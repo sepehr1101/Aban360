@@ -6,4 +6,33 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\ApiKey\" />
+    <Folder Include="Features\Authentication\" />
+    <Folder Include="Features\Authorization\" />
+    <Folder Include="Features\Logging\" />
+    <Folder Include="Features\Policy\" />
+    <Folder Include="Features\UiElement\" />
+    <Folder Include="Scaffold\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EFCore.BulkExtensions" Version="8.1.1" />
+    <PackageReference Include="FluentMigrator" Version="6.2.0" />
+    <PackageReference Include="FluentMigrator.Runner.SqlServer" Version="6.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
+    <PackageReference Include="Scrutor" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
+  </ItemGroup>
+
 </Project>
