@@ -7,9 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Cmd\_scaffold.cmd" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Cmd\_scaffold.cmd" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Features\ApiKey\" />
-    <Folder Include="Features\Authentication\" />
-    <Folder Include="Features\Authorization\" />
     <Folder Include="Features\Logging\" />
     <Folder Include="Features\Policy\" />
     <Folder Include="Features\UiElement\" />

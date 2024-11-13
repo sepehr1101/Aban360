@@ -7,15 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Accounting\Dto\Commands\Outputs\" />
-    <Folder Include="Features\Accounting\Dto\Queries\" />
-    <Folder Include="Features\Accounting\EfConfig\" />
     <Folder Include="Features\Authentication\Dto\Commands\" />
     <Folder Include="Features\Authentication\Dto\Queries\" />
     <Folder Include="Features\Authentication\EfConfig\" />
-    <Folder Include="Features\Authorization\Dto\Commands\" />
-    <Folder Include="Features\Authorization\Dto\Queries\" />
-    <Folder Include="Features\Authorization\EfConfig\" />
     <Folder Include="Features\Logging\Dto\Commands\" />
     <Folder Include="Features\Logging\Dto\Queries\" />
     <Folder Include="Features\Logging\EfConfig\" />

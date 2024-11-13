@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Pol.Common.Extensions;
+using Aban360.Common.Extensions;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
 using Aban360.UserPool.Persistence.DbSeeder.Contracts;
 

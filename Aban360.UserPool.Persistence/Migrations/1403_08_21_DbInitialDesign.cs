@@ -5,11 +5,11 @@ using System.Reflection;
 
 namespace Aban360.UserPool.Persistence.Migrations
 {
-    [Migration(1403061501)]
+    [Migration(1403082101)]
     public class DbInitialDesign : Migration
     {
         string Id = nameof(Id), Hash = nameof(Hash);
-        int _31, _255 = 255, _1023 = 1023;
+        int _31=31, _255 = 255, _1023 = 1023;
         public override void Up()
         {
             var methods =
@@ -31,26 +31,26 @@ namespace Aban360.UserPool.Persistence.Migrations
             tableNames.ForEach(t => Delete.Table(t));
         }
 
-        public void CreateCaptchaDisplayMode()
+        private void CreateCaptchaDisplayMode()
         {
             var table = TableName.CaptchaDisplayMode;
-            Create.Table(nameof(table))
+            Create.Table(nameof(TableName.CaptchaDisplayMode))
                 .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("Name").AsAnsiString(_31).NotNullable()
                 .WithColumn("Tite").AsString(_31).NotNullable();
         }
-        public void CreateCapchaLanguage()
+        private void CreateCapchaLanguage()
         {
             var table= TableName.CaptchaLanguage;
-            Create.Table(nameof(table))
+            Create.Table(nameof(TableName.CaptchaLanguage))
                 .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("Name").AsAnsiString(_31).NotNullable() 
                 .WithColumn("Title").AsString(_31).NotNullable();
         }
-        public void CreateCaptcha()
+        private void CreateCaptcha()
         {   
             var table = TableName.Captcha;
-            Create.Table(nameof(table))
+            Create.Table(nameof(TableName.Captcha))
                 .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn($"{TableName.CaptchaLanguage}{Id}").AsInt16().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.CaptchaLanguage,table),nameof(TableName.CaptchaLanguage),Id)
@@ -103,10 +103,10 @@ namespace Aban360.UserPool.Persistence.Migrations
                .WithColumn("UserId").AsGuid().NotNullable()
                .WithColumn("ClientInfo").AsString(int.MaxValue).NotNullable();
         }
-        public void CreateUser()
+        private void CreateUser()
         {
             var table = TableName.User;
-            Create.Table(nameof(table))
+            Create.Table(nameof(TableName.User))
                 .WithColumn(Id).AsGuid().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("FullName").AsString(_255).NotNullable()
                 .WithColumn("DisplayName").AsString(_255).NotNullable()
@@ -124,16 +124,16 @@ namespace Aban360.UserPool.Persistence.Migrations
         private void CreateRole()
         {
             var table = TableName.Role;
-            Create.Table(nameof(table))
+            Create.Table(nameof(TableName.Role))
                 .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("Name").AsAnsiString(_255).NotNullable() 
                 .WithColumn("Title").AsString(_255).NotNullable()
-                .WithColumn(Hash);
+                .WithColumn(Hash).AsString(_1023).NotNullable();
         }
         private void CreateUserRole()
         {
             var table = TableName.UserRole;
-            Create.Table(nameof(table))
+            Create.Table(nameof(TableName.UserRole))
                 .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table))                    
                 .WithColumn($"{nameof(TableName.User)}{Id}").AsGuid().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.User, table), nameof(TableName.User), Id)
@@ -144,7 +144,7 @@ namespace Aban360.UserPool.Persistence.Migrations
         private void CreateUserToken()
         {
             var table = TableName.UserToken;
-            Create.Table(nameof(table))
+            Create.Table(nameof(TableName.UserToken))
                 .WithColumn(Id).AsInt64().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn($"{nameof(TableName.User)}{Id}").AsGuid().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.User, table), nameof(TableName.User), Id)
@@ -157,7 +157,7 @@ namespace Aban360.UserPool.Persistence.Migrations
         private void CreateUserLogin()
         {            
             var table = TableName.UserLogin;
-            Create.Table(nameof(table))
+            Create.Table(nameof(TableName.UserLogin))
                 .WithColumn(Id).AsInt64().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn("Username").AsString(_255).NotNullable()
                 .WithColumn($"{nameof(TableName.User)}{Id}").AsGuid().Nullable()
