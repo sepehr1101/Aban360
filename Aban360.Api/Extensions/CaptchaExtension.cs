@@ -4,6 +4,7 @@ namespace Aban360.Api.Extensions
 {
     public static class CaptchaExtension
     {
+        const int _expireMin = 5;
         public static void AddCaptcha(this IServiceCollection services)
         {
             services.AddDNTCaptcha(options =>
@@ -17,15 +18,15 @@ namespace Aban360.Api.Extensions
                // Don't set this line (remove it) to use the installed system's fonts (FontName = "Tahoma").
                // Or if you want to use a custom font, make sure that font is present in the wwwroot/fonts folder and also use a good and complete font!
                //.UseCustomFont(Path.Combine(_env.WebRootPath, "fonts", "IRANSans(FaNum)_Bold.ttf")) // This is optional.
-               .AbsoluteExpiration(minutes: 7)
+               .AbsoluteExpiration(minutes: _expireMin)
                .ShowThousandsSeparators(false)
                .WithEncryptionKey("This is my secure key!")
                .InputNames(// This is optional. Change it if you don't like the default names.
                    new DNTCaptchaComponent
                    {
-                       CaptchaHiddenInputName = "Aban360CaptchaText",
-                       CaptchaHiddenTokenName = "Aban360CaptchaToken",
-                       CaptchaInputName = "Aban360CaptchaInputText"
+                       CaptchaHiddenInputName = "CaptchaText",
+                       CaptchaHiddenTokenName = "CaptchaToken",
+                       CaptchaInputName = "CaptchaInputText"
                    })
                .Identifier("Aban360Captcha")// This is optional. Change it if you don't like its default name.
                ;

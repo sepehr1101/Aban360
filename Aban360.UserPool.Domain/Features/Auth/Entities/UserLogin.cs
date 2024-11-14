@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Aban360.UserPool.Persistence.Features.Authentication;
+namespace Aban360.UserPool.Domain.Features.Auth.Entities;
 
 public partial class UserLogin
 {

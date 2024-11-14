@@ -7,9 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Authentication\Dto\Commands\" />
-    <Folder Include="Features\Authentication\Dto\Queries\" />
-    <Folder Include="Features\Authentication\EfConfig\" />
+    <Folder Include="Features\Auth\EfConfig\" />
     <Folder Include="Features\Logging\Dto\Commands\" />
     <Folder Include="Features\Logging\Dto\Queries\" />
     <Folder Include="Features\Logging\EfConfig\" />

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Aban360.UserPool.Persistence.Scaffold;
+﻿namespace Aban360.UserPool.Persistence.Scaffold;
 
 public partial class OperationType
 {

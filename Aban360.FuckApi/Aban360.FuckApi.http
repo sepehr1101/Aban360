@@ -1,0 +1,6 @@
+@Aban360.FuckApi_HostAddress = http://localhost:5042
+
+GET {{Aban360.FuckApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Aban360.Common.Extensions;
-using Aban360.UserPool.Domain.Features.Accounting.Dto.Commands.Inputs;
+using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
+using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 
 namespace Aban360.Api.Controllers.Authentication.Commands
 {
-    [Route("Login")]
+    [Route("login")]
     [ApiController]
     public class LoginController : ControllerBase
     {
@@ -32,7 +33,7 @@ namespace Aban360.Api.Controllers.Authentication.Commands
 
         [AllowAnonymous]
         [HttpPost]
-        [Route("FirstStep")]
+        [Route("first-step")]
         //[ProducesResponseType(typeof(LoginOutput), StatusCodes.Status200OK)]
         public async Task<IActionResult> PaceFirstStep([FromForm] FirstStepLoginInput loginInput)
         {
@@ -45,18 +46,18 @@ namespace Aban360.Api.Controllers.Authentication.Commands
 
         [AllowAnonymous]
         [HttpPost]
-        [Route("SecondStep")]
+        [Route("second-step")]
         //[ProducesResponseType(typeof(LoginOutput), StatusCodes.Status200OK)]
         public async Task<IActionResult> PaceSecondStep()
         {
             return Ok();
         }
 
-        //[AllowAnonymous]
+        [AllowAnonymous]
         [HttpGet]
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true, Duration = 0)]
-        [Route("CreateCaptchaParams")]
-        public ActionResult<DNTCaptchaApiResponse> CreateDNTCaptchaParams()
+        [Route("captcha")]
+        public ActionResult<CaptchaApiResponse> CreateCaptchaParams()
         {
             // Note: For security reasons, a JavaScript client shouldn't be able to provide these attributes directly.
             // Otherwise an attacker will be able to change them and make them easier!
@@ -72,7 +73,8 @@ namespace Aban360.Api.Controllers.Authentication.Commands
                 Min = 1,
                 Dir="ltr"                
             });
-            return captcha;
+            var response = new CaptchaApiResponse(captcha.DntCaptchaImgUrl, captcha.DntCaptchaId, captcha.DntCaptchaTextValue, captcha.DntCaptchaTokenValue);
+            return response;
         }
     }
 }
