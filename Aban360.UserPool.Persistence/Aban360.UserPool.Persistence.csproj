@@ -8,7 +8,8 @@
 
   <ItemGroup>
     <Folder Include="Features\ApiKey\" />
-    <Folder Include="Features\Auth\" />
+    <Folder Include="Features\Auth\Commands\Contracts\" />
+    <Folder Include="Features\Auth\Commands\Implementations\" />
     <Folder Include="Features\Logging\" />
     <Folder Include="Features\Policy\" />
     <Folder Include="Features\UiElement\" />
@@ -32,6 +33,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
+    <ProjectReference Include="..\Aban360.UserPool.Domain\Aban360.UserPool.Domain.csproj" />
   </ItemGroup>
 
 </Project>

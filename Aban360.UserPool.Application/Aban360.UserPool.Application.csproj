@@ -6,4 +6,63 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Common\Constants\" />
+    <Folder Include="Common\Entities\" />
+    <Folder Include="Common\Services\Contracts\" />
+    <Folder Include="Common\Services\Implementations\" />
+    <Folder Include="Features\Auth\Handlers\Commands\Create\Contracts\" />
+    <Folder Include="Features\Auth\Handlers\Commands\Create\Implementations\" />
+    <Folder Include="Features\Auth\Handlers\Commands\Delete\Contracts\" />
+    <Folder Include="Features\Auth\Handlers\Commands\Delete\Implementations\" />
+    <Folder Include="Features\Auth\Handlers\Commands\Update\Contracts\" />
+    <Folder Include="Features\Auth\Handlers\Commands\Update\Implementations\" />
+    <Folder Include="Features\Auth\Validations\" />
+    <Folder Include="Features\Logging\Handlers\Commands\Create\Contracts\" />
+    <Folder Include="Features\Logging\Handlers\Commands\Create\Implementations\" />
+    <Folder Include="Features\Logging\Handlers\Commands\Delete\Contracts\" />
+    <Folder Include="Features\Logging\Handlers\Commands\Delete\Implementations\" />
+    <Folder Include="Features\Logging\Handlers\Commands\Update\Contracts\" />
+    <Folder Include="Features\Logging\Handlers\Commands\Update\Implementations\" />
+    <Folder Include="Features\Logging\Handlers\Queries\Contracts\" />
+    <Folder Include="Features\Logging\Handlers\Queries\Implementations\" />
+    <Folder Include="Features\Logging\Mappings\" />
+    <Folder Include="Features\Logging\Validations\" />
+    <Folder Include="Features\Policy\Handlers\Commands\Create\Contracts\" />
+    <Folder Include="Features\Policy\Handlers\Commands\Create\Implementations\" />
+    <Folder Include="Features\Policy\Handlers\Commands\Delete\Contracts\" />
+    <Folder Include="Features\Policy\Handlers\Commands\Delete\Implementations\" />
+    <Folder Include="Features\Policy\Handlers\Commands\Update\Contracts\" />
+    <Folder Include="Features\Policy\Handlers\Commands\Update\Implementations\" />
+    <Folder Include="Features\Policy\Handlers\Queries\Contracts\" />
+    <Folder Include="Features\Policy\Handlers\Queries\Implementations\" />
+    <Folder Include="Features\Policy\Mappings\" />
+    <Folder Include="Features\Policy\Validations\" />
+    <Folder Include="Features\UiElement\Handlers\Commands\Create\Contracts\" />
+    <Folder Include="Features\UiElement\Handlers\Commands\Create\Implementations\" />
+    <Folder Include="Features\UiElement\Handlers\Commands\Delete\Contracts\" />
+    <Folder Include="Features\UiElement\Handlers\Commands\Delete\Implementations\" />
+    <Folder Include="Features\UiElement\Handlers\Commands\Update\Contracts\" />
+    <Folder Include="Features\UiElement\Handlers\Commands\Update\Implementations\" />
+    <Folder Include="Features\UiElement\Handlers\Queries\Contracts\" />
+    <Folder Include="Features\UiElement\Handlers\Queries\Implementations\" />
+    <Folder Include="Features\UiElement\Mappings\" />
+    <Folder Include="Features\UiElement\Validations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Automapper" Version="13.0.1" />
+    <PackageReference Include="FluentValidation" Version="11.10.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+    <PackageReference Include="Scrutor" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
+    <ProjectReference Include="..\Aban360.UserPool.Domain\Aban360.UserPool.Domain.csproj" />
+    <ProjectReference Include="..\Aban360.UserPool.Infrastructure\Aban360.UserPool.Infrastructure.csproj" />
+    <ProjectReference Include="..\Aban360.UserPool.Persistence\Aban360.UserPool.Persistence.csproj" />
+  </ItemGroup>
+
 </Project>

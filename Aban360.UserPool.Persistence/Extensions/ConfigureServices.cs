@@ -11,7 +11,7 @@ namespace Aban360.UserPool.Persistence.Extensions
                 scan
                     .FromCallingAssembly()
                     .AddClasses(publicOnly: false)
-                    .UsingRegistrationStrategy(RegistrationStrategy.Skip)
+                    .UsingRegistrationStrategy(RegistrationStrategy.Append)
                     .AsImplementedInterfaces()
                     .WithScopedLifetime());
         }

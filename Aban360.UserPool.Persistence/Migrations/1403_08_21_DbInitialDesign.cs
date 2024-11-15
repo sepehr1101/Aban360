@@ -36,6 +36,7 @@ namespace Aban360.UserPool.Persistence.Migrations
             var table = TableName.CaptchaDisplayMode;
             Create.Table(nameof(TableName.CaptchaDisplayMode))
                 .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("DisplayModeEnumId").AsInt16().NotNullable()
                 .WithColumn("Name").AsAnsiString(_31).NotNullable()
                 .WithColumn("Tite").AsString(_31).NotNullable();
         }
@@ -44,6 +45,7 @@ namespace Aban360.UserPool.Persistence.Migrations
             var table= TableName.CaptchaLanguage;
             Create.Table(nameof(TableName.CaptchaLanguage))
                 .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("LanguageId").AsInt16().NotNullable()
                 .WithColumn("Name").AsAnsiString(_31).NotNullable() 
                 .WithColumn("Title").AsString(_31).NotNullable();
         }
@@ -76,7 +78,7 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn("HiddenTokenName").AsAnsiString(_255).NotNullable()
                 .WithColumn("InputName").AsAnsiString(_255).NotNullable()
                 .WithColumn("InputClass").AsAnsiString(_255).NotNullable()
-                .WithColumn("InputTemplate").AsString(int.MinValue)
+                .WithColumn("InputTemplate").AsString(int.MaxValue)
                 .WithColumn("Identifier").AsAnsiString(_255).NotNullable();
         }
 

@@ -1,9 +1,12 @@
-﻿namespace Aban360.UserPool.Domain.Features.Auth.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-public partial class CaptchaDisplayMode
+namespace Aban360.UserPool.Domain.Features.Auth.Entities;
+
+[Table(nameof(CaptchaDisplayMode))]
+public class CaptchaDisplayMode
 {
     public short Id { get; set; }
-
+    public short DisplayModeEnumId { get; set; }
     public string Name { get; set; } = null!;
 
     public string Tite { get; set; } = null!;

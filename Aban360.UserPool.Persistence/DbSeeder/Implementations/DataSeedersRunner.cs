@@ -19,7 +19,7 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
         }
         public void RunAllDataSeeders()
         {
-            var seeders = _serviceProvider.GetServices<IDataSeeder>().ToList();            
+            var seeders = _serviceProvider.GetServices<IDataSeeder>().ToList();
             foreach (var seeder in seeders.OrderBy(dataSeeder => dataSeeder.Order))
             {               
                 seeder.SeedData();

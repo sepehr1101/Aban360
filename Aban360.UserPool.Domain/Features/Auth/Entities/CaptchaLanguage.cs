@@ -1,8 +1,13 @@
-﻿namespace Aban360.UserPool.Domain.Features.Auth.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-public partial class CaptchaLanguage
+namespace Aban360.UserPool.Domain.Features.Auth.Entities;
+
+[Table(nameof(CaptchaLanguage))]
+public class CaptchaLanguage
 {
     public short Id { get; set; }
+
+    public short LanguageId { get; set; }
 
     public string Name { get; set; } = null!;
 
