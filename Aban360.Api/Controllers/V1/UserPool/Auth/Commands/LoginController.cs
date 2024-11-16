@@ -7,12 +7,14 @@ using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
+using Aban360.Common.Entities;
+using Aban360.UserPool.Domain.Constants;
 
-namespace Aban360.Api.Controllers.Authentication.Commands
+namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
 {
     [Route("login")]
     [ApiController]
-    public class LoginController : ControllerBase
+    public class LoginController : BaseController
     {
         private readonly IDNTCaptchaApiProvider _captchaApiProvider;
         private readonly IDNTCaptchaValidatorService _captchaValidatorService;
@@ -41,12 +43,12 @@ namespace Aban360.Api.Controllers.Authentication.Commands
         [AllowAnonymous]
         [HttpPost]
         [Route("first-step")]
-        //[ProducesResponseType(typeof(LoginOutput), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> PaceFirstStep([FromForm] FirstStepLoginInput loginInput)
         {
             if (!_captchaValidatorService.HasRequestValidCaptchaEntry())
             {
-                return BadRequest(_captchaOptions.CaptchaComponent);
+                return ClientError(MessageResources.CaptchaInvalid);
             }
             return Ok(_captchaOptions.CaptchaComponent);
         }
@@ -64,43 +66,31 @@ namespace Aban360.Api.Controllers.Authentication.Commands
         [HttpGet]
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true, Duration = 0)]
         [Route("captcha")]
-        public async Task<ActionResult<CaptchaApiResponse>> CreateCaptchaParams()
+        public async Task<IActionResult> CreateCaptchaParams()
         {
             CaptchaDto captchaDto = await _captchaGetSingleHandler.Handle();
-
             var captcha = _captchaApiProvider.CreateDNTCaptcha(new DNTCaptchaTagHelperHtmlAttributes
             {
-                //BackColor = "#f7f3f3",
-                //FontName = "Tahoma",
-                //FontSize = 18,
-                //ForeColor = "#111111",
-                //Language = Language.English,
-                //DisplayMode = DisplayMode.SumOfTwoNumbersToWords,
-                //Max = 90,
-                //Min = 1,
-                //Dir="ltr"
                 BackColor = captchaDto.BackColor,
-                Dir = "ltr",
+                Dir = captchaDto.Direction,
                 FontName = captchaDto.FontName,
                 FontSize = captchaDto.FontSize,
                 ForeColor = captchaDto.ForeColor,
-                Placeholder = string.Empty,//captchaDto.Placeholder,
-                RefreshButtonClass = captchaDto.RefreshButtonClass,
-                Max= 99,
-                Min=1,
-                ShowRefreshButton=captchaDto.ShowRefreshButton,
-                TextBoxClass = captchaDto.InputClass,
+                Max = captchaDto.Max,
+                Min = captchaDto.Min,
+                //ShowRefreshButton=captchaDto.ShowRefreshButton,
+                //TextBoxClass = captchaDto.InputClass,
                 ValidationMessageClass = captchaDto.ValidationMessageClass,
-                ValidationErrorMessage= string.Empty, //captchaDto.ValidationErrorMessage,
-                TextBoxTemplate=captchaDto.InputTemplate,
-                TooManyRequestsErrorMessage=captchaDto.RateLimitMessage,
-                CaptchaToken= captchaDto.HiddenTokenName,
-                DisplayMode=DisplayMode.ShowDigits,
-                Language=Language.English,
-                UseRelativeUrls=false,
+                ValidationErrorMessage = string.Empty, //captchaDto.ValidationErrorMessage,
+                //TextBoxTemplate=captchaDto.InputTemplate,
+                //TooManyRequestsErrorMessage=captchaDto.RateLimitMessage,
+                //CaptchaToken= captchaDto.HiddenTokenName,
+                DisplayMode = (DisplayMode)captchaDto.DisplayModeEnumId,
+                Language = (Language)captchaDto.LanguageId,
+                UseRelativeUrls = false
             });
             var response = new CaptchaApiResponse(captcha.DntCaptchaImgUrl, captcha.DntCaptchaId, captcha.DntCaptchaTextValue, captcha.DntCaptchaTokenValue);
-            return response;
+            return Ok(response);
         }
     }
 }

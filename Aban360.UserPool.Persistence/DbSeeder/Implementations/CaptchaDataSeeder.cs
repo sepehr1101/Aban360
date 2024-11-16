@@ -27,30 +27,33 @@ namespace SmsHub.Persistence.DbSeeder.Implementations
             }
             var captcha1 = new Captcha()
             {
-                BackColor = "",
-                CaptchaDisplayModeId = 1,
+                BackColor = "#f7f3f3",
+                CaptchaDisplayModeId = 4,
                 CaptchaLanguageId = 1,
                 EncryptionKey = "This is my secret",
                 ExpiresAfter = 7,
                 FontName = "Tahoma",
-                FontSize = 12,
+                FontSize = 18,
                 ForeColor = "#111111",
-                Identifier = "Aban360",
-                HiddenInputName = "hidden",
-                InputClass = "class-1",
-                InputName = "inputName",
-                InputPlaceholder = "placeHolder",
-                InputTemplate = "<input>",
-                Noise = "asdfas",
+                //Identifier = "Aban360",
+                //HiddenInputName = "hidden",
+                //InputClass = "class-1",
+                //InputName = "inputName",
+                //InputPlaceholder = "placeHolder",
+                //InputTemplate = "<input>",
+                Noise = "putNoiserAsYouCan",
                 NonceKey = "nonceKey",
                 RateLimit = 10,
-                RateLimitMessage = "ignored rate limit mate",
-                RefreshButtonClass = "refresh",
-                ShowRefreshButton = true,
+                //RateLimitMessage = "ignored rate limit mate",
+                //RefreshButtonClass = "refresh",
+                //ShowRefreshButton = true,
                 ShowThousandSeperator = true,
-                ValidationMessage = "invalid",
-                ValidationMessageClass = "validation-class",
-                HiddenTokenName="hidden token Name"
+                Direction="ltr",
+                Min=0,
+                Max=99
+                //ValidationMessage = "invalid",
+                //ValidationMessageClass = "validation-class",
+                //HiddenTokenName="hidden token Name"
             };       
             _capthcas.Add(captcha1);
         }
