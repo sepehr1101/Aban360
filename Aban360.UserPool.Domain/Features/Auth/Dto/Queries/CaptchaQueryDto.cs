@@ -1,5 +1,5 @@
 ﻿namespace Aban360.UserPool.Domain.Features.Auth.Entities;
-public record CaptchaDto
+public record CaptchaQueryDto
 {
     public int Id { get; set; }    
     public short LanguageId { get; set; }

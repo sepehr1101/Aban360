@@ -29,6 +29,7 @@ namespace Aban360.Api.Controllers.V1
             var envelope = new ApiResponseEnvelope<object>((int)HttpStatusCode.BadRequest, null, new List<ApiError> { error }, null, meta);
             return BadRequest(envelope);
         }
+
         [NonAction]
         public IActionResult ClientError(string errorMessage, [Optional] ApiMeta meta)
         {

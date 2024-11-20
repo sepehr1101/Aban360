@@ -6,12 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
 {
-    public sealed class CaptchaQueryService : ICaptchaQueryService
+    public sealed class CaptchaCommandService : ICaptchaQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<Captcha> _captchas;
 
-        public CaptchaQueryService(IUnitOfWork uow)
+        public CaptchaCommandService(IUnitOfWork uow)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));
@@ -22,9 +22,20 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
         public async Task<Captcha> Get()
         {
             return await _captchas
+                .AsNoTracking()
                 .Include(c=>c.CaptchaDisplayMode)
                 .Include(c=>c.CaptchaLanguage)
-                .FirstAsync();
+                .Where(c=>c.IsSelected)
+                .SingleAsync();
+        }
+
+        public async Task<ICollection<Captcha>> GetAll()
+        {
+            return await _captchas
+                .AsNoTracking()
+                .Include(c => c.CaptchaDisplayMode)
+                .Include(c => c.CaptchaLanguage)
+                .ToListAsync();
         }
     }
 }

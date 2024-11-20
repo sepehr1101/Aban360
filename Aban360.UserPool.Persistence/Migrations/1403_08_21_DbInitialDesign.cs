@@ -19,7 +19,6 @@ namespace Aban360.UserPool.Persistence.Migrations
               .ToList();
             methods.ForEach(m => m.Invoke(this, null));
         }
-
         public override void Down()
         {
             var tableNames =
@@ -75,7 +74,8 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn("NonceKey").AsString(_1023).NotNullable()
                 .WithColumn("Direction").AsAnsiString(3).NotNullable()
                 .WithColumn("Min").AsInt32().NotNullable()
-                .WithColumn("Max").AsInt32().NotNullable();
+                .WithColumn("Max").AsInt32().NotNullable()
+                .WithColumn("IsSelected").AsBoolean().NotNullable();
                 //.WithColumn("InputPlaceholder").AsString(_255).NotNullable()
                 //.WithColumn("HiddenInputName").AsAnsiString(_255).NotNullable()
                 //.WithColumn("HiddenTokenName").AsAnsiString(_255).NotNullable()
@@ -112,7 +112,7 @@ namespace Aban360.UserPool.Persistence.Migrations
         {
             var table = TableName.User;
             Create.Table(nameof(TableName.User))
-                .WithColumn(Id).AsGuid().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn(Id).AsGuid().PrimaryKey(NamingHelper.Pk(table))               
                 .WithColumn("FullName").AsString(_255).NotNullable()
                 .WithColumn("DisplayName").AsString(_255).NotNullable()
                 .WithColumn("Username").AsString(_255).Unique(NamingHelper.Uq(table,"Username")).NotNullable()
@@ -123,9 +123,15 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn("InvalidLoginAttemptCount").AsInt32().NotNullable().WithDefaultValue(0)
                 .WithColumn("LatestLoginDateTime").AsDateTime().Nullable()
                 .WithColumn("LockTimespan").AsDateTime().Nullable()
-                .WithColumn("IsActive").AsBoolean().NotNullable()
+                .WithColumn("PreviousId").AsGuid().Nullable()
+                     .ForeignKey(NamingHelper.Fk(table, table), nameof(table), Id)
+                .WithColumn("ValidFrom").AsDateTime2().NotNullable()
+                .WithColumn("ValidTo").AsDateTime2().Nullable()
+                .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
+                .WithColumn("RemoveLogInfo").AsString(int.MinValue).Nullable()
                 .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
         }
+
         private void CreateRole()
         {
             var table = TableName.Role;
@@ -133,7 +139,12 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("Name").AsAnsiString(_255).NotNullable() 
                 .WithColumn("Title").AsString(_255).NotNullable()
-                .WithColumn(Hash).AsString(_1023).NotNullable();
+                .WithColumn("DefaultClaims").AsString(int.MaxValue).Nullable()
+                .WithColumn("ValidFrom").AsDateTime2().NotNullable()
+                .WithColumn("ValidTo").AsDateTime2().Nullable()
+                .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
+                .WithColumn("RemoveLogInfo").AsString(int.MinValue).Nullable()
+                .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
         }
         private void CreateUserRole()
         {
@@ -144,7 +155,11 @@ namespace Aban360.UserPool.Persistence.Migrations
                     .ForeignKey(NamingHelper.Fk(TableName.User, table), nameof(TableName.User), Id)
                 .WithColumn($"{nameof(TableName.Role)}{Id}").AsInt32().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.Role, TableName.UserRole), nameof(TableName.Role), Id)
-                .WithColumn(Hash).AsString(_1023).NotNullable();
+                .WithColumn("ValidFrom").AsDateTime2().NotNullable()
+                .WithColumn("ValidTo").AsDateTime2().Nullable()
+                .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
+                .WithColumn("RemoveLogInfo").AsString(int.MinValue).Nullable()
+                .WithColumn(Hash).AsString(int.MaxValue).NotNullable(); ;
         }
         private void CreateUserToken()
         {
@@ -159,6 +174,21 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn("RefreshTokenIdHash").AsString(_1023)
                 .WithColumn("RefreshTokenIdHashSource").AsString(_1023);
         }
+
+        private void CreateInvalidLoginReason()
+        {
+            var table = TableName.InvalidLoginReason;
+            Create.Table(nameof(TableName.InvalidLoginReason))
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn("Title").AsString(_255).NotNullable();
+        }
+        private void CreateLogoutReason()
+        {
+            var table = TableName.LogoutReason;
+            Create.Table(nameof(TableName.LogoutReason))
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn("Title").AsString(_255).NotNullable();
+        }
         private void CreateUserLogin()
         {            
             var table = TableName.UserLogin;
@@ -170,6 +200,8 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn("FirstStepDateTime").AsDateTime().NotNullable()
                 .WithColumn("Ip").AsAnsiString(15).NotNullable()
                 .WithColumn("FirstStepSuccess").AsBoolean().NotNullable()
+                .WithColumn($"{nameof(TableName.InvalidLoginReason)}{Id}").AsInt16()
+                    .ForeignKey(NamingHelper.Fk(TableName.InvalidLoginReason, table), nameof(TableName.InvalidLoginReason), Id)
                 .WithColumn("WrongPassword").AsString(_1023).Nullable()
                 .WithColumn("AppVersion").AsString(15).NotNullable()
                 .WithColumn("TwoStepCode").AsAnsiString(15).Nullable()
@@ -178,10 +210,11 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn("TwoStepWasSuccessful").AsBoolean().Nullable()
                 .WithColumn("PreviousFailureIsShown").AsBoolean().NotNullable()
                 .WithColumn("LogoutDateTime").AsDateTime().Nullable()
-                .WithColumn("LogoutReasonId").AsInt32().Nullable();
+                .WithColumn($"{nameof(TableName.LogoutReason)}{Id}").AsInt16()
+                    .ForeignKey(NamingHelper.Fk(TableName.LogoutReason, table), nameof(TableName.LogoutReason), Id);
 
             //todo invalidloginRason table with enum id
             //todo logoutReason table with enum id
-        }
+        }       
     }
 }

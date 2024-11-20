@@ -8,6 +8,8 @@ public partial class Role
 
     public string Title { get; set; } = null!;
 
+    public string? DefaultClaims { get; set; }
+
     public string Hash { get; set; } = null!;
 
     public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();

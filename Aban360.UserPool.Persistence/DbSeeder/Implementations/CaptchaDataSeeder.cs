@@ -50,7 +50,8 @@ namespace SmsHub.Persistence.DbSeeder.Implementations
                 ShowThousandSeperator = true,
                 Direction="ltr",
                 Min=0,
-                Max=99
+                Max=99,
+                IsSelected=true
                 //ValidationMessage = "invalid",
                 //ValidationMessageClass = "validation-class",
                 //HiddenTokenName="hidden token Name"

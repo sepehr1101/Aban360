@@ -60,37 +60,6 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
         public async Task<IActionResult> PaceSecondStep()
         {
             return Ok();
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true, Duration = 0)]
-        [Route("captcha")]
-        public async Task<IActionResult> CreateCaptchaParams()
-        {
-            CaptchaDto captchaDto = await _captchaGetSingleHandler.Handle();
-            var captcha = _captchaApiProvider.CreateDNTCaptcha(new DNTCaptchaTagHelperHtmlAttributes
-            {
-                BackColor = captchaDto.BackColor,
-                Dir = captchaDto.Direction,
-                FontName = captchaDto.FontName,
-                FontSize = captchaDto.FontSize,
-                ForeColor = captchaDto.ForeColor,
-                Max = captchaDto.Max,
-                Min = captchaDto.Min,
-                //ShowRefreshButton=captchaDto.ShowRefreshButton,
-                //TextBoxClass = captchaDto.InputClass,
-                ValidationMessageClass = captchaDto.ValidationMessageClass,
-                ValidationErrorMessage = string.Empty, //captchaDto.ValidationErrorMessage,
-                //TextBoxTemplate=captchaDto.InputTemplate,
-                //TooManyRequestsErrorMessage=captchaDto.RateLimitMessage,
-                //CaptchaToken= captchaDto.HiddenTokenName,
-                DisplayMode = (DisplayMode)captchaDto.DisplayModeEnumId,
-                Language = (Language)captchaDto.LanguageId,
-                UseRelativeUrls = false
-            });
-            var response = new CaptchaApiResponse(captcha.DntCaptchaImgUrl, captcha.DntCaptchaId, captcha.DntCaptchaTextValue, captcha.DntCaptchaTokenValue);
-            return Ok(response);
-        }
+        }                
     }
 }
