@@ -1,5 +1,4 @@
-﻿using Aban360.UserPool.Domain.Features.Auth.Entities;
-using Aban360.UserPool.Persistence.Extensions;
+﻿using Aban360.UserPool.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.UserPool.Persistence.Contexts.Implementation
@@ -13,10 +12,7 @@ namespace Aban360.UserPool.Persistence.Contexts.Implementation
         public Aban360Context(DbContextOptions<Aban360Context> options)
             : base(options)
         {
-        }
-        public virtual DbSet<CaptchaLanguage> CaptchaLanguages { get; set; } = null!;
-        public virtual DbSet<CaptchaDisplayMode> CaptchaDisplayMode { get; set; } = null!;
-        public virtual DbSet<Captcha> Captchas { get; set; } = null!;
+        }       
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -27,9 +23,7 @@ namespace Aban360.UserPool.Persistence.Contexts.Implementation
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            //modelBuilder.ApplyConfigurationsFromAssembly(typeof(Provider).Assembly);
-
+        {            
             OnModelCreatingPartial(modelBuilder);
         }
 

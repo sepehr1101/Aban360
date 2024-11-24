@@ -29,9 +29,10 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Commands.Implementations
         {
             _captchas.Remove(captcha);
         }
-        public async Task Update(CapthcaUpdateDto captcha)
+        public void Update(Captcha captcha)
         {
-            var captchaInDb = await _captchas.FindAsync(captcha.Id);
+            _uow.SetEntityState(captcha, EntityState.Modified);
+            //var captchaInDb = await _captchas.FindAsync(captcha.Id);
         }
         public async Task SetIsSelected(int id)
         {

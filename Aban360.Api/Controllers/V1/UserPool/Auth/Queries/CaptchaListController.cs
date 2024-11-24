@@ -1,9 +1,6 @@
 ﻿using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
-using Aban360.UserPool.Domain.Features.Auth.Entities;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Http;
+using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
 {
@@ -18,9 +15,9 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
         }
 
         [Route("read")]
-        public async Task<IActionResult> Read([FromBody]CancellationToken cancellationToken)
+        public async Task<IActionResult> Read(CancellationToken cancellationToken)
         {
-            var captchaDtos= await _captchaGetListHandler.Handle(cancellationToken);
+            ICollection<CaptchaListQueryDto> captchaDtos = await _captchaGetListHandler.Handle(cancellationToken);
             return Ok(captchaDtos);
         }
     }

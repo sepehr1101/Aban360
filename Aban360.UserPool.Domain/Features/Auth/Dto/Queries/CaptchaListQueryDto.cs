@@ -1,9 +1,9 @@
-﻿namespace Aban360.UserPool.Domain.Features.Auth.Dto.Commands
-{    
-    public sealed class CapthcaUpdateDto
+﻿namespace Aban360.UserPool.Domain.Features.Auth.Dto.Queries
+{
+    public sealed record CaptchaListQueryDto
     {
         public int Id { get; set; }
-        public short CapthcaLanguageId { get; set; }
+        public short CaptchaLanguageId { get; set; }
         public short CaptchaDisplayModeId { get; set; }
         public bool ShowThousandSeperator { get; set; }
         public string FontName { get; set; } = null!;

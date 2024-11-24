@@ -3,7 +3,6 @@ using Aban360.Common.Extensions;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
 using Aban360.UserPool.Persistence.DbSeeder.Contracts;
-using System.ComponentModel.DataAnnotations;
 
 namespace SmsHub.Persistence.DbSeeder.Implementations
 {

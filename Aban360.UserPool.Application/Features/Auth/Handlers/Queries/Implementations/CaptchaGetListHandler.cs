@@ -1,14 +1,8 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
-using Aban360.UserPool.Domain.Features.Auth.Entities;
+using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations
 {
@@ -25,10 +19,10 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
             _queryService = captchaQueryService;
             _queryService.NotNull();
         }
-        public async Task<ICollection<CaptchaQueryDto>> Handle(CancellationToken cancellationToken)
+        public async Task<ICollection<CaptchaListQueryDto>> Handle(CancellationToken cancellationToken)
         {
             var captchas = await _queryService.GetAll();
-            return _mapper.Map<ICollection<CaptchaQueryDto>>(captchas);
+            return _mapper.Map<ICollection<CaptchaListQueryDto>>(captchas);
         }
     }
 }

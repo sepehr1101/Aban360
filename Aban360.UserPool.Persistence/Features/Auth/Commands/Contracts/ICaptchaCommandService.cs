@@ -1,5 +1,4 @@
-﻿using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
-using Aban360.UserPool.Domain.Features.Auth.Entities;
+﻿using Aban360.UserPool.Domain.Features.Auth.Entities;
 
 namespace Aban360.UserPool.Persistence.Features.Auth.Commands.Contracts
 {
@@ -8,6 +7,6 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Commands.Contracts
         Task Create(Captcha captcha);
         void Delete(Captcha captcha);
         Task SetIsSelected(int id);
-        Task Update(CapthcaUpdateDto captcha);
+        void Update(Captcha captcha);
     }
 }

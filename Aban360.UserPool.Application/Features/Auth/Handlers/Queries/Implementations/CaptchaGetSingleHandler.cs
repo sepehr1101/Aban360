@@ -18,10 +18,11 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
             _queryService = queryService;
             _queryService.NotNull(nameof(queryService));
         }
-        public async Task<CaptchaQueryDto> Handle()
+        public async Task<CaptchaSingleQueryDto> Handle(CancellationToken cancellationToken)
          {
             var captcha = await _queryService.Get();
-            return _mapper.Map<CaptchaQueryDto>(captcha);
+            captcha.IsSelected = true;
+            return _mapper.Map<CaptchaSingleQueryDto>(captcha);
         }
     }
 }

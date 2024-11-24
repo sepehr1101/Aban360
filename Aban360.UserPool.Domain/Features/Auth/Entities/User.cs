@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace Aban360.UserPool.Domain.Features.Auth.Entities;
 
-namespace Aban360.UserPool.Domain.Features.Auth.Entities;
-
-public partial class User
+public class User
 {
     public Guid Id { get; set; }
 
@@ -27,9 +24,23 @@ public partial class User
 
     public DateTime? LockTimespan { get; set; }
 
-    public bool IsActive { get; set; }
+    public Guid? PreviousId { get; set; }
+
+    public DateTime ValidFrom { get; set; }
+
+    public DateTime? ValidTo { get; set; }
+
+    public string InsertLogInfo { get; set; } = null!;
+
+    public string? RemoveLogInfo { get; set; }
 
     public string Hash { get; set; } = null!;
+
+    public virtual ICollection<User> InversePrevious { get; set; } = new List<User>();
+
+    public virtual User? Previous { get; set; }
+
+    public virtual ICollection<UserClaim> UserClaims { get; set; } = new List<UserClaim>();
 
     public virtual ICollection<UserLogin> UserLogins { get; set; } = new List<UserLogin>();
 

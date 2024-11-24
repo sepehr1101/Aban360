@@ -1,10 +1,12 @@
 ﻿using Aban360.Common.Entities;
+using Aban360.Common.Entities.ApiResponse;
+using Aban360.UserPool.Domain.Constants;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Runtime.InteropServices;
 
 namespace Aban360.Api.Controllers.V1
-{   
+{
     [ApiController]
     [ApiVersion("0.0.1")]
     public abstract class BaseController : ControllerBase
@@ -12,28 +14,35 @@ namespace Aban360.Api.Controllers.V1
         [NonAction]
         public IActionResult Ok<D>(D data)
         {
-            var envelope= new ApiResponseEnvelope<D>((int)HttpStatusCode.OK,data);
+            var envelope= new ApiResponseEnvelope<D>((int)HttpStatusCode.OK,data, MessageResources.SuccessfulProccess);
+            return base.Ok(envelope);
+        }
+
+        [NonAction]
+        public IActionResult Ok<D>(D data, string successfulMessage)
+        {
+            var envelope = new ApiResponseEnvelope<D>((int)HttpStatusCode.OK, data, successfulMessage);
             return base.Ok(envelope);
         }
 
         [NonAction]
         public IActionResult ClientError(ICollection<ApiError> errors, [Optional]ApiMeta meta)
         {
-            var envelope = new ApiResponseEnvelope<object>((int)HttpStatusCode.BadRequest, null, errors, null, meta);
+            var envelope = new ApiResponseEnvelope<object>((int)HttpStatusCode.BadRequest, null, null, errors, null, meta);
             return BadRequest(envelope);
         }
 
         [NonAction]
         public IActionResult ClientError(ApiError error, [Optional] ApiMeta meta)
         {
-            var envelope = new ApiResponseEnvelope<object>((int)HttpStatusCode.BadRequest, null, new List<ApiError> { error }, null, meta);
+            var envelope = new ApiResponseEnvelope<object>((int)HttpStatusCode.BadRequest, null, null, new List<ApiError> { error }, null, meta);
             return BadRequest(envelope);
         }
 
         [NonAction]
         public IActionResult ClientError(string errorMessage, [Optional] ApiMeta meta)
         {
-            var envelope = new ApiResponseEnvelope<object>((int)HttpStatusCode.BadRequest, null, new List<ApiError> {new ApiError(errorMessage) }, null, meta);
+            var envelope = new ApiResponseEnvelope<object>((int)HttpStatusCode.BadRequest, null, null, new List<ApiError> {new ApiError(errorMessage) }, null, meta);
             return BadRequest(envelope);
         }
     }

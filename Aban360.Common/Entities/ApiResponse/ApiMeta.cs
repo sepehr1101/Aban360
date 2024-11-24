@@ -1,13 +1,13 @@
-﻿namespace Aban360.Common.Entities
+﻿namespace Aban360.Common.Entities.ApiResponse
 {
     public record ApiMeta
     {
-        public string NextAction { get;}
+        public string NextAction { get; }
         public DateTime ServerDateTime { get; }
 
-        public ApiMeta():this(string.Empty)
+        public ApiMeta() : this(string.Empty)
         {
-            
+
         }
         public ApiMeta(string nextAction)
         {

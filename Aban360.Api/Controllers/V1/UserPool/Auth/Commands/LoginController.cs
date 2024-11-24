@@ -7,8 +7,8 @@ using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
-using Aban360.Common.Entities;
 using Aban360.UserPool.Domain.Constants;
+using Aban360.Common.Entities.ApiResponse;
 
 namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
 {
