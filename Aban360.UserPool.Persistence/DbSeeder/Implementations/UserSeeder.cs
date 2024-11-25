@@ -25,11 +25,11 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
         {
             if (!_users.Any())
             {
-                var admin = new User()
+                var programmer = new User()
                 {
-                    DisplayName = "programmer",
-                    FullName = "programmer",
-                    Username = "programmer",
+                    DisplayName = "برنامه نویس",
+                    FullName = "برنامه نویس",
+                    Username = "progrmmer",
                     HasTwoStepVerification = false,
                     Id = Guid.NewGuid(),
                     InsertLogInfo = LogInfoJson.Get(),
@@ -40,7 +40,7 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
                     Password = await SecurityOperations.GetSha512Hash("123456"),
                     Hash = string.Empty
                 };
-                _users.Add(admin);
+                _users.Add(programmer);
                 _uow.SaveChanges();
             }           
         }
