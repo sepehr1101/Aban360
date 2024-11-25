@@ -10,6 +10,7 @@
     <PackageReference Include="DeviceDetector.NET" Version="6.3.3" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+    <PackageReference Include="Scrutor" Version="5.0.2" />
   </ItemGroup>
 
 </Project>

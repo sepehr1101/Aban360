@@ -1,14 +1,12 @@
-﻿using Aban360.Common.Contrats;
-using System.Buffers.Binary;
+﻿using System.Buffers.Binary;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Aban360.Application.Features.Security.Services.Contracts
+namespace Aban360.Common.Extensions
 {
-    public class SecurityOperations : ISecurityOpertions
+    public static class SecurityOperations
     {
-        private readonly RandomNumberGenerator _rand = RandomNumberGenerator.Create();
-        public async Task<string> GetSha512Hash(string input)
+        public static async Task<string> GetSha512Hash(string input)
         {
             using var hashAlgorithm = SHA512.Create();
             var byteValue = Encoding.UTF8.GetBytes(input);
@@ -16,26 +14,27 @@ namespace Aban360.Application.Features.Security.Services.Contracts
             {
                 var byteHash = await hashAlgorithm.ComputeHashAsync(stream);
                 return Convert.ToBase64String(byteHash);
-            }           
+            }
         }
-        public string Base64Encode(string plainText)
+        public static string Base64Encode(string plainText)
         {
             var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
             return Convert.ToBase64String(plainTextBytes);
         }
-        public string Base64Decode(string base64EncodedData)
+        public static string Base64Decode(string base64EncodedData)
         {
             var base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
             return Encoding.UTF8.GetString(base64EncodedBytes);
         }
 
-        public Guid CreateCryptographicallySecureGuid()
+        public static Guid CreateCryptographicallySecureGuid()
         {
+            RandomNumberGenerator _rand = RandomNumberGenerator.Create();
             var bytes = new byte[16];
             _rand.GetBytes(bytes);
             return new Guid(bytes);
         }
-        public string EncryptAesGcm(string plain)
+        public static string EncryptAesGcm(string plain)
         {
             byte[] plainBytes = Encoding.UTF8.GetBytes(plain);
             int nonceSize = AesGcm.NonceByteSizes.MaxSize;
@@ -63,7 +62,7 @@ namespace Aban360.Application.Features.Security.Services.Contracts
             // Encode for transmission
             return Convert.ToBase64String(encryptedData);
         }
-        public string DecryptAesGcm(string cipher)
+        public static string DecryptAesGcm(string cipher)
         {
             Span<byte> encryptedData = Convert.FromBase64String(cipher).AsSpan();
 
@@ -87,7 +86,7 @@ namespace Aban360.Application.Features.Security.Services.Contracts
             // Convert plain bytes back into string
             return Encoding.UTF8.GetString(plainBytes);
         }
-        private byte[] GetKey()
+        private static byte[] GetKey()
         {
             var charArray = "3fd00454580de44ea216d8b7b234267a";
             return Encoding.GetEncoding("UTF-8").GetBytes(charArray);

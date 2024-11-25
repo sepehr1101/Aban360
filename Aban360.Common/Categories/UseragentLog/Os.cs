@@ -1,4 +1,4 @@
-﻿namespace Aban360.Common.Entities.UseragentLog
+﻿namespace Aban360.Common.Categories.UseragentLog
 {
     public class Os
     {

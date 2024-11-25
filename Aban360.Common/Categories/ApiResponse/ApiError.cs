@@ -1,4 +1,4 @@
-﻿namespace Aban360.Common.Entities.ApiResponse
+﻿namespace Aban360.Common.Categories.ApiResponse
 {
     public record ApiError
     {

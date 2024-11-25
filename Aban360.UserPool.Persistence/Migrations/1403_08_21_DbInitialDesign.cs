@@ -136,10 +136,12 @@ namespace Aban360.UserPool.Persistence.Migrations
         {
             var table = TableName.Role;
             Create.Table(nameof(TableName.Role))
-                .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn("Name").AsAnsiString(_255).NotNullable() 
                 .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn("DefaultClaims").AsString(int.MaxValue).Nullable()
+                .WithColumn("SensitiveInfo").AsBoolean().NotNullable()
+                .WithColumn("IsRemovable").AsBoolean().NotNullable()
                 .WithColumn("PreviousId").AsInt32().Nullable()
                     .ForeignKey(NamingHelper.Fk(table, table, "PreviousId"), nameof(TableName.Role), Id)
                 .WithColumn("ValidFrom").AsDateTime2().NotNullable()

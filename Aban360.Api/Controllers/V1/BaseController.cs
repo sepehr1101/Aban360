@@ -1,5 +1,4 @@
-﻿using Aban360.Common.Entities;
-using Aban360.Common.Entities.ApiResponse;
+﻿using Aban360.Common.Categories.ApiResponse;
 using Aban360.UserPool.Domain.Constants;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;

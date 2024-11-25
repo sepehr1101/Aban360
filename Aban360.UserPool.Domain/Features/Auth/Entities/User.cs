@@ -1,5 +1,8 @@
-﻿namespace Aban360.UserPool.Domain.Features.Auth.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
+namespace Aban360.UserPool.Domain.Features.Auth.Entities;
+
+[Table(nameof(User))]
 public class User
 {
     public Guid Id { get; set; }

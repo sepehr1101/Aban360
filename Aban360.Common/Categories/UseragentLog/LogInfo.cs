@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Aban360.Common.Entities.UseragentLog
+namespace Aban360.Common.Categories.UseragentLog
 {
     public record LogInfo
     {
@@ -12,5 +12,8 @@ namespace Aban360.Common.Entities.UseragentLog
 
         [AllowNull]
         public Client Client { get; set; }
+
+        [AllowNull]
+        public Bot Bot { get; set; }
     }
 }

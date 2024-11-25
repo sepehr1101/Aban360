@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Categories.UseragentLog;
+using Aban360.Common.Extensions;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
 using Aban360.UserPool.Persistence.DbSeeder.Contracts;
@@ -8,7 +9,7 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
 {
     public class UserSeeder : IDataSeeder
     {
-        public int Order { get; set; } = 4;        
+        public int Order { get; set; } = 4;
 
         private readonly IUnitOfWork _uow;
         private readonly DbSet<User> _users;
@@ -20,17 +21,24 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
             _users=_uow.Set<User>();
             _users.NotNull(nameof(_users));
         }
-        public void SeedData()
+        public async void SeedData()
         {
             if (!_users.Any())
             {
                 var admin = new User()
                 {
-                     DisplayName="admin",
-                     FullName="admin",
-                     HasTwoStepVerification=false,
-                     Id=Guid.NewGuid(),
-                     InsertLogInfo=
+                    DisplayName = "programmer",
+                    FullName = "programmer",
+                    Username = "programmer",
+                    HasTwoStepVerification = false,
+                    Id = Guid.NewGuid(),
+                    InsertLogInfo = LogInfoJson.Get(),
+                    InvalidLoginAttemptCount = 0,
+                    Mobile = "09130000000",
+                    MobileConfirmed = false,
+                    ValidFrom = DateTime.Now,
+                    Password = await SecurityOperations.GetSha512Hash("123456"),
+                    Hash = string.Empty
                 };
                 _users.Add(admin);
                 _uow.SaveChanges();

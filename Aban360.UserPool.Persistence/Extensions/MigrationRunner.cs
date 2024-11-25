@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Runtime.InteropServices;
-using Aban360.Common.Entities;
+using Aban360.Common.Categories;
 
 namespace Aban360.UserPool.Persistence.Extensions
 {

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Aban360.Common.Entities.ApiResponse
+namespace Aban360.Common.Categories.ApiResponse
 {
     public sealed class ApiResponseEnvelope<D>
     {

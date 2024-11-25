@@ -1,4 +1,4 @@
-﻿namespace Aban360.Common.Entities
+﻿namespace Aban360.Common.Categories
 {
     public class DatabaseCreationParameters
     {
