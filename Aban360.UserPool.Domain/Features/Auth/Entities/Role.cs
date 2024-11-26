@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Aban360.UserPool.Domain.BaseEntities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.UserPool.Domain.Features.Auth.Entities;
 
 [Table(nameof(Role))]
-public class Role
+public class Role: IHashableEntity
 {
     public int Id { get; set; }
     public string Name { get; set; } = null!;
@@ -16,7 +17,6 @@ public class Role
     public DateTime? ValidTo { get; set; }
     public string InsertLogInfo { get; set; } = null!;
     public string? RemoveLogInfo { get; set; }
-    public string Hash { get; set; } = null!;
 
     public virtual ICollection<Role> InversePrevious { get; set; } = new List<Role>();
     public virtual Role? Previous { get; set; }

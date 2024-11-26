@@ -1,4 +1,5 @@
-﻿using System.Buffers.Binary;
+﻿using Newtonsoft.Json;
+using System.Buffers.Binary;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -13,6 +14,22 @@ namespace Aban360.Common.Extensions
             using (var stream = new MemoryStream(byteValue))
             {
                 var byteHash = await hashAlgorithm.ComputeHashAsync(stream);
+                return Convert.ToBase64String(byteHash);
+            }
+        }
+        public static string GenerateObjectHash(this object @object)
+        {
+            if (@object == null)
+            {
+                return string.Empty;
+            }
+
+            using var hashAlgorithm = SHA256.Create();
+            var jsonData = JsonConvert.SerializeObject(@object, Formatting.Indented);
+            var byteValue = Encoding.UTF8.GetBytes(jsonData);
+            using (var stream = new MemoryStream(byteValue))
+            {
+                var byteHash = hashAlgorithm.ComputeHash(stream);
                 return Convert.ToBase64String(byteHash);
             }
         }

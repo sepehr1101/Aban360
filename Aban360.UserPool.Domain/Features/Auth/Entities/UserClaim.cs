@@ -1,5 +1,7 @@
-﻿namespace Aban360.UserPool.Domain.Features.Auth.Entities;
-public class UserClaim
+﻿using Aban360.UserPool.Domain.BaseEntities;
+
+namespace Aban360.UserPool.Domain.Features.Auth.Entities;
+public class UserClaim: IHashableEntity
 {
     public int Id { get; set; }
     public Guid UserId { get; set; }
@@ -11,7 +13,6 @@ public class UserClaim
     public DateTime? ValidTo { get; set; }
     public string InsertLogInfo { get; set; } = null!;
     public string? RemoveLogInfo { get; set; }
-    public string Hash { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
 }

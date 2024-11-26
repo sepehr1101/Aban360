@@ -1,64 +1,112 @@
-﻿using Microsoft.EntityFrameworkCore.Diagnostics;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Aban360.Common.Extensions;
+using Aban360.UserPool.Domain.BaseEntities;
+using Aban360.UserPool.Persistence.Auditing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Aban360.UserPool.Persistence.Interceptors
 {
-    public class RowLevelAuthenticityICommandInterceptor: DbCommandInterceptor
+    public class RowLevelAuthenticitySaveChangeInterceptor: SaveChangesInterceptor
     {
-        public override InterceptionResult<DbDataReader> ReaderExecuting(
-          DbCommand command,
-          CommandEventData eventData,
-          InterceptionResult<DbDataReader> result)
+        public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
         {
-            return base.ReaderExecuting(command, eventData, result);
+            if (eventData?.Context is null)
+            {
+                return result;
+            }
+
+            BeforeSaveTriggers(eventData.Context);
+
+            return result;
         }
 
-        public override ValueTask<InterceptionResult<DbDataReader>> ReaderExecutingAsync(
-           DbCommand command,
-           CommandEventData eventData,
-           InterceptionResult<DbDataReader> result,
-           CancellationToken cancellationToken = new())
+        public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
+            DbContextEventData eventData,
+            InterceptionResult<int> result,
+            CancellationToken cancellationToken = default)
         {
-            return base.ReaderExecutingAsync(command, eventData, result, cancellationToken);    
+            if (eventData?.Context is null)
+            {
+                return ValueTask.FromResult(result);
+            }
+
+            BeforeSaveTriggers(eventData.Context);
+
+            return ValueTask.FromResult(result);
         }
 
-        public override InterceptionResult<int> NonQueryExecuting(
-           DbCommand command,
-           CommandEventData eventData,
-           InterceptionResult<int> result)
+        private void BeforeSaveTriggers(DbContext context)
         {
-            return base.NonQueryExecuting(command, eventData, result);
+            var hashableEntries = GetHashableEntities(context);
+            CalculateHash(hashableEntries);
         }
-
-        public override ValueTask<InterceptionResult<int>> NonQueryExecutingAsync(
-           DbCommand command,
-           CommandEventData eventData,
-           InterceptionResult<int> result,
-           CancellationToken cancellationToken = new())
+        private IList<AuditEntry> GetHashableEntities(DbContext context)
         {
-            return base.NonQueryExecutingAsync(command,eventData,result, cancellationToken)     
+            var auditEntries = new List<AuditEntry>();
+            var hashableEntries = context.ChangeTracker.Entries<IHashableEntity>();
+            foreach (var entry in hashableEntries)
+            {
+                if (entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
+                {
+                    continue;
+                }
+
+                var auditEntry = new AuditEntry(entry);
+                auditEntries.Add(auditEntry);
+
+                //var now = DateTimeOffset.UtcNow;
+
+                foreach (var property in entry.Properties)
+                {
+                    var propertyName = property.Metadata.Name;
+                    if (propertyName == nameof(IHashableEntity.Hash) /*|| IgnoreHashNames.Names.Contains(propertyName)*/)
+                    {
+                        continue;
+                    }
+                    if (property.IsTemporary)
+                    {
+                        // It's an auto-generated value and should be retrieved from the DB after calling the base.SaveChanges().
+                        auditEntry.AuditProperties.Add(new AuditProperty(propertyName, null, true, property));
+                        continue;
+                    }
+                    switch (entry.State)
+                    {
+                        case EntityState.Added:
+                            //entry.Property(AuditableShadowProperties.CreatedDateTime).CurrentValue = now;
+                            auditEntry.AuditProperties.Add(new AuditProperty(propertyName, property.CurrentValue, false, property));
+                            break;
+                        case EntityState.Modified:
+                            auditEntry.AuditProperties.Add(new AuditProperty(propertyName, property.CurrentValue, false, property));
+                            // entry.Property(AuditableShadowProperties.ModifiedDateTime).CurrentValue = now;
+                            break;
+                    }
+                }
+            }
+
+            return auditEntries;
         }
-
-        public override InterceptionResult<object> ScalarExecuting(
-           DbCommand command,
-           CommandEventData eventData,
-           InterceptionResult<object> result)
+        private void CalculateHash(IList<AuditEntry> auditEntries)
         {
-            return base.ScalarExecuting(command, eventData, result);
+            foreach (var auditEntry in auditEntries)
+            {
+                foreach (var auditProperty in auditEntry.AuditProperties.Where(x => x.IsTemporary))
+                {
+                    // Now we have the auto-generated value from the DB.
+                    auditProperty.Value = auditProperty.PropertyEntry.CurrentValue;
+                    auditProperty.IsTemporary = false;
+                }
+                var dic = auditEntry.AuditProperties.ToDictionary(x => x.Name, x => x.Value);
+                auditEntry.EntityEntry.Property(nameof(IHashableEntity.Hash)).CurrentValue =
+                    auditEntry.AuditProperties.ToDictionary(x => x.Name, x => x.Value).GenerateObjectHash();
+            }
         }
-
-        public override ValueTask<InterceptionResult<object>> ScalarExecutingAsync(
-            DbCommand command,
-            CommandEventData eventData,
-            InterceptionResult<object> result,
-            CancellationToken cancellationToken = new())
+        private void ApplyAudit()
         {
-            base.ScalarExecuting(command, eventData, result);
+
+        }
+        private void ValidateEntities()
+        {
+
         }
     }
 }

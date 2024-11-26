@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Aban360.UserPool.Domain.BaseEntities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.UserPool.Domain.Features.Auth.Entities;
 
 [Table(nameof(User))]
-public class User
+public class User: IHashableEntity
 {
     public Guid Id { get; set; }
 
@@ -36,8 +37,6 @@ public class User
     public string InsertLogInfo { get; set; } = null!;
 
     public string? RemoveLogInfo { get; set; }
-
-    public string Hash { get; set; } = null!;
 
     public virtual ICollection<User> InversePrevious { get; set; } = new List<User>();
 
