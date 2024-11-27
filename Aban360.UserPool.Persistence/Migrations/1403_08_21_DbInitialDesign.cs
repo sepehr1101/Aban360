@@ -122,6 +122,7 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn("MobileConfirmed").AsBoolean().NotNullable()    
                 .WithColumn("HasTwoStepVerification").AsBoolean().NotNullable()
                 .WithColumn("InvalidLoginAttemptCount").AsInt32().NotNullable().WithDefaultValue(0)
+                .WithColumn("SerialNumber").AsAnsiString(36).Nullable()
                 .WithColumn("LatestLoginDateTime").AsDateTime().Nullable()
                 .WithColumn("LockTimespan").AsDateTime().Nullable()
                 .WithColumn("PreviousId").AsGuid().Nullable()

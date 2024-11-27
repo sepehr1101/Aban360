@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.Categories.ApiResponse;
 using Aban360.UserPool.Domain.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Runtime.InteropServices;
@@ -8,6 +9,7 @@ namespace Aban360.Api.Controllers.V1
 {
     [ApiController]
     [ApiVersion("0.0.1")]
+    [Authorize]
     public abstract class BaseController : ControllerBase
     {
         [NonAction]

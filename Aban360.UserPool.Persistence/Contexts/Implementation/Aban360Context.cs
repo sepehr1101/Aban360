@@ -1,6 +1,7 @@
 ﻿using Aban360.UserPool.Persistence.Extensions;
 using Aban360.UserPool.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Aban360.UserPool.Persistence.Contexts.Implementation
 {
@@ -18,10 +19,16 @@ namespace Aban360.UserPool.Persistence.Contexts.Implementation
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var connectionString = MigrationRunner.GetConnectionInfo().Item1;
-                optionsBuilder.UseSqlServer(connectionString);
-                optionsBuilder.AddInterceptors(new PersianYeKeCommandInterceptor());
-                optionsBuilder.AddInterceptors(new RowLevelAuthenticitySaveChangeInterceptor());
+                //var connectionString = MigrationRunner.GetConnectionInfo().Item1;
+                //optionsBuilder.UseSqlServer(connectionString,
+                //        serverDbContextOptionsBuilder =>
+                //        {
+                //            var minutes = (int)TimeSpan.FromMinutes(3).TotalSeconds;
+                //            serverDbContextOptionsBuilder.CommandTimeout(minutes);
+                //            //serverDbContextOptionsBuilder.EnableRetryOnFailure();
+                //        });
+                //optionsBuilder.AddInterceptors(new PersianYeKeCommandInterceptor());
+                //optionsBuilder.AddInterceptors(new RowLevelAuthenticitySaveChangeInterceptor());
             }
         }
 

@@ -24,6 +24,8 @@ public class User: IHashableEntity
 
     public int InvalidLoginAttemptCount { get; set; }
 
+    public string? SerialNumber { get; set; }
+
     public DateTime? LatestLoginDateTime { get; set; }
 
     public DateTime? LockTimespan { get; set; }

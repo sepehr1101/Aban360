@@ -56,10 +56,10 @@ namespace Aban360.UserPool.Persistence.Interceptors
 
                 //var now = DateTimeOffset.UtcNow;
 
-                foreach (var property in entry.Properties)
+                /*foreach (var property in entry.Properties)
                 {
                     var propertyName = property.Metadata.Name;
-                    if (propertyName == nameof(IHashableEntity.Hash) /*|| IgnoreHashNames.Names.Contains(propertyName)*/)
+                    if (propertyName == nameof(IHashableEntity.Hash) || IgnoreHashNames.Names.Contains(propertyName))
                     {
                         continue;
                     }
@@ -80,7 +80,7 @@ namespace Aban360.UserPool.Persistence.Interceptors
                             // entry.Property(AuditableShadowProperties.ModifiedDateTime).CurrentValue = now;
                             break;
                     }
-                }
+                }*/
             }
 
             return auditEntries;
