@@ -134,10 +134,10 @@ namespace Aban360.Api.Extensions
                                     }
                                 }                                
                             }
-                            if(context.Token is null)
+                           /* if(context.Token is null)
                             {
                                 //context.Fail(new Exception());
-                            }
+                            }*/
                             return Task.CompletedTask;
                         },
                         OnChallenge = context =>

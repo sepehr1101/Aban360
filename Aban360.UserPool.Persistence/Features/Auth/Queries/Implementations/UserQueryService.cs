@@ -6,28 +6,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
 {
-    public class RoleQueryService : IRoleQueryService
+    public class UserQueryService : IUserQueryService
     {
         private readonly IUnitOfWork _uow;
-        private readonly DbSet<Role> _roles;
-        public RoleQueryService(IUnitOfWork uow)
+        private readonly DbSet<User> _users;
+        public UserQueryService(IUnitOfWork uow)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));
 
-            _roles = _uow.Set<Role>();
-            _roles.NotNull(nameof(_roles));
+            _users = _uow.Set<User>();
+            _users.NotNull(nameof(_users));
         }
-
-        public async Task<ICollection<Role>> Get()
+        public async Task<User> Get(Guid id)
         {
-            return await _roles
-                .Where(r => r.ValidTo != null)
-                .ToListAsync();
+            return await _uow.FindOrThrowAsync<User>(id);
         }
-        public async Task<Role> Get(int id)
+        public async Task<User?> Get(string username)
         {
-            return await _uow.FindOrThrowAsync<Role>(id);
+            return await _users
+                .SingleOrDefaultAsync(u => u.Username == username);
         }
     }
 }

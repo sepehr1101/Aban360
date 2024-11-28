@@ -9,14 +9,8 @@ namespace Aban360.Common.Extensions
     {
         //source  of this projcet at :https://github.com/totpero/DeviceDetector.NET
         public static LogInfo GetLogInfo(HttpRequest request, bool skipBotDetection=true)
-        {
-            DeviceDetector.SetVersionTruncation(VersionTruncation.VERSION_TRUNCATION_NONE);
-
-            var userAgent = request.Headers["User-Agent"]; // change this to the useragent you want to parse
-            var headers = request.Headers.ToDictionary(a => a.Key, a => a.Value.ToArray().FirstOrDefault());
-            var clientHints = ClientHints.Factory(headers); // client hints are optional
-            var dd = new DeviceDetector(userAgent, clientHints);           
-
+        {           
+            var (clientHints, dd) = GetClientHitnAndDD(request);
             return LogInfoFactory.Create(dd, clientHints, skipBotDetection);
         }        
         public static Tuple<bool, string> IsBot(HttpRequest request)
@@ -39,6 +33,25 @@ namespace Aban360.Common.Extensions
                 return new Tuple<bool, string>(true, result.ParserName);
             }
             return new Tuple<bool, string>(true,string.Empty);
+        }
+
+        public static async  Task<string> GetHash(HttpRequest request)
+        {
+            var userAgent = request.Headers["User-Agent"];
+            string hash = await SecurityOperations.GetSha512Hash(userAgent);
+            return hash;
+        }
+
+        private static (ClientHints,DeviceDetector) GetClientHitnAndDD(HttpRequest request)
+        {
+            DeviceDetector.SetVersionTruncation(VersionTruncation.VERSION_TRUNCATION_NONE);
+
+            var userAgent = request.Headers["User-Agent"]; // change this to the useragent you want to parse
+            var headers = request.Headers.ToDictionary(a => a.Key, a => a.Value.ToArray().FirstOrDefault());
+            var clientHints = ClientHints.Factory(headers); // client hints are optional
+            var dd = new DeviceDetector(userAgent, clientHints);
+
+            return (clientHints, dd);
         }
     }
 }
