@@ -85,7 +85,7 @@ namespace Aban360.UserPool.Persistence.Interceptors
 
             return auditEntries;
         }
-        private void CalculateHash(IList<AuditEntry> auditEntries)
+        private async void CalculateHash(IList<AuditEntry> auditEntries)
         {
             foreach (var auditEntry in auditEntries)
             {
@@ -97,7 +97,7 @@ namespace Aban360.UserPool.Persistence.Interceptors
                 }
                 var dic = auditEntry.AuditProperties.ToDictionary(x => x.Name, x => x.Value);
                 auditEntry.EntityEntry.Property(nameof(IHashableEntity.Hash)).CurrentValue =
-                    auditEntry.AuditProperties.ToDictionary(x => x.Name, x => x.Value).GenerateObjectHash();
+                   await auditEntry.AuditProperties.ToDictionary(x => x.Name, x => x.Value).GenerateObjectHash();
             }
         }
         private void ApplyAudit()

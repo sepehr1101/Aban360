@@ -7,6 +7,16 @@ namespace Aban360.Common.Extensions
 {
     public static class SecurityOperations
     {
+        public static async Task<string> GetSha256Hash(string input)
+        {
+            using var hashAlgorithm = SHA256.Create();
+            var byteValue = Encoding.UTF8.GetBytes(input);
+            using (var stream = new MemoryStream(byteValue))
+            {
+                var byteHash = await hashAlgorithm.ComputeHashAsync(stream);
+                return Convert.ToBase64String(byteHash);
+            }
+        }
         public static async Task<string> GetSha512Hash(string input)
         {
             using var hashAlgorithm = SHA512.Create();
@@ -17,21 +27,14 @@ namespace Aban360.Common.Extensions
                 return Convert.ToBase64String(byteHash);
             }
         }
-        public static string GenerateObjectHash(this object @object)
+        public static async Task<string> GenerateObjectHash(this object @object)
         {
             if (@object == null)
             {
                 return string.Empty;
             }
-
-            using var hashAlgorithm = SHA256.Create();
             var jsonData = JsonConvert.SerializeObject(@object, Formatting.Indented);
-            var byteValue = Encoding.UTF8.GetBytes(jsonData);
-            using (var stream = new MemoryStream(byteValue))
-            {
-                var byteHash = hashAlgorithm.ComputeHash(stream);
-                return Convert.ToBase64String(byteHash);
-            }
+            return await GetSha256Hash(jsonData);
         }
         public static string Base64Encode(string plainText)
         {

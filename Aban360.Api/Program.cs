@@ -21,7 +21,7 @@ builder.Services.AddCustomDbContext(configuration);
 
 builder.Services.UpdateAndSeedUserPoolDb();
 builder.Services.AddCustomCors();
-builder.Services.AddCustomAntiforgery();
+//builder.Services.AddCustomAntiforgery();
 builder.Services.AddCustomOptions(configuration);
 
 var app = builder.Build();

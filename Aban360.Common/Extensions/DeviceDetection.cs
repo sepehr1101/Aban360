@@ -38,7 +38,7 @@ namespace Aban360.Common.Extensions
         public static async  Task<string> GetHash(HttpRequest request)
         {
             var userAgent = request.Headers["User-Agent"];
-            string hash = await SecurityOperations.GetSha512Hash(userAgent);
+            string hash = await SecurityOperations.GetSha256Hash(userAgent);
             return hash;
         }
 
