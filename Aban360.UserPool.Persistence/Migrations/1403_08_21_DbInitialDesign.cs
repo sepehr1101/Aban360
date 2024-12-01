@@ -192,11 +192,11 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn(Id).AsInt64().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn($"{nameof(TableName.User)}{Id}").AsGuid().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.User, table), nameof(TableName.User), Id)
-                .WithColumn("AccessTokenExpiresDateTime").AsDate().NotNullable()
+                .WithColumn("AccessTokenExpiresDateTime").AsDateTime().NotNullable()
                 .WithColumn("AccessTokenHash").AsString(_1023).NotNullable()
                 .WithColumn("RefreshTokenExpiresDateTime").AsDateTime().NotNullable()
-                .WithColumn("RefreshTokenIdHash").AsString(_1023)
-                .WithColumn("RefreshTokenIdHashSource").AsString(_1023);
+                .WithColumn("RefreshTokenIdHash").AsString(_1023).NotNullable()
+                .WithColumn("RefreshTokenIdHashSource").AsString(_1023).Nullable();
         }
 
         private void CreateInvalidLoginReason()

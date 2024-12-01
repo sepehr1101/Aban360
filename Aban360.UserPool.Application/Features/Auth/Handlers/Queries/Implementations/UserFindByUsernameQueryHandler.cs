@@ -6,11 +6,11 @@ using AutoMapper;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations
 {
-    public class UserFindByUsernameHandler : IUserFindByUsernameHandler
+    public class UserFindByUsernameQueryHandler : IUserFindByUsernameQueryHandler
     {
         private readonly IMapper _mapper;
         private readonly IUserQueryService _userQueryService;
-        public UserFindByUsernameHandler(IMapper mapper, IUserQueryService userQueryService)
+        public UserFindByUsernameQueryHandler(IMapper mapper, IUserQueryService userQueryService)
         {
             _mapper = mapper;
             _mapper.NotNull(nameof(mapper));

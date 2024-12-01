@@ -2,7 +2,7 @@
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts
 {
-    public interface IUserFindByUsernameHandler
+    public interface IUserFindByUsernameQueryHandler
     {
         Task<(User, bool)> Handle(string username, string plainPassword);
     }

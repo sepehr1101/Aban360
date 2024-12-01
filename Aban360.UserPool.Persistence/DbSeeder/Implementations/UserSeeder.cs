@@ -41,7 +41,7 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
                     ValidFrom = DateTime.Now,
                     Password = await SecurityOperations.GetSha512Hash("123456"),
                     Hash = string.Empty,
-                    SerialNumber=Guid.NewGuid().ToString().Replace("-",string.Empty),
+                    SerialNumber=Guid.NewGuid().ToString("n"),
                     //UserClaims= new List<UserClaim>
                 };
                 _users.Add(programmer);

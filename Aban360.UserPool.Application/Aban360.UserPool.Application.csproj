@@ -11,10 +11,6 @@
     <Folder Include="Common\Entities\" />
     <Folder Include="Common\Services\Contracts\" />
     <Folder Include="Common\Services\Implementations\" />
-    <Folder Include="Features\Auth\Handlers\Commands\Create\Contracts\" />
-    <Folder Include="Features\Auth\Handlers\Commands\Create\Implementations\" />
-    <Folder Include="Features\Auth\Handlers\Commands\Delete\Contracts\" />
-    <Folder Include="Features\Auth\Handlers\Commands\Delete\Implementations\" />
     <Folder Include="Features\Auth\Validations\" />
     <Folder Include="Features\Logging\Handlers\Commands\Create\Contracts\" />
     <Folder Include="Features\Logging\Handlers\Commands\Create\Implementations\" />

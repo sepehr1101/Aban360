@@ -45,6 +45,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Services.Implementations
             var (refreshTokenValue, refreshTokenSerial) = CreateRefreshToken();
             return new JwtTokenData
             {
+                UserId = user.Id,
                 AccessToken = accessToken,
                 RefreshToken = refreshTokenValue,
                 RefreshTokenSerial = refreshTokenSerial,

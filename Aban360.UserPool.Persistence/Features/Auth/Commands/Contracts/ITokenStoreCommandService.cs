@@ -2,9 +2,10 @@
 
 namespace Aban360.UserPool.Persistence.Features.Auth.Commands.Contracts
 {
-    public interface ITokenStoreService
+    public interface ITokenStoreCommandService
     {
-        void Add(UserToken userToken);
-        void Remove(UserToken userToken);
+        Task Add(UserToken userToken);        
+        Task RemoveTokensWithSameRefreshTokenSource(Guid userId);
+        Task Remove(Guid userId);
     }
 }
