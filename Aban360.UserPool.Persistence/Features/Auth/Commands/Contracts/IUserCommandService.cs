@@ -5,5 +5,6 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Commands.Contracts
     public interface IUserCommandService
     {
         Task Add(User user);
+        void Remove(User user, string logInfo);
     }
 }

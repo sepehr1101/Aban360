@@ -22,5 +22,11 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Commands.Implementations
         {
             await _users.AddAsync(user);
         }
+
+        public void Remove(User user, string logInfo)
+        {
+            user.RemoveLogInfo = logInfo;
+            user.ValidTo = DateTime.Now;
+        }
     }
 }

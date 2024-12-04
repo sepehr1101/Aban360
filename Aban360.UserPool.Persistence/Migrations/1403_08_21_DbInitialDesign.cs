@@ -155,7 +155,7 @@ namespace Aban360.UserPool.Persistence.Migrations
         {
             var table = TableName.UserRole;
             Create.Table(nameof(TableName.UserRole))
-                .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table))                    
+                .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn($"{nameof(TableName.User)}{Id}").AsGuid().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.User, table), nameof(TableName.User), Id)
                 .WithColumn($"{nameof(TableName.Role)}{Id}").AsInt32().NotNullable()
@@ -172,7 +172,7 @@ namespace Aban360.UserPool.Persistence.Migrations
         {
             var table = TableName.UserClaim;
             Create.Table(nameof(TableName.UserClaim))
-                .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn($"{nameof(TableName.User)}{Id}").AsGuid().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.User, table), nameof(TableName.User), Id)
                 .WithColumn("ClaimTypeId").AsInt16().NotNullable()

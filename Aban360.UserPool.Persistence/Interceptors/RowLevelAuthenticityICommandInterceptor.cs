@@ -1,12 +1,14 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.UserPool.Domain.BaseEntities;
 using Aban360.UserPool.Persistence.Auditing;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Aban360.UserPool.Persistence.Interceptors
 {
-    public class RowLevelAuthenticitySaveChangeInterceptor: SaveChangesInterceptor
+    public class RowLevelAuthenticitySaveChangeInterceptor :
+        SaveChangesInterceptor
     {
         public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
         {
@@ -14,31 +16,34 @@ namespace Aban360.UserPool.Persistence.Interceptors
             {
                 return result;
             }
-
-            BeforeSaveTriggers(eventData.Context);
+            BeforeSaveTriggers(eventData.Context).Wait();
 
             return result;
         }
 
-        public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
+        public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
             DbContextEventData eventData,
             InterceptionResult<int> result,
             CancellationToken cancellationToken = default)
         {
             if (eventData?.Context is null)
             {
-                return ValueTask.FromResult(result);
+                return result; //ValueTask.FromResult(result);
             }
 
-            BeforeSaveTriggers(eventData.Context);
+            await BeforeSaveTriggers(eventData.Context);
 
-            return ValueTask.FromResult(result);
+            return result;//ValueTask.FromResult(result);
         }
 
-        private void BeforeSaveTriggers(DbContext context)
+        private async Task BeforeSaveTriggers(DbContext context)
         {
             var hashableEntries = GetHashableEntities(context);
-            CalculateHash(hashableEntries);
+            foreach (var auditEntry in hashableEntries)
+            {
+               AddShadowProperties(auditEntry);
+               await CalculateHash(auditEntry);               
+            }            
         }
         private IList<AuditEntry> GetHashableEntities(DbContext context)
         {
@@ -49,8 +54,7 @@ namespace Aban360.UserPool.Persistence.Interceptors
                 if (entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
                 {
                     continue;
-                }
-
+                }                
                 var auditEntry = new AuditEntry(entry);
                 auditEntries.Add(auditEntry);
 
@@ -85,19 +89,29 @@ namespace Aban360.UserPool.Persistence.Interceptors
 
             return auditEntries;
         }
-        private async void CalculateHash(IList<AuditEntry> auditEntries)
+        private async Task CalculateHash(AuditEntry auditEntry)
         {
-            foreach (var auditEntry in auditEntries)
+            foreach (var auditProperty in auditEntry.AuditProperties.Where(x => x.IsTemporary))
             {
-                foreach (var auditProperty in auditEntry.AuditProperties.Where(x => x.IsTemporary))
-                {
-                    // Now we have the auto-generated value from the DB.
-                    auditProperty.Value = auditProperty.PropertyEntry.CurrentValue;
-                    auditProperty.IsTemporary = false;
-                }
-                var dic = auditEntry.AuditProperties.ToDictionary(x => x.Name, x => x.Value);
-                auditEntry.EntityEntry.Property(nameof(IHashableEntity.Hash)).CurrentValue =
-                   await auditEntry.AuditProperties.ToDictionary(x => x.Name, x => x.Value).GenerateObjectHash();
+                // Now we have the auto-generated value from the DB.
+                auditProperty.Value = auditProperty.PropertyEntry.CurrentValue;
+                auditProperty.IsTemporary = false;
+            }
+            var dic = auditEntry.AuditProperties.ToDictionary(x => x.Name, x => x.Value);
+            auditEntry.EntityEntry.Property(nameof(IHashableEntity.Hash)).CurrentValue =
+               await auditEntry.AuditProperties.ToDictionary(x => x.Name, x => x.Value).GenerateObjectHash();
+        }
+        private void AddShadowProperties(AuditEntry auditEntry)
+        {           
+            switch (auditEntry.EntityEntry.State)
+            {
+                case EntityState.Added:
+                    auditEntry.EntityEntry.Property(nameof(IHashableEntity.ValidFrom)).CurrentValue = DateTime.Now;
+                    //auditEntry.AuditProperties.Add(new AuditProperty(propertyName, property.CurrentValue, false, property));
+                    break;
+                case EntityState.Modified:
+                    auditEntry.EntityEntry.Property(nameof(IHashableEntity.ValidTo)).CurrentValue = DateTime.Now;
+                    break;
             }
         }
         private void ApplyAudit()

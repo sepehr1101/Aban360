@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Folder Include="Features\ApiKey\" />
+    <Folder Include="Features\Auth\Validations\" />
     <Folder Include="Features\Logging\" />
     <Folder Include="Features\Policy\" />
     <Folder Include="Features\UiElement\" />

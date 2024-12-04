@@ -1,7 +1,10 @@
 ﻿using Aban360.UserPool.Domain.BaseEntities;
 using Aban360.UserPool.Persistence.Constants.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.UserPool.Domain.Features.Auth.Entities;
+
+[Table(nameof(UserClaim))]
 public class UserClaim: IHashableEntity
 {
     public int Id { get; set; }

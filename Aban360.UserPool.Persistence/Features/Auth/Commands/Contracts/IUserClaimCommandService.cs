@@ -2,8 +2,9 @@
 
 namespace Aban360.UserPool.Persistence.Features.Auth.Commands.Contracts
 {
-    public interface IUserCliamCommandService
+    public interface IUserClaimCommandService
     {
         Task Add(ICollection<UserClaim> userCliams);
+        void Remove(ICollection<UserClaim> userCliams, string logInfo);
     }
 }

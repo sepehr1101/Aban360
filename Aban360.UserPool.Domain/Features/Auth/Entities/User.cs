@@ -7,39 +7,19 @@ namespace Aban360.UserPool.Domain.Features.Auth.Entities;
 public class User: IHashableEntity
 {
     public Guid Id { get; set; }
-
     public string FullName { get; set; } = null!;
-
     public string DisplayName { get; set; } = null!;
-
     public string Username { get; set; } = null!;
-
     public string Password { get; set; } = null!;
-
     public string Mobile { get; set; } = null!;
-
     public bool MobileConfirmed { get; set; }
-
     public bool HasTwoStepVerification { get; set; }
-
     public int InvalidLoginAttemptCount { get; set; }
-
     public string? SerialNumber { get; set; }
-
     public DateTime? LatestLoginDateTime { get; set; }
-
     public DateTime? LockTimespan { get; set; }
-
     public Guid? PreviousId { get; set; }
-
-    public DateTime ValidFrom { get; set; }
-
-    public DateTime? ValidTo { get; set; }
-
-    public string InsertLogInfo { get; set; } = null!;
-
-    public string? RemoveLogInfo { get; set; }
-
+    
     public virtual ICollection<User> InversePrevious { get; set; } = new List<User>();
 
     public virtual User? Previous { get; set; }

@@ -23,5 +23,17 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Commands.Implementations
         {
             await _userRoles.AddRangeAsync(userRoles);
         }
+
+        public void Remove(ICollection<UserRole> userRoles, string logInfo)
+        {
+            Guid operationGroupId = Guid.NewGuid();
+            userRoles.ForEach(userRole => Remove(userRole,logInfo,operationGroupId));
+        }
+        private void Remove(UserRole userRole, string logInfo, Guid operationGroupId)
+        {
+            userRole.RemoveLogInfo=logInfo;
+            userRole.RemoveGroupId=operationGroupId;
+            userRole.ValidTo=DateTime.Now;
+        }
     }
 }

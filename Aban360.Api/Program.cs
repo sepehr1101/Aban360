@@ -1,7 +1,5 @@
 using Aban360.Api.Extensions;
 using Aban360.UserPool.Persistence.Extensions;
-using DeviceDetectorNET.Parser.Device;
-using Microsoft.Extensions.Configuration;
 using Swashbuckle.AspNetCore.SwaggerGen.ConventionalRouting;
 
 var builder = WebApplication.CreateBuilder(args);

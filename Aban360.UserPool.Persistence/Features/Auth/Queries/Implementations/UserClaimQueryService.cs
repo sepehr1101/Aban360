@@ -6,21 +6,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
 {
-    public class UserRoleQueryService : IUserRoleQueryService
+    public class UserClaimQueryService : IUserClaimQueryService
     {
         private readonly IUnitOfWork _uow;
-        private readonly DbSet<UserRole> _userRoles;
-        public UserRoleQueryService(IUnitOfWork uow)
+        private readonly DbSet<UserClaim> _userClaims;
+        public UserClaimQueryService(IUnitOfWork uow)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));
 
-            _userRoles = _uow.Set<UserRole>();
-            _userRoles.NotNull(nameof(_userRoles));
+            _userClaims = _uow.Set<UserClaim>();
+            _userClaims.NotNull(nameof(_userClaims));
         }
-        public async Task<ICollection<UserRole>> Get(Guid userId)
+        public async Task<ICollection<UserClaim>> Get(Guid userId)
         {
-            return await _userRoles.Where(r => r.UserId == userId)
+            return await _userClaims
+                .Where(uc => uc.UserId == userId)
                 .ToListAsync();
         }
     }

@@ -22,7 +22,7 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Commands.Implementations
         {
             await _roles.AddAsync(role);
         }
-        public void Delete(Role role, string removeLogInfo)
+        public void Remove(Role role, string removeLogInfo)
         {
             role.ValidTo = DateTime.Now;
             role.RemoveLogInfo = removeLogInfo;

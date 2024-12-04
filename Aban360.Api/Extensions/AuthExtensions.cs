@@ -17,6 +17,7 @@ namespace Aban360.Api.Extensions
     {
         public static void AddCustomOptions(this IServiceCollection services, IConfiguration configuration)
         {
+            
             services.AddOptions<BearerTokenOptions>()
                 .Bind(configuration.GetSection("BearerTokens"))
                 .Validate(bearerTokens =>
@@ -52,8 +53,8 @@ namespace Aban360.Api.Extensions
         public static void AddCustomDbContext(this IServiceCollection services, IConfiguration configuration)
         {            
             var connectionString = configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<Aban360Context>(options =>
-            {
+            services.AddDbContext<Aban360Context>((sp,options) =>
+            {                
                 options.UseSqlServer(connectionString,
                         serverDbContextOptionsBuilder =>
                         {
@@ -61,7 +62,7 @@ namespace Aban360.Api.Extensions
                             serverDbContextOptionsBuilder.CommandTimeout(minutes);
                             //serverDbContextOptionsBuilder.EnableRetryOnFailure();
                         });
-                options.AddInterceptors(new PersianYeKeCommandInterceptor());
+                options.AddInterceptors(new PersianYeKeCommandInterceptor());                
                 options.AddInterceptors(new RowLevelAuthenticitySaveChangeInterceptor());
             });
         }
