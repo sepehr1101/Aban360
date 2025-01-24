@@ -75,7 +75,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
                 //return ClientError(MessageResources.CaptchaInvalid);
             //}
             var (user, result) = await _userFindByUsernameHandler.Handle(loginInput.Username, loginInput.Password);
-            var jwtData= await _tokenFactoryService.CreateJwtTokensAsync(user);
+            var jwtData = await _tokenFactoryService.CreateJwtTokensAsync(user);
             await _userTokenCreateHandler.Handle(jwtData, null, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
             return Ok(new { access = jwtData.AccessToken, refresh = jwtData.RefreshToken });

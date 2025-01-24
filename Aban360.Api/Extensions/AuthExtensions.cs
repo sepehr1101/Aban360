@@ -15,7 +15,7 @@ namespace Aban360.Api.Extensions
 {
     public static class AuthExtensions
     {
-        public static void AddCustomOptions(this IServiceCollection services, IConfiguration configuration)
+        public static void AddCustomOptions1(this IServiceCollection services, IConfiguration configuration)
         {
             
             services.AddOptions<BearerTokenOptions>()
@@ -26,7 +26,7 @@ namespace Aban360.Api.Extensions
                 }, MessageResources.RefreshTokenIsLessThanToken);
             services.AddOptions<ApiSettings>().Bind(configuration.GetSection("ApiSettings"));
         }
-        public static void AddCustomCors(this IServiceCollection services)
+        public static void AddCustomCors1(this IServiceCollection services)
         {
             services.AddCors(options =>
             {
@@ -42,7 +42,7 @@ namespace Aban360.Api.Extensions
                         .WithExposedHeaders("Content-Disposition"));
             });
         }
-        public static void AddCustomAntiforgery(this IServiceCollection services)
+        public static void AddCustomAntiforgery1(this IServiceCollection services)
         {
             services.AddAntiforgery(x => x.HeaderName = "X-XSRF-TOKEN");
             services.AddMvc(options =>
@@ -50,7 +50,7 @@ namespace Aban360.Api.Extensions
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
         }
-        public static void AddCustomDbContext(this IServiceCollection services, IConfiguration configuration)
+        public static void AddCustomDbContext1(this IServiceCollection services, IConfiguration configuration)
         {            
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<Aban360Context>((sp,options) =>
@@ -66,7 +66,7 @@ namespace Aban360.Api.Extensions
                 options.AddInterceptors(new RowLevelAuthenticitySaveChangeInterceptor());
             });
         }
-        public static void AddCustomJwtBearer(this IServiceCollection services, IConfiguration configuration)
+        public static void AddCustomJwtBearer1(this IServiceCollection services, IConfiguration configuration)
         {
             // Only needed for custom roles.
             services.AddAuthorization(options =>

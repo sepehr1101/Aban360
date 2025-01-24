@@ -15,6 +15,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
         }
 
         [Route("params")]
+        [HttpGet]
         public async Task<IActionResult> Read(CancellationToken cancellationToken)
         {
             CaptchaSingleQueryDto captchaDtos = await _captchaGetSingleHandler.Handle(cancellationToken);
