@@ -1,8 +1,12 @@
-﻿namespace Aban360.UserPool.Domain.Features.Auth.Entities;
+﻿using Aban360.UserPool.Domain.Constants;
+using System.ComponentModel.DataAnnotations.Schema;
 
-public partial class LogoutReason
+namespace Aban360.UserPool.Domain.Features.Auth.Entities;
+
+[Table(nameof(LogoutReason))]
+public class LogoutReason
 {
-    public short Id { get; set; }
+    public LogoutReasonEnum Id { get; set; }
 
     public string Title { get; set; } = null!;
 

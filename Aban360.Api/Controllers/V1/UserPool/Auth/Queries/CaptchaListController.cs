@@ -17,6 +17,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
 
         [Route("read")]
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Read(CancellationToken cancellationToken)
         {
             ICollection<CaptchaListQueryDto> captchaDtos = await _captchaGetListHandler.Handle(cancellationToken);

@@ -47,5 +47,13 @@ namespace Aban360.Api.Controllers.V1
             var envelope = new ApiResponseEnvelope<object>((int)HttpStatusCode.BadRequest, null, null, new List<ApiError> {new ApiError(errorMessage) }, null, meta);
             return BadRequest(envelope);
         }
+
+        [NonAction]
+        public IActionResult Unauthorized([Optional]string? message)
+        {
+            message = message ?? MessageResources.UnathorizedResource;
+            var envelope = new ApiResponseEnvelope<object>((int)HttpStatusCode.Unauthorized, null, null, new List<ApiError> { new ApiError(message) });
+            return BadRequest(envelope);
+        }
     }
 }

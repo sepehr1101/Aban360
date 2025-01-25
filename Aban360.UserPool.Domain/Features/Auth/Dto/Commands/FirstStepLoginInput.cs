@@ -5,8 +5,7 @@
         public string Username { get; set; } = null!;
         public string Password { get; set; } = null!;
         public string? ClientDateTime { get; set; }
-        public int AppVersion { get; set; }
-        public string CaptchaText { get; set; } = null!;
+        public string? AppVersion { get; set; }
         public string CaptchaToken { get; set; } = null!;
         public string CaptchaInputText { get; set; } = null!;
     }

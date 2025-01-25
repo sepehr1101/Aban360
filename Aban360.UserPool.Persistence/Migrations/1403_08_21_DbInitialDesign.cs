@@ -203,28 +203,28 @@ namespace Aban360.UserPool.Persistence.Migrations
         {
             var table = TableName.InvalidLoginReason;
             Create.Table(nameof(TableName.InvalidLoginReason))
-                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
         private void CreateLogoutReason()
         {
             var table = TableName.LogoutReason;
             Create.Table(nameof(TableName.LogoutReason))
-                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
         private void CreateUserLogin()
-        {            
+        {
             var table = TableName.UserLogin;
             Create.Table(nameof(TableName.UserLogin))
-                .WithColumn(Id).AsInt64().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn(Id).AsGuid().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("Username").AsString(_255).NotNullable()
                 .WithColumn($"{nameof(TableName.User)}{Id}").AsGuid().Nullable()
                     .ForeignKey(NamingHelper.Fk(TableName.User, table), nameof(TableName.User), Id)
                 .WithColumn("FirstStepDateTime").AsDateTime().NotNullable()
                 .WithColumn("Ip").AsAnsiString(15).NotNullable()
                 .WithColumn("FirstStepSuccess").AsBoolean().NotNullable()
-                .WithColumn($"{nameof(TableName.InvalidLoginReason)}{Id}").AsInt16()
+                .WithColumn($"{nameof(TableName.InvalidLoginReason)}{Id}").AsInt16().Nullable()
                     .ForeignKey(NamingHelper.Fk(TableName.InvalidLoginReason, table), nameof(TableName.InvalidLoginReason), Id)
                 .WithColumn("WrongPassword").AsString(_1023).Nullable()
                 .WithColumn("AppVersion").AsString(15).NotNullable()
@@ -234,12 +234,9 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn("TwoStepWasSuccessful").AsBoolean().Nullable()
                 .WithColumn("PreviousFailureIsShown").AsBoolean().NotNullable()
                 .WithColumn("LogoutDateTime").AsDateTime().Nullable()
-                .WithColumn($"{nameof(TableName.LogoutReason)}{Id}").AsInt16()
+                .WithColumn($"{nameof(TableName.LogoutReason)}{Id}").AsInt16().Nullable()
                     .ForeignKey(NamingHelper.Fk(TableName.LogoutReason, table), nameof(TableName.LogoutReason), Id)
                 .WithColumn("LogInfo").AsAnsiString(int.MaxValue).NotNullable();
-
-            //todo invalidloginRason table with enum id
-            //todo logoutReason table with enum id
-        }       
+        }
     }
 }
