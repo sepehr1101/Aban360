@@ -2,17 +2,17 @@
 using Scrutor;
 using System.Reflection;
 
-namespace Aban360.Common.Extensions
+namespace Aban360.ClaimPool.Persistence.Extensions
 {
     public static class ConfigureServices
     {
-        public static void AddCommonInjections(this IServiceCollection services)
+        public static void AddUserPoolPersistenceInjections(this IServiceCollection services)
         {
             services.Scan(scan =>
                 scan
                     .FromAssemblies(Assembly.GetExecutingAssembly())
                     .AddClasses(publicOnly: false)
-                    .UsingRegistrationStrategy(RegistrationStrategy.Throw)
+                    .UsingRegistrationStrategy(RegistrationStrategy.Append)
                     .AsImplementedInterfaces()
                     .WithScopedLifetime());
         }

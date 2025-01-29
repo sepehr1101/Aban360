@@ -28,18 +28,11 @@ namespace Aban360.Common.Categories.ApplicationUser
                 return FindFirst(ClaimTypes.Name).Value;
             }
         }
-        public int UserCode
+        public string FullName
         {
             get
             {
-                return Convert.ToInt32(this.FindFirst(CustomClaimTypes.UserCode).Value);
-            }
-        }
-        public string DisplayName
-        {
-            get
-            {
-                return FindFirst(CustomClaimTypes.DisplayName).Value;
+                return FindFirst(ClaimTypes.GivenName).Value;
             }
         }
         public ICollection<string> Roles
@@ -51,11 +44,13 @@ namespace Aban360.Common.Categories.ApplicationUser
                     .ToList();
             }
         }
-        public bool Is1522User
+        public bool IsAdmin
         {
             get
             {
-                return Claims.Where(c => c.Type.Trim() == "roleId" && c.Value == "2").Any();
+                return FindAll(u => u.Type.Trim() == ClaimTypes.Role)
+                     .Select(u => u.Value)
+                     .ToList().Any(r => r.Trim() == "admin");
             }
         }
     }

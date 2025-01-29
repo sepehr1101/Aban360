@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Scrutor;
+using System.Reflection;
 
 namespace Aban360.UserPool.Persistence.Extensions
 {
@@ -9,7 +10,7 @@ namespace Aban360.UserPool.Persistence.Extensions
         {            
             services.Scan(scan =>
                 scan
-                    .FromCallingAssembly()
+                    .FromAssemblies(Assembly.GetExecutingAssembly())
                     .AddClasses(publicOnly: false)
                     .UsingRegistrationStrategy(RegistrationStrategy.Append)
                     .AsImplementedInterfaces()

@@ -4,8 +4,8 @@
     {
         public Guid UserId { get; }
         public string Username { get; }
-        public int UserCode { get; }
-        public string DisplayName { get; }
+        public string FullName { get; }
         public ICollection<string> Roles { get; }
+        public bool IsAdmin { get; }
     }
 }
