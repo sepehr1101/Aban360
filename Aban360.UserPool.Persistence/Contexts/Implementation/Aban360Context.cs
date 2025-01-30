@@ -1,6 +1,4 @@
-﻿using Aban360.UserPool.Persistence.Extensions;
-using Aban360.UserPool.Persistence.Interceptors;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Aban360.UserPool.Persistence.Contexts.Implementation

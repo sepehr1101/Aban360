@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace Aban360.UserPool.Persistence.Auditing
+namespace Aban360.Common.Db.Auditing
 {
     public class AuditProperty
     {

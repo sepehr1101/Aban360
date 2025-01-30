@@ -1,14 +1,25 @@
 ﻿using Aban360.UserPool.Persistence.Extensions;
 using Aban360.UserPool.Application.Extensions;
+using Aban360.LocationPool.Persistence.Extensions;
 
 namespace Aban360.Api.Extensions
 {
-    public static class ConfigureDependencies
+    internal static class ConfigureDependencies
     {
         public static void AddDI(this IServiceCollection services)
         {
+            services.AddUserPoolDI();
+            services.AddLocationPoolDI();
+        }
+
+        private static void AddUserPoolDI(this IServiceCollection services)
+        {
             services.AddUserPoolPersistenceInjections();
             services.AddUserPoolApplicationInjections();
+        }
+        private static void AddLocationPoolDI(this IServiceCollection services)
+        {
+            services.AddLocationPoolPersistenceInjections();
         }
     }
 }

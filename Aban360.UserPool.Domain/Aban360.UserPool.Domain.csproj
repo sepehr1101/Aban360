@@ -19,4 +19,8 @@
     <Folder Include="Features\UiElement\EfConfig\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
+  </ItemGroup>
+
 </Project>

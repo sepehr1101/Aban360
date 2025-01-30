@@ -6,7 +6,7 @@ namespace Aban360.LocationPool.Persistence.Extensions
 {
     public static class ConfigureServices
     {
-        public static void AddUserPoolPersistenceInjections(this IServiceCollection services)
+        public static void AddLocationPoolPersistenceInjections(this IServiceCollection services)
         {
             services.Scan(scan =>
                 scan

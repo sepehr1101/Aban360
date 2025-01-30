@@ -2,7 +2,7 @@
 
 namespace Aban360.UserPool.Persistence.Contexts.Implementation
 {
-    public partial class Aban360Context
+    public partial class LocationPoolContext
     {
        
     }

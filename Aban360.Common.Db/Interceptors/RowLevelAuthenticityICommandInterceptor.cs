@@ -1,11 +1,10 @@
-﻿using Aban360.Common.Extensions;
-using Aban360.UserPool.Domain.BaseEntities;
-using Aban360.UserPool.Persistence.Auditing;
-using Microsoft.AspNetCore.Http;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Auditing;
+using Aban360.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace Aban360.UserPool.Persistence.Interceptors
+namespace Aban360.Common.Db.Interceptors
 {
     public class RowLevelAuthenticitySaveChangeInterceptor :
         SaveChangesInterceptor
@@ -41,9 +40,9 @@ namespace Aban360.UserPool.Persistence.Interceptors
             var hashableEntries = GetHashableEntities(context);
             foreach (var auditEntry in hashableEntries)
             {
-               AddShadowProperties(auditEntry);
-               await CalculateHash(auditEntry);               
-            }            
+                AddShadowProperties(auditEntry);
+                await CalculateHash(auditEntry);
+            }
         }
         private IList<AuditEntry> GetHashableEntities(DbContext context)
         {
@@ -54,7 +53,7 @@ namespace Aban360.UserPool.Persistence.Interceptors
                 if (entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
                 {
                     continue;
-                }                
+                }
                 var auditEntry = new AuditEntry(entry);
                 auditEntries.Add(auditEntry);
 
@@ -102,7 +101,7 @@ namespace Aban360.UserPool.Persistence.Interceptors
                await auditEntry.AuditProperties.ToDictionary(x => x.Name, x => x.Value).GenerateObjectHash();
         }
         private void AddShadowProperties(AuditEntry auditEntry)
-        {           
+        {
             switch (auditEntry.EntityEntry.State)
             {
                 case EntityState.Added:

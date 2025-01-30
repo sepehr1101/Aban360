@@ -1,5 +1,5 @@
 ﻿using Aban360.Api.Extensions;
-using Aban360.UserPool.Persistence.Extensions;
+using Aban360.Common.Db.Extensions;
 using Serilog;
 using Serilog.Ui.Core.Extensions;
 using Serilog.Ui.MsSqlServerProvider.Extensions;

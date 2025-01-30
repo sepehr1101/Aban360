@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DbSeeder\Implementations\" />
-    <Folder Include="Features\" />
-    <Folder Include="Scaffold\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="DNTPersianUtils.Core" Version="6.4.0" />
     <PackageReference Include="EFCore.BulkExtensions" Version="8.1.2" />
     <PackageReference Include="FluentMigrator" Version="6.2.0" />
@@ -25,12 +19,10 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
-    <PackageReference Include="Scrutor" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
-    <ProjectReference Include="..\Aban360.LocationPool.Domain\Aban360.LocationPool.Domain.csproj" />
   </ItemGroup>
 
 </Project>

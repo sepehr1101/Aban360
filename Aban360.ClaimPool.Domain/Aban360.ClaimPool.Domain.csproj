@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="BaseEntities\" />
     <Folder Include="Constants\" />
     <Folder Include="Features\Individual\" />
     <Folder Include="Features\E\" />

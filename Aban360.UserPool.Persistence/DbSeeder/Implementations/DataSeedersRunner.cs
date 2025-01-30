@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Aban360.Common.Extensions;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
-using Aban360.UserPool.Persistence.DbSeeder.Contracts;
+using Aban360.Common.Db.DbSeeder.Contracts;
 
 namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
 {

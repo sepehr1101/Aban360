@@ -1,4 +1,4 @@
-﻿using Aban360.UserPool.Domain.BaseEntities;
+﻿using Aban360.Common.BaseEntities;
 using Aban360.UserPool.Persistence.Constants.Enums;
 using System.ComponentModel.DataAnnotations.Schema;
 

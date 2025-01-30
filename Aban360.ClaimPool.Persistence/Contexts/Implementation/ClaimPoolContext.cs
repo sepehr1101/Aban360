@@ -1,18 +1,15 @@
-﻿using Aban360.ClaimPool.Persistence.Contexts.Implementation;
-using Aban360.UserPool.Persistence.Extensions;
-using Aban360.UserPool.Persistence.Interceptors;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
 {
-    public partial class Aban360Context : BaseDbContext
+    public partial class ClaimPoolContext : BaseDbContext
     {
-        public Aban360Context()
+        public ClaimPoolContext()
         {
         }
 
-        public Aban360Context(DbContextOptions<Aban360Context> options)
+        public ClaimPoolContext(DbContextOptions<ClaimPoolContext> options)
             : base(options)
         {
         }       

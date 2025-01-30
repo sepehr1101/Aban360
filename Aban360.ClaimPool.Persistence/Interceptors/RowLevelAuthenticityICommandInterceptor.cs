@@ -1,13 +1,12 @@
-﻿using Aban360.ClaimPool.Persistence.Auditing;
+﻿using Aban360.ClaimPool.Domain.BaseEntities;
+using Aban360.ClaimPool.Persistence.Auditing;
 using Aban360.Common.Extensions;
-using Aban360.UserPool.Domain.BaseEntities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace Aban360.UserPool.Persistence.Interceptors
+namespace Aban360.ClaimPool.Persistence.Interceptors
 {
-    public class RowLevelAuthenticitySaveChangeInterceptor :
+    internal class RowLevelAuthenticitySaveChangeInterceptor1 :
         SaveChangesInterceptor
     {
         public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
@@ -41,9 +40,9 @@ namespace Aban360.UserPool.Persistence.Interceptors
             var hashableEntries = GetHashableEntities(context);
             foreach (var auditEntry in hashableEntries)
             {
-               AddShadowProperties(auditEntry);
-               await CalculateHash(auditEntry);               
-            }            
+                AddShadowProperties(auditEntry);
+                await CalculateHash(auditEntry);
+            }
         }
         private IList<AuditEntry> GetHashableEntities(DbContext context)
         {
@@ -54,7 +53,7 @@ namespace Aban360.UserPool.Persistence.Interceptors
                 if (entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
                 {
                     continue;
-                }                
+                }
                 var auditEntry = new AuditEntry(entry);
                 auditEntries.Add(auditEntry);
 
@@ -102,7 +101,7 @@ namespace Aban360.UserPool.Persistence.Interceptors
                await auditEntry.AuditProperties.ToDictionary(x => x.Name, x => x.Value).GenerateObjectHash();
         }
         private void AddShadowProperties(AuditEntry auditEntry)
-        {           
+        {
             switch (auditEntry.EntityEntry.State)
             {
                 case EntityState.Added:

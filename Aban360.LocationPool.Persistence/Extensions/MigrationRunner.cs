@@ -13,22 +13,22 @@ namespace Aban360.LocationPool.Persistence.Extensions
 {
     public static class MigrationRunner
     {
-        public static void UpdateAndSeedUserPoolDb(this IServiceCollection services)
+        public static void UpdateAndSeedLocationPoolDb(this IServiceCollection services)
         {
             var connectionInfo = GetConnectionInfo();
             services.UpdateAndSeedDb(connectionInfo.Item1, connectionInfo.Item3 ? null : connectionInfo.Item2);
         }
         private static void UpdateAndSeedDb(this IServiceCollection services, string connectionString, DatabaseCreationParameters? databaseCreationParameters, [Optional] string dbName)
         {
-            using (var serviceProvider = CreateServices(services, connectionString))
-            {
-                using (var scope = serviceProvider.CreateScope())
-                {
-                    EnsureDatabase(connectionString, databaseCreationParameters, dbName);
-                    UpdateDatabase(scope.ServiceProvider);
-                    SeedDatabse(scope.ServiceProvider);
-                }
-            }
+            //using (var serviceProvider = CreateServices(services, connectionString))
+            //{
+            //    using (var scope = serviceProvider.CreateScope())
+            //    {
+            //        EnsureDatabase(connectionString, databaseCreationParameters, dbName);
+            //        UpdateDatabase(scope.ServiceProvider);
+            //        SeedDatabse(scope.ServiceProvider);
+            //    }
+            //}
         }
         private static ServiceProvider CreateServices(IServiceCollection services, string connectionString)
         {

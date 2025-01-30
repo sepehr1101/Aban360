@@ -1,4 +1,4 @@
-﻿using Aban360.UserPool.Domain.BaseEntities;
+﻿using Aban360.Common.BaseEntities;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.UserPool.Domain.Features.Auth.Entities;

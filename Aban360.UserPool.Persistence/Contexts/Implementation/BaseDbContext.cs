@@ -6,7 +6,7 @@ using System.Data.Common;
 using EFCore.BulkExtensions;
 using Aban360.Common.Extensions;
 using System.Transactions;
-using Aban360.UserPool.Persistence.Exceptions;
+using Aban360.Common.Db.Exceptions;
 
 namespace Aban360.UserPool.Persistence.Contexts.Implementation
 {

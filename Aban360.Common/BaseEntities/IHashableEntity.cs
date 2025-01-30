@@ -1,4 +1,4 @@
-﻿namespace Aban360.UserPool.Domain.BaseEntities
+﻿namespace Aban360.Common.BaseEntities
 {
     public class IHashableEntity
     {

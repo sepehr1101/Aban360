@@ -1,6 +1,5 @@
 using Aban360.Api.ExceptionHandlers;
 using Aban360.Api.Extensions;
-using Aban360.UserPool.Persistence.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -16,7 +15,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerService();
 builder.Services.AddCaptcha();
 builder.Services.AddCustomDbContext(configuration);
-builder.Services.UpdateAndSeedUserPoolDb();
+builder.Services.AddMigragionsAndSeeds();
+//builder.Services.UpdateAndSeedUserPoolDb();
 builder.AddHangfire();
 
 

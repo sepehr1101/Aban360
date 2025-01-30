@@ -1,4 +1,4 @@
-﻿namespace Aban360.UserPool.Persistence.Migrations.Enums
+﻿namespace Aban360.ClaimPool.Persistence.Migrations.Enums
 {
     internal enum TableName
     {

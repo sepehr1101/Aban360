@@ -1,19 +1,18 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using FluentMigrator.Runner;
-using System.Reflection;
-using Aban360.UserPool.Persistence.DbSeeder.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Runtime.InteropServices;
 using Aban360.Common.Categories;
+using Aban360.Common.Db.DbSeeder.Contracts;
 
-namespace Aban360.UserPool.Persistence.Extensions
+namespace Aban360.Common.Db.Extensions
 {
     public static class MigrationRunner
     {
-        public static void UpdateAndSeedUserPoolDb(this IServiceCollection services)
+        public static void UpdateAndSeedDb(this IServiceCollection services)
         {
             var connectionInfo = GetConnectionInfo();
             services.UpdateAndSeedDb(connectionInfo.Item1, connectionInfo.Item3 ? null : connectionInfo.Item2);
@@ -32,12 +31,16 @@ namespace Aban360.UserPool.Persistence.Extensions
         }
         private static ServiceProvider CreateServices(IServiceCollection services, string connectionString)
         {
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies()
+                 .Where(assembly => assembly.GetName().Name.Contains("Persistence"))
+                 .ToArray();
             return services
                 .AddFluentMigratorCore()
                 .ConfigureRunner(rb => rb
                     .AddSqlServer()
                     .WithGlobalConnectionString(connectionString)
-                    .ScanIn(Assembly.GetExecutingAssembly()).For.All())
+                    //.ScanIn(Assembly.GetExecutingAssembly()).For.All())
+                    .ScanIn(assemblies).For.All())
                 .AddLogging(lb => lb.AddFluentMigratorConsole())
                 .BuildServiceProvider(false);
         }

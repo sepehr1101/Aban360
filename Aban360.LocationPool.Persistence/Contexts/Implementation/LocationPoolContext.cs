@@ -6,13 +6,13 @@ using Microsoft.Extensions.Options;
 
 namespace Aban360.UserPool.Persistence.Contexts.Implementation
 {
-    public partial class Aban360Context : BaseDbContext
+    public partial class LocationPoolContext : BaseDbContext
     {
-        public Aban360Context()
+        public LocationPoolContext()
         {
         }
 
-        public Aban360Context(DbContextOptions<Aban360Context> options)
+        public LocationPoolContext(DbContextOptions<LocationPoolContext> options)
             : base(options)
         {
         }       

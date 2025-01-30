@@ -14,7 +14,7 @@ namespace Aban360.UserPool.Application.Extensions
 
             services.Scan(scan =>
                           scan
-                            .FromCallingAssembly()
+                            .FromAssemblies(Assembly.GetExecutingAssembly())
                             .AddClasses(publicOnly: false)
                             .UsingRegistrationStrategy(RegistrationStrategy.Throw)
                             .AsMatchingInterface()

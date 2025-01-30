@@ -6,7 +6,7 @@ using Aban360.Common.Extensions;
 using DNTPersianUtils.Core;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace Aban360.UserPool.Persistence.Interceptors;
+namespace Aban360.Common.Db.Interceptors;
 
 public class PersianYeKeCommandInterceptor : DbCommandInterceptor
 {
@@ -94,7 +94,7 @@ public class PersianYeKeCommandInterceptor : DbCommandInterceptor
         Justification = "`ApplyCorrectYeKe()` method is safe.")]
     private static void ApplyCorrectYeKe(DbCommand command)
     {
-        command.NotNull(nameof(command));   
+        command.NotNull(nameof(command));
 
         command.CommandText = command.CommandText.ApplyCorrectYeKe();
 

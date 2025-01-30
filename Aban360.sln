@@ -147,6 +147,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aban360.Api", "Aban360.Api\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aban360.LocationPool.Infrastructure", "Aban360.LocationPool.Infrastructure\Aban360.LocationPool.Infrastructure.csproj", "{0EA5E394-378F-4C81-BE92-63C2E2C954EA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aban360.Common.Db", "Aban360.Common.Db\Aban360.Common.Db.csproj", "{457F1182-D116-4E21-8E36-DD8BD37BFBA2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -313,6 +315,10 @@ Global
 		{0EA5E394-378F-4C81-BE92-63C2E2C954EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EA5E394-378F-4C81-BE92-63C2E2C954EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0EA5E394-378F-4C81-BE92-63C2E2C954EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{457F1182-D116-4E21-8E36-DD8BD37BFBA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{457F1182-D116-4E21-8E36-DD8BD37BFBA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{457F1182-D116-4E21-8E36-DD8BD37BFBA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{457F1182-D116-4E21-8E36-DD8BD37BFBA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -387,6 +393,7 @@ Global
 		{B9BB24F3-CCFC-45E9-AA69-3DC16F0CB009} = {03679720-5509-4747-BF35-324936EBC717}
 		{63502AB5-C284-4B24-A698-97146B264705} = {D0B7CD7A-FDB1-4FC3-8B88-FACB4AEA4E0B}
 		{0EA5E394-378F-4C81-BE92-63C2E2C954EA} = {E2844A2F-FDA5-47C1-B72A-462647B65894}
+		{457F1182-D116-4E21-8E36-DD8BD37BFBA2} = {E06AE18D-3DBD-4B3B-A7B6-F4A3B451C8AD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C0F258BB-DDA6-4E35-A9D0-53DD876EE11C}

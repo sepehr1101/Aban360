@@ -1,4 +1,4 @@
-﻿namespace Aban360.ClaimPool.Persistence.DbSeeder.Contracts
+﻿namespace Aban360.Common.Db.DbSeeder.Contracts
 {
     public interface IDataSeedersRunner
     {

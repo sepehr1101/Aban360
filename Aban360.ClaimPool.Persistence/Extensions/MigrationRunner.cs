@@ -1,23 +1,23 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using FluentMigrator.Runner;
 using System.Reflection;
-using Aban360.UserPool.Persistence.DbSeeder.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Runtime.InteropServices;
 using Aban360.Common.Categories;
+using Aban360.ClaimPool.Persistence.DbSeeder.Contracts;
 
-namespace Aban360.UserPool.Persistence.Extensions
+namespace Aban360.ClaimPool.Persistence.Extensions
 {
-    public static class MigrationRunner
+    public static class MigrationRunner1
     {
-        public static void UpdateAndSeedUserPoolDb(this IServiceCollection services)
-        {
-            var connectionInfo = GetConnectionInfo();
-            services.UpdateAndSeedDb(connectionInfo.Item1, connectionInfo.Item3 ? null : connectionInfo.Item2);
-        }
+        //public static void UpdateAndSeedUserPoolDb(this IServiceCollection services)
+        //{
+        //    var connectionInfo = GetConnectionInfo();
+        //    services.UpdateAndSeedDb(connectionInfo.Item1, connectionInfo.Item3 ? null : connectionInfo.Item2);
+        //}
         private static void UpdateAndSeedDb(this IServiceCollection services, string connectionString, DatabaseCreationParameters? databaseCreationParameters, [Optional] string dbName)
         {
             using (var serviceProvider = CreateServices(services, connectionString))
