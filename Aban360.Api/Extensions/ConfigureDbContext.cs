@@ -9,7 +9,7 @@ namespace Aban360.Api.Extensions
         public static void AddCustomDbContext(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<Aban360Context>((sp, options) =>
+            services.AddDbContext<UserPoolContext>((sp, options) =>
             {
                 options.UseSqlServer(connectionString,
                         serverDbContextOptionsBuilder =>

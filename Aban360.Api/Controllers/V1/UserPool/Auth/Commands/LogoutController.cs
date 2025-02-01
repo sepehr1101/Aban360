@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
 {
-    [Route("logout")]
+    [Route("v1/session")]
     public class LogoutController : BaseController
     {
         private readonly IUnitOfWork _uow;
@@ -30,7 +30,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
             _userTokenDeleteHandler.NotNull(nameof(_userTokenDeleteHandler));
         }
 
-        [Route("terminate_session")]
+        [Route("terminate")]
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> TerminateSession([FromBody] RefreshToken refreshToken, CancellationToken cancellationToken)

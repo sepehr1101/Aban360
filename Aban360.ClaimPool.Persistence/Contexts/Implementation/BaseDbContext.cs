@@ -6,7 +6,7 @@ using EFCore.BulkExtensions;
 using Aban360.Common.Extensions;
 using System.Transactions;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
-using Aban360.ClaimPool.Persistence.Exceptions;
+using Aban360.Common.Db.Exceptions;
 
 namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
 {

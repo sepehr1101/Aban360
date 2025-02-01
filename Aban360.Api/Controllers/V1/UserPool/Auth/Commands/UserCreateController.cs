@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
 {
-    [Route("user")]
+    [Route("v1/user")]
     public class UserCreateController : BaseController
     {
         private IUnitOfWork _uow;

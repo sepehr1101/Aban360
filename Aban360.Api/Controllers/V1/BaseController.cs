@@ -9,8 +9,7 @@ namespace Aban360.Api.Controllers.V1
 {
     [ApiController]
     [ApiVersion("0.0.1")]
-    [Route("V1")]
-    [Authorize]
+    //[Authorize]
     public abstract class BaseController : ControllerBase
     {
         [NonAction]

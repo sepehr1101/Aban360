@@ -1,0 +1,35 @@
+﻿using Aban360.Common.Extensions;
+using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
+using Aban360.UserPool.Domain.Features.Auth.Entities;
+using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
+using AutoMapper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations
+{
+    public sealed class CaptchaDisplayModeQueryHandler : ICaptchaDisplayModeQueryHandler
+    {
+        private readonly ICaptchaDisplayModeQueryService _captchaDisplayModeQueryService;
+        private readonly IMapper _mapper;
+        public CaptchaDisplayModeQueryHandler(
+            ICaptchaDisplayModeQueryService captchaDisplayModeQueryService,
+            IMapper mapper)
+        {
+            _captchaDisplayModeQueryService = captchaDisplayModeQueryService;
+            _captchaDisplayModeQueryService.NotNull(nameof(captchaDisplayModeQueryService));
+
+            _mapper = mapper;
+            _mapper.NotNull(nameof(mapper));
+        }
+        public async Task<ICollection<CaptchaDisplayModeDto>> Handle(CancellationToken cancellationToken)
+        {
+            var captchaDisplayModes = await _captchaDisplayModeQueryService.Get();
+            var captchaDisplayModeDtos = _mapper.Map<ICollection<CaptchaDisplayModeDto>>(captchaDisplayModes);
+            return captchaDisplayModeDtos;
+        }
+    }
+}

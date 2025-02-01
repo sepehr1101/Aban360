@@ -28,6 +28,12 @@
         RoutePolicy,
         UserPolicy,
 
+        App,
+        Module,
+        Controller,
+        Action,
+
         ServerUser
+
     }
 }

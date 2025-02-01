@@ -16,7 +16,6 @@ builder.Services.AddSwaggerService();
 builder.Services.AddCaptcha();
 builder.Services.AddCustomDbContext(configuration);
 builder.Services.AddMigragionsAndSeeds();
-//builder.Services.UpdateAndSeedUserPoolDb();
 builder.AddHangfire();
 
 

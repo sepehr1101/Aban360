@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.UserPool.Persistence.Contexts.Implementation
 {
-    public partial class Aban360Context
+    public partial class UserPoolContext
     {
         public virtual DbSet<CaptchaLanguage> CaptchaLanguages { get; set; } = null!;
         public virtual DbSet<CaptchaDisplayMode> CaptchaDisplayMode { get; set; } = null!;

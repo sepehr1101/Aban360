@@ -78,9 +78,10 @@ namespace Aban360.LocationPool.Persistence.Migrations
                 .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn(Title).AsString(_255).NotNullable()
                 .WithColumn($"{nameof(TableName.Region)}{Id}").AsInt16().NotNullable()
-                   .ForeignKey(NamingHelper.Fk(TableName.Region, table), nameof(TableName.Region), Id);
+                   .ForeignKey(NamingHelper.Fk(TableName.Region, table), nameof(TableName.Region), Id)
+                .WithColumn("UnstandardCode").AsAnsiString(5);
         }
-        private void CreateMunicipality()
+        private void CreateMunicipality()//شهرداری، شهر،روستا
         {
             var table = TableName.Municipality;
             Create.Table(nameof(TableName.Municipality))
@@ -88,6 +89,28 @@ namespace Aban360.LocationPool.Persistence.Migrations
                 .WithColumn(Title).AsString(_255).NotNullable()
                 .WithColumn($"{nameof(TableName.Zone)}{Id}").AsInt16().NotNullable()
                    .ForeignKey(NamingHelper.Fk(TableName.Zone, table), nameof(TableName.Zone), Id);
+        }
+        private void CreateReadingBound()
+        {
+            var table = TableName.ReadingBound;
+            Create.Table(nameof(TableName.ReadingBound))
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn(Title).AsString(_255).NotNullable()
+                .WithColumn("FromReadingNumber").AsAnsiString(20).NotNullable()
+                .WithColumn("ToReadingNumber").AsAnsiString(20).NotNullable()
+                .WithColumn($"{nameof(TableName.Zone)}{Id}").AsInt16().NotNullable()
+                   .ForeignKey(NamingHelper.Fk(TableName.Zone, table), nameof(TableName.Zone), Id);
+        }
+        private void CreateReadingBlock()
+        {
+            var table = TableName.ReadingBlock;
+            Create.Table(nameof(TableName.ReadingBlock))
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn(Title).AsString(_255).NotNullable()
+                .WithColumn("FromReadingNumber").AsAnsiString(20).NotNullable()
+                .WithColumn("ToReadingNumber").AsAnsiString(20).NotNullable()
+                .WithColumn($"{nameof(TableName.ReadingBound)}{Id}").AsInt16().NotNullable()
+                   .ForeignKey(NamingHelper.Fk(TableName.ReadingBound, table), nameof(TableName.ReadingBound), Id);
         }
     }
 }

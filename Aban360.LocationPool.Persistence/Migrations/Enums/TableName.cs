@@ -8,6 +8,8 @@
         Province,
         Region,
         Zone,
-        Municipality
+        Municipality,
+        ReadingBound,
+        ReadingBlock
     }
 }

@@ -238,5 +238,59 @@ namespace Aban360.UserPool.Persistence.Migrations
                     .ForeignKey(NamingHelper.Fk(TableName.LogoutReason, table), nameof(TableName.LogoutReason), Id)
                 .WithColumn("LogInfo").AsAnsiString(int.MaxValue).NotNullable();
         }
+               
+        private void CreateApp()
+        {
+            var table = TableName.App;
+            Create.Table(nameof(TableName.App))
+                .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Style").AsString(_1023).NotNullable()
+                .WithColumn("InMenu").AsBoolean().NotNullable()
+                .WithColumn("LogicalOrder").AsInt32().NotNullable()
+                .WithColumn("IsActive").AsBoolean().NotNullable();
+        }
+        private void CreateModule()
+        {
+            var table = TableName.Module;
+            Create.Table(nameof(TableName.Module))
+                .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn($"{nameof(TableName.App)}{Id}").AsInt32().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.App, table), nameof(TableName.App), Id)
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Style").AsString(_1023).Nullable()
+                .WithColumn("InMenu").AsBoolean().NotNullable()
+                .WithColumn("LogicalOrder").AsInt32().NotNullable()
+                .WithColumn("ClientRoute").AsString(_255).Nullable()
+                .WithColumn("IsActive").AsBoolean().NotNullable();
+        }
+        private void CreateController()
+        {
+            var table = TableName.Controller;
+            Create.Table(nameof(TableName.Controller))
+                .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn($"{nameof(TableName.Module)}{Id}").AsInt32().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.Module, table), nameof(TableName.Module), Id)
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Style").AsString(_1023).Nullable()
+                .WithColumn("InMenu").AsBoolean().NotNullable()
+                .WithColumn("LogicalOrder").AsInt32().NotNullable()
+                .WithColumn("ClientRoute").AsString(_255).Nullable()
+                .WithColumn("IsActive").AsBoolean().NotNullable();
+        }
+        private void CreateAction()
+        {
+            var table = TableName.Action;
+            Create.Table(nameof(TableName.Action))
+                .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn($"{nameof(TableName.Controller)}{Id}").AsInt32().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.Controller, table), nameof(TableName.Controller), Id)
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Style").AsString(_1023).Nullable()
+                .WithColumn("InMenu").AsBoolean().NotNullable()
+                .WithColumn("LogicalOrder").AsInt32().NotNullable()
+                .WithColumn("AuthValue").AsString(_255).Nullable()
+                .WithColumn("IsActive").AsBoolean().NotNullable();
+        }
     }
 }

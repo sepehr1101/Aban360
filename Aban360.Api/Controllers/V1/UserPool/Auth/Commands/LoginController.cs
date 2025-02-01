@@ -13,11 +13,10 @@ using Aban360.UserPool.Domain.Constants;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using DNTPersianUtils.Core;
 using System.Globalization;
-using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations;
 
 namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
 {
-    [Route("login")]
+    [Route("v1/login")]
     public class LoginController : BaseController
     {
         private readonly IUnitOfWork _uow;

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
 {
-    [Route("captcha")]
+    [Route("v1/captcha")]
     [ApiController]
     public class CaptchaListController : BaseController
     {
