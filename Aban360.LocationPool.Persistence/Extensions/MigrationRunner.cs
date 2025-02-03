@@ -7,8 +7,8 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Runtime.InteropServices;
 using Aban360.Common.Categories;
-using Aban360.LocationPool.Persistence.DbSeeder.Contracts;
-
+using Aban360.Common.Db.DbSeeder.Contracts;
+z
 namespace Aban360.LocationPool.Persistence.Extensions
 {
     public static class MigrationRunner
@@ -20,7 +20,6 @@ namespace Aban360.LocationPool.Persistence.Extensions
         }
         private static void UpdateAndSeedDb(this IServiceCollection services, string connectionString, DatabaseCreationParameters? databaseCreationParameters, [Optional] string dbName)
         {
-            //todo : commit
             //using (var serviceProvider = CreateServices(services, connectionString))
             //{
             //    using (var scope = serviceProvider.CreateScope())

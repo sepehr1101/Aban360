@@ -1,6 +1,5 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.LocationPool.Persistence.Contexts.Contracts;
-using Aban360.LocationPool.Persistence.DbSeeder.Contracts;
 using DataSeeders = Aban360.Common.Db.DbSeeder.Contracts;
 
 namespace Aban360.LocationPool.Persistence.DbSeeder.Implementations

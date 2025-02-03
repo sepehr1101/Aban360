@@ -45,7 +45,7 @@ namespace Aban360.Common.Db.Extensions
                 .BuildServiceProvider(false);
         }
 
-        public static void EnsureDatabase(string connectionString, [Optional] DatabaseCreationParameters? databaseCreationParameters, [Optional] string dbName)
+        private static void EnsureDatabase(string connectionString, [Optional] DatabaseCreationParameters? databaseCreationParameters, [Optional] string dbName)
         {
             var connectionBuilder = new SqlConnectionStringBuilder(connectionString);
             var initialCatalog = string.IsNullOrWhiteSpace(dbName) ? connectionBuilder.InitialCatalog : dbName;
@@ -100,7 +100,7 @@ namespace Aban360.Common.Db.Extensions
             runner.MigrateUp();
 
         }
-        public static void SeedDatabse(IServiceProvider serviceProvider)
+        private static void SeedDatabse(IServiceProvider serviceProvider)
         {
             var runner = serviceProvider.GetRequiredService<IDataSeedersRunner>();
             runner.RunAllDataSeeders();
