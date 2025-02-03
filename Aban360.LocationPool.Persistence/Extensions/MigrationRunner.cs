@@ -20,6 +20,7 @@ namespace Aban360.LocationPool.Persistence.Extensions
         }
         private static void UpdateAndSeedDb(this IServiceCollection services, string connectionString, DatabaseCreationParameters? databaseCreationParameters, [Optional] string dbName)
         {
+            //todo : commit
             //using (var serviceProvider = CreateServices(services, connectionString))
             //{
             //    using (var scope = serviceProvider.CreateScope())

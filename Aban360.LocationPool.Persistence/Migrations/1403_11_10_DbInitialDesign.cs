@@ -51,7 +51,9 @@ namespace Aban360.LocationPool.Persistence.Migrations
                 .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn(Title).AsString(_255)
                 .WithColumn($"{nameof(TableName.CordinalDirection)}{Id}").AsInt16().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.CordinalDirection, table), nameof(TableName.CordinalDirection), Id);
+                    .ForeignKey(NamingHelper.Fk(TableName.CordinalDirection, table), nameof(TableName.CordinalDirection), Id)
+                .WithColumn($"{nameof(TableName.Country)}{Id}").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.Country, table), nameof(TableName.Country), Id);
         }
         private void CreateHeadquarters()
         {

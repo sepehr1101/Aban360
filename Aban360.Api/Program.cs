@@ -1,5 +1,6 @@
 using Aban360.Api.ExceptionHandlers;
 using Aban360.Api.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -28,6 +29,8 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 //serilog
 builder.Services.AddSerilog(configuration);
+
+
 
 //builder.Services.AddUserPoolExtensions();
 //builder.Services.AddCustomJwtBearer(configuration);
