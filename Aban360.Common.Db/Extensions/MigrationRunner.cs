@@ -39,7 +39,6 @@ namespace Aban360.Common.Db.Extensions
                 .ConfigureRunner(rb => rb
                     .AddSqlServer()
                     .WithGlobalConnectionString(connectionString)
-                    //.ScanIn(Assembly.GetExecutingAssembly()).For.All())
                     .ScanIn(assemblies).For.All())
                 .AddLogging(lb => lb.AddFluentMigratorConsole())
                 .BuildServiceProvider(false);
