@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.LocationPool.Domain.Features.MainHierarchy;
 
-public partial class Municipality
+[Table(nameof(Municipality))]
+public class Municipality
 {
     public short Id { get; set; }
 

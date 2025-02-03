@@ -1,30 +1,13 @@
-﻿using Aban360.Common.Extensions;
-using Aban360.LocationPool.Persistence.Contexts.Contracts;
-using Microsoft.Extensions.DependencyInjection;
-using DataSeeders= Aban360.Common.Db.DbSeeder.Contracts;
+﻿using Aban360.Common.Db.DbSeeder.Implementation;
 
 namespace Aban360.LocationPool.Persistence.DbSeeder.Implementations
 {
-    public class DataSeedersRunner: DataSeeders.IDataSeedersRunner
+    public class DataSeedersRunner : AbstractDataSeedersRunner
     {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly IUnitOfWork _uow;
-        public DataSeedersRunner(IServiceProvider serviceProvider, IUnitOfWork uow)
+        public DataSeedersRunner(IServiceProvider serviceProvider)
+            : base(serviceProvider)
         {
-            _serviceProvider = serviceProvider;
-            _serviceProvider.NotNull(nameof(serviceProvider));
 
-            _uow = uow;
-            _uow.NotNull(nameof(uow));
-        }
-        public void RunAllDataSeeders()
-        {
-            var seeders = _serviceProvider.GetServices<DataSeeders.IDataSeeder>().ToList();
-            foreach (var seeder in seeders.OrderBy(dataSeeder => dataSeeder.Order))
-            {
-                seeder.SeedData();
-            }
-            _uow.SaveChanges();
         }
     }
 }
