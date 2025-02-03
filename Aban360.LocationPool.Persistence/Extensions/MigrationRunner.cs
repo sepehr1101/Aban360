@@ -8,7 +8,7 @@ using System.Data;
 using System.Runtime.InteropServices;
 using Aban360.Common.Categories;
 using Aban360.Common.Db.DbSeeder.Contracts;
-z
+
 namespace Aban360.LocationPool.Persistence.Extensions
 {
     public static class MigrationRunner

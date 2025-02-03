@@ -101,7 +101,7 @@ namespace Aban360.LocationPool.Persistence.Migrations
                 .WithColumn(Title).AsString(_255).NotNullable()
                 .WithColumn("FromReadingNumber").AsAnsiString(20).NotNullable()
                 .WithColumn("ToReadingNumber").AsAnsiString(20).NotNullable()
-                .WithColumn($"{nameof(TableName.Zone)}{Id}").AsInt16().NotNullable()
+                .WithColumn($"{nameof(TableName.Zone)}{Id}").AsInt32().NotNullable()
                    .ForeignKey(NamingHelper.Fk(TableName.Zone, table), nameof(TableName.Zone), Id);
         }
         private void CreateReadingBlock()

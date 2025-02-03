@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.LocationPool.Persistence.Contexts.Contracts;
+using Microsoft.EntityFrameworkCore;
 using DataSeeders = Aban360.Common.Db.DbSeeder.Contracts;
 
 namespace Aban360.LocationPool.Persistence.DbSeeder.Implementations
@@ -25,8 +26,18 @@ namespace Aban360.LocationPool.Persistence.DbSeeder.Implementations
                 }
 
                 string sqlScript = File.ReadAllText(sqlFilePath);
+                var sqlCommands = sqlScript.Split(new[] { "GO" }, StringSplitOptions.RemoveEmptyEntries);
 
-                ExecuteSqlScript(sqlScript);
+                foreach (var command in sqlCommands.Select(cmd => cmd.Trim()).Where(cmd => !string.IsNullOrWhiteSpace(cmd)))
+                {
+                    if (command.Contains("IDENTITY_INSERT") || string.IsNullOrEmpty(command))
+                    {
+                        continue;
+                    }
+
+                    ExecuteSqlScript(command);
+                }
+
                 Console.WriteLine("داده‌ها با موفقیت اجرا شدند.");
             }
             catch (Exception ex)
@@ -44,7 +55,7 @@ namespace Aban360.LocationPool.Persistence.DbSeeder.Implementations
         private string GetSqlFilePath()
         {
             string basePath = AppContext.BaseDirectory;
-            string relativePath = @"..\..\..\..\Aban360.LocationPool.Persistence\DbSeeder\DataScript\Aban360-Data-removeSpaceByTrim.sql";
+            string relativePath = @"..\..\..\..\Aban360.LocationPool.Persistence\DbSeeder\MainHierarchy\MainHierarchy.sql";
 
             return Path.Combine(basePath, relativePath);
         }
