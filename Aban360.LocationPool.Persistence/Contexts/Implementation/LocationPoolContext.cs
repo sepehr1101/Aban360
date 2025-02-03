@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.UserPool.Persistence.Contexts.Implementation
 {
-    public partial class LocationPoolContext : BaseDbContext
+    public partial class LocationPoolContext : BaseDbContext,IUnitOfWork
     {
         public LocationPoolContext()
         {
