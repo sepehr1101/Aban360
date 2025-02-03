@@ -57,6 +57,7 @@ namespace SmsHub.Persistence.DbSeeder.Implementations
                 //HiddenTokenName="hidden token Name"
             };       
             _capthcas.Add(captcha1);
+            _uow.SaveChanges();
         }
     }
 }

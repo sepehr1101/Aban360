@@ -48,12 +48,5 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
                 _uow.SaveChanges();
             }           
         }
-        //private ICollection<UserClaim> GetProgrammerUSerClaims()
-        //{
-        //    ICollection<UserClaim> userClaims= new List<UserClaim>()
-        //    {
-        //        new UserClaim( ){ClaimTypeId= ClaimType.}
-        //    };
-        //}
     }
 }
