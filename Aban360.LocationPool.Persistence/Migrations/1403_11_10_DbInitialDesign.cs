@@ -75,7 +75,7 @@ namespace Aban360.LocationPool.Persistence.Migrations
         {
             var table = TableName.Zone;
             Create.Table(nameof(TableName.Zone))
-                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn(Title).AsString(_255).NotNullable()
                 .WithColumn($"{nameof(TableName.Region)}{Id}").AsInt32().NotNullable()
                    .ForeignKey(NamingHelper.Fk(TableName.Region, table), nameof(TableName.Region), Id);
@@ -84,10 +84,11 @@ namespace Aban360.LocationPool.Persistence.Migrations
         {
             var table = TableName.Municipality;
             Create.Table(nameof(TableName.Municipality))
-                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn(Title).AsString(_255).NotNullable()
-                .WithColumn($"{nameof(TableName.Zone)}{Id}").AsInt16().NotNullable()
-                   .ForeignKey(NamingHelper.Fk(TableName.Zone, table), nameof(TableName.Zone), Id);
+                .WithColumn($"{nameof(TableName.Zone)}{Id}").AsInt32().NotNullable()
+                   .ForeignKey(NamingHelper.Fk(TableName.Zone, table), nameof(TableName.Zone), Id)
+                .WithColumn("IsVillage").AsBoolean().NotNullable();
         }
     }
 }
