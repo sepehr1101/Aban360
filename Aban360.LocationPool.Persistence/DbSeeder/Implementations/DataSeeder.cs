@@ -55,7 +55,7 @@ namespace Aban360.LocationPool.Persistence.DbSeeder.Implementations
         private string GetSqlFilePath()
         {
             string basePath = AppContext.BaseDirectory;
-            string relativePath = @"..\..\..\..\Aban360.LocationPool.Persistence\DbSeeder\MainHierarchy\MainHierarchy.sql";
+            string relativePath = @"..\..\..\..\Aban360.LocationPool.Persistence\DbSeeder\DataScript\Aban360-Data-removeSpaceByTrim.sql";
 
             return Path.Combine(basePath, relativePath);
         }
