@@ -1,4 +1,5 @@
-﻿using Aban360.LocationPool.Persistence.Contexts.Implementation;
+﻿using Aban360.LocationPool.Persistence.Contexts.Contracts;
+using Aban360.LocationPool.Persistence.Contexts.Implementation;
 using Aban360.LocationPool.Persistence.Extensions;
 using Aban360.LocationPool.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace Aban360.UserPool.Persistence.Contexts.Implementation
 {
-    public partial class LocationPoolContext : BaseDbContext
+    public partial class LocationPoolContext : BaseDbContext,IUnitOfWork
     {
         public LocationPoolContext()
         {

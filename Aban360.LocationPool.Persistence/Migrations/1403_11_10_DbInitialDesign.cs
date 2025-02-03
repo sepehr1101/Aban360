@@ -81,7 +81,7 @@ namespace Aban360.LocationPool.Persistence.Migrations
                 .WithColumn(Title).AsString(_255).NotNullable()
                 .WithColumn($"{nameof(TableName.Region)}{Id}").AsInt32().NotNullable()
                    .ForeignKey(NamingHelper.Fk(TableName.Region, table), nameof(TableName.Region), Id)
-                .WithColumn("UnstandardCode").AsAnsiString(5);
+                .WithColumn("UnstandardCode").AsAnsiString(5).Nullable();
         }
         private void CreateMunicipality()//شهرداری، شهر،روستا
         {

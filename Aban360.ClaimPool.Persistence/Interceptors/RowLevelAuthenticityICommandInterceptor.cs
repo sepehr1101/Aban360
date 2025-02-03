@@ -1,5 +1,5 @@
-﻿using Aban360.ClaimPool.Persistence.Auditing;
-using Aban360.Common.BaseEntities;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Auditing;
 using Aban360.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
