@@ -48,16 +48,18 @@ namespace Aban360.LocationPool.Persistence.Migrations
         {
             var table = TableName.Province;
             Create.Table(nameof(TableName.Province))
-                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn(Title).AsString(_255)
                 .WithColumn($"{nameof(TableName.CordinalDirection)}{Id}").AsInt16().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.CordinalDirection, table), nameof(TableName.CordinalDirection), Id);
+                    .ForeignKey(NamingHelper.Fk(TableName.CordinalDirection, table), nameof(TableName.CordinalDirection), Id)
+                .WithColumn($"{nameof(TableName.Country)}{Id}").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.Country, table), nameof(TableName.Country), Id);
         }
         private void CreateHeadquarters()
         {
             var table = TableName.Headquarters;
             Create.Table(nameof(TableName.Headquarters))
-                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn(Title).AsString(_255).NotNullable()
                 .WithColumn($"{nameof(TableName.Province)}{Id}").AsInt16().NotNullable()
                    .ForeignKey(NamingHelper.Fk(TableName.Province, table), nameof(TableName.Province), Id);
@@ -66,7 +68,7 @@ namespace Aban360.LocationPool.Persistence.Migrations
         {
             var table = TableName.Region;
             Create.Table(nameof(TableName.Region))
-                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn(Title).AsString(_255).NotNullable()
                 .WithColumn($"{nameof(TableName.Headquarters)}{Id}").AsInt16().NotNullable()
                    .ForeignKey(NamingHelper.Fk(TableName.Headquarters, table), nameof(TableName.Headquarters), Id);
@@ -75,9 +77,9 @@ namespace Aban360.LocationPool.Persistence.Migrations
         {
             var table = TableName.Zone;
             Create.Table(nameof(TableName.Zone))
-                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn(Title).AsString(_255).NotNullable()
-                .WithColumn($"{nameof(TableName.Region)}{Id}").AsInt16().NotNullable()
+                .WithColumn($"{nameof(TableName.Region)}{Id}").AsInt32().NotNullable()
                    .ForeignKey(NamingHelper.Fk(TableName.Region, table), nameof(TableName.Region), Id)
                 .WithColumn("UnstandardCode").AsAnsiString(5);
         }
@@ -85,10 +87,11 @@ namespace Aban360.LocationPool.Persistence.Migrations
         {
             var table = TableName.Municipality;
             Create.Table(nameof(TableName.Municipality))
-                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn(Title).AsString(_255).NotNullable()
-                .WithColumn($"{nameof(TableName.Zone)}{Id}").AsInt16().NotNullable()
-                   .ForeignKey(NamingHelper.Fk(TableName.Zone, table), nameof(TableName.Zone), Id);
+                .WithColumn($"{nameof(TableName.Zone)}{Id}").AsInt32().NotNullable()
+                   .ForeignKey(NamingHelper.Fk(TableName.Zone, table), nameof(TableName.Zone), Id)
+                .WithColumn("IsVillage").AsBoolean().NotNullable();
         }
         private void CreateReadingBound()
         {
