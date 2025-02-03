@@ -1,6 +1,9 @@
-﻿namespace Aban360.LocationPool.Domain.Features.MainHierarchy;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-public partial class CordinalDirection
+namespace Aban360.LocationPool.Domain.Features.MainHierarchy;
+
+[Table(nameof(CordinalDirection))]
+public class CordinalDirection
 {
     public short Id { get; set; }
 

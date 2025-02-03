@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.LocationPool.Domain.Features.MainHierarchy;
 
-public partial class Headquarter
+[Table(nameof(Headquarter))]
+public class Headquarter
 {
     public short Id { get; set; }
 
