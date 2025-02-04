@@ -1,16 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
 using System.Data.Common;
 using EFCore.BulkExtensions;
 using Aban360.Common.Extensions;
 using System.Transactions;
 using Aban360.Common.Db.Exceptions;
 
-namespace Aban360.UserPool.Persistence.Contexts.Implementation
+namespace Aban360.Common.Db.Context
 {
-    public abstract class BaseDbContext : DbContext, IUnitOfWork
+    public abstract class BaseDbContext : DbContext
     {
         public BaseDbContext()
         {
@@ -52,17 +51,17 @@ namespace Aban360.UserPool.Persistence.Contexts.Implementation
             var bulkConfig = new BulkConfig() { BulkCopyTimeout = int.MaxValue };
             await this.BulkInsertAsync(entities, bulkConfig);
         }
-        public async Task BulkInsert<T1,T2>(IList<T1> entities1, IList<T2> entities2) where T1: class where T2 : class
+        public async Task BulkInsert<T1, T2>(IList<T1> entities1, IList<T2> entities2) where T1 : class where T2 : class
         {
             using (var transaction = TransactionBuilder.Create(2, 0, IsolationLevel.ReadUncommitted))
-            {                
+            {
                 await BulkInsert(entities1);
                 await BulkInsert(entities2);
                 transaction.Complete();
             }
         }
         public override int SaveChanges()
-        {          
+        {
             var result = base.SaveChanges();
             return result;
         }
@@ -90,6 +89,35 @@ namespace Aban360.UserPool.Persistence.Contexts.Implementation
                 throw new InvalidIdException();
             }
             return entity;
+        }
+        public void ExecuteBatch(string sqlFilePath)
+        {
+            try
+            {               
+                if (!File.Exists(sqlFilePath))
+                {
+                    throw new FileNotFoundException($"فایل SQL یافت نشد: {sqlFilePath}");
+                }
+
+                string sqlScript = File.ReadAllText(sqlFilePath);
+                var sqlCommands = sqlScript.Split(new[] { "GO" }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var command in sqlCommands.Select(cmd => cmd.Trim()).Where(cmd => !string.IsNullOrWhiteSpace(cmd)))
+                {
+                    if (command.Contains("IDENTITY_INSERT") || string.IsNullOrEmpty(command))
+                    {
+                        continue;
+                    }
+                    GetDatabase().ExecuteSqlRaw(command, string.Empty);
+                }
+
+                Console.WriteLine("داده‌ها با موفقیت اجرا شدند.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"خطایی رخ داد: {ex.Message}");
+                throw;
+            }
         }
 
         class ContextForQueryType<T> : DbContext where T : class
