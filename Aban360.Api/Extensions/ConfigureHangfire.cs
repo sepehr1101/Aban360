@@ -26,8 +26,9 @@ namespace Aban360.Api.Extensions
             {
                 Authorization =
                 [
-                    new HangfireDashboardJwtAuthorizationFilter(GetTokenValidationParameters(configuration), [BaseRoles.Admin, BaseRoles.Programmer])
-                ]
+                    new HangfireDashboardJwtAuthorizationFilter(GetTokenValidationParameters(configuration), [BaseRoles.Admin, BaseRoles.Programmer])                   
+                ],
+                IgnoreAntiforgeryToken = true
             };
             app.UseHangfireDashboard(_dashboardRoute, dashboardOptions);
         }
