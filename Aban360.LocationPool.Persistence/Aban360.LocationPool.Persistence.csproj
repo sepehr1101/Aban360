@@ -7,6 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="DbSeeder\DataScript\mainHierarchy.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="DbSeeder\DataScript\mainHierarchy.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Features\" />
     <Folder Include="Scaffold\" />
   </ItemGroup>

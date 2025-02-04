@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Common.ApplicationUser;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.UserPool.Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -53,6 +54,14 @@ namespace Aban360.Api.Controllers.V1
             message = message ?? MessageResources.UnathorizedResource;
             var envelope = new ApiResponseEnvelope<object>((int)HttpStatusCode.Unauthorized, null, null, new List<ApiError> { new ApiError(message) });
             return BadRequest(envelope);
+        }
+
+        public IAppUser CurrentUser
+        {
+            get
+            {
+                return new AppUser(User);
+            }
         }
     }
 }

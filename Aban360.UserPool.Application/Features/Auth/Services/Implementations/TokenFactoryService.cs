@@ -17,20 +17,20 @@ namespace Aban360.UserPool.Application.Features.Auth.Services.Implementations
     {
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IOptionsSnapshot<BearerTokenOptions> _configuration;
-        private readonly IRoleQueryService _rolesService;
+        private readonly IUserRoleQueryService _userRoleQueryService;
         private readonly ILogger<TokenFactoryService> _logger;
 
         public TokenFactoryService(
             IHttpContextAccessor contextAccessor,
-            IRoleQueryService rolesService,
+            IUserRoleQueryService userRoleQueryService,
             IOptionsSnapshot<BearerTokenOptions> configuration,
             ILogger<TokenFactoryService> logger)
         {
             _contextAccessor = contextAccessor;
             _contextAccessor.NotNull(nameof(contextAccessor));
 
-            _rolesService = rolesService;
-            _rolesService.NotNull(nameof(rolesService));
+            _userRoleQueryService = userRoleQueryService;
+            _userRoleQueryService.NotNull(nameof(_userRoleQueryService));
 
             _configuration = configuration;
             _configuration.NotNull(nameof(configuration));
@@ -41,7 +41,9 @@ namespace Aban360.UserPool.Application.Features.Auth.Services.Implementations
 
         public async Task<JwtTokenData> CreateJwtTokensAsync(User user)
         {
-            var (accessToken, claims) = await CreateAccessTokenAsync(user);
+            var userRoles = await _userRoleQueryService.GetIncludeRoles(user.Id);
+            var roles = userRoles.Select(ur => ur.Role)?.ToList();
+            var (accessToken, claims) = await CreateAccessTokenAsync(user, roles);
             var (refreshTokenValue, refreshTokenSerial) = CreateRefreshToken();
             return new JwtTokenData
             {
@@ -115,7 +117,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Services.Implementations
             return decodedRefreshTokenPrincipal?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.SerialNumber)?.Value;
         }
 
-        private async Task<(string AccessToken, IEnumerable<Claim> Claims)> CreateAccessTokenAsync(User user)
+        private async Task<(string AccessToken, IEnumerable<Claim> Claims)> CreateAccessTokenAsync(User user, ICollection<Role>? roles)
         {
             var claims = new List<Claim>
             {
@@ -134,14 +136,17 @@ namespace Aban360.UserPool.Application.Features.Auth.Services.Implementations
                 new Claim(ClaimTypes.UserData, user.Id.ToString(), ClaimValueTypes.String, _configuration.Value.Issuer),
                 // device detection in token
                 new Claim(ClaimTypes.System, await DeviceDetection.GetHash(_contextAccessor.HttpContext.Request), ClaimValueTypes.String, _configuration.Value.Issuer),
+                new Claim(ClaimTypes.GivenName, user.FullName, ClaimValueTypes.String, _configuration.Value.Issuer)
             };
 
             // add roles
-            //var roles = await _rolesService.Get(user.Id);
-            //foreach (var role in roles)
-            //{
-            //    //claims.Add(new Claim(ClaimTypes.Role, role.Title, ClaimValueTypes.String, _configuration.Value.Issuer));
-            //}
+            if (roles is not null)
+            {
+                foreach (var role in roles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, role.Name, ClaimValueTypes.String, _configuration.Value.Issuer));
+                }
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.Value.Key));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha384);

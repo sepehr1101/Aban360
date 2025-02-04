@@ -1,11 +1,16 @@
 ﻿using Aban360.Api.Extensions;
+using Aban360.Api.Filters;
+using Aban360.UserPool.Domain.Constants;
 using Hangfire;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Aban360.Api.Extensions
 {
-    public static class ConfigureHangfire
+    internal static class ConfigureHangfire
     {
-        public static void AddHangfire(this WebApplicationBuilder builder)
+        private const string _dashboardRoute = "/main/admin/hangfire";
+        internal static void AddHangfire(this WebApplicationBuilder builder)
         {
             builder.Services.AddHangfire(x =>
             {
@@ -15,18 +20,33 @@ namespace Aban360.Api.Extensions
             });
             builder.Services.AddHangfireServer();
         }
-        public static void AddHangfireDashboard(this IApplicationBuilder app)
+        internal static void AddHangfireDashboard(this IApplicationBuilder app, IConfiguration configuration)
         {
-            //var dashboardOptions = new DashboardOptions
-            //{
-            //    Authorization = new IDashboardAuthorizationFilter[]
-            //    {
-            //        new HangfireDashboardJwtAuthorizationFilter(GetTokenValidationParameters(), CustomRoles.Admin)
-            //    }
-            //};
-            //app.UseHangfireDashboard("/main/admin/hangfire", dashboardOptions);
-
-            app.UseHangfireDashboard();
+            var dashboardOptions = new DashboardOptions
+            {
+                Authorization =
+                [
+                    new HangfireDashboardJwtAuthorizationFilter(GetTokenValidationParameters(configuration), [BaseRoles.Admin, BaseRoles.Programmer])                   
+                ],
+                IgnoreAntiforgeryToken = true
+            };
+            app.UseHangfireDashboard(_dashboardRoute, dashboardOptions);
         }
+        private static TokenValidationParameters GetTokenValidationParameters(IConfiguration configuration)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidIssuer = configuration["BearerTokens:Issuer"], // site that makes the token
+                ValidateIssuer = false, // TODO: change this to avoid forwarding attacks
+                ValidAudience = configuration["BearerTokens:Audience"], // site that consumes the token
+                ValidateAudience = false, // TODO: change this to avoid forwarding attacks
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["BearerTokens:Key"])),
+                ValidateIssuerSigningKey = true, // verify signature to avoid tampering
+                ValidateLifetime = true, // validate the expiration
+                ClockSkew = TimeSpan.Zero // tolerance for the expiration date
+            };
+            return tokenValidationParameters;
+        }
+
     }
 }
