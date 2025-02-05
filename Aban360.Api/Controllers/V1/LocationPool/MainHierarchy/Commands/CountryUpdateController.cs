@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Extensions;
 using Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Update.Contracts;
 using Aban360.LocationPool.Domain.Features.MainHierarchy.Dto.Commands;
 using Aban360.LocationPool.Persistence.Contexts.Contracts;
@@ -24,6 +25,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Commands
 
         [HttpPost]
         [Route("update")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<CountryUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] CountryUpdateDto updateDto, CancellationToken cancellationToken)
         {
             await _countryUpdateHandler.Handle(updateDto, cancellationToken);

@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Aban360.LocationPool.Persistence\Aban360.LocationPool.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\MainHierarchy\Validations\" />
+  </ItemGroup>
+
 </Project>

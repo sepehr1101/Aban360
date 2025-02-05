@@ -3,6 +3,5 @@
     public record CordinalDirectionDeleteDto
     {
         public short Id { get; set; }
-        public string Title { get; set; } = null!;
     }
 }
