@@ -1,7 +1,5 @@
-﻿using Aban360.LocationPool.Persistence.Contexts.Contracts;
-using Aban360.LocationPool.Persistence.Contexts.Implementation;
-using Aban360.LocationPool.Persistence.Extensions;
-using Aban360.LocationPool.Persistence.Interceptors;
+﻿using Aban360.Common.Db.Context;
+using Aban360.LocationPool.Persistence.Contexts.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.UserPool.Persistence.Contexts.Implementation
@@ -20,16 +18,7 @@ namespace Aban360.UserPool.Persistence.Contexts.Implementation
         {
             if (!optionsBuilder.IsConfigured)
             {
-                //var connectionString = MigrationRunner.GetConnectionInfo().Item1;
-                //optionsBuilder.UseSqlServer(connectionString,
-                //        serverDbContextOptionsBuilder =>
-                //        {
-                //            var minutes = (int)TimeSpan.FromMinutes(3).TotalSeconds;
-                //            serverDbContextOptionsBuilder.CommandTimeout(minutes);
-                //            //serverDbContextOptionsBuilder.EnableRetryOnFailure();
-                //        });
-                //optionsBuilder.AddInterceptors(new PersianYeKeCommandInterceptor());
-                //optionsBuilder.AddInterceptors(new RowLevelAuthenticitySaveChangeInterceptor());
+                
             }
         }
 

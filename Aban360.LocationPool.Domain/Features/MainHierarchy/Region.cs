@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.LocationPool.Domain.Features.MainHierarchy;
 
+[Table(nameof(Region))]
 public partial class Region
 {
     public short Id { get; set; }

@@ -29,23 +29,6 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 //serilog
 builder.Services.AddSerilog(configuration);
 
-
-
-//builder.Services.AddUserPoolExtensions();
-//builder.Services.AddCustomJwtBearer(configuration);
-//builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-//builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
-//builder.Services.AddSwaggerGenWithConventionalRoutes();
-//builder.Services.AddCaptcha();
-//builder.Services.AddCustomDbContext(configuration);
-
-//builder.Services.UpdateAndSeedUserPoolDb();
-//builder.Services.AddCustomCors();
-//builder.Services.AddCustomAntiforgery();
-//builder.Services.AddCustomOptions(configuration);
-
 var app = builder.Build();
 app.UseExceptionHandler("/error");
 app.AddSwaggerApp();
@@ -61,7 +44,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseSerilogInterface();
 
-app.AddHangfireDashboard();
+app.AddHangfireDashboard(configuration);
 
 app.MapControllers();
 app.Run();

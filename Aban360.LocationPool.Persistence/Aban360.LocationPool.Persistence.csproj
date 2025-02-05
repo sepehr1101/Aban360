@@ -7,7 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="DbSeeder\MainHierarchy\Aban360-Data-removeSpaceByTrim.sql" />
+    <None Remove="DbSeeder\DataScript\mainHierarchy.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="DbSeeder\DataScript\mainHierarchy.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

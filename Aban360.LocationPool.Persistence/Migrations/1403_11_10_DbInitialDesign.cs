@@ -97,7 +97,7 @@ namespace Aban360.LocationPool.Persistence.Migrations
         {
             var table = TableName.ReadingBound;
             Create.Table(nameof(TableName.ReadingBound))
-                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn(Title).AsString(_255).NotNullable()
                 .WithColumn("FromReadingNumber").AsAnsiString(20).NotNullable()
                 .WithColumn("ToReadingNumber").AsAnsiString(20).NotNullable()
@@ -112,7 +112,7 @@ namespace Aban360.LocationPool.Persistence.Migrations
                 .WithColumn(Title).AsString(_255).NotNullable()
                 .WithColumn("FromReadingNumber").AsAnsiString(20).NotNullable()
                 .WithColumn("ToReadingNumber").AsAnsiString(20).NotNullable()
-                .WithColumn($"{nameof(TableName.ReadingBound)}{Id}").AsInt16().NotNullable()
+                .WithColumn($"{nameof(TableName.ReadingBound)}{Id}").AsInt32().NotNullable()
                    .ForeignKey(NamingHelper.Fk(TableName.ReadingBound, table), nameof(TableName.ReadingBound), Id);
         }
     }

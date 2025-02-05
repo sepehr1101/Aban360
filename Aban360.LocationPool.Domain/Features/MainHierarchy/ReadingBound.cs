@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.LocationPool.Domain.Features.MainHierarchy;
 
-public partial class ReadingBound
+[Table(nameof(ReadingBound))]
+public class ReadingBound
 {
     public short Id { get; set; }
 

@@ -23,6 +23,6 @@ namespace Aban360.LocationPool.Persistence.Contexts.Contracts
 
         TEntity FindOrThrow<TEntity>(params object?[]? keyValues) where TEntity : class;
         Task<TEntity> FindOrThrowAsync<TEntity>(params object?[]? keyValues) where TEntity : class;
-
+        void ExecuteBatch(string sqlFilePath);
     }
 }
