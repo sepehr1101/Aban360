@@ -44,7 +44,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseSerilogInterface();
 
-app.AddHangfireDashboard(configuration);
+app.AddHangfireDashboard();
 
 app.MapControllers();
 app.Run();
