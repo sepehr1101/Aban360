@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Delete.Contracts;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
@@ -32,6 +33,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
 
         [Route("terminate")]
         [HttpPost]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<string>), StatusCodes.Status200OK)]
         [AllowAnonymous]
         public async Task<IActionResult> TerminateSession([FromBody] RefreshToken refreshToken, CancellationToken cancellationToken)
         {
@@ -42,7 +44,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
             }
             await _userTokenDeleteHandler.Handle(userToken.UserId, cancellationToken);
             await _uow.SaveChangesAsync();
-            return Ok();
+            return Ok("خروج با موفقت انجام شد");
         }
     }
 }

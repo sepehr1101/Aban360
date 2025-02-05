@@ -75,6 +75,7 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn("Direction").AsAnsiString(3).NotNullable()
                 .WithColumn("Min").AsInt32().NotNullable()
                 .WithColumn("Max").AsInt32().NotNullable()
+                .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn("IsSelected").AsBoolean().NotNullable();
                 //.WithColumn("InputPlaceholder").AsString(_255).NotNullable()
                 //.WithColumn("HiddenInputName").AsAnsiString(_255).NotNullable()
@@ -266,8 +267,8 @@ namespace Aban360.UserPool.Persistence.Migrations
         }
         private void CreateController()
         {
-            var table = TableName.Controller;
-            Create.Table(nameof(TableName.Controller))
+            var table = TableName.SubModule;
+            Create.Table(nameof(TableName.SubModule))
                 .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn($"{nameof(TableName.Module)}{Id}").AsInt32().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.Module, table), nameof(TableName.Module), Id)
@@ -278,13 +279,13 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn("ClientRoute").AsString(_255).Nullable()
                 .WithColumn("IsActive").AsBoolean().NotNullable();
         }
-        private void CreateAction()
+        private void CreateEndpoint()
         {
-            var table = TableName.Action;
-            Create.Table(nameof(TableName.Action))
+            var table = TableName.Endpoint;
+            Create.Table(nameof(TableName.Endpoint))
                 .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
-                .WithColumn($"{nameof(TableName.Controller)}{Id}").AsInt32().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.Controller, table), nameof(TableName.Controller), Id)
+                .WithColumn($"{nameof(TableName.SubModule)}{Id}").AsInt32().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.SubModule, table), nameof(TableName.SubModule), Id)
                 .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn("Style").AsString(_1023).Nullable()
                 .WithColumn("InMenu").AsBoolean().NotNullable()

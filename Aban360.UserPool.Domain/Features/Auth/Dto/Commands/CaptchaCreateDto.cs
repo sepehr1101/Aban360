@@ -1,8 +1,7 @@
 ﻿namespace Aban360.UserPool.Domain.Features.Auth.Dto.Commands
-{    
-    public record CaptchaUpdateDto
-    {
-        public int Id { get; set; }
+{
+    public record CaptchaCreateDto
+    {  
         public short CaptchaLanguageId { get; set; }
         public short CaptchaDisplayModeId { get; set; }
         public bool ShowThousandSeperator { get; set; }
@@ -18,7 +17,7 @@
         public string Direction { get; set; } = null!;
         public int Min { get; set; }
         public int Max { get; set; }
-        public bool IsSelected { get; set; }
         public string Title { get; set; } = default!;
+        public bool IsSelected { get; set; }
     }
 }

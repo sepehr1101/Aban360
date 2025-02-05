@@ -30,8 +30,8 @@
 
         App,
         Module,
-        Controller,
-        Action,
+        SubModule,
+        Endpoint,
 
         ServerUser
 
