@@ -19,7 +19,6 @@ namespace Aban360.LocationPool.Persistence.DbSeeder.Implementations
             _countries = _uow.Set<Country>();
             _countries.NotNull(nameof(_countries));
         }
-
         public void SeedData()
         {
             if(_countries.Any())
