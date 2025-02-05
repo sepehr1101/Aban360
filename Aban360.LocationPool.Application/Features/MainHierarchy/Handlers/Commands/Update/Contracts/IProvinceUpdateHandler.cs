@@ -2,8 +2,8 @@
 
 namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Update.Contracts
 {
-    public interface ICordinalDirectionUpdateHandler
+    public interface IProvinceUpdateHandler
     {
-        Task Handle(CordinalDirectionUpdateDto updateDto,CancellationToken cancellationToken);
+        Task Handle(ProvinceUpdateDto updateDto, CancellationToken cancellationToken);
     }
 }
