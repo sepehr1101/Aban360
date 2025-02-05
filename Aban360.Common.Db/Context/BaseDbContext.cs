@@ -96,7 +96,7 @@ namespace Aban360.Common.Db.Context
             {               
                 if (!File.Exists(sqlFilePath))
                 {
-                    throw new FileNotFoundException($"فایل SQL یافت نشد: {sqlFilePath}");
+                    throw new FileNotFoundException($"batch sql execution file not found: {sqlFilePath}");
                 }
 
                 string sqlScript = File.ReadAllText(sqlFilePath);
@@ -110,12 +110,9 @@ namespace Aban360.Common.Db.Context
                     }
                     GetDatabase().ExecuteSqlRaw(command, string.Empty);
                 }
-
-                Console.WriteLine("داده‌ها با موفقیت اجرا شدند.");
             }
-            catch (Exception ex)
+            catch 
             {
-                Console.WriteLine($"خطایی رخ داد: {ex.Message}");
                 throw;
             }
         }
