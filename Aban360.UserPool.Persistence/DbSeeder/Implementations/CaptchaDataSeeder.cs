@@ -16,6 +16,7 @@ namespace SmsHub.Persistence.DbSeeder.Implementations
             _uow.NotNull(nameof(uow));
 
             _capthcas = _uow.Set<Captcha>();
+            _capthcas.NotNull(nameof(_capthcas));
         }
         public int Order { get; set; } = 3;
 
@@ -53,9 +54,6 @@ namespace SmsHub.Persistence.DbSeeder.Implementations
                 Max=99,
                 IsSelected=false,
                 Title="کپچا فارسی جمع دو عدد به حروف"
-                //ValidationMessage = "invalid",
-                //ValidationMessageClass = "validation-class",
-                //HiddenTokenName="hidden token Name"
             };
             var captcha2 = new Captcha()
             {
@@ -83,11 +81,8 @@ namespace SmsHub.Persistence.DbSeeder.Implementations
                 Direction = "ltr",
                 Min = 0,
                 Max = 99,
-                IsSelected = true,
-                Title = "کپچا فارسی جمع دو عدد"
-                //ValidationMessage = "invalid",
-                //ValidationMessageClass = "validation-class",
-                //HiddenTokenName="hidden token Name"
+                Title = "کپچا فارسی جمع دو عدد",
+                IsSelected = true        
             };
             _capthcas.Add(captcha1);
             _uow.SaveChanges();

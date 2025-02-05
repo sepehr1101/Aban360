@@ -23,5 +23,5 @@ public class Module
 
     public virtual App App { get; set; } = null!;
 
-    public virtual ICollection<Controller> Controllers { get; set; } = new List<Controller>();
+    public virtual ICollection<SubModule> Controllers { get; set; } = new List<SubModule>();
 }

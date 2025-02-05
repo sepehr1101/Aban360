@@ -30,7 +30,7 @@
 
         App,
         Module,
-        Controller,
+        SubModule,
         Endpoint,
 
         ServerUser

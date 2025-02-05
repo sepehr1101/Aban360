@@ -21,5 +21,6 @@ public class Endpoint
 
     public bool IsActive { get; set; }
 
-    public virtual Controller Controller { get; set; } = null!;
+
+    public virtual SubModule SubModule { get; set; } = null!;
 }

@@ -2,8 +2,8 @@
 
 namespace Aban360.UserPool.Domain.Features.AceessTree.Entites;
 
-[Table(nameof(Controller))]
-public class Controller
+[Table(nameof(SubModule))]
+public class SubModule
 {
     public int Id { get; set; }
 
@@ -21,7 +21,7 @@ public class Controller
 
     public bool IsActive { get; set; }
 
-    public virtual ICollection<Action> Actions { get; set; } = new List<Action>();
+    public virtual ICollection<Endpoint> Actions { get; set; } = new List<Endpoint>();
 
     public virtual Module Module { get; set; } = null!;
 }
