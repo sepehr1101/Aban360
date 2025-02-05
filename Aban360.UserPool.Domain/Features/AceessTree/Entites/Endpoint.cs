@@ -7,7 +7,7 @@ public class Endpoint
 {
     public int Id { get; set; }
 
-    public int ControllerId { get; set; }
+    public int SubModuleId { get; set; }
 
     public string Title { get; set; } = null!;
 

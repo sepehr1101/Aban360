@@ -265,7 +265,7 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn("ClientRoute").AsString(_255).Nullable()
                 .WithColumn("IsActive").AsBoolean().NotNullable();
         }
-        private void CreateController()
+        private void CreateSubModule()
         {
             var table = TableName.SubModule;
             Create.Table(nameof(TableName.SubModule))
