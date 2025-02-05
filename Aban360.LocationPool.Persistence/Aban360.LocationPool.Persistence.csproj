@@ -7,11 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="DbSeeder\MainHierarchySeeder\Aban360-Data-removeSpaceByTrim.sql" />
+    <None Remove="DbSeeder\MainHierarchy\Aban360-Data-removeSpaceByTrim.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DbSeeder\DataScript\" />
     <Folder Include="Features\" />
     <Folder Include="Scaffold\" />
   </ItemGroup>
