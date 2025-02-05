@@ -1,4 +1,5 @@
-﻿using Aban360.UserPool.Domain.Features.Auth.Entities;
+﻿using Aban360.UserPool.Domain.Features.AceessTree.Entites;
+using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.UserPool.Persistence.Contexts.Implementation
@@ -17,5 +18,9 @@ namespace Aban360.UserPool.Persistence.Contexts.Implementation
         public virtual DbSet<UserLogin> UserLogins { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
         public virtual DbSet<UserToken> UserTokens { get; set; }
+        public virtual DbSet<App> Apps { get; set; }
+        public virtual DbSet<Module> Modules { get; set; }
+        public virtual DbSet<Controller> Controllers { get; set; }
+        public virtual DbSet<Endpoint> Endpoints { get; set; }
     }
 }

@@ -31,7 +31,7 @@
         App,
         Module,
         Controller,
-        Action,
+        Endpoint,
 
         ServerUser
 

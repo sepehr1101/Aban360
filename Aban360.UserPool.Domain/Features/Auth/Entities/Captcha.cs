@@ -31,6 +31,7 @@ public class Captcha
     public string Direction { get; set; } = null!;
     public int Min { get; set; }
     public int Max { get; set; }
+    public string Title { get; set; } = default!;
     public bool IsSelected { get; set; }
 
     //public string InputPlaceholder { get; set; } = null!;

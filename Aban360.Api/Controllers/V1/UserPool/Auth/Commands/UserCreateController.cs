@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
@@ -25,6 +26,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
         [HttpPost]
         [Route("create")]
         [AllowAnonymous]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] UserCreateDto userCreateDto ,CancellationToken cancellationToken)
         {
             await _userCreateHandler.Handle(userCreateDto, cancellationToken);

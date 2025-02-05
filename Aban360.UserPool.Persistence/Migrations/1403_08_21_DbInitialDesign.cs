@@ -75,6 +75,7 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn("Direction").AsAnsiString(3).NotNullable()
                 .WithColumn("Min").AsInt32().NotNullable()
                 .WithColumn("Max").AsInt32().NotNullable()
+                .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn("IsSelected").AsBoolean().NotNullable();
                 //.WithColumn("InputPlaceholder").AsString(_255).NotNullable()
                 //.WithColumn("HiddenInputName").AsAnsiString(_255).NotNullable()
@@ -278,10 +279,10 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn("ClientRoute").AsString(_255).Nullable()
                 .WithColumn("IsActive").AsBoolean().NotNullable();
         }
-        private void CreateAction()
+        private void CreateEndpoint()
         {
-            var table = TableName.Action;
-            Create.Table(nameof(TableName.Action))
+            var table = TableName.Endpoint;
+            Create.Table(nameof(TableName.Endpoint))
                 .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn($"{nameof(TableName.Controller)}{Id}").AsInt32().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.Controller, table), nameof(TableName.Controller), Id)
