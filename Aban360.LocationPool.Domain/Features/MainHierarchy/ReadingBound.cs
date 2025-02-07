@@ -9,7 +9,7 @@ public class ReadingBound
 
     public string Title { get; set; } = null!;
 
-    public short ZoneId { get; set; }
+    public int ZoneId { get; set; }
 
     public virtual ICollection<ReadingBlock> ReadingBlocks { get; set; } = new List<ReadingBlock>();
 

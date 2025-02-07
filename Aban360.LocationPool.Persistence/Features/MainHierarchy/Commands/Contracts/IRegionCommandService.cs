@@ -2,9 +2,9 @@
 
 namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Commands.Contracts
 {
-    public interface IProvinceCommandService
+    public interface IRegionCommandService
     {
-        Task Add(Province province);
-        Task Remove(Province province);
+        Task Add(Region region);
+        Task Remove(Region region);
     }
 }
