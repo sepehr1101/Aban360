@@ -1,5 +1,4 @@
-﻿
-using Aban360.Common.Extensions;
+﻿using Aban360.Common.Extensions;
 using Aban360.LocationPool.Domain.Features.MainHierarchy;
 using Aban360.LocationPool.Persistence.Contexts.Contracts;
 using Aban360.LocationPool.Persistence.Features.MainHierarchy.Commands.Contracts;

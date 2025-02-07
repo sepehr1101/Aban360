@@ -11,7 +11,7 @@ public partial class Region
 
     public short HeadquartersId { get; set; }
 
-    public virtual Headquarter Headquarters { get; set; } = null!;
+    public virtual Headquarters Headquarters { get; set; } = null!;
 
     public virtual ICollection<Zone> Zones { get; set; } = new List<Zone>();
 }
