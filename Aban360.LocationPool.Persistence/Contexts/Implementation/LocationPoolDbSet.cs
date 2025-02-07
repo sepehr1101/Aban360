@@ -8,7 +8,7 @@ namespace Aban360.UserPool.Persistence.Contexts.Implementation
         public virtual DbSet<Country> Countries { get; set; }
         public virtual DbSet<CordinalDirection> CordinalDirections { get; set; }
         public virtual DbSet<Province> Provinces { get; set; }
-        public virtual DbSet<Headquarter> Headquarters { get; set; }
+        public virtual DbSet<Headquarters> Headquarters { get; set; }
         public virtual DbSet<Region> Regions { get; set; }
         public virtual DbSet<Zone> Zones { get; set; }
         public virtual DbSet<Municipality> Municipalities { get; set; }

@@ -10,8 +10,10 @@ public class Province
     public string Title { get; set; } = null!;
 
     public short CordinalDirectionId { get; set; }
+    public short CountryId { get; set; }
 
     public virtual CordinalDirection CordinalDirection { get; set; } = null!;
+    public virtual Country Country { get; set; } = null!;
 
-    public virtual ICollection<Headquarter> Headquarters { get; set; } = new List<Headquarter>();
+    public virtual ICollection<Headquarters> Headquarters { get; set; } = new List<Headquarters>();
 }

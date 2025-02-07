@@ -5,13 +5,14 @@ namespace Aban360.LocationPool.Domain.Features.MainHierarchy;
 [Table(nameof(Zone))]
 public class Zone
 {
-    public short Id { get; set; }
+    public int Id { get; set; }
 
     public string Title { get; set; } = null!;
 
-    public short RegionId { get; set; }
+    public int RegionId { get; set; }
 
-    public string UnstandardCode { get; set; } = null!;
+  //  public string UnstandardCode { get; set; } = null!;
+    public string? UnstandardCode { get; set; } 
 
     public virtual ICollection<Municipality> Municipalities { get; set; } = new List<Municipality>();
 
