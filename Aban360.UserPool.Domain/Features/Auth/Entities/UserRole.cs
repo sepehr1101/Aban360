@@ -10,7 +10,7 @@ public class UserRole:IHashableEntity
     public Guid UserId { get; set; }
     public int RoleId { get; set; }
     public Guid InsertGroupId { get; set; }
-    public Guid RemoveGroupId { get; set; }
+    public Guid? RemoveGroupId { get; set; }
     public DateTime ValidFrom { get; set; }
     public DateTime? ValidTo { get; set; }
     public string InsertLogInfo { get; set; } = null!;

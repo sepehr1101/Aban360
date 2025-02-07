@@ -39,7 +39,7 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
                 IsActive = true,
                 LogicalOrder = 1,
                 Style=string.Empty,
-                Title="دسترسی ها",
+                Title="امنیت و کاربران",
                 Modules=GetModules()
             };
             return app;
@@ -50,49 +50,150 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
             {
                 new Module()
                 {
-                    ClientRoute="client/route/captcha",
+                    ClientRoute=string.Empty,
                     InMenu=true,
                     IsActive=true,
                     LogicalOrder=1,
                     Style=string.Empty,
                     Title="تصاویر امنیتی",
-                    SubModules=GetSubModules()
+                    SubModules=GetSubModulesCaptcha()
+                },
+                 new Module()
+                {
+                    ClientRoute=string.Empty,
+                    InMenu=true,
+                    IsActive=true,
+                    LogicalOrder=1,
+                    Style=string.Empty,
+                    Title="مدیریت کاربران",
+                    SubModules=GetSubModulesUserManagement()
                 }
             };
             return modules;
         }
-        private ICollection<SubModule> GetSubModules()
+        private ICollection<SubModule> GetSubModulesCaptcha()
         {
             var subModules = new List<SubModule>()
             {
                 new SubModule()
                 {
-                    ClientRoute="sub-module-route",
-                    Endpoints=GetEndpoints(),
+                    ClientRoute="v1/captcha/show1",
+                    Endpoints=GetEndpointsCaptcha(),
                     InMenu=true,
                     IsActive=true,
                     LogicalOrder=1,
                     Style=string.Empty,
-                    Title="زیر ماژول آزمایشی"
+                    Title="زیر ماژول کپچا 1"
+                },
+                new SubModule()
+                {
+                    ClientRoute="v1/captcha/show2",
+                    Endpoints=GetEndpointsCaptcha(),
+                    InMenu=true,
+                    IsActive=true,
+                    LogicalOrder=1,
+                    Style=string.Empty,
+                    Title="زیر ماژول کپچا2"
+                },
+                new SubModule()
+                {
+                    ClientRoute="v1/captcha/show3",
+                    Endpoints=GetEndpointsCaptcha(),
+                    InMenu=true,
+                    IsActive=true,
+                    LogicalOrder=1,
+                    Style=string.Empty,
+                    Title="زیر ماژول کپچا3"
+                },
+                new SubModule()
+                {
+                    ClientRoute="v1/captcha/show4",
+                    Endpoints=GetEndpointsCaptcha(),
+                    InMenu=true,
+                    IsActive=true,
+                    LogicalOrder=1,
+                    Style=string.Empty,
+                    Title="زیر ماژول کپچا4"
                 }
             };
             return subModules;
         }
-        private ICollection<Endpoint> GetEndpoints()
+        private ICollection<SubModule> GetSubModulesUserManagement()
+        {
+            var subModules = new List<SubModule>()
+            {
+                new SubModule()
+                {
+                    ClientRoute="v1/user/all",
+                    Endpoints=GetEndpointsUsers(),
+                    InMenu=true,
+                    IsActive=true,
+                    LogicalOrder=1,
+                    Style=string.Empty,
+                    Title="زیر ماژول کاربران"
+                }
+            };
+            return subModules;
+        }
+        private ICollection<Endpoint> GetEndpointsCaptcha()
+        {
+            var endpoints = new List<Endpoint>()
+            {                
+                 new Endpoint()
+                {
+                    AuthValue=@"CaptchaDictionary.Get",
+                    InMenu=true,
+                    IsActive=true,
+                    LogicalOrder=1,
+                    Style=string.Empty,
+                    Title="مشاهده"
+                },
+                  new Endpoint()
+                {
+                    AuthValue=@"CaptchaLanguage.Get",
+                    InMenu=true,
+                    IsActive=true,
+                    LogicalOrder=1,
+                    Style=string.Empty,
+                    Title="مشاهده"
+                },
+                   new Endpoint()
+                {
+                    AuthValue=@"CaptchaDisplayMode.Get",
+                    InMenu=true,
+                    IsActive=true,
+                    LogicalOrder=1,
+                    Style=string.Empty,
+                    Title="مشاهده"
+                }
+            };
+            return endpoints;
+        }
+        private ICollection<Endpoint> GetEndpointsUsers()
         {
             var endpoints = new List<Endpoint>()
             {
                 new Endpoint()
                 {
-                    AuthValue="authVal",
+                    AuthValue=@"UserCreate.Trigger",
                     InMenu=true,
                     IsActive=true,
                     LogicalOrder=1,
                     Style=string.Empty,
-                    Title="عنوان آزمایشی"
+                    Title="افزودن کاربر"
+                },
+                 new Endpoint()
+                {
+                    AuthValue=@"UserManager.All",
+                    InMenu=true,
+                    IsActive=true,
+                    LogicalOrder=2,
+                    Style=string.Empty,
+                    Title="نمایش همه"
                 }
             };
             return endpoints;
         }
+
     }
 }

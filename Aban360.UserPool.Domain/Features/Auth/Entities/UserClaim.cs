@@ -12,7 +12,7 @@ public class UserClaim: IHashableEntity
     public ClaimType ClaimTypeId { get; set; }
     public string ClaimValue { get; set; } = null!;
     public Guid InsertGroupId { get; set; }
-    public Guid RemoveGroupId { get; set; }
+    public Guid? RemoveGroupId { get; set; }
     public DateTime ValidFrom { get; set; }
     public DateTime? ValidTo { get; set; }
     public string InsertLogInfo { get; set; } = null!;
