@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
@@ -25,6 +26,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
 
         [Route("update")]
         [HttpPost]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<CaptchaUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] CaptchaUpdateDto capthcaUpdateDto, CancellationToken cancellationToken)
         {
             _captchaUpdateHandler.Handle(capthcaUpdateDto, cancellationToken);

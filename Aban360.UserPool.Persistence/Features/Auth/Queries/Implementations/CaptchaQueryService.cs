@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Extensions;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
@@ -35,6 +36,14 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
                 .AsNoTracking()
                 .Include(c => c.CaptchaDisplayMode)
                 .Include(c => c.CaptchaLanguage)
+                .ToListAsync();
+        }
+
+        public async Task<ICollection<NumericDictionary>> GetDictionary()
+        {
+            return await _captchas
+                .AsNoTracking()
+                .Select(captcha => new NumericDictionary() { Id = captcha.Id, Title = captcha.Title })
                 .ToListAsync();
         }
     }

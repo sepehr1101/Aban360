@@ -1,4 +1,5 @@
-﻿using Aban360.UserPool.Domain.Features.Auth.Entities;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.UserPool.Domain.Features.Auth.Entities;
 
 namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts
 {
@@ -6,5 +7,6 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts
     {
         Task<Captcha> Get();
         Task<ICollection<Captcha>> GetAll();
+        Task<ICollection<NumericDictionary>> GetDictionary();
     }
 }
