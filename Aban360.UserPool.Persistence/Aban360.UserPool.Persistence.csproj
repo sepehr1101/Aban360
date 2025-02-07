@@ -12,7 +12,7 @@
     <Folder Include="Features\Auth\Validations\" />
     <Folder Include="Features\Logging\" />
     <Folder Include="Features\Policy\" />
-    <Folder Include="Features\UiElement\" />
+    <Folder Include="Features\UiElement\Commands\Contracts\" />
     <Folder Include="Scaffold\" />
   </ItemGroup>
 

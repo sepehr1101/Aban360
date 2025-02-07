@@ -17,10 +17,10 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
         private readonly DbSet<User> _users;
         public UserSeeder(IUnitOfWork uow)
         {
-            _uow= uow;
+            _uow = uow;
             _uow.NotNull(nameof(uow));
 
-            _users=_uow.Set<User>();
+            _users = _uow.Set<User>();
             _users.NotNull(nameof(_users));
         }
         public async void SeedData()
@@ -44,12 +44,12 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
                     Password = await SecurityOperations.GetSha512Hash("123456"),
                     Hash = string.Empty,
                     SerialNumber = Guid.NewGuid().ToString("n"),
-                    UserRoles = GetProgrammerRoles(userId, logInfo)
-                    //UserClaims= new List<UserClaim>
+                    UserRoles = GetProgrammerRoles(userId, logInfo),
+                    UserClaims= GetProgrammerUserClaims(userId, logInfo)
                 };
                 _users.Add(programmer);
                 _uow.SaveChanges();
-            }           
+            }
         }
         private ICollection<UserRole> GetProgrammerRoles(Guid userId, string logInfo)
         {
@@ -59,5 +59,19 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
             };
             return userRoles;
         }
+        private ICollection<UserClaim> GetProgrammerUserClaims(Guid userid, string logInfo)
+        {
+            var insertGroupId = Guid.NewGuid();
+            var now=DateTime.Now;
+            var userClaims = new List<UserClaim>()
+            {
+                new UserClaim() { Hash = string.Empty, ClaimTypeId = ClaimType.DefaultZoneId, ClaimValue="131301", UserId = userid, InsertGroupId =insertGroupId,InsertLogInfo=logInfo,ValidFrom=now},
+                new UserClaim() { Hash = string.Empty, ClaimTypeId = ClaimType.Endpoint, ClaimValue=@"UserCreate.Trigger", UserId = userid, InsertGroupId =insertGroupId,InsertLogInfo=logInfo,ValidFrom=now},
+                new UserClaim() { Hash = string.Empty, ClaimTypeId = ClaimType.Endpoint, ClaimValue=@"CaptchaDisplayMode.Get", UserId = userid, InsertGroupId =insertGroupId,InsertLogInfo=logInfo,ValidFrom=now},
+                new UserClaim() { Hash = string.Empty, ClaimTypeId = ClaimType.Endpoint, ClaimValue=@"CaptchaLanguage.Get", UserId = userid, InsertGroupId =insertGroupId,InsertLogInfo=logInfo,ValidFrom=now},
+                new UserClaim() { Hash = string.Empty, ClaimTypeId = ClaimType.Endpoint, ClaimValue=@"CaptchaDictionary.Get", UserId = userid, InsertGroupId =insertGroupId,InsertLogInfo=logInfo,ValidFrom=now},
+            };
+            return userClaims;
+        }    
     }
 }

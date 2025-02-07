@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
+using Aban360.UserPool.Persistence.Constants.Enums;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using Microsoft.EntityFrameworkCore;
@@ -18,10 +19,21 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
             _userClaims = _uow.Set<UserClaim>();
             _userClaims.NotNull(nameof(_userClaims));
         }
+
+        public IQueryable<UserClaim> GetQuery()
+        {
+            return _userClaims.AsQueryable();
+        }
         public async Task<ICollection<UserClaim>> Get(Guid userId)
         {
             return await _userClaims
                 .Where(uc => uc.UserId == userId)
+                .ToListAsync();
+        }
+        public async Task<ICollection<UserClaim>> Get(Guid userId, ClaimType claimType)
+        {
+            return await _userClaims
+                .Where(userClaim => userClaim.UserId == userId && userClaim.ClaimTypeId == claimType)
                 .ToListAsync();
         }
     }
