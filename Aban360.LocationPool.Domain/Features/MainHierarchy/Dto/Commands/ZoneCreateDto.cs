@@ -5,6 +5,6 @@
         public int Id { get; set; }
         public string Title { get; set; } = null!;
         public int RegionId { get; set; }
-        public string UnstandardCode { get; set; } = null!;
+        public string UnstandardCode { get; set; } //= null!;
     }
 }

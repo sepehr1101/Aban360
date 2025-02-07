@@ -19,7 +19,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Queries
         [HttpPost]
         [Route("single/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ZoneGetDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Update(int id,CancellationToken cancellationToken)
+        public async Task<IActionResult> GetSingle(int id,CancellationToken cancellationToken)
         {
             var zone = await _zoneGetSingleHandler.Handle(id,cancellationToken);
             return Ok(zone);

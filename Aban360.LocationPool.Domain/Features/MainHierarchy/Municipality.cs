@@ -10,6 +10,7 @@ public class Municipality
     public string Title { get; set; } = null!;
 
     public int ZoneId { get; set; }
+    public bool IsVillage { get; set; }
 
     public virtual Zone Zone { get; set; } = null!;
 }

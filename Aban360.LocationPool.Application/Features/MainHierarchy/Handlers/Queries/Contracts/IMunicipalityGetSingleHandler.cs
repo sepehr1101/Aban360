@@ -4,6 +4,6 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queri
 {
     public interface IMunicipalityGetSingleHandler
     {
-        Task<ICollection<MunicipalityGetDto>> Handle(CancellationToken cancellationToken);
+        Task<MunicipalityGetDto> Handle(int id, CancellationToken cancellationToken);
     }
 }

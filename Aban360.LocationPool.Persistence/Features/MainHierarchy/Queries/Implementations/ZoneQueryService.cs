@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implementations
 {
-    public class ZoneQueryService : IZoneQueryService
+    public  class ZoneQueryService: IZoneQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<Zone> _zone;
@@ -21,8 +21,7 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implem
 
         public async Task<Zone> Get(int id)
         {
-            //return await _uow.FindOrThrowAsync<Zone>(id);
-            return await _zone. Where(x=>x.Id == id).SingleAsync();
+            return await _uow.FindOrThrowAsync<Zone>(id);
         }
 
         public async Task<ICollection<Zone>> Get()

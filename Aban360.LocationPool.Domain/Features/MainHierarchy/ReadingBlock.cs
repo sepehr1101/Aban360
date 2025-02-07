@@ -9,7 +9,11 @@ public class ReadingBlock
 
     public string Title { get; set; } = null!;
 
-    public short ReadingBoundId { get; set; }
+    public int ReadingBoundId { get; set; }
+
+    public string FromReadingNumber { get; set; } = null!;
+
+    public string ToReadingNumber { get; set; } = null!;
 
     public virtual ReadingBound ReadingBound { get; set; } = null!;
 }

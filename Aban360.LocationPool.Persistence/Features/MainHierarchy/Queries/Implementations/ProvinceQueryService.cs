@@ -26,7 +26,7 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implem
 
         public async Task<ICollection<Province>> Get()
         {
-            return _province.ToList();
+            return await _province.ToListAsync();
         }
     }
 }

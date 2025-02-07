@@ -21,10 +21,10 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queri
             _municipalqueryService.NotNull(nameof(municipalqueryService));
         }
 
-        public async Task<MunicipalityGetDto> Handle(int id, CancellationToken cancellationToken)
+        public async Task<ICollection<MunicipalityGetDto>> Handle(CancellationToken cancellationToken)
         {
-            var municipality = await _municipalqueryService.Get(id);
-            return _mapper.Map<MunicipalityGetDto>(municipality);
+            var municipality = await _municipalqueryService.Get();
+            return _mapper.Map<ICollection<MunicipalityGetDto>>(municipality);
         }
     }
 }

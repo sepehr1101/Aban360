@@ -11,7 +11,8 @@ public class Zone
 
     public int RegionId { get; set; }
 
-    public string UnstandardCode { get; set; } = null!;
+  //  public string UnstandardCode { get; set; } = null!;
+    public string? UnstandardCode { get; set; } 
 
     public virtual ICollection<Municipality> Municipalities { get; set; } = new List<Municipality>();
 
