@@ -2,8 +2,8 @@
 
 namespace Aban360.LocationPool.Domain.Features.MainHierarchy;
 
-[Table(nameof(Headquarter))]
-public class Headquarter
+[Table(nameof(Headquarters))]
+public class Headquarters
 {
     public short Id { get; set; }
 

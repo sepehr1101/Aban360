@@ -5,11 +5,13 @@ namespace Aban360.LocationPool.Domain.Features.MainHierarchy;
 [Table(nameof(ReadingBound))]
 public class ReadingBound
 {
-    public short Id { get; set; }
+    public int Id { get; set; }
 
     public string Title { get; set; } = null!;
 
-    public short ZoneId { get; set; }
+    public int ZoneId { get; set; }
+    public string FromReadingNumber { get; set; }= null!;
+    public string ToReadingNumber { get; set; }= null!;
 
     public virtual ICollection<ReadingBlock> ReadingBlocks { get; set; } = new List<ReadingBlock>();
 
