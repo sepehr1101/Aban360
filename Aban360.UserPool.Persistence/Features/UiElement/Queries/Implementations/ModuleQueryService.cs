@@ -3,11 +3,6 @@ using Aban360.UserPool.Domain.Features.AceessTree.Entites;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
 using Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aban360.UserPool.Persistence.Features.UiElement.Queries.Implementations
 {
