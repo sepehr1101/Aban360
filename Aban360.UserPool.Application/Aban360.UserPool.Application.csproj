@@ -11,6 +11,7 @@
     <Folder Include="Common\Entities\" />
     <Folder Include="Common\Services\Contracts\" />
     <Folder Include="Common\Services\Implementations\" />
+    <Folder Include="Features\AccessTree\Validations\" />
     <Folder Include="Features\Auth\Validations\" />
     <Folder Include="Features\Logging\Handlers\Commands\Create\Contracts\" />
     <Folder Include="Features\Logging\Handlers\Commands\Create\Implementations\" />

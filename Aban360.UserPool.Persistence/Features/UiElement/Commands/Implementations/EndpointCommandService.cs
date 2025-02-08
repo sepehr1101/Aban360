@@ -1,7 +1,7 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.UserPool.Domain.Features.AceessTree.Entites;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
-using Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts;
+using Aban360.UserPool.Persistence.Features.UiElement.Commands.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.UserPool.Persistence.Features.UiElement.Commands.Implementations
