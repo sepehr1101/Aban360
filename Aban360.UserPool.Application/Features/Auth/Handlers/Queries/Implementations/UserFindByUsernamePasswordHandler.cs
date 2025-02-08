@@ -9,12 +9,12 @@ using Microsoft.AspNetCore.Http;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations
 {
-    public sealed class FindUserByUsernamePasswordHandler : IFindUserByUsernamePasswordHandler
+    public sealed class UserFindByUsernamePasswordHandler : IUserFindByUsernamePasswordHandler
     {
         private readonly IUserQueryService _userQueryService;
         private readonly IUserLoginCommandService _userLoginCommandService;
         private readonly IHttpContextAccessor _contextAccessor;
-        public FindUserByUsernamePasswordHandler(
+        public UserFindByUsernamePasswordHandler(
             IUserQueryService userQueryService,
             IUserLoginCommandService userLoginCommandService,
             IHttpContextAccessor contextAccessor)

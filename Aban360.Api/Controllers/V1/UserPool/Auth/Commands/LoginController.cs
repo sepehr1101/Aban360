@@ -20,7 +20,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
     public class LoginController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IFindUserByUsernamePasswordHandler _userFindByPasswordHandler;
+        private readonly IUserFindByUsernamePasswordHandler _userFindByPasswordHandler;
         private readonly IDNTCaptchaApiProvider _captchaApiProvider;
         private readonly ICaptchaCryptoProvider _captchaCryptoProvider;
         private readonly IDNTCaptchaValidatorService _captchaValidatorService;
@@ -43,7 +43,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
             ICaptchaGetSingleHandler captchaGetSingleHandler,
             ITokenFactoryService tokenFactoryService,
             IUserFindByUsernameQueryHandler userFindByUsernameHandler,
-            IFindUserByUsernamePasswordHandler findUserByUsernamePasswordHandler,
+            IUserFindByUsernamePasswordHandler findUserByUsernamePasswordHandler,
             IUserTokenCreateHandler userTokenCreateHandler,
             IUserTokenFindByRefreshQueryHandler userTokenFindByRefreshTokenHandler,
             IUserPolicyQueryHandler userPolicyQueryHandler,
