@@ -9,7 +9,6 @@ namespace Aban360.UserPool.Application.Features.AccessTree.Mappings
     {
         public AppMapper()
         {
-            //.ForMember(c => c.t, opt => opt.Condition(src => (src.baz >= 0)));
             CreateMap<AppCreateDto, App>().ReverseMap();
             CreateMap<AppDeleteDto, App>().ReverseMap();
             CreateMap<AppUpdateDto, App>().ReverseMap();

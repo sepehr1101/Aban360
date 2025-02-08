@@ -1,4 +1,6 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Extensions;
+using Aban360.LocationPool.Domain.Features.MainHierarchy.Dto.Commands;
 using Aban360.UserPool.Application.Features.AccessTree.Handlers.Commands.Create.Contracts;
 using Aban360.UserPool.Domain.Features.AceessTree.Dto.Commands;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
@@ -24,6 +26,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree.Commands
 
         [HttpPost]
         [Route("create")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<AppCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] AppCreateDto createDto, CancellationToken cancellationToken)
         {
             await _appCreateHandler.Handle(createDto, cancellationToken);
