@@ -18,6 +18,18 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
             _users = _uow.Set<User>();
             _users.NotNull(nameof(_users));
         }
+        public IQueryable<User> GetQuery()
+        {
+            return _users
+                .AsNoTracking()
+                .AsQueryable();
+        }
+        public async Task<ICollection<User>> Get()
+        {
+            return await _users
+                .Where(user=> user.ValidTo==null)
+                .ToListAsync();
+        }
         public async Task<User> Get(Guid id)
         {
             return await _uow.FindOrThrowAsync<User>(id);
