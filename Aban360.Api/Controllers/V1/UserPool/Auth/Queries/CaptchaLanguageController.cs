@@ -1,5 +1,7 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations;
+using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
@@ -16,6 +18,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
 
         [HttpGet]
         [Route("lang")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<CaptchaLanguageDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
             var languages = await _languageQueryHandler.Handle(cancellationToken);
