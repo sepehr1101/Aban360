@@ -4,7 +4,6 @@
     {
         public int Id { get; set; }
         public int ModuleId { get; set; }
-        public string ModuleTitle { get; set; }
         public string Title { get; set; } = null!;
         public string? Style { get; set; }
         public bool InMenu { get; set; }

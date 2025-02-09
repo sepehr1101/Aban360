@@ -16,8 +16,7 @@ namespace Aban360.UserPool.Application.Features.AccessTree.Mappings
                 .ReverseMap();
 
             CreateMap<SubModuleUpdateDto, SubModule>()
-                .ReverseMap()
-                .ForMember(dest => dest.ModuleTitle, opt => opt.MapFrom(src => src.Module.Title));
+                .ReverseMap();
 
             CreateMap<SubModuleGetDto, SubModule>()
                 .ReverseMap()

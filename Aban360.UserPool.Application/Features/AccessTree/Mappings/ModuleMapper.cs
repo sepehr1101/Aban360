@@ -11,19 +11,17 @@ namespace Aban360.UserPool.Application.Features.AccessTree.Mappings
         {
             CreateMap<ModuleCreateDto, Module>()
                 .ReverseMap();
-                //.ForMember(dest => dest.AppTitle, opt => opt.MapFrom(src => src.App.Title));
 
-            CreateMap<ModuleDeleteDto, Module>().ReverseMap();
+            CreateMap<ModuleDeleteDto, Module>()
+                .ReverseMap();
 
             CreateMap<ModuleUpdateDto, Module>()
                 .ReverseMap();
-               // .ForMember(dest => dest.AppTitle, opt => opt.MapFrom(src => src.App.Title));
 
             CreateMap<ModuleGetDto, Module>()
                 .ReverseMap()
                 .ForMember(dest => dest.AppTitle, opt => opt.MapFrom(src => src.App.Title));
         
-             //todo : AppTitle always need ?
         }
     }
 }

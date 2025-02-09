@@ -3,7 +3,6 @@
     public record ModuleCreateDto
     {
         public int AppId { get; set; }
-       // public string AppTitle { get; set; }
         public string Title { get; set; } = null!;
         public string? Style { get; set; }
         public bool InMenu { get; set; }

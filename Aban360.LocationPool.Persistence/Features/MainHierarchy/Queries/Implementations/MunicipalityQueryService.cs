@@ -21,12 +21,18 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implem
 
         public async Task<Municipality> Get(int id)
         {
-            return await _uow.FindOrThrowAsync<Municipality>(id);
+            //return await _uow.FindOrThrowAsync<Municipality>(id);
+            return await _municipality
+                .Include(m => m.Zone)
+                .Where(m => m.Id == id)
+                .SingleAsync();
         }
 
         public async Task<ICollection<Municipality>> Get()
         {
-            return await _municipality.ToListAsync();
+            return await _municipality
+                .Include(m=>m.Zone)
+                .ToListAsync();
         }
     }
 

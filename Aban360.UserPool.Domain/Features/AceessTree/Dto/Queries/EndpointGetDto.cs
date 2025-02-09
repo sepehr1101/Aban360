@@ -1,4 +1,4 @@
-﻿namespace Aban360.UserPool.Domain.Features.AceessTree.Dto.Commands
+﻿namespace Aban360.UserPool.Domain.Features.AceessTree.Dto.Queries
 {
     public record EndpointGetDto
     {
