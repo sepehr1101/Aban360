@@ -21,7 +21,6 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implem
 
         public async Task<Zone> Get(int id)
         {
-            //  return await _uow.FindOrThrowAsync<Zone>(id);
             return await _zone
                     .Include(z => z.Region)
                     .Where(z => z.Id == id)

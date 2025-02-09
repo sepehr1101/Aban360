@@ -21,7 +21,6 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implem
 
         public async Task<Province> Get(short id)
         {
-            //return _uow.FindOrThrow<Province>(id);
             return await _province
                 .Include(p => p.Country)
                 .Include(p=>p.CordinalDirection)

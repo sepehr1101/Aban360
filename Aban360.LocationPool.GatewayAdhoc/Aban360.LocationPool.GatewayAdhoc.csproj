@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Aban360.LocationPool.Application\Aban360.LocationPool.Application.csproj" />
+  </ItemGroup>
+
 </Project>
