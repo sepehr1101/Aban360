@@ -5,5 +5,6 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts
     public interface IUserLoginQueryService
     {
         Task<UserLogin?> Get(Guid id);
+        Task<ICollection<UserLogin>?> GetByUserId(Guid userId);
     }
 }
