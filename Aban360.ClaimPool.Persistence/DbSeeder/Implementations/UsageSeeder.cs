@@ -16,8 +16,8 @@ namespace Aban360.ClaimPool.Persistence.DbSeeder.Implementations
 
         public void SeedData()
         {
-            string fileAddress = GetSqlFilePath();
-            _uow.ExecuteBatch(fileAddress);
+           // string fileAddress = GetSqlFilePath();
+            //_uow.ExecuteBatch(fileAddress);
         }
         private string GetSqlFilePath()
         {
