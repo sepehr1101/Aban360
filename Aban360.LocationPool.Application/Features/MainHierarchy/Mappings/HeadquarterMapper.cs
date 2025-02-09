@@ -9,10 +9,19 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Mappings
     {
         public HeadquarterMapper()
         {
-            CreateMap<HeadquarterCreateDto, Headquarters>().ReverseMap();
-            CreateMap<HeadquarterDeleteDto, Headquarters>().ReverseMap();
-            CreateMap<HeadquarterUpdateDto, Headquarters>().ReverseMap();
-            CreateMap<HeadquarterGetDto, Headquarters>().ReverseMap();
+            CreateMap<HeadquarterCreateDto, Headquarters>()
+                .ReverseMap();
+
+            CreateMap<HeadquarterDeleteDto, Headquarters>()
+                .ReverseMap();
+
+            CreateMap<HeadquarterUpdateDto, Headquarters>()
+                .ReverseMap();
+            
+            CreateMap<HeadquarterGetDto, Headquarters>()
+                .ReverseMap()
+                .ForMember(dest => dest.ProvinceTitle, opt => opt.MapFrom(src => src.Province.Title));
+
         }
     }
 }

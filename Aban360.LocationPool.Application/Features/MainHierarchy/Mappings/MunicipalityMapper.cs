@@ -5,14 +5,23 @@ using AutoMapper;
 
 namespace Aban360.LocationPool.Application.Features.MainHierarchy.Mappings
 {
-    public class MunicipalityMapper:Profile
+    public class MunicipalityMapper : Profile
     {
         public MunicipalityMapper()
         {
-            CreateMap<MunicipalityCreateDto, Municipality>().ReverseMap();
-            CreateMap<MunicipalityDeleteDto, Municipality>().ReverseMap();
-            CreateMap<MunicipalityUpdateDto, Municipality>().ReverseMap();
-            CreateMap<MunicipalityGetDto, Municipality>().ReverseMap();
+            CreateMap<MunicipalityCreateDto, Municipality>()
+                .ReverseMap();
+
+            CreateMap<MunicipalityDeleteDto, Municipality>()
+                .ReverseMap();
+
+            CreateMap<MunicipalityUpdateDto, Municipality>()
+                .ReverseMap();
+
+            CreateMap<MunicipalityGetDto, Municipality>()
+                .ReverseMap()
+                .ForMember(dest => dest.ZoneTitle, opt => opt.MapFrom(src => src.Zone.Title));
+
         }
     }
 }
