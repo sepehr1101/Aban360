@@ -22,7 +22,6 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implem
 
         public async Task<Headquarters> Get(short id)
         {
-            // return await _uow.FindOrThrowAsync<Headquarters>(id);
             return await _headquarter
                  .Include(h => h.Province)
                  .Where(h => h.Id == id)

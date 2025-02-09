@@ -1,9 +1,11 @@
-﻿using FluentMigrator;
+﻿using Aban360.ClaimPool.Persistence.Extensions;
+using Aban360.ClaimPool.Persistence.Migrations.Enums;
+using FluentMigrator;
 using System.Reflection;
 
 namespace Aban360.ClaimPool.Persistence.Migrations
 {
-    [Migration(1403082101)]
+    [Migration(1403112101)]
     public class DbInitialDesign : Migration
     {
         string Id = nameof(Id), Hash = nameof(Hash);
@@ -28,6 +30,13 @@ namespace Aban360.ClaimPool.Persistence.Migrations
             tableNames.ForEach(t => Delete.Table(t));
         }
 
-
+        private void CreateUsage()
+        {
+            var table = TableName.Usage;
+            Create.Table(nameof(TableName.Usage))
+                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("ProvienceId").AsInt16().NotNullable();
+        }
     }
 }

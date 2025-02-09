@@ -7,7 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DbSeeder\Implementations\" />
+    <None Remove="DbSeeder\DataScript\Usage.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="DbSeeder\DataScript\Usage.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Exceptions\" />
     <Folder Include="Features\People\" />
     <Folder Include="Scaffold\" />

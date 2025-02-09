@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+﻿using Aban360.ClaimPool.Persistence.Contexts.Contracts;
+using Aban360.Common.Db.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
 {
-    public partial class ClaimPoolContext : BaseDbContext
+    public partial class ClaimPoolContext : BaseDbContext,IUnitOfWork
     {
         public ClaimPoolContext()
         {

@@ -21,7 +21,6 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implem
 
         public async Task<ReadingBlock> Get(short id)
         {
-            //return await _uow.FindOrThrowAsync<ReadingBlock>(id);
             return await _readingBlock
                     .Include(r => r.ReadingBoundId)
                     .Where(r => r.Id == id)
