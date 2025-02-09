@@ -8,6 +8,6 @@
         Siphon,
         Individual,
         Subscription,
-
+        Usage,
     }
 }
