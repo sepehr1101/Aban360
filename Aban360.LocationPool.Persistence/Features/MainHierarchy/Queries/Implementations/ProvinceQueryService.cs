@@ -21,12 +21,19 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implem
 
         public async Task<Province> Get(short id)
         {
-            return _uow.FindOrThrow<Province>(id);
+            return await _province
+                .Include(p => p.Country)
+                .Include(p=>p.CordinalDirection)
+                .Where(p => p.Id == id)
+                .SingleAsync();
         }
 
         public async Task<ICollection<Province>> Get()
         {
-            return await _province.ToListAsync();
+            return await _province
+                .Include(p=>p.Country)
+                .Include(p => p.CordinalDirection)
+                .ToListAsync();
         }
     }
 }

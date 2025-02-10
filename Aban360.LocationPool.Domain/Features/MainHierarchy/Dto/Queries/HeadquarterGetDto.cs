@@ -5,5 +5,6 @@
         public short Id { get; set; }
         public string Title { get; set; } = null!;
         public short ProvinceId { get; set; }
+        public string ProvinceTitle { get; set; }
     }
 }

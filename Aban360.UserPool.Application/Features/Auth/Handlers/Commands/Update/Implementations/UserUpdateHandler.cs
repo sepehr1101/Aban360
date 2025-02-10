@@ -6,11 +6,6 @@ using Aban360.UserPool.Persistence.Features.Auth.Commands.Contracts;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations
 {

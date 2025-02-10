@@ -9,10 +9,20 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Mappings
     {
         public ReadingBlockMapper()
         {
-            CreateMap<ReadingBlockCreateDto, ReadingBlock>().ReverseMap();
-            CreateMap<ReadingBlockDeleteDto, ReadingBlock>().ReverseMap();
-            CreateMap<ReadingBlockUpdateDto, ReadingBlock>().ReverseMap();
-            CreateMap<ReadingBlockGetDto, ReadingBlock>().ReverseMap();
+
+            CreateMap<ReadingBlockCreateDto, ReadingBlock>()
+                .ReverseMap();
+
+            CreateMap<ReadingBlockDeleteDto, ReadingBlock>()
+                .ReverseMap();
+            
+            CreateMap<ReadingBlockUpdateDto, ReadingBlock>()
+                .ReverseMap();
+            
+            CreateMap<ReadingBlockGetDto, ReadingBlock>()
+                .ReverseMap()
+                .ForMember(dest => dest.ReadingBoundTitle, opt => opt.MapFrom(src => src.ReadingBound.Title));
+
         }
     }
 }

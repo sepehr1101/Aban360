@@ -21,12 +21,17 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implem
 
         public async Task<ReadingBound> Get(int id)
         {
-            return await _uow.FindOrThrowAsync<ReadingBound>(id);
+            return await _readingBound
+                    .Include(r => r.Zone)
+                    .Where(r => r.Id == id)
+                    .SingleAsync();
         }
 
         public async Task<ICollection<ReadingBound>> Get()
         {
-            return await _readingBound.ToListAsync();
+            return await _readingBound
+                .Include(r => r.Zone)
+                .ToListAsync();
         }
     }
 }

@@ -5,14 +5,23 @@ using AutoMapper;
 
 namespace Aban360.LocationPool.Application.Features.MainHierarchy.Mappings
 {
-    public class ZoneMapper:Profile
+    public class ZoneMapper : Profile
     {
         public ZoneMapper()
         {
-            CreateMap<ZoneCreateDto, Zone>().ReverseMap();
-            CreateMap<ZoneDeleteDto, Zone>().ReverseMap();
-            CreateMap<ZoneUpdateDto, Zone>().ReverseMap();
-            CreateMap<ZoneGetDto, Zone>().ReverseMap();
+            CreateMap<ZoneCreateDto, Zone>()
+                .ReverseMap();
+
+            CreateMap<ZoneDeleteDto, Zone>()
+                .ReverseMap();
+
+            CreateMap<ZoneUpdateDto, Zone>()
+                .ReverseMap();
+
+            CreateMap<ZoneGetDto, Zone>()
+                .ReverseMap()
+                .ForMember(dest => dest.RegionTitle, opt => opt.MapFrom(src => src.Region.Title));
+
         }
     }
 }

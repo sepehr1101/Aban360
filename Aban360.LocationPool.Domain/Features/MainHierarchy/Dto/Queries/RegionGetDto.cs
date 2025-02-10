@@ -5,5 +5,6 @@
         public int Id { get; set; }
         public string Title { get; set; } = null!;
         public short HeadquartersId { get; set; }
+        public string HeadquartersTitle { get; set; }
     }
 }
