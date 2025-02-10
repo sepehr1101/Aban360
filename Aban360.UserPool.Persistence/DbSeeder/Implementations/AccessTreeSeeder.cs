@@ -26,10 +26,23 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
             {
                 return;
             }
-            var app = GetApp();
-            _apps.Add(app);
-            _uow.SaveChanges();
+
+            string sqlFilePath = GetSqlFilePath();
+            _uow.ExecuteBatch(sqlFilePath);
+           // var app = GetApp();
+           // _apps.Add(app);
+           // _uow.SaveChanges();
         }
+
+        private string GetSqlFilePath()
+        {
+            string basePath = AppContext.BaseDirectory;
+            string relativePath = @"\DbSeeder\DataScript\AccessTree.sql";
+
+            var path = string.Concat(basePath, relativePath);
+            return path;
+        }
+
 
         private App GetApp()
         {
