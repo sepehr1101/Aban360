@@ -46,6 +46,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
             var userClaims = CreateUserClaims(userCreateDto.ClaimItems, logInfoString, operationGroupId, operationGroupId);
             var userRoles = CreateUserRoles(userCreateDto.RoleIds, logInfoString, operationGroupId, operationGroupId);
 
+            //todo : hashPassword
             var user = _mapper.Map<User>(userCreateDto);
             user.Id = operationGroupId;
             user.InsertLogInfo = logInfoString;
