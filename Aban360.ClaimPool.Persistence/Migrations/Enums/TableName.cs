@@ -4,10 +4,25 @@
     {
         Estate,
         Flat,
-        WaterMeter,
-        Siphon,
         Individual,
-        Subscription,
+        IndividualEstateRelationType,
+        IndividualEstate,
         Usage,
+        ConstructionType,
+
+        MeterDiameter,
+        MeterType,
+        MeterProducer,
+        MeterMaterial,
+        MeterUseType,
+        WaterMeter,
+
+        SiphonDiameter,
+        SiphonType,
+        SiphonMaterial,
+        Siphon,
+
+        UseState,
+        Subscription,
     }
 }

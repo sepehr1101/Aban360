@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Commands
 {
-    [Route("v1/headquarter")]
-    public class HeadquarterUpdateController : BaseController
+    [Route("v1/headquarters")]
+    public class HeadquartersUpdateController : BaseController
     {
         private readonly IUnitOfWork _uow;
         private readonly IHeadquarterUpdateHandler _headquarterUpdateHandler;
-        public HeadquarterUpdateController(
+        public HeadquartersUpdateController(
             IUnitOfWork uow,
             IHeadquarterUpdateHandler headquarterUpdateHandler)
         {

@@ -7,12 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.UserPool.AccessTree.Commands
 {
-    [Route("v1/sub-model")]
-    public class SubModelDeleteController : BaseController
+    [Route("v1/sub-module")]
+    public class SubModuleDeleteController : BaseController
     {
         private readonly IUnitOfWork _uow;
         private readonly ISubModuleDeleteHandler _subModuleDeleteHandler;
-        public SubModelDeleteController(
+        public SubModuleDeleteController(
             IUnitOfWork uow,
             ISubModuleDeleteHandler subModuleDeleteHandler)
         {

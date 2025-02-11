@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Commands
 {
-    [Route("v1/headquarter")]
-    public class HeadquarterDeleteController : BaseController
+    [Route("v1/headquarters")]
+    public class HeadquartersDeleteController : BaseController
     {
         private readonly IUnitOfWork _uow;
         private readonly IHeadquarterDeleteHandler _headquarterDeleteHandler;
-        public HeadquarterDeleteController(
+        public HeadquartersDeleteController(
             IUnitOfWork uow,
             IHeadquarterDeleteHandler headquarterDeleteHandler)
         {
