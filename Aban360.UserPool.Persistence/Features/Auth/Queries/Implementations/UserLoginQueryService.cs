@@ -24,5 +24,13 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
                 .Include(u => u.User)
                 .SingleOrDefaultAsync(u => u.Id == id);
         }
+        public async Task<ICollection<UserLogin>?> GetByUserId(Guid userId)
+        {
+            return await _userLogins
+                .Where(userLogin=> 
+                        userLogin.UserId == userId &&
+                        userLogin.LogoutDateTime==null)
+                .ToListAsync();
+        }
     }
 }

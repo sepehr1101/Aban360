@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aban360.Api.Controllers.V1.UserPool.AccessTree.Quereis
 {
     [Route("v1/sub-model")]
-    public class SubModelGetSingleController : BaseController
+    public class SubModulelGetSingleController : BaseController
     {
         private readonly IUnitOfWork _uow;
         private readonly ISubModuleGetSingleHandler _subModuleGetSingleHandler;
-        public SubModelGetSingleController(
+        public SubModulelGetSingleController(
             IUnitOfWork uow,
             ISubModuleGetSingleHandler subModuleGetSingleHandler)
         {

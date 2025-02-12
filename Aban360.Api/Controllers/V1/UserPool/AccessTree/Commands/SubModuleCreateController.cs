@@ -7,12 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.UserPool.AccessTree.Commands
 {
-    [Route("v1/sub-model")]
-    public class SubModelCreateController : BaseController
+    [Route("v1/sub-module")]
+    public class SubModuleCreateController : BaseController
     {
         private readonly IUnitOfWork _uow;
         private readonly ISubModuleCreateHandler _subModuleCreateHandler;
-        public SubModelCreateController(
+        public SubModuleCreateController(
             IUnitOfWork uow,
             ISubModuleCreateHandler subModuleCreateHandler)
         {

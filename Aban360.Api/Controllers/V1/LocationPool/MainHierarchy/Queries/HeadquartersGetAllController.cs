@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Queries
 {
-    [Route("v1/headquarter")]
-    public class HeadquarterGetAllController : BaseController
+    [Route("v1/headquarters")]
+    public class HeadquartersGetAllController : BaseController
     {
         private readonly IHeadquarterGetAllHandler _headquarterGetAllHandler;
-        public HeadquarterGetAllController(IHeadquarterGetAllHandler headquarterGetAllHandler)
+        public HeadquartersGetAllController(IHeadquarterGetAllHandler headquarterGetAllHandler)
         {
             _headquarterGetAllHandler = headquarterGetAllHandler;
             _headquarterGetAllHandler.NotNull(nameof(headquarterGetAllHandler));
