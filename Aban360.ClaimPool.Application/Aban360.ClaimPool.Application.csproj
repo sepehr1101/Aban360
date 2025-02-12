@@ -19,4 +19,9 @@
     <ProjectReference Include="..\Aban360.ClaimPool.Persistence\Aban360.ClaimPool.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Land\Validations\" />
+    <Folder Include="Features\Metering\Validations\" />
+  </ItemGroup>
+
 </Project>

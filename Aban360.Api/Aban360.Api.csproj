@@ -51,4 +51,8 @@
     <ProjectReference Include="..\Aban360.UserPool.Persistence\Aban360.UserPool.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\V1\ClaimPool\Metering\Queries\" />
+  </ItemGroup>
+
 </Project>
