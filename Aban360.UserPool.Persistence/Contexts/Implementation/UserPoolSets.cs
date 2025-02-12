@@ -23,5 +23,7 @@ namespace Aban360.UserPool.Persistence.Contexts.Implementation
         public virtual DbSet<Module> Modules { get; set; }
         public virtual DbSet<SubModule> SubModules { get; set; }
         public virtual DbSet<Endpoint> Endpoints { get; set; }
+
+        public virtual DbSet<TokenFailureType> TokenFailureTypes { get; set; }
     }
 }

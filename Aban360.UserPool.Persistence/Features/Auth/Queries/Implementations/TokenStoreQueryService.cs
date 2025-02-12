@@ -27,5 +27,14 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
                     u.RefreshTokenIdHash == refreshTokenHash &&
                     u.RefreshTokenExpiresDateTime>=DateTime.Now);
         }
+        public async Task<bool> IsValid(string accessToken, Guid userId)
+        {
+            var accessTokenHash = await SecurityOperations.GetSha512Hash(accessToken);
+            var userToken = await _userTokens
+                .FirstOrDefaultAsync(userToken=>
+                    userToken.AccessTokenHash == accessTokenHash &&
+                    userToken.UserId == userId);
+            return userToken?.AccessTokenExpiresDateTime >= DateTime.Now;
+        }
     }
 }
