@@ -21,7 +21,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
             _usageQueryService.NotNull(nameof(usageQueryService));
         }
 
-        public async Task<ICollection<UsageGetDto>> Handle()
+        public async Task<ICollection<UsageGetDto>> Handle(CancellationToken cancellationToken)
         {
             var usage = await _usageQueryService.Get();
             if (usage == null)

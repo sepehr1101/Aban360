@@ -4,6 +4,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts
 {
     public interface IUsageGetAllHandler
     {
-        Task<ICollection<UsageGetDto>> Handle();
+        Task<ICollection<UsageGetDto>> Handle(CancellationToken cancellationToken);
     }
 }
