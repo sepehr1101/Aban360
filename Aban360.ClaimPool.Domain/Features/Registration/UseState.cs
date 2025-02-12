@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Aban360.ClaimPool.Domain.Features.Land;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.Registration;
 
+[Table(nameof(UseState))]
 public partial class UseState
 {
     public short Id { get; set; }

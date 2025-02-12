@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.WasteWater;
 
+[Table(nameof(SiphonDiameter))]
 public partial class SiphonDiameter
 {
     public short Id { get; set; }

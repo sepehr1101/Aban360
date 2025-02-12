@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Aban360.ClaimPool.Domain.Features.Land;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.Metering;
 
+[Table(nameof(MeterUseType))]
 public partial class MeterUseType
 {
     public short Id { get; set; }

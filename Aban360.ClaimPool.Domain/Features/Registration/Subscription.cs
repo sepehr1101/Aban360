@@ -1,4 +1,4 @@
-﻿using Aban360.ClaimPool.Domain.Features.Land;
+﻿using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Domain.Features.Metering;
 using System.ComponentModel.DataAnnotations.Schema;
 

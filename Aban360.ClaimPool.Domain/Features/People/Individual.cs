@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Aban360.ClaimPool.Domain.Features.Land;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.People;
 
+[Table(nameof(Individual))]
 public partial class Individual
 {
     public int Id { get; set; }

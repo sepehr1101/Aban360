@@ -1,9 +1,10 @@
-﻿using Aban360.ClaimPool.Domain.Features.Registration;
-using System;
-using System.Collections.Generic;
+﻿using Aban360.ClaimPool.Domain.Features.Land;
+using Aban360.ClaimPool.Domain.Features.Registration;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.Metering
 {
+    [Table(nameof(WaterMeter))]
     public partial class WaterMeter
     {
         public int Id { get; set; }
