@@ -36,7 +36,8 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
                    new TokenFailureType(){ Id=TokenFailureTypeEnum.NoTokenInDb,Title="توکن در پایگاه داده پیدا نشد" },
                    new TokenFailureType(){ Id=TokenFailureTypeEnum.NoAccess,Title="دسترسی غیرمجاز" },
                    new TokenFailureType(){ Id=TokenFailureTypeEnum.DeviceChanged,Title="دستگاه کاربر تغییر پیدا کرده" },
-                   new TokenFailureType(){ Id=TokenFailureTypeEnum.InactiveSession,Title="مدت زمان session به پایان رسیده است" }
+                   new TokenFailureType(){ Id=TokenFailureTypeEnum.InactiveSession,Title="مدت زمان session به پایان رسیده است" },
+                   new TokenFailureType(){Id=TokenFailureTypeEnum.NotOurToken, Title="توکن متعلق به سرویس های ما نیست"}
             };
             _tokenFailureTypes.AddRange(tokenFailureTypes);
             _uow.SaveChanges();

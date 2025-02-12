@@ -7,9 +7,10 @@
         NoSerial = 3,
         NoUserId = 4,
         Expired = 5,
-        NoTokenInDb = 6,
+        NoTokenInDb = 6,        
         NoAccess = 7,
         DeviceChanged = 8,
-        InactiveSession = 9
+        InactiveSession = 9,
+        NotOurToken=10
     }
 }

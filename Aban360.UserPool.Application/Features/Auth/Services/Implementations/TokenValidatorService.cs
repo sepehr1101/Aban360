@@ -3,6 +3,7 @@ using Aban360.UserPool.Application.Features.Auth.Services.Contracts;
 using Aban360.UserPool.Domain.Constants;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.JsonWebTokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -97,11 +98,11 @@ namespace Aban360.UserPool.Application.Features.Auth.Services.Implementations
                 return failureReasonId;
             }
 
-            //if (context.SecurityToken is not JwtSecurityToken accessToken)
-            //{
-            //    failureReasonId = TokenFailureTypeEnum.NoTokenInDb;
-            //    return failureReasonId;
-            //}
+            if (context.SecurityToken is not JsonWebToken accessToken)
+            {
+                failureReasonId = TokenFailureTypeEnum.NoTokenInDb;
+                return failureReasonId;
+            }
 
             //var accessToken = context.SecurityToken as JwtSecurityToken;
             //if (string.IsNullOrWhiteSpace(accessToken.RawData) ||
@@ -123,7 +124,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Services.Implementations
             //    failureReasonId = TokenFailureTypeEnum.InactiveSession;
             //    return (failureReasonId);
             //}
-            
+
             return (failureReasonId);
         }
     }
