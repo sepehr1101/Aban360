@@ -8,10 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Constants\" />
-    <Folder Include="Features\Individual\" />
-    <Folder Include="Features\E\" />
-    <Folder Include="Features\WaterMater\" />
-    <Folder Include="Features\Siphon\" />
   </ItemGroup>
 
 </Project>
