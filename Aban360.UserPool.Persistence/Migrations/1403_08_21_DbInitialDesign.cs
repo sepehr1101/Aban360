@@ -293,5 +293,13 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn("AuthValue").AsString(_255).Nullable()
                 .WithColumn("IsActive").AsBoolean().NotNullable();
         }
+
+        private void CreateTokenFailureType()
+        {
+            var table = TableName.TokenFailureType;
+            Create.Table(nameof(TableName.TokenFailureType))
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("Title").AsString(_255).NotNullable();
+        }
     }
 }

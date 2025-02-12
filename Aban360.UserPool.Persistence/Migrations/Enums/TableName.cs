@@ -33,7 +33,8 @@
         SubModule,
         Endpoint,
 
-        ServerUser
+        TokenFailureType,
 
+        ServerUser
     }
 }
