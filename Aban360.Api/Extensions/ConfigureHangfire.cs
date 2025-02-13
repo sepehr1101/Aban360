@@ -28,7 +28,8 @@ namespace Aban360.Api.Extensions
                 [
                     new HangfireDashboardJwtAuthorizationFilter(GetTokenValidationParameters(configuration), [BaseRoles.Admin, BaseRoles.Programmer])                   
                 ],
-                IgnoreAntiforgeryToken = true
+                IgnoreAntiforgeryToken = true,
+                DashboardTitle="داشبورد Sms Hub",
             };
             app.UseHangfireDashboard(_dashboardRoute, dashboardOptions);
         }

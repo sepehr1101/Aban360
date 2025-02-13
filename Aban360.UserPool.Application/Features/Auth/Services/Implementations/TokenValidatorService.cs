@@ -4,7 +4,6 @@ using Aban360.UserPool.Domain.Constants;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.JsonWebTokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace Aban360.UserPool.Application.Features.Auth.Services.Implementations
