@@ -39,8 +39,6 @@
     <Folder Include="Features\UiElement\Handlers\Commands\Delete\Implementations\" />
     <Folder Include="Features\UiElement\Handlers\Commands\Update\Contracts\" />
     <Folder Include="Features\UiElement\Handlers\Commands\Update\Implementations\" />
-    <Folder Include="Features\UiElement\Handlers\Queries\Contracts\" />
-    <Folder Include="Features\UiElement\Handlers\Queries\Implementations\" />
     <Folder Include="Features\UiElement\Mappings\" />
     <Folder Include="Features\UiElement\Validations\" />
   </ItemGroup>
