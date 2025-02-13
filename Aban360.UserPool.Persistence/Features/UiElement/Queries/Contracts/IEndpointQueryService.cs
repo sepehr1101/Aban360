@@ -6,6 +6,7 @@ namespace Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts
     {
         Task<ICollection<Endpoint>> Get();
         Task<ICollection<Endpoint>> GetInclude();
+        Task<ICollection<Endpoint>> GetIncludeAll();
         Task<Endpoint> Get(int id);
         Task<Endpoint> GetInclude(int id);
         IQueryable<Endpoint> GetQuery();

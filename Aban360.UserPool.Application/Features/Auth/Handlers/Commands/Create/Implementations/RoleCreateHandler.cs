@@ -4,6 +4,7 @@ using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Features.Auth.Commands.Contracts;
 using AutoMapper;
+using System.Text.Json;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Implementations
 {
@@ -25,6 +26,10 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
         public async Task Handle(RoleCreateDto createDto, CancellationToken cancellationToken)
         {
             var role = _mapper.Map<Role>(createDto);
+            if (createDto.SelectedEndpointIds is not null && createDto.SelectedEndpointIds.Any())
+            {
+                role.DefaultClaims = JsonOperation.Marshal(createDto.SelectedEndpointIds);
+            }
             await _roleCommandService.Add(role);
         }
     }

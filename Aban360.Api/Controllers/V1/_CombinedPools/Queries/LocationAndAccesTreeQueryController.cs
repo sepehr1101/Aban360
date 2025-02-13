@@ -1,6 +1,7 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Extensions;
 using Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations;
-using Microsoft.AspNetCore.Authorization;
+using Aban360.LocationPool.Domain.Features.MainHierarchy.Dto.Queries.ValueKeys;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1._CombinedPools.Implementations
@@ -17,9 +18,9 @@ namespace Aban360.Api.Controllers.V1._CombinedPools.Implementations
             _locationQueryHandler.NotNull(nameof(locationValueKeyQueryHandler));
         }
 
-        [AllowAnonymous]
         [HttpGet, HttpPost]
         [Route("value-keys")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<LocationValueKeyDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetValueKeys(CancellationToken cancellationToken)
         {
             var locationValueKeyDto= await _locationQueryHandler.Handle(cancellationToken);
