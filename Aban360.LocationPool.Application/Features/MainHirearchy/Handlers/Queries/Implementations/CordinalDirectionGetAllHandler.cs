@@ -1,0 +1,30 @@
+﻿using Aban360.Common.Extensions;
+using Aban360.LocationPool.Application.Features.MainHirearchy.Handlers.Queries.Contracts;
+using Aban360.LocationPool.Domain.Features.MainHirearchy.Dto.Queries;
+using Aban360.LocationPool.Persistence.Features.MainHirearchy.Queries.Contracts;
+using AutoMapper;
+
+namespace Aban360.LocationPool.Application.Features.MainHirearchy.Handlers.Queries.Implementations
+{
+    public class CordinalDirectionGetAllHandler : ICordinalDirectionGetAllHandler
+    {
+        private readonly IMapper _mapper;
+        private readonly ICordinalDirectionQueryService _cordinalDirectionQueryService;
+        public CordinalDirectionGetAllHandler(
+            IMapper mapper,
+            ICordinalDirectionQueryService cordinalDirectionQueryService)
+        {
+            _mapper = mapper;
+            _mapper.NotNull(nameof(mapper));
+
+            _cordinalDirectionQueryService = cordinalDirectionQueryService;
+            _cordinalDirectionQueryService.NotNull(nameof(cordinalDirectionQueryService));
+        }
+
+        public async Task<ICollection<CordinalDirectionGetDto>> Handle(CancellationToken cancellationToken)
+        {
+            var cordinalDirection = await _cordinalDirectionQueryService.Get();
+            return _mapper.Map<ICollection<CordinalDirectionGetDto>>(cordinalDirection);
+        }
+    }
+}

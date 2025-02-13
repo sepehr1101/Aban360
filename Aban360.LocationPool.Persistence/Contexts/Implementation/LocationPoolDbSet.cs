@@ -1,4 +1,4 @@
-﻿using Aban360.LocationPool.Domain.Features.MainHierarchy;
+﻿using Aban360.LocationPool.Domain.Features.MainHirearchy.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.UserPool.Persistence.Contexts.Implementation
