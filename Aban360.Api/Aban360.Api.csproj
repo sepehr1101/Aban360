@@ -53,6 +53,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\V1\ClaimPool\Metering\Queries\" />
+    <Folder Include="Controllers\V1\_CombinedPools\Contracts\" />
   </ItemGroup>
 
 </Project>

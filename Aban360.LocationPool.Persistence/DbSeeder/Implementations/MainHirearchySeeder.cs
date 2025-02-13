@@ -1,6 +1,6 @@
 ﻿using Aban360.Common.Db.DbSeeder.Contracts;
 using Aban360.Common.Extensions;
-using Aban360.LocationPool.Domain.Features.MainHirearchy.Entities;
+using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.LocationPool.Persistence.Contexts.Contracts;
 using Microsoft.EntityFrameworkCore;
 

@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\MainHirearchy\Validations\" />
+    <Folder Include="Features\MainHierarchy\Validations\" />
   </ItemGroup>
 
 </Project>
