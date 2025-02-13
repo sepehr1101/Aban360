@@ -19,7 +19,7 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queri
             LocationValueKeyDto locationValueKeyDto = new (BuildLocationTree(zones));
             return locationValueKeyDto;
         }
-        public List<CordinalDirectionValueKey> BuildLocationTree(ICollection<Zone> zones)
+        private List<CordinalDirectionValueKey> BuildLocationTree(ICollection<Zone> zones)
         {
             var directionDic = new Dictionary<int, CordinalDirectionValueKey>();
             var provinceDict = new Dictionary<int, ProvinceValueKey>();
@@ -32,7 +32,7 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queri
                 // Get or create the RegionTree
                 if (!regionDict.TryGetValue(zone.RegionId, out var regionTree))
                 {
-                    regionTree = new RegionValueKey(zone.RegionId, zone.Title, new List<ZoneValueKey>());                 
+                    regionTree = new RegionValueKey(zone.RegionId, zone.Region.Title, new List<ZoneValueKey>());                 
                     regionDict[zone.RegionId] = regionTree;
                 }
 
@@ -51,10 +51,10 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queri
                 }
 
                 // Get or create the CountryTree
-                if (!directionDic.TryGetValue(zone.Region.Headquarters.Province.CountryId, out var directionTree))
+                if (!directionDic.TryGetValue(zone.Region.Headquarters.Province.CordinalDirectionId, out var directionTree))
                 {
                     directionTree = new CordinalDirectionValueKey(zone.Region.Headquarters.Province.CordinalDirection.Id, zone.Region.Headquarters.Province.CordinalDirection.Title, new List<ProvinceValueKey>());                   
-                    directionDic[zone.Region.Headquarters.Province.CountryId] = directionTree;
+                    directionDic[zone.Region.Headquarters.Province.CordinalDirectionId] = directionTree;
                 }
 
                 // Add the zone to the region
