@@ -1,0 +1,35 @@
+﻿using Aban360.Common.Extensions;
+using Aban360.LocationPool.Application.Features.MainHirearchy.Handlers.Commands.Update.Contracts;
+using Aban360.LocationPool.Domain.Features.MainHirearchy.Dto.Commands;
+using Aban360.LocationPool.Persistence.Features.MainHirearchy.Queries.Contracts;
+using AutoMapper;
+
+namespace Aban360.LocationPool.Application.Features.MainHirearchy.Handlers.Commands.Update.Implementations
+{
+    public class HeadquarterUpdateHandler : IHeadquarterUpdateHandler
+    {
+        private readonly IMapper _mapper;
+        private readonly IHeadquarterQueryService _headquarterQueryService;
+        public HeadquarterUpdateHandler(
+            IMapper mapper,
+            IHeadquarterQueryService headquarterQueryService)
+        {
+            _mapper = mapper;
+            _mapper.NotNull(nameof(mapper));
+
+            _headquarterQueryService = headquarterQueryService;
+            _headquarterQueryService.NotNull(nameof(headquarterQueryService));
+
+        }
+
+        public async Task Handle(HeadquarterUpdateDto updateDto, CancellationToken cancellationToken)
+        {
+            var headquarter = await _headquarterQueryService.Get(updateDto.Id);
+            if (headquarter == null)
+            {
+                throw new InvalidDataException();
+            }
+            _mapper.Map(updateDto, headquarter);
+        }
+    }
+}
