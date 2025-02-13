@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
 {
-    [Route("meter-material")]
+    [Route("v1/meter-material")]
     public class MeterMaterialUpdateController : BaseController
     {
         private readonly IUnitOfWork _uow;
@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
             _meterMaterialHandler.NotNull(nameof(meterMaterialHandler));
         }
 
-        [HttpPost]
+        [HttpPost, HttpPatch]
         [Route("update")]
         public async Task<IActionResult> Update([FromBody] MeterMaterialUpdateDto updateDto, CancellationToken cancellationToken)
         {

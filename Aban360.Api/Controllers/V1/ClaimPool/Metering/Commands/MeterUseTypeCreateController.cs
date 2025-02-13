@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
 {
-    [Route("meter-use-type")]
+    [Route("v1/meter-use-type")]
     public class MeterUseTypeCreateController:BaseController
     {
         private readonly IUnitOfWork _uow;

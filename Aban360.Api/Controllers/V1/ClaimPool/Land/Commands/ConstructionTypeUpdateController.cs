@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
 {
-    [Route("construction-type")]
+    [Route("v1/construction-type")]
     public class ConstructionTypeUpdateController : BaseController
     {
         private readonly IUnitOfWork _uow;

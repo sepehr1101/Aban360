@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
 {
-    [Route("meter-type")]
+    [Route("v1/meter-type")]
     public class MeterTypeUpdateController:BaseController
     {
         private readonly IUnitOfWork _uow;
@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
             _meterTypeHandler.NotNull(nameof(meterTypeHandler));
         }
 
-        [HttpPost]
+        [HttpPost, HttpPatch]
         [Route("update")]
         public async Task<IActionResult> Update([FromBody] MeterTypeUpdateDto updateDto, CancellationToken cancellationToken)
         {

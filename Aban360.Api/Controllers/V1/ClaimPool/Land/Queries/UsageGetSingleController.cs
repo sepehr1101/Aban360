@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
 {
-    [Route("usage")]
+    [Route("v1/usage")]
     public class UsageGetSingleController : BaseController
     {
         private readonly IUnitOfWork _uow;

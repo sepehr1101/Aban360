@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
             _roleDeleteHandler.NotNull(nameof(roleDeleteHandler));
         }
 
-        [HttpPost]
+        [HttpPost, HttpDelete]
         [Route("delete")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<RoleDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] RoleDeleteDto deleteDto, CancellationToken cancellationToken)

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
 {
-    [Route("falt")]
+    [Route("v1/falt")]
     public class FlatUpdateController : BaseController
     {
         private readonly IUnitOfWork _uow;

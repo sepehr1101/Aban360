@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Queries
 {
-    [Route("meter-producer")]
+    [Route("v1/meter-producer")]
     public class MeterProducerGetSingleController : BaseController
     {
         private readonly IUnitOfWork _uow;

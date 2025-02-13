@@ -25,7 +25,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
         }
 
         [Route("update")]
-        [HttpPost]
+        [HttpPost, HttpPatch]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CaptchaUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] CaptchaUpdateDto capthcaUpdateDto, CancellationToken cancellationToken)
         {

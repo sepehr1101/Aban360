@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Queries
 {
-    [Route("meter-diameter")]
+    [Route("v1/meter-diameter")]
     public class MeterDiameterGetSingleController : BaseController
     {
         private readonly IUnitOfWork _uow;
