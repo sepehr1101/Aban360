@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Queries
             _provinceGetSingleHandler.NotNull(nameof(provinceGetSingleHandler));    
         }
 
-        [HttpPost]
+        [HttpGet, HttpPost]
         [Route("single/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ProvinceGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
 {
-    [Route("falt")]
+    [Route("v1/falt")]
     public class FlatGetSingleController : BaseController
     {
         private readonly IUnitOfWork _uow;
@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
             _flatHandler.NotNull(nameof(flatHandler));
         }
 
-        [HttpPost]
+        [HttpGet, HttpPost]
         [Route("single/{id}")]
         public async Task<IActionResult> GetSingle(int id, CancellationToken cancellationToken)
         {

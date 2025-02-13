@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Commands
             _zoneUpdateHandler.NotNull(nameof(zoneUpdateHandler));
         }
 
-        [HttpPost]
+        [HttpPost, HttpPatch]
         [Route("update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ZoneUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] ZoneUpdateDto updateDto, CancellationToken cancellationToken)

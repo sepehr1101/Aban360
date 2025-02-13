@@ -4,6 +4,7 @@ using Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.
 using Aban360.LocationPool.Domain.Features.MainHierarchy.Dto.Commands;
 using Aban360.LocationPool.Persistence.Contexts.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.CompilerServices;
 
 namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Commands
 {
@@ -23,7 +24,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Commands
             _cordinalDirectionUpdateHandler.NotNull(nameof(cordinalDirectionUpdateHandler));
         }
 
-        [HttpPost]
+        [HttpPost, HttpPatch]
         [Route("update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CordinalDirectionDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] CordinalDirectionUpdateDto updatedto, CancellationToken cancellationToken)

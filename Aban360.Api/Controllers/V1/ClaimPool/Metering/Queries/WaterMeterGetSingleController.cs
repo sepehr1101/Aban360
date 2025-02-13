@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
 {
-    [Route("water-meter")]
+    [Route("v1/water-meter")]
     public class WaterMeterGetSingleController : BaseController
     {
         private readonly IUnitOfWork _uow;
@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
             _waterMeterHandler.NotNull(nameof(waterMeterHandler));
         }
 
-        [HttpPost]
+        [HttpGet,HttpPost]
         [Route("single/{id}")]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {

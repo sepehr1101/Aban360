@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
 {
-    [Route("usage")]
+    [Route("v1/usage")]
     public class UsageGetSingleController : BaseController
     {
         private readonly IUnitOfWork _uow;
@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
             _usageHandler.NotNull(nameof(_usageHandler));
         }
 
-        [HttpPost]
+        [HttpGet ,HttpPost]
         [Route("single/{id}")]
         public async Task<IActionResult> Create(short id, CancellationToken cancellationToken)
         {

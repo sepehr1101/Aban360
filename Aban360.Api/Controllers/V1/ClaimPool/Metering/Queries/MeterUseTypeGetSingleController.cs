@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Queries
 {
-    [Route("meter-use-type")]
+    [Route("v1/meter-use-type")]
     public class MeterUseTypeGetSingleController : BaseController
     {
         private readonly IUnitOfWork _uow;
@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Queries
             _meterUseTypeHandler.NotNull(nameof(meterUseTypeHandler));
         }
 
-        [HttpPost]
+        [HttpGet, HttpPost]
         [Route("single/{id}")]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {

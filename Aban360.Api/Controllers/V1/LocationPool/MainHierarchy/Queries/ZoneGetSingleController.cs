@@ -16,7 +16,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Queries
             _zoneGetSingleHandler.NotNull(nameof(zoneGetSingleHandler));
         }
 
-        [HttpPost]
+        [HttpGet, HttpPost]
         [Route("single/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ZoneGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(int id,CancellationToken cancellationToken)

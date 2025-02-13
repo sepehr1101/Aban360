@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Queries
 {
-    [Route("meter-diameter")]
+    [Route("v1/meter-diameter")]
     public class MeterDiameterGetAllController : BaseController
     {
         private readonly IUnitOfWork _uow;
@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Queries
             _meterDiameterHandler.NotNull(nameof(meterDiameterHandler));
         }
 
-        [HttpGet]
+        [HttpGet, HttpPost]
         [Route("all")]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {

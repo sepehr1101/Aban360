@@ -16,7 +16,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree.Quereis
             _appGetSingleHandler.NotNull(nameof(_appGetSingleHandler));
         }
 
-        [HttpPost]
+        [HttpGet,HttpPost]
         [Route("single/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AppGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(int id, CancellationToken cancellationToken)

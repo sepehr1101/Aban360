@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree.Commands
             _subModuleDeleteHandler.NotNull(nameof(subModuleDeleteHandler));
         }
 
-        [HttpPost]
+        [HttpDelete, HttpPost]
         [Route("delete")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<SubModuleDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] SubModuleDeleteDto deleteDto, CancellationToken cancellationToken)

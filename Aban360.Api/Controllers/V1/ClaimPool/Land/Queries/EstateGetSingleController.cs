@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
 {
-    [Route("Estate")]
+    [Route("v1/estate")]
     public class EstateGetSingleController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
             _getSingleHandler.NotNull(nameof(_getSingleHandler));
         }
 
-        [HttpGet]
+        [HttpGet, HttpPost]
         [Route("single/{id}")]
         public async Task<IActionResult> GetSingle(int id, CancellationToken cancellationToken)
         {

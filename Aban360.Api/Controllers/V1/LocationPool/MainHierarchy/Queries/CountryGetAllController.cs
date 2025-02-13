@@ -16,7 +16,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Queries
             _countryGetAllHandler.NotNull(nameof(countryGetAllHandler));
         }
 
-        [HttpGet]
+        [HttpGet, HttpPost]
         [Route("all")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<CountryGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)

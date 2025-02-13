@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Queries
 {
-    [Route("water-meter")]
+    [Route("v1/water-meter")]
     public class WaterMeterGetAllController : BaseController
     {
         private readonly IUnitOfWork _uow;
@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Queries
             _waterMeterHandler.NotNull(nameof(waterMeterHandler));
         }
 
-        [HttpPost]
+        [HttpGet, HttpPost]
         [Route("all")]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {

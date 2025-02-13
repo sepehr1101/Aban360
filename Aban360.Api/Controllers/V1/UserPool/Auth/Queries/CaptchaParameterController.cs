@@ -27,8 +27,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
         }
 
         [Route("params")]
-        [HttpGet]
-        [AllowAnonymous]
+        [HttpGet, HttpPost]
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true, Duration = 0)]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CaptchaParams>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Read(CancellationToken cancellationToken)

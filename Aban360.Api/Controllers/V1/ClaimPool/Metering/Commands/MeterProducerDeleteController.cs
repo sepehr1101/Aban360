@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
 {
-    [Route("meter-producer")]
+    [Route("v1/meter-producer")]
     public class MeterProducerDeleteController:BaseController
     {
         private readonly IUnitOfWork _uow;
@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
             _meterProducerHandler.NotNull(nameof(meterProducerHandler));
         }
 
-        [HttpPost]
+        [HttpPost, HttpDelete]
         [Route("delete")]
         public async Task<IActionResult> Delete([FromBody] MeterProducerDeleteDto deleteDto, CancellationToken cancellationToken)
         {

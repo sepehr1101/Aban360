@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Commands
             _countryUpdateHandler.NotNull(nameof(countryUpdateHandler));
         }
 
-        [HttpPost]
+        [HttpPost, HttpPatch]
         [Route("update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CountryUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] CountryUpdateDto updateDto, CancellationToken cancellationToken)

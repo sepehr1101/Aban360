@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
             _roleUpdateHandler.NotNull(nameof(roleUpdateHandler));
         }
 
-        [HttpPost]
+        [HttpPost, HttpPatch]
         [Route("update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<RoleUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] RoleUpdateDto updateDto, CancellationToken cancellationToken)

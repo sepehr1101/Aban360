@@ -16,7 +16,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Queries
             _municipalityGetAllHandler.NotNull(nameof(municipalityGetAllHandler));
         }
 
-        [HttpGet]
+        [HttpGet, HttpPost]
         [Route("all")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<MunicipalityGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)

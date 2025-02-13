@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Commands
             _regionUpdateHandler.NotNull(nameof(regionUpdateHandler));
         }
 
-        [HttpPost]
+        [HttpPost, HttpPatch]
         [Route("update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<RegionUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] RegionUpdateDto updateDto, CancellationToken cancellationToken)

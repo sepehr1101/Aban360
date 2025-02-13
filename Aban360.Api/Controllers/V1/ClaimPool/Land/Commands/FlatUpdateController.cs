@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
 {
-    [Route("falt")]
+    [Route("v1/falt")]
     public class FlatUpdateController : BaseController
     {
         private readonly IUnitOfWork _uow;
@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
             _flatHandler.NotNull(nameof(flatHandler));
         }
 
-        [HttpPost]
+        [HttpPost, HttpPatch]
         [Route("update")]
         public async Task<IActionResult> Update([FromBody] FlatUpdateDto updateDto, CancellationToken cancellationToken)
         {

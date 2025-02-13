@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Commands
             _readingBlockDeleteHandler.NotNull(nameof(readingBlockDeleteHandler));
         }
 
-        [HttpPost]
+        [HttpPost, HttpDelete]
         [Route("delete")]
         public async Task<IActionResult> Delete([FromBody] ReadingBlockDeleteDto deleteDto, CancellationToken cancellationToken)
         {

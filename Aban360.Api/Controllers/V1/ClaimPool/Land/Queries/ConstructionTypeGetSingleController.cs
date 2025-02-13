@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
 {
-    [Route("constructionType")]
+    [Route("v1/construction-type")]
     public class ConstructionTypeGetSingleController : BaseController
     {
         private readonly IUnitOfWork _uow;
@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
             _getSingleHandler.NotNull(nameof(_getSingleHandler));
         }
 
-        [HttpPost]
+        [HttpGet, HttpPost]
         [Route("single/{id}")]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
 {
-    [Route("constructionType")]
+    [Route("v1/construction-type")]
     public class ConstructionTypeDeleteController : BaseController
     {
         private readonly IUnitOfWork _uow;
@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
             _deleteHandler.NotNull(nameof(_deleteHandler));
         }
 
-        [HttpPost]
+        [HttpPost, HttpDelete]
         [Route("delete")]
         public async Task<IActionResult> Delete([FromBody] ConstructionTypeDeleteDto deleteDto, CancellationToken cancellationToken)
         {

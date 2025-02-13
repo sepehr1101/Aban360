@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Commands
             _municipalityDeleteHandler.NotNull(nameof(municipalityDeleteHandler));
         }
 
-        [HttpPost]
+        [HttpPost, HttpDelete]
         [Route("delete")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MunicipalityDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] MunicipalityDeleteDto deleteDto, CancellationToken cancellationToken)

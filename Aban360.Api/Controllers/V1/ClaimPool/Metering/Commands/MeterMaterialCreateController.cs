@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
 {
-    [Route("meter-material")]
+    [Route("v1/meter-material")]
     public class MeterMaterialCreateController : BaseController
     {
         private readonly IUnitOfWork _uow;

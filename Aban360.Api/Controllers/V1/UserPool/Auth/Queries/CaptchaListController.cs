@@ -16,7 +16,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
         }
 
         [Route("read")]
-        [HttpGet]
+        [HttpGet, HttpPost]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<CaptchaListQueryDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Read(CancellationToken cancellationToken)
         {

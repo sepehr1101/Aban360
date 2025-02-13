@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Commands
             _regionDeleteHandler.NotNull(nameof(regionDeleteHandler));
         }
 
-        [HttpPost]
+        [HttpPost, HttpDelete]
         [Route("delete")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<RegionDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] RegionDeleteDto deleteDto, CancellationToken cancellationToken)

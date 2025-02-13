@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree.Quereis
             _endpointGetAllHandler.NotNull(nameof(endpointGetAllHandler));
         }
 
-        [HttpGet]
+        [HttpGet,HttpPost]
         [Route("all")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<EndpointGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)

@@ -24,7 +24,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Queries
         }
 
 
-        [HttpGet]
+        [HttpGet,HttpPost]
         [Route("All")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<ProvinceGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)

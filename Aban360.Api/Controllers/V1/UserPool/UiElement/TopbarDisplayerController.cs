@@ -17,7 +17,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.UiElement
             _topbarQueryHandler.NotNull(nameof(topbarQueryHandler));
         }
 
-        [HttpGet]
+        [HttpGet,HttpPost]
         [Route("my-topbar")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<Topbar>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetMyTopbar(CancellationToken cancellationToken)
@@ -26,10 +26,9 @@ namespace Aban360.Api.Controllers.V1.UserPool.UiElement
             return Ok(topbar);
         }
 
-        [HttpGet]
+        [HttpGet, HttpPost]
         [Route("user-topbar/{userId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<Topbar>), StatusCodes.Status200OK)]
-        [AllowAnonymous]
         public async Task<IActionResult> GetMyTopbar(Guid userId,CancellationToken cancellationToken)
         {
             var topbar = await _topbarQueryHandler.Handle(userId, cancellationToken);

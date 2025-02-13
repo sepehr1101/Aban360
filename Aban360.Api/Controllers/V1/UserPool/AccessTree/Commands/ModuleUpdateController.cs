@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree.Commands
             _moduleUpdateHandler.NotNull(nameof(moduleUpdateHandler));
         }
 
-        [HttpPost]
+        [HttpPatch, HttpPost]
         [Route("update")]
         public async Task<IActionResult> Update([FromBody] ModuleUpdateDto updateDto, CancellationToken cancellationToken)
         {
