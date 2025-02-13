@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\People\**" />
+    <EmbeddedResource Remove="Features\People\**" />
+    <None Remove="Features\People\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="DbSeeder\DataScript\Usage.sql" />
   </ItemGroup>
 

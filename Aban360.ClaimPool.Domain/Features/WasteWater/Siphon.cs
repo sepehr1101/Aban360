@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Aban360.ClaimPool.Domain.Features.Land;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.WasteWater;
 
+[Table(nameof(Siphon))]
 public partial class Siphon
 {
     public int Id { get; set; }

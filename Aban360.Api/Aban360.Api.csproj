@@ -52,7 +52,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\V1\ClaimPool\" />
+    <Folder Include="Controllers\V1\ClaimPool\Metering\Queries\" />
   </ItemGroup>
 
 </Project>
