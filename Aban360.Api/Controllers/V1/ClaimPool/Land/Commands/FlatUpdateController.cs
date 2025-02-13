@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
             _flatHandler.NotNull(nameof(flatHandler));
         }
 
-        [HttpPost]
+        [HttpPost, HttpPatch]
         [Route("update")]
         public async Task<IActionResult> Update([FromBody] FlatUpdateDto updateDto, CancellationToken cancellationToken)
         {

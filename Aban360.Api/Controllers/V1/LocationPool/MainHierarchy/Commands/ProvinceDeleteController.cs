@@ -24,7 +24,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Commands
         }
 
 
-        [HttpPost]
+        [HttpPost, HttpDelete]
         [Route("delete")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ProvinceDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] ProvinceDeleteDto deleteDto, CancellationToken cancellationToken)

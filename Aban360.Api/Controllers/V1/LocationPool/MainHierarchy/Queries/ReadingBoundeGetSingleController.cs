@@ -14,7 +14,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Queries
             _readingBoundGetSingleHandler.NotNull(nameof(readingBoundGetSingleHandler));
         }
 
-        [HttpPost]
+        [HttpGet, HttpPost]
         [Route("single/{id}")]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {

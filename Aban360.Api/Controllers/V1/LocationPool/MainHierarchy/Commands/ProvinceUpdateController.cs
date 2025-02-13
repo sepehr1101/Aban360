@@ -24,7 +24,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Commands
         }
 
 
-        [HttpPost]
+        [HttpPost, HttpPatch]
         [Route("update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ProvinceUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] ProvinceUpdateDto updateDto, CancellationToken cancellationToken)

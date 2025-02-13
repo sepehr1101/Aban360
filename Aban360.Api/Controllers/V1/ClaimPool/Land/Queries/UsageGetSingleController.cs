@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
             _usageHandler.NotNull(nameof(_usageHandler));
         }
 
-        [HttpPost]
+        [HttpGet ,HttpPost]
         [Route("single/{id}")]
         public async Task<IActionResult> Create(short id, CancellationToken cancellationToken)
         {

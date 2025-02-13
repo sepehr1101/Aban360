@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Commands
             _readingBlockUpdateHandler.NotNull(nameof(readingBlockUpdateHandler));
         }
 
-        [HttpPost]
+        [HttpPost, HttpPatch]
         [Route("update")]
         public async Task<IActionResult> Update([FromBody] ReadingBlockUpdateDto updateDto, CancellationToken cancellationToken)
         {

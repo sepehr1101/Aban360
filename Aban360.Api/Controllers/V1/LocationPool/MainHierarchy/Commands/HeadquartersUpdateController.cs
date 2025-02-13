@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Commands
             _headquarterUpdateHandler.NotNull(nameof(headquarterUpdateHandler));
         }
 
-        [HttpPost]
+        [HttpPost, HttpPatch]
         [Route("update")]
         public async Task<IActionResult> Update([FromBody] HeadquarterUpdateDto updateDto, CancellationToken cancellationToken)
         {

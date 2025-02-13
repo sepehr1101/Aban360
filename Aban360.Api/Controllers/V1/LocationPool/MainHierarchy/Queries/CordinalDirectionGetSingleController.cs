@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Queries
             _cordinalDirectionGetSingleService.NotNull(nameof(cordinalDirectionGetSingleService));
         }
 
-        [HttpPost]
+        [HttpGet, HttpPost]
         [Route("Single/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CordinalDirectionGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSigle(short id, CancellationToken cancellationToken)

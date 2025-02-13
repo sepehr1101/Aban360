@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Commands
             _headquarterDeleteHandler.NotNull(nameof(headquarterDeleteHandler));
         }
 
-        [HttpPost]
+        [HttpPost, HttpDelete]
         [Route("Delete")]
         public async Task<IActionResult> Delete([FromBody] HeadquarterDeleteDto deleteDto, CancellationToken cancellationToken)
         {
