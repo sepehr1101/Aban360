@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree.Quereis
             _moduleGetAllHandler.NotNull(nameof(moduleGetAllHandler));
         }
 
-        [HttpGet]
+        [HttpGet, HttpPost]
         [Route("all")]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {

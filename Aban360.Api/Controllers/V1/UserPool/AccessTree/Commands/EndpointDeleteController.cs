@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree.Commands
             _endpointDeleteHandler.NotNull(nameof(endpointDeleteHandler));
         }
 
-        [HttpPost]
+        [HttpDelete, HttpPost]
         [Route("delete")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<EndpointDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] EndpointDeleteDto deleteDto, CancellationToken cancellationToken)

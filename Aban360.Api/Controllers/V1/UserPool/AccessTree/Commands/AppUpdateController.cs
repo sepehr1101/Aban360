@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree.Commands
             _appUpdateHandler.NotNull(nameof(_appUpdateHandler));
         }
 
-        [HttpPost]
+        [HttpPatch, HttpPost]
         [Route("update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AppUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] AppUpdateDto updateDto, CancellationToken cancellationToken)

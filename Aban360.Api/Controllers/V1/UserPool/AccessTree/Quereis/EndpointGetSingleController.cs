@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree.Quereis
             _endpointGetSingleHandler.NotNull(nameof(endpointGetSingleHandler));
         }
 
-        [HttpPost]
+        [HttpGet,HttpPost]
         [Route("single")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<EndpointGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Single(int id, CancellationToken cancellationToken)

@@ -16,7 +16,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
             _captchaDictionaryHandler.NotNull(nameof(captchaDictionaryHandler));
         }
 
-        [HttpGet]
+        [HttpGet, HttpPost]
         [Route("dictionary")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<NumericDictionary>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(CancellationToken cancellationToken)

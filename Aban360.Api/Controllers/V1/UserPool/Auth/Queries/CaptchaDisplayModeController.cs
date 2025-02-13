@@ -16,7 +16,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
             _displayModeHandler.NotNull(nameof(captchaDisplayModeQueryHandler));
         }
 
-        [HttpGet]
+        [HttpGet, HttpPost]
         [Route("mode")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<CaptchaDisplayModeDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(CancellationToken cancellationToken)

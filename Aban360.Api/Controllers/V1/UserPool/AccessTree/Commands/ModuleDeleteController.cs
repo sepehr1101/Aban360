@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree.Commands
             _moduleDeleteHandler.NotNull(nameof(moduleDeleteHandler));
         }
 
-        [HttpPost]
+        [HttpDelete, HttpPost]
         [Route("delete")]
         public async Task<IActionResult> Delete([FromBody] ModuleDeleteDto deleteDto, CancellationToken cancellationToken)
         {

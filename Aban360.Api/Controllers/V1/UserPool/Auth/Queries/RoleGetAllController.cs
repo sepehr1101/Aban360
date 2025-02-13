@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
             _roleGetAllHandler.NotNull(nameof(roleGetAllHandler));
         }
 
-        [HttpGet]
+        [HttpGet, HttpPost]
         [Route("all")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<RoleGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)

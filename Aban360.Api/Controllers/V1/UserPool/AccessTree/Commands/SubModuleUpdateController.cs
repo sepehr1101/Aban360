@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree.Commands
             _subModuleUpdateHandler.NotNull(nameof(subModuleUpdateHandler));
         }
 
-        [HttpPost]
+        [HttpPatch, HttpPost]
         [Route("update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<SubModuleUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] SubModuleUpdateDto updateDto, CancellationToken cancellationToken)

@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
             _roleGetSingleHandler.NotNull(nameof(roleGetSingleHandler));
         }
 
-        [HttpPost]
+        [HttpGet, HttpPost]
         [Route("single/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<RoleGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(int id, CancellationToken cancellationToken)

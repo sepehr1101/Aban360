@@ -17,10 +17,9 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
             _userAllQueryHandler.NotNull(nameof(userAllQueryHandler));
         }
 
-        [HttpGet]
+        [HttpGet, HttpPost]
         [Route("all")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<UserQueryDto>>), StatusCodes.Status200OK)]
-        [AllowAnonymous]
         public async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
             var usersDto= await _userAllQueryHandler.Handle(cancellationToken);
