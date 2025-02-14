@@ -9,7 +9,7 @@ public class CaptchaDisplayMode
     public short DisplayModeEnumId { get; set; }
     public string Name { get; set; } = null!;
 
-    public string Tite { get; set; } = null!;
+    public string Title { get; set; } = null!;
 
     public virtual ICollection<Captcha> Captchas { get; set; } = new List<Captcha>();
 }

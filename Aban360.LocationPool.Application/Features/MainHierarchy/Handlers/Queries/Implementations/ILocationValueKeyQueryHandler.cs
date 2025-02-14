@@ -4,6 +4,7 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queri
 {
     public interface ILocationValueKeyQueryHandler
     {
-        Task<LocationValueKeyDto> Handle(CancellationToken cancellationToken);
+        Task<LocationTree> Handle(CancellationToken cancellationToken);
+        Task<LocationTree> Handle(ICollection<int> selectedZoneIds, CancellationToken cancellationToken);
     }
 }

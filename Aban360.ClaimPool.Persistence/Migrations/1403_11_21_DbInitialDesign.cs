@@ -97,11 +97,20 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Storey").AsInt16()
                 .WithColumn("Description").AsString(_1023).Nullable();
         }
+        private void CreateIndividualType()
+        {
+            var table = TableName.IndividualType;
+            Create.Table(nameof(TableName.IndividualType))
+                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+                .WithColumn("Title").AsString(_255).NotNullable();
+        }
         private void CreateIndividual()
         {
             var table = TableName.Individual;
             Create.Table(nameof(TableName.Individual))
                 .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable().Identity()
+                .WithColumn("IndividualTypeId").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.IndividualType, table), nameof(TableName.IndividualType), Id)
                 .WithColumn("FullName").AsString(_255).NotNullable()
                 .WithColumn("NationalId").AsFixedLengthAnsiString(10).Nullable()
                 .WithColumn("FatherName").AsString(_255).Nullable()
@@ -171,11 +180,25 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
+        private void CreateUseState()
+        {
+            var table = TableName.UseState;
+            Create.Table(nameof(TableName.UseState))
+                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+                .WithColumn("Title").AsString(_255).NotNullable();
+        }
         private void CreateWaterMeter()
         {
             var table = TableName.WaterMeter;
             Create.Table(nameof(TableName.WaterMeter))
               .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+              .WithColumn("ReadingNumber").AsAnsiString(_31).Nullable()
+              .WithColumn("CustomerNumber").AsInt32().NotNullable()
+              .WithColumn("BillId").AsString(15).NotNullable()
+              .WithColumn("EstateId").AsInt32().NotNullable()
+                  .ForeignKey(NamingHelper.Fk(TableName.Estate, table), nameof(TableName.Estate), Id)           
+              .WithColumn("UseStateId").AsInt16().NotNullable()
+                  .ForeignKey(NamingHelper.Fk(TableName.UseState, table), nameof(TableName.UseState), Id)
               .WithColumn("InstallationLocation").AsString(_255).Nullable()
               .WithColumn("BodySerial").AsAnsiString(_31).Nullable()
               .WithColumn("InstallationDate").AsAnsiString(10).Nullable()
@@ -228,7 +251,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         {
             var table = TableName.Siphon;
             Create.Table(nameof(TableName.Siphon))
-              .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+              .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable()             
               .WithColumn("InstallationLocation").AsString(_255).Nullable()
               .WithColumn("InstallationDate").AsAnsiString(10).Nullable()
               .WithColumn("SiphonDiameterId").AsInt16().NotNullable()
@@ -246,36 +269,15 @@ namespace Aban360.ClaimPool.Persistence.Migrations
               .WithColumn("RemoveLogInfo").AsString(int.MinValue).Nullable()
               .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
         }
-
-        private void CreateUseState()
+        private void CreateWaterMeterSiphon()
         {
-            var table = TableName.UseState;
-            Create.Table(nameof(TableName.UseState))
-                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
-                .WithColumn("Title").AsString(_255).NotNullable();
-        }
-        private void CreateSubscription()
-        {
-            var table = TableName.Subscription;
-            Create.Table(nameof(TableName.Subscription))
-                .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
-                .WithColumn("ReadingNumber").AsAnsiString(_31).Nullable()
-                .WithColumn("CustomerNumber").AsInt32().NotNullable()
-                .WithColumn("BillId").AsString(15).NotNullable()
-                .WithColumn("EstateId").AsInt32().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.Estate, table), nameof(TableName.Estate), Id)
-                .WithColumn("WaterMeterId").AsInt32().NotNullable()
-                     .ForeignKey(NamingHelper.Fk(TableName.WaterMeter, table), nameof(TableName.WaterMeter), Id)
-                .WithColumn("UseStateId").AsInt16().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.UseState, table), nameof(TableName.UseState), Id)
-                .WithColumn("UserId").AsGuid().NotNullable()
-                .WithColumn("PreviousId").AsInt32().Nullable()
-                     .ForeignKey(NamingHelper.Fk(table, table, "PreviousId"), nameof(TableName.Estate), Id)
-                .WithColumn("ValidFrom").AsDateTime2().NotNullable()
-                .WithColumn("ValidTo").AsDateTime2().Nullable()
-                .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
-                .WithColumn("RemoveLogInfo").AsString(int.MinValue).Nullable()
-                .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
+            var table = TableName.WaterMeterSiphon;
+            Create.Table(nameof(TableName.WaterMeterSiphon))
+              .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+              .WithColumn("WaterMeterId").AsInt32().NotNullable()
+                  .ForeignKey(NamingHelper.Fk(TableName.WaterMeter, table), nameof(TableName.WaterMeter), Id)
+              .WithColumn("SiphonId").AsInt32().NotNullable()
+                  .ForeignKey(NamingHelper.Fk(TableName.Siphon, table), nameof(TableName.Siphon), Id);              
         }
     }
 }

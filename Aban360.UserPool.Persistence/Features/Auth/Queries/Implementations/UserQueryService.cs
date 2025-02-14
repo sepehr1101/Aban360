@@ -24,10 +24,19 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
                 .AsNoTracking()
                 .AsQueryable();
         }
+        private IQueryable<User> _query 
+        { 
+            get 
+            {
+                return _users.
+                    AsNoTracking()
+                    .Where(user=>user.ValidTo==null) ;
+            }
+        }
         public async Task<ICollection<User>> Get()
         {
-            return await _users
-                .Where(user=> user.ValidTo==null)
+            return await 
+                _query
                 .ToListAsync();
         }
         public async Task<User> Get(Guid id)
@@ -38,6 +47,17 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
         {
             return await _users
                 .SingleOrDefaultAsync(u => u.Username == username);
+        }
+        public async Task<User> GetIncludeUserAndClaims(Guid userId)
+        {
+            return await 
+                _query
+                .Include(user=>user.UserRoles)
+                .ThenInclude(userRole=>userRole.Role)
+                .Include(user=>user.UserClaims)
+                .Where(user=> user.UserClaims.Any(userClaim=>userClaim.ValidTo == null))
+                .Where(user => user.UserRoles.Any(userRole => userRole.ValidTo == null))
+                .SingleAsync(user=>user.Id==userId);
         }
     }
 }

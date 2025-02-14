@@ -23,6 +23,15 @@
     <Folder Include="Features\Land\Validations\" />
     <Folder Include="Features\Metering\Validations\" />
     <Folder Include="Features\People\Validations\" />
+    <Folder Include="Features\Registration\Handlers\Commands\Create\Contracts\" />
+    <Folder Include="Features\Registration\Handlers\Commands\Create\Implementations\" />
+    <Folder Include="Features\Registration\Handlers\Commands\Delete\Contracts\" />
+    <Folder Include="Features\Registration\Handlers\Commands\Delete\Implementations\" />
+    <Folder Include="Features\Registration\Handlers\Commands\Update\Contracts\" />
+    <Folder Include="Features\Registration\Handlers\Commands\Update\Implementations\" />
+    <Folder Include="Features\Registration\Handlers\Queries\Contracts\" />
+    <Folder Include="Features\Registration\Handlers\Queries\Implementations\" />
+    <Folder Include="Features\Registration\Mappings\" />
     <Folder Include="Features\Registration\Validations\" />
     <Folder Include="Features\WasteWater\Validations\" />
   </ItemGroup>

@@ -22,7 +22,7 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
         public async Task<ICollection<Role>> Get()
         {
             return await _roles
-                .Where(r => r.ValidTo != null)
+                .Where(r => r.ValidTo == null)
                 .ToListAsync();
         }
         public async Task<Role> Get(int id)

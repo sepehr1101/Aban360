@@ -1,13 +1,22 @@
-﻿using Aban360.ClaimPool.Domain.Features.Land;
-using Aban360.ClaimPool.Domain.Features.Registration.Entities;
+﻿using Aban360.ClaimPool.Domain.Features.Land.Entities;
+using Aban360.ClaimPool.Domain.Features.WasteWater.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.Metering.Entities
 {
     [Table(nameof(WaterMeter))]
-    public partial class WaterMeter
+    public class WaterMeter
     {
         public int Id { get; set; }
+        public string? ReadingNumber { get; set; }
+
+        public int CustomerNumber { get; set; }
+
+        public string BillId { get; set; } = null!;
+
+        public int EstateId { get; set; }
+
+        public short UseStateId { get; set; }
 
         public string? InstallationLocation { get; set; }
 
@@ -45,6 +54,7 @@ namespace Aban360.ClaimPool.Domain.Features.Metering.Entities
 
         public string Hash { get; set; } = null!;
 
+        public virtual Estate Estate { get; set; } = null!;
         public virtual ICollection<WaterMeter> InverseParent { get; set; } = new List<WaterMeter>();
 
         public virtual ICollection<WaterMeter> InversePrevious { get; set; } = new List<WaterMeter>();
@@ -63,6 +73,8 @@ namespace Aban360.ClaimPool.Domain.Features.Metering.Entities
 
         public virtual WaterMeter? Previous { get; set; }
 
-        public virtual ICollection<Subscription> Subscriptions { get; set; } = new List<Subscription>();
+        public virtual UseState UseState { get; set; } = null!;
+
+        public virtual ICollection<WaterMeterSiphon> WaterMeterSiphons { get; set; } = new List<WaterMeterSiphon>();
     }
 }

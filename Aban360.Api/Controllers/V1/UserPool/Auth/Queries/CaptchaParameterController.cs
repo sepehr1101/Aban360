@@ -30,6 +30,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
         [HttpGet, HttpPost]
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true, Duration = 0)]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CaptchaParams>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> Read(CancellationToken cancellationToken)
         {
             CaptchaSingleQueryDto captchaDto = await _captchaGetSingleHandler.Handle(cancellationToken);
@@ -44,7 +45,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
                 Max = captchaDto.Max,
                 Min = captchaDto.Min
             });
-            var captchaParams = new CaptchaParams(dntCaptchaParams.DntCaptchaImgUrl, dntCaptchaParams.DntCaptchaTextValue);
+            CaptchaParams captchaParams = new CaptchaParams(dntCaptchaParams.DntCaptchaImgUrl, dntCaptchaParams.DntCaptchaTextValue);
             return Ok(captchaParams);
         }
     }
