@@ -10,10 +10,10 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Registration.Commands
     public class UseStateDeleteController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IUseEstateDeleteHandler _useEstateHandler;
+        private readonly IUseStateDeleteHandler _useEstateHandler;
         public UseStateDeleteController(
             IUnitOfWork uow,
-            IUseEstateDeleteHandler useEstateHandler)
+            IUseStateDeleteHandler useEstateHandler)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));

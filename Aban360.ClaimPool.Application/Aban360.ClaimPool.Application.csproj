@@ -23,6 +23,8 @@
     <Folder Include="Features\Land\Validations\" />
     <Folder Include="Features\Metering\Validations\" />
     <Folder Include="Features\People\Validations\" />
+    <Folder Include="Features\Registration\Validations\" />
+    <Folder Include="Features\WasteWater\Validations\" />
   </ItemGroup>
 
 </Project>
