@@ -3,7 +3,6 @@ using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using AutoMapper;
-using System.Text.Json;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations
 {
