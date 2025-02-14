@@ -2,7 +2,7 @@
 using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Aban360.ClaimPool.Domain.Features.Registration;
+namespace Aban360.ClaimPool.Domain.Features.Registration.Entities;
 
 [Table(nameof(Subscription))]
 public class Subscription

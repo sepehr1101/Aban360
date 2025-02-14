@@ -1,5 +1,5 @@
 ﻿using Aban360.ClaimPool.Domain.Features.People.Entities;
-using Aban360.ClaimPool.Domain.Features.Registration;
+using Aban360.ClaimPool.Domain.Features.Registration.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.Land.Entities;
