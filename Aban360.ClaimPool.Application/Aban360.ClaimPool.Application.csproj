@@ -22,6 +22,7 @@
   <ItemGroup>
     <Folder Include="Features\Land\Validations\" />
     <Folder Include="Features\Metering\Validations\" />
+    <Folder Include="Features\People\Validations\" />
   </ItemGroup>
 
 </Project>

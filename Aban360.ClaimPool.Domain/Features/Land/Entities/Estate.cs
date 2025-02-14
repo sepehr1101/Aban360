@@ -1,4 +1,4 @@
-﻿using Aban360.ClaimPool.Domain.Features.People;
+﻿using Aban360.ClaimPool.Domain.Features.People.Entities;
 using Aban360.ClaimPool.Domain.Features.Registration;
 using System.ComponentModel.DataAnnotations.Schema;
 

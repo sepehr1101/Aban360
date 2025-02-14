@@ -1,7 +1,7 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Aban360.ClaimPool.Domain.Features.People;
+namespace Aban360.ClaimPool.Domain.Features.People.Entities;
 
 [Table(nameof(IndividualEstate))]
 public partial class IndividualEstate
