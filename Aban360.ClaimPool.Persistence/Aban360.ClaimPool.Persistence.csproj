@@ -18,6 +18,11 @@
 
   <ItemGroup>
     <Folder Include="Exceptions\" />
+    <Folder Include="Features\Registration\Commands\Contracts\" />
+    <Folder Include="Features\Registration\Commands\Implementations\" />
+    <Folder Include="Features\Registration\Queries\Contracts\" />
+    <Folder Include="Features\Registration\Queries\Implementations\" />
+    <Folder Include="Interceptors\" />
     <Folder Include="Scaffold\" />
   </ItemGroup>
 

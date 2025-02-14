@@ -4,6 +4,7 @@
     {
         Estate,
         Flat,
+        IndividualType,
         Individual,
         IndividualEstateRelationType,
         IndividualEstate,
@@ -21,6 +22,7 @@
         SiphonType,
         SiphonMaterial,
         Siphon,
+        WaterMeterSiphon,
 
         UseState,
         Subscription,

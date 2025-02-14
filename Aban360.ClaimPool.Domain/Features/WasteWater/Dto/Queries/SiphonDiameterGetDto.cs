@@ -1,4 +1,6 @@
-﻿namespace Aban360.ClaimPool.Domain.Features.WasteWater.Dto.Queries
+﻿using Aban360.ClaimPool.Domain.Features.WasteWater.Entities;
+
+namespace Aban360.ClaimPool.Domain.Features.WasteWater.Dto.Queries
 {
     public record SiphonDiameterGetDto
     {

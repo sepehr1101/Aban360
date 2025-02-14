@@ -3,5 +3,5 @@
 public record CaptchaDisplayModeDto
 {
     public short Id { get; set; }
-    public string Tite { get; set; } = null!;
+    public string Title { get; set; } = null!;
 }

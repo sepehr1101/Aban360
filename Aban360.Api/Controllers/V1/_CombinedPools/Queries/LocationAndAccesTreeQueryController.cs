@@ -20,7 +20,7 @@ namespace Aban360.Api.Controllers.V1._CombinedPools.Implementations
 
         [HttpGet, HttpPost]
         [Route("value-keys")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<LocationValueKeyDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<LocationTree>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetValueKeys(CancellationToken cancellationToken)
         {
             var locationValueKeyDto= await _locationQueryHandler.Handle(cancellationToken);

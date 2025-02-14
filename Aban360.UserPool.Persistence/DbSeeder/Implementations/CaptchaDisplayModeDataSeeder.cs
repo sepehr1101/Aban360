@@ -27,10 +27,10 @@ namespace SmsHub.Persistence.DbSeeder.Implementations
             }
             var captcahDisplayModes = new List<CaptchaDisplayMode>()
             {
-                new CaptchaDisplayMode(){Id=1, DisplayModeEnumId=0,Name="NumberToWord",Tite="تبدیل حروف به ارقام"},
-                new CaptchaDisplayMode(){Id=2,DisplayModeEnumId=1,Name="ShowDigits",Tite="نمایش ارقام"},
-                new CaptchaDisplayMode(){Id=3,DisplayModeEnumId=2,Name="SumOfTwoNumbers",Tite="جمع دو عدد"},
-                new CaptchaDisplayMode(){Id=4,DisplayModeEnumId=3,Name="SumOfTwoNumbersToWords",Tite="جمع دو عدد با حروف"}
+                new CaptchaDisplayMode(){Id=1, DisplayModeEnumId=0,Name="NumberToWord",Title="تبدیل حروف به ارقام"},
+                new CaptchaDisplayMode(){Id=2,DisplayModeEnumId=1,Name="ShowDigits",Title="نمایش ارقام"},
+                new CaptchaDisplayMode(){Id=3,DisplayModeEnumId=2,Name="SumOfTwoNumbers",Title="جمع دو عدد"},
+                new CaptchaDisplayMode(){Id=4,DisplayModeEnumId=3,Name="SumOfTwoNumbersToWords",Title="جمع دو عدد با حروف"}
             };
             _capthcaDisplayModes.AddRange(captcahDisplayModes);
             _uow.SaveChanges();

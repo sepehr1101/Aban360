@@ -1,5 +1,5 @@
-﻿using Aban360.ClaimPool.Domain.Features.People.Entities;
-using Aban360.ClaimPool.Domain.Features.Registration.Entities;
+﻿using Aban360.ClaimPool.Domain.Features.Metering.Entities;
+using Aban360.ClaimPool.Domain.Features.People.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.Land.Entities;
@@ -81,11 +81,8 @@ public class Estate
 
     public virtual Estate? Previous { get; set; }
 
-    public virtual ICollection<Subscription> SubscriptionEstates { get; set; } = new List<Subscription>();
-
-    public virtual ICollection<Subscription> SubscriptionPrevious { get; set; } = new List<Subscription>();
-
     public virtual Usage UsageConsumtion { get; set; } = null!;
 
     public virtual Usage UsageSell { get; set; } = null!;
+    public virtual ICollection<WaterMeter> WaterMeters { get; set; } = new List<WaterMeter>();
 }

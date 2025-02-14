@@ -37,7 +37,7 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("DisplayModeEnumId").AsInt16().NotNullable()
                 .WithColumn("Name").AsAnsiString(_31).NotNullable()
-                .WithColumn("Tite").AsString(_31).NotNullable();
+                .WithColumn("Title").AsString(_31).NotNullable();
         }
         private void CreateCapchaLanguage()
         {

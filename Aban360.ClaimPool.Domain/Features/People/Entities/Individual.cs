@@ -1,5 +1,4 @@
-﻿using Aban360.ClaimPool.Domain.Features.Land;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.People.Entities;
 
@@ -7,7 +6,7 @@ namespace Aban360.ClaimPool.Domain.Features.People.Entities;
 public partial class Individual
 {
     public int Id { get; set; }
-
+    public short IndividualTypeId { get; set; }
     public string FullName { get; set; } = null!;
 
     public string? NationalId { get; set; }
@@ -32,6 +31,7 @@ public partial class Individual
 
     public string Hash { get; set; } = null!;
 
+    public virtual IndividualType IndividualType { get; set; } = null!;
     public virtual ICollection<IndividualEstate> IndividualEstates { get; set; } = new List<IndividualEstate>();
 
     public virtual ICollection<Individual> InversePrevious { get; set; } = new List<Individual>();
