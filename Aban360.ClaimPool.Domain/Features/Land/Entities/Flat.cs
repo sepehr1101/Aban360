@@ -3,7 +3,6 @@
 namespace Aban360.ClaimPool.Domain.Features.Land.Entities;
 
 [Table(nameof(Flat))]
-
 public class Flat
 {
     public int Id { get; set; }
