@@ -5,10 +5,10 @@ using Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Contracts;
 
 namespace Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementations
 {
-    public class ZoneQueryAddhoc : IZoneQueryAddhoc
+    public class ZoneAllQueryAddhoc : IZoneAllQueryAddhoc
     {
         private readonly IZoneGetAllHandler _zoneGetAllHandler;
-        public ZoneQueryAddhoc(IZoneGetAllHandler zoneGetAllHandler)
+        public ZoneAllQueryAddhoc(IZoneGetAllHandler zoneGetAllHandler)
         {
             _zoneGetAllHandler = zoneGetAllHandler;
             _zoneGetAllHandler.NotNull(nameof(zoneGetAllHandler));

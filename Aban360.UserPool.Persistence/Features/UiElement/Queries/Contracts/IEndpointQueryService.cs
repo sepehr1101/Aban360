@@ -10,5 +10,6 @@ namespace Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts
         Task<Endpoint> Get(int id);
         Task<Endpoint> GetInclude(int id);
         IQueryable<Endpoint> GetQuery();
+        Task<List<string>> GetAuthValue(int[] ids);
     }
 }
