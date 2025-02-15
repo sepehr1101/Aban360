@@ -6,5 +6,6 @@
         public static string EmptyString { get { return "نوع داده رشته ای تهی یا خالی است"; } }
         public static string AppBasePathNotFound_1 { get {return "ریشه پروژه در مسیر {0} پیدا نشد"; } }
         public static string InvalidIp { get { return "Ip وارد شده صحیح نمیباشد: {0}"; } }
+
     }
 }

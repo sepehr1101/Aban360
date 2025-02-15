@@ -7,5 +7,6 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contra
         Task<Zone> Get(int id);
         Task<ICollection<Zone>> Get();
         Task<ICollection<Zone>> GetIncludeAll();
+        Task<int> GetCount(ICollection<int> ids);
     }
 }

@@ -2,8 +2,8 @@
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
+using Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts;
 using AutoMapper;
-using System.Text.Json;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations
 {
@@ -11,15 +11,20 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
     {
         private readonly IMapper _mapper;
         private readonly IRoleQueryService _roleQueryService;
+        private readonly IEndpointQueryService _endpointQueryService;
         public RoleUpdateHandler(
             IMapper mapper,
-            IRoleQueryService roleQueryService)
+            IRoleQueryService roleQueryService,
+            IEndpointQueryService endpointQueryService)
         {
             _mapper = mapper;
             _mapper.NotNull(nameof(mapper));
 
             _roleQueryService = roleQueryService;
             _roleQueryService.NotNull(nameof(roleQueryService));
+
+            _endpointQueryService = endpointQueryService;
+            _endpointQueryService.NotNull(nameof(endpointQueryService));
         }
 
         public async Task Handle(RoleUpdateDto updateDto, CancellationToken cancellationToken)
@@ -29,7 +34,10 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
             {
                 throw new InvalidDataException();
             }
-            if (updateDto.SelectedEndpointIds is not null && updateDto.SelectedEndpointIds.Any())
+
+            var endpointValue = await _endpointQueryService.GetAuthValue(updateDto.SelectedEndpointIds);
+
+            if (updateDto.SelectedEndpointIds is not null && endpointValue.Count() == updateDto.SelectedEndpointIds.Count() /*updateDto.SelectedEndpointIds.Any()*/)
             {
                 role.DefaultClaims = JsonOperation.Marshal(updateDto.SelectedEndpointIds);
             }

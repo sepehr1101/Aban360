@@ -8,6 +8,7 @@
         public static string UserNotFound { get { return "کاربر پیدا نشد"; } }
         public static string InvalidConfirmCode { get { return "کد نامعتبر یا زمان آن منقضی شده است"; } }
         public static string UnathorizedResource { get { return "دسترسی غیر مجاز"; } }
+        public static string CreateUserSuccess { get { return "افزودن کاربر با موفقیت انجام شد"; } }
 
 
         #region Invalid Login Reason

@@ -3,6 +3,7 @@ using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.LocationPool.Persistence.Contexts.Contracts;
 using Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contracts;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 
 namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implementations
 {
@@ -36,10 +37,17 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implem
         {
             return await _zones
                 .Include(zone => zone.Region)
-                .ThenInclude(region=>region.Headquarters)
-                .ThenInclude(headquartes=>headquartes.Province)
-                .ThenInclude(province=>province.CordinalDirection)
+                .ThenInclude(region => region.Headquarters)
+                .ThenInclude(headquartes => headquartes.Province)
+                .ThenInclude(province => province.CordinalDirection)
                 .ToListAsync();
-        }      
+        }
+
+        public async Task<int> GetCount(ICollection<int> ids)
+        {
+            return await _zones
+                 .Where(x => ids.Contains(x.Id))
+                 .CountAsync();
+        }
     }
 }
