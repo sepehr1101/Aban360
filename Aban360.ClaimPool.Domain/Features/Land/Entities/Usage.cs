@@ -10,8 +10,4 @@ public partial class Usage
     public string Title { get; set; } = null!;
 
     public short ProvienceId { get; set; }
-
-    public virtual ICollection<Estate> EstateUsageConsumtions { get; set; } = new List<Estate>();
-
-    public virtual ICollection<Estate> EstateUsageSells { get; set; } = new List<Estate>();
 }
