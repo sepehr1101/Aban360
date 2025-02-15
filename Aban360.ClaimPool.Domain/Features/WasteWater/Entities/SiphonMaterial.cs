@@ -3,7 +3,7 @@
 namespace Aban360.ClaimPool.Domain.Features.WasteWater.Entities;
 
 [Table(nameof(SiphonMaterial))]
-public partial class SiphonMaterial
+public class SiphonMaterial
 {
     public short Id { get; set; }
 

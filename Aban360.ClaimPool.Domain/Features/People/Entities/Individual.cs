@@ -3,7 +3,7 @@
 namespace Aban360.ClaimPool.Domain.Features.People.Entities;
 
 [Table(nameof(Individual))]
-public partial class Individual
+public class Individual
 {
     public int Id { get; set; }
     public short IndividualTypeId { get; set; }

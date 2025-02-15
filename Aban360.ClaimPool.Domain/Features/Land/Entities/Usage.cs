@@ -3,7 +3,7 @@
 namespace Aban360.ClaimPool.Domain.Features.Land.Entities;
 
 [Table(nameof(Usage))]
-public partial class Usage
+public class Usage
 {
     public short Id { get; set; }
 
