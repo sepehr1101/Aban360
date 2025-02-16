@@ -37,7 +37,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
 
             var endpointValue = await _endpointQueryService.GetAuthValue(updateDto.SelectedEndpointIds);
 
-            if (updateDto.SelectedEndpointIds is not null && endpointValue.Count() == updateDto.SelectedEndpointIds.Count() /*updateDto.SelectedEndpointIds.Any()*/)
+            if (updateDto.SelectedEndpointIds is not null && endpointValue.Count() == updateDto.SelectedEndpointIds.Count())
             {
                 role.DefaultClaims = JsonOperation.Marshal(updateDto.SelectedEndpointIds);
             }

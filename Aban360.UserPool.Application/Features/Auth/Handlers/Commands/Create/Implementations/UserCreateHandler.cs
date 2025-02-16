@@ -93,7 +93,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
         {
             if (zoneCount != userCreateDto.ZoneId.Count() || endpoint.Count() != userCreateDto.EndpointId.Count())
             {
-                throw new InvalidDataException();//todo : exceptionClass
+                throw new InvalidIdException();
             }
         }
 

@@ -24,9 +24,9 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
         {
             return await _captchas
                 .AsNoTracking()
-                .Include(c=>c.CaptchaDisplayMode)
-                .Include(c=>c.CaptchaLanguage)
-                .Where(c=>c.IsSelected)
+                .Include(c => c.CaptchaDisplayMode)
+                .Include(c => c.CaptchaLanguage)
+                .Where(c => c.IsSelected)
                 .SingleAsync();
         }
 
@@ -45,6 +45,15 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
                 .AsNoTracking()
                 .Select(captcha => new NumericDictionary() { Id = captcha.Id, Title = captcha.Title })
                 .ToListAsync();
+        }
+
+        public async Task<Captcha> Get(int id)
+        {
+            return await _captchas
+                 .Include(c => c.CaptchaDisplayMode)
+                 .Include(c => c.CaptchaLanguage)
+                 .Where(c => c.Id == id)
+                 .SingleAsync();
         }
     }
 }

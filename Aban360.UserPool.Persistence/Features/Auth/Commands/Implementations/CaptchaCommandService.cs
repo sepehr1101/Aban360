@@ -43,5 +43,14 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Commands.Implementations
             var targetCaptcha = await _captchas.FindAsync(id);
             targetCaptcha.IsSelected = true;
         }
+        
+        public async Task SetIsSelected()
+        {
+            var captchas = await _captchas.ToListAsync();
+            foreach (var captcha in captchas)
+            {
+                captcha.IsSelected = false;
+            }
+        }
     }
 }
