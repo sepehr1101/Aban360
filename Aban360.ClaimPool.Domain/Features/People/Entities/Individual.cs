@@ -37,4 +37,6 @@ public class Individual
     public virtual ICollection<Individual> InversePrevious { get; set; } = new List<Individual>();
 
     public virtual Individual? Previous { get; set; }
+    public virtual ICollection<IndividualTag> IndividualTags { get; set; } = new List<IndividualTag>();
+
 }

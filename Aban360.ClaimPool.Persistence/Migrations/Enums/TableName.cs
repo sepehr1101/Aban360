@@ -8,6 +8,8 @@
         Individual,
         IndividualEstateRelationType,
         IndividualEstate,
+        IndividualTagDefinition,
+        IndividualTag,
         Usage,
         ConstructionType,
 
@@ -17,6 +19,8 @@
         MeterMaterial,
         MeterUseType,
         WaterMeter,
+        WaterMeterTagDefinition,
+        WaterMeterTag,
 
         SiphonDiameter,
         SiphonType,

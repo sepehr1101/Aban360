@@ -9,6 +9,7 @@
         public string? MobileNumbers { get; set; }
         public Guid UserId { get; set; }
         public int? PreviousId { get; set; }
+        public short IndividualTypeId { get; set; }
         public DateTime ValidFrom { get; set; }
         public DateTime? ValidTo { get; set; }
         public string InsertLogInfo { get; set; } = null!;

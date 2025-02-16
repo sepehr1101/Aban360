@@ -25,6 +25,7 @@ namespace Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Create
         public async Task Handle(IndividualCreateDto createDto, CancellationToken cancellationToken)
         {
             var individual = _mapper.Map<Individual>(createDto);
+            individual.Hash = " "; //todo Hash in not null
             await _commandService.Add(individual);
         }
     }

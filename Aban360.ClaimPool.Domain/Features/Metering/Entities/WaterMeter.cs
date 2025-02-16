@@ -78,5 +78,6 @@ namespace Aban360.ClaimPool.Domain.Features.Metering.Entities
         public virtual UseState UseState { get; set; } = null!;
 
         public virtual ICollection<WaterMeterSiphon> WaterMeterSiphons { get; set; } = new List<WaterMeterSiphon>();
+        public virtual ICollection<WaterMeterTag> WaterMeterTags { get; set; } = new List<WaterMeterTag>();
     }
 }
