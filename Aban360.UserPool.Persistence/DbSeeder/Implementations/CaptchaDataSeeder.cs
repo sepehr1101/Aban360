@@ -85,6 +85,7 @@ namespace SmsHub.Persistence.DbSeeder.Implementations
                 IsSelected = true        
             };
             _capthcas.Add(captcha1);
+            _capthcas.Add(captcha2);
             _uow.SaveChanges();
         }
     }
