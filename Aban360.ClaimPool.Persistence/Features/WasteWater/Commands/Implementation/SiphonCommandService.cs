@@ -23,6 +23,10 @@ namespace Aban360.ClaimPool.Persistence.Features.WasteWater.Commands.Implementat
         {
             await _siphon.AddAsync(siphon);
         }
+        public async Task Add(ICollection<Siphon> siphons)
+        {
+            await _siphon.AddRangeAsync(siphons);
+        }
 
         public async Task Remove(Siphon siphon)
         {

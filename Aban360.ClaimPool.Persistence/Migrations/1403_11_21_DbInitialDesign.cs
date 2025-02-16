@@ -1,4 +1,5 @@
-﻿using Aban360.ClaimPool.Persistence.Extensions;
+﻿using Aban360.ClaimPool.Domain.Features.Metering.Entities;
+using Aban360.ClaimPool.Persistence.Extensions;
 using Aban360.ClaimPool.Persistence.Migrations.Enums;
 using FluentMigrator;
 using System.Reflection;
@@ -9,7 +10,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
     public class DbInitialDesign : Migration
     {
         string Id = nameof(Id), Hash = nameof(Hash);
-        int _31 = 31, _255 = 255, _1023 = 1023;
+        int _31 = 31, _255 = 255, _1023 = 1023, _15 = 15;
         public override void Up()
         {
             var methods =
@@ -59,9 +60,9 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Address").AsString(_1023).NotNullable()
                 .WithColumn("MunipulityId").AsInt32()
                 .WithColumn("UsageSellId").AsInt16().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.Usage, table)+"_Sell", nameof(TableName.Usage), Id)
+                    .ForeignKey(NamingHelper.Fk(TableName.Usage, table) + "_Sell", nameof(TableName.Usage), Id)
                 .WithColumn("UsageConsumtionId").AsInt16().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.Usage, table)+"_Consumption", nameof(TableName.Usage), Id)
+                    .ForeignKey(NamingHelper.Fk(TableName.Usage, table) + "_Consumption", nameof(TableName.Usage), Id)
                 .WithColumn("UnitDomesticWater").AsInt16().NotNullable()
                 .WithColumn("UnitCommercialWater").AsInt16().NotNullable()
                 .WithColumn("UnitOtherWater").AsInt16().NotNullable()
@@ -134,7 +135,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         }
         private void CreateIndividualEstate()
         {
-            var table= TableName.IndividualEstate;
+            var table = TableName.IndividualEstate;
             Create.Table(nameof(TableName.IndividualEstate))
                 .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable().Identity()
                 .WithColumn("IndividualId").AsInt32().NotNullable()
@@ -145,6 +146,30 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                     .ForeignKey(NamingHelper.Fk(TableName.IndividualEstateRelationType, table), nameof(TableName.IndividualEstateRelationType), Id);
         }
 
+        private void CreateIndividualTagDefinition()
+        {
+            var table = TableName.IndividualTagDefinition;
+            Create.Table(nameof(TableName.IndividualTagDefinition))
+                .WithColumn(Id).AsInt16().Identity().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Color").AsString(_15).Nullable();
+        }
+        private void CreateIndividualTag()
+        {
+            var table = TableName.IndividualTag;
+            Create.Table(nameof(TableName.IndividualTag))
+                .WithColumn(Id).AsInt32().Identity().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+                .WithColumn("IndividualId").AsInt32().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.Individual, table), nameof(TableName.Individual), Id)
+                .WithColumn("IndividualTagDefinitionId").AsInt16().NotNullable()
+                   .ForeignKey(NamingHelper.Fk(TableName.IndividualTagDefinition, table), nameof(TableName.IndividualTagDefinition), Id)
+                .WithColumn("Value").AsString(_255).Nullable()
+                .WithColumn("ValidFrom").AsDateTime2().NotNullable()
+                .WithColumn("ValidTo").AsDateTime2().Nullable()
+                .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
+                .WithColumn("RemoveLogInfo").AsString(int.MinValue).Nullable()
+                .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
+        }
         private void CreateMeterDiameter()
         {
             var table = TableName.MeterDiameter;
@@ -196,7 +221,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
               .WithColumn("CustomerNumber").AsInt32().NotNullable()
               .WithColumn("BillId").AsString(15).NotNullable()
               .WithColumn("EstateId").AsInt32().NotNullable()
-                  .ForeignKey(NamingHelper.Fk(TableName.Estate, table), nameof(TableName.Estate), Id)           
+                  .ForeignKey(NamingHelper.Fk(TableName.Estate, table), nameof(TableName.Estate), Id)
               .WithColumn("UseStateId").AsInt16().NotNullable()
                   .ForeignKey(NamingHelper.Fk(TableName.UseState, table), nameof(TableName.UseState), Id)
               .WithColumn("InstallationLocation").AsString(_255).Nullable()
@@ -225,7 +250,31 @@ namespace Aban360.ClaimPool.Persistence.Migrations
               .WithColumn("RemoveLogInfo").AsString(int.MinValue).Nullable()
               .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
         }
+        private void CreateWaterMeterTagDefinition()
+        { 
+            var table = TableName.WaterMeterTagDefinition;
+            Create.Table(nameof(TableName.WaterMeterTagDefinition))
+                .WithColumn(Id).AsInt16().Identity().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Color").AsString(_15).Nullable();
+        }
 
+        private void CreateWaterMeterTag()
+        {
+            var table = TableName.WaterMeterTag;
+            Create.Table(nameof(TableName.WaterMeterTag))
+                .WithColumn(Id).AsInt32().Identity().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+                .WithColumn("WaterMeterId").AsInt32().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.WaterMeter, table), nameof(TableName.WaterMeter), Id)
+                .WithColumn("WaterMeterTagDefinitionId").AsInt16().NotNullable()
+                   .ForeignKey(NamingHelper.Fk(TableName.WaterMeterTagDefinition, table), nameof(TableName.WaterMeterTagDefinition), Id)
+                .WithColumn("Value").AsString(_255).Nullable()
+                .WithColumn("ValidFrom").AsDateTime2().NotNullable()
+                .WithColumn("ValidTo").AsDateTime2().Nullable()
+                .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
+                .WithColumn("RemoveLogInfo").AsString(int.MinValue).Nullable()
+                .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
+        }
         private void CreateSiphonDiameter()
         {
             var table = TableName.SiphonDiameter;
@@ -251,7 +300,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         {
             var table = TableName.Siphon;
             Create.Table(nameof(TableName.Siphon))
-              .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable()             
+              .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
               .WithColumn("InstallationLocation").AsString(_255).Nullable()
               .WithColumn("InstallationDate").AsAnsiString(10).Nullable()
               .WithColumn("SiphonDiameterId").AsInt16().NotNullable()
@@ -277,7 +326,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
               .WithColumn("WaterMeterId").AsInt32().NotNullable()
                   .ForeignKey(NamingHelper.Fk(TableName.WaterMeter, table), nameof(TableName.WaterMeter), Id)
               .WithColumn("SiphonId").AsInt32().NotNullable()
-                  .ForeignKey(NamingHelper.Fk(TableName.Siphon, table), nameof(TableName.Siphon), Id);              
+                  .ForeignKey(NamingHelper.Fk(TableName.Siphon, table), nameof(TableName.Siphon), Id);
         }
     }
 }
