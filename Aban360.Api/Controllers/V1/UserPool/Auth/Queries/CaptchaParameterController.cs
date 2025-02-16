@@ -33,7 +33,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
         [AllowAnonymous]
         public async Task<IActionResult> Read(CancellationToken cancellationToken)
         {
-            CaptchaSingleQueryDto captchaDto = await _captchaGetSingleHandler.Handle(cancellationToken);
+            CaptchaActiveDto captchaDto = await _captchaGetSingleHandler.Handle(cancellationToken);
             var dntCaptchaParams = _captchaApiProvider.CreateDNTCaptcha(new DNTCaptchaTagHelperHtmlAttributes
             {
                 BackColor = captchaDto.BackColor,

@@ -4,6 +4,6 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Co
 {
     public interface ICaptchaUpdateHandler
     {
-        void Handle(CaptchaUpdateDto capthcaUpdateDto, CancellationToken cancellationToken);
+        Task Handle(CaptchaUpdateDto capthcaUpdateDto, CancellationToken cancellationToken);
     }
 }

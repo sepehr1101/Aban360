@@ -8,5 +8,6 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts
         Task<Captcha> Get();
         Task<ICollection<Captcha>> GetAll();
         Task<ICollection<NumericDictionary>> GetDictionary();
+        Task<Captcha> Get(int id);
     }
 }

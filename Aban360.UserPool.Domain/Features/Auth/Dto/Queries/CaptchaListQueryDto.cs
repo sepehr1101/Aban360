@@ -20,5 +20,6 @@
         public string Direction { get; set; } = null!;
         public int Min { get; set; }
         public int Max { get; set; }
+        public bool IsSelected { get; set; }
     }
 }

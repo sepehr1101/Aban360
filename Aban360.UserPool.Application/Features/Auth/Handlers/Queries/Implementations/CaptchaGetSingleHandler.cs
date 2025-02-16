@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.Extensions;
+using Aban360.UserPool.Application.Exceptions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
@@ -18,11 +19,20 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
             _queryService = queryService;
             _queryService.NotNull(nameof(queryService));
         }
-        public async Task<CaptchaSingleQueryDto> Handle(CancellationToken cancellationToken)
-         {
+        public async Task<CaptchaActiveDto> Handle(CancellationToken cancellationToken)
+        {
             var captcha = await _queryService.Get();
-            captcha.IsSelected = true;
-            return _mapper.Map<CaptchaSingleQueryDto>(captcha);
+            return _mapper.Map<CaptchaActiveDto>(captcha);
+        }
+
+        public async Task<CaptchaSingleDto> Handle(int id, CancellationToken cancellationToken)
+        {
+            var captcha = await _queryService.Get(id);
+            if (captcha == null)
+            {
+                throw new InvalidIdException();
+            }
+           return _mapper.Map<CaptchaSingleDto>(captcha);
         }
     }
 }

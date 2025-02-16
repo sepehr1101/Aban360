@@ -4,6 +4,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts
 {
     public interface ICaptchaGetSingleHandler
     {
-        Task<CaptchaSingleQueryDto> Handle(CancellationToken cancellationToken);
+        Task<CaptchaActiveDto> Handle(CancellationToken cancellationToken);
+        Task<CaptchaSingleDto> Handle(int id, CancellationToken cancellationToken);
     }
 }

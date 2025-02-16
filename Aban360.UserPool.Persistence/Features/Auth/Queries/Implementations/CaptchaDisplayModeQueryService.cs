@@ -22,5 +22,10 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
         {
             return await _captchaDisplayModes.ToListAsync();
         }
+
+        public async Task<CaptchaDisplayMode> Get(short id)
+        {
+            return await _uow.FindOrThrowAsync<CaptchaDisplayMode>(id);
+        }
     }
 }
