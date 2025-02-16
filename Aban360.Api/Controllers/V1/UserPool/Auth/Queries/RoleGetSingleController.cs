@@ -26,19 +26,11 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
 
         [HttpGet, HttpPost]
         [Route("single/{id}")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<RoleGetDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<RoleDisplayDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(int id, CancellationToken cancellationToken)
         {
-            var roleDto = await _roleGetSingleHandler.Handle(id, cancellationToken);
-            if (roleDto.SelectedEndpointIds is not null)
-            {
-                roleDto.AccessTreeValueKeyDto = await _accessTreeValueKeyQueryHandler.Handle(roleDto.SelectedEndpointIds, cancellationToken);
-            }
-            else
-            {
-                roleDto.AccessTreeValueKeyDto = await _accessTreeValueKeyQueryHandler.Handle(cancellationToken);
-            }
-            return Ok(roleDto);
+            RoleDisplayDto roleDisplayDto = await _roleGetSingleHandler.Handle(id, cancellationToken);
+            return Ok(roleDisplayDto);
         }
     }
 }
