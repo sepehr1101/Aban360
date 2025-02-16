@@ -1,4 +1,5 @@
-﻿using Aban360.ClaimPool.Domain.Features.Metering.Entities;
+﻿using Aban360.ClaimPool.Domain.Constants;
+using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
 using Aban360.Common.Db.DbSeeder.Contracts;
 using Aban360.Common.Extensions;
@@ -29,8 +30,8 @@ namespace Aban360.ClaimPool.Persistence.DbSeeder.Implementations
 
             ICollection<MeterUseType> meterUseType = new List<MeterUseType>()
             {
-                new MeterUseType(){Id=1,Title="مصرف"},
-                new MeterUseType(){Id=2,Title="شاهد"},
+                new MeterUseType(){Id=MeterUseTypeEnum.consumption,Title="مصرف"},
+                new MeterUseType(){Id=MeterUseTypeEnum.witness,Title="شاهد"},
             };
             _meterUseType.AddRange(meterUseType);
             _uow.SaveChanges();
