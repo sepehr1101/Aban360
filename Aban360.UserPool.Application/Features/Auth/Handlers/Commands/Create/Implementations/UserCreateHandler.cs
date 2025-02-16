@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Contracts;
+using Aban360.UserPool.Application.Exceptions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
