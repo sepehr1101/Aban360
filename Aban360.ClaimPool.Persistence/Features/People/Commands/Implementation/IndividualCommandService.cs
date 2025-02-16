@@ -23,6 +23,11 @@ namespace Aban360.ClaimPool.Persistence.Features.People.Commands.Implementation
         {
             await _individuals.AddAsync(individual);
         }
+        
+        public async Task Add(ICollection<Individual> individuals)
+        {
+            await _individuals.AddRangeAsync(individuals);
+        }
 
         public async Task Remove(Individual individual)
         {
