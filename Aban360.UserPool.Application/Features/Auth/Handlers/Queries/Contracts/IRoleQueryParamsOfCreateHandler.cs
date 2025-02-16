@@ -2,8 +2,8 @@
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts
 {
-    public interface IRoleGetSingleHandler
+    public interface IRoleQueryParamsOfCreateHandler
     {
-        Task<RoleDisplayDto> Handle(int id, CancellationToken cancellationToken);
+        Task<RoleParamsOfCreateDto> Handle(CancellationToken cancellationToken);
     }
 }
