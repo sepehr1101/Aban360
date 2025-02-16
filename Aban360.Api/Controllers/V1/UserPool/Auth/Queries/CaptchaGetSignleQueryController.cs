@@ -1,6 +1,5 @@
 ﻿using Aban360.Common.Categories.ApiResponse;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
-using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,10 +7,10 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
 {
     [Route("v1/captcha")]
     [ApiController]
-    public class CaptchaSignleController : BaseController
+    public class CaptchaGetSignleQueryController : BaseController
     {
         private readonly ICaptchaGetSingleHandler _captchaGetSingleHandler;
-        public CaptchaSignleController(ICaptchaGetSingleHandler captchaGetSingleHandler)
+        public CaptchaGetSignleQueryController(ICaptchaGetSingleHandler captchaGetSingleHandler)
         {
             _captchaGetSingleHandler = captchaGetSingleHandler;
         }

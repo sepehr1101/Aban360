@@ -13,6 +13,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Mappings
             CreateMap<RoleDeleteDto, Role>().ReverseMap();
             CreateMap<RoleUpdateDto, Role>().ReverseMap();
             CreateMap<RoleGetDto, Role>().ReverseMap();
+            CreateMap<Role, UserRoleQueryDto>();
         }
     }
 }

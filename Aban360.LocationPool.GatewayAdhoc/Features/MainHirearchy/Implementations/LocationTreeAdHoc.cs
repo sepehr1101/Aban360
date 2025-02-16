@@ -17,5 +17,9 @@ namespace Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementatio
         {
             return await _locationValueKeyQueryHandler.Handle(selectedZoneIds, cancellationToken);
         }
+        public async Task<LocationTree> Handle(CancellationToken cancellationToken)
+        {
+            return await _locationValueKeyQueryHandler.Handle(cancellationToken);
+        }
     }
 }
