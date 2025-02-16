@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Constants\" />
     <Folder Include="Features\Registration\Dto\Command\" />
     <Folder Include="Features\Registration\Dto\Queries\" />
     <Folder Include="Features\Registration\Entities\" />

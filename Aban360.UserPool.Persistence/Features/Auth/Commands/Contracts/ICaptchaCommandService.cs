@@ -7,6 +7,7 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Commands.Contracts
         Task Create(Captcha captcha);
         void Delete(Captcha captcha);
         Task SetIsSelected(int id);
+        Task SetIsSelected();
         void Update(Captcha captcha);
     }
 }

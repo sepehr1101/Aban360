@@ -9,7 +9,7 @@
         public static string InvalidConfirmCode { get { return "کد نامعتبر یا زمان آن منقضی شده است"; } }
         public static string UnathorizedResource { get { return "دسترسی غیر مجاز"; } }
         public static string CreateUserSuccess { get { return "افزودن کاربر با موفقیت انجام شد"; } }
-
+        public static string InvalidId { get { return "عدم تطابق شناسه های وارد شده"; }  }
 
         #region Invalid Login Reason
         public static string InvalidUsername = "نام کاربری نادرست";

@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Contracts;
 using Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contracts;
+using Aban360.UserPool.Application.Exceptions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Base;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
@@ -97,7 +98,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
         {
             if (zoneCount != userCreateDto.ZoneId.Count() || endpoint.Count() != userCreateDto.EndpointId.Count())
             {
-                throw new InvalidDataException();//todo : exceptionClass
+                throw new InvalidIdException();
             }
         }
         //private UserClaim CreateUserClaim(ClaimDto claimDto, string logInfo, Guid operationGroupId, Guid userId)

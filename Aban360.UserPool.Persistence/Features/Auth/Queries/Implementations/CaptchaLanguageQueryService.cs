@@ -22,5 +22,10 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
         {
             return await _captchaLanguages.ToListAsync();
         }
+
+        public async Task<CaptchaLanguage> Get(short id)
+        {
+            return await _uow.FindOrThrowAsync<CaptchaLanguage>(id);
+        }
     }
 }
