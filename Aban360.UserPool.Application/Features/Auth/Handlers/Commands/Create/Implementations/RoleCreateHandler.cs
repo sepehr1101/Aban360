@@ -4,6 +4,7 @@ using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Features.Auth.Commands.Contracts;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Implementations
@@ -12,15 +13,20 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
     {
         private readonly IMapper _mapper;
         private readonly IRoleCommandService _roleCommandService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         public RoleCreateHandler(
             IMapper mapper,
-            IRoleCommandService roleCommandService)
+            IRoleCommandService roleCommandService,
+            IHttpContextAccessor httpContextAccessor)
         {
             _mapper = mapper;
             _mapper.NotNull(nameof(mapper));
 
             _roleCommandService = roleCommandService;
             _roleCommandService.NotNull(nameof(roleCommandService));
+
+            _httpContextAccessor = httpContextAccessor;
+            _httpContextAccessor.NotNull(nameof(_httpContextAccessor));
         }
 
         public async Task Handle(RoleCreateDto createDto, CancellationToken cancellationToken)
@@ -30,6 +36,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
             {
                 role.DefaultClaims = JsonOperation.Marshal(createDto.SelectedEndpointIds);
             }
+            var logInfo = DeviceDetection.GetLogInfo(_httpContextAccessor.HttpContext.Request);
+            role.InsertLogInfo = JsonOperation.Marshal(logInfo);
             await _roleCommandService.Add(role);
         }
     }
