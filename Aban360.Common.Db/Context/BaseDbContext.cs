@@ -92,6 +92,7 @@ namespace Aban360.Common.Db.Context
         }
         public void ExecuteBatch(string sqlFilePath)
         {
+            string tempCommand;
             try
             {               
                 if (!File.Exists(sqlFilePath))
@@ -108,12 +109,13 @@ namespace Aban360.Common.Db.Context
                     {
                         continue;
                     }
+                    tempCommand = command.Trim();
                     GetDatabase().ExecuteSqlRaw(command, string.Empty);
                 }
             }
-            catch 
+            catch (Exception e)
             {
-                throw;
+                throw e;
             }
         }
 

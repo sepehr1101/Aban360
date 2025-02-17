@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aban360.Api.Controllers.V1.ClaimPool.People.Queries
 {
     [Route("individual-tag")]
-    public class IndividualTagGetSingleController : BaseController
+    public class IndividualTagGetSingleBySearchInputController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IIndividualTagGetSingleHandler _individualTagHandler;
-        public IndividualTagGetSingleController(
+        private readonly IIndividualTagGetSinglBySearchInputeHandler _individualTagHandler;
+        public IndividualTagGetSingleBySearchInputController(
             IUnitOfWork uow,
-            IIndividualTagGetSingleHandler individualTagHandler)
+            IIndividualTagGetSinglBySearchInputeHandler individualTagHandler)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));
@@ -22,10 +22,10 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People.Queries
         }
 
         [HttpPost, HttpGet]
-        [Route("single/{id}")]
-        public async Task<IActionResult> GetSingle(int id, CancellationToken cancellationToken)
+        [Route("search/{id}")]
+        public async Task<IActionResult> Search(string input, CancellationToken cancellationToken)
         {
-            var IndividualTag = await _individualTagHandler.Handle(id, cancellationToken);
+            var IndividualTag = await _individualTagHandler.Handle(input, cancellationToken);
             return Ok(IndividualTag);
         }
     }

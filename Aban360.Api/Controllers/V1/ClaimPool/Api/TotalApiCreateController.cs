@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Api
 {
-    [Route("claim-pool")]
+    [Route("v1/claim-pool")]
     public class TotalApiCreateController : BaseController
     {
         private readonly IUnitOfWork _uow;
