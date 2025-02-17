@@ -2,9 +2,9 @@
 
 namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Contracts
 {
-    public interface IWaterMeterTagGetSingleHandler
+    public interface IWaterMeterTagGetSinglBySearchInputeHandler
     {
-        Task<ICollection<WaterMeterTagGetDto>> Handle(int id, CancellationToken cancellationToken);
+        Task<WaterMeterTagGetDto> Handle(string input, CancellationToken cancellationToken);
 
     }
 }

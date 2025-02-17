@@ -31,9 +31,10 @@ namespace Aban360.ClaimPool.Persistence.DbSeeder.Implementations
 
             ICollection<UseState> UseState = new List<UseState>()
             {
-                new UseState(){Id=UseStateEnum.TemporaryDeletion,Title="حذف موقت"},
-                new UseState(){Id=UseStateEnum.Established,Title="برقرار"},
-                new UseState(){Id=UseStateEnum.Collected,Title="جمع آوری شده"},
+                new UseState(){Id=UseStateEnum.TemporarilyDeleted,Title="حذف موقت"},
+                new UseState(){Id=UseStateEnum.Established,Title="انشعاب برقرار"},
+                new UseState(){Id=UseStateEnum.Collected,Title="جمع آوری "},
+                new UseState(){Id=UseStateEnum.Replaced,Title="جابه‌جا شده"},
             };
             _useState.AddRange(UseState);
             _uow.SaveChanges();

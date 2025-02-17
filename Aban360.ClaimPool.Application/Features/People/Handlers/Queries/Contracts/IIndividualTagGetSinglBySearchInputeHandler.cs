@@ -2,8 +2,8 @@
 
 namespace Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts
 {
-    public interface IIndividualTagGetSingleHandler
+    public interface IIndividualTagGetSinglBySearchInputeHandler
     {
-        Task<ICollection<IndividualTagGetDto>> Handle(int id, CancellationToken cancellationToken);
+        Task<IndividualTagGetDto> Handle(string input, CancellationToken cancellationToken);
     }
 }

@@ -7,11 +7,11 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Implementations
 {
-    public class WaterMeterTagGetSingleHandler : IWaterMeterTagGetSingleHandler
+    public class WaterMeterTagGetSinglBySearchInputeHandler : IWaterMeterTagGetSinglBySearchInputeHandler
     {
         private readonly IMapper _mapper;
         private readonly IWaterMeterTagQueryService _waterMeterTagQueryService;
-        public WaterMeterTagGetSingleHandler(
+        public WaterMeterTagGetSinglBySearchInputeHandler(
             IMapper mapper,
             IWaterMeterTagQueryService waterMeterTagQueryService)
         {
@@ -22,14 +22,14 @@ namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Imp
             _waterMeterTagQueryService.NotNull(nameof(waterMeterTagQueryService));
         }
 
-        public async Task<ICollection<WaterMeterTagGetDto>> Handle(int id, CancellationToken cancellationToken)
+        public async Task<WaterMeterTagGetDto> Handle(string input, CancellationToken cancellationToken)
         {
-            var waterMeterTag = await _waterMeterTagQueryService.Get(id);
+            var waterMeterTag = await _waterMeterTagQueryService.Get(input);
             if (waterMeterTag == null)
             {
                 throw new InvalidIdException();
             }
-            return _mapper.Map<ICollection<WaterMeterTagGetDto>>(waterMeterTag);
+            return _mapper.Map<WaterMeterTagGetDto>(waterMeterTag);
         }
     }
 }
