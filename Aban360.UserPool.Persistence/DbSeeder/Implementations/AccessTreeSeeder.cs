@@ -29,9 +29,10 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
 
             string sqlFilePath = GetSqlFilePath();
             _uow.ExecuteBatch(sqlFilePath);
-           // var app = GetApp();
-           // _apps.Add(app);
-           // _uow.SaveChanges();
+
+            // var app = GetApp();
+            // _apps.Add(app);
+            // _uow.SaveChanges();
         }
 
         private string GetSqlFilePath()

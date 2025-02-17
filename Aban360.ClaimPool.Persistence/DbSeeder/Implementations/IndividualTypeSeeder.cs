@@ -30,9 +30,8 @@ namespace Aban360.ClaimPool.Persistence.DbSeeder.Implementations
 
             ICollection<IndividualType> IndividualType = new List<IndividualType>()
             {
-                new IndividualType(){Id=1,Title="---"},
-                new IndividualType(){Id=2,Title="---"},
-                new IndividualType(){Id=3,Title="---"},
+                new IndividualType(){Id=1,Title="حقیقی"},
+                new IndividualType(){Id=2,Title="حقوقی"}
             };
             _IndividualType.AddRange(IndividualType);
             _uow.SaveChanges();

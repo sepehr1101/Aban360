@@ -7,11 +7,11 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Implementations
 {
-    public class IndividualTagGetSingleHandler : IIndividualTagGetSingleHandler
+    public class IndividualTagGetSinglBySearchInputeHandler : IIndividualTagGetSinglBySearchInputeHandler
     {
         private readonly IMapper _mapper;
         private readonly IIndividualTagQueryService _IndividualTagQueryService;
-        public IndividualTagGetSingleHandler(
+        public IndividualTagGetSinglBySearchInputeHandler(
             IMapper mapper,
             IIndividualTagQueryService IndividualTagQueryService)
         {
@@ -22,14 +22,14 @@ namespace Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Impleme
             _IndividualTagQueryService.NotNull(nameof(IndividualTagQueryService));
         }
 
-        public async Task<ICollection<IndividualTagGetDto>> Handle(int id, CancellationToken cancellationToken)
+        public async Task<IndividualTagGetDto> Handle(string input, CancellationToken cancellationToken)
         {
-            var IndividualTag = await _IndividualTagQueryService.Get(id);
+            var IndividualTag = await _IndividualTagQueryService.Get(input);
             if (IndividualTag == null)
             {
                 throw new InvalidIdException();
             }
-            return _mapper.Map<ICollection<IndividualTagGetDto>>(IndividualTag);
+            return _mapper.Map<IndividualTagGetDto>(IndividualTag);
         }
     }
 }
