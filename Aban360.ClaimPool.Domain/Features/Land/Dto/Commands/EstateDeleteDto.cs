@@ -3,7 +3,5 @@
     public record EstateDeleteDto
     {
         public int Id { get; set; }
-
     }
-
 }
