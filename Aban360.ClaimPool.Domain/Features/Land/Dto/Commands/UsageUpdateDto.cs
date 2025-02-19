@@ -4,6 +4,6 @@
     {
         public short Id { get; set; }
         public string Title { get; set; } = null!;
-        public short ProvienceId { get; set; }
+        public short ProvinceId { get; set; }
     }
 }
