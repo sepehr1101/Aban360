@@ -108,7 +108,7 @@ namespace Aban360.Common.Db.Interceptors
                     auditEntry.EntityEntry.Property(nameof(IHashableEntity.ValidFrom)).CurrentValue = DateTime.Now;
                     //auditEntry.AuditProperties.Add(new AuditProperty(propertyName, property.CurrentValue, false, property));
                     break;
-                case EntityState.Modified:
+                case EntityState.Deleted:
                     auditEntry.EntityEntry.Property(nameof(IHashableEntity.ValidTo)).CurrentValue = DateTime.Now;
                     break;
             }
