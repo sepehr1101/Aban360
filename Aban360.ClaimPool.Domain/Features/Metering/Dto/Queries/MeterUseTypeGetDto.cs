@@ -1,11 +1,10 @@
-﻿using Aban360.ClaimPool.Domain.Features.Metering.Entities;
+﻿using Aban360.ClaimPool.Domain.Constants;
 
 namespace Aban360.ClaimPool.Domain.Features.Metering.Dto.Queries
 {
     public record MeterUseTypeGetDto
     {
-        public short Id { get; set; }
+        public MeterUseTypeEnum Id { get; set; }
         public string Title { get; set; } = null!;
-        public virtual ICollection<WaterMeter> WaterMeters { get; set; } = new List<WaterMeter>();
     }
 }

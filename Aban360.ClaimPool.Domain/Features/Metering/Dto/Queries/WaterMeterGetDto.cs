@@ -23,13 +23,5 @@
         public short MeterMaterialId { get; set; }
 
         public short MeterUseTypeId { get; set; }
-
-        public int? ParentId { get; set; }
-
-        public Guid UserId { get; set; }
-
-        public int? PreviousId { get; set; }
-
-        public DateTime ValidFrom { get; set; }
     }
 }

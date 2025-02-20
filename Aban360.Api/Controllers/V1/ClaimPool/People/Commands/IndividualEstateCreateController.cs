@@ -1,6 +1,8 @@
 ﻿using Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Create.Contracts;
+using Aban360.ClaimPool.Domain.Features.Metering.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.People.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,6 +26,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People.Commands
 
         [HttpPost]
         [Route("create")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IndividualEstateCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] IndividualEstateCreateDto createDto, CancellationToken cancellationToken)
         {
             await _individualEstateHandler.Handle(createDto, cancellationToken);

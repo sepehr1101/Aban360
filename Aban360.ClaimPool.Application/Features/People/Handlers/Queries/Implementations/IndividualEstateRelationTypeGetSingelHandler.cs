@@ -1,4 +1,5 @@
 ﻿using Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.People.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.People.Queries.Contracts;
 using Aban360.Common.Extensions;
@@ -21,7 +22,7 @@ namespace Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Impleme
             _queryService.NotNull(nameof(queryService));
         }
 
-        public async Task<IndividualEstateRelationTypeGetDto> Handle(short id, CancellationToken cancellationToken)
+        public async Task<IndividualEstateRelationTypeGetDto> Handle(IndividualEstateRelationEnum id, CancellationToken cancellationToken)
         {
             var individualEstateRelationType = await _queryService.Get(id);
             if (individualEstateRelationType == null)

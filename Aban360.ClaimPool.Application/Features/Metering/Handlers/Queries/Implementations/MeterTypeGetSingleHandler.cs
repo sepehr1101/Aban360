@@ -22,7 +22,7 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Imple
 
         public async Task<MeterTypeGetDto> Handle(short id,CancellationToken cancellationToken)
         {
-            var meterType = await _meterTypeQueryService.Get();
+            var meterType = await _meterTypeQueryService.Get(id);
             if (meterType == null)
             {
                 throw new InvalidDataException();
