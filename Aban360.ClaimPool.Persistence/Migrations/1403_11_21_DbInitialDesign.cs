@@ -37,7 +37,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
             Create.Table(nameof(TableName.Usage))
                 .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable()
-                .WithColumn("ProvienceId").AsInt16().NotNullable();
+                .WithColumn("ProvinceId").AsInt16().NotNullable();
         }
         private void CreateConstructionType()
         {

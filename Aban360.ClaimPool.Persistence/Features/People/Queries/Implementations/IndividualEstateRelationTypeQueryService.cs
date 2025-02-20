@@ -1,4 +1,5 @@
-﻿using Aban360.ClaimPool.Domain.Features.People.Entities;
+﻿using Aban360.ClaimPool.Domain.Constants;
+using Aban360.ClaimPool.Domain.Features.People.Entities;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
 using Aban360.ClaimPool.Persistence.Features.People.Queries.Contracts;
 using Aban360.Common.Extensions;
@@ -19,7 +20,7 @@ namespace Aban360.ClaimPool.Persistence.Features.People.Queries.Implementations
             _individualEstateRelationTypes.NotNull(nameof(_individualEstateRelationTypes));
         }
 
-        public async Task<IndividualEstateRelationType> Get(short id)
+        public async Task<IndividualEstateRelationType> Get(IndividualEstateRelationEnum id)
         {
             return await _uow.FindOrThrowAsync<IndividualEstateRelationType>(id);
         }

@@ -1,4 +1,5 @@
 ﻿using Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Metering.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Metering.Queries.Contracts;
 using Aban360.Common.Extensions;
@@ -21,7 +22,7 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Imple
             _meterUseTypeQueryService.NotNull(nameof(meterUseTypeQueryService));
         }
 
-        public async Task<MeterUseTypeGetDto> Handle(short id, CancellationToken cancellationToken)
+        public async Task<MeterUseTypeGetDto> Handle(MeterUseTypeEnum id, CancellationToken cancellationToken)
         {
             var meterUseType = await _meterUseTypeQueryService.Get(id);
             if (meterUseType == null)

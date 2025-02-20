@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.People.Commands
 {
-    [Route("individual-tag")]
+    [Route("v1/individual-tag")]
     public class IndividualTagUpdateController : BaseController
     {
         private readonly IUnitOfWork _uow;

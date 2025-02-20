@@ -1,4 +1,5 @@
-﻿using Aban360.ClaimPool.Domain.Features.Metering.Entities;
+﻿using Aban360.ClaimPool.Domain.Constants;
+using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Metering.Queries.Contracts;
 using Aban360.Common.Extensions;
@@ -19,7 +20,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Metering.Queries.Implementation
             _meterUserType.NotNull(nameof(_meterUserType));
         }
 
-        public async Task<MeterUseType> Get(short id)
+        public async Task<MeterUseType> Get(MeterUseTypeEnum id)
         {
             return await _uow.FindOrThrowAsync<MeterUseType>(id);
         }
