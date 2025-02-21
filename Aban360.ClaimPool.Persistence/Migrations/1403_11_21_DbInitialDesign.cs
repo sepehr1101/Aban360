@@ -300,7 +300,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         {
             var table = TableName.Siphon;
             Create.Table(nameof(TableName.Siphon))
-              .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+              .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable().Identity()
               .WithColumn("InstallationLocation").AsString(_255).Nullable()
               .WithColumn("InstallationDate").AsAnsiString(10).Nullable()
               .WithColumn("SiphonDiameterId").AsInt16().NotNullable()

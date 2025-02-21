@@ -1,0 +1,39 @@
+﻿
+select W.Id as WaterMeterId,W.BillId,W.ReadingNumber,W.InstallationDate,W.ProductDate,W.GuaranteeDate,
+	   E.Address,
+	   C.Title as ConstructionType ,
+	   --F.--Which Data?
+	   U.Title as UsageConsumtion,UU.Title as UsageSell,
+	   I.FullName,
+	   S.InstallationDate as SiphonInstallationDate,--Which Data
+	   P.Title as Province,
+	   R.Title as Region,
+	   Z.Title as Zone, 
+	   M.Title as Municipality,
+	 -- STRING_AGG(I.FullName ,',') as FullName,
+	  Count(distinct IE.Id) as IndividualCount,--تعداد تمام  خانواده های که در ارتباط هستند را باید بیاره اما فقط یکی رو میاره
+	  --string_agg(IE.Id,',') as IndividualCount,
+	   STRING_AGG(WTD.Title,',') as WaterMeterTag
+from WaterMeter W
+left join Estate E on W.EstateId=E.Id
+left join IndividualEstate IE on E.Id=IE.EstateId
+left join Individual I on IE.IndividualId=I.Id
+left join ConstructionType C on E.ConstructionTypeId=C.Id
+left join Flat F on E.Id=F.EstateId
+left join Usage U on E.UsageConsumtionId=U.Id 
+left join Usage UU on E.UsageSellId=UU.Id
+left join WaterMeterTag WT on W.Id=WT.WaterMeterId
+left join WaterMeterTagDefinition WTD on WT.WaterMeterTagDefinitionId=WTD.Id 
+left join WaterMeterSiphon WS on W.Id=WS.WaterMeterId
+left join Siphon S on WS.SiphonId=S.Id
+--need?
+left join Municipality M on E.MunipulityId=M.Id
+left join Zone Z on M.ZoneId=Z.Id
+left join Region R on Z.RegionId=R.Id
+left join Headquarters H on R.HeadquartersId=H.Id
+left join Province P on H.ProvinceId=P.Id
+where W.BillId=@id
+group by 
+W.Id,W.BillId,W.ReadingNumber,W.InstallationDate,W.ProductDate,W.GuaranteeDate,
+E.Address,C.Title,U.Title,UU.Title,S.InstallationDate,I.FullName,
+P.Title,R.Title,Z.Title,M.Title--,FullName
