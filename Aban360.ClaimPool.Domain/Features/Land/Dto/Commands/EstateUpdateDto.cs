@@ -37,17 +37,17 @@
 
         public short HouseholdNumber { get; set; }
 
-        public short Premises { get; set; }
+        public int Premises { get; set; }
 
-        public short ImprovementsOverall { get; set; }
+        public int ImprovementsOverall { get; set; }
 
-        public short ImprovementsDomestic { get; set; }
+        public int ImprovementsDomestic { get; set; }
 
-        public short ImprovementsCommercial { get; set; }
+        public int ImprovementsCommercial { get; set; }
 
-        public short ImprovementsOther { get; set; }
+        public int ImprovementsOther { get; set; }
 
-        public short ContractualCapacity { get; set; }
+        public int ContractualCapacity { get; set; }
 
         public short Storeys { get; set; }
 
