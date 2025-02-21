@@ -29,7 +29,7 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Upda
             {
                 throw new InvalidDataException();
             }
-            _mapper.Map(updateDto.Id, meterDiameter);
+            _mapper.Map(updateDto, meterDiameter);
         }
     }
 }

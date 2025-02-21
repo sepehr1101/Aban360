@@ -23,12 +23,12 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Imple
 
         public async Task<ICollection<MeterUseTypeGetDto>> Handle(CancellationToken cancellationToken)
         {
-            var meterUseType = await _meterUseTypeQueryService.Get();
-            if (meterUseType == null)
+            var meterUseTypes = await _meterUseTypeQueryService.Get();
+            if (meterUseTypes == null)
             {
                 throw new InvalidDataException();
             }
-            return _mapper.Map<ICollection<MeterUseTypeGetDto>>(meterUseType);
+            return _mapper.Map<ICollection<MeterUseTypeGetDto>>(meterUseTypes);
         }
     }
 }

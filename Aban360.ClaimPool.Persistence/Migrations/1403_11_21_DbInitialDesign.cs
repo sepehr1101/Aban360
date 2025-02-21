@@ -37,7 +37,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
             Create.Table(nameof(TableName.Usage))
                 .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable()
-                .WithColumn("ProvienceId").AsInt16().NotNullable();
+                .WithColumn("ProvinceId").AsInt16().NotNullable();
         }
         private void CreateConstructionType()
         {
@@ -71,12 +71,12 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("UnitOtherSewage").AsInt16().NotNullable()
                 .WithColumn("EmptyUnit").AsInt16().NotNullable()
                 .WithColumn("HouseholdNumber").AsInt16().NotNullable()
-                .WithColumn("Premises").AsInt16().NotNullable()
-                .WithColumn("ImprovementsOverall").AsInt16().NotNullable()
-                .WithColumn("ImprovementsDomestic").AsInt16().NotNullable()
-                .WithColumn("ImprovementsCommercial").AsInt16().NotNullable()
-                .WithColumn("ImprovementsOther").AsInt16().NotNullable()
-                .WithColumn("ContractualCapacity").AsInt16().NotNullable()
+                .WithColumn("Premises").AsInt32().NotNullable()
+                .WithColumn("ImprovementsOverall").AsInt32().NotNullable()
+                .WithColumn("ImprovementsDomestic").AsInt32().NotNullable()
+                .WithColumn("ImprovementsCommercial").AsInt32().NotNullable()
+                .WithColumn("ImprovementsOther").AsInt32().NotNullable()
+                .WithColumn("ContractualCapacity").AsInt32().NotNullable()
                 .WithColumn("Storeys").AsInt16().NotNullable()
                 .WithColumn("UserId").AsGuid().NotNullable()
                 .WithColumn("PreviousId").AsInt32().Nullable()
