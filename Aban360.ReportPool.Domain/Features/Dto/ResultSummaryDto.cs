@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ReportPool.Persistence.Queries.Implementations
 {
-    public record ResultSummeryDto
+    public record ResultSummaryDto
     {
         public int CustomerNumber { get; set; }
         public string BillId { get; set; }

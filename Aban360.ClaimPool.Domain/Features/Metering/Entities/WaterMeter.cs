@@ -1,4 +1,5 @@
-﻿using Aban360.ClaimPool.Domain.Features.Land.Entities;
+﻿using Aban360.ClaimPool.Domain.Constants;
+using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Domain.Features.WasteWater.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,7 +17,7 @@ namespace Aban360.ClaimPool.Domain.Features.Metering.Entities
 
         public int EstateId { get; set; }
 
-        public short UseStateId { get; set; }
+        public UseStateEnum UseStateId { get; set; }
 
         public string? InstallationLocation { get; set; }
 
@@ -36,7 +37,7 @@ namespace Aban360.ClaimPool.Domain.Features.Metering.Entities
 
         public short MeterMaterialId { get; set; }
 
-        public short MeterUseTypeId { get; set; }
+        public MeterUseTypeEnum MeterUseTypeId { get; set; }
 
         public int? ParentId { get; set; }
 

@@ -2,7 +2,7 @@
 {
     public interface IConsumerSummaryInfo
     {
-        Task<ResultSummeryDto> GetSummery(string id);
+        Task<ResultSummaryDto> GetSummery(string id);
     }
 
 }

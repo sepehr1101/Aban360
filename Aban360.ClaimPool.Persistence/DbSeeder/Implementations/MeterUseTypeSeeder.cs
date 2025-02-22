@@ -30,8 +30,8 @@ namespace Aban360.ClaimPool.Persistence.DbSeeder.Implementations
 
             ICollection<MeterUseType> meterUseType = new List<MeterUseType>()
             {
-                new MeterUseType(){Id=MeterUseTypeEnum.consumption,Title="مصرف"},
-                new MeterUseType(){Id=MeterUseTypeEnum.witness,Title="شاهد"},
+                new MeterUseType(){Id=MeterUseTypeEnum.Consumption,Title="مصرف"},
+                new MeterUseType(){Id=MeterUseTypeEnum.Witness,Title="شاهد"},
             };
             _meterUseType.AddRange(meterUseType);
             _uow.SaveChanges();

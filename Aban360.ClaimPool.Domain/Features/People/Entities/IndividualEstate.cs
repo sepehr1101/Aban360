@@ -1,4 +1,5 @@
-﻿using Aban360.ClaimPool.Domain.Features.Land.Entities;
+﻿using Aban360.ClaimPool.Domain.Constants;
+using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.People.Entities;
@@ -12,7 +13,7 @@ public class IndividualEstate
 
     public int EstateId { get; set; }
 
-    public short IndividualEstateRelationTypeId { get; set; }
+    public IndividualEstateRelationEnum IndividualEstateRelationTypeId { get; set; }
 
     public virtual Estate Estate { get; set; } = null!;
 

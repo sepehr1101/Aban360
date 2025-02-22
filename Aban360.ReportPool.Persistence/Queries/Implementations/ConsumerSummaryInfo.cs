@@ -13,12 +13,13 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
             _configuration=configuration;
             _configuration.NotNull(nameof(configuration));
         }
-        public async Task<ResultSummeryDto> GetSummery(string id)
+        public async Task<ResultSummaryDto> GetSummery(string id)
         {
             var connectionString= _configuration.GetConnectionString("DefaultConnection");
             var connection = new SqlConnection(connectionString);
+
             string getSummery = SummeryGetQuery();
-            var summery = await connection.QuerySingleAsync<ResultSummeryDto>(getSummery, new { id = id });
+            var summery = await connection.QuerySingleAsync<ResultSummaryDto>(getSummery, new { id = id });
 
             string getWaterMeterTag = WaterMeterTagGetByBillId();
             var tags = await connection.QueryAsync<string>(getWaterMeterTag, new { id = id });
@@ -65,6 +66,30 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
                    " left join WaterMeterTagDefinition WTD on WT.WaterMeterTagDefinitionId=WTD.Id  " +
                    " where W.BillId=@id";
         }
+    }
+    public record WaterMeterGetDto
+    {
+        public int Id { get; set; }
+
+        public string? InstallationLocation { get; set; }
+
+        public string? BodySerial { get; set; }
+
+        public string? InstallationDate { get; set; }
+
+        public string? ProductDate { get; set; }
+
+        public string? GuaranteeDate { get; set; }
+
+        public short MeterDiameterId { get; set; }
+
+        public short MeterProducerId { get; set; }
+
+        public short MeterTypeId { get; set; }
+
+        public short MeterMaterialId { get; set; }
+
+        public short MeterUseTypeId { get; set; }
     }
 
 }
