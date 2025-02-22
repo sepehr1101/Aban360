@@ -1,10 +1,13 @@
 ﻿namespace Aban360.UserPool.Domain.Features.Auth.Dto.Queries
 {
-    public sealed record CaptchaListQueryDto
+    public sealed record CaptchaQueryDto
     {
         public int Id { get; set; }
-        public short CaptchaLanguageId { get; set; }
-        public short CaptchaDisplayModeId { get; set; }
+        public string Title { get; set; } = default!;
+        public short LanguageId { get; set; }
+        public short DisplayModeId { get; set; }
+        public string DispalyModeTitle { get; set; } = default!;
+        public string LanguageTitle { get; set; } = default!;
         public bool ShowThousandSeperator { get; set; }
         public string FontName { get; set; } = null!;
         public int FontSize { get; set; }

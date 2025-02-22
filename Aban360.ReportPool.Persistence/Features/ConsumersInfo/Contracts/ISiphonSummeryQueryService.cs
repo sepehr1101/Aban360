@@ -2,6 +2,6 @@
 {
     public interface ISiphonSummeryQueryService
     {
-        Task<SiphonSummaryDto> GetSummery(string billId);
+        Task<SiphonSummaryDto> GetInfo(string billId);
     }
 }

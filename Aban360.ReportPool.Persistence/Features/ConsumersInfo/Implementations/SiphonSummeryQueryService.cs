@@ -1,29 +1,26 @@
 ﻿using Aban360.Common.Extensions;
+using Aban360.ReportPool.Persistence.Base;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Queries.Implementations
 {
-    internal class SiphonSummeryQueryService : ISiphonSummeryQueryService
+    internal class SiphonSummeryQueryService : AbstractBaseConnection,ISiphonSummeryQueryService
     {
-        private readonly IConfiguration _configuration;
         public SiphonSummeryQueryService(IConfiguration configuration)
+            :base(configuration)
         {
-            _configuration = configuration;
-            _configuration.NotNull(nameof(configuration));
         }
-        public async Task<SiphonSummaryDto> GetSummery(string billId)
+        public async Task<SiphonSummaryDto> GetInfo(string billId)
         {
-            var connectionString = _configuration.GetConnectionString("DefaultConnection");
-            var connection = new SqlConnection(connectionString);
-            string? estateQuery = SiphonGetQuery();
-            SiphonSummaryDto? result = await connection.QuerySingleAsync<SiphonSummaryDto>(estateQuery , new { billId = billId });
+            string? estateQuery = GetSiphonSummeryDtoQuery();
+            SiphonSummaryDto? result = await _sqlConnection.QuerySingleAsync<SiphonSummaryDto>(estateQuery , new { billId = billId });
             
             return result;
         }
 
-        private string SiphonGetQuery()
+        private string GetSiphonSummeryDtoQuery()
         {
             return @"select 
                        S.InstallationLocation,S.InstallationDate,

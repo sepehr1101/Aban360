@@ -1,14 +1,14 @@
 ﻿namespace Aban360.ReportPool.Persistence.Queries.Implementations
 {
-    public record ResultSummaryDto
+    public record ConsumerSummaryDto
     {
         public int CustomerNumber { get; set; }
-        public string BillId { get; set; }
+        public string BillId { get; set; } = default!;
         public string? ReadingNumber { get; set; }
         public DateTime? InstallationDate { get; set; }
         public DateTime? ProductDate { get; set; }
         public DateTime? GuaranteeDate { get; set; }
-        public string Address { get; set; }
+        public string Address { get; set; } = default!;
         public short ContractualCapacity { get; set; }
         public short HouseholdNumber { get; set; }
         public short UnitDomesticWater { get; set; }

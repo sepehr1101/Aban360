@@ -13,16 +13,11 @@ namespace Aban360.UserPool.Application.Features.Auth.Mappings
                 .ForMember(dest => dest.DisplayModeEnumId, opt => opt.MapFrom(src => src.CaptchaDisplayMode.DisplayModeEnumId))
                 .ForMember(dest => dest.LanguageId, opt => opt.MapFrom(src => src.CaptchaLanguage.LanguageId));
 
-
-            CreateMap<Captcha, CaptchaSingleDto>()
-               .ForMember(dest => dest.DisplayModeEnumId, opt => opt.MapFrom(src => src.CaptchaDisplayMode.Id))
-               .ForMember(dest => dest.DisplayModeTitle, opt => opt.MapFrom(src => src.CaptchaDisplayMode.Title))
+            CreateMap<Captcha, CaptchaQueryDto>()
+               .ForMember(dest => dest.DisplayModeId, opt => opt.MapFrom(src => src.CaptchaDisplayMode.Id))
+               .ForMember(dest => dest.DispalyModeTitle, opt => opt.MapFrom(src => src.CaptchaDisplayMode.Title))
                .ForMember(dest => dest.LanguageId, opt => opt.MapFrom(src => src.CaptchaLanguage.Id))
                .ForMember(dest => dest.LanguageTitle, opt => opt.MapFrom(src => src.CaptchaLanguage.Title));
-
-            CreateMap<Captcha, CaptchaListQueryDto>();
-            //.ForMember(dest => dest.CaptchaDisplayModeId, opt => opt.MapFrom(src => src.CaptchaDisplayModeId))
-            //.ForMember(dest => dest.CaptchaLanguageId, opt => opt.MapFrom(src => src.CaptchaLanguageId));
 
             CreateMap<CaptchaUpdateDto, Captcha>().ReverseMap();
             CreateMap<CaptchaCreateDto, Captcha>().ReverseMap();

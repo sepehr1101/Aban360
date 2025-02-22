@@ -2,6 +2,6 @@
 {
     public interface IWaterMeterSummeryQueryService
     {
-        Task<WaterMeterSummaryDto> GetSummery(string billId, short meterDiameterId);
+        Task<WaterMeterSummaryDto> GetInfo(string billId, short meterDiameterId);
     }
 }
