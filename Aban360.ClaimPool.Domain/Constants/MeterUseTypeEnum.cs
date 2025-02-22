@@ -2,7 +2,7 @@
 {
     public enum MeterUseTypeEnum:short
     {
-        consumption = 1,
-        witness = 2
+        Consumption = 1,
+        Witness = 2
     }
 }

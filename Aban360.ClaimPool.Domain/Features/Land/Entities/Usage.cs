@@ -10,4 +10,5 @@ public class Usage
     public string Title { get; set; } = null!;
 
     public short ProvinceId { get; set; }
+    
 }

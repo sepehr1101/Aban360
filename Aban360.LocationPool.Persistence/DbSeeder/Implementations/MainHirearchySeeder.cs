@@ -8,7 +8,7 @@ namespace Aban360.LocationPool.Persistence.DbSeeder.Implementations
 {
     public class MainHirearchySeeder : IDataSeeder
     {        
-        public int Order { get; set; } = 20;
+        public int Order { get; set; } = 1;
         private readonly IUnitOfWork _uow;
         private readonly DbSet<Country> _countries;
         public MainHirearchySeeder(IUnitOfWork uow)
