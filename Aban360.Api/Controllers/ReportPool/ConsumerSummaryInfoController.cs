@@ -7,20 +7,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.ReportPool
 {
-    [Route("v1/consumerInfo")]
+    [Route("v1/consumer")]
     public class ConsumerSummaryInfoController : BaseController
     {
         private readonly IConsumerSummaryQueryService _consumerSummeryQueryService;
-        public ConsumerSummaryInfoController(IConsumerSummaryQueryService summery)
+        public ConsumerSummaryInfoController(IConsumerSummaryQueryService consumerSummaryQueryService)
         {
-            _consumerSummeryQueryService = summery;
+            _consumerSummeryQueryService = consumerSummaryQueryService;
             _consumerSummeryQueryService.NotNull(nameof(_consumerSummeryQueryService));
         }
 
         [HttpGet, HttpPost]
         [Route("summary/{billId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ConsumerSummaryDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get(string biilId)
+        public async Task<IActionResult> GetSummaryInfo(string biilId)
         {
             ConsumerSummaryDto summary = await _consumerSummeryQueryService.GetInfo(biilId);
             return Ok(summary);
