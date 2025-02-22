@@ -5,6 +5,7 @@ using Aban360.LocationPool.Application.Extensions;
 using Aban360.ClaimPool.Persistence.Extensions;
 using Aban360.ClaimPool.Application.Extentions;
 using Aban360.LocationPool.GatewayAdhoc.Extentions;
+using Aban360.ReportPool.Persistence.Extentions;
 
 namespace Aban360.Api.Extensions
 {
@@ -15,6 +16,7 @@ namespace Aban360.Api.Extensions
             services.AddUserPoolDI();
             services.AddLocationPoolDI();
             services.AddClaimPoolDI();
+            services.AddReportPoolDI();
         }
 
         private static void AddUserPoolDI(this IServiceCollection services)
@@ -33,6 +35,11 @@ namespace Aban360.Api.Extensions
         {
             services.AddClaimPoolApplicationInjections();
             services.AddClaimPoolPersistenceInjections();
+        }
+
+        private static void AddReportPoolDI(this IServiceCollection services)
+        {
+            services.AddReportPoolPersistenceInjections();
         }
     }
 }

@@ -36,7 +36,7 @@
 
         public short EmptyUnit { get; set; }
 
-        public int HouseholdNumber { get; set; }
+        public short HouseholdNumber { get; set; }
 
         public int Premises { get; set; }
 
