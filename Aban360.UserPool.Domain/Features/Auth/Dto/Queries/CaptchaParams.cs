@@ -1,6 +1,6 @@
-﻿namespace Aban360.UserPool.Domain.Features.Auth.Dto.Commands
+﻿namespace Aban360.UserPool.Domain.Features.Auth.Dto.Queries
 {
-    public record CaptchaParams
+    public sealed record CaptchaParams
     {
         public string ImageUrl { get; } = default!;
         public string TokenText { get; } = default!;

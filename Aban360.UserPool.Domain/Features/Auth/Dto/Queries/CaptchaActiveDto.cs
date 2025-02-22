@@ -1,5 +1,5 @@
 ﻿namespace Aban360.UserPool.Domain.Features.Auth.Entities;
-public record CaptchaActiveDto
+public sealed record CaptchaActiveDto
 {
     public int Id { get; set; }    
     public short DisplayModeEnumId { get; set; }

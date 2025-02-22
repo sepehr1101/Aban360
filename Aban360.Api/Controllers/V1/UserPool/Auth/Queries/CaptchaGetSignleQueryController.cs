@@ -1,6 +1,6 @@
 ﻿using Aban360.Common.Categories.ApiResponse;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
-using Aban360.UserPool.Domain.Features.Auth.Entities;
+using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
@@ -17,10 +17,10 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
 
         [Route("read/{id}")]
         [HttpGet, HttpPost]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<CaptchaActiveDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<CaptchaQueryDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Read(int id,CancellationToken cancellationToken)
         {
-           CaptchaSingleDto captchaDtos = await _captchaGetSingleHandler.Handle(id,cancellationToken);
+           CaptchaQueryDto captchaDtos = await _captchaGetSingleHandler.Handle(id,cancellationToken);
             return Ok(captchaDtos);
         }
     }
