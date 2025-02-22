@@ -10,12 +10,12 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
         private readonly IConfiguration _configuration;
         public ConsumerSummaryInfo(IConfiguration configuration)
         {
-            _configuration=configuration;
+            _configuration = configuration;
             _configuration.NotNull(nameof(configuration));
         }
         public async Task<ResultSummaryDto> GetSummery(string id)
         {
-            var connectionString= _configuration.GetConnectionString("DefaultConnection");
+            var connectionString = _configuration.GetConnectionString("DefaultConnection");
             var connection = new SqlConnection(connectionString);
 
             string getSummery = SummeryGetQuery();
@@ -36,7 +36,7 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
                          "     E.UnitDomesticWater,E.UnitCommercialWater, E.UnitOtherWater," +
                          "     E.UnitDomesticSewage,E.UnitCommercialSewage,E.UnitOtherSewage,E.EmptyUnit," +
                          "     C.Title as ConstructionType ," +
-                         "     U.Title as UsageConsumtion,UU.Title as UsageSell," +
+                         "     U.Title as UsageConsumtionTitle,UU.Title as UsageSellTitle," +
                          "     I.FullName," +
                          "     S.InstallationDate as SiphonInstallationDate, " +
                          "     H.Title as Headquarter , P.Title as Province,R.Title as Region,Z.Title as Zone, M.Title as Municipality " +
@@ -67,29 +67,4 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
                    " where W.BillId=@id";
         }
     }
-    public record WaterMeterGetDto
-    {
-        public int Id { get; set; }
-
-        public string? InstallationLocation { get; set; }
-
-        public string? BodySerial { get; set; }
-
-        public string? InstallationDate { get; set; }
-
-        public string? ProductDate { get; set; }
-
-        public string? GuaranteeDate { get; set; }
-
-        public short MeterDiameterId { get; set; }
-
-        public short MeterProducerId { get; set; }
-
-        public short MeterTypeId { get; set; }
-
-        public short MeterMaterialId { get; set; }
-
-        public short MeterUseTypeId { get; set; }
-    }
-
 }
