@@ -6,21 +6,21 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aban360.Api.Controllers.ReportPool
 {
     [Route("v1/summery")]
-    public class SummeryGetController:BaseController
+    public class ConsumerSummaryInfoController:BaseController
     {
-        private readonly ISummery _summery;
-        public SummeryGetController(ISummery summery)
+        private readonly IConsumerSummaryInfo _summery;
+        public ConsumerSummaryInfoController(IConsumerSummaryInfo summery)
         {
             _summery = summery;
-            _summery.NotNull(nameof(Summery));
+            _summery.NotNull(nameof(ConsumerSummaryInfo));
         }
 
         [HttpGet, HttpPost]
         [Route("summery/{id}")]
         public async Task<IActionResult> Get(string id)
         {
-            var x=await _summery.GetSummery(id);
-            return Ok(x);
+            var summary=await _summery.GetSummery(id);
+            return Ok(summary);
         }
     }
 }
