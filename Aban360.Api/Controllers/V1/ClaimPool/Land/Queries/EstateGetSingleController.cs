@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
 {
-    [Route("v1/estate")]
+    [Route("v1/estate")]    
     public class EstateGetSingleController : ControllerBase
     {
         private readonly IUnitOfWork _uow;

@@ -1,7 +1,7 @@
 ﻿using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
-using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
+using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using DNTCaptcha.Core;
 using Microsoft.AspNetCore.Authorization;
