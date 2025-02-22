@@ -1,5 +1,4 @@
-﻿using Aban360.ClaimPool.Domain.Features.Metering.Entities;
-using Aban360.ClaimPool.Persistence.Extensions;
+﻿using Aban360.ClaimPool.Persistence.Extensions;
 using Aban360.ClaimPool.Persistence.Migrations.Enums;
 using FluentMigrator;
 using System.Reflection;
@@ -216,7 +215,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         {
             var table = TableName.WaterMeter;
             Create.Table(nameof(TableName.WaterMeter))
-              .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+              .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
               .WithColumn("ReadingNumber").AsAnsiString(_31).Nullable()
               .WithColumn("CustomerNumber").AsInt32().NotNullable()
               .WithColumn("BillId").AsString(15).NotNullable()
@@ -300,7 +299,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         {
             var table = TableName.Siphon;
             Create.Table(nameof(TableName.Siphon))
-              .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable().Identity()
+              .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
               .WithColumn("InstallationLocation").AsString(_255).Nullable()
               .WithColumn("InstallationDate").AsAnsiString(10).Nullable()
               .WithColumn("SiphonDiameterId").AsInt16().NotNullable()
@@ -322,7 +321,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         {
             var table = TableName.WaterMeterSiphon;
             Create.Table(nameof(TableName.WaterMeterSiphon))
-              .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+              .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
               .WithColumn("WaterMeterId").AsInt32().NotNullable()
                   .ForeignKey(NamingHelper.Fk(TableName.WaterMeter, table), nameof(TableName.WaterMeter), Id)
               .WithColumn("SiphonId").AsInt32().NotNullable()

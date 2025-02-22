@@ -1,14 +1,14 @@
 ﻿namespace Aban360.ReportPool.Persistence.Queries.Implementations
 {
-    public record ResultSummaryDto
+    public record ConsumerSummaryDto
     {
         public int CustomerNumber { get; set; }
-        public string BillId { get; set; }
+        public string BillId { get; set; } = default!;
         public string? ReadingNumber { get; set; }
         public DateTime? InstallationDate { get; set; }
         public DateTime? ProductDate { get; set; }
         public DateTime? GuaranteeDate { get; set; }
-        public string Address { get; set; }
+        public string Address { get; set; } = default!;
         public short ContractualCapacity { get; set; }
         public short HouseholdNumber { get; set; }
         public short UnitDomesticWater { get; set; }
@@ -18,9 +18,15 @@
         public short UnitCommercialSewage { get; set; }
         public short UnitOtherSewage { get; set; }
         public short EmptyUnit { get; set; }
+<<<<<<< HEAD:Aban360.ReportPool.Domain/Features/Dto/ResultSummaryDto.cs
         public string ConstructionType { get; set; }
         public string UsageConsumtionTitle { get; set; }
         public string UsageSellTitle { get; set; }
+=======
+        public string ConstructionType { get; set; } = default!;
+        public string UsageConsumtion { get; set; }
+        public string UsageSell { get; set; } = default!;
+>>>>>>> 7092db47c21ef44d72ffe9ecbc9a8d37d2f34daf:Aban360.ReportPool.Domain/Features/Dto/ConsumerSummaryDto.cs
         public string FullName { get; set; }
         public DateTime? SiphonInstallationDate { get; set; }
         public string Headquarter { get; set; }
