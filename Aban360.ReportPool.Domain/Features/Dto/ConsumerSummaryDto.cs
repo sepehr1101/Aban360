@@ -18,9 +18,9 @@
         public short UnitCommercialSewage { get; set; }
         public short UnitOtherSewage { get; set; }
         public short EmptyUnit { get; set; }
-        public string ConstructionType { get; set; } = default!;
-        public string UsageConsumtion { get; set; }
-        public string UsageSell { get; set; } = default!;
+        public string ConstructionType { get; set; }
+        public string UsageConsumtionTitle { get; set; }
+        public string UsageSellTitle { get; set; }
         public string FullName { get; set; }
         public DateTime? SiphonInstallationDate { get; set; }
         public string Headquarter { get; set; }
