@@ -1,28 +1,26 @@
-﻿using Aban360.Common.Extensions;
-using Aban360.ReportPool.Persistence.Base;
+﻿using Aban360.ReportPool.Persistence.Base;
 using Dapper;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Queries.Implementations
 {
-    internal class IndividualSummeryQueryService : AbstractBaseConnection, IIndividualSummeryQueryService
+    internal sealed class IndividualSummeryQueryService : AbstractBaseConnection, IIndividualSummeryQueryService
     {
         public IndividualSummeryQueryService(IConfiguration configuration)
             :base(configuration) 
         {
         }
-        public async Task<IndividualSummaryDto> GetOwnerShipSummery(string billId,short relationTypeId)
+        public async Task<IEnumerable<IndividualSummaryDto>> GetOwnerShipSummery(string billId,short relationTypeId)
         {
-            string? estateQuery = GetIndividualOwnerShipQuery();
-            IndividualSummaryDto? result = await _sqlConnection.QuerySingleAsync<IndividualSummaryDto>(estateQuery , new { billId = billId, relationTypeId =relationTypeId});
+            string estateQuery = GetIndividualOwnerShipQuery();
+            IEnumerable<IndividualSummaryDto> result = await _sqlConnection.QueryAsync<IndividualSummaryDto>(estateQuery , new { billId = billId, relationTypeId =relationTypeId});
             
             return result;
         }
-        public async Task<IndividualSummaryDto> GetStakeHolderSummery(string billId,short relationTypeId)
+        public async Task<IEnumerable<IndividualSummaryDto>> GetStakeHolderSummery(string billId,short relationTypeId)
         {
-            string? estateQuery = GetIndividualStakeHolderQuery();
-            IndividualSummaryDto? result = await _sqlConnection.QuerySingleAsync<IndividualSummaryDto>(estateQuery , new { billId = billId, relationTypeId =relationTypeId});
+            string estateQuery = GetIndividualStakeHolderQuery();
+            IEnumerable<IndividualSummaryDto> result = await _sqlConnection.QueryAsync<IndividualSummaryDto>(estateQuery , new { billId = billId, relationTypeId =relationTypeId});
             
             return result;
         }
@@ -45,7 +43,7 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
                      left join Estate E on W.EstateId=E.Id
                      left join IndividualEstate IE on E.Id=IE.EstateId
                      left join Individual I on IE.IndividualId=I.Id
-                     where W.BillId=@billId and IE.IndividualEstateRelationTypeId!=@relationTypeId";
+                     where W.BillId=@billId and IE.IndividualEstateRelationTypeId <> @relationTypeId";
         }
     }
 }

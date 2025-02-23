@@ -4,16 +4,16 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Queries.Implementations
 {
-    internal class WaterMeterSummeryQueryService : AbstractBaseConnection,IWaterMeterSummeryQueryService
+    internal class WaterMeterSummeryQueryService : AbstractBaseConnection, IWaterMeterSummeryQueryService
     {
         public WaterMeterSummeryQueryService(IConfiguration configuration)
             :base(configuration)
         {
         }
-        public async Task<WaterMeterSummaryDto> GetInfo(string billId,short meterDiameterId)
+        public async Task<IEnumerable<WaterMeterSummaryDto>> GetInfo(string billId, short meterUseTypeId)
         {
-            var estateQuery = GetWaterMetereSummeryDtoQuery();
-            var result = await _sqlConnection.QuerySingleAsync<WaterMeterSummaryDto>(estateQuery , new { billId = billId, meterDiameterId = meterDiameterId });
+            string estateQuery = GetWaterMetereSummeryDtoQuery();
+            IEnumerable<WaterMeterSummaryDto> result = await _sqlConnection.QueryAsync<WaterMeterSummaryDto>(estateQuery , new { billId = billId, meterUseTypeId = meterUseTypeId });
             
             return result;
         }
@@ -24,9 +24,9 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
                       W.BodySerial,W.InstallationDate,
                       MUT.Title as MeterUseTypeTitle,MD.Title as MeterDiameterTitle
                     from WaterMeter W
-                    left join MeterUseType MUT on W.MeterUseTypeId=MUT.Id
-                    left join MeterDiameter MD on W.MeterDiameterId=MD.Id
-                    where W.BillId=@billId and MUT.Id=@meterDiameterId";
+                    JOIN MeterUseType MUT on W.MeterUseTypeId=MUT.Id
+                    JOIN MeterDiameter MD on W.MeterDiameterId=MD.Id
+                    where W.BillId=@billId and MUT.Id=@meterUseTypeId";
         }
     }
 }

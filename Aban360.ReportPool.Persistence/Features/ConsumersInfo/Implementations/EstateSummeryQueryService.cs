@@ -1,7 +1,5 @@
-﻿using Aban360.Common.Extensions;
-using Aban360.ReportPool.Persistence.Base;
+﻿using Aban360.ReportPool.Persistence.Base;
 using Dapper;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Queries.Implementations
@@ -12,10 +10,10 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
             : base(configuration)
         {
         }
-        public async Task<ResultEstateDto> GetSummery(string billId)
+        public async Task<IEnumerable<ResultEstateDto>> GetSummery(string billId)
         {
-            var estateQuery = GetEstateSummeryDtoQuery();
-            ResultEstateDto? result = await _sqlConnection.QuerySingleAsync<ResultEstateDto>(estateQuery, new { id = billId });
+            string estateQuery = GetEstateSummeryDtoQuery();
+            IEnumerable<ResultEstateDto> result = await _sqlConnection.QueryAsync<ResultEstateDto>(estateQuery, new { id = billId });
 
             return result;
         }

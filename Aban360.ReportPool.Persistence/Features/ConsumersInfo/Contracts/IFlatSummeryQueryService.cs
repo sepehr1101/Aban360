@@ -2,6 +2,6 @@
 {
     public interface IFlatSummeryQueryService
     {
-        Task<ResultFlatDto> GetInfo(string billId);
+        Task<IEnumerable<ResultFlatDto>> GetInfo(string billId);
     }
 }
