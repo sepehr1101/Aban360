@@ -18,6 +18,7 @@
         public short UnitCommercialSewage { get; set; }
         public short UnitOtherSewage { get; set; }
         public short EmptyUnit { get; set; }
+<<<<<<< HEAD
 <<<<<<< HEAD:Aban360.ReportPool.Domain/Features/Dto/ResultSummaryDto.cs
         public string ConstructionType { get; set; }
         public string UsageConsumtionTitle { get; set; }
@@ -27,6 +28,11 @@
         public string UsageConsumtion { get; set; }
         public string UsageSell { get; set; } = default!;
 >>>>>>> 7092db47c21ef44d72ffe9ecbc9a8d37d2f34daf:Aban360.ReportPool.Domain/Features/Dto/ConsumerSummaryDto.cs
+=======
+        public string ConstructionType { get; set; }
+        public string UsageConsumtionTitle { get; set; }
+        public string UsageSellTitle { get; set; }
+>>>>>>> master
         public string FullName { get; set; }
         public DateTime? SiphonInstallationDate { get; set; }
         public string Headquarter { get; set; }

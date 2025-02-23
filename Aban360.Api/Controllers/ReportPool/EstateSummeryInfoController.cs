@@ -6,22 +6,22 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.ReportPool
 {
-    [Route("v1/summary")]
+    [Route("v1/consumer")]
     public class EstateSummeryInfoController : BaseController
     {
-        private readonly IEstateSummeryQueryService _summery;
-        public EstateSummeryInfoController(IEstateSummeryQueryService summery)
+        private readonly IEstateSummeryQueryService _estateSummeryQueryService;
+        public EstateSummeryInfoController(IEstateSummeryQueryService estateSummeryQueryService)
         {
-            _summery = summery;
-            _summery.NotNull(nameof(ConsumerSummaryInfo));
+            _estateSummeryQueryService = estateSummeryQueryService;
+            _estateSummeryQueryService.NotNull(nameof(estateSummeryQueryService));
         }
 
         [HttpGet, HttpPost]
-        [Route("consumer-info/{biilId}")]
+        [Route("estate-summary/{biilId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ResultEstateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(string biilId)
         {
-            ResultEstateDto summary = await _summery.GetSummery(biilId);
+            ResultEstateDto summary = await _estateSummeryQueryService.GetSummery(biilId);
             return Ok(summary);
         }
     }
