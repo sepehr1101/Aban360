@@ -17,7 +17,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool
             _individualSummeryQueryService.NotNull(nameof(individualSummeryQueryService));
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("owner")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<IndividualSummaryDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> OwnerShipSummary([FromBody] SearchInput searchInput)
@@ -26,7 +26,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool
             return Ok(summary);
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("stakeholder")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<IndividualSummaryDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> StakeHolderSummary([FromBody] SearchInput searchInput)

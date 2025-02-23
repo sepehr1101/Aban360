@@ -20,7 +20,10 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             string tagQuery = GetWaterMeterTagsQuery();
             IEnumerable<string> tags = await _sqlConnection.QueryAsync<string>(tagQuery, new { id = billId });
 
-            summaryInfo.WaterMeterTags = tags.ToList();
+            if (summaryInfo is not null)
+            {
+                summaryInfo.WaterMeterTags = tags.ToList();
+            }            
             return summaryInfo;
         }
 
@@ -49,13 +52,14 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     UU.Title AS UsageSell,
                     I.FullName,
                     S.InstallationDate AS SiphonInstallationDate,
-                    H.Title AS Headquarter,
-                    P.Title AS Province,
-                    R.Title AS Region,
-                    Z.Title AS Zone,
-                    M.Title AS Municipality
+                    CD.Title CordinalDirectionTitle,
+                    H.Title AS HeadquartersTitle,
+                    P.Title AS ProvinceTitle,
+                    R.Title AS RegionTitle,
+                    Z.Title AS ZoneTitle,
+                    M.Title AS MunicipalityTitle
                 FROM WaterMeter W
-                LEFT JOIN Estate E ON W.EstateId = E.Id
+                JOIN Estate E ON W.EstateId = E.Id
                 LEFT JOIN IndividualEstate IE ON E.Id = IE.EstateId
                 LEFT JOIN Individual I ON IE.IndividualId = I.Id
                 LEFT JOIN ConstructionType C ON E.ConstructionTypeId = C.Id
@@ -69,6 +73,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                 LEFT JOIN Region R ON Z.RegionId = R.Id
                 LEFT JOIN Headquarters H ON R.HeadquartersId = H.Id
                 LEFT JOIN Province P ON H.ProvinceId = P.Id
+                LEFT JOIN CordinalDirection CD ON P.CordinalDirectionId = CD.Id
                 WHERE W.BillId = @id";
             return query;
         }
