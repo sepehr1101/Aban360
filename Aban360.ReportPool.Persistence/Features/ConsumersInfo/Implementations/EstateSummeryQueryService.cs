@@ -20,8 +20,8 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
 
         private string GetEstateSummeryDtoQuery()
         {
-            return @" select
-                        E.Premises,E.X,E.Y,
+            return @" SELECT
+                        E.Id, E.Premises,E.X,E.Y,
                         E.ImprovementsCommercial,E.ImprovementsDomestic,E.ImprovementsOther,E.ImprovementsOverall
                       from WaterMeter W
                       left join Estate E on W.EstateId=E.Id

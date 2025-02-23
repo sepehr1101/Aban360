@@ -2,6 +2,7 @@
 {
     public record WaterMeterSummaryDto
     {
+        public int Id { get; set; }
         public string? BodySerial { get; set; }
         public string InstallationDate { get; set; } = default!;
         public string MeterUseTypeTitle { get; set; } = default!;

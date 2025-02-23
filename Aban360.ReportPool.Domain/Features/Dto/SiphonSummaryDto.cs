@@ -2,9 +2,10 @@
 {
     public record SiphonSummaryDto
     {
-        public string? InstallationLocation { get; set; }     
-        public string InstallationDate { get; set; }     
-        public string SiphonTypeTitle { get; set; }     
-        public string SiphonDiameterTitle { get; set; }     
+        public int Id { get; set; }
+        public string? InstallationLocation { get; set; }
+        public string InstallationDate { get; set; } = default!;
+        public string SiphonTypeTitle { get; set; } = default!;
+        public string SiphonDiameterTitle { get; set; } = default!;
     }
 }
