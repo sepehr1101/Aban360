@@ -2,6 +2,6 @@
 {
     public interface IWaterMeterSummeryQueryService
     {
-        Task<WaterMeterSummaryDto> GetInfo(string billId, short meterDiameterId);
+        Task<IEnumerable<WaterMeterSummaryDto>> GetInfo(string billId, short meterUseTypeId);
     }
 }

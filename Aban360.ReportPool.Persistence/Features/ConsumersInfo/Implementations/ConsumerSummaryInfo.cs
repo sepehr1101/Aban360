@@ -14,20 +14,20 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         }
         public async Task<ConsumerSummaryDto> GetInfo(string billId)
         {
-            string getSummery = GetConsumerSummaryDtoQuery();
-            ConsumerSummaryDto? summery = await _sqlConnection.QuerySingleAsync<ConsumerSummaryDto>(getSummery, new { id = billId });
+            string summaryQuery = GetConsumerSummaryDtoQuery();
+            ConsumerSummaryDto? summaryInfo = await _sqlConnection.QuerySingleOrDefaultAsync<ConsumerSummaryDto>(summaryQuery, new { id = billId });
 
-            string getWaterMeterTag = GetWaterMeterTagsQuery();
-            IEnumerable<string> tags = await _sqlConnection.QueryAsync<string>(getWaterMeterTag, new { id = billId });
+            string tagQuery = GetWaterMeterTagsQuery();
+            IEnumerable<string> tags = await _sqlConnection.QueryAsync<string>(tagQuery, new { id = billId });
 
-            summery.WaterMeterTags = tags.ToList();
-            return summery;
+            summaryInfo.WaterMeterTags = tags.ToList();
+            return summaryInfo;
         }
 
         private string GetConsumerSummaryDtoQuery()
         {
             string query = @"
-                SELECT DISTINCT TOP 1
+                SELECT TOP 1
                     W.CustomerNumber,
                     W.BillId,
                     W.ReadingNumber,
@@ -78,8 +78,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             string query = @"
                 SELECT WTD.Title
                 FROM WaterMeter W
-                LEFT JOIN WaterMeterTag WT ON W.Id = WT.WaterMeterId
-                LEFT JOIN WaterMeterTagDefinition WTD ON WT.WaterMeterTagDefinitionId = WTD.Id
+                JOIN WaterMeterTag WT ON W.Id = WT.WaterMeterId
+                JOIN WaterMeterTagDefinition WTD ON WT.WaterMeterTagDefinitionId = WTD.Id
                 WHERE W.BillId = @id";
             return query;
         }

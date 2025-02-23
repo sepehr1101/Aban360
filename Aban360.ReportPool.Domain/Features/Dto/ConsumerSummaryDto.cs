@@ -5,9 +5,9 @@
         public int CustomerNumber { get; set; }
         public string BillId { get; set; } = default!;
         public string? ReadingNumber { get; set; }
-        public DateTime? InstallationDate { get; set; }
-        public DateTime? ProductDate { get; set; }
-        public DateTime? GuaranteeDate { get; set; }
+        public string InstallationDate { get; set; }
+        public string ProductDate { get; set; }
+        public string GuaranteeDate { get; set; }
         public string Address { get; set; } = default!;
         public short ContractualCapacity { get; set; }
         public short HouseholdNumber { get; set; }
@@ -22,7 +22,7 @@
         public string UsageConsumtionTitle { get; set; }
         public string UsageSellTitle { get; set; }
         public string FullName { get; set; }
-        public DateTime? SiphonInstallationDate { get; set; }
+        public string SiphonInstallationDate { get; set; }
         public string Headquarter { get; set; }
         public string Province { get; set; }
         public string Region { get; set; }
