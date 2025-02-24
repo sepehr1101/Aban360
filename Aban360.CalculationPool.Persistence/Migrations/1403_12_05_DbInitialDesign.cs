@@ -1,10 +1,7 @@
-﻿using FluentMigrator;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Aban360.CalculationPool.Persistence.Migrations.Enums;
+using Aban360.UserPool.Persistence.Extensions;
+using FluentMigrator;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aban360.CalculationPool.Persistence.Migrations
 {
@@ -32,6 +29,62 @@ namespace Aban360.CalculationPool.Persistence.Migrations
              .ToList();
             tableNames.ForEach(t => Delete.Table(t));
         }
+        private void CreateOfferingUnit()
+        {
+            var table = TableName.OfferingUnit;
+            Create.Table(nameof(TableName.OfferingUnit))
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Symbol").AsString(_255).NotNullable();
+        }
+        private void CreateOfferingGroup()
+        {
+            var table = TableName.OfferingGroup;
+            Create.Table(nameof(TableName.OfferingGroup))
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn("Title").AsString(_255).NotNullable();
+        }
+        private void CreateOffering()
+        {
+            var table = TableName.Offering;
+            Create.Table(nameof(TableName.Offering))
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn($"{nameof(TableName.OfferingUnit)}{Id}").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.OfferingUnit, TableName.Offering), nameof(TableName.OfferingUnit), Id)
+                .WithColumn($"{nameof(TableName.OfferingGroup)}{Id}").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.OfferingGroup, TableName.Offering), nameof(TableName.OfferingGroup), Id)
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Description").AsString(_1023).Nullable();
+        }
+        private void CreateInvoiceType()
+        {
+            var table = TableName.InvoiceType;
+            Create.Table(nameof(TableName.InvoiceType))
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Description").AsString(_1023).Nullable();
+        }
+        private void CreateInvoiceStatus()
+        {
+            var table = TableName.InvoiceStatus;
+            Create.Table(nameof(TableName.InvoiceStatus))
+               .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
+               .WithColumn("Title").AsString(_255).NotNullable()
+               .WithColumn("Description").AsString(_1023).Nullable();
+        }
+        private void CreateInvoinceLineItemInsertMode()
+        {
+            var table = TableName.InvoinceLineItemInsertMode;
+            Create.Table(nameof(TableName.InvoinceLineItemInsertMode))
+               .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
+               .WithColumn("Title").AsString(_255).NotNullable()
+               .WithColumn("Description").AsString(_1023).Nullable();
+        }
+        private void CreateInvoice()
+        {
+            var table = TableName.Invoice;
+            Create.Table(nameof(TableName.Invoice))
 
+        }
     }
 }
