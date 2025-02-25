@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aban360.Api.Controllers.V1.ReportPool
 {
     [Route("v1/subscription")]
-    public class ConsumerSummaryInfoController : BaseController
+    public class SubscriptionSummaryInfoController : BaseController
     {
         private readonly IConsumerSummaryQueryService _consumerSummeryQueryService;
-        public ConsumerSummaryInfoController(IConsumerSummaryQueryService consumerSummaryQueryService)
+        public SubscriptionSummaryInfoController(IConsumerSummaryQueryService consumerSummaryQueryService)
         {
             _consumerSummeryQueryService = consumerSummaryQueryService;
             _consumerSummeryQueryService.NotNull(nameof(_consumerSummeryQueryService));

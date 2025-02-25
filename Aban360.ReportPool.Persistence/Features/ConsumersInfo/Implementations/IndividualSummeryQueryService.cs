@@ -27,18 +27,18 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
 
         private string GetIndividualOwnerShipQuery()
         {
-            return @"select
-                        I.FullName,I.FatherName,I.NationalId,I.PhoneNumbers,I.MobileNumbers
+            return @"SELECT
+                        I.Id, I.FullName,I.FatherName,I.NationalId,I.PhoneNumbers,I.MobileNumbers
                      from WaterMeter W
-                     left join Estate E on W.EstateId=E.Id
-                     left join IndividualEstate IE on E.Id=IE.EstateId
-                     left join Individual I on IE.IndividualId=I.Id
+                     join Estate E on W.EstateId=E.Id
+                     join IndividualEstate IE on E.Id=IE.EstateId
+                     join Individual I on IE.IndividualId=I.Id
                      where W.BillId=@billId and IE.IndividualEstateRelationTypeId=@relationTypeId";
         }
         private string GetIndividualStakeHolderQuery()
         {
-            return @"select
-                        I.FullName,I.FatherName,I.NationalId,I.PhoneNumbers,I.MobileNumbers
+            return @"SELECT
+                        I.Id, I.FullName,I.FatherName,I.NationalId,I.PhoneNumbers,I.MobileNumbers
                      from WaterMeter W
                      left join Estate E on W.EstateId=E.Id
                      left join IndividualEstate IE on E.Id=IE.EstateId

@@ -21,10 +21,10 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
         private string GetFlatSummeryDtoQuery()
         {
             return @" select
-                        F.PostalCode,F.Storey,F.Description
+                        F.Id, F.PostalCode,F.Storey,F.Description
                       from WaterMeter W
-                      left join Estate E on W.EstateId=E.Id
-                      left join Flat F on E.Id=F.EstateId 
+                      join Estate E on W.EstateId=E.Id
+                      join Flat F on E.Id=F.EstateId 
                       where W.BillId=@id";
         }
     }

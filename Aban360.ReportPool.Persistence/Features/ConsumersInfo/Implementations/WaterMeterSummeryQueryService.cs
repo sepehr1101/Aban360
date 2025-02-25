@@ -20,13 +20,16 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
 
         private string GetWaterMetereSummeryDtoQuery()
         {
-            return @"select 
-                      W.BodySerial,W.InstallationDate,
-                      MUT.Title as MeterUseTypeTitle,MD.Title as MeterDiameterTitle
-                    from WaterMeter W
+            return @"SELECT 
+                      W.Id,
+                      W.BodySerial,
+                      W.InstallationDate,
+                      MUT.Title as MeterUseTypeTitle,
+                      MD.Title as MeterDiameterTitle
+                    FROM WaterMeter W
                     JOIN MeterUseType MUT on W.MeterUseTypeId=MUT.Id
                     JOIN MeterDiameter MD on W.MeterDiameterId=MD.Id
-                    where W.BillId=@billId and MUT.Id=@meterUseTypeId";
+                    WHERE W.BillId=@billId and MUT.Id=@meterUseTypeId";
         }
     }
 }

@@ -20,9 +20,12 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
 
         private string GetSiphonSummeryDtoQuery()
         {
-            return @"select 
-                       S.InstallationLocation,S.InstallationDate,
-                       ST.Title as SiphonTypeTitle,SD.Title as SiphonDiameterTitle
+            return @"SELECT 
+                       S.Id,
+                       S.InstallationLocation,
+                       S.InstallationDate,
+                       ST.Title as SiphonTypeTitle,
+                       SD.Title as SiphonDiameterTitle
                     from WaterMeter W
                     join WaterMeterSiphon WS on W.Id=WS.WaterMeterId
                     join Siphon S on WS.SiphonId=S.Id                   

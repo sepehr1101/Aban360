@@ -20,7 +20,10 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
         }
         public async Task<ICollection<UserRole>> Get(Guid userId)
         {
-            return await _userRoles.Where(r => r.UserId == userId)
+            return await _userRoles
+                .Where(r => 
+                    r.UserId == userId &&
+                    r.ValidTo==null)
                 .ToListAsync();
         }
         public async Task<ICollection<UserRole>> GetIncludeRoles(Guid userId)
