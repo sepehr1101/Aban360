@@ -27,13 +27,17 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
         public async Task<ICollection<UserClaim>> Get(Guid userId)
         {
             return await _userClaims
-                .Where(uc => uc.UserId == userId)
+                .Where(uc => 
+                    uc.UserId == userId &&
+                    uc.ValidTo == null)
                 .ToListAsync();
         }
         public async Task<ICollection<UserClaim>> Get(Guid userId, ClaimType claimType)
         {
             return await _userClaims
-                .Where(userClaim => userClaim.UserId == userId && userClaim.ClaimTypeId == claimType)
+                .Where(userClaim => 
+                    userClaim.UserId == userId &&
+                    userClaim.ClaimTypeId == claimType)
                 .ToListAsync();
         }
     }

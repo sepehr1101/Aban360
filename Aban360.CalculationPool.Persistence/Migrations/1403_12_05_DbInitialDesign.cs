@@ -54,6 +54,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                 .WithColumn($"{nameof(TableName.OfferingGroup)}{Id}").AsInt16().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.OfferingGroup, TableName.Offering), nameof(TableName.OfferingGroup), Id)
                 .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("InstallmentOption").AsBoolean().NotNullable()
                 .WithColumn("Description").AsString(_1023).Nullable();
         }
         private void CreateInvoiceType()
@@ -84,7 +85,43 @@ namespace Aban360.CalculationPool.Persistence.Migrations
         {
             var table = TableName.Invoice;
             Create.Table(nameof(TableName.Invoice))
-
+                .WithColumn(Id).AsInt64().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("InvoiceTypeId").AsInt16().NotNullable()
+                     .ForeignKey(NamingHelper.Fk(TableName.InvoiceType, TableName.Invoice), nameof(TableName.InvoiceType), Id)
+                .WithColumn("InvoiceStatusId").AsInt16().NotNullable()
+                     .ForeignKey(NamingHelper.Fk(TableName.InvoiceStatus, TableName.Invoice), nameof(TableName.InvoiceStatus), Id)
+                .WithColumn("Amount").AsInt64().NotNullable()
+                .WithColumn("OfferingCount").AsInt16().NotNullable()
+                .WithColumn("DepositRate").AsInt16().NotNullable()
+                .WithColumn("InstallmentCount").AsInt16().NotNullable();
+        }
+        private void CreateInvoiceLineItem()
+        {
+            var table = TableName.InvoiceLineItem;
+            Create.Table(nameof(TableName.InvoiceLineItem))
+                .WithColumn(Id).AsInt64().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("InvoiceId").AsInt64().NotNullable()
+                     .ForeignKey(NamingHelper.Fk(TableName.Invoice, TableName.InvoiceLineItem), nameof(TableName.Invoice), Id)
+                .WithColumn("OfferingId").AsInt16().NotNullable()
+                     .ForeignKey(NamingHelper.Fk(TableName.Offering, TableName.InvoiceLineItem), nameof(TableName.Offering), Id)
+                .WithColumn("InvoinceLineItemInsertModeId").AsInt16().NotNullable()
+                     .ForeignKey(NamingHelper.Fk(TableName.InvoinceLineItemInsertMode, TableName.InvoiceLineItem), nameof(TableName.InvoinceLineItemInsertMode), Id)
+                .WithColumn("Amount").AsInt64().NotNullable()
+                .WithColumn("Quanity").AsInt32().NotNullable();
+        }
+        private void CreateInvoiceInstallment()
+        {
+            var table= TableName.InvoiceInstallment;
+            Create.Table(nameof(TableName.InvoiceInstallment))
+                .WithColumn (Id).AsInt64().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("InvoiceId").AsInt64().NotNullable()
+                     .ForeignKey(NamingHelper.Fk(TableName.Invoice, TableName.InvoiceInstallment), nameof(TableName.Invoice), Id)
+                .WithColumn("Amount").AsInt64().NotNullable() 
+                .WithColumn("DueDateJalali").AsAnsiString(10).NotNullable()
+                .WithColumn("DueDateTime").AsDateTime().NotNullable() 
+                .WithColumn("InstallmentOrder").AsInt32().NotNullable()
+                .WithColumn("BillId").AsAnsiString(20).Nullable()
+                .WithColumn("PaymentId").AsAnsiString(20).Nullable();
         }
     }
 }

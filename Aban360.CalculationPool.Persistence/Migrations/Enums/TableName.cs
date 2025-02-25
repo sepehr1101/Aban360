@@ -8,9 +8,9 @@
 
         InvoiceType,
         InvoiceStatus,
+        InvoinceLineItemInsertMode,
         Invoice,
         InvoiceInstallment,      
-        InvoinceLineItemInsertMode,
         InvoiceLineItem, 
     }
 }
