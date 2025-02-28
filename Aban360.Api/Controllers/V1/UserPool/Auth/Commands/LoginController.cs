@@ -13,6 +13,7 @@ using Aban360.UserPool.Domain.Constants;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using DNTPersianUtils.Core;
 using System.Globalization;
+using Aban360.CalculationPool.Persistence.Contexts.Contracts;
 
 namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
 {

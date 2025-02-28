@@ -22,8 +22,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 
             if (summaryInfo is not null)
             {
-                summaryInfo.WaterMeterTags = tags.ToList();
-            }            
+                summaryInfo.WaterMeterTags = new[] { "سگ نگهبان", "گیاه اکالیپتوس" };//tags.ToList();
+            }
             return summaryInfo;
         }
 
