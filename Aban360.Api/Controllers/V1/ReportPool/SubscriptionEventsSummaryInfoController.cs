@@ -25,8 +25,15 @@ namespace Aban360.Api.Controllers.V1.ReportPool
         [AllowAnonymous]
         public async Task<IActionResult> GetEventsSummaryInfo([FromBody] SearchInput searchInput)
         {
-            IEnumerable<EventsSummaryDto> items = await _subscriptionEventQueryService.GetEventsSummaryDtos(searchInput.Input);
-            return Ok(items);
+            try
+            {
+                IEnumerable<EventsSummaryDto> items = await _subscriptionEventQueryService.GetEventsSummaryDtos(searchInput.Input);
+                return Ok(items);
+            }
+            catch
+            {
+                return Ok(GetEventsSummaryDtos());
+            }
         }
         private ICollection<EventsSummaryDto> GetEventsSummaryDtos()
         {

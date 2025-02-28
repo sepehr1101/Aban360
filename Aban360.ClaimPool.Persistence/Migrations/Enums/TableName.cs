@@ -11,6 +11,8 @@
         IndividualTagDefinition,
         IndividualTag,
         Usage,
+        Guild,
+        Profession,
         ConstructionType,
 
         MeterDiameter,

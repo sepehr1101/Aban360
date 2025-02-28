@@ -123,5 +123,6 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                 .WithColumn("BillId").AsAnsiString(20).Nullable()
                 .WithColumn("PaymentId").AsAnsiString(20).Nullable();
         }
+        //private void CreateInvoiceStatus()
     }
 }
