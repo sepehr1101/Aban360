@@ -11,6 +11,8 @@ public class Estate
 
     public short ConstructionTypeId { get; set; }
 
+    public short EstateBoundTypeId { get; set; }
+
     public string? PostalCode { get; set; }
 
     public string? X { get; set; }
@@ -72,6 +74,8 @@ public class Estate
     public string Hash { get; set; } = null!;
 
     public virtual ConstructionType ConstructionType { get; set; } = null!;
+
+    public virtual EstateBoundType EstateBoundType { get; set; } = null!;
 
     public virtual ICollection<Flat> Flats { get; set; } = new List<Flat>();
 
