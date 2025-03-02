@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Contexts\Constracts\**" />
+    <EmbeddedResource Remove="Contexts\Constracts\**" />
+    <None Remove="Contexts\Constracts\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="EFCore.BulkExtensions" Version="8.1.2" />
     <PackageReference Include="FluentMigrator" Version="6.2.0" />
     <PackageReference Include="FluentMigrator.Runner.SqlServer" Version="6.2.0" />
@@ -21,6 +27,11 @@
     <Folder Include="Constants\" />
     <Folder Include="DbSeeder\" />
     <Folder Include="Features\Rule\" />
+    <Folder Include="Features\Bill\Commands\Contracts\" />
+    <Folder Include="Features\Bill\Commands\Implementations\" />
+    <Folder Include="Features\Bill\Queries\Contracts\" />
+    <Folder Include="Features\Bill\Queries\Implementations\" />
+    <Folder Include="Contexts\Implementation\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,4 @@
-﻿using Aban360.CalculationPool.Persistence.Contexts.Contracts;
-using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Contracts;

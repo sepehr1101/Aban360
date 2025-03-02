@@ -13,7 +13,7 @@ namespace Aban360.CalculationPool.Persistence.Contexts.Implementations
 
         public virtual DbSet<InvoiceType> InvoiceTypes { get; set; }
         public virtual DbSet<InvoiceStatus> InvoiceStatuses { get; set; }
-        public virtual DbSet<InvoiceLineItemInsertMode> InvoinceLineItemInsertModes { get; set; }
+        public virtual DbSet<InvoiceLineItemInsertMode> InvoiceLineItemInsertModes { get; set; }
         public virtual DbSet<Invoice> Invoices { get; set; }
         public virtual DbSet<InvoiceInstallment> InvoiceInstallments { get; set; }
         public virtual DbSet<InvoiceLineItem> InvoiceLineItems { get; set; }

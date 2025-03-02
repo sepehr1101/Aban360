@@ -9,10 +9,10 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bil.Queries
     public class OfferingGetAllController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IOfferingGetSingleHandler _offeringGetAllHandler;
+        private readonly IOfferingGetAllHandler _offeringGetAllHandler;
         public OfferingGetAllController(
             IUnitOfWork uow,
-            IOfferingGetSingleHandler offeringGetAllHandler)
+            IOfferingGetAllHandler offeringGetAllHandler)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));

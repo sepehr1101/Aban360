@@ -6,7 +6,7 @@ using AutoMapper;
 
 namespace Aban360.CalculationPool.Application.Features.Bil.Handlers.Quries.Implementation
 {
-    public class OfferingGetAllHandler : IOfferingGetSingleHandler
+    public class OfferingGetAllHandler : IOfferingGetAllHandler
     {
         private readonly IMapper _mapper;
         private readonly IOfferingQueryService _offeringQueryService;
