@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Aban360.ClaimPool.Domain.Constants;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.WasteWater.Entities;
 
-[Table(nameof(Siphon))]
+[Table(nameof(Siphon), Schema = TableSchema.Name)]
 public class Siphon
 {
     public int Id { get; set; }

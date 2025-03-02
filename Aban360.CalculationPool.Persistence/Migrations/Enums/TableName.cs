@@ -5,12 +5,19 @@
         OfferingUnit,
         OfferingGroup,
         Offering,
+        CompanyServiceType,
+        CompanyService,
+        CompanyServiceOffering,
 
         InvoiceType,
         InvoiceStatus,
         InvoinceLineItemInsertMode,
         Invoice,
         InvoiceInstallment,      
-        InvoiceLineItem, 
+        InvoiceLineItem,
+
+        TariffCalculationMode,
+        LineItemTypeGroup,
+        LineItemType,
     }
 }

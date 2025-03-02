@@ -1,10 +1,11 @@
-﻿using Aban360.ClaimPool.Domain.Features.Metering.Entities;
+﻿using Aban360.ClaimPool.Domain.Constants;
+using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Domain.Features.People.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.Land.Entities;
 
-[Table(nameof(Estate))]
+[Table(nameof(Estate), Schema = TableSchema.Name)]
 public class Estate
 {
     public int Id { get; set; }

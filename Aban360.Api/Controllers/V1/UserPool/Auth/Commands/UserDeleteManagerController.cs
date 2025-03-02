@@ -1,5 +1,4 @@
-﻿using Aban360.CalculationPool.Persistence.Contexts.Contracts;
-using Aban360.Common.Extensions;
+﻿using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Delete.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Base;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
