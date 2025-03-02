@@ -13,7 +13,7 @@
         InsertMode,
         InvoiceLineItem,
         InvoiceStatus, 
-        InvoinceLineItemInsertMode,
+        InvoiceLineItemInsertMode,
 
         InsertResion,
         Balance,

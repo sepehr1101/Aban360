@@ -2,8 +2,8 @@
 
 namespace Aban360.CalculationPool.Domain.Features.Bill.Entities;
 
-[Table(nameof(InvoinceLineItemInsertMode))]
-public class InvoinceLineItemInsertMode
+[Table(nameof(InvoiceLineItemInsertMode))]
+public class InvoiceLineItemInsertMode
 {
     public short Id { get; set; }
 

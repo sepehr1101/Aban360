@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Bill\Dtos\" />
     <Folder Include="Features\Rule\" />
   </ItemGroup>
 

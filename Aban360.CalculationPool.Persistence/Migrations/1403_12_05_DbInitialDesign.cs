@@ -73,10 +73,10 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                .WithColumn("Title").AsString(_255).NotNullable()
                .WithColumn("Description").AsString(_1023).Nullable();
         }
-        private void CreateInvoinceLineItemInsertMode()
+        private void CreateInvoiceLineItemInsertMode()
         {
-            var table = TableName.InvoinceLineItemInsertMode;
-            Create.Table(nameof(TableName.InvoinceLineItemInsertMode))
+            var table = TableName.InvoiceLineItemInsertMode;
+            Create.Table(nameof(TableName.InvoiceLineItemInsertMode))
                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
                .WithColumn("Title").AsString(_255).NotNullable()
                .WithColumn("Description").AsString(_1023).Nullable();
@@ -105,7 +105,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                 .WithColumn("OfferingId").AsInt16().NotNullable()
                      .ForeignKey(NamingHelper.Fk(TableName.Offering, TableName.InvoiceLineItem), nameof(TableName.Offering), Id)
                 .WithColumn("InvoinceLineItemInsertModeId").AsInt16().NotNullable()
-                     .ForeignKey(NamingHelper.Fk(TableName.InvoinceLineItemInsertMode, TableName.InvoiceLineItem), nameof(TableName.InvoinceLineItemInsertMode), Id)
+                     .ForeignKey(NamingHelper.Fk(TableName.InvoiceLineItemInsertMode, TableName.InvoiceLineItem), nameof(TableName.InvoiceLineItemInsertMode), Id)
                 .WithColumn("Amount").AsInt64().NotNullable()
                 .WithColumn("Quanity").AsInt32().NotNullable();
         }
