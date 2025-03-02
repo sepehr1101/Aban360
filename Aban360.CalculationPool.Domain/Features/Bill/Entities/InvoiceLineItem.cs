@@ -19,7 +19,7 @@ public class InvoiceLineItem
 
     public virtual Invoice Invoice { get; set; } = null!;
 
-    public virtual InvoinceLineItemInsertMode InvoinceLineItemInsertMode { get; set; } = null!;
+    public virtual InvoiceLineItemInsertMode InvoinceLineItemInsertMode { get; set; } = null!;
 
     public virtual Offering Offering { get; set; } = null!;
 }

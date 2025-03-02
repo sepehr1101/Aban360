@@ -11,6 +11,7 @@ namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
         public virtual DbSet<ConstructionType> ConstructionTypes { get; set; }
         public virtual DbSet<EstateBoundType> EstateBoundTypes { get; set; }
         public virtual DbSet<Estate> Estates { get; set; }
+        public virtual DbSet<EstateBoundType> EstateBoundTypes{ get; set; }
         public virtual DbSet<Flat> Flats { get; set; }
         public virtual DbSet<Usage> Usages { get; set; }
         public virtual DbSet<Guild> Guilds { get; set; }

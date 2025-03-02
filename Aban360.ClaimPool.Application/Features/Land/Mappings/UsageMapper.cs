@@ -15,5 +15,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Mappings
             CreateMap<UsageGetDto, Usage>().ReverseMap();
         }
     }
-   
+
 }
+

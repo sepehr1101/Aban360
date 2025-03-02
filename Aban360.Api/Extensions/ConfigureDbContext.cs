@@ -1,4 +1,5 @@
-﻿using Aban360.ClaimPool.Persistence.Contexts.Implementation;
+﻿using Aban360.CalculationPool.Persistence.Contexts.Implementations;
+using Aban360.ClaimPool.Persistence.Contexts.Implementation;
 using Aban360.Common.Db.Interceptors;
 using Aban360.UserPool.Persistence.Contexts.Implementation;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ namespace Aban360.Api.Extensions
             services.AddUserPoolDbContext(configuration, connectionString);
             services.AddLocationPoolDbContext(configuration, connectionString);
             services.AddClaimPoolDbContext(configuration, connectionString);
+            services.AddCalculationPoolDbContext(configuration, connectionString);
         }
         private static void AddUserPoolDbContext(this IServiceCollection services, IConfiguration configuration, string connectionString)
         {
@@ -46,6 +48,21 @@ namespace Aban360.Api.Extensions
         private static void AddClaimPoolDbContext(this IServiceCollection services, IConfiguration configuration1, string connectionString)
         {
             services.AddDbContext<ClaimPoolContext>((sp, options) =>
+            {
+                options.UseSqlServer(connectionString,
+                    serverDbContextOptionsBuilder =>
+                    {
+                        var minutes = (int)TimeSpan.FromMinutes(3).TotalSeconds;
+                        serverDbContextOptionsBuilder.CommandTimeout(minutes);
+                    });
+                options.AddInterceptors(new PersianYeKeCommandInterceptor());
+                options.AddInterceptors(new RowLevelAuthenticitySaveChangeInterceptor());
+            });
+        }
+        
+        private static void AddCalculationPoolDbContext(this IServiceCollection services, IConfiguration configuration1, string connectionString)
+        {
+            services.AddDbContext<CalculationPoolContext>((sp, options) =>
             {
                 options.UseSqlServer(connectionString,
                     serverDbContextOptionsBuilder =>

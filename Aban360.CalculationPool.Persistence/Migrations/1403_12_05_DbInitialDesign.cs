@@ -1,4 +1,4 @@
-﻿using Aban360.CalculationPool.Persistence.Constants;
+using Aban360.CalculationPool.Persistence.Constants;
 using Aban360.CalculationPool.Persistence.Migrations.Enums;
 using Aban360.UserPool.Persistence.Extensions;
 using FluentMigrator;
@@ -104,10 +104,10 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                .WithColumn("Title").AsString(_255).NotNullable()
                .WithColumn("Description").AsString(_1023).Nullable();
         }
-        private void CreateInvoinceLineItemInsertMode()
+        private void CreateInvoiceLineItemInsertMode()
         {
-            var table = TableName.InvoinceLineItemInsertMode;
-            Create.Table(nameof(TableName.InvoinceLineItemInsertMode)).InSchema(_schema)
+            var table = TableName.InvoiceLineItemInsertMode;
+            Create.Table(nameof(TableName.InvoiceLineItemInsertMode)).InSchema(_schema)
                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
                .WithColumn("Title").AsString(_255).NotNullable()
                .WithColumn("Description").AsString(_1023).Nullable();
@@ -135,8 +135,8 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                      .ForeignKey(NamingHelper.Fk(TableName.Invoice, TableName.InvoiceLineItem), _schema, nameof(TableName.Invoice), Id)
                 .WithColumn("OfferingId").AsInt16().NotNullable()
                      .ForeignKey(NamingHelper.Fk(TableName.Offering, TableName.InvoiceLineItem), _schema, nameof(TableName.Offering), Id)
-                .WithColumn("InvoinceLineItemInsertModeId").AsInt16().NotNullable()
-                     .ForeignKey(NamingHelper.Fk(TableName.InvoinceLineItemInsertMode, TableName.InvoiceLineItem), _schema, nameof(TableName.InvoinceLineItemInsertMode), Id)
+                .WithColumn("InvoiceLineItemInsertModeId").AsInt16().NotNullable()
+                     .ForeignKey(NamingHelper.Fk(TableName.InvoiceLineItemInsertMode, TableName.InvoiceLineItem), _schema, nameof(TableName.InvoiceLineItemInsertMode), Id)                     
                 .WithColumn("Amount").AsInt64().NotNullable()
                 .WithColumn("Quanity").AsInt32().NotNullable();
         }

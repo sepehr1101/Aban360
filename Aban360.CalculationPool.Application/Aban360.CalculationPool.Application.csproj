@@ -17,4 +17,8 @@
     <ProjectReference Include="..\Aban360.CalculationPool.Persistence\Aban360.CalculationPool.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Bil\Validations\" />
+  </ItemGroup>
+
 </Project>

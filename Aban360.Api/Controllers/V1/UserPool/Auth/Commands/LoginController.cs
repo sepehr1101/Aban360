@@ -1,5 +1,4 @@
-﻿using DNTCaptcha.Core;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Aban360.Common.Extensions;
@@ -13,6 +12,7 @@ using Aban360.UserPool.Domain.Constants;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using DNTPersianUtils.Core;
 using System.Globalization;
+using DNTCaptcha.Core;
 
 namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
 {
