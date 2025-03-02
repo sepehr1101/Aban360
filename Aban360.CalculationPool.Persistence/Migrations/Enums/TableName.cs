@@ -5,13 +5,18 @@
         Offering,
         OfferingUnit,
         OfferingGroup,
+
         Invoice,
         InvoiceType,
         InvoiceItem,
         InvoiceInstallment,      
         InsertMode,
+        InvoiceLineItem,
+        InvoiceStatus, 
+        InvoinceLineItemInsertMode,
+
         InsertResion,
-        Balance
+        Balance,
 
     }
 }
