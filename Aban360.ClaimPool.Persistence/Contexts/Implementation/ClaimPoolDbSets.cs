@@ -9,6 +9,7 @@ namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
     public partial class ClaimPoolContext
     {
         public virtual DbSet<ConstructionType> ConstructionTypes { get; set; }
+        public virtual DbSet<EstateBoundType> EstateBoundTypes { get; set; }
         public virtual DbSet<Estate> Estates { get; set; }
         public virtual DbSet<EstateBoundType> EstateBoundTypes{ get; set; }
         public virtual DbSet<Flat> Flats { get; set; }

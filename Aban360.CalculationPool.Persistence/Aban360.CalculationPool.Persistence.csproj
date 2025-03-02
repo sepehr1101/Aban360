@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <Folder Include="Exceptions\" />
-    <Folder Include="Constants\" />
     <Folder Include="DbSeeder\" />
     <Folder Include="Features\Rule\" />
     <Folder Include="Features\Bill\Commands\Contracts\" />

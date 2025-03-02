@@ -1,5 +1,6 @@
-﻿using Aban360.CalculationPool.Persistence.Migrations.Enums;
-using Aban360.CalculationPool.Persistence.Extensions;
+using Aban360.CalculationPool.Persistence.Constants;
+using Aban360.CalculationPool.Persistence.Migrations.Enums;
+using Aban360.UserPool.Persistence.Extensions;
 using FluentMigrator;
 using System.Reflection;
 
@@ -8,10 +9,12 @@ namespace Aban360.CalculationPool.Persistence.Migrations
     [Migration(1403120501)]
     public class DbInitialDesign: Migration
     {
-        string Id = nameof(Id), Hash = nameof(Hash);
+        string _schema= TableSchema.Name , Id = nameof(Id), Hash = nameof(Hash);
         int _31 = 31, _255 = 255, _1023 = 1023;
         public override void Up()
         {
+            Create.Schema(_schema);
+
             var methods =
                GetType()
               .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
@@ -32,7 +35,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
         private void CreateOfferingUnit()
         {
             var table = TableName.OfferingUnit;
-            Create.Table(nameof(TableName.OfferingUnit))
+            Create.Table(nameof(TableName.OfferingUnit)).InSchema(_schema)
                 .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn("Symbol").AsString(_255).NotNullable();
@@ -40,27 +43,55 @@ namespace Aban360.CalculationPool.Persistence.Migrations
         private void CreateOfferingGroup()
         {
             var table = TableName.OfferingGroup;
-            Create.Table(nameof(TableName.OfferingGroup))
+            Create.Table(nameof(TableName.OfferingGroup)).InSchema(_schema)
                 .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
         private void CreateOffering()
         {
             var table = TableName.Offering;
-            Create.Table(nameof(TableName.Offering))
+            Create.Table(nameof(TableName.Offering)).InSchema(_schema)
                 .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn($"{nameof(TableName.OfferingUnit)}{Id}").AsInt16().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.OfferingUnit, TableName.Offering), nameof(TableName.OfferingUnit), Id)
+                    .ForeignKey(NamingHelper.Fk(TableName.OfferingUnit, TableName.Offering),_schema, nameof(TableName.OfferingUnit), Id)
                 .WithColumn($"{nameof(TableName.OfferingGroup)}{Id}").AsInt16().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.OfferingGroup, TableName.Offering), nameof(TableName.OfferingGroup), Id)
+                    .ForeignKey(NamingHelper.Fk(TableName.OfferingGroup, TableName.Offering), _schema, nameof(TableName.OfferingGroup), Id)
                 .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn("InstallmentOption").AsBoolean().NotNullable()
                 .WithColumn("Description").AsString(_1023).Nullable();
         }
+        private void CreateCompanyServiceType()
+        {
+            var table = TableName.CompanyServiceType;
+            Create.Table(nameof(TableName.CompanyServiceType)).InSchema(_schema)
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Description").AsString(_1023).Nullable();
+        }// foroosh, ab baha, pas as foroosh
+        private void CreateCompanyService()// foroosh ab, fazelab, taqir qotr ,...
+        {
+            var table = TableName.CompanyService;
+            Create.Table(nameof(TableName.CompanyService)).InSchema(_schema)
+                .WithColumn($"{nameof(TableName.CompanyServiceType)}{Id}").AsInt16().NotNullable()
+                   .ForeignKey(NamingHelper.Fk(TableName.CompanyServiceType, table), _schema, nameof(TableName.CompanyServiceType), Id)
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("Title").AsString(_255).NotNullable();
+        }
+        private void CreateCompanyServiceOffering()
+        {
+            var table = TableName.CompanyServiceOffering;
+            Create.Table(nameof(TableName.CompanyServiceOffering)).InSchema(_schema)
+                .WithColumn($"{nameof(TableName.CompanyService)}{Id}").AsInt16().NotNullable()
+                   .ForeignKey(NamingHelper.Fk(TableName.CompanyService, table), _schema, nameof(TableName.CompanyService), Id)
+                .WithColumn($"{nameof(TableName.Offering)}{Id}").AsInt16().NotNullable()
+                   .ForeignKey(NamingHelper.Fk(TableName.Offering, table), _schema, nameof(TableName.Offering), Id)
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table));
+        }
+
         private void CreateInvoiceType()
         {
             var table = TableName.InvoiceType;
-            Create.Table(nameof(TableName.InvoiceType))
+            Create.Table(nameof(TableName.InvoiceType)).InSchema(_schema)
                 .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn("Description").AsString(_1023).Nullable();
@@ -68,7 +99,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
         private void CreateInvoiceStatus()
         {
             var table = TableName.InvoiceStatus;
-            Create.Table(nameof(TableName.InvoiceStatus))
+            Create.Table(nameof(TableName.InvoiceStatus)).InSchema(_schema)
                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
                .WithColumn("Title").AsString(_255).NotNullable()
                .WithColumn("Description").AsString(_1023).Nullable();
@@ -76,20 +107,20 @@ namespace Aban360.CalculationPool.Persistence.Migrations
         private void CreateInvoiceLineItemInsertMode()
         {
             var table = TableName.InvoiceLineItemInsertMode;
-            Create.Table(nameof(TableName.InvoiceLineItemInsertMode))
+            Create.Table(nameof(TableName.InvoiceLineItemInsertMode)).InSchema(_schema)
                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
                .WithColumn("Title").AsString(_255).NotNullable()
                .WithColumn("Description").AsString(_1023).Nullable();
-        }
+        }      
         private void CreateInvoice()
         {
             var table = TableName.Invoice;
-            Create.Table(nameof(TableName.Invoice))
+            Create.Table(nameof(TableName.Invoice)).InSchema(_schema)
                 .WithColumn(Id).AsInt64().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("InvoiceTypeId").AsInt16().NotNullable()
-                     .ForeignKey(NamingHelper.Fk(TableName.InvoiceType, TableName.Invoice), nameof(TableName.InvoiceType), Id)
+                     .ForeignKey(NamingHelper.Fk(TableName.InvoiceType, TableName.Invoice), _schema, nameof(TableName.InvoiceType), Id)
                 .WithColumn("InvoiceStatusId").AsInt16().NotNullable()
-                     .ForeignKey(NamingHelper.Fk(TableName.InvoiceStatus, TableName.Invoice), nameof(TableName.InvoiceStatus), Id)
+                     .ForeignKey(NamingHelper.Fk(TableName.InvoiceStatus, TableName.Invoice), _schema, nameof(TableName.InvoiceStatus), Id)
                 .WithColumn("Amount").AsInt64().NotNullable()
                 .WithColumn("OfferingCount").AsInt16().NotNullable()
                 .WithColumn("DepositRate").AsInt16().NotNullable()
@@ -98,24 +129,24 @@ namespace Aban360.CalculationPool.Persistence.Migrations
         private void CreateInvoiceLineItem()
         {
             var table = TableName.InvoiceLineItem;
-            Create.Table(nameof(TableName.InvoiceLineItem))
+            Create.Table(nameof(TableName.InvoiceLineItem)).InSchema(_schema)
                 .WithColumn(Id).AsInt64().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("InvoiceId").AsInt64().NotNullable()
-                     .ForeignKey(NamingHelper.Fk(TableName.Invoice, TableName.InvoiceLineItem), nameof(TableName.Invoice), Id)
+                     .ForeignKey(NamingHelper.Fk(TableName.Invoice, TableName.InvoiceLineItem), _schema, nameof(TableName.Invoice), Id)
                 .WithColumn("OfferingId").AsInt16().NotNullable()
-                     .ForeignKey(NamingHelper.Fk(TableName.Offering, TableName.InvoiceLineItem), nameof(TableName.Offering), Id)
-                .WithColumn("InvoinceLineItemInsertModeId").AsInt16().NotNullable()
-                     .ForeignKey(NamingHelper.Fk(TableName.InvoiceLineItemInsertMode, TableName.InvoiceLineItem), nameof(TableName.InvoiceLineItemInsertMode), Id)
+                     .ForeignKey(NamingHelper.Fk(TableName.Offering, TableName.InvoiceLineItem), _schema, nameof(TableName.Offering), Id)
+                .WithColumn("InvoiceLineItemInsertModeId").AsInt16().NotNullable()
+                     .ForeignKey(NamingHelper.Fk(TableName.InvoiceLineItemInsertMode, TableName.InvoiceLineItem), _schema, nameof(TableName.InvoiceLineItemInsertMode), Id)                     
                 .WithColumn("Amount").AsInt64().NotNullable()
                 .WithColumn("Quanity").AsInt32().NotNullable();
         }
         private void CreateInvoiceInstallment()
         {
             var table= TableName.InvoiceInstallment;
-            Create.Table(nameof(TableName.InvoiceInstallment))
+            Create.Table(nameof(TableName.InvoiceInstallment)).InSchema(_schema)
                 .WithColumn (Id).AsInt64().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("InvoiceId").AsInt64().NotNullable()
-                     .ForeignKey(NamingHelper.Fk(TableName.Invoice, TableName.InvoiceInstallment), nameof(TableName.Invoice), Id)
+                     .ForeignKey(NamingHelper.Fk(TableName.Invoice, table), _schema, nameof(TableName.Invoice), Id)
                 .WithColumn("Amount").AsInt64().NotNullable() 
                 .WithColumn("DueDateJalali").AsAnsiString(10).NotNullable()
                 .WithColumn("DueDateTime").AsDateTime().NotNullable() 
@@ -123,6 +154,38 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                 .WithColumn("BillId").AsAnsiString(20).Nullable()
                 .WithColumn("PaymentId").AsAnsiString(20).Nullable();
         }
+        private void CreateInvoiceEvent()
+        {
+
+        }
         //private void CreateInvoiceStatus()
+
+        private void CreateTariffCalculationMode()
+        {
+            var table = TableName.TariffCalculationMode;
+            Create.Table(nameof(TableName.TariffCalculationMode)).InSchema(_schema)
+               .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
+               .WithColumn("Title").AsString(_255).NotNullable()
+               .WithColumn("Description").AsString(_1023).NotNullable();
+        }
+        private void CreateLineItemTypeGroup()//tax , calculation, comission, discount
+        {
+            var table = TableName.LineItemTypeGroup;
+            Create.Table(nameof(TableName.LineItemTypeGroup)).InSchema(_schema)
+               .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
+               .WithColumn("Title").AsString(_255).NotNullable()
+               .WithColumn("ImpactSign").AsInt16().NotNullable()
+               .WithColumn("Description").AsString(_1023).Nullable();
+        }
+        private void CreateLineItemType()//tax sub items: janbaz, shahid, tax sub items: 9%, 10%
+        {
+            var table = TableName.LineItemType;
+            Create.Table(nameof(TableName.LineItemType)).InSchema(_schema)
+               .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
+               .WithColumn("LineItemTypeGroupId").AsInt16().NotNullable()
+                     .ForeignKey(NamingHelper.Fk(TableName.LineItemTypeGroup, table), _schema, nameof(TableName.LineItemTypeGroup), Id)
+               .WithColumn("Title").AsString(_255).NotNullable()
+               .WithColumn("Description").AsString(_1023).Nullable();
+        }
     }
 }

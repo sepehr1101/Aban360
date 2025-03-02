@@ -1,9 +1,10 @@
-﻿using Aban360.Common.BaseEntities;
+﻿using Aban360.ClaimPool.Domain.Constants;
+using Aban360.Common.BaseEntities;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.People.Entities;
 
-[Table(nameof(IndividualTag))]
+[Table(nameof(IndividualTag), Schema = TableSchema.Name)]
 public class IndividualTag: IHashableEntity
 {
     public int Id { get; set; }

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.People.Entities;
 
-[Table(nameof(IndividualEstate))]
+[Table(nameof(IndividualEstate), Schema = TableSchema.Name)]
 public class IndividualEstate
 {
     public int Id { get; set; }

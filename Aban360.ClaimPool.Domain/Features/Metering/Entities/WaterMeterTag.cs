@@ -1,9 +1,10 @@
-﻿using Aban360.Common.BaseEntities;
+﻿using Aban360.ClaimPool.Domain.Constants;
+using Aban360.Common.BaseEntities;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.Metering.Entities;
 
-[Table(nameof(WaterMeterTag))]
+[Table(nameof(WaterMeterTag), Schema = TableSchema.Name)]
 public class WaterMeterTag:IHashableEntity
 {
     public int Id { get; set; }

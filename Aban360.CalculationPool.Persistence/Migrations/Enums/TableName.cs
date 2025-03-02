@@ -1,22 +1,23 @@
 ﻿namespace Aban360.CalculationPool.Persistence.Migrations.Enums
 {
     internal enum TableName
-    {
-        Offering,
+    {        
         OfferingUnit,
         OfferingGroup,
+        Offering,
+        CompanyServiceType,
+        CompanyService,
+        CompanyServiceOffering,
 
-        Invoice,
         InvoiceType,
-        InvoiceItem,
-        InvoiceInstallment,      
-        InsertMode,
-        InvoiceLineItem,
         InvoiceStatus, 
         InvoiceLineItemInsertMode,
+        Invoice,
+        InvoiceInstallment, 
+        InvoiceLineItem,
 
-        InsertResion,
-        Balance,
-
+        TariffCalculationMode,
+        LineItemTypeGroup,
+        LineItemType
     }
 }

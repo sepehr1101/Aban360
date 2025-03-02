@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Aban360.ClaimPool.Domain.Constants;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.People.Entities;
 
-[Table(nameof(IndividualType))]
+[Table(nameof(IndividualType), Schema = TableSchema.Name)]
 public class IndividualType
 {
     public short Id { get; set; }
