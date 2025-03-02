@@ -65,6 +65,13 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
+        private void CreateEstateBoundType()
+        {
+            var table = TableName.EstateBoundType;
+            Create.Table(nameof(TableName.EstateBoundType))
+                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+                .WithColumn("Title").AsString(_255).NotNullable();
+        }
         private void CreateEstate()
         {
             var table = TableName.Estate;
@@ -72,6 +79,8 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable().Identity()
                 .WithColumn("ConstructionTypeId").AsInt16().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.ConstructionType, table), nameof(TableName.ConstructionType), Id)
+                .WithColumn("EstateBoundTypeId").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.EstateBoundType, table), nameof(TableName.EstateBoundType), Id)
                 .WithColumn("PostalCode").AsFixedLengthAnsiString(10).Nullable()
                 .WithColumn("X").AsString(_31).Nullable()
                 .WithColumn("Y").AsString(_31).Nullable()
