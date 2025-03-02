@@ -6,5 +6,4 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
     {
         Task<ConsumerSummaryDto> GetInfo(string billId);
     }
-
 }

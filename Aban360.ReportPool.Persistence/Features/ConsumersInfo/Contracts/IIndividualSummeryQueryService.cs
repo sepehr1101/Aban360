@@ -2,7 +2,7 @@
 {
     public interface IIndividualSummeryQueryService
     {
-        Task<IndividualSummaryDto> GetOwnerShipSummery(string billId, short relationTypeId);
-        Task<IndividualSummaryDto> GetStakeHolderSummery(string billId, short relationTypeId);
+        Task<IEnumerable<IndividualSummaryDto>> GetOwnerShipSummery(string billId, short relationTypeId);
+        Task<IEnumerable<IndividualSummaryDto>> GetStakeHolderSummery(string billId, short relationTypeId);
     }
 }

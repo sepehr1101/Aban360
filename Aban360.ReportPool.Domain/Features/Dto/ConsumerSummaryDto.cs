@@ -5,9 +5,9 @@
         public int CustomerNumber { get; set; }
         public string BillId { get; set; } = default!;
         public string? ReadingNumber { get; set; }
-        public DateTime? InstallationDate { get; set; }
-        public DateTime? ProductDate { get; set; }
-        public DateTime? GuaranteeDate { get; set; }
+        public string InstallationDate { get; set; } = default!;
+        public string? ProductDate { get; set; }
+        public string? GuaranteeDate { get; set; }
         public string Address { get; set; } = default!;
         public short ContractualCapacity { get; set; }
         public short HouseholdNumber { get; set; }

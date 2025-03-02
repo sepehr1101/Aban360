@@ -131,7 +131,7 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn("ValidFrom").AsDateTime2().NotNullable()
                 .WithColumn("ValidTo").AsDateTime2().Nullable()
                 .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
-                .WithColumn("RemoveLogInfo").AsString(int.MinValue).Nullable()
+                .WithColumn("RemoveLogInfo").AsString(int.MaxValue).Nullable()
                 .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
         }
         private void CreateRole()
@@ -149,7 +149,7 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn("ValidFrom").AsDateTime2().NotNullable()
                 .WithColumn("ValidTo").AsDateTime2().Nullable()
                 .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
-                .WithColumn("RemoveLogInfo").AsString(int.MinValue).Nullable()
+                .WithColumn("RemoveLogInfo").AsString(int.MaxValue).Nullable()
                 .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
         }
         private void CreateUserRole()
@@ -166,7 +166,7 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn("ValidFrom").AsDateTime2().NotNullable()
                 .WithColumn("ValidTo").AsDateTime2().Nullable()
                 .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
-                .WithColumn("RemoveLogInfo").AsString(int.MinValue).Nullable()
+                .WithColumn("RemoveLogInfo").AsString(int.MaxValue).Nullable()
                 .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
         }
         private void CreateUserClaim()
@@ -183,7 +183,7 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn("ValidFrom").AsDateTime2().NotNullable()
                 .WithColumn("ValidTo").AsDateTime2().Nullable()
                 .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
-                .WithColumn("RemoveLogInfo").AsString(int.MinValue).Nullable()
+                .WithColumn("RemoveLogInfo").AsString(int.MaxValue).Nullable()
                 .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
         }
         private void CreateUserToken()

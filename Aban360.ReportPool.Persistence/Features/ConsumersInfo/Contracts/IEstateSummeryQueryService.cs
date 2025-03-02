@@ -2,6 +2,6 @@
 {
     public interface IEstateSummeryQueryService
     {
-        Task<ResultEstateDto> GetSummery(string billId);
+        Task<IEnumerable<ResultEstateDto>> GetSummery(string billId);
     }
 }

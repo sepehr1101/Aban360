@@ -1,6 +1,6 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Contracts;
-using Aban360.UserPool.Application.Exceptions;
+using Aban360.UserPool.Application.Common.Base;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Implementations
 {
-    public class UserCreateHandler : IUserCreateHandler
+    internal sealed class UserCreateHandler : UserBaseCreateOrUpdateService, IUserCreateHandler
     {
         private readonly IUserCommandService _userCommandService;
         private readonly IUserClaimCommandService _userClaimCommandService;
@@ -57,15 +57,15 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
             var logInfoString = JsonOperation.Marshal(logInfo);
             Guid operationGroupId = Guid.NewGuid();
 
-            var zoneCount = await _zoneCountQueryAddhoc.GetCount(userCreateDto.ZoneId, cancellationToken);
-            var endpointValue = await _endpointQueryService.GetAuthValue(userCreateDto.EndpointId.ToArray());
-            Validate(zoneCount,endpointValue,userCreateDto);
+            var zoneCount = await _zoneCountQueryAddhoc.GetCount(userCreateDto.SelectedZoneIds, cancellationToken);
+            var endpointValue = await _endpointQueryService.GetAuthValue(userCreateDto.SelectedEndpointIds.ToArray());
+            Validate(zoneCount,userCreateDto.SelectedZoneIds.Count(),endpointValue.Count(), userCreateDto.SelectedEndpointIds.Count());
 
-            var zones = CreateUserClaim(userCreateDto.ZoneId.Select(x=>x.ToString()).ToList(), ClaimType.ZoneId, logInfoString, operationGroupId);
-            var endpionts = CreateUserClaim(endpointValue,ClaimType.Endpoint, logInfoString, operationGroupId);
+            var zones = CreateUserClaim(userCreateDto.SelectedZoneIds.Select(x=>x.ToString()).ToList(), ClaimType.ZoneId, logInfoString, operationGroupId, operationGroupId);
+            var endpionts = CreateUserClaim(endpointValue,ClaimType.Endpoint, logInfoString, operationGroupId, operationGroupId);
             var userCliams = zones.Union(endpionts).ToList();
 
-            var userRoles = CreateUserRoles(userCreateDto.RoleIds, logInfoString, operationGroupId, operationGroupId);
+            var userRoles = CreateUserRoles(userCreateDto.SelectedRoleIds, logInfoString, operationGroupId, operationGroupId);
             var user = _mapper.Map<User>(userCreateDto);
             user.Id = operationGroupId;
             user.InsertLogInfo = logInfoString;
@@ -74,48 +74,6 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
             await _userCommandService.Add(user);
             await _userClaimCommandService.Add(userCliams);
             await _userRoleCommandService.Add(userRoles);
-        }
-
-        private ICollection<UserClaim> CreateUserClaim( ICollection<string> value, ClaimType claimType, string logInfo, Guid operationGroupId)
-        {
-            return value.Select(x => new UserClaim()
-                   {
-                       ClaimTypeId = claimType,
-                       ClaimValue = x,
-                       InsertGroupId = operationGroupId,
-                       InsertLogInfo = logInfo,
-                       //ValidFrom = DateTime.Now,
-                       ValidTo = null,
-                       UserId = operationGroupId
-                   }).ToList();
-
-        }
-        private void Validate(int zoneCount, ICollection<string> endpoint, UserCreateDto userCreateDto)
-        {
-            if (zoneCount != userCreateDto.ZoneId.Count() || endpoint.Count() != userCreateDto.EndpointId.Count())
-            {
-                throw new InvalidIdException();
-            }
-        }
-
-        private ICollection<UserRole> CreateUserRoles(ICollection<int> roleIds, string logInfoString, Guid operationGroupId, Guid userId)
-        {
-            return roleIds
-                .Select(roleId => CreateUserRole(roleId, logInfoString, operationGroupId, userId))
-                .ToList();
-
-            UserRole CreateUserRole(int roleId, string logInfoString, Guid operationGroupId, Guid userId)
-            {
-                return new UserRole()
-                {
-                    RoleId = roleId,
-                    InsertGroupId = operationGroupId,
-                    InsertLogInfo = logInfoString,
-                    //ValidFrom = DateTime.Now,
-                    ValidTo = null,
-                    UserId = userId
-                };
-            }
         }
     }
 }

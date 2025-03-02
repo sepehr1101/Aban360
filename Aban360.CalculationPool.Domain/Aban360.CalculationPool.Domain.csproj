@@ -12,4 +12,9 @@
     <Folder Include="Features\Line\Entities\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Bill\Dtos\" />
+    <Folder Include="Features\Rule\" />
+  </ItemGroup>
+
 </Project>

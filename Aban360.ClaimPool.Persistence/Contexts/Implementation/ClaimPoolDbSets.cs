@@ -12,6 +12,8 @@ namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
         public virtual DbSet<Estate> Estates { get; set; }
         public virtual DbSet<Flat> Flats { get; set; }
         public virtual DbSet<Usage> Usages { get; set; }
+        public virtual DbSet<Guild> Guilds { get; set; }
+        public virtual DbSet<Profession> Professions { get; set; }
         public virtual DbSet<MeterDiameter> MeterDiameters { get; set; }
         public virtual DbSet<MeterMaterial> MeterMaterials { get; set; }
         public virtual DbSet<MeterProducer> MeterProducers { get; set; }

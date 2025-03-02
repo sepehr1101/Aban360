@@ -38,6 +38,26 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn("ProvinceId").AsInt16().NotNullable();
         }
+        private void CreateGuild()
+        {
+            var table = TableName.Guild;
+            Create.Table(nameof(TableName.Guild))
+                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+                .WithColumn("UsageId").AsInt16().NotNullable()
+                   .ForeignKey(NamingHelper.Fk(TableName.Usage, table), nameof(TableName.Usage), Id)
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Description").AsInt16().NotNullable();
+        }
+        private void CreateProfession()
+        {
+            var table=TableName.Profession;
+            Create.Table(nameof(TableName.Profession))
+               .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+               .WithColumn("GuildId").AsInt16().NotNullable()
+                  .ForeignKey(NamingHelper.Fk(TableName.Guild, table), nameof(TableName.Guild), Id)
+               .WithColumn("Title").AsString(_255).NotNullable()
+               .WithColumn("Description").AsInt16().NotNullable();
+        }
         private void CreateConstructionType()
         {
             var table = TableName.ConstructionType;

@@ -8,7 +8,7 @@
         Invoice,
         InvoiceType,
         InvoiceItem,
-        InvoiceInstallment,
+        InvoiceInstallment,      
         InsertMode,
         InsertResion,
         Balance

@@ -14,20 +14,23 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         }
         public async Task<ConsumerSummaryDto> GetInfo(string billId)
         {
-            string getSummery = GetConsumerSummaryDtoQuery();
-            ConsumerSummaryDto? summery = await _sqlConnection.QuerySingleAsync<ConsumerSummaryDto>(getSummery, new { id = billId });
+            string summaryQuery = GetConsumerSummaryDtoQuery();
+            ConsumerSummaryDto? summaryInfo = await _sqlConnection.QuerySingleOrDefaultAsync<ConsumerSummaryDto>(summaryQuery, new { id = billId });
 
-            string getWaterMeterTag = GetWaterMeterTagsQuery();
-            IEnumerable<string> tags = await _sqlConnection.QueryAsync<string>(getWaterMeterTag, new { id = billId });
+            string tagQuery = GetWaterMeterTagsQuery();
+            IEnumerable<string> tags = await _sqlConnection.QueryAsync<string>(tagQuery, new { id = billId });
 
-            summery.WaterMeterTags = tags.ToList();
-            return summery;
+            if (summaryInfo is not null)
+            {
+                summaryInfo.WaterMeterTags = new[] { "سگ نگهبان", "گیاه اکالیپتوس" };//tags.ToList();
+            }
+            return summaryInfo;
         }
 
         private string GetConsumerSummaryDtoQuery()
         {
             string query = @"
-                SELECT DISTINCT TOP 1
+                SELECT TOP 1
                     W.CustomerNumber,
                     W.BillId,
                     W.ReadingNumber,
@@ -49,13 +52,14 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     UU.Title AS UsageSell,
                     I.FullName,
                     S.InstallationDate AS SiphonInstallationDate,
-                    H.Title AS Headquarter,
-                    P.Title AS Province,
-                    R.Title AS Region,
-                    Z.Title AS Zone,
-                    M.Title AS Municipality
+                    CD.Title CordinalDirectionTitle,
+                    H.Title AS HeadquartersTitle,
+                    P.Title AS ProvinceTitle,
+                    R.Title AS RegionTitle,
+                    Z.Title AS ZoneTitle,
+                    M.Title AS MunicipalityTitle
                 FROM WaterMeter W
-                LEFT JOIN Estate E ON W.EstateId = E.Id
+                JOIN Estate E ON W.EstateId = E.Id
                 LEFT JOIN IndividualEstate IE ON E.Id = IE.EstateId
                 LEFT JOIN Individual I ON IE.IndividualId = I.Id
                 LEFT JOIN ConstructionType C ON E.ConstructionTypeId = C.Id
@@ -69,6 +73,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                 LEFT JOIN Region R ON Z.RegionId = R.Id
                 LEFT JOIN Headquarters H ON R.HeadquartersId = H.Id
                 LEFT JOIN Province P ON H.ProvinceId = P.Id
+                LEFT JOIN CordinalDirection CD ON P.CordinalDirectionId = CD.Id
                 WHERE W.BillId = @id";
             return query;
         }
@@ -78,8 +83,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             string query = @"
                 SELECT WTD.Title
                 FROM WaterMeter W
-                LEFT JOIN WaterMeterTag WT ON W.Id = WT.WaterMeterId
-                LEFT JOIN WaterMeterTagDefinition WTD ON WT.WaterMeterTagDefinitionId = WTD.Id
+                JOIN WaterMeterTag WT ON W.Id = WT.WaterMeterId
+                JOIN WaterMeterTagDefinition WTD ON WT.WaterMeterTagDefinitionId = WTD.Id
                 WHERE W.BillId = @id";
             return query;
         }
