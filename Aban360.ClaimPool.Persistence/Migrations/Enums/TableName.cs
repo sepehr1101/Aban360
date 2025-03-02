@@ -14,6 +14,7 @@
         Guild,
         Profession,
         ConstructionType,
+        EstateBoundType,
 
         MeterDiameter,
         MeterType,
