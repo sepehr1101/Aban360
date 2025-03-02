@@ -21,12 +21,17 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
 
         public async Task<Guild> Get(short id)
         {
-            return await _uow.FindOrThrowAsync<Guild>(id);
+            return await _guild
+                  .Include(x => x.Usage)
+                  .Where(x => x.Id == id)
+                  .SingleAsync();
         }
 
         public async Task<ICollection<Guild>> Get()
         {
-            return await _guild.ToListAsync();
+            return await _guild
+                  .Include(x=>x.Usage)
+                  .ToListAsync();
         }
     }
 }

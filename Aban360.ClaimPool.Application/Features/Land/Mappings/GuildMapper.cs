@@ -9,11 +9,10 @@ namespace Aban360.ClaimPool.Application.Features.Land.Mappings
     {
         public GuildMapper()
         {
-            CreateMap<GuildCreateDto, Guild>().ReverseMap();
-            CreateMap<GuildDeleteDto, Guild>().ReverseMap();
-            CreateMap<GuildUpdateDto, Guild>().ReverseMap();
-            CreateMap<GuildGetDto, Guild>()
-                .ReverseMap()
+            CreateMap<GuildCreateDto, Guild>();
+            CreateMap<GuildDeleteDto, Guild>();
+            CreateMap<GuildUpdateDto, Guild>();
+            CreateMap<Guild, GuildGetDto>()
                 .ForMember(dest => dest.UsageTitle, opt => opt.MapFrom(src => src.Usage.Title));
         }
     }

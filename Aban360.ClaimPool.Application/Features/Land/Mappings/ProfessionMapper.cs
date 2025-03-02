@@ -9,11 +9,10 @@ namespace Aban360.ClaimPool.Application.Features.Land.Mappings
     {
         public ProfessionMapper()
         {
-            CreateMap<ProfessionCreateDto, Profession>().ReverseMap();
-            CreateMap<ProfessionDeleteDto, Profession>().ReverseMap();
-            CreateMap<ProfessionUpdateDto, Profession>().ReverseMap();
-            CreateMap<ProfessionGetDto, Profession>()
-                .ReverseMap()
+            CreateMap<ProfessionCreateDto, Profession>();
+            CreateMap<ProfessionDeleteDto, Profession>();
+            CreateMap<ProfessionUpdateDto, Profession>();
+            CreateMap<Profession,ProfessionGetDto>()
                 .ForMember(dest => dest.GuildTitle, opt => opt.MapFrom(src => src.Guild.Title));
         }
     }

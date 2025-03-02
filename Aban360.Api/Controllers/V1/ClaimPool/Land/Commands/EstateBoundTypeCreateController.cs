@@ -7,28 +7,28 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
 {
-    [Route("v1/profession")]
-    public class ProfessionCreateController : BaseController
+    [Route("v1/estate-bound-type")]
+    public class EstateBoundTypeCreateController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
-        private readonly IProfessionCreateHandler _professionHandler;
-        public ProfessionCreateController(
+        private readonly IEstateBoundTypeCreateHandler _createHandler;
+        public EstateBoundTypeCreateController(
             IUnitOfWork uow,
-            IProfessionCreateHandler professionHandler)
+            IEstateBoundTypeCreateHandler createHandler)
         {
             _uow = uow;
             _uow.NotNull(nameof(_uow));
 
-            _professionHandler = professionHandler;
-            _professionHandler.NotNull(nameof(professionHandler));
+            _createHandler = createHandler;
+            _createHandler.NotNull(nameof(_createHandler));
         }
 
         [HttpPost]
         [Route("create")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ProfessionCreateDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Create([FromBody] ProfessionCreateDto createDto, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponseEnvelope<EstateBoundTypeCreateDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Create([FromBody] EstateBoundTypeCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _professionHandler.Handle(createDto, cancellationToken);
+            await _createHandler.Handle(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
