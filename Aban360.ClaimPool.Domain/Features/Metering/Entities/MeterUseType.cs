@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.Metering.Entities;
 
-[Table(nameof(MeterUseType))]
+[Table(nameof(MeterUseType), Schema = TableSchema.Name)]
 public class MeterUseType
 {
     public MeterUseTypeEnum Id { get; set; }

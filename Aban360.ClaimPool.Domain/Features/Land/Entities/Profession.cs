@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Aban360.ClaimPool.Domain.Constants;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.Land.Entities;
 
-[Table(nameof(Profession))]
+[Table(nameof(Profession), Schema = TableSchema.Name)]
 public class Profession
 {
     public short Id { get; set; }

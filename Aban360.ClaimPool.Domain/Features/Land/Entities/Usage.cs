@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Aban360.ClaimPool.Domain.Constants;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.Land.Entities;
 
-[Table(nameof(Usage))]
+[Table(nameof(Usage), Schema = TableSchema.Name)]
 public class Usage
 {
     public short Id { get; set; }

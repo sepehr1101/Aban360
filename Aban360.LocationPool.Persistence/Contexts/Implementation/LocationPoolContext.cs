@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.Db.Context;
+using Aban360.LocationPool.Persistence.Constants;
 using Aban360.LocationPool.Persistence.Contexts.Contracts;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,7 +24,8 @@ namespace Aban360.UserPool.Persistence.Contexts.Implementation
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {            
+        {
+            modelBuilder.HasDefaultSchema(TableSchema.Name);
             OnModelCreatingPartial(modelBuilder);
         }
 

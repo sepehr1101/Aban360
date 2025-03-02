@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Aban360.ClaimPool.Domain.Constants;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.Metering.Entities;
 
-[Table(nameof(WaterMeterTagDefinition))]
+[Table(nameof(WaterMeterTagDefinition), Schema = TableSchema.Name)]
 public class WaterMeterTagDefinition
 {
     public short Id { get; set; }
