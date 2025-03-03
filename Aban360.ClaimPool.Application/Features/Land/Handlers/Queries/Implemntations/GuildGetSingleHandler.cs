@@ -24,10 +24,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
         public async Task<GuildGetDto> Handle(short id, CancellationToken cancellationToken)
         {
             var guild = await _queryService.Get(id);
-            if (guild == null)
-            {
-                throw new InvalidDataException();
-            }
             return _mapper.Map<GuildGetDto>(guild);
         }
     }

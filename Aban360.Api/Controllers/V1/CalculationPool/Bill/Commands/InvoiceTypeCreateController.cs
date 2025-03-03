@@ -1,6 +1,7 @@
 ﻿using Aban360.CalculationPool.Application.Features.Bil.Handlers.Commands.Create.Contracts;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.CalculationPool.Persistence.Contexts.Contracts;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,6 +25,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bil.Commands
 
         [HttpPost]
         [Route("create")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<InvoiceTypeCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] InvoiceTypeCreateDto createDto, CancellationToken cancellationToken)
         {
             await _invoiceTypeCreateHandler.Handle(createDto, cancellationToken);

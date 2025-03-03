@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations
 {
-    public class GuildCreateHandler : IGuildCreateHandler
+    internal sealed class GuildCreateHandler : IGuildCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IGuildCommandService _commandService;

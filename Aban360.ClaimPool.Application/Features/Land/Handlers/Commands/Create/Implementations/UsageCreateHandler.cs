@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations
 {
-    public class UsageCreateHandler : IUsageCreateHandler
+    internal sealed class UsageCreateHandler : IUsageCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IUsageCommandSevice _usageCommandService;

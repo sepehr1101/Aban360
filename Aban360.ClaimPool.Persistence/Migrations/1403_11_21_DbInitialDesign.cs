@@ -49,7 +49,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("UsageId").AsInt16().NotNullable()
                    .ForeignKey(NamingHelper.Fk(TableName.Usage, table), _schema, nameof(TableName.Usage), Id)
                 .WithColumn("Title").AsString(_255).NotNullable()
-                .WithColumn("Description").AsInt16().NotNullable();
+                .WithColumn("Description").AsString(_255).Nullable();
         }
         private void CreateProfession()
         {
@@ -59,7 +59,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                .WithColumn("GuildId").AsInt16().NotNullable()
                   .ForeignKey(NamingHelper.Fk(TableName.Guild, table), _schema, nameof(TableName.Guild), Id)
                .WithColumn("Title").AsString(_255).NotNullable()
-               .WithColumn("Description").AsInt16().NotNullable();
+               .WithColumn("Description").AsString(_255).Nullable();
         }
         private void CreateConstructionType()
         {

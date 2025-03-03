@@ -12,7 +12,7 @@ public class Profession
 
     public string Title { get; set; } = null!;
 
-    public short Description { get; set; }
+    public string? Description { get; set; }
 
     public virtual Guild Guild { get; set; } = null!;
 }
