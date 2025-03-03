@@ -7,25 +7,25 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations
 {
-    public class ProfessionCreateHandler : IProfessionCreateHandler
+    internal sealed class ProfessionCreateHandler : IProfessionCreateHandler
     {
         private readonly IMapper _mapper;
-        private readonly IProfessionCommandService _commandService;
+        private readonly IProfessionCommandService _professionCommandService;
         public ProfessionCreateHandler(
             IMapper mapper,
-            IProfessionCommandService commandService)
+            IProfessionCommandService professionCommandService)
         {
             _mapper = mapper;
             _mapper.NotNull(nameof(mapper));
 
-            _commandService = commandService;
-            _commandService.NotNull(nameof(commandService));
+            _professionCommandService = professionCommandService;
+            _professionCommandService.NotNull(nameof(_professionCommandService));
         }
 
         public async Task Handle(ProfessionCreateDto createDto, CancellationToken cancellationToken)
         {
             var profession = _mapper.Map<Profession>(createDto);
-            await _commandService.Add(profession);
+            await _professionCommandService.Add(profession);
         }
     }
 }

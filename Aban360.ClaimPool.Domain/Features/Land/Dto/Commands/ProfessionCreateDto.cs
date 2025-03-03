@@ -5,6 +5,6 @@
         public short Id { get; set; }
         public short GuildId { get; set; }
         public string Title { get; set; } = null!;
-        public short Description { get; set; }
+        public string? Description { get; set; }
     }
 }

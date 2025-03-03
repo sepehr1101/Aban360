@@ -4,8 +4,8 @@
     {
         public short Id { get; set; }
         public short UsageId { get; set; }
-        public string UsageTitle { get; set; }
+        public string UsageTitle { get; set; } = default!;
         public string Title { get; set; } = null!;
-        public short Description { get; set; }
+        public string? Description { get; set; }
     }
 }
