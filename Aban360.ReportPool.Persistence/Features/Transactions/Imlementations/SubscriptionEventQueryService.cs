@@ -29,7 +29,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             select
 	            Id,PreviousNumber PreviousMeterNumber,NextNumber NextMeterNumber, PreviousDay PreviousMeterDate,NextDay CurrentMeterDate,RegisterDay RegisterDate,SumItems DebtAmount,0 OweAmount,TypeId as [Description], ConsumptionAverage, NULL BankTitle
             from Bills
-            where (BillId)='10018315'
+            where (BillId)=@billId
             union
             select
 	            Id, 0 PreviousMeterNumber,0 NextMeterNumber,NULL PreviousMeterDate,NULL CurrentMeterDate, RegisterDay RegisterDate, 0 DebtAmount, Amount OweAmount, N'پرداخت' [Description], 0, BankName BankTitle

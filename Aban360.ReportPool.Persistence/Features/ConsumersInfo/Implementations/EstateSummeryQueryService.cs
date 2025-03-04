@@ -23,8 +23,8 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
             return @" SELECT
                         E.Id, E.Premises,E.X,E.Y,
                         E.ImprovementsCommercial,E.ImprovementsDomestic,E.ImprovementsOther,E.ImprovementsOverall
-                      from WaterMeter W
-                      left join Estate E on W.EstateId=E.Id
+                      from [ClaimPool].WaterMeter W
+                      left join [ClaimPool].Estate E on W.EstateId=E.Id
                       where W.BillId=@id";
         }
     }
