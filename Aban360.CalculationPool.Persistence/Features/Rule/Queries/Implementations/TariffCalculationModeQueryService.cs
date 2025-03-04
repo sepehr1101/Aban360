@@ -1,6 +1,6 @@
 ﻿using Aban360.CalculationPool.Domain.Features.Rule.Entities;
 using Aban360.CalculationPool.Persistence.Contexts.Contracts;
-using Aban360.CalculationPool.Persistence.Features.Rule.Queries.Commands;
+using Aban360.CalculationPool.Persistence.Features.Rule.Queries.Contracts;
 using Aban360.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 

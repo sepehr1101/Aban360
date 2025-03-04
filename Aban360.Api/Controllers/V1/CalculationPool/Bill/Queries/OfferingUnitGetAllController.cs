@@ -1,4 +1,4 @@
-﻿using Aban360.CalculationPool.Application.Features.Bil.Handlers.Quries.Contracts;
+﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
 using Aban360.Common.Categories.ApiResponse;
