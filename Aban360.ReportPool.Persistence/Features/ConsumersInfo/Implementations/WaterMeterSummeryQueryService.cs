@@ -26,9 +26,9 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
                       W.InstallationDate,
                       MUT.Title as MeterUseTypeTitle,
                       MD.Title as MeterDiameterTitle
-                    FROM WaterMeter W
-                    JOIN MeterUseType MUT on W.MeterUseTypeId=MUT.Id
-                    JOIN MeterDiameter MD on W.MeterDiameterId=MD.Id
+                    FROM [ClaimPool].WaterMeter W
+                    JOIN [ClaimPool].MeterUseType MUT on W.MeterUseTypeId=MUT.Id
+                    JOIN [ClaimPool].MeterDiameter MD on W.MeterDiameterId=MD.Id
                     WHERE W.BillId=@billId and MUT.Id=@meterUseTypeId";
         }
     }

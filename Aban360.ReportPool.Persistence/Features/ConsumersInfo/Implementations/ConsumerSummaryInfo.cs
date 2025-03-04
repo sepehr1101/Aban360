@@ -58,22 +58,22 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     R.Title AS RegionTitle,
                     Z.Title AS ZoneTitle,
                     M.Title AS MunicipalityTitle
-                FROM WaterMeter W
-                JOIN Estate E ON W.EstateId = E.Id
-                LEFT JOIN IndividualEstate IE ON E.Id = IE.EstateId
-                LEFT JOIN Individual I ON IE.IndividualId = I.Id
-                LEFT JOIN ConstructionType C ON E.ConstructionTypeId = C.Id
-                LEFT JOIN Flat F ON E.Id = F.EstateId
-                LEFT JOIN Usage U ON E.UsageConsumtionId = U.Id
-                LEFT JOIN Usage UU ON E.UsageSellId = UU.Id
-                LEFT JOIN WaterMeterSiphon WS ON W.Id = WS.WaterMeterId
-                LEFT JOIN Siphon S ON WS.SiphonId = S.Id
-                LEFT JOIN Municipality M ON E.MunipulityId = M.Id
-                LEFT JOIN Zone Z ON M.ZoneId = Z.Id
-                LEFT JOIN Region R ON Z.RegionId = R.Id
-                LEFT JOIN Headquarters H ON R.HeadquartersId = H.Id
-                LEFT JOIN Province P ON H.ProvinceId = P.Id
-                LEFT JOIN CordinalDirection CD ON P.CordinalDirectionId = CD.Id
+                FROM [ClaimPool].WaterMeter W
+                JOIN [ClaimPool].Estate E ON W.EstateId = E.Id
+                LEFT JOIN [ClaimPool].IndividualEstate IE ON E.Id = IE.EstateId
+                LEFT JOIN [ClaimPool].Individual I ON IE.IndividualId = I.Id
+                LEFT JOIN [ClaimPool].ConstructionType C ON E.ConstructionTypeId = C.Id
+                LEFT JOIN [ClaimPool].Flat F ON E.Id = F.EstateId
+                LEFT JOIN [ClaimPool].Usage U ON E.UsageConsumtionId = U.Id
+                LEFT JOIN [ClaimPool].Usage UU ON E.UsageSellId = UU.Id
+                LEFT JOIN [ClaimPool].WaterMeterSiphon WS ON W.Id = WS.WaterMeterId
+                LEFT JOIN [ClaimPool].Siphon S ON WS.SiphonId = S.Id
+                LEFT JOIN [LocationPool].Municipality M ON E.MunipulityId = M.Id
+                LEFT JOIN [LocationPool].Zone Z ON M.ZoneId = Z.Id
+                LEFT JOIN [LocationPool].Region R ON Z.RegionId = R.Id
+                LEFT JOIN [LocationPool].Headquarters H ON R.HeadquartersId = H.Id
+                LEFT JOIN [LocationPool].Province P ON H.ProvinceId = P.Id
+                LEFT JOIN [LocationPool].CordinalDirection CD ON P.CordinalDirectionId = CD.Id
                 WHERE W.BillId = @id";
             return query;
         }
@@ -82,9 +82,9 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         {
             string query = @"
                 SELECT WTD.Title
-                FROM WaterMeter W
-                JOIN WaterMeterTag WT ON W.Id = WT.WaterMeterId
-                JOIN WaterMeterTagDefinition WTD ON WT.WaterMeterTagDefinitionId = WTD.Id
+                FROM [ClaimPool].WaterMeter W
+                JOIN [ClaimPool].WaterMeterTag WT ON W.Id = WT.WaterMeterId
+                JOIN [ClaimPool].WaterMeterTagDefinition WTD ON WT.WaterMeterTagDefinitionId = WTD.Id
                 WHERE W.BillId = @id";
             return query;
         }

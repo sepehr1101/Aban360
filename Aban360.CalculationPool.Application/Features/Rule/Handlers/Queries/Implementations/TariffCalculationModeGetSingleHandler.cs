@@ -1,6 +1,6 @@
 ﻿using Aban360.CalculationPool.Application.Features.Rule.Handlers.Queries.Contracts;
 using Aban360.CalculationPool.Domain.Features.Rule.Dto.Queries;
-using Aban360.CalculationPool.Persistence.Features.Rule.Queries.Commands;
+using Aban360.CalculationPool.Persistence.Features.Rule.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
 

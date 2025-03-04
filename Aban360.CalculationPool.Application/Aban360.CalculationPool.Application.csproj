@@ -18,8 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Bil\Validations\" />
-    <Folder Include="Features\Rule\Validations\" />
+                <Folder Include="Features\Rule\Validations\" />
   </ItemGroup>
 
 </Project>

@@ -26,11 +26,11 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
                        S.InstallationDate,
                        ST.Title as SiphonTypeTitle,
                        SD.Title as SiphonDiameterTitle
-                    from WaterMeter W
-                    join WaterMeterSiphon WS on W.Id=WS.WaterMeterId
-                    join Siphon S on WS.SiphonId=S.Id                   
-                    join SiphonDiameter SD on S.SiphonDiameterId=SD.Id
-                    LEFT OUTER JOIN SiphonType ST on S.SiphonTypeId=ST.Id
+                    from [ClaimPool].WaterMeter W
+                    join [ClaimPool].WaterMeterSiphon WS on W.Id=WS.WaterMeterId
+                    join [ClaimPool].Siphon S on WS.SiphonId=S.Id                   
+                    join [ClaimPool].SiphonDiameter SD on S.SiphonDiameterId=SD.Id
+                    LEFT OUTER JOIN [ClaimPool].SiphonType ST on S.SiphonTypeId=ST.Id
                     where W.BillId=@billId";
         }
     }

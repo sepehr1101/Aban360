@@ -22,9 +22,9 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
         {
             return @" select
                         F.Id, F.PostalCode,F.Storey,F.Description
-                      from WaterMeter W
-                      join Estate E on W.EstateId=E.Id
-                      join Flat F on E.Id=F.EstateId 
+                      from [ClaimPool].WaterMeter W
+                      join [ClaimPool].Estate E on W.EstateId=E.Id
+                      join [ClaimPool].Flat F on E.Id=F.EstateId 
                       where W.BillId=@id";
         }
     }

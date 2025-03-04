@@ -1,4 +1,4 @@
-﻿using Aban360.CalculationPool.Application.Features.Bil.Handlers.Commands.Delete.Contracts;
+﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Delete.Contracts;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.CalculationPool.Persistence.Contexts.Contracts;
 using Aban360.Common.Extensions;

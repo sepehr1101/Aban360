@@ -29,20 +29,20 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
         {
             return @"SELECT
                         I.Id, I.FullName,I.FatherName,I.NationalId,I.PhoneNumbers,I.MobileNumbers
-                     from WaterMeter W
-                     join Estate E on W.EstateId=E.Id
-                     join IndividualEstate IE on E.Id=IE.EstateId
-                     join Individual I on IE.IndividualId=I.Id
+                     from [ClaimPool].WaterMeter W
+                     join [ClaimPool].Estate E on W.EstateId=E.Id
+                     join [ClaimPool].IndividualEstate IE on E.Id=IE.EstateId
+                     join [ClaimPool].Individual I on IE.IndividualId=I.Id
                      where W.BillId=@billId and IE.IndividualEstateRelationTypeId=@relationTypeId";
         }
         private string GetIndividualStakeHolderQuery()
         {
             return @"SELECT
                         I.Id, I.FullName,I.FatherName,I.NationalId,I.PhoneNumbers,I.MobileNumbers
-                     from WaterMeter W
-                     left join Estate E on W.EstateId=E.Id
-                     left join IndividualEstate IE on E.Id=IE.EstateId
-                     left join Individual I on IE.IndividualId=I.Id
+                     from [ClaimPool].WaterMeter W
+                     left join [ClaimPool].Estate E on W.EstateId=E.Id
+                     left join [ClaimPool].IndividualEstate IE on E.Id=IE.EstateId
+                     left join [ClaimPool].Individual I on IE.IndividualId=I.Id
                      where W.BillId=@billId and IE.IndividualEstateRelationTypeId <> @relationTypeId";
         }
     }
