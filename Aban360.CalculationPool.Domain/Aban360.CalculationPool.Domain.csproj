@@ -6,14 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Line\Dto\Commands\" />
-    <Folder Include="Features\Line\Dto\Queries\" />
-    <Folder Include="Features\Line\Entities\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Features\Rule\" />
-  </ItemGroup>
-
 </Project>

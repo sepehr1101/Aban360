@@ -1,4 +1,5 @@
 ﻿using Aban360.CalculationPool.Domain.Features.Bill.Entities;
+using Aban360.CalculationPool.Domain.Features.Rule.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.CalculationPool.Persistence.Contexts.Implementations
@@ -10,6 +11,9 @@ namespace Aban360.CalculationPool.Persistence.Contexts.Implementations
         public virtual DbSet<OfferingGroup> OfferingGroups { get; set; }
 
         public virtual DbSet<OfferingUnit> OfferingUnits { get; set; }
+        public virtual DbSet<CompanyService> CompanyServices{ get; set; }
+        public virtual DbSet<CompanyServiceType> CompanyServiceTypes{ get; set; }
+        public virtual DbSet<CompanyServiceOffering> CompanyServiceOfferings{ get; set; }
 
         public virtual DbSet<InvoiceType> InvoiceTypes { get; set; }
         public virtual DbSet<InvoiceStatus> InvoiceStatuses { get; set; }
@@ -17,5 +21,9 @@ namespace Aban360.CalculationPool.Persistence.Contexts.Implementations
         public virtual DbSet<Invoice> Invoices { get; set; }
         public virtual DbSet<InvoiceInstallment> InvoiceInstallments { get; set; }
         public virtual DbSet<InvoiceLineItem> InvoiceLineItems { get; set; }
+        public virtual DbSet<LineItemType> LineItemTypes{ get; set; }
+        public virtual DbSet<LineItemTypeGroup> LineItemTypeGroups{ get; set; }
+        public virtual DbSet<TariffCalculationMode> TariffCalculationModes{ get; set; }
+
     }
 }
