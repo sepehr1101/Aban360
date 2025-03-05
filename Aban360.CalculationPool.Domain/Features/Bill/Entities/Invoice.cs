@@ -12,7 +12,7 @@ public class Invoice
     public short InvoiceStatusId { get; set; }
 
     public long Amount { get; set; }
-
+    //currency
     public short OfferingCount { get; set; }
 
     public short DepositRate { get; set; }

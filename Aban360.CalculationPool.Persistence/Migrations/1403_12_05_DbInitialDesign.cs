@@ -168,7 +168,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                .WithColumn("Title").AsString(_255).NotNullable()
                .WithColumn("Description").AsString(_1023).NotNullable();
         }
-        private void CreateLineItemTypeGroup()//tax , calculation, comission, discount
+        private void CreateLineItemTypeGroup()//Tax , Main,Karmozd-> karmozd Karshenasi, Takhfif
         {
             var table = TableName.LineItemTypeGroup;
             Create.Table(nameof(TableName.LineItemTypeGroup)).InSchema(_schema)
@@ -177,7 +177,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                .WithColumn("ImpactSign").AsInt16().NotNullable()
                .WithColumn("Description").AsString(_1023).Nullable();
         }
-        private void CreateLineItemType()//tax sub items: janbaz, shahid, tax sub items: 9%, 10%
+        private void CreateLineItemType()//tax sub items: janbaz, shahid, tax sub items: 9%, 10%-> tax
         {
             var table = TableName.LineItemType;
             Create.Table(nameof(TableName.LineItemType)).InSchema(_schema)
