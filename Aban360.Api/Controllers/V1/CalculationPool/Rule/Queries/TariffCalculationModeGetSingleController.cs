@@ -1,4 +1,5 @@
 ﻿using Aban360.CalculationPool.Application.Features.Rule.Handlers.Queries.Contracts;
+using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.Rule.Dto.Queries;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
@@ -19,7 +20,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule.Queries
         [HttpPost, HttpGet]
         [Route("single/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<TariffCalculationModeGetDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetSingle(TariffCalculationModeEnum id, CancellationToken cancellationToken)
         {
             var tariffCalculationModes = await _tariffCalculationModeGetSingleHandler.Handle(id, cancellationToken);
             return Ok(tariffCalculationModes);
