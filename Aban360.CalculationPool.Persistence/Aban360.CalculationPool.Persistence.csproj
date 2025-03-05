@@ -13,6 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="DbSeeder\DataScript\Services.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="EFCore.BulkExtensions" Version="8.1.2" />
     <PackageReference Include="FluentMigrator" Version="6.2.0" />
     <PackageReference Include="FluentMigrator.Runner.SqlServer" Version="6.2.0" />
@@ -24,7 +30,6 @@
 
   <ItemGroup>
     <Folder Include="Exceptions\" />
-    <Folder Include="DbSeeder\" />
     <Folder Include="Contexts\Implementation\" />
   </ItemGroup>
 
