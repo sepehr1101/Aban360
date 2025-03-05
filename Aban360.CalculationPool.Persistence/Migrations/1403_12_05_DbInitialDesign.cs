@@ -160,15 +160,8 @@ namespace Aban360.CalculationPool.Persistence.Migrations
         }
         //private void CreateInvoiceStatus()
 
-        private void CreateTariffCalculationMode()
-        {
-            var table = TableName.TariffCalculationMode;
-            Create.Table(nameof(TableName.TariffCalculationMode)).InSchema(_schema)
-               .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
-               .WithColumn("Title").AsString(_255).NotNullable()
-               .WithColumn("Description").AsString(_1023).NotNullable();
-        }
-        private void CreateLineItemTypeGroup()//Tax , Main,Karmozd-> karmozd Karshenasi, Takhfif
+        
+        private void CreateLineItemTypeGroup()
         {
             var table = TableName.LineItemTypeGroup;
             Create.Table(nameof(TableName.LineItemTypeGroup)).InSchema(_schema)
@@ -177,7 +170,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                .WithColumn("ImpactSign").AsInt16().NotNullable()
                .WithColumn("Description").AsString(_1023).Nullable();
         }
-        private void CreateLineItemType()//tax sub items: janbaz, shahid, tax sub items: 9%, 10%-> tax
+        private void CreateLineItemType()
         {
             var table = TableName.LineItemType;
             Create.Table(nameof(TableName.LineItemType)).InSchema(_schema)
@@ -186,6 +179,41 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                      .ForeignKey(NamingHelper.Fk(TableName.LineItemTypeGroup, table), _schema, nameof(TableName.LineItemTypeGroup), Id)
                .WithColumn("Title").AsString(_255).NotNullable()
                .WithColumn("Description").AsString(_1023).Nullable();
+        }
+        private void CreateTariffCalculationMode()
+        {
+            var table = TableName.TariffCalculationMode;
+            Create.Table(nameof(TableName.TariffCalculationMode)).InSchema(_schema)
+               .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
+               .WithColumn("Title").AsString(_255).NotNullable()
+               .WithColumn("Description").AsString(_1023).NotNullable();
+        }
+        private void CreateTariffConstant()
+        {
+            var table = TableName.TariffConstant;
+            Create.Table(nameof(TableName.TariffConstant)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Condition").AsString(int.MaxValue).NotNullable()
+                .WithColumn("Key").AsString(_255).NotNullable()
+                .WithColumn("FromDateJalali").AsString(10).NotNullable()
+                .WithColumn("ToDateJalali").AsString(10).NotNullable()
+                .WithColumn("Description").AsString(_255).Nullable();
+        }
+        private void CreateTariff()
+        {
+            var table = TableName.Tariff;
+            Create.Table(nameof(TableName.Tariff)).InSchema(_schema)
+                  .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                  .WithColumn($"{TableName.LineItemType}Id").AsInt16().NotNullable()
+                       .ForeignKey(NamingHelper.Fk(TableName.LineItemType, table), _schema, nameof(TableName.LineItemType), Id)
+                  .WithColumn($"{TableName.Offering}Id").AsInt16().NotNullable()
+                       .ForeignKey(NamingHelper.Fk(TableName.Offering, table), _schema, nameof(TableName.Offering), Id)
+                  .WithColumn("Condition").AsString(int.MinValue).NotNullable()
+                  .WithColumn("Formula").AsString(int.MaxValue).NotNullable()
+                  .WithColumn("FromDateJalali").AsString(10).NotNullable()
+                  .WithColumn("ToDateJalali").AsString(10).NotNullable()
+                  .WithColumn("Description").AsString(_255).Nullable();
         }
     }
 }

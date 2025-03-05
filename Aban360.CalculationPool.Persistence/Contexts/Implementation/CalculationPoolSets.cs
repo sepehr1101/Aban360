@@ -1,5 +1,6 @@
 ﻿using Aban360.CalculationPool.Domain.Features.Bill.Entities;
 using Aban360.CalculationPool.Domain.Features.Rule.Entities;
+using Aban360.CalculationPool.Domain.Features.Rule.Entties;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.CalculationPool.Persistence.Contexts.Implementations
@@ -24,6 +25,8 @@ namespace Aban360.CalculationPool.Persistence.Contexts.Implementations
         public virtual DbSet<LineItemType> LineItemTypes{ get; set; }
         public virtual DbSet<LineItemTypeGroup> LineItemTypeGroups{ get; set; }
         public virtual DbSet<TariffCalculationMode> TariffCalculationModes{ get; set; }
+        public virtual DbSet<Tariff> Tariffs{ get; set; }
+        public virtual DbSet<TariffConstant> TariffConstants{ get; set; }
 
     }
 }
