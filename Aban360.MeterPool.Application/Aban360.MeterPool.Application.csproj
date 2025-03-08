@@ -6,4 +6,16 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="FluentValidation" Version="11.10.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aban360.LocationPool.GatewayAdhoc\Aban360.LocationPool.GatewayAdhoc.csproj" />
+    <ProjectReference Include="..\Aban360.MeterPool.Domain\Aban360.MeterPool.Domain.csproj" />
+    <ProjectReference Include="..\Aban360.MeterPool.Persistence\Aban360.MeterPool.Persistence.csproj" />
+  </ItemGroup>
+
 </Project>
