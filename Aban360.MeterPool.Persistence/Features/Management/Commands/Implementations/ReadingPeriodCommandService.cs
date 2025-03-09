@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.MeterPool.Persistence.Features.Manegement.Commands.Implementations
 {
-    public class ReadingPeriodCommandService : IReadingPeriodCommandService
+    internal sealed class ReadingPeriodCommandService : IReadingPeriodCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<ReadingPeriod> _readingPeriod;
@@ -24,7 +24,7 @@ namespace Aban360.MeterPool.Persistence.Features.Manegement.Commands.Implementat
             await _readingPeriod.AddAsync(readingPeriod);
         }
 
-        public async Task Remove(ReadingPeriod readingPeriod)
+        public void Remove(ReadingPeriod readingPeriod)
         {
             _readingPeriod.Remove(readingPeriod);
         }
