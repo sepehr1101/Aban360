@@ -6,7 +6,7 @@ using Aban360.MeterPool.Persistence.Features.Manegement.Queries.Contracts;
 
 namespace Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Delete.Implementations
 {
-    public class ReadingPeriodDeleteHandler : IReadingPeriodDeleteHandler
+    internal sealed class ReadingPeriodDeleteHandler : IReadingPeriodDeleteHandler
     {
         private readonly IReadingPeriodCommandService _readingPeriodCommandService;
         private readonly IReadingPeriodQueryService _readingPeriodQueryService;
@@ -24,10 +24,6 @@ namespace Aban360.MeterPool.Application.Features.Management.Handlers.Commands.De
         public async Task Handle(ReadingPeriodDeleteDto deleteDto, CancellationToken cancellationToken)
         {
             var readingPeriod = await _readingPeriodQueryService.Get(deleteDto.Id);
-            if (readingPeriod == null)
-            {
-                throw new InvalidDataException();
-            }
             await _readingPeriodCommandService.Remove(readingPeriod);
         }
     }

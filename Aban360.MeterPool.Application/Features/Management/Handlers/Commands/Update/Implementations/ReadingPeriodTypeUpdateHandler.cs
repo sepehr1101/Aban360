@@ -1,6 +1,5 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Contracts;
-using Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementations;
 using Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Update.Contracts;
 using Aban360.MeterPool.Domain.Features.Management.Dtos.Commands;
 using Aban360.MeterPool.Persistence.Features.Manegement.Queries.Contracts;
@@ -8,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Update.Implementations
 {
-    public class ReadingPeriodTypeUpdateHandler : IReadingPeriodTypeUpdateHandler
+    internal sealed class ReadingPeriodTypeUpdateHandler : IReadingPeriodTypeUpdateHandler
     {
         private readonly IMapper _mapper;
         private readonly IReadingPeriodTypeQueryService _readingPeriodTypeQueryService;
