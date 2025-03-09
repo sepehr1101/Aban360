@@ -8,7 +8,7 @@ using AutoMapper;
 
 namespace Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Create.Implementations
 {
-    public class ReadingPeriodTypeCreateHandler : IReadingPeriodTypeCreateHandler
+    internal sealed class ReadingPeriodTypeCreateHandler : IReadingPeriodTypeCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IReadingPeriodTypeCommandService _readingPeriodTypeCommandService;
