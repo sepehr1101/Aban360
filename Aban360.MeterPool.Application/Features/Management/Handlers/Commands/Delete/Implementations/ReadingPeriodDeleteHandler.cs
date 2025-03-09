@@ -24,7 +24,7 @@ namespace Aban360.MeterPool.Application.Features.Management.Handlers.Commands.De
         public async Task Handle(ReadingPeriodDeleteDto deleteDto, CancellationToken cancellationToken)
         {
             var readingPeriod = await _readingPeriodQueryService.Get(deleteDto.Id);
-            await _readingPeriodCommandService.Remove(readingPeriod);
+            _readingPeriodCommandService.Remove(readingPeriod);
         }
     }
 }
