@@ -3,6 +3,8 @@
     internal enum TableName
     {
         ReadingPeriodType,
-        ReadingPeriod
+        ReadingPeriod,
+        CounterState,
+        ReadingConfigDefault
     }
 }

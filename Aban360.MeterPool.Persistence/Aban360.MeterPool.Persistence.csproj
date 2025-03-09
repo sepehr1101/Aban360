@@ -7,11 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="DbSeeder\DataScript\Management.sql" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="DbSeeder\DataScript\Management.sql">
+    <Content Include="DbSeeder\DataScript\Meter.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
