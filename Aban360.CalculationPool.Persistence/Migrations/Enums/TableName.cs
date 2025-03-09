@@ -17,6 +17,8 @@
         InvoiceLineItem,
 
         TariffCalculationMode,
+        TariffConstant,
+        Tariff,
         LineItemTypeGroup,
         LineItemType
     }

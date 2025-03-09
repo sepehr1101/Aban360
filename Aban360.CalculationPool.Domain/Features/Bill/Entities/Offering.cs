@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Aban360.CalculationPool.Domain.Features.Rule.Entties;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.CalculationPool.Domain.Features.Bill.Entities;
 
@@ -18,6 +19,8 @@ public class Offering
     public string? Description { get; set; }
 
     public virtual ICollection<InvoiceLineItem> InvoiceLineItems { get; set; } = new List<InvoiceLineItem>();
+
+    public virtual ICollection<Tariff> Tariffs { get; set; } = new List<Tariff>();
 
     public virtual OfferingGroup OfferingGroup { get; set; } = null!;
 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Aban360.CalculationPool.Domain.Features.Rule.Entties;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.CalculationPool.Domain.Features.Bill.Entities;
 
@@ -14,4 +15,6 @@ public class LineItemType
     public short LineItemTypeGroupId { get; set; }
 
     public virtual LineItemTypeGroup LineItemTypeGroup { get; set; } = null!;
+
+    public virtual ICollection<Tariff> Tariffs { get; set; } = new List<Tariff>();
 }
