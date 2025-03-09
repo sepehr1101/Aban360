@@ -47,6 +47,7 @@
     <ProjectReference Include="..\Aban360.LocationPool.GatewayAdhoc\Aban360.LocationPool.GatewayAdhoc.csproj" />
     <ProjectReference Include="..\Aban360.LocationPool.Infrastructure\Aban360.LocationPool.Infrastructure.csproj" />
     <ProjectReference Include="..\Aban360.LocationPool.Persistence\Aban360.LocationPool.Persistence.csproj" />
+    <ProjectReference Include="..\Aban360.MeterPool.Application\Aban360.MeterPool.Application.csproj" />
     <ProjectReference Include="..\Aban360.MeterPool.Persistence\Aban360.MeterPool.Persistence.csproj" />
     <ProjectReference Include="..\Aban360.ReportPool.Persistence\Aban360.ReportPool.Persistence.csproj" />
     <ProjectReference Include="..\Aban360.UserPool.Application\Aban360.UserPool.Application.csproj" />

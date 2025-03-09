@@ -4,9 +4,9 @@
     {
         public int Id { get; set; }
         public short LineItemTypeId { get; set; }
-        public string LineItemTypeTitle { get; set; }
+        public string LineItemTypeTitle { get; set; } = null!;
         public short OfferingId { get; set; }
-        public string OfferingTitle { get; set; }
+        public string OfferingTitle { get; set; } = null!;
         public string Condition { get; set; } = null!;
         public string Formula { get; set; } = null!;
         public string FromDateJalali { get; set; } = null!;
