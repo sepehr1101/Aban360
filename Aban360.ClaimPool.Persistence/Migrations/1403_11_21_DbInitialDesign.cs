@@ -243,6 +243,13 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
+        private void CreateSubscriptionType()
+        {
+            var table = TableName.SubscriptionType;
+            Create.Table(nameof(TableName.SubscriptionType)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("Title").AsString(_255).NotNullable();
+        }
         private void CreateWaterMeter()
         {
             var table = TableName.WaterMeter;
@@ -255,6 +262,8 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                   .ForeignKey(NamingHelper.Fk(TableName.Estate, table), _schema, nameof(TableName.Estate), Id)
               .WithColumn("UseStateId").AsInt16().NotNullable()
                   .ForeignKey(NamingHelper.Fk(TableName.UseState, table), _schema, nameof(TableName.UseState), Id)
+              .WithColumn("SubscriptionTypeId").AsInt16().NotNullable()
+                  .ForeignKey(NamingHelper.Fk(TableName.SubscriptionType, table), _schema, nameof(TableName.SubscriptionType), Id)
               .WithColumn("InstallationLocation").AsString(_255).Nullable()
               .WithColumn("BodySerial").AsAnsiString(_31).Nullable()
               .WithColumn("InstallationDate").AsAnsiString(10).Nullable()

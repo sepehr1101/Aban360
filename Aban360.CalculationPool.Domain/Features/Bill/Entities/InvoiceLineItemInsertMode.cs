@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Aban360.CalculationPool.Domain.Constants;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.CalculationPool.Domain.Features.Bill.Entities;
 
 [Table(nameof(InvoiceLineItemInsertMode))]
 public class InvoiceLineItemInsertMode
 {
-    public short Id { get; set; }
+    public InvoiceLineItemInsertModeEnum Id { get; set; }
 
     public string Title { get; set; } = null!;
 

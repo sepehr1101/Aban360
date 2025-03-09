@@ -32,6 +32,6 @@
         WaterMeterSiphon,
 
         UseState,
-        Subscription,
+        SubscriptionType,
     }
 }

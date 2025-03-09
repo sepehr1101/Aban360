@@ -160,14 +160,22 @@ namespace Aban360.CalculationPool.Persistence.Migrations
         }
         //private void CreateInvoiceStatus()
 
-        
+        private void CreateImpactSign()
+        {
+            var table = TableName.ImpactSign;
+            Create.Table(nameof(TableName.ImpactSign)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Description").AsString(int.MaxValue).Nullable();
+        }
         private void CreateLineItemTypeGroup()
         {
             var table = TableName.LineItemTypeGroup;
             Create.Table(nameof(TableName.LineItemTypeGroup)).InSchema(_schema)
                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
                .WithColumn("Title").AsString(_255).NotNullable()
-               .WithColumn("ImpactSign").AsInt16().NotNullable()
+               .WithColumn("ImpactSignId").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.ImpactSign, table), _schema, nameof(TableName.ImpactSign), Id)
                .WithColumn("Description").AsString(_1023).Nullable();
         }
         private void CreateLineItemType()
