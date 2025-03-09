@@ -21,13 +21,13 @@
         public string ConstructionType { get; set; }
         public string UsageConsumtionTitle { get; set; }
         public string UsageSellTitle { get; set; }
-        public string FullName { get; set; }
+        public string FullName { get; set; }=default!;
         public DateTime? SiphonInstallationDate { get; set; }
-        public string Headquarter { get; set; }
-        public string Province { get; set; }
-        public string Region { get; set; }
-        public string Zone { get; set; }
-        public string Municipality { get; set; }
+        public string? HeadquarterTitle { get; set; }
+        public string? ProvinceTitle { get; set; }
+        public string? RegionTitle { get; set; }
+        public string? ZoneTitle { get; set; }
+        public string? MunicipalityTitle { get; set; }
         public ICollection<string>? WaterMeterTags { get; set; }
     }
 
