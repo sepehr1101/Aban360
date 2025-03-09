@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.MeterPool.Persistence.Features.Manegement.Queries.Implementations
 {
-    public class ReadingPeriodTypeQueryService : IReadingPeriodTypeQueryService
+    internal sealed class ReadingPeriodTypeQueryService : IReadingPeriodTypeQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<ReadingPeriodType> _readingPeriodType;

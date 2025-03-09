@@ -6,7 +6,7 @@ using AutoMapper;
 
 namespace Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Implementations
 {
-    public class ReadingPeriodGetAllHandler : IReadingPeriodGetAllHandler
+    internal sealed class ReadingPeriodGetAllHandler : IReadingPeriodGetAllHandler
     {
         private readonly IMapper _mapper;
         private readonly IReadingPeriodQueryService _readingPeriodQueryService;
@@ -23,11 +23,7 @@ namespace Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Imp
 
         public async Task<ICollection<ReadingPeriodGetDto>> Handle(CancellationToken cancellationToken)
         {
-            var readingPeriod = await _readingPeriodQueryService.Get();
-            if (readingPeriod == null)
-            {
-                throw new InvalidDataException();
-            }
+            var readingPeriod = await _readingPeriodQueryService.Get();            
             return _mapper.Map<ICollection<ReadingPeriodGetDto>>(readingPeriod);
         }
     }
