@@ -33,7 +33,7 @@ namespace Aban360.MeterPool.Persistence.DbSeeder.Implementations
         private string GetSqlFilePath()
         {
             string basePath = AppContext.BaseDirectory;
-            string relativePath = @"\DbSeeder\DataScript\Management.sql";
+            string relativePath = @"\DbSeeder\DataScript\Meter.sql";
 
             var path = string.Concat(basePath, relativePath);
             return path;

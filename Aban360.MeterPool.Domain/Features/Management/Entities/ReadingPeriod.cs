@@ -11,7 +11,7 @@ public class ReadingPeriod
 
     public short ReadingPeriodTypeId { get; set; }
 
-    public int ClientOrder { get; set; }
+    public short ClientOrder { get; set; }
 
     public virtual ReadingPeriodType ReadingPeriodType { get; set; } = null!;
 }

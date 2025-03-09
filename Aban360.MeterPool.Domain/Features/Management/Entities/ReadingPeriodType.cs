@@ -11,7 +11,7 @@ public class ReadingPeriodType
 
     public short Days { get; set; }
 
-    public int ClientOrder { get; set; }
+    public short ClientOrder { get; set; }
 
     public bool IsEnabled { get; set; }
 
