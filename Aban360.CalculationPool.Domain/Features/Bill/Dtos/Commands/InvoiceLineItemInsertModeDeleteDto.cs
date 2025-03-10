@@ -1,7 +1,9 @@
-﻿namespace Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands
+﻿using Aban360.CalculationPool.Domain.Constants;
+
+namespace Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands
 {
     public record InvoiceLineItemInsertModeDeleteDto
     {
-        public short Id { get; set; }
+        public InvoiceLineItemInsertModeEnum Id { get; set; }
     }
 }

@@ -9,9 +9,10 @@ public class LineItemTypeGroup
 
     public string Title { get; set; } = null!;
 
-    public short ImpactSign { get; set; }
+    public short ImpactSignId { get; set; }
 
     public string? Description { get; set; }
 
     public virtual ICollection<LineItemType> LineItemTypes { get; set; } = new List<LineItemType>();
+    public virtual ImpactSign ImpactSign { get; set; }
 }

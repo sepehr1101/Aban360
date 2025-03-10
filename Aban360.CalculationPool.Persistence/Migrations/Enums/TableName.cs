@@ -19,6 +19,7 @@
         TariffCalculationMode,
         TariffConstant,
         Tariff,
+        ImpactSign,
         LineItemTypeGroup,
         LineItemType
     }

@@ -35,10 +35,10 @@ namespace Aban360.CalculationPool.Persistence.DbSeeder.Implementations
         {
             ICollection<LineItemTypeGroup> lineItemTypeGroups = new List<LineItemTypeGroup>()
             {
-                new LineItemTypeGroup(){Id=1,Title="اصلی",ImpactSign=+1,Description=""},
-                new LineItemTypeGroup(){Id=2,Title="مالیات",ImpactSign=+1,Description=""},
-                new LineItemTypeGroup(){Id=3,Title="کارمزد",ImpactSign=+1,Description=""},
-                new LineItemTypeGroup(){Id=4,Title="تخفیف",ImpactSign=-1,Description=""},
+                new LineItemTypeGroup(){Id=1,Title="اصلی",ImpactSignId=1,Description=""},
+                new LineItemTypeGroup(){Id=2,Title="مالیات",ImpactSignId=1,Description=""},
+                new LineItemTypeGroup(){Id=3,Title="کارمزد",ImpactSignId=1,Description=""},
+                new LineItemTypeGroup(){Id=4,Title="تخفیف",ImpactSignId=2,Description=""},
             };
 
             return lineItemTypeGroups;

@@ -1,4 +1,5 @@
 ﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts;
+using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Contexts.Contracts;
@@ -27,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bil.Queries
         [HttpPost, HttpGet]
         [Route("single/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<InvoiceLineItemInsertModeGetDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetSingle(InvoiceLineItemInsertModeEnum id, CancellationToken cancellationToken)
         {
             var InvoiceLineItemInsertModes = await _invoiceLineItemInsertModeGetSingleHandler.Handle(id, cancellationToken);
             return Ok(InvoiceLineItemInsertModes);

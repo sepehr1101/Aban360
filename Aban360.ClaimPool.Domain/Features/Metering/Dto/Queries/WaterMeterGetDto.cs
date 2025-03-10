@@ -1,4 +1,6 @@
-﻿namespace Aban360.ClaimPool.Domain.Features.Metering.Dto.Queries
+﻿using Aban360.ClaimPool.Domain.Constants;
+
+namespace Aban360.ClaimPool.Domain.Features.Metering.Dto.Queries
 {
     public record WaterMeterGetDto
     {
@@ -23,5 +25,9 @@
         public short MeterMaterialId { get; set; }
 
         public short MeterUseTypeId { get; set; }
+
+        public UseStateEnum UseStateId { get; set; }
+        
+        public SubscriptionTypeEnum SubscriptionTypeId { get; set; }
     }
 }
