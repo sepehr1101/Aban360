@@ -6,5 +6,6 @@
         public string Title { get; set; } = null!;
         public string? Description { get; set; }
         public short LineItemTypeGroupId { get; set; }
+        public string LineItemTypeGroupTitle { get; set; }
     }
 }

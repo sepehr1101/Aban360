@@ -36,8 +36,8 @@ namespace Aban360.CalculationPool.Persistence.DbSeeder.Implementations
         {
             ICollection<InvoiceLineItemInsertMode> InvoiceLineItemInsertModes = new List<InvoiceLineItemInsertMode>()
             {
-                new InvoiceLineItemInsertMode(){Id=InvoiceLineItemInsertModeEnum.Interval,Title="بازه ای"},
-                new InvoiceLineItemInsertMode(){Id=InvoiceLineItemInsertModeEnum.CurrentTime,Title="آخرین مقدار"},
+                new InvoiceLineItemInsertMode(){Id=InvoiceLineItemInsertModeEnum.ByUser,Title="توسط کاربر"},
+                new InvoiceLineItemInsertMode(){Id=InvoiceLineItemInsertModeEnum.BySystem,Title="بصورت سیستمی"},
             };
 
             return InvoiceLineItemInsertModes;

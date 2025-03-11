@@ -1,4 +1,5 @@
-﻿using Aban360.CalculationPool.Domain.Features.Bill.Entities;
+﻿using Aban360.CalculationPool.Domain.Constants;
+using Aban360.CalculationPool.Domain.Features.Bill.Entities;
 using Aban360.CalculationPool.Persistence.Contexts.Contracts;
 using Aban360.Common.Db.DbSeeder.Contracts;
 using Aban360.Common.Extensions;
@@ -35,10 +36,10 @@ namespace Aban360.CalculationPool.Persistence.DbSeeder.Implementations
         {
             ICollection<LineItemTypeGroup> lineItemTypeGroups = new List<LineItemTypeGroup>()
             {
-                new LineItemTypeGroup(){Id=1,Title="اصلی",ImpactSignId=1,Description=""},
-                new LineItemTypeGroup(){Id=2,Title="مالیات",ImpactSignId=1,Description=""},
-                new LineItemTypeGroup(){Id=3,Title="کارمزد",ImpactSignId=1,Description=""},
-                new LineItemTypeGroup(){Id=4,Title="تخفیف",ImpactSignId=2,Description=""},
+                new LineItemTypeGroup(){Id=1,Title="اصلی",ImpactSignId=ImpactSignEnum.Positive,Description=""},
+                new LineItemTypeGroup(){Id=2,Title="مالیات",ImpactSignId=ImpactSignEnum.Positive,Description=""},
+                new LineItemTypeGroup(){Id=3,Title="کارمزد",ImpactSignId=ImpactSignEnum.Positive,Description=""},
+                new LineItemTypeGroup(){Id=4,Title="تخفیف",ImpactSignId=ImpactSignEnum.Negative,Description=""},
             };
 
             return lineItemTypeGroups;

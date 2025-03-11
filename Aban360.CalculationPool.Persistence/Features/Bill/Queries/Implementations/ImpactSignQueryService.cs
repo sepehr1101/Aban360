@@ -1,4 +1,5 @@
-﻿using Aban360.CalculationPool.Domain.Features.Bill.Entities;
+﻿using Aban360.CalculationPool.Domain.Constants;
+using Aban360.CalculationPool.Domain.Features.Bill.Entities;
 using Aban360.CalculationPool.Persistence.Contexts.Contracts;
 using Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts;
 using Aban360.Common.Extensions;
@@ -19,7 +20,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
             _impactSign.NotNull(nameof(_impactSign));
         }
 
-        public async Task<ImpactSign> Get(short id)
+        public async Task<ImpactSign> Get(ImpactSignEnum id)
         {
             return await _uow.FindOrThrowAsync<ImpactSign>(id);
         }

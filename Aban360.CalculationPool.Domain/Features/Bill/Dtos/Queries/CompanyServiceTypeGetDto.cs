@@ -7,6 +7,7 @@ namespace Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries
         public short Id { get; set; }
         public string Title { get; set; } = null!;
         public TariffCalculationModeEnum TariffCalculationModeId { get; set; }
+        public string TariffCalculationModeTitle { get; set; }
         public string? Description { get; set; }
     }
 }

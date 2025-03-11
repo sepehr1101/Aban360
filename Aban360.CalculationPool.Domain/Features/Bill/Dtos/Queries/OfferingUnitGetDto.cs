@@ -1,6 +1,4 @@
-﻿using Aban360.CalculationPool.Domain.Features.Bill.Entities;
-
-namespace Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries
+﻿namespace Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries
 {
     public record OfferingUnitGetDto
     {

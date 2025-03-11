@@ -4,6 +4,7 @@
     {
         public short Id { get; set; }
         public short CompanyServiceId { get; set; }
+        public string CompanyServiceTitle { get; set; }
         public short OfferingId { get; set; }
     }
 }

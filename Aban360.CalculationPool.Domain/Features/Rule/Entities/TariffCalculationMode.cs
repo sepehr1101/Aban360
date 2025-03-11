@@ -11,7 +11,7 @@ public class TariffCalculationMode
 
     public string Title { get; set; } = null!;
 
-    public string Description { get; set; } = null!;
+    public string Description { get; set; }
 
     public virtual ICollection<CompanyServiceType> CompanyServiceTypes{ get; set; }=new List<CompanyServiceType>();
 }

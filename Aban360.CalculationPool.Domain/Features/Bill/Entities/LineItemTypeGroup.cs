@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Aban360.CalculationPool.Domain.Constants;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.CalculationPool.Domain.Features.Bill.Entities;
 
@@ -9,7 +10,7 @@ public class LineItemTypeGroup
 
     public string Title { get; set; } = null!;
 
-    public short ImpactSignId { get; set; }
+    public ImpactSignEnum ImpactSignId { get; set; }
 
     public string? Description { get; set; }
 

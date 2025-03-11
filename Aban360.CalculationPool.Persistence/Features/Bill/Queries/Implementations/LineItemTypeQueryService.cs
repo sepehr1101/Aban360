@@ -21,12 +21,17 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
 
         public async Task<LineItemType> Get(short id)
         {
-            return await _uow.FindOrThrowAsync<LineItemType>(id);
+            return await _lineItemType
+                .Include(l => l.LineItemTypeGroup)
+                .Where(l => l.Id == id)
+                .SingleAsync();
         }
 
         public async Task<ICollection<LineItemType>> Get()
         {
-            return await _lineItemType.ToListAsync();
+            return await _lineItemType
+                .Include(l => l.LineItemTypeGroup)
+                .ToListAsync();
         }
     }
 }
