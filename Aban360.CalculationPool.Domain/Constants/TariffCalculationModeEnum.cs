@@ -3,6 +3,6 @@
     public enum TariffCalculationModeEnum:short
     {
         Interval=1,
-        CurrentTime=2
-    } 
+        CurrentTime= 2
+    }
 }

@@ -166,6 +166,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
             Create.Table(nameof(TableName.ImpactSign)).InSchema(_schema)
                 .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn(".").AsInt16().NotNullable()
                 .WithColumn("Description").AsString(int.MaxValue).Nullable();
         }
         private void CreateLineItemTypeGroup()
