@@ -1,4 +1,5 @@
 ﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts;
+using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts;
 using Aban360.Common.Extensions;
@@ -21,7 +22,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Imp
             _impactSignQueryService.NotNull(nameof(_impactSignQueryService));
         }
 
-        public async Task<ImpactSignGetDto> Handle(short id, CancellationToken cancellationToken)
+        public async Task<ImpactSignGetDto> Handle(ImpactSignEnum id, CancellationToken cancellationToken)
         {
             var ImpactSign = await _impactSignQueryService.Get(id);
             return _mapper.Map<ImpactSignGetDto>(ImpactSign);

@@ -12,7 +12,8 @@ namespace Aban360.CalculationPool.Application.Features.Bil.Mappings
             CreateMap<CompanyServiceTypeCreateDto, CompanyServiceType>().ReverseMap();
             CreateMap<CompanyServiceTypeDeleteDto, CompanyServiceType>().ReverseMap();
             CreateMap<CompanyServiceTypeUpdateDto, CompanyServiceType>().ReverseMap();
-            CreateMap<CompanyServiceTypeGetDto, CompanyServiceType>().ReverseMap();
+            CreateMap< CompanyServiceType, CompanyServiceTypeGetDto>()
+                .ForMember(dest => dest.TariffCalculationModeTitle, m => m.MapFrom(o => o.TariffCalculationMode.Title));
         }
     }
 }

@@ -5,14 +5,16 @@ using AutoMapper;
 
 namespace Aban360.CalculationPool.Application.Features.Bil.Mappings
 {
-    public class OfferingMapper:Profile
+    public class OfferingMapper : Profile
     {
         public OfferingMapper()
         {
-            CreateMap<Offering,OfferingCreateDto>().ReverseMap();
-            CreateMap<Offering,OfferingDeleteDto>().ReverseMap();
-            CreateMap<Offering,OfferingUpdateDto>().ReverseMap();
-            CreateMap<Offering,OfferingGetDto>().ReverseMap();
+            CreateMap<Offering, OfferingCreateDto>().ReverseMap();
+            CreateMap<Offering, OfferingDeleteDto>().ReverseMap();
+            CreateMap<Offering, OfferingUpdateDto>().ReverseMap();
+            CreateMap<Offering, OfferingGetDto>()
+                 .ForMember(dest => dest.OfferingGroupTitle, m => m.MapFrom(o => o.OfferingGroup.Title))
+                 .ForMember(dest => dest.OfferingUnitTitle, m => m.MapFrom(o => o.OfferingUnit.Title));
         }
     }
 }

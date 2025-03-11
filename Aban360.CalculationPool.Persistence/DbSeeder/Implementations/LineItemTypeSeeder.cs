@@ -35,11 +35,12 @@ namespace Aban360.CalculationPool.Persistence.DbSeeder.Implementations
         {
             ICollection<LineItemType> lineItemTypes = new List<LineItemType>()
             {
-                new LineItemType(){Id=1,Title="جانبازان",LineItemTypeGroupId=4,Description=""},
-                new LineItemType(){Id=2,Title="خانواده شهدا",LineItemTypeGroupId=4,Description=""},
-                new LineItemType(){Id=3,Title="9%",LineItemTypeGroupId=2,Description=""},
-                new LineItemType(){Id=4,Title="10%",LineItemTypeGroupId=2,Description=""},
-                new LineItemType(){Id=5,Title="کارمزد ارزیابی",LineItemTypeGroupId=3,Description=""},
+                new LineItemType(){Id=1,Title="اصلی",LineItemTypeGroupId=1,Description=""},
+                new LineItemType(){Id=2,Title="جانبازان",LineItemTypeGroupId=4,Description=""},
+                new LineItemType(){Id=3,Title="خانواده شهدا",LineItemTypeGroupId=4,Description=""},
+                new LineItemType(){Id=4,Title="9%",LineItemTypeGroupId=2,Description=""},
+                new LineItemType(){Id=5,Title="10%",LineItemTypeGroupId=2,Description=""},
+                new LineItemType(){Id=6,Title="کارمزد ارزیابی",LineItemTypeGroupId=3,Description=""},
             };
 
             return lineItemTypes;

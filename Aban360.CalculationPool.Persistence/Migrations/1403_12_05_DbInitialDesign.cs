@@ -60,12 +60,22 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                 .WithColumn("InstallmentOption").AsBoolean().NotNullable()
                 .WithColumn("Description").AsString(_1023).Nullable();
         }
+        private void CreateTariffCalculationMode()
+        {
+            var table = TableName.TariffCalculationMode;
+            Create.Table(nameof(TableName.TariffCalculationMode)).InSchema(_schema)
+               .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
+               .WithColumn("Title").AsString(_255).NotNullable()
+               .WithColumn("Description").AsString(_1023).Nullable();
+        }
         private void CreateCompanyServiceType()
         {
             var table = TableName.CompanyServiceType;
             Create.Table(nameof(TableName.CompanyServiceType)).InSchema(_schema)
                 .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn($"{TableName.TariffCalculationMode}Id").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.TariffCalculationMode, TableName.CompanyServiceType), _schema,nameof(TableName.TariffCalculationMode), Id)
                 .WithColumn("Description").AsString(_1023).Nullable();
         }// foroosh, ab baha, pas as foroosh
         private void CreateCompanyService()// foroosh ab, fazelab, taqir qotr ,...
@@ -166,7 +176,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
             Create.Table(nameof(TableName.ImpactSign)).InSchema(_schema)
                 .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("Title").AsString(_255).NotNullable()
-                .WithColumn(".").AsInt16().NotNullable()
+                .WithColumn("Multiplier").AsInt16().NotNullable()
                 .WithColumn("Description").AsString(int.MaxValue).Nullable();
         }
         private void CreateLineItemTypeGroup()
@@ -189,14 +199,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                .WithColumn("Title").AsString(_255).NotNullable()
                .WithColumn("Description").AsString(_1023).Nullable();
         }
-        private void CreateTariffCalculationMode()
-        {
-            var table = TableName.TariffCalculationMode;
-            Create.Table(nameof(TableName.TariffCalculationMode)).InSchema(_schema)
-               .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
-               .WithColumn("Title").AsString(_255).NotNullable()
-               .WithColumn("Description").AsString(_1023).NotNullable();
-        }
+      
         private void CreateTariffConstant()
         {
             var table = TableName.TariffConstant;

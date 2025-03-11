@@ -21,12 +21,17 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
 
         public async Task<CompanyServiceType> Get(short id)
         {
-            return await _uow.FindOrThrowAsync<CompanyServiceType>(id);
+            return await _companyServiceType
+                .Include(c => c.TariffCalculationMode)
+                .Where(c => c.Id == id)
+                .SingleAsync();
         }
 
         public async Task<ICollection<CompanyServiceType>> Get()
         {
-            return await _companyServiceType.ToListAsync();
+            return await _companyServiceType
+                .Include(c => c.TariffCalculationMode)
+                .ToListAsync();
         }
     }
 }

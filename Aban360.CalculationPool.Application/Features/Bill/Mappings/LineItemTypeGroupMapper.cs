@@ -12,7 +12,9 @@ namespace Aban360.CalculationPool.Application.Features.Bil.Mappings
             CreateMap<LineItemTypeGroupCreateDto, LineItemTypeGroup>().ReverseMap();
             CreateMap<LineItemTypeGroupDeleteDto, LineItemTypeGroup>().ReverseMap();
             CreateMap<LineItemTypeGroupUpdateDto, LineItemTypeGroup>().ReverseMap();
-            CreateMap<LineItemTypeGroupGetDto, LineItemTypeGroup>().ReverseMap();
+            CreateMap< LineItemTypeGroup, LineItemTypeGroupGetDto>()
+                                .ForMember(dest => dest.ImpactSignTitle, m => m.MapFrom(o => o.ImpactSign.Title));
+
         }
     }
 }

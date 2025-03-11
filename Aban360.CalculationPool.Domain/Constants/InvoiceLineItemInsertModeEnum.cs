@@ -2,7 +2,7 @@
 {
     public enum InvoiceLineItemInsertModeEnum : short
     {
-        Interval=1,
-        CurrentTime=2
+        ByUser=1,
+        BySystem=2
     }
 }

@@ -1,10 +1,10 @@
 USE [Aban360]
 GO
-INSERT [CalculationPool].[CompanyServiceType] ([Title], [Id]) VALUES (N'فروش', 1)
+INSERT [CalculationPool].[CompanyServiceType] ([Title], [Id],[TariffCalculationModeId]) VALUES (N'فروش', 1,1)
 GO
-INSERT [CalculationPool].[CompanyServiceType] ([Title], [Id]) VALUES (N'پس از فروش', 2)
+INSERT [CalculationPool].[CompanyServiceType] ([Title], [Id],[TariffCalculationModeId]) VALUES (N'پس از فروش', 2,1)
 GO
-INSERT [CalculationPool].[CompanyServiceType] ([Title], [Id]) VALUES (N'آب بها', 3)
+INSERT [CalculationPool].[CompanyServiceType] ([Title], [Id],[TariffCalculationModeId]) VALUES (N'آب بها', 3,1)
 GO
 INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (1, 1, N'انشعاب آب')
 GO
