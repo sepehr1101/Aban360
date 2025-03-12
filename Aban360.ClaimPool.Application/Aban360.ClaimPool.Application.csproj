@@ -33,6 +33,7 @@
     <Folder Include="Features\Registration\Handlers\Queries\Implementations\" />
     <Folder Include="Features\Registration\Mappings\" />
     <Folder Include="Features\Registration\Validations\" />
+    <Folder Include="Features\Request\Validations\" />
     <Folder Include="Features\WasteWater\Validations\" />
   </ItemGroup>
 

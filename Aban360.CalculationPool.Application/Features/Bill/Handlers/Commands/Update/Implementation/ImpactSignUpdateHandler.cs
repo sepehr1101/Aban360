@@ -24,7 +24,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Up
         public async Task Handle(ImpactSignUpdateDto updateDto, CancellationToken cancellationToken)
         {
             var impactSign = await _impactSignQueryService.Get(updateDto.Id);
-            _mapper.Map(impactSign, updateDto);
+            _mapper.Map(updateDto,impactSign);
         }
     }
 }
