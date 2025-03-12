@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.Dto
 {
-    public record WateInvoiceDto
+    public record WaterInvoiceDto
     {
         public string Headquarters { get; set; }
         public string EconomicalNumber {  get; set; }
@@ -38,7 +38,7 @@
         public int ConsumptionLiter { get; set; }
         public int ConsumptionAverage { get; set; }
 
-        public ICollection<LineItems> LineItems { get; set; }
+        public ICollection<LineItemsDto> LineItems { get; set; }=new List<LineItemsDto>();
 
         public long Sum { get; set; }
         public long DisCount { get; set; }
@@ -49,14 +49,14 @@
 
         public int ConsumptionState { get; set; }
 
-        public ICollection<PreviousConsumptions> PreviousConsumptions {  get; set; }
+        public ICollection<PreviousConsumptionsDto> PreviousConsumptions {  get; set; }
 
         public string BillId { get; set; }
         public string PayId { get; set; }
 
         public string BarCode {  get; set; }
 
-        public int PaymenetAmountText { get; set; }
+        public string PaymenetAmountText { get; set; }
 
         public bool IsPayed { get; set; }
         public string Description { get; set; }
