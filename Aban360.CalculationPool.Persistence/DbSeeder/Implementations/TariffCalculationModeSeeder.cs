@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.CalculationPool.Persistence.DbSeeder.Implementations
 {
-    public class TariffCalculationModeIdSeeder : IDataSeeder
+    public class TariffCalculationModeSeeder : IDataSeeder
     {
         public int Order { get; set; } = 9;
         private readonly IUnitOfWork _uow;
         private readonly DbSet<TariffCalculationMode> _tariffCalculationMode;
-        public TariffCalculationModeIdSeeder(IUnitOfWork uow)
+        public TariffCalculationModeSeeder(IUnitOfWork uow)
         {
             _uow = uow;
             _uow.NotNull(nameof(_uow));
