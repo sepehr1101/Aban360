@@ -86,7 +86,7 @@ public class Estate
 
     public virtual Estate? Previous { get; set; }
 
-    public virtual Usage UsageConsumtion { get; set; } = null!;
+    public virtual Usage UsageConsumtion { get; set; } = null!;//todo: UsageConsumption
 
     public virtual Usage UsageSell { get; set; } = null!;
     public virtual ICollection<WaterMeter> WaterMeters { get; set; } = new List<WaterMeter>();
