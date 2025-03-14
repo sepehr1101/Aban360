@@ -1,6 +1,5 @@
 using Aban360.Api.ExceptionHandlers;
 using Aban360.Api.Extensions;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -18,6 +17,9 @@ builder.Services.AddCaptcha();
 builder.Services.AddCustomDbContext(configuration);
 builder.Services.AddMigragionsAndSeeds();
 builder.AddHangfire();
+
+builder.Services.AddMvc();
+builder.Services.AddRazorPages();
 
 
 builder.Services.AddCustomCors();
@@ -38,6 +40,7 @@ app.AddSwaggerApp();
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();
 app.UseRouting();
 app.UseCustomCors();
 app.UseAuthentication();

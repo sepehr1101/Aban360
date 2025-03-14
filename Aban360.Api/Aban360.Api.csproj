@@ -12,6 +12,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="AppData\DynamicReport\fa.xml" />
+    <None Remove="AppData\DynamicReport\StiLicense.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DNTCaptcha.Core" Version="5.2.7" />
     <PackageReference Include="DNTPersianUtils.Core" Version="6.4.0" />
     <PackageReference Include="Gridify.EntityFramework" Version="2.16.1" />
@@ -24,12 +29,22 @@
     <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="8.1.0" />
     <PackageReference Include="Serilog.UI" Version="3.1.0" />
     <PackageReference Include="Serilog.UI.MsSqlServerProvider" Version="3.1.0" />
+    <PackageReference Include="Stimulsoft.Reports.Web.NetCore" Version="2024.3.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen.ConventionalRouting" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ContainerPort Include="8081" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="AppData\DynamicReport\fa.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AppData\DynamicReport\StiLicense.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -62,6 +77,12 @@
     <Folder Include="Controllers\V1\ClaimPool\Registration\Queries\" />
     <Folder Include="Controllers\V1\_CombinedPools\Commands\" />
     <Folder Include="Controllers\V1\_CombinedPools\Queries\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Views\V1\DynamicGenerator\DisplayDesigner.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

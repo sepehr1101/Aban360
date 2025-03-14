@@ -1,0 +1,41 @@
+﻿@using Stimulsoft.Report.Mvc;
+@using Stimulsoft.Report.Web;
+
+@{
+    Layout = "~/Views/V1/Shared/_Layout.cshtml";
+    ViewBag.Title = "طراحی";
+}
+
+@Html.StiNetCoreDesigner(new StiNetCoreDesignerOptions()
+{
+    Actions =
+    {
+        GetReport = "design-report",
+        SaveReport = "save-report",
+        SaveReportAs = "save-as-report",
+        DesignerEvent = "design-event"
+    },
+    Localization = "~/AppData/DynamicReport/fa.xml",
+    Appearance =
+    {
+        ShowTooltipsHelp = false,
+        ShowDialogsHelp = false,
+        ShowTooltips=false,
+        DefaultUnit = Stimulsoft.Report.StiReportUnitType.Centimeters,
+    },
+    Theme = StiDesignerTheme.Office2022WhitePurple,
+    Bands =
+    {
+        ShowChildBand = false,
+        ShowEmptyBand = false,
+        ShowOverlayBand = false,
+    },
+    Toolbar =
+    {
+        ShowAboutButton=false,
+    },
+    Behavior =
+    {
+        ShowSaveDialog=true
+    }    
+})
