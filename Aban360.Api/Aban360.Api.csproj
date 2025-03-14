@@ -14,6 +14,10 @@
   <ItemGroup>
     <None Remove="AppData\DynamicReport\fa.xml" />
     <None Remove="AppData\DynamicReport\StiLicense.txt" />
+    <None Remove="lib\twitter-bootstrap\css\bootstrap-grid.css" />
+    <None Remove="lib\twitter-bootstrap\css\bootstrap-reboot.css" />
+    <None Remove="lib\twitter-bootstrap\css\bootstrap.css" />
+    <None Remove="lib\twitter-bootstrap\js\bootstrap.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,6 +47,18 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="AppData\DynamicReport\StiLicense.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\twitter-bootstrap\css\bootstrap-grid.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\twitter-bootstrap\css\bootstrap-reboot.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\twitter-bootstrap\css\bootstrap.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\twitter-bootstrap\js\bootstrap.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

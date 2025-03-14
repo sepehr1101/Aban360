@@ -1,5 +1,6 @@
 using Aban360.Api.ExceptionHandlers;
 using Aban360.Api.Extensions;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -40,7 +41,12 @@ app.AddSwaggerApp();
 
 app.UseHttpsRedirection();
 
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "lib")),
+    RequestPath = "/lib"
+});
 app.UseRouting();
 app.UseCustomCors();
 app.UseAuthentication();

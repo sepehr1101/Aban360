@@ -1,11 +1,12 @@
 ﻿using Aban360.Common.Extensions;
+using Aban360.ReportPool.Domain.Features.Dto;
 using Aban360.ReportPool.Persistence.Features.WaterInvoice.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool
 {
-    [Route("water-invoice")]
-    public class WaterInvoiceSummeryInfoController:BaseController
+    [Route("v1/water-invoice")]
+    public class WaterInvoiceSummeryInfoController : BaseController
     {
         private readonly IWaterInvoiceQueryService _waterInvoiceQueryService;
         public WaterInvoiceSummeryInfoController(IWaterInvoiceQueryService waterInvoiceQueryService)
@@ -14,11 +15,11 @@ namespace Aban360.Api.Controllers.V1.ReportPool
             _waterInvoiceQueryService.NotNull(nameof(waterInvoiceQueryService));
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("summery")]
-        public IActionResult Get()
+        public IActionResult GetSummary([FromBody] SearchInput searchInput)
         {
-            var waterInvoice= _waterInvoiceQueryService.Get();
+            var waterInvoice = _waterInvoiceQueryService.Get();
             return Ok(waterInvoice);
         }
     }
