@@ -368,5 +368,13 @@ namespace Aban360.ClaimPool.Persistence.Migrations
               .WithColumn("SiphonId").AsInt32().NotNullable()
                   .ForeignKey(NamingHelper.Fk(TableName.Siphon, table), _schema, nameof(TableName.Siphon), Id);
         }
+
+        private void CreateGeteway()
+        {
+            var table=TableName.Geteway;
+            Create.Table(nameof(TableName.Geteway)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().NotNullable().Identity().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("Title").AsString(_255).NotNullable();
+        }
     }
 }

@@ -75,6 +75,7 @@
   <ItemGroup>
     <Folder Include="Controllers\V1\ClaimPool\Registration\Commands\" />
     <Folder Include="Controllers\V1\ClaimPool\Registration\Queries\" />
+    <Folder Include="Controllers\V1\ClaimPool\Request\Queries\" />
     <Folder Include="Controllers\V1\_CombinedPools\Commands\" />
     <Folder Include="Controllers\V1\_CombinedPools\Queries\" />
   </ItemGroup>

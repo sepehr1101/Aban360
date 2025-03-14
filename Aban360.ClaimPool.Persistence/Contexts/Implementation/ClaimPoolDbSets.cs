@@ -1,6 +1,7 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Domain.Features.People.Entities;
+using Aban360.ClaimPool.Domain.Features.Request.Entities;
 using Aban360.ClaimPool.Domain.Features.WasteWater.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,5 +37,6 @@ namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
         public virtual DbSet<WaterMeterTag> WaterMeterTags{ get; set; }
         public virtual DbSet<IndividualTagDefinition> IndividualTagDefinitions{ get; set; }
         public virtual DbSet<IndividualTag> IndividualTags{ get; set; }
+        public virtual DbSet<Geteway> Geteways{ get; set; }
     }
 }
