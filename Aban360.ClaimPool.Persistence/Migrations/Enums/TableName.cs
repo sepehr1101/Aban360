@@ -26,6 +26,7 @@
         WaterMeter,
         WaterMeterTagDefinition,
         WaterMeterTag,
+        ChangeMeterReason,
 
         SiphonDiameter,
         SiphonType,
