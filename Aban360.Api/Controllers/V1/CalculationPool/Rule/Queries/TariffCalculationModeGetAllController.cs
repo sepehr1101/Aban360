@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<TariffCalculationModeGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var tariffCalculationModes = await _tariffCalculationModeGetAllHandler.Handle(cancellationToken);
+            ICollection<TariffCalculationModeGetDto> tariffCalculationModes = await _tariffCalculationModeGetAllHandler.Handle(cancellationToken);
             return Ok(tariffCalculationModes);
         }
     }

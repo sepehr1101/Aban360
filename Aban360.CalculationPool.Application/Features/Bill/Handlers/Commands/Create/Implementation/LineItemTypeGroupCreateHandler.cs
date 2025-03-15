@@ -24,11 +24,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
 
         public async Task Handle(LineItemTypeGroupCreateDto createDto, CancellationToken cancellationToken)
         {
-            var lineItemTypeGroup = _mapper.Map<LineItemTypeGroup>(createDto);
-            if (lineItemTypeGroup == null)
-            {
-                throw new InvalidDataException();
-            }
+            LineItemTypeGroup lineItemTypeGroup = _mapper.Map<LineItemTypeGroup>(createDto);
             await _lineItemTypeGroupCommandService.Add(lineItemTypeGroup);
         }
     }

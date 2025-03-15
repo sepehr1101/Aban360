@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Commands.Implementations
 {
-    public class ReadingBlockCommandService : IReadingBlockCommandService
+    internal sealed class ReadingBlockCommandService : IReadingBlockCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<ReadingBlock> _readingBlock;

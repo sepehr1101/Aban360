@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations
 {
-    public class ConstructionTypeCreateHandler : IConstructionTypeCreateHandler
+    internal sealed class ConstructionTypeCreateHandler : IConstructionTypeCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IConstructionTypeCommandService _commandService;
@@ -24,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
 
         public async Task Handle(ConstructionTypeCreateDto createDto, CancellationToken cancellationToken)
         {
-            var constructionType = _mapper.Map<ConstructionType>(createDto);
+            ConstructionType constructionType = _mapper.Map<ConstructionType>(createDto);
             await _commandService.Add(constructionType);
         }
     }

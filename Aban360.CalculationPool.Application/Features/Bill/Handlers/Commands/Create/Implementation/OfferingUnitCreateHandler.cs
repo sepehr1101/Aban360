@@ -24,11 +24,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
 
         public async Task Handle(OfferingUnitCreateDto createDto, CancellationToken cancellationToken)
         {
-            var offeringUnit = _mapper.Map<OfferingUnit>(createDto);
-            if (offeringUnit == null)
-            {
-                throw new InvalidDataException();
-            }
+            OfferingUnit offeringUnit = _mapper.Map<OfferingUnit>(createDto);
             await _offeringUnitCommandService.Add(offeringUnit);
         }
     }

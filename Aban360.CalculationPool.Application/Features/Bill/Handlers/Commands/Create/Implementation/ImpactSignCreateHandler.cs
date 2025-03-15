@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Implementation
 {
-    public class ImpactSignCreateHandler : IImpactSignCreateHandler
+    internal sealed class ImpactSignCreateHandler : IImpactSignCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IImpactSignCommandService _impactSignCommandService;
@@ -24,7 +24,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
 
         public async Task Handle(ImpactSignCreateDto createDto, CancellationToken cancellationToken)
         {
-            var impactSign = _mapper.Map<ImpactSign>(createDto);
+            ImpactSign impactSign = _mapper.Map<ImpactSign>(createDto);
             await _impactSignCommandService.Add(impactSign);
         }
     }

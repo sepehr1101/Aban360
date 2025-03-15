@@ -1,12 +1,13 @@
 ﻿using Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Update.Contracts;
 using Aban360.ClaimPool.Domain.Features.Metering.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Persistence.Features.Metering.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Update.Implementations
 {
-    public class WaterMeterUpdateHandler : IWaterMeterUpdateHandler
+    internal sealed class WaterMeterUpdateHandler : IWaterMeterUpdateHandler
     {
         private readonly IMapper _mapper;
         private readonly IWaterMeterQueryService _queryService;
@@ -23,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Upda
 
         public async Task Handle(WaterMeterUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            var waterMeter = await _queryService.Get(updateDto.Id);
+            WaterMeter waterMeter = await _queryService.Get(updateDto.Id);
             if (waterMeter == null)
             {
                 throw new InvalidDataException();

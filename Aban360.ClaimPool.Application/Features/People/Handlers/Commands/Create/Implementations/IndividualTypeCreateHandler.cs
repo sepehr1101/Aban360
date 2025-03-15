@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Create.Implementations
 {
-    public class IndividualTypeCreateHandler : IIndividualTypeCreateHandler
+    internal sealed class IndividualTypeCreateHandler : IIndividualTypeCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IIndividualTypeCommandService _commandService;
@@ -24,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Create
 
         public async Task Handle(IndividualTypeCreateDto createDto, CancellationToken cancellationToken)
         {
-            var individualType = _mapper.Map<IndividualType>(createDto);
+            IndividualType individualType = _mapper.Map<IndividualType>(createDto);
             await _commandService.Add(individualType);
         }
     }

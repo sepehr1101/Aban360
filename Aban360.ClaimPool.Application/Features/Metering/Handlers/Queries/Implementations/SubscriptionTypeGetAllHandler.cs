@@ -1,12 +1,13 @@
 ﻿using Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Metering.Dto.Queries;
+using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Persistence.Features.Metering.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Implementations
 {
-    public class SubscriptionTypeGetAllHandler : ISubscriptionTypeGetAllHandler
+    internal sealed class SubscriptionTypeGetAllHandler : ISubscriptionTypeGetAllHandler
     {
         private readonly IMapper _mapper;
         private readonly ISubscriptionTypeQueryService _subscriptionTypeQueryService;
@@ -23,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Imple
 
         public async Task<ICollection<SubscriptionTypeGetDto>> Handle(CancellationToken cancellationToken)
         {
-            var subscriptionType = await _subscriptionTypeQueryService.Get();
+            ICollection<SubscriptionType> subscriptionType = await _subscriptionTypeQueryService.Get();
             if (subscriptionType == null)
             {
                 throw new InvalidDataException();

@@ -1,12 +1,13 @@
 ﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Delete.Contracts;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
+using Aban360.CalculationPool.Domain.Features.Bill.Entities;
 using Aban360.CalculationPool.Persistence.Features.Bill.Commands.Contracts;
 using Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts;
 using Aban360.Common.Extensions;
 
 namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Delete.Implementation
 {
-    public class InvoiceStatusDeleteHandler : IInvoiceStatusDeleteHandler
+    internal sealed class InvoiceStatusDeleteHandler : IInvoiceStatusDeleteHandler
     {
         private readonly IInvoiceStatusCommandService _invoiceStatusCommandService;
         private readonly IInvoiceStatusQueryService _invoiceStatusQueryService;
@@ -23,11 +24,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.De
 
         public async Task Handle(InvoiceStatusDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            var invoiceStatus = await _invoiceStatusQueryService.Get(deleteDto.Id);
-            if (invoiceStatus == null)
-            {
-                throw new InvalidDataException();
-            }
+            InvoiceStatus invoiceStatus = await _invoiceStatusQueryService.Get(deleteDto.Id);
             await _invoiceStatusCommandService.Remove(invoiceStatus);
         }
     }

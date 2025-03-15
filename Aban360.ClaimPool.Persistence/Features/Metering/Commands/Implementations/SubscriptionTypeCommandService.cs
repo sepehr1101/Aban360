@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.Metering.Commands.Implementations
 {
-    public class SubscriptionTypeCommandService : ISubscriptionTypeCommandService
+    internal sealed class SubscriptionTypeCommandService : ISubscriptionTypeCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<SubscriptionType> _subscriptionType;

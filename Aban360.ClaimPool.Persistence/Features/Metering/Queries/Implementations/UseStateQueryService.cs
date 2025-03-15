@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.Metering.Queries.Implementations
 {
-    public class UseStateQueryService : IUseStateQueryService
+    internal sealed class UseStateQueryService : IUseStateQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<UseState> _useState;

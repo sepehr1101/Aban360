@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<WaterMeterTagDefinitionGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var waterMeterTagDefinition = await _tagDefinitionHandler.Handle(cancellationToken);
+            ICollection<WaterMeterTagDefinitionGetDto> waterMeterTagDefinition = await _tagDefinitionHandler.Handle(cancellationToken);
             return Ok(waterMeterTagDefinition);
         }
     }

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.CalculationPool.Persistence.Features.Rule.Queries.Implementations
 {
-    public class TariffCalculationModeQueryService : ITariffCalculationModeQueryService
+   internal sealed class TariffCalculationModeQueryService : ITariffCalculationModeQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<TariffCalculationMode> _tariffCalculationMode;

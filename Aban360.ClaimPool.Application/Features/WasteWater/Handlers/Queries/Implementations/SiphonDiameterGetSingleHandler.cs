@@ -3,10 +3,11 @@ using Aban360.ClaimPool.Persistence.Features.WasteWater.Queries.Contracts;
 using AutoMapper;
 using Aban360.Common.Extensions;
 using Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Features.WasteWater.Entities;
 
 namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Implementations
 {
-    public class SiphonDiameterGetSingleHandler : ISiphonDiameterGetSingleHandler
+    internal sealed class SiphonDiameterGetSingleHandler : ISiphonDiameterGetSingleHandler
     {
         private readonly IMapper _mapper;
         private readonly ISiphonDiameterQueryService _queryService;
@@ -23,11 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Imp
 
         public async Task<SiphonDiameterGetDto> Handle(short id, CancellationToken cancellationToken)
         {
-            var siphonDiameter = await _queryService.Get(id);
-            if (siphonDiameter == null)
-            {
-                throw new InvalidDataException();
-            }
+            SiphonDiameter siphonDiameter = await _queryService.Get(id);
             return _mapper.Map<SiphonDiameterGetDto>(siphonDiameter);
         }
     }

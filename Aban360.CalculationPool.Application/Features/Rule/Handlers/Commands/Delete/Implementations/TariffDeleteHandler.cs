@@ -6,7 +6,7 @@ using Aban360.Common.Extensions;
 
 namespace Aban360.CalculationPool.Application.Features.Rule.Handlers.Commands.Delete.Implementations
 {
-    public class TariffDeleteHandler : ITariffDeleteHandler
+    internal sealed class TariffDeleteHandler : ITariffDeleteHandler
     {
         private readonly ITariffCommandService _tariffCommandService;
         private readonly ITariffQueryService _tariffQueryService;
@@ -23,11 +23,7 @@ namespace Aban360.CalculationPool.Application.Features.Rule.Handlers.Commands.De
 
         public async Task Handle(TariffDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            var tariff = await _tariffQueryService.Get(deleteDto.Id);
-            if (tariff == null)
-            {
-                throw new InvalidDataException();
-            }
+            Tariff tariff = await _tariffQueryService.Get(deleteDto.Id);
             await _tariffCommandService.Remove(tariff);
         }
     }

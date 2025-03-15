@@ -1,12 +1,13 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Update.Contracts;
 using Aban360.LocationPool.Domain.Features.MainHierarchy.Dto.Commands;
+using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contracts;
 using AutoMapper;
 
 namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Update.Implementations
 {
-    public class MunicipalityUpdateHandler : IMunicipalityUpdateHandler
+    internal sealed class MunicipalityUpdateHandler : IMunicipalityUpdateHandler
     {
         private readonly IMapper _mapper;
         private readonly IMunicipalityQueryService _municipalqueryService;
@@ -23,11 +24,7 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Comma
 
         public async Task Handel(MunicipalityUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            var municipality = await _municipalqueryService.Get(updateDto.Id);
-            if (municipality == null)
-            {
-                throw new InvalidDataException();
-            }
+            Municipality municipality = await _municipalqueryService.Get(updateDto.Id);
             _mapper.Map(updateDto, municipality);
         }
     }

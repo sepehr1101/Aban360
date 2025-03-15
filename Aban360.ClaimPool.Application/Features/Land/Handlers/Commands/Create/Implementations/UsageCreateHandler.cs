@@ -24,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
 
         public async Task Handle(UsageCreateDto createDto, CancellationToken cancellationToken)
         {
-            var usage = _mapper.Map<Usage>(createDto);
+            Usage usage = _mapper.Map<Usage>(createDto);
             await _usageCommandService.Add(usage);
         }
     }

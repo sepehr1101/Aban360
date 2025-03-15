@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReadingConfigDefaultGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var readingConfigDefaults = await _readingConfigDefaultGetSingleHandler.Handle(id, cancellationToken);
+            ReadingConfigDefaultGetDto readingConfigDefaults = await _readingConfigDefaultGetSingleHandler.Handle(id, cancellationToken);
             return Ok(readingConfigDefaults);
         }
     }

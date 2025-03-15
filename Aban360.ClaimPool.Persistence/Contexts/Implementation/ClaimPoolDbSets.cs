@@ -13,6 +13,8 @@ namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
         public virtual DbSet<EstateBoundType> EstateBoundTypes { get; set; }
         public virtual DbSet<Estate> Estates { get; set; }
         public virtual DbSet<Flat> Flats { get; set; }
+        public virtual DbSet<EstateWaterResource> EstateWaterResources{ get; set; }
+        public virtual DbSet<WaterResource> WaterResources{ get; set; }
         public virtual DbSet<Usage> Usages { get; set; }
         public virtual DbSet<Guild> Guilds { get; set; }
         public virtual DbSet<Profession> Professions { get; set; }
@@ -38,5 +40,6 @@ namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
         public virtual DbSet<IndividualTagDefinition> IndividualTagDefinitions{ get; set; }
         public virtual DbSet<IndividualTag> IndividualTags{ get; set; }
         public virtual DbSet<Geteway> Geteways{ get; set; }
+        public virtual DbSet<ChangeMeterReason> ChangeMeterReasons{ get; set; }
     }
 }

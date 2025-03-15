@@ -24,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
 
         public async Task Handle(ProfessionCreateDto createDto, CancellationToken cancellationToken)
         {
-            var profession = _mapper.Map<Profession>(createDto);
+            Profession profession = _mapper.Map<Profession>(createDto);
             await _professionCommandService.Add(profession);
         }
     }

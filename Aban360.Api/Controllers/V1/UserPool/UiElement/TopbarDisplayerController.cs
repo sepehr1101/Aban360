@@ -2,7 +2,6 @@
 using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.UiElement.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.UserPool.UiElement
@@ -22,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.UiElement
         [ProducesResponseType(typeof(ApiResponseEnvelope<Topbar>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetMyTopbar(CancellationToken cancellationToken)
         {
-            var topbar = await _topbarQueryHandler.Handle(CurrentUser.UserId, cancellationToken);
+            Topbar topbar = await _topbarQueryHandler.Handle(CurrentUser.UserId, cancellationToken);
             return Ok(topbar);
         }
 
@@ -31,7 +30,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.UiElement
         [ProducesResponseType(typeof(ApiResponseEnvelope<Topbar>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetMyTopbar(Guid userId,CancellationToken cancellationToken)
         {
-            var topbar = await _topbarQueryHandler.Handle(userId, cancellationToken);
+            Topbar topbar = await _topbarQueryHandler.Handle(userId, cancellationToken);
             return Ok(topbar);
         }
     }

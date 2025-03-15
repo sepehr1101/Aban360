@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Create.Implementations
 {
-    public class MunicipalityCreateHandler : IMunicipalityCreateHandler
+    internal sealed class MunicipalityCreateHandler : IMunicipalityCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IMunicipalityCommandService _municipalCommandService;
@@ -24,7 +24,7 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Comma
 
         public async Task Handle(MunicipalityCreateDto createDto, CancellationToken cancellationToken)
         {
-            var municipality = _mapper.Map<Municipality>(createDto);
+            Municipality municipality = _mapper.Map<Municipality>(createDto);
             await _municipalCommandService.Add(municipality);
         }
     }

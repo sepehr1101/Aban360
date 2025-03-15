@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<EstateBoundTypeGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var estateBoundType = await _getSingleHandler.Handle(id, cancellationToken);
+            EstateBoundTypeGetDto estateBoundType = await _getSingleHandler.Handle(id, cancellationToken);
             return Ok(estateBoundType);
         }
     }

@@ -1,5 +1,4 @@
 ﻿using Aban360.Common.BaseEntities;
-using System.Threading.Tasks;
 
 namespace Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Contracts
 {

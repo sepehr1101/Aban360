@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 {
-    public class FlatCommandService : IFlatCommandService
+    internal sealed class FlatCommandService : IFlatCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<Flat> _flat;

@@ -29,7 +29,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<MeterUseTypeGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(MeterUseTypeEnum id, CancellationToken cancellationToken)
         {
-            var meterUseType = await _meterUseTypeHandler.Handle(id, cancellationToken);
+            MeterUseTypeGetDto meterUseType = await _meterUseTypeHandler.Handle(id, cancellationToken);
             return Ok(meterUseType);
         }
     }

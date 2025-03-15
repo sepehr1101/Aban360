@@ -1,5 +1,6 @@
 ﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
+using Aban360.CalculationPool.Domain.Features.Bill.Entities;
 using Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
@@ -23,11 +24,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Imp
 
         public async Task<InvoiceTypeGetDto> Handle(short id, CancellationToken cancellationToken)
         {
-            var invoiceType = await _invoiceTypeQueryService.Get(id);
-            if (invoiceType == null)
-            {
-                throw new InvalidDataException();
-            }
+            InvoiceType invoiceType = await _invoiceTypeQueryService.Get(id);
             return _mapper.Map<InvoiceTypeGetDto>(invoiceType);
         }
     }

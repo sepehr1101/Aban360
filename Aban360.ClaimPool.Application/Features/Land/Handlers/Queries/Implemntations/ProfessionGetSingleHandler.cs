@@ -1,12 +1,13 @@
 ﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
+using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations
 {
-    public class ProfessionGetSingleHandler : IProfessionGetSingleHandler
+    internal sealed class ProfessionGetSingleHandler : IProfessionGetSingleHandler
     {
         private readonly IMapper _mapper;
         private readonly IProfessionQueryService _queryService;
@@ -23,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
 
         public async Task<ProfessionGetDto> Handle(short id, CancellationToken cancellationToken)
         {
-            var profession = await _queryService.Get(id);
+            Profession profession = await _queryService.Get(id);
             if (profession == null)
             {
                 throw new InvalidDataException();

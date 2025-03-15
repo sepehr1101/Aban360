@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Create.Implementations
 {
-    public class SubscriptionTypeCreateHandler : ISubscriptionTypeCreateHandler
+    internal sealed class SubscriptionTypeCreateHandler : ISubscriptionTypeCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly ISubscriptionTypeCommandService _subscriptionTypeCommandService;
@@ -24,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Crea
 
         public async Task Handle(SubscriptionTypeCreateDto createDto, CancellationToken cancellationToken)
         {
-            var subscriptionType = _mapper.Map<SubscriptionType>(createDto);
+            SubscriptionType subscriptionType = _mapper.Map<SubscriptionType>(createDto);
             await _subscriptionTypeCommandService.Add(subscriptionType);
         }
     }

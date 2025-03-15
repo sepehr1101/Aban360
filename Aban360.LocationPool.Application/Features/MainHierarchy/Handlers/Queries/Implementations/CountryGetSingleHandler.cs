@@ -1,12 +1,13 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts;
 using Aban360.LocationPool.Domain.Features.MainHierarchy.Dto.Queries;
+using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contracts;
 using AutoMapper;
 
 namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations
 {
-    public class CountryGetSingleHandler : ICountryGetSingleHandler
+    internal sealed class CountryGetSingleHandler : ICountryGetSingleHandler
     {
         private readonly IMapper _mapper;
         private readonly ICountryQueryService _countryQueryService;
@@ -23,7 +24,7 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queri
 
         public async Task<CountryGetDto> Handle(short id,CancellationToken cancellationToken)
         {
-            var country = await _countryQueryService.Get(id);
+            Country country = await _countryQueryService.Get(id);
             return _mapper.Map<CountryGetDto>(country);
         }
     }

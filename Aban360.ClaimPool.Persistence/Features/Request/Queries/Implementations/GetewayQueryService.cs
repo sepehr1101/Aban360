@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 {
-    public class GetewayQueryService : IGetewayQueryService
+    internal sealed class GetewayQueryService : IGetewayQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<Geteway> _geteway;

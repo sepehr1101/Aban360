@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.Metering.Queries.Implementations
 {
-    public class MeterMaterialQueryService : IMeterMaterialQueryService
+    internal sealed class MeterMaterialQueryService : IMeterMaterialQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<MeterMaterial> _meterMaterial;

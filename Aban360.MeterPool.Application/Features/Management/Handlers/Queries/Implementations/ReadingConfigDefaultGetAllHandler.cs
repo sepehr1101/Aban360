@@ -1,12 +1,13 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Contracts;
 using Aban360.MeterPool.Domain.Features.Management.Dtos.Queries;
+using Aban360.MeterPool.Domain.Features.Management.Entities;
 using Aban360.MeterPool.Persistence.Features.Management.Queries.Contracts;
 using AutoMapper;
 
 namespace Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Implementations
 {
-    public class ReadingConfigDefaultGetAllHandler : IReadingConfigDefaultGetAllHandler
+    internal sealed class ReadingConfigDefaultGetAllHandler : IReadingConfigDefaultGetAllHandler
     {
         private readonly IMapper _mapper;
         private readonly IReadingConfigDefaultQueryService _readingConfigDefaultQueryService;
@@ -23,7 +24,7 @@ namespace Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Imp
 
         public async Task<ICollection<ReadingConfigDefaultGetDto>> Handle(CancellationToken cancellationToken)
         {
-            var readingConfigDefault = await _readingConfigDefaultQueryService.Get();
+            ICollection<ReadingConfigDefault> readingConfigDefault = await _readingConfigDefaultQueryService.Get();
             return _mapper.Map<ICollection<ReadingConfigDefaultGetDto>>(readingConfigDefault);
         }
     }

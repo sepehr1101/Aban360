@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Create.Implementations
 {
-    public class WaterMeterTagCreateHandler : IWaterMeterTagCreateHandler
+    internal sealed class WaterMeterTagCreateHandler : IWaterMeterTagCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IWaterMeterTagCommandService _waterMeterTagCommandService;
@@ -24,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Cr
 
         public async Task Handle(WaterMeterTagCreateDto createDto, CancellationToken cancellationToken)
         {
-            var waterMeterTag = _mapper.Map<WaterMeterTag>(createDto);
+            WaterMeterTag waterMeterTag = _mapper.Map<WaterMeterTag>(createDto);
             await _waterMeterTagCommandService.Add(waterMeterTag);
         }
     }

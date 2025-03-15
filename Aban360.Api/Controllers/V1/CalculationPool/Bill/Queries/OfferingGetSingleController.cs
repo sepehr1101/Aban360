@@ -19,10 +19,10 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bil.Queries
 
         [HttpPost, HttpGet]
         [Route("single/{id}")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<OfferingGroupGetDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<OfferingGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var offerings = await _offeringGetSingleHandler.Handle(id, cancellationToken);
+            OfferingGetDto offerings = await _offeringGetSingleHandler.Handle(id, cancellationToken);
             return Ok(offerings);
         }
     }

@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations
 {
-    public class FlatCreateHandler : IFlatCreateHandler
+    internal sealed class FlatCreateHandler : IFlatCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IFlatCommandService _commandService;
@@ -24,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
 
         public async Task Handle(FlatCreateDto createDto, CancellationToken cancellationToken)
         {
-            var flat = _mapper.Map<Flat>(createDto);
+            Flat flat = _mapper.Map<Flat>(createDto);
             await _commandService.Add(flat);
         }
     }

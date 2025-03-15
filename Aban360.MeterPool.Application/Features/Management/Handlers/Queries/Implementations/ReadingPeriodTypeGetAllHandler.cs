@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Contracts;
 using Aban360.MeterPool.Domain.Features.Management.Dtos.Queries;
+using Aban360.MeterPool.Domain.Features.Management.Entities;
 using Aban360.MeterPool.Persistence.Features.Manegement.Queries.Contracts;
 using AutoMapper;
 
@@ -23,7 +24,7 @@ namespace Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Imp
 
         public async Task<ICollection<ReadingPeriodTypeGetDto>> Handle(CancellationToken cancellationToken)
         {
-            var readingPeriodType = await _readingPeriodTypeQueryService.Get();
+            ICollection<ReadingPeriodType> readingPeriodType = await _readingPeriodTypeQueryService.Get();
             return _mapper.Map<ICollection<ReadingPeriodTypeGetDto>>(readingPeriodType);
         }
     }

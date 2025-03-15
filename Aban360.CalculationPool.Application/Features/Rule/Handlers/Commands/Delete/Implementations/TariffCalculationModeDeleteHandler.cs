@@ -1,12 +1,13 @@
 ﻿using Aban360.CalculationPool.Application.Features.Rule.Handlers.Commands.Delete.Contracts;
 using Aban360.CalculationPool.Domain.Features.Rule.Dto.Commands;
+using Aban360.CalculationPool.Domain.Features.Rule.Entities;
 using Aban360.CalculationPool.Persistence.Features.Rule.Commands.Contracts;
 using Aban360.CalculationPool.Persistence.Features.Rule.Queries.Contracts;
 using Aban360.Common.Extensions;
 
 namespace Aban360.CalculationPool.Application.Features.Rule.Handlers.Commands.Delete.Implementations
 {
-    public class TariffCalculationModeDeleteHandler : ITariffCalculationModeDeleteHandler
+    internal sealed class TariffCalculationModeDeleteHandler : ITariffCalculationModeDeleteHandler
     {
         private readonly ITariffCalculationModeCommandService _tariffCalculationModeCommandService;
         private readonly ITariffCalculationModeQueryService _tariffCalculationModeQueryService;
@@ -23,11 +24,7 @@ namespace Aban360.CalculationPool.Application.Features.Rule.Handlers.Commands.De
 
         public async Task Handle(TariffCalculationModeDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            var tariffCalculationMode = await _tariffCalculationModeQueryService.Get(deleteDto.Id);
-            if (tariffCalculationMode == null)
-            {
-                throw new InvalidDataException();
-            }
+            TariffCalculationMode tariffCalculationMode = await _tariffCalculationModeQueryService.Get(deleteDto.Id);
             await _tariffCalculationModeCommandService.Remove(tariffCalculationMode);
         }
     }

@@ -24,11 +24,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
 
         public async Task Handle(CompanyServiceCreateDto createDto, CancellationToken cancellationToken)
         {
-            var companyService = _mapper.Map<CompanyService>(createDto);
-            if (companyService == null)
-            {
-                throw new InvalidDataException();
-            }
+            CompanyService companyService = _mapper.Map<CompanyService>(createDto);
             await _companyServiceCommandService.Add(companyService);
         }
     }

@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Create.Implementations
 {
-    public class HeadquarterCreateHandler : IHeadquarterCreateHandler
+    internal sealed class HeadquarterCreateHandler : IHeadquarterCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IHeadquarterCommandService _headquarterCommandService;
@@ -24,7 +24,7 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Comma
 
         public async Task Handle(HeadquarterCreateDto createDto, CancellationToken cancellationToken)
         {
-            var headquarter = _mapper.Map<Headquarters>(createDto);
+            Headquarters headquarter = _mapper.Map<Headquarters>(createDto);
             await _headquarterCommandService.Add(headquarter);
         }
     }

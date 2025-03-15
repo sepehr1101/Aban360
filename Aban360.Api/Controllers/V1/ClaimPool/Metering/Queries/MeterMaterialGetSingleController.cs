@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<MeterMaterialGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var meterMaterial = await _meterMaterialHandler.Handle(id, cancellationToken);
+            MeterMaterialGetDto meterMaterial = await _meterMaterialHandler.Handle(id, cancellationToken);
             return Ok(meterMaterial);
         }
     }

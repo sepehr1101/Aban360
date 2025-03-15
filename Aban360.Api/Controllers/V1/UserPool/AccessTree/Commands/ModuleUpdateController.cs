@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.AccessTree.Handlers.Commands.Update.Contracts;
 using Aban360.UserPool.Domain.Features.AceessTree.Dto.Commands;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
@@ -24,6 +25,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree.Commands
 
         [HttpPatch, HttpPost]
         [Route("update")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ModuleUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] ModuleUpdateDto updateDto, CancellationToken cancellationToken)
         {
             await _moduleUpdateHandler.Handle(updateDto, cancellationToken);

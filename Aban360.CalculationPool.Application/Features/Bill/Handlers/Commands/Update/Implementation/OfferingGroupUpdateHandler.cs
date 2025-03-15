@@ -1,12 +1,13 @@
 ﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Contracts;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
+using Aban360.CalculationPool.Domain.Features.Bill.Entities;
 using Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
 namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Implementation
 {
-    public class OfferingGroupUpdateHandler : IOfferingGroupUpdateHandler
+    internal sealed class OfferingGroupUpdateHandler : IOfferingGroupUpdateHandler
     {
         private readonly IMapper _mapper;
         private readonly IOfferingGroupQueryService _offeringGroupQueryService;
@@ -23,11 +24,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Up
 
         public async Task Handle(OfferingGroupUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            var offeringGroup = await _offeringGroupQueryService.Get(updateDto.Id);
-            if (offeringGroup == null)
-            {
-                throw new InvalidDataException();
-            }
+            OfferingGroup offeringGroup = await _offeringGroupQueryService.Get(updateDto.Id);
             _mapper.Map(updateDto, offeringGroup);
         }
     }

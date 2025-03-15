@@ -29,7 +29,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<ProvinceGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var result = await _provinceGetAllHandler.Handle(cancellationToken);
+            ICollection<ProvinceGetDto> result = await _provinceGetAllHandler.Handle(cancellationToken);
             return Ok(result);
         }
     }

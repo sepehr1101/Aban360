@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 {
-    public class EstateBoundTypeCommandService : IEstateBoundTypeCommandService
+    internal sealed class EstateBoundTypeCommandService : IEstateBoundTypeCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<EstateBoundType> _estateBoundType;

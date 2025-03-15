@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<GuildGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var guild = await _guildHandler.Handle(cancellationToken);
+            ICollection<GuildGetDto> guild = await _guildHandler.Handle(cancellationToken);
             return Ok(guild);
         }
     }

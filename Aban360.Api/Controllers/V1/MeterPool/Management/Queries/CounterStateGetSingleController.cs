@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<CounterStateGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var counterStates = await _counterStateGetSingleHandler.Handle(id, cancellationToken);
+            CounterStateGetDto counterStates = await _counterStateGetSingleHandler.Handle(id, cancellationToken);
             return Ok(counterStates);
         }
     }

@@ -36,7 +36,7 @@ namespace Aban360.ClaimPool.Persistence.DbSeeder.Implementations
                 new UseState(){Id=UseStateEnum.Collected,Title="جمع آوری "},
                 new UseState(){Id=UseStateEnum.Replaced,Title="جابه‌جا شده"},
             };
-            _useState.AddRange(UseState);
+           _useState.AddRange(UseState);
             _uow.SaveChanges();
         }
     }

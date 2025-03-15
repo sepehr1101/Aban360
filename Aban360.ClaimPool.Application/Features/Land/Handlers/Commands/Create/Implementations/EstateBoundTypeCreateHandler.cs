@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations
 {
-    public class EstateBoundTypeCreateHandler : IEstateBoundTypeCreateHandler
+    internal sealed class EstateBoundTypeCreateHandler : IEstateBoundTypeCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IEstateBoundTypeCommandService _commandService;
@@ -24,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
 
         public async Task Handle(EstateBoundTypeCreateDto createDto, CancellationToken cancellationToken)
         {
-            var estateBoundType = _mapper.Map<EstateBoundType>(createDto);
+            EstateBoundType estateBoundType = _mapper.Map<EstateBoundType>(createDto);
             await _commandService.Add(estateBoundType);
         }
     }

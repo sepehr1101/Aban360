@@ -2,12 +2,13 @@
 using Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Contracts;
 using Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Update.Contracts;
 using Aban360.MeterPool.Domain.Features.Management.Dtos.Commands;
+using Aban360.MeterPool.Domain.Features.Management.Entities;
 using Aban360.MeterPool.Persistence.Features.Management.Queries.Contracts;
 using AutoMapper;
 
 namespace Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Update.Implementations
 {
-    public class CounterStateUpdateHandler : ICounterStateUpdateHandler
+    internal sealed class CounterStateUpdateHandler : ICounterStateUpdateHandler
     {
         private readonly IMapper _mapper;
         private readonly ICounterStateQueryService _counterStateQueryService;
@@ -29,7 +30,7 @@ namespace Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Up
 
         public async Task Handle(CounterStateUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            var counterStateDto = await _counterStateQueryService.Get(updateDto.Id);
+            CounterState counterStateDto = await _counterStateQueryService.Get(updateDto.Id);
 
             var headquarterTitle = await _headquarterAddhoc.Handle(updateDto.HeadquartersId, cancellationToken);
             counterStateDto.HeadquartersTitle = headquarterTitle;

@@ -29,7 +29,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<UseStateGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(UseStateEnum id, CancellationToken cancellationToken)
         {
-            var useEstate = await _useEstateHandler.Handle(id, cancellationToken);
+            UseStateGetDto useEstate = await _useEstateHandler.Handle(id, cancellationToken);
             return Ok(useEstate);
         }
     }

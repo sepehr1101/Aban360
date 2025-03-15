@@ -1,7 +1,7 @@
 ﻿using Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Metering.Dto.Queries;
+using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Persistence.Features.Metering.Queries.Contracts;
-using Aban360.Common.Db.Exceptions;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
@@ -24,11 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Imp
 
         public async Task<WaterMeterTagDefinitionGetDto> Handle(short id, CancellationToken cancellationToken)
         {
-            var waterMeterTagDefinition = await _queryService.Get(id);
-            if (waterMeterTagDefinition == null)
-            {
-                throw new InvalidIdException();//todo : exception
-            }
+            WaterMeterTagDefinition waterMeterTagDefinition = await _queryService.Get(id);
             return _mapper.Map<WaterMeterTagDefinitionGetDto>(waterMeterTagDefinition);
         }
     }

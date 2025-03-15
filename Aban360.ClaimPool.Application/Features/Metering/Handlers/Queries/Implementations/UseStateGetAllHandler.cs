@@ -1,12 +1,13 @@
 ﻿using Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Metering.Dto.Queries;
+using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Persistence.Features.Metering.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Implementations
 {
-    public class UseStateGetAllHandler : IUseStateGetAllHandler
+    internal sealed class UseStateGetAllHandler : IUseStateGetAllHandler
     {
         private readonly IMapper _mapper;
         private readonly IUseStateQueryService _useStateQueryService;
@@ -23,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Imple
 
         public async Task<ICollection<UseStateGetDto>> Handle(CancellationToken cancellationToken)
         {
-            var useState = await _useStateQueryService.Get();
+            ICollection<UseState> useState = await _useStateQueryService.Get();
             if (useState == null)
             {
                 throw new InvalidDataException();

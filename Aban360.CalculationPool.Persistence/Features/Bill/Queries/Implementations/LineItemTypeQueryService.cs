@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementations
 {
-    public class LineItemTypeQueryService : ILineItemTypeQueryService
+   internal sealed class LineItemTypeQueryService : ILineItemTypeQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<LineItemType> _lineItemType;

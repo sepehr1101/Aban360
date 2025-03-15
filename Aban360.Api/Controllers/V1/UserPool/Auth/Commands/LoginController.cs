@@ -13,6 +13,7 @@ using Aban360.UserPool.Domain.Features.Auth.Entities;
 using DNTPersianUtils.Core;
 using System.Globalization;
 using DNTCaptcha.Core;
+using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 
 namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
 {
@@ -116,10 +117,10 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
 
             if (!user.HasTwoStepVerification)
             {
-                var secondStepOutput = await GetSecondStepOutput(user, cancellationToken);
+                SecondStepOutput secondStepOutput = await GetSecondStepOutput(user, cancellationToken);
                 return Ok(secondStepOutput);
             }
-            var output = await _userLoginAddHandler.Handle(loginInput, user);
+            FirstStepOutput output = await _userLoginAddHandler.Handle(loginInput, user);
             await _uow.SaveChangesAsync(cancellationToken);
             return Ok(output, "second-step");
         }
@@ -130,17 +131,17 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<SecondStepOutput>), StatusCodes.Status200OK)]
         public async Task<IActionResult> PaceSecondStep([FromBody] SecondStepLoginInput loginDto, CancellationToken cancellationToken)
         {
-            var userLogin = await _userLoginFindHandler.Handle(loginDto, cancellationToken);
+            UserLogin userLogin = await _userLoginFindHandler.Handle(loginDto, cancellationToken);
             if (userLogin == null)
             {
                 return ClientError(MessageResources.InvalidConfirmCode);
             }
-            var secondStepOutput = await GetSecondStepOutput(userLogin.User, cancellationToken);
+            SecondStepOutput secondStepOutput = await GetSecondStepOutput(userLogin.User, cancellationToken);
             return Ok(secondStepOutput);
         }
         private async Task<SecondStepOutput> GetSecondStepOutput(User user, CancellationToken cancellationToken)
         {
-            var jwtData = await _tokenFactoryService.CreateJwtTokensAsync(user);
+            JwtTokenData jwtData = await _tokenFactoryService.CreateJwtTokensAsync(user);
             await _userTokenCreateHandler.Handle(jwtData, null, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
             return new SecondStepOutput(jwtData.AccessToken, jwtData.RefreshToken);
@@ -164,8 +165,8 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
                 return false;
             }
 
-            var decryptedText = _captchaCryptoProvider.Decrypt(input.CaptchaToken);
-            var numberToText = inputNumber.ToString(CultureInfo.InvariantCulture);
+            string decryptedText = _captchaCryptoProvider.Decrypt(input.CaptchaToken);
+            string numberToText = inputNumber.ToString(CultureInfo.InvariantCulture);
 
             if (decryptedText?.Equals(numberToText, StringComparison.Ordinal) != true)
             {
@@ -185,13 +186,13 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
             //{
             //    return BadRequest("refreshToken is not set.");
             //}
-            var userToken = await _userTokenFindByRefreshTokenHandler.Handle(refreshToken, cancellationToken);
+            UserToken userToken = await _userTokenFindByRefreshTokenHandler.Handle(refreshToken, cancellationToken);
             if (userToken == null)
             {
                 return Unauthorized();
             }
-            var refreshSerial= _tokenFactoryService.GetRefreshTokenSerial(refreshToken.ToString());
-            var jwtData = await _tokenFactoryService.CreateJwtTokensAsync(userToken.User);
+            string refreshSerial= _tokenFactoryService.GetRefreshTokenSerial(refreshToken.ToString());
+            JwtTokenData jwtData = await _tokenFactoryService.CreateJwtTokensAsync(userToken.User);
             await _userTokenCreateHandler.Handle(jwtData, refreshSerial, cancellationToken);            
             await _uow.SaveChangesAsync();
             return Ok(new  SecondStepOutput(jwtData.AccessToken,jwtData.RefreshToken));

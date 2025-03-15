@@ -1,12 +1,13 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts;
 using Aban360.LocationPool.Domain.Features.MainHierarchy.Dto.Queries;
+using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contracts;
 using AutoMapper;
 
 namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations
 {
-    public class ProvinceGetSingleHandler : IProvinceGetSingleHandler
+    internal sealed class ProvinceGetSingleHandler : IProvinceGetSingleHandler
     {
         private readonly IMapper _mapper;
         private readonly IProvinceQueryService _provinceQueryService;
@@ -22,7 +23,7 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queri
         }
         public async Task<ProvinceGetDto> Handle(short id, CancellationToken cancellationToken)
         {
-            var province = await _provinceQueryService.Get(id);
+            Province province = await _provinceQueryService.Get(id);
             return _mapper.Map<ProvinceGetDto>(province);
         }
     }

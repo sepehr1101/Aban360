@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
 {
-    public class UsageQuerySevice : IUsageQuerySevice
+    internal sealed class UsageQuerySevice : IUsageQuerySevice
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<Usage> _usage;

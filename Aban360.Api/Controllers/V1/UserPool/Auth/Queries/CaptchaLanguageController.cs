@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<CaptchaLanguageDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
-            var languages = await _languageQueryHandler.Handle(cancellationToken);
+            ICollection<CaptchaLanguageDto> languages = await _languageQueryHandler.Handle(cancellationToken);
             return Ok(languages);
         }
     }

@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bil.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<InvoiceLineItemInsertModeGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var InvoiceLineItemInsertModes = await _invoiceLineItemInsertModeGetAllHandler.Handle(cancellationToken);
+            ICollection<InvoiceLineItemInsertModeGetDto> InvoiceLineItemInsertModes = await _invoiceLineItemInsertModeGetAllHandler.Handle(cancellationToken);
             return Ok(InvoiceLineItemInsertModes);
         }
     }

@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<CordinalDirectionGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(CancellationToken cancellationToken)
         {
-            var cordinalDirection = await _cordinalDirectionGetAllHandler.Handle(cancellationToken);
+            ICollection<CordinalDirectionGetDto> cordinalDirection = await _cordinalDirectionGetAllHandler.Handle(cancellationToken);
             return Ok(cordinalDirection);
         }
     }

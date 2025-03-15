@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implementations
 {
-    public class ReadingBlockQeryService : IReadingBlockQeryService
+    internal sealed class ReadingBlockQeryService : IReadingBlockQeryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<ReadingBlock> _readingBlocks;
@@ -22,7 +22,7 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implem
         public async Task<ReadingBlock> Get(short id)
         {
             return await _readingBlocks
-                    .Include(r => r.ReadingBoundId)
+                    .Include(r => r.ReadingBound)
                     .Where(r => r.Id == id)
                     .SingleAsync();
         }
@@ -30,7 +30,7 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implem
         public async Task<ICollection<ReadingBlock>> Get()
         {
             return await _readingBlocks
-                .Include(r=>r.ReadingBoundId)
+                .Include(r=>r.ReadingBound)
                 .ToListAsync();
         }
     }

@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implementations
 {
-    public class ZoneQueryService : IZoneQueryService
+    internal sealed class ZoneQueryService : IZoneQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<Zone> _zones;

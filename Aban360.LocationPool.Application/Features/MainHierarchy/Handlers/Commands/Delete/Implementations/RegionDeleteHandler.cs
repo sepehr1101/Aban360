@@ -1,12 +1,13 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Delete.Contracts;
 using Aban360.LocationPool.Domain.Features.MainHierarchy.Dto.Commands;
+using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.LocationPool.Persistence.Features.MainHierarchy.Commands.Contracts;
 using Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contracts;
 
 namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Delete.Implementations
 {
-    public class RegionDeleteHandler : IRegionDeleteHandler
+    internal sealed class RegionDeleteHandler : IRegionDeleteHandler
     {
         private readonly IRegionQueryService _regionQueryService;
         private readonly IRegionCommandService _regionCommandService;
@@ -23,11 +24,7 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Comma
 
         public async Task Handle(RegionDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            var region = await _regionQueryService.Get(deleteDto.Id);
-            if (region == null)
-            {
-                throw new InvalidDataException();
-            }
+            Region region = await _regionQueryService.Get(deleteDto.Id);
             await _regionCommandService.Remove(region);
         }
     }

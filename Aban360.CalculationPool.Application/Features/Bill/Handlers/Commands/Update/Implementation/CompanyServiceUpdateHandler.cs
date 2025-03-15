@@ -1,12 +1,13 @@
 ﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Contracts;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
+using Aban360.CalculationPool.Domain.Features.Bill.Entities;
 using Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
 namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Implementation
 {
-    public class CompanyServiceUpdateHandler : ICompanyServiceUpdateHandler
+    internal sealed class CompanyServiceUpdateHandler : ICompanyServiceUpdateHandler
     {
         private readonly IMapper _mapper;
         private readonly ICompanyServiceQueryService _companyServiceQueryService;
@@ -23,11 +24,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Up
 
         public async Task Handle(CompanyServiceUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            var companyService = await _companyServiceQueryService.Get(updateDto.Id);
-            if (companyService == null)
-            {
-                throw new InvalidDataException();
-            }
+            CompanyService companyService = await _companyServiceQueryService.Get(updateDto.Id);
             _mapper.Map(updateDto, companyService);
         }
     }

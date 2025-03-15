@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Create.Implementations
 {
-    public class RegionCreateHandler : IRegionCreateHandler
+    internal sealed class RegionCreateHandler : IRegionCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IRegionCommandService _regionCommandService;
@@ -24,7 +24,7 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Comma
 
         public async Task Handle(RegionCreateDto createDto, CancellationToken cancellationToken)
         {
-            var region = _mapper.Map<Region>(createDto);
+            Region region = _mapper.Map<Region>(createDto);
             await _regionCommandService.Add(region);
         }
     }

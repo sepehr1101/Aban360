@@ -1,13 +1,13 @@
 ﻿using Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Metering.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Persistence.Features.Metering.Queries.Contracts;
-using Aban360.Common.Db.Exceptions;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Implementations
 {
-    public class WaterMeterTagGetSinglBySearchInputeHandler : IWaterMeterTagGetSinglBySearchInputeHandler
+    internal sealed class WaterMeterTagGetSinglBySearchInputeHandler : IWaterMeterTagGetSinglBySearchInputeHandler
     {
         private readonly IMapper _mapper;
         private readonly IWaterMeterTagQueryService _waterMeterTagQueryService;
@@ -24,11 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Imp
 
         public async Task<WaterMeterTagGetDto> Handle(string input, CancellationToken cancellationToken)
         {
-            var waterMeterTag = await _waterMeterTagQueryService.Get(input);
-            if (waterMeterTag == null)
-            {
-                throw new InvalidIdException();
-            }
+            ICollection<WaterMeterTag> waterMeterTag = await _waterMeterTagQueryService.Get(input);
             return _mapper.Map<WaterMeterTagGetDto>(waterMeterTag);
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.People.Dto.Queries;
+using Aban360.ClaimPool.Domain.Features.People.Entities;
 using Aban360.ClaimPool.Persistence.Features.People.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
@@ -23,11 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Impleme
 
         public async Task<IndividualGetDto> Handle(int id, CancellationToken cancellationToken)
         {
-            var individual = await _queryService.Get(id);
-            if (individual == null)
-            {
-                throw new InvalidDataException();
-            }
+            Individual individual = await _queryService.Get(id);
             return _mapper.Map<IndividualGetDto>(individual);
         }
     }

@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Create.Implementations
 {
-    public class CordinalDirectionCreateHandler : ICordinalDirectionCreateHandler
+    internal sealed class CordinalDirectionCreateHandler : ICordinalDirectionCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly ICordinalDirectionCommandService _cordinalDirectionCommandService;
@@ -25,7 +25,7 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Comma
 
         public async Task Handle(CordinalDirectionCreateDto createDto, CancellationToken cancellationToken)
         {
-            var cordinalDirection = _mapper.Map<CordinalDirection>(createDto);
+            CordinalDirection cordinalDirection = _mapper.Map<CordinalDirection>(createDto);
             await _cordinalDirectionCommandService.Add(cordinalDirection);
         }
     }

@@ -1,12 +1,13 @@
 ﻿using Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.People.Dto.Queries;
+using Aban360.ClaimPool.Domain.Features.People.Entities;
 using Aban360.ClaimPool.Persistence.Features.People.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Implementations
 {
-    public class IndividualEstateGetAllHandler : IIndividualEstateGetAllHandler
+    internal sealed class IndividualEstateGetAllHandler : IIndividualEstateGetAllHandler
     {
         private readonly IMapper _mapper;
         private readonly IIndividualEstateQueryService _queryService;
@@ -23,11 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Impleme
 
         public async Task<ICollection<IndividualEstateGetDto>> Handle(CancellationToken cancellationToken)
         {
-            var individualEstate = await _queryService.Get();
-            if (individualEstate == null)
-            {
-                throw new InvalidDataException();
-            }
+            ICollection<IndividualEstate> individualEstate = await _queryService.Get();
             return _mapper.Map<ICollection<IndividualEstateGetDto>>(individualEstate);
         }
     }

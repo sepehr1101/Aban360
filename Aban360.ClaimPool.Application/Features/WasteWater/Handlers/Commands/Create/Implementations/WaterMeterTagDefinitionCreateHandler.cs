@@ -8,7 +8,7 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Create.Implementations
 {
-    public class WaterMeterTagDefinitionCreateHandler : IWaterMeterTagDefinitionCreateHandler
+    internal sealed class WaterMeterTagDefinitionCreateHandler : IWaterMeterTagDefinitionCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IWaterMeterTagDefinitionCommandService _commandService;

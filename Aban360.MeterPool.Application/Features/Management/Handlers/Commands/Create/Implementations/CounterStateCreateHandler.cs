@@ -8,7 +8,7 @@ using AutoMapper;
 
 namespace Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Create.Implementations
 {
-    public class CounterStateCreateHandler : ICounterStateCreateHandler
+    internal sealed class CounterStateCreateHandler : ICounterStateCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly ICounterStateCommandService _counterStateCommandService;
@@ -30,9 +30,8 @@ namespace Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Cr
 
         public async Task Handle(CounterStateCreateDto createDto, CancellationToken cancellationToken)
         {
-            var counterStateDto = _mapper.Map<CounterState>(createDto);
-            var headquarterTitle = await _headquarterAddhoc.Handle(createDto.HeadquartersId, cancellationToken);
-            var counterState = _mapper.Map<CounterState>(createDto);
+            CounterState counterState = _mapper.Map<CounterState>(createDto);
+            string headquarterTitle = await _headquarterAddhoc.Handle(createDto.HeadquartersId, cancellationToken);
             counterState.HeadquartersTitle = headquarterTitle;
 
             await _counterStateCommandService.Add(counterState);

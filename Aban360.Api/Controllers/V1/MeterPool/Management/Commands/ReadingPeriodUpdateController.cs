@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Extensions;
 using Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Update.Contracts;
 using Aban360.MeterPool.Domain.Features.Management.Dtos.Commands;
 using Aban360.MeterPool.Persistence.Contexts.Contracts;
@@ -24,6 +25,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management.Commands
 
         [HttpPost, HttpPatch]
         [Route("update")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReadingPeriodUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] ReadingPeriodUpdateDto updateDto, CancellationToken cancellationToken)
         {
             await _readingPeriodUpdateHandler.Handle(updateDto, cancellationToken);

@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<UsageGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create(short id, CancellationToken cancellationToken)
         {
-            var usage = await _usageHandler.Handle(id, cancellationToken);
+            UsageGetDto usage = await _usageHandler.Handle(id, cancellationToken);
             return Ok(usage);
         }
     }

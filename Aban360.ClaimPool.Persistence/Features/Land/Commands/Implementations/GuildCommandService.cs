@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 {
-    public class GuildCommandService : IGuildCommandService
+    internal sealed class GuildCommandService : IGuildCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<Guild> _guild;

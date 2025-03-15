@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<SubscriptionTypeGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var subscriptionTypes = await _subscriptionTypeGetAllHandler.Handle(cancellationToken);
+            ICollection<SubscriptionTypeGetDto> subscriptionTypes = await _subscriptionTypeGetAllHandler.Handle(cancellationToken);
             return Ok(subscriptionTypes);
         }
     }

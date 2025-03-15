@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<CordinalDirectionGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSigle(short id, CancellationToken cancellationToken)
         {
-            var cordinalDirection = await _cordinalDirectionGetSingleService.Handle(id, cancellationToken);
+            CordinalDirectionGetDto cordinalDirection = await _cordinalDirectionGetSingleService.Handle(id, cancellationToken);
             return Ok(cordinalDirection);
         }
     }

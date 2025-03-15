@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.People.Queries.Implementations
 {
-    public class IndividualEstateQueryService : IIndividualEstateQueryService
+    internal sealed class IndividualEstateQueryService : IIndividualEstateQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<IndividualEstate> _individualEstates;

@@ -3,7 +3,6 @@ using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
@@ -29,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<UsageGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var usages = await _usageHandler.Handle(cancellationToken);
+            ICollection<UsageGetDto> usages = await _usageHandler.Handle(cancellationToken);
             return Ok(usages);
         }
     }

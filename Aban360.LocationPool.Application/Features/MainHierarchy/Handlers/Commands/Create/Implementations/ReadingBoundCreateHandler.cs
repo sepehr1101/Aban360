@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Create.Implementations
 {
-    public class ReadingBoundCreateHandler : IReadingBoundCreateHandler
+    internal sealed class ReadingBoundCreateHandler : IReadingBoundCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IReadingBoundCommandService _readingBoundCommandService;
@@ -24,7 +24,7 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Comma
 
         public async Task Handle(ReadingBoundCreateDto createDto, CancellationToken cancellationToken)
         {
-            var readingBound = _mapper.Map<ReadingBound>(createDto);
+            ReadingBound readingBound = _mapper.Map<ReadingBound>(createDto);
             await _readingBoundCommandService.Add(readingBound);
         }
     }

@@ -1,12 +1,13 @@
 ﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Delete.Contracts;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
+using Aban360.CalculationPool.Domain.Features.Bill.Entities;
 using Aban360.CalculationPool.Persistence.Features.Bill.Commands.Contracts;
 using Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts;
 using Aban360.Common.Extensions;
 
 namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Delete.Implementation
 {
-    public class CompanyServiceTypeDeleteHandler : ICompanyServiceTypeDeleteHandler
+    internal sealed class CompanyServiceTypeDeleteHandler : ICompanyServiceTypeDeleteHandler
     {
         private readonly ICompanyServiceTypeCommandService _companyServiceTypeCommandService;
         private readonly ICompanyServiceTypeQueryService _companyServiceTypeQueryService;
@@ -23,11 +24,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.De
 
         public async Task Handle(CompanyServiceTypeDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            var companyServiceType = await _companyServiceTypeQueryService.Get(deleteDto.Id);
-            if (companyServiceType == null)
-            {
-                throw new InvalidDataException();
-            }
+            CompanyServiceType companyServiceType = await _companyServiceTypeQueryService.Get(deleteDto.Id);
             await _companyServiceTypeCommandService.Remove(companyServiceType);
         }
     }

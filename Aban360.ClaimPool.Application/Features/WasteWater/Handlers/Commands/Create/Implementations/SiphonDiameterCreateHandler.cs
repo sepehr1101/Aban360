@@ -7,7 +7,7 @@ using Aban360.ClaimPool.Domain.Features.WasteWater.Entities;
 
 namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Create.Implementations
 {
-    public class SiphonDiameterCreateHandler : ISiphonDiameterCreateHandler
+    internal sealed class SiphonDiameterCreateHandler : ISiphonDiameterCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly ISiphonDiameterCommandService _commandService;
@@ -24,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Cr
 
         public async Task Handle(SiphonDiameterCreateDto createDto, CancellationToken cancellationToken)
         {
-            var SiphonDiameter = _mapper.Map<SiphonDiameter>(createDto);
+            SiphonDiameter SiphonDiameter = _mapper.Map<SiphonDiameter>(createDto);
             await _commandService.Add(SiphonDiameter);
         }
     }

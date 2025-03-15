@@ -4,6 +4,8 @@
     {
         Estate,
         Flat,
+        WaterResource,
+        EstateWaterResource,
         IndividualType,
         Individual,
         IndividualEstateRelationType,
@@ -24,6 +26,7 @@
         WaterMeter,
         WaterMeterTagDefinition,
         WaterMeterTag,
+        ChangeMeterReason,
 
         SiphonDiameter,
         SiphonType,

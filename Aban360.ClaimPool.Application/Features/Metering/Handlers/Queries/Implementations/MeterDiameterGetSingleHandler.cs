@@ -1,12 +1,13 @@
 ﻿using Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Metering.Dto.Queries;
+using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Persistence.Features.Metering.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Implementations
 {
-    public class MeterDiameterGetSingleHandler : IMeterDiameterGetSingleHandler
+    internal sealed class MeterDiameterGetSingleHandler : IMeterDiameterGetSingleHandler
     {
         private readonly IMapper _mapper;
         private readonly IMeterDiameterQueryService _meterDiameterQueryService;
@@ -24,7 +25,7 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Imple
 
         public async Task<MeterDiameterGetDto> Handle(short id, CancellationToken cancellationToken)
         {
-            var meterDiameter = await _meterDiameterQueryService.Get(id);
+            MeterDiameter meterDiameter = await _meterDiameterQueryService.Get(id);
             if (meterDiameter == null)
             {
                 throw new InvalidDataException();

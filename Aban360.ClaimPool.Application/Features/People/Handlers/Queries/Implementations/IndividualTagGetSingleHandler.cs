@@ -1,13 +1,13 @@
 ﻿using Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.People.Dto.Queries;
+using Aban360.ClaimPool.Domain.Features.People.Entities;
 using Aban360.ClaimPool.Persistence.Features.People.Queries.Contracts;
-using Aban360.Common.Db.Exceptions;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Implementations
 {
-    public class IndividualTagGetSingleHandler : IIndividualTagGetSingleHandler
+    internal sealed class IndividualTagGetSingleHandler : IIndividualTagGetSingleHandler
     {
         private readonly IMapper _mapper;
         private readonly IIndividualTagQueryService _IndividualTagQueryService;
@@ -24,12 +24,8 @@ namespace Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Impleme
 
         public async Task<ICollection<IndividualTagGetDto>> Handle(int id, CancellationToken cancellationToken)
         {
-            var IndividualTag = await _IndividualTagQueryService.Get(id);
-            if (IndividualTag == null)
-            {
-                throw new InvalidIdException();
-            }
-            return _mapper.Map<ICollection<IndividualTagGetDto>>(IndividualTag);
+            IndividualTag individualTag = await _IndividualTagQueryService.Get(id);
+            return _mapper.Map<ICollection<IndividualTagGetDto>>(individualTag);
         }
     }
 }

@@ -21,7 +21,8 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bil.Queries
         [Route("single/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<InvoiceStatusGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
-        {   var InvoiceStatuss = await _invoiceStatusGetSingleHandler.Handle(id, cancellationToken);
+        {
+            InvoiceStatusGetDto InvoiceStatuss = await _invoiceStatusGetSingleHandler.Handle(id, cancellationToken);
             return Ok(InvoiceStatuss);
         }
     }

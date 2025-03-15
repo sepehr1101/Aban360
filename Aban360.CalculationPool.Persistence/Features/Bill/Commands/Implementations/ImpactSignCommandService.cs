@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementations
 {
-    public class ImpactSignCommandService : IImpactSignCommandService
+   internal sealed class ImpactSignCommandService : IImpactSignCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<ImpactSign> _impactSign;

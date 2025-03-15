@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ImpactSignGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(ImpactSignEnum id, CancellationToken cancellationToken)
         {
-            var impactSigns = await _impactSignGetSingleHandler.Handle(id, cancellationToken);
+            ImpactSignGetDto impactSigns = await _impactSignGetSingleHandler.Handle(id, cancellationToken);
             return Ok(impactSigns);
         }
     }

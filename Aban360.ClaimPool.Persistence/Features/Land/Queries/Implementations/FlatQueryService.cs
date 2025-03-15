@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
 {
-    public class FlatQueryService : IFlatQueryService
+    internal sealed class FlatQueryService : IFlatQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<Flat> _flat;

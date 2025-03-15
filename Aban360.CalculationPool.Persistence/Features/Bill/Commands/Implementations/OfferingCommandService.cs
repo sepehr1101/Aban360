@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementations
 {
-    public class OfferingCommandService : IOfferingCommandService
+   internal sealed class OfferingCommandService : IOfferingCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<Offering> _offering;

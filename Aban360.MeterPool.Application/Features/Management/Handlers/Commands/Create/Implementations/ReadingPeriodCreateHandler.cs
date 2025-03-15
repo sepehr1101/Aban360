@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Create.Implementations
 {
-    public class ReadingPeriodCreateHandler : IReadingPeriodCreateHandler
+    internal sealed class ReadingPeriodCreateHandler : IReadingPeriodCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IReadingPeriodCommandService _readingPeriodCommandService;
@@ -24,7 +24,7 @@ namespace Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Cr
 
         public async Task Handle(ReadingPeriodCreateDto createDto, CancellationToken cancellationToken)
         {
-            var readingPeriod = _mapper.Map<ReadingPeriod>(createDto);
+            ReadingPeriod readingPeriod = _mapper.Map<ReadingPeriod>(createDto);
             await _readingPeriodCommandService.Add(readingPeriod);
         }
     }

@@ -1,12 +1,13 @@
 ﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Contracts;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
+using Aban360.CalculationPool.Domain.Features.Bill.Entities;
 using Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
 namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Implementation
 {
-    public class ImpactSignUpdateHandler : IImpactSignUpdateHandler
+    internal sealed class ImpactSignUpdateHandler : IImpactSignUpdateHandler
     {
         private readonly IMapper _mapper;
         private readonly IImpactSignQueryService _impactSignQueryService;
@@ -23,7 +24,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Up
 
         public async Task Handle(ImpactSignUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            var impactSign = await _impactSignQueryService.Get(updateDto.Id);
+            ImpactSign impactSign = await _impactSignQueryService.Get(updateDto.Id);
             _mapper.Map(updateDto,impactSign);
         }
     }

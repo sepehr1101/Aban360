@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Extensions;
 using Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Create.Contracts;
 using Aban360.LocationPool.Domain.Features.MainHierarchy.Dto.Commands;
 using Aban360.LocationPool.Persistence.Contexts.Contracts;
@@ -24,6 +25,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Commands
 
         [HttpPost]
         [Route("create")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReadingBoundCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] ReadingBoundCreateDto createDto, CancellationToken cancellationToken)
         {
             await _readingBoundCreateHandler.Handle(createDto, cancellationToken);

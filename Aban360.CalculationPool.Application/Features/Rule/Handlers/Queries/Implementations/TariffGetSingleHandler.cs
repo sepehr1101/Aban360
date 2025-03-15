@@ -6,7 +6,7 @@ using AutoMapper;
 
 namespace Aban360.CalculationPool.Application.Features.Rule.Handlers.Queries.Implementations
 {
-    public class TariffGetSingleHandler : ITariffGetSingleHandler
+    internal sealed class TariffGetSingleHandler : ITariffGetSingleHandler
     {
         private readonly IMapper _mapper;
         private readonly ITariffQueryService _tariffQueryService;
@@ -23,11 +23,7 @@ namespace Aban360.CalculationPool.Application.Features.Rule.Handlers.Queries.Imp
 
         public async Task<TariffGetDto> Handle(int id, CancellationToken cancellationToken)
         {
-            var tariff = await _tariffQueryService.Get(id);
-            if (tariff == null)
-            {
-                throw new InvalidDataException();
-            }
+            Tariff tariff = await _tariffQueryService.Get(id);
             return _mapper.Map<TariffGetDto>(tariff);
         }
     }

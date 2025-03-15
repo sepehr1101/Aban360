@@ -18,10 +18,10 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule.Queries
 
         [HttpPost, HttpGet]
         [Route("by-offering/{id}")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<TariffGetDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<TariffGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetByOfferingId(short id, CancellationToken cancellationToken)
         {
-            var tariffs = await _tariffGetByOfferingIdHandler.Handle(id, cancellationToken);
+            ICollection<TariffGetDto> tariffs = await _tariffGetByOfferingIdHandler.Handle(id, cancellationToken);
             return Ok(tariffs);
         }
     }

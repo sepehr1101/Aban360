@@ -1,10 +1,11 @@
 ﻿using Aban360.Common.Extensions;
+using Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts;
 using Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contracts;
 using AutoMapper;
 
 namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations
 {
-    public class ZoneGetCountHandler: IZoneGetCountHandler
+    internal sealed class ZoneGetCountHandler: IZoneGetCountHandler
     {
         private readonly IZoneQueryService _zoneQueryService;
         private readonly IMapper _mapper;
@@ -24,6 +25,4 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queri
             return await _zoneQueryService.GetCount(input);
         }
     }
-
-
 }

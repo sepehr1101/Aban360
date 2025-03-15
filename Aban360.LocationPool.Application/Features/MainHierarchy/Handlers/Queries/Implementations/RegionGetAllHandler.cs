@@ -1,12 +1,13 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts;
 using Aban360.LocationPool.Domain.Features.MainHierarchy.Dto.Queries;
+using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contracts;
 using AutoMapper;
 
 namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations
 {
-    public class RegionGetAllHandler : IRegionGetAllHandler
+    internal sealed class RegionGetAllHandler : IRegionGetAllHandler
     {
         private readonly IRegionQueryService _regionQueryService;
         private readonly IMapper _mapper;
@@ -23,7 +24,7 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queri
 
         public async Task<ICollection<RegionGetDto>> Handle(CancellationToken cancellationToken)
         {
-            var region = await _regionQueryService.Get();
+            ICollection<Region> region = await _regionQueryService.Get();
             return _mapper.Map<ICollection<RegionGetDto>>(region);
         }
     }

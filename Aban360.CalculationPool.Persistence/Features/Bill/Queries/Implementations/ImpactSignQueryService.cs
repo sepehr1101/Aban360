@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementations
 {
-    public class ImpactSignQueryService : IImpactSignQueryService
+   internal sealed class ImpactSignQueryService : IImpactSignQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<ImpactSign> _impactSign;

@@ -1,5 +1,4 @@
 ﻿using Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Update.Contracts;
-using Aban360.ClaimPool.Domain.Features.People.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.WasteWater.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
 using Aban360.Common.Categories.ApiResponse;
