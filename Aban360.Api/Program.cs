@@ -1,6 +1,6 @@
 using Aban360.Api.ExceptionHandlers;
 using Aban360.Api.Extensions;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -18,6 +18,9 @@ builder.Services.AddCaptcha();
 builder.Services.AddCustomDbContext(configuration);
 builder.Services.AddMigragionsAndSeeds();
 builder.AddHangfire();
+
+builder.Services.AddMvc();
+builder.Services.AddRazorPages();
 
 
 builder.Services.AddCustomCors();
@@ -38,6 +41,12 @@ app.AddSwaggerApp();
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "lib")),
+    RequestPath = "/lib"
+});
 app.UseRouting();
 app.UseCustomCors();
 app.UseAuthentication();
