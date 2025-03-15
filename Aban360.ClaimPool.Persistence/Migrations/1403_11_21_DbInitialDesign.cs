@@ -129,6 +129,27 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Storey").AsInt16()
                 .WithColumn("Description").AsString(_1023).Nullable();
         }
+
+        private void CreateWaterResource()
+        {
+            var table = TableName.WaterResource;
+            Create.Table(nameof(TableName.WaterResource)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().NotNullable().Identity().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Description").AsString(int.MaxValue).Nullable()
+                .WithColumn("HeadquartersId").AsInt16().NotNullable()
+                .WithColumn("HeadquartersTitle").AsString(_255).NotNullable();
+        }
+        private void CreateEstateWaterResource()
+        {
+            var table = TableName.EstateWaterResource;
+            Create.Table(nameof(TableName.EstateWaterResource)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().NotNullable().Identity().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn($"{TableName.Estate}Id").AsInt32().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.Estate, table), _schema, nameof(TableName.Estate), Id)
+                .WithColumn($"{TableName.WaterResource}Id").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.WaterResource, table), _schema, nameof(TableName.WaterResource), Id);
+        }
         private void CreateIndividualType()
         {
             var table = TableName.IndividualType;

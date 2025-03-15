@@ -4,6 +4,8 @@
     {
         Estate,
         Flat,
+        WaterResource,
+        EstateWaterResource,
         IndividualType,
         Individual,
         IndividualEstateRelationType,
