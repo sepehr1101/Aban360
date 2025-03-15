@@ -1,11 +1,13 @@
-﻿using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
+﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
+using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations
 {
-    public class WaterResourceGetSingleHandler : IWaterResourceGetSingleHandler
+    internal sealed class WaterResourceGetSingleHandler : IWaterResourceGetSingleHandler
     {
         private readonly IMapper _mapper;
         private readonly IWaterResourceQueryService _waterResourceQueryService;
@@ -22,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
 
         public async Task<WaterResourceGetDto> Handle(short id, CancellationToken cancellationToken)
         {
-            var waterResource = await _waterResourceQueryService.Get(id);
+            WaterResource waterResource = await _waterResourceQueryService.Get(id);
             return _mapper.Map<WaterResourceGetDto>(waterResource);
         }
     }

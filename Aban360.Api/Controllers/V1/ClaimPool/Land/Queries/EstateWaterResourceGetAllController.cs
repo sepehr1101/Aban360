@@ -1,4 +1,4 @@
-﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations;
+﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<EstateWaterResourceGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var estateWaterResources = await _estateWaterResourceGetAllHandler.Handle(cancellationToken);
+            ICollection<EstateWaterResourceGetDto> estateWaterResources = await _estateWaterResourceGetAllHandler.Handle(cancellationToken);
             return Ok(estateWaterResources);
         }
     }

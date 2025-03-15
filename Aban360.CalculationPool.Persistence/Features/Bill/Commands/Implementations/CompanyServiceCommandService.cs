@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementations
 {
-    public class CompanyServiceCommandService : ICompanyServiceCommandService
+   internal sealed class CompanyServiceCommandService : ICompanyServiceCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<CompanyService> _companyService;

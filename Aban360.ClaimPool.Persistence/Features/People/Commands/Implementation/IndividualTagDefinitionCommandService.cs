@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.People.Commands.Implementation
 {
-    public class IndividualTagDefinitionCommandService : IIndividualTagDefinitionCommandService
+    internal sealed class IndividualTagDefinitionCommandService : IIndividualTagDefinitionCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<IndividualTagDefinition> _individualTagDefinitions;

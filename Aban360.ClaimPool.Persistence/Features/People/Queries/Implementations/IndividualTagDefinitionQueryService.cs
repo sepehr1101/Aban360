@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.People.Queries.Implementations
 {
-    public class IndividualTagDefinitionQueryService : IIndividualTagDefinitionQueryService
+    internal sealed class IndividualTagDefinitionQueryService : IIndividualTagDefinitionQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<IndividualTagDefinition> _individualTagDefinitions;

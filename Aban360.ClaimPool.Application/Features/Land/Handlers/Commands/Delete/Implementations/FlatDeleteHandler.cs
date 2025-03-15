@@ -1,5 +1,6 @@
 ﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.Extensions;
@@ -23,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.I
 
         public async Task Handle(FlatDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            var flat = await _queryService.Get(deleteDto.Id);
+            Flat flat = await _queryService.Get(deleteDto.Id);
             if (flat == null)
             {
                 throw new InvalidDataException();

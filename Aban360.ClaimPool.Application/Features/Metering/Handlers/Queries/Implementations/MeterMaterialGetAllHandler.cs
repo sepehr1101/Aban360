@@ -1,5 +1,6 @@
 ﻿using Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Metering.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Persistence.Features.Metering.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
@@ -23,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Imple
 
         public async Task<ICollection<MeterMaterialGetDto>> Handle(CancellationToken cancellationToken)
         {
-            var meterMaterial = await _meterMaterialQueryService.Get();
+            ICollection<MeterMaterial> meterMaterial = await _meterMaterialQueryService.Get();
             if (meterMaterial == null)
             {
                 throw new InvalidDataException();

@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<RoleGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var role = await _roleGetAllHandler.Handle(cancellationToken);
+            ICollection<RoleGetDto> role = await _roleGetAllHandler.Handle(cancellationToken);
             return Ok(role);
         }
     }

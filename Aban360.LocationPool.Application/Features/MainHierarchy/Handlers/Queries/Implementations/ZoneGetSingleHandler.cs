@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts;
 using Aban360.LocationPool.Domain.Features.MainHierarchy.Dto.Queries;
+using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contracts;
 using AutoMapper;
 
@@ -23,7 +24,7 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queri
 
         public async Task<ZoneGetDto> Handle(int id, CancellationToken cancellationToken)
         {
-            var zone = await _zoneQueryService.Get(id);
+            Zone zone = await _zoneQueryService.Get(id);
             return _mapper.Map<ZoneGetDto>(zone);
         }
     }

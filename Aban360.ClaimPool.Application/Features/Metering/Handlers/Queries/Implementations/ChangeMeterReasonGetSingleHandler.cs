@@ -1,13 +1,14 @@
 ﻿using Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Metering.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Persistence.Features.Metering.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Implementations
 {
-    public class ChangeMeterReasonGetSingleHandler : IChangeMeterReasonGetSingleHandler
+    internal sealed class ChangeMeterReasonGetSingleHandler : IChangeMeterReasonGetSingleHandler
     {
         private readonly IMapper _mapper;
         private readonly IChangeMeterReasonQueryService _changeMeterReasonQueryService;
@@ -24,7 +25,7 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Imple
 
         public async Task<ChangeMeterReasonGetDto> Handle(ChangeMeterReasonEnum id, CancellationToken cancellationToken)
         {
-            var changeMeterReason = await _changeMeterReasonQueryService.Get(id);
+            ChangeMeterReason changeMeterReason = await _changeMeterReasonQueryService.Get(id);
             return _mapper.Map<ChangeMeterReasonGetDto>(changeMeterReason);
         }
     }

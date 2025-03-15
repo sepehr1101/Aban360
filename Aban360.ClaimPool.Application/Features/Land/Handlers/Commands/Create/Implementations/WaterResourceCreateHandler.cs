@@ -8,7 +8,7 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations
 {
-    public class WaterResourceCreateHandler : IWaterResourceCreateHandler
+    internal sealed class WaterResourceCreateHandler : IWaterResourceCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IWaterResourceCommandService _waterResourceCommandService;
@@ -30,12 +30,12 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
 
         public async Task Handle(WaterResourceCreateDto createDto, CancellationToken cancellationToken)
         {
-            var waterResource = _mapper.Map<WaterResource>(createDto);
+            WaterResource waterResource = _mapper.Map<WaterResource>(createDto);
             if (waterResource == null)
             {
                 throw new InvalidDataException();
             }
-            var headquartersTitle=await _headquartersAddhoc.Handle(createDto.HeadquartersId, cancellationToken);
+            string headquartersTitle=await _headquartersAddhoc.Handle(createDto.HeadquartersId, cancellationToken);
             waterResource.HeadquartersTitle = headquartersTitle;
             await _waterResourceCommandService.Add(waterResource);
         }

@@ -1,12 +1,13 @@
 ﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
+using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations
 {
-    public class UsageGetAllHandler : IUsageGetAllHandler
+    internal sealed class UsageGetAllHandler : IUsageGetAllHandler
     {
         private readonly IMapper _mapper;
         private readonly IUsageQuerySevice _usageQueryService;
@@ -23,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
 
         public async Task<ICollection<UsageGetDto>> Handle(CancellationToken cancellationToken)
         {
-            var usage = await _usageQueryService.Get();
+            ICollection<Usage> usage = await _usageQueryService.Get();
             if (usage == null)
             {
                 throw new InvalidDataException();

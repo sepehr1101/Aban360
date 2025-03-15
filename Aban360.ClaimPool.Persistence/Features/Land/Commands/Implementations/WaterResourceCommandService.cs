@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 {
-    public class WaterResourceCommandService : IWaterResourceCommandService
+    internal sealed class WaterResourceCommandService : IWaterResourceCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<WaterResource> _waterResource;

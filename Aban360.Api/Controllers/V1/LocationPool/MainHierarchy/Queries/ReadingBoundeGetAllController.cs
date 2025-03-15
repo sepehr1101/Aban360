@@ -1,5 +1,7 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Extensions;
 using Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts;
+using Aban360.LocationPool.Domain.Features.MainHierarchy.Dto.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Queries
@@ -16,9 +18,10 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Queries
 
         [HttpGet, HttpPost]
         [Route("all")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<ReadingBoundGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var readingBound = await _readingBoundGetAllHandler.Handle(cancellationToken);
+            ICollection<ReadingBoundGetDto> readingBound = await _readingBoundGetAllHandler.Handle(cancellationToken);
             return Ok(readingBound);
         }
     }

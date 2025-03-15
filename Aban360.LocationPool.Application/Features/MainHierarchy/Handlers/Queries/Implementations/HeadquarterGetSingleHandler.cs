@@ -1,12 +1,13 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts;
 using Aban360.LocationPool.Domain.Features.MainHierarchy.Dto.Queries;
+using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contracts;
 using AutoMapper;
 
 namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations
 {
-    public class HeadquarterGetSingleHandler : IHeadquarterGetSingleHandler
+    internal sealed class HeadquarterGetSingleHandler : IHeadquarterGetSingleHandler
     {
         private readonly IMapper _mapper;
         private readonly IHeadquarterQueryService _headquarterQueryService;
@@ -23,7 +24,7 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queri
   
         public async Task<HeadquarterGetDto> Handle(short id, CancellationToken cancellationToken)
         {
-            var headquarter = await _headquarterQueryService.Get(id);
+            Headquarters headquarter = await _headquarterQueryService.Get(id);
             return _mapper.Map<HeadquarterGetDto>(headquarter);
         }
     }

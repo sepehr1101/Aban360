@@ -1,12 +1,13 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts;
 using Aban360.LocationPool.Domain.Features.MainHierarchy.Dto.Queries;
+using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contracts;
 using AutoMapper;
 
 namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations
 {
-    public class ReadingBoundGetSingleHandler : IReadingBoundGetSingleHandler
+    internal sealed class ReadingBoundGetSingleHandler : IReadingBoundGetSingleHandler
     {
         private readonly IMapper _mapper;
         private readonly IReadingBoundQueryService _readingBoundQueryService;
@@ -21,9 +22,9 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queri
             _readingBoundQueryService.NotNull(nameof(readingBoundQueryService));
         }
 
-        public async Task<ReadingBoundGetDto> Handle(short id,CancellationToken cancellationToken)
+        public async Task<ReadingBoundGetDto> Handle(short id, CancellationToken cancellationToken)
         {
-            var readingBound = await _readingBoundQueryService.Get();
+            ReadingBound readingBound = await _readingBoundQueryService.Get(id);
             return _mapper.Map<ReadingBoundGetDto>(readingBound);
         }
     }

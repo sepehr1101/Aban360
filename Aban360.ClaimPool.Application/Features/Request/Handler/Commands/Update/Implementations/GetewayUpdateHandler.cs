@@ -1,12 +1,13 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update.Contracts;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Request.Entities;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update.Implementations
 {
-    public class GetewayUpdateHandler : IGetewayUpdateHandler
+    internal sealed class GetewayUpdateHandler : IGetewayUpdateHandler
     {
         private readonly IMapper _mapper;
         private readonly IGetewayQueryService _getewayQueryService;
@@ -23,11 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
 
         public async Task Handle(GetewayUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            var geteway = await _getewayQueryService.Get(updateDto.Id);
-            if (geteway == null)
-            {
-                throw new InvalidDataException();
-            }
+            Geteway geteway = await _getewayQueryService.Get(updateDto.Id);
             _mapper.Map(updateDto, geteway);
         }
     }

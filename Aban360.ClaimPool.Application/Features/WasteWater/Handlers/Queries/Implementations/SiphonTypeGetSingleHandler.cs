@@ -3,10 +3,11 @@ using Aban360.ClaimPool.Persistence.Features.WasteWater.Queries.Contracts;
 using AutoMapper;
 using Aban360.Common.Extensions;
 using Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Features.WasteWater.Entities;
 
 namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Implementations
 {
-    public class SiphonTypeGetSingleHandler : ISiphonTypeGetSingleHandler
+    internal sealed class SiphonTypeGetSingleHandler : ISiphonTypeGetSingleHandler
     {
         private readonly IMapper _mapper;
         private readonly ISiphonTypeQueryService _queryService;
@@ -23,11 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Imp
 
         public async Task<SiphonTypeGetDto> Handle(short id, CancellationToken cancellationToken)
         {
-            var siphonType = await _queryService.Get(id);
-            if (siphonType == null)
-            {
-                throw new InvalidDataException();
-            }
+            SiphonType siphonType = await _queryService.Get(id);
             return _mapper.Map<SiphonTypeGetDto>(siphonType);
         }
     }

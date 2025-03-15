@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implementations
 {
-    public class ProvinceQueryService : IProvinceQueryService
+    internal sealed class ProvinceQueryService : IProvinceQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<Province> _provinces;

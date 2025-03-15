@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<CompanyServiceGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var companyServices = await _companyServiceGetAllHandler.Handle(cancellationToken);
+            ICollection<CompanyServiceGetDto> companyServices = await _companyServiceGetAllHandler.Handle(cancellationToken);
             return Ok(companyServices);
         }
     }

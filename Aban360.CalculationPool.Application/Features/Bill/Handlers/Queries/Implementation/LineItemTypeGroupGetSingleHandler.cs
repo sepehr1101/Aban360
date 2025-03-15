@@ -1,5 +1,6 @@
 ﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
+using Aban360.CalculationPool.Domain.Features.Bill.Entities;
 using Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
@@ -23,11 +24,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Imp
 
         public async Task<LineItemTypeGroupGetDto> Handle(short id, CancellationToken cancellationToken)
         {
-            var lineItemTypeGroup = await _lineItemTypeGroupQueryService.Get(id);
-            if (lineItemTypeGroup == null)
-            {
-                throw new InvalidDataException();
-            }
+            LineItemTypeGroup lineItemTypeGroup = await _lineItemTypeGroupQueryService.Get(id);
             return _mapper.Map<LineItemTypeGroupGetDto>(lineItemTypeGroup);
         }
     }

@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Delete.Contracts;
 using Aban360.MeterPool.Domain.Features.Management.Dtos.Commands;
+using Aban360.MeterPool.Domain.Features.Management.Entities;
 using Aban360.MeterPool.Persistence.Features.Manegement.Commands.Contracts;
 using Aban360.MeterPool.Persistence.Features.Manegement.Queries.Contracts;
 
@@ -23,7 +24,7 @@ namespace Aban360.MeterPool.Application.Features.Management.Handlers.Commands.De
 
         public async Task Handle(ReadingPeriodDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            var readingPeriod = await _readingPeriodQueryService.Get(deleteDto.Id);
+            ReadingPeriod readingPeriod = await _readingPeriodQueryService.Get(deleteDto.Id);
             _readingPeriodCommandService.Remove(readingPeriod);
         }
     }

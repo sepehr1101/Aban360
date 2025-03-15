@@ -3,10 +3,11 @@ using Aban360.Common.Extensions;
 using Aban360.ClaimPool.Domain.Features.WasteWater.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Features.WasteWater.Commands.Contracts;
 using Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Delete.Contracts;
+using Aban360.ClaimPool.Domain.Features.WasteWater.Entities;
 
 namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Delete.Implementations
 {
-    public class SiphonMaterialDeleteHandler : ISiphonMaterialDeleteHandler
+    internal sealed class SiphonMaterialDeleteHandler : ISiphonMaterialDeleteHandler
     {
         private readonly ISiphonMaterialCommandService _commandService;
         private readonly ISiphonMaterialQueryService _queryService;
@@ -23,12 +24,8 @@ namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.De
 
         public async Task Handle(SiphonMaterialDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            var SiphonMaterial = await _queryService.Get(deleteDto.Id);
-            if (SiphonMaterial == null)
-            {
-                throw new InvalidDataException();
-            }
-            await _commandService.Remove(SiphonMaterial);
+            SiphonMaterial siphonMaterial = await _queryService.Get(deleteDto.Id);
+            await _commandService.Remove(siphonMaterial);
         }
     }
 }

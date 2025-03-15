@@ -8,7 +8,7 @@ using AutoMapper;
 
 namespace Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Create.Implementations
 {
-    public class ReadingConfigDefaultCreateHandler : IReadingConfigDefaultCreateHandler
+    internal sealed class ReadingConfigDefaultCreateHandler : IReadingConfigDefaultCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IReadingConfigDefaultCommandService _readingConfigDefaultCommandService;
@@ -30,9 +30,8 @@ namespace Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Cr
 
         public async Task Handle(ReadingConfigDefaultCreateDto createDto, CancellationToken cancellationToken)
         {
-            var readingConfigDefaultDto = _mapper.Map<ReadingConfigDefault>(createDto);
+            ReadingConfigDefault readingConfigDefault = _mapper.Map<ReadingConfigDefault>(createDto);
             var headquarterTitle = await _headquarterAddhoc.Handle(createDto.HeadquartersId, cancellationToken);
-            var readingConfigDefault = _mapper.Map<ReadingConfigDefault>(createDto);
             readingConfigDefault.HeadquartersTitle = headquarterTitle;
 
             await _readingConfigDefaultCommandService.Add(readingConfigDefault);

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
 {
-    public class EstateBoundTypeQueryService : IEstateBoundTypeQueryService
+    internal sealed class EstateBoundTypeQueryService : IEstateBoundTypeQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<EstateBoundType> _estateBoundType;

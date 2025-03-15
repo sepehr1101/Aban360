@@ -1,5 +1,6 @@
 ﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.Extensions;
 using Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Contracts;
@@ -7,7 +8,7 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations
 {
-    public class WaterResourceUpdateHandler : IWaterResourceUpdateHandler
+    internal sealed class WaterResourceUpdateHandler : IWaterResourceUpdateHandler
     {
         private readonly IMapper _mapper;
         private readonly IWaterResourceQueryService _waterResourceQueryService;
@@ -30,9 +31,9 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
 
         public async Task Handle(WaterResourceUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            var waterResource = await _waterResourceQueryService.Get(updateDto.Id);
+            WaterResource waterResource = await _waterResourceQueryService.Get(updateDto.Id);
          
-            var headquartersTitle = await _headquartersAddhoc.Handle(updateDto.HeadquartersId, cancellationToken);
+            string headquartersTitle = await _headquartersAddhoc.Handle(updateDto.HeadquartersId, cancellationToken);
             waterResource.HeadquartersTitle = headquartersTitle;
             
             _mapper.Map(updateDto, waterResource);

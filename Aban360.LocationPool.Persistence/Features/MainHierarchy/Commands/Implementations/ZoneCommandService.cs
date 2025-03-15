@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Commands.Implementations
 {
-    public class ZoneCommandService : IZoneCommandService
+    internal sealed class ZoneCommandService : IZoneCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<Zone> _zone;

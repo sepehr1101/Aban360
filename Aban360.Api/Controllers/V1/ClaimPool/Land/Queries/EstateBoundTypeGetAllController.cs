@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<EstateBoundTypeGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var estateBoundType = await _getAllHandler.Handle(cancellationToken);
+            ICollection<EstateBoundTypeGetDto> estateBoundType = await _getAllHandler.Handle(cancellationToken);
             return Ok(estateBoundType);
         }
     }

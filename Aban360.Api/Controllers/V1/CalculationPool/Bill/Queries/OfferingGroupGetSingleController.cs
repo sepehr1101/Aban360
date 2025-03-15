@@ -1,5 +1,4 @@
 ﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts;
-using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Contexts.Contracts;
 using Aban360.Common.Categories.ApiResponse;
@@ -29,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bil.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<OfferingGroupGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var offeringGroups = await _offeringGroupGetSingleHandler.Handle(id, cancellationToken);
+            OfferingGroupGetDto offeringGroups = await _offeringGroupGetSingleHandler.Handle(id, cancellationToken);
             return Ok(offeringGroups);
         }
     }

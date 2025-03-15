@@ -1,12 +1,13 @@
 ﻿using Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Delete.Contracts;
 using Aban360.ClaimPool.Domain.Features.Metering.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Persistence.Features.Metering.Commands.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Metering.Queries.Contracts;
 using Aban360.Common.Extensions;
 
 namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Delete.Implementations
 {
-    public class MeterTypeDeleteHandler : IMeterTypeDeleteHandler
+    internal sealed class MeterTypeDeleteHandler : IMeterTypeDeleteHandler
     {
         private readonly IMeterTypeQueryService _meterTypeQueryService;
         private readonly IMeterTypeCommandService _meterTypeCommandService;
@@ -23,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Dele
 
         public async Task Handle(MeterTypeDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            var meterType = await _meterTypeQueryService.Get(deleteDto.Id);
+            MeterType meterType = await _meterTypeQueryService.Get(deleteDto.Id);
             if (meterType == null)
             {
                 throw new InvalidDataException();

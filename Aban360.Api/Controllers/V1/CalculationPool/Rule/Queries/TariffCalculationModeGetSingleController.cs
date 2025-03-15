@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<TariffCalculationModeGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(TariffCalculationModeEnum id, CancellationToken cancellationToken)
         {
-            var tariffCalculationModes = await _tariffCalculationModeGetSingleHandler.Handle(id, cancellationToken);
+            TariffCalculationModeGetDto tariffCalculationModes = await _tariffCalculationModeGetSingleHandler.Handle(id, cancellationToken);
             return Ok(tariffCalculationModes);
         }
     }

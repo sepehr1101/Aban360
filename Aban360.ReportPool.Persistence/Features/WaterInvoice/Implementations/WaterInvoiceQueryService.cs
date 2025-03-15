@@ -7,13 +7,13 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
     {
         public WaterInvoiceDto Get()
         {
-            var waterInvoice = GetWaterInvoice();
+            WaterInvoiceDto waterInvoice = GetWaterInvoice();
             return waterInvoice;
         }
 
         private WaterInvoiceDto GetWaterInvoice()
         {
-            var waterInvoice = new WaterInvoiceDto()
+            WaterInvoiceDto waterInvoice = new WaterInvoiceDto()
             {
                 Headquarters = "شرکت آب و فاضلاب استان اصفهان",
                 EconomicalNumber = "411-7676-4864",

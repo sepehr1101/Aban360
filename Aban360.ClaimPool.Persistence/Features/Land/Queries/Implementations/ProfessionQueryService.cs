@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
 {
-    public class ProfessionQueryService : IProfessionQueryService
+    internal sealed class ProfessionQueryService : IProfessionQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<Profession> _profession;

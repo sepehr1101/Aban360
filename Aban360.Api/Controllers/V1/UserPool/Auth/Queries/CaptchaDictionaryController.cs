@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<NumericDictionary>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
-            var dictionary= await _captchaDictionaryHandler.Handle(cancellationToken);
+            ICollection<NumericDictionary> dictionary = await _captchaDictionaryHandler.Handle(cancellationToken);
             return Ok(dictionary);
         }
     }

@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<IndividualEstateRelationTypeGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var individualEstateRelationTypes = await _individualEstateRelationTypeHandler.Handle(cancellationToken);
+            ICollection<IndividualEstateRelationTypeGetDto> individualEstateRelationTypes = await _individualEstateRelationTypeHandler.Handle(cancellationToken);
             return Ok(individualEstateRelationTypes);
         }
     }

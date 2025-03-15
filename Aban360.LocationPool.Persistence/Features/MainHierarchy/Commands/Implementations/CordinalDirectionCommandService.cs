@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Commands.Implementations
 {
-    public class CordinalDirectionCommandService : ICordinalDirectionCommandService
+    internal sealed class CordinalDirectionCommandService : ICordinalDirectionCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<CordinalDirection> _directions;

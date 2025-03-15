@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.Metering.Queries.Implementations
 {
-    public class ChangeMeterReasonQueryService : IChangeMeterReasonQueryService
+    internal sealed class ChangeMeterReasonQueryService : IChangeMeterReasonQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<ChangeMeterReason> _changeMeterReason;

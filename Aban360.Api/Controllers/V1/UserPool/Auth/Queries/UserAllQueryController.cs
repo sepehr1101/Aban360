@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<UserQueryDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
-            var usersDto= await _userAllQueryHandler.Handle(cancellationToken);
+            ICollection<UserQueryDto> usersDto = await _userAllQueryHandler.Handle(cancellationToken);
             return Ok(usersDto);
         }
     }

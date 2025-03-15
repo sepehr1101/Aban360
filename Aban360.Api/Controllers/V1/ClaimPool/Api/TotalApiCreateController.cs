@@ -1,10 +1,7 @@
-﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.TotalApi.Handler;
-using Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Create.Contracts;
+﻿using Aban360.ClaimPool.Application.Features.TotalApi.Handler;
 using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,11 +25,10 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Api
 
         [HttpPost]
         [Route("create")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<TotalApiCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] TotalApiCreateDto createDto, CancellationToken cancellationToken)
         {
             await _totalApiCommandService.Handle(createDto, cancellationToken);
-          //  await _uow.SaveChangesAsync(cancellationToken);
-
             return Ok(createDto);
         }
     }

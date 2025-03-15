@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementations
 {
-    public class InvoiceLineItemInsertModeQueryService : IInvoiceLineItemInsertModeQueryService
+   internal sealed class InvoiceLineItemInsertModeQueryService : IInvoiceLineItemInsertModeQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<InvoiceLineItemInsertMode> _InvoinceLineItemInsertMode;

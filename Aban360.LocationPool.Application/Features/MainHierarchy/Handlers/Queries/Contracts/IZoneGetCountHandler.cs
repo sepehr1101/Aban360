@@ -1,4 +1,4 @@
-﻿namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations
+﻿namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts
 {
     public interface IZoneGetCountHandler
     {
