@@ -1,11 +1,14 @@
-﻿using Aban360.ClaimPool.Domain.Constants;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using Aban360.ClaimPool.Domain.Features.Metering.Base;
+using Aban360.ClaimPool.Domain.Features.Metering.Entities;
+using Aban360.ClaimPool.Domain.Features.People.Base;
+using Aban360.ClaimPool.Domain.Features.People.Entities;
 
 namespace Aban360.ClaimPool.Domain.Features.Land.Entities;
 
-[Table(nameof(Estate), Schema = TableSchema.Name)]
-public class Estate: EstateBase
+public class EstateBase
 {
+    public int Id { get; set; }
+
     public short ConstructionTypeId { get; set; }
 
     public short EstateBoundTypeId { get; set; }
@@ -74,18 +77,16 @@ public class Estate: EstateBase
 
     public virtual EstateBoundType EstateBoundType { get; set; } = null!;
 
-    public virtual ICollection<Flat> Flats { get; set; } = new List<Flat>();
+    public virtual ICollection<FlatBase> Flats { get; set; } = new List<FlatBase>();
 
-    public virtual ICollection<IndividualEstate> IndividualEstates { get; set; } = new List<IndividualEstate>();
+    public virtual ICollection<IndividualEstateBase> IndividualEstates { get; set; } = new List<IndividualEstateBase>();
 
-    public virtual ICollection<Estate> InversePrevious { get; set; } = new List<Estate>();
+    public virtual ICollection<EstateBase> InversePrevious { get; set; } = new List<EstateBase>();
 
     public virtual Estate? Previous { get; set; }
 
     public virtual Usage UsageConsumtion { get; set; } = null!;//todo: UsageConsumption
 
     public virtual Usage UsageSell { get; set; } = null!;
-    public virtual ICollection<WaterMeter> WaterMeters { get; set; } = new List<WaterMeter>();
-    public virtual ICollection<EstateWaterResource> EstateWaterResources { get; set; } = new List<EstateWaterResource>();
-
+    public virtual ICollection<WaterMeterBase> WaterMeters { get; set; } = new List<WaterMeterBase>();
 }

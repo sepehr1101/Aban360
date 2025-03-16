@@ -1,3 +1,20 @@
+﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts;
+using Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Create.Contracts;
+using Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Create.Contracts;
+using Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Create.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
+using Aban360.ClaimPool.Domain.Features.Land.Entities;
+using Aban360.ClaimPool.Domain.Features.Metering.Entities;
+using Aban360.ClaimPool.Domain.Features.People.Base;
+using Aban360.ClaimPool.Domain.Features.People.Entities;
+using Aban360.ClaimPool.Domain.Features.WasteWater.Base;
+using Aban360.ClaimPool.Domain.Features.WasteWater.Entities;
+using Aban360.ClaimPool.Persistence.Features.Land.Commands.Contracts;
+using Aban360.ClaimPool.Persistence.Features.Metering.Commands.Contracts;
+using Aban360.ClaimPool.Persistence.Features.People.Commands.Contracts;
+using Aban360.ClaimPool.Persistence.Features.WasteWater.Commands.Contracts;
+using Aban360.Common.Extensions;
+using AutoMapper;
 ﻿using Aban360.ClaimPool.Domain.Constants;
 
 namespace Aban360.ClaimPool.Application.Features.TotalApi.Handler
