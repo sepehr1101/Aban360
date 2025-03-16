@@ -2,8 +2,10 @@
 using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Domain.Features.Metering.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Metering.Entities;
+using Aban360.ClaimPool.Domain.Features.People.Base;
 using Aban360.ClaimPool.Domain.Features.People.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.People.Entities;
+using Aban360.ClaimPool.Domain.Features.WasteWater.Base;
 using Aban360.ClaimPool.Domain.Features.WasteWater.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.WasteWater.Entities;
 using AutoMapper;

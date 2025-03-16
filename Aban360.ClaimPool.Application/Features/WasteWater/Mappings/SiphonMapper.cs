@@ -1,4 +1,5 @@
-﻿using Aban360.ClaimPool.Domain.Features.WasteWater.Dto.Commands;
+﻿using Aban360.ClaimPool.Domain.Features.WasteWater.Base;
+using Aban360.ClaimPool.Domain.Features.WasteWater.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.WasteWater.Dto.Queries;
 using Aban360.ClaimPool.Domain.Features.WasteWater.Entities;
 using AutoMapper;

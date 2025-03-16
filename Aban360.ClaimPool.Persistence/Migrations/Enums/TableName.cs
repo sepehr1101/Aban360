@@ -3,11 +3,15 @@
     internal enum TableName
     {
         Estate,
+        RequestEstate,
         Flat,
+        RequestFlat,
         IndividualType,
         Individual,
+        RequestIndividual,
         IndividualEstateRelationType,
         IndividualEstate,
+        RequestIndividualEstate,
         IndividualTagDefinition,
         IndividualTag,
         Usage,
@@ -22,6 +26,7 @@
         MeterMaterial,
         MeterUseType,
         WaterMeter,
+        RequestWaterMeter,
         WaterMeterTagDefinition,
         WaterMeterTag,
 
@@ -29,7 +34,9 @@
         SiphonType,
         SiphonMaterial,
         Siphon,
+        RequestSiphon,
         WaterMeterSiphon,
+        RequestWaterMeterSiphon,
 
         UseState,
         SubscriptionType,
