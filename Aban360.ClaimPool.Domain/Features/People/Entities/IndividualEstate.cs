@@ -1,23 +1,10 @@
 ﻿using Aban360.ClaimPool.Domain.Constants;
-using Aban360.ClaimPool.Domain.Features.Land.Entities;
+using Aban360.ClaimPool.Domain.Features.People.Base;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.People.Entities;
 
 [Table(nameof(IndividualEstate), Schema = TableSchema.Name)]
-public class IndividualEstate
+public class IndividualEstate: IndividualEstateBase
 {
-    public int Id { get; set; }
-
-    public int IndividualId { get; set; }
-
-    public int EstateId { get; set; }
-
-    public IndividualEstateRelationEnum IndividualEstateRelationTypeId { get; set; }
-
-    public virtual Estate Estate { get; set; } = null!;
-
-    public virtual Individual Individual { get; set; } = null!;
-
-    public virtual IndividualEstateRelationType IndividualEstateRelationType { get; set; } = null!;
 }
