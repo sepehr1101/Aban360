@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.WasteWater.Commands.Implementation
 {
-    public class SiphonCommandService : ISiphonCommandService
+    internal sealed class SiphonCommandService : ISiphonCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<Siphon> _siphon;

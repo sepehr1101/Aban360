@@ -1,12 +1,13 @@
 ﻿using Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Update.Contracts;
 using Aban360.ClaimPool.Domain.Features.People.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.People.Entities;
 using Aban360.ClaimPool.Persistence.Features.People.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Update.Implementations
 {
-    public class IndividualEstateUpdateHandler : IIndividualEstateUpdateHandler
+    internal sealed class IndividualEstateUpdateHandler : IIndividualEstateUpdateHandler
     {
         private readonly IMapper _mapper;
         private readonly IIndividualEstateQueryService _queryService;
@@ -23,11 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Update
 
         public async Task Handle(IndividualEstateUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            var individualEstate = await _queryService.Get(updateDto.Id);
-            if (individualEstate == null)
-            {
-                throw new InvalidDataException();
-            }
+            IndividualEstate individualEstate = await _queryService.Get(updateDto.Id);
             _mapper.Map(updateDto, individualEstate);
         }
     }

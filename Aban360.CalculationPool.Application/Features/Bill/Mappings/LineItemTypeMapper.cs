@@ -9,9 +9,9 @@ namespace Aban360.CalculationPool.Application.Features.Bil.Mappings
     {
         public LineItemTypeMapper()
         {
-            CreateMap<LineItemTypeCreateDto, LineItemType>().ReverseMap();
-            CreateMap<LineItemTypeDeleteDto, LineItemType>().ReverseMap();
-            CreateMap<LineItemTypeUpdateDto, LineItemType>().ReverseMap();
+            CreateMap<LineItemTypeCreateDto, LineItemType>();
+            CreateMap<LineItemTypeDeleteDto, LineItemType>();
+            CreateMap<LineItemTypeUpdateDto, LineItemType>();
             CreateMap<LineItemType, LineItemTypeGetDto>()
                     .ForMember(dest => dest.LineItemTypeGroupTitle, m => m.MapFrom(o => o.LineItemTypeGroup.Title));
 

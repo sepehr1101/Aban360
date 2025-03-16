@@ -4,12 +4,14 @@ using Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Contracts;
 using Aban360.UserPool.Application.Features.AccessTree.Factories;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.AceessTree.Dto.Queries.ValueKeyItems;
+using Aban360.UserPool.Domain.Features.AceessTree.Entites;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Constants.Enums;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts;
 using AutoMapper;
+using System.Collections.Generic;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations
 {
@@ -44,7 +46,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
         }
         public async Task<UserDisplayDto> Handle(Guid userId, CancellationToken cancellationToken)
         {
-            var user = await _userQueryService.GetIncludeUserAndClaims(userId);
+            User user = await _userQueryService.GetIncludeUserAndClaims(userId);
             UserDisplayDto userDisplayDto = new();
             if (user.UserClaims.Any())
             {
@@ -61,8 +63,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
             {
                 return new UserRoleInfo();
             }
-            var roles = await _roleQueryService.Get();
-            var query = from role in roles
+            ICollection<Role> roles = await _roleQueryService.Get();
+            IEnumerable<UserRoleQueryDto> query = from role in roles
                         join userRole in userRoles
                         on role.Id equals userRole.RoleId into roleGroup
                         from rg in roleGroup.DefaultIfEmpty()
@@ -72,30 +74,30 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
                             Title = role.Title,
                             IsSelected = rg != null
                         };
-            var userRoleQueryDtos = query.ToList();
+            List<UserRoleQueryDto> userRoleQueryDtos = query.ToList();
             return new UserRoleInfo(userRoleQueryDtos);
         }
         private async Task<LocationTree> CreateLocationTree(ICollection<UserClaim> userClaims, CancellationToken cancellationToken)
         {
-            var zoneIds =
+            List<int> zoneIds =
                 userClaims
                 .Where(userClaim => userClaim.ClaimTypeId == ClaimType.ZoneId)
                 .Select(userClaim => int.Parse(userClaim.ClaimValue))
             .ToList();
-            var locationTree = await _locationTreeAdHoc.Handle(zoneIds, cancellationToken);
+            LocationTree locationTree = await _locationTreeAdHoc.Handle(zoneIds, cancellationToken);
             return locationTree;
         }
         private async Task<AccessTreeValueKeyDto> CreateAccessTree(ICollection<UserClaim> userClaims)
         {
-            var authValues = userClaims.Where(userClaim => userClaim.ClaimTypeId == ClaimType.Endpoint)
+            List<string> authValues = userClaims.Where(userClaim => userClaim.ClaimTypeId == ClaimType.Endpoint)
                     .Select(userClaim => userClaim.ClaimValue)
                     .ToList();
-            var endpoints = await _endpointQueryService.GetIncludeAll();
-            var toBeSelectedEndpointIds = endpoints
+            ICollection<Endpoint> endpoints = await _endpointQueryService.GetIncludeAll();
+            List<int> toBeSelectedEndpointIds = endpoints
                 .Where(endpoint => authValues.Contains(endpoint.AuthValue))
                 .Select(endpoint => endpoint.Id)
                 .ToList();
-            var accessTree = endpoints.CreateAccessTree(toBeSelectedEndpointIds);
+            AccessTreeValueKeyDto accessTree = endpoints.CreateAccessTree(toBeSelectedEndpointIds);
             return accessTree;
         }
     }

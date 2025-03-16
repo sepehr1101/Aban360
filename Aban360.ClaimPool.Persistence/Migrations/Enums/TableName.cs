@@ -6,6 +6,8 @@
         RequestEstate,
         Flat,
         RequestFlat,
+        WaterResource,
+        EstateWaterResource,
         IndividualType,
         Individual,
         RequestIndividual,
@@ -29,6 +31,7 @@
         RequestWaterMeter,
         WaterMeterTagDefinition,
         WaterMeterTag,
+        ChangeMeterReason,
 
         SiphonDiameter,
         SiphonType,

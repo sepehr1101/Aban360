@@ -10,10 +10,10 @@ namespace Aban360.ClaimPool.Application.Features.People.Mappings
     {
         public IndividualMapper()
         {
-            CreateMap<IndividualCreateDto, Individual>().ReverseMap();
-            CreateMap<IndividualDeleteDto, Individual>().ReverseMap();
-            CreateMap<IndividualUpdateDto, Individual>().ReverseMap();
-            CreateMap<IndividualGetDto, Individual>().ReverseMap();
+            CreateMap<IndividualCreateDto, Individual>();
+            CreateMap<IndividualDeleteDto, Individual>();
+            CreateMap<IndividualUpdateDto, Individual>();
+            CreateMap<Individual,IndividualGetDto>();
         }
     }
 }

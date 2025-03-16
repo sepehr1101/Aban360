@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Base;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
@@ -24,6 +25,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
 
         [HttpPost]
         [Route("reset-password")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ResetPassword([FromBody] UserIdDto userId, CancellationToken cancellationToken)
         {
             await _userResetPasswordCommandHandler.Handle(userId, cancellationToken);

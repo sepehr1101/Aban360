@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Create.Implementations
 {
-    public class ZoneCreateHandler : IZoneCreateHandler
+    internal sealed class ZoneCreateHandler : IZoneCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IZoneCommandService _zoneCommandService;
@@ -24,7 +24,7 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Comma
 
         public async Task Handle(ZoneCreateDto createDto, CancellationToken cancellationToken)
         {
-            var zone = _mapper.Map<Zone>(createDto);
+            Zone zone = _mapper.Map<Zone>(createDto);
             await _zoneCommandService.Add(zone);
         }
     }

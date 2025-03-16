@@ -41,7 +41,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
         public async Task Handle(CaptchaCreateDto captchaCreateDto, CancellationToken cancellationToken)
         {
             Validation(captchaCreateDto.CaptchaLanguageId, captchaCreateDto.CaptchaDisplayModeId);
-            var captcha = _mapper.Map<Captcha>(captchaCreateDto);
+            Captcha captcha = _mapper.Map<Captcha>(captchaCreateDto);
             await _captchaCommandService.Create(captcha);
             if (captcha.IsSelected)
                 await _captchaCommandService.SetIsSelected();
@@ -49,11 +49,11 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
 
         private async void Validation(short languegaId, short displayModeId)
         {
-            var language = await _captchaLanguageQueryService.Get(languegaId);
+            CaptchaLanguage language = await _captchaLanguageQueryService.Get(languegaId);
             if (language == null)
                 throw new InvalidIdException();
 
-            var displayMode = await _captchaDisplayModeQueryService.Get(displayModeId);
+            CaptchaDisplayMode displayMode = await _captchaDisplayModeQueryService.Get(displayModeId);
             if (displayMode == null)
                 throw new InvalidIdException();
         }

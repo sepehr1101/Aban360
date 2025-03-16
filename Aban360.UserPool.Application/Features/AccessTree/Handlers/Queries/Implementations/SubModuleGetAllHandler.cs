@@ -1,12 +1,13 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.AccessTree.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.AceessTree.Dto.Queries;
+using Aban360.UserPool.Domain.Features.AceessTree.Entites;
 using Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts;
 using AutoMapper;
 
 namespace Aban360.UserPool.Application.Features.AccessTree.Handlers.Queries.Implementations
 {
-    public class SubModuleGetAllHandler : ISubModuleGetAllHandler
+    internal sealed class SubModuleGetAllHandler : ISubModuleGetAllHandler
     {
         private readonly IMapper _mapper;
         private readonly ISubModuleQueryService _subModuleQueryService;
@@ -23,7 +24,7 @@ namespace Aban360.UserPool.Application.Features.AccessTree.Handlers.Queries.Impl
 
         public async Task<ICollection<SubModuleGetDto>> Handle(CancellationToken cancellationToken)
         {
-            var subModule = await _subModuleQueryService.GetInclude();
+            ICollection<SubModule> subModule = await _subModuleQueryService.GetInclude();
             return _mapper.Map<ICollection<SubModuleGetDto>>(subModule);
         }
     }

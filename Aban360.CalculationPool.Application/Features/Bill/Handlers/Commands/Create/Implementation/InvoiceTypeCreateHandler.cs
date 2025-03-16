@@ -24,11 +24,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
 
         public async Task Handle(InvoiceTypeCreateDto createDto, CancellationToken cancellationToken)
         {
-            var invoiceType = _mapper.Map<InvoiceType>(createDto);
-            if (invoiceType == null)
-            {
-                throw new InvalidDataException();
-            }
+            InvoiceType invoiceType = _mapper.Map<InvoiceType>(createDto);
             await _invoiceTypeCommandService.Add(invoiceType);
         }
     }

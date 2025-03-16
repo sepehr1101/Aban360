@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.UserPool.Application.Features.AccessTree.Handlers.Commands.Create.Implementations
 {
-    public class EndpointCreateHandler : IEndpointCreateHandler
+    internal sealed class EndpointCreateHandler : IEndpointCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IEndpointCommandService _endpointCommandService;
@@ -24,7 +24,7 @@ namespace Aban360.UserPool.Application.Features.AccessTree.Handlers.Commands.Cre
 
         public async Task Handle(EndpointCreateDto createDto, CancellationToken cancellationToken)
         {
-            var endpoint = _mapper.Map<Endpoint>(createDto);
+            Endpoint endpoint = _mapper.Map<Endpoint>(createDto);
             await _endpointCommandService.Add(endpoint);
         }
     }

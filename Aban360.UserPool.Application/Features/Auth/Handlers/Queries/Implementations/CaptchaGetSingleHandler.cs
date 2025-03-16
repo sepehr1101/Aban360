@@ -22,13 +22,13 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
         }
         public async Task<CaptchaActiveDto> Handle(CancellationToken cancellationToken)
         {
-            var captcha = await _queryService.Get();
+            Captcha captcha = await _queryService.Get();
             return _mapper.Map<CaptchaActiveDto>(captcha);
         }
 
         public async Task<CaptchaQueryDto> Handle(int id, CancellationToken cancellationToken)
         {
-            var captcha = await _queryService.Get(id);
+            Captcha captcha = await _queryService.Get(id);
             if (captcha == null)
             {
                 throw new InvalidIdException();

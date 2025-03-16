@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Create.Implementations
 {
-    public class UseStateCreateHandler : IUseStateCreateHandler
+    internal sealed class UseStateCreateHandler : IUseStateCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IUseStateCommandService _useStateCommandService;
@@ -24,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Crea
 
         public async Task Handle(UseStateCreateDto createDto, CancellationToken cancellationToken)
         {
-            var useState = _mapper.Map<UseState>(createDto);
+            UseState useState = _mapper.Map<UseState>(createDto);
             await _useStateCommandService.Add(useState);
         }
     }

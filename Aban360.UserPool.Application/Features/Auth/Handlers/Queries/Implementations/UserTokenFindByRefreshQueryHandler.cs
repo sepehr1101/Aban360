@@ -7,7 +7,7 @@ using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations
 {
-    public class UserTokenFindByRefreshQueryHandler : IUserTokenFindByRefreshQueryHandler
+    internal sealed class UserTokenFindByRefreshQueryHandler : IUserTokenFindByRefreshQueryHandler
     {
         private readonly ITokenStoreQueryService _tokenStoreService;
         private readonly ITokenFactoryService _tokenFactoryService;
@@ -24,13 +24,13 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
         public async Task<UserToken?> Handle(RefreshToken refreshToken, CancellationToken cancellationToken)
         {
             //validate refreshtokendto
-            var refreshTokenSerial = _tokenFactoryService.GetRefreshTokenSerial(refreshToken.Value);
+            string refreshTokenSerial = _tokenFactoryService.GetRefreshTokenSerial(refreshToken.Value);
             if (string.IsNullOrWhiteSpace(refreshTokenSerial))
             {
                 return default;
             }
-            var refreshTokenHash = await SecurityOperations.GetSha256Hash(refreshTokenSerial);
-            var userToken = await _tokenStoreService.Get(refreshTokenHash);
+            string refreshTokenHash = await SecurityOperations.GetSha256Hash(refreshTokenSerial);
+            UserToken userToken = await _tokenStoreService.Get(refreshTokenHash);
             return userToken;
         }
     }

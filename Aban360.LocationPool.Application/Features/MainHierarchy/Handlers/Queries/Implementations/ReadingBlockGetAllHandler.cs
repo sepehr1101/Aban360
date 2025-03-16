@@ -1,12 +1,13 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts;
 using Aban360.LocationPool.Domain.Features.MainHierarchy.Dto.Queries;
+using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contracts;
 using AutoMapper;
 
 namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations
 {
-    public class ReadingBlockGetAllHandler : IReadingBlockGetAllHandler
+    internal sealed class ReadingBlockGetAllHandler : IReadingBlockGetAllHandler
     {
         private readonly IMapper _mapper;
         private readonly IReadingBlockQeryService _readingBlockQeryService;
@@ -23,7 +24,7 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queri
 
         public async Task<ICollection<ReadingBlockGetDto>> Handle(CancellationToken cancellationToken)
         {
-            var readingBound = await _readingBlockQeryService.Get();
+            ICollection<ReadingBlock> readingBound = await _readingBlockQeryService.Get();
             return _mapper.Map<ICollection<ReadingBlockGetDto>>(readingBound);
         }
     }

@@ -1,12 +1,13 @@
 ﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.Extensions;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Implementations
 {
-    public class ProfessionDeleteHandler : IProfessionDeleteHandler
+    internal sealed class ProfessionDeleteHandler : IProfessionDeleteHandler
     {
         private readonly IProfessionQueryService _queryService;
         private readonly IProfessionCommandService _commandService;
@@ -23,11 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.I
 
         public async Task Handle(ProfessionDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            var profession = await _queryService.Get(deleteDto.Id);
-            if (profession == null)
-            {
-                throw new InvalidDataException();
-            }
+            Profession profession = await _queryService.Get(deleteDto.Id);
             await _commandService.Remove(profession);
 
         }

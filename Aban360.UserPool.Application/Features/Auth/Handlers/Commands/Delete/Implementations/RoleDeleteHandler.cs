@@ -3,6 +3,7 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Delete.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
+using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Features.Auth.Commands.Contracts;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using Microsoft.AspNetCore.Http;
@@ -32,7 +33,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Delete.Im
 
         public async Task Handle(RoleDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            var role = await _roleQueryService.Get(deleteDto.Id);
+            Role role = await _roleQueryService.Get(deleteDto.Id);
             if (role.IsRemovable)
             {
                 throw new BaseException("این نقش غیرقابل حذف است");//todo magic string

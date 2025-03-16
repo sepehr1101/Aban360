@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations
 {
-    public class GetewayCommandService : IGetewayCommandService
+    internal sealed class GetewayCommandService : IGetewayCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<Geteway> _geteway;

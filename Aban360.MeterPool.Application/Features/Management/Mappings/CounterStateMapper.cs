@@ -9,10 +9,10 @@ namespace Aban360.MeterPool.Application.Features.Management.Mappings
     {
         public CounterStateMapper()
         {
-            CreateMap<CounterStateCreateDto, CounterState>().ReverseMap();
-            CreateMap<CounterStateDeleteDto, CounterState>().ReverseMap();
-            CreateMap<CounterStateUpdateDto, CounterState>().ReverseMap();
-            CreateMap<CounterStateGetDto, CounterState>().ReverseMap();
+            CreateMap<CounterStateCreateDto, CounterState>();
+            CreateMap<CounterStateDeleteDto, CounterState>();
+            CreateMap<CounterStateUpdateDto, CounterState>();
+            CreateMap<CounterState,CounterStateGetDto>();
         }
     }
 }

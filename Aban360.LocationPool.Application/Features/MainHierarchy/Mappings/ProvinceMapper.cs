@@ -9,17 +9,10 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Mappings
     {
         public ProvinceMapper()
         {
-            CreateMap<ProvinceCreateDto, Province>()
-                .ReverseMap();
-
-            CreateMap<ProvinceDeleteDto, Province>()
-                .ReverseMap();
-
-            CreateMap<ProvinceUpdateDto, Province>()
-                .ReverseMap();
-
-            CreateMap<ProvinceGetDto, Province>()
-                .ReverseMap()
+            CreateMap<ProvinceCreateDto, Province>();
+            CreateMap<ProvinceDeleteDto, Province>();
+            CreateMap<ProvinceUpdateDto, Province>();
+            CreateMap<Province,ProvinceGetDto>()
                 .ForMember(dest => dest.CordinalDirectionTitle, opt => opt.MapFrom(src => src.CordinalDirection.Title))
                 .ForMember(dest => dest.CountryTitle, opt => opt.MapFrom(src => src.Country.Title));
 

@@ -8,10 +8,10 @@ namespace Aban360.ClaimPool.Application.Features.People.Mappings
     {
         public IndividualTagDefinitionMapper()
         {
-            CreateMap<IndividualTagDefinitionCreateDto, IndividualTagDefinition>().ReverseMap();
-            CreateMap<IndividualTagDefinitionDeleteDto, IndividualTagDefinition>().ReverseMap();
-            CreateMap<IndividualTagDefinitionUpdateDto, IndividualTagDefinition>().ReverseMap();
-            CreateMap<IndividualTagDefinitionGetDto, IndividualTagDefinition>().ReverseMap();
+            CreateMap<IndividualTagDefinitionCreateDto, IndividualTagDefinition>();
+            CreateMap<IndividualTagDefinitionDeleteDto, IndividualTagDefinition>();
+            CreateMap<IndividualTagDefinitionUpdateDto, IndividualTagDefinition>();
+            CreateMap<IndividualTagDefinition,IndividualTagDefinitionGetDto>();
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<MunicipalityGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(int id, CancellationToken cancellationToken)
         {
-            var municipality = await _municipalityGetSingleHandler.Handle(id, cancellationToken);
+            MunicipalityGetDto municipality = await _municipalityGetSingleHandler.Handle(id, cancellationToken);
             return Ok(municipality);
         }
     }

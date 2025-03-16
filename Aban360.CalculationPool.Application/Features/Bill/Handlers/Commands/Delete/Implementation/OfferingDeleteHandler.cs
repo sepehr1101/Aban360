@@ -1,12 +1,13 @@
 ﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Delete.Contracts;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
+using Aban360.CalculationPool.Domain.Features.Bill.Entities;
 using Aban360.CalculationPool.Persistence.Features.Bill.Commands.Contracts;
 using Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts;
 using Aban360.Common.Extensions;
 
 namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Delete.Implementation
 {
-    public class OfferingDeleteHandler : IOfferingDeleteHandler
+    internal sealed class OfferingDeleteHandler : IOfferingDeleteHandler
     {
         private readonly IOfferingCommandService _offeringCommandService;
         private readonly IOfferingQueryService _offeringQueryService;
@@ -23,11 +24,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.De
 
         public async Task Handle(OfferingDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            var offering = await _offeringQueryService.Get(deleteDto.Id);
-            if (offering == null)
-            {
-                throw new InvalidDataException();
-            }
+            Offering offering = await _offeringQueryService.Get(deleteDto.Id);
             await _offeringCommandService.Remove(offering);
         }
     }

@@ -22,8 +22,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
         }
         public async Task<ICollection<CaptchaDisplayModeDto>> Handle(CancellationToken cancellationToken)
         {
-            var captchaDisplayModes = await _captchaDisplayModeQueryService.Get();
-            var captchaDisplayModeDtos = _mapper.Map<ICollection<CaptchaDisplayModeDto>>(captchaDisplayModes);
+            ICollection<CaptchaDisplayMode> captchaDisplayModes = await _captchaDisplayModeQueryService.Get();
+            ICollection<CaptchaDisplayModeDto> captchaDisplayModeDtos = _mapper.Map<ICollection<CaptchaDisplayModeDto>>(captchaDisplayModes);
             return captchaDisplayModeDtos;
         }
     }

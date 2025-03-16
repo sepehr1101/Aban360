@@ -1,12 +1,13 @@
 ﻿using Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Delete.Contracts;
 using Aban360.ClaimPool.Domain.Features.Metering.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Persistence.Features.Metering.Commands.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Metering.Queries.Contracts;
 using Aban360.Common.Extensions;
 
 namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Delete.Implementations
 {
-    public class UseStateDeleteHandler : IUseStateDeleteHandler
+    internal sealed class UseStateDeleteHandler : IUseStateDeleteHandler
     {
         private readonly IUseStateCommandService _useStateCommandService;
         private readonly IUseStateQueryService _useStateQueryService;
@@ -23,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Dele
 
         public async Task Handle(UseStateDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            var useState = await _useStateQueryService.Get(deleteDto.Id);
+            UseState useState = await _useStateQueryService.Get(deleteDto.Id);
             if (useState == null)
             {
                 throw new InvalidDataException();

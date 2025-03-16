@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
+using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using AutoMapper;
 using Gridify;
@@ -24,11 +25,11 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
         }
         public async Task<ICollection<UserQueryDto>> Handle(GridifyQuery query, CancellationToken cancellationToken)
         {
-            var users = await _userQueryService
+            Paging<User> users = await _userQueryService
                 .GetQuery()
                 .GridifyAsync(query);
 
-            var usersDto = _mapper.Map<ICollection<UserQueryDto>>(users.Data);
+            ICollection<UserQueryDto> usersDto = _mapper.Map<ICollection<UserQueryDto>>(users.Data);
             return usersDto;
         }
     }

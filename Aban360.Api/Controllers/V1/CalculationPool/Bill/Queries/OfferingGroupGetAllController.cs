@@ -1,7 +1,5 @@
 ﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts;
-using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
-using Aban360.CalculationPool.Persistence.Contexts.Contracts;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bil.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<OfferingGroupGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var offeringGroups = await _offeringGroupGetAllHandler.Handle(cancellationToken);
+            ICollection<OfferingGroupGetDto> offeringGroups = await _offeringGroupGetAllHandler.Handle(cancellationToken);
             return Ok(offeringGroups);
         }
     }

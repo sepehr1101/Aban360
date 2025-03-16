@@ -9,11 +9,10 @@ namespace Aban360.ClaimPool.Application.Features.Land.Mappings
     {
         public EstateMapper()
         {
-            CreateMap<EstateCreateDto, Estate>().ReverseMap();
-            CreateMap<EstateDeleteDto, Estate>().ReverseMap();
-            CreateMap<EstateUpdateDto, Estate>().ReverseMap();
-            CreateMap<EstateGetDto, Estate>().ReverseMap();
+            CreateMap<EstateCreateDto, Estate>();
+            CreateMap<EstateDeleteDto, Estate>();
+            CreateMap<EstateUpdateDto, Estate>();
+            CreateMap<Estate,EstateGetDto>();
         }
-    }
-   
+    }   
 }

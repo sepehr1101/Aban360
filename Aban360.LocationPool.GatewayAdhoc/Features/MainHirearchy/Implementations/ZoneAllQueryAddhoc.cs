@@ -1,11 +1,12 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Extensions;
 using Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts;
+using Aban360.LocationPool.Domain.Features.MainHierarchy.Dto.Queries;
 using Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Contracts;
 
 namespace Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementations
 {
-    public class ZoneAllQueryAddhoc : IZoneAllQueryAddhoc
+    internal sealed class ZoneAllQueryAddhoc : IZoneAllQueryAddhoc
     {
         private readonly IZoneGetAllHandler _zoneGetAllHandler;
         public ZoneAllQueryAddhoc(IZoneGetAllHandler zoneGetAllHandler)
@@ -16,8 +17,8 @@ namespace Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementatio
 
         public async Task<ICollection<NumericDictionary>> Get(CancellationToken cancellationToken)
         {
-            var provience = await _zoneGetAllHandler.Handle(cancellationToken);
-            return provience
+            ICollection<ZoneGetDto> zone = await _zoneGetAllHandler.Handle(cancellationToken);
+            return zone
                 .Select(x => new NumericDictionary()
                 {
                     Id = x.Id,

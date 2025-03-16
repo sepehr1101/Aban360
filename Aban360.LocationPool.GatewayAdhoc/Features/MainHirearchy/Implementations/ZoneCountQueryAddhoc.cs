@@ -1,10 +1,10 @@
 ﻿using Aban360.Common.Extensions;
-using Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations;
+using Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts;
 using Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Contracts;
 
 namespace Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementations
 {
-    public class ZoneCountQueryAddhoc : IZoneCountQueryAddhoc
+    internal sealed class ZoneCountQueryAddhoc : IZoneCountQueryAddhoc
     {
         private readonly IZoneGetCountHandler _zoneGetCountHandler;
         public ZoneCountQueryAddhoc(IZoneGetCountHandler zoneGetCountHandler)

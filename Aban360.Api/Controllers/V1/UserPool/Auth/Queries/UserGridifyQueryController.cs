@@ -3,7 +3,6 @@ using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Gridify;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
@@ -24,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<UserQueryDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUsersByQuery([FromQuery] GridifyQuery query, CancellationToken cancellationToken)
         {
-            var userQueryDtos = await _userGridifyQueryHandler.Handle(query, cancellationToken); ;
+            ICollection<UserQueryDto> userQueryDtos = await _userGridifyQueryHandler.Handle(query, cancellationToken); ;
             return Ok(userQueryDtos);
         }
     }

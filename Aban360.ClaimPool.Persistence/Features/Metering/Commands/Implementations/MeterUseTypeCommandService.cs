@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.Metering.Commands.Implementations
 {
-    public class MeterUseTypeCommandService : IMeterUseTypeCommandService
+    internal sealed class MeterUseTypeCommandService : IMeterUseTypeCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<MeterUseType> _meterUserType;

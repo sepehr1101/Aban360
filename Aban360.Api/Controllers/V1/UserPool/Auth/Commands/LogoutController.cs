@@ -3,6 +3,7 @@ using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Delete.Contracts;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
+using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,7 +36,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> TerminateSession([FromBody] RefreshToken refreshToken, CancellationToken cancellationToken)
         {
-            var userToken = await _userTokenFindByRefreshTokenHandler.Handle(refreshToken, cancellationToken);
+            UserToken userToken = await _userTokenFindByRefreshTokenHandler.Handle(refreshToken, cancellationToken);
             if (userToken == null)
             {
                 return Unauthorized();

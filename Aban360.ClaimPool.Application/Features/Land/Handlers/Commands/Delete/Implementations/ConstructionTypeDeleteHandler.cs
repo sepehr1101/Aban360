@@ -1,12 +1,13 @@
 ﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.Extensions;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Implementations
 {
-    public class ConstructionTypeDeleteHandler : IConstructionTypeDeleteHandler
+    internal sealed class ConstructionTypeDeleteHandler : IConstructionTypeDeleteHandler
     {
         private readonly IConstructionTypeQueryService _queryService;
         private readonly IConstructionTypeCommandService _commandService;
@@ -23,11 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.I
 
         public async Task Handle(ConstructionTypeDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            var constructionType = await _queryService.Get(deleteDto.Id);
-            if (constructionType == null)
-            {
-                throw new InvalidDataException();
-            }
+            ConstructionType constructionType = await _queryService.Get(deleteDto.Id);
             await _commandService.Remove(constructionType);
         }
     }

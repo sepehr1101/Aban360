@@ -1,6 +1,6 @@
 ﻿using Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Constants;
-using Aban360.ClaimPool.Domain.Features.People.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.People.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
@@ -26,10 +26,10 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People.Queries
 
         [HttpGet, HttpPost]
         [Route("single/{id}")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<IndividualTagDefinitionCreateDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IndividualEstateRelationTypeGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle (IndividualEstateRelationEnum id,CancellationToken cancellationToken)
         {
-            var individualEstateRelationType = await _individualEstateRelationTypeHandler.Handle(id, cancellationToken);
+            IndividualEstateRelationTypeGetDto individualEstateRelationType = await _individualEstateRelationTypeHandler.Handle(id, cancellationToken);
             return Ok(individualEstateRelationType);
         }
     }

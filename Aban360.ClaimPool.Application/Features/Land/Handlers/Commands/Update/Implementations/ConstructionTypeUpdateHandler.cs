@@ -1,12 +1,13 @@
 ﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations
 {
-    public class ConstructionTypeUpdateHandler : IConstructionTypeUpdateHandler
+    internal sealed class ConstructionTypeUpdateHandler : IConstructionTypeUpdateHandler
     {
         private readonly IMapper _mapper;
         private readonly IConstructionTypeQueryService _queryService;
@@ -23,11 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
 
         public async Task Handle(ConstructionTypeUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            var constructionType = await _queryService.Get(updateDto.Id);
-            if (constructionType == null)
-            {
-                throw new InvalidDataException();
-            }
+            ConstructionType constructionType = await _queryService.Get(updateDto.Id);
             _mapper.Map(updateDto, constructionType);
         }
     }

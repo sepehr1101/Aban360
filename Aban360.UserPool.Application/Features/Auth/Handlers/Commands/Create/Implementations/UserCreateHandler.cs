@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Categories.UseragentLog;
+using Aban360.Common.Extensions;
 using Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Contracts;
 using Aban360.UserPool.Application.Common.Base;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Contracts;
@@ -53,20 +54,20 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
         }
         public async Task Handle(UserCreateDto userCreateDto, CancellationToken cancellationToken)
         {
-            var logInfo = DeviceDetection.GetLogInfo(_contextAccessor.HttpContext.Request);
-            var logInfoString = JsonOperation.Marshal(logInfo);
+            LogInfo logInfo = DeviceDetection.GetLogInfo(_contextAccessor.HttpContext.Request);
+            string logInfoString = JsonOperation.Marshal(logInfo);
             Guid operationGroupId = Guid.NewGuid();
 
-            var zoneCount = await _zoneCountQueryAddhoc.GetCount(userCreateDto.SelectedZoneIds, cancellationToken);
-            var endpointValue = await _endpointQueryService.GetAuthValue(userCreateDto.SelectedEndpointIds.ToArray());
+            int zoneCount = await _zoneCountQueryAddhoc.GetCount(userCreateDto.SelectedZoneIds, cancellationToken);
+            List<string> endpointValue = await _endpointQueryService.GetAuthValue(userCreateDto.SelectedEndpointIds.ToArray());
             Validate(zoneCount,userCreateDto.SelectedZoneIds.Count(),endpointValue.Count(), userCreateDto.SelectedEndpointIds.Count());
 
-            var zones = CreateUserClaim(userCreateDto.SelectedZoneIds.Select(x=>x.ToString()).ToList(), ClaimType.ZoneId, logInfoString, operationGroupId, operationGroupId);
-            var endpionts = CreateUserClaim(endpointValue,ClaimType.Endpoint, logInfoString, operationGroupId, operationGroupId);
-            var userCliams = zones.Union(endpionts).ToList();
+            ICollection<UserClaim> zones = CreateUserClaim(userCreateDto.SelectedZoneIds.Select(x=>x.ToString()).ToList(), ClaimType.ZoneId, logInfoString, operationGroupId, operationGroupId);
+            ICollection<UserClaim> endpionts = CreateUserClaim(endpointValue,ClaimType.Endpoint, logInfoString, operationGroupId, operationGroupId);
+            List<UserClaim> userCliams = zones.Union(endpionts).ToList();
 
-            var userRoles = CreateUserRoles(userCreateDto.SelectedRoleIds, logInfoString, operationGroupId, operationGroupId);
-            var user = _mapper.Map<User>(userCreateDto);
+            ICollection<UserRole> userRoles = CreateUserRoles(userCreateDto.SelectedRoleIds, logInfoString, operationGroupId, operationGroupId);
+            User user = _mapper.Map<User>(userCreateDto);
             user.Id = operationGroupId;
             user.InsertLogInfo = logInfoString;
             user.Password = await SecurityOperations.GetSha512Hash(userCreateDto.Password);

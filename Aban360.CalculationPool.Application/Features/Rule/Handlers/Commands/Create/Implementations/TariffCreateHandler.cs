@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.CalculationPool.Application.Features.Rule.Handlers.Commands.Create.Implementations
 {
-    public class TariffCreateHandler : ITariffCreateHandler
+    internal sealed class TariffCreateHandler : ITariffCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly ITariffCommandService _tariffCommandService;
@@ -24,11 +24,7 @@ namespace Aban360.CalculationPool.Application.Features.Rule.Handlers.Commands.Cr
 
         public async Task Handle(TariffCreateDto createDto, CancellationToken cancellationToken)
         {
-            var tariff = _mapper.Map<Tariff>(createDto);
-            if (tariff == null)
-            {
-                throw new InvalidDataException();
-            }
+            Tariff tariff = _mapper.Map<Tariff>(createDto);
             await _tariffCommandService.Add(tariff);
         }
     }

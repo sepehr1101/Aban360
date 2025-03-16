@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.CalculationPool.Persistence.Features.Rule.Commands.Implementations
 {
-    public class TariffConstantCommandService : ITariffConstantCommandService
+   internal sealed class TariffConstantCommandService : ITariffConstantCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<TariffConstant> _tariffConstant;

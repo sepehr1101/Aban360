@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Commands.Implementation
 {
-    public class CountryCommandService : ICountryCommandService
+    internal sealed class CountryCommandService : ICountryCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<Country> _country;

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
 {
-    public class UserQueryService : IUserQueryService
+    internal sealed class UserQueryService : IUserQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<User> _users;

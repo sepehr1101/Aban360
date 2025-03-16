@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Create.Implementations
 {
-    public class MeterMaterialCreateHandler : IMeterMaterialCreateHandler
+    internal sealed class MeterMaterialCreateHandler : IMeterMaterialCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IMeterMaterialCommandService _meterMaterialCommandService;
@@ -24,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Crea
 
         public async Task Handle(MeterMaterialCreateDto ceateDto, CancellationToken cancellationToken)
         {
-            var meterMaterial = _mapper.Map<MeterMaterial>(ceateDto);
+            MeterMaterial meterMaterial = _mapper.Map<MeterMaterial>(ceateDto);
             await _meterMaterialCommandService.Add(meterMaterial);
         }
     }

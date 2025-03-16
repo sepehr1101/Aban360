@@ -1,12 +1,13 @@
 ﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations
 {
-    public class EstateBoundTypeUpdateHandler : IEstateBoundTypeUpdateHandler
+    internal sealed class EstateBoundTypeUpdateHandler : IEstateBoundTypeUpdateHandler
     {
         private readonly IMapper _mapper;
         private readonly IEstateBoundTypeQueryService _queryService;
@@ -23,11 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
 
         public async Task Handle(EstateBoundTypeUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            var estateBoundType = await _queryService.Get(updateDto.Id);
-            if (estateBoundType == null)
-            {
-                throw new InvalidDataException();
-            }
+            EstateBoundType estateBoundType = await _queryService.Get(updateDto.Id);
             _mapper.Map(updateDto, estateBoundType);
         }
     }

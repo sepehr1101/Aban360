@@ -25,7 +25,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
         public async Task<FirstStepOutput> Handle(FirstStepLoginInput input, User user)
         {
             Random rand = new Random();
-            var userLogin = new UserLogin()
+            UserLogin userLogin = new UserLogin()
             {
                 Id = Guid.NewGuid(),
                 AppVersion = input.AppVersion,

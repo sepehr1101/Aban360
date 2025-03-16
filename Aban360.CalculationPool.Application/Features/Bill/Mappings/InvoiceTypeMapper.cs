@@ -9,10 +9,10 @@ namespace Aban360.CalculationPool.Application.Features.Bil.Mappings
     {
         public InvoiceTypeMapper()
         {
-            CreateMap<InvoiceType, InvoiceTypeCreateDto>().ReverseMap();
-            CreateMap<InvoiceType, InvoiceTypeDeleteDto>().ReverseMap();
-            CreateMap<InvoiceType, InvoiceTypeUpdateDto>().ReverseMap();
-            CreateMap<InvoiceType, InvoiceTypeGetDto>().ReverseMap();
+            CreateMap<InvoiceTypeCreateDto,InvoiceType>();
+            CreateMap< InvoiceTypeDeleteDto,InvoiceType>();
+            CreateMap< InvoiceTypeUpdateDto,InvoiceType>();
+            CreateMap<InvoiceType, InvoiceTypeGetDto>();
         }
     }
 }

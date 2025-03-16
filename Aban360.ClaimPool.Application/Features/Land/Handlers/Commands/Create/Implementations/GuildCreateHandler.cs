@@ -24,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
 
         public async Task Handle(GuildCreateDto createDto, CancellationToken cancellationToken)
         {
-            var guild = _mapper.Map<Guild>(createDto);
+            Guild guild = _mapper.Map<Guild>(createDto);
             await _commandService.Add(guild);
         }
     }

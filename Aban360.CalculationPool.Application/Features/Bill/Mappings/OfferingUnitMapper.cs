@@ -9,10 +9,10 @@ namespace Aban360.CalculationPool.Application.Features.Bil.Mappings
     {
         public OfferingUnitMapper()
         {
-            CreateMap<OfferingUnit, OfferingUnitCreateDto>().ReverseMap();
-            CreateMap<OfferingUnit, OfferingUnitDeleteDto>().ReverseMap();
-            CreateMap<OfferingUnit, OfferingUnitUpdateDto>().ReverseMap();
-            CreateMap<OfferingUnit, OfferingUnitGetDto>().ReverseMap();
+            CreateMap<OfferingUnitCreateDto, OfferingUnit>();
+            CreateMap<OfferingUnitDeleteDto,OfferingUnit >();
+            CreateMap<OfferingUnitUpdateDto,OfferingUnit >();
+            CreateMap<OfferingUnit, OfferingUnitGetDto>();
         }
     }
 }

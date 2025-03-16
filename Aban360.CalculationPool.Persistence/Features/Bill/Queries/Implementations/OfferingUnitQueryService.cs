@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementations
 {
-    public class OfferingUnitQueryService : IOfferingUnitQueryService
+   internal sealed class OfferingUnitQueryService : IOfferingUnitQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<OfferingUnit> _OfferingUnit;

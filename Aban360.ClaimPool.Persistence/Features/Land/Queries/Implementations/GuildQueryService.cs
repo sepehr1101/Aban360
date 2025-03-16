@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
 {
-    public class GuildQueryService : IGuildQueryService
+    internal sealed class GuildQueryService : IGuildQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<Guild> _guild;

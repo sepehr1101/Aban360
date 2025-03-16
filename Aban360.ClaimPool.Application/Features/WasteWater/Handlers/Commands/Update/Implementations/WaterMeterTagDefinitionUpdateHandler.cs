@@ -1,13 +1,13 @@
 ﻿using Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Update.Contracts;
 using Aban360.ClaimPool.Domain.Features.Metering.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Persistence.Features.Metering.Queries.Contracts;
-using Aban360.Common.Db.Exceptions;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Update.Implementations
 {
-    public class WaterMeterTagDefinitionUpdateHandler : IWaterMeterTagDefinitionUpdateHandler
+    internal sealed class WaterMeterTagDefinitionUpdateHandler : IWaterMeterTagDefinitionUpdateHandler
     {
         private readonly IMapper _mapper;
         private readonly IWaterMeterTagDefinitionQueryService _queryService;
@@ -24,11 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Up
 
         public async Task Handle(WaterMeterTagDefinitionUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            var waterMeterTagDefinition = await _queryService.Get(updateDto.Id);
-            if (waterMeterTagDefinition == null)
-            {
-                throw new InvalidIdException();//todo : exception
-            }
+            WaterMeterTagDefinition waterMeterTagDefinition = await _queryService.Get(updateDto.Id);
             _mapper.Map(updateDto, waterMeterTagDefinition);
         }
     }

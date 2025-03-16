@@ -9,10 +9,10 @@ namespace Aban360.ClaimPool.Application.Features.Land.Mappings
     {
         public UsageMapper()
         {
-            CreateMap<UsageCreateDto, Usage>().ReverseMap();
-            CreateMap<UsageDeleteDto, Usage>().ReverseMap();
-            CreateMap<UsageUpdateDto, Usage>().ReverseMap();
-            CreateMap<UsageGetDto, Usage>().ReverseMap();
+            CreateMap<UsageCreateDto, Usage>();
+            CreateMap<UsageDeleteDto, Usage>();
+            CreateMap<UsageUpdateDto, Usage>();
+            CreateMap<Usage,UsageGetDto>();
         }
     }
 
