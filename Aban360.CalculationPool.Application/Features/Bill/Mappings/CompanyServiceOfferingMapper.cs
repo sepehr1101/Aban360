@@ -9,9 +9,9 @@ namespace Aban360.CalculationPool.Application.Features.Bil.Mappings
     {
         public CompanyServiceOfferingMapper()
         {
-            CreateMap<CompanyServiceOfferingCreateDto, CompanyServiceOffering>().ReverseMap();
-            CreateMap<CompanyServiceOfferingDeleteDto, CompanyServiceOffering>().ReverseMap();
-            CreateMap<CompanyServiceOfferingUpdateDto, CompanyServiceOffering>().ReverseMap();
+            CreateMap<CompanyServiceOfferingCreateDto, CompanyServiceOffering>();
+            CreateMap<CompanyServiceOfferingDeleteDto, CompanyServiceOffering>();
+            CreateMap<CompanyServiceOfferingUpdateDto, CompanyServiceOffering>();
             CreateMap<CompanyServiceOffering,CompanyServiceOfferingGetDto>()
                     .ForMember(dest => dest.CompanyServiceTitle, m => m.MapFrom(o => o.CompanyService.Title));
 

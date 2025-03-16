@@ -9,11 +9,10 @@ namespace Aban360.ClaimPool.Application.Features.Land.Mappings
     {
         public ConstructionTypeMapper()
         {
-            CreateMap<ConstructionTypeCreateDto, ConstructionType>().ReverseMap();
-            CreateMap<ConstructionTypeDeleteDto, ConstructionType>().ReverseMap();
-            CreateMap<ConstructionTypeUpdateDto, ConstructionType>().ReverseMap();
-            CreateMap<ConstructionTypeGetDto, ConstructionType>().ReverseMap();
+            CreateMap<ConstructionTypeCreateDto, ConstructionType>();
+            CreateMap<ConstructionTypeDeleteDto, ConstructionType>();
+            CreateMap<ConstructionTypeUpdateDto, ConstructionType>();
+            CreateMap<ConstructionType,ConstructionTypeGetDto>();
         }
     }
-   
 }

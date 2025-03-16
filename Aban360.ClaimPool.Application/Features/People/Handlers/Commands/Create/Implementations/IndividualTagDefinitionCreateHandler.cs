@@ -8,7 +8,7 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Create.Implementations
 {
-    public class IndividualTagDefinitionCreateHandler : IIndividualTagDefinitionCreateHandler
+    internal sealed class IndividualTagDefinitionCreateHandler : IIndividualTagDefinitionCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IIndividualTagDefinitionCommandService _commandService;
@@ -30,7 +30,7 @@ namespace Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Create
 
         public async Task Handle(IndividualTagDefinitionCreateDto createDto, CancellationToken cancellationToken)
         {
-            var individualTagDefinition = _mapper.Map<IndividualTagDefinition>(createDto);
+            IndividualTagDefinition individualTagDefinition = _mapper.Map<IndividualTagDefinition>(createDto);
             await _commandService.Add(individualTagDefinition);
         }
     }

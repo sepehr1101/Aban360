@@ -1,12 +1,13 @@
 ﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Contracts;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
+using Aban360.CalculationPool.Domain.Features.Bill.Entities;
 using Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
 namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Implementation
 {
-    public class InvoiceLineItemInsertModeUpdateHandler : IInvoiceLineItemInsertModeUpdateHandler
+    internal sealed class InvoiceLineItemInsertModeUpdateHandler : IInvoiceLineItemInsertModeUpdateHandler
     {
         private readonly IMapper _mapper;
         private readonly IInvoiceLineItemInsertModeQueryService _invoiceLineItemInsertModeQueryService;
@@ -23,11 +24,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Up
 
         public async Task Handle(InvoiceLineItemInsertModeUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            var invoiceLineItemInsertMode = await _invoiceLineItemInsertModeQueryService.Get(updateDto.Id);
-            if (invoiceLineItemInsertMode == null)
-            {
-                throw new InvalidDataException();
-            }
+            InvoiceLineItemInsertMode invoiceLineItemInsertMode = await _invoiceLineItemInsertModeQueryService.Get(updateDto.Id);
             _mapper.Map(updateDto, invoiceLineItemInsertMode);
         }
     }

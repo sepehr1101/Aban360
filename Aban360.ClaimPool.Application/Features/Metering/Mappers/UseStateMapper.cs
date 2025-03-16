@@ -9,10 +9,10 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Mappers
     {
         public UseStateMapper()
         {
-            CreateMap<UseStateCreateDto, UseState>().ReverseMap();
-            CreateMap<UseStateDeleteDto, UseState>().ReverseMap();
-            CreateMap<UseStateUpdateDto, UseState>().ReverseMap();
-            CreateMap<UseStateGetDto, UseState>().ReverseMap();
+            CreateMap<UseStateCreateDto, UseState>();
+            CreateMap<UseStateDeleteDto, UseState>();
+            CreateMap<UseStateUpdateDto, UseState>();
+            CreateMap<UseState,UseStateGetDto>();
         }
     }
 }

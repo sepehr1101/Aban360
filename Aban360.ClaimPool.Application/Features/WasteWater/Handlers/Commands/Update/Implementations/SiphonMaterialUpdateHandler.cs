@@ -3,10 +3,11 @@ using AutoMapper;
 using Aban360.Common.Extensions;
 using Aban360.ClaimPool.Domain.Features.WasteWater.Dto.Commands;
 using Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Update.Contracts;
+using Aban360.ClaimPool.Domain.Features.WasteWater.Entities;
 
 namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Update.Implementations
 {
-    public class SiphonMaterialUpdateHandler : ISiphonMaterialUpdateHandler
+    internal sealed class SiphonMaterialUpdateHandler : ISiphonMaterialUpdateHandler
     {
         private readonly IMapper _mapper;
         private readonly ISiphonMaterialQueryService _queryService;
@@ -23,12 +24,8 @@ namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Up
 
         public async Task Handle(SiphonMaterialUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            var SiphonMaterial = await _queryService.Get(updateDto.Id);
-            if (SiphonMaterial == null)
-            {
-                throw new InvalidDataException();
-            }
-            _mapper.Map(updateDto, SiphonMaterial);
+            SiphonMaterial siphonMaterial = await _queryService.Get(updateDto.Id);
+            _mapper.Map(updateDto, siphonMaterial);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<MunicipalityGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var municipality = await _municipalityGetAllHandler.Handle(cancellationToken);
+            ICollection<MunicipalityGetDto> municipality = await _municipalityGetAllHandler.Handle(cancellationToken);
             return Ok(municipality);
         }
     }

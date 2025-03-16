@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.UserPool.Application.Features.AccessTree.Handlers.Commands.Create.Implementations
 {
-    public class AppCreateHandler : IAppCreateHandler
+    internal sealed class AppCreateHandler : IAppCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IAppCommandService _appCommandService;
@@ -24,7 +24,7 @@ namespace Aban360.UserPool.Application.Features.AccessTree.Handlers.Commands.Cre
 
         public async Task Handle(AppCreateDto createDto, CancellationToken cancellationToken)
         {
-            var app = _mapper.Map<App>(createDto);
+            App app = _mapper.Map<App>(createDto);
             await _appCommandService.Add(app);
         }
     }

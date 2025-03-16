@@ -90,4 +90,6 @@ public class Estate
 
     public virtual Usage UsageSell { get; set; } = null!;
     public virtual ICollection<WaterMeter> WaterMeters { get; set; } = new List<WaterMeter>();
+    public virtual ICollection<EstateWaterResource> EstateWaterResources { get; set; } = new List<EstateWaterResource>();
+
 }

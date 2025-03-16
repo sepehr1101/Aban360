@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<ProfessionGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var profession = await _professionHandler.Handle(cancellationToken);
+            ICollection<ProfessionGetDto> profession = await _professionHandler.Handle(cancellationToken);
             return Ok(profession);
         }
     }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implementations
 {
-    public class RegionQueryService : IRegionQueryService
+    internal sealed class RegionQueryService : IRegionQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<Region> _regions;

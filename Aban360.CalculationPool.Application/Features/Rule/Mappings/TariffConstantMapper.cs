@@ -9,10 +9,10 @@ namespace Aban360.CalculationPool.Application.Features.Rule.Mappings
     {
         public TariffConstantMapper()
         {
-            CreateMap<TariffConstantCreateDto, TariffConstant>().ReverseMap();
-            CreateMap<TariffConstantDeleteDto, TariffConstant>().ReverseMap();
-            CreateMap<TariffConstantUpdateDto, TariffConstant>().ReverseMap();
-            CreateMap<TariffConstantGetDto, TariffConstant>().ReverseMap();
+            CreateMap<TariffConstantCreateDto, TariffConstant>();
+            CreateMap<TariffConstantDeleteDto, TariffConstant>();
+            CreateMap<TariffConstantUpdateDto, TariffConstant>();
+            CreateMap<TariffConstant, TariffConstantGetDto>();
         }
     }
 }

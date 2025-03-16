@@ -9,10 +9,11 @@ namespace Aban360.ClaimPool.Application.Features.Land.Mappings
     {
         public FlatMapper()
         {
-            CreateMap<FlatCreateDto, Flat>().ReverseMap();
-            CreateMap<FlatDeleteDto, Flat>().ReverseMap();
-            CreateMap<FlatUpdateDto, Flat>().ReverseMap();
-            CreateMap<FlatGetDto, Flat>().ReverseMap();
+            CreateMap<FlatCreateDto, Flat>();
+            CreateMap<FlatDeleteDto, Flat>();
+            CreateMap<FlatUpdateDto, Flat>();
+            CreateMap<Flat, FlatGetDto>()
+                .ForMember(dest => dest.EstateTitle, x => x.MapFrom(mem => mem.Estate.PostalCode));
         }
     }   
 }

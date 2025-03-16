@@ -9,10 +9,10 @@ namespace Aban360.MeterPool.Application.Features.Management.Mappings
     {
         public ReadingPeriodTypeMapper()
         {
-            CreateMap<ReadingPeriodTypeCreateDto, ReadingPeriodType>().ReverseMap();
-            CreateMap<ReadingPeriodTypeDeleteDto, ReadingPeriodType>().ReverseMap();
-            CreateMap<ReadingPeriodTypeUpdateDto, ReadingPeriodType>().ReverseMap();
-            CreateMap<ReadingPeriodTypeGetDto, ReadingPeriodType>().ReverseMap();
+            CreateMap<ReadingPeriodTypeCreateDto, ReadingPeriodType>();
+            CreateMap<ReadingPeriodTypeDeleteDto, ReadingPeriodType>();
+            CreateMap<ReadingPeriodTypeUpdateDto, ReadingPeriodType>();
+            CreateMap<ReadingPeriodType, ReadingPeriodTypeGetDto>();
         }
     }
 }

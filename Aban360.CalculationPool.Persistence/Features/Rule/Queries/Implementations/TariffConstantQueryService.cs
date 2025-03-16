@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.CalculationPool.Persistence.Features.Rule.Queries.Implementations
 {
-    public class TariffConstantQueryService : ITariffConstantQueryService
+   internal sealed class TariffConstantQueryService : ITariffConstantQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<TariffConstant> _tariffConstant;

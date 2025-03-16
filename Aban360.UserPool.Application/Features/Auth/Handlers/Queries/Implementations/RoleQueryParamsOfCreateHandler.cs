@@ -2,6 +2,7 @@
 using Aban360.UserPool.Application.Features.AccessTree.Factories;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.AceessTree.Dto.Queries.ValueKeyItems;
+using Aban360.UserPool.Domain.Features.AceessTree.Entites;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts;
 
@@ -23,8 +24,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
         }
         private async Task<AccessTreeValueKeyDto> CreateAccessTree()
         {
-            var endpoints = await _endpointQueryService.GetIncludeAll();
-            var accessTree = endpoints.CreateAccessTree();
+            ICollection<Endpoint> endpoints = await _endpointQueryService.GetIncludeAll();
+            AccessTreeValueKeyDto accessTree = endpoints.CreateAccessTree();
             return accessTree;
         }
     }

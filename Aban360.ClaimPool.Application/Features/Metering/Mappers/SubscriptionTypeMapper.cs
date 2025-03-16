@@ -9,10 +9,10 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Mappers
     {
         public SubscriptionTypeMapper()
         {
-            CreateMap<SubscriptionTypeCreateDto, SubscriptionType>().ReverseMap();
-            CreateMap<SubscriptionTypeDeleteDto, SubscriptionType>().ReverseMap();
-            CreateMap<SubscriptionTypeUpdateDto, SubscriptionType>().ReverseMap();
-            CreateMap<SubscriptionTypeGetDto, SubscriptionType>().ReverseMap();
+            CreateMap<SubscriptionTypeCreateDto, SubscriptionType>();
+            CreateMap<SubscriptionTypeDeleteDto, SubscriptionType>();
+            CreateMap<SubscriptionTypeUpdateDto, SubscriptionType>();
+            CreateMap<SubscriptionType,SubscriptionTypeGetDto>();
         }
     }
 }

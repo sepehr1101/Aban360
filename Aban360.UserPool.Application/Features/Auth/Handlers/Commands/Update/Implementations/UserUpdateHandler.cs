@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Categories.UseragentLog;
+using Aban360.Common.Extensions;
 using Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Contracts;
 using Aban360.UserPool.Application.Common.Base;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts;
@@ -75,11 +76,11 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
         }
         public async Task Handle(UserUpdateDto userUpdateDto, CancellationToken cancellationToken)
         {
-            var logInfo = DeviceDetection.GetLogInfo(_contextAccessor.HttpContext.Request);
-            var logInfoString = JsonOperation.Marshal(logInfo);
+            LogInfo logInfo = DeviceDetection.GetLogInfo(_contextAccessor.HttpContext.Request);
+            string logInfoString = JsonOperation.Marshal(logInfo);
             Guid operationGroupId = Guid.NewGuid();
-            var userInDb = await _userQueryService.Get(userUpdateDto.Id);
-            var user = _mapper.Map<User>(userInDb);
+            User userInDb = await _userQueryService.Get(userUpdateDto.Id);
+            User user = _mapper.Map<User>(userInDb);
 
             ICollection<UserClaim> previousClaims = await _userClaimsQueryService.Get(userUpdateDto.Id);
             ICollection<UserRole> previousRoles = await _userRoleQueryService.Get(userUpdateDto.Id);
@@ -87,15 +88,15 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
             _userClaimCommandService.Remove(previousClaims, logInfoString);
             _userRoleCommandService.Remove(previousRoles, logInfoString);
 
-            var zoneCount = await _zoneCountQueryAddhoc.GetCount(userUpdateDto.SelectedZoneIds, cancellationToken);
-            var endpointValue = await _endpointQueryService.GetAuthValue(userUpdateDto.SelectedEndpointIds);
+            int zoneCount = await _zoneCountQueryAddhoc.GetCount(userUpdateDto.SelectedZoneIds, cancellationToken);
+            List<string> endpointValue = await _endpointQueryService.GetAuthValue(userUpdateDto.SelectedEndpointIds);
             Validate(zoneCount, userUpdateDto.SelectedZoneIds.Count(), endpointValue.Count(), userUpdateDto.SelectedEndpointIds.Count());
 
-            var zones = CreateUserClaim(userUpdateDto.SelectedZoneIds.Select(x => x.ToString()).ToList(), ClaimType.ZoneId, logInfoString, operationGroupId, userUpdateDto.Id);
-            var endpionts = CreateUserClaim(endpointValue, ClaimType.Endpoint, logInfoString, operationGroupId, userUpdateDto.Id);
-            var userCliams = zones.Union(endpionts).ToList();
+            ICollection<UserClaim> zones = CreateUserClaim(userUpdateDto.SelectedZoneIds.Select(x => x.ToString()).ToList(), ClaimType.ZoneId, logInfoString, operationGroupId, userUpdateDto.Id);
+            ICollection<UserClaim> endpionts = CreateUserClaim(endpointValue, ClaimType.Endpoint, logInfoString, operationGroupId, userUpdateDto.Id);
+            List<UserClaim> userCliams = zones.Union(endpionts).ToList();
 
-            var userRoles = CreateUserRoles(userUpdateDto.SelectedRoleIds, logInfoString, operationGroupId, userUpdateDto.Id);
+            ICollection<UserRole> userRoles = CreateUserRoles(userUpdateDto.SelectedRoleIds, logInfoString, operationGroupId, userUpdateDto.Id);
 
             await _userClaimCommandService.Add(userCliams);
             await _userRoleCommandService.Add(userRoles);

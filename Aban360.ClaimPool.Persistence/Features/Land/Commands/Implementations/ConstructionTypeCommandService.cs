@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 {
-    public class ConstructionTypeCommandService : IConstructionTypeCommandService
+    internal sealed class ConstructionTypeCommandService : IConstructionTypeCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<ConstructionType> _constructionTypes;

@@ -1,12 +1,13 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Delete.Contracts;
 using Aban360.LocationPool.Domain.Features.MainHierarchy.Dto.Commands;
+using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.LocationPool.Persistence.Features.MainHierarchy.Commands.Contracts;
 using Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contracts;
 
 namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Delete.Implementations
 {
-    public class ReadingBoundDeleteHandler : IReadingBoundDeleteHandler
+    internal sealed class ReadingBoundDeleteHandler : IReadingBoundDeleteHandler
     {
         private readonly IReadingBoundQueryService _readingBoundQueryService;
         private readonly IReadingBoundCommandService _readingBoundCommandService;
@@ -23,11 +24,7 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Comma
 
         public async Task Handle(ReadingBoundDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            var readingBound = await _readingBoundQueryService.Get(deleteDto.Id);
-            if (readingBound == null)
-            {
-                throw new InvalidDataException();
-            }
+            ReadingBound readingBound = await _readingBoundQueryService.Get(deleteDto.Id);
             await _readingBoundCommandService.Remove(readingBound);
         }
     }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.People.Commands.Implementation
 {
-    public class IndividualEstateRelationTypeCommandService : IIndividualEstateRelationTypeCommandService
+    internal sealed class IndividualEstateRelationTypeCommandService : IIndividualEstateRelationTypeCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<IndividualEstateRelationType> _individualEstateRelationTypes;

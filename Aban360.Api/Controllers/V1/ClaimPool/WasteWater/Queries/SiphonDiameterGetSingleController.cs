@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.WasteWater.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<SiphonDiameterGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var siphonDiameter = await _siphonDiameterHandler.Handle(id, cancellationToken);
+            SiphonDiameterGetDto siphonDiameter = await _siphonDiameterHandler.Handle(id, cancellationToken);
             return Ok(siphonDiameter);
         }
     }

@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<ReadingConfigDefaultGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var readingConfigDefaults = await _readingConfigDefaultGetAllHandler.Handle(cancellationToken);
+            ICollection<ReadingConfigDefaultGetDto> readingConfigDefaults = await _readingConfigDefaultGetAllHandler.Handle(cancellationToken);
             return Ok(readingConfigDefaults);
         }
     }

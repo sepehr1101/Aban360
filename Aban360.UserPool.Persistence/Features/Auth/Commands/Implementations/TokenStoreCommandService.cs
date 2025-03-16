@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.UserPool.Persistence.Features.Auth.Commands.Implementations
 {
-    public class TokenStoreService : ITokenStoreCommandService
+    internal sealed class TokenStoreService : ITokenStoreCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<UserToken> _userTokens;

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.WasteWater.Queries.Implementation
 {
-    public class siphonDiameterQueryService : ISiphonDiameterQueryService
+    internal sealed class siphonDiameterQueryService : ISiphonDiameterQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<SiphonDiameter> _siphonDiameter;

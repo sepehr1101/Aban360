@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<LineItemTypeGroupGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var lineItemTypeGroups = await _lineItemTypeGroupGetSingleHandler.Handle(id, cancellationToken);
+            LineItemTypeGroupGetDto lineItemTypeGroups = await _lineItemTypeGroupGetSingleHandler.Handle(id, cancellationToken);
             return Ok(lineItemTypeGroups);
         }
     }

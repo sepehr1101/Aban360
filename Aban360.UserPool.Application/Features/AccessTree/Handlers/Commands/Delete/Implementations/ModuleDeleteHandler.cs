@@ -1,12 +1,13 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.AccessTree.Handlers.Commands.Delete.Contracts;
 using Aban360.UserPool.Domain.Features.AceessTree.Dto.Commands;
+using Aban360.UserPool.Domain.Features.AceessTree.Entites;
 using Aban360.UserPool.Persistence.Features.UiElement.Commands.Contracts;
 using Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts;
 
 namespace Aban360.UserPool.Application.Features.AccessTree.Handlers.Commands.Delete.Implementations
 {
-    public class ModuleDeleteHandler : IModuleDeleteHandler
+    internal sealed class ModuleDeleteHandler : IModuleDeleteHandler
     {
         private readonly IModuleQueryService _moduleQueryService;
         private readonly IModuleCommandService _moduleCommandService;
@@ -23,11 +24,7 @@ namespace Aban360.UserPool.Application.Features.AccessTree.Handlers.Commands.Del
 
         public async Task Handle(ModuleDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            var module = await _moduleQueryService.Get(deleteDto.Id);
-            if (module == null)
-            {
-                throw new InvalidDataException();
-            }
+            Module module = await _moduleQueryService.Get(deleteDto.Id);
             _moduleCommandService.Remove(module);
         }
     }

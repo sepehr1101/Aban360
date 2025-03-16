@@ -9,17 +9,10 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Mappings
     {
         public MunicipalityMapper()
         {
-            CreateMap<MunicipalityCreateDto, Municipality>()
-                .ReverseMap();
-
-            CreateMap<MunicipalityDeleteDto, Municipality>()
-                .ReverseMap();
-
-            CreateMap<MunicipalityUpdateDto, Municipality>()
-                .ReverseMap();
-
-            CreateMap<MunicipalityGetDto, Municipality>()
-                .ReverseMap()
+            CreateMap<MunicipalityCreateDto, Municipality>();
+            CreateMap<MunicipalityDeleteDto, Municipality>();
+            CreateMap<MunicipalityUpdateDto, Municipality>();
+            CreateMap<Municipality,MunicipalityGetDto>()
                 .ForMember(dest => dest.ZoneTitle, opt => opt.MapFrom(src => src.Zone.Title));
 
         }

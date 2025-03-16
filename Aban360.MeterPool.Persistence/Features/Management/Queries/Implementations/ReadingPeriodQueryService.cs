@@ -21,12 +21,17 @@ namespace Aban360.MeterPool.Persistence.Features.Manegement.Queries.Implementati
 
         public async Task<ReadingPeriod> Get(short id)
         {
-            return await _uow.FindOrThrowAsync<ReadingPeriod>(id);
+            return await _readingPeriod
+                .Include(r => r.ReadingPeriodType)
+                .Where(r => r.Id == id)
+                .SingleAsync();
         }
 
         public async Task<ICollection<ReadingPeriod>> Get()
         {
-            return await _readingPeriod.ToListAsync();
+            return await _readingPeriod
+                .Include(r => r.ReadingPeriodType)
+                .ToListAsync();
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<IndividualTagDefinitionGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var IndividualTagDefinition = await _tagDefinitionHandler.Handle(id, cancellationToken);
+            IndividualTagDefinitionGetDto IndividualTagDefinition = await _tagDefinitionHandler.Handle(id, cancellationToken);
             return Ok(IndividualTagDefinition);
         }
     }

@@ -8,10 +8,10 @@ namespace Aban360.ClaimPool.Application.Features.WasteWater.Mappings
     {
         public WaterMeterTagMapper()
         {
-            CreateMap<WaterMeterTagCreateDto, WaterMeterTag>().ReverseMap();
-            CreateMap<WaterMeterTagDeleteDto, WaterMeterTag>().ReverseMap();
-            CreateMap<WaterMeterTagUpdateDto, WaterMeterTag>().ReverseMap();
-            CreateMap<WaterMeterTagGetDto, WaterMeterTag>().ReverseMap();
+            CreateMap<WaterMeterTagCreateDto, WaterMeterTag>();
+            CreateMap<WaterMeterTagDeleteDto, WaterMeterTag>();
+            CreateMap<WaterMeterTagUpdateDto, WaterMeterTag>();
+            CreateMap<WaterMeterTag,WaterMeterTagGetDto>();
         }
     }
 }

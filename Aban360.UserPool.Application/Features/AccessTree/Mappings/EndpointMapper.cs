@@ -9,17 +9,10 @@ namespace Aban360.UserPool.Application.Features.AccessTree.Mappings
     {
         public EndpointMapper()
         {
-            CreateMap<EndpointCreateDto, Endpoint>()
-                .ReverseMap();
-
-            CreateMap<EndpointDeleteDto, Endpoint>()
-                .ReverseMap();
-
-            CreateMap<EndpointUpdateDto, Endpoint>()
-                .ReverseMap();
-
-            CreateMap<EndpointGetDto, Endpoint>()
-                .ReverseMap()
+            CreateMap<EndpointCreateDto, Endpoint>();
+            CreateMap<EndpointDeleteDto, Endpoint>();
+            CreateMap<EndpointUpdateDto, Endpoint>();
+            CreateMap<Endpoint,EndpointGetDto>()
                 .ForMember(dest => dest.SubModuleTitle, opt => opt.MapFrom(src => src.SubModule.Title));
 
         }

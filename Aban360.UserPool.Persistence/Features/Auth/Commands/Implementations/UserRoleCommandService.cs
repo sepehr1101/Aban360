@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.UserPool.Persistence.Features.Auth.Commands.Implementations
 {
-    public class UserRoleCommandService : IUserRoleCommandService
+    internal sealed class UserRoleCommandService : IUserRoleCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<UserRole> _userRoles;

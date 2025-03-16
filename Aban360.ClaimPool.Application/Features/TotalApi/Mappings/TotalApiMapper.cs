@@ -14,10 +14,10 @@ namespace Aban360.ClaimPool.Application.Features.TotalApi.Mappings
     {
         public TotalApiMapper()
         {
-            CreateMap<EstateCreateDto, Estate>().ReverseMap();
-            CreateMap<WaterMeterCreateDto, WaterMeter>().ReverseMap();
-            CreateMap<SiphonCreateDto, Siphon>().ReverseMap();
-            CreateMap<IndividualCreateDto, Individual>().ReverseMap();
+            CreateMap<EstateCreateDto, Estate>();
+            CreateMap<WaterMeterCreateDto, WaterMeter>();
+            CreateMap<SiphonCreateDto, Siphon>();
+            CreateMap<IndividualCreateDto, Individual>();
         }
     }
 }

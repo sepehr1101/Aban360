@@ -9,10 +9,10 @@ namespace Aban360.MeterPool.Application.Features.Management.Mappings
     {
         public ReadingConfigDefaultMapper()
         {
-            CreateMap<ReadingConfigDefaultCreateDto, ReadingConfigDefault>().ReverseMap();
-            CreateMap<ReadingConfigDefaultDeleteDto, ReadingConfigDefault>().ReverseMap();
-            CreateMap<ReadingConfigDefaultUpdateDto, ReadingConfigDefault>().ReverseMap();
-            CreateMap<ReadingConfigDefaultGetDto, ReadingConfigDefault>().ReverseMap();
+            CreateMap<ReadingConfigDefaultCreateDto,ReadingConfigDefault>();
+            CreateMap<ReadingConfigDefaultDeleteDto,ReadingConfigDefault>();
+            CreateMap<ReadingConfigDefaultUpdateDto,ReadingConfigDefault>();
+            CreateMap<ReadingConfigDefault,ReadingConfigDefaultGetDto>();
         }
     }
 }

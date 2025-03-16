@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bil.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<OfferingGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var offerings = await _offeringGetAllHandler.Handle(cancellationToken);
+            ICollection<OfferingGetDto> offerings = await _offeringGetAllHandler.Handle(cancellationToken);
             return Ok(offerings);
         }
     }

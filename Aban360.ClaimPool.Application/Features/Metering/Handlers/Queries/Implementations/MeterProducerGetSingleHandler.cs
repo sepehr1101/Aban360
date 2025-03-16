@@ -6,7 +6,7 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Implementations
 {
-    public class MeterProducerGetSingleHandler : IMeterProducerGetSingleHandler
+    internal sealed class MeterProducerGetSingleHandler : IMeterProducerGetSingleHandler
     {
         private readonly IMapper _mapper;
         private readonly IMeterProducerQueryService _meterProducerQueryService;

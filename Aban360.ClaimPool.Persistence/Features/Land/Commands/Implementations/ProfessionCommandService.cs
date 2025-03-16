@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 {
-    public class ProfessionCommandService : IProfessionCommandService
+    internal sealed class ProfessionCommandService : IProfessionCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<Profession> _profession;

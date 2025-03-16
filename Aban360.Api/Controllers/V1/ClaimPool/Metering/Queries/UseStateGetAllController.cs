@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<UseStateGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var useEstates = await _useEstateHandler.Handle(cancellationToken);
+            ICollection<UseStateGetDto> useEstates = await _useEstateHandler.Handle(cancellationToken);
             return Ok(useEstates);
         }
     }

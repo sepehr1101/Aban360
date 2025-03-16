@@ -1,13 +1,14 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
+using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts;
 using AutoMapper;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations
 {
-    public class RoleUpdateHandler : IRoleUpdateHandler
+    internal sealed class RoleUpdateHandler : IRoleUpdateHandler
     {
         private readonly IMapper _mapper;
         private readonly IRoleQueryService _roleQueryService;
@@ -29,13 +30,13 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
 
         public async Task Handle(RoleUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            var role = await _roleQueryService.Get(updateDto.Id);
+            Role role = await _roleQueryService.Get(updateDto.Id);
             if (role == null)
             {
                 throw new InvalidDataException();
             }
 
-            var endpointValue = await _endpointQueryService.GetAuthValue(updateDto.SelectedEndpointIds);
+            List<string> endpointValue = await _endpointQueryService.GetAuthValue(updateDto.SelectedEndpointIds);
 
             if (updateDto.SelectedEndpointIds is not null && endpointValue.Count() == updateDto.SelectedEndpointIds.Count())
             {

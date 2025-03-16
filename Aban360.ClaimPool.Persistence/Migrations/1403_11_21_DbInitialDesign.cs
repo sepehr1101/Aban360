@@ -9,7 +9,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
     [Migration(1403112101)]
     public class DbInitialDesign : Migration
     {
-        string _schema=TableSchema.Name, Id = nameof(Id), Hash = nameof(Hash);
+        string _schema = TableSchema.Name, Id = nameof(Id), Hash = nameof(Hash);
         int _31 = 31, _255 = 255, _1023 = 1023, _15 = 15;
         public override void Up()
         {
@@ -53,7 +53,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         }
         private void CreateProfession()
         {
-            var table=TableName.Profession;
+            var table = TableName.Profession;
             Create.Table(nameof(TableName.Profession)).InSchema(_schema)
                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                .WithColumn("GuildId").AsInt16().NotNullable()
@@ -128,6 +128,27 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("PostalCode").AsFixedLengthAnsiString(10).Nullable()
                 .WithColumn("Storey").AsInt16()
                 .WithColumn("Description").AsString(_1023).Nullable();
+        }
+
+        private void CreateWaterResource()
+        {
+            var table = TableName.WaterResource;
+            Create.Table(nameof(TableName.WaterResource)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().NotNullable().Identity().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Description").AsString(int.MaxValue).Nullable()
+                .WithColumn("HeadquartersId").AsInt16().NotNullable()
+                .WithColumn("HeadquartersTitle").AsString(_255).NotNullable();
+        }
+        private void CreateEstateWaterResource()
+        {
+            var table = TableName.EstateWaterResource;
+            Create.Table(nameof(TableName.EstateWaterResource)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().NotNullable().Identity().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn($"{TableName.Estate}Id").AsInt32().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.Estate, table), _schema, nameof(TableName.Estate), Id)
+                .WithColumn($"{TableName.WaterResource}Id").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.WaterResource, table), _schema, nameof(TableName.WaterResource), Id);
         }
         private void CreateIndividualType()
         {
@@ -291,7 +312,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
               .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
         }
         private void CreateWaterMeterTagDefinition()
-        { 
+        {
             var table = TableName.WaterMeterTagDefinition;
             Create.Table(nameof(TableName.WaterMeterTagDefinition)).InSchema(_schema)
                 .WithColumn(Id).AsInt16().Identity().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
@@ -325,7 +346,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         private void CreateSiphonType()
         {
             var table = TableName.SiphonType;
-            Create.Table(nameof(TableName.SiphonType)).InSchema(_schema)    
+            Create.Table(nameof(TableName.SiphonType)).InSchema(_schema)
                 .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
@@ -371,9 +392,17 @@ namespace Aban360.ClaimPool.Persistence.Migrations
 
         private void CreateGeteway()
         {
-            var table=TableName.Geteway;
+            var table = TableName.Geteway;
             Create.Table(nameof(TableName.Geteway)).InSchema(_schema)
                 .WithColumn("Id").AsInt16().NotNullable().Identity().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("Title").AsString(_255).NotNullable();
+        }
+
+        private void CreateChangeMeterReason()
+        {
+            var table = TableName.ChangeMeterReason;
+            Create.Table(nameof(TableName.ChangeMeterReason)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
     }

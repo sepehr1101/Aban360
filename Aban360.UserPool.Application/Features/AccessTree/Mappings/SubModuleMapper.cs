@@ -9,17 +9,10 @@ namespace Aban360.UserPool.Application.Features.AccessTree.Mappings
     {
         public SubModuleMapper()
         {
-            CreateMap<SubModuleCreateDto, SubModule>()
-                .ReverseMap();
-
-            CreateMap<SubModuleDeleteDto, SubModule>()
-                .ReverseMap();
-
-            CreateMap<SubModuleUpdateDto, SubModule>()
-                .ReverseMap();
-
-            CreateMap<SubModuleGetDto, SubModule>()
-                .ReverseMap()
+            CreateMap<SubModuleCreateDto, SubModule>();
+            CreateMap<SubModuleDeleteDto, SubModule>();
+            CreateMap<SubModuleUpdateDto, SubModule>();
+            CreateMap<SubModule,SubModuleGetDto>()
                 .ForMember(dest => dest.ModuleTitle, opt => opt.MapFrom(src => src.Module.Title));
 
         }

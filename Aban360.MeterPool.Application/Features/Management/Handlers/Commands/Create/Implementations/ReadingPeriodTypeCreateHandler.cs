@@ -30,18 +30,9 @@ namespace Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Cr
 
         public async Task Handle(ReadingPeriodTypeCreateDto createDto, CancellationToken cancellationToken)
         {
-            var readingPeriodTypeDto = _mapper.Map<ReadingPeriodType>(createDto);
-            if (readingPeriodTypeDto == null)
-            {
-                throw new InvalidDataException();
-            }
-            var headquarterTitle=await _headquarterAddhoc.Handle(createDto.HeadquartersId,cancellationToken);
-            if (headquarterTitle == null)
-            {
-                throw new InvalidDataException();
-            }
+            ReadingPeriodType readingPeriodType = _mapper.Map<ReadingPeriodType>(createDto);
 
-            var readingPeriodType = _mapper.Map<ReadingPeriodType>(createDto);
+            string headquarterTitle=await _headquarterAddhoc.Handle(createDto.HeadquartersId,cancellationToken);
             readingPeriodType.HeadquartersTitle = headquarterTitle;
 
             await _readingPeriodTypeCommandService.Add(readingPeriodType);

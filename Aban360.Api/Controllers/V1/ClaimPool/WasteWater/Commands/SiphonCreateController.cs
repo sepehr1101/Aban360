@@ -1,6 +1,7 @@
 ﻿using Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Create.Contracts;
 using Aban360.ClaimPool.Domain.Features.WasteWater.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,6 +25,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.WasteWater.Commands
 
         [HttpPost]
         [Route("create")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<SiphonCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] SiphonCreateDto createDto, CancellationToken cancellationToken)
         {
             await _siphonHandler.Handle(createDto, cancellationToken);

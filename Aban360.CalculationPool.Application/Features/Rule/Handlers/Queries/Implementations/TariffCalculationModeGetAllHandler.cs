@@ -1,12 +1,13 @@
 ﻿using Aban360.CalculationPool.Application.Features.Rule.Handlers.Queries.Contracts;
 using Aban360.CalculationPool.Domain.Features.Rule.Dto.Queries;
+using Aban360.CalculationPool.Domain.Features.Rule.Entities;
 using Aban360.CalculationPool.Persistence.Features.Rule.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
 
 namespace Aban360.CalculationPool.Application.Features.Rule.Handlers.Queries.Implementations
 {
-    public class TariffCalculationModeGetAllHandler : ITariffCalculationModeGetAllHandler
+    internal sealed class TariffCalculationModeGetAllHandler : ITariffCalculationModeGetAllHandler
     {
         private readonly IMapper _mapper;
         private readonly ITariffCalculationModeQueryService _tariffCalculationModeQueryService;
@@ -23,11 +24,7 @@ namespace Aban360.CalculationPool.Application.Features.Rule.Handlers.Queries.Imp
 
         public async Task<ICollection<TariffCalculationModeGetDto>> Handle(CancellationToken cancellationToken)
         {
-            var tariffCalculationMode = await _tariffCalculationModeQueryService.Get();
-            if (tariffCalculationMode == null)
-            {
-                throw new InvalidDataException();
-            }
+            ICollection<TariffCalculationMode> tariffCalculationMode = await _tariffCalculationModeQueryService.Get();
             return _mapper.Map<ICollection<TariffCalculationModeGetDto>>(tariffCalculationMode);
         }
     }

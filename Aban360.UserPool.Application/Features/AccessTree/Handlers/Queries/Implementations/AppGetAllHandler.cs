@@ -1,12 +1,13 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.AccessTree.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.AceessTree.Dto.Queries;
+using Aban360.UserPool.Domain.Features.AceessTree.Entites;
 using Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts;
 using AutoMapper;
 
 namespace Aban360.UserPool.Application.Features.AccessTree.Handlers.Queries.Implementations
 {
-    public class AppGetAllHandler : IAppGetAllHandler
+    internal sealed class AppGetAllHandler : IAppGetAllHandler
     {
         private readonly IMapper _mapper;
         private readonly IAppQueryService _appQueryService;
@@ -23,7 +24,7 @@ namespace Aban360.UserPool.Application.Features.AccessTree.Handlers.Queries.Impl
 
         public async Task<ICollection<AppGetDto>> Handle(CancellationToken cancellationToken)
         {
-            var app = await _appQueryService.Get();
+            ICollection<App> app = await _appQueryService.Get();
             return _mapper.Map<ICollection<AppGetDto>>(app);
         }
     }

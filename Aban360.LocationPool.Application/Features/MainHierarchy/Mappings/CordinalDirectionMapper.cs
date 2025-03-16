@@ -9,10 +9,10 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Mappings
     {
         public CordinalDirectionMapper()
         {
-            CreateMap<CordinalDirectionCreateDto, CordinalDirection>().ReverseMap();
-            CreateMap<CordinalDirectionDeleteDto, CordinalDirection>().ReverseMap();
-            CreateMap<CordinalDirectionUpdateDto, CordinalDirection>().ReverseMap();
-            CreateMap<CordinalDirectionGetDto, CordinalDirection>().ReverseMap();
+            CreateMap<CordinalDirectionCreateDto, CordinalDirection>();
+            CreateMap<CordinalDirectionDeleteDto, CordinalDirection>();
+            CreateMap<CordinalDirectionUpdateDto, CordinalDirection>();
+            CreateMap<CordinalDirection,CordinalDirectionGetDto>();
         }
     }
 }

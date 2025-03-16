@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<SubscriptionTypeGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(SubscriptionTypeEnum id, CancellationToken cancellationToken)
         {
-            var subscriptionTypes = await _subscriptionTypeGetSingleHandler.Handle(id, cancellationToken);
+            SubscriptionTypeGetDto subscriptionTypes = await _subscriptionTypeGetSingleHandler.Handle(id, cancellationToken);
             return Ok(subscriptionTypes);
         }
     }

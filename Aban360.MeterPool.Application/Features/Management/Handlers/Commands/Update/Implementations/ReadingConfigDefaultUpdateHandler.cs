@@ -2,12 +2,13 @@
 using Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Contracts;
 using Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Update.Contracts;
 using Aban360.MeterPool.Domain.Features.Management.Dtos.Commands;
+using Aban360.MeterPool.Domain.Features.Management.Entities;
 using Aban360.MeterPool.Persistence.Features.Management.Queries.Contracts;
 using AutoMapper;
 
 namespace Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Update.Implementations
 {
-    public class ReadingConfigDefaultUpdateHandler : IReadingConfigDefaultUpdateHandler
+    internal sealed class ReadingConfigDefaultUpdateHandler : IReadingConfigDefaultUpdateHandler
     {
         private readonly IMapper _mapper;
         private readonly IReadingConfigDefaultQueryService _readingConfigDefaultQueryService;
@@ -29,7 +30,7 @@ namespace Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Up
 
         public async Task Handle(ReadingConfigDefaultUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            var readingConfigDefaultDto = await _readingConfigDefaultQueryService.Get(updateDto.Id);
+            ReadingConfigDefault readingConfigDefaultDto = await _readingConfigDefaultQueryService.Get(updateDto.Id);
 
             var headquarterTitle = await _headquarterAddhoc.Handle(updateDto.HeadquartersId, cancellationToken);
             readingConfigDefaultDto.HeadquartersTitle = headquarterTitle;

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.Metering.Queries.Implementations
 {
-    public class WaterMeterTagQueryService : IWaterMeterTagQueryService
+    internal sealed class WaterMeterTagQueryService : IWaterMeterTagQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<WaterMeterTag> _waterMeterTag;

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Aban360.UserPool.Persistence.Features.Auth.Commands.Implementations
 {
-    public class UserCliamCommandService : IUserClaimCommandService
+    internal sealed class UserCliamCommandService : IUserClaimCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<UserClaim> _userClaims;

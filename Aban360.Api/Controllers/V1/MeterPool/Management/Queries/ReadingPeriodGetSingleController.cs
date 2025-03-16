@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReadingPeriodGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var readingPeriods = await _readingPeriodGetSingleHandler.Handle(id, cancellationToken);
+            ReadingPeriodGetDto readingPeriods = await _readingPeriodGetSingleHandler.Handle(id, cancellationToken);
             return Ok(readingPeriods);
         }
     }

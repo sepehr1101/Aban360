@@ -1,11 +1,12 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Delete.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Base;
+using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Delete.Implementations
 {
-    public class UserDeleteManagerHandler : IUserDeleteManagerHandler
+    internal sealed class UserDeleteManagerHandler : IUserDeleteManagerHandler
     {
         private readonly IUserQueryService _userQueryService;
         public UserDeleteManagerHandler(IUserQueryService userQueryService)
@@ -16,7 +17,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Delete.Im
 
         public async Task Handle(UserIdDto userId, CancellationToken cancellationToken)
         {
-            var user = await _userQueryService.Get(userId.Id);
+            User user = await _userQueryService.Get(userId.Id);
             if (user == null)
             {
                 throw new InvalidDataException();

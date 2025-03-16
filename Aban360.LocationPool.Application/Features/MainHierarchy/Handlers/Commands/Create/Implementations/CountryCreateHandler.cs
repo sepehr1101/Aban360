@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Create.Implementations
 {
-    public class CountryCreateHandler : ICountryCreateHandler
+    internal sealed class CountryCreateHandler : ICountryCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly ICountryCommandService _countryCommandService;
@@ -23,7 +23,7 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Comma
         }
         public async Task Handle(CountryCreateDto countryCreateDto, CancellationToken cancellationToken)
         {
-            var coutry = _mapper.Map<Country>(countryCreateDto);
+            Country coutry = _mapper.Map<Country>(countryCreateDto);
             await _countryCommandService.Add(coutry);
         }
     }

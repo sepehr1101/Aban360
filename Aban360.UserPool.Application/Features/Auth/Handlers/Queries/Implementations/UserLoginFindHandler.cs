@@ -6,7 +6,7 @@ using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations
 {
-    public class UserLoginFindHandler : IUserLoginFindHandler
+    internal sealed class UserLoginFindHandler : IUserLoginFindHandler
     {
         private readonly IUserLoginQueryService _userLoginQueryService;
         public UserLoginFindHandler(
@@ -17,7 +17,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
         }
         public async Task<UserLogin> Handle(SecondStepLoginInput input, CancellationToken cancellationToken)
         {
-            var userLogin = await _userLoginQueryService.Get(input.Id);
+            UserLogin userLogin = await _userLoginQueryService.Get(input.Id);
             userLogin.NotNull(nameof(userLogin));
             userLogin.TwoStepCode.NotEmptyString(userLogin.TwoStepCode);
             if (userLogin.TwoStepCode != input.ConfirmCode)
