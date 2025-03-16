@@ -8,10 +8,10 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Mappers
     {
         public MeterMaterialMapper()
         {
-            CreateMap<MeterMaterialCreateDto, MeterMaterial>().ReverseMap();
-            CreateMap<MeterMaterialDeleteDto, MeterMaterial>().ReverseMap();
-            CreateMap<MeterMaterialUpdateDto, MeterMaterial>().ReverseMap();
-            CreateMap<MeterMaterialGetDto, MeterMaterial>().ReverseMap();
+            CreateMap<MeterMaterialCreateDto, MeterMaterial>();
+            CreateMap<MeterMaterialDeleteDto, MeterMaterial>();
+            CreateMap<MeterMaterialUpdateDto, MeterMaterial>();
+            CreateMap<MeterMaterial,MeterMaterialGetDto>();
         }
     }
 }

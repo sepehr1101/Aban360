@@ -8,10 +8,10 @@ namespace Aban360.ClaimPool.Application.Features.Land.Mappings
     {
         public EstateBoundTypeBoundTypeMapper()
         {
-            CreateMap<EstateBoundTypeCreateDto, EstateBoundType>().ReverseMap();
-            CreateMap<EstateBoundTypeDeleteDto, EstateBoundType>().ReverseMap();
-            CreateMap<EstateBoundTypeUpdateDto, EstateBoundType>().ReverseMap();
-            CreateMap<EstateBoundTypeGetDto, EstateBoundType>().ReverseMap();
+            CreateMap<EstateBoundTypeCreateDto, EstateBoundType>();
+            CreateMap<EstateBoundTypeDeleteDto, EstateBoundType>();
+            CreateMap<EstateBoundTypeUpdateDto, EstateBoundType>();
+            CreateMap<EstateBoundType,EstateBoundTypeGetDto>();   
         }
     }
 }

@@ -21,12 +21,17 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
 
         public async Task<Flat> Get(int id)
         {
-            return await _uow.FindOrThrowAsync<Flat>(id);
+            return await _flat
+                .Include(f => f.Estate)
+                .Where(f => f.Id == id)
+                .SingleAsync();
         }
 
         public async Task<ICollection<Flat>> Get()
         {
-            return await _flat.ToListAsync();
+            return await _flat
+                .Include(f => f.Estate)
+                .ToListAsync();
         }
     }
 }

@@ -25,10 +25,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         public async Task Handle(ConstructionTypeUpdateDto updateDto, CancellationToken cancellationToken)
         {
             ConstructionType constructionType = await _queryService.Get(updateDto.Id);
-            if (constructionType == null)
-            {
-                throw new InvalidDataException();
-            }
             _mapper.Map(updateDto, constructionType);
         }
     }

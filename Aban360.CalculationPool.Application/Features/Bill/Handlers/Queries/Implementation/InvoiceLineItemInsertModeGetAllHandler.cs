@@ -25,6 +25,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Imp
         public async Task<ICollection<InvoiceLineItemInsertModeGetDto>> Handle(CancellationToken cancellationToken)
         {
             ICollection<InvoiceLineItemInsertMode> invoiceLineItemInsertMode = await _invoiceLineItemInsertModeQueryService.Get();
+            return _mapper.Map<ICollection<InvoiceLineItemInsertModeGetDto>>(invoiceLineItemInsertMode);
         }
     }
 }

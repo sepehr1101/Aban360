@@ -25,10 +25,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.I
         public async Task Handle(EstateBoundTypeDeleteDto deleteDto, CancellationToken cancellationToken)
         {
             EstateBoundType estateBoundType = await _queryService.Get(deleteDto.Id);
-            if (estateBoundType == null)
-            {
-                throw new InvalidDataException();
-            }
             await _commandService.Remove(estateBoundType);
         }
     }

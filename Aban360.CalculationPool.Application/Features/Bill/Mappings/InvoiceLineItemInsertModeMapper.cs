@@ -9,10 +9,10 @@ namespace Aban360.CalculationPool.Application.Features.Bil.Mappings
     {
         public InvoiceLineItemInsertModeMapper()
         {
-            CreateMap<InvoiceLineItemInsertMode, InvoiceLineItemInsertModeCreateDto>().ReverseMap();
-            CreateMap<InvoiceLineItemInsertMode, InvoiceLineItemInsertModeDeleteDto>().ReverseMap();
-            CreateMap<InvoiceLineItemInsertMode, InvoiceLineItemInsertModeUpdateDto>().ReverseMap();
-            CreateMap<InvoiceLineItemInsertMode, InvoiceLineItemInsertModeGetDto>().ReverseMap();
+            CreateMap<InvoiceLineItemInsertModeCreateDto,InvoiceLineItemInsertMode>();
+            CreateMap<InvoiceLineItemInsertModeDeleteDto,InvoiceLineItemInsertMode>();
+            CreateMap<InvoiceLineItemInsertModeUpdateDto,InvoiceLineItemInsertMode>();
+            CreateMap<InvoiceLineItemInsertMode, InvoiceLineItemInsertModeGetDto>();
         }
     }
 }

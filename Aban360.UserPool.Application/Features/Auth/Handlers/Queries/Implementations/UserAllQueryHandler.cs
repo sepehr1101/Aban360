@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
+using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using AutoMapper;
 
@@ -22,8 +23,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
         }
         public async Task<ICollection<UserQueryDto>> Handle(CancellationToken cancellationToken)
         {
-            var users = await _userQueryService.Get();
-            var userQueryDtoList = _mapper.Map<ICollection<UserQueryDto>>(users);
+            ICollection<User> users = await _userQueryService.Get();
+            ICollection<UserQueryDto> userQueryDtoList = _mapper.Map<ICollection<UserQueryDto>>(users);
             return userQueryDtoList;
         }
     }

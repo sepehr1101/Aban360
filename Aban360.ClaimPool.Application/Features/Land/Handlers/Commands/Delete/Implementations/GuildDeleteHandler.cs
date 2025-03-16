@@ -25,10 +25,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.I
         public async Task Handle(GuildDeleteDto deleteDto, CancellationToken cancellationToken)
         {
             Guild guild = await _queryService.Get(deleteDto.Id);
-            if (guild == null)
-            {
-                throw new InvalidDataException();
-            }
             await _commandService.Remove(guild);
 
         }

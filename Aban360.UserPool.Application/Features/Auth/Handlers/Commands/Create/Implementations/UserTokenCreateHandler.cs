@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Implementations
 {
-    public class UserTokenCreateHandler : IUserTokenCreateHandler
+    internal sealed class UserTokenCreateHandler : IUserTokenCreateHandler
     {
         private readonly ITokenStoreCommandService _tokeStoreService;
         private readonly IMapper _mapper;
@@ -35,8 +35,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
         }
         private async Task<UserToken> CreateUserToken(JwtTokenData jwtTokenData, string? refreshTokenSourceSerial)
         {
-            var now = DateTime.Now;
-            var userToken = new UserToken
+            DateTime now = DateTime.Now;
+            UserToken userToken = new UserToken
             {
                 UserId = jwtTokenData.UserId,
                 // Refresh token handles should be treated as secrets and should be stored hashed

@@ -1,12 +1,13 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.AccessTree.Handlers.Commands.Update.Contracts;
 using Aban360.UserPool.Domain.Features.AceessTree.Dto.Commands;
+using Aban360.UserPool.Domain.Features.AceessTree.Entites;
 using Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts;
 using AutoMapper;
 
 namespace Aban360.UserPool.Application.Features.AccessTree.Handlers.Commands.Update.Implementations
 {
-    public class EndpointUpdateHandler : IEndpointUpdateHandler
+    internal sealed class EndpointUpdateHandler : IEndpointUpdateHandler
     {
         private readonly IMapper _mapper;
         private readonly IEndpointQueryService _endpointQueryService;
@@ -23,11 +24,7 @@ namespace Aban360.UserPool.Application.Features.AccessTree.Handlers.Commands.Upd
 
         public async Task Handle(EndpointUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            var endpoint = await _endpointQueryService.Get(updateDto.Id);
-            if (endpoint == null)
-            {
-                throw new InvalidDataException();
-            }
+            Endpoint endpoint = await _endpointQueryService.Get(updateDto.Id);
             _mapper.Map(updateDto, endpoint);
         }
     }

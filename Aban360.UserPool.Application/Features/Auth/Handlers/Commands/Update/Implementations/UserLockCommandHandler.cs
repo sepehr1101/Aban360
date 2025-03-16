@@ -2,11 +2,12 @@
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Base;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
+using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations
 {
-    public class UserLockCommandHandler : IUserLockCommandHandler
+    internal sealed class UserLockCommandHandler : IUserLockCommandHandler
     {
         private readonly IUserQueryService _userQueryService;
         public UserLockCommandHandler(IUserQueryService userQueryService)
@@ -17,7 +18,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
 
         public async Task Handle(UserIdDto userId, CancellationToken cancellationToken)
         {
-            var user = await _userQueryService.Get(userId.Id);
+            User user = await _userQueryService.Get(userId.Id);
             if (user == null)
             {
                 throw new InvalidDataException();

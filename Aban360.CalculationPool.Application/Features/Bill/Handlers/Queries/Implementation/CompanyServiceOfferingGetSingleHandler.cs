@@ -25,6 +25,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Imp
         public async Task<CompanyServiceOfferingGetDto> Handle(short id, CancellationToken cancellationToken)
         {
             CompanyServiceOffering companyServiceOffering = await _companyServiceOfferingQueryService.Get(id);
+            return _mapper.Map<CompanyServiceOfferingGetDto>(companyServiceOffering);
         }
     }
 }

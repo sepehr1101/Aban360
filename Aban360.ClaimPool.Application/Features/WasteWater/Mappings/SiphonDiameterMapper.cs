@@ -9,10 +9,10 @@ namespace Aban360.ClaimPool.Application.Features.WasteWater.Mappings
     {
         public SiphonDiameterMapper()
         {
-            CreateMap<SiphonDiameterCreateDto, SiphonDiameter>().ReverseMap();
-            CreateMap<SiphonDiameterDeleteDto, SiphonDiameter>().ReverseMap();
-            CreateMap<SiphonDiameterUpdateDto, SiphonDiameter>().ReverseMap();
-            CreateMap<SiphonDiameterGetDto, SiphonDiameter>().ReverseMap();
+            CreateMap<SiphonDiameterCreateDto, SiphonDiameter>();
+            CreateMap<SiphonDiameterDeleteDto, SiphonDiameter>();
+            CreateMap<SiphonDiameterUpdateDto, SiphonDiameter>();
+            CreateMap<SiphonDiameter,SiphonDiameterGetDto>();
         }
     }
 }

@@ -25,10 +25,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.I
         public async Task Handle(ProfessionDeleteDto deleteDto, CancellationToken cancellationToken)
         {
             Profession profession = await _queryService.Get(deleteDto.Id);
-            if (profession == null)
-            {
-                throw new InvalidDataException();
-            }
             await _commandService.Remove(profession);
 
         }

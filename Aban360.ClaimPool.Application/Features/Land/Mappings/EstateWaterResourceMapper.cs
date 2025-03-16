@@ -9,9 +9,9 @@ namespace Aban360.ClaimPool.Application.Features.Land.Mappings
     {
         public EstateWaterResourceMapper()
         {
-            CreateMap<EstateWaterResourceCreateDto, EstateWaterResource>().ReverseMap();
-            CreateMap<EstateWaterResourceDeleteDto, EstateWaterResource>().ReverseMap();
-            CreateMap<EstateWaterResourceUpdateDto, EstateWaterResource>().ReverseMap();
+            CreateMap<EstateWaterResourceCreateDto, EstateWaterResource>();
+            CreateMap<EstateWaterResourceDeleteDto, EstateWaterResource>();
+            CreateMap<EstateWaterResourceUpdateDto, EstateWaterResource>();
 
             CreateMap<EstateWaterResource, EstateWaterResourceGetDto>()
                 .ForMember(dest => dest.WaterResourceTitle, x => x.MapFrom(mem => mem.WaterResource.Title))

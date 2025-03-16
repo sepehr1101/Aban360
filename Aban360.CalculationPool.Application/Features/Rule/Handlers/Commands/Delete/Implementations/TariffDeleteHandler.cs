@@ -1,5 +1,6 @@
 ﻿using Aban360.CalculationPool.Application.Features.Rule.Handlers.Commands.Delete.Contracts;
 using Aban360.CalculationPool.Domain.Features.Rule.Dto.Commands;
+using Aban360.CalculationPool.Domain.Features.Rule.Entties;
 using Aban360.CalculationPool.Persistence.Features.Rule.Commands.Contracts;
 using Aban360.CalculationPool.Persistence.Features.Rule.Queries.Contracts;
 using Aban360.Common.Extensions;

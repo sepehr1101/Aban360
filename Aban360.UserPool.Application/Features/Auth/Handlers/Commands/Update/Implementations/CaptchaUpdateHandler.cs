@@ -24,7 +24,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
         }
         public async Task Handle(CaptchaUpdateDto capthcaUpdateDto, CancellationToken cancellationToken)
         {
-            var captcha= _mapper.Map<Captcha>(capthcaUpdateDto);
+            Captcha captcha = _mapper.Map<Captcha>(capthcaUpdateDto);
             _commandService.Update(captcha);
             if(captcha.IsSelected )
                 await _commandService.SetIsSelected(captcha.Id);

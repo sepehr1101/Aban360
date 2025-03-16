@@ -9,10 +9,10 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Mappers
     {
         public MeterUseTypeMapper()
         {
-            CreateMap<MeterUseTypeCreateDto, MeterUseType>().ReverseMap();
-            CreateMap<MeterUseTypeDeleteDto, MeterUseType>().ReverseMap();
-            CreateMap<MeterUseTypeUpdateDto, MeterUseType>().ReverseMap();
-            CreateMap<MeterUseTypeGetDto, MeterUseType>().ReverseMap();
+            CreateMap<MeterUseTypeCreateDto, MeterUseType>();
+            CreateMap<MeterUseTypeDeleteDto, MeterUseType>();
+            CreateMap<MeterUseTypeUpdateDto, MeterUseType>();
+            CreateMap<MeterUseType,MeterUseTypeGetDto>();
         }
     }
 }

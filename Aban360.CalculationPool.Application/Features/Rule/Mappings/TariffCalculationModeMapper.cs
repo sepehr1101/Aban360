@@ -9,10 +9,10 @@ namespace Aban360.CalculationPool.Application.Features.Rule.Mappings
     {
         public TariffCalculationModeMapper()
         {
-            CreateMap<TariffCalculationModeCreateDto, TariffCalculationMode>().ReverseMap();
-            CreateMap<TariffCalculationModeDeleteDto, TariffCalculationMode>().ReverseMap();
-            CreateMap<TariffCalculationModeUpdateDto, TariffCalculationMode>().ReverseMap();
-            CreateMap<TariffCalculationModeGetDto, TariffCalculationMode>().ReverseMap();
+            CreateMap<TariffCalculationModeCreateDto, TariffCalculationMode>();
+            CreateMap<TariffCalculationModeDeleteDto, TariffCalculationMode>();
+            CreateMap<TariffCalculationModeUpdateDto, TariffCalculationMode>();
+            CreateMap<TariffCalculationMode, TariffCalculationModeGetDto>();
         }
     }
 }

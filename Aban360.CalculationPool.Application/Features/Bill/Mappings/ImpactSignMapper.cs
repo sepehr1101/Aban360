@@ -9,10 +9,10 @@ namespace Aban360.CalculationPool.Application.Features.Bil.Mappings
     {
         public ImpactSignMapper()
         {
-            CreateMap<ImpactSign, ImpactSignCreateDto>().ReverseMap();
-            CreateMap<ImpactSign, ImpactSignDeleteDto>().ReverseMap();
-            CreateMap<ImpactSign, ImpactSignUpdateDto>().ReverseMap();
-            CreateMap<ImpactSign, ImpactSignGetDto>().ReverseMap();
+            CreateMap<ImpactSignCreateDto,ImpactSign >();
+            CreateMap<ImpactSignDeleteDto,ImpactSign >();
+            CreateMap<ImpactSignUpdateDto,ImpactSign >();
+            CreateMap<ImpactSign, ImpactSignGetDto>();
         }
     }
 }

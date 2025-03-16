@@ -8,10 +8,10 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Mappers
     {
         public ChangeMeterReasonMapper()
         {
-            CreateMap<ChangeMeterReasonCreateDto, ChangeMeterReason>().ReverseMap();
-            CreateMap<ChangeMeterReasonDeleteDto, ChangeMeterReason>().ReverseMap();
-            CreateMap<ChangeMeterReasonUpdateDto, ChangeMeterReason>().ReverseMap();
-            CreateMap<ChangeMeterReasonGetDto, ChangeMeterReason>().ReverseMap();
+            CreateMap<ChangeMeterReasonCreateDto, ChangeMeterReason>();
+            CreateMap<ChangeMeterReasonDeleteDto, ChangeMeterReason>();
+            CreateMap<ChangeMeterReasonUpdateDto, ChangeMeterReason>();
+            CreateMap<ChangeMeterReason,ChangeMeterReasonGetDto>();
         }
     }
 }

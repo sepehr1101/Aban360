@@ -25,10 +25,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.I
         public async Task Handle(EstateDeleteDto deleteDto, CancellationToken cancellationToken)
         {
             Estate estate = await _queryService.Get(deleteDto.Id);
-            if (estate == null)
-            {
-                throw new InvalidDataException();
-            }
             await _commandService.Remove(estate);
         }
     }

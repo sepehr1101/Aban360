@@ -9,10 +9,10 @@ namespace Aban360.ClaimPool.Application.Features.Land.Mappings
     {
         public WaterResourceMapper()
         {
-            CreateMap<WaterResourceCreateDto, WaterResource>().ReverseMap();
-            CreateMap<WaterResourceDeleteDto, WaterResource>().ReverseMap();
-            CreateMap<WaterResourceUpdateDto, WaterResource>().ReverseMap();
-            CreateMap<WaterResourceGetDto, WaterResource>().ReverseMap();
+            CreateMap<WaterResourceCreateDto, WaterResource>();
+            CreateMap<WaterResourceDeleteDto, WaterResource>();
+            CreateMap<WaterResourceUpdateDto, WaterResource>();
+            CreateMap<WaterResource,WaterResourceGetDto>();
         }
     }
    

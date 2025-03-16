@@ -6,7 +6,7 @@ using AutoMapper;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations
 {
-    public class UserFindByUsernameQueryHandler : IUserFindByUsernameQueryHandler
+    internal sealed class UserFindByUsernameQueryHandler : IUserFindByUsernameQueryHandler
     {
         private readonly IMapper _mapper;
         private readonly IUserQueryService _userQueryService;
@@ -25,7 +25,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
             {
                 throw new ArgumentNullException(nameof(user));
             }
-            var password = await SecurityOperations.GetSha512Hash(plainPassword);
+            string password = await SecurityOperations.GetSha512Hash(plainPassword);
             if (user.Password != password)
             {
                 throw new ArgumentException(nameof(password));

@@ -31,7 +31,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
 
         public async Task<(string, bool)> Handle(FirstStepLoginInput input, CancellationToken cancellationToken)
         {
-            var user = await _userQueryService.Get(input.Username);
+            User user = await _userQueryService.Get(input.Username);
 
             if (user.InvalidLoginAttemptCount > 3)//todo: check
             {
@@ -41,8 +41,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
             else if (user.LockTimespan > DateTime.Now)//todo: check
             {
                 await GetUserLogin(InvalidLoginReasonEnum.InactiveUser, true, true, input, user);
-                var dateLock = user.LockTimespan.Value.Date;
-                var timeLock = user.LockTimespan.Value.TimeOfDay;
+                DateTime dateLock = user.LockTimespan.Value.Date;
+                TimeSpan timeLock = user.LockTimespan.Value.TimeOfDay;
                 return ($"حساب کاربری شما تاریخ {dateLock} - ساعت {timeLock} قفل می باشد ", false);
             }
             else//valid

@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Categories.UseragentLog;
+using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Constants;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
@@ -30,9 +31,9 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
         }
         public async Task<(User?, bool)> Handle(FirstStepLoginInput input, CancellationToken cancellationToken)
         {
-            var user = await _userQueryService.Get(input.Username);
+            User user = await _userQueryService.Get(input.Username);
 
-            var logInfoString = GetLogInfo();
+            string logInfoString = GetLogInfo();
 
             if (user == null)
             {
@@ -42,7 +43,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
             }
             else
             {
-                var hashedPassword = await SecurityOperations.GetSha512Hash(input.Password);
+                string hashedPassword = await SecurityOperations.GetSha512Hash(input.Password);
                 if (hashedPassword != user.Password)
                 {
                     await GetUserLogin(InvalidLoginReasonEnum.InvalidPassword, true, true, input, user);
@@ -56,8 +57,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
         }
         private string GetLogInfo()
         {
-            var logInfo = DeviceDetection.GetLogInfo(_contextAccessor.HttpContext.Request);
-            var logInfoString = JsonOperation.Marshal(logInfo);
+            LogInfo logInfo = DeviceDetection.GetLogInfo(_contextAccessor.HttpContext.Request);
+            string logInfoString = JsonOperation.Marshal(logInfo);
 
             return logInfoString;
         }
@@ -65,7 +66,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
         private async Task GetUserLogin(InvalidLoginReasonEnum LoginReasonEnum, bool IsUserName, bool IsPassword, FirstStepLoginInput input,
             User? user)
         {
-            var userLogin = new UserLogin()
+            UserLogin userLogin = new UserLogin()
             {
                 Id = new Guid(),
                 Username = IsUserName ? input.Username : null,

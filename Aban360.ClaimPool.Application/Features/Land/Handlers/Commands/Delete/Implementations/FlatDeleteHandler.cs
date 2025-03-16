@@ -25,10 +25,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.I
         public async Task Handle(FlatDeleteDto deleteDto, CancellationToken cancellationToken)
         {
             Flat flat = await _queryService.Get(deleteDto.Id);
-            if (flat == null)
-            {
-                throw new InvalidDataException();
-            }
             await _commandService.Remove(flat);
 
         }

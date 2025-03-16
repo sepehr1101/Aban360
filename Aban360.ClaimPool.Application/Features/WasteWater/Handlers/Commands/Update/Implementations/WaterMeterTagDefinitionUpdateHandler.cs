@@ -24,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Up
 
         public async Task Handle(WaterMeterTagDefinitionUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            WaterMeterTag waterMeterTagDefinition = await _queryService.Get(updateDto.Id);
+            WaterMeterTagDefinition waterMeterTagDefinition = await _queryService.Get(updateDto.Id);
             _mapper.Map(updateDto, waterMeterTagDefinition);
         }
     }

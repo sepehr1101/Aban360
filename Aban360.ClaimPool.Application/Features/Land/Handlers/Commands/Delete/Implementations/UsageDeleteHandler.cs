@@ -25,10 +25,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.I
         public async Task Handle(UsageDeleteDto deleteDto, CancellationToken cancellationToken)
         {
             Usage usage = await _usageQueryService.Get(deleteDto.Id);
-            if (usage == null)
-            {
-                throw new InvalidDataException();
-            }
             await _usageCommandService.Remove(usage);
         }
     }

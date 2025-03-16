@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
+using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations
@@ -16,7 +17,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
 
         public async Task<ICollection<NumericDictionary>> Handle(CancellationToken cancellationToken)
         {
-            var dictionary = await _captchaQueryService.GetDictionary();
+            ICollection<NumericDictionary> dictionary = await _captchaQueryService.GetDictionary();
             return dictionary;
         }
     }

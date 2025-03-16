@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Categories.UseragentLog;
+using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
@@ -9,7 +10,7 @@ using System.Text.Json;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Implementations
 {
-    public class RoleCreateHandler : IRoleCreateHandler
+    internal sealed class RoleCreateHandler : IRoleCreateHandler
     {
         private readonly IMapper _mapper;
         private readonly IRoleCommandService _roleCommandService;
@@ -31,12 +32,12 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
 
         public async Task Handle(RoleCreateDto createDto, CancellationToken cancellationToken)
         {
-            var role = _mapper.Map<Role>(createDto);
+            Role role = _mapper.Map<Role>(createDto);
             if (createDto.SelectedEndpointIds is not null && createDto.SelectedEndpointIds.Any())
             {
                 role.DefaultClaims = JsonOperation.Marshal(createDto.SelectedEndpointIds);
             }
-            var logInfo = DeviceDetection.GetLogInfo(_httpContextAccessor.HttpContext.Request);
+            LogInfo logInfo = DeviceDetection.GetLogInfo(_httpContextAccessor.HttpContext.Request);
             role.InsertLogInfo = JsonOperation.Marshal(logInfo);
             await _roleCommandService.Add(role);
         }

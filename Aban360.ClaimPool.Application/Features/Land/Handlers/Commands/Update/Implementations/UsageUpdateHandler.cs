@@ -25,10 +25,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         public async Task Handle(UsageUpdateDto updateDto, CancellationToken cancellationToken)
         {
             Usage usage = await _usageQueryService.Get(updateDto.Id);
-            if (usage == null)
-            {
-                throw new InvalidDataException();
-            }
             _mapper.Map(updateDto, usage);
         }
     }

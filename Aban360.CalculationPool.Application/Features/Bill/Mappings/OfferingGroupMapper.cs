@@ -9,10 +9,10 @@ namespace Aban360.CalculationPool.Application.Features.Bil.Mappings
     {
         public OfferingGroupMapper()
         {
-            CreateMap<OfferingGroup, OfferingGroupCreateDto>().ReverseMap();
-            CreateMap<OfferingGroup, OfferingGroupDeleteDto>().ReverseMap();
-            CreateMap<OfferingGroup, OfferingGroupUpdateDto>().ReverseMap();
-            CreateMap<OfferingGroup, OfferingGroupGetDto>().ReverseMap();
+            CreateMap<OfferingGroupCreateDto, OfferingGroup>();
+            CreateMap<OfferingGroupDeleteDto,OfferingGroup >();
+            CreateMap<OfferingGroupUpdateDto,OfferingGroup >();
+            CreateMap<OfferingGroup, OfferingGroupGetDto>();
         }
     }
 }

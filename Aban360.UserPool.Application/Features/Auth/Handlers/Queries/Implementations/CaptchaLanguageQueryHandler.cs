@@ -21,8 +21,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
         }
         public async Task<ICollection<CaptchaLanguageDto>> Handle(CancellationToken cancellationToken)
         {
-            var captchaLanguages = await _captchaLanguageQueryService.Get();
-            var captchaLanguageDtos = _mapper.Map<ICollection<CaptchaLanguageDto>>(captchaLanguages);
+            ICollection<CaptchaLanguage> captchaLanguages = await _captchaLanguageQueryService.Get();
+            ICollection<CaptchaLanguageDto> captchaLanguageDtos = _mapper.Map<ICollection<CaptchaLanguageDto>>(captchaLanguages);
             return captchaLanguageDtos;
         }
     }

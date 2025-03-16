@@ -12,7 +12,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Mappings
             CreateMap<ConstructionTypeCreateDto, ConstructionType>();
             CreateMap<ConstructionTypeDeleteDto, ConstructionType>();
             CreateMap<ConstructionTypeUpdateDto, ConstructionType>();
-            CreateMap<ConstructionTypeGetDto, ConstructionType>();
+            CreateMap<ConstructionType,ConstructionTypeGetDto>();
         }
     }
 }

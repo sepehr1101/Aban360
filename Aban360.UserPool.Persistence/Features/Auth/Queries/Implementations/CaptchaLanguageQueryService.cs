@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
 {
-    public class CaptchaLanguageQueryService : ICaptchaLanguageQueryService
+    internal sealed class CaptchaLanguageQueryService : ICaptchaLanguageQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<CaptchaLanguage> _captchaLanguages;

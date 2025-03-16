@@ -25,10 +25,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.I
         public async Task Handle(ConstructionTypeDeleteDto deleteDto, CancellationToken cancellationToken)
         {
             ConstructionType constructionType = await _queryService.Get(deleteDto.Id);
-            if (constructionType == null)
-            {
-                throw new InvalidDataException();
-            }
             await _commandService.Remove(constructionType);
         }
     }

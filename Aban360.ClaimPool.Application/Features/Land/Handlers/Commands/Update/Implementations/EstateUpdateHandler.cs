@@ -25,10 +25,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         public async Task Handle(EstateUpdateDto updateDto, CancellationToken cancellationToken)
         {
             Estate estate = await _queryService.Get(updateDto.Id);
-            if (estate == null)
-            {
-                throw new InvalidDataException();
-            }
             _mapper.Map(updateDto, estate);
         }
     }

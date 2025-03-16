@@ -9,10 +9,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Mappings
     {
         public GetewayMapper()
         {
-            CreateMap<GetewayCreateDto, Geteway>().ReverseMap();
-            CreateMap<GetewayDeleteDto, Geteway>().ReverseMap();
-            CreateMap<GetewayUpdateDto, Geteway>().ReverseMap();
-            CreateMap<GetewayGetDto, Geteway>().ReverseMap();
+            CreateMap<GetewayCreateDto, Geteway>();
+            CreateMap<GetewayDeleteDto, Geteway>();
+            CreateMap<GetewayUpdateDto, Geteway>();
+            CreateMap<Geteway,GetewayGetDto>();
         }
     }
 }

@@ -25,10 +25,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         public async Task Handle(ProfessionUpdateDto updateDto, CancellationToken cancellationToken)
         {
             Profession profession = await _queryService.Get(updateDto.Id);
-            if (profession == null)
-            {
-                throw new InvalidDataException();
-            }
             _mapper.Map(updateDto, profession);
         }
     }
