@@ -85,7 +85,8 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                 .WithColumn($"{nameof(TableName.CompanyServiceType)}{Id}").AsInt16().NotNullable()
                    .ForeignKey(NamingHelper.Fk(TableName.CompanyServiceType, table), _schema, nameof(TableName.CompanyServiceType), Id)
                 .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
-                .WithColumn("Title").AsString(_255).NotNullable();
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("IsMultiSelect").AsBoolean().NotNullable();
         }
         private void CreateCompanyServiceOffering()
         {

@@ -9,6 +9,8 @@ public class CompanyService
 
     public string Title { get; set; } = null!;
 
+    public bool IsMultiSelect { get; set; } = false;
+
     public short CompanyServiceTypeId { get; set; }
 
     public string CompanyServiceTypeTitle{ get; set; }
