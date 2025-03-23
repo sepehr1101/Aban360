@@ -34,15 +34,14 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
         }
         private void CreateWorkflow()
         {
-            Create.Table("WorkflowInstances")
-           .WithColumn("InstanceGuidId").AsString(36).PrimaryKey()
-           .WithColumn("WorkflowId").AsInt32().NotNullable().ForeignKey("Workflows", "WorkflowId")
-           .WithColumn("InstanceId").AsString(255).NotNullable()
-           .WithColumn("CorrelationId").AsString(255).Nullable()
-           .WithColumn("StartedDate").AsDateTime().Nullable()
-           .WithColumn("CompletedDate").AsDateTime().Nullable()
-           .WithColumn("Status").AsString(50).NotNullable()
-           .WithColumn("Data").AsString(int.MaxValue).Nullable();
+            var table = TableName.Workflow;
+            Create.Table("Workflow")
+                .WithColumn(Id).AsInt32()
+                .WithColumn("Title").AsString(_255).NotNullable().Unique(NamingHelper.Uq(table, "Title"))
+                .WithColumn("Version").AsInt16()
+                .WithColumn("ValidFrom").AsDateTime().NotNullable()
+                .WithColumn("ValidTo").AsDateTime().Nullable()
+                .WithColumn("Status").AsString(_255).NotNullable();//created, published, ...
         }
         private void CreateWorkflowVariable()
         {
@@ -56,7 +55,15 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
         }
         private void CreateWorkflowInstance()
         {
-
+            Create.Table("WorkflowInstances")
+          .WithColumn("InstanceGuidId").AsString(36).PrimaryKey()
+          .WithColumn("WorkflowId").AsInt32().NotNullable().ForeignKey("Workflows", "WorkflowId")
+          .WithColumn("InstanceId").AsString(255).NotNullable()
+          .WithColumn("CorrelationId").AsString(255).Nullable()
+          .WithColumn("StartedDate").AsDateTime().Nullable()
+          .WithColumn("CompletedDate").AsDateTime().Nullable()
+          .WithColumn("Status").AsString(50).NotNullable()
+          .WithColumn("Data").AsString(int.MaxValue).Nullable();
         }
 
         private void CreateAssignAlgorithm()

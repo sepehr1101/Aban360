@@ -1,9 +1,4 @@
-﻿using Aban360.ClaimPool.Domain.Features.Metering.Base;
-using Aban360.ClaimPool.Domain.Features.Metering.Entities;
-using Aban360.ClaimPool.Domain.Features.People.Base;
-using Aban360.ClaimPool.Domain.Features.People.Entities;
-
-namespace Aban360.ClaimPool.Domain.Features.Land.Entities;
+﻿namespace Aban360.ClaimPool.Domain.Features.Land.Entities;
 
 public class EstateBase
 {
@@ -72,21 +67,5 @@ public class EstateBase
     public string? RemoveLogInfo { get; set; }
 
     public string Hash { get; set; } = null!;
-
-    public virtual ConstructionType ConstructionType { get; set; } = null!;
-
-    public virtual EstateBoundType EstateBoundType { get; set; } = null!;
-
-    public virtual ICollection<FlatBase> Flats { get; set; } = new List<FlatBase>();
-
-    public virtual ICollection<IndividualEstateBase> IndividualEstates { get; set; } = new List<IndividualEstateBase>();
-
-    public virtual ICollection<EstateBase> InversePrevious { get; set; } = new List<EstateBase>();
-
-    public virtual Estate? Previous { get; set; }
-
-    public virtual Usage UsageConsumtion { get; set; } = null!;//todo: UsageConsumption
-
-    public virtual Usage UsageSell { get; set; } = null!;
-    public virtual ICollection<WaterMeterBase> WaterMeters { get; set; } = new List<WaterMeterBase>();
+   
 }

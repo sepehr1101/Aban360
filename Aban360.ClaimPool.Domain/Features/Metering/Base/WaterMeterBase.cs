@@ -1,9 +1,4 @@
 ﻿using Aban360.ClaimPool.Domain.Constants;
-using Aban360.ClaimPool.Domain.Features.Land.Entities;
-using Aban360.ClaimPool.Domain.Features.Metering.Entities;
-using Aban360.ClaimPool.Domain.Features.WasteWater.Base;
-using Aban360.ClaimPool.Domain.Features.WasteWater.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.Metering.Base
 {
@@ -57,32 +52,5 @@ namespace Aban360.ClaimPool.Domain.Features.Metering.Base
         public string? RemoveLogInfo { get; set; }
 
         public string Hash { get; set; } = null!;
-
-        public virtual EstateBase Estate { get; set; } = null!;
-        public virtual ICollection<WaterMeterBase> InverseParent { get; set; } = new List<WaterMeterBase>();
-
-        //public virtual ICollection<WaterMeter> InversePrevious { get; set; } = new List<WaterMeter>();
-
-        public virtual MeterDiameter MeterDiameter { get; set; } = null!;
-
-        public virtual MeterMaterial MeterMaterial { get; set; } = null!;
-
-        public virtual MeterProducer MeterProducer { get; set; } = null!;
-
-        public virtual MeterType MeterType { get; set; } = null!;
-
-        public virtual MeterUseType MeterUseType { get; set; } = null!;
-
-        [ForeignKey(nameof(ParentId))]
-        public virtual WaterMeterBase? Parent { get; set; }
-
-        //[ForeignKey(nameof(PreviousId))]
-        //public virtual WaterMeter? Previous { get; set; }
-
-        public virtual UseState UseState { get; set; } = null!;
-        public virtual SubscriptionType SubscriptionType { get; set; } = null!;
-
-        public virtual ICollection<WaterMeterSiphonBase> WaterMeterSiphons { get; set; } = new List<WaterMeterSiphonBase>();
-        public virtual ICollection<WaterMeterTag> WaterMeterTags { get; set; } = new List<WaterMeterTag>();
     }
 }

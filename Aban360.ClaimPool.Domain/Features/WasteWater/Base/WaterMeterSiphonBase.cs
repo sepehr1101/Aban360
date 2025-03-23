@@ -9,8 +9,4 @@ public class WaterMeterSiphonBase
     public int WaterMeterId { get; set; }
 
     public int SiphonId { get; set; }
-
-    public virtual WaterMeterSiphonBase Siphon { get; set; } = null!;
-
-    public virtual WaterMeterBase WaterMeter { get; set; } = null!;
 }
