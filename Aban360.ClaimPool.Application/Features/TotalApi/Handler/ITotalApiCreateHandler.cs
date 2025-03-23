@@ -15,7 +15,6 @@ using Aban360.ClaimPool.Persistence.Features.People.Commands.Contracts;
 using Aban360.ClaimPool.Persistence.Features.WasteWater.Commands.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
-﻿using Aban360.ClaimPool.Domain.Constants;
 
 namespace Aban360.ClaimPool.Application.Features.TotalApi.Handler
 {

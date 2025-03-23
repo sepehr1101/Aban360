@@ -29,15 +29,4 @@ public class SiphonBase
     public string? RemoveLogInfo { get; set; }
 
     public string Hash { get; set; } = null!;
-
-    public virtual ICollection<SiphonBase> InversePrevious { get; set; } = new List<SiphonBase>();
-
-    public virtual Siphon? Previous { get; set; }
-
-    public virtual SiphonDiameter SiphonDiameter { get; set; } = null!;
-
-    public virtual SiphonMaterial SiphonMaterial { get; set; } = null!;
-
-    public virtual SiphonType SiphonType { get; set; } = null!;
-    public virtual ICollection<WaterMeterSiphonBase> WaterMeterSiphons { get; set; } = new List<WaterMeterSiphonBase>();
 }

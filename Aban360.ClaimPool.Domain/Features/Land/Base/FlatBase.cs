@@ -11,6 +11,4 @@ public class FlatBase
     public short Storey { get; set; }
 
     public string? Description { get; set; }
-
-    public virtual EstateBase Estate { get; set; } = null!;
 }
