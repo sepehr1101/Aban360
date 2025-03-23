@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="DbSeeder\DataScript\" />
+    <Folder Include="DbSeeder\Implementations\" />
+    <Folder Include="Exceptions\" />
+    <Folder Include="Features\Assignment\" />
+    <Folder Include="Features\Execution\" />
+    <Folder Include="Features\Management\" />
+    <Folder Include="Features\Reporting\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DNTPersianUtils.Core" Version="6.4.0" />
+    <PackageReference Include="EFCore.BulkExtensions" Version="8.1.2" />
+    <PackageReference Include="FluentMigrator" Version="6.2.0" />
+    <PackageReference Include="FluentMigrator.Runner.SqlServer" Version="6.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Scrutor" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aban360.Common.Db\Aban360.Common.Db.csproj" />
+    <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\Projects\Aban360\Aban360.WorkflowPool.Persistence\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="D:\Projects\Aban360\Aban360.WorkflowPool.Persistence\.editorconfig" />
+  </ItemGroup>
+
+</Project>
