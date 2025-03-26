@@ -31,6 +31,7 @@
     <Folder Include="Features\Policy\Handlers\Queries\Implementations\" />
     <Folder Include="Features\Policy\Mappings\" />
     <Folder Include="Features\Policy\Validations\" />
+    <Folder Include="Features\TimeTable\Vlidations\" />
     <Folder Include="Features\UiElement\Handlers\Commands\Create\Contracts\" />
     <Folder Include="Features\UiElement\Handlers\Commands\Create\Implementations\" />
     <Folder Include="Features\UiElement\Handlers\Commands\Delete\Contracts\" />
