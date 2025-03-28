@@ -1,5 +1,6 @@
 ﻿using Aban360.UserPool.Domain.Features.AceessTree.Entites;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
+using Aban360.UserPool.Domain.Features.TimeTable.Entites;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.UserPool.Persistence.Contexts.Implementation
@@ -25,5 +26,13 @@ namespace Aban360.UserPool.Persistence.Contexts.Implementation
         public virtual DbSet<Endpoint> Endpoints { get; set; }
 
         public virtual DbSet<TokenFailureType> TokenFailureTypes { get; set; }
+
+        public virtual DbSet<UsageLevel1> UsageLevels { get; set; }
+        public virtual DbSet<UsageLevel2> UsageLevel2s { get; set; }
+        public virtual DbSet<UsageLevel3> UsageLevel3s { get; set; }
+        public virtual DbSet<UsageLevel4> UsageLevel4s { get; set; }
+        public virtual DbSet<UserLeave> UserLeaves{ get; set; }
+        public virtual DbSet<UserWorkday> UserWorkdays{ get; set; }
+        public virtual DbSet<OfficialHoliday> OfficialHolidays{ get; set; }
     }
 }
