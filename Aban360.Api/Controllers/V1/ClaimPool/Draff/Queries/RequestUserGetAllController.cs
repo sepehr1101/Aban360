@@ -1,5 +1,5 @@
-﻿using Aban360.ClaimPool.Application.Features.Draff.Handlers.Queries.Contracts;
-using Aban360.ClaimPool.Domain.Features.Draff.Dto.Queries;
+﻿using Aban360.ClaimPool.Application.Features.Draft.Handlers.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Features.Draft.Dto.Queries;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
