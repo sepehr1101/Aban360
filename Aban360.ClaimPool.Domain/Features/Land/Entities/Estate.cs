@@ -1,4 +1,5 @@
 ﻿using Aban360.ClaimPool.Domain.Constants;
+using Aban360.ClaimPool.Domain.Features._Base;
 using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Domain.Features.People.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,7 +21,7 @@ public class Estate: EstateBase
 
     public virtual Estate? Previous { get; set; }
 
-    public virtual Usage UsageConsumtion { get; set; } = null!;//todo: UsageConsumption
+    public virtual Usage UsageConsumtion { get; set; } = null!;
 
     public virtual Usage UsageSell { get; set; } = null!;
     public virtual ICollection<WaterMeter> WaterMeters { get; set; } = new List<WaterMeter>();

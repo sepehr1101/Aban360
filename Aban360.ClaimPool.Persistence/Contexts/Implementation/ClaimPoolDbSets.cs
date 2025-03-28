@@ -1,9 +1,7 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Domain.Features.Metering.Entities;
-using Aban360.ClaimPool.Domain.Features.People.Base;
 using Aban360.ClaimPool.Domain.Features.People.Entities;
 using Aban360.ClaimPool.Domain.Features.Request.Entities;
-using Aban360.ClaimPool.Domain.Features.WasteWater.Base;
 using Aban360.ClaimPool.Domain.Features.WasteWater.Entities;
 using Microsoft.EntityFrameworkCore;
 
