@@ -6,123 +6,123 @@ INSERT [CalculationPool].[CompanyServiceType] ([Title], [Id],[TariffCalculationM
 GO
 INSERT [CalculationPool].[CompanyServiceType] ([Title], [Id],[TariffCalculationModeId]) VALUES (N'آب بها', 3,1)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (1, 1, N'انشعاب آب')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (1, 1, N'انشعاب آب',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (2, 1, N'انشعاب فاضلاب')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (2, 1, N'انشعاب فاضلاب',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (3, 2, N'انشعاب فاضلاب')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (3, 2, N'انشعاب فاضلاب',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (4, 2, N'تفکیک کنتور')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (4, 2, N'تفکیک کنتور',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (5, 2, N'تغییر مشخصات')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (5, 2, N'تغییر مشخصات',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (6, 2, N'تغییر واحد ')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (6, 2, N'تغییر واحد ',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (7, 2, N'تغییر کاربری')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (7, 2, N'تغییر کاربری',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (8, 2, N'تغییر قطر انشعاب')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (8, 2, N'تغییر قطر انشعاب',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (9, 2, N'نصب سیفون اضافی')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (9, 2, N'نصب سیفون اضافی',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (10, 2, N'جابجایی کنتور')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (10, 2, N'جابجایی کنتور',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (11, 2, N'برچیدن انشعاب')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (11, 2, N'برچیدن انشعاب',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (12, 2, N'تجمیع و ادغام املاک')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (12, 2, N'تجمیع و ادغام املاک',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (13, 2, N'فروش آب تانکری')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (13, 2, N'فروش آب تانکری',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (14, 2, N'"پیشنهادات،انتقادات،شکایات"')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (14, 2, N'"پیشنهادات،انتقادات،شکایات"',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (15, 2, N'امکان پرداخت صورتحساب')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (15, 2, N'امکان پرداخت صورتحساب',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (16, 2, N'مشاهده سوابق')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (16, 2, N'مشاهده سوابق',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (17, 2, N'تسویه حساب')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (17, 2, N'تسویه حساب',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (18, 2, N'بررسی صورتحساب')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (18, 2, N'بررسی صورتحساب',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (19, 2, N'صورتحساب میاندوره')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (19, 2, N'صورتحساب میاندوره',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (20, 2, N'قطع موقت و وصل انشعاب')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (20, 2, N'قطع موقت و وصل انشعاب',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (21, 2, N'آزمایش کنتور')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (21, 2, N'آزمایش کنتور',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (22, 2, N'واگذاری انشعاب آب و فاضلاب')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (22, 2, N'واگذاری انشعاب آب و فاضلاب',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (23, 2, N'خدمات پس از فروش')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (23, 2, N'خدمات پس از فروش',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (24, 2, N'تغییر قطر سیفون')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (24, 2, N'تغییر قطر سیفون',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (25, 2, N'تعویض سیفون')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (25, 2, N'تعویض سیفون',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (26, 2, N'استعلام محضر')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (26, 2, N'استعلام محضر',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (27, 2, N'قطع و وصل انشعاب')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (27, 2, N'قطع و وصل انشعاب',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (28, 2, N'جابجایی سیفون')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (28, 2, N'جابجایی سیفون',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (29, 2, N'نظام مهندسی')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (29, 2, N'نظام مهندسی',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (30, 2, N'تعویض کنتور')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (30, 2, N'تعویض کنتور',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (31, 2, N'تغییر ظرفیت قراردادی')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (31, 2, N'تغییر ظرفیت قراردادی',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (39, 1, N'نظام مهندسی')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (39, 1, N'نظام مهندسی',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (40, 1, N'لوله گذاری اصلی')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (40, 1, N'لوله گذاری اصلی',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (41, 1, N'کنتور مجزا')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (41, 1, N'کنتور مجزا',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (42, 2, N'خانوار شماری')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (42, 2, N'خانوار شماری',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (43, 1, N'آماده سازی آب')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (43, 1, N'آماده سازی آب',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (44, 1, N'آماده سازی فاضلاب')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (44, 1, N'آماده سازی فاضلاب',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (45, 2, N'آماده سازی آب')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (45, 2, N'آماده سازی آب',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (46, 2, N'آماده سازی فاضلاب')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (46, 2, N'آماده سازی فاضلاب',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (47, 2, N'تغییر تعرفه')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (47, 2, N'تغییر تعرفه',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (60, 3, N'تعویض کنتور')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (60, 3, N'تعویض کنتور',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (61, 3, N'برگشتی')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (61, 3, N'برگشتی',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (62, 3, N'آزمایش کنتور')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (62, 3, N'آزمایش کنتور',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (63, 3, N'بررسی صورتحساب')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (63, 3, N'بررسی صورتحساب',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (64, 3, N'فروش آب تانکری')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (64, 3, N'فروش آب تانکری',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (65, 3, N'اعلام کنتور خراب')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (65, 3, N'اعلام کنتور خراب',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (66, 3, N'اشتباه قرائت')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (66, 3, N'اشتباه قرائت',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (67, 2, N'پیمایش')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (67, 2, N'پیمایش',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (68, 3, N'تسویه حساب')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (68, 3, N'تسویه حساب',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (69, 3, N'قطع و وصل ')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (69, 3, N'قطع و وصل ',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (70, 3, N'حذف موقت')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (70, 3, N'حذف موقت',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (71, 3, N'برگشتی')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (71, 3, N'برگشتی',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (72, 3, N'سایر')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (72, 3, N'سایر',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (73, 3, N'ارجاع به کلید ها')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (73, 3, N'ارجاع به کلید ها',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (74, 2, N'سایر خدمات')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (74, 2, N'سایر خدمات',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (75, 3, N'لوله ترکیدگی')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (75, 3, N'لوله ترکیدگی',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (76, 3, N'بررسی اشتباه پرداخت')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (76, 3, N'بررسی اشتباه پرداخت',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (77, 2, N'تغییر سطح کنتور')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (77, 2, N'تغییر سطح کنتور',0)
 GO
-INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title]) VALUES (78, 3, N'اعتراض به آحاد خالی')
+INSERT [CalculationPool].[CompanyService] ([Id], [CompanyServiceTypeId], [Title],[IsMultiSelect]) VALUES (78, 3, N'اعتراض به آحاد خالی',0)
 GO
 INSERT [CalculationPool].[OfferingGroup] ([Title]) VALUES (N'واگذاری انشعاب')
 GO

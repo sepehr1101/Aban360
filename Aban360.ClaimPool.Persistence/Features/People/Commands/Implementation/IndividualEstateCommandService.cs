@@ -1,5 +1,4 @@
-﻿using Aban360.ClaimPool.Domain.Features.People.Base;
-using Aban360.ClaimPool.Domain.Features.People.Entities;
+﻿using Aban360.ClaimPool.Domain.Features.People.Entities;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
 using Aban360.ClaimPool.Persistence.Features.People.Commands.Contracts;
 using Aban360.Common.Extensions;
