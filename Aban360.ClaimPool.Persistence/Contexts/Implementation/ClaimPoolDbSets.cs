@@ -41,5 +41,14 @@ namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
         public virtual DbSet<IndividualTag> IndividualTags{ get; set; }
         public virtual DbSet<Geteway> Geteways{ get; set; }
         public virtual DbSet<ChangeMeterReason> ChangeMeterReasons{ get; set; }
+
+
+        public virtual DbSet<UsageLevel1> UsageLevels { get; set; }
+        public virtual DbSet<UsageLevel2> UsageLevel2s { get; set; }
+        public virtual DbSet<UsageLevel3> UsageLevel3s { get; set; }
+        public virtual DbSet<UsageLevel4> UsageLevel4s { get; set; }
+        public virtual DbSet<UserLeave> UserLeaves { get; set; }
+        public virtual DbSet<UserWorkday> UserWorkdays { get; set; }
+        public virtual DbSet<OfficialHoliday> OfficialHolidays { get; set; }
     }
 }

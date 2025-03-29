@@ -10,7 +10,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
     public class DbInitialDesign : Migration
     {
         string _schema = TableSchema.Name, Id = nameof(Id), Hash = nameof(Hash);
-        int _31 = 31, _255 = 255, _1023 = 1023, _15 = 15;
+        int _31 = 31, _255 = 255, _1023 = 1023, _15 = 15, _10 = 10;
         public override void Up()
         {
             Create.Schema(_schema);
@@ -334,6 +334,14 @@ namespace Aban360.ClaimPool.Persistence.Migrations
             _CreateWaterMeter(TableName.RequestWaterMeter,nameof(TableName.RequestWaterMeter));
         }
 
+        private void CreateWaterMeterTagDefinition()
+        {
+            var table = TableName.WaterMeterTagDefinition;
+            Create.Table(nameof(TableName.WaterMeterTagDefinition)).InSchema(_schema)
+                .WithColumn(Id).AsInt16().Identity().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Color").AsString(_15).Nullable();
+        }
 
         private void CreateWaterMeterTag()
         {
@@ -429,5 +437,83 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
+
+
+
+        private void CreateUsageLevel1()
+        {
+            var table = TableName.UsageLevel1;
+            Create.Table(nameof(TableName.UsageLevel1)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
+                .WithColumn("Title").AsString(_255).NotNullable();
+        }
+
+        private void CreateUsageLevel2()
+        {
+            var table = TableName.UsageLevel2;
+            Create.Table(nameof(TableName.UsageLevel2)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn($"{TableName.UsageLevel1}Id").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.UsageLevel1, table), _schema, nameof(TableName.UsageLevel1), Id);
+        }
+
+        private void CreateUsageLevel3()
+        {
+            var table = TableName.UsageLevel3;
+            Create.Table(nameof(TableName.UsageLevel3)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn($"{TableName.UsageLevel2}Id").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.UsageLevel2, table), _schema, nameof(TableName.UsageLevel2), Id);
+        }
+
+        private void CreateUsageLevel4()
+        {
+            var table = TableName.UsageLevel4;
+            Create.Table(nameof(TableName.UsageLevel4)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn($"{TableName.UsageLevel3}Id").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.UsageLevel3, table), _schema, nameof(TableName.UsageLevel3), Id);
+        }
+
+        private void CreateUserWorkday()
+        {
+            var table = TableName.UserWorkday;
+            Create.Table(nameof(TableName.UserWorkday)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
+                .WithColumn("UserId").AsGuid().NotNullable()
+                .WithColumn("UserFullname").AsString(_255).NotNullable()
+                .WithColumn("FromReadingNumber").AsAnsiString(_31).NotNullable()
+                .WithColumn("ToReadingNumber").AsAnsiString(_31).NotNullable()
+                .WithColumn("DateJalali").AsString(_10).NotNullable()
+                .WithColumn("ZoneId").AsInt32().NotNullable()
+                .WithColumn("ZoneTitle").AsString(_255).NotNullable();
+        }
+
+        private void CreateUserLeave()
+        {
+            var table = TableName.UserLeave;
+            Create.Table(nameof(TableName.UserLeave)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
+                .WithColumn("RegiatereId").AsInt16().NotNullable()
+                .WithColumn("RegiatereFullname").AsString(_255).NotNullable()
+                .WithColumn("RegiatereDatetime").AsDateTime().NotNullable()
+                .WithColumn("UserId").AsGuid().NotNullable()
+                .WithColumn("UserFullname").AsString(_255).NotNullable()
+                .WithColumn("FromDateJalali").AsString(_10).NotNullable()
+                .WithColumn("ToDateJalali").AsString(_10).NotNullable();
+        }
+
+        private void CreateOfficialHoliday()
+        {
+            var table = TableName.OfficialHoliday;
+            Create.Table(nameof(TableName.OfficialHoliday)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("DateJalali").AsString(_10).NotNullable();
+        }
+
     }
 }

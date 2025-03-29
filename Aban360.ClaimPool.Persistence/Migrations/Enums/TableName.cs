@@ -46,5 +46,14 @@
         
         Geteway,
 
+        UsageLevel1,
+        UsageLevel2,
+        UsageLevel3,
+        UsageLevel4,
+
+        UserWorkday,
+        UserLeave,
+        OfficialHoliday
+
     }
 }
