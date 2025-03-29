@@ -25,9 +25,11 @@ namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Cr
         public async Task Handle(SiphonCreateDto createDto, CancellationToken cancellationToken)
         {
             Siphon siphon = _mapper.Map<Siphon>(createDto);
+
+            siphon.ValidFrom = DateTime.Now;
+            siphon.InsertLogInfo = "SampleLogInfo";
+            siphon.Hash = "SmapleHash";
             await _commandService.Add(siphon);
         }
     }
-
-
 }

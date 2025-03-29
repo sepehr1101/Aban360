@@ -25,6 +25,10 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Crea
         public async Task Handle(WaterMeterCreateDto createDto, CancellationToken cancellationToken)
         {
             WaterMeter waterMeter = _mapper.Map<WaterMeter>(createDto);
+            waterMeter.ValidFrom=DateTime.Now;
+            waterMeter.InsertLogInfo = "SampleLogInfo";
+            waterMeter.Hash = "SampleHash";
+
             await _commandService.Add(waterMeter);
         }
     }

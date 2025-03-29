@@ -4,8 +4,6 @@ namespace Aban360.ClaimPool.Domain.Features.Metering.Dto.Commands
 {
     public record WaterMeterCreateDto
     {
-        public int Id { get; set; }
-
         public string? InstallationLocation { get; set; }
 
         public string? BodySerial { get; set; }
@@ -31,6 +29,14 @@ namespace Aban360.ClaimPool.Domain.Features.Metering.Dto.Commands
         public UseStateEnum UseStateId { get; set; }
 
         public SubscriptionTypeEnum SubscriptionTypeId { get; set; }
+
+        public string? ReadingNumber { get; set; }
+
+        public int CustomerNumber { get; set; }
+
+        public string BillId { get; set; } = null!;
+
+        public int EstateId { get; set; }
 
     }
 }

@@ -25,10 +25,10 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Upda
         public async Task Handle(WaterMeterUpdateDto updateDto, CancellationToken cancellationToken)
         {
             WaterMeter waterMeter = await _queryService.Get(updateDto.Id);
-            if (waterMeter == null)
-            {
-                throw new InvalidDataException();
-            }
+            waterMeter.ValidFrom = DateTime.Now;
+            waterMeter.InsertLogInfo = "SampleLogInfo";
+            waterMeter.Hash = "SampleHash";
+
             _mapper.Map(updateDto, waterMeter);
         }
     }

@@ -3,6 +3,7 @@
     public record SiphonGetDto
     {
         public int Id { get; set; }
+        public int WaterMeterId { get; set; }
         public string? InstallationLocation { get; set; }
         public string? InstallationDate { get; set; }
         public short SiphonDiameterId { get; set; }
