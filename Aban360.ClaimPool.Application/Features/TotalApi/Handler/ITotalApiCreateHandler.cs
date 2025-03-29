@@ -1,8 +1,4 @@
-﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Domain.Constants;
+﻿using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Domain.Features.People.Entities;
