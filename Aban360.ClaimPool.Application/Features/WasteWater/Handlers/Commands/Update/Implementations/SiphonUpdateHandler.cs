@@ -25,6 +25,10 @@ namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Up
         public async Task Handle(SiphonUpdateDto updateDto, CancellationToken cancellationToken)
         {
             Siphon siphon = await _queryService.Get(updateDto.Id);
+            siphon.ValidFrom = DateTime.Now;
+            siphon.InsertLogInfo = "SampleLogInfo";
+            siphon.Hash = "SmapleHash";
+
             _mapper.Map(updateDto, siphon);
         }
     }

@@ -9,8 +9,29 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Mappings
     {
         public RequestUserMapper()
         {
-            CreateMap<RequestUserCommandDto, RequestUser>();
+            CreateMap<RequestUserCommandDto, RequestUser>()
+            .ForMember(dest => dest.RequestEstate, opt => opt.MapFrom(src => src.EstateCommand))
+            .ForMember(dest => dest.RequestFlat, opt => opt.MapFrom(src => src.flatCommands))
+            .ForMember(dest => dest.RequestIndividual, opt => opt.MapFrom(src => src.IndividualCommand))
+            .ForMember(dest => dest.RequestSiphon, opt => opt.MapFrom(src => src.SiphonCommand))
+            .ForMember(dest => dest.RequestWaterMeter, opt => opt.MapFrom(src => src.WaterMeterCommand))
+            .ForMember(dest => dest.RequestWaterMeterSiphon, opt => opt.MapFrom(src => src.WaterMeterSiphonCommand))
+            .ForMember(dest => dest.RequestWaterMeterTag, opt => opt.MapFrom(src => src.WaterMeterTagCommand))
+            .ForMember(dest => dest.RequestIndividualEstate, opt => opt.MapFrom(src => src.IndividualEstateCommand))
+            .ForMember(dest => dest.RequestIndividualTag, opt => opt.MapFrom(src => src.IndividualTagCommand));
+
+            CreateMap<EstateCommandDto, RequestEstate>();
+            CreateMap<FlatCommandDto, RequestFlat>();
+            CreateMap<IndividualCommandDto, RequestIndividual>();
+            CreateMap<SiphonCommandDto, RequestSiphon>();
+            CreateMap<WaterMeterCommandDto, RequestWaterMeter>();
+            CreateMap<WaterMeterSiphonCommandDto, RequestWaterMeterSiphon>();
+            CreateMap<WaterMeterTagCommandDto, RequestWaterMeterTag>();
+            CreateMap<IndividualEstateCommandDto, RequestIndividualEstate>();
+            CreateMap<IndividualTagCommandDto, RequestIndividualTag>();
+
             CreateMap<RequestUser, RequestUserQueryDto>();
+
         }
     }
 }

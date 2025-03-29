@@ -1,4 +1,6 @@
-﻿namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
+﻿using Aban360.ClaimPool.Domain.Features.Metering.Entities;
+
+namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
 {
     public record EstateCreateDto
     {

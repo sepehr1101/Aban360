@@ -2,6 +2,7 @@
 {
     public record IndividualCreateDto
     {
+        public int WaterMeterId { get; set; }
         public string FullName { get; set; } = null!;
         public string? NationalId { get; set; }
         public string? FatherName { get; set; }
