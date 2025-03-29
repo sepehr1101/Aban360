@@ -366,14 +366,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
         }
 
-        private void CreateWaterMeterTagDefinition()
-        {
-            var table = TableName.WaterMeterTagDefinition;
-            Create.Table(nameof(TableName.WaterMeterTagDefinition)).InSchema(_schema)
-                .WithColumn(Id).AsInt16().Identity().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
-                .WithColumn("Title").AsString(_255).NotNullable()
-                .WithColumn("Color").AsString(_15).Nullable();
-        }
+
 
 
 
