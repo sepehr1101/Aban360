@@ -5,6 +5,9 @@ namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
 {
     public class RequestSiphon: SiphonBase
     {
+
+        public virtual RequestWaterMeter RequestWaterMeter { get; set; }
+
         public virtual ICollection<RequestSiphon> InversePrevious { get; set; } = new List<RequestSiphon>();
 
         public virtual RequestSiphon? Previous { get; set; }
@@ -14,6 +17,6 @@ namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
         public virtual SiphonMaterial SiphonMaterial { get; set; } = null!;
 
         public virtual SiphonType SiphonType { get; set; } = null!;
-        //public virtual ICollection<WaterMeterSiphon> WaterMeterSiphons { get; set; } = new List<WaterMeterSiphon>();
+        public virtual ICollection<RequestWaterMeterSiphon> RequestWaterMeterSiphons { get; set; } = new List<RequestWaterMeterSiphon>();
     }
 }

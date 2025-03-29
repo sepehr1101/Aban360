@@ -1,6 +1,5 @@
 ﻿using Aban360.ClaimPool.Domain.Features._Base;
 using Aban360.ClaimPool.Domain.Features.Land.Entities;
-using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Domain.Features.People.Entities;
 
 namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
@@ -11,9 +10,9 @@ namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
 
         public virtual EstateBoundType EstateBoundType { get; set; } = null!;
 
-        //public virtual ICollection<Flat> Flats { get; set; } = new List<Flat>(); //TODO: RequestFlat Entity
+        public virtual ICollection<RequestFlat> RequestFlats{ get; set; } = new List<RequestFlat>();
 
-        //public virtual ICollection<IndividualEstate> IndividualEstates { get; set; } = new List<IndividualEstate>();
+        public virtual ICollection<RequestIndividualEstate> RequestIndividualEstates{ get; set; } = new List<RequestIndividualEstate>();
 
         public virtual ICollection<RequestEstate> InversePrevious { get; set; } = new List<RequestEstate>();
 

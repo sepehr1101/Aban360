@@ -25,7 +25,24 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
         public async Task Handle(RequestUserCommandDto createDto, CancellationToken cancellationToken)
         {
             var requestUser = _mapper.Map<RequestUser>(createDto);
-            await _requestUserCommandService.Add(requestUser);
+
+            requestUser.RequestFlat.RequestEstate = requestUser.RequestEstate;
+            requestUser.RequestWaterMeter.RequestEstate = requestUser.RequestEstate;
+            requestUser.RequestSiphon.RequestWaterMeter = requestUser.RequestWaterMeter;
+            requestUser.RequestIndividual.RequestWaterMeter = requestUser.RequestWaterMeter;
+            requestUser.RequestIndividualEstate.RequestEstate= requestUser.RequestEstate;
+            requestUser.RequestIndividualEstate.RequestIndividual = requestUser.RequestIndividual;
+            requestUser.RequestIndividualTag.RequestIndividual = requestUser.RequestIndividual;
+            requestUser.RequestWaterMeterSiphon.RequestWaterMeter = requestUser.RequestWaterMeter;
+            requestUser.RequestWaterMeterSiphon.RequestSiphon = requestUser.RequestSiphon;
+            requestUser.RequestWaterMeterTag.RequestWaterMeter= requestUser.RequestWaterMeter;
+
+
+            await _requestUserCommandService.Add(requestUser.RequestWaterMeter);
         }
+        //public async Task Handle(RequestUserCommandDto createDto, CancellationToken cancellationToken)
+        //{
+
+        //}
     }
 }
