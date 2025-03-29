@@ -2,9 +2,9 @@
 
 namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Contracts
 {
-    public interface IGetewayCommandService
+    public interface IGatewayCommandService
     {
-        Task Add(Geteway geteway);
-        Task Remove(Geteway geteway);
+        Task Add(Gateway geteway);
+        Task Remove(Gateway geteway);
     }
 }

@@ -39,7 +39,7 @@ namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
         public virtual DbSet<WaterMeterTag> WaterMeterTags{ get; set; }
         public virtual DbSet<IndividualTagDefinition> IndividualTagDefinitions{ get; set; }
         public virtual DbSet<IndividualTag> IndividualTags{ get; set; }
-        public virtual DbSet<Geteway> Geteways{ get; set; }
+        public virtual DbSet<Gateway> Geteways{ get; set; }
         public virtual DbSet<ChangeMeterReason> ChangeMeterReasons{ get; set; }
     }
 }

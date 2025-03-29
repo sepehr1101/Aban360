@@ -5,14 +5,14 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Mappings
 {
-    public class GetewayMapper : Profile
+    public class GatewayMapper : Profile
     {
-        public GetewayMapper()
+        public GatewayMapper()
         {
-            CreateMap<GetewayCreateDto, Geteway>();
-            CreateMap<GetewayDeleteDto, Geteway>();
-            CreateMap<GetewayUpdateDto, Geteway>();
-            CreateMap<Geteway,GetewayGetDto>();
+            CreateMap<GatewayCreateDto, Gateway>();
+            CreateMap<GatewayDeleteDto, Gateway>();
+            CreateMap<GetewayUpdateDto, Gateway>();
+            CreateMap<Gateway,GatewayGetDto>();
         }
     }
 }

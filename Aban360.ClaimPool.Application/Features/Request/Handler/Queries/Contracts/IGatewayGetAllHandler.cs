@@ -2,8 +2,8 @@
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts
 {
-    public interface IGetewayGetAllHandler
+    public interface IGatewayGetAllHandler
     {
-        Task<ICollection<GetewayGetDto>> Handle(CancellationToken cancellationToken);
+        Task<ICollection<GatewayGetDto>> Handle(CancellationToken cancellationToken);
     }
 }

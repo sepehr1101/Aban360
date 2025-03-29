@@ -2,8 +2,8 @@
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts
 {
-    public interface IGetewayGetSingleHandler
+    public interface IGatewayGetSingleHandler
     {
-        Task<GetewayGetDto> Handle(short id, CancellationToken cancellationToken);
+        Task<GatewayGetDto> Handle(short id, CancellationToken cancellationToken);
     }
 }
