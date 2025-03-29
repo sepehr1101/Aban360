@@ -27,11 +27,6 @@ namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
         {
             modelBuilder.HasDefaultSchema(TableSchema.Name);
             OnModelCreatingPartial(modelBuilder);
-
-            modelBuilder.Entity<RequestFlat>()
-                .HasOne(rf => rf.RequestEstate)
-                .WithMany() 
-                .HasForeignKey("EstateId");
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
