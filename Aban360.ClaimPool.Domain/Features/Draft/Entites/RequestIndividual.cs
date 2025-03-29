@@ -7,11 +7,11 @@ namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
     {
         public virtual RequestWaterMeter RequestWaterMeter { get; set; }
         public virtual IndividualType IndividualType { get; set; } = null!;
-        public virtual ICollection<RequestIndividualEstate> RequestIndividualEstates { get; set; } = new List<RequestIndividualEstate>();
+        public virtual ICollection<RequestIndividualEstate> IndividualEstates { get; set; } = new List<RequestIndividualEstate>();
 
         public virtual ICollection<RequestIndividual> InversePrevious { get; set; } = new List<RequestIndividual>();
 
         public virtual RequestIndividual? Previous { get; set; }
-        public virtual ICollection<RequestIndividualTag> RequestIndividualTags { get; set; } = new List<RequestIndividualTag>();
+        public virtual ICollection<RequestIndividualTag> IndividualTags { get; set; } = new List<RequestIndividualTag>();
     }
 }

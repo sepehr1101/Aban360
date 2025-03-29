@@ -20,6 +20,16 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Mappings
             .ForMember(dest => dest.RequestIndividualEstate, opt => opt.MapFrom(src => src.IndividualEstateCommand))
             .ForMember(dest => dest.RequestIndividualTag, opt => opt.MapFrom(src => src.IndividualTagCommand));
 
+            CreateMap<EstateCommandDto, RequestEstate>();
+            CreateMap<FlatCommandDto, RequestFlat>();
+            CreateMap<IndividualCommandDto, RequestIndividual>();
+            CreateMap<SiphonCommandDto, RequestSiphon>();
+            CreateMap<WaterMeterCommandDto, RequestWaterMeter>();
+            CreateMap<WaterMeterSiphonCommandDto, RequestWaterMeterSiphon>();
+            CreateMap<WaterMeterTagCommandDto, RequestWaterMeterTag>();
+            CreateMap<IndividualEstateCommandDto, RequestIndividualEstate>();
+            CreateMap<IndividualTagCommandDto, RequestIndividualTag>();
+
             CreateMap<RequestUser, RequestUserQueryDto>();
 
         }

@@ -17,6 +17,6 @@ namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
         public virtual SiphonMaterial SiphonMaterial { get; set; } = null!;
 
         public virtual SiphonType SiphonType { get; set; } = null!;
-        public virtual ICollection<RequestWaterMeterSiphon> RequestWaterMeterSiphons { get; set; } = new List<RequestWaterMeterSiphon>();
+        public virtual ICollection<RequestWaterMeterSiphon> WaterMeterSiphons { get; set; } = new List<RequestWaterMeterSiphon>();
     }
 }

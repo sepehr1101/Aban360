@@ -26,17 +26,33 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
         {
             var requestUser = _mapper.Map<RequestUser>(createDto);
 
-            requestUser.RequestFlat.RequestEstate = requestUser.RequestEstate;
+            requestUser.RequestFlat.RequestEstate= requestUser.RequestEstate;
             requestUser.RequestWaterMeter.RequestEstate = requestUser.RequestEstate;
             requestUser.RequestSiphon.RequestWaterMeter = requestUser.RequestWaterMeter;
             requestUser.RequestIndividual.RequestWaterMeter = requestUser.RequestWaterMeter;
-            requestUser.RequestIndividualEstate.RequestEstate= requestUser.RequestEstate;
+            requestUser.RequestIndividualEstate.RequestEstate = requestUser.RequestEstate;
             requestUser.RequestIndividualEstate.RequestIndividual = requestUser.RequestIndividual;
             requestUser.RequestIndividualTag.RequestIndividual = requestUser.RequestIndividual;
             requestUser.RequestWaterMeterSiphon.RequestWaterMeter = requestUser.RequestWaterMeter;
             requestUser.RequestWaterMeterSiphon.RequestSiphon = requestUser.RequestSiphon;
-            requestUser.RequestWaterMeterTag.RequestWaterMeter= requestUser.RequestWaterMeter;
+            requestUser.RequestWaterMeterTag.RequestWaterMeter = requestUser.RequestWaterMeter;
 
+            requestUser.RequestEstate.InsertLogInfo = "sample";
+            requestUser.RequestEstate.Hash = "sample";
+
+            requestUser.RequestIndividual.Hash = "sample";
+
+            requestUser.RequestSiphon.ValidFrom=DateTime.Now;
+            requestUser.RequestSiphon.InsertLogInfo = "sample";
+            requestUser.RequestSiphon.Hash = "sample";
+            
+            requestUser.RequestIndividual.ValidFrom=DateTime.Now;
+            requestUser.RequestIndividual.InsertLogInfo = "sample";
+            requestUser.RequestIndividual.Hash = "sample";
+            
+            requestUser.RequestWaterMeter.ValidFrom=DateTime.Now;
+            requestUser.RequestWaterMeter.InsertLogInfo = "sample";
+            requestUser.RequestWaterMeter.Hash = "sample";
 
             await _requestUserCommandService.Add(requestUser.RequestWaterMeter);
         }

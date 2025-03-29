@@ -10,9 +10,9 @@ namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
 
         public virtual EstateBoundType EstateBoundType { get; set; } = null!;
 
-        public virtual ICollection<RequestFlat> RequestFlats{ get; set; } = new List<RequestFlat>();
+        public virtual ICollection<RequestFlat> Flats{ get; set; } = new List<RequestFlat>();
 
-        public virtual ICollection<RequestIndividualEstate> RequestIndividualEstates{ get; set; } = new List<RequestIndividualEstate>();
+        public virtual ICollection<RequestIndividualEstate> IndividualEstates{ get; set; } = new List<RequestIndividualEstate>();
 
         public virtual ICollection<RequestEstate> InversePrevious { get; set; } = new List<RequestEstate>();
 

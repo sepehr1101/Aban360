@@ -1,4 +1,5 @@
-﻿using Aban360.ClaimPool.Domain.Features.Land.Entities;
+﻿using Aban360.ClaimPool.Domain.Features.Draft.Entites;
+using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Domain.Features.People.Entities;
 using Aban360.ClaimPool.Domain.Features.Request.Entities;
@@ -13,8 +14,8 @@ namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
         public virtual DbSet<EstateBoundType> EstateBoundTypes { get; set; }
         public virtual DbSet<Estate> Estates { get; set; }
         public virtual DbSet<Flat> Flats { get; set; }
-        public virtual DbSet<EstateWaterResource> EstateWaterResources{ get; set; }
-        public virtual DbSet<WaterResource> WaterResources{ get; set; }
+        public virtual DbSet<EstateWaterResource> EstateWaterResources { get; set; }
+        public virtual DbSet<WaterResource> WaterResources { get; set; }
         public virtual DbSet<Usage> Usages { get; set; }
         public virtual DbSet<Guild> Guilds { get; set; }
         public virtual DbSet<Profession> Professions { get; set; }
@@ -29,18 +30,18 @@ namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
         public virtual DbSet<IndividualEstate> IndividualEstates { get; set; }
         public virtual DbSet<IndividualEstateRelationType> IndividualEstateRelationTypes { get; set; }
         public virtual DbSet<UseState> UseStates { get; set; }
-        public virtual DbSet<SubscriptionType> SubscriptionTypes{ get; set; }
+        public virtual DbSet<SubscriptionType> SubscriptionTypes { get; set; }
         public virtual DbSet<Siphon> Siphons { get; set; }
         public virtual DbSet<SiphonDiameter> SiphonDiameters { get; set; }
         public virtual DbSet<SiphonMaterial> SiphonMaterials { get; set; }
         public virtual DbSet<SiphonType> SiphonTypes { get; set; }
         public virtual DbSet<WaterMeterSiphon> WaterMeterSiphons { get; set; }
         public virtual DbSet<WaterMeterTagDefinition> WaterMeterTagDefinitions { get; set; }
-        public virtual DbSet<WaterMeterTag> WaterMeterTags{ get; set; }
-        public virtual DbSet<IndividualTagDefinition> IndividualTagDefinitions{ get; set; }
-        public virtual DbSet<IndividualTag> IndividualTags{ get; set; }
-        public virtual DbSet<Geteway> Geteways{ get; set; }
-        public virtual DbSet<ChangeMeterReason> ChangeMeterReasons{ get; set; }
+        public virtual DbSet<WaterMeterTag> WaterMeterTags { get; set; }
+        public virtual DbSet<IndividualTagDefinition> IndividualTagDefinitions { get; set; }
+        public virtual DbSet<IndividualTag> IndividualTags { get; set; }
+        public virtual DbSet<Geteway> Geteways { get; set; }
+        public virtual DbSet<ChangeMeterReason> ChangeMeterReasons { get; set; }
 
 
         public virtual DbSet<UsageLevel1> UsageLevels { get; set; }
@@ -50,5 +51,15 @@ namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
         public virtual DbSet<UserLeave> UserLeaves { get; set; }
         public virtual DbSet<UserWorkday> UserWorkdays { get; set; }
         public virtual DbSet<OfficialHoliday> OfficialHolidays { get; set; }
+
+        public virtual DbSet<RequestEstate> RequestEstate { get; set; }
+        public virtual DbSet<RequestFlat> RequestFlats { get; set; }
+        public virtual DbSet<RequestIndividual> RequestIndividuals{ get; set; }
+        public virtual DbSet<RequestIndividualEstate> RequestIndividualEstates{ get; set; }
+        public virtual DbSet<RequestIndividualTag> RequestIndividualTags { get; set; }
+        public virtual DbSet<RequestSiphon> RequestSiphons { get; set; }
+        public virtual DbSet<RequestWaterMeter> RequestWaterMeters{ get; set; }
+        public virtual DbSet<RequestWaterMeterSiphon> RequestWaterMeterSiphons { get; set; }
+        public virtual DbSet<RequestWaterMeterTag> RequestWaterMeterTags    { get; set; }
     }
 }

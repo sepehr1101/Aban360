@@ -4,7 +4,7 @@ namespace Aban360.ClaimPool.Domain.Features.Draft.Dto.Commands
 {
     public record WaterMeterCommandDto
     {
-        public int Id { get; set; }
+       // public int Id { get; set; }
 
         public string? InstallationLocation { get; set; }
 

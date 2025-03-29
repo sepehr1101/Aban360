@@ -2,7 +2,7 @@
 {
     public record SiphonCommandDto
     {
-        public int Id { get; set; }
+      //  public int Id { get; set; }
         public string? InstallationLocation { get; set; }
         public string? InstallationDate { get; set; }
         public short SiphonDiameterId { get; set; }
@@ -10,8 +10,8 @@
         public short SiphonMaterialId { get; set; }
         public Guid UserId { get; set; }
         public int? PreviousId { get; set; }
-        public DateTime ValidFrom { get; set; }
-        public DateTime? ValidTo { get; set; }
-        public string InsertLogInfo { get; set; } = null!;
+       // public DateTime ValidFrom { get; set; }
+       // public DateTime? ValidTo { get; set; }
+       // public string InsertLogInfo { get; set; } = null!;
     }
 }

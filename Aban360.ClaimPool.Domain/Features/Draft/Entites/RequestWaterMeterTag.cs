@@ -1,4 +1,6 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Metering.Entities;
+using Aban360.ClaimPool.Domain.Features.People.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
 {
@@ -12,6 +14,7 @@ namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
 
         public string? Value { get; set; }
 
+        [ForeignKey(nameof(WaterMeterId))]
         public virtual RequestWaterMeter RequestWaterMeter{ get; set; } = null!;
 
         public virtual WaterMeterTagDefinition WaterMeterTagDefinition { get; set; } = null!;

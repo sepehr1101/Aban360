@@ -2,8 +2,8 @@
 {
     public record IndividualTagCommandDto
     {
-        public int Id { get; set; }
-        public int RequestIndividualId { get; set; }
+      //  public int Id { get; set; }
+        public int IndividualId { get; set; }
         public short IndividualTagDefinitionId { get; set; }
         public string? Value { get; set; }
     }

@@ -2,7 +2,7 @@
 {
     public record EstateCommandDto
     {
-        public int Id { get; set; }
+       // public int Id { get; set; }
         public short ConstructionTypeId { get; set; }
         public short EstateBoundTypeId { get; set; }
         public string? PostalCode { get; set; }
@@ -31,5 +31,6 @@
         public Guid UserId { get; set; }
         public int? PreviousId { get; set; }
         public DateTime ValidFrom { get; set; }
+        
     }
 }
