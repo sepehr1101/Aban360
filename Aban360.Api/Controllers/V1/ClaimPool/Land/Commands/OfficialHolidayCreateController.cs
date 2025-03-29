@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
 {
-    [Route("v4/official-holiday")]
+    [Route("v1/official-holiday")]
     public class OfficialHolidayCreateController : BaseController
     {
         private readonly IUnitOfWork _uow;

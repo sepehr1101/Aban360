@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
 {
-    [Route("v4/official-holiday")]
+    [Route("v1/official-holiday")]
     public class OfficialHolidayGetSingleController : BaseController
     {
         private readonly IOfficialHolidayGetSingleHandler officialHolidayGetSingleHandler;

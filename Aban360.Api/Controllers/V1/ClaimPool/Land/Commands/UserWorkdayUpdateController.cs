@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
 {
-    [Route("v4/user-Workday")]
+    [Route("v1/user-Workday")]
     public class UserWorkdayUpdateController : BaseController
     {
         private readonly IUnitOfWork _uow;

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
 {
-    [Route("v4/user-leave")]
+    [Route("v1/user-leave")]
     public class UserLeaveUpdateController : BaseController
     {
         private readonly IUnitOfWork _uow;
