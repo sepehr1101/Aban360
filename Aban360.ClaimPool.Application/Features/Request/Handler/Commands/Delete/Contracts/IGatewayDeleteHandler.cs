@@ -2,8 +2,8 @@
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Delete.Contracts
 {
-    public interface IGetewayDeleteHandler
+    public interface IGatewayDeleteHandler
     {
-        Task Handle(GetewayDeleteDto deleteDto, CancellationToken cancellationToken);
+        Task Handle(GatewayDeleteDto deleteDto, CancellationToken cancellationToken);
     }
 }

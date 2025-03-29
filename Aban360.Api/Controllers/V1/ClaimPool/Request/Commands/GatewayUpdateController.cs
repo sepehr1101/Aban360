@@ -6,27 +6,27 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 {
-    [Route("v1/geteway")]
-    public class GetewayUpdateController : BaseController
+    [Route("v1/gateway")]
+    public class GatewayUpdateController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IGetewayUpdateHandler _getewayUpdateHandler;
-        public GetewayUpdateController(
+        private readonly IGatewayUpdateHandler _gatewayUpdateHandler;
+        public GatewayUpdateController(
             IUnitOfWork uow,
-            IGetewayUpdateHandler getewayUpdateHandler)
+            IGatewayUpdateHandler getewayUpdateHandler)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));
 
-            _getewayUpdateHandler = getewayUpdateHandler;
-            _getewayUpdateHandler.NotNull(nameof(getewayUpdateHandler));
+            _gatewayUpdateHandler = getewayUpdateHandler;
+            _gatewayUpdateHandler.NotNull(nameof(getewayUpdateHandler));
         }
 
         [HttpPost, HttpPatch]
         [Route("update")]
         public async Task<IActionResult> Update([FromBody] GetewayUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _getewayUpdateHandler.Handle(updateDto, cancellationToken);
+            await _gatewayUpdateHandler.Handle(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);

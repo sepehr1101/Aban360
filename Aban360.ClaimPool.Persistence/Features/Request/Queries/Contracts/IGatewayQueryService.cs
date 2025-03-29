@@ -2,9 +2,9 @@
 
 namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts
 {
-    public interface IGetewayQueryService
+    public interface IGatewayQueryService
     {
-        Task<Geteway> Get(short id);
-        Task<ICollection<Geteway>> Get();
+        Task<Gateway> Get(short id);
+        Task<ICollection<Gateway>> Get();
     }
 }

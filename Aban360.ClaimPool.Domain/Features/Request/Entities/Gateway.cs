@@ -2,8 +2,8 @@
 
 namespace Aban360.ClaimPool.Domain.Features.Request.Entities;
 
-[Table(nameof(Geteway))]
-public class Geteway
+[Table(nameof(Gateway))]
+public class Gateway
 {
     public short Id { get; set; }
 

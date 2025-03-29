@@ -7,13 +7,13 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations
 {
-    internal sealed class GetewayGetSingleHandler : IGetewayGetSingleHandler
+    internal sealed class GetewayGetSingleHandler : IGatewayGetSingleHandler
     {
         private readonly IMapper _mapper;
-        private readonly IGetewayQueryService _getewayQueryService;
+        private readonly IGatewayQueryService _getewayQueryService;
         public GetewayGetSingleHandler(
             IMapper mapper,
-            IGetewayQueryService getewayQueryService)
+            IGatewayQueryService getewayQueryService)
         {
             _mapper = mapper;
             _mapper.NotNull(nameof(_mapper));
@@ -22,10 +22,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             _getewayQueryService.NotNull(nameof(_getewayQueryService));
         }
 
-        public async Task<GetewayGetDto> Handle(short id, CancellationToken cancellationToken)
+        public async Task<GatewayGetDto> Handle(short id, CancellationToken cancellationToken)
         {
-            Geteway geteway = await _getewayQueryService.Get(id);
-            return _mapper.Map<GetewayGetDto>(geteway);
+            Gateway geteway = await _getewayQueryService.Get(id);
+            return _mapper.Map<GatewayGetDto>(geteway);
         }
     }
 }

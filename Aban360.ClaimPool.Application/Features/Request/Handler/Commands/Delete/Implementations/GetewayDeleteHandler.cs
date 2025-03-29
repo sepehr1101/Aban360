@@ -7,13 +7,13 @@ using Aban360.Common.Extensions;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Delete.Implementations
 {
-    internal sealed class GetewayDeleteHandler : IGetewayDeleteHandler
+    internal sealed class GetewayDeleteHandler : IGatewayDeleteHandler
     {
-        private readonly IGetewayCommandService _getewayCommandService;
-        private readonly IGetewayQueryService _getewayQueryService;
+        private readonly IGatewayCommandService _getewayCommandService;
+        private readonly IGatewayQueryService _getewayQueryService;
         public GetewayDeleteHandler(
-            IGetewayCommandService getewayCommandService,
-            IGetewayQueryService getewayQueryService)
+            IGatewayCommandService getewayCommandService,
+            IGatewayQueryService getewayQueryService)
         {
             _getewayCommandService = getewayCommandService;
             _getewayCommandService.NotNull(nameof(_getewayCommandService));
@@ -22,9 +22,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Delete
             _getewayQueryService.NotNull(nameof(_getewayQueryService));
         }
 
-        public async Task Handle(GetewayDeleteDto deleteDto, CancellationToken cancellationToken)
+        public async Task Handle(GatewayDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            Geteway geteway = await _getewayQueryService.Get(deleteDto.Id);
+            Gateway geteway = await _getewayQueryService.Get(deleteDto.Id);
             await _getewayCommandService.Remove(geteway);
         }
     }

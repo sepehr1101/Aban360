@@ -6,25 +6,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations
 {
-    internal sealed class GetewayCommandService : IGetewayCommandService
+    internal sealed class GatewayCommandService : IGatewayCommandService
     {
         private readonly IUnitOfWork _uow;
-        private readonly DbSet<Geteway> _geteway;
-        public GetewayCommandService(IUnitOfWork uow)
+        private readonly DbSet<Gateway> _geteway;
+        public GatewayCommandService(IUnitOfWork uow)
         {
             _uow = uow;
             _uow.NotNull(nameof(_uow));
 
-            _geteway = _uow.Set<Geteway>();
+            _geteway = _uow.Set<Gateway>();
             _geteway.NotNull(nameof(_geteway));
         }
 
-        public async Task Add(Geteway geteway)
+        public async Task Add(Gateway geteway)
         {
             await _geteway.AddAsync(geteway);
         }
 
-        public async Task Remove(Geteway geteway)
+        public async Task Remove(Gateway geteway)
         {
             _geteway.Remove(geteway);
         }

@@ -2,8 +2,8 @@
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts
 {
-    public interface IGetewayCreateHandler
+    public interface IGatewayCreateHandler
     {
-        Task Handle(GetewayCreateDto createDto, CancellationToken cancellationToken);
+        Task Handle(GatewayCreateDto createDto, CancellationToken cancellationToken);
     }
 }

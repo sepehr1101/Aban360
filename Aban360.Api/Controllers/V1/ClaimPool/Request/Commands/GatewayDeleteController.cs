@@ -7,28 +7,28 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 {
-    [Route("v1/geteway")]
-    public class GetewayDeleteController : BaseController
+    [Route("v1/gateway")]
+    public class GatewayDeleteController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IGetewayDeleteHandler _getewayDeleteHandler;
-        public GetewayDeleteController(
+        private readonly IGatewayDeleteHandler _gatewayDeleteHandler;
+        public GatewayDeleteController(
             IUnitOfWork uow,
-            IGetewayDeleteHandler getewayDeleteHandler)
+            IGatewayDeleteHandler getewayDeleteHandler)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));
 
-            _getewayDeleteHandler = getewayDeleteHandler;
-            _getewayDeleteHandler.NotNull(nameof(getewayDeleteHandler));
+            _gatewayDeleteHandler = getewayDeleteHandler;
+            _gatewayDeleteHandler.NotNull(nameof(getewayDeleteHandler));
         }
 
         [HttpPost, HttpDelete]
         [Route("delete")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<GetewayDeleteDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Delete([FromBody] GetewayDeleteDto deleteDto, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponseEnvelope<GatewayDeleteDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Delete([FromBody] GatewayDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _getewayDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _gatewayDeleteHandler.Handle(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
