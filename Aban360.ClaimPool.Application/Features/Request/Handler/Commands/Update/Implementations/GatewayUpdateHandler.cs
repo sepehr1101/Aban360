@@ -7,13 +7,13 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update.Implementations
 {
-    internal sealed class GetewayUpdateHandler : IGetewayUpdateHandler
+    internal sealed class GatewayUpdateHandler : IGatewayUpdateHandler
     {
         private readonly IMapper _mapper;
-        private readonly IGetewayQueryService _getewayQueryService;
-        public GetewayUpdateHandler(
+        private readonly IGatewayQueryService _getewayQueryService;
+        public GatewayUpdateHandler(
             IMapper mapper,
-            IGetewayQueryService getewayQueryService)
+            IGatewayQueryService getewayQueryService)
         {
             _mapper = mapper;
             _mapper.NotNull(nameof(_mapper));
@@ -24,8 +24,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
 
         public async Task Handle(GetewayUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            Geteway geteway = await _getewayQueryService.Get(updateDto.Id);
-            _mapper.Map(updateDto, geteway);
+            Gateway gateway = await _getewayQueryService.Get(updateDto.Id);
+            _mapper.Map(updateDto, gateway);
         }
     }
 }

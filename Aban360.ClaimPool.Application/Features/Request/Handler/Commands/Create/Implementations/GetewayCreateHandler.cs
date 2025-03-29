@@ -7,13 +7,13 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations
 {
-    internal sealed class GetewayCreateHandler : IGetewayCreateHandler
+    internal sealed class GetewayCreateHandler : IGatewayCreateHandler
     {
         private readonly IMapper _mapper;
-        private readonly IGetewayCommandService _getewayCommandService;
+        private readonly IGatewayCommandService _getewayCommandService;
         public GetewayCreateHandler(
             IMapper mapper,
-            IGetewayCommandService getewayCommandService)
+            IGatewayCommandService getewayCommandService)
         {
             _mapper = mapper;
             _mapper.NotNull(nameof(_mapper));
@@ -22,9 +22,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             _getewayCommandService.NotNull(nameof(_getewayCommandService));
         }
 
-        public async Task Handle(GetewayCreateDto createDto, CancellationToken cancellationToken)
+        public async Task Handle(GatewayCreateDto createDto, CancellationToken cancellationToken)
         {
-            Geteway geteway = _mapper.Map<Geteway>(createDto);
+            Gateway geteway = _mapper.Map<Gateway>(createDto);
             if (geteway == null)
             {
                 throw new InvalidDataException();

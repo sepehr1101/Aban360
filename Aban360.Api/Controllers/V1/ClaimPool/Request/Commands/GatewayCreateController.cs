@@ -7,28 +7,28 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 {
-    [Route("v1/geteway")]
-    public class GetewayCreateController : BaseController
+    [Route("v1/gateway")]
+    public class GatewayCreateController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IGetewayCreateHandler _getewayCreateHandler;
-        public GetewayCreateController(
+        private readonly IGatewayCreateHandler _gatewayCreateHandler;
+        public GatewayCreateController(
             IUnitOfWork uow,
-            IGetewayCreateHandler getewayCreateHandler)
+            IGatewayCreateHandler getewayCreateHandler)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));
 
-            _getewayCreateHandler = getewayCreateHandler;
-            _getewayCreateHandler.NotNull(nameof(getewayCreateHandler));
+            _gatewayCreateHandler = getewayCreateHandler;
+            _gatewayCreateHandler.NotNull(nameof(getewayCreateHandler));
         }
 
         [HttpPost]
         [Route("create")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<GetewayCreateDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Create([FromBody] GetewayCreateDto createDto, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponseEnvelope<GatewayCreateDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Create([FromBody] GatewayCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _getewayCreateHandler.Handle(createDto, cancellationToken);
+            await _gatewayCreateHandler.Handle(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);

@@ -44,7 +44,7 @@
         UseState,
         SubscriptionType,
         
-        Geteway,
+        Gateway,
 
         UsageLevel1,
         UsageLevel2,

@@ -435,10 +435,10 @@ namespace Aban360.ClaimPool.Persistence.Migrations
             _CreateWaterMeterSiphon(TableName.RequestWaterMeterSiphon, nameof(TableName.RequestWaterMeterSiphon));
         }
 
-        private void CreateGeteway()
+        private void CreateGateway()
         {
-            var table = TableName.Geteway;
-            Create.Table(nameof(TableName.Geteway)).InSchema(_schema)
+            var table = TableName.Gateway;
+            Create.Table(nameof(TableName.Gateway)).InSchema(_schema)
                 .WithColumn("Id").AsInt16().NotNullable().Identity().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
