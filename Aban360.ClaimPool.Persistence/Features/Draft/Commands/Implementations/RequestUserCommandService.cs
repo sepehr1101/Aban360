@@ -21,7 +21,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Draft.Commands.Implementations
 
         public async Task Add(RequestUser requestUser)
         {
-         //   await _requestUser.AddAsync(requestUser);
+            //   await _requestUser.AddAsync(requestUser);
         }
         public async Task Add(RequestWaterMeter requestWaterMeter)
         {

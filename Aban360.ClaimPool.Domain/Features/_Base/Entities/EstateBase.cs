@@ -1,6 +1,8 @@
-﻿namespace Aban360.ClaimPool.Domain.Features._Base;
+﻿using Aban360.Common.BaseEntities;
 
-public class EstateBase
+namespace Aban360.ClaimPool.Domain.Features._Base.Entities;
+
+public class EstateBase: IHashableEntity
 {
     public int Id { get; set; }
 
@@ -53,19 +55,5 @@ public class EstateBase
     public int ContractualCapacity { get; set; }
 
     public short Storeys { get; set; }
-
     public Guid UserId { get; set; }
-
-    public int? PreviousId { get; set; }
-
-    public DateTime ValidFrom { get; set; }
-
-    public DateTime? ValidTo { get; set; }
-
-    public string InsertLogInfo { get; set; } = null!;
-
-    public string? RemoveLogInfo { get; set; }
-
-    public string Hash { get; set; } = null!;
-
 }

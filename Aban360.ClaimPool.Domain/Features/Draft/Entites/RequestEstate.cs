@@ -1,9 +1,10 @@
-﻿using Aban360.ClaimPool.Domain.Features._Base;
+﻿using Aban360.ClaimPool.Domain.Features._Base.Entities;
 using Aban360.ClaimPool.Domain.Features.Land.Entities;
-using Aban360.ClaimPool.Domain.Features.People.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
 {
+    [Table(nameof(RequestEstate))]
     public class RequestEstate: EstateBase
     {
         public virtual ConstructionType ConstructionType { get; set; } = null!;
@@ -14,9 +15,9 @@ namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
 
         public virtual ICollection<RequestIndividualEstate> IndividualEstates{ get; set; } = new List<RequestIndividualEstate>();
 
-        public virtual ICollection<RequestEstate> InversePrevious { get; set; } = new List<RequestEstate>();
+        //public virtual ICollection<RequestEstate> InversePrevious { get; set; } = new List<RequestEstate>();
 
-        public virtual Estate? Previous { get; set; }
+        //public virtual Estate? Previous { get; set; }
 
         public virtual Usage UsageConsumtion { get; set; } = null!;
 

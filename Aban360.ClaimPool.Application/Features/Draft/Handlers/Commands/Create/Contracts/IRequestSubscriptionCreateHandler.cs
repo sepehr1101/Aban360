@@ -2,8 +2,8 @@
 
 namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.Contracts
 {
-    public interface IRequestUserCreateHandler
+    public interface IRequestSubscriptionCreateHandler
     {
-        Task Handle(RequestUserCommandDto createDto, CancellationToken cancellationToken);
+        Task Handle(RequestSubscriptionCreateDto createDto, CancellationToken cancellationToken);
     }
 }

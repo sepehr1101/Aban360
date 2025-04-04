@@ -1,5 +1,5 @@
 ﻿using Aban360.ClaimPool.Domain.Constants;
-using Aban360.ClaimPool.Domain.Features._Base;
+using Aban360.ClaimPool.Domain.Features._Base.Entities;
 using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Domain.Features.WasteWater.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
