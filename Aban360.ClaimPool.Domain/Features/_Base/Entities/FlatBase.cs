@@ -1,4 +1,4 @@
-﻿namespace Aban360.ClaimPool.Domain.Features._Base;
+﻿namespace Aban360.ClaimPool.Domain.Features._Base.Entities;
 
 public class FlatBase
 {

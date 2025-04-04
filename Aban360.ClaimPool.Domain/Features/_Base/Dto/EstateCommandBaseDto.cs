@@ -1,8 +1,8 @@
-﻿namespace Aban360.ClaimPool.Domain.Features.Draft.Dto.Commands
+﻿namespace Aban360.ClaimPool.Domain.Features._Base.Dto
 {
-    public record EstateCommandDto
+    public record EstateCommandBaseDto
     {
-       // public int Id { get; set; }
+        // public int Id { get; set; }
         public short ConstructionTypeId { get; set; }
         public short EstateBoundTypeId { get; set; }
         public string? PostalCode { get; set; }
@@ -27,6 +27,6 @@
         public int ImprovementsCommercial { get; set; }
         public int ImprovementsOther { get; set; }
         public int ContractualCapacity { get; set; }
-        public short Storeys { get; set; }        
+        public short Storeys { get; set; }
     }
 }

@@ -4,9 +4,9 @@ using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Aban360.Api.Controllers.V1.ClaimPool.Draff.Queries
+namespace Aban360.Api.Controllers.V1.ClaimPool.Draft.Queries
 {
-    [Route("v1/request-user")]
+    [Route("v1/request-subscription")]
     public class RequestUserGetSingleController : BaseController
     {
         private readonly IRequestUserGetSingleHandler _requestUserGetSingleHandler;

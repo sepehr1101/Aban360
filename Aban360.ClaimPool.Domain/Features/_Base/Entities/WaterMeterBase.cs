@@ -1,8 +1,9 @@
 ﻿using Aban360.ClaimPool.Domain.Constants;
+using Aban360.Common.BaseEntities;
 
-namespace Aban360.ClaimPool.Domain.Features._Base
+namespace Aban360.ClaimPool.Domain.Features._Base.Entities
 {
-    public class WaterMeterBase
+    public class WaterMeterBase:IHashableEntity
     {
         public int Id { get; set; }
         public string? ReadingNumber { get; set; }
@@ -40,17 +41,5 @@ namespace Aban360.ClaimPool.Domain.Features._Base
         public int? ParentId { get; set; }
 
         public Guid UserId { get; set; }
-
-        public int? PreviousId { get; set; }
-
-        public DateTime ValidFrom { get; set; }
-
-        public DateTime? ValidTo { get; set; }
-
-        public string InsertLogInfo { get; set; } = null!;
-
-        public string? RemoveLogInfo { get; set; }
-
-        public string Hash { get; set; } = null!;
     }
 }

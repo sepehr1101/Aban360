@@ -117,7 +117,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("RemoveLogInfo").AsString(int.MinValue).Nullable()
                 .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
         }
-        private void _CreateFlat(TableName table, string nameOfTable)
+        private void _CreateFlat(TableName table, string nameOfTable, TableName estateTable, string estateName)
         {           
             Create.Table(nameOfTable).InSchema(_schema)
                 .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable().Identity()
@@ -135,8 +135,8 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         }
         private void CreateFlats()
         {
-            _CreateFlat(TableName.RequestFlat, nameof(TableName.RequestFlat));
-            _CreateFlat(TableName.Flat, nameof(TableName.Flat));
+            _CreateFlat(TableName.RequestFlat, nameof(TableName.RequestFlat),TableName.Estate, nameof(TableName.Estate));
+            _CreateFlat(TableName.Flat, nameof(TableName.Flat), TableName.RequestEstate, nameof(TableName.RequestEstate));
            
         }
         private void CreateWaterResource()
@@ -210,7 +210,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
-        private void _CreateWaterMeter(TableName table, string nameOfTable)
+        private void _CreateWaterMeter(TableName table, string nameOfTable, TableName estateTable, string estateName)
         {
             Create.Table(nameOfTable).InSchema(_schema)
               .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
@@ -218,7 +218,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
               .WithColumn("CustomerNumber").AsInt32().NotNullable()
               .WithColumn("BillId").AsString(15).NotNullable()
               .WithColumn("EstateId").AsInt32().NotNullable()
-                  .ForeignKey(NamingHelper.Fk(TableName.Estate, table), _schema, nameof(TableName.Estate), Id)
+                  .ForeignKey(NamingHelper.Fk(estateTable, table), _schema, estateName, Id)
               .WithColumn("UseStateId").AsInt16().NotNullable()
                   .ForeignKey(NamingHelper.Fk(TableName.UseState, table), _schema, nameof(TableName.UseState), Id)
               .WithColumn("SubscriptionTypeId").AsInt16().NotNullable()
@@ -251,8 +251,8 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         }
         private void CreateWaterMeters()
         {
-            _CreateWaterMeter(TableName.WaterMeter, nameof(TableName.WaterMeter));
-            _CreateWaterMeter(TableName.RequestWaterMeter, nameof(TableName.RequestWaterMeter));
+            _CreateWaterMeter(TableName.WaterMeter, nameof(TableName.WaterMeter), TableName.Estate, nameof(TableName.Estate));
+            _CreateWaterMeter(TableName.RequestWaterMeter, nameof(TableName.RequestWaterMeter), TableName.RequestEstate, nameof(TableName.RequestEstate));
         }
 
         private void CreateWaterMeterTagDefinition()
@@ -290,12 +290,12 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
-        private void _CreateIndividual(TableName table, string nameOfTable)
+        private void _CreateIndividual(TableName table, string nameOfTable, TableName watermeterTable, string watermeterName)
         {           
             Create.Table(nameOfTable).InSchema(_schema)
                 .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable().Identity()
-                .WithColumn($"{TableName.WaterMeter}Id").AsInt32().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.WaterMeter, table), _schema, nameof(TableName.WaterMeter), Id)
+                .WithColumn($"WaterMeterId").AsInt32().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(watermeterTable, table), _schema, watermeterName, Id)
                 .WithColumn("IndividualTypeId").AsInt16().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.IndividualType, table), _schema, nameof(TableName.IndividualType), Id)
                 .WithColumn("FullName").AsString(_255).NotNullable()
@@ -314,8 +314,8 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         }
         private void CreateIndividuals()
         {
-            _CreateIndividual(TableName.Individual, nameof(TableName.Individual));
-            _CreateIndividual(TableName.RequestIndividual, nameof(TableName.RequestIndividual));
+            _CreateIndividual(TableName.Individual, nameof(TableName.Individual), TableName.WaterMeter, nameof(TableName.WaterMeter));
+            _CreateIndividual(TableName.RequestIndividual, nameof(TableName.RequestIndividual), TableName.RequestWaterMeter, nameof(TableName.RequestWaterMeter));
         }
         private void CreateIndividualEstateRelationType()
         {
@@ -324,21 +324,21 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
-        private void _CreateIndividualEstate(TableName table, string nameOfTable)
+        private void _CreateIndividualEstate(TableName table, string nameOfTable, TableName individualTable, string individualName, TableName estateTable, string estateName)
         {            
             Create.Table(nameOfTable).InSchema(_schema)
                 .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable().Identity()
-                .WithColumn("IndividualId").AsInt32().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.Individual, table), _schema, nameof(TableName.Individual), Id)
+                .WithColumn($"IndividualId").AsInt32().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(individualTable, table), _schema, individualName, Id)
                 .WithColumn("EstateId").AsInt32().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.Estate, table), _schema, nameof(TableName.Estate), Id)
+                    .ForeignKey(NamingHelper.Fk(estateTable, table), _schema, estateName, Id)
                 .WithColumn("IndividualEstateRelationTypeId").AsInt16().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.IndividualEstateRelationType, table), _schema, nameof(TableName.IndividualEstateRelationType), Id);
         }
         private void CreateIndividualEstates()
         {
-            _CreateIndividualEstate(TableName.IndividualEstate, nameof(TableName.IndividualEstate));
-            _CreateIndividualEstate(TableName.RequestIndividualEstate, nameof(TableName.RequestIndividualEstate));
+            _CreateIndividualEstate(TableName.IndividualEstate, nameof(TableName.IndividualEstate), TableName.Individual, nameof(TableName.Individual), TableName.Estate, nameof(TableName.Estate));
+            _CreateIndividualEstate(TableName.RequestIndividualEstate, nameof(TableName.RequestIndividualEstate), TableName.RequestIndividual, nameof(TableName.RequestIndividual), TableName.RequestEstate, nameof(TableName.RequestIndividual));
         }
 
         private void CreateIndividualTagDefinition()
