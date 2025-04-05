@@ -32,18 +32,49 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
              .ToList();
             tableNames.ForEach(t => Delete.Table(t));
         }
+        private void CreateWorkflowStatus()
+        {
+            var table = TableName.WorkflowStatus;
+            Create.Table(nameof(TableName.WorkflowStatus)).InSchema(_schema)
+                .WithColumn(Id).AsInt16().PrimaryKey()
+                .WithColumn("Title").AsString(_255).NotNullable();//created, published, ...
+        }
         private void CreateWorkflow()
         {
             var table = TableName.Workflow;
+<<<<<<< HEAD
             Create.Table("Workflows")
                 .WithColumn("WorkflowId").AsInt32()//Id
                 .WithColumn("Title").AsString(_255).NotNullable().Unique(NamingHelper.Uq(table, "Title"))
+=======
+            Create.Table("Workflow").InSchema(_schema)
+                .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()                
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Name").AsAnsiString(_31)
+                .WithColumn("JsonDefinition").AsString(int.MaxValue).Nullable()
+>>>>>>> c37947236e070bdc467d5ea27c49cf971e406758
                 .WithColumn("Version").AsInt16()
                 .WithColumn("ValidFrom").AsDateTime().NotNullable()
                 .WithColumn("ValidTo").AsDateTime().Nullable()
-                .WithColumn("Status").AsString(_255).NotNullable();//created, published, ...
+                .WithColumn("WorkflowStatusId").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.WorkflowStatus, table), _schema, nameof(TableName.WorkflowStatus), Id);
+               
         }
+<<<<<<< HEAD
         private void CreateWorkflowInstances()
+=======
+        private void _CreateWorkflowVariable()
+        {
+            Create.Table("Variables")
+           .WithColumn("VariableId").AsInt32().PrimaryKey().Identity()
+           .WithColumn("InstanceId").AsString(36).NotNullable().ForeignKey("WorkflowInstances", "InstanceGuidId")
+           .WithColumn("Name").AsString(255).NotNullable()
+           .WithColumn("Value").AsString(255).Nullable()
+           .WithColumn("Type").AsString(50).Nullable()
+           .WithColumn("Scope").AsString(50).Nullable();
+        }
+        private void _CreateWorkflowInstance()
+>>>>>>> c37947236e070bdc467d5ea27c49cf971e406758
         {
             Create.Table("WorkflowInstances")
           .WithColumn("InstanceGuidId").AsString(36).PrimaryKey()
@@ -67,23 +98,23 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
         }
        
 
-        private void CreateAssignAlgorithm()
+        private void _CreateAssignAlgorithm()
         {
 
         }
-        private void CreateStateType()
+        private void _CreateStateType()
         {
 
         }
-        private void CreateState()
+        private void _CreateState()
         {
 
         }
-        private void CreateActivityType()
+        private void _CreateActivityType()
         {
 
         }
-        private void CreateActivity()
+        private void _CreateActivity()
         {
             Create.Table("Activities")
            .WithColumn("ActivityId").AsInt32().PrimaryKey().Identity()
@@ -97,6 +128,7 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
            .WithColumn("CompletedDate").AsDateTime().Nullable();
         }
 
+<<<<<<< HEAD
        
         private void CreateActivityInstance()
         {
@@ -110,6 +142,9 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
            .WithColumn("Data").AsString(int.MaxValue).Nullable();
         }
         private void CreateActivityEvent()
+=======
+        private void _CreateActivityEvent()
+>>>>>>> c37947236e070bdc467d5ea27c49cf971e406758
         {
             Create.Table("Events")
            .WithColumn("EventId").AsInt32().PrimaryKey().Identity()
@@ -121,7 +156,23 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
 
         }
 
+<<<<<<< HEAD
         private void CreateTransition()
+=======
+        private void _CreateActivityInstance()
+        {
+            Create.Table("ActivityInstances")
+           .WithColumn("ActivityInstanceId").AsInt32().PrimaryKey().Identity()
+           .WithColumn("ActivityId").AsInt32().NotNullable().ForeignKey("Activities", "ActivityId")
+           .WithColumn("InstanceId").AsString(36).NotNullable().ForeignKey("WorkflowInstances", "InstanceGuidId")
+           .WithColumn("StartedDate").AsDateTime().Nullable()
+           .WithColumn("CompletedDate").AsDateTime().Nullable()
+           .WithColumn("Status").AsString(50).NotNullable()
+           .WithColumn("Data").AsString(int.MaxValue).Nullable();
+        }
+       
+        private void _CreateTransition()
+>>>>>>> c37947236e070bdc467d5ea27c49cf971e406758
         {
             Create.Table("Transitions")
            .WithColumn("TransitionId").AsInt32().PrimaryKey().Identity()
