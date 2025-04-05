@@ -8,9 +8,7 @@ namespace Aban360.ClaimPool.Domain.Features.WasteWater.Entities;
 [Table(nameof(Siphon), Schema = TableSchema.Name)]
 public class Siphon: SiphonBase
 {
-    public int WaterMeterId { get; set; }
-
-    public virtual WaterMeter WaterMeter { get; set; } = null!;
+    public virtual WaterMeter WaterMeter { get; set; } = null!;//WaterMeterSiphon??
 
     public virtual ICollection<Siphon> InversePrevious { get; set; } = new List<Siphon>();
 
