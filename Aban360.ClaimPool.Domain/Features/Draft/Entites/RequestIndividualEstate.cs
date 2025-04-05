@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
 {
+    [Table(nameof(RequestIndividualEstate))]
     public class RequestIndividualEstate:IndividualEstateBase
     {
         [ForeignKey(nameof(EstateId))]

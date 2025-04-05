@@ -8,6 +8,6 @@
         public string? PhoneNumbers { get; set; }
         public string? MobileNumbers { get; set; }
         public short IndividualTypeId { get; set; }
-        public ICollection<int>? TagIds { get; set; }
+        public ICollection<short>? TagIds { get; set; }
     }
 }

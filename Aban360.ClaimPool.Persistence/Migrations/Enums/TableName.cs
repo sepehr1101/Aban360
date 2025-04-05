@@ -16,6 +16,7 @@
         RequestIndividualEstate,
         IndividualTagDefinition,
         IndividualTag,
+        RequestIndividualTag,
         Usage,
         Guild,
         Profession,
@@ -31,6 +32,7 @@
         RequestWaterMeter,
         WaterMeterTagDefinition,
         WaterMeterTag,
+        RequestWaterMeterTag,
         ChangeMeterReason,
 
         SiphonDiameter,
