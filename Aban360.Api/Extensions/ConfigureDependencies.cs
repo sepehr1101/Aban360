@@ -9,6 +9,8 @@ using Aban360.ReportPool.Persistence.Extentions;
 using Aban360.CalculationPool.Persistence.Extensions;
 using Aban360.MeterPool.Persistence.Extentions;
 using Aban360.MeterPool.Application.Extensions;
+using Aban360.WorkflowPool.Persistence.Extensions;
+using Aban360.WorkflowPool.Application.Extensions;
 
 namespace Aban360.Api.Extensions
 {
@@ -22,6 +24,7 @@ namespace Aban360.Api.Extensions
             services.AddReportPoolDI();
             services.AddCalculationPoolDI();
             services.AddMeterPoolDI();
+            services.AddWorkflowPoolDI();
         }
 
         private static void AddUserPoolDI(this IServiceCollection services)
@@ -55,6 +58,11 @@ namespace Aban360.Api.Extensions
         {
             services.AddMeterPoolApplicationInjections();
             services.AddMeterPoolPersistenceInjections();
+        }
+        private static void AddWorkflowPoolDI(this IServiceCollection services)
+        {
+            services.AddWorkflowPersistenceInjections();
+            services.AddWorkflowPoolApplicationInjections();
         }
     }
 }

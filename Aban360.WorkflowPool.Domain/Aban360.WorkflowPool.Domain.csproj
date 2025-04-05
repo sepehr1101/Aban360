@@ -7,10 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Management\" />
-    <Folder Include="Features\Assignment\" />
-    <Folder Include="Features\Execution\" />
-    <Folder Include="Features\Reporting\" />
+    <Folder Include="Features\Trigger\" />
   </ItemGroup>
 
 </Project>
