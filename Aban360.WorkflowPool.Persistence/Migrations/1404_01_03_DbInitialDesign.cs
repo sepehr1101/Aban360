@@ -32,18 +32,29 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
              .ToList();
             tableNames.ForEach(t => Delete.Table(t));
         }
+        private void CreateWorkflowStatus()
+        {
+            var table = TableName.WorkflowStatus;
+            Create.Table(nameof(TableName.WorkflowStatus)).InSchema(_schema)
+                .WithColumn(Id).AsInt16().PrimaryKey()
+                .WithColumn("Title").AsString(_255).NotNullable();//created, published, ...
+        }
         private void CreateWorkflow()
         {
             var table = TableName.Workflow;
-            Create.Table("Workflow")
-                .WithColumn(Id).AsInt32()
-                .WithColumn("Title").AsString(_255).NotNullable().Unique(NamingHelper.Uq(table, "Title"))
+            Create.Table("Workflow").InSchema(_schema)
+                .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()                
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Name").AsAnsiString(_31)
+                .WithColumn("JsonDefinition").AsString(int.MaxValue).Nullable()
                 .WithColumn("Version").AsInt16()
                 .WithColumn("ValidFrom").AsDateTime().NotNullable()
                 .WithColumn("ValidTo").AsDateTime().Nullable()
-                .WithColumn("Status").AsString(_255).NotNullable();//created, published, ...
+                .WithColumn("WorkflowStatusId").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.WorkflowStatus, table), _schema, nameof(TableName.WorkflowStatus), Id);
+               
         }
-        private void CreateWorkflowVariable()
+        private void _CreateWorkflowVariable()
         {
             Create.Table("Variables")
            .WithColumn("VariableId").AsInt32().PrimaryKey().Identity()
@@ -53,7 +64,7 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
            .WithColumn("Type").AsString(50).Nullable()
            .WithColumn("Scope").AsString(50).Nullable();
         }
-        private void CreateWorkflowInstance()
+        private void _CreateWorkflowInstance()
         {
             Create.Table("WorkflowInstances")
           .WithColumn("InstanceGuidId").AsString(36).PrimaryKey()
@@ -66,23 +77,23 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
           .WithColumn("Data").AsString(int.MaxValue).Nullable();
         }
 
-        private void CreateAssignAlgorithm()
+        private void _CreateAssignAlgorithm()
         {
 
         }
-        private void CreateStateType()
+        private void _CreateStateType()
         {
 
         }
-        private void CreateState()
+        private void _CreateState()
         {
 
         }
-        private void CreateActivityType()
+        private void _CreateActivityType()
         {
 
         }
-        private void CreateActivity()
+        private void _CreateActivity()
         {
             Create.Table("Activities")
            .WithColumn("ActivityId").AsInt32().PrimaryKey().Identity()
@@ -96,7 +107,7 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
            .WithColumn("CompletedDate").AsDateTime().Nullable();
         }
 
-        private void CreateActivityEvent()
+        private void _CreateActivityEvent()
         {
             Create.Table("Events")
            .WithColumn("EventId").AsInt32().PrimaryKey().Identity()
@@ -108,7 +119,7 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
 
         }
 
-        private void CreateActivityInstance()
+        private void _CreateActivityInstance()
         {
             Create.Table("ActivityInstances")
            .WithColumn("ActivityInstanceId").AsInt32().PrimaryKey().Identity()
@@ -120,7 +131,7 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
            .WithColumn("Data").AsString(int.MaxValue).Nullable();
         }
        
-        private void CreateTransition()
+        private void _CreateTransition()
         {
             Create.Table("Transitions")
            .WithColumn("TransitionId").AsInt32().PrimaryKey().Identity()
