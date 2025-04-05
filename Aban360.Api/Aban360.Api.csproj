@@ -86,6 +86,8 @@
     <ProjectReference Include="..\Aban360.UserPool.GatewayAdhoc\Aban360.UserPool.GatewayAdhoc.csproj" />
     <ProjectReference Include="..\Aban360.UserPool.Infrastructure\Aban360.UserPool.Infrastructure.csproj" />
     <ProjectReference Include="..\Aban360.UserPool.Persistence\Aban360.UserPool.Persistence.csproj" />
+    <ProjectReference Include="..\Aban360.WorkflowPool.Application\Aban360.WorkflowPool.Application.csproj" />
+    <ProjectReference Include="..\Aban360.WorkflowPool.Persistence\Aban360.WorkflowPool.Persistence.csproj" />
   </ItemGroup>
 
   <ItemGroup>

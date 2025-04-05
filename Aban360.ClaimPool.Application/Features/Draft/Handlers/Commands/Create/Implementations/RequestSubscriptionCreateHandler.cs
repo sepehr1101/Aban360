@@ -99,19 +99,6 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
 
                 number++;
             }
-            //var individualTags = createDto.Individuals.ElementAt(0).TagIds.ToList();
-            //individualTags.ForEach(item =>
-            //{
-            //    RequestIndividualTag requestIndividualTag = new()
-            //    {
-            //        InsertLogInfo = "loginfo",
-            //        Hash = "hash",
-            //        RequestIndividual = estate.IndividualEstates.First().RequestIndividual,
-            //        IndividualTagDefinitionId = item
-            //    };
-            //    estate.IndividualEstates.First().RequestIndividual.IndividualTags.Add(requestIndividualTag);
-
-            //});
 
 
 

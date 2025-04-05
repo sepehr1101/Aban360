@@ -6,7 +6,7 @@ namespace Aban360.WorkflowPool.Persistence.Extensions
 {
     public static class ConfigureServices
     {
-        public static void AddClaimPoolPersistenceInjections(this IServiceCollection services)
+        public static void AddWorkflowPoolPersistenceInjections(this IServiceCollection services)
         {
             services.Scan(scan =>
                 scan

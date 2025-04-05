@@ -10,7 +10,6 @@
     <Folder Include="DbSeeder\DataScript\" />
     <Folder Include="DbSeeder\Implementations\" />
     <Folder Include="Exceptions\" />
-    <Folder Include="Features\Assignment\" />
     <Folder Include="Features\Execution\" />
     <Folder Include="Features\Management\" />
     <Folder Include="Features\Reporting\" />
@@ -32,6 +31,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Aban360.Common.Db\Aban360.Common.Db.csproj" />
     <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
+    <ProjectReference Include="..\Aban360.WorkflowPool.Domain\Aban360.WorkflowPool.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

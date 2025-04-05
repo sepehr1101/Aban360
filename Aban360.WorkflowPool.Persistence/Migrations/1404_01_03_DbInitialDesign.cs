@@ -35,25 +35,15 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
         private void CreateWorkflow()
         {
             var table = TableName.Workflow;
-            Create.Table("Workflow")
-                .WithColumn(Id).AsInt32()
+            Create.Table("Workflows")
+                .WithColumn("WorkflowId").AsInt32()//Id
                 .WithColumn("Title").AsString(_255).NotNullable().Unique(NamingHelper.Uq(table, "Title"))
                 .WithColumn("Version").AsInt16()
                 .WithColumn("ValidFrom").AsDateTime().NotNullable()
                 .WithColumn("ValidTo").AsDateTime().Nullable()
                 .WithColumn("Status").AsString(_255).NotNullable();//created, published, ...
         }
-        private void CreateWorkflowVariable()
-        {
-            Create.Table("Variables")
-           .WithColumn("VariableId").AsInt32().PrimaryKey().Identity()
-           .WithColumn("InstanceId").AsString(36).NotNullable().ForeignKey("WorkflowInstances", "InstanceGuidId")
-           .WithColumn("Name").AsString(255).NotNullable()
-           .WithColumn("Value").AsString(255).Nullable()
-           .WithColumn("Type").AsString(50).Nullable()
-           .WithColumn("Scope").AsString(50).Nullable();
-        }
-        private void CreateWorkflowInstance()
+        private void CreateWorkflowInstances()
         {
             Create.Table("WorkflowInstances")
           .WithColumn("InstanceGuidId").AsString(36).PrimaryKey()
@@ -65,6 +55,17 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
           .WithColumn("Status").AsString(50).NotNullable()
           .WithColumn("Data").AsString(int.MaxValue).Nullable();
         }
+        private void CreateWorkflowVariable()
+        {
+            Create.Table("Variables")
+           .WithColumn("VariableId").AsInt32().PrimaryKey().Identity()
+           .WithColumn("InstanceId").AsString(36).NotNullable().ForeignKey("WorkflowInstances", "InstanceGuidId")
+           .WithColumn("Name").AsString(255).NotNullable()
+           .WithColumn("Value").AsString(255).Nullable()
+           .WithColumn("Type").AsString(50).Nullable()
+           .WithColumn("Scope").AsString(50).Nullable();
+        }
+       
 
         private void CreateAssignAlgorithm()
         {
@@ -96,6 +97,18 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
            .WithColumn("CompletedDate").AsDateTime().Nullable();
         }
 
+       
+        private void CreateActivityInstance()
+        {
+            Create.Table("ActivityInstances")
+           .WithColumn("ActivityInstanceId").AsInt32().PrimaryKey().Identity()
+           .WithColumn("ActivityId").AsInt32().NotNullable().ForeignKey("Activities", "ActivityId")
+           .WithColumn("InstanceId").AsString(36).NotNullable().ForeignKey("WorkflowInstances", "InstanceGuidId")
+           .WithColumn("StartedDate").AsDateTime().Nullable()
+           .WithColumn("CompletedDate").AsDateTime().Nullable()
+           .WithColumn("Status").AsString(50).NotNullable()
+           .WithColumn("Data").AsString(int.MaxValue).Nullable();
+        }
         private void CreateActivityEvent()
         {
             Create.Table("Events")
@@ -108,18 +121,6 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
 
         }
 
-        private void CreateActivityInstance()
-        {
-            Create.Table("ActivityInstances")
-           .WithColumn("ActivityInstanceId").AsInt32().PrimaryKey().Identity()
-           .WithColumn("ActivityId").AsInt32().NotNullable().ForeignKey("Activities", "ActivityId")
-           .WithColumn("InstanceId").AsString(36).NotNullable().ForeignKey("WorkflowInstances", "InstanceGuidId")
-           .WithColumn("StartedDate").AsDateTime().Nullable()
-           .WithColumn("CompletedDate").AsDateTime().Nullable()
-           .WithColumn("Status").AsString(50).NotNullable()
-           .WithColumn("Data").AsString(int.MaxValue).Nullable();
-        }
-       
         private void CreateTransition()
         {
             Create.Table("Transitions")
