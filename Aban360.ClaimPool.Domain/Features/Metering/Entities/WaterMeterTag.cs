@@ -1,21 +1,13 @@
 ﻿using Aban360.ClaimPool.Domain.Constants;
-using Aban360.Common.BaseEntities;
+using Aban360.ClaimPool.Domain.Features._Base.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.Metering.Entities;
 
 [Table(nameof(WaterMeterTag), Schema = TableSchema.Name)]
-public class WaterMeterTag:IHashableEntity
+public class WaterMeterTag:WaterMeterTagBase
 {
-    public int Id { get; set; }
-
-    public int WaterMeterId { get; set; }
-
-    public short WaterMeterTagDefinitionId { get; set; }
-
-    public string? Value { get; set; }
-
+    [ForeignKey(nameof(WaterMeterId))]
     public virtual WaterMeter WaterMeter { get; set; } = null!;
 
-    public virtual WaterMeterTagDefinition WaterMeterTagDefinition { get; set; } = null!;
 }

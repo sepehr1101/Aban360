@@ -264,13 +264,13 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Color").AsString(_15).Nullable();
         }
 
-        private void CreateWaterMeterTag()
+        private void _CreateWaterMeterTag(TableName table,string nameOfTable,TableName waterMeterTable,string waterMeterName)
         {
-            var table = TableName.WaterMeterTag;
-            Create.Table(nameof(TableName.WaterMeterTag)).InSchema(_schema)
+           // var table = TableName.WaterMeterTag;
+            Create.Table(nameOfTable).InSchema(_schema)
                 .WithColumn(Id).AsInt32().Identity().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("WaterMeterId").AsInt32().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.WaterMeter, table), _schema, nameof(TableName.WaterMeter), Id)
+                    .ForeignKey(NamingHelper.Fk(waterMeterTable, table), _schema, waterMeterName, Id)
                 .WithColumn("WaterMeterTagDefinitionId").AsInt16().NotNullable()
                    .ForeignKey(NamingHelper.Fk(TableName.WaterMeterTagDefinition, table), _schema, nameof(TableName.WaterMeterTagDefinition), Id)
                 .WithColumn("Value").AsString(_255).Nullable()
@@ -281,7 +281,14 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
         }
 
+        private void CreateWaterMeterTag()
+        {
+            _CreateWaterMeterTag(TableName.WaterMeterTag,nameof(TableName.WaterMeterTag),
+                TableName.WaterMeter,nameof(TableName.WaterMeter));
 
+            _CreateWaterMeterTag(TableName.RequestWaterMeterTag, nameof(TableName.RequestWaterMeterTag), 
+                TableName.RequestWaterMeter, nameof(TableName.RequestWaterMeter));
+        }
 
         private void CreateIndividualType()
         {
@@ -349,13 +356,12 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn("Color").AsString(_15).Nullable();
         }
-        private void CreateIndividualTag()
+        private void _CreateIndividualTag(TableName table, string nameOfTable, TableName individualTable, string individualName)
         {
-            var table = TableName.IndividualTag;
-            Create.Table(nameof(TableName.IndividualTag)).InSchema(_schema)
+            Create.Table(nameOfTable).InSchema(_schema)
                 .WithColumn(Id).AsInt32().Identity().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("IndividualId").AsInt32().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.Individual, table), _schema, nameof(TableName.Individual), Id)
+                    .ForeignKey(NamingHelper.Fk(individualTable, table), _schema, individualName, Id)
                 .WithColumn("IndividualTagDefinitionId").AsInt16().NotNullable()
                    .ForeignKey(NamingHelper.Fk(TableName.IndividualTagDefinition, table), _schema, nameof(TableName.IndividualTagDefinition), Id)
                 .WithColumn("Value").AsString(_255).Nullable()
@@ -366,9 +372,14 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
         }
 
+        private void CreateIndividualTag()
+        {
+            _CreateIndividualTag(TableName.IndividualTag, nameof(TableName.IndividualTag),
+                TableName.Individual, nameof(TableName.Individual));
 
-
-
+            _CreateIndividualTag(TableName.RequestIndividualTag, nameof(TableName.RequestIndividualTag),
+                TableName.RequestIndividual, nameof(TableName.RequestIndividual));
+        }
 
 
         private void CreateSiphonDiameter()
