@@ -1,10 +1,13 @@
 ﻿using Aban360.ClaimPool.Domain.Features._Base.Entities;
 using Aban360.ClaimPool.Domain.Features.People.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
 {
+    [Table(nameof(RequestIndividual))]
     public class RequestIndividual: IndividualBase
     {
+        [ForeignKey(nameof(WaterMeterId))]
         public virtual RequestWaterMeter RequestWaterMeter { get; set; }
         public virtual IndividualType IndividualType { get; set; } = null!;
         public virtual ICollection<RequestIndividualEstate> IndividualEstates { get; set; } = new List<RequestIndividualEstate>();

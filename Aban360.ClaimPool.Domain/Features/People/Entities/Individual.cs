@@ -8,8 +8,6 @@ namespace Aban360.ClaimPool.Domain.Features.People.Entities;
 [Table(nameof(Individual), Schema = TableSchema.Name)]
 public class Individual: IndividualBase
 {
-    public int WaterMeterId { get; set; }
-
     public virtual WaterMeter WaterMeter { get; set; } = null!;
 
     public virtual IndividualType IndividualType { get; set; } = null!;

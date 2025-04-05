@@ -1,12 +1,14 @@
 ﻿using Aban360.ClaimPool.Domain.Features._Base.Entities;
 using Aban360.ClaimPool.Domain.Features.WasteWater.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
 {
+    [Table(nameof(RequestSiphon))]
     public class RequestSiphon: SiphonBase
     {
-
-        public virtual RequestWaterMeter RequestWaterMeter { get; set; }
+        [ForeignKey(nameof(WaterMeterId))]
+        public virtual RequestWaterMeter RequestWaterMeter { get; set; }// WaterMeterSiphon
 
         public virtual ICollection<RequestSiphon> InversePrevious { get; set; } = new List<RequestSiphon>();
 

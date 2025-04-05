@@ -76,7 +76,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
         private void _CreateEstate(TableName table, string nameOfTable)
-        {            
+        {
             Create.Table(nameOfTable).InSchema(_schema)
                 .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable().Identity()
                 .WithColumn("ConstructionTypeId").AsInt16().NotNullable()
@@ -118,11 +118,11 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
         }
         private void _CreateFlat(TableName table, string nameOfTable, TableName estateTable, string estateName)
-        {           
+        {
             Create.Table(nameOfTable).InSchema(_schema)
                 .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable().Identity()
                 .WithColumn("EstateId").AsInt32().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.Estate, table), _schema, nameof(TableName.Estate), Id)
+                    .ForeignKey(NamingHelper.Fk(estateTable, table), _schema, estateName, Id)
                 .WithColumn("PostalCode").AsFixedLengthAnsiString(10).Nullable()
                 .WithColumn("Storey").AsInt16()
                 .WithColumn("Description").AsString(_1023).Nullable();
@@ -135,9 +135,9 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         }
         private void CreateFlats()
         {
-            _CreateFlat(TableName.RequestFlat, nameof(TableName.RequestFlat),TableName.Estate, nameof(TableName.Estate));
-            _CreateFlat(TableName.Flat, nameof(TableName.Flat), TableName.RequestEstate, nameof(TableName.RequestEstate));
-           
+            _CreateFlat(TableName.Flat, nameof(TableName.Flat), TableName.Estate, nameof(TableName.Estate));
+            _CreateFlat(TableName.RequestFlat, nameof(TableName.RequestFlat), TableName.RequestEstate, nameof(TableName.RequestEstate));
+
         }
         private void CreateWaterResource()
         {
@@ -291,7 +291,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
         private void _CreateIndividual(TableName table, string nameOfTable, TableName watermeterTable, string watermeterName)
-        {           
+        {
             Create.Table(nameOfTable).InSchema(_schema)
                 .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable().Identity()
                 .WithColumn($"WaterMeterId").AsInt32().NotNullable()
@@ -325,7 +325,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
         private void _CreateIndividualEstate(TableName table, string nameOfTable, TableName individualTable, string individualName, TableName estateTable, string estateName)
-        {            
+        {
             Create.Table(nameOfTable).InSchema(_schema)
                 .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable().Identity()
                 .WithColumn($"IndividualId").AsInt32().NotNullable()
@@ -392,12 +392,12 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
-        private void _CreateSiphon(TableName table, string nameOfTable)
-        {            
+        private void _CreateSiphon(TableName table, string nameOfTable, TableName waterMeterTable, string waterMeterName)
+        {
             Create.Table(nameOfTable).InSchema(_schema)
               .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
-                .WithColumn($"{TableName.WaterMeter}Id").AsInt32().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.WaterMeter, table), _schema, nameof(TableName.WaterMeter), Id)
+                .WithColumn("WaterMeterId").AsInt32().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(waterMeterTable, table), _schema, waterMeterName, Id)
               .WithColumn("InstallationLocation").AsString(_255).Nullable()
               .WithColumn("InstallationDate").AsAnsiString(10).Nullable()
               .WithColumn("SiphonDiameterId").AsInt16().NotNullable()
@@ -414,25 +414,32 @@ namespace Aban360.ClaimPool.Persistence.Migrations
               .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
               .WithColumn("RemoveLogInfo").AsString(int.MinValue).Nullable()
               .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
-        }       
-        private void _CreateWaterMeterSiphon(TableName table, string nameOfTable)
-        {            
+        }
+        private void _CreateWaterMeterSiphon(TableName table, string nameOfTable,TableName waterMeterTable,string waterMeterName,TableName siphonTable,string siphonName)
+        {
             Create.Table(nameOfTable).InSchema(_schema)
               .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
               .WithColumn("WaterMeterId").AsInt32().NotNullable()
-                  .ForeignKey(NamingHelper.Fk(TableName.WaterMeter, table), _schema, nameof(TableName.WaterMeter), Id)
+                  .ForeignKey(NamingHelper.Fk(waterMeterTable, table), _schema, waterMeterName, Id)
               .WithColumn("SiphonId").AsInt32().NotNullable()
-                  .ForeignKey(NamingHelper.Fk(TableName.Siphon, table), _schema, nameof(TableName.Siphon), Id);
+                  .ForeignKey(NamingHelper.Fk(siphonTable, table), _schema, siphonName, Id);
         }
         private void CreateSiphons()
         {
-            _CreateSiphon(TableName.Siphon, nameof(TableName.Siphon));
-            _CreateSiphon(TableName.RequestSiphon, nameof(TableName.RequestSiphon));
+            _CreateSiphon(TableName.Siphon, nameof(TableName.Siphon),
+                TableName.WaterMeter,nameof(TableName.WaterMeter));
+            _CreateSiphon(TableName.RequestSiphon, nameof(TableName.RequestSiphon),
+                TableName.RequestWaterMeter, nameof(TableName.RequestWaterMeter));
         }
         private void CreateWaterMeterSiphon()
         {
-            _CreateWaterMeterSiphon(TableName.WaterMeterSiphon, nameof(TableName.WaterMeterSiphon));
-            _CreateWaterMeterSiphon(TableName.RequestWaterMeterSiphon, nameof(TableName.RequestWaterMeterSiphon));
+            _CreateWaterMeterSiphon(TableName.WaterMeterSiphon, nameof(TableName.WaterMeterSiphon),
+                TableName.WaterMeter,nameof(TableName.WaterMeter),
+                TableName.Siphon,nameof(TableName.Siphon));
+
+            _CreateWaterMeterSiphon(TableName.RequestWaterMeterSiphon, nameof(TableName.RequestWaterMeterSiphon),
+                TableName.RequestWaterMeter, nameof(TableName.RequestWaterMeter),
+                TableName.RequestSiphon,nameof(TableName.RequestSiphon));
         }
 
         private void CreateGateway()

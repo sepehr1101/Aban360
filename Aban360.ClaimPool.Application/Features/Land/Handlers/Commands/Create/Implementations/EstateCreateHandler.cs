@@ -25,6 +25,10 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
         public async Task Handle(EstateCreateDto createDto, CancellationToken cancellationToken)
         {
             Estate estate = _mapper.Map<Estate>(createDto);
+            estate.ValidFrom = DateTime.Now;
+            estate.InsertLogInfo = "loginfo";
+            estate.Hash = "hash";
+
             await _commandService.Add(estate);
         }
     }

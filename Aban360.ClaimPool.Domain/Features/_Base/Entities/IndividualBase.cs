@@ -4,6 +4,8 @@ public class IndividualBase
 {
     public int Id { get; set; }
     public short IndividualTypeId { get; set; }
+    public int WaterMeterId { get; set; }
+
     public string FullName { get; set; } = null!;
 
     public string? NationalId { get; set; }

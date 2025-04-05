@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
 {
+    [Table(nameof(RequestWaterMeterSiphon))]
     public class RequestWaterMeterSiphon:WaterMeterSiphonBase
     {
         [ForeignKey(nameof(SiphonId))]
