@@ -2,6 +2,7 @@
 {
     internal enum TableName
     {
+        WorkflowStatus,
         Workflow,
         WorkflowVariable,
         WorkflowInstance,       
