@@ -1,6 +1,6 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.WorkflowPool.Application.Features.Assignment.Handlers.Commands.Update.Contracts;
-using Aban360.WorkflowPool.Domain.Features.Assignment.Dto.Commands;
+using Aban360.WorkflowPool.Domain.Features.Design.Dto.Commands;
 using Aban360.WorkflowPool.Persistence.Contexts.Contracts;
 using Microsoft.AspNetCore.Mvc;
 

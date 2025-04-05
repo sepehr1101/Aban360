@@ -1,4 +1,4 @@
-﻿using Aban360.WorkflowPool.Domain.Features.Design;
+﻿using Aban360.WorkflowPool.Domain.Features.Design.Entities;
 
 namespace Aban360.WorkflowPool.Persistence.Features.Design.Commands.Contracts
 {

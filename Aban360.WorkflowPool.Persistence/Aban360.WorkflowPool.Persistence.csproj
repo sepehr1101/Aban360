@@ -7,16 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\Assignment\**" />
+    <EmbeddedResource Remove="Features\Assignment\**" />
+    <None Remove="Features\Assignment\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="DbSeeder\DataScript\" />
     <Folder Include="Exceptions\" />
-<<<<<<< HEAD
-    <Folder Include="Features\Execution\" />
-    <Folder Include="Features\Management\" />
-    <Folder Include="Features\Reporting\" />
-=======
-    <Folder Include="Features\Design\Queries\" />
-    <Folder Include="Features\Trigger\" />
->>>>>>> c37947236e070bdc467d5ea27c49cf971e406758
+    <Folder Include="Features\Trigger\Queries\Contracts\" />
+    <Folder Include="Features\Trigger\Queries\Implementations\" />
   </ItemGroup>
 
   <ItemGroup>

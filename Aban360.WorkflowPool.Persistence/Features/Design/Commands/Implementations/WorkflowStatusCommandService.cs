@@ -1,5 +1,5 @@
 ﻿using Aban360.Common.Extensions;
-using Aban360.WorkflowPool.Domain.Features.Design;
+using Aban360.WorkflowPool.Domain.Features.Design.Entities;
 using Aban360.WorkflowPool.Persistence.Contexts.Contracts;
 using Aban360.WorkflowPool.Persistence.Features.Design.Commands.Contracts;
 using Microsoft.EntityFrameworkCore;

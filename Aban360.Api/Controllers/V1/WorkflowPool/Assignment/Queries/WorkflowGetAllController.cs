@@ -1,7 +1,7 @@
 ﻿using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.WorkflowPool.Application.Features.Assignment.Handlers.Queries.Contracts;
-using Aban360.WorkflowPool.Domain.Features.Assignment.Dto.Queries;
+using Aban360.WorkflowPool.Domain.Features.Design.Dto.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.WorkflowPool.Assignment.Queries
