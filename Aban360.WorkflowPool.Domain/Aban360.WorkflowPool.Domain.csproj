@@ -7,13 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-<<<<<<< HEAD
-    <Folder Include="Features\Management\" />
-    <Folder Include="Features\Execution\" />
-    <Folder Include="Features\Reporting\" />
-=======
+    <Compile Remove="Features\Execution\**" />
+    <Compile Remove="Features\Management\**" />
+    <Compile Remove="Features\Reporting\**" />
+    <EmbeddedResource Remove="Features\Execution\**" />
+    <EmbeddedResource Remove="Features\Management\**" />
+    <EmbeddedResource Remove="Features\Reporting\**" />
+    <None Remove="Features\Execution\**" />
+    <None Remove="Features\Management\**" />
+    <None Remove="Features\Reporting\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Assignment\" />
     <Folder Include="Features\Trigger\" />
->>>>>>> c37947236e070bdc467d5ea27c49cf971e406758
   </ItemGroup>
 
 </Project>

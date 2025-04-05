@@ -7,15 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-<<<<<<< HEAD
-    <Folder Include="Features\Execution\" />
-    <Folder Include="Features\Management\" />
-    <Folder Include="Features\Reporting\" />
+    <Folder Include="Features\" />
   </ItemGroup>
 
   <ItemGroup>
-=======
->>>>>>> c37947236e070bdc467d5ea27c49cf971e406758
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
@@ -24,12 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-<<<<<<< HEAD
     <ProjectReference Include="..\Aban360.WorkflowPool.Domain\Aban360.WorkflowPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.WorkflowPool.Persistence\Aban360.WorkflowPool.Persistence.csproj" />
-=======
-    <Folder Include="Features\" />
->>>>>>> c37947236e070bdc467d5ea27c49cf971e406758
   </ItemGroup>
   
 </Project>
