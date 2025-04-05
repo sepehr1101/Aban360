@@ -1,6 +1,6 @@
 ﻿using Aban360.WorkflowPool.Domain.Features.Design.Entities;
 
-namespace Aban360.WorkflowPool.Persistence.Features.Trigger.Queries.Contracts
+namespace Aban360.WorkflowPool.Persistence.Features.Design.Queries.Contracts
 {
     public interface IWorkflowQueryService
     {

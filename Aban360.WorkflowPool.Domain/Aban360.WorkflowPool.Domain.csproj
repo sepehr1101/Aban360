@@ -19,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Assignment\" />
     <Folder Include="Features\Trigger\" />
   </ItemGroup>
 

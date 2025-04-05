@@ -1,10 +1,10 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.WorkflowPool.Domain.Features.Design.Entities;
 using Aban360.WorkflowPool.Persistence.Contexts.Contracts;
-using Aban360.WorkflowPool.Persistence.Features.Trigger.Queries.Contracts;
+using Aban360.WorkflowPool.Persistence.Features.Design.Queries.Contracts;
 using Microsoft.EntityFrameworkCore;
 
-namespace Aban360.WorkflowPool.Persistence.Features.Trigger.Queries.Implementations
+namespace Aban360.WorkflowPool.Persistence.Features.Design.Queries.Implementations
 {
     internal sealed class WorkflowQueryService : IWorkflowQueryService
     {

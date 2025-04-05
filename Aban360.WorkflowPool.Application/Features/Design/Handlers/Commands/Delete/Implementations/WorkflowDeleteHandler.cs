@@ -2,7 +2,7 @@
 using Aban360.WorkflowPool.Application.Features.Assignment.Handlers.Commands.Delete.Contracts;
 using Aban360.WorkflowPool.Domain.Features.Design.Dto.Commands;
 using Aban360.WorkflowPool.Persistence.Features.Design.Commands.Contracts;
-using Aban360.WorkflowPool.Persistence.Features.Trigger.Queries.Contracts;
+using Aban360.WorkflowPool.Persistence.Features.Design.Queries.Contracts;
 
 namespace Aban360.WorkflowPool.Application.Features.Assignment.Handlers.Commands.Delete.Implementations
 {

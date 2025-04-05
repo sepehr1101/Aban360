@@ -1,7 +1,7 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.WorkflowPool.Application.Features.Assignment.Handlers.Queries.Contracts;
 using Aban360.WorkflowPool.Domain.Features.Design.Dto.Queries;
-using Aban360.WorkflowPool.Persistence.Features.Trigger.Queries.Contracts;
+using Aban360.WorkflowPool.Persistence.Features.Design.Queries.Contracts;
 using AutoMapper;
 
 namespace Aban360.WorkflowPool.Application.Features.Design.Handlers.Queries.Implementations

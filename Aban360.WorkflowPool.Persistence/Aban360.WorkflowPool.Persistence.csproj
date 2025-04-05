@@ -15,7 +15,8 @@
   <ItemGroup>
     <Folder Include="DbSeeder\DataScript\" />
     <Folder Include="Exceptions\" />
-    <Folder Include="Features\Design\Queries\" />
+    <Folder Include="Features\Trigger\Queries\Contracts\" />
+    <Folder Include="Features\Trigger\Queries\Implementations\" />
   </ItemGroup>
 
   <ItemGroup>
