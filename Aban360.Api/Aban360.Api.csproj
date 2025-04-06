@@ -64,6 +64,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Aban360.BloblPool.Persistence\Aban360.BloblPool.Persistence.csproj" />
     <ProjectReference Include="..\Aban360.CalculationPool.Application\Aban360.CalculationPool.Application.csproj" />
     <ProjectReference Include="..\Aban360.CalculationPool.Domain\Aban360.CalculationPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.CalculationPool.GatewayAdhoc\Aban360.CalculationPool.GatewayAdhoc.csproj" />

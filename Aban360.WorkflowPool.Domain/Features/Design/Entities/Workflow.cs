@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Aban360.WorkflowPool.Domain.Constants;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.WorkflowPool.Domain.Features.Design.Entities;
 
@@ -19,7 +20,7 @@ public class Workflow
 
     public DateTime? ValidTo { get; set; }
 
-    public short WorkflowStatusId { get; set; }
+    public WorkflowStatusEnum WorkflowStatusId { get; set; }
 
     public virtual WorkflowStatus WorkflowStatus { get; set; } = null!;
 }

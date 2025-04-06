@@ -25,6 +25,9 @@ namespace Aban360.WorkflowPool.Application.Features.Design.Handlers.Commands.Cre
         public async Task Handle(WorkflowCreateDto createDto, CancellationToken cancellationToken)
         {
             var workflow = _mapper.Map<Workflow>(createDto);
+            workflow.ValidFrom = DateTime.Now;
+            workflow.Name = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 10);
+
             await _workflowCommandService.Add(workflow);
         }
     }

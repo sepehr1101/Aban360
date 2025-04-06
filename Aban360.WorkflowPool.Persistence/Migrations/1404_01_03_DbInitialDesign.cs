@@ -76,17 +76,6 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
           .WithColumn("Status").AsString(50).NotNullable()
           .WithColumn("Data").AsString(int.MaxValue).Nullable();
         }
-        private void CreateWorkflowVariable()
-        {
-            Create.Table("Variables")
-           .WithColumn("VariableId").AsInt32().PrimaryKey().Identity()
-           .WithColumn("InstanceId").AsString(36).NotNullable().ForeignKey("WorkflowInstances", "InstanceGuidId")
-           .WithColumn("Name").AsString(255).NotNullable()
-           .WithColumn("Value").AsString(255).Nullable()
-           .WithColumn("Type").AsString(50).Nullable()
-           .WithColumn("Scope").AsString(50).Nullable();
-        }
-       
 
         private void _CreateAssignAlgorithm()
         {

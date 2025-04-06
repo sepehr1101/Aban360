@@ -6,5 +6,6 @@ namespace Aban360.WorkflowPool.Persistence.Features.Design.Queries.Contracts
     {
         Task<Workflow> Get(int id);
         Task<ICollection<Workflow>> Get();
+        Task<ICollection<Workflow>> GetMaster();
     }
 }
