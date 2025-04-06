@@ -1,4 +1,6 @@
-﻿namespace Aban360.WorkflowPool.Domain.Features.Design.Dto.Queries
+﻿using Aban360.WorkflowPool.Domain.Constants;
+
+namespace Aban360.WorkflowPool.Domain.Features.Design.Dto.Queries
 {
     public record WorkflowGetMasterDto
     {
@@ -8,6 +10,6 @@
         public short Version { get; set; }
         public DateTime ValidFrom { get; set; }
         public DateTime? ValidTo { get; set; }
-        public short WorkflowStatusId { get; set; }
+        public WorkflowStatusEnum WorkflowStatusId { get; set; }
     }
 }
