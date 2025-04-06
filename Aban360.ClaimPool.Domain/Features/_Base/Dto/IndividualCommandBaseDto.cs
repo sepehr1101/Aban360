@@ -1,4 +1,6 @@
-﻿namespace Aban360.ClaimPool.Domain.Features._Base.Dto
+﻿using Aban360.ClaimPool.Domain.Constants;
+
+namespace Aban360.ClaimPool.Domain.Features._Base.Dto
 {
     public record IndividualCommandBaseDto
     {
@@ -8,6 +10,7 @@
         public string? PhoneNumbers { get; set; }
         public string? MobileNumbers { get; set; }
         public short IndividualTypeId { get; set; }
+        public IndividualEstateRelationEnum IndividualEstateRelationTypeId { get; set; }
         public ICollection<short>? TagIds { get; set; }
     }
 }
