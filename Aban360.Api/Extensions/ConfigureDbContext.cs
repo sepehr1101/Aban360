@@ -1,4 +1,5 @@
-﻿using Aban360.CalculationPool.Persistence.Contexts.Implementations;
+﻿using Aban360.BloblPool.Persistence.Contexts.Implementations;
+using Aban360.CalculationPool.Persistence.Contexts.Implementations;
 using Aban360.ClaimPool.Persistence.Contexts.Implementation;
 using Aban360.Common.Db.Interceptors;
 using Aban360.MeterPool.Persistence.Contexts.Implementations;
@@ -20,6 +21,7 @@ namespace Aban360.Api.Extensions
             services.AddCalculationPoolDbContext(configuration, connectionString);
             services.AddMeterPoolDbContext(configuration, connectionString);
             services.AddWorkflowPoolDbContext(configuration, connectionString);
+            services.AddBlobPoolContext(configuration, connectionString);
         }
         private static void AddUserPoolDbContext(this IServiceCollection services, IConfiguration configuration, string connectionString)
         {
@@ -64,7 +66,7 @@ namespace Aban360.Api.Extensions
                 options.AddInterceptors(new RowLevelAuthenticitySaveChangeInterceptor());
             });
         }
-        
+
         private static void AddCalculationPoolDbContext(this IServiceCollection services, IConfiguration configuration1, string connectionString)
         {
             services.AddDbContext<CalculationPoolContext>((sp, options) =>
@@ -109,6 +111,21 @@ namespace Aban360.Api.Extensions
                 options.AddInterceptors(new RowLevelAuthenticitySaveChangeInterceptor());
             });
 
+        }
+
+        private static void AddBlobPoolContext(this IServiceCollection services, IConfiguration configuration1, string connectionString)
+        {
+            services.AddDbContext<BlobPoolContext>((sp, options) =>
+            {
+                options.UseSqlServer(connectionString,
+                    SqlServerDbContextOptionsBuilder =>
+                    {
+                        var munutes = (int)TimeSpan.FromMinutes(3).TotalSeconds;
+                        SqlServerDbContextOptionsBuilder.CommandTimeout(munutes);
+                    });
+                options.AddInterceptors(new PersianYeKeCommandInterceptor());
+                options.AddInterceptors(new RowLevelAuthenticitySaveChangeInterceptor());
+            });
         }
     }
 }
