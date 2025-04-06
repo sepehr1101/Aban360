@@ -2,6 +2,7 @@
 using Aban360.ClaimPool.Domain.Features.Draft.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Draft.Entites;
 using Aban360.ClaimPool.Persistence.Features.Draft.Commands.Contracts;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using AutoMapper;
 using FluentValidation;
@@ -144,7 +145,7 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
             if (!validationResult.IsValid)
             {
                 var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new Exception(message);
+                throw new BaseException(message);
             }
 
 

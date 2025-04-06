@@ -7,7 +7,7 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Validations
     {
         public RequestSubscriptionCreateValidator()
         {
-            //Estate
+            #region Estate
             RuleFor(e => e.Estate.ConstructionTypeId)
                 .NotEmpty().WithMessage("Not Empty")
                 .NotNull().WithMessage("Not Nyull");
@@ -97,9 +97,9 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Validations
             RuleFor(e => e.Estate.Storeys)
               .NotEmpty().WithMessage("Not Empty")
               .NotNull().WithMessage("Not Nyull");
+            #endregion
 
-
-            //Flat
+            #region Flat
             RuleForEach(f => f.Flats).ChildRules(flat =>
             {
                 flat.RuleFor(f => f.PostalCode)
@@ -107,9 +107,9 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Validations
                         .NotNull().WithMessage("Not Nyull")
                         .Length(10).WithMessage("must 10 char");
             });
+            #endregion
 
-
-            //Individual
+            #region Individual
             RuleForEach(i => i.Individuals).ChildRules(individual =>
             {
                 individual.RuleFor(f => f.IndividualTypeId)
@@ -120,13 +120,10 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Validations
                    .NotEmpty().WithMessage("Not Empty")
                    .NotNull().WithMessage("Not Nyull")
                    .MaximumLength(255).WithMessage("less than 255");
-
-                individual.RuleFor(f => f.NationalId)
-                  .Length(10).WithMessage("less than 255");
             });
+            #endregion
 
-
-            //Siphon
+            #region Siphon
             RuleForEach(s => s.Siphons).ChildRules(siphon =>
             {
                 siphon.RuleFor(s => s.SiphonDiameterId)
@@ -141,21 +138,52 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Validations
                    .NotEmpty().WithMessage("Not Empty")
                    .NotNull().WithMessage("Not Nyull");
             });
+            #endregion
 
-
-            //WaterMeter
+            #region WaterMeter
             RuleFor(f => f.WaterMeter.BillId)
-               .NotEmpty().WithMessage("Not Empty")
-               .NotNull().WithMessage("Not Nyull")
-               .MaximumLength(15).WithMessage("less than 15");
+         .NotEmpty().WithMessage("Not Empty")
+         .NotNull().WithMessage("Not Nyull")
+         .MaximumLength(15).WithMessage("less than 15");
 
             RuleFor(f => f.WaterMeter.UseStateId)
               .NotEmpty().WithMessage("Not Empty")
-              .NotNull().WithMessage("Not Nyull");
+              .NotNull().WithMessage("Not Nyull")
+              .IsInEnum().WithMessage("SubscriptionTypeId must Enum");
 
             RuleFor(f => f.WaterMeter.SubscriptionTypeId)
               .NotEmpty().WithMessage("Not Empty")
-              .NotNull().WithMessage("Not Nyull");
+              .NotNull().WithMessage("Not Nyull")
+              .IsInEnum().WithMessage("SubscriptionTypeId must Enum");
+
+            RuleFor(f => f.WaterMeter.MeterDiameterId)
+            .NotEmpty().WithMessage("Not Empty")
+            .NotNull().WithMessage("Not Nyull")
+            .GreaterThan((short)0).WithMessage("MeterDiameterId not Equal 0");
+
+            RuleFor(f => f.WaterMeter.MeterProducerId)
+            .NotEmpty().WithMessage("Not Empty")
+            .NotNull().WithMessage("Not Nyull")
+             .GreaterThan((short)0).WithMessage("MeterProducerId not Equal 0");
+
+
+            RuleFor(f => f.WaterMeter.MeterTypeId)
+            .NotEmpty().WithMessage("Not Empty")
+            .NotNull().WithMessage("Not Nyull")
+             .GreaterThan((short)0).WithMessage("MeterTypeId not Equal 0");
+
+
+            RuleFor(f => f.WaterMeter.MeterMaterialId)
+            .NotEmpty().WithMessage("Not Empty")
+            .NotNull().WithMessage("Not Nyull")
+            .GreaterThan((short)0).WithMessage("MeterMaterialId not Equal 0");
+
+
+            RuleFor(f => f.WaterMeter.MeterUseTypeId)
+            .NotEmpty().WithMessage("Not Empty")
+            .NotNull().WithMessage("Not Nyull")
+            .GreaterThan((short)0).WithMessage("MeterUseTypeId not Equal 0");
+            #endregion
         }
     }
 }
