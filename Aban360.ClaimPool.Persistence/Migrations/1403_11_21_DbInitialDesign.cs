@@ -88,7 +88,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Y").AsString(_31).Nullable()
                 .WithColumn("Parcel").AsString(int.MaxValue).Nullable()
                 .WithColumn("Address").AsString(_1023).NotNullable()
-                .WithColumn("MunipulityId").AsInt32()
+                .WithColumn("MunipulityId").AsInt32().NotNullable()
                 .WithColumn("UsageSellId").AsInt16().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.Usage, table) + "_Sell", _schema, nameof(TableName.Usage), Id)
                 .WithColumn("UsageConsumtionId").AsInt16().NotNullable()

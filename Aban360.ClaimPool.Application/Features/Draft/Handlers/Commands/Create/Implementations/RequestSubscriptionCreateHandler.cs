@@ -1,15 +1,10 @@
 ﻿using Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Draft.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Draft.Entites;
-using Aban360.ClaimPool.Domain.Features.Land.Entities;
-using Aban360.ClaimPool.Domain.Features.People.Entities;
 using Aban360.ClaimPool.Persistence.Features.Draft.Commands.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
-using NetTopologySuite.Index.HPRtree;
-using System.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using FluentValidation;
 
 namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.Implementations
 {
@@ -18,10 +13,12 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
         private readonly IMapper _mapper;
         private readonly IRequestUserCommandService _requestUserCommandService;
         private readonly IRequestEstateCommandService _requestEstateCommandService;
+        private readonly IValidator<RequestSubscriptionCreateDto> _requestValidator;
         public RequestSubscriptionCreateHandler(
             IMapper mapper,
             IRequestUserCommandService requestUserCommandService,
-            IRequestEstateCommandService requestEstateCommandService)
+            IRequestEstateCommandService requestEstateCommandService,
+            IValidator<RequestSubscriptionCreateDto> requestValidator)
         {
             _mapper = mapper;
             _mapper.NotNull(nameof(_mapper));
@@ -31,6 +28,9 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
 
             _requestEstateCommandService = requestEstateCommandService;
             _requestEstateCommandService.NotNull(nameof(_requestEstateCommandService));
+
+            _requestValidator = requestValidator;
+            _requestValidator.NotNull(nameof(_requestValidator));
         }
         private void GetFlats(ICollection<FlatRequestCreateDto> flats, RequestEstate estate)
         {
@@ -140,6 +140,15 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
         }
         public async Task Handle(RequestSubscriptionCreateDto createDto, CancellationToken cancellationToken)
         {
+            var validationResult=await _requestValidator.ValidateAsync(createDto,cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new Exception(message);
+            }
+
+
+
             RequestEstate estate = GetEstate(createDto.Estate);
             ICollection<RequestWaterMeter> requestWaterMeters = GetWaterMeter(createDto.WaterMeter, estate);
 
