@@ -5,7 +5,7 @@ using Aban360.WorkflowPool.Domain.Features.Design.Dto.Commands;
 using Aban360.WorkflowPool.Persistence.Contexts.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Aban360.Api.Controllers.V1.WorkflowPool.Assignment.Commands
+namespace Aban360.Api.Controllers.V1.WorkflowPool.Design.Commands
 {
     [Route("v1/workflow")]
     public class WorkflowCreateController : BaseController
