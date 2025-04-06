@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using Scrutor;
 using System.Reflection;
 
@@ -9,7 +10,7 @@ namespace Aban360.ClaimPool.Application.Extentions
         public static void AddClaimPoolApplicationInjections(this IServiceCollection services)
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            // services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 
             services.Scan(scan =>
                           scan

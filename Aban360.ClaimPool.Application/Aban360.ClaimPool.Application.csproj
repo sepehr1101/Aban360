@@ -21,9 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Land\Validations\" />
-    <Folder Include="Features\Metering\Validations\" />
-    <Folder Include="Features\People\Validations\" />
     <Folder Include="Features\Registration\Handlers\Commands\Create\Contracts\" />
     <Folder Include="Features\Registration\Handlers\Commands\Create\Implementations\" />
     <Folder Include="Features\Registration\Handlers\Commands\Delete\Contracts\" />
@@ -35,7 +32,6 @@
     <Folder Include="Features\Registration\Mappings\" />
     <Folder Include="Features\Registration\Validations\" />
     <Folder Include="Features\Request\Validations\" />
-    <Folder Include="Features\WasteWater\Validations\" />
   </ItemGroup>
 
 </Project>
