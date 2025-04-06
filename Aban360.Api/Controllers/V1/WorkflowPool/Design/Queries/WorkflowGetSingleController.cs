@@ -4,7 +4,7 @@ using Aban360.WorkflowPool.Application.Features.Assignment.Handlers.Queries.Cont
 using Aban360.WorkflowPool.Domain.Features.Design.Dto.Queries;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Aban360.Api.Controllers.V1.WorkflowPool.Assignment.Queries
+namespace Aban360.Api.Controllers.V1.WorkflowPool.Design.Queries
 {
     [Route("v1/workflow")]
     public class WorkflowGetSingleController : BaseController
