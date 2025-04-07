@@ -26,5 +26,9 @@ namespace Aban360.ClaimPool.Persistence.Features.Draft.Commands.Implementations
         {
             await _requestEstates.AddRangeAsync(requestEstates);
         }
+        public async void Remove(RequestEstate requestEstate)
+        {
+            _requestEstates.Remove(requestEstate);
+        }
     }
 }
