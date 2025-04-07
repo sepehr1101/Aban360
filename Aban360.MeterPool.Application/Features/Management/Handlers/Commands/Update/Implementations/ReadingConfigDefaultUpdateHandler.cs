@@ -30,12 +30,10 @@ namespace Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Up
 
         public async Task Handle(ReadingConfigDefaultUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            ReadingConfigDefault readingConfigDefaultDto = await _readingConfigDefaultQueryService.Get(updateDto.Id);
-
+            ReadingConfigDefault readingConfigDefault = await _readingConfigDefaultQueryService.Get(updateDto.Id);
+            _mapper.Map(updateDto, readingConfigDefault);
             var headquarterTitle = await _headquarterAddhoc.Handle(updateDto.HeadquartersId, cancellationToken);
-            readingConfigDefaultDto.HeadquartersTitle = headquarterTitle;
-
-            _mapper.Map(readingConfigDefaultDto, updateDto);
+            readingConfigDefault.HeadquartersTitle = headquarterTitle;
         }
     }
 }

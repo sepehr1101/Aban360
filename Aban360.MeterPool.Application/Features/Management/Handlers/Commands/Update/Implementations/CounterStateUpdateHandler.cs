@@ -30,12 +30,11 @@ namespace Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Up
 
         public async Task Handle(CounterStateUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            CounterState counterStateDto = await _counterStateQueryService.Get(updateDto.Id);
+            CounterState counterState = await _counterStateQueryService.Get(updateDto.Id);
+            _mapper.Map(updateDto, counterState);
 
             var headquarterTitle = await _headquarterAddhoc.Handle(updateDto.HeadquartersId, cancellationToken);
-            counterStateDto.HeadquartersTitle = headquarterTitle;
-
-            _mapper.Map(counterStateDto, updateDto);
+            counterState.HeadquartersTitle = headquarterTitle;
         }
     }
 }
