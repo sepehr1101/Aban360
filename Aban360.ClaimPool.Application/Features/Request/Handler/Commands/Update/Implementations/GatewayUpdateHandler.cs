@@ -22,7 +22,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
             _getewayQueryService.NotNull(nameof(_getewayQueryService));
         }
 
-        public async Task Handle(GetewayUpdateDto updateDto, CancellationToken cancellationToken)
+        public async Task Handle(GatewayUpdateDto updateDto, CancellationToken cancellationToken)
         {
             Gateway gateway = await _getewayQueryService.Get(updateDto.Id);
             _mapper.Map(updateDto, gateway);

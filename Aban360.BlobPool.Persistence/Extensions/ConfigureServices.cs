@@ -2,7 +2,7 @@
 using Scrutor;
 using System.Reflection;
 
-namespace Aban360.BloblPool.Persistence.Extensions
+namespace Aban360.BlobPool.Persistence.Extensions
 {
     public static class ConfigureServices
     {

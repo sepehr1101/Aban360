@@ -1,8 +1,8 @@
-﻿using Aban360.BloblPool.Persistence.Migrations.Enums;
+﻿using Aban360.BlobPool.Persistence.Migrations.Enums;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
-namespace Aban360.BloblPool.Persistence.Extensions
+namespace Aban360.BlobPool.Persistence.Extensions
 {
     internal static class NamingHelper
     {

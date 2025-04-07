@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
 {
-    [Route("v3/usage-level-3")]
+    [Route("v1/usage-level-3")]
     public class UsageLevel3UpdateController : BaseController
     {
         private readonly IUnitOfWork _uow;

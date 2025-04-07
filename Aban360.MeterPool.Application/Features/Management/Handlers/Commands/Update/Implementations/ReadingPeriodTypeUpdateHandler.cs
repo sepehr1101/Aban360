@@ -31,10 +31,9 @@ namespace Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Up
         public async Task Handle(ReadingPeriodTypeUpdateDto updateDto, CancellationToken cancellationToken)
         {
             ReadingPeriodType readingPeriodType = await _readingPeriodTypeQueryService.Get(updateDto.Id);
+            _mapper.Map(updateDto, readingPeriodType);
             string headquarterTitle = await _headquarterAddhoc.Handle(updateDto.HeadquartersId, cancellationToken);
-            readingPeriodType.HeadquartersTitle= headquarterTitle;
-            
-            _mapper.Map(readingPeriodType, updateDto);
+            readingPeriodType.HeadquartersTitle = headquarterTitle;
         }
     }
 }

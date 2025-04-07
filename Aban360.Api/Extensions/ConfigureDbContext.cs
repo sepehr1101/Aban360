@@ -1,4 +1,4 @@
-﻿using Aban360.BloblPool.Persistence.Contexts.Implementations;
+﻿using Aban360.BlobPool.Persistence.Contexts.Implementations;
 using Aban360.CalculationPool.Persistence.Contexts.Implementations;
 using Aban360.ClaimPool.Persistence.Contexts.Implementation;
 using Aban360.Common.Db.Interceptors;

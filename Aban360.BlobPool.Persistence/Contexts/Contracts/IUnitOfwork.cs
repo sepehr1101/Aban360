@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace Aban360.BloblPool.Persistence.Contexts.Contracts
+namespace Aban360.BlobPool.Persistence.Contexts.Contracts
 {
-    public interface IUnitOfwork:IDisposable
+    public interface IUnitOfwork : IDisposable
     {
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
 
