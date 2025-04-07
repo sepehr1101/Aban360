@@ -4,6 +4,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
 {
     public interface IGatewayUpdateHandler
     {
-        Task Handle(GetewayUpdateDto updateDto, CancellationToken cancellationToken);
+        Task Handle(GatewayUpdateDto updateDto, CancellationToken cancellationToken);
     }
 }

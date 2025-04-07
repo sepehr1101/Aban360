@@ -42,6 +42,16 @@ namespace Aban360.BlobPool.Persistence.Migrations
         {
 
         }
+        private void CreateMimetypeCategory()
+        {
+
+        }
+        private void CreateExecutableMimetype()
+        {
+            //field supportStream
+            //field frontendExecutor
+
+        }
         private void CreateDocument()
         {
 

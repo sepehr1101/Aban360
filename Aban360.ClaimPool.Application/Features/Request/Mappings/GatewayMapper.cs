@@ -11,7 +11,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Mappings
         {
             CreateMap<GatewayCreateDto, Gateway>();
             CreateMap<GatewayDeleteDto, Gateway>();
-            CreateMap<GetewayUpdateDto, Gateway>();
+            CreateMap<GatewayUpdateDto, Gateway>();
             CreateMap<Gateway,GatewayGetDto>();
         }
     }
