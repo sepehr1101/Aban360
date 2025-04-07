@@ -24,7 +24,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 
         [HttpPost, HttpPatch]
         [Route("update")]
-        public async Task<IActionResult> Update([FromBody] GetewayUpdateDto updateDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Update([FromBody] GatewayUpdateDto updateDto, CancellationToken cancellationToken)
         {
             await _gatewayUpdateHandler.Handle(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);

@@ -7,11 +7,11 @@ using Aban360.Common.Extensions;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Delete.Implementations
 {
-    internal sealed class GetewayDeleteHandler : IGatewayDeleteHandler
+    internal sealed class GatewayDeleteHandler : IGatewayDeleteHandler
     {
         private readonly IGatewayCommandService _getewayCommandService;
         private readonly IGatewayQueryService _getewayQueryService;
-        public GetewayDeleteHandler(
+        public GatewayDeleteHandler(
             IGatewayCommandService getewayCommandService,
             IGatewayQueryService getewayQueryService)
         {

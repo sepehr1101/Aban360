@@ -7,11 +7,11 @@ using AutoMapper;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations
 {
-    internal sealed class GetewayGetAllHandler : IGatewayGetAllHandler
+    internal sealed class GatewayGetAllHandler : IGatewayGetAllHandler
     {
         private readonly IMapper _mapper;
         private readonly IGatewayQueryService _getewayQueryService;
-        public GetewayGetAllHandler(
+        public GatewayGetAllHandler(
             IMapper mapper,
             IGatewayQueryService getewayQueryService)
         {

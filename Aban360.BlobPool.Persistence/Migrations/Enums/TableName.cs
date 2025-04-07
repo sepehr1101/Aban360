@@ -4,7 +4,10 @@
     {
         DocumentCategory,
         DocumentType,
+        Document,
         ImageWatermark,
-        Document
+        MimetypeCategory,
+        ExecutableMimetype,
+        
     }
 }
