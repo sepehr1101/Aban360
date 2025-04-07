@@ -25,7 +25,7 @@ namespace Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Up
         public async Task Handle(ReadingPeriodUpdateDto updateDto, CancellationToken cancellationToken)
         {
             ReadingPeriod readingPeriod = await _readingPeriodQueryService.Get(updateDto.Id);
-            _mapper.Map(readingPeriod, updateDto);
+            _mapper.Map(updateDto, readingPeriod);
         }
     }
 }

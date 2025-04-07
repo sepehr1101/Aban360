@@ -15,6 +15,5 @@
         public bool IsEnabled { get; set; }
         public bool ImageRequired { get; set; }
         public short HeadquartersId { get; set; }
-        public string HeadquartersTitle { get; set; }
     }
 }

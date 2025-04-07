@@ -457,7 +457,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         {
             var table = TableName.Gateway;
             Create.Table(nameof(TableName.Gateway)).InSchema(_schema)
-                .WithColumn("Id").AsInt16().NotNullable().Identity().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
 
