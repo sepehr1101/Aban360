@@ -35,7 +35,7 @@ namespace Aban360.Common.Extensions
             return new Tuple<bool, string>(true,string.Empty);
         }
 
-        public static async  Task<string> GetHash(HttpRequest request)
+        public static async Task<string> GetHash(HttpRequest request)
         {
             var userAgent = request.Headers["User-Agent"];
             string hash = await SecurityOperations.GetSha256Hash(userAgent);

@@ -64,7 +64,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Aban360.BloblPool.Persistence\Aban360.BloblPool.Persistence.csproj" />
+    <ProjectReference Include="..\Aban360.BlobPool.Application\Aban360.BlobPool.Application.csproj" />
+    <ProjectReference Include="..\Aban360.BlobPool.Domain\Aban360.BlobPool.Domain.csproj" />
+    <ProjectReference Include="..\Aban360.BlobPool.GatewayAddHoc\Aban360.BlobPool.GatewayAddHoc.csproj" />
+    <ProjectReference Include="..\Aban360.BlobPool.Persistence\Aban360.BlobPool.Persistence.csproj" />
     <ProjectReference Include="..\Aban360.CalculationPool.Application\Aban360.CalculationPool.Application.csproj" />
     <ProjectReference Include="..\Aban360.CalculationPool.Domain\Aban360.CalculationPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.CalculationPool.GatewayAdhoc\Aban360.CalculationPool.GatewayAdhoc.csproj" />

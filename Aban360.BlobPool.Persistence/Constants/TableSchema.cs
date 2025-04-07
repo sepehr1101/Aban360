@@ -1,4 +1,4 @@
-﻿namespace Aban360.BloblPool.Persistence.Constants
+﻿namespace Aban360.BlobPool.Persistence.Constants
 {
     internal static class TableSchema
     {

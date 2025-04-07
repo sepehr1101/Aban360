@@ -1,8 +1,8 @@
-﻿using Aban360.BloblPool.Persistence.Constants;
+﻿using Aban360.BlobPool.Persistence.Constants;
 using FluentMigrator;
 using System.Reflection;
 
-namespace Aban360.BloblPool.Persistence.Migrations
+namespace Aban360.BlobPool.Persistence.Migrations
 {
     [Migration(14040117)]
     public class DbInitialDesign : Migration
@@ -28,6 +28,23 @@ namespace Aban360.BloblPool.Persistence.Migrations
              .Select(m => m.Name.Replace("Create", string.Empty))
              .ToList();
             tableNames.ForEach(t => Delete.Table(t));
+        }
+
+        private void CreateDocumentCategory()
+        {
+
+        }
+        private void CreateDocumentType()
+        {
+
+        }
+        private void CreateImageWatermark()
+        {
+
+        }
+        private void CreateDocument()
+        {
+
         }
     }
 }
