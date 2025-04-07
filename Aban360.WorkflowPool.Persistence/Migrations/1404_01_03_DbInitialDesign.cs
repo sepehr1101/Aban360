@@ -3,7 +3,6 @@ using Aban360.WorkflowPool.Persistence.Migrations.Enums;
 using Aban360.WorkflowPool.Persistence.Constants;
 using FluentMigrator;
 using System.Reflection;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Aban360.WorkflowPool.Persistence.Migrations
 {
@@ -75,7 +74,7 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
                 .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn("Code").AsInt32().NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable()
-                .WithColumn("WorkflowId").AsInt16().NotNullable()
+                .WithColumn("WorkflowId").AsInt32().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.Workflow, table), _schema, nameof(TableName.Workflow), Id)
                 .WithColumn("ValidFrom").AsDateTime().NotNullable()
                 .WithColumn("ValidTo").AsDateTime().Nullable()
@@ -86,12 +85,12 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
         private void _CreateWorkflowVariable()
         {
             Create.Table("Variables")
-           .WithColumn("VariableId").AsInt32().PrimaryKey().Identity()
-           .WithColumn("InstanceId").AsString(36).NotNullable().ForeignKey("WorkflowInstances", "InstanceGuidId")
-           .WithColumn("Name").AsString(255).NotNullable()
-           .WithColumn("Value").AsString(255).Nullable()
-           .WithColumn("Type").AsString(50).Nullable()
-           .WithColumn("Scope").AsString(50).Nullable();
+               .WithColumn("VariableId").AsInt32().PrimaryKey().Identity()
+               .WithColumn("InstanceId").AsString(36).NotNullable().ForeignKey("WorkflowInstances", "InstanceGuidId")
+               .WithColumn("Name").AsString(255).NotNullable()
+               .WithColumn("Value").AsString(255).Nullable()
+               .WithColumn("Type").AsString(50).Nullable()
+               .WithColumn("Scope").AsString(50).Nullable();
         }
         private void _CreateWorkflowInstance()
         {

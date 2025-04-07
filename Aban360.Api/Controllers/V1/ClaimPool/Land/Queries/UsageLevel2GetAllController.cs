@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
 {
-    [Route("v2/usage-level-2")]
+    [Route("v1/usage-level-2")]
     public class UsageLevel2GetAllController : BaseController
     {
         private readonly IUsageLevel2GetAllHandler _usageLevel2GetAllHandler;

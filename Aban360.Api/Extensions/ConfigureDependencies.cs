@@ -11,7 +11,7 @@ using Aban360.MeterPool.Persistence.Extentions;
 using Aban360.MeterPool.Application.Extensions;
 using Aban360.WorkflowPool.Application.Extentsions;
 using Aban360.WorkflowPool.Persistence.Extensions;
-using Aban360.BloblPool.Persistence.Extensions;
+using Aban360.BlobPool.Persistence.Extensions;
 
 namespace Aban360.Api.Extensions
 {
