@@ -44,7 +44,7 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
         {
 
         }
-       
+
         private void CreateWorkflowStatus()
         {
             var table = TableName.WorkflowStatus;
@@ -56,31 +56,32 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
         {
             var table = TableName.Workflow;
             Create.Table($"{nameof(TableName.Workflow)}").InSchema(_schema)
-                .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()                
+                .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn("Name").AsAnsiString(_31)
                 .WithColumn("JsonDefinition").AsString(int.MaxValue).Nullable()
                 .WithColumn("Version").AsInt16()
                 .WithColumn("ValidFrom").AsDateTime().NotNullable()
                 .WithColumn("ValidTo").AsDateTime().Nullable()
+                .WithColumn("Description").AsAnsiString(_255).Nullable()
                 .WithColumn("WorkflowStatusId").AsInt16().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.WorkflowStatus, table), _schema, nameof(TableName.WorkflowStatus), Id);
-               
+
         }
         private void CreateState()
         {
             var table = TableName.State;
             Create.Table($"{nameof(TableName.State)}").InSchema(_schema)
                 .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
-                .WithColumn("Code").AsInt32().NotNullable()
-                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Code").AsInt32().NotNullable()//
+                .WithColumn("Title").AsString(_255).NotNullable()// 
                 .WithColumn("WorkflowId").AsInt32().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.Workflow, table), _schema, nameof(TableName.Workflow), Id)
                 .WithColumn("ValidFrom").AsDateTime().NotNullable()
                 .WithColumn("ValidTo").AsDateTime().Nullable()
                 .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
                 .WithColumn("RemoveLogInfo").AsString(int.MaxValue).Nullable()
-                .WithColumn(Hash).AsString(int.MaxValue).NotNullable();                
+                .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
         }
         private void _CreateWorkflowVariable()
         {
@@ -105,7 +106,7 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
           .WithColumn("Data").AsString(int.MaxValue).Nullable();
         }
 
-      
+
         private void _CreateActivityType()
         {
 
@@ -123,7 +124,7 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
            .WithColumn("StartedDate").AsDateTime().Nullable()
            .WithColumn("CompletedDate").AsDateTime().Nullable();
         }
-       
+
         private void _CreateActivityInstance()
         {
             Create.Table("ActivityInstances")
@@ -155,6 +156,6 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
            .WithColumn("Condition").AsString(255).Nullable()
            .WithColumn("Trigger").AsString(255).Nullable();
         }
-       
+
     }
 }

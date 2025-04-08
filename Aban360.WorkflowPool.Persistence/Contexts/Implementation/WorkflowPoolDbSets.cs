@@ -10,5 +10,7 @@ namespace Aban360.WorkflowPool.Persistence.Contexts.Implementation
 
         public virtual DbSet<WorkflowStatus> WorkflowStatuses { get; set; }
 
+        public virtual DbSet<State> States { get; set; }
+
     }
 }
