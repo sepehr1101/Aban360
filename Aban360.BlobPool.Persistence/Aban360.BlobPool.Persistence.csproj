@@ -14,7 +14,23 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Aban360.BlobPool.Domain\Aban360.BlobPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.Common.Db\Aban360.Common.Db.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Update="D:\Projects\Aban360\Aban360.BlobPool.Persistence\.editorconfig">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EditorConfigFiles>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Analyctics\" />
+    <Folder Include="Features\Policies\" />
+    <Folder Include="Features\Proccessing\" />
+    <Folder Include="Features\Rendering\" />
+    <Folder Include="Features\Searching\" />
+    <Folder Include="Features\SystemIntegration\" />
   </ItemGroup>
 
 </Project>
