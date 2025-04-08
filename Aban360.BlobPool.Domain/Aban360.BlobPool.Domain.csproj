@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Constants\" />
+    <Folder Include="Features\Analyctics\" />
+    <Folder Include="Features\Searching\" />
+    <Folder Include="Features\Policies\" />
+    <Folder Include="Features\Rendering\" />
+    <Folder Include="Features\Proccessing\" />
+    <Folder Include="Features\SystemIntegration\" />
+  </ItemGroup>
+
 </Project>

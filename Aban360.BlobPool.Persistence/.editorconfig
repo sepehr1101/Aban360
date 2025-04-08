@@ -280,12 +280,6 @@ dotnet_style_qualification_for_method = false:silent
 dotnet_style_qualification_for_property = false:silent
 dotnet_style_qualification_for_field = false:silent
 
-[1404_01_03_DbInitialDesign.cs]
-dotnet_diagnostic.IDE0055.severity = none
-dotnet_diagnostic.IDE0052.severity = none
-dotnet_diagnostic.IDE0051.severity = none
-dotnet_diagnostic.IDE0044.severity = none
-
 [1404_01_17_DbInitialDesign.cs]
 dotnet_diagnostic.IDE0055.severity = none
 dotnet_diagnostic.IDE0052.severity = none
