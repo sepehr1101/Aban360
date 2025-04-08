@@ -14,7 +14,7 @@ namespace Aban360.Common.Db.Extensions
     {
         public static void UpdateAndSeedDb(this IServiceCollection services)
         {
-            var connectionInfo = GetConnectionInfo();
+            Tuple<string, DatabaseCreationParameters?,bool> connectionInfo = GetConnectionInfo();
             services.UpdateAndSeedDb(connectionInfo.Item1, connectionInfo.Item3 ? null : connectionInfo.Item2);
         }
         private static void UpdateAndSeedDb(this IServiceCollection services, string connectionString, DatabaseCreationParameters? databaseCreationParameters, [Optional] string dbName)
@@ -51,18 +51,21 @@ namespace Aban360.Common.Db.Extensions
 
             connectionBuilder.InitialCatalog = "master";
             using var connection = new SqlConnection(connectionBuilder.ConnectionString);
-            var str =
+            string configureFilestreamQuery = GetConfigureFilestreamQuery();
+            string createDbQuery =
                 $"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '{initialCatalog}') " +
                 $"BEGIN " +
                 $"CREATE DATABASE {initialCatalog} " +
                 $"{GetDbCratetionParametersQuery(databaseCreationParameters)} " +
                 $"END";
 
-            SqlCommand myCommand = new SqlCommand(str, connection);
+            SqlCommand createDbCommand = new SqlCommand(createDbQuery, connection);
+            SqlCommand configureDbCommand = new SqlCommand(configureFilestreamQuery, connection);
             try
             {
                 connection.Open();
-                myCommand.ExecuteNonQuery();
+                configureDbCommand.ExecuteNonQuery();
+                createDbCommand.ExecuteNonQuery();
             }
             finally
             {
@@ -72,19 +75,33 @@ namespace Aban360.Common.Db.Extensions
                 }
             }
         }
-        private static string GetDbCratetionParametersQuery(DatabaseCreationParameters? databaseCreationParameters)
+        private static string GetConfigureFilestreamQuery()
         {
+            string query = @"
+                IF NOT EXISTS (SELECT 1 FROM sys.configurations WHERE name = 'filestream access level' AND value_in_use = 2)
+                BEGIN
+                    EXEC sp_configure 'filestream access level', 2;
+                    RECONFIGURE;
+                END";
+            return query;
+        }
+        private static string GetDbCratetionParametersQuery(DatabaseCreationParameters? databaseCreationParameters)
+        {           
             if (databaseCreationParameters is null)
             {
                 return string.Empty;
             }
+            string formattedDay = DateTime.Now.ToString("yyyy-MM-dd-HH-ss");
             string query =
                  $"ON PRIMARY " +
                      $"(NAME = {databaseCreationParameters.MdfName}, " +
                      $"FILENAME = '{databaseCreationParameters.MdfFileName}', " +
                      $"SIZE = {databaseCreationParameters.MdfSize}, " +
                      $"MAXSIZE = {databaseCreationParameters.MdfMaxSize}, " +
-                     $"FILEGROWTH = {databaseCreationParameters.MdfFileGrowth}) " +
+                     $"FILEGROWTH = {databaseCreationParameters.MdfFileGrowth}), " +
+                 $"FILEGROUP FileStreamGroup CONTAINS FILESTREAM " +
+                     $"(NAME = {databaseCreationParameters.StreamName}, " +
+                     $"FILENAME = '{databaseCreationParameters.StreamFileName}\\{formattedDay}' ) " +
                  $"LOG ON " +
                      $"(NAME = {databaseCreationParameters.LdfName}, " +
                      $"FILENAME = '{databaseCreationParameters.LdfFileName}', " +
@@ -129,8 +146,10 @@ namespace Aban360.Common.Db.Extensions
                 {
                     MdfName = configuration.GetSection($"{nameof(DatabaseCreationParameters)}:MdfName")?.Value,
                     LdfName = configuration.GetSection($"{nameof(DatabaseCreationParameters)}:LdfName")?.Value,
+                    StreamName = configuration.GetSection($"{nameof(DatabaseCreationParameters)}:StreamName")?.Value,
                     MdfFileName = configuration.GetSection($"{nameof(DatabaseCreationParameters)}:MdfFileName")?.Value,
                     LdfFileName = configuration.GetSection($"{nameof(DatabaseCreationParameters)}:LdfFileName")?.Value,
+                    StreamFileName = configuration.GetSection($"{nameof(DatabaseCreationParameters)}:StreamFileName")?.Value,
                     MdfSize = configuration.GetSection($"{nameof(DatabaseCreationParameters)}:MdfSize")?.Value,
                     LdfSize = configuration.GetSection($"{nameof(DatabaseCreationParameters)}:LdfSize")?.Value,
                     MdfMaxSize = configuration.GetSection($"{nameof(DatabaseCreationParameters)}:MdfMaxSize")?.Value,
