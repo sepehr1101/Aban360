@@ -50,7 +50,6 @@ namespace Aban360.BlobPool.Persistence.Migrations
                 .WithColumn($"{nameof(TableName.DocumentCategory)}Id").AsInt16().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.DocumentCategory, table), _schema, nameof(TableName.DocumentCategory), Id)
                 .WithColumn(Title).AsString(_255)
-                .WithColumn("Name").AsAnsiString(_255)
                 .WithColumn("Icon").AsAnsiString(int.MaxValue)
                 .WithColumn("Css").AsAnsiString(_255);
         }

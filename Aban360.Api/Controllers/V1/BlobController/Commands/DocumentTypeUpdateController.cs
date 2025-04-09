@@ -26,7 +26,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.Commands
         [HttpPost, HttpPatch]
         [Route("update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<DocumentTypeUpdateDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Update([FromBody] DocumentTypeUpdateDto updateDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Update([FromForm] DocumentTypeUpdateDto updateDto, CancellationToken cancellationToken)
         {
             await _documentTypeUpdateHandler.Handle(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);

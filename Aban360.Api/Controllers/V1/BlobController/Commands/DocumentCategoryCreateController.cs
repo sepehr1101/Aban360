@@ -26,7 +26,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.Commands
         [HttpPost]
         [Route("create")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<DocumentCategoryCreateDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Create([FromBody] DocumentCategoryCreateDto createDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Create([FromForm] DocumentCategoryCreateDto createDto,CancellationToken cancellationToken)
         {
             await _documentCategoryCreateHandler.Handle(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
