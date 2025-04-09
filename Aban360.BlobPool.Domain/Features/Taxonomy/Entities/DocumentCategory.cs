@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Aban360.BlobPool.Domain.Features.Classification;
+namespace Aban360.BlobPool.Domain.Features.Taxonomy.Entities;
 
-public partial class DocumentCategory
+[Table(nameof(DocumentCategory))]
+public class DocumentCategory
 {
     public short Id { get; set; }
 

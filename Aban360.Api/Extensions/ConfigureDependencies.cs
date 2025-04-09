@@ -1,17 +1,19 @@
-﻿using Aban360.UserPool.Persistence.Extensions;
-using Aban360.UserPool.Application.Extensions;
-using Aban360.LocationPool.Persistence.Extensions;
+﻿using Aban360.UserPool.Application.Extensions;
+using Aban360.UserPool.Persistence.Extensions;
 using Aban360.LocationPool.Application.Extensions;
-using Aban360.ClaimPool.Persistence.Extensions;
-using Aban360.ClaimPool.Application.Extentions;
+using Aban360.LocationPool.Persistence.Extensions;
 using Aban360.LocationPool.GatewayAdhoc.Extentions;
+using Aban360.ClaimPool.Application.Extentions;
+using Aban360.ClaimPool.Persistence.Extensions;
 using Aban360.ReportPool.Persistence.Extentions;
+using Aban360.CalculationPool.Application.Extensions;
 using Aban360.CalculationPool.Persistence.Extensions;
-using Aban360.MeterPool.Persistence.Extentions;
 using Aban360.MeterPool.Application.Extensions;
-using Aban360.WorkflowPool.Application.Extentsions;
+using Aban360.MeterPool.Persistence.Extentions;
 using Aban360.WorkflowPool.Persistence.Extensions;
+using Aban360.WorkflowPool.Application.Extensions;
 using Aban360.BlobPool.Persistence.Extensions;
+using Aban360.BlobPool.Application.Extenstions;
 
 namespace Aban360.Api.Extensions
 {
@@ -53,7 +55,7 @@ namespace Aban360.Api.Extensions
         }
         private static void AddCalculationPoolDI(this IServiceCollection services)
         {
-            services.AddCalculationPoolPersistenceInjections();
+            services.AddCalculationPoolApplicationInjections();
             services.AddCalculationPoolPersistenceInjections();
         }
         private static void AddMeterPoolDI(this IServiceCollection services)
@@ -68,7 +70,7 @@ namespace Aban360.Api.Extensions
         }
         private static void AddBlobPoolDI(this IServiceCollection services)
         {
-            services.AddBlobPoolApplicationInjections();
+            services.AddBlboPoolPoolApplicationInjections();
             services.AddBlobPoolPersistenceInjections();
         }
     }

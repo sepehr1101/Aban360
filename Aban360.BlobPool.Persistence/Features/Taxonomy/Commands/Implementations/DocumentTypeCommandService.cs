@@ -1,4 +1,4 @@
-﻿using Aban360.BlobPool.Domain.Features.Classification;
+﻿using Aban360.BlobPool.Domain.Features.Taxonomy.Entities;
 using Aban360.BlobPool.Persistence.Contexts.Contracts;
 using Aban360.BlobPool.Persistence.Features.Taxonomy.Commands.Contracts;
 using Aban360.Common.Extensions;

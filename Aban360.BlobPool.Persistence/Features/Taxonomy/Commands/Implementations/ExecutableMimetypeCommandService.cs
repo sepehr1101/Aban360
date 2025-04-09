@@ -1,4 +1,4 @@
-﻿using Aban360.BlobPool.Domain.Features.Taxonomy;
+﻿using Aban360.BlobPool.Domain.Features.Taxonomy.Entities;
 using Aban360.BlobPool.Persistence.Contexts.Contracts;
 using Aban360.BlobPool.Persistence.Features.Taxonomy.Commands.Contracts;
 using Aban360.Common.Extensions;
@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.BlobPool.Persistence.Features.Taxonomy.Commands.Implementations
 {
-    internal sealed class ExecuteableMimetypeCommandService : IExecuteableMimetypeCommandService
+    internal sealed class ExecutableMimetypeCommandService : IExecutableMimetypeCommandService
     {
         private readonly IUnitOfwork _uow;
         private readonly DbSet<ExecutableMimetype> _executableMimetypes;
-        public ExecuteableMimetypeCommandService(IUnitOfwork uow)
+        public ExecutableMimetypeCommandService(IUnitOfwork uow)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));
