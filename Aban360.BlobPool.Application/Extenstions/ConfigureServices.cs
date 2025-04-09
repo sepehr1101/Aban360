@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Aban360.BlobPool.Application.Extenstions
 {
-    internal static class ConfigureServices
+    public static class ConfigureServices
     {
         public static void AddBlboPoolPoolApplicationInjections(this IServiceCollection services)
         {

@@ -1,10 +1,10 @@
-﻿using Aban360.BlobPool.Domain.Features.Classification;
+﻿using Aban360.BlobPool.Domain.Features.Taxonomy.Entities;
 
 namespace Aban360.BlobPool.Persistence.Features.Taxonomy.Queries.Contracts
 {
-    internal interface IDocumentCategoryQueryService
+    public interface IDocumentCategoryQueryService
     {
         Task<ICollection<DocumentCategory>> Get();
-        Task<DocumentCategory> Get(int id);
+        Task<DocumentCategory> Get(short id);
     }
 }

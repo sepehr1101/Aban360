@@ -1,10 +1,10 @@
-﻿using Aban360.BlobPool.Domain.Features.Classification;
+﻿using Aban360.BlobPool.Domain.Features.Taxonomy.Entities;
 
 namespace Aban360.BlobPool.Persistence.Features.Taxonomy.Queries.Contracts
 {
-    internal interface IDocumentTypeQueryService
+    public interface IDocumentTypeQueryService
     {
         Task<ICollection<DocumentType>> Get();
-        Task<DocumentType> Get(int id);
+        Task<DocumentType> Get(short id);
     }
 }

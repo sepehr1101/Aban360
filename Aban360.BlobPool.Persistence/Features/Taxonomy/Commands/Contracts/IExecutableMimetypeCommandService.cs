@@ -1,7 +1,7 @@
-﻿using Aban360.BlobPool.Domain.Features.Taxonomy;
+﻿using Aban360.BlobPool.Domain.Features.Taxonomy.Entities;
 namespace Aban360.BlobPool.Persistence.Features.Taxonomy.Commands.Contracts
 {
-    public interface IExecuteableMimetypeCommandService
+    public interface IExecutableMimetypeCommandService
     {
         Task Add(ExecutableMimetype executableMimetype);
         Task Add(ICollection<ExecutableMimetype> executableMimetypes);
