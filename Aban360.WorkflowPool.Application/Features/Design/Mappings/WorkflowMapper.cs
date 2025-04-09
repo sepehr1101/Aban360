@@ -12,6 +12,7 @@ namespace Aban360.WorkflowPool.Application.Features.Assignment.Mappings
             CreateMap<WorkflowCreateDto, Workflow>();
             CreateMap<WorkflowDeleteDto, Workflow>();
             CreateMap<WorkflowUpdateDto, Workflow>();
+            CreateMap<WorkflowJsonDefinitionUpdateDto, Workflow>();
             CreateMap<Workflow, WorkflowGetDto>();
             CreateMap<Workflow, WorkflowGetMasterDto>();
         }
