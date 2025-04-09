@@ -11,8 +11,6 @@ public class DocumentType
 
     public string Title { get; set; } = null!;
 
-    public string Name { get; set; } = null!;
-
     public string Icon { get; set; } = null!;
 
     public string Css { get; set; } = null!;

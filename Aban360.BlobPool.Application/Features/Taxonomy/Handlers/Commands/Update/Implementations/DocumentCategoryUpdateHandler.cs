@@ -24,6 +24,12 @@ namespace Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Updat
         public async Task Handle(DocumentCategoryUpdateDto updateDto, CancellationToken cancellationToken)
         {
             var documentCategory = await _documentCategoryQueryService.Get(updateDto.Id);
+            
+            MemoryStream memoryStream = new MemoryStream();
+            await (updateDto.Icon).CopyToAsync(memoryStream);
+            string base64String = Convert.ToBase64String(memoryStream.ToArray());
+            documentCategory.Icon = base64String;
+
             _mapper.Map(updateDto, documentCategory);
         }
     }

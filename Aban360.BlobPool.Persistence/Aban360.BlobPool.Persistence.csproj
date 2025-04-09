@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DbSeeder\DataScript\" />
     <Folder Include="Features\Analyctics\" />
     <Folder Include="Features\Policies\" />
     <Folder Include="Features\Proccessing\" />
