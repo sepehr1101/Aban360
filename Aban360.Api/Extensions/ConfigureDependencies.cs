@@ -14,6 +14,7 @@ using Aban360.WorkflowPool.Persistence.Extensions;
 using Aban360.WorkflowPool.Application.Extensions;
 using Aban360.BlobPool.Persistence.Extensions;
 using Aban360.BlobPool.Application.Extenstions;
+using Aban360.BlobPool.GatewayAddHoc.Extentions;
 using Aban360.SystemPool.Application.Extenstions;
 
 namespace Aban360.Api.Extensions
@@ -74,6 +75,7 @@ namespace Aban360.Api.Extensions
         {
             services.AddBlboPoolPoolApplicationInjections();
             services.AddBlobPoolPersistenceInjections();
+            services.AddBlobPoolGatewayInjections();
         }
         private static void AddSystemPoolDI(this IServiceCollection services)
         {
