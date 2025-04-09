@@ -21,7 +21,10 @@ namespace Aban360.WorkflowPool.Persistence.Features.Design.Queries.Implementatio
 
         public async Task<Workflow> Get(int id)
         {
-            return await _uow.FindOrThrowAsync<Workflow>(id);
+            return await _workflow
+                .Include(w => w.States)
+                .Where(w=>w.Id == id)
+                .SingleAsync();
         }
 
         public async Task<ICollection<Workflow>> Get()
