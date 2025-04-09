@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.WorkflowPool.Application.Features.Assignment.Handlers.Commands.Create.Contracts;
+using Aban360.WorkflowPool.Domain.Constants;
 using Aban360.WorkflowPool.Domain.Features.Design.Dto.Commands;
 using Aban360.WorkflowPool.Domain.Features.Design.Entities;
 using Aban360.WorkflowPool.Persistence.Features.Design.Commands.Contracts;
@@ -32,6 +33,7 @@ namespace Aban360.WorkflowPool.Application.Features.Design.Handlers.Commands.Cre
             Workflow workflow = _mapper.Map<Workflow>(createDto);
             workflow.ValidFrom = DateTime.Now;
             workflow.Name = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 10);
+            workflow.WorkflowStatusId = WorkflowStatusEnum.Draft;
 
             ICollection<State> states = _mapper.Map<ICollection<State>>(createDto.states);
             states.ForEach(s=>
