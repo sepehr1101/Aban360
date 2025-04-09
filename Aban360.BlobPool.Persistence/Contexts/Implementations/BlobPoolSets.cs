@@ -9,5 +9,6 @@ public partial class BlobPoolContext
     public virtual DbSet<DocumentType> DocumentTypes{ get; set; }
     public virtual DbSet<ExecutableMimetype> ExecutableMimetypes{ get; set; }
     public virtual DbSet<MimetypeCategory> MimetypeCategories{ get; set; }
+    public virtual DbSet<Document> Documents{ get; set; }
 
 }
