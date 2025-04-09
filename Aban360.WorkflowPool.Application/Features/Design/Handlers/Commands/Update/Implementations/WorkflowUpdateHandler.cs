@@ -25,7 +25,6 @@ namespace Aban360.WorkflowPool.Application.Features.Design.Handlers.Commands.Upd
         {
             var workflow = await _workflowQueryService.Get(updateDto.Id);
             workflow.ValidFrom = DateTime.Now;
-            workflow.Name = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 10);
 
             _mapper.Map(updateDto, workflow);
         }

@@ -14,6 +14,8 @@ public class Workflow
 
     public string? JsonDefinition { get; set; }
 
+    public string? Description { get; set; }
+
     public short Version { get; set; }
 
     public DateTime ValidFrom { get; set; }

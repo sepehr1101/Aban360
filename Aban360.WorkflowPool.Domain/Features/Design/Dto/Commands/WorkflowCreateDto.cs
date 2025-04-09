@@ -7,8 +7,7 @@ namespace Aban360.WorkflowPool.Domain.Features.Design.Dto.Commands
     {
         public string Title { get; set; } = null!;
         public string? JsonDefinition { get; set; }
-        public short Version { get; set; }
-        public WorkflowStatusEnum WorkflowStatusId { get; set; }
+        public string? Description { get; set; }
         public ICollection<StateCreateDto> states { get; set; }
     }
 }
