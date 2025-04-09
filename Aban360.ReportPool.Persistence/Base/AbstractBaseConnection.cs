@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Base
 {
-    public abstract class AbstractBaseConnection
+    internal abstract class AbstractBaseConnection
     {
         private readonly IConfiguration _configuration;
         protected AbstractBaseConnection(IConfiguration configuration)
