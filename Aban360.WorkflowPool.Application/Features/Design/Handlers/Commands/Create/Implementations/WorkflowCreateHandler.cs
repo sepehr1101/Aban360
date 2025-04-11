@@ -38,7 +38,7 @@ namespace Aban360.WorkflowPool.Application.Features.Design.Handlers.Commands.Cre
             ICollection<State> states = _mapper.Map<ICollection<State>>(createDto.states);
             states.ForEach(s=>
             {
-                s.ValidFrom = DateTime.Now;
+                s.ValidFrom =  DateTime.Now;
                 s.Hash = "hash";
                 s.InsertLogInfo = "insertLogInfo";
                 s.Workflow= workflow;

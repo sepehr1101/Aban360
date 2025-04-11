@@ -25,4 +25,5 @@ public class Workflow
     public WorkflowStatusEnum WorkflowStatusId { get; set; }
 
     public virtual WorkflowStatus WorkflowStatus { get; set; } = null!;
+    public virtual ICollection<State> States { get; set; }
 }

@@ -138,6 +138,7 @@ namespace Aban360.Common.Db.Extensions
             return new Tuple<string, DatabaseCreationParameters?, bool>(connectionString, databaseCreationParameters, isIntegrationTest);
         }
 
+
         private static DatabaseCreationParameters? GetDbCreationParameters(IConfigurationRoot configuration)
         {
             try
