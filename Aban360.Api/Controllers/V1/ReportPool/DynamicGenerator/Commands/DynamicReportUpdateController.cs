@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Common.ApplicationUser;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.DynamicGenerator.Handlers.Commands.Update.Contracts;
 using Aban360.ReportPool.Domain.Features.DynamicGenerator.Dto.Commands;
@@ -28,7 +29,8 @@ namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<DynamicReportUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] DynamicReportUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _tariffConstantUpdateHandler.Handle(updateDto, cancellationToken);
+            IAppUser currentUser=CurrentUser;
+            await _tariffConstantUpdateHandler.Handle(currentUser,updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);

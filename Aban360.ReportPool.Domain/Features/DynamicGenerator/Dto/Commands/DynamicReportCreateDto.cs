@@ -10,8 +10,6 @@
 
         public Guid UserId { get; set; }
 
-        public string UserName { get; set; } = null!;
-
         public Guid DocumentId { get; set; }
     }
 }

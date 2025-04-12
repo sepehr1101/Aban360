@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.ApplicationUser;
+using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.DynamicGenerator.Handlers.Commands.Create.Contracts;
 using Aban360.ReportPool.Domain.Features.DynamicGenerator.Dto.Commands;
 using Aban360.ReportPool.Domain.Features.DynamicGenerator.Entities;
@@ -22,9 +23,11 @@ namespace Aban360.ReportPool.Application.Features.DynamicGenerator.Handlers.Comm
             _dynamicReportCommandService.NotNull(nameof(_dynamicReportCommandService));
         }
 
-        public async Task Handle(DynamicReportCreateDto createDto, CancellationToken cancellationToken)
+        public async Task Handle(IAppUser currentUser,DynamicReportCreateDto createDto, CancellationToken cancellationToken)
         {
             var dynamicReport = _mapper.Map<DynamicReport>(createDto);
+            dynamicReport.UserName = currentUser.Username;
+
             dynamicReport.ValidFrom=DateTime.Now;
             dynamicReport.InsertLogInfo = "insertLogInfo";
             dynamicReport.Hash = "hash";

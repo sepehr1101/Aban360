@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Common.ApplicationUser;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.DynamicGenerator.Handlers.Commands.Create.Contracts;
 using Aban360.ReportPool.Domain.Features.DynamicGenerator.Dto.Commands;
@@ -28,7 +29,8 @@ namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<DynamicReportCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] DynamicReportCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _tariffConstantCreateHandler.Handle(createDto, cancellationToken);
+            IAppUser currentUser = CurrentUser;
+            await _tariffConstantCreateHandler.Handle(currentUser, createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
