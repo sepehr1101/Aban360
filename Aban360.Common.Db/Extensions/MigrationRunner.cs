@@ -112,9 +112,8 @@ namespace Aban360.Common.Db.Extensions
         }
         private static void UpdateDatabase(IServiceProvider serviceProvider)
         {
-            var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
+            IMigrationRunner runner = serviceProvider.GetRequiredService<IMigrationRunner>();
             runner.MigrateUp();
-
         }
         private static void SeedDatabse(IServiceProvider serviceProvider)
         {

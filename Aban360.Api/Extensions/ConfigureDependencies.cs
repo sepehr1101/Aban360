@@ -27,12 +27,12 @@ namespace Aban360.Api.Extensions
             services.AddUserPoolDI();
             services.AddLocationPoolDI();
             services.AddClaimPoolDI();
-            services.AddReportPoolDI();
             services.AddCalculationPoolDI();
             services.AddMeterPoolDI();
             services.AddWorkflowPoolDI();
             services.AddBlobPoolDI();
             services.AddSystemPoolDI();
+            services.AddReportPoolDI();
         }
 
         private static void AddUserPoolDI(this IServiceCollection services)

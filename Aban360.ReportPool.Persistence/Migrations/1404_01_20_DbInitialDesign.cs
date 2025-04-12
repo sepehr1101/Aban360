@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Persistence.Migrations
              .ToList();
             tableNames.ForEach(t => Delete.Table(t));
         }
-        public void CreateDynamicReport()
+        private void CreateDynamicReport()
         {
             var table = TableName.DynamicReport;
             Create.Table(nameof(TableName.DynamicReport)).InSchema(_schema)
