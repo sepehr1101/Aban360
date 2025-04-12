@@ -1,4 +1,4 @@
-﻿using Aban360.ReportPool.Domain.Features.Dto;
+﻿using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.Transactions.Contracts;
 using Dapper;

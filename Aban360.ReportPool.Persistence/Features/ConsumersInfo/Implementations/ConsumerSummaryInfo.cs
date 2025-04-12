@@ -1,6 +1,6 @@
-﻿using Aban360.ReportPool.Persistence.Base;
+﻿using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
-using Aban360.ReportPool.Persistence.Queries.Implementations;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 

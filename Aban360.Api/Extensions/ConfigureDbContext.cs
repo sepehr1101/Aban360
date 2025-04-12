@@ -23,7 +23,7 @@ namespace Aban360.Api.Extensions
             services.AddMeterPoolDbContext(configuration, connectionString);
             services.AddWorkflowPoolDbContext(configuration, connectionString);
             services.AddBlobPoolContext(configuration, connectionString);
-            //services.AddReportPoolContext(configuration, connectionString);
+            services.AddReportPoolContext(configuration, connectionString);
         }
         private static void AddUserPoolDbContext(this IServiceCollection services, IConfiguration configuration, string connectionString)
         {
