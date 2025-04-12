@@ -8,6 +8,8 @@
         WorkflowInstance,       
         StateType,
         State,
+        Operation,
+        Cartable,
         ActivityType,
         Activity,
         ActivityEvent,
