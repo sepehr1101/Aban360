@@ -83,6 +83,33 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
                 .WithColumn("RemoveLogInfo").AsString(int.MaxValue).Nullable()
                 .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
         }
+        private void CreateOperation()
+        {
+            var table = TableName.Operation;
+            Create.Table($"{nameof(TableName.Operation)}").InSchema(_schema)
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("Title").AsString(_255)
+                .WithColumn("ValidFrom").AsDateTime().NotNullable()
+                .WithColumn("ValidTo").AsDateTime().Nullable()
+                .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
+                .WithColumn("RemoveLogInfo").AsString(int.MaxValue).Nullable();
+        }
+        private void CreateCartable()
+        {
+            var table= TableName.Cartable;
+            Create.Table($"{nameof(TableName.Cartable)}").InSchema(_schema)
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn("WorkflowId").AsInt32().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.Workflow, table), _schema, nameof(TableName.Workflow), Id)
+                .WithColumn("StateCode").AsInt32()
+                    .ForeignKey(NamingHelper.Fk(TableName.State, table), _schema, nameof(TableName.State), "Code")
+                .WithColumn("GrantedRoles").AsAnsiString(int.MaxValue).Nullable()
+                .WithColumn("ConfirmRequired").AsBoolean().NotNullable()
+                .WithColumn("ValidFrom").AsDateTime().NotNullable()
+                .WithColumn("ValidTo").AsDateTime().Nullable()
+                .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
+                .WithColumn("RemoveLogInfo").AsString(int.MaxValue).Nullable();
+        }
         private void _CreateWorkflowVariable()
         {
             Create.Table("Variables")
