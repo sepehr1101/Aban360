@@ -55,7 +55,9 @@
 
         UserWorkday,
         UserLeave,
-        OfficialHoliday
+        OfficialHoliday,
+
+        DocumentEntity
 
     }
 }

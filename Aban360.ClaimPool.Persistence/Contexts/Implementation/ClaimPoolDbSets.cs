@@ -1,4 +1,5 @@
-﻿using Aban360.ClaimPool.Domain.Features.Draft.Entites;
+﻿using Aban360.ClaimPool.Domain.Features.DMS.Entities;
+using Aban360.ClaimPool.Domain.Features.Draft.Entites;
 using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Domain.Features.People.Entities;
@@ -54,12 +55,14 @@ namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
 
         public virtual DbSet<RequestEstate> RequestEstate { get; set; }
         public virtual DbSet<RequestFlat> RequestFlats { get; set; }
-        public virtual DbSet<RequestIndividual> RequestIndividuals{ get; set; }
-        public virtual DbSet<RequestIndividualEstate> RequestIndividualEstates{ get; set; }
+        public virtual DbSet<RequestIndividual> RequestIndividuals { get; set; }
+        public virtual DbSet<RequestIndividualEstate> RequestIndividualEstates { get; set; }
         public virtual DbSet<RequestIndividualTag> RequestIndividualTags { get; set; }
         public virtual DbSet<RequestSiphon> RequestSiphons { get; set; }
-        public virtual DbSet<RequestWaterMeter> RequestWaterMeters{ get; set; }
+        public virtual DbSet<RequestWaterMeter> RequestWaterMeters { get; set; }
         public virtual DbSet<RequestWaterMeterSiphon> RequestWaterMeterSiphons { get; set; }
-        public virtual DbSet<RequestWaterMeterTag> RequestWaterMeterTags    { get; set; }
+        public virtual DbSet<RequestWaterMeterTag> RequestWaterMeterTags { get; set; }
+
+        public virtual DbSet<DocumentEntity> DocumentEntities { get; set; }
     }
 }
