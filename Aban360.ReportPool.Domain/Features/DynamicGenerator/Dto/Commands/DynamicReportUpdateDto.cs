@@ -1,4 +1,6 @@
-﻿namespace Aban360.ReportPool.Domain.Features.DynamicGenerator.Dto.Commands
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Aban360.ReportPool.Domain.Features.DynamicGenerator.Dto.Commands
 {
     public record DynamicReportUpdateDto
     {
@@ -7,10 +9,12 @@
 
         public long Version { get; set; }
 
-        public string? Description { get; set; }
-
         public Guid UserId { get; set; }
 
-        public Guid DocumentId { get; set; }
+        public IFormFile Document { get; set; }
+
+        public short DocumentTypeId { get; set; }
+
+        public string? Description { get; set; }
     }
 }

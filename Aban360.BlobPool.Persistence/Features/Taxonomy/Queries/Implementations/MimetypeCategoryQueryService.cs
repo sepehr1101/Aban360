@@ -7,10 +7,10 @@ namespace Aban360.BlobPool.Persistence.Features.Taxonomy.Queries.Implementations
 {
     internal sealed class MimetypeCategoryQueryService : IMimetypeCategoryQueryService
     {
-        private readonly IUnitOfwork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly DbSet<MimetypeCategory> _mimetypeCategories;
 
-        public MimetypeCategoryQueryService(IUnitOfwork uow)
+        public MimetypeCategoryQueryService(IUnitOfWork uow)
         {
             _uow = uow;
             _mimetypeCategories = _uow.Set<MimetypeCategory>();

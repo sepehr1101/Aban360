@@ -9,11 +9,11 @@ namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator.Queries
     [Route("v1/dynamic-Report")]
     public class DynamicReportGetAllController : BaseController
     {
-        private readonly IDynamicReportGetAllHandler _tariffConstantGetAllHandler;
+        private readonly IDynamicReportGetAllHandler _dynamicReportGetAllHandler;
         public DynamicReportGetAllController(IDynamicReportGetAllHandler tariffConstantGetAllHandler)
         {
-            _tariffConstantGetAllHandler = tariffConstantGetAllHandler;
-            _tariffConstantGetAllHandler.NotNull(nameof(tariffConstantGetAllHandler));
+            _dynamicReportGetAllHandler = tariffConstantGetAllHandler;
+            _dynamicReportGetAllHandler.NotNull(nameof(tariffConstantGetAllHandler));
         }
 
         [HttpPost, HttpGet]
@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<DynamicReportGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var dynamicReport = await _tariffConstantGetAllHandler.Handle(cancellationToken);
+            var dynamicReport = await _dynamicReportGetAllHandler.Handle(cancellationToken);
             return Ok(dynamicReport);
         }
     }

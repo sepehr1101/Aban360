@@ -10,10 +10,10 @@ namespace Aban360.Api.Controllers.V1.BlobController.Commands
     [Route("v1/document_category")]
     public class DocumentCategoryDeleteController : BaseController
     {
-        private readonly IUnitOfwork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly IDocumentCategoryDeleteHandler _documentCategoryDeleteHandler;
         public DocumentCategoryDeleteController(
-            IUnitOfwork uow,
+            IUnitOfWork uow,
             IDocumentCategoryDeleteHandler documentCategoryDeleteHandler)
         {
             _uow = uow;

@@ -4,6 +4,6 @@ namespace Aban360.BlobPool.GatewayAddHoc.Features.Taxonomy.Contracts
 {
     public interface IDocumentCommandAddhoc
     {
-        Task Handle(IFormFile file, string description, CancellationToken cancellationToken);
+        Task<Guid> Handle(IFormFile file, string description, short documentTypeId, CancellationToken cancellationToken);
     }
 }

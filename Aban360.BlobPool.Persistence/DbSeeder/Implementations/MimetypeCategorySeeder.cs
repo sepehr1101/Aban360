@@ -11,9 +11,9 @@ namespace Aban360.BlobPool.Persistence.DbSeeder.Implementations
     public class MimetypeCategorySeeder : IDataSeeder
     {
         public int Order { get; set; } = 10;
-        private readonly IUnitOfwork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly DbSet<MimetypeCategory> _mimetypeCategories;
-        public MimetypeCategorySeeder(IUnitOfwork uow)
+        public MimetypeCategorySeeder(IUnitOfWork uow)
         {
             _uow = uow;
             _uow.NotNull(nameof(_uow));

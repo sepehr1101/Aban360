@@ -3,35 +3,49 @@ using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.DynamicGenerator.Handlers.Commands.Create.Contracts;
 using Aban360.ReportPool.Domain.Features.DynamicGenerator.Dto.Commands;
-using Aban360.ReportPool.Persistence.Contexts.Contracts;
+using Report = Aban360.ReportPool.Persistence.Contexts.Contracts;
+using Blob = Aban360.BlobPool.Persistence.Contexts.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using System.Transactions;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator.Commands
 {
     [Route("v1/dynamic-Report")]
     public class DynamicReportCreateController : BaseController
     {
-        private readonly IUnitOfWork _uow;
-        private readonly IDynamicReportCreateHandler _tariffConstantCreateHandler;
+        private readonly Report.IUnitOfWork _reportUow;
+        private readonly Blob.IUnitOfWork _blobUow;
+        private readonly IDynamicReportCreateHandler _dynamicReportCreateHandler;
         public DynamicReportCreateController(
-            IUnitOfWork uow,
+            Report.IUnitOfWork reportUow,
+            Blob.IUnitOfWork blobUow,
             IDynamicReportCreateHandler tariffConstantCreateHandler)
         {
-            _uow = uow;
-            _uow.NotNull(nameof(uow));
+            _reportUow = reportUow;
+            _reportUow.NotNull(nameof(reportUow));
 
-            _tariffConstantCreateHandler = tariffConstantCreateHandler;
-            _tariffConstantCreateHandler.NotNull(nameof(tariffConstantCreateHandler));
+            _blobUow = blobUow;
+            _blobUow.NotNull(nameof(blobUow));
+
+            _dynamicReportCreateHandler = tariffConstantCreateHandler;
+            _dynamicReportCreateHandler.NotNull(nameof(tariffConstantCreateHandler));
         }
 
         [HttpPost]
         [Route("create")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<DynamicReportCreateDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Create([FromBody] DynamicReportCreateDto createDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Create([FromForm] DynamicReportCreateDto createDto, CancellationToken cancellationToken)
         {
             IAppUser currentUser = CurrentUser;
-            await _tariffConstantCreateHandler.Handle(currentUser, createDto, cancellationToken);
-            await _uow.SaveChangesAsync(cancellationToken);
+            await _dynamicReportCreateHandler.Handle(currentUser, createDto, cancellationToken);
+
+            using (var transaction = TransactionBuilder.Create(1, isolationLevel:IsolationLevel.ReadCommitted))
+            {
+                await _reportUow.SaveChangesAsync(cancellationToken);
+                await _blobUow.SaveChangesAsync(cancellationToken);
+
+                transaction.Complete();
+            }
 
             return Ok(createDto);
         }

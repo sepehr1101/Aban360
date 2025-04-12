@@ -9,9 +9,9 @@ namespace Aban360.BlobPool.Persistence.DbSeeder.Implementations
     public class ExecutableMimetypeSeeder : IDataSeeder
     {
         public int Order { get; set; } = 10;
-        private readonly IUnitOfwork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly DbSet<ExecutableMimetype> _executableMimetypes;
-        public ExecutableMimetypeSeeder(IUnitOfwork uow)
+        public ExecutableMimetypeSeeder(IUnitOfWork uow)
         {
             _uow = uow;
             _uow.NotNull(nameof(_uow));

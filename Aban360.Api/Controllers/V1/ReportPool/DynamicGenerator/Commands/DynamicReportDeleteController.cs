@@ -11,7 +11,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator.Commands
     public class DynamicReportDeleteController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IDynamicReportDeleteHandler _tariffConstantDeleteHandler;
+        private readonly IDynamicReportDeleteHandler _dynamicReportDeleteHandler;
         public DynamicReportDeleteController(
             IUnitOfWork uow,
             IDynamicReportDeleteHandler tariffConstantDeleteHandler)
@@ -19,8 +19,8 @@ namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator.Commands
             _uow = uow;
             _uow.NotNull(nameof(uow));
 
-            _tariffConstantDeleteHandler = tariffConstantDeleteHandler;
-            _tariffConstantDeleteHandler.NotNull(nameof(tariffConstantDeleteHandler));
+            _dynamicReportDeleteHandler = tariffConstantDeleteHandler;
+            _dynamicReportDeleteHandler.NotNull(nameof(tariffConstantDeleteHandler));
         }
 
         [HttpPost, HttpDelete]
@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<DynamicReportDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] DynamicReportDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _tariffConstantDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _dynamicReportDeleteHandler.Handle(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);

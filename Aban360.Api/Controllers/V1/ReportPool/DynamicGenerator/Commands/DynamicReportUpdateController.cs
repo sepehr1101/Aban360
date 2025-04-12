@@ -12,7 +12,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator.Commands
     public class DynamicReportUpdateController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IDynamicReportUpdateHandler _tariffConstantUpdateHandler;
+        private readonly IDynamicReportUpdateHandler _dynamicReportUpdateHandler;
         public DynamicReportUpdateController(
             IUnitOfWork uow,
             IDynamicReportUpdateHandler tariffConstantUpdateHandler)
@@ -20,8 +20,8 @@ namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator.Commands
             _uow = uow;
             _uow.NotNull(nameof(uow));
 
-            _tariffConstantUpdateHandler = tariffConstantUpdateHandler;
-            _tariffConstantUpdateHandler.NotNull(nameof(tariffConstantUpdateHandler));
+            _dynamicReportUpdateHandler = tariffConstantUpdateHandler;
+            _dynamicReportUpdateHandler.NotNull(nameof(tariffConstantUpdateHandler));
         }
 
         [HttpPost, HttpPatch]
@@ -30,7 +30,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator.Commands
         public async Task<IActionResult> Update([FromBody] DynamicReportUpdateDto updateDto, CancellationToken cancellationToken)
         {
             IAppUser currentUser=CurrentUser;
-            await _tariffConstantUpdateHandler.Handle(currentUser,updateDto, cancellationToken);
+            await _dynamicReportUpdateHandler.Handle(currentUser,updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);

@@ -10,10 +10,10 @@ namespace Aban360.Api.Controllers.V1.BlobController.Commands
     [Route("v1/mimetype_category")]
     public class MimetypeCategoryDeleteController : BaseController
     {
-        private readonly IUnitOfwork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly IMimetypeCategoryDeleteHandler _mimetypeCategoryDeleteHandler;
         public MimetypeCategoryDeleteController(
-            IUnitOfwork uow,
+            IUnitOfWork uow,
             IMimetypeCategoryDeleteHandler mimetypeCategoryDeleteHandler)
         {
             _uow = uow;

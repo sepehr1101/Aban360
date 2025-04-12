@@ -9,9 +9,9 @@ namespace Aban360.BlobPool.Persistence.DbSeeder.Implementations
     public class DocumentTypeSeeder : IDataSeeder
     {
         public int Order { get; set; } = 12;
-        private readonly IUnitOfwork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly DbSet<DocumentType> _documentTypes;
-        public DocumentTypeSeeder(IUnitOfwork uow)
+        public DocumentTypeSeeder(IUnitOfWork uow)
         {
             _uow = uow;
             _uow.NotNull(nameof(_uow));

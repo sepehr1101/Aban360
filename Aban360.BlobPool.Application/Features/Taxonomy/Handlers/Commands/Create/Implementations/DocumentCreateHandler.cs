@@ -23,7 +23,7 @@ namespace Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Creat
             _documentCommandService.NotNull(nameof(_documentCommandService));
         }
 
-        public async Task Handle(DocumentCreateDto createDto, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(DocumentCreateDto createDto, CancellationToken cancellationToken)
         {
             Document document = new Document();
 
@@ -45,6 +45,7 @@ namespace Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Creat
             document.DocumentTypeId = createDto.DocumentTypeId;
 
             await _documentCommandService.Add(document);
+            return document.Id;
         }
     }
 }

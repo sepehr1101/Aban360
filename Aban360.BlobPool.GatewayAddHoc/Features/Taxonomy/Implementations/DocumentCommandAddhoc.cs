@@ -15,14 +15,16 @@ namespace Aban360.BlobPool.GatewayAddHoc.Features.Taxonomy.Implementations
             _documentCreateHandler.NotNull(nameof(documentCreateHandler));
         }
 
-        public async Task Handle(IFormFile file, string description, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(IFormFile file, string description,short documentTypeId, CancellationToken cancellationToken)
         {
             DocumentCreateDto createDto = new DocumentCreateDto()
             {
                 Description = description,
-                document = file
+                document = file,
+                DocumentTypeId= documentTypeId
             };
-            await _documentCreateHandler.Handle(createDto, cancellationToken);
+            var documentId = await _documentCreateHandler.Handle(createDto, cancellationToken);
+            return documentId;
         }
     }
 }

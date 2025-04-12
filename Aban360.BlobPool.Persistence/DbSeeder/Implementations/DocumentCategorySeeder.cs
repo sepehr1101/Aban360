@@ -9,9 +9,9 @@ namespace Aban360.BlobPool.Persistence.DbSeeder.Implementations
     public class DocumentCategorySeeder : IDataSeeder
     {
         public int Order { get; set; } = 10;
-        private readonly IUnitOfwork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly DbSet<DocumentCategory> _documentCategorys;
-        public DocumentCategorySeeder(IUnitOfwork uow)
+        public DocumentCategorySeeder(IUnitOfWork uow)
         {
             _uow = uow;
             _uow.NotNull(nameof(_uow));
