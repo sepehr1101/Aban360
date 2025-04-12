@@ -10,10 +10,10 @@ namespace Aban360.Api.Controllers.V1.BlobController.Commands
     [Route("v1/document_category")]
     public class DocumentCategoryUpdateController : BaseController
     {
-        private readonly IUnitOfwork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly IDocumentCategoryUpdateHandler _documentCategoryUpdateHandler;
         public DocumentCategoryUpdateController(
-            IUnitOfwork uow,
+            IUnitOfWork uow,
             IDocumentCategoryUpdateHandler documentCategoryUpdateHandler)
         {
             _uow = uow;

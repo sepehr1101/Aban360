@@ -8,9 +8,9 @@ namespace Aban360.BlobPool.Persistence.Features.Taxonomy.Commands.Implementation
 {
     internal sealed class ExecutableMimetypeCommandService : IExecutableMimetypeCommandService
     {
-        private readonly IUnitOfwork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly DbSet<ExecutableMimetype> _executableMimetypes;
-        public ExecutableMimetypeCommandService(IUnitOfwork uow)
+        public ExecutableMimetypeCommandService(IUnitOfWork uow)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));

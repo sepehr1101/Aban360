@@ -10,10 +10,10 @@ namespace Aban360.Api.Controllers.V1.BlobController.Commands
     [Route("v1/document")]
     public class DocumentCreateController : BaseController
     {
-        private readonly IUnitOfwork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly IDocumentCreateHandler _documentCreateHandler;
         public DocumentCreateController(
-            IUnitOfwork uow,
+            IUnitOfWork uow,
             IDocumentCreateHandler documentCreateHandler)
         {
             _uow = uow;

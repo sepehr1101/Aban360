@@ -8,9 +8,9 @@ namespace Aban360.BlobPool.Persistence.Features.Taxonomy.Queries.Implementations
 {
     internal sealed class DocumentQueryService : IDocumentQueryService
     {
-        private readonly IUnitOfwork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly DbSet<Document> _document;
-        public DocumentQueryService(IUnitOfwork uow)
+        public DocumentQueryService(IUnitOfWork uow)
         {
             _uow = uow;
             _uow.NotNull(nameof(_uow));

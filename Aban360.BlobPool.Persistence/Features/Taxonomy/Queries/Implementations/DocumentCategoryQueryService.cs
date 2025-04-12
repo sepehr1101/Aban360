@@ -7,9 +7,9 @@ namespace Aban360.BlobPool.Persistence.Features.Taxonomy.Queries.Implementations
 {
     internal sealed class DocumentCategoryQueryService : IDocumentCategoryQueryService
     {
-        private readonly IUnitOfwork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly DbSet<DocumentCategory> _documentCategories;
-        public DocumentCategoryQueryService(IUnitOfwork uow)
+        public DocumentCategoryQueryService(IUnitOfWork uow)
         {
             _uow = uow;
             _documentCategories = _uow.Set<DocumentCategory>();

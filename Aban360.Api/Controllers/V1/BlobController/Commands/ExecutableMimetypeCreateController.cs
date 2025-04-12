@@ -10,10 +10,10 @@ namespace Aban360.Api.Controllers.V1.BlobController.Commands
     [Route("v1/executable_mimetype")]
     public class ExecutableMimetypeCreateController : BaseController
     {
-        private readonly IUnitOfwork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly IExecutableMimetypeCreateHandler _executableMimetypeCreateHandler;
         public ExecutableMimetypeCreateController(
-            IUnitOfwork uow,
+            IUnitOfWork uow,
             IExecutableMimetypeCreateHandler executableMimetypeCreateHandler)
         {
             _uow = uow;

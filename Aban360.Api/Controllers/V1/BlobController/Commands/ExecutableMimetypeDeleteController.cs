@@ -10,10 +10,10 @@ namespace Aban360.Api.Controllers.V1.BlobController.Commands
     [Route("v1/executable_mimetype")]
     public class ExecutableMimetypeDeleteController : BaseController
     {
-        private readonly IUnitOfwork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly IExecutableMimetypeDeleteHandler _executableMimetypeDeleteHandler;
         public ExecutableMimetypeDeleteController(
-            IUnitOfwork uow,
+            IUnitOfWork uow,
             IExecutableMimetypeDeleteHandler executableMimetypeDeleteHandler)
         {
             _uow = uow;

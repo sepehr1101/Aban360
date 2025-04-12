@@ -31,6 +31,7 @@ namespace Aban360.ReportPool.Application.Features.DynamicGenerator.Handlers.Comm
             dynamicReport.InsertLogInfo = "insertLogInfo";
             dynamicReport.Hash = "hash";
             _mapper.Map(updateDto, dynamicReport);
+
         }
     }
 }

@@ -5,6 +5,6 @@ namespace Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Creat
 {
     public interface IDocumentCreateHandler
     {
-        Task Handle(DocumentCreateDto createDto, CancellationToken cancellationToken);
+        Task<Guid> Handle(DocumentCreateDto createDto, CancellationToken cancellationToken);
     }
 }

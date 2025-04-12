@@ -8,9 +8,9 @@ namespace Aban360.BlobPool.Persistence.Features.Taxonomy.Commands.Implementation
 {
     internal sealed class MimetypeCategoryCommandService : IMimetypeCategoryCommandService
     {
-        private readonly IUnitOfwork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly DbSet<MimetypeCategory> _mimetypeCategories;
-        public MimetypeCategoryCommandService(IUnitOfwork uow)
+        public MimetypeCategoryCommandService(IUnitOfWork uow)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));

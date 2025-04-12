@@ -10,10 +10,10 @@ namespace Aban360.Api.Controllers.V1.BlobController.Commands
     [Route("v1/mimetype_category")]
     public class MimetypeCategoryUpdateController : BaseController
     {
-        private readonly IUnitOfwork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly IMimetypeCategoryUpdateHandler _mimetypeCategoryUpdateHandler;
         public MimetypeCategoryUpdateController(
-            IUnitOfwork uow,
+            IUnitOfWork uow,
             IMimetypeCategoryUpdateHandler mimetypeCategoryUpdateHandler)
         {
             _uow = uow;

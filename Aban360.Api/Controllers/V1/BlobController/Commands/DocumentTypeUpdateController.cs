@@ -10,10 +10,10 @@ namespace Aban360.Api.Controllers.V1.BlobController.Commands
     [Route("v1/document_Type")]
     public class DocumentTypeUpdateController : BaseController
     {
-        private readonly IUnitOfwork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly IDocumentTypeUpdateHandler _documentTypeUpdateHandler;
         public DocumentTypeUpdateController(
-            IUnitOfwork uow,
+            IUnitOfWork uow,
             IDocumentTypeUpdateHandler documentTypeUpdateHandler)
         {
             _uow = uow;

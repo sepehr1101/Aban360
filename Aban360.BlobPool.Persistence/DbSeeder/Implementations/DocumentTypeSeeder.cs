@@ -9,9 +9,9 @@ namespace Aban360.BlobPool.Persistence.DbSeeder.Implementations
     public class DocumentTypeSeeder : IDataSeeder
     {
         public int Order { get; set; } = 12;
-        private readonly IUnitOfwork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly DbSet<DocumentType> _documentTypes;
-        public DocumentTypeSeeder(IUnitOfwork uow)
+        public DocumentTypeSeeder(IUnitOfWork uow)
         {
             _uow = uow;
             _uow.NotNull(nameof(_uow));
@@ -28,17 +28,17 @@ namespace Aban360.BlobPool.Persistence.DbSeeder.Implementations
                 return;
             }
 
-            ICollection<DocumentType> documentTypes = new List<DocumentType>()
-            {
-                new DocumentType(){Id=1,Title="",DocumentCategoryId=1,Icon="",Css=""},
-                new DocumentType(){Id=2,Title="",DocumentCategoryId=1,Icon="",Css=""},
-                new DocumentType(){Id=3,Title="",DocumentCategoryId=1,Icon="",Css=""},
-                new DocumentType(){Id=4,Title="",DocumentCategoryId=1,Icon="",Css=""},
-                new DocumentType(){Id=5,Title="",DocumentCategoryId=1,Icon="",Css=""},
-            };
-            _documentTypes.AddRange(documentTypes);
-            _uow.SaveChanges();
+            string sqlFilePath = GetSqlFilePath();
+            _uow.ExecuteBatch(sqlFilePath);
 
+        }
+        private string GetSqlFilePath()
+        {
+            string basePath = AppContext.BaseDirectory;
+            string relativePath = @"\DbSeeder\DataScript\DocumentType.sql";
+
+            string path = string.Concat(basePath, relativePath);
+            return path;
         }
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.BlobPool.Persistence.Contexts.Implementations;
 
-public partial class BlobPoolContext: BaseDbContext,IUnitOfwork
+public partial class BlobPoolContext: BaseDbContext,IUnitOfWork
 {
     public BlobPoolContext()
     {

@@ -7,10 +7,10 @@ namespace Aban360.BlobPool.Persistence.Features.Taxonomy.Queries.Implementations
 {
     internal sealed class ExecutableMimetypeQueryService : IExecutableMimetypeQueryService
     {
-        private readonly IUnitOfwork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly DbSet<ExecutableMimetype> _executableMimetypes;
 
-        public ExecutableMimetypeQueryService(IUnitOfwork uow)
+        public ExecutableMimetypeQueryService(IUnitOfWork uow)
         {
             _uow = uow;
             _executableMimetypes = _uow.Set<ExecutableMimetype>();

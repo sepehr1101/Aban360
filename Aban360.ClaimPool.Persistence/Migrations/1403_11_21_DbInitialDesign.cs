@@ -546,5 +546,15 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("DateJalali").AsString(_10).NotNullable();
         }
 
+        private void CreateDocumentEntity()
+        {
+            var table = TableName.DocumentEntity;
+            Create.Table(nameof(TableName.DocumentEntity)).InSchema(_schema)
+                .WithColumn("Id").AsInt64().Identity().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+                .WithColumn("DocumentId").AsGuid().NotNullable()
+                .WithColumn("TableId").AsInt64().NotNullable()
+                .WithColumn("RelationEntityId").AsInt16().NotNullable();
+        }
+
     }
 }

@@ -7,10 +7,10 @@ namespace Aban360.BlobPool.Persistence.Features.Taxonomy.Queries.Implementations
 {
     internal sealed class DocumentTypeQueryService : IDocumentTypeQueryService
     {
-        private readonly IUnitOfwork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly DbSet<DocumentType> _documentTypes;
 
-        public DocumentTypeQueryService(IUnitOfwork uow)
+        public DocumentTypeQueryService(IUnitOfWork uow)
         {
             _uow = uow;
             _documentTypes = _uow.Set<DocumentType>();

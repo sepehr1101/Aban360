@@ -8,9 +8,9 @@ namespace Aban360.BlobPool.Persistence.Features.Taxonomy.Commands.Implementation
 {
     internal sealed class DocumentTypeCommandService : IDocumentTypeCommandService
     {
-        private readonly IUnitOfwork _uow;
+        private readonly IUnitOfWork _uow;
         private readonly DbSet<DocumentType> _documentTypes;
-        public DocumentTypeCommandService(IUnitOfwork uow)
+        public DocumentTypeCommandService(IUnitOfWork uow)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));

@@ -72,30 +72,34 @@ namespace Aban360.BlobPool.Persistence.Migrations
                 .WithColumn(Id).AsInt16()
                 .WithColumn(Title).AsString(_255).NotNullable()
                 .WithColumn("StreamingOption").AsBoolean().NotNullable()
-                .WithColumn("FrontendExecutor").AsBoolean().NotNullable();
+                .WithColumn("FrontendExecutor").AsBoolean().NotNullable()
+                .WithColumn("IconName").AsString(_255).Nullable();
 
         }
         private void CreateDocument()
-        {           
+        {
             string command = $"CREATE TABLE [{_schema}].[Document] " +
-                           $"(" +
-                           $"     [Id] UNIQUEIDENTIFIER NOT NULL CONSTRAINT [DF_Document_Id] DEFAULT NEWID()," +
-                           $"     [FileRowId] UNIQUEIDENTIFIER ROWGUIDCOL NOT NULL " +
-                           $"         CONSTRAINT [DF_Document_FileRowId] DEFAULT NEWID()," +
-                           $"     [Name] NVARCHAR(255) NOT NULL, " +
-                           $"     [Extension] NVARCHAR(255) NOT NULL," +
-                           $"     [SizeInByte] BIGINT NOT NULL, " +
-                           $"     [ContentType] NVARCHAR(255) NOT NULL," +
-                           $"     [FileContent] VARBINARY(MAX) FILESTREAM NULL," +
-                           $"     [CreatedDateTime] DATETIME NOT NULL " +
-                           $"         CONSTRAINT [DF_Document_CreatedDateTime] DEFAULT GETDATE()," +
-                           $"     [Description] NVARCHAR(1023), " +
-                           $"     [DocumentTypeId] SMALLINT NOT NULL," +
-                           $"     CONSTRAINT [PK_Document] PRIMARY KEY ([Id])," +
-                           $"     CONSTRAINT [UQ_Document_FileRowId] UNIQUE ([FileRowId])," +
-                           $"     CONSTRAINT [FK_Document_DocumentType] FOREIGN KEY ([DocumentTypeId]) REFERENCES [{_schema}].[DocumentType]([Id])" +
-                           $");";
-
+                             $"(" +
+                             $"     [Id] UNIQUEIDENTIFIER NOT NULL CONSTRAINT [DF_Document_Id] DEFAULT NEWID()," +
+                             $"     [FileRowId] UNIQUEIDENTIFIER ROWGUIDCOL NOT NULL " +
+                             $"         CONSTRAINT [DF_Document_FileRowId] DEFAULT NEWID()," +
+                             $"     [Name] NVARCHAR(255) NOT NULL, " +
+                             $"     [Extension] NVARCHAR(255) NOT NULL," +
+                             $"     [SizeInByte] BIGINT NOT NULL, " +
+                             $"     [ContentType] NVARCHAR(255) NOT NULL," +
+                             $"     [FileContent] VARBINARY(MAX) FILESTREAM NULL," +
+                             $"     [CreatedDateTime] DATETIME NOT NULL " +
+                             $"         CONSTRAINT [DF_Document_CreatedDateTime] DEFAULT GETDATE()," +
+                             $"     [Description] NVARCHAR(1023), " +
+                             $"     [DocumentTypeId] SMALLINT NOT NULL," +
+                             $"     [IsThumbnail] BIT NOT NULL " +
+                             $"         CONSTRAINT [DF_Document_IsThumbnail] DEFAULT 0," +
+                             $"     [ParrentId] UNIQUEIDENTIFIER NULL," +
+                             $"     CONSTRAINT [PK_Document] PRIMARY KEY ([Id])," +
+                             $"     CONSTRAINT [UQ_Document_FileRowId] UNIQUE ([FileRowId])," +
+                             $"     CONSTRAINT [FK_Document_DocumentType] FOREIGN KEY ([DocumentTypeId]) REFERENCES [{_schema}].[DocumentType]([Id])," +
+                             $"     CONSTRAINT [FK_Document_Parrent] FOREIGN KEY ([ParrentId]) REFERENCES [{_schema}].[Document]([Id])" +
+                             $");";
             Execute.Sql(command);
         }
     }
