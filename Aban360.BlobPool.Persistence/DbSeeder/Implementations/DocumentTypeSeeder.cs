@@ -28,17 +28,17 @@ namespace Aban360.BlobPool.Persistence.DbSeeder.Implementations
                 return;
             }
 
-            ICollection<DocumentType> documentTypes = new List<DocumentType>()
-            {
-                new DocumentType(){Id=1,Title="",DocumentCategoryId=1,Icon="",Css=""},
-                new DocumentType(){Id=2,Title="",DocumentCategoryId=1,Icon="",Css=""},
-                new DocumentType(){Id=3,Title="",DocumentCategoryId=1,Icon="",Css=""},
-                new DocumentType(){Id=4,Title="",DocumentCategoryId=1,Icon="",Css=""},
-                new DocumentType(){Id=5,Title="",DocumentCategoryId=1,Icon="",Css=""},
-            };
-            _documentTypes.AddRange(documentTypes);
-            _uow.SaveChanges();
+            string sqlFilePath = GetSqlFilePath();
+            _uow.ExecuteBatch(sqlFilePath);
 
+        }
+        private string GetSqlFilePath()
+        {
+            string basePath = AppContext.BaseDirectory;
+            string relativePath = @"\DbSeeder\DataScript\DocumentType.sql";
+
+            string path = string.Concat(basePath, relativePath);
+            return path;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Aban360.BlobPool.Domain.Features.Taxonomy.Dto.Commands
+﻿namespace Aban360.BlobPool.Domain.Features.Taxonomy.Dto.Queries
 {
     public record DocumentGetDto
     {
@@ -12,5 +12,7 @@
         public byte[]? FileContent { get; set; }
         public DateTime CreatedDateTime { get; set; }
         public string? Description { get; set; }
+        public bool IsThumbnail { get; set; } = false;
+        public Guid? ParrentId { get; set; }
     }
 }

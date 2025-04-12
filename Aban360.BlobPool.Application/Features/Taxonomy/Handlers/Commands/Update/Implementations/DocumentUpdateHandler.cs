@@ -37,6 +37,8 @@ namespace Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Updat
             document.FileContent = memoryStream.ToArray();
             document.CreatedDateTime = DateTime.Now;
             document.Description = updateDto.Description;
+            document.IsThumbnail = updateDto.IsThumbnail;
+            document.ParrentId = updateDto.ParrentId;
 
             _mapper.Map(updateDto, document);
         }

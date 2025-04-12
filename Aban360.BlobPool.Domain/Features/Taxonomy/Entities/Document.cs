@@ -23,8 +23,14 @@ namespace Aban360.BlobPool.Domain.Features.Taxonomy.Entities
 
         public string? Description { get; set; }
 
+        public bool IsThumbnail { get; set; } = false;
+
+        public Guid? ParrentId { get; set; }
+
         public short DocumentTypeId { get; set; }
 
         public virtual DocumentType DocumentType { get; set; }
+        public virtual Document Parrent { get; set; }
+
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Queries.Contracts;
-using Aban360.BlobPool.Domain.Features.Taxonomy.Dto.Commands;
+using Aban360.BlobPool.Domain.Features.Taxonomy.Dto.Queries;
 using Aban360.BlobPool.Persistence.Features.Taxonomy.Queries.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;

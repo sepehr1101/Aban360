@@ -12,4 +12,6 @@ public class ExecutableMimetype
     public bool StreamingOption { get; set; }
 
     public bool FrontendExecutor { get; set; }
+
+    public string?  IconName { get; set; }
 }

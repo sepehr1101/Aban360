@@ -7,6 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="DbSeeder\DataScript\DocumentType.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="DbSeeder\DataScript\DocumentType.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentMigrator" Version="6.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.12" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
@@ -25,7 +35,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DbSeeder\DataScript\" />
     <Folder Include="Features\Analyctics\" />
     <Folder Include="Features\Policies\" />
     <Folder Include="Features\Proccessing\" />

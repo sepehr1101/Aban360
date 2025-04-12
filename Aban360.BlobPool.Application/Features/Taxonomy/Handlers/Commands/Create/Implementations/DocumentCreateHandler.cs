@@ -40,6 +40,9 @@ namespace Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Creat
             document.FileContent = memoryStream.ToArray();
             document.CreatedDateTime = DateTime.Now;
             document.Description = createDto.Description;
+            document.IsThumbnail = createDto.IsThumbnail;
+            document.ParrentId=createDto.ParrentId;
+            document.DocumentTypeId = createDto.DocumentTypeId;
 
             await _documentCommandService.Add(document);
         }
