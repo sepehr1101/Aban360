@@ -1,4 +1,4 @@
-﻿using Aban360.ReportPool.Domain.Features.DynamicReports.Entities;
+﻿using Aban360.ReportPool.Domain.Features.DynamicGenerator.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ReportPool.Persistence.Contexts.Implementations
