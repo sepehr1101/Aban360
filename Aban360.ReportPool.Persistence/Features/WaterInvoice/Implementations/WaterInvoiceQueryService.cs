@@ -1,4 +1,4 @@
-﻿using Aban360.ReportPool.Domain.Features.Dto;
+﻿using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Features.WaterInvoice.Contracts;
 
 namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations

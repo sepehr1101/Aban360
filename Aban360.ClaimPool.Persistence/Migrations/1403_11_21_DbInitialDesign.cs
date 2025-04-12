@@ -475,7 +475,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         {
             var table = TableName.UsageLevel1;
             Create.Table(nameof(TableName.UsageLevel1)).InSchema(_schema)
-                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
+                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
 
@@ -483,7 +483,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         {
             var table = TableName.UsageLevel2;
             Create.Table(nameof(TableName.UsageLevel2)).InSchema(_schema)
-                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
+                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn($"{TableName.UsageLevel1}Id").AsInt16().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.UsageLevel1, table), _schema, nameof(TableName.UsageLevel1), Id);
@@ -493,7 +493,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         {
             var table = TableName.UsageLevel3;
             Create.Table(nameof(TableName.UsageLevel3)).InSchema(_schema)
-                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
+                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn($"{TableName.UsageLevel2}Id").AsInt16().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.UsageLevel2, table), _schema, nameof(TableName.UsageLevel2), Id);
@@ -503,7 +503,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         {
             var table = TableName.UsageLevel4;
             Create.Table(nameof(TableName.UsageLevel4)).InSchema(_schema)
-                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
+                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn($"{TableName.UsageLevel3}Id").AsInt16().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.UsageLevel3, table), _schema, nameof(TableName.UsageLevel3), Id);

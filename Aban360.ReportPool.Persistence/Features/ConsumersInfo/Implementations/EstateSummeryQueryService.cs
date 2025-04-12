@@ -1,4 +1,5 @@
-﻿using Aban360.ReportPool.Persistence.Base;
+﻿using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+using Aban360.ReportPool.Persistence.Base;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
