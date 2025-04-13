@@ -297,12 +297,10 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
-        private void _CreateIndividual(TableName table, string nameOfTable, TableName watermeterTable, string watermeterName)
+        private void _CreateIndividual(TableName table, string nameOfTable)
         {
             Create.Table(nameOfTable).InSchema(_schema)
                 .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable().Identity()
-                .WithColumn($"WaterMeterId").AsInt32().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(watermeterTable, table), _schema, watermeterName, Id)
                 .WithColumn("IndividualTypeId").AsInt16().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.IndividualType, table), _schema, nameof(TableName.IndividualType), Id)
                 .WithColumn("FullName").AsString(_255).NotNullable()
@@ -321,8 +319,8 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         }
         private void CreateIndividuals()
         {
-            _CreateIndividual(TableName.Individual, nameof(TableName.Individual), TableName.WaterMeter, nameof(TableName.WaterMeter));
-            _CreateIndividual(TableName.RequestIndividual, nameof(TableName.RequestIndividual), TableName.RequestWaterMeter, nameof(TableName.RequestWaterMeter));
+            _CreateIndividual(TableName.Individual, nameof(TableName.Individual));
+            _CreateIndividual(TableName.RequestIndividual, nameof(TableName.RequestIndividual));
         }
         private void CreateIndividualEstateRelationType()
         {
@@ -403,12 +401,10 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
-        private void _CreateSiphon(TableName table, string nameOfTable, TableName waterMeterTable, string waterMeterName)
+        private void _CreateSiphon(TableName table, string nameOfTable)
         {
             Create.Table(nameOfTable).InSchema(_schema)
               .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
-                .WithColumn("WaterMeterId").AsInt32().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(waterMeterTable, table), _schema, waterMeterName, Id)
               .WithColumn("InstallationLocation").AsString(_255).Nullable()
               .WithColumn("InstallationDate").AsAnsiString(10).Nullable()
               .WithColumn("SiphonDiameterId").AsInt16().NotNullable()
@@ -437,10 +433,8 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         }
         private void CreateSiphons()
         {
-            _CreateSiphon(TableName.Siphon, nameof(TableName.Siphon),
-                TableName.WaterMeter,nameof(TableName.WaterMeter));
-            _CreateSiphon(TableName.RequestSiphon, nameof(TableName.RequestSiphon),
-                TableName.RequestWaterMeter, nameof(TableName.RequestWaterMeter));
+            _CreateSiphon(TableName.Siphon, nameof(TableName.Siphon));
+            _CreateSiphon(TableName.RequestSiphon, nameof(TableName.RequestSiphon));
         }
         private void CreateWaterMeterSiphon()
         {
