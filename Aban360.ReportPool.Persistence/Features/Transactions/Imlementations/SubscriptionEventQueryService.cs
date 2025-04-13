@@ -25,7 +25,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         private string GetSubscriptionEventsQuery()
         {
             string query = @"
-            use CustomerWarehouse
+            use Aban360
             select
 	            Id,PreviousNumber PreviousMeterNumber,NextNumber NextMeterNumber, PreviousDay PreviousMeterDate,NextDay CurrentMeterDate,RegisterDay RegisterDate,SumItems DebtAmount,0 OweAmount,TypeId as [Description], ConsumptionAverage, NULL BankTitle
             from Bills

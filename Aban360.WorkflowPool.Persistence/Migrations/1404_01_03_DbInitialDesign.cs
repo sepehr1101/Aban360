@@ -83,7 +83,7 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
                 .WithColumn("RemoveLogInfo").AsString(int.MaxValue).Nullable()
                 .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
         }
-        private void CreateOperation()
+        private void _CreateOperation()
         {
             var table = TableName.Operation;
             Create.Table($"{nameof(TableName.Operation)}").InSchema(_schema)
@@ -94,7 +94,7 @@ namespace Aban360.WorkflowPool.Persistence.Migrations
                 .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
                 .WithColumn("RemoveLogInfo").AsString(int.MaxValue).Nullable();
         }
-        private void CreateCartable()
+        private void _CreateCartable()
         {
             var table= TableName.Cartable;
             Create.Table($"{nameof(TableName.Cartable)}").InSchema(_schema)
