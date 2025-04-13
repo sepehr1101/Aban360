@@ -7,9 +7,6 @@ namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
     [Table(nameof(RequestSiphon))]
     public class RequestSiphon: SiphonBase
     {
-        [ForeignKey(nameof(WaterMeterId))]
-        public virtual RequestWaterMeter RequestWaterMeter { get; set; }// WaterMeterSiphon
-
         public virtual ICollection<RequestSiphon> InversePrevious { get; set; } = new List<RequestSiphon>();
 
         public virtual RequestSiphon? Previous { get; set; }

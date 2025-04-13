@@ -13,8 +13,6 @@ public class CompanyService
 
     public short CompanyServiceTypeId { get; set; }
 
-    public string CompanyServiceTypeTitle{ get; set; }
-
     public virtual ICollection<CompanyServiceOffering> CompanyServiceOfferings { get; set; } = new List<CompanyServiceOffering>();
 
     public virtual CompanyServiceType CompanyServiceType { get; set; } = null!;

@@ -3,7 +3,6 @@
 public class SiphonBase
 {
     public int Id { get; set; }
-    public int WaterMeterId { get; set; }
 
     public string? InstallationLocation { get; set; }
 

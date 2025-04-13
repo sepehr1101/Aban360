@@ -95,7 +95,6 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
             individual.Hash = "hash";
 
             individual.IndividualTypeId = individualDto.IndividualTypeId;
-            individual.RequestWaterMeter = requestWaterMeter;
 
             RequestIndividualEstate requestIndividualEstate = new()
             {
@@ -128,8 +127,6 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
                 item.InsertLogInfo = "loginfo";
                 item.UserId = Guid.Parse("7DE99BA5-024F-47DA-AACE-23AB662D619C");
                 item.Hash = "hash";
-
-                item.RequestWaterMeter = requestWaterMeter;
 
                 RequestWaterMeterSiphon requestWaterMeterSiphon = new RequestWaterMeterSiphon()
                 {
