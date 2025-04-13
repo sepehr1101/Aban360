@@ -64,7 +64,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
         {
             var table = TableName.TariffCalculationMode;
             Create.Table(nameof(TableName.TariffCalculationMode)).InSchema(_schema)
-               .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
+               .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                .WithColumn("Title").AsString(_255).NotNullable()
                .WithColumn("Description").AsString(_1023).Nullable();
         }
@@ -72,7 +72,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
         {
             var table = TableName.CompanyServiceType;
             Create.Table(nameof(TableName.CompanyServiceType)).InSchema(_schema)
-                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn($"{TableName.TariffCalculationMode}Id").AsInt16().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.TariffCalculationMode, TableName.CompanyServiceType), _schema,nameof(TableName.TariffCalculationMode), Id)
@@ -82,11 +82,11 @@ namespace Aban360.CalculationPool.Persistence.Migrations
         {
             var table = TableName.CompanyService;
             Create.Table(nameof(TableName.CompanyService)).InSchema(_schema)
-                .WithColumn($"{nameof(TableName.CompanyServiceType)}{Id}").AsInt16().NotNullable()
-                   .ForeignKey(NamingHelper.Fk(TableName.CompanyServiceType, table), _schema, nameof(TableName.CompanyServiceType), Id)
-                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable()
-                .WithColumn("IsMultiSelect").AsBoolean().NotNullable();
+                .WithColumn("IsMultiSelect").AsBoolean().NotNullable()
+                .WithColumn($"{nameof(TableName.CompanyServiceType)}{Id}").AsInt16().NotNullable()
+                   .ForeignKey(NamingHelper.Fk(TableName.CompanyServiceType, table), _schema, nameof(TableName.CompanyServiceType), Id);
         }
         private void CreateCompanyServiceOffering()
         {
