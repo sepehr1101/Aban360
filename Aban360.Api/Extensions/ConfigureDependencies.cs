@@ -17,6 +17,7 @@ using Aban360.BlobPool.Application.Extenstions;
 using Aban360.BlobPool.GatewayAddHoc.Extentions;
 using Aban360.SystemPool.Application.Extenstions;
 using Aban360.ReportPool.Application.Extensions;
+using Aban360.ReportPool.GatewayAdhoc.Extensions;
 
 namespace Aban360.Api.Extensions
 {
@@ -57,6 +58,7 @@ namespace Aban360.Api.Extensions
         {
             services.AddReportPoolApplicationInjections();
             services.AddReportPoolPersistenceInjections();
+            services.AddReportPoolGatewayInjections();
         }
         private static void AddCalculationPoolDI(this IServiceCollection services)
         {
