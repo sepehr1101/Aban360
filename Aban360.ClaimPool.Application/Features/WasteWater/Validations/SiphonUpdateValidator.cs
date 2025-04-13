@@ -1,27 +1,29 @@
-﻿using Aban360.ClaimPool.Domain.Features.WasteWater.Dto.Commands;
+﻿using Aban360.ClaimPool.Application.Features.Base.Validations;
+using Aban360.ClaimPool.Domain.Features.WasteWater.Dto.Commands;
+using Aban360.Common.Literals;
 using FluentValidation;
 
 namespace Aban360.ClaimPool.Application.Features.WasteWater.Validations
 {
-    public class SiphonUpdateValidator:AbstractValidator<SiphonUpdateDto>
+    public class SiphonUpdateValidator:BaseValidator<SiphonUpdateDto>
     {
         public SiphonUpdateValidator()
         {
             RuleFor(s => s.Id)
-                           .NotEmpty().WithMessage("Not Empty")
-                           .NotNull().WithMessage("Not Nyull");
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+               .NotNull().WithMessage(ExceptionLiterals.NotNUll);
             
             RuleFor(s => s.SiphonDiameterId)
-                           .NotEmpty().WithMessage("Not Empty")
-                           .NotNull().WithMessage("Not Nyull");
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+               .NotNull().WithMessage(ExceptionLiterals.NotNUll);
 
             RuleFor(s => s.SiphonTypeId)
-                .NotEmpty().WithMessage("Not Empty")
-                .NotNull().WithMessage("Not Nyull");
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+               .NotNull().WithMessage(ExceptionLiterals.NotNUll);
 
             RuleFor(s => s.SiphonMaterialId)
-               .NotEmpty().WithMessage("Not Empty")
-               .NotNull().WithMessage("Not Nyull");
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+               .NotNull().WithMessage(ExceptionLiterals.NotNUll);
         }
     }
 }

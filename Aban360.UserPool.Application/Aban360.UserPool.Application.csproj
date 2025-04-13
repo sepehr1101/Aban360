@@ -10,7 +10,6 @@
     <Folder Include="Common\Constants\" />
     <Folder Include="Common\Entities\" />
     <Folder Include="Features\AccessTree\Validations\" />
-    <Folder Include="Features\Auth\Validations\" />
     <Folder Include="Features\Logging\Handlers\Commands\Create\Contracts\" />
     <Folder Include="Features\Logging\Handlers\Commands\Create\Implementations\" />
     <Folder Include="Features\Logging\Handlers\Commands\Delete\Contracts\" />

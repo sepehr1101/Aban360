@@ -1,24 +1,26 @@
-﻿using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
+﻿using Aban360.ClaimPool.Application.Features.Base.Validations;
+using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
+using Aban360.Common.Literals;
 using FluentValidation;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Validations
 {
-    public class FlatUpdateValidator:AbstractValidator<FlatUpdateDto>
+    public class FlatUpdateValidator:BaseValidator<FlatUpdateDto>
     {
         public FlatUpdateValidator()
         {
             RuleFor(f => f.Id)
-                .NotEmpty().WithMessage("Not Empty")
-                .NotNull().WithMessage("Not Nyull");
+                .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+                .NotNull().WithMessage(ExceptionLiterals.NotNUll);
             
             RuleFor(f => f.EstateId)
-                .NotEmpty().WithMessage("Not Empty")
-                .NotNull().WithMessage("Not Nyull");
+                .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+                .NotNull().WithMessage(ExceptionLiterals.NotNUll);
             
             RuleFor(f => f.PostalCode)
-                .NotEmpty().WithMessage("Not Empty")
-                .NotNull().WithMessage("Not Nyull")
-                .Length(10).WithMessage("must 10 char");
+                .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+                .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+                .Length(10).WithMessage(ExceptionLiterals.Equal10);
         }
     }
 }

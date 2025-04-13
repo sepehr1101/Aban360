@@ -9,7 +9,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Mappings
     {
         public UserMapper()
         {
-            CreateMap<UserCreateDto, User>();
+            CreateMap<UserCreateDto, User>()
+                .ForMember(dest => dest.SerialNumber, opt=>opt.MapFrom(src=>Guid.NewGuid().ToString("n")));
             CreateMap<User, UserQueryDto>();
         }
     }
