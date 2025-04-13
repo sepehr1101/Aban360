@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.Categories.UseragentLog;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Contracts;
 using Aban360.UserPool.Application.Common.Base;
@@ -11,7 +12,10 @@ using Aban360.UserPool.Persistence.Features.Auth.Commands.Contracts;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using System.Threading;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations
 {
@@ -28,6 +32,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
         private readonly IZoneCountQueryAddhoc _zoneCountQueryAddhoc;
         private readonly IEndpointQueryService _endpointQueryService;
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IValidator<UserUpdateDto> _userValidator;
         public UserUpdateHandler(
             IUnitOfWork uow,
             IMapper mapper,
@@ -39,7 +44,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
             IUserRoleCommandService userRoleCommandService,
             IZoneCountQueryAddhoc zoneCountQueryAddhoc,
             IEndpointQueryService endpointQueryService,
-            IHttpContextAccessor contextAccessor)
+            IHttpContextAccessor contextAccessor,
+            IValidator<UserUpdateDto> userValidator)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));
@@ -73,9 +79,22 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
 
             _contextAccessor = contextAccessor;
             _contextAccessor.NotNull(nameof(contextAccessor));
+
+            _userValidator = userValidator;
+            _userValidator.NotNull(nameof(userValidator));
         }
+
         public async Task Handle(UserUpdateDto userUpdateDto, CancellationToken cancellationToken)
         {
+            var validationResult = await _userValidator.ValidateAsync(userUpdateDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new CustomeValidationException(message);
+            }//
+
+
+
             LogInfo logInfo = DeviceDetection.GetLogInfo(_contextAccessor.HttpContext.Request);
             string logInfoString = JsonOperation.Marshal(logInfo);
             Guid operationGroupId = Guid.NewGuid();

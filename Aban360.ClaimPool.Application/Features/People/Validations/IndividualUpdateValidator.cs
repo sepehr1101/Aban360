@@ -1,24 +1,26 @@
-﻿using Aban360.ClaimPool.Domain.Features.People.Dto.Commands;
+﻿using Aban360.ClaimPool.Application.Features.Base.Validations;
+using Aban360.ClaimPool.Domain.Features.People.Dto.Commands;
+using Aban360.Common.Literals;
 using FluentValidation;
 
 namespace Aban360.ClaimPool.Application.Features.People.Validations
 {
-    public class IndividualUpdateValidator : AbstractValidator<IndividualUpdateDto>
+    public class IndividualUpdateValidator : BaseValidator<IndividualUpdateDto>
     {
         public IndividualUpdateValidator()
         {
             RuleFor(f => f.Id)
-                          .NotEmpty().WithMessage("Not Empty")
-                          .NotNull().WithMessage("Not Nyull");
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+               .NotNull().WithMessage(ExceptionLiterals.NotNUll);
 
             RuleFor(f => f.WaterMeterId)
-                          .NotEmpty().WithMessage("Not Empty")
-                          .NotNull().WithMessage("Not Nyull");
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+               .NotNull().WithMessage(ExceptionLiterals.NotNUll);
 
             RuleFor(f => f.FullName)
-               .NotEmpty().WithMessage("Not Empty")
-               .NotNull().WithMessage("Not Nyull")
-               .MaximumLength(255).WithMessage("less than 255");
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
 
         }
     }

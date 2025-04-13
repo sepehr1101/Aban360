@@ -18,10 +18,6 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
         public async Task Handle(UserIdDto userId, CancellationToken cancellationToken)
         {
             User user = await _userQueryService.Get(userId.Id);
-            if (user == null)
-            {
-                throw new InvalidDataException();
-            }
             user.Password = await SecurityOperations.GetSha512Hash(user.Mobile);
         }
     }

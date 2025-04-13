@@ -1,10 +1,14 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts;
 using AutoMapper;
+using FluentValidation;
+using Microsoft.AspNetCore.Http.HttpResults;
+using System.Threading;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations
 {
@@ -13,10 +17,12 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
         private readonly IMapper _mapper;
         private readonly IRoleQueryService _roleQueryService;
         private readonly IEndpointQueryService _endpointQueryService;
+        private readonly IValidator<RoleUpdateDto> _roleValidator;
         public RoleUpdateHandler(
             IMapper mapper,
             IRoleQueryService roleQueryService,
-            IEndpointQueryService endpointQueryService)
+            IEndpointQueryService endpointQueryService,
+            IValidator<RoleUpdateDto> roleValidator)
         {
             _mapper = mapper;
             _mapper.NotNull(nameof(mapper));
@@ -26,16 +32,22 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
 
             _endpointQueryService = endpointQueryService;
             _endpointQueryService.NotNull(nameof(endpointQueryService));
+            
+            _roleValidator = roleValidator;
+            _roleValidator.NotNull(nameof(roleValidator));
         }
 
         public async Task Handle(RoleUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            Role role = await _roleQueryService.Get(updateDto.Id);
-            if (role == null)
+            var validationResult = await _roleValidator.ValidateAsync(updateDto, cancellationToken);
+            if (!validationResult.IsValid)
             {
-                throw new InvalidDataException();
-            }
+                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new CustomeValidationException(message);
+            }//
 
+
+            Role role = await _roleQueryService.Get(updateDto.Id);
             List<string> endpointValue = await _endpointQueryService.GetAuthValue(updateDto.SelectedEndpointIds);
 
             if (updateDto.SelectedEndpointIds is not null && endpointValue.Count() == updateDto.SelectedEndpointIds.Count())

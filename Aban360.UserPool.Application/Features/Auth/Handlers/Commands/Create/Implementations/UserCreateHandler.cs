@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.Categories.UseragentLog;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Contracts;
 using Aban360.UserPool.Application.Common.Base;
@@ -9,7 +10,9 @@ using Aban360.UserPool.Persistence.Constants.Enums;
 using Aban360.UserPool.Persistence.Features.Auth.Commands.Contracts;
 using Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
+using System.Threading;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Implementations
 {
@@ -22,6 +25,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IZoneCountQueryAddhoc _zoneCountQueryAddhoc;
         private readonly IEndpointQueryService _endpointQueryService;
+        private readonly IValidator<UserCreateDto> _userValidator;
+
         public UserCreateHandler(
             IUserCommandService userCommandService,
             IUserClaimCommandService userClaimCommandService,
@@ -29,7 +34,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
             IMapper mapper,
             IHttpContextAccessor contextAccessor,
             IZoneCountQueryAddhoc zoneCountQueryAddhoc,
-            IEndpointQueryService endpointQueryService)
+            IEndpointQueryService endpointQueryService,
+            IValidator<UserCreateDto> userValidator)
         {
             _userCommandService = userCommandService;
             _userCommandService.NotNull(nameof(userCommandService));
@@ -51,9 +57,20 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
 
             _endpointQueryService = endpointQueryService;
             _endpointQueryService.NotNull(nameof(endpointQueryService));
+
+            _userValidator = userValidator;
+            _userValidator.NotNull(nameof(userValidator));
         }
         public async Task Handle(UserCreateDto userCreateDto, CancellationToken cancellationToken)
         {
+            var validationResult = await _userValidator.ValidateAsync(userCreateDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new CustomeValidationException(message);
+            }//
+
+
             LogInfo logInfo = DeviceDetection.GetLogInfo(_contextAccessor.HttpContext.Request);
             string logInfoString = JsonOperation.Marshal(logInfo);
             Guid operationGroupId = Guid.NewGuid();

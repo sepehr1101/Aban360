@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{03679720-5509-4747-BF35-324936EBC717}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{E06AE18D-3DBD-4B3B-A7B6-F4A3B451C8AD}"
+	ProjectSection(SolutionItems) = preProject
+		Aban360.UserPool.Domain\Constants\ValidationException.cs = Aban360.UserPool.Domain\Constants\ValidationException.cs
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{61BD4FAA-395B-4F26-8FB0-4EBFF6F34B87}"
 EndProject
