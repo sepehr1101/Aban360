@@ -19,11 +19,11 @@
         public short UnitOtherSewage { get; set; }
         public short EmptyUnit { get; set; }
         public string ConstructionType { get; set; }
-        public string UsageConsumtionTitle { get; set; }
-        public string UsageSellTitle { get; set; }
+        public string UsageConsumtion { get; set; }//UsageConsumtionTitle
+        public string UsageSell { get; set; }//UsageSellTitle
         public string FullName { get; set; } = default!;
         public DateTime? SiphonInstallationDate { get; set; }
-        public string? HeadquarterTitle { get; set; }
+        public string? HeadquartersTitle { get; set; }
         public string? ProvinceTitle { get; set; }
         public string? RegionTitle { get; set; }
         public string? ZoneTitle { get; set; }

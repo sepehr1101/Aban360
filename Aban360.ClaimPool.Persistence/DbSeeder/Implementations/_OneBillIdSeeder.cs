@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.DbSeeder.Implementations
 {
-    public class _OneBillIdSeeder //: IDataSeeder
+    public class _OneBillIdSeeder : IDataSeeder
     {
         public int Order { get; set; } = 40;
         private readonly IUnitOfWork _uow;
