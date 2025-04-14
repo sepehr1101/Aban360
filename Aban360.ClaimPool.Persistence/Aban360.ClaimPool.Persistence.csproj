@@ -7,11 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="DbSeeder\DataScript\seed-manual-one-billid.sql" />
     <None Remove="DbSeeder\DataScript\Usage.sql" />
     <None Remove="DbSeeder\DataScript\UsageLevels.sql" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="DbSeeder\DataScript\seed-manual-one-billid.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="DbSeeder\DataScript\Usage.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
