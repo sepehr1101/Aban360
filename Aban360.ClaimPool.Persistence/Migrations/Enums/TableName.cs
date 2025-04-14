@@ -17,6 +17,10 @@
         IndividualTagDefinition,
         IndividualTag,
         RequestIndividualTag,
+        DiscountType,
+        IndividualDiscountType,
+        RequestIndividualDiscountType,
+
         Usage,
         Guild,
         Profession,

@@ -30,6 +30,10 @@ namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
         public virtual DbSet<Individual> Individuals { get; set; }
         public virtual DbSet<IndividualEstate> IndividualEstates { get; set; }
         public virtual DbSet<IndividualEstateRelationType> IndividualEstateRelationTypes { get; set; }
+        public virtual DbSet<DiscountType> DiscountTypes{ get; set; }
+        public virtual DbSet<IndividualDiscountType> IndividualDiscountTypes{ get; set; }
+        public virtual DbSet<RequestIndividualDiscountType> RequestIndividualDiscountTypes{ get; set; }
+
         public virtual DbSet<UseState> UseStates { get; set; }
         public virtual DbSet<SubscriptionType> SubscriptionTypes { get; set; }
         public virtual DbSet<Siphon> Siphons { get; set; }

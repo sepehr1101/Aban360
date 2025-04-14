@@ -264,9 +264,9 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Color").AsString(_15).Nullable();
         }
 
-        private void _CreateWaterMeterTag(TableName table,string nameOfTable,TableName waterMeterTable,string waterMeterName)
+        private void _CreateWaterMeterTag(TableName table, string nameOfTable, TableName waterMeterTable, string waterMeterName)
         {
-           // var table = TableName.WaterMeterTag;
+            // var table = TableName.WaterMeterTag;
             Create.Table(nameOfTable).InSchema(_schema)
                 .WithColumn(Id).AsInt32().Identity().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("WaterMeterId").AsInt32().NotNullable()
@@ -283,10 +283,10 @@ namespace Aban360.ClaimPool.Persistence.Migrations
 
         private void CreateWaterMeterTag()
         {
-            _CreateWaterMeterTag(TableName.WaterMeterTag,nameof(TableName.WaterMeterTag),
-                TableName.WaterMeter,nameof(TableName.WaterMeter));
+            _CreateWaterMeterTag(TableName.WaterMeterTag, nameof(TableName.WaterMeterTag),
+                TableName.WaterMeter, nameof(TableName.WaterMeter));
 
-            _CreateWaterMeterTag(TableName.RequestWaterMeterTag, nameof(TableName.RequestWaterMeterTag), 
+            _CreateWaterMeterTag(TableName.RequestWaterMeterTag, nameof(TableName.RequestWaterMeterTag),
                 TableName.RequestWaterMeter, nameof(TableName.RequestWaterMeter));
         }
 
@@ -378,7 +378,37 @@ namespace Aban360.ClaimPool.Persistence.Migrations
             _CreateIndividualTag(TableName.RequestIndividualTag, nameof(TableName.RequestIndividualTag),
                 TableName.RequestIndividual, nameof(TableName.RequestIndividual));
         }
-
+        private void CreateDiscountType()
+        {
+            var table = TableName.DiscountType;
+            Create.Table(nameof(TableName.DiscountType)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("Title").AsString(_255).NotNullable();
+        }
+        private void _CreateIndividualDiscountType(TableName table, string nameOfTable, TableName individualTable, string individualName)
+        {
+            Create.Table(nameOfTable).InSchema(_schema)
+                .WithColumn(Id).AsInt32().Identity().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+                .WithColumn("IndividualId").AsInt32().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(individualTable, table), _schema, individualName, Id)
+                .WithColumn("DiscountTypeId").AsInt16().NotNullable()
+                   .ForeignKey(NamingHelper.Fk(TableName.DiscountType, table), _schema, nameof(TableName.DiscountType), Id)
+                .WithColumn("UserId").AsGuid().Nullable()
+                .WithColumn("ExpireDate").AsDateTime2().NotNullable()
+                .WithColumn("ValidFrom").AsDateTime2().NotNullable()
+                .WithColumn("ValidTo").AsDateTime2().Nullable()
+                .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
+                .WithColumn("RemoveLogInfo").AsString(int.MinValue).Nullable()
+                .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
+        }
+        private void CreateIndividualDiscountType()
+        {
+            _CreateIndividualDiscountType(TableName.IndividualDiscountType, nameof(TableName.IndividualDiscountType)
+                , TableName.Individual, nameof(TableName.Individual));
+            
+            _CreateIndividualDiscountType(TableName.RequestIndividualDiscountType, nameof(TableName.RequestIndividualDiscountType)
+                , TableName.RequestIndividual, nameof(TableName.RequestIndividual));
+        }
 
         private void CreateSiphonDiameter()
         {
@@ -422,7 +452,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
               .WithColumn("RemoveLogInfo").AsString(int.MinValue).Nullable()
               .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
         }
-        private void _CreateWaterMeterSiphon(TableName table, string nameOfTable,TableName waterMeterTable,string waterMeterName,TableName siphonTable,string siphonName)
+        private void _CreateWaterMeterSiphon(TableName table, string nameOfTable, TableName waterMeterTable, string waterMeterName, TableName siphonTable, string siphonName)
         {
             Create.Table(nameOfTable).InSchema(_schema)
               .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
@@ -439,12 +469,12 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         private void CreateWaterMeterSiphon()
         {
             _CreateWaterMeterSiphon(TableName.WaterMeterSiphon, nameof(TableName.WaterMeterSiphon),
-                TableName.WaterMeter,nameof(TableName.WaterMeter),
-                TableName.Siphon,nameof(TableName.Siphon));
+                TableName.WaterMeter, nameof(TableName.WaterMeter),
+                TableName.Siphon, nameof(TableName.Siphon));
 
             _CreateWaterMeterSiphon(TableName.RequestWaterMeterSiphon, nameof(TableName.RequestWaterMeterSiphon),
                 TableName.RequestWaterMeter, nameof(TableName.RequestWaterMeter),
-                TableName.RequestSiphon,nameof(TableName.RequestSiphon));
+                TableName.RequestSiphon, nameof(TableName.RequestSiphon));
         }
 
         private void CreateGateway()
