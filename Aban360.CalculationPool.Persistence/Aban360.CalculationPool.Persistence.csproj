@@ -13,7 +13,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="DbSeeder\DataScript\SupportedField.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="DbSeeder\DataScript\Services.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DbSeeder\DataScript\SupportedField.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

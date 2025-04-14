@@ -62,7 +62,7 @@ namespace Aban360.CalculationPool.Application.Features.Rule.Handlers.Commands.Cr
             var consumerSummary = await _consumerSummaryAddhoc.Handle(billId, cancellationToken);
             dateSegment.ForEach(d =>
             {
-                d.Formula =CalcFormula(d.Formula, consumerSummary);
+                d.Formula = CalcFormula(d.Formula, consumerSummary);
             });
 
         }
@@ -125,3 +125,4 @@ namespace Aban360.CalculationPool.Application.Features.Rule.Handlers.Commands.Cr
         public string Formula { get; set; }
     }
 }
+    
