@@ -37,4 +37,10 @@
     <ProjectReference Include="..\Aban360.Common.Db\Aban360.Common.Db.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="DbSeeder\DataScript\supportedOperation.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
