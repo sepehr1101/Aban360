@@ -62,7 +62,7 @@ namespace Aban360.CalculationPool.Application.Features.Rule.Handlers.Commands.Cr
             var consumerSummary = await _consumerSummaryAddhoc.Handle(billId, cancellationToken);
             dateSegment.ForEach(d =>
             {
-                d.Formula =CalcFormula(d.Formula, consumerSummary);
+                d.Formula = CalcFormula(d.Formula, consumerSummary);
             });
 
         }
@@ -124,36 +124,5 @@ namespace Aban360.CalculationPool.Application.Features.Rule.Handlers.Commands.Cr
         public string ToDate { get; set; }
         public string Formula { get; set; }
     }
-
-    public class Dto
-    {
-        public int CustomerNumber { get; set; }
-        public string BillId { get; set; } = default!;
-        public string? ReadingNumber { get; set; }
-        public string InstallationDate { get; set; } = default!;
-        public short ContractualCapacity { get; set; }
-        public short HouseholdNumber { get; set; }
-        public short UnitDomesticWater { get; set; }
-        public short UnitCommercialWater { get; set; }
-        public short UnitOtherWater { get; set; }
-        public short UnitDomesticSewage { get; set; }
-        public short UnitCommercialSewage { get; set; }
-        public short UnitOtherSewage { get; set; }
-        public short EmptyUnit { get; set; }
-        public short ConstructionTypeId { get; set; }
-        public short UsageConsumtionId { get; set; }
-        public short UsageSellId { get; set; }
-        public string? SiphonInstallationDate { get; set; }
-        public int HeadquarterId { get; set; }
-        public int ProvinceId { get; set; }
-        public int RegionId { get; set; }
-        public int ZoneId { get; set; }
-        public int MunicipalityId { get; set; }
-        public int PreviousWaterMeterNumber { get; set; }
-        public string? PreviousWaterMeterDateJalali { get; set; }
-        public Dictionary<short, string>? WaterMeterTags { get; set; }
-        public Dictionary<short, string>? IndividualTags { get; set; }
-        public Dictionary<short, string>? Discounts { get; set; }
-    }
 }
-
+    

@@ -228,5 +228,21 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                   .WithColumn("ToDateJalali").AsString(10).NotNullable()
                   .WithColumn("Description").AsString(_255).Nullable();
         }
+        private void CreateSupportedOperator()
+        {
+            var table= TableName.SupportedOperator;
+            Create.Table($"{nameof(TableName.SupportedOperator)}").InSchema(_schema)
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Description").AsString(_1023).NotNullable();
+        }
+        private void CreateSupportedField()
+        {
+            var table= TableName.SupportedField;
+            Create.Table($"{nameof(TableName.SupportedField)}").InSchema(_schema)
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn("Title").AsString(_255)
+                .WithColumn("Description").AsString(_1023);
+        }
     }
 }

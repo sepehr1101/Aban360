@@ -21,6 +21,9 @@
         Tariff,
         ImpactSign,
         LineItemTypeGroup,
-        LineItemType
+        LineItemType,
+
+        SupportedOperator,
+        SupportedField
     }
 }
