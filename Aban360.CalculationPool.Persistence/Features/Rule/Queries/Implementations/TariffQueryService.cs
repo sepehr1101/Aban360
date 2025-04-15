@@ -37,6 +37,17 @@ namespace Aban360.CalculationPool.Persistence.Features.Rule.Queries.Implementati
                 .Include(tariff => tariff.LineItemType)
                 .ToListAsync();
         }
+        public async Task<ICollection<Tariff>> Get(string @from, string @to)
+        {
+            return await _tariff
+                .AsNoTracking()
+                .Where(tariff=>
+                       tariff.FromDateJalali.CompareTo(to) <= 0 &&
+                       tariff.ToDateJalali.CompareTo(from) >= 0)
+                .Include(tariff => tariff.Offering)
+                .Include(tariff => tariff.LineItemType)
+                .ToListAsync();
+        }
 
         public async Task<ICollection<Tariff>> GetByLineItemType(short id)
         {

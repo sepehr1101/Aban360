@@ -8,12 +8,14 @@
 
   <ItemGroup>
     <PackageReference Include="Automapper" Version="13.0.1" />
+    <PackageReference Include="DNTPersianUtils.Core" Version="6.4.0" />
     <PackageReference Include="FluentValidation" Version="11.10.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Aban360.CalculationPool.Domain\Aban360.CalculationPool.Domain.csproj" />
+    <ProjectReference Include="..\Aban360.CalculationPool.Evaluation\Aban360.CalculationPool.Evaluation.csproj" />
     <ProjectReference Include="..\Aban360.CalculationPool.Persistence\Aban360.CalculationPool.Persistence.csproj" />
     <ProjectReference Include="..\Aban360.ReportPool.GatewayAdhoc\Aban360.ReportPool.GatewayAdhoc.csproj" />
   </ItemGroup>
