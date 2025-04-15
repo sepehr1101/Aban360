@@ -19,7 +19,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                 EconomicalNumber = "411-7676-4864",
 
                 ZoneTitle = "منطقه پنج - 5",
-                FullName = "سعید شمسایی",
+                FullName = "حمیدرضا رضایی",
                 Address = "خیابان 17 شهریور-کوچه 13",
                 PostalCode = "",
 

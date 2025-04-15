@@ -25,4 +25,10 @@ public class Tariff
     public virtual LineItemType LineItemType { get; set; } = null!;
 
     public virtual Offering Offering { get; set; } = null!;
+
+    [NotMapped]
+    public double Consumption { get; set; }
+
+    [NotMapped]
+    public int Duration { get; set; }
 }

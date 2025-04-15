@@ -1,4 +1,4 @@
-﻿namespace Aban360.ReportPool.Domain.Features.InvoiceInfo
+﻿namespace Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto
 {
     public record CurrentTimeBillRequestInfo
     {

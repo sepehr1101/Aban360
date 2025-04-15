@@ -1,4 +1,4 @@
-﻿namespace Aban360.ReportPool.Domain.Features.InvoiceInfo
+﻿namespace Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto
 {
     public record IntervalBillSubscriptionInfo
     {
@@ -16,7 +16,7 @@
         public short UnitOtherSewage { get; set; }
         public short EmptyUnit { get; set; }
         public short ConstructionTypeId { get; set; }
-        public short UsageConsumtionId { get; set; }
+        public short UsageConsumptionId { get; set; }
         public short UsageSellId { get; set; }
         public string? SiphonInstallationDate { get; set; }
         public int HeadquarterId { get; set; }
@@ -26,8 +26,8 @@
         public int MunicipalityId { get; set; }
         public int PreviousWaterMeterNumber { get; set; }
         public string? PreviousWaterMeterDateJalali { get; set; }
-        public Dictionary<short,string>? WaterMeterTags { get; set; }
-        public Dictionary<short,string>? IndividualTags { get; set; }
-        public Dictionary<short,string>? Discounts { get; set; }
+        public Dictionary<short, string>? WaterMeterTags { get; set; }
+        public Dictionary<short, string>? IndividualTags { get; set; }
+        public Dictionary<short, string>? Discounts { get; set; }
     }
 }
