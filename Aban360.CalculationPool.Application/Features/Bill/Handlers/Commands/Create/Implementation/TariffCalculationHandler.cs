@@ -33,33 +33,49 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
             string currentReadingDate = DateTime.Now.ToShortPersianDateString();
             int consumption = GetConsumption(previousReadingNumber, currentReadingNumber);
             int duration = GetDuration(previousReadingDate, currentReadingDate);
-            double average= GetDailyConsumptionAverage(consumption, duration);
+            double average = GetDailyConsumptionAverage(consumption, duration);
             IntervalCalculationResultWrapper calculationResult = new()
             {
                 Consumption = consumption,
-                Duration= duration,
-                ConsumptionAverage=average,
-                FromDate=previousReadingDate,
-                ToDate=currentReadingDate,
+                Duration = duration,
+                ConsumptionAverage = average,
+                FromDate = previousReadingDate,
+                ToDate = currentReadingDate,
             };
-            
+
             IntervalBillSubscriptionInfo info = await _intervalBillPrerequisiteInfoHandler.Handle(tariffTestInput.BillId, cancellationToken);
             var rawTariffs = await GetRawTariffs(previousReadingDate, currentReadingDate);
-            var tariffs= GetTariffs(rawTariffs,average,previousReadingDate, currentReadingDate);
+            var tariffs = GetTariffs(rawTariffs, average, previousReadingDate, currentReadingDate);
             List<IntervalCalculationResult> intervalCalculationResults = new List<IntervalCalculationResult>();
             foreach (var tariff in tariffs)
             {
                 Expression expressionCondition = GetExpression(tariff.Condition, info);
-                bool conditionSatisfied= expressionCondition.Eval<bool>();
+                bool conditionSatisfied = expressionCondition.Eval<bool>();
                 if (!conditionSatisfied)
                 {
-                    continue;   
+                    continue;
                 }
                 Expression expressionFormula = GetExpression(tariff.Formula, info);
                 double result = expressionFormula.Eval<double>();
-                intervalCalculationResults.Add(new IntervalCalculationResult() { Amount=result,Formula=tariff.Formula,Consumption=tariff.Consumption,Duration=tariff.Duration,FromDate=tariff.FromDateJalali,ToDate=tariff.ToDateJalali,LineItemTypeTitle=tariff.LineItemType.Title,OfferingTitle=tariff.Offering.Title});
+                intervalCalculationResults.Add(new IntervalCalculationResult() { Amount = result, Formula = tariff.Formula, Consumption = tariff.Consumption, Duration = tariff.Duration, FromDate = tariff.FromDateJalali, ToDate = tariff.ToDateJalali, LineItemTypeTitle = tariff.LineItemType.Title, OfferingTitle = tariff.Offering.Title });
             }
-            calculationResult.IntervalCalculationResults = intervalCalculationResults;
+            var result3= intervalCalculationResults
+                .GroupBy(item => new { item.FromDate, item.ToDate })
+                .Select(grp => new IntervalCalculationResult3
+                {
+                    FromDate = grp.Key.FromDate,
+                    ToDate = grp.Key.ToDate,
+                    CalculationInfo = grp.Select(g => new IntervalCalculationResult2()
+                    {
+                        Amount = g.Amount,
+                        Consumption = g.Consumption,
+                        Duration = g.Duration,
+                        Formula = g.Formula,
+                        LineItemTypeTitle = g.LineItemTypeTitle,
+                        OfferingTitle = g.OfferingTitle
+                    }).ToList()
+                }).ToList();
+            calculationResult.IntervalCalculationResults = result3;
             calculationResult.IntervalCount = intervalCalculationResults.Count;
             calculationResult.Amount = intervalCalculationResults.Sum(i => i.Amount);
             return calculationResult;
@@ -114,16 +130,16 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
         }
         private ICollection<Tariff> GetTariffs(ICollection<Tariff> rawTariffs, double average, string fromDate, string toDate)
         {
-            if(rawTariffs == null)
+            if (rawTariffs == null)
             {
                 return new List<Tariff>();
             }
-            rawTariffs.First().FromDateJalali=fromDate;
-            rawTariffs.Last().ToDateJalali=toDate;
+            rawTariffs.First().FromDateJalali = fromDate;
+            rawTariffs.Last().ToDateJalali = toDate;
             foreach (Tariff tariff in rawTariffs)
             {
-                int duration=GetDuration(tariff.FromDateJalali,tariff.ToDateJalali);
-                double consumption= GetConsumption(average, duration);
+                int duration = GetDuration(tariff.FromDateJalali, tariff.ToDateJalali);
+                double consumption = GetConsumption(average, duration);
                 tariff.Duration = duration;
                 tariff.Consumption = consumption;
             }
@@ -135,22 +151,22 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
         }
         private double GetConsumption(double consumptionDailyAverage, int duration)
         {
-            return consumptionDailyAverage*duration;
+            return consumptionDailyAverage * duration;
         }
         private int GetDuration(string previousDate, string currentDate)
         {
             var previousGregorian = previousDate.ToGregorianDateTime();
             var currentGregorian = currentDate.ToGregorianDateTime();
-            return (currentGregorian.Value-previousGregorian.Value).Days;
+            return (currentGregorian.Value - previousGregorian.Value).Days;
         }
         private double GetDailyConsumptionAverage(int masraf, int duration)
         {
             return (double)masraf / (double)duration;
-        }                
+        }
     }
     public record IntervalCalculationResultWrapper
     {
-        public ICollection<IntervalCalculationResult>? IntervalCalculationResults { get; set; }
+        public ICollection<IntervalCalculationResult3>? IntervalCalculationResults { get; set; }
         public int Consumption { get; set; }
         public double ConsumptionAverage { get; set; }
         public int IntervalCount { get; set; }
@@ -167,8 +183,23 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
         public double Consumption { get; set; }
         public int Duration { get; set; }
         public double Amount { get; set; }
-        public string OfferingTitle { get; set; }= default!;
-        public string LineItemTypeTitle { get; set; }= default!;
+        public string OfferingTitle { get; set; } = default!;
+        public string LineItemTypeTitle { get; set; } = default!;
+    }
+    public record IntervalCalculationResult3
+    {
+        public string FromDate { get; set; } = default!;
+        public string ToDate { get; set; } = default!;
+        public ICollection<IntervalCalculationResult2> CalculationInfo { get; set; } = default!;
+    }
+    public record IntervalCalculationResult2
+    {
+        public string Formula { get; set; } = default!;
+        public double Consumption { get; set; }
+        public int Duration { get; set; }
+        public double Amount { get; set; }
+        public string OfferingTitle { get; set; } = default!;
+        public string LineItemTypeTitle { get; set; } = default!;
     }
     public record TariffTestInput
     {
