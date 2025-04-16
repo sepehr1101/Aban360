@@ -37,9 +37,9 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     W.InstallationDate,
                     W.ProductDate,
                     W.GuaranteeDate,
-                    Us.Title AS UseStateTitle,
-                    LastDept = N'153000',--LastDept
-                    --Counter Status?
+                    CounterState = N'عادی',--todo
+               	    CounterStatus=N'متصل به شبکه',--todo
+               	    LastDept = N'53000',--todo
                     E.Address,
                     E.ContractualCapacity,
                     E.HouseholdNumber,
@@ -70,7 +70,6 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                 LEFT JOIN [ClaimPool].Usage U ON E.UsageConsumtionId = U.Id
                 LEFT JOIN [ClaimPool].Usage UU ON E.UsageSellId = UU.Id
                 LEFT JOIN [ClaimPool].WaterMeterSiphon WS ON W.Id = WS.WaterMeterId
-                LEFT JOIN [ClaimPool].UseState US ON W.UseStateId=US.Id
                 LEFT JOIN [ClaimPool].Siphon S ON WS.SiphonId = S.Id
                 LEFT JOIN [LocationPool].Municipality M ON E.MunipulityId = M.Id
                 LEFT JOIN [LocationPool].Zone Z ON M.ZoneId = Z.Id

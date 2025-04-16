@@ -9,8 +9,9 @@
         public string? ProductDate { get; set; }
         public string? GuaranteeDate { get; set; }
         public string Address { get; set; } = default!;
-        public string? UseStateTitle { get; set; }//new
         public string? LastDept { get; set; }//new
+        public string? CounterState { get; set; }//new
+        public string? CounterStatus { get; set; }//new
         public short ContractualCapacity { get; set; }
         public short HouseholdNumber { get; set; }
         public short UnitDomesticWater { get; set; }
