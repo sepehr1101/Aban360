@@ -9,6 +9,8 @@
         public string? ProductDate { get; set; }
         public string? GuaranteeDate { get; set; }
         public string Address { get; set; } = default!;
+        public string? UseStateTitle { get; set; }//new
+        public string? LastDept { get; set; }//new
         public short ContractualCapacity { get; set; }
         public short HouseholdNumber { get; set; }
         public short UnitDomesticWater { get; set; }
@@ -24,6 +26,7 @@
         public string FullName { get; set; } = default!;
         public DateTime? SiphonInstallationDate { get; set; }
         public string? HeadquartersTitle { get; set; }
+        public string? CordinalDirectionTitle { get; set; }
         public string? ProvinceTitle { get; set; }
         public string? RegionTitle { get; set; }
         public string? ZoneTitle { get; set; }

@@ -12,20 +12,15 @@ namespace Aban360.WorkflowPool.Application.Features.Design.Handlers.Commands.Cre
     {
         private readonly IMapper _mapper;
         private readonly IWorkflowCommandService _workflowCommandService;
-        private readonly IStateCommandService _stateCommandService;
         public WorkflowCreateHandler(
             IMapper mapper,
-            IWorkflowCommandService workflowCommandService,
-            IStateCommandService stateCommandService)
+            IWorkflowCommandService workflowCommandService)
         {
             _mapper = mapper;
             _mapper.NotNull(nameof(_mapper));
 
             _workflowCommandService = workflowCommandService;
             _workflowCommandService.NotNull(nameof(_workflowCommandService));
-
-            _stateCommandService = stateCommandService;
-            _stateCommandService.NotNull(nameof(_stateCommandService));
         }
 
         public async Task Handle(WorkflowCreateDto createDto, CancellationToken cancellationToken)
@@ -35,16 +30,13 @@ namespace Aban360.WorkflowPool.Application.Features.Design.Handlers.Commands.Cre
             workflow.Name = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 10);
             workflow.WorkflowStatusId = WorkflowStatusEnum.Draft;
 
-            ICollection<State> states = _mapper.Map<ICollection<State>>(createDto.states);
-            states.ForEach(s=>
+            workflow.States.ForEach(s =>
             {
-                s.ValidFrom =  DateTime.Now;
+                s.ValidFrom = DateTime.Now;
                 s.Hash = "hash";
                 s.InsertLogInfo = "insertLogInfo";
-                s.Workflow= workflow;
             });
-            await _stateCommandService.Add(states);
-            await _workflowCommandService.Add(workflow);
+           await _workflowCommandService.Add(workflow);
         }
     }
 }

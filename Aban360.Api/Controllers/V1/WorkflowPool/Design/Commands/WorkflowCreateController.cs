@@ -30,12 +30,6 @@ namespace Aban360.Api.Controllers.V1.WorkflowPool.Design.Commands
         {
             await _workflowCreateHandler.Handle(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
-            //"Exception occurred: Message: An error occurred while saving the entity changes.
-            //See the inner exception for details., Inner Exception:The conversion of a datetime2
-            //data type to a datetime data type resulted in an out-of-range value."
-
-            //Error to Create Workflow
-
             return Ok(createDto);
         }
     }
