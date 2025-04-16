@@ -37,6 +37,9 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     W.InstallationDate,
                     W.ProductDate,
                     W.GuaranteeDate,
+                    CounterState = N'عادی',--todo
+               	    CounterStatus=N'متصل به شبکه',--todo
+               	    LastDept = N'53000',--todo
                     E.Address,
                     E.ContractualCapacity,
                     E.HouseholdNumber,
