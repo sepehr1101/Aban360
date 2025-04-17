@@ -38,7 +38,7 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
         private string GetSqlFilePath()
         {
             string basePath = AppContext.BaseDirectory;
-            string relativePath = @"\DbSeeder\DataScript\AccessTree.sql";
+            string relativePath = @"\DbSeeder\DataScript\AccessTree2.sql";
 
             var path = string.Concat(basePath, relativePath);
             return path;
