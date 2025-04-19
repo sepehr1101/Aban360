@@ -7,6 +7,6 @@ namespace Aban360.CalculationPool.Domain.Features.Rule.Entities
     {
         public short Id { get; set; }
         public string Title { get; set; } = default!;
-        public string Desciption { get; set; } = default!;
+        public string Description { get; set; } = default!;
     }
 }

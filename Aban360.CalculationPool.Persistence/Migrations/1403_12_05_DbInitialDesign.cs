@@ -242,7 +242,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
             Create.Table($"{nameof(TableName.SupportedField)}").InSchema(_schema)
                 .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn("Title").AsString(_255)
-                .WithColumn("Description").AsString(_1023);
+                .WithColumn("Description").AsString(_1023).NotNullable();
         }
     }
 }

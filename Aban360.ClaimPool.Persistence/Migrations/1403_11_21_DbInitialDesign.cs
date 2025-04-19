@@ -409,6 +409,13 @@ namespace Aban360.ClaimPool.Persistence.Migrations
             _CreateIndividualDiscountType(TableName.RequestIndividualDiscountType, nameof(TableName.RequestIndividualDiscountType)
                 , TableName.RequestIndividual, nameof(TableName.RequestIndividual));
         }
+        private void CreateHandover()
+        {
+            var table = TableName.Handover;
+            Create.Table(nameof(TableName.Handover)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable().Identity()
+                .WithColumn("Title").AsString(_255).NotNullable();
+        }
 
         private void CreateSiphonDiameter()
         {

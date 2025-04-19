@@ -8,10 +8,14 @@
 
   <ItemGroup>
     <None Remove="DbSeeder\DataScript\AccessTree.sql" />
+    <None Remove="DbSeeder\DataScript\AccessTree2.sql" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="DbSeeder\DataScript\AccessTree.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DbSeeder\DataScript\AccessTree2.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

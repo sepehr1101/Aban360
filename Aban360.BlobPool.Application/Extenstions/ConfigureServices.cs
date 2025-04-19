@@ -7,7 +7,7 @@ namespace Aban360.BlobPool.Application.Extenstions
 {
     public static class ConfigureServices
     {
-        public static void AddBlboPoolPoolApplicationInjections(this IServiceCollection services)
+        public static void AddBlboPoolApplicationInjections(this IServiceCollection services)
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
