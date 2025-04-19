@@ -18,6 +18,8 @@ using Aban360.BlobPool.GatewayAddHoc.Extentions;
 using Aban360.SystemPool.Application.Extenstions;
 using Aban360.ReportPool.Application.Extensions;
 using Aban360.ReportPool.GatewayAdhoc.Extensions;
+using Aban360.InstallationPool.Application.Extensions;
+using Aban360.InstallationPool.Persistence.Extensions;
 
 namespace Aban360.Api.Extensions
 {
@@ -34,6 +36,7 @@ namespace Aban360.Api.Extensions
             services.AddBlobPoolDI();
             services.AddSystemPoolDI();
             services.AddReportPoolDI();
+            services.AddInstallationPoolDI();
         }
 
         private static void AddUserPoolDI(this IServiceCollection services)
@@ -77,13 +80,19 @@ namespace Aban360.Api.Extensions
         }
         private static void AddBlobPoolDI(this IServiceCollection services)
         {
-            services.AddBlboPoolPoolApplicationInjections();
+            services.AddBlboPoolApplicationInjections();
             services.AddBlobPoolPersistenceInjections();
             services.AddBlobPoolGatewayInjections();
         }
         private static void AddSystemPoolDI(this IServiceCollection services)
         {
             services.AddSystemPoolApplicationInjections();
+        }
+
+        private static void AddInstallationPoolDI(this IServiceCollection services)
+        {
+            services.AddInstallationPoolApplicationInjections();
+            services.AddInstallationPoolPersistenceInjections();
         }
     }
 }

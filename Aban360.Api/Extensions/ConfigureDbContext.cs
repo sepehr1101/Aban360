@@ -2,6 +2,7 @@
 using Aban360.CalculationPool.Persistence.Contexts.Implementations;
 using Aban360.ClaimPool.Persistence.Contexts.Implementation;
 using Aban360.Common.Db.Interceptors;
+using Aban360.InstallationPool.Persistence.Contexts.Implementations;
 using Aban360.MeterPool.Persistence.Contexts.Implementations;
 using Aban360.ReportPool.Persistence.Contexts.Implementations;
 using Aban360.UserPool.Persistence.Contexts.Implementation;
@@ -24,6 +25,7 @@ namespace Aban360.Api.Extensions
             services.AddWorkflowPoolDbContext(configuration, connectionString);
             services.AddBlobPoolContext(configuration, connectionString);
             services.AddReportPoolContext(configuration, connectionString);
+            services.AddInstallationPoolContext(configuration, connectionString);
         }
         private static void AddUserPoolDbContext(this IServiceCollection services, IConfiguration configuration, string connectionString)
         {
@@ -133,6 +135,20 @@ namespace Aban360.Api.Extensions
         private static void AddReportPoolContext(this IServiceCollection services, IConfiguration configuration1, string connectionString)
         {
             services.AddDbContext<ReportPoolContext>((sp, options) =>
+            {
+                options.UseSqlServer(connectionString,
+                    SqlServerDbContextOptionsBuilder =>
+                    {
+                        var munutes = (int)TimeSpan.FromMinutes(3).TotalSeconds;
+                        SqlServerDbContextOptionsBuilder.CommandTimeout(munutes);
+                    });
+                options.AddInterceptors(new PersianYeKeCommandInterceptor());
+                options.AddInterceptors(new RowLevelAuthenticitySaveChangeInterceptor());
+            });
+        }
+        private static void AddInstallationPoolContext(this IServiceCollection services, IConfiguration configuration1, string connectionString)
+        {
+            services.AddDbContext<InstallationPoolContext>((sp, options) =>
             {
                 options.UseSqlServer(connectionString,
                     SqlServerDbContextOptionsBuilder =>
