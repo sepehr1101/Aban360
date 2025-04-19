@@ -10,9 +10,9 @@ INSERT [UserPool].[App] ( [Title], [Style], [InMenu], [LogicalOrder], [IsActive]
 GO
 INSERT [UserPool].[App] ( [Title], [Style], [InMenu], [LogicalOrder], [IsActive]) VALUES ( N'بایگانی الکترونیک', N'', 1, 1, 1)
 GO
-INSERT [UserPool].[App] ( [Title], [Style], [InMenu], [LogicalOrder], [IsActive]) VALUES ( N'درخواست های مشترکین', N'', 1, 1, 1)
+INSERT [UserPool].[App] ( [Title], [Style], [InMenu], [LogicalOrder], [IsActive]) VALUES ( N'درخواست های مشترکین', N'', 1, 1, 1)--module
 GO
-INSERT [UserPool].[App] ( [Title], [Style], [InMenu], [LogicalOrder], [IsActive]) VALUES ( N'کنتور', N'', 1, 1, 1)
+INSERT [UserPool].[App] ( [Title], [Style], [InMenu], [LogicalOrder], [IsActive]) VALUES ( N'قرائت کنتور', N'', 1, 1, 1)
 GO
 SET IDENTITY_INSERT [UserPool].[App] OFF
 GO
@@ -38,13 +38,13 @@ INSERT [UserPool].[Module] ( [AppId], [Title], [Style], [InMenu], [LogicalOrder]
 GO
 INSERT [UserPool].[Module] ( [AppId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 3, N'صورت حساب', N'', 1, 1, N'', 1)
 GO
-INSERT [UserPool].[Module] ( [AppId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 3, N'تنظیمات Todo', N'', 1, 2, N'', 1)
+INSERT [UserPool].[Module] ( [AppId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 3, N'قواعد محاسبه', N'', 1, 2, N'', 1)
 GO
 INSERT [UserPool].[Module] ( [AppId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 4, N'مدیریت مدارک', N'', 1, 1, N'', 1)
 GO
-INSERT [UserPool].[Module] ( [AppId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 5, N'درخواست های مشترکین', N'', 1, 1, N'', 1)
+INSERT [UserPool].[Module] ( [AppId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 5, N'درخواست های مشترکین', N'', 1, 1, N'', 1)--
 GO
-INSERT [UserPool].[Module] ( [AppId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 6, N'مدیریت کنتور', N'', 1, 1, N'', 1)
+INSERT [UserPool].[Module] ( [AppId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 6, N'تعاریف', N'', 1, 1, N'', 1)
 GO
 SET IDENTITY_INSERT [UserPool].[Module] OFF
 GO
@@ -130,25 +130,25 @@ INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [Logical
 GO
 INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'نوع خدمات', N'', 1, 2, N'', 1)
 GO
-INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'تخفیف Todo', N'', 1, 3, N'', 1)
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'اقلام-خدمات', N'', 1, 3, N'', 1)
 GO
-INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'علامتTOdo', N'', 1, 4, N'', 1)
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'علامت', N'', 1, 4, N'', 1)
 GO
-INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'فاکتور', N'', 1, 5, N'', 1)
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'صورتحساب', N'', 1, 5, N'', 1)
 GO
-INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'اقساطTodo', N'', 1, 6, N'', 1)
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'اقساط', N'', 1, 6, N'', 1)
 GO
-INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'جزئیات فاکتور Todo', N'', 1, 7, N'', 1)
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'نوع ورود صورتحساب', N'', 1, 7, N'', 1)
 GO
-INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'وضعیت ثبت فاکتورTodo', N'', 1, 8, N'', 1)
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'وضعیت ثبت صورتحساب', N'', 1, 8, N'', 1)
 GO
-INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'نوع فاکتور', N'', 1, 9, N'', 1)
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'نوع صورتحساب', N'', 1, 9, N'', 1)
 GO
-INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'وضعیت فاکتور', N'', 1, 10, N'', 1)
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'وضعیت صورتحساب', N'', 1, 10, N'', 1)
 GO
-INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'Todo:LineItemType', N'', 1, 11, N'', 1)
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'ردیف هزینه', N'', 1, 11, N'', 1)
 GO
-INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'Todo:LineItemTypeGroup', N'', 1, 12, N'', 1)
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'گروه ردیف هزینه', N'', 1, 12, N'', 1)
 GO
 INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 11, N'اقلام', N'', 1, 1, N'', 1)
 GO
@@ -156,17 +156,25 @@ INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [Logical
 GO
 INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 11, N'واحد اقلام', N'', 1, 3, N'', 1)
 GO
-INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 11, N'Todo:SupportedOperator', N'', 1, 4, N'', 1)
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 11, N'عملگر قابل استفاده', N'', 1, 4, N'', 1)
 GO
-INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 11, N'Todo:SupportedField', N'', 1, 5, N'', 1)
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 11, N'فیلد های قابل استفاده', N'', 1, 5, N'', 1)
 GO
 INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 11, N'تعرفه', N'', 1, 6, N'', 1)
 GO
 INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 11, N'نوع محاسبه تعرفه', N'', 1, 7, N'', 1)
 GO
-INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 11, N'Todo:TariffConstant', N'', 1, 8, N'', 1)
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 11, N'ثوابت', N'', 1, 8, N'', 1)
 GO
-INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 12, N'مدارک', N'', 1, 1, N'', 1)
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 12, N'سند', N'', 1, 1, N'', 1)
+GO
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 12, N'دسته بندی سند', N'', 1, 2, N'', 1)
+GO
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 12, N'نوع مدارک', N'', 1, 3, N'', 1)
+GO
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 12, N'مدارک قابل اجرا', N'', 1, 4, N'', 1)
+GO
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 12, N'Mimetype', N'', 1, 5, N'', 1)
 GO
 INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 13, N'وضعیت کنتور', N'', 1, 1, N'', 1)
 GO
@@ -174,7 +182,7 @@ INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [Logical
 GO
 INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 13, N'دوره قرائت', N'', 1, 3, N'', 1)
 GO
-INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 13, N'Todo :ReadingConfigDefault', N'', 1, 4, N'', 1)
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 13, N'تنظیمات پیشفرض', N'', 1, 4, N'', 1)
 GO
 SET IDENTITY_INSERT [UserPool].[SubModule] OFF
 GO

@@ -20,6 +20,7 @@
         DiscountType,
         IndividualDiscountType,
         RequestIndividualDiscountType,
+        Handover,
 
         Usage,
         Guild,

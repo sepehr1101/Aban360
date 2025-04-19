@@ -36,6 +36,9 @@ namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
 
         public virtual DbSet<UseState> UseStates { get; set; }
         public virtual DbSet<SubscriptionType> SubscriptionTypes { get; set; }
+        public virtual DbSet<Handover> Handovers{ get; set; }
+
+
         public virtual DbSet<Siphon> Siphons { get; set; }
         public virtual DbSet<SiphonDiameter> SiphonDiameters { get; set; }
         public virtual DbSet<SiphonMaterial> SiphonMaterials { get; set; }
