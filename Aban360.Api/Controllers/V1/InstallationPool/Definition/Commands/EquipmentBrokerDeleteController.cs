@@ -7,7 +7,7 @@ using Aban360.InstallationPool.Application.Features.Definition.Handlers.Commands
 
 namespace Aban360.Api.Controllers.V1.InstallationPool.Definition.Commands
 {
-    [Route("v1/equipment_broker")]
+    [Route("v1/equipment-broker")]
     public class EquipmentBrokerDeleteController : BaseController
     {
         private readonly IUnitOfWork _uow;
