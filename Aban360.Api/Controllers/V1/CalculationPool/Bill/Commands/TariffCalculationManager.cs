@@ -10,10 +10,16 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Commands
     public class TariffCalculationManager : BaseController
     {
         private readonly ITariffCalculationHandler _tariffCalculationHandler;
-        public TariffCalculationManager(ITariffCalculationHandler tariffCalculationHandler)
+        private readonly IInvoiceInserterHandler _invoiceInserterHandler;
+        public TariffCalculationManager(
+            ITariffCalculationHandler tariffCalculationHandler, 
+            IInvoiceInserterHandler invoiceInserterHandler)
         {
             _tariffCalculationHandler = tariffCalculationHandler;
             _tariffCalculationHandler.NotNull();
+
+            _invoiceInserterHandler = invoiceInserterHandler;
+            _invoiceInserterHandler.NotNull(nameof(invoiceInserterHandler));
         }
 
         [HttpPost]
@@ -22,6 +28,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Commands
         public async Task<IActionResult> Test([FromBody]TariffTestInput tariffTestInput, CancellationToken cancellationToken)
         {
             var result = await _tariffCalculationHandler.Test(tariffTestInput, cancellationToken);
+            _invoiceInserterHandler.Handle(result,cancellationToken );
             return Ok(result);
         }
     }
