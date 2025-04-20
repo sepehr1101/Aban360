@@ -124,8 +124,8 @@ namespace Aban360.Api.Extensions
                 options.UseSqlServer(connectionString,
                     SqlServerDbContextOptionsBuilder =>
                     {
-                        var munutes = (int)TimeSpan.FromMinutes(3).TotalSeconds;
-                        SqlServerDbContextOptionsBuilder.CommandTimeout(munutes);
+                        var minutes = (int)TimeSpan.FromMinutes(3).TotalSeconds;
+                        SqlServerDbContextOptionsBuilder.CommandTimeout(minutes);
                     });
                 options.AddInterceptors(new PersianYeKeCommandInterceptor());
                 options.AddInterceptors(new RowLevelAuthenticitySaveChangeInterceptor());
@@ -139,8 +139,8 @@ namespace Aban360.Api.Extensions
                 options.UseSqlServer(connectionString,
                     SqlServerDbContextOptionsBuilder =>
                     {
-                        var munutes = (int)TimeSpan.FromMinutes(3).TotalSeconds;
-                        SqlServerDbContextOptionsBuilder.CommandTimeout(munutes);
+                        var minutes = (int)TimeSpan.FromMinutes(3).TotalSeconds;
+                        SqlServerDbContextOptionsBuilder.CommandTimeout(minutes);
                     });
                 options.AddInterceptors(new PersianYeKeCommandInterceptor());
                 options.AddInterceptors(new RowLevelAuthenticitySaveChangeInterceptor());
@@ -153,8 +153,8 @@ namespace Aban360.Api.Extensions
                 options.UseSqlServer(connectionString,
                     SqlServerDbContextOptionsBuilder =>
                     {
-                        var munutes = (int)TimeSpan.FromMinutes(3).TotalSeconds;
-                        SqlServerDbContextOptionsBuilder.CommandTimeout(munutes);
+                        var minutes = (int)TimeSpan.FromMinutes(3).TotalSeconds;
+                        SqlServerDbContextOptionsBuilder.CommandTimeout(minutes);
                     });
                 options.AddInterceptors(new PersianYeKeCommandInterceptor());
                 options.AddInterceptors(new RowLevelAuthenticitySaveChangeInterceptor());

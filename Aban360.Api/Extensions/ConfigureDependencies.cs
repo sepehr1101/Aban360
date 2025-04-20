@@ -80,7 +80,7 @@ namespace Aban360.Api.Extensions
         }
         private static void AddBlobPoolDI(this IServiceCollection services)
         {
-            services.AddBlboPoolApplicationInjections();
+            services.AddBlobPoolApplicationInjections();
             services.AddBlobPoolPersistenceInjections();
             services.AddBlobPoolGatewayInjections();
         }
