@@ -1,8 +1,7 @@
 ﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Contracts;
-using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Implementation;
+using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Commands
