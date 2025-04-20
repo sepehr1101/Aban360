@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementations
 {
-   internal sealed class InvoiceStatusCommandService : IInvoiceStatusCommandService
+    internal sealed class InvoiceStatusCommandService : IInvoiceStatusCommandService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<InvoiceStatus> _invoiceStatus;
