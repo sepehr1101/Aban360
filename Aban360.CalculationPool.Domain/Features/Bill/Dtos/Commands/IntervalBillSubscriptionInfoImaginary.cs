@@ -29,5 +29,9 @@
         public Dictionary<short, string>? WaterMeterTags { get; set; }
         public Dictionary<short, string>? IndividualTags { get; set; }
         public Dictionary<short, string>? Discounts { get; set; }
+
+        public int PreviousReadingNumber { get; set; }
+        public int CurrentReadingNumber { get; set; }
+        public string PreviousReadingDate { get; set; } = default!;
     }
 }
