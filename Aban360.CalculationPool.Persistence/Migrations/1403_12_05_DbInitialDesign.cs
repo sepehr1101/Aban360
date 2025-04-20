@@ -127,7 +127,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
         {
             var table = TableName.Invoice;
             Create.Table(nameof(TableName.Invoice)).InSchema(_schema)
-                .WithColumn(Id).AsInt64().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn(Id).AsInt64().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn("InvoiceTypeId").AsInt16().NotNullable()
                      .ForeignKey(NamingHelper.Fk(TableName.InvoiceType, TableName.Invoice), _schema, nameof(TableName.InvoiceType), Id)
                 .WithColumn("InvoiceStatusId").AsInt16().NotNullable()
@@ -141,7 +141,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
         {
             var table = TableName.InvoiceLineItem;
             Create.Table(nameof(TableName.InvoiceLineItem)).InSchema(_schema)
-                .WithColumn(Id).AsInt64().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn(Id).AsInt64().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn("InvoiceId").AsInt64().NotNullable()
                      .ForeignKey(NamingHelper.Fk(TableName.Invoice, TableName.InvoiceLineItem), _schema, nameof(TableName.Invoice), Id)
                 .WithColumn("OfferingId").AsInt16().NotNullable()
@@ -155,7 +155,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
         {
             var table= TableName.InvoiceInstallment;
             Create.Table(nameof(TableName.InvoiceInstallment)).InSchema(_schema)
-                .WithColumn (Id).AsInt64().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn (Id).AsInt64().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn("InvoiceId").AsInt64().NotNullable()
                      .ForeignKey(NamingHelper.Fk(TableName.Invoice, table), _schema, nameof(TableName.Invoice), Id)
                 .WithColumn("Amount").AsInt64().NotNullable() 
