@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Commands
 {
-    [Route("v1/tariff-calculation")]
-    public class TariffCalculationManager : BaseController
+    [Route("v1/tariff-calculation_imaginery")]
+    public class TariffCalculationImaginaryManager : BaseController
     {
         private readonly ITariffCalculationHandler _tariffCalculationHandler;
-        public TariffCalculationManager(ITariffCalculationHandler tariffCalculationHandler)
+        public TariffCalculationImaginaryManager(ITariffCalculationHandler tariffCalculationHandler)
         {
             _tariffCalculationHandler = tariffCalculationHandler;
             _tariffCalculationHandler.NotNull();
