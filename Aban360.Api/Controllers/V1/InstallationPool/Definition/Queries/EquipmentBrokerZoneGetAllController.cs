@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.InstallationPool.Definition.Queries
 {
-    [Route("v1/equipment_broker_zone")]
+    [Route("v1/equipment-broker-zone")]
     public class EquipmentBrokerZoneGetAllController : BaseController
     {
         private readonly IEquipmentBrokerZoneGetAllHandler _equipmentBrokerZoneGetAllHandler;

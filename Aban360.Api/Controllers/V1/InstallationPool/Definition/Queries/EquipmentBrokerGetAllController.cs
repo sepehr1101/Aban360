@@ -6,7 +6,7 @@ using Aban360.InstallationPool.Domain.Features.Definition.Dto.Queries;
 
 namespace Aban360.Api.Controllers.V1.InstallationPool.Definition.Queries
 {
-    [Route("v1/equipment_broker")]
+    [Route("v1/equipment-broker")]
     public class EquipmentBrokerGetAllController : BaseController
     {
         private readonly IEquipmentBrokerGetAllHandler _equipmentBrokerGetAllHandler;
