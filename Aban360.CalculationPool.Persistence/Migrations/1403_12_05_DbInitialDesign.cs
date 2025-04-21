@@ -207,6 +207,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
             Create.Table(nameof(TableName.TariffConstant)).InSchema(_schema)
                 .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Value").AsString(_255).NotNullable()
                 .WithColumn("Condition").AsString(int.MaxValue).NotNullable()
                 .WithColumn("Key").AsString(_255).NotNullable()
                 .WithColumn("FromDateJalali").AsString(10).NotNullable()

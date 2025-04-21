@@ -8,6 +8,8 @@ public partial class TariffConstant
 
     public string Title { get; set; } = null!;
 
+    public string Value { get; set; } = null!;
+
     public string Condition { get; set; } = null!;
 
     public string Key { get; set; } = null!;
