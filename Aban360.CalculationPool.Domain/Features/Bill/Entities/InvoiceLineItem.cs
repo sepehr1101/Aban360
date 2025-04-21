@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Aban360.CalculationPool.Domain.Constants;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.CalculationPool.Domain.Features.Bill.Entities;
 
@@ -11,7 +12,7 @@ public class InvoiceLineItem
 
     public short OfferingId { get; set; }
 
-    public short InvoinceLineItemInsertModeId { get; set; }
+    public InvoiceLineItemInsertModeEnum InvoiceLineItemInsertModeId { get; set; }
 
     public long Amount { get; set; }
 
