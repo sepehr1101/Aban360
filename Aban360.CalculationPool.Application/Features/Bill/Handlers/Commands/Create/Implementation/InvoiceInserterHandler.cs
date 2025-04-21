@@ -35,24 +35,24 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
         }
         public async Task Handle(IntervalCalculationResultWrapper intervalCalculationResult, CancellationToken cancellationToken)
         {
-            ICollection<IntervalCalculationResult2> Result2 = new List<IntervalCalculationResult2>();
-            foreach (var item1 in intervalCalculationResult.IntervalCalculationResults)
+            ICollection<IntervalCalculationResult2> allIntervalCalculationResult2 = new List<IntervalCalculationResult2>();
+            foreach (var result3 in intervalCalculationResult.IntervalCalculationResults)
             {
-                item1.CalculationInfo.ForEach(x => Result2.Add(x));
+                result3.CalculationInfo.ForEach(result2 => allIntervalCalculationResult2.Add(result2));
             }
 
-            var invoiceLineItemList = Result2
-                 .GroupBy(x => new { x.OfferingTitle })
-                 .Select(y => new invoiceLineItemList()
+            var invoiceLineItemList = allIntervalCalculationResult2
+                 .GroupBy(intervalResult2 => new { intervalResult2.OfferingTitle })
+                 .Select(result2 => new invoiceLineItemList()
                  {
-                     OfferingTitle = y.Key.OfferingTitle,
-                     invoiceLineItem = y.Select(z => new invoiceLineItemResult()
+                     OfferingTitle = result2.Key.OfferingTitle,
+                     invoiceLineItem = result2.Select(result => new invoiceLineItemResult()
                      {
-                         Amount = (long)z.Amount,
-                         Consumption = z.Consumption,
-                         Duration = z.Duration,
-                         Formula = z.Formula,
-                         LineItemTypeTitle = z.LineItemTypeTitle
+                         Amount = (long)result.Amount,
+                         Consumption = result.Consumption,
+                         Duration = result.Duration,
+                         Formula = result.Formula,
+                         LineItemTypeTitle = result.LineItemTypeTitle
                      }).ToList()
                  }).ToList();
 
@@ -68,10 +68,10 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
                 DepositRate = 100,
                 InstallmentCount = 1,
             };
-            ICollection<InvoiceLineItem> invoiceLineItems = invoiceLineItemList.Select(x =>
+            ICollection<InvoiceLineItem> invoiceLineItems = invoiceLineItemList.Select(itemList =>
             {
-                var offering = offerings.Single(o => o.Title == x.OfferingTitle);
-                var offeringAmount = x.invoiceLineItem.Sum(o => o.Amount);
+                var offering = offerings.Single(offer => offer.Title == itemList.OfferingTitle);
+                var offeringAmount = itemList.invoiceLineItem.Sum(itemResult => itemResult.Amount);
 
                 return new InvoiceLineItem()
                 {
