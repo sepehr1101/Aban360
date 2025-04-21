@@ -6,6 +6,7 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using AutoMapper;
 using FluentValidation;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.Implementations
 {
@@ -43,6 +44,10 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
         }
         private void GetWaterMeterTags(WaterMeterRequestCreateDto waterMeterDto, RequestWaterMeter requestWaterMeter)
         {
+            if (waterMeterDto.TagIds.IsNullOrEmpty())
+            {
+                return;
+            }
             waterMeterDto.TagIds.ForEach(item =>
             {
                 RequestWaterMeterTag requestWaterMeterTag = new RequestWaterMeterTag()
@@ -109,6 +114,7 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
         {
             individualTagsId.ForEach(tagId =>
             {
+                if(tagId==0) return;
                 RequestIndividualTag requestIndividualTag = new()
                 {
                     InsertLogInfo = "loginfo",
