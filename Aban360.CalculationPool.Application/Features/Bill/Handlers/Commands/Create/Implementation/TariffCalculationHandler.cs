@@ -1,6 +1,7 @@
 ﻿using Aban360.CalculationPool.Application.Features.Base;
 using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Contracts;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
+using Aban360.CalculationPool.Domain.Features.Rule.Entities;
 using Aban360.CalculationPool.Domain.Features.Rule.Entties;
 using Aban360.CalculationPool.Persistence.Features.Rule.Queries.Contracts;
 using Aban360.Common.Extensions;
@@ -15,15 +16,20 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
     {
         private readonly IIntervalBillPrerequisiteInfoAddHoc _intervalBillPrerequisiteInfoAddHocHandler;
         private readonly ITariffQueryService _tariffQueryService;
+        private readonly ITariffConstantQueryService _tariffConstantQueryService;
         public TariffCalculationHandler(
             IIntervalBillPrerequisiteInfoAddHoc intervalBillPrerequisiteInfoHandler,
-            ITariffQueryService tariffQueryService)
+            ITariffQueryService tariffQueryService,
+            ITariffConstantQueryService tariffConstantQueryService)
         {
             _intervalBillPrerequisiteInfoAddHocHandler = intervalBillPrerequisiteInfoHandler;
             _intervalBillPrerequisiteInfoAddHocHandler.NotNull(nameof(_intervalBillPrerequisiteInfoAddHocHandler));
 
             _tariffQueryService = tariffQueryService;
             _tariffQueryService.NotNull(nameof(_tariffQueryService));
+
+            _tariffConstantQueryService = tariffConstantQueryService;
+            _tariffConstantQueryService.NotNull(nameof(tariffConstantQueryService));
         }
         public async Task<IntervalCalculationResultWrapper> Test(TariffTestInput tariffTestInput, CancellationToken cancellationToken)
         {
@@ -108,6 +114,27 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
                 tariff.Consumption = consumption;
             }
             return rawTariffs;
+        }
+        private async Task<Dictionary<string, object>> GetTariffConstantsDictionary(string @from, string @to, double average, IntervalBillSubscriptionInfo info)
+        {
+            Dictionary<string, object> keyValuePairs = new Dictionary<string, object>();
+            ICollection<TariffConstant> tariffConstatns = await _tariffConstantQueryService.Get(from, to);
+            if(tariffConstatns is null)
+            {
+                return keyValuePairs;
+            }
+            List<IntervalCalculationResult> intervalCalculationResults = new List<IntervalCalculationResult>();
+            foreach (var tariffConstant in tariffConstatns)
+            {
+                Expression expressionCondition = GetExpression(tariffConstant.Condition, info);
+                bool conditionSatisfied = expressionCondition.Eval<bool>();
+                if (!conditionSatisfied)
+                {
+                    continue;
+                }
+                keyValuePairs.Add(tariffConstant.Title, tariffConstant.Key);
+            }
+            return keyValuePairs;
         }
         private int GetConsumption(int previousNumber, int currentNumber)
         {
