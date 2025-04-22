@@ -7,7 +7,7 @@ using Aban360.ReportPool.Application.Features.DynamicGenerator.Handlers.Queries.
 
 namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator
 {
-    [Route("dynamic-report-view")]
+    [Route("v1/dynamic-report-view")]
     public class DynamicReportViewController : BaseMvcController
     {        
         private readonly IDynamicReportGetTemplateJsonHandler _dynamicReportGetTemplateJsonHandler;

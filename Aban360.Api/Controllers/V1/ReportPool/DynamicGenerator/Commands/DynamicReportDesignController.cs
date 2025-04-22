@@ -8,9 +8,9 @@ using Aban360.ReportPool.Application.Features.DynamicGenerator.Handlers.Commands
 using Aban360.ReportPool.Application.Features.DynamicGenerator.Handlers.Commands.Update.Contracts;
 using Aban360.ReportPool.Application.Features.DynamicGenerator.Handlers.Queries.Contracts;
 
-namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator.Queries
+namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator.Commands
 {
-    [Route("dynamic-report-design")]
+    [Route("v1/dynamic-report-design")]
     public class DynamicReportViewController : BaseMvcController
     {
         private readonly IUnitOfWork _uow;

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator.Commands
 {
-    [Route("v1/dynamic-Report")]
+    [Route("v1/dynamic-report")]
     public class DynamicReportDeleteController : BaseController
     {
         private readonly IUnitOfWork _uow;
