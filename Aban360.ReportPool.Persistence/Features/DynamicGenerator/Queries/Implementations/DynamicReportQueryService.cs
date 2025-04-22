@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.Extensions;
+using Aban360.ReportPool.Domain.Features.DynamicGenerator.Dto.Queries;
 using Aban360.ReportPool.Domain.Features.DynamicGenerator.Entities;
 using Aban360.ReportPool.Persistence.Contexts.Contracts;
 using Aban360.ReportPool.Persistence.Features.DynamicGenerator.Queries.Contracts;
@@ -24,9 +25,26 @@ namespace Aban360.ReportPool.Persistence.Features.DynamicGenerator.Queries.Imple
             return await _uow.FindOrThrowAsync<DynamicReport>(id);
         }
 
-        public async Task<ICollection<DynamicReport>> Get()
+        public async Task<string> GetTemplateJson(int id)
         {
-            return await _dynamicReport.ToListAsync();
+            return await
+                _dynamicReport
+                .Select(dynamicReport => dynamicReport.ReportTemplateJson)
+                .SingleAsync();
+        }
+
+        public async Task<ICollection<DynamicReportMasterDto>> GetMasters()
+        {
+            return await _dynamicReport
+                .Select(dynamicReport => new DynamicReportMasterDto()
+                {
+                    Id = dynamicReport.Id,
+                    Description = dynamicReport.Description,
+                    Name = dynamicReport.Name,
+                    UserDisplayName = dynamicReport.UserDisplayName,
+                    Version = dynamicReport.Version,
+                })
+                .ToListAsync();
         }
     }
 }

@@ -2,7 +2,6 @@
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.DynamicGenerator.Handlers.Commands.Create.Contracts;
-using Aban360.ReportPool.Domain.Features.DynamicGenerator.Dto.Commands;
 using Aban360.ReportPool.Domain.Features.DynamicGenerator.Entities;
 using Aban360.ReportPool.Persistence.Features.DynamicGenerator.Commands.Contracts;
 using AutoMapper;
@@ -13,7 +12,6 @@ namespace Aban360.ReportPool.Application.Features.DynamicGenerator.Handlers.Comm
     {
         private readonly IMapper _mapper;
         private readonly IDynamicReportCommandService _dynamicReportCommandService;
-        private readonly IDocumentCommandAddhoc _documentCommandAddhoc;
         public DynamicReportCreateHandler(
             IMapper mapper,
             IDynamicReportCommandService dynamicReportCommandService,
@@ -24,21 +22,19 @@ namespace Aban360.ReportPool.Application.Features.DynamicGenerator.Handlers.Comm
 
             _dynamicReportCommandService = dynamicReportCommandService;
             _dynamicReportCommandService.NotNull(nameof(_dynamicReportCommandService));
-
-            _documentCommandAddhoc = documentCommandAddhoc;
-            _documentCommandAddhoc.NotNull(nameof(_documentCommandAddhoc));
         }
 
-        public async Task Handle(IAppUser currentUser,DynamicReportCreateDto createDto, CancellationToken cancellationToken)
+        public async Task Handle(IAppUser currentUser, string name, string reportTemplateJson)
         {
-            var dynamicReport = _mapper.Map<DynamicReport>(createDto);
-            var documentId = await _documentCommandAddhoc.Handle(createDto.Document, createDto.Description,createDto.DocumentTypeId, cancellationToken);
-
-            dynamicReport.UserName = currentUser.Username;
-            dynamicReport.DocumentId=documentId;
-            dynamicReport.ValidFrom=DateTime.Now;
-            dynamicReport.InsertLogInfo = "insertLogInfo";
-            dynamicReport.Hash = "hash";
+            DynamicReport dynamicReport = new()
+            {
+                Version = 1,
+                UserDisplayName = currentUser.FullName,
+                ReportTemplateJson = reportTemplateJson,
+                InsertLogInfo = "insertLogInfo",
+                Name=name,
+                UserId=currentUser.UserId
+            };
             await _dynamicReportCommandService.Add(dynamicReport);
         }
     }
