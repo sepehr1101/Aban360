@@ -6,11 +6,11 @@ using AutoMapper;
 
 namespace Aban360.ReportPool.Application.Features.DynamicGenerator.Handlers.Queries.Implementations
 {
-    internal sealed class DynamicReportGetAllHandler : IDynamicReportGetAllHandler
+    internal sealed class DynamicReportGetMastersHandler : IDynamicReportGetMastersHandler
     {
         private readonly IMapper _mapper;
         private readonly IDynamicReportQueryService _dynamicReportQueryService;
-        public DynamicReportGetAllHandler(
+        public DynamicReportGetMastersHandler(
             IMapper mapper,
             IDynamicReportQueryService dynamicReportQueryService)
         {
@@ -21,10 +21,10 @@ namespace Aban360.ReportPool.Application.Features.DynamicGenerator.Handlers.Quer
             _dynamicReportQueryService.NotNull(nameof(_dynamicReportQueryService));
         }
 
-        public async Task<ICollection<DynamicReportGetDto>> Handle(CancellationToken cancellationToken)
+        public async Task<ICollection<DynamicReportMasterDto>> Handle(CancellationToken cancellationToken)
         {
-            var dynamicReport = await _dynamicReportQueryService.Get();
-            return _mapper.Map<ICollection<DynamicReportGetDto>>(dynamicReport);
+            ICollection<DynamicReportMasterDto> dynamicReportMasters = await _dynamicReportQueryService.GetMasters();
+            return dynamicReportMasters;
         }
     }
 }

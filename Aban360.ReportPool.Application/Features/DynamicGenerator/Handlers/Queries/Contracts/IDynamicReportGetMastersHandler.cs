@@ -2,8 +2,8 @@
 
 namespace Aban360.ReportPool.Application.Features.DynamicGenerator.Handlers.Queries.Contracts
 {
-    public interface IDynamicReportGetAllHandler
+    public interface IDynamicReportGetMastersHandler
     {
-        Task<ICollection<DynamicReportGetDto>> Handle(CancellationToken cancellationToken);
+        Task<ICollection<DynamicReportMasterDto>> Handle(CancellationToken cancellationToken);
     }
 }

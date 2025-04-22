@@ -2,7 +2,6 @@
 using Aban360.ReportPool.Persistence.Extentions;
 using Aban360.ReportPool.Persistence.Migrations.Enums;
 using FluentMigrator;
-using System;
 using System.Reflection;
 
 namespace Aban360.ReportPool.Persistence.Migrations
@@ -33,6 +32,7 @@ namespace Aban360.ReportPool.Persistence.Migrations
              .ToList();
             tableNames.ForEach(t => Delete.Table(t));
         }
+
         private void CreateDynamicReport()
         {
             var table = TableName.DynamicReport;
@@ -42,14 +42,13 @@ namespace Aban360.ReportPool.Persistence.Migrations
                 .WithColumn("Version").AsInt64().NotNullable()
                 .WithColumn("Description").AsString(int.MaxValue).Nullable()
                 .WithColumn("UserId").AsGuid().NotNullable()
-                .WithColumn("UserName").AsString(_255).NotNullable()
-                .WithColumn("DocumentId").AsGuid().NotNullable()
+                .WithColumn("UserDisplayName").AsString(_255).NotNullable()
+                .WithColumn("ReportTemplateJson").AsAnsiString(int.MaxValue).NotNullable()
                 .WithColumn("ValidFrom").AsDateTime().NotNullable()
                 .WithColumn("ValidTo").AsDateTime().Nullable()
                 .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
                 .WithColumn("RemoveLogInfo").AsString(int.MaxValue).Nullable()
                 .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
         }
-
     }
 }

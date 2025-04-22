@@ -14,4 +14,8 @@
     <Folder Include="Features\InvoiceInfo\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
+  </ItemGroup>
+
 </Project>

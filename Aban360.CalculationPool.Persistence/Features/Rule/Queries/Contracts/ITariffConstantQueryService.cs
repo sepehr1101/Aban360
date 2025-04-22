@@ -6,5 +6,6 @@ namespace Aban360.CalculationPool.Persistence.Features.Rule.Queries.Contracts
     {
         Task<TariffConstant> Get(short id);
         Task<ICollection<TariffConstant>> Get();
+        Task<ICollection<TariffConstant>> Get(string @from, string @to);
     }
 }

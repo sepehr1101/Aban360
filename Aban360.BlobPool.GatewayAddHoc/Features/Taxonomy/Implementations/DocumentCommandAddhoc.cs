@@ -20,7 +20,7 @@ namespace Aban360.BlobPool.GatewayAddHoc.Features.Taxonomy.Implementations
             DocumentCreateDto createDto = new DocumentCreateDto()
             {
                 Description = description,
-                document = file,
+                DocumentFile = file,
                 DocumentTypeId= documentTypeId
             };
             var documentId = await _documentCreateHandler.Handle(createDto, cancellationToken);

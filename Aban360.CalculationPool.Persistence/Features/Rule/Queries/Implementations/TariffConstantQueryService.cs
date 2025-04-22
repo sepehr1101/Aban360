@@ -28,5 +28,14 @@ namespace Aban360.CalculationPool.Persistence.Features.Rule.Queries.Implementati
         {
             return await _tariffConstant.ToListAsync();
         }
+        public async Task<ICollection<TariffConstant>> Get(string @from, string @to)
+        {
+            return await _tariffConstant
+                .AsNoTracking()
+                .Where(tariff =>
+                       tariff.FromDateJalali.CompareTo(to) <= 0 &&
+                       tariff.ToDateJalali.CompareTo(from) >= 0)
+                .ToListAsync();
+        }
     }
 }

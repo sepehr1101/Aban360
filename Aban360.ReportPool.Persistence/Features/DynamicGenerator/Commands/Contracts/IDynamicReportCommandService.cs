@@ -5,6 +5,6 @@ namespace Aban360.ReportPool.Persistence.Features.DynamicGenerator.Commands.Cont
     public interface IDynamicReportCommandService
     {
         Task Add(DynamicReport dynamicReport);
-        Task Remove(DynamicReport dynamicReport);
+        void Remove(DynamicReport dynamicReport);
     }
 }

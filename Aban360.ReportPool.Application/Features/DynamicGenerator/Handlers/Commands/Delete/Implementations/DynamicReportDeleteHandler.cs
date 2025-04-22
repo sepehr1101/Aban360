@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.DynamicGenerator.Handlers.Comm
         public async Task Handle(DynamicReportDeleteDto deleteDto, CancellationToken cancellationToken)
         {
             var dynamicReport = await _dynamicReportQueryService.Get(deleteDto.Id);
-            await _dynamicReportCommandService.Remove(dynamicReport);
+            _dynamicReportCommandService.Remove(dynamicReport);
         }
     }
 }

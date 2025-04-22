@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Persistence.Features.DynamicGenerator.Commands.Impl
             await _dynamicReport.AddAsync(dynamicReport);
         }
 
-        public async Task Remove(DynamicReport dynamicReport)
+        public void Remove(DynamicReport dynamicReport)
         {
             _dynamicReport.Remove(dynamicReport);
         }
