@@ -15,6 +15,7 @@
         Invoice,
         InvoiceInstallment, 
         InvoiceLineItem,
+        WaterMeterChangeNumberHistory,
 
         TariffCalculationMode,
         TariffConstant,

@@ -165,6 +165,17 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                 .WithColumn("BillId").AsAnsiString(20).Nullable()
                 .WithColumn("PaymentId").AsAnsiString(20).Nullable();
         }
+        private void CreateWaterMeterChangeNumberHistory()
+        {
+            var table = TableName.WaterMeterChangeNumberHistory;
+            Create.Table(nameof(TableName.WaterMeterChangeNumberHistory)).InSchema(_schema)
+                .WithColumn("Id").AsInt64().Identity().NotNullable().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("Consumption").AsInt64().NotNullable()//Todo: type
+                .WithColumn("ConstumptionAverage").AsInt64().NotNullable()//Todo: type
+                .WithColumn("ChangeMeterReasonId").AsInt16().NotNullable()
+                .WithColumn($"{TableName.InvoiceInstallment}Id").AsInt64().NotNullable()//Todo
+                    .ForeignKey(NamingHelper.Fk(TableName.InvoiceInstallment, table), _schema, nameof(TableName.InvoiceInstallment), Id);
+        }
         private void CreateInvoiceEvent()
         {
 
