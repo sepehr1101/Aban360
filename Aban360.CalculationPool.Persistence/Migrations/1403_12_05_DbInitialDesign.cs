@@ -165,6 +165,17 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                 .WithColumn("BillId").AsAnsiString(20).Nullable()
                 .WithColumn("PaymentId").AsAnsiString(20).Nullable();
         }
+        private void CreateWaterMeterChangeNumberHistory()
+        {
+            var table = TableName.WaterMeterChangeNumberHistory;
+            Create.Table(nameof(TableName.WaterMeterChangeNumberHistory)).InSchema(_schema)
+                .WithColumn("Id").AsInt64().Identity().NotNullable().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("Consumption").AsInt32().NotNullable()
+                .WithColumn("ConstumptionAverage").AsFloat().NotNullable()
+                .WithColumn("ChangeMeterReasonId").AsInt16().NotNullable()
+                .WithColumn($"{TableName.Invoice}Id").AsInt64().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.Invoice, table), _schema, nameof(TableName.Invoice), Id);
+        }
         private void CreateInvoiceEvent()
         {
 
@@ -207,6 +218,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
             Create.Table(nameof(TableName.TariffConstant)).InSchema(_schema)
                 .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Value").AsString(_255).NotNullable()
                 .WithColumn("Condition").AsString(int.MaxValue).NotNullable()
                 .WithColumn("Key").AsString(_255).NotNullable()
                 .WithColumn("FromDateJalali").AsString(10).NotNullable()

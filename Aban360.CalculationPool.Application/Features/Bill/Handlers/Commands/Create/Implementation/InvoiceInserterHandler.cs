@@ -15,11 +15,13 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
         private readonly IInvoiceLineItemCommandService _invoiceLineItemCommand;
         private readonly IInvoiceInstallmentCommandService _invoiceInstallmentCommand;
         private readonly IOfferingQueryService _offeringQueryService;
+        private readonly IWaterMeterChangeNumberHistoryCommandService _waterMeterChangeNumberHistoryCommand;    
         public InvoiceInserterHandler(
             IInvoiceCommandService invoiceCommand,
             IInvoiceLineItemCommandService invoiceLineItemCommand,
             IInvoiceInstallmentCommandService invoiceInstallmentCommand,
-            IOfferingQueryService offeringQueryService)
+            IOfferingQueryService offeringQueryService,
+            IWaterMeterChangeNumberHistoryCommandService waterMeterChangeNumberHistoryCommand)
         {
             _invoiceCommand = invoiceCommand;
             _invoiceCommand.NotNull(nameof(invoiceCommand));
@@ -32,6 +34,9 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
 
             _offeringQueryService = offeringQueryService;
             _offeringQueryService.NotNull(nameof(offeringQueryService));
+
+            _waterMeterChangeNumberHistoryCommand = waterMeterChangeNumberHistoryCommand;
+            _waterMeterChangeNumberHistoryCommand.NotNull(nameof(waterMeterChangeNumberHistoryCommand));
         }
         public async Task Handle(IntervalCalculationResultWrapper intervalCalculationResult, CancellationToken cancellationToken)
         {
@@ -93,10 +98,20 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
                 PaymentId="102030"//Todo
             };
 
+            ///WaterMeterChangeNumberHistory
+            WaterMeterChangeNumberHistory waterMeterHistory = new WaterMeterChangeNumberHistory()
+            {
+                Consumption= intervalCalculationResult.Consumption,
+                ConstumptionAverage=(float)intervalCalculationResult.ConsumptionAverage,
+                ChangeMeterReasonId=1,//Todo
+                Invoice= invoice
+            };
+
             await _invoiceCommand.Add(invoice);
             await _invoiceLineItemCommand.Add(invoiceLineItems);
             await _invoiceInstallmentCommand.Add(invoiceInstallment);
-            //return "finish";
+            await _waterMeterChangeNumberHistoryCommand.Add(waterMeterHistory);
+
         }
 
     }

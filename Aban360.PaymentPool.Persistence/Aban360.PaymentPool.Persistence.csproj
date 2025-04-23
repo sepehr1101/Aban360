@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aban360.Common.Db\Aban360.Common.Db.csproj" />
+    <ProjectReference Include="..\Aban360.PaymentPool.Domain\Aban360.PaymentPool.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
