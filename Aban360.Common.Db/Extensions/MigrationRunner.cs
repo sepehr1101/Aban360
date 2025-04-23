@@ -23,9 +23,9 @@ namespace Aban360.Common.Db.Extensions
             {
                 using (var scope = serviceProvider.CreateScope())
                 {
-                    EnsureDatabase(connectionString, databaseCreationParameters, dbName);
-                    UpdateDatabase(scope.ServiceProvider);
-                    SeedDatabse(scope.ServiceProvider);
+                    //EnsureDatabase(connectionString, databaseCreationParameters, dbName);
+                    //UpdateDatabase(scope.ServiceProvider);
+                    //SeedDatabse(scope.ServiceProvider);
                 }
             }
         }

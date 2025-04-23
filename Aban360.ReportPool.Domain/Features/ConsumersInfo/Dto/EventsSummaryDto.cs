@@ -2,6 +2,7 @@
 {
     public record EventsSummaryDto
     {
+        public string BillId { get; set; } = default!;
         public long Id { get; set; }
         public int? PreviousMeterNumber { get; set; }//
         public int? NextMeterNumber { get; set; }//
