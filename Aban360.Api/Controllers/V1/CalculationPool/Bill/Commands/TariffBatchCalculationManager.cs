@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Commands
         [AllowAnonymous]
         public async Task<IActionResult> Test([FromBody] CaluclationIntervalBatchTestInput tariffTestInput, CancellationToken cancellationToken)
         {
-            CaluclationIntervalDiscrepancytWrapper wrapper = await _tariffCalculationHandler.Handle(tariffTestInput);
+            CaluclationIntervalDiscrepancytWrapper wrapper = await _tariffCalculationHandler.Handle(tariffTestInput, cancellationToken);
             return Ok(wrapper);
         }
     }

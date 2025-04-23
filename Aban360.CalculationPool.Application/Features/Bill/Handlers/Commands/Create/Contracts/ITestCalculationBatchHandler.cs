@@ -4,6 +4,6 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
 {
     public interface ITestCalculationBatchHandler
     {
-        Task<CaluclationIntervalDiscrepancytWrapper> Handle(CaluclationIntervalBatchTestInput testInput);
+        Task<CaluclationIntervalDiscrepancytWrapper> Handle(CaluclationIntervalBatchTestInput testInput, CancellationToken cancellationToken);
     }
 }

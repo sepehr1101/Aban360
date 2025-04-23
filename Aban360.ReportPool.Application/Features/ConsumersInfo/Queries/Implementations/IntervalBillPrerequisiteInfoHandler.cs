@@ -18,5 +18,10 @@ namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implemen
             var info = await _intervalBillPrerequisiteInfoService.GetInfo(billId);
             return info;
         }
+        public async Task<IEnumerable<IntervalBillSubscriptionInfo>> Handle(int zoneId, string registerDate, string fromReadingNumber, string toReadingNumber, CancellationToken cancellationToken)
+        {
+            IEnumerable<IntervalBillSubscriptionInfo> info = await _intervalBillPrerequisiteInfoService.GetInfo(zoneId, registerDate, fromReadingNumber, toReadingNumber);
+            return info;
+        }
     }
 }

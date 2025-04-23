@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Aban360.Api.Controllers
+namespace Aban360.Api.Controllers.V1
 {
     [EnableCors("CorsPolicy")]
     [Authorize]
