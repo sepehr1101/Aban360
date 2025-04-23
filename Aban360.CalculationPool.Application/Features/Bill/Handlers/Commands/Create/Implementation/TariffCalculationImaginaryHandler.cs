@@ -28,9 +28,9 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
         }
         public async Task<IntervalCalculationResultWrapper> Test(IntervalBillSubscriptionInfoImaginary tariffTestInput, CancellationToken cancellationToken)
         {
-            string previousReadingDate = tariffTestInput.PreviousReadingDate;
+            string previousReadingDate = tariffTestInput.PreviousWaterMeterDate;
             string currentReadingDate = DateTime.Now.ToShortPersianDateString();
-            int consumption = GetConsumption(tariffTestInput.PreviousReadingNumber, tariffTestInput.CurrentReadingNumber);
+            int consumption = GetConsumption(tariffTestInput.PreviousWaterMeterNumber, tariffTestInput.CurrentWaterMeterNumber);
             int duration = GetDuration(previousReadingDate, currentReadingDate);
             double average = GetDailyConsumptionAverage(consumption, duration);
             ICollection<Tariff> rawTariffs = await GetRawTariffs(previousReadingDate, currentReadingDate);

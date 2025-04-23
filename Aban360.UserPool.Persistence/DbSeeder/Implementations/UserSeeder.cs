@@ -27,27 +27,34 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
         {
             if (!_users.Any())
             {
-                var logInfo = LogInfoJson.Get();
-                var userId = Guid.NewGuid();
-                var programmer = new User()
-                {
-                    DisplayName = "برنامه نویس",
-                    FullName = "برنامه نویس",
-                    Username = "programmer",
-                    HasTwoStepVerification = false,
-                    Id = userId,
-                    InsertLogInfo = logInfo,
-                    InvalidLoginAttemptCount = 0,
-                    Mobile = "09130000000",
-                    MobileConfirmed = false,
-                    ValidFrom = DateTime.Now,
-                    Password = await SecurityOperations.GetSha512Hash("123456"),
-                    Hash = string.Empty,
-                    SerialNumber = Guid.NewGuid().ToString("n"),
-                    UserRoles = GetProgrammerRoles(userId, logInfo),
-                    UserClaims= GetProgrammerUserClaims(userId, logInfo)
-                };
-                _users.Add(programmer);
+                //var logInfo = LogInfoJson.Get();
+                //var userId = Guid.NewGuid();
+                //var programmer = new User()
+                //{
+                //    DisplayName = "برنامه نویس",
+                //    FullName = "برنامه نویس",
+                //    Username = "programmer",
+                //    HasTwoStepVerification = false,
+                //    Id = userId,
+                //    InsertLogInfo = logInfo,
+                //    InvalidLoginAttemptCount = 0,
+                //    Mobile = "09130000000",
+                //    MobileConfirmed = false,
+                //    ValidFrom = DateTime.Now,
+                //    Password = await SecurityOperations.GetSha512Hash("123456"),
+                //    Hash = string.Empty,
+                //    SerialNumber = Guid.NewGuid().ToString("n"),
+                //    UserRoles = GetProgrammerRoles(userId, logInfo),
+                //    UserClaims = GetProgrammerUserClaims(userId, logInfo)
+                //};
+
+                ICollection<User> users = new List<User>();
+                users.Add(await GetUser("1برنامه نویس", "برنامه نویس1", "programmer1"));
+                users.Add(await GetUser("برنامه نویس2", "برنامه نویس2", "programmer2"));
+                users.Add(await GetUser("برنامه نویس3", "برنامه نویس3", "programmer3"));
+                users.Add(await GetUser("برنامه نویس4", "برنامه نویس4", "programmer4"));
+
+                _users.AddRange(users);
                 _uow.SaveChanges();
             }
         }
@@ -62,7 +69,7 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
         private ICollection<UserClaim> GetProgrammerUserClaims(Guid userid, string logInfo)
         {
             var insertGroupId = Guid.NewGuid();
-            var now=DateTime.Now;
+            var now = DateTime.Now;
             var userClaims = new List<UserClaim>()
             {
                 new UserClaim() { Hash = string.Empty, ClaimTypeId = ClaimType.DefaultZoneId, ClaimValue="131301", UserId = userid, InsertGroupId =insertGroupId,InsertLogInfo=logInfo,ValidFrom=now},
@@ -72,6 +79,31 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
                 new UserClaim() { Hash = string.Empty, ClaimTypeId = ClaimType.Endpoint, ClaimValue=@"CaptchaDictionary.Get", UserId = userid, InsertGroupId =insertGroupId,InsertLogInfo=logInfo,ValidFrom=now},
             };
             return userClaims;
-        }    
+        }
+        private async Task<User> GetUser(string displayName, string fullname, string userName)
+        {
+            var logInfo = LogInfoJson.Get();
+            var userId = Guid.NewGuid();
+            var programmer = new User()
+            {
+                DisplayName = displayName,
+                FullName = fullname,
+                Username = userName,
+                HasTwoStepVerification = false,
+                Id = userId,
+                InsertLogInfo = logInfo,
+                InvalidLoginAttemptCount = 0,
+                Mobile = "09130000000",
+                MobileConfirmed = false,
+                ValidFrom = DateTime.Now,
+                Password = await SecurityOperations.GetSha512Hash("123456"),
+                Hash = string.Empty,
+                SerialNumber = Guid.NewGuid().ToString("n"),
+                UserRoles = GetProgrammerRoles(userId, logInfo),
+                UserClaims = GetProgrammerUserClaims(userId, logInfo)
+
+            };
+            return programmer;
+        }
     }
 }
