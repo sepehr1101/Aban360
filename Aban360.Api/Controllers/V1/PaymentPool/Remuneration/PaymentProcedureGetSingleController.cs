@@ -7,23 +7,23 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.PaymentPool.Remuneration
 {
-    [Route("v1/payment-procedure")]
-    public class PaymentProcedureGetSingleController : BaseController
+    [Route("v1/payment-method")]
+    public class PaymentMethodGetSingleController : BaseController
     {
-        private readonly IPaymentProcedureGetSingleHandler _paymentProcedureGetSingleHandler;
-        public PaymentProcedureGetSingleController(IPaymentProcedureGetSingleHandler paymentProcedureGetSingleHandler)
+        private readonly IPaymentMethodGetSingleHandler _paymentMethodGetSingleHandler;
+        public PaymentMethodGetSingleController(IPaymentMethodGetSingleHandler paymentMethodGetSingleHandler)
         {
-            _paymentProcedureGetSingleHandler = paymentProcedureGetSingleHandler;
-            _paymentProcedureGetSingleHandler.NotNull(nameof(paymentProcedureGetSingleHandler));
+            _paymentMethodGetSingleHandler = paymentMethodGetSingleHandler;
+            _paymentMethodGetSingleHandler.NotNull(nameof(paymentMethodGetSingleHandler));
         }
 
         [HttpPost, HttpGet]
         [Route("single/{id}")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<PaymentProcedureGetDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetSingle(PaymentProcedureEnum id, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponseEnvelope<PaymentMethodGetDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetSingle(PaymentMethodEnum id, CancellationToken cancellationToken)
         {
-            var paymentProcedures = await _paymentProcedureGetSingleHandler.Handle(id, cancellationToken);
-            return Ok(paymentProcedures);
+            var paymentMethods = await _paymentMethodGetSingleHandler.Handle(id, cancellationToken);
+            return Ok(paymentMethods);
         }
     }
 }

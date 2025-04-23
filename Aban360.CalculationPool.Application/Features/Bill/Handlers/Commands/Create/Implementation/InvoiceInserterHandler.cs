@@ -101,17 +101,17 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
             ///WaterMeterChangeNumberHistory
             WaterMeterChangeNumberHistory waterMeterHistory = new WaterMeterChangeNumberHistory()
             {
-                Consumption=(long) intervalCalculationResult.Consumption,
-                ConstumptionAverage=(long)intervalCalculationResult.ConsumptionAverage,//Todo : change Date Type
+                Consumption= intervalCalculationResult.Consumption,
+                ConstumptionAverage=(float)intervalCalculationResult.ConsumptionAverage,
                 ChangeMeterReasonId=1,//Todo
-                InvoiceInstallment= invoiceInstallment
+                Invoice= invoice
             };
 
             await _invoiceCommand.Add(invoice);
             await _invoiceLineItemCommand.Add(invoiceLineItems);
             await _invoiceInstallmentCommand.Add(invoiceInstallment);
             await _waterMeterChangeNumberHistoryCommand.Add(waterMeterHistory);
-            //return "finish";
+
         }
 
     }

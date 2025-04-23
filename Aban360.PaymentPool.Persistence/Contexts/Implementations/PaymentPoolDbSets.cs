@@ -6,6 +6,6 @@ namespace Aban360.PaymentPool.Persistence.Contexts.Implementations
     public partial class PaymentPoolContext
     {
         public virtual DbSet<Bank> Banks { get; set; }
-        public virtual DbSet<PaymentProcedure> PaymentProcedures { get; set; }
+        public virtual DbSet<PaymentMethod> PaymentProcedures { get; set; }
     }
 }

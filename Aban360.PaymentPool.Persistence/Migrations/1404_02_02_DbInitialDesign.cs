@@ -40,13 +40,13 @@ namespace Aban360.PaymentPool.Persistence.Migrations
                 .WithColumn("Id").AsInt16().NotNullable().Identity().PrimaryKey(NamingHelpers.Pk(table))
                 .WithColumn("BankName").AsString(_255).NotNullable()
                 .WithColumn("Icon").AsString(int.MaxValue).Nullable()
-                .WithColumn("CentralBankCode").AsString(_255).NotNullable()//Todo
+                .WithColumn("CentralBankCode").AsString(_255).NotNullable()
                 .WithColumn("Description").AsString(int.MaxValue).Nullable();
         }
-        private void CreatePaymentProcedure()
+        private void CreatePaymentMethod()
         {
-            var table = TableName.PaymentProcedure;
-            Create.Table(nameof(TableName.PaymentProcedure)).InSchema(_schema)
+            var table = TableName.PaymentMethod;
+            Create.Table(nameof(TableName.PaymentMethod)).InSchema(_schema)
                 .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelpers.Pk(table))
                 .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn("Icon").AsString(int.MaxValue).Nullable()

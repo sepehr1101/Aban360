@@ -170,11 +170,11 @@ namespace Aban360.CalculationPool.Persistence.Migrations
             var table = TableName.WaterMeterChangeNumberHistory;
             Create.Table(nameof(TableName.WaterMeterChangeNumberHistory)).InSchema(_schema)
                 .WithColumn("Id").AsInt64().Identity().NotNullable().PrimaryKey(NamingHelper.Pk(table))
-                .WithColumn("Consumption").AsInt64().NotNullable()//Todo: type
-                .WithColumn("ConstumptionAverage").AsInt64().NotNullable()//Todo: type
+                .WithColumn("Consumption").AsInt32().NotNullable()
+                .WithColumn("ConstumptionAverage").AsFloat().NotNullable()
                 .WithColumn("ChangeMeterReasonId").AsInt16().NotNullable()
-                .WithColumn($"{TableName.InvoiceInstallment}Id").AsInt64().NotNullable()//Todo
-                    .ForeignKey(NamingHelper.Fk(TableName.InvoiceInstallment, table), _schema, nameof(TableName.InvoiceInstallment), Id);
+                .WithColumn($"{TableName.Invoice}Id").AsInt64().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.Invoice, table), _schema, nameof(TableName.Invoice), Id);
         }
         private void CreateInvoiceEvent()
         {

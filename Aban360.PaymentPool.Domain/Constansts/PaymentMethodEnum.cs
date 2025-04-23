@@ -1,6 +1,6 @@
 ﻿namespace Aban360.PaymentPool.Domain.Constansts
 {
-    public enum PaymentProcedureEnum:short
+    public enum PaymentMethodEnum:short
     {
         PresenceAtBank=1,
         Internet=2,

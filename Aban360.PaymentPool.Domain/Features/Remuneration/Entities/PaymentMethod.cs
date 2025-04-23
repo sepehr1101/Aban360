@@ -3,10 +3,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.PaymentPool.Domain.Features.Remuneration.Entities;
 
-[Table(nameof(PaymentProcedure))]
-public class PaymentProcedure
+[Table(nameof(PaymentMethod))]
+public class PaymentMethod
 {
-    public PaymentProcedureEnum Id { get; set; }
+    public PaymentMethodEnum Id { get; set; }
 
     public string Title { get; set; } = null!;
 

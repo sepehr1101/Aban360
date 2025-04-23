@@ -3,8 +3,8 @@ using Aban360.PaymentPool.Domain.Features.Remuneration.Dto.Queries;
 
 namespace Aban360.PaymentPool.Application.Features.Remuneration.Handlers.Queries.Contracts
 {
-    public interface IPaymentProcedureGetSingleHandler
+    public interface IPaymentMethodGetSingleHandler
     {
-        Task<PaymentProcedureGetDto> Handle(PaymentProcedureEnum id, CancellationToken cancellationToken);
+        Task<PaymentMethodGetDto> Handle(PaymentMethodEnum id, CancellationToken cancellationToken);
     }
 }

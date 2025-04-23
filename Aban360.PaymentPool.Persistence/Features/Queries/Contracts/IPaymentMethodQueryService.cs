@@ -3,9 +3,9 @@ using Aban360.PaymentPool.Domain.Features.Remuneration.Entities;
 
 namespace Aban360.PaymentPool.Persistence.Features.Queries.Contracts
 {
-    public interface IPaymentProcedureQueryService
+    public interface IPaymentMethodQueryService
     {
-        Task<PaymentProcedure> Get(PaymentProcedureEnum id);
-        Task<ICollection<PaymentProcedure>> Get();
+        Task<PaymentMethod> Get(PaymentMethodEnum id);
+        Task<ICollection<PaymentMethod>> Get();
     }
 }

@@ -4,11 +4,11 @@ using AutoMapper;
 
 namespace Aban360.PaymentPool.Application.Features.Remuneration.Mappings
 {
-    public class PaymentProcedureMapper:Profile
+    public class PaymentMethodMapper:Profile
     {
-        public PaymentProcedureMapper()
+        public PaymentMethodMapper()
         {
-            CreateMap<PaymentProcedure, PaymentProcedureGetDto>();
+            CreateMap<PaymentMethod, PaymentMethodGetDto>();
         }
     }
 }

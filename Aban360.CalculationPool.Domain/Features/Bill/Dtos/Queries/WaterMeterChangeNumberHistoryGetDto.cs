@@ -6,14 +6,14 @@ namespace Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries
     {
         public long Id { get; set; }
 
-        public long Consumption { get; set; }
+        public int Consumption { get; set; }
 
-        public long ConstumptionAverage { get; set; }
+        public float ConstumptionAverage { get; set; }
 
         public short ChangeMeterReasonId { get; set; }
 
-        public long InvoiceInstallmentId { get; set; }
+        public long InvoicetId { get; set; }
 
-        public virtual InvoiceInstallment InvoiceInstallment { get; set; } = null!;
+        public virtual Invoice Invoice{ get; set; } = null!;
     }
 }
