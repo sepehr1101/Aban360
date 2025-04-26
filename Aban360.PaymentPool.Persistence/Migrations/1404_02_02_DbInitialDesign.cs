@@ -72,5 +72,26 @@ namespace Aban360.PaymentPool.Persistence.Migrations
                 .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn("IsHeader").AsBoolean().NotNullable();
         }
+
+        private void CreateAccountType()
+        {
+            var table =TableName.AccountType;
+            Create.Table(nameof(TableName.AccountType)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelpers.Pk(table))
+                .WithColumn("Title").AsString(_255).NotNullable();
+        }
+
+        private void CreateBankAccount()
+        {
+            var table = TableName.BankAccount;
+            Create.Table(nameof(TableName.BankAccount)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelpers.Pk(table)).Identity()
+                .WithColumn($"{TableName.Bank}Id").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelpers.Fk(TableName.Bank, table), _schema, nameof(TableName.Bank), Id)
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn($"{TableName.AccountType}Id").AsInt16().NotNullable()
+                .WithColumn("ZoneId").AsInt32().NotNullable()
+                .WithColumn("ZoneTitle").AsString(_255).NotNullable();
+        }
     }
 }

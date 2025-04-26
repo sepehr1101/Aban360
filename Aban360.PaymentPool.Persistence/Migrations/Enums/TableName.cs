@@ -5,6 +5,8 @@
         Bank,
         PaymentMethod,
         CreditorType,
-        BankFileStructure
+        BankFileStructure,
+        BankAccount,
+        AccountType
     }
 }

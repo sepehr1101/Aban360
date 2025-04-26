@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Aban360.LocationPool.GatewayAdhoc\Aban360.LocationPool.GatewayAdhoc.csproj" />
     <ProjectReference Include="..\Aban360.PaymentPool.Domain\Aban360.PaymentPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.PaymentPool.Persistence\Aban360.PaymentPool.Persistence.csproj" />
   </ItemGroup>
