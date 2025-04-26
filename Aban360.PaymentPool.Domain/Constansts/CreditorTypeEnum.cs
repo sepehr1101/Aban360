@@ -4,7 +4,9 @@
     {
         ElectronicPayment=1,
         ManualRegistration =2,
-        DocumentsReceived=3,
-        Clearing=4
+        Barter=3,
+        Cheque=4,
+        InstallmentBook=5,
+        DemandNote=6
     }
 }

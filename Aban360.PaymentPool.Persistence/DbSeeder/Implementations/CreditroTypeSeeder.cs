@@ -32,8 +32,10 @@ namespace Aban360.PaymentPool.Persistence.DbSeeder.Implementations
             {
                 new CreditorType(){Id=CreditorTypeEnum.ElectronicPayment,Title="پرداخت الکترونیک"},    
                 new CreditorType(){Id=CreditorTypeEnum.ManualRegistration,Title="ثبت دستی وصولی"},    
-                new CreditorType(){Id=CreditorTypeEnum.DocumentsReceived,Title="اسناد دریافتی (چک، سفته و ...("},    
-                new CreditorType(){Id=CreditorTypeEnum.Clearing,Title="تهاتر"},    
+                new CreditorType(){Id=CreditorTypeEnum.Barter,Title="تهاتر"},    
+                new CreditorType(){Id=CreditorTypeEnum.Cheque,Title="چک"},    
+                new CreditorType(){Id=CreditorTypeEnum.InstallmentBook,Title="دفترچه قسط"},    
+                new CreditorType(){Id=CreditorTypeEnum.DemandNote,Title="سفته"},    
             };
 
             _creditorType.AddRange(creditroTypes);

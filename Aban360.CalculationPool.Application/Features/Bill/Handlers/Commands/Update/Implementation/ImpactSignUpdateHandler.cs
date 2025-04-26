@@ -2,8 +2,11 @@
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.Bill.Entities;
 using Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using AutoMapper;
+using FluentValidation;
+using System.Threading;
 
 namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Implementation
 {
@@ -11,19 +14,32 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Up
     {
         private readonly IMapper _mapper;
         private readonly IImpactSignQueryService _impactSignQueryService;
+        private readonly IValidator<ImpactSignUpdateDto> _validator;
         public ImpactSignUpdateHandler(
             IMapper mapper,
-            IImpactSignQueryService impactSignQueryService)
+            IImpactSignQueryService impactSignQueryService,
+            IValidator<ImpactSignUpdateDto> validator)
         {
             _mapper = mapper;
             _mapper.NotNull(nameof(_mapper));
 
             _impactSignQueryService = impactSignQueryService;
             _impactSignQueryService.NotNull(nameof(_impactSignQueryService));
+
+            _validator = validator;
+            _validator.NotNull(nameof(validator));
+
         }
 
         public async Task Handle(ImpactSignUpdateDto updateDto, CancellationToken cancellationToken)
         {
+            var validationResult = await _validator.ValidateAsync(updateDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new CustomeValidationException(message);
+            }
+
             ImpactSign impactSign = await _impactSignQueryService.Get(updateDto.Id);
             _mapper.Map(updateDto,impactSign);
         }
