@@ -1,0 +1,47 @@
+﻿using Aban360.CalculationPool.Domain.Features.Rule.Dto.Commands;
+using Aban360.Common.Literals;
+using FluentValidation;
+
+namespace Aban360.CalculationPool.Application.Features.Rule.Validations
+{
+    public class TariffUpdateValidator:BaseValidator<TariffUpdateDto>
+    {
+        public TariffUpdateValidator()
+        {
+            RuleFor(t => t.Id)
+               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+            
+            RuleFor(t => t.LineItemTypeId)
+               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+
+            RuleFor(t => t.OfferingId)
+               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+            
+            RuleFor(t => t.Condition)
+               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+            
+            RuleFor(t => t.Formula)
+               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+            
+            RuleFor(t => t.FromDateJalali)
+               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+               .Length(10).WithMessage(ExceptionLiterals.Equal10);
+            
+            RuleFor(t => t.ToDateJalali)
+               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+               .Length(10).WithMessage(ExceptionLiterals.Equal10);  
+            
+            RuleFor(t => t.Description)
+               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+               .MaximumLength(1023).WithMessage(ExceptionLiterals.NotMoreThan1023);
+        }
+    }
+}

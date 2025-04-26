@@ -3,12 +3,12 @@ using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.Rule.Entties;
 using Aban360.CalculationPool.Persistence.Features.Rule.Queries.Contracts;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.GatewayAdhoc.Features.ConsumersInfo.Contracts;
 using DNTPersianUtils.Core;
+using FluentValidation;
 using org.matheval;
-using System.Formats.Tar;
 
 namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Implementation
 {
@@ -16,18 +16,31 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
     {
         private readonly IIntervalBillPrerequisiteInfoAddHoc _intervalBillPrerequisiteInfoAddHocHandler;
         private readonly ITariffQueryService _tariffQueryService;
+        private readonly IValidator<IntervalBillSubscriptionInfoImaginary> _intervalBillValidator;
         public TariffCalculationImaginaryHandler(
             IIntervalBillPrerequisiteInfoAddHoc intervalBillPrerequisiteInfoHandler,
-            ITariffQueryService tariffQueryService)
+            ITariffQueryService tariffQueryService,
+            IValidator<IntervalBillSubscriptionInfoImaginary> intervalBillValidator)
         {
             _intervalBillPrerequisiteInfoAddHocHandler = intervalBillPrerequisiteInfoHandler;
             _intervalBillPrerequisiteInfoAddHocHandler.NotNull(nameof(_intervalBillPrerequisiteInfoAddHocHandler));
 
             _tariffQueryService = tariffQueryService;
             _tariffQueryService.NotNull(nameof(_tariffQueryService));
+
+            _intervalBillValidator= intervalBillValidator;
+            _intervalBillValidator.NotNull(nameof(intervalBillValidator));
         }
         public async Task<IntervalCalculationResultWrapper> Test(IntervalBillSubscriptionInfoImaginary tariffTestInput, CancellationToken cancellationToken)
-        {
+        {  
+            var validationResult = await _intervalBillValidator.ValidateAsync(tariffTestInput, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new CustomeValidationException(message);
+            }
+
+
             string previousReadingDate = tariffTestInput.PreviousWaterMeterDate;
             string currentReadingDate = DateTime.Now.ToShortPersianDateString();
             int consumption = GetConsumption(tariffTestInput.PreviousWaterMeterNumber, tariffTestInput.CurrentWaterMeterNumber);

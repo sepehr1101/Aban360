@@ -26,8 +26,8 @@
         public int MunicipalityId { get; set; }
         public int PreviousWaterMeterNumber { get; set; }
         public int CurrentWaterMeterNumber { get; set; }
-        public string? PreviousWaterMeterDate { get; set; }
-        public string? CurrentWaterMeterDate { get; set; }
+        public string PreviousWaterMeterDate { get; set; }
+        public string CurrentWaterMeterDate { get; set; }
         public Dictionary<short, string>? WaterMeterTags { get; set; }
         public Dictionary<short, string>? IndividualTags { get; set; }
         public Dictionary<short, string>? Discounts { get; set; }

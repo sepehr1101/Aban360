@@ -5,5 +5,6 @@ namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contract
     public interface IIntervalBillPrerequisiteInfoHandler
     {
         Task<IntervalBillSubscriptionInfo> Handle(string billId, CancellationToken cancellationToken);
+        Task<IEnumerable<IntervalBillSubscriptionInfo>> Handle(int zoneId, string registerDate, string fromReadingNumber, string toReadingNumber, CancellationToken cancellationToken);
     }
 }

@@ -16,6 +16,8 @@
         public static string NotMoreThan31 => "مقدار وارد شده نباید بیش از 31 کاراکتر باشد";
         public static string NotMoreThan255 => "مقدار وارد شده نباید بیش از 255 کاراکتر باشد";
         public static string NotMoreThan1023 => "مقدار وارد شده نباید بیش از 1023 کاراکتر باشد";
+        public static string CurrentDateNotMoreThanPreviousDate => "تاریخ دوره قبلی نمیتوان از تاریخ دوره جاری بزرگ تر باشد";
+        public static string CurrentNumberNotMoreThanPreviousNumber => "رقم دوره قبلی نمیتوان از رقم دوره جاری بزرگ تر باشد";
 
         public static string MessageException(string message) => $"خطا : {message}";
 
