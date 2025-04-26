@@ -12,11 +12,11 @@ namespace Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.
     {
         private readonly IMapper _mapper;
         private readonly IBankAccountCommandService _bankAccountCommandService;
-        private readonly IZoneTitleAddhoc _zoneTitleAddhoc;
+        private readonly IRegionTitleAddhoc _regionTitleAddhoc;
         public BankAccountCreateHandler(
             IMapper mapper,
             IBankAccountCommandService bankAccountCommandService,
-            IZoneTitleAddhoc zoneTitleAddhoc)
+            IRegionTitleAddhoc regionTitleAddhoc)
         {
             _mapper = mapper;
             _mapper.NotNull(nameof(_mapper));
@@ -24,14 +24,14 @@ namespace Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.
             _bankAccountCommandService = bankAccountCommandService;
             _bankAccountCommandService.NotNull(nameof(_bankAccountCommandService));
 
-            _zoneTitleAddhoc = zoneTitleAddhoc;
-            _zoneTitleAddhoc.NotNull(nameof(_zoneTitleAddhoc));
+            _regionTitleAddhoc = regionTitleAddhoc;
+            _regionTitleAddhoc.NotNull(nameof(_regionTitleAddhoc));
         }
 
         public async Task Handle(BankAccountCreateDto createDto, CancellationToken cancellationToken)
         {
             var bankAccount = _mapper.Map<BankAccount>(createDto);
-            bankAccount.ZoneTitle = await _zoneTitleAddhoc.Handle(createDto.ZoneId, cancellationToken);
+            bankAccount.RegionTitle = await _regionTitleAddhoc.Handle(createDto.RegionId, cancellationToken);
 
             await _bankAccountCommandService.Add(bankAccount);
         }

@@ -10,7 +10,7 @@ namespace Aban360.PaymentPool.Persistence.Migrations
     public class DbInitialDesign : Migration
     {
         string _schema = TableSchema.Name, Id = nameof(Id);
-        int _255 = 255, _1023 = 1023;
+        int _255 = 255, _1023 = 1023,_24=24;
         public override void Up()
         {
             Create.Schema(_schema);
@@ -90,8 +90,10 @@ namespace Aban360.PaymentPool.Persistence.Migrations
                     .ForeignKey(NamingHelpers.Fk(TableName.Bank, table), _schema, nameof(TableName.Bank), Id)
                 .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn($"{TableName.AccountType}Id").AsInt16().NotNullable()
-                .WithColumn("ZoneId").AsInt32().NotNullable()
-                .WithColumn("ZoneTitle").AsString(_255).NotNullable();
+                .WithColumn("RegionId").AsInt32().NotNullable()
+                .WithColumn("RegionTitle").AsString(_255).NotNullable()
+                .WithColumn("IBan").AsString(_24).NotNullable()
+                .WithColumn("Number").AsString(_24).NotNullable();//Todo : lenght
         }
     }
 }
