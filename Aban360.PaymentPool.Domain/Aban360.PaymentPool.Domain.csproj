@@ -9,8 +9,6 @@
   <ItemGroup>
     <Folder Include="Features\Gateway\Dto\" />
     <Folder Include="Features\Gateway\Entities\" />
-    <Folder Include="Features\NegotiableInstrument\Dto\" />
-    <Folder Include="Features\NegotiableInstrument\Entities\" />
     <Folder Include="Features\Receivable\Dto\" />
     <Folder Include="Features\Receivable\Entities\" />
     <Folder Include="Features\Settlement\Dto\" />

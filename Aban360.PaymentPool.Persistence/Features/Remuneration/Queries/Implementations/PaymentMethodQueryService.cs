@@ -2,10 +2,10 @@
 using Aban360.PaymentPool.Domain.Constansts;
 using Aban360.PaymentPool.Domain.Features.Remuneration.Entities;
 using Aban360.PaymentPool.Persistence.Contexts.Contracts;
-using Aban360.PaymentPool.Persistence.Features.Queries.Contracts;
+using Aban360.PaymentPool.Persistence.Features.Remuneration.Queries.Contracts;
 using Microsoft.EntityFrameworkCore;
 
-namespace Aban360.PaymentPool.Persistence.Features.Queries.Implementations
+namespace Aban360.PaymentPool.Persistence.Features.Remuneration.Queries.Implementations
 {
     internal sealed class PaymentMethodQueryService : IPaymentMethodQueryService
     {

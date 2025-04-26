@@ -3,6 +3,8 @@
     internal enum TableName
     {
         Bank,
-        PaymentMethod//Todo
+        PaymentMethod,
+        CreditorType,
+        BankFileStructure
     }
 }

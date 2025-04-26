@@ -10,7 +10,7 @@ namespace Aban360.PaymentPool.Persistence.Migrations
     public class DbInitialDesign : Migration
     {
         string _schema = TableSchema.Name, Id = nameof(Id);
-        int _255 = 255;
+        int _255 = 255, _1023 = 1023;
         public override void Up()
         {
             Create.Schema(_schema);
@@ -53,6 +53,24 @@ namespace Aban360.PaymentPool.Persistence.Migrations
                 .WithColumn("Description").AsString(int.MaxValue).Nullable();
         }
 
+        private void CreateCreditor()
+        {
+            var table = TableName.CreditorType;
+            Create.Table(nameof(TableName.CreditorType)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelpers.Pk(table))
+                .WithColumn("Title").AsString(_255).NotNullable();
+        }
 
+        private void CreateBankFileStructure()
+        {
+            var table = TableName.BankFileStructure;
+            Create.Table(nameof(TableName.BankFileStructure)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelpers.Pk(table)).Identity()
+                .WithColumn("FromIndex").AsInt16().NotNullable()
+                .WithColumn("ToIndex").AsInt16().NotNullable()
+                .WithColumn("StringLenght").AsInt16().NotNullable()
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("IsHeader").AsBoolean().NotNullable();
+        }
     }
 }
