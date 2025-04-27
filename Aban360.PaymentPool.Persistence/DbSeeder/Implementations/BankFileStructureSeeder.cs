@@ -30,10 +30,8 @@ namespace Aban360.PaymentPool.Persistence.DbSeeder.Implementations
             //sample to test
             ICollection<BankFileStructure> bankFileStructures = new List<BankFileStructure>()
             {
-                new BankFileStructure(){FromIndex=0,ToIndex=7,StringLenght=8,Title="Bill",IsHeader=false},
-                new BankFileStructure(){FromIndex=8,ToIndex=14,StringLenght=7,Title="Pay",IsHeader=false},
-                new BankFileStructure(){FromIndex=15,ToIndex=28,StringLenght=14,Title="National",IsHeader=false},
-                new BankFileStructure(){FromIndex=29,ToIndex=35,StringLenght=7,Title="Phone",IsHeader=false},
+                new BankFileStructure(){FromIndex=20,ToIndex=28,StringLenght=9,Title="BillId",IsHeader=false,BankId=(short)1},
+                new BankFileStructure(){FromIndex=34,ToIndex=45,StringLenght=12,Title="PaymentId",IsHeader=false,BankId=(short)1},
             };
             _bankFileStructure.AddRange(bankFileStructures);
             _uow.SaveChanges();

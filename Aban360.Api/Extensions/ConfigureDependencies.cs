@@ -22,6 +22,7 @@ using Aban360.InstallationPool.Application.Extensions;
 using Aban360.InstallationPool.Persistence.Extensions;
 using Aban360.PaymentPool.Application.Extensions;
 using Aban360.PaymentPool.Persistence.Extensions;
+using Aban360.CalculationPool.GatewayAdhoc.Extensions;
 
 namespace Aban360.Api.Extensions
 {
@@ -70,6 +71,7 @@ namespace Aban360.Api.Extensions
         {
             services.AddCalculationPoolApplicationInjections();
             services.AddCalculationPoolPersistenceInjections();
+            services.AddCalculationPoolGatewayInjections();
         }
         private static void AddMeterPoolDI(this IServiceCollection services)
         {

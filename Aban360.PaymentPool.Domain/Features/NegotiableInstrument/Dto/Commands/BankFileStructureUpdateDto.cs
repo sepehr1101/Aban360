@@ -8,5 +8,6 @@
         public short StringLenght { get; set; }
         public string Title { get; set; } = null!;
         public bool IsHeader { get; set; } = false;
+        public short  BankId { get; set; }
     }
 }

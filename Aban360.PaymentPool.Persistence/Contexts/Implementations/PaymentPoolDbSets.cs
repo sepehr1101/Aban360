@@ -12,5 +12,7 @@ namespace Aban360.PaymentPool.Persistence.Contexts.Implementations
         public virtual DbSet<CreditorType> CreditorTypes{ get; set; }
         public virtual DbSet<AccountType> AccountTypes{ get; set; }
         public virtual DbSet<BankAccount> BankAccounts{ get; set; }
+        public virtual DbSet<Credit> Credits{ get; set; }
+        public virtual DbSet<Uploader> Uploaders{ get; set; }
     }
 }

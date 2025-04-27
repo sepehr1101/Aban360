@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Aban360.CalculationPool.Application\Aban360.CalculationPool.Application.csproj" />
+    <ProjectReference Include="..\Aban360.CalculationPool.Domain\Aban360.CalculationPool.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

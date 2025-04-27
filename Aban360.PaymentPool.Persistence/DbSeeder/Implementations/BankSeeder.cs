@@ -9,7 +9,7 @@ namespace Aban360.PaymentPool.Persistence.DbSeeder.Implementations
 {
     public class BankSeeder:IDataSeeder
     {
-        public int Order { get; set; } = 11;
+        public int Order { get; set; } = 9;
         private readonly IUnitOfWork _uow;
         private readonly DbSet<Bank> _bank;
         public BankSeeder(IUnitOfWork uow)
