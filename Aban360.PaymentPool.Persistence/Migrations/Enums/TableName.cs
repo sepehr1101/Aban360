@@ -7,6 +7,8 @@
         CreditorType,
         BankFileStructure,
         BankAccount,
-        AccountType
+        AccountType,
+        Uploader,
+        Credit,
     }
 }

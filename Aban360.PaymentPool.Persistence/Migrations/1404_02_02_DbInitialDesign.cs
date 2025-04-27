@@ -95,5 +95,6 @@ namespace Aban360.PaymentPool.Persistence.Migrations
                 .WithColumn("IBan").AsString(_24).NotNullable()
                 .WithColumn("Number").AsString(_24).NotNullable();//Todo : lenght
         }
+
     }
 }
