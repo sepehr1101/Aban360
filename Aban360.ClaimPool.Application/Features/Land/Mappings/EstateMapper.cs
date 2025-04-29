@@ -14,5 +14,5 @@ namespace Aban360.ClaimPool.Application.Features.Land.Mappings
             CreateMap<EstateUpdateDto, Estate>();
             CreateMap<Estate,EstateGetDto>();
         }
-    }   
+    } 
 }

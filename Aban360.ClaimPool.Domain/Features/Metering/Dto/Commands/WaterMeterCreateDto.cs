@@ -38,5 +38,8 @@ namespace Aban360.ClaimPool.Domain.Features.Metering.Dto.Commands
 
         public int EstateId { get; set; }
 
+        public WaterMeterInstallationStructureEnum WaterMeterInstallationStructureId { get; set; }
+
+
     }
 }

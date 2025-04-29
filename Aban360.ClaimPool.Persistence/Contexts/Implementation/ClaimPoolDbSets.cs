@@ -14,6 +14,7 @@ namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
         public virtual DbSet<ConstructionType> ConstructionTypes { get; set; }
         public virtual DbSet<EstateBoundType> EstateBoundTypes { get; set; }
         public virtual DbSet<Estate> Estates { get; set; }
+        public virtual DbSet<CapacityCalculationIndex> CapacityCalculationIndices{ get; set; }
         public virtual DbSet<Flat> Flats { get; set; }
         public virtual DbSet<EstateWaterResource> EstateWaterResources { get; set; }
         public virtual DbSet<WaterResource> WaterResources { get; set; }
@@ -45,6 +46,7 @@ namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
         public virtual DbSet<SiphonType> SiphonTypes { get; set; }
         public virtual DbSet<WaterMeterSiphon> WaterMeterSiphons { get; set; }
         public virtual DbSet<WaterMeterTagDefinition> WaterMeterTagDefinitions { get; set; }
+        public virtual DbSet<WaterMeterInstallationStructure> WaterMeterInstallationStructures{ get; set; }
 
         public virtual DbSet<WaterMeterTag> WaterMeterTags { get; set; }
         public virtual DbSet<IndividualTagDefinition> IndividualTagDefinitions { get; set; }

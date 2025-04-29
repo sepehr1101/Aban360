@@ -41,5 +41,8 @@ namespace Aban360.ClaimPool.Domain.Features._Base.Entities
         public int? ParentId { get; set; }
 
         public Guid UserId { get; set; }
+
+        public WaterMeterInstallationStructureEnum WaterMeterInstallationStructureId { get; set; }
+
     }
 }

@@ -29,5 +29,8 @@ namespace Aban360.ClaimPool.Domain.Features.Metering.Dto.Queries
         public UseStateEnum UseStateId { get; set; }
         
         public SubscriptionTypeEnum SubscriptionTypeId { get; set; }
+
+        public WaterMeterInstallationStructureEnum WaterMeterInstallationStructureId { get; set; }
+
     }
 }

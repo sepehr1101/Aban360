@@ -31,5 +31,7 @@
         public Guid UserId { get; set; }
         public int? PreviousId { get; set; }
         public DateTime ValidFrom { get; set; }
+        public short CapacityCalculationIndexId { get; set; }
+
     }
 }

@@ -75,6 +75,16 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
+
+        private void CreateCapacityCalculatinIndex()
+        {
+            var table = TableName.CapacityCalculationIndex;
+            Create.Table(nameof(TableName.CapacityCalculationIndex)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().NotNullable().Identity().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Description").AsString(_1023).Nullable();
+        }
+
         private void _CreateEstate(TableName table, string nameOfTable)
         {
             Create.Table(nameOfTable).InSchema(_schema)
@@ -111,6 +121,8 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("UserId").AsGuid().NotNullable()
                 .WithColumn("PreviousId").AsInt32().Nullable()
                      .ForeignKey(NamingHelper.Fk(table, table, "PreviousId"), _schema, nameOfTable, Id)
+                .WithColumn($"{TableName.CapacityCalculationIndex}Id").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.CapacityCalculationIndex, table), _schema, nameof(TableName.CapacityCalculationIndex), Id)
                 .WithColumn("ValidFrom").AsDateTime2().NotNullable()
                 .WithColumn("ValidTo").AsDateTime2().Nullable()
                 .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
@@ -210,6 +222,15 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
+
+        private void CreateWaterMeterInstallationStructure()
+        {
+            var table = TableName.WaterMeterInstallationStructure;
+            Create.Table(nameof(TableName.WaterMeterInstallationStructure)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("Title").AsString(_255).NotNullable();
+        }
+
         private void _CreateWaterMeter(TableName table, string nameOfTable, TableName estateTable, string estateName)
         {
             Create.Table(nameOfTable).InSchema(_schema)
@@ -243,6 +264,8 @@ namespace Aban360.ClaimPool.Persistence.Migrations
               .WithColumn("UserId").AsGuid().NotNullable()
               .WithColumn("PreviousId").AsInt32().Nullable()
                      .ForeignKey(NamingHelper.Fk(table, table, "PreviousId"), _schema, nameOfTable, Id)
+              .WithColumn($"{TableName.WaterMeterInstallationStructure}Id").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.WaterMeterInstallationStructure, table), _schema, nameof(TableName.WaterMeterInstallationStructure), Id)
               .WithColumn("ValidFrom").AsDateTime2().NotNullable()
               .WithColumn("ValidTo").AsDateTime2().Nullable()
               .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
@@ -290,6 +313,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 TableName.RequestWaterMeter, nameof(TableName.RequestWaterMeter));
         }
 
+
         private void CreateIndividualType()
         {
             var table = TableName.IndividualType;
@@ -297,6 +321,8 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
+
+
         private void _CreateIndividual(TableName table, string nameOfTable)
         {
             Create.Table(nameOfTable).InSchema(_schema)
@@ -329,6 +355,8 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
+
+
         private void _CreateIndividualEstate(TableName table, string nameOfTable, TableName individualTable, string individualName, TableName estateTable, string estateName)
         {
             Create.Table(nameOfTable).InSchema(_schema)
@@ -405,7 +433,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         {
             _CreateIndividualDiscountType(TableName.IndividualDiscountType, nameof(TableName.IndividualDiscountType)
                 , TableName.Individual, nameof(TableName.Individual));
-            
+
             _CreateIndividualDiscountType(TableName.RequestIndividualDiscountType, nameof(TableName.RequestIndividualDiscountType)
                 , TableName.RequestIndividual, nameof(TableName.RequestIndividual));
         }
