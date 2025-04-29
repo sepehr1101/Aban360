@@ -18,14 +18,6 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Validations
                .NotNull().WithMessage(ExceptionLiterals.NotNUll)
                .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
 
-            RuleFor(o => o.Amount)
-                 .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-                 .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
-
-            RuleFor(o => o.OfferingCount)
-                 .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-                 .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
-
             RuleFor(o => o.DepositRate)
                  .NotNull().WithMessage(ExceptionLiterals.NotNUll)
                  .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.People.Commands
 {
-    [Route("v1/intividual-discount-type")]
+    [Route("v1/individual-discount-type")]
     public class IndividualDiscountTypeUpdateController : BaseController
     {
         private readonly IUnitOfWork _uow;
