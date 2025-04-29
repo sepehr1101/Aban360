@@ -27,26 +27,6 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
         {
             if (!_users.Any())
             {
-                //var logInfo = LogInfoJson.Get();
-                //var userId = Guid.NewGuid();
-                //var programmer = new User()
-                //{
-                //    DisplayName = "برنامه نویس",
-                //    FullName = "برنامه نویس",
-                //    Username = "programmer",
-                //    HasTwoStepVerification = false,
-                //    Id = userId,
-                //    InsertLogInfo = logInfo,
-                //    InvalidLoginAttemptCount = 0,
-                //    Mobile = "09130000000",
-                //    MobileConfirmed = false,
-                //    ValidFrom = DateTime.Now,
-                //    Password = await SecurityOperations.GetSha512Hash("123456"),
-                //    Hash = string.Empty,
-                //    SerialNumber = Guid.NewGuid().ToString("n"),
-                //    UserRoles = GetProgrammerRoles(userId, logInfo),
-                //    UserClaims = GetProgrammerUserClaims(userId, logInfo)
-                //};
 
                 ICollection<User> users = new List<User>();
                 users.Add(await GetUser("1برنامه نویس", "برنامه نویس1", "programmer1"));

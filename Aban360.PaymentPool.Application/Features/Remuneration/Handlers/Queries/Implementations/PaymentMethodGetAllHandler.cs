@@ -1,7 +1,7 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.PaymentPool.Application.Features.Remuneration.Handlers.Queries.Contracts;
 using Aban360.PaymentPool.Domain.Features.Remuneration.Dto.Queries;
-using Aban360.PaymentPool.Persistence.Features.Queries.Contracts;
+using Aban360.PaymentPool.Persistence.Features.Remuneration.Queries.Contracts;
 using AutoMapper;
 
 namespace Aban360.PaymentPool.Application.Features.Remuneration.Handlers.Queries.Implementations

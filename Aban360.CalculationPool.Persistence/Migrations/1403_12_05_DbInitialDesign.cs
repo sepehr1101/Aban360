@@ -96,7 +96,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                    .ForeignKey(NamingHelper.Fk(TableName.CompanyService, table), _schema, nameof(TableName.CompanyService), Id)
                 .WithColumn($"{nameof(TableName.Offering)}{Id}").AsInt16().NotNullable()
                    .ForeignKey(NamingHelper.Fk(TableName.Offering, table), _schema, nameof(TableName.Offering), Id)
-                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table));
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable();
         }
 
         private void CreateInvoiceType()
@@ -223,7 +223,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                 .WithColumn("Key").AsString(_255).NotNullable()
                 .WithColumn("FromDateJalali").AsString(10).NotNullable()
                 .WithColumn("ToDateJalali").AsString(10).NotNullable()
-                .WithColumn("Description").AsString(_255).Nullable();
+                .WithColumn("Description").AsString(_1023).Nullable();
         }
         private void CreateTariff()
         {
@@ -234,11 +234,11 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                        .ForeignKey(NamingHelper.Fk(TableName.LineItemType, table), _schema, nameof(TableName.LineItemType), Id)
                   .WithColumn($"{TableName.Offering}Id").AsInt16().NotNullable()
                        .ForeignKey(NamingHelper.Fk(TableName.Offering, table), _schema, nameof(TableName.Offering), Id)
-                  .WithColumn("Condition").AsString(int.MinValue).NotNullable()
+                  .WithColumn("Condition").AsString(int.MaxValue).NotNullable()
                   .WithColumn("Formula").AsString(int.MaxValue).NotNullable()
                   .WithColumn("FromDateJalali").AsString(10).NotNullable()
                   .WithColumn("ToDateJalali").AsString(10).NotNullable()
-                  .WithColumn("Description").AsString(_255).Nullable();
+                  .WithColumn("Description").AsString(_1023).Nullable();
         }
         private void CreateSupportedOperator()
         {

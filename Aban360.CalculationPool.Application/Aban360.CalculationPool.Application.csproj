@@ -20,8 +20,4 @@
     <ProjectReference Include="..\Aban360.ReportPool.GatewayAdhoc\Aban360.ReportPool.GatewayAdhoc.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-                <Folder Include="Features\Rule\Validations\" />
-  </ItemGroup>
-
 </Project>
