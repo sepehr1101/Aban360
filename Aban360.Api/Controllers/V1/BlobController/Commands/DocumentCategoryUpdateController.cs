@@ -7,7 +7,7 @@ using Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Update.Co
 
 namespace Aban360.Api.Controllers.V1.BlobController.Commands
 {
-    [Route("v1/document_category")]
+    [Route("v1/document-category")]
     public class DocumentCategoryUpdateController : BaseController
     {
         private readonly IUnitOfWork _uow;

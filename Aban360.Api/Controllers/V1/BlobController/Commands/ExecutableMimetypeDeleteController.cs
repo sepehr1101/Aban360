@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.BlobController.Commands
 {
-    [Route("v1/executable_mimetype")]
+    [Route("v1/executable-mimetype")]
     public class ExecutableMimetypeDeleteController : BaseController
     {
         private readonly IUnitOfWork _uow;

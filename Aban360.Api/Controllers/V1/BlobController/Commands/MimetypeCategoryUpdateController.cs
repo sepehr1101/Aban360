@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.BlobController.Commands
 {
-    [Route("v1/mimetype_category")]
+    [Route("v1/mimetype-category")]
     public class MimetypeCategoryUpdateController : BaseController
     {
         private readonly IUnitOfWork _uow;

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.BlobController.Queries
 {
-    [Route("v1/mimetype_category")]
+    [Route("v1/mimetype-category")]
     public class MimetypeCategoryGetSingleController : BaseController
     {
         private readonly IMimetypeCategoryGetSingleHandler _mimetypeCategoryGetSingleHandler;

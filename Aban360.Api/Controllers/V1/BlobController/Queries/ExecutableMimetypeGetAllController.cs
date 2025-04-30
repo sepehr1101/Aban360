@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.BlobController.Queries
 {
-    [Route("v1/executable_mimetype")]
+    [Route("v1/executable-mimetype")]
     public class ExecutableMimetypeGetAllController : BaseController
     {
         private readonly IExecutableMimetypeGetAllHandler _executableMimetypeGetAllHandler;

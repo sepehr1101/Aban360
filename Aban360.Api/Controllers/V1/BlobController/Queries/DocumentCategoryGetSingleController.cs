@@ -6,7 +6,7 @@ using Aban360.BlobPool.Domain.Features.Taxonomy.Dto.Queries;
 
 namespace Aban360.Api.Controllers.V1.BlobController.Queries
 {
-    [Route("v1/document_category")]
+    [Route("v1/document-category")]
     public class DocumentCategoryGetSingleController : BaseController
     {
         private readonly IDocumentCategoryGetSingleHandler _documentCategoryGetSingleHandler;
