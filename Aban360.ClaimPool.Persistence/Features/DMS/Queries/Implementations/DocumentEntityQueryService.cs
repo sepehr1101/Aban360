@@ -23,6 +23,12 @@ namespace Aban360.ClaimPool.Persistence.Features.DMS.Queries.Implementations
         {
             return await _uow.FindOrThrowAsync<DocumentEntity>(id);
         }
+        public async Task<ICollection<DocumentEntity>> Get(string id)
+        {
+            return await _documentEntity
+                .Where(d=>d.BillId == id)
+                .ToListAsync();
+        }
 
         public async Task<ICollection<DocumentEntity>> Get()
         {

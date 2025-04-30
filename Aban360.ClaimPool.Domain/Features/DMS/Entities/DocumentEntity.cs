@@ -10,6 +10,7 @@ namespace Aban360.ClaimPool.Domain.Features.DMS.Entities
         public Guid DocumentId { get; set; }
         public long TableId { get; set; }
         public RelationEntityEnum RelationEntityId { get; set; }
+        public string?  BillId { get; set; }
     }
 
 }

@@ -23,6 +23,14 @@ namespace Aban360.BlobPool.Persistence.Features.Taxonomy.Queries.Implementations
         {
             return await _uow.FindOrThrowAsync<Document>(id);
         }
+        public async Task<ICollection<Document>> Get(ICollection<Guid> ids)
+        {
+            return await _document
+                .Include(d=>d.DocumentType)
+                .ThenInclude(d=>d.DocumentCategory)
+                .Where(d=>ids.Contains(d.Id))
+                .ToListAsync();
+        }
 
         public async Task<ICollection<Document>> Get()
         {
