@@ -40,7 +40,7 @@
         WaterMeterTag,
         RequestWaterMeterTag,
         ChangeMeterReason,
-        WaterMeterInstallationStructure,//
+        WaterMeterInstallationMethod,//
 
         SiphonDiameter,
         SiphonType,

@@ -46,7 +46,7 @@ namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
         public virtual DbSet<SiphonType> SiphonTypes { get; set; }
         public virtual DbSet<WaterMeterSiphon> WaterMeterSiphons { get; set; }
         public virtual DbSet<WaterMeterTagDefinition> WaterMeterTagDefinitions { get; set; }
-        public virtual DbSet<WaterMeterInstallationStructure> WaterMeterInstallationStructures{ get; set; }
+        public virtual DbSet<WaterMeterInstallationMethod> WaterMeterInstallationStructures{ get; set; }
 
         public virtual DbSet<WaterMeterTag> WaterMeterTags { get; set; }
         public virtual DbSet<IndividualTagDefinition> IndividualTagDefinitions { get; set; }

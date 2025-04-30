@@ -3,8 +3,8 @@ using Aban360.ClaimPool.Domain.Features.Metering.Dto.Queries;
 
 namespace Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Contracts
 {
-    public interface IWaterMeterInstallationStructureGetSingleHandler
+    public interface IWaterMeterInstallationMethodGetSingleHandler
     {
-        Task<WaterMeterInstallationStructureGetDto> Handle(WaterMeterInstallationStructureEnum id, CancellationToken cancellationToken);
+        Task<WaterMeterInstallationMethodGetDto> Handle(short id, CancellationToken cancellationToken);
     }
 }

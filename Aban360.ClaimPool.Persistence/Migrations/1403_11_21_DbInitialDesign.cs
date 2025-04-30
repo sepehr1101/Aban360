@@ -223,11 +223,11 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
 
-        private void CreateWaterMeterInstallationStructure()
+        private void CreateWaterMeterInstallationMethod()
         {
-            var table = TableName.WaterMeterInstallationStructure;
-            Create.Table(nameof(TableName.WaterMeterInstallationStructure)).InSchema(_schema)
-                .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelper.Pk(table))
+            var table = TableName.WaterMeterInstallationMethod;
+            Create.Table(nameof(TableName.WaterMeterInstallationMethod)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
 
@@ -264,8 +264,8 @@ namespace Aban360.ClaimPool.Persistence.Migrations
               .WithColumn("UserId").AsGuid().NotNullable()
               .WithColumn("PreviousId").AsInt32().Nullable()
                      .ForeignKey(NamingHelper.Fk(table, table, "PreviousId"), _schema, nameOfTable, Id)
-              .WithColumn($"{TableName.WaterMeterInstallationStructure}Id").AsInt16().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.WaterMeterInstallationStructure, table), _schema, nameof(TableName.WaterMeterInstallationStructure), Id)
+              .WithColumn($"{TableName.WaterMeterInstallationMethod}Id").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.WaterMeterInstallationMethod, table), _schema, nameof(TableName.WaterMeterInstallationMethod), Id)
               .WithColumn("ValidFrom").AsDateTime2().NotNullable()
               .WithColumn("ValidTo").AsDateTime2().Nullable()
               .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()

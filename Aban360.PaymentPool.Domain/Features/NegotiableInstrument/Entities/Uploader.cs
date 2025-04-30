@@ -16,7 +16,7 @@ public partial class Uploader
 
     public Guid? DocumentId { get; set; }
 
-    public string? LetterNumber { get; set; }
+    public string? ReferenceNumber { get; set; }
                                         
     public DateTime InsertDateTime { get; set; }
 

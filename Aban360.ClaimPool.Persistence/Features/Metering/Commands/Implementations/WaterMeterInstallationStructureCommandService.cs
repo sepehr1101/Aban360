@@ -6,25 +6,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.Metering.Commands.Implementations
 {
-    internal sealed class WaterMeterInstallationStructureCommandService : IWaterMeterInstallationStructureCommandService
+    internal sealed class WaterMeterInstallationStructureCommandService : IWaterMeterInstallationMethodCommandService
     {
         private readonly IUnitOfWork _uow;
-        private readonly DbSet<WaterMeterInstallationStructure> _waterMeterInstallationStructure;
+        private readonly DbSet<WaterMeterInstallationMethod> _waterMeterInstallationStructure;
         public WaterMeterInstallationStructureCommandService(IUnitOfWork uow)
         {
             _uow = uow;
             _uow.NotNull(nameof(_uow));
 
-            _waterMeterInstallationStructure = _uow.Set<WaterMeterInstallationStructure>();
+            _waterMeterInstallationStructure = _uow.Set<WaterMeterInstallationMethod>();
             _waterMeterInstallationStructure.NotNull(nameof(_waterMeterInstallationStructure));
         }
 
-        public async Task Add(WaterMeterInstallationStructure waterMeterInstallationStructure)
+        public async Task Add(WaterMeterInstallationMethod waterMeterInstallationStructure)
         {
             await _waterMeterInstallationStructure.AddAsync(waterMeterInstallationStructure);
         }
 
-        public async Task Remove(WaterMeterInstallationStructure waterMeterInstallationStructure)
+        public async Task Remove(WaterMeterInstallationMethod waterMeterInstallationStructure)
         {
             _waterMeterInstallationStructure.Remove(waterMeterInstallationStructure);
         }

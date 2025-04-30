@@ -30,7 +30,7 @@ namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
 
         public virtual ICollection<RequestWaterMeterSiphon> WaterMeterSiphons { get; set; } = new List<RequestWaterMeterSiphon>();
         public virtual ICollection<RequestWaterMeterTag> WaterMeterTags { get; set; } = new List<RequestWaterMeterTag>();
-        public virtual WaterMeterInstallationStructure WaterMeterInstallationStructure { get; set; }
+        public virtual WaterMeterInstallationMethod WaterMeterInstallationStructure { get; set; }
 
     }
 }

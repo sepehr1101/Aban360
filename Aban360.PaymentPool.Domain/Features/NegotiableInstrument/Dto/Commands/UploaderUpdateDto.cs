@@ -10,6 +10,6 @@
         public int InsertRecordCount { get; set; }
         public long Amount { get; set; }
         public Guid? DocumentId { get; set; }
-        public string? LetterNumber { get; set; }
+        public string? ReferenceNumber { get; set; }
     }
 }
