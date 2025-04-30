@@ -28,6 +28,7 @@ namespace Aban360.CalculationPool.Persistence.Contexts.Implementations
         public virtual DbSet<LineItemTypeGroup> LineItemTypeGroups{ get; set; }
         public virtual DbSet<TariffCalculationMode> TariffCalculationModes{ get; set; }
         public virtual DbSet<Tariff> Tariffs{ get; set; }
+        public virtual DbSet<TariffByDetail> TariffByDetails{ get; set; }
         public virtual DbSet<TariffConstant> TariffConstants{ get; set; }
         public virtual DbSet<SupportedOperator> SupportedOperators { get; set; }
 
