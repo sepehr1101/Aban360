@@ -22,9 +22,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Validations
                  .NotNull().WithMessage(ExceptionLiterals.NotNUll)
                  .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
 
-            RuleFor(o => o.InstallmentCount)
-                 .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-                 .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+  
 
         }
     }

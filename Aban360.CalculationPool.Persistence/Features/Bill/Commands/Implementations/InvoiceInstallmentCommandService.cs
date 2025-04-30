@@ -23,6 +23,10 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementat
         {
             await _invoiceInstallment.AddAsync(invoiceInstallment);
         }
+        public async Task Add(ICollection<InvoiceInstallment> invoiceInstallments)
+        {
+            await _invoiceInstallment.AddRangeAsync(invoiceInstallments);
+        }
 
         public async Task Remove(InvoiceInstallment invoiceInstallment)
         {

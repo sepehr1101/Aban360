@@ -47,21 +47,34 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
                 i.InvoiceLineItemInsertModeId = InvoiceLineItemInsertModeEnum.ByUser;
             });
 
-            InvoiceInstallment invoiceInstallment = new InvoiceInstallment()
+            ICollection<InvoiceInstallment> invoiceInstallments = new List<InvoiceInstallment>(createDto.InstallmentCount);
+            for (int i = 0; i < createDto.InstallmentCount; i++)
             {
-                Invoice = invoice,
-                Amount = invoiceLineItem.Sum(i => i.Amount),
-                DueDateJalali = DateTime.Now.ToShortPersianDateString(),
-                DueDateTime = DateTime.Now,//Todo
-                InstallmentOrder = 1,
-                BillId = createDto.BillId,
-                PaymentId = createDto.PaymentId,
-            };
+                var invoiceInstallment = new InvoiceInstallment()
+                {
+                    Invoice = invoice,
+                    BillId = createDto.BillId,
+                    PaymentId = createDto.PaymentId,
+                    InstallmentOrder = i + 1,
+                    DueDateJalali = DateTime.Now.AddDays(createDto.PaymentPeriod * i).ToShortPersianDateString(),
+                    DueDateTime = DateTime.Now.AddDays(createDto.PaymentPeriod * i),
+                };
+                if (i == 0)
+                {
+                    invoiceInstallment.Amount = (long)Math.Ceiling((invoiceLineItem.Sum(i => i.Amount) * createDto.PrepaymentPercent) / 100m);
+                }
+                else
+                {
+                    var eachPayment = (invoiceLineItem.Sum(i => i.Amount)) - (invoiceInstallments.Where(i => i.InstallmentOrder == 1).First().Amount);
+                    invoiceInstallment.Amount =(long)Math.Ceiling( eachPayment / (createDto.InstallmentCount - 1m));
+                }
+                invoiceInstallments.Add(invoiceInstallment);
+            }
 
 
             await _invoiceCommandService.Add(invoice);
             await _invoiceLineItemCommandService.Add(invoiceLineItem);
-            await _invoiceInstallmentCommandService.Add(invoiceInstallment);
+            await _invoiceInstallmentCommandService.Add(invoiceInstallments);
         }
     }
 }
