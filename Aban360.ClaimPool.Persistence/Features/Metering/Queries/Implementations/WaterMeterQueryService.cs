@@ -28,5 +28,16 @@ namespace Aban360.ClaimPool.Persistence.Features.Metering.Queries.Implementation
         {
             return await _wateMere.ToListAsync();
         }
+        public async Task<ICollection<WaterMeter>> Get(string fromDate, string toDate, short usageId
+            , short individualTypeId, string fromBillId, string toBillId, int ZoneId)//individualTypeId,zoneId
+        {
+            return await _wateMere
+                .Where(d => DateTime.Parse(d.InstallationDate) >= DateTime.Parse(fromDate) &
+                       DateTime.Parse(d.InstallationDate) <= DateTime.Parse(toDate) &
+                       d.Estate.UsageConsumtionId == usageId &
+                       long.Parse(d.BillId) >= long.Parse(fromBillId) &
+                       long.Parse(d.BillId) <= long.Parse(toBillId))
+                .ToListAsync();
+        }
     }
 }

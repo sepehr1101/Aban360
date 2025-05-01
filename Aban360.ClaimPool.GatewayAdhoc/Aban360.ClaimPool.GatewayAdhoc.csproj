@@ -10,8 +10,4 @@
     <ProjectReference Include="..\Aban360.ClaimPool.Application\Aban360.ClaimPool.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\" />
-  </ItemGroup>
-
 </Project>

@@ -240,21 +240,6 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                   .WithColumn("ToDateJalali").AsString(10).NotNullable()
                   .WithColumn("Description").AsString(_1023).Nullable();
         }
-        private void CreateTariffByDetail()
-        {
-            var table=TableName.TariffByDetail;
-            Create.Table(nameof(TableName.TariffByDetail)).InSchema(_schema)
-                .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
-                .WithColumn("FromDateJalali").AsString(10).NotNullable()
-                .WithColumn("ToDateJalali").AsString(10).NotNullable()
-                .WithColumn("UsageId").AsInt16().NotNullable()
-                .WithColumn("IndividualTypeId").AsInt16().NotNullable()
-                .WithColumn("FromBillId").AsAnsiString(20).NotNullable()
-                .WithColumn("ToBillId").AsAnsiString(20).NotNullable()
-                .WithColumn("ZoneId").AsInt32().NotNullable()
-                .WithColumn("ZoneTitle").AsString(_255).NotNullable()
-                .WithColumn("Description").AsString(_1023).Nullable();
-        }
         private void CreateSupportedOperator()
         {
             var table= TableName.SupportedOperator;
