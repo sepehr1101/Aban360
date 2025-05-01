@@ -1,5 +1,4 @@
-﻿using Aban360.ClaimPool.Domain.Features.DMS.Entities;
-using Aban360.ClaimPool.Domain.Features.Draft.Entites;
+﻿using Aban360.ClaimPool.Domain.Features.Draft.Entites;
 using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Domain.Features.People.Entities;
@@ -72,6 +71,5 @@ namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
         public virtual DbSet<RequestWaterMeterSiphon> RequestWaterMeterSiphons { get; set; }
         public virtual DbSet<RequestWaterMeterTag> RequestWaterMeterTags { get; set; }
 
-        public virtual DbSet<DocumentEntity> DocumentEntities { get; set; }
     }
 }

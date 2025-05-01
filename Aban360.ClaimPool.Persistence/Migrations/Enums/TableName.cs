@@ -64,7 +64,5 @@
         UserLeave,
         OfficialHoliday,
 
-        DocumentEntity
-
     }
 }

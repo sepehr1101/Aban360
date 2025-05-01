@@ -10,7 +10,7 @@ namespace Aban360.BlobPool.Persistence.Migrations
     public class DbInitialDesign : Migration
     {
         string _schema = TableSchema.Name, Title=nameof(Title), Id = nameof(Id), Hash = nameof(Hash);
-        int _31 = 31, _255 = 255, _1023 = 1023, _10 = 10;
+        int _13=13,_31 = 31, _255 = 255, _1023 = 1023, _10 = 10;
         public override void Up()
         {
             Create.Schema(_schema);
@@ -101,6 +101,18 @@ namespace Aban360.BlobPool.Persistence.Migrations
                              $"     CONSTRAINT [FK_Document_Parrent] FOREIGN KEY ([ParrentId]) REFERENCES [{_schema}].[Document]([Id])" +
                              $");";
             Execute.Sql(command);
+        }
+
+
+        private void CreateDocumentEntity()
+        {
+            var table = TableName.DocumentEntity;
+            Create.Table(nameof(TableName.DocumentEntity)).InSchema(_schema)
+                .WithColumn("Id").AsInt64().Identity().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+                .WithColumn("DocumentId").AsGuid().NotNullable()
+                .WithColumn("TableId").AsInt64().NotNullable()
+                .WithColumn("RelationEntityId").AsInt16().NotNullable()
+                .WithColumn("BillId").AsString(_13).Nullable();
         }
     }
 }

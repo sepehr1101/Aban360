@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Constants\" />
     <Folder Include="Features\Analyctics\" />
     <Folder Include="Features\Searching\" />
     <Folder Include="Features\Policies\" />

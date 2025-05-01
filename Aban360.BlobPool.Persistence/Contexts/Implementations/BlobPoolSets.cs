@@ -1,4 +1,5 @@
-﻿using Aban360.BlobPool.Domain.Features.Taxonomy.Entities;
+﻿using Aban360.BlobPool.Domain.Features.DMS.Entities;
+using Aban360.BlobPool.Domain.Features.Taxonomy.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.BlobPool.Persistence.Contexts.Implementations;
@@ -10,5 +11,7 @@ public partial class BlobPoolContext
     public virtual DbSet<ExecutableMimetype> ExecutableMimetypes{ get; set; }
     public virtual DbSet<MimetypeCategory> MimetypeCategories{ get; set; }
     public virtual DbSet<Document> Documents{ get; set; }
+    public virtual DbSet<DocumentEntity> DocumentEntities { get; set; }
+
 
 }
