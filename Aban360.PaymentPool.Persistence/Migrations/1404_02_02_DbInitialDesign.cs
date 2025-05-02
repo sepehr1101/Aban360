@@ -110,7 +110,7 @@ namespace Aban360.PaymentPool.Persistence.Migrations
                 .WithColumn("InsertDateTime").AsDateTime().NotNullable()
                 .WithColumn("InsertRecordCount").AsInt32().NotNullable()//Todo : DataType
                 .WithColumn("Amount").AsInt64().NotNullable()//Todo : DataType
-                .WithColumn("LetterNumber").AsString(_20).Nullable()//Todo : DataType
+                .WithColumn("ReferenceNumber").AsString(_20).Nullable()//Todo : DataType
                 .WithColumn("DocumentId").AsGuid().Nullable();
         }
 

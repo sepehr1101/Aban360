@@ -7,6 +7,7 @@
         Document, //file stream,content,..., size
         ImageWatermark, 
         MimetypeCategory,// video, audio, ...
-        ExecutableMimetype,//any file extention/mimetype that we can execute        
+        ExecutableMimetype,//any file extention/mimetype that we can execute
+        DocumentEntity,
     }
 }

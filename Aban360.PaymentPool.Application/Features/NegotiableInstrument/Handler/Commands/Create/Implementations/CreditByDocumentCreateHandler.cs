@@ -61,7 +61,7 @@ namespace Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.
                 BankId = createDto.BankId,
                 InsertDateTime = DateTime.Now,//todo: persian
                 InsertRecordCount = documentDate.Length,//count off Document OR count off insert?
-                LetterNumber = createDto.LetterNumber,
+                ReferenceNumber = createDto.LetterNumber,
                 DocumentId = createDto.DocumentId,
             };
             ICollection<Credit> credits = new List<Credit>();

@@ -25,4 +25,7 @@ public class Estate: EstateBase
 
     public virtual Usage UsageSell { get; set; } = null!;
     public virtual ICollection<WaterMeter> WaterMeters { get; set; } = new List<WaterMeter>();
+
+    public virtual CapacityCalculationIndex CapacityCalculationIndex { get; set; }
+
 }

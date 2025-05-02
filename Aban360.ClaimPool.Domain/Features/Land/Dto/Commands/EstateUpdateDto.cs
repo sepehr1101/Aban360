@@ -57,6 +57,8 @@
 
         public DateTime ValidFrom { get; set; }
 
+        public short CapacityCalculationIndexId { get; set; }
+
     }
 
 }

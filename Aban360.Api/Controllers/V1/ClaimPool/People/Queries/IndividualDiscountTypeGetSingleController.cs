@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.People.Queries
 {
-    [Route("v1/intividual-discount-type")]
+    [Route("v1/individual-discount-type")]
     public class IndividualDiscountTypeGetSingleController : BaseController
     {
         private readonly IIndividualDiscountTypeGetSingleHandler _individualDiscountTypeGetSingleHandler;

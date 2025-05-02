@@ -3,6 +3,7 @@
     internal enum TableName
     {
         Estate,
+        CapacityCalculationIndex,//
         RequestEstate,
         Flat,
         RequestFlat,
@@ -39,6 +40,7 @@
         WaterMeterTag,
         RequestWaterMeterTag,
         ChangeMeterReason,
+        WaterMeterInstallationMethod,//
 
         SiphonDiameter,
         SiphonType,
@@ -61,8 +63,6 @@
         UserWorkday,
         UserLeave,
         OfficialHoliday,
-
-        DocumentEntity
 
     }
 }

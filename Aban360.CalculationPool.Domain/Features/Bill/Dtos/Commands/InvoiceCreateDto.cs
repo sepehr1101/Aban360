@@ -4,9 +4,6 @@
     {
         public short InvoiceTypeId { get; set; }
         public short InvoiceStatusId { get; set; }
-        public long Amount { get; set; }
-        public short OfferingCount { get; set; }
         public short DepositRate { get; set; }
-        public short InstallmentCount { get; set; }
     }
 }

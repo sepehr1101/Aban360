@@ -10,7 +10,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
     public class DbInitialDesign : Migration
     {
         string _schema = TableSchema.Name, Id = nameof(Id), Hash = nameof(Hash);
-        int _31 = 31, _255 = 255, _1023 = 1023, _15 = 15, _10 = 10;
+        int _13=13,_31 = 31, _255 = 255, _1023 = 1023, _15 = 15, _10 = 10;
         public override void Up()
         {
             Create.Schema(_schema);
@@ -75,6 +75,16 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
+
+        private void CreateCapacityCalculatinIndex()
+        {
+            var table = TableName.CapacityCalculationIndex;
+            Create.Table(nameof(TableName.CapacityCalculationIndex)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().NotNullable().Identity().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Description").AsString(_1023).Nullable();
+        }
+
         private void _CreateEstate(TableName table, string nameOfTable)
         {
             Create.Table(nameOfTable).InSchema(_schema)
@@ -111,6 +121,8 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("UserId").AsGuid().NotNullable()
                 .WithColumn("PreviousId").AsInt32().Nullable()
                      .ForeignKey(NamingHelper.Fk(table, table, "PreviousId"), _schema, nameOfTable, Id)
+                .WithColumn($"{TableName.CapacityCalculationIndex}Id").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.CapacityCalculationIndex, table), _schema, nameof(TableName.CapacityCalculationIndex), Id)
                 .WithColumn("ValidFrom").AsDateTime2().NotNullable()
                 .WithColumn("ValidTo").AsDateTime2().Nullable()
                 .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
@@ -210,6 +222,15 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
+
+        private void CreateWaterMeterInstallationMethod()
+        {
+            var table = TableName.WaterMeterInstallationMethod;
+            Create.Table(nameof(TableName.WaterMeterInstallationMethod)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn("Title").AsString(_255).NotNullable();
+        }
+
         private void _CreateWaterMeter(TableName table, string nameOfTable, TableName estateTable, string estateName)
         {
             Create.Table(nameOfTable).InSchema(_schema)
@@ -243,6 +264,8 @@ namespace Aban360.ClaimPool.Persistence.Migrations
               .WithColumn("UserId").AsGuid().NotNullable()
               .WithColumn("PreviousId").AsInt32().Nullable()
                      .ForeignKey(NamingHelper.Fk(table, table, "PreviousId"), _schema, nameOfTable, Id)
+              .WithColumn($"{TableName.WaterMeterInstallationMethod}Id").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.WaterMeterInstallationMethod, table), _schema, nameof(TableName.WaterMeterInstallationMethod), Id)
               .WithColumn("ValidFrom").AsDateTime2().NotNullable()
               .WithColumn("ValidTo").AsDateTime2().Nullable()
               .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
@@ -290,6 +313,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 TableName.RequestWaterMeter, nameof(TableName.RequestWaterMeter));
         }
 
+
         private void CreateIndividualType()
         {
             var table = TableName.IndividualType;
@@ -297,6 +321,8 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
+
+
         private void _CreateIndividual(TableName table, string nameOfTable)
         {
             Create.Table(nameOfTable).InSchema(_schema)
@@ -329,6 +355,8 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
+
+
         private void _CreateIndividualEstate(TableName table, string nameOfTable, TableName individualTable, string individualName, TableName estateTable, string estateName)
         {
             Create.Table(nameOfTable).InSchema(_schema)
@@ -405,7 +433,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         {
             _CreateIndividualDiscountType(TableName.IndividualDiscountType, nameof(TableName.IndividualDiscountType)
                 , TableName.Individual, nameof(TableName.Individual));
-            
+
             _CreateIndividualDiscountType(TableName.RequestIndividualDiscountType, nameof(TableName.RequestIndividualDiscountType)
                 , TableName.RequestIndividual, nameof(TableName.RequestIndividual));
         }
@@ -575,16 +603,6 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn("DateJalali").AsString(_10).NotNullable();
-        }
-
-        private void CreateDocumentEntity()
-        {
-            var table = TableName.DocumentEntity;
-            Create.Table(nameof(TableName.DocumentEntity)).InSchema(_schema)
-                .WithColumn("Id").AsInt64().Identity().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
-                .WithColumn("DocumentId").AsGuid().NotNullable()
-                .WithColumn("TableId").AsInt64().NotNullable()
-                .WithColumn("RelationEntityId").AsInt16().NotNullable();
         }
 
     }

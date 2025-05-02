@@ -30,7 +30,8 @@ namespace Aban360.ClaimPool.Persistence.DbSeeder.Implementations
             ICollection<MeterType> meterTypes = new List<MeterType>()
             {
                 new MeterType(){Id=1,Title="هوشمند"},
-                new MeterType(){Id=2,Title="معمولی"},
+                new MeterType(){Id=2,Title="مکانیکی"},//معمولی
+                new MeterType(){Id=3,Title="فلومتر"},
             };
             _meterType.AddRange(meterTypes);
             _uow.SaveChanges();

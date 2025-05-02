@@ -58,5 +58,7 @@ namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
 
         public DateTime ValidFrom { get; set; }
 
+        public short CapacityCalculationIndexId { get; set; }
+
     }
 }

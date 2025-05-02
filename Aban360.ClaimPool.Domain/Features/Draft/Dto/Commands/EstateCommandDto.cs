@@ -27,6 +27,8 @@
         public int ImprovementsCommercial { get; set; }
         public int ImprovementsOther { get; set; }
         public int ContractualCapacity { get; set; }
-        public short Storeys { get; set; }        
+        public short Storeys { get; set; }
+        public short CapacityCalculationIndexId { get; set; }
+
     }
 }

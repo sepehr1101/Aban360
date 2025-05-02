@@ -56,4 +56,6 @@ public class EstateBase: IHashableEntity
 
     public short Storeys { get; set; }
     public Guid UserId { get; set; }
+
+    public short CapacityCalculationIndexId { get; set; }
 }

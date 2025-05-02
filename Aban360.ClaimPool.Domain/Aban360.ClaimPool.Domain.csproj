@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Features\DMS\Dto\Commands\" />
+    <Folder Include="Features\DMS\Dto\Queries\" />
+    <Folder Include="Features\DMS\Entities\" />
     <Folder Include="Features\Registration\Dto\Command\" />
     <Folder Include="Features\Registration\Dto\Queries\" />
     <Folder Include="Features\Registration\Entities\" />

@@ -7,7 +7,7 @@ namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
 {
     [Table(nameof(RequestWaterMeter))]
     public class RequestWaterMeter : WaterMeterBase
-    {       
+    {
         [ForeignKey(nameof(EstateId))]
         public virtual RequestEstate RequestEstate { get; set; } = null!;
         //public virtual ICollection<RequestWaterMeter> InverseParent { get; set; } = new List<RequestWaterMeter>();
@@ -22,13 +22,15 @@ namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
 
         public virtual MeterUseType MeterUseType { get; set; } = null!;
 
-       /* [ForeignKey(nameof(ParentId))]
-        public virtual RequestWaterMeter? Parent { get; set; }*/
+        /* [ForeignKey(nameof(ParentId))]
+         public virtual RequestWaterMeter? Parent { get; set; }*/
 
         public virtual UseState UseState { get; set; } = null!;
         public virtual SubscriptionType SubscriptionType { get; set; } = null!;
 
         public virtual ICollection<RequestWaterMeterSiphon> WaterMeterSiphons { get; set; } = new List<RequestWaterMeterSiphon>();
         public virtual ICollection<RequestWaterMeterTag> WaterMeterTags { get; set; } = new List<RequestWaterMeterTag>();
+        public virtual WaterMeterInstallationMethod WaterMeterInstallationStructure { get; set; }
+
     }
 }
