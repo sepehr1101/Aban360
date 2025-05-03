@@ -30,26 +30,9 @@ namespace Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Queries.Implem
         public async Task<ICollection<DocumentCategoryGetDto>> Handle(string billId, CancellationToken cancellationToken)
         {
             var documentEntities = await _documentEntityQueryService.Get(billId);
-            //var documentCategories = await _documentQueryService.GetDocoumentCategory(documentEntities.Select(d => d.DocumentId).ToList());
-
-            //return documentCategories;//2
-
-            var documents = await _documentQueryService.Get(documentEntities.Select(d => d.DocumentId).ToList());
-            ICollection<DocumentCategoryGetDto> documentCategories = documents//1
-                .Select(d => new
-                {
-                    Category = d.DocumentType.DocumentCategory
-                })
-                .GroupBy(d => d.Category.Id)
-                .Select(d => new DocumentCategoryGetDto()
-                {
-                    Id = d.Key,
-                    Title = d.First().Category.Title,
-                    Css = d.First().Category.Css,
-                    Icon = d.First().Category.Icon,
-                })
-                .ToList();
-            return documentCategories;
+            var documentCategories = await _documentQueryService.GetDocoumentCategory(documentEntities.Select(d => d.DocumentId).ToList());
+            
+            return _mapper.Map<ICollection<DocumentCategoryGetDto>>(documentCategories);
         }
     }
 }
