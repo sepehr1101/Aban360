@@ -1,4 +1,5 @@
-﻿using Aban360.CalculationPool.Application.Features.Rule.Handlers.Commands.Create.Contracts;
+﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Contracts;
+using Aban360.CalculationPool.Application.Features.Rule.Handlers.Commands.Create.Contracts;
 using Aban360.CalculationPool.Domain.Features.Rule.Dto.Commands;
 using Aban360.CalculationPool.Persistence.Contexts.Contracts;
 using Aban360.Common.Categories.ApiResponse;
@@ -11,10 +12,10 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule.Commands
     public class TariffByDetailCreateController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly ITariffByDetailCreateHandler _tariffByDetailCreateHandler;
+        private readonly ITariffCalculationByDetailHandler _tariffByDetailCreateHandler;
         public TariffByDetailCreateController(
             IUnitOfWork uow,
-            ITariffByDetailCreateHandler tariffByDetailCreateHandler)
+            ITariffCalculationByDetailHandler tariffByDetailCreateHandler)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));

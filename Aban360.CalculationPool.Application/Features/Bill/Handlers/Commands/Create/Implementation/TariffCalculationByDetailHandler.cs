@@ -38,7 +38,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
             _waterMeterAddhoc= waterMeterAddhoc;
             _waterMeterAddhoc.NotNull(nameof(waterMeterAddhoc));
         }
-        public async Task<IntervalCalculationResultWrapper> Test(TariffByDetailCreateDto createDto, CancellationToken cancellationToken)
+        public async Task<IntervalCalculationResultWrapper> Handle(TariffByDetailCreateDto createDto, CancellationToken cancellationToken)
         {
             //var validationResult = await _intervalBillValidator.ValidateAsync(tariffTestInput, cancellationToken);
             //if (!validationResult.IsValid)

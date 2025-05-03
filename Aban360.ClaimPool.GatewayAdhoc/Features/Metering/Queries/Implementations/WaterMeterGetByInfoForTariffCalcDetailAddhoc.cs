@@ -7,8 +7,8 @@ namespace Aban360.ClaimPool.GatewayAdhoc.Features.Metering.Queries.Implementatio
 {
     internal sealed class WaterMeterGetByInfoForTariffCalcDetailAddhoc : IWaterMeterGetByInfoForTariffCalcDetailAddhoc
     {
-        private readonly _IWaterMeterGetByInfoForTariffCalcDetailHandler _handler;
-        public WaterMeterGetByInfoForTariffCalcDetailAddhoc(_IWaterMeterGetByInfoForTariffCalcDetailHandler handler)
+        private readonly I_WaterMeterGetByInfoForTariffCalcDetailHandler _handler;
+        public WaterMeterGetByInfoForTariffCalcDetailAddhoc(I_WaterMeterGetByInfoForTariffCalcDetailHandler handler)
         {
             _handler = handler;
             _handler.NotNull(nameof(handler));
