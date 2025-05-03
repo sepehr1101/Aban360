@@ -2,8 +2,6 @@
 using Aban360.BlobPool.Domain.Features.Taxonomy.Dto.Commands;
 using Aban360.Common.Literals;
 using FluentValidation;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Aban360.BlobPool.Application.Features.Taxonomy.Validation
 {

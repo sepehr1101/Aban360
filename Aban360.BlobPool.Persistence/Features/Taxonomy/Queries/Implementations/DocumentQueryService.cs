@@ -40,7 +40,7 @@ namespace Aban360.BlobPool.Persistence.Features.Taxonomy.Queries.Implementations
                  .Where(d => ids.Contains(d.Id))
                  .ToListAsync();
         }
-        public async Task<ICollection<DocumentCategoryGetDto>> GetDocoumentCategory(ICollection<Guid> ids)//2
+        public async Task<ICollection<DocumentCategoryGetDto>> GetDocoumentCategory(ICollection<Guid> ids)//category
         {
             return await _document
                 .Include(d => d.DocumentType)

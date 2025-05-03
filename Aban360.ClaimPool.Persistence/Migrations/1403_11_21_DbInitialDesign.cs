@@ -341,7 +341,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("ValidTo").AsDateTime2().Nullable()
                 .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
                 .WithColumn("RemoveLogInfo").AsString(int.MinValue).Nullable()
-                .WithColumn(Hash).AsString(int.MaxValue).NotNullable(); ;
+                .WithColumn(Hash).AsString(int.MaxValue).NotNullable(); 
         }
         private void CreateIndividuals()
         {

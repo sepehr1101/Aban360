@@ -5,11 +5,11 @@
         public string FromDateJalali { get; set; } = null!;
         public string ToDateJalali { get; set; } = null!;
         public short UsageId { get; set; }
-        public short IndividualTypeId { get; set; }
-        public string FromBillId { get; set; } = null!;
-        public string ToBillId { get; set; } = null!;
+        public short IndividualTypeId { get; set; }//handoverid har2
+        public string FromBillId { get; set; } = null!;//readingnumber
+        public string ToBillId { get; set; } = null!;//readingNubmer
         public int ZoneId { get; set; }
-        public string ZoneTitle { get; set; } = null!;
-        public string? Description { get; set; }
+        public string ZoneTitle { get; set; } = null!;//remove
+        public string? Description { get; set; }//remove
     }
 }

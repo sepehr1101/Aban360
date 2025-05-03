@@ -5,13 +5,17 @@ using FluentValidation;
 
 namespace Aban360.BlobPool.Application.Features.DMS.Validation
 {
-    public class DocumentEntityValidator : BaseValidator<DocumentEntityCreateDto>
+    public class DocumentEntityUpdateValidator : BaseValidator<DocumentEntityUpdateDto>
     {
-        public DocumentEntityValidator()
+        public DocumentEntityUpdateValidator()
         {
+            RuleFor(t => t.Id)
+              .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+              .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+            
             RuleFor(t => t.DocumentId)
-                          .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-                          .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
 
             RuleFor(t => t.TableId)
                .NotNull().WithMessage(ExceptionLiterals.NotNUll)
