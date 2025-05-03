@@ -6,7 +6,6 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using AutoMapper;
 using FluentValidation;
-using System.Threading;
 
 namespace Aban360.CalculationPool.Application.Features.Bil.Handlers.Commands.Create.Implementation
 {

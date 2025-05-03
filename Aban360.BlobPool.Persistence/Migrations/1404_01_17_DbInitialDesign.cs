@@ -50,8 +50,8 @@ namespace Aban360.BlobPool.Persistence.Migrations
                 .WithColumn($"{nameof(TableName.DocumentCategory)}Id").AsInt16().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.DocumentCategory, table), _schema, nameof(TableName.DocumentCategory), Id)
                 .WithColumn(Title).AsString(_255)
-                .WithColumn("Icon").AsAnsiString(int.MaxValue)
-                .WithColumn("Css").AsAnsiString(_255);
+                .WithColumn("Icon").AsAnsiString(int.MaxValue).Nullable()
+                .WithColumn("Css").AsAnsiString(_255).Nullable();
         }
         private void CreateImageWatermark()
         {
@@ -61,15 +61,15 @@ namespace Aban360.BlobPool.Persistence.Migrations
         {
             var table = TableName.MimetypeCategory;
             Create.Table(nameof(TableName.MimetypeCategory)).InSchema(_schema)
-                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
-                .WithColumn(Title).AsString(_255)
-                .WithColumn("Name").AsAnsiString(_255);
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+                .WithColumn(Title).AsString(_255).NotNullable()
+                .WithColumn("Name").AsAnsiString(_255).NotNullable();
         }
         private void CreateExecutableMimetype()
         {
             var table= TableName.ExecutableMimetype;
             Create.Table(nameof(TableName.ExecutableMimetype)).InSchema(_schema)
-                .WithColumn(Id).AsInt16()
+                .WithColumn(Id).AsInt16().NotNullable().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn(Title).AsString(_255).NotNullable()
                 .WithColumn("StreamingOption").AsBoolean().NotNullable()
                 .WithColumn("FrontendExecutor").AsBoolean().NotNullable()

@@ -8,7 +8,7 @@ namespace Aban360.BlobPool.Persistence.Features.Taxonomy.Queries.Contracts
         Task<Document> Get(Guid id);
         Task<ICollection<Document>> Get(ICollection<Guid> ids, short documentCategoryId);
         Task<ICollection<Document>> Get(ICollection<Guid> ids);
-        Task<ICollection<DocumentCategoryGetDto>> GetDocoumentCategory(ICollection<Guid> ids);
+        Task<ICollection<DocumentCategory>> GetDocoumentCategory(ICollection<Guid> ids);
         Task<ICollection<Document>> Get();
     }
 

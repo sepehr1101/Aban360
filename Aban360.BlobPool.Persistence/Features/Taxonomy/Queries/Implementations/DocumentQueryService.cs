@@ -40,25 +40,15 @@ namespace Aban360.BlobPool.Persistence.Features.Taxonomy.Queries.Implementations
                  .Where(d => ids.Contains(d.Id))
                  .ToListAsync();
         }
-        public async Task<ICollection<DocumentCategoryGetDto>> GetDocoumentCategory(ICollection<Guid> ids)//2
+        public async Task<ICollection<DocumentCategory>> GetDocoumentCategory(ICollection<Guid> ids)
         {
             return await _document
-                .Include(d => d.DocumentType)
-                .ThenInclude(d => d.DocumentCategory)
-                .Where(d => ids.Contains(d.Id))
-                .Select(d => new
-                {
-                    Category = d.DocumentType.DocumentCategory
-                })
-                .GroupBy(d => d.Category.Id)
-                .Select(d => new DocumentCategoryGetDto()
-                {
-                    Id = d.Key,
-                    Title = d.First().Category.Title,
-                    Css = d.First().Category.Css,
-                    Icon = d.First().Category.Icon,
-                })
-                .ToListAsync();
+                   .Include(d => d.DocumentType)
+                   .ThenInclude(d => d.DocumentCategory)
+                   .Where(d => ids.Contains(d.Id))
+                   .Select(d => d.DocumentType.DocumentCategory)
+                   .Distinct()
+                   .ToListAsync();
         }
 
         public async Task<ICollection<Document>> Get()
