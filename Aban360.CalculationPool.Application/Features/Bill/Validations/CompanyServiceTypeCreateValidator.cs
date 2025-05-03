@@ -19,7 +19,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Validations
                .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
 
             RuleFor(o => o.Description)
-               .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan1023);
+               .MaximumLength(1023).WithMessage(ExceptionLiterals.NotMoreThan1023);
 
             RuleFor(o => o.TariffCalculationModeId)
                .IsInEnum().WithMessage(ExceptionLiterals.MustEnum)

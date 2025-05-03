@@ -1,6 +1,5 @@
 ﻿using Aban360.BlobPool.Application.Features.Base;
 using Aban360.BlobPool.Domain.Features.DMS.Dto.Commands;
-using Aban360.ClaimPool.Domain.Constants;
 using Aban360.Common.Literals;
 using FluentValidation;
 
