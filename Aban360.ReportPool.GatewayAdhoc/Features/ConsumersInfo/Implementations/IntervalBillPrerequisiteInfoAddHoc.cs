@@ -21,5 +21,9 @@ namespace Aban360.ReportPool.GatewayAdhoc.Features.ConsumersInfo.Implementations
         {
             return await _intervalBillPrerequisiteInfoHandler.Handle(zoneId, registerDate, fromReadingNumber, toReadingNumber, cancellationToken);
         }
+        public async Task<IEnumerable<IntervalBillSubscriptionInfo>> Handle(int zoneId, string fromDate, string toDate, short usageId, short individualTypeId, short handover, string fromReadingNumber, string toReadingNumber,CancellationToken cancellationToken)
+        {
+            return await _intervalBillPrerequisiteInfoHandler.Handle(zoneId, fromDate, toDate, usageId, individualTypeId, handover, fromReadingNumber, toReadingNumber);
+        }
     }
 }

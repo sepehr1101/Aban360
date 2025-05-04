@@ -2,14 +2,13 @@
 {
     public record TariffByDetailCreateDto
     {
-        public string FromDateJalali { get; set; } = null!;
-        public string ToDateJalali { get; set; } = null!;
+        public string FromDate{ get; set; } = null!;
+        public string? ToDate{ get; set; } 
         public short UsageId { get; set; }
-        public short IndividualTypeId { get; set; }//handoverid har2
-        public string FromBillId { get; set; } = null!;//readingnumber
-        public string ToBillId { get; set; } = null!;//readingNubmer
+        public short IndividualTypeId { get; set; }
+        public short Handover { get; set; }
+        public string FromReadingNumber{ get; set; } = null!;
+        public string ToReadingNumber{ get; set; } = null!;
         public int ZoneId { get; set; }
-        public string ZoneTitle { get; set; } = null!;//remove
-        public string? Description { get; set; }//remove
     }
 }
