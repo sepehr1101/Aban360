@@ -34,7 +34,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 
         public async Task<IEnumerable<IntervalBillSubscriptionInfo>> GetInfo(int zoneId,string fromDate,string toDate, short usageId,short individualTypeId,short handover,string fromReadingNumber,string toReadingNumber)
         {
-            string summaryQuery = GetConsumerSummaryDtoQueryByReadingNumberToReadingNumber();
+            string summaryQuery = GetConsumerSummaryDtoQueryByReadingNumberToReadingNumber();//dont use Handover
             IEnumerable<IntervalBillSubscriptionInfo>? summaryInfo = await _sqlConnection.QueryAsync<IntervalBillSubscriptionInfo>(summaryQuery, new { zoneId = zoneId, fromReadingNumber = fromReadingNumber, toReadingNumber = toReadingNumber,fromDate=fromDate,toDate=toDate,usageId=usageId,individualId=individualTypeId });
 
             return summaryInfo;

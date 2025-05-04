@@ -2,9 +2,9 @@
 {
     public enum UseStateEnum:short
     {
-        TemporarilyDeleted = 1,
-        Established=2,
-        Collected=3,
-        Replaced=4            
+        TemporarilyDeleted = 5,
+        Established=0,
+        Collected=1,
+        Replaced=2            
     }
 }

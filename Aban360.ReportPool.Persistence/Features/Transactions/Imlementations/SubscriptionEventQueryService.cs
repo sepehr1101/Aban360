@@ -45,7 +45,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         public async Task<IEnumerable<EventsSummaryDto>> GetBillDto(int zoneId, string fromReadingNumber, string toReadingNumber)
         {
             string query = GetSubscriptionEventsQuerybyZone();
-            IEnumerable<EventsSummaryDto> result = await _sqlConnection.QueryAsync<EventsSummaryDto>(query, new { zoneId,, fromReadingNumber, toReadingNumber });
+            IEnumerable<EventsSummaryDto> result = await _sqlConnection.QueryAsync<EventsSummaryDto>(query, new { zoneId, fromReadingNumber, toReadingNumber });
             if (result.Any())
             {
                 result = result.OrderBy(i => i.RegisterDate);
