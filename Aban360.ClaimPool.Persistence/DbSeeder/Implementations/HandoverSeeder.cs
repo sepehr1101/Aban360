@@ -29,7 +29,7 @@ namespace Aban360.ClaimPool.Persistence.DbSeeder.Implementations
 
             ICollection<Handover> handover = new List<Handover>()
             {
-                new Handover(){Id=10,Title="مشخص نشده)عادی)"},
+                new Handover(){Id=10,Title="مشخص نشده)عادی)"},//Id=0
                 new Handover(){Id=1,Title="عادی"},
                 new Handover(){Id=2,Title="مقطوعی قدیم"},
                 new Handover(){Id=3,Title="خانه عالم"},

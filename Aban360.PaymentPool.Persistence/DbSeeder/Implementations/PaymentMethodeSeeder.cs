@@ -30,16 +30,15 @@ namespace Aban360.PaymentPool.Persistence.DbSeeder.Implementations
 
             ICollection<PaymentMethod> paymentMethods = new List<PaymentMethod>()
             {
-                new PaymentMethod(){Id=PaymentMethodEnum.PresenceAtBank1,Title="حضور در شعبه",Icon="",Description="" },
                 new PaymentMethod(){Id=PaymentMethodEnum.ATM,Title="خودپرداز",Icon="",Description="" },
-                new PaymentMethod(){Id=PaymentMethodEnum.PresenceAtBank2,Title="حضور در شعبه",Icon="",Description="" },
+                new PaymentMethod(){Id=PaymentMethodEnum.PresenceAtBank,Title="حضور در شعبه",Icon="",Description="" },
                 new PaymentMethod(){Id=PaymentMethodEnum.Interanet,Title="اینترانت",Icon="",Description="" },
                 new PaymentMethod(){Id=PaymentMethodEnum.SMS,Title="پیامک",Icon="",Description="" },
                 new PaymentMethod(){Id=PaymentMethodEnum.BankPhone,Title="تلفن بانک",Icon="",Description="" },
                 new PaymentMethod(){Id=PaymentMethodEnum.CRS,Title="خود دریافت",Icon="",Description="" },
-                new PaymentMethod(){Id=PaymentMethodEnum.BankReceive,Title="بانک دریافت",Icon="",Description="" },
+                new PaymentMethod(){Id=PaymentMethodEnum.PaymentBank,Title="بانک دریافت",Icon="",Description="" },
                 new PaymentMethod(){Id=PaymentMethodEnum.WebKiosk,Title="وب کیوسک",Icon="",Description="" },
-                new PaymentMethod(){Id=PaymentMethodEnum.SalesTerminal,Title="پایانه فروش",Icon="",Description="" },
+                new PaymentMethod(){Id=PaymentMethodEnum.POS,Title="پایانه فروش",Icon="",Description="" },
                 new PaymentMethod(){Id=PaymentMethodEnum.Internet,Title="اینترنت",Icon="",Description="" },
             };
 

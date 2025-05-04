@@ -6,6 +6,7 @@ using EFCore.BulkExtensions;
 using Aban360.Common.Extensions;
 using System.Transactions;
 using Aban360.Common.Db.Exceptions;
+using System.Diagnostics.Metrics;
 
 namespace Aban360.Common.Db.Context
 {
@@ -92,6 +93,8 @@ namespace Aban360.Common.Db.Context
         }
         public void ExecuteBatch(string sqlFilePath)
         {
+            int counter = 0;
+
             string tempCommand;
             try
             {               
@@ -102,7 +105,6 @@ namespace Aban360.Common.Db.Context
 
                 string sqlScript = File.ReadAllText(sqlFilePath);
                 var sqlCommands = sqlScript.Split(new[] { "GO" }, StringSplitOptions.RemoveEmptyEntries);
-
                 foreach (var command in sqlCommands.Select(cmd => cmd.Trim()).Where(cmd => !string.IsNullOrWhiteSpace(cmd)))
                 {
                     if (command.Contains("IDENTITY_INSERT") || string.IsNullOrEmpty(command))
@@ -111,10 +113,12 @@ namespace Aban360.Common.Db.Context
                     }
                     tempCommand = command.Trim();
                     GetDatabase().ExecuteSqlRaw(command, string.Empty);
+                    counter++;
                 }
             }
             catch (Exception e)
             {
+                counter = counter;
                 throw e;
             }
         }

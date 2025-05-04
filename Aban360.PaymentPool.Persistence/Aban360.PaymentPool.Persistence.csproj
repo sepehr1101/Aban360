@@ -8,10 +8,14 @@
 
   <ItemGroup>
     <None Remove="DbSeeder\DataScript\Bank.sql" />
+    <None Remove="DbSeeder\DataScript\BankAccount.sql" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="DbSeeder\DataScript\Bank.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DbSeeder\DataScript\BankAccount.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
