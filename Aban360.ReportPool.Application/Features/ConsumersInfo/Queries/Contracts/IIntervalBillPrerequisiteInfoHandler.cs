@@ -6,5 +6,6 @@ namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contract
     {
         Task<IntervalBillSubscriptionInfo> Handle(string billId, CancellationToken cancellationToken);
         Task<IEnumerable<IntervalBillSubscriptionInfo>> Handle(int zoneId, string registerDate, string fromReadingNumber, string toReadingNumber, CancellationToken cancellationToken);
+        Task<IEnumerable<IntervalBillSubscriptionInfo>> Handle(int zoneId, string fromDate, string toDate, short usageId, short individualTypeId, short handover, string fromReadingNumber, string toReadingNumber);
     }
 }
