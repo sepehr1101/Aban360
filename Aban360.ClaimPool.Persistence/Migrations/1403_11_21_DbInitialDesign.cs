@@ -441,7 +441,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
         {
             var table = TableName.Handover;
             Create.Table(nameof(TableName.Handover)).InSchema(_schema)
-                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable().Identity()
+                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable();
         }
 

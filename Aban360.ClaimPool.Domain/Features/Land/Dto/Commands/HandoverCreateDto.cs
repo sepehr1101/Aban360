@@ -2,6 +2,7 @@
 {
     public record HandoverCreateDto
     {
+        public short Id { get; set; }
         public string Title { get; set; } = null!;
     }
 }

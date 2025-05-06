@@ -30,8 +30,23 @@ namespace Aban360.ClaimPool.Persistence.DbSeeder.Implementations
 
             ICollection<DiscountType> discountType = new List<DiscountType>()
             {
-                new DiscountType(){Id=DiscountTypeEnum.Janbazan,Title="جانبازان"},
+                new DiscountType(){Id=DiscountTypeEnum.BedonTakhfif,Title="بدون تخفیف"},
                 new DiscountType(){Id=DiscountTypeEnum.KhanevadeShohada,Title="خانواده شهدا"},
+                new DiscountType(){Id=DiscountTypeEnum.Janbazan,Title="جانبازان"},
+                new DiscountType(){Id=DiscountTypeEnum.Basij,Title="بسیج"},
+                new DiscountType(){Id=DiscountTypeEnum.Behzisti ,Title="بهزیستی"},
+                new DiscountType(){Id=DiscountTypeEnum.KomiteEmdad,Title="کمیته امداد"},
+                new DiscountType(){Id=DiscountTypeEnum.Masajed,Title="مساجد"},
+                new DiscountType(){Id=DiscountTypeEnum.Razmandegan,Title="رزمندگان"},
+                new DiscountType(){Id=DiscountTypeEnum.AmakenMazhabi,Title="اماکن مذهبی"},
+                new DiscountType(){Id=DiscountTypeEnum.MarakezAmozeshi,Title="مراکز آموزشی"},
+                new DiscountType(){Id=DiscountTypeEnum.JavaniJamiyat1,Title="جوانی جمعیت 1"},
+                new DiscountType(){Id=DiscountTypeEnum.HeyatModire,Title="هیئت مدیره"},
+                new DiscountType(){Id=DiscountTypeEnum.PadashNaghdi,Title="پاداش نقدی"},
+                new DiscountType(){Id=DiscountTypeEnum.FarzandJanbaz70Darsad,Title="فرزند جانباز70 درصد"},
+                new DiscountType(){Id=DiscountTypeEnum.KhanevadeJanbazVaAzadeMotovafi,Title="خانواده جانباز و آزاده متوفی"},
+                new DiscountType(){Id=DiscountTypeEnum.JavaniJamiyat2,Title="جوانی جمعیت 2"},
+                new DiscountType(){Id=DiscountTypeEnum.KhayerinMaskanSaz,Title="خیرین مسکن ساز"},
             };
             _discountType.AddRange(discountType);
             _uow.SaveChanges();

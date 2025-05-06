@@ -49,7 +49,6 @@ namespace Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.
             var document = await _DocumentAddhoc.Handle(createDto.DocumentId, cancellationToken);
             var documentText = Encoding.UTF8.GetString(document);
             var bankFileStructure = (await _bankFileStructureQueryService.Get())
-                .Where(b=>b.BankId==createDto.BankId)
                 .ToList();
 
             var documentDate = documentText.Split("\r\n");

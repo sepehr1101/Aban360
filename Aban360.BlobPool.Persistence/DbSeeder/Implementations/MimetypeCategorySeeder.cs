@@ -37,7 +37,7 @@ namespace Aban360.BlobPool.Persistence.DbSeeder.Implementations
                 new MimetypeCategory(){Id=3,Name="متن",Title="Text"},
                 new MimetypeCategory(){Id=4,Name="سند متنی",Title="Word"},
                 new MimetypeCategory(){Id=5,Name="اکسل",Title="Excel"},
-                new MimetypeCategory(){Id=6,Name="prd",Title="pdf"},
+                new MimetypeCategory(){Id=6,Name="pdf",Title="pdf"},
             };
             _mimetypeCategories.AddRange(mimetypeCategories);
             _uow.SaveChanges();

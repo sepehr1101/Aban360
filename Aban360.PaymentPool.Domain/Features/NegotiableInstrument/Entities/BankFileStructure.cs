@@ -1,4 +1,5 @@
-﻿using Aban360.PaymentPool.Domain.Features.Remuneration.Entities;
+﻿using Aban360.PaymentPool.Domain.Constansts;
+using Aban360.PaymentPool.Domain.Features.Remuneration.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.PaymentPool.Domain.Features.NegotiableInstrument.Entities;
@@ -18,7 +19,5 @@ public class BankFileStructure
 
     public bool IsHeader { get; set; } = false;
 
-    public short BankId { get; set; }
-
-    public virtual Bank Bank { get; set; }
+    public BankStructureItemEnum BankStructureItemId{get;set;}
 }

@@ -29,9 +29,14 @@ namespace Aban360.ClaimPool.Persistence.DbSeeder.Implementations
 
             ICollection<Handover> handover = new List<Handover>()
             {
-                new Handover(){Title="عادی"},
-                new Handover(){Title="ساخت و ساز"},
-                new Handover(){Title="خانه عالم"},
+                new Handover(){Id=10,Title="مشخص نشده)عادی)"},//Id=0
+                new Handover(){Id=1,Title="عادی"},
+                new Handover(){Id=2,Title="مقطوعی قدیم"},
+                new Handover(){Id=3,Title="خانه عالم"},
+                new Handover(){Id=4,Title="ساخت و ساز"},
+                new Handover(){Id=5,Title="کد 5"},
+                new Handover(){Id=6,Title="بهزیستی"},
+                new Handover(){Id=7,Title="کمیته امداد"},
             };
            _useState.AddRange(handover);
             _uow.SaveChanges();

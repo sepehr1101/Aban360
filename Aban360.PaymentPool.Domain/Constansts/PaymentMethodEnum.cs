@@ -2,8 +2,15 @@
 {
     public enum PaymentMethodEnum:short
     {
-        PresenceAtBank=1,
-        Internet=2,
-        PhoneBank=3,
+        ATM=2,
+        PresenceAtBank= 3,
+        Interanet=5,
+        SMS=6,
+        BankPhone=7,
+        CRS=8,//Self Receiver
+        PaymentBank=9,
+        WebKiosk=13,
+        POS=14,
+        Internet=59,
     }
 }
