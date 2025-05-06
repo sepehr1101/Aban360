@@ -99,10 +99,10 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Validations
             RuleFor(e => e.Estate.Storeys)
               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
               .NotNull().WithMessage(ExceptionLiterals.NotNUll);
-            #endregion
+        #endregion
 
-            #region Flat
-            RuleForEach(f => f.Flats).ChildRules(flat =>
+        #region Flat
+        RuleForEach(f => f.Flats).ChildRules(flat =>
             {
                 flat.RuleFor(f => f.PostalCode)
                         .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
