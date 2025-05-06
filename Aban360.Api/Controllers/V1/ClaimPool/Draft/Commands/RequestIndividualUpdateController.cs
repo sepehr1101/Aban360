@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Draft.Commands
 {
-    [Route("v1/request_individual")]
+    [Route("v1/request-individual")]
     public class RequestIndividualUpdateController : BaseController
     {
         private readonly IUnitOfWork _uow;

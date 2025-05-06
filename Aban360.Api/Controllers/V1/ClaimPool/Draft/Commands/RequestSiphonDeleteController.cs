@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Draft.Commands
 {
-    [Route("v1/request_siphon")]
+    [Route("v1/request-siphon")]
     public class RequestSiphonDeleteController : BaseController
     {
         private readonly IUnitOfWork _uow;
