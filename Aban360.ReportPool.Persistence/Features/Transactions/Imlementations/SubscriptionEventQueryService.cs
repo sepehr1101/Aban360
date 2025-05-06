@@ -47,12 +47,12 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             string query = @"
             use Aban360
             select
-	            TRIM(BillId) BillId ,Id,PreviousNumber PreviousMeterNumber,NextNumber NextMeterNumber, PreviousDay PreviousMeterDate,NextDay CurrentMeterDate,RegisterDay RegisterDate,SumItems DebtAmount,0 OweAmount,TypeId as [Description], ConsumptionAverage, NULL BankTitle
+	            TRIM(BillId) BillId ,Id,PreviousNumber PreviousMeterNumber,NextNumber NextMeterNumber, PreviousDay PreviousMeterDate,NextDay CurrentMeterDate,RegisterDay RegisterDate,SumItems DebtAmount,0 CreditAmount,TypeId as [Description], ConsumptionAverage, NULL BankTitle
             from [ReportPool].Bills
             where (BillId)=@billId
             union
             select
-	            TRIM(BillId) BillId, Id, 0 PreviousMeterNumber,0 NextMeterNumber,NULL PreviousMeterDate,NULL CurrentMeterDate, RegisterDay RegisterDate, 0 DebtAmount, Amount OweAmount, N'پرداخت' [Description], 0, BankName BankTitle
+	            TRIM(BillId) BillId, Id, 0 PreviousMeterNumber,0 NextMeterNumber,NULL PreviousMeterDate,NULL CurrentMeterDate, RegisterDay RegisterDate, 0 DebtAmount, Amount CreditAmount, N'پرداخت' [Description], 0, BankName BankTitle
             from [ReportPool].Payments
             where (BillId)=@billId";
             return query;
@@ -62,12 +62,35 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             string query = @"
             use Aban360
             select
-	            TRIM(BillId) BillId, Id,PreviousNumber PreviousMeterNumber,NextNumber NextMeterNumber, PreviousDay PreviousMeterDate,NextDay CurrentMeterDate,RegisterDay RegisterDate,SumItems DebtAmount,0 OweAmount,TypeId as [Description], ConsumptionAverage, NULL BankTitle
+	            TRIM(BillId) BillId, Id,PreviousNumber PreviousMeterNumber,NextNumber NextMeterNumber, PreviousDay PreviousMeterDate,NextDay CurrentMeterDate,RegisterDay RegisterDate,SumItems DebtAmount,0 CreditAmount,TypeId as [Description], ConsumptionAverage, NULL BankTitle
             from [ReportPool].Bills
             where 
 	            ZoneId=@zoneId AND 
 	            RegisterDay=@registerDate AND 
 	            TRIM(ReadingNumber) BETWEEN @fromReadingNumber AND @toReadingNumber";
+            return query;
+        }
+
+        public async Task<IEnumerable<BranchEventsDto>> GetBranchEventDtos(string billId)
+        {
+            string query = GetBranchEventsSummaryQuery();
+            IEnumerable<BranchEventsDto> result = await _sqlConnection.QueryAsync<BranchEventsDto>(query, new { billId = billId });
+            if (result.Any())
+            {
+                result = result.OrderBy(i => i.RegisterDate);
+            }
+            return result;
+
+        }
+        private string GetBranchEventsSummaryQuery()
+        {
+            string query =
+                @"SELECT N'صدور صورتحساب' [Description],TrackNumber, RegisterDay RegisterDate, AmountSum DebtAmount , 0 CreditAmount from ReportPool.BillsEn
+                WHERE BillId=@billId
+                UNION
+                SELECT N'پرداخت'+ N'('+ BankName+' '+PaymentGateway+N')' [Description], '' TrackNumber, RegisterDay RegisterDate, 0 DebtAmount, Amount CreditAmount
+                FROM ReportPool.PaymentsEn
+                WHERE BillId=@billId";
             return query;
         }
     }
