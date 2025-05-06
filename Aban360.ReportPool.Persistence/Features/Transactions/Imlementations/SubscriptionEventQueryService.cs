@@ -42,6 +42,16 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             }
             return result;
         }
+        public async Task<IEnumerable<EventsSummaryDto>> GetBillDto(int zoneId, string fromReadingNumber, string toReadingNumber)
+        {
+            string query = GetSubscriptionEventsQuerybyZone();
+            IEnumerable<EventsSummaryDto> result = await _sqlConnection.QueryAsync<EventsSummaryDto>(query, new { zoneId, fromReadingNumber, toReadingNumber });
+            if (result.Any())
+            {
+                result = result.OrderBy(i => i.RegisterDate);
+            }
+            return result;
+        }
         private string GetSubscriptionEventsQuery()
         {
             string query = @"
@@ -91,6 +101,16 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                 SELECT N'پرداخت'+ N'('+ BankName+' '+PaymentGateway+N')' [Description], '' TrackNumber, RegisterDay RegisterDate, 0 DebtAmount, Amount CreditAmount
                 FROM ReportPool.PaymentsEn
                 WHERE BillId=@billId";
+        private string GetSubscriptionEventsQuerybyZone()
+        {
+            string query = @"
+            use Aban360
+            select
+	            TRIM(BillId) BillId, Id,PreviousNumber PreviousMeterNumber,NextNumber NextMeterNumber, PreviousDay PreviousMeterDate,NextDay CurrentMeterDate,RegisterDay RegisterDate,SumItems DebtAmount,0 OweAmount,TypeId as [Description], ConsumptionAverage, NULL BankTitle
+            from [ReportPool].Bills
+            where 
+	            ZoneId=@zoneId AND 
+	            TRIM(ReadingNumber) BETWEEN @fromReadingNumber AND @toReadingNumber";
             return query;
         }
     }

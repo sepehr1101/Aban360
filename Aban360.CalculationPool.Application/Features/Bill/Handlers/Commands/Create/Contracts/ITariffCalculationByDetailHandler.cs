@@ -5,6 +5,6 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
 {
     public interface ITariffCalculationByDetailHandler
     {
-        Task<IntervalCalculationResultWrapper> Handle(TariffByDetailCreateDto createDto,CancellationToken cancellationToken);
+        Task<CaluclationIntervalDiscrepancytWrapper> Handle(TariffByDetailCreateDto testInput, CancellationToken cancellationToken);
     }
 }

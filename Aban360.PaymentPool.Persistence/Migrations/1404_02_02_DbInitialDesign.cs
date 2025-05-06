@@ -10,7 +10,7 @@ namespace Aban360.PaymentPool.Persistence.Migrations
     public class DbInitialDesign : Migration
     {
         string _schema = TableSchema.Name, Id = nameof(Id),Hash=nameof(Hash);
-        int _15 = 15, _20 = 20, _255 = 255, _1023 = 1023, _24 = 24;
+        int _15 = 15, _20 = 20, _255 = 255, _1023 = 1023, _26=26,_24 = 24;
         public override void Up()
         {
             Create.Schema(_schema);
@@ -39,6 +39,7 @@ namespace Aban360.PaymentPool.Persistence.Migrations
             Create.Table(nameof(TableName.Bank)).InSchema(_schema)
                 .WithColumn("Id").AsInt16().NotNullable().Identity().PrimaryKey(NamingHelpers.Pk(table))
                 .WithColumn("BankName").AsString(_255).NotNullable()
+                .WithColumn("_3Char").AsString(3).Nullable()
                 .WithColumn("Icon").AsString(int.MaxValue).Nullable()
                 .WithColumn("CentralBankCode").AsString(_255).NotNullable()
                 .WithColumn("Description").AsString(int.MaxValue).Nullable();
@@ -71,8 +72,7 @@ namespace Aban360.PaymentPool.Persistence.Migrations
                 .WithColumn("StringLenght").AsInt16().NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn("IsHeader").AsBoolean().NotNullable()
-                .WithColumn($"{TableName.Bank}Id").AsInt16().NotNullable()
-                    .ForeignKey(NamingHelpers.Fk(TableName.Bank, table), _schema, nameof(TableName.Bank), Id);
+                .WithColumn("BankStructureItemId").AsInt16().NotNullable();
         }
 
         private void CreateAccountType()
@@ -94,7 +94,7 @@ namespace Aban360.PaymentPool.Persistence.Migrations
                 .WithColumn($"{TableName.AccountType}Id").AsInt16().NotNullable()
                 .WithColumn("RegionId").AsInt32().NotNullable()
                 .WithColumn("RegionTitle").AsString(_255).NotNullable()
-                .WithColumn("IBan").AsString(_24).NotNullable()
+                .WithColumn("IBan").AsString(_26).NotNullable()
                 .WithColumn("Number").AsString(_24).NotNullable();//Todo : lenght
         }
 
