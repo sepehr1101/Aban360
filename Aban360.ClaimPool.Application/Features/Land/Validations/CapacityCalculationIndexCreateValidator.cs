@@ -5,18 +5,17 @@ using FluentValidation;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Validations
 {
-    public class FlatCreateValidator : BaseValidator<FlatCreateDto>
+    public class CapacityCalculationIndexCreateValidator : BaseValidator<CapacityCalculationIndexCreateDto>
     {
-        public FlatCreateValidator()
+        public CapacityCalculationIndexCreateValidator()
         {
-            RuleFor(f => f.EstateId)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                .NotNull().WithMessage(ExceptionLiterals.NotNUll);
-
-            RuleFor(f => f.PostalCode)
+            RuleFor(f => f.Title)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
                 .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-                .Length(10).WithMessage(ExceptionLiterals.Equal10);
+                .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
+
+            RuleFor(f => f.Description)
+                .MaximumLength(1023).WithMessage(ExceptionLiterals.NotMoreThan1023);
         }
     }
 }

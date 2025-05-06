@@ -5,18 +5,23 @@ using FluentValidation;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Validations
 {
-    public class FlatCreateValidator : BaseValidator<FlatCreateDto>
+    public class OfficialHolidayUpdateValidator : BaseValidator<OfficialHolidayUpdateDto>
     {
-        public FlatCreateValidator()
+        public OfficialHolidayUpdateValidator()
         {
-            RuleFor(f => f.EstateId)
+            RuleFor(f => f.Id)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
                 .NotNull().WithMessage(ExceptionLiterals.NotNUll);
 
-            RuleFor(f => f.PostalCode)
+            RuleFor(f => f.Title)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
                 .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-                .Length(10).WithMessage(ExceptionLiterals.Equal10);
+                .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
+
+            RuleFor(f => f.DateJalali)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .Length(10).WithMessage(ExceptionLiterals.Equal10);
         }
     }
 }
