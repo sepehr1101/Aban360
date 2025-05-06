@@ -101,6 +101,8 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                 SELECT N'پرداخت'+ N'('+ BankName+' '+PaymentGateway+N')' [Description], '' TrackNumber, RegisterDay RegisterDate, 0 DebtAmount, Amount CreditAmount
                 FROM ReportPool.PaymentsEn
                 WHERE BillId=@billId";
+            return query;
+        }
         private string GetSubscriptionEventsQuerybyZone()
         {
             string query = @"
