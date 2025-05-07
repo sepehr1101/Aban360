@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Commands
 {
-    [Route("v1/tariff-calculation_imaginary")]
+    [Route("v1/tariff-calculation-imaginary")]
     public class TariffCalculationImaginaryManager : BaseController
     {
         private readonly ITariffCalculationImaginaryHandler _tariffCalculationImaginaryHandler;
