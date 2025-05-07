@@ -61,7 +61,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                .WithColumn("Title").AsString(_255).NotNullable()
                .WithColumn("Description").AsString(_255).Nullable();
         }
-        private void CreateConstructionType()
+        private void CreateEtructionType()
         {
             var table = TableName.ConstructionType;
             Create.Table(nameof(TableName.ConstructionType)).InSchema(_schema)

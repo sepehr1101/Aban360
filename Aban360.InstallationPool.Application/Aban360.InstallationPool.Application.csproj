@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Definition\Validations\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Aban360.InstallationPool.Domain\Aban360.InstallationPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.InstallationPool.Persistence\Aban360.InstallationPool.Persistence.csproj" />
     <ProjectReference Include="..\Aban360.LocationPool.GatewayAdhoc\Aban360.LocationPool.GatewayAdhoc.csproj" />

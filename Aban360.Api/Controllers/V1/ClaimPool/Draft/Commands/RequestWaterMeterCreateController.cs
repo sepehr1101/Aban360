@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Draft.Commands
 {
-    [Route("v1/request_water_meter")]
+    [Route("v1/request-water-meter")]
     public class RequestWaterMeterCreateController : BaseController
     {
         private readonly IUnitOfWork _uow;

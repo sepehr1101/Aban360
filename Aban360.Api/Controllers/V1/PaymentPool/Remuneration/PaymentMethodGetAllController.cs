@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.PaymentPool.Remuneration
 {
-    [Route("v1/payment_method")]
+    [Route("v1/payment-method")]
     public class PaymentMethodGetAllController : BaseController
     {
         private readonly IPaymentMethodGetAllHandler _paymentMethodGetAllHandler;

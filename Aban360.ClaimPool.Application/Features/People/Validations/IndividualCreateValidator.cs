@@ -12,7 +12,7 @@ namespace Aban360.ClaimPool.Application.Features.People.Validations
             RuleFor(f => f.WaterMeterId)
                .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
                .NotNull().WithMessage(ExceptionLiterals.NotNUll);
-            
+
             RuleFor(f => f.IndividualTypeId)
                .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
                .NotNull().WithMessage(ExceptionLiterals.NotNUll);

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Draft.Commands
 {
-    [Route("v1/request_estate")]
+    [Route("v1/request-estate")]
     public class RequestEstateUpdateController : BaseController
     {
         private readonly IUnitOfWork _uow;
