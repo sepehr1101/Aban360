@@ -12,8 +12,7 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Validations
         {
             RuleFor(f => f.Id)
               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-              .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-              .IsInEnum().WithErrorCode(ExceptionLiterals.MustEnum);
+              .NotNull().WithMessage(ExceptionLiterals.NotNUll);
 
             RuleFor(f => f.Title)
                .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
