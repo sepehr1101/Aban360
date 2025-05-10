@@ -9,7 +9,7 @@
         public string? Description { get; set; }//
         public string Style { get; set; } = default!;
         public long? DebtAmount { get; set; }//
-        public long? OweAmount { get; set; }//
+        public long? CreditAmount { get; set; }//
         public string? PreviousMeterDate { get; set; }//
         public string? CurrentMeterDate { get; set; }//
         public string RegisterDate { get; set; } = default!;//
