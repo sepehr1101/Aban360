@@ -3,6 +3,7 @@
     public record TariffCreateDto
     {
         public short LineItemTypeId { get; set; }
+        public string Title { get; set; } = null!;
         public short OfferingId { get; set; }
         public string Condition { get; set; } = null!;
         public string Formula { get; set; } = null!;

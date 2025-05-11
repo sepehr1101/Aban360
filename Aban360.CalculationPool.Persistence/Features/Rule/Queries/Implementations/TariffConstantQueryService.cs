@@ -1,12 +1,13 @@
 ﻿using Aban360.CalculationPool.Domain.Features.Rule.Entities;
 using Aban360.CalculationPool.Persistence.Contexts.Contracts;
 using Aban360.CalculationPool.Persistence.Features.Rule.Queries.Contracts;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.CalculationPool.Persistence.Features.Rule.Queries.Implementations
 {
-   internal sealed class TariffConstantQueryService : ITariffConstantQueryService
+    internal sealed class TariffConstantQueryService : ITariffConstantQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<TariffConstant> _tariffConstant;
@@ -36,6 +37,15 @@ namespace Aban360.CalculationPool.Persistence.Features.Rule.Queries.Implementati
                        tariff.FromDateJalali.CompareTo(to) <= 0 &&
                        tariff.ToDateJalali.CompareTo(from) >= 0)
                 .ToListAsync();
+        }
+        public async Task<ICollection<StringDictionary>> GetDictionary()
+        {
+            return await _tariffConstant
+                .AsNoTracking()
+                .GroupBy(constant => constant.Key)
+                .Select(c => new StringDictionary() { Id = c.Key, Title = c.First().Value })
+                .ToListAsync();
+
         }
     }
 }

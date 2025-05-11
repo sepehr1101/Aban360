@@ -8,6 +8,8 @@ public class Tariff
 {
     public int Id { get; set; }
 
+    public string Title { get; set; } = null!;
+
     public short LineItemTypeId { get; set; }
 
     public short OfferingId { get; set; }
