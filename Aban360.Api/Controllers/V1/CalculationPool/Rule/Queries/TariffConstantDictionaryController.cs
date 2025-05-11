@@ -1,5 +1,4 @@
 ﻿using Aban360.CalculationPool.Application.Features.Rule.Handlers.Queries.Contracts;
-using Aban360.CalculationPool.Domain.Features.Rule.Dto.Queries;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
