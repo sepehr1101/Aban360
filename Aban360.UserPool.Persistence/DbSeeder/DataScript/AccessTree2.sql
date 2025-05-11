@@ -70,6 +70,10 @@ INSERT [UserPool].[Module] ( [AppId], [Title], [Style], [InMenu], [LogicalOrder]
 GO
 INSERT [UserPool].[Module] ( [AppId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 10, N'Workflow', N'', 1, 1, N'', 1)--22
 GO
+INSERT [UserPool].[Module] ( [AppId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 1, N'درخت دسترسی', N'', 1, 4, N'', 1)
+GO
+INSERT [UserPool].[Module] ( [AppId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 1, N'رابط کاربری', N'', 1, 5, N'', 1)--24
+GO
 SET IDENTITY_INSERT [UserPool].[Module] OFF
 GO
 SET IDENTITY_INSERT [UserPool].[SubModule] ON 
@@ -270,7 +274,7 @@ INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [Logical
 GO
 INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 14, N'مدارک قابل اجرا', N'', 1, 5, N'', 1)
 GO
-INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 14, N'MimetypeCategory', N'', 1, 6, N'', 1)
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 14, N'دسته بندی Mime', N'', 1, 6, N'', 1)
 GO
 INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES ( 15, N'وضعیت کنتور', N'', 1, 1, N'', 1)
 GO
@@ -318,7 +322,19 @@ INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [Logical
 GO
 INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES (22 , N'Workflow', N'', 1, 2, N'', 1)
 GO
-INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES (22 , N'WorkflowStatus', N'', 1, 3, N'', 1)
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES (22 , N'WorkflowStatus', N'', 1, 3, N'', 1)--122
+GO
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES (23 , N'App', N'', 1, 3, N'', 1)--123
+GO
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES (23 , N'Module', N'', 1, 3, N'', 1)
+GO
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES (23 , N'SubModule', N'', 1, 3, N'', 1)
+GO
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES (23 , N'Endpoint', N'', 1, 3, N'', 1)
+GO
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES (24 , N'نوار بالا', N'', 1, 3, N'', 1)--127
+GO
+INSERT [UserPool].[SubModule] ( [ModuleId], [Title], [Style], [InMenu], [LogicalOrder], [ClientRoute], [IsActive]) VALUES (20 , N'انشعاب', N'', 1, 9, N'', 1)--129
 GO
 SET IDENTITY_INSERT [UserPool].[SubModule] OFF
 GO
@@ -345,7 +361,7 @@ INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [Logic
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 2, N'مشاهده همه مقادیر', N'', 1, 2, N'', 1)
 GO
-INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 2, N'ویرایش', N'UserUpdate.Update', 1, 3, N'', 1)
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 2, N'ویرایش', N'', 1, 3, N'UserUpdate.Update', 1)
 GO
 
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 3, N'مشاهده', N'', 1, 1, N'CaptchaGetSignleQuery.Read', 1)
@@ -715,7 +731,7 @@ INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [Logic
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 39, N'ویرایش', N'', 1, 5, N'UserWorkdayUpdate.Update', 1)
 GO
-INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 40, N'ایجاد', N'', 1, 1, N'WaterResourceGCreate.Create', 1)
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 40, N'ایجاد', N'', 1, 1, N'WaterResourceCreate.Create', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 40, N'مشاهده لیست', N'', 1, 2, N'WaterResourceGetAll.GetAll', 1)
 GO
@@ -727,6 +743,8 @@ INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [Logic
 GO
 
 
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (41, N'ایجاد', N'', 1, 1, N'IndividualTypeCreate.Create', 1)
+GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (41, N'مشاهده لیست', N'', 1, 1, N'IndividualTypeGetAll.GetAll', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (41, N'مشاهده', N'', 1, 2, N'IndividualTypeGetSingle.GetSingle', 1)
@@ -734,6 +752,9 @@ GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (41, N'حذف', N'', 1, 3, N'IndividualTypeDelete.Delete', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (41, N'ویرایش', N'', 1, 4, N'IndividualTypeUpdate.Update', 1)
+GO
+
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (42, N'ایجاد', N'', 1, 1, N'IndividualEstateRelationTypeCreate.Create', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (42, N'مشاهده لیست', N'', 1, 1, N'IndividualEstateRelationTypeGetAll.GetAll', 1)
 GO
@@ -743,6 +764,8 @@ INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [Logic
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (42, N'ویرایش', N'', 1, 4, N'IndividualEstateRelationTypeUpdate.Update', 1)
 GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (43, N'ایجاد', N'', 1, 1, N'IndividualCreate.Create', 1)
+GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (43, N'مشاهده لیست', N'', 1, 1, N'IndividualGetAll.GetAll', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (43, N'مشاهده', N'', 1, 2, N'IndividualGetSingle.GetSingle', 1)
@@ -751,6 +774,9 @@ INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [Logic
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (43, N'ویرایش', N'', 1, 4, N'IndividualUpdate.Update', 1)
 GO
+
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (44, N'ایجاد', N'', 1, 1, N'IndividualTagDefinitionCreate.Create', 1)
+GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (44, N'مشاهده لیست', N'', 1, 1, N'IndividualTagDefinitionGetAll.GetAll', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (44, N'مشاهده', N'', 1, 2, N'IndividualTagDefinitionGetSingle.GetSingle', 1)
@@ -758,6 +784,9 @@ GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (44, N'حذف', N'', 1, 3, N'IndividualTagDefinitionDelete.Delete', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (44, N'ویرایش', N'', 1, 4, N'IndividualTagDefinitionUpdate.Update', 1)
+GO
+
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (45, N'ایجاد', N'', 1, 1, N'IndividualTagCreate.Create', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (45, N'مشاهده لیست', N'', 1, 1, N'IndividualTagGetAll.GetAll', 1)
 GO
@@ -780,6 +809,8 @@ GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 46, N'ویرایش', N'', 1, 5, N'IndividualDiscountTypeUpdate.Update', 1)
 GO
 
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (47, N'ایجاد', N'', 1, 1, N'CountryCreate.Create', 1)
+GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (47, N'مشاهده لیست', N'', 1, 1, N'CountryGetAll.GetAll', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (47, N'مشاهده', N'', 1, 2, N'CountryGetSingle.GetSingle', 1)
@@ -787,6 +818,9 @@ GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (47, N'حذف', N'', 1, 3, N'CountryDelete.Delete', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (47, N'ویرایش', N'', 1, 4, N'CountryUpdate.Update', 1)
+GO
+
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (48, N'ایجاد', N'', 1, 1, N'CordinalDirectionCreate.Create', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (48, N'مشاهده لیست', N'', 1, 1, N'CordinalDirectionGetAll.GetAll', 1)
 GO
@@ -797,6 +831,8 @@ GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (48, N'ویرایش', N'', 1, 4, N'CordinalDirectionUpdate.Update', 1)
 GO
 
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (49, N'ایجاد', N'', 1, 1, N'ProvinceCreate.Create', 1)
+GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (49, N'مشاهده لیست', N'', 1, 1, N'ProvinceGetAll.GetAll', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (49, N'مشاهده', N'', 1, 2, N'ProvinceGetSingle.GetSingle', 1)
@@ -804,6 +840,9 @@ GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (49, N'حذف', N'', 1, 3, N'ProvinceDelete.Delete', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (49, N'ویرایش', N'', 1, 4, N'ProvinceUpdate.Update', 1)
+GO
+
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (50, N'ایجاد', N'', 1, 1, N'HeadquartersCreate.Create', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (50, N'مشاهده لیست', N'', 1, 1, N'HeadquartersGetAll.GetAll', 1)
 GO
@@ -813,6 +852,9 @@ INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [Logic
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (50, N'ویرایش', N'', 1, 4, N'HeadquartersUpdate.Update', 1)
 GO
+
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (51, N'ایجاد', N'', 1, 1, N'RegionCreate.Create', 1)
+GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (51, N'مشاهده لیست', N'', 1, 1, N'RegionGetAll.GetAll', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (51, N'مشاهده', N'', 1, 2, N'RegionGetSingle.GetSingle', 1)
@@ -820,6 +862,9 @@ GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (51, N'حذف', N'', 1, 3, N'RegionDelete.Delete', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (51, N'ویرایش', N'', 1, 4, N'RegionUpdate.Update', 1)
+GO
+
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (52, N'ایجاد', N'', 1, 1, N'ZoneCreate.Create', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (52, N'مشاهده لیست', N'', 1, 1, N'ZoneGetAll.GetAll', 1)
 GO
@@ -829,6 +874,9 @@ INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [Logic
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (52, N'ویرایش', N'', 1, 4, N'ZoneUpdate.Update', 1)
 GO
+
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (53, N'ایجاد', N'', 1, 1, N'MunicipalityCreate.Create', 1)
+GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (53, N'مشاهده لیست', N'', 1, 1, N'MunicipalityGetAll.GetAll', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (53, N'مشاهده', N'', 1, 2, N'MunicipalityGetSingle.GetSingle', 1)
@@ -837,6 +885,9 @@ INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [Logic
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (53, N'ویرایش', N'', 1, 4, N'MunicipalityUpdate.Update', 1)
 GO
+
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (54, N'ایجاد', N'', 1, 1, N'ReadingBoundCreate.Create', 1)
+GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (54, N'مشاهده لیست', N'', 1, 1, N'ReadingBoundGetAll.GetAll', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (54, N'مشاهده', N'', 1, 2, N'ReadingBoundGetSingle.GetSingle', 1)
@@ -844,6 +895,9 @@ GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (54, N'حذف', N'', 1, 3, N'ReadingBoundDelete.Delete', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (54, N'ویرایش', N'', 1, 4, N'ReadingBoundUpdate.Update', 1)
+GO
+
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (55, N'ایجاد', N'', 1, 1, N'ReadingBlockCreate.Create', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (55, N'مشاهده لیست', N'', 1, 1, N'ReadingBlockGetAll.GetAll', 1)
 GO
@@ -1202,7 +1256,7 @@ INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [Logic
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (96, N'ایجاد', N'', 1, 1, N'DocumentCreate.Create', 1)
 GO
-INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (96, N'مشاهده لیست', N'', 1, 2, N'DocumentGetAllByBillIdCategoryId.GetByBillIdCategoryId', 1)
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (96, N'مشاهده با شناسه قبض', N'', 1, 2, N'DocumentGetAllByBillIdCategoryId.GetByBillIdCategoryId', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES (96, N'مشاهده', N'', 1, 3, N'DocumentGet.Get', 1)
 GO
@@ -1325,14 +1379,28 @@ INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [Logic
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 109, N'ویرایش', N'', 1, 5, N'CreditByDocumentUpdate.Update', 1)
 GO
-INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 110, N'مشاهده لیست', N'', 1, 2, N'DynamicReportGetAll.GetAll', 1)
+
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 110, N'مشاهده لیست', N'', 1, 1, N'DynamicReportGetAll.GetAll', 1)
 GO
-INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 110, N'View', N'', 1, 3, N'?', 1)
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 110, N'حذف', N'', 1, 2, N'DynamicReportDelete.Delete', 1)
 GO
-INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 110, N'حذف', N'', 1, 4, N'DynamicReportDelete.Delete', 1)
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 110, N'نمایش گزارش', N'', 1, 3, N'DynamicReportView.DisplayDesigner', 1)
 GO
-INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 110, N'Design', N'', 1, 5, N'?', 1)
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 110, N'طراحی', N'', 1, 4, N'DynamicReportView.DesignReport', 1)
 GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 110, N'ذخیره', N'', 1, 5, N'DynamicReportView.SaveReport', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 110, N'ذخیره با نام', N'', 1, 6, N'DynamicReportView.SaveReportAs', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 110, N'رویداد طراحی', N'', 1, 7, N'DynamicReportView.DesignerEvent', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 110, N'مشاهد گزارش', N'', 1, 8, N'DynamicReportView.DisplayViewer', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 110, N'نمایش', N'', 1, 9, N'DynamicReportView.DisplayReport', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 110, N'رویداد مشاهده', N'', 1, 10, N'DynamicReportView.ViewerEvent', 1)
+GO
+
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 111, N'مشاهده گزارش', N'', 1, 1, N'IndividualSummeryInfo.OwnerShipSummary', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 112, N'مشاهده گزارش', N'', 1, 1, N'RealmEstateSummeryInfo.Get', 1)
@@ -1376,6 +1444,52 @@ GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 121, N'مشاهده Master', N'', 1, 5, N'WorkflowGetMaster.GetMaster', 1)
 GO
 INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 122, N'مشاهده لیست', N'', 1, 5, N'WorkflowStatusGetAll.GetAll', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 123, N'ایجاد', N'', 1, 1, N'AppCreate.Create', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 123, N'مشاهده لیست', N'', 1, 2, N'AppGetAll.GetAll', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 123, N'مشاهده', N'', 1, 3, N'AppGetSingle.GetSingle', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 123, N'حذف', N'', 1, 4, N'AppDelete.Delete', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 123, N'ویرایش', N'', 1, 5, N'AppUpdate.Update', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 124, N'ایجاد', N'', 1, 1, N'ModuleCreate.Create', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 124, N'مشاهده لیست', N'', 1, 2, N'ModuleGetAll.GetAll', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 124, N'مشاهده', N'', 1, 3, N'ModuleGetSingle.GetSingle', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 124, N'حذف', N'', 1, 4, N'ModuleDelete.Delete', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 124, N'ویرایش', N'', 1, 5, N'ModuleUpdate.Update', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 125, N'ایجاد', N'', 1, 1, N'SubModuleCreate.Create', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 125, N'مشاهده لیست', N'', 1, 2, N'SubModuleGetAll.GetAll', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 125, N'مشاهده', N'', 1, 3, N'SubModuleGetSingle.GetSingle', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 125, N'حذف', N'', 1, 4, N'SubModuleDelete.Delete', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 125, N'ویرایش', N'', 1, 5, N'SubModuleUpdate.Update', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 126, N'ایجاد', N'', 1, 1, N'EndpointCreate.Create', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 126, N'مشاهده لیست', N'', 1, 2, N'EndpointGetAll.GetAll', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 126, N'مشاهده', N'', 1, 3, N'EndpointGetSingle.GetSingle', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 126, N'حذف', N'', 1, 4, N'EndpointDelete.Delete', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 126, N'ویرایش', N'', 1, 5, N'EndpointUpdate.Update', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 127, N'مشاهده با UserId', N'', 1, 4, N'TopbarDisplayer.GetUserTopbar', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 127, N'مشاهده کاربر جاری', N'', 1, 5, N'TopbarDisplayer.GetMyTopbar', 1)
+GO
+INSERT [UserPool].[Endpoint] ( [SubModuleId], [Title], [Style], [InMenu], [LogicalOrder], [AuthValue], [IsActive]) VALUES ( 129, N'مشاهده گزارش', N'', 1, 1, N'BranchEventsSummar.GetBranchEventsSummary', 1)
 GO
 SET IDENTITY_INSERT [UserPool].[Endpoint] OFF
 GO
