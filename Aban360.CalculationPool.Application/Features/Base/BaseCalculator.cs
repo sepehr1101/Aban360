@@ -1,12 +1,34 @@
 ﻿using Aban360.CalculationPool.Domain.Exceptions;
-using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using org.matheval;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace Aban360.CalculationPool.Application.Features.Base
 {
     internal abstract class BaseCalculator
     {
+        internal Expression GetExpression(string formula, object info, [Optional] Dictionary<string, object>? dependencyDictionary)
+        {
+            Dictionary<string, object> propertyDictionary = GetDictionaryOfProperties(info);
+            if (dependencyDictionary is not null)
+            {
+                propertyDictionary = propertyDictionary
+                    .Union(dependencyDictionary)
+                    .ToDictionary();
+            }
+            Expression expression = new Expression(formula);
+            List<string> errors = expression.GetError();
+            if (errors != null && errors.Any())
+            {
+                throw new ExpressionValidationException(errors.First());
+            }
+            List<string> formulaVariables = expression.getVariables();
+            foreach (string variable in formulaVariables)
+            {
+                Bind(expression, variable, propertyDictionary);
+            }
+            return expression;
+        }
         private Dictionary<string, object> GetDictionaryOfProperties(object obj)
         {
             if (obj == null)
@@ -23,7 +45,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             }
             return dict;
         }
-        internal void Bind(Expression expression, string formulaVariable, Dictionary<string, object> propertyDictionary)
+        private void Bind(Expression expression, string formulaVariable, Dictionary<string, object> propertyDictionary)
         {
             foreach (var prop in propertyDictionary)
             {
@@ -34,21 +56,6 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 }
             }
         }
-        internal Expression GetExpression(string formula, object info)
-        {
-            Dictionary<string, object> propertyDictionary = GetDictionaryOfProperties(info);
-            Expression expression = new Expression(formula);
-            List<string> errors = expression.GetError();
-            if (errors != null && errors.Any())
-            {
-                throw new ExpressionValidationException(errors.First());
-            }
-            List<string> formulaVariables = expression.getVariables();
-            foreach (string variable in formulaVariables)
-            {
-                Bind(expression, variable, propertyDictionary);
-            }
-            return expression;
-        }
+      
     }
 }

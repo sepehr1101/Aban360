@@ -11,7 +11,6 @@ using Aban360.ReportPool.GatewayAdhoc.Features.ConsumersInfo.Contracts;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using org.matheval;
-using System.Formats.Tar;
 
 namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Implementation
 {
@@ -57,7 +56,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
             IntervalBillSubscriptionInfo info = await _intervalBillPrerequisiteInfoAddHocHandler.Handle(tariffTestInput.BillId, cancellationToken);
             ICollection<Tariff> rawTariffs = await GetRawTariffs(previousReadingDate, currentReadingDate);
             ICollection<Tariff> tariffs = GetTariffs(rawTariffs, average, previousReadingDate, currentReadingDate);
-            List<IntervalCalculationResult> intervalCalculationResults = CreateCalculationResult(info, tariffs);
+            List<IntervalCalculationResult> intervalCalculationResults = await CreateCalculationResult(info, tariffs, previousReadingDate, currentReadingDate, average);
             List<IntervalCalculationResult3> result3 = CreateCalculationResult3(intervalCalculationResults);
             IntervalCalculationResultWrapper calculationResult = CreateCalculationResultWrapper(previousReadingDate, currentReadingDate, consumption, duration, average, intervalCalculationResults, result3);
             return calculationResult;
@@ -71,18 +70,19 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
             calculationResult.Amount = intervalCalculationResults.Sum(i => i.Amount);
             return calculationResult;
         }
-        private List<IntervalCalculationResult> CreateCalculationResult(IntervalBillSubscriptionInfo info, ICollection<Tariff> tariffs)
+        private async Task<List<IntervalCalculationResult>> CreateCalculationResult(IntervalBillSubscriptionInfo info, ICollection<Tariff> tariffs, string @from, string @to, double average)
         {
+            Dictionary<string, object>  constantDictionary= await GetTariffConstantsDictionary(from, to, average, info);
             List<IntervalCalculationResult> intervalCalculationResults = new List<IntervalCalculationResult>();
             foreach (var tariff in tariffs)
             {
-                Expression expressionCondition = GetExpression(tariff.Condition, info);
+                Expression expressionCondition = GetExpression(tariff.Condition, info, constantDictionary);
                 bool conditionSatisfied = expressionCondition.Eval<bool>();
                 if (!conditionSatisfied)
                 {
                     continue;
                 }
-                Expression expressionFormula = GetExpression(tariff.Formula, info);
+                Expression expressionFormula = GetExpression(tariff.Formula, info, constantDictionary);
                 double result = expressionFormula.Eval<double>();
                 intervalCalculationResults.Add(new IntervalCalculationResult(tariff, result));
             }
@@ -147,7 +147,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
                 {
                     continue;
                 }
-                keyValuePairs.Add(tariffConstant.Title, tariffConstant.Key);
+                keyValuePairs.Add(tariffConstant.Key, Convert.ToDouble(tariffConstant.Value));
             }
             return keyValuePairs;
         }
