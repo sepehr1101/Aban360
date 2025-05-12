@@ -48,14 +48,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator.Commands
 
         [Route("")]
         [HttpGet]
-        public IActionResult DisplayDesigner(int? id = null)
+        public IActionResult DisplayDesigner(int? id = null)//namayesh gozaresh Saz
         {
             return View(@"~/Views/V1/DynamicGenerator/DisplayDesigner.cshtml");
         }
 
         [HttpGet, HttpPost]
         [Route("design")]
-        public async Task<IActionResult> DesignReport(int? id = null)
+        public async Task<IActionResult> DesignReport(int? id = null)//tarahi
         {
             if (!id.HasValue)
             {
@@ -71,7 +71,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator.Commands
 
         [HttpGet, HttpPost]
         [Route("save")]
-        public async Task<IActionResult> SaveReport(int? id = null)
+        public async Task<IActionResult> SaveReport(int? id = null)//zakhire
         {
             StiReport report = StiNetCoreDesigner.GetReportObject(this);
             string reportTemplateJson = report.SaveToJsonString();
@@ -89,7 +89,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator.Commands
 
         [HttpGet, HttpPost]
         [Route("save-as")]
-        public async Task<IActionResult> SaveReportAs(int? id = null)
+        public async Task<IActionResult> SaveReportAs(int? id = null)//zakhire ba nam
         {
             StiReport report = StiNetCoreDesigner.GetReportObject(this);
             string reportTemplateJson = report.SaveToJsonString();
@@ -100,7 +100,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator.Commands
 
         [HttpGet, HttpPost]
         [Route("design-event")]
-        public IActionResult DesignerEvent()
+        public IActionResult DesignerEvent()//رویداد طراحی
         {
             return StiNetCoreDesigner.DesignerEventResult(this);
         }
