@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.UiElement
         [HttpGet, HttpPost]
         [Route("user-topbar/{userId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<Topbar>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetMyTopbar(Guid userId,CancellationToken cancellationToken)
+        public async Task<IActionResult> GetUserTopbar(Guid userId,CancellationToken cancellationToken)
         {
             Topbar topbar = await _topbarQueryHandler.Handle(userId, cancellationToken);
             return Ok(topbar);

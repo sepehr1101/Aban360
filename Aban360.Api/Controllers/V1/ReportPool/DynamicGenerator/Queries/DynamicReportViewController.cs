@@ -29,14 +29,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator
 
         [Route("")]
         [HttpGet]
-        public IActionResult DisplayViewer(int? id = null)
+        public IActionResult DisplayViewer(int? id = null)//moshahede gozaresh
         {
             return View(@"~/Views/V1/DynamicGenerator/DisplayViewer.cshtml");
         }
 
         [HttpGet, HttpPost]
         [Route("display")]
-        public async Task<IActionResult> DisplayReport(int id)
+        public async Task<IActionResult> DisplayReport(int id)//namayesh
         {
             string reportTemplateJson = await _dynamicReportGetTemplateJsonHandler.Handle(id);
             using (var report = new StiReport())
@@ -48,7 +48,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator
 
         [HttpGet, HttpPost]
         [Route("event")]
-        public IActionResult ViewerEvent()
+        public IActionResult ViewerEvent()//roydad moshahede
         {
             return StiNetCoreViewer.ViewerEventResult(this);
         }

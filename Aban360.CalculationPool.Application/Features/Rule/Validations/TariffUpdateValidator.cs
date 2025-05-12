@@ -11,7 +11,12 @@ namespace Aban360.CalculationPool.Application.Features.Rule.Validations
             RuleFor(t => t.Id)
                .NotNull().WithMessage(ExceptionLiterals.NotNUll)
                .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
-            
+
+            RuleFor(t => t.Title)
+               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+               .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
+
             RuleFor(t => t.LineItemTypeId)
                .NotNull().WithMessage(ExceptionLiterals.NotNUll)
                .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);

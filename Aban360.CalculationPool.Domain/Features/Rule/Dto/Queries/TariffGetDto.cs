@@ -3,6 +3,7 @@
     public record TariffGetDto
     {
         public int Id { get; set; }
+        public string Title { get; set; } = null!;
         public short LineItemTypeId { get; set; }
         public string LineItemTypeTitle { get; set; } = null!;
         public short OfferingId { get; set; }

@@ -7,9 +7,9 @@ using System.Reflection;
 namespace Aban360.CalculationPool.Persistence.Migrations
 {
     [Migration(1403120501)]
-    public class DbInitialDesign: Migration
+    public class DbInitialDesign : Migration
     {
-        string _schema= TableSchema.Name , Id = nameof(Id), Hash = nameof(Hash);
+        string _schema = TableSchema.Name, Id = nameof(Id), Hash = nameof(Hash);
         int _31 = 31, _255 = 255, _1023 = 1023;
         public override void Up()
         {
@@ -53,7 +53,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
             Create.Table(nameof(TableName.Offering)).InSchema(_schema)
                 .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn($"{nameof(TableName.OfferingUnit)}{Id}").AsInt16().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.OfferingUnit, TableName.Offering),_schema, nameof(TableName.OfferingUnit), Id)
+                    .ForeignKey(NamingHelper.Fk(TableName.OfferingUnit, TableName.Offering), _schema, nameof(TableName.OfferingUnit), Id)
                 .WithColumn($"{nameof(TableName.OfferingGroup)}{Id}").AsInt16().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.OfferingGroup, TableName.Offering), _schema, nameof(TableName.OfferingGroup), Id)
                 .WithColumn("Title").AsString(_255).NotNullable()
@@ -75,7 +75,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                 .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
                 .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn($"{TableName.TariffCalculationMode}Id").AsInt16().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.TariffCalculationMode, TableName.CompanyServiceType), _schema,nameof(TableName.TariffCalculationMode), Id)
+                    .ForeignKey(NamingHelper.Fk(TableName.TariffCalculationMode, TableName.CompanyServiceType), _schema, nameof(TableName.TariffCalculationMode), Id)
                 .WithColumn("Description").AsString(_1023).Nullable();
         }// foroosh, ab baha, pas as foroosh
         private void CreateCompanyService()// foroosh ab, fazelab, taqir qotr ,...
@@ -122,7 +122,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table))
                .WithColumn("Title").AsString(_255).NotNullable()
                .WithColumn("Description").AsString(_1023).Nullable();
-        }      
+        }
         private void CreateInvoice()
         {
             var table = TableName.Invoice;
@@ -147,20 +147,20 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                 .WithColumn("OfferingId").AsInt16().NotNullable()
                      .ForeignKey(NamingHelper.Fk(TableName.Offering, TableName.InvoiceLineItem), _schema, nameof(TableName.Offering), Id)
                 .WithColumn("InvoiceLineItemInsertModeId").AsInt16().NotNullable()
-                     .ForeignKey(NamingHelper.Fk(TableName.InvoiceLineItemInsertMode, TableName.InvoiceLineItem), _schema, nameof(TableName.InvoiceLineItemInsertMode), Id)                     
+                     .ForeignKey(NamingHelper.Fk(TableName.InvoiceLineItemInsertMode, TableName.InvoiceLineItem), _schema, nameof(TableName.InvoiceLineItemInsertMode), Id)
                 .WithColumn("Amount").AsInt64().NotNullable()
                 .WithColumn("Quanity").AsInt32().NotNullable();
         }
         private void CreateInvoiceInstallment()
         {
-            var table= TableName.InvoiceInstallment;
+            var table = TableName.InvoiceInstallment;
             Create.Table(nameof(TableName.InvoiceInstallment)).InSchema(_schema)
-                .WithColumn (Id).AsInt64().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn(Id).AsInt64().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn("InvoiceId").AsInt64().NotNullable()
                      .ForeignKey(NamingHelper.Fk(TableName.Invoice, table), _schema, nameof(TableName.Invoice), Id)
-                .WithColumn("Amount").AsInt64().NotNullable() 
+                .WithColumn("Amount").AsInt64().NotNullable()
                 .WithColumn("DueDateJalali").AsAnsiString(10).NotNullable()
-                .WithColumn("DueDateTime").AsDateTime().NotNullable() 
+                .WithColumn("DueDateTime").AsDateTime().NotNullable()
                 .WithColumn("InstallmentOrder").AsInt32().NotNullable()
                 .WithColumn("BillId").AsAnsiString(20).Nullable()
                 .WithColumn("PaymentId").AsAnsiString(20).Nullable();
@@ -211,7 +211,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                .WithColumn("Title").AsString(_255).NotNullable()
                .WithColumn("Description").AsString(_1023).Nullable();
         }
-      
+
         private void CreateTariffConstant()
         {
             var table = TableName.TariffConstant;
@@ -230,6 +230,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
             var table = TableName.Tariff;
             Create.Table(nameof(TableName.Tariff)).InSchema(_schema)
                   .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                  .WithColumn("Title").AsString(_255).NotNullable()
                   .WithColumn($"{TableName.LineItemType}Id").AsInt16().NotNullable()
                        .ForeignKey(NamingHelper.Fk(TableName.LineItemType, table), _schema, nameof(TableName.LineItemType), Id)
                   .WithColumn($"{TableName.Offering}Id").AsInt16().NotNullable()
@@ -242,7 +243,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
         }
         private void CreateSupportedOperator()
         {
-            var table= TableName.SupportedOperator;
+            var table = TableName.SupportedOperator;
             Create.Table($"{nameof(TableName.SupportedOperator)}").InSchema(_schema)
                 .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn("Title").AsString(_255).NotNullable()
@@ -250,7 +251,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
         }
         private void CreateSupportedField()
         {
-            var table= TableName.SupportedField;
+            var table = TableName.SupportedField;
             Create.Table($"{nameof(TableName.SupportedField)}").InSchema(_schema)
                 .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn("Title").AsString(_255)
