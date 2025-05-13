@@ -21,9 +21,9 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Commands
         [Route("test-basic")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IntervalCalculationResultWrapper>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Test([FromBody] IntervalBillSubscriptionInfoImaginary tariffTestInput, CancellationToken cancellationToken)
+        public async Task<IActionResult> Test([FromBody] TariffTestImaginaryInput tariffTestInput, CancellationToken cancellationToken)
         {
-            var result = await _tariffCalculationImaginaryHandler.Test(tariffTestInput, cancellationToken);
+            var result = await _tariffCalculationImaginaryHandler.Handle(tariffTestInput, cancellationToken);
             return Ok(result);
         }
     }

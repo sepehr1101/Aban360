@@ -1,6 +1,6 @@
 ﻿namespace Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands
 {
-    public record IntervalBillSubscriptionInfoImaginary
+    public record TariffTestImaginaryInput
     {
         public int CustomerNumber { get; set; }
         public string BillId { get; set; } = default!;
@@ -26,8 +26,8 @@
         public int MunicipalityId { get; set; }
         public int PreviousWaterMeterNumber { get; set; }
         public int CurrentWaterMeterNumber { get; set; }
-        public string PreviousWaterMeterDate { get; set; }
-        public string CurrentWaterMeterDate { get; set; }
+        public string PreviousWaterMeterDate { get; set; } = default!;
+        public string CurrentWaterMeterDate { get; set; } = default!;
         public Dictionary<short, string>? WaterMeterTags { get; set; }
         public Dictionary<short, string>? IndividualTags { get; set; }
         public Dictionary<short, string>? Discounts { get; set; }

@@ -15,7 +15,7 @@ using org.matheval;
 
 namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Implementation
 {
-    internal sealed class TariffCalculationByDetailHandler : BaseCalculator, ITariffCalculationByDetailHandler
+    internal sealed class TariffCalculationByDetailHandler : BaseExpressionCalculator, ITariffCalculationByDetailHandler
     {
         private readonly IIntervalBillPrerequisiteInfoAddHoc _intervalBillPrerequisiteInfoAddHocHandler;
         private readonly ITariffQueryService _tariffQueryService;

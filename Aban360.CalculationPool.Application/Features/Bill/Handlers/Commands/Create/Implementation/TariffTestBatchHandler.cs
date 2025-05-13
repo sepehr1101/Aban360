@@ -4,28 +4,27 @@ using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.Rule.Entities;
 using Aban360.CalculationPool.Domain.Features.Rule.Entties;
 using Aban360.CalculationPool.Persistence.Features.Rule.Queries.Contracts;
-using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.GatewayAdhoc.Features.ConsumersInfo.Contracts;
+using Aban360.ReportPool.Persistence.Features.Transactions.Contracts;
 using DNTPersianUtils.Core;
-using FluentValidation;
 using org.matheval;
-using System.Formats.Tar;
 
 namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Implementation
 {
-    internal sealed class TariffCalculationHandler : BaseCalculator, ITariffCalculationHandler
+    internal sealed class TariffTestBatchHandler : BaseExpressionCalculator, ITestCalculationBatchHandler
     {
         private readonly IIntervalBillPrerequisiteInfoAddHoc _intervalBillPrerequisiteInfoAddHocHandler;
         private readonly ITariffQueryService _tariffQueryService;
         private readonly ITariffConstantQueryService _tariffConstantQueryService;
-        private readonly IValidator<TariffTestInput> _tariffValidator;
-        public TariffCalculationHandler(
+        private readonly ISubscriptionEventQueryService _eventQueryService; 
+
+        public TariffTestBatchHandler(
             IIntervalBillPrerequisiteInfoAddHoc intervalBillPrerequisiteInfoHandler,
             ITariffQueryService tariffQueryService,
             ITariffConstantQueryService tariffConstantQueryService,
-            IValidator<TariffTestInput> tariffValidator)
+            ISubscriptionEventQueryService subscriptionEventQueryService)
         {
             _intervalBillPrerequisiteInfoAddHocHandler = intervalBillPrerequisiteInfoHandler;
             _intervalBillPrerequisiteInfoAddHocHandler.NotNull(nameof(_intervalBillPrerequisiteInfoAddHocHandler));
@@ -36,40 +35,48 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
             _tariffConstantQueryService = tariffConstantQueryService;
             _tariffConstantQueryService.NotNull(nameof(tariffConstantQueryService));
 
-            _tariffValidator = tariffValidator; 
-            _tariffValidator.NotNull(nameof(tariffValidator));
+            _eventQueryService = subscriptionEventQueryService;
+            _eventQueryService.NotNull(nameof(_eventQueryService));
         }
-        public async Task<IntervalCalculationResultWrapper> Test(TariffTestInput tariffTestInput, CancellationToken cancellationToken)
+        public async Task<CaluclationIntervalDiscrepancytWrapper> Handle(CaluclationIntervalBatchTestInput testInput, CancellationToken cancellationToken)
         {
-            var validationResult = await _tariffValidator.ValidateAsync(tariffTestInput, cancellationToken);
-            if (!validationResult.IsValid)
+            IEnumerable<IntervalBillSubscriptionInfo> infos = await _intervalBillPrerequisiteInfoAddHocHandler.Handle(testInput.ZoneId, testInput.RegisterDate, testInput.FormReadingNumber, testInput.ToReadingNumber, cancellationToken);
+            IEnumerable<EventsSummaryDto> eventInfos = await _eventQueryService.GetBillDto(testInput.ZoneId, testInput.RegisterDate, testInput.FormReadingNumber, testInput.ToReadingNumber);
+            ICollection<CaluclationIntervalDiscrepancy> discrepancies = new List<CaluclationIntervalDiscrepancy>();
+            foreach (IntervalBillSubscriptionInfo info in infos)
             {
-                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomeValidationException(message);
+                var eventInfo = eventInfos.FirstOrDefault(e => e.BillId == info.BillId.Trim());                
+                if(eventInfo is not null)
+                {
+                    var amount = await CalculateOne(eventInfo.PreviousMeterDate, eventInfo.CurrentMeterDate, eventInfo.PreviousMeterNumber.Value, eventInfo.NextMeterNumber.Value, info);
+                    var discrepency = new CaluclationIntervalDiscrepancy() { Amount = Convert.ToInt64(amount), BillId = info.BillId, CustomerNumber = 0, FromReadingDate = eventInfo.PreviousMeterDate, FromWaterMeterNumber = eventInfo.PreviousMeterNumber.Value, ToWaterMeterNumber = eventInfo.NextMeterNumber.Value };
+                    discrepancies.Add(discrepency);
+                }
             }
+            var res= new CaluclationIntervalDiscrepancytWrapper()
+            {
+                CurrentSystemSum = discrepancies.Sum(d=>d.Amount),
+                DifferenceSum = 56997,
+                PreviousSystemSum = eventInfos.Sum(e => e.DebtAmount.Value),
+                DiscrepancyDetails = discrepancies
+            };
+            res.DifferenceSum = res.CurrentSystemSum - res.PreviousSystemSum;
+            return res;
+        }
 
-            string previousReadingDate = tariffTestInput.PreviousReadingDate;
-            string currentReadingDate = DateTime.Now.ToShortPersianDateString();
-            int consumption = GetConsumption(tariffTestInput.PreviousReadingNumber, tariffTestInput.CurrentReadingNumber);
+        private async Task<double> CalculateOne(string @from, string @to, int previousNumber, int currentNumber, IntervalBillSubscriptionInfo info)
+        {
+            string previousReadingDate = from;
+            string currentReadingDate = to;
+            int consumption = GetConsumption(previousNumber, currentNumber);
             int duration = GetDuration(previousReadingDate, currentReadingDate);
             double average = GetDailyConsumptionAverage(consumption, duration);
-
-            IntervalBillSubscriptionInfo info = await _intervalBillPrerequisiteInfoAddHocHandler.Handle(tariffTestInput.BillId, cancellationToken);
+            
             ICollection<Tariff> rawTariffs = await GetRawTariffs(previousReadingDate, currentReadingDate);
             ICollection<Tariff> tariffs = GetTariffs(rawTariffs, average, previousReadingDate, currentReadingDate);
             List<IntervalCalculationResult> intervalCalculationResults = CreateCalculationResult(info, tariffs);
-            List<IntervalCalculationResult3> result3 = CreateCalculationResult3(intervalCalculationResults);
-            IntervalCalculationResultWrapper calculationResult = CreateCalculationResultWrapper(previousReadingDate, currentReadingDate, consumption, duration, average, intervalCalculationResults, result3);
-            return calculationResult;
-        }
-
-        private IntervalCalculationResultWrapper CreateCalculationResultWrapper(string previousReadingDate, string currentReadingDate, int consumption, int duration, double average, List<IntervalCalculationResult> intervalCalculationResults, List<IntervalCalculationResult3> result3)
-        {
-            IntervalCalculationResultWrapper calculationResult = new(consumption, duration, average, previousReadingDate, currentReadingDate);
-            calculationResult.IntervalCalculationResults = result3;
-            calculationResult.IntervalCount = intervalCalculationResults.Count;
-            calculationResult.Amount = intervalCalculationResults.Sum(i => i.Amount);
-            return calculationResult;
+            double amount= intervalCalculationResults.Sum(x => x.Amount);
+            return amount;
         }
         private List<IntervalCalculationResult> CreateCalculationResult(IntervalBillSubscriptionInfo info, ICollection<Tariff> tariffs)
         {
@@ -134,7 +141,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
         {
             Dictionary<string, object> keyValuePairs = new Dictionary<string, object>();
             ICollection<TariffConstant> tariffConstatns = await _tariffConstantQueryService.Get(from, to);
-            if(tariffConstatns is null)
+            if (tariffConstatns is null)
             {
                 return keyValuePairs;
             }

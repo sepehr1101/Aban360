@@ -33,7 +33,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Commands
         [AllowAnonymous]
         public async Task<IActionResult> Test([FromBody] TariffTestInput tariffTestInput, CancellationToken cancellationToken)
         {
-            var result = await _tariffCalculationHandler.Test(tariffTestInput, cancellationToken);
+            var result = await _tariffCalculationHandler.Handle(tariffTestInput, cancellationToken);
             await _invoiceInserterHandler.Handle(result, cancellationToken);
 
             await _uow.SaveChangesAsync(cancellationToken);
