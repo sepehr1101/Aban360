@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace Aban360.CalculationPool.Application.Features.Base
 {
-    internal abstract class BaseCalculator
+    internal abstract class BaseExpressionCalculator
     {
         internal Expression GetExpression(string formula, object info, [Optional] Dictionary<string, object>? dependencyDictionary)
         {
@@ -55,7 +55,6 @@ namespace Aban360.CalculationPool.Application.Features.Base
                     break;
                 }
             }
-        }
-      
+        }      
     }
 }

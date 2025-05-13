@@ -5,6 +5,7 @@
         public int PreviousReadingNumber { get; set; }
         public int CurrentReadingNumber { get; set; }
         public string PreviousReadingDate { get; set; } = default!;
+        public string CurrentReadingDate { get; set; } = default!;
         public string BillId { get; set; } = default!;
     }
 }

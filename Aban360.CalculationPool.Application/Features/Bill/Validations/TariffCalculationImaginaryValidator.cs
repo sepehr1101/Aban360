@@ -5,7 +5,7 @@ using FluentValidation;
 
 namespace Aban360.CalculationPool.Application.Features.Bill.Validations
 {
-    public class TariffCalculationImaginaryValidator : BaseValidator<IntervalBillSubscriptionInfoImaginary>
+    public class TariffCalculationImaginaryValidator : BaseValidator<TariffTestImaginaryInput>
     {
         public TariffCalculationImaginaryValidator()
         {

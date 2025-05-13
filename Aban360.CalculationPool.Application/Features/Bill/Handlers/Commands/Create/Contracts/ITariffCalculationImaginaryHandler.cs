@@ -4,6 +4,6 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
 {
     public interface ITariffCalculationImaginaryHandler
     {
-        Task<IntervalCalculationResultWrapper> Test(IntervalBillSubscriptionInfoImaginary tariffTestInput,CancellationToken cancellationToken);
+        Task<IntervalCalculationResultWrapper> Handle(TariffTestImaginaryInput tariffTestInput,CancellationToken cancellationToken);
     }
 }
