@@ -12,52 +12,52 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Validations
         {
 
             RuleFor(f => f.BillId)
-            .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-            .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+            .NotNull().WithMessage(ExceptionLiterals.NotNull)
             .MaximumLength(15).WithMessage(ExceptionLiterals.NotMoreThan15);
 
             RuleFor(f => f.UseStateId)
-              .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-              .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+              .NotNull().WithMessage(ExceptionLiterals.NotNull)
               .IsInEnum().WithMessage(ExceptionLiterals.MustEnum);
 
             RuleFor(f => f.SubscriptionTypeId)
-              .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-              .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+              .NotNull().WithMessage(ExceptionLiterals.NotNull)
               .IsInEnum().WithMessage(ExceptionLiterals.MustEnum);
 
             RuleFor(f => f.MeterDiameterId)
-            .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-            .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+            .NotNull().WithMessage(ExceptionLiterals.NotNull)
             .GreaterThan((short)0).WithMessage(ExceptionLiterals.GreaterThan0);
 
             RuleFor(f => f.MeterProducerId)
-            .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-            .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+            .NotNull().WithMessage(ExceptionLiterals.NotNull)
              .GreaterThan((short)0).WithMessage(ExceptionLiterals.GreaterThan0);
 
 
             RuleFor(f => f.MeterTypeId)
-            .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-            .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+            .NotNull().WithMessage(ExceptionLiterals.NotNull)
              .GreaterThan((short)0).WithMessage(ExceptionLiterals.GreaterThan0);
 
 
             RuleFor(f => f.MeterMaterialId)
-            .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-            .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+            .NotNull().WithMessage(ExceptionLiterals.NotNull)
             .GreaterThan((short)0).WithMessage(ExceptionLiterals.GreaterThan0);
 
 
             RuleFor(f => f.MeterUseTypeId)
-            .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-            .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+            .NotNull().WithMessage(ExceptionLiterals.NotNull)
             .GreaterThan((short)0).WithMessage(ExceptionLiterals.GreaterThan0);
 
 
             RuleFor(f => f.CustomerNumber)
-            .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-            .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+            .NotNull().WithMessage(ExceptionLiterals.NotNull);
         }
     }
 }

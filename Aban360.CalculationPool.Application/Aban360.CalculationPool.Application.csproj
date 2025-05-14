@@ -21,4 +21,8 @@
     <ProjectReference Include="..\Aban360.ReportPool.GatewayAdhoc\Aban360.ReportPool.GatewayAdhoc.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\TestTariff\Mappings\" />
+  </ItemGroup>
+
 </Project>

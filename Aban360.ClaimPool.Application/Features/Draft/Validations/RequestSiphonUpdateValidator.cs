@@ -10,8 +10,8 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Validations
         public RequestSiphonUpdateValidator()
         {
             RuleFor(s => s.Id)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(s => s.InstallationLocation)
             .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
@@ -20,16 +20,16 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Validations
                 .Length(10).WithMessage(ExceptionLiterals.Equal10);
 
             RuleFor(s => s.SiphonDiameterId)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(s => s.SiphonTypeId)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(s => s.SiphonMaterialId)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull);
         }
     }
 }

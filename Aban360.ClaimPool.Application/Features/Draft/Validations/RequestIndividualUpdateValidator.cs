@@ -10,16 +10,16 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Validations
         public RequestIndividualUpdateValidator()
         {
             RuleFor(f => f.Id)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull);
             
             RuleFor(f => f.IndividualTypeId)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.FullName)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
 
             RuleFor(f => f.NationalId)

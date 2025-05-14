@@ -87,7 +87,7 @@ namespace Aban360.PaymentPool.Persistence.Migrations
         {
             var table = TableName.BankAccount;
             Create.Table(nameof(TableName.BankAccount)).InSchema(_schema)
-                .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelpers.Pk(table)).Identity()
+                .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelpers.Pk(table))
                 .WithColumn($"{TableName.Bank}Id").AsInt16().NotNullable()
                     .ForeignKey(NamingHelpers.Fk(TableName.Bank, table), _schema, nameof(TableName.Bank), Id)
                 .WithColumn("Title").AsString(_255).NotNullable()

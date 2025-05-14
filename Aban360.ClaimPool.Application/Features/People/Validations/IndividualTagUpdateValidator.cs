@@ -10,16 +10,16 @@ namespace Aban360.ClaimPool.Application.Features.People.Validations
         public IndividualTagUpdateValidator()
         {
             RuleFor(f => f.Id)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.IndividualId)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.IndividualTagDefinitionId)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.Value)
                .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);

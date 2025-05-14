@@ -1,4 +1,5 @@
 ﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Contracts;
+using Aban360.CalculationPool.Application.Features.TestTariff.Handlers.Contrats;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.CalculationPool.Persistence.Contexts.Contracts;
 using Aban360.Common.Extensions;
@@ -10,11 +11,11 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Commands
     [Route("v1/tariff-calculation")]
     public class TariffCalculationManager : BaseController
     {
-        private readonly ITariffCalculationHandler _tariffCalculationHandler;
+        private readonly ITariffTestSingleCustomerHandler _tariffCalculationHandler;
         private readonly IInvoiceInserterHandler _invoiceInserterHandler;
         private readonly IUnitOfWork _uow;
         public TariffCalculationManager(
-            ITariffCalculationHandler tariffCalculationHandler,
+            ITariffTestSingleCustomerHandler tariffCalculationHandler,
             IInvoiceInserterHandler invoiceInserterHandler,
             IUnitOfWork uow)
         {
@@ -33,7 +34,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Commands
         [AllowAnonymous]
         public async Task<IActionResult> Test([FromBody] TariffTestInput tariffTestInput, CancellationToken cancellationToken)
         {
-            var result = await _tariffCalculationHandler.Test(tariffTestInput, cancellationToken);
+            var result = await _tariffCalculationHandler.Handle(tariffTestInput, cancellationToken);
             await _invoiceInserterHandler.Handle(result, cancellationToken);
 
             await _uow.SaveChangesAsync(cancellationToken);

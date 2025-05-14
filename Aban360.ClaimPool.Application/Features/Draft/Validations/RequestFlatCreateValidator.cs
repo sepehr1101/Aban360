@@ -11,8 +11,8 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Validations
         public RequestFlatCreateValidator()
         {
             RuleFor(f => f.Storey)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
         }
     }

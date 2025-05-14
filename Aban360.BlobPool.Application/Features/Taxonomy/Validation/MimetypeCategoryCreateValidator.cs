@@ -10,17 +10,17 @@ namespace Aban360.BlobPool.Application.Features.Taxonomy.Validation
         public MimetypeCategoryCreateValidator()
         {
             RuleFor(t => t.Id)
-                .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+                .NotNull().WithMessage(ExceptionLiterals.NotNull)
+                .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(t => t.Title)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
             
             RuleFor(t => t.Name)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
         }
     }

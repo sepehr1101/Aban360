@@ -10,12 +10,12 @@ namespace Aban360.InstallationPool.Application.Features.Definition.Validations
         public EquipmentBrokerZoneCreateValidator()
         {
             RuleFor(f => f.ZoneId)
-              .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-              .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+              .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.EquipmentBrokerId)
-              .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-              .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+              .NotNull().WithMessage(ExceptionLiterals.NotNull);
         }
     }
 }

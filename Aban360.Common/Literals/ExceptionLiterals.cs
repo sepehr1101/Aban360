@@ -8,7 +8,7 @@
         public static string InvalidIp { get { return "Ip وارد شده صحیح نمیباشد: {0}"; } }
         public static string MustEnum => "مقدار وارد شده باید یک Enum باشد";
         public static string GreaterThan0 => "مقدار وارد شده باید بزرگ تر از 0 باشد";
-        public static string NotNUll => "از پر بودن تمامی فیلد ها اطمینان حاصل کنید";
+        public static string NotNull => "از پر بودن تمامی فیلد ها اطمینان حاصل کنید";
         public static string Equal10 => "مقدار وارد شده باید برابر 10 کاراکتر باشد";
         public static string NotMoreThan3 => "مقدار وارد شده نباید بیش از 3 کاراکتر باشد";
         public static string NotMoreThan11 => "مقدار وارد شده نباید بیش از 11 کاراکتر باشد";
@@ -16,6 +16,8 @@
         public static string NotMoreThan31 => "مقدار وارد شده نباید بیش از 31 کاراکتر باشد";
         public static string NotMoreThan255 => "مقدار وارد شده نباید بیش از 255 کاراکتر باشد";
         public static string NotMoreThan1023 => "مقدار وارد شده نباید بیش از 1023 کاراکتر باشد";
+        public static string PreviousDateIsInvalid => "تاریخ قبلی قرائت ناصحیح است";
+        public static string CurrentDateIsInvalid => "تاریخ فعلی قرائت ناصحیح است";
         public static string CurrentDateNotMoreThanPreviousDate => "تاریخ دوره قبلی نمیتوان از تاریخ دوره جاری بزرگ تر باشد";
         public static string CurrentNumberNotMoreThanPreviousNumber => "رقم دوره قبلی نمیتوان از رقم دوره جاری بزرگ تر باشد";
 

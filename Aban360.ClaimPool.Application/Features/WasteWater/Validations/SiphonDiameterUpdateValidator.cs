@@ -10,12 +10,12 @@ namespace Aban360.ClaimPool.Application.Features.WasteWater.Validations
         public SiphonDiameterUpdateValidator()
         {
             RuleFor(s => s.Id)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(s => s.Title)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
         }
     }

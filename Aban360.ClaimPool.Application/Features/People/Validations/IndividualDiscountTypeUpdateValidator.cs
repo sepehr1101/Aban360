@@ -10,26 +10,26 @@ namespace Aban360.ClaimPool.Application.Features.People.Validations
         public IndividualDiscountTypeUpdateValidator()
         {
             RuleFor(f => f.Id)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.IndividualId)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.DiscountTypeId)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .IsInEnum().WithMessage(ExceptionLiterals.MustEnum);
 
             RuleFor(f => f.UserId)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .Must(u => u != Guid.Empty).WithMessage(ExceptionLiterals.NotNUll);
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .Must(u => u != Guid.Empty).WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.ExpireDate)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull);
         }
     }
 }
