@@ -9,5 +9,6 @@
         public string IBan { get; set; } = null!;
         public string Number { get; set; } = null!;
         public int RegionId { get; set; }
+        public string? Icon { get; set; }
     }
 }

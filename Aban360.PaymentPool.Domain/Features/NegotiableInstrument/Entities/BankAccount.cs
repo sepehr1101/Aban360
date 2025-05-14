@@ -22,5 +22,7 @@ public class BankAccount
 
     public string RegionTitle { get; set; } = null!;
 
+    public string? Icon { get; set; }
+
     public virtual Bank Bank { get; set; } = null!;
 }

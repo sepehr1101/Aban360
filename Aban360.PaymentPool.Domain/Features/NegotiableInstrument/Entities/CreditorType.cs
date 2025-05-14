@@ -10,4 +10,6 @@ public class CreditorType
 
     public string Title { get; set; } = null!;
 
+    public string? Icon { get; set; }
+
 }

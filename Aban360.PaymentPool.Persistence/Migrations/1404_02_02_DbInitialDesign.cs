@@ -9,8 +9,8 @@ namespace Aban360.PaymentPool.Persistence.Migrations
     [Migration(14040202)]
     public class DbInitialDesign : Migration
     {
-        string _schema = TableSchema.Name, Id = nameof(Id),Hash=nameof(Hash);
-        int _15 = 15, _20 = 20, _255 = 255, _1023 = 1023, _26=26,_24 = 24;
+        string _schema = TableSchema.Name, Id = nameof(Id), Hash = nameof(Hash);
+        int _15 = 15, _20 = 20, _255 = 255, _1023 = 1023, _26 = 26, _24 = 24;
         public override void Up()
         {
             Create.Schema(_schema);
@@ -54,12 +54,13 @@ namespace Aban360.PaymentPool.Persistence.Migrations
                 .WithColumn("Description").AsString(int.MaxValue).Nullable();
         }
 
-        private void CreateCreditor()
+        private void CreateCreditorType()
         {
             var table = TableName.CreditorType;
             Create.Table(nameof(TableName.CreditorType)).InSchema(_schema)
                 .WithColumn("Id").AsInt16().NotNullable().PrimaryKey(NamingHelpers.Pk(table))
-                .WithColumn("Title").AsString(_255).NotNullable();
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Icon").AsString(int.MaxValue).Nullable();
         }
 
         private void CreateBankFileStructure()
@@ -95,7 +96,8 @@ namespace Aban360.PaymentPool.Persistence.Migrations
                 .WithColumn("RegionId").AsInt32().NotNullable()
                 .WithColumn("RegionTitle").AsString(_255).NotNullable()
                 .WithColumn("IBan").AsString(_26).NotNullable()
-                .WithColumn("Number").AsString(_24).NotNullable();//Todo : lenght
+                .WithColumn("Number").AsString(_24).NotNullable()//Todo : lenght
+                .WithColumn("Icon").AsString(int.MaxValue).Nullable();
         }
 
         private void CreateUploader()
@@ -127,9 +129,9 @@ namespace Aban360.PaymentPool.Persistence.Migrations
                 .WithColumn($"{TableName.Uploader}Id").AsInt32().NotNullable()
                     .ForeignKey(NamingHelpers.Fk(TableName.Uploader, table), _schema, nameof(TableName.Uploader), Id)
                 .WithColumn($"{TableName.CreditorType}Id").AsInt16().NotNullable()
-                    .ForeignKey(NamingHelpers.Fk(TableName.CreditorType,table),_schema,nameof(TableName.CreditorType), Id)
+                    .ForeignKey(NamingHelpers.Fk(TableName.CreditorType, table), _schema, nameof(TableName.CreditorType), Id)
                 .WithColumn($"{TableName.PaymentMethod}Id").AsInt16().NotNullable()
-                    .ForeignKey(NamingHelpers.Fk(TableName.PaymentMethod, table),_schema,nameof(TableName.PaymentMethod), Id)
+                    .ForeignKey(NamingHelpers.Fk(TableName.PaymentMethod, table), _schema, nameof(TableName.PaymentMethod), Id)
                 .WithColumn("ValidFrom").AsDateTime2().NotNullable()
                 .WithColumn("ValidTo").AsDateTime2().Nullable()
                 .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
