@@ -20,7 +20,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         private readonly IValidator<TariffTestInput> _tariffValidator;
         private readonly IValidator<TariffTestImaginaryInput> _intervalBillValidator;
 
-        protected BaseIntervalTariffEngine(IIntervalBillPrerequisiteInfoAddHoc intervalBillPrerequisiteInfoHandler,
+        public BaseIntervalTariffEngine(IIntervalBillPrerequisiteInfoAddHoc intervalBillPrerequisiteInfoHandler,
             ITariffQueryService tariffQueryService,
             ITariffConstantQueryService tariffConstantQueryService,
             IValidator<TariffTestInput> tariffValidator,

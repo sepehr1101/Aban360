@@ -11,13 +11,13 @@ namespace Aban360.ClaimPool.Application.Features.Metering.Validations
         public SubscriptionTypeUpdateValidator()
         {
             RuleFor(f => f.Id)
-              .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-              .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+              .NotNull().WithMessage(ExceptionLiterals.NotNull)
               .IsInEnum().WithErrorCode(ExceptionLiterals.MustEnum);
 
             RuleFor(f => f.Title)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
         }
     }

@@ -10,13 +10,13 @@ namespace Aban360.ClaimPool.Application.Features.Land.Validations
         public OfficialHolidayCreateValidator()
         {
             RuleFor(f => f.Title)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
 
             RuleFor(f => f.DateJalali)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .Length(10).WithMessage(ExceptionLiterals.Equal10);
         }
     }

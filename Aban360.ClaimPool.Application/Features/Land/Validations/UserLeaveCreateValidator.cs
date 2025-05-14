@@ -10,36 +10,36 @@ namespace Aban360.ClaimPool.Application.Features.Land.Validations
         public UserLeaveCreateValidator()
         {
             RuleFor(f => f.RegiatereId)
-              .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-              .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+              .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.RegiatereFullname)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
 
             RuleFor(f => f.RegiatereDatetime)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.UserId)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .Must(u => u != Guid.Empty).WithMessage(ExceptionLiterals.NotNUll);
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .Must(u => u != Guid.Empty).WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.UserFullname)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
 
             RuleFor(f => f.FromDateJalali)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .Length(10).WithMessage(ExceptionLiterals.Equal10);
 
             RuleFor(f => f.ToDateJalali)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .Length(10).WithMessage(ExceptionLiterals.Equal10);
 
         }
@@ -48,40 +48,40 @@ namespace Aban360.ClaimPool.Application.Features.Land.Validations
             public UserLeaveUpdateValidator()
             {
                 RuleFor(f => f.Id)
-                  .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                  .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+                  .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                  .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
                 RuleFor(f => f.RegiatereId)
-                  .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                  .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+                  .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                  .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
                 RuleFor(f => f.RegiatereFullname)
-                   .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                   .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+                   .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                   .NotNull().WithMessage(ExceptionLiterals.NotNull)
                    .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
 
                 RuleFor(f => f.RegiatereDatetime)
-                   .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                   .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+                   .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                   .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
                 RuleFor(f => f.UserId)
-                   .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                   .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-                   .Must(u => u != Guid.Empty).WithMessage(ExceptionLiterals.NotNUll);
+                   .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                   .NotNull().WithMessage(ExceptionLiterals.NotNull)
+                   .Must(u => u != Guid.Empty).WithMessage(ExceptionLiterals.NotNull);
 
                 RuleFor(f => f.UserFullname)
-                   .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                   .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+                   .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                   .NotNull().WithMessage(ExceptionLiterals.NotNull)
                    .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
 
                 RuleFor(f => f.FromDateJalali)
-                   .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                   .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+                   .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                   .NotNull().WithMessage(ExceptionLiterals.NotNull)
                    .Length(10).WithMessage(ExceptionLiterals.Equal10);
 
                 RuleFor(f => f.ToDateJalali)
-                   .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                   .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+                   .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                   .NotNull().WithMessage(ExceptionLiterals.NotNull)
                    .Length(10).WithMessage(ExceptionLiterals.Equal10);
             }
         }
@@ -90,37 +90,37 @@ namespace Aban360.ClaimPool.Application.Features.Land.Validations
             public UserWorkdayUpdateValidator()
             {
                 RuleFor(f => f.Id)
-                 .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                 .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
                 RuleFor(f => f.UserId)
-                   .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                   .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-                   .Must(u => u != Guid.Empty).WithMessage(ExceptionLiterals.NotNUll);
+                   .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                   .NotNull().WithMessage(ExceptionLiterals.NotNull)
+                   .Must(u => u != Guid.Empty).WithMessage(ExceptionLiterals.NotNull);
 
                 RuleFor(f => f.UserFullname)
-                   .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                   .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+                   .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                   .NotNull().WithMessage(ExceptionLiterals.NotNull)
                    .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
 
                 RuleFor(f => f.FromReadingNumber)
-                   .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                   .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+                   .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                   .NotNull().WithMessage(ExceptionLiterals.NotNull)
                    .MaximumLength(31).WithMessage(ExceptionLiterals.NotMoreThan31);
 
                 RuleFor(f => f.ToReadingNumber)
-                   .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                   .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+                   .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                   .NotNull().WithMessage(ExceptionLiterals.NotNull)
                    .MaximumLength(31).WithMessage(ExceptionLiterals.NotMoreThan31);
 
                 RuleFor(f => f.DateJalali)
-                   .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                   .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+                   .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                   .NotNull().WithMessage(ExceptionLiterals.NotNull)
                    .Length(10).WithMessage(ExceptionLiterals.Equal10);
 
                 RuleFor(f => f.ZoneId)
-                   .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                   .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+                   .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                   .NotNull().WithMessage(ExceptionLiterals.NotNull);
             }
         }
         public class UserWorkdayCreateValidator : BaseValidator<UserWorkdayCreateDto>
@@ -128,33 +128,33 @@ namespace Aban360.ClaimPool.Application.Features.Land.Validations
             public UserWorkdayCreateValidator()
             {
                 RuleFor(f => f.UserId)
-                   .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                   .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-                   .Must(u => u != Guid.Empty).WithMessage(ExceptionLiterals.NotNUll);
+                   .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                   .NotNull().WithMessage(ExceptionLiterals.NotNull)
+                   .Must(u => u != Guid.Empty).WithMessage(ExceptionLiterals.NotNull);
 
                 RuleFor(f => f.UserFullname)
-                   .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                   .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+                   .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                   .NotNull().WithMessage(ExceptionLiterals.NotNull)
                    .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
 
                 RuleFor(f => f.FromReadingNumber)
-                   .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                   .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+                   .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                   .NotNull().WithMessage(ExceptionLiterals.NotNull)
                    .MaximumLength(31).WithMessage(ExceptionLiterals.NotMoreThan31);
 
                 RuleFor(f => f.ToReadingNumber)
-                   .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                   .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+                   .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                   .NotNull().WithMessage(ExceptionLiterals.NotNull)
                    .MaximumLength(31).WithMessage(ExceptionLiterals.NotMoreThan31);
 
                 RuleFor(f => f.DateJalali)
-                   .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                   .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+                   .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                   .NotNull().WithMessage(ExceptionLiterals.NotNull)
                    .Length(10).WithMessage(ExceptionLiterals.Equal10);
 
                 RuleFor(f => f.ZoneId)
-                   .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                   .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+                   .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                   .NotNull().WithMessage(ExceptionLiterals.NotNull);
             }
         }
         public class WaterResourceCreateValidator : BaseValidator<WaterResourceCreateDto>
@@ -162,13 +162,13 @@ namespace Aban360.ClaimPool.Application.Features.Land.Validations
             public WaterResourceCreateValidator()
             {
                 RuleFor(f => f.Title)
-                 .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                 .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                 .NotNull().WithMessage(ExceptionLiterals.NotNull)
                  .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
 
                 RuleFor(f => f.HeadquartersId)
-                   .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                   .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+                   .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                   .NotNull().WithMessage(ExceptionLiterals.NotNull);
             }
         }
         public class WaterResourceUpdateValidator : BaseValidator<WaterResourceUpdateDto>
@@ -176,17 +176,17 @@ namespace Aban360.ClaimPool.Application.Features.Land.Validations
             public WaterResourceUpdateValidator()
             {
                 RuleFor(f => f.Id)
-                 .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                 .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
                 RuleFor(f => f.Title)
-                  .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                  .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+                  .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                  .NotNull().WithMessage(ExceptionLiterals.NotNull)
                   .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
 
                 RuleFor(f => f.HeadquartersId)
-                   .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                   .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+                   .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                   .NotNull().WithMessage(ExceptionLiterals.NotNull);
             }
         }
     }

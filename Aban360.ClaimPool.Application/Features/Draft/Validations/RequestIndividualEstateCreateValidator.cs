@@ -12,16 +12,16 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Validations
             public RequestIndividualEstateCreateValidator()
             {
                 RuleFor(f => f.EstateId)
-                    .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                    .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+                    .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                    .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
                 RuleFor(f => f.IndividualId)
-                    .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                    .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+                    .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                    .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
                 RuleFor(f => f.IndividualEstateRelationTypeId)
-                    .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                    .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+                    .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                    .NotNull().WithMessage(ExceptionLiterals.NotNull)
                     .IsInEnum().WithMessage(ExceptionLiterals.MustEnum);
 
             }

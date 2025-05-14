@@ -11,13 +11,13 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Validations
         public OfferingUnitCreateValidator()
         {
             RuleFor(o => o.Title)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
 
             RuleFor(o => o.Symbol)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
         }
     }

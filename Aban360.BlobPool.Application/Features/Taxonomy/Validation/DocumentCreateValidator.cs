@@ -10,12 +10,12 @@ namespace Aban360.BlobPool.Application.Features.Taxonomy.Validation
         public DocumentCreateValidator()
         {
             RuleFor(t => t.DocumentFile)
-                .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+                .NotNull().WithMessage(ExceptionLiterals.NotNull)
+                .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(t => t.DocumentTypeId)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(t => t.ParrentId)
                 .Must(m => m != Guid.Empty);

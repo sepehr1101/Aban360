@@ -9,35 +9,35 @@ namespace Aban360.UserPool.Application.Features.Auth.Validations
         public UserUpdateValidator()
         {
             RuleFor(u => u.Id)
-                .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+                .NotNull().WithMessage(ExceptionLiterals.NotNull)
+                .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(u => u.FullName)
-                .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+                .NotNull().WithMessage(ExceptionLiterals.NotNull)
+                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
 
             RuleFor(u => u.DisplayName)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
 
             RuleFor(u => u.Mobile)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                .Length(11).WithMessage(ExceptionLiterals.NotMoreThan11);
 
             RuleFor(u => u.SelectedRoleIds)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(u => u.SelectedZoneIds)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(u => u.SelectedEndpointIds)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
         }
     }
 }

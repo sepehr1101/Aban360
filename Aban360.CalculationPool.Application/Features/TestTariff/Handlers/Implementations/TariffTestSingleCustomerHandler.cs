@@ -1,12 +1,12 @@
 ﻿using Aban360.CalculationPool.Application.Features.Base;
-using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Contracts;
+using Aban360.CalculationPool.Application.Features.TestTariff.Handlers.Contrats;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.Common.Extensions;
 using FluentValidation;
 
-namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Implementation
+namespace Aban360.CalculationPool.Application.Features.TestTariff.Handlers.Implementations
 {
-    internal sealed class TariffTestSingleCustomerHandler : ITariffCalculationHandler
+    internal sealed class TariffTestSingleCustomerHandler : ITariffTestSingleCustomerHandler
     {
         private readonly IBaseIntervalTariffEngine _baseIntervalTariffEngine;
         public TariffTestSingleCustomerHandler(
@@ -30,7 +30,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
             calculationResult.IntervalCount = intervalCalculationResults.Count;
             calculationResult.Amount = intervalCalculationResults.Sum(i => i.Amount);
             return calculationResult;
-        }       
+        }
         private List<IntervalCalculationResult3> CreateCalculationResult3(List<IntervalCalculationResult> intervalCalculationResults)
         {
             return intervalCalculationResults
@@ -49,6 +49,6 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
                         OfferingTitle = g.OfferingTitle
                     }).ToList()
                 }).ToList();
-        }       
+        }
     }
 }

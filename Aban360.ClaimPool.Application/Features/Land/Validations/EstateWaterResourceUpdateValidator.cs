@@ -10,16 +10,16 @@ namespace Aban360.ClaimPool.Application.Features.Land.Validations
         public EstateWaterResourceUpdateValidator()
         {
             RuleFor(f => f.Id)
-                 .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                 .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.EstateId)
-              .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-              .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+              .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.WaterResourceId)
-              .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-              .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+              .NotNull().WithMessage(ExceptionLiterals.NotNull);
         }
     }
 }
