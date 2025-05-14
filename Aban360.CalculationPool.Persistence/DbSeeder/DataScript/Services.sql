@@ -296,72 +296,72 @@ INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId
 GO
 INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'لوازم نصب فاضلاب', 1, 1, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'آب بها', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'آب بها', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'کارمزد دفع فاضلاب', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'کارمزد دفع فاضلاب', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'آبونمان آب', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'آبونمان آب', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'آبونمان فاضلاب', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'آبونمان فاضلاب', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'عوارض شهرداری', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'عوارض شهرداری', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تبصره 2', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تبصره', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تبصره 2 و 3 قدیم (قابل جمع با آب بها)', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تبصره 2 و 3 قدیم (قابل جمع با آب بها)', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'جریمه', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'جریمه', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'آبرسانی', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'آبرسانی', 1,2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'ضریب D/ جوانی جمعیت', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'ضریب D/ جوانی جمعیت', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'فصل گرم سال', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'فصل گرم سال', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'ضریب تعدیل', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'ضریب تعدیل', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تبصره3  آب', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تبصره3  آب', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تبصره3  فاضلاب', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تبصره3  فاضلاب', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تبصره آبونمان فاضلاب', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تبصره آبونمان فاضلاب', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'مبلغ قانون بودجه', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'مبلغ قانون بودجه', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'قسط لوازم کاهنده مصرف', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'قسط لوازم کاهنده مصرف', 1, 2, 0)
 GO
 --
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف آب بها', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف آب بها', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف کارمزد دفع فاضلاب', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف کارمزد دفع فاضلاب', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف آبونمان آب', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف آبونمان آب', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف آبونمان فاضلاب', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف آبونمان فاضلاب', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف عوارض شهرداری', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف عوارض شهرداری', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف تبصره 2', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف تبصره 2', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف تبصره 2 و 3 قدیم (قابل جمع با آب بها)', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف تبصره 2 و 3 قدیم (قابل جمع با آب بها)', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف جریمه', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف جریمه', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف آبرسانی', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف آبرسانی', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف ضریب D/ جوانی جمعیت', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف ضریب D/ جوانی جمعیت', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف فصل گرم سال', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف فصل گرم سال', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف ضریب تعدیل', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف ضریب تعدیل', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف تبصره3 آب', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف تبصره3 آب', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف تبصره3 فاضلاب', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف تبصره3 فاضلاب', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف تبصره آبونمان فاضلاب', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف تبصره آبونمان فاضلاب', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف مبلغ قانون بودجه', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف مبلغ قانون بودجه', 1, 2, 0)
 GO
-INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف قسط لوازم کاهنده مصرف', 1, 1, 0)
+INSERT [CalculationPool].[Offering] ([Title], [OfferingUnitId], [OfferingGroupId], [InstallmentOption]) VALUES (N'تخفیف قسط لوازم کاهنده مصرف', 1, 2, 0)
 GO

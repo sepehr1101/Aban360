@@ -128,6 +128,8 @@ namespace Aban360.PaymentPool.Persistence.Migrations
                     .ForeignKey(NamingHelpers.Fk(TableName.Uploader, table), _schema, nameof(TableName.Uploader), Id)
                 .WithColumn($"{TableName.CreditorType}Id").AsInt16().NotNullable()
                     .ForeignKey(NamingHelpers.Fk(TableName.CreditorType,table),_schema,nameof(TableName.CreditorType), Id)
+                .WithColumn($"{TableName.PaymentMethod}Id").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelpers.Fk(TableName.PaymentMethod, table),_schema,nameof(TableName.PaymentMethod), Id)
                 .WithColumn("ValidFrom").AsDateTime2().NotNullable()
                 .WithColumn("ValidTo").AsDateTime2().Nullable()
                 .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()

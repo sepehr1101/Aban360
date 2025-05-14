@@ -11,5 +11,7 @@ namespace Aban360.PaymentPool.Domain.Features.NegotiableInstrument.Dto.Commands
         public long Amount { get; set; }
         public short UploaderId { get; set; }
         public CreditorTypeEnum CreditorTypeId { get; set; }
+        public PaymentMethodEnum PaymentMethodId { get; set; }
+
     }
 }
