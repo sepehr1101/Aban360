@@ -5,7 +5,7 @@ using FluentValidation;
 
 namespace Aban360.InstallationPool.Application.Features.Definition.Validations
 {
-    public class EquipmentBrokerCreateValidator:BaseValidator<EquipmentBrokerCreateDto>
+    public class EquipmentBrokerCreateValidator : BaseValidator<EquipmentBrokerCreateDto>
     {
         public EquipmentBrokerCreateValidator()
         {

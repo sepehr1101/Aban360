@@ -52,5 +52,24 @@ namespace Aban360.InstallationPool.Persistence.Migrations
                 .WithColumn($"{TableName.EquipmentBroker}Id").AsInt16().NotNullable()
                 .ForeignKey(NamingHelper.Fk(TableName.EquipmentBroker, table), _schema, nameof(TableName.EquipmentBroker), Id);
         }
+        private void CreateSewageEquipmentBroker()
+        {
+            var table = TableName.SewageEquipmentBroker;
+            Create.Table(nameof(TableName.SewageEquipmentBroker)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().Identity().NotNullable().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("Title").AsString(_255).NotNullable()
+                .WithColumn("Website").AsString(_1023).NotNullable()
+                .WithColumn("ApiUrl").AsString(_1023).NotNullable();
+        }
+        private void CreateSewageEquipmentBrokerZone()
+        {
+            var table = TableName.SewageEquipmentBrokerZone;
+            Create.Table(nameof(TableName.SewageEquipmentBrokerZone)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().Identity().NotNullable().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("ZoneId").AsInt32().NotNullable()
+                .WithColumn("ZoneTitle").AsString(_255).NotNullable()
+                .WithColumn($"{TableName.SewageEquipmentBroker}Id").AsInt16().NotNullable()
+                .ForeignKey(NamingHelper.Fk(TableName.SewageEquipmentBroker, table), _schema, nameof(TableName.SewageEquipmentBroker), Id);
+        }
     }
 }

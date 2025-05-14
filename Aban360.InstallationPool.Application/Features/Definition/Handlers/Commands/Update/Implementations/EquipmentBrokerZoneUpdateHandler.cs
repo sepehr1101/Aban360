@@ -36,8 +36,6 @@ namespace Aban360.InstallationPool.Application.Features.Definition.Handlers.Comm
 
         }
 
-
-
         public async Task Handle(EquipmentBrokerZoneUpdateDto updateDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(updateDto, cancellationToken);

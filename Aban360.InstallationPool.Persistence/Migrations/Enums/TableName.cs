@@ -4,5 +4,8 @@
     {
         EquipmentBroker,
         EquipmentBrokerZone,
+
+        SewageEquipmentBroker,
+        SewageEquipmentBrokerZone,
     }
 }

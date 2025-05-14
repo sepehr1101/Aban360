@@ -6,5 +6,4 @@ namespace Aban360.InstallationPool.Persistence.Features.Queries.Contracts
     {
         Task<EquipmentBrokerZone> Get(short id);
         Task<ICollection<EquipmentBrokerZone>> Get();
-    }
-}
+    }}
