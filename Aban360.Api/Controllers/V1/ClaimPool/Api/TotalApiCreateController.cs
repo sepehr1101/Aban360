@@ -29,6 +29,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Api
         public async Task<IActionResult> Create([FromBody] TotalApiCreateDto createDto, CancellationToken cancellationToken)
         {
             await _totalApiCommandService.Handle(createDto, cancellationToken);
+            await _uow.SaveChangesAsync(cancellationToken);
             return Ok(createDto);
         }
     }

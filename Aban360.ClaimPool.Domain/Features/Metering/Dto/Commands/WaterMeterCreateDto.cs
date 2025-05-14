@@ -36,7 +36,7 @@ namespace Aban360.ClaimPool.Domain.Features.Metering.Dto.Commands
 
         public string BillId { get; set; } = null!;
 
-        public int EstateId { get; set; }
+        public int EstateId { get; set; }//todo: remove
 
         public short WaterMeterInstallationMethodId { get; set; }
 

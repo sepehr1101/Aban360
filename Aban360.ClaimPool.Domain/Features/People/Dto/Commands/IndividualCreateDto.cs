@@ -1,8 +1,11 @@
-﻿namespace Aban360.ClaimPool.Domain.Features.People.Dto.Commands
+﻿using Aban360.ClaimPool.Domain.Constants;
+using Aban360.ClaimPool.Domain.Features.People.Entities;
+
+namespace Aban360.ClaimPool.Domain.Features.People.Dto.Commands
 {
     public record IndividualCreateDto
     {
-        public int WaterMeterId { get; set; }
+        public int WaterMeterId { get; set; }//doto: remove
         public string FullName { get; set; } = null!;
         public string? NationalId { get; set; }
         public string? FatherName { get; set; }
@@ -14,5 +17,7 @@
         public DateTime ValidFrom { get; set; }
         public DateTime? ValidTo { get; set; }
         public string InsertLogInfo { get; set; } = null!;
+        //new
+        public IndividualEstateRelationTypeEnum IndividualEstateRelationTypeId { get; set; }
     }
 }

@@ -23,7 +23,7 @@ namespace Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Impleme
             _queryService.NotNull(nameof(queryService));
         }
 
-        public async Task<IndividualEstateRelationTypeGetDto> Handle(IndividualEstateRelationEnum id, CancellationToken cancellationToken)
+        public async Task<IndividualEstateRelationTypeGetDto> Handle(IndividualEstateRelationTypeEnum id, CancellationToken cancellationToken)
         {
             IndividualEstateRelationType individualEstateRelationType = await _queryService.Get(id);
             return _mapper.Map<IndividualEstateRelationTypeGetDto>(individualEstateRelationType);

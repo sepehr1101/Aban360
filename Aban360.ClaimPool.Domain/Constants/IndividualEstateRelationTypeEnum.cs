@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ClaimPool.Domain.Constants
 {
-    public enum IndividualEstateRelationEnum:short
+    public enum IndividualEstateRelationTypeEnum:short
     {
         OwnerShip = 1,
         Dwellty = 2,

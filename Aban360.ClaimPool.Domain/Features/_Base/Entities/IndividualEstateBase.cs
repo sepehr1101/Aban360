@@ -10,5 +10,5 @@ public class IndividualEstateBase
 
     public int EstateId { get; set; }
 
-    public IndividualEstateRelationEnum IndividualEstateRelationTypeId { get; set; }
+    public IndividualEstateRelationTypeEnum IndividualEstateRelationTypeId { get; set; }
 }
