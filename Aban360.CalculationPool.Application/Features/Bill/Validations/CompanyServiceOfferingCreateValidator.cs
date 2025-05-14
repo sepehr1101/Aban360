@@ -10,16 +10,16 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Validations
         public CompanyServiceOfferingCreateValidator()
         {
             RuleFor(o => o.Id)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(o => o.CompanyServiceId)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(o => o.OfferingId)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
         }
     }
 }

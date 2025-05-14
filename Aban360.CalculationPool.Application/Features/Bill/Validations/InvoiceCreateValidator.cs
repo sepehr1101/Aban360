@@ -11,16 +11,16 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Validations
         public InvoiceCreateValidator()
         {
             RuleFor(o => o.InvoiceTypeId)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(o => o.InvoiceStatusId)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(o => o.DepositRate)
-                 .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-                 .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+                 .NotNull().WithMessage(ExceptionLiterals.NotNull)
+                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
   
 

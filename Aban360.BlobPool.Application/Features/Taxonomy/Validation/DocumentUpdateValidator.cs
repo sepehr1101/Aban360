@@ -10,16 +10,16 @@ namespace Aban360.BlobPool.Application.Features.Taxonomy.Validation
         public DocumentUpdateValidator()
         {
             RuleFor(t => t.Id)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .Must(m => m != Guid.Empty);
 
             RuleFor(t => t.document)
-                .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+                .NotNull().WithMessage(ExceptionLiterals.NotNull)
+                .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(t => t.DocumentTypeId)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(t => t.ParrentId)
                 .Must(m => m != Guid.Empty);
@@ -28,8 +28,8 @@ namespace Aban360.BlobPool.Application.Features.Taxonomy.Validation
                 .MaximumLength(1023).WithMessage(ExceptionLiterals.NotMoreThan1023);
 
             RuleFor(t => t.IsThumbnail)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
         }
     }

@@ -1,4 +1,4 @@
-﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Contracts;
+﻿using Aban360.CalculationPool.Application.Features.TestTariff.Handlers.Contrats;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
@@ -10,8 +10,8 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Commands
     [Route("v1/tariff-calculation-imaginary")]
     public class TariffCalculationImaginaryManager : BaseController
     {
-        private readonly ITariffCalculationImaginaryHandler _tariffCalculationImaginaryHandler;
-        public TariffCalculationImaginaryManager(ITariffCalculationImaginaryHandler tariffCalculationImaginaryHandler)
+        private readonly ITariffTestImaginaryCustomerHandler _tariffCalculationImaginaryHandler;
+        public TariffCalculationImaginaryManager(ITariffTestImaginaryCustomerHandler tariffCalculationImaginaryHandler)
         {
             _tariffCalculationImaginaryHandler = tariffCalculationImaginaryHandler;
             _tariffCalculationImaginaryHandler.NotNull();

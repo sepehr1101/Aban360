@@ -10,12 +10,12 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Validations
         public RequestIndividualTagCreateValidator()
         {
             RuleFor(f => f.IndividualId)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.IndividualTagDefinitionId)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
         }
     }

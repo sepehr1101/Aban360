@@ -10,12 +10,12 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Validations
         public CompanyServiceTypeUpdateValidator()
         {
             RuleFor(o => o.Id)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(o => o.Title)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
 
             RuleFor(o => o.Description)
@@ -23,8 +23,8 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Validations
 
             RuleFor(o => o.TariffCalculationModeId)
                .IsInEnum().WithMessage(ExceptionLiterals.MustEnum)
-               .NotNull().WithMessage(ExceptionLiterals.NotNUll)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNUll);
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
         }
     }
 }

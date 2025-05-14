@@ -10,12 +10,12 @@ namespace Aban360.ClaimPool.Application.Features.Land.Validations
         public FlatCreateValidator()
         {
             RuleFor(f => f.EstateId)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                .NotNull().WithMessage(ExceptionLiterals.NotNUll);
+                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.PostalCode)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNUll)
-                .NotNull().WithMessage(ExceptionLiterals.NotNUll)
+                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                .NotNull().WithMessage(ExceptionLiterals.NotNull)
                 .Length(10).WithMessage(ExceptionLiterals.Equal10);
         }
     }
