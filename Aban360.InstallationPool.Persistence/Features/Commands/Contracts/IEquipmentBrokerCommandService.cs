@@ -6,5 +6,4 @@ namespace Aban360.InstallationPool.Persistence.Features.Commands.Contracts
     {
         Task Add(EquipmentBroker equipmentBroker);
         Task Remove(EquipmentBroker equipmentBroker);
-    }
-}
+    }}

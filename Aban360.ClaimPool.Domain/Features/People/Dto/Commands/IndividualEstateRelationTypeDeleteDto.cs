@@ -4,6 +4,6 @@ namespace Aban360.ClaimPool.Domain.Features.People.Dto.Commands
 {
     public record IndividualEstateRelationTypeDeleteDto
     {
-        public IndividualEstateRelationEnum Id { get; set; }
+        public IndividualEstateRelationTypeEnum Id { get; set; }
     }
 }

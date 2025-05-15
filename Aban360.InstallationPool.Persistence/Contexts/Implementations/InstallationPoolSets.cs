@@ -7,5 +7,7 @@ namespace Aban360.InstallationPool.Persistence.Contexts.Implementations
     {
         public virtual DbSet<EquipmentBroker> EquipmentBrokers { get; set; }
         public virtual DbSet<EquipmentBrokerZone> EquipmentBrokerZones{ get; set; }
+        public virtual DbSet<SewageEquipmentBroker> SewageEquipmentBrokers { get; set; }
+        public virtual DbSet<SewageEquipmentBrokerZone> SewageEquipmentBrokerZones { get; set; }
     }
 }

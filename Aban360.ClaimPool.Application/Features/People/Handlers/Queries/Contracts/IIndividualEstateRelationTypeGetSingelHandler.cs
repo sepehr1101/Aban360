@@ -5,6 +5,6 @@ namespace Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contrac
 {
     public interface IIndividualEstateRelationTypeGetSingelHandler
     {
-        Task<IndividualEstateRelationTypeGetDto> Handle(IndividualEstateRelationEnum id, CancellationToken cancellationToken);
+        Task<IndividualEstateRelationTypeGetDto> Handle(IndividualEstateRelationTypeEnum id, CancellationToken cancellationToken);
     }
 }

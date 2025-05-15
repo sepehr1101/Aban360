@@ -30,9 +30,9 @@ namespace Aban360.ClaimPool.Persistence.DbSeeder.Implementations
 
             ICollection<IndividualEstateRelationType> IndividualEstateRelationType = new List<IndividualEstateRelationType>()
             {
-                new IndividualEstateRelationType(){Id=IndividualEstateRelationEnum.OwnerShip,Title="مالک"},
-                new IndividualEstateRelationType(){Id=IndividualEstateRelationEnum.Dwellty,Title="ساکن"},
-                new IndividualEstateRelationType(){Id=IndividualEstateRelationEnum.Tenant,Title="مستاجر"},
+                new IndividualEstateRelationType(){Id=IndividualEstateRelationTypeEnum.OwnerShip,Title="مالک"},
+                new IndividualEstateRelationType(){Id=IndividualEstateRelationTypeEnum.Dwellty,Title="ساکن"},
+                new IndividualEstateRelationType(){Id=IndividualEstateRelationTypeEnum.Tenant,Title="مستاجر"},
             };
             _individualEstateRelationType.AddRange(IndividualEstateRelationType);
             _uow.SaveChanges();

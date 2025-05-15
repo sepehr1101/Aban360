@@ -20,7 +20,7 @@ namespace Aban360.ClaimPool.Persistence.Features.People.Queries.Implementations
             _individualEstateRelationTypes.NotNull(nameof(_individualEstateRelationTypes));
         }
 
-        public async Task<IndividualEstateRelationType> Get(IndividualEstateRelationEnum id)
+        public async Task<IndividualEstateRelationType> Get(IndividualEstateRelationTypeEnum id)
         {
             return await _uow.FindOrThrowAsync<IndividualEstateRelationType>(id);
         }

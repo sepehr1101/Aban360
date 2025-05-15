@@ -47,7 +47,7 @@ namespace Aban360.InstallationPool.Application.Features.Definition.Handlers.Comm
             }
 
             var equipmentBrokerZone = _mapper.Map<EquipmentBrokerZone>(createDto);
-            equipmentBrokerZone.ZoneTitle = await _zoneTitleAddHock.Handle(createDto.ZoneId,cancellationToken);
+            equipmentBrokerZone.ZoneTitle = await _zoneTitleAddHock.Handle(createDto.ZoneId, cancellationToken);
             await _equipmentBrokerZoneCommandService.Add(equipmentBrokerZone);
         }
     }

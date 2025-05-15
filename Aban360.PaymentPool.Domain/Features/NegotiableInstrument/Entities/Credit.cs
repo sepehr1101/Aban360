@@ -22,6 +22,8 @@ public class Credit
 
     public CreditorTypeEnum CreditorTypeId { get; set; }
 
+    public PaymentMethodEnum PaymentMethodId { get; set; }
+
     public DateTime ValidFrom { get; set; }
 
     public DateTime? ValidTo { get; set; }

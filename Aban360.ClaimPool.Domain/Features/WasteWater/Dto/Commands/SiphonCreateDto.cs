@@ -2,7 +2,7 @@
 {
     public record SiphonCreateDto
     {
-        public int WaterMeterId { get; set; }
+        public int WaterMeterId { get; set; }//todo: remove 
         public string? InstallationLocation { get; set; }
         public string? InstallationDate { get; set; }
         public short SiphonDiameterId { get; set; }

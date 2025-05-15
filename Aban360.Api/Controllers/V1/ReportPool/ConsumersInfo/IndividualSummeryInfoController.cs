@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<IndividualSummaryDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> OwnerShipSummary([FromBody] SearchInput searchInput)
         {
-            IEnumerable<IndividualSummaryDto> summary = await _individualSummeryQueryService.GetOwnerShipSummery(searchInput.Input, (short)IndividualEstateRelationEnum.OwnerShip);
+            IEnumerable<IndividualSummaryDto> summary = await _individualSummeryQueryService.GetOwnerShipSummery(searchInput.Input, (short)IndividualEstateRelationTypeEnum.OwnerShip);
             return Ok(summary);
         }
 
@@ -31,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<IndividualSummaryDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> StakeHolderSummary([FromBody] SearchInput searchInput)
         {
-            IEnumerable<IndividualSummaryDto> summary = await _individualSummeryQueryService.GetStakeHolderSummery(searchInput.Input, (short)IndividualEstateRelationEnum.OwnerShip);
+            IEnumerable<IndividualSummaryDto> summary = await _individualSummeryQueryService.GetStakeHolderSummery(searchInput.Input, (short)IndividualEstateRelationTypeEnum.OwnerShip);
             return Ok(summary);
         }
     }

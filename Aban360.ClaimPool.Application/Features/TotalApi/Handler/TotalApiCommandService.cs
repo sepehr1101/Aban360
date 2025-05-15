@@ -49,6 +49,44 @@ namespace Aban360.ClaimPool.Application.Features.TotalApi.Handler
             ICollection<Siphon> siphons = _mapper.Map<ICollection<Siphon>>(createDto.siphons);
             ICollection<Individual> individuals = _mapper.Map<ICollection<Individual>>(createDto.individuals);
 
+            estate.InsertLogInfo = "-";
+            estate.ValidFrom = DateTime.Now;
+            estate.Hash = "-";
+
+            waterMeter.Estate = estate;
+            waterMeter.InsertLogInfo = "-";
+            waterMeter.ValidFrom = DateTime.Now;
+            waterMeter.Hash = "-";
+
+
+            siphons.ForEach(s =>
+            { 
+                WaterMeterSiphon waterMeterSiphon = new()
+                {
+                    Siphon=s,
+                    WaterMeter=waterMeter
+                };
+                s.WaterMeterSiphons.Add(waterMeterSiphon);
+
+                s.InsertLogInfo = "-";
+                s.ValidFrom = DateTime.Now;
+                s.Hash = "-";
+            });
+
+            individuals.ForEach(i =>
+            {
+                IndividualEstate individualEstate = new()
+                {
+                    Estate=estate,
+                    Individual=i,
+                    IndividualEstateRelationTypeId=IndividualEstateRelationTypeEnum.Tenant//Todo
+                };
+                i.IndividualEstates.Add(individualEstate);
+                i.InsertLogInfo = "-";
+                i.ValidFrom = DateTime.Now;
+                i.Hash = "-";
+            });
+
             await _estateCommandService.Add(estate);
             await _waterMeterCommandService.Add(waterMeter);
             await _siphonCommandService.Add(siphons);

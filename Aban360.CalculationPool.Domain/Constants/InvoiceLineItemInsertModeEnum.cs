@@ -3,6 +3,7 @@
     public enum InvoiceLineItemInsertModeEnum : short
     {
         ByUser=1,
-        BySystem=2
+        BySystem=2,
+        ByConvert=3
     }
 }
