@@ -32,7 +32,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.DMS.Commands
         }
         [HttpPost]
         [Route("create")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<DocumentEntityCreateDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<DocumentEntityByDocumentCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromForm] DocumentEntityByDocumentCreateDto documentEntityByDocumentCreateDto, CancellationToken cancellationToken)
         {
             Guid documentdId = await _documentCreateHandler.Handle(documentEntityByDocumentCreateDto.documentCreateDto.DocumentFile, documentEntityByDocumentCreateDto.documentCreateDto.DocumentTypeId, documentEntityByDocumentCreateDto.documentCreateDto.Description, cancellationToken);
