@@ -20,5 +20,8 @@ namespace Aban360.ClaimPool.Domain.Features._Base.Dto
         public int CustomerNumber { get; set; }
         public string BillId { get; set; } = null!;
         public ICollection<short>? TagIds { get; set; }
+        //new
+        public short WaterMeterInstallationMethodId { get; set; }
+
     }
 }

@@ -2,7 +2,7 @@
 {
     public record CreditByDocumentCreateDto
     {
-        public Guid DocumentId { get; set; }
+        // public Guid DocumentId { get; set; }
         public string? LetterNumber { get; set; }
         public short BankId { get; set; }
     }

@@ -17,8 +17,8 @@ namespace Aban360.BlobPool.Application.Features.Taxonomy.Validation
                .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(t => t.ParrentId)
-                .Must(m => m != Guid.Empty);
+          //  RuleFor(t => t.ParrentId)
+          //      .Must(m => m != Guid.Empty);
 
             RuleFor(t => t.Description)
                 .MaximumLength(1023).WithMessage(ExceptionLiterals.NotMoreThan1023);

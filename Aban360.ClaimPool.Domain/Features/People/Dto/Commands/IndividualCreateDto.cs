@@ -1,11 +1,11 @@
 ﻿using Aban360.ClaimPool.Domain.Constants;
-using Aban360.ClaimPool.Domain.Features.People.Entities;
 
 namespace Aban360.ClaimPool.Domain.Features.People.Dto.Commands
 {
     public record IndividualCreateDto
     {
-        public int WaterMeterId { get; set; }//doto: remove
+        public int WaterMeterId { get; set; }//doto: remove , add estateId
+        public int EstateId { get; set; }
         public string FullName { get; set; } = null!;
         public string? NationalId { get; set; }
         public string? FatherName { get; set; }

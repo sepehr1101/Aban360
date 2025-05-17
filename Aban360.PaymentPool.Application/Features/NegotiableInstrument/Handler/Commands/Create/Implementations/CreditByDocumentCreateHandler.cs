@@ -44,9 +44,10 @@ namespace Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.
             _bankFileStructureQueryService.NotNull(nameof(_bankFileStructureQueryService));
         }
 
-        public async Task Handle(IAppUser currentUser, CreditByDocumentCreateDto createDto, CancellationToken cancellationToken)
+        public async Task Handle(IAppUser currentUser,string? letterNumber, short bankId,Guid documentId, CancellationToken cancellationToken)
         {
-            var document = await _DocumentAddhoc.Handle(createDto.DocumentId, cancellationToken);
+           // var document = await _DocumentAddhoc.Handle(createDto.DocumentId, cancellationToken);
+            var document = await _DocumentAddhoc.Handle(documentId, cancellationToken);
             var documentText = Encoding.UTF8.GetString(document);
             var bankFileStructure = (await _bankFileStructureQueryService.Get())
                 .ToList();
@@ -57,11 +58,11 @@ namespace Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.
             {
                 UserId = currentUser.UserId,
                 Username = currentUser.FullName,
-                BankId = createDto.BankId,
+                BankId = bankId,
                 InsertDateTime = DateTime.Now,//todo: persian
                 InsertRecordCount = documentDate.Length,//count off Document OR count off insert?
-                ReferenceNumber = createDto.LetterNumber,
-                DocumentId = createDto.DocumentId,
+                ReferenceNumber = letterNumber,
+                DocumentId = documentId,
             };
             ICollection<Credit> credits = new List<Credit>();
             foreach (var item in documentDate)

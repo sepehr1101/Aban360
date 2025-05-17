@@ -1,4 +1,5 @@
-﻿using Aban360.ClaimPool.Domain.Features.WasteWater.Entities;
+﻿using Aban360.ClaimPool.Domain.Features.Metering.Entities;
+using Aban360.ClaimPool.Domain.Features.WasteWater.Entities;
 
 namespace Aban360.ClaimPool.Persistence.Features.WasteWater.Commands.Contracts
 {

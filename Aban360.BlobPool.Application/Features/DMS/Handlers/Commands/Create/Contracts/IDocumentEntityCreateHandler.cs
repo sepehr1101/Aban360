@@ -4,6 +4,6 @@ namespace Aban360.BlobPool.Application.Features.DMS.Handlers.Commands.Create.Con
 {
     public interface IDocumentEntityCreateHandler
     {
-        Task Handle(DocumentEntityCreateDto createDto, CancellationToken cancellationToken);
+        Task Handle(DocumentEntityCreateDto createDto,Guid documentId, CancellationToken cancellationToken);
     }
 }
