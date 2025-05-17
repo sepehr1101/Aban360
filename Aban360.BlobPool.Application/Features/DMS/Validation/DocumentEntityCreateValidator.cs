@@ -9,9 +9,9 @@ namespace Aban360.BlobPool.Application.Features.DMS.Validation
     {
         public DocumentEntityCreateValidator()
         {
-            RuleFor(t => t.DocumentId)
-                          .NotNull().WithMessage(ExceptionLiterals.NotNull)
-                          .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
+            //RuleFor(t => t.DocumentId)
+                          //.NotNull().WithMessage(ExceptionLiterals.NotNull)
+                          //.NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(t => t.TableId)
                .NotNull().WithMessage(ExceptionLiterals.NotNull)

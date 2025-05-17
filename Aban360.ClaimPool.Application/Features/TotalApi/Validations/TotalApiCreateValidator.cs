@@ -116,9 +116,10 @@ namespace Aban360.ClaimPool.Application.Features.TotalApi.Validations
 
             #region WaterMeter
             RuleFor(f => f.WaterMeter.BillId)
-         .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-         .NotNull().WithMessage(ExceptionLiterals.NotNull)
-         .MaximumLength(15).WithMessage(ExceptionLiterals.NotMoreThan15);
+              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+              .NotNull().WithMessage(ExceptionLiterals.NotNull)
+              .MaximumLength(13).WithMessage(ExceptionLiterals.NotMoreThan13)
+              .MinimumLength(6).WithMessage(ExceptionLiterals.NotLessThan6);
 
             RuleFor(f => f.WaterMeter.UseStateId)
               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
