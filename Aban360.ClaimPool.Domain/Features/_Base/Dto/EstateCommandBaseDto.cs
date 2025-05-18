@@ -28,5 +28,8 @@
         public int ImprovementsOther { get; set; }
         public int ContractualCapacity { get; set; }
         public short Storeys { get; set; }
+        //new
+        public short CapacityCalculationIndexId { get; set; }
+
     }
 }

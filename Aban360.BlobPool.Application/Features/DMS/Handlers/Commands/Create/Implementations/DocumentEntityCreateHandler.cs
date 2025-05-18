@@ -29,7 +29,7 @@ namespace Aban360.BlobPool.Application.Features.DMS.Handlers.Commands.Create.Imp
             _documentEntityCreateValidator.NotNull(nameof(_documentEntityCreateValidator)); 
         }
 
-        public async Task Handle(DocumentEntityCreateDto createDto, CancellationToken cancellationToken)
+        public async Task Handle(DocumentEntityCreateDto createDto, Guid documentId, CancellationToken cancellationToken)
         {
             var validationResult = await _documentEntityCreateValidator.ValidateAsync(createDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -38,7 +38,8 @@ namespace Aban360.BlobPool.Application.Features.DMS.Handlers.Commands.Create.Imp
                 throw new CustomeValidationException(message);
             }
 
-            var documentEntity = _mapper.Map<DocumentEntity>(createDto);
+            DocumentEntity documentEntity = _mapper.Map<DocumentEntity>(createDto);
+            documentEntity.DocumentId = documentId;
             await _documentEntityCommandService.Add(documentEntity);
         }
     }

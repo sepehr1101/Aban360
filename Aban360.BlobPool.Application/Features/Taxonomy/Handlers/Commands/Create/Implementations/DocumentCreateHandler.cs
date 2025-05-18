@@ -6,6 +6,7 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Http;
 
 namespace Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Create.Implementations
 {
@@ -30,9 +31,15 @@ namespace Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Creat
 
         }
 
-        public async Task<Guid> Handle(DocumentCreateDto createDto, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(IFormFile documentFile,short documentTypeId,string? description, CancellationToken cancellationToken)
         {
-            var validationResult = await _validator.ValidateAsync(createDto, cancellationToken);
+            DocumentCreateDto documentCreateDto = new DocumentCreateDto()
+            {
+                DocumentFile = documentFile,
+                Description = description,
+                DocumentTypeId =documentTypeId,
+            };
+            var validationResult = await _validator.ValidateAsync(documentCreateDto, cancellationToken);
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
@@ -43,20 +50,20 @@ namespace Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Creat
 
             using (MemoryStream memoryStream = new MemoryStream())
             {
-                await createDto.DocumentFile.CopyToAsync(memoryStream);
+                await documentCreateDto.DocumentFile.CopyToAsync(memoryStream);
 
                 document.Id = Guid.NewGuid();
                 document.FileRowId = Guid.NewGuid();
-                document.Name = Path.GetFileNameWithoutExtension(createDto.DocumentFile.FileName);
-                document.Extension = Path.GetExtension(createDto.DocumentFile.FileName).TrimStart('.');
+                document.Name = Path.GetFileNameWithoutExtension(documentCreateDto.DocumentFile.FileName);
+                document.Extension = Path.GetExtension(documentCreateDto.DocumentFile.FileName).TrimStart('.');
                 document.SizeInByte = memoryStream.Length;
-                document.ContentType = createDto.DocumentFile.ContentType;
+                document.ContentType = documentCreateDto.DocumentFile.ContentType;
                 document.FileContent = memoryStream.ToArray();
                 document.CreatedDateTime = DateTime.Now;
-                document.Description = createDto.Description;
+                document.Description = documentCreateDto.Description;
                 document.IsThumbnail = false;
-                document.ParrentId = createDto.ParrentId;
-                document.DocumentTypeId = createDto.DocumentTypeId;
+                //document.ParrentId = documentCreateDto.ParrentId;
+                document.DocumentTypeId = documentCreateDto.DocumentTypeId;
             }
 
             await _documentCommandService.Add(document);

@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace Aban360.BlobPool.Domain.Features.Taxonomy.Dto.Commands
 {
