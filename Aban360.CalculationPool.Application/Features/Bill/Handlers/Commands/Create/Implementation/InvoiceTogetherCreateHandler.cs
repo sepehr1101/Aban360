@@ -6,6 +6,7 @@ using Aban360.CalculationPool.Persistence.Features.Bill.Commands.Contracts;
 using Aban360.Common.Extensions;
 using AutoMapper;
 using DNTPersianUtils.Core;
+using System;
 
 namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Implementation
 {
@@ -50,11 +51,13 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
             ICollection<InvoiceInstallment> invoiceInstallments = new List<InvoiceInstallment>(createDto.InstallmentCount);
             for (int i = 0; i < createDto.InstallmentCount; i++)
             {
+                Random random = new Random();
+
                 var invoiceInstallment = new InvoiceInstallment()
                 {
                     Invoice = invoice,
                     BillId = createDto.BillId,
-                    PaymentId = createDto.PaymentId,
+                    PaymentId =createDto.PaymentId,
                     InstallmentOrder = i + 1,
                     DueDateJalali = DateTime.Now.AddDays(createDto.PaymentPeriod * i).ToShortPersianDateString(),
                     DueDateTime = DateTime.Now.AddDays(createDto.PaymentPeriod * i),

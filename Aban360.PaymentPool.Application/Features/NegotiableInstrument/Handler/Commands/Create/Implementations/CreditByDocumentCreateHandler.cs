@@ -59,7 +59,7 @@ namespace Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.
                 UserId = currentUser.UserId,
                 Username = currentUser.FullName,
                 BankId = bankId,
-                InsertDateTime = DateTime.Now,//todo: persian
+                InsertDateTime = DateTime.Now,
                 InsertRecordCount = documentDate.Length,//count off Document OR count off insert?
                 ReferenceNumber = letterNumber,
                 DocumentId = documentId,

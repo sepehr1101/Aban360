@@ -41,6 +41,10 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
             }
 
             var requestIndividualTag = _mapper.Map<RequestIndividualTag>(createDto);
+            requestIndividualTag.Hash = "-";
+            requestIndividualTag.InsertLogInfo = "-";
+            requestIndividualTag.ValidFrom = DateTime.Now;
+
             await _requestIndividualTagCommandService.Add(requestIndividualTag);
         }
     }

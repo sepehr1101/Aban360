@@ -7,5 +7,6 @@
         public short SiphonDiameterId { get; set; }
         public short SiphonTypeId { get; set; }
         public short SiphonMaterialId { get; set; }
+        public int WaterMeterId { get; set; }
     }
 }

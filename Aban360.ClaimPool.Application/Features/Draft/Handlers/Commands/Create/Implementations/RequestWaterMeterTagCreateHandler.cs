@@ -41,6 +41,10 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
             }
 
             var requestWaterMeterTag = _mapper.Map<RequestWaterMeterTag>(createDto);
+            requestWaterMeterTag .Hash = "-";
+            requestWaterMeterTag.InsertLogInfo = "-";
+            requestWaterMeterTag.ValidFrom = DateTime.Now;
+
             await _requestWaterMeterTagCommandService.Add(requestWaterMeterTag);
         }
     }

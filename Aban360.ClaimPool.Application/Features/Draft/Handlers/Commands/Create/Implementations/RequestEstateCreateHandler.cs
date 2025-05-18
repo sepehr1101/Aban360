@@ -41,6 +41,10 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
             }
 
             var requestEstate = _mapper.Map<RequestEstate>(createDto);
+            requestEstate.Hash = "-";
+            requestEstate.InsertLogInfo = "-";
+            requestEstate.ValidFrom = DateTime.Now;
+
             await _requestEstateCommandService.Add(requestEstate);
         }
     }

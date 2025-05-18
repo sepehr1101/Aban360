@@ -41,6 +41,7 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
             }
 
             var requestIndividualEstate = _mapper.Map<RequestIndividualEstate>(createDto);
+
             await _requestIndividualEstateCommandService.Add(requestIndividualEstate);
         }
     }
