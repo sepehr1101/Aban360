@@ -23,6 +23,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Draft.Queries.Implementations
         {
             return await _uow.FindOrThrowAsync<RequestWaterMeterSiphon>(id);
         }
+        
+        public async Task<RequestWaterMeterSiphon> GetBySiphonId(int id)
+        {
+            return await _requestWaterMeterSiphon
+                .Where(r => r.SiphonId == id)
+                .SingleOrDefaultAsync();
+        }
 
         public async Task<ICollection<RequestWaterMeterSiphon>> Get()
         {

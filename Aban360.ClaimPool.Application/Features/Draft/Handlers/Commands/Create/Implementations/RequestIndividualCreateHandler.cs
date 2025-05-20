@@ -13,11 +13,13 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
     {
         private readonly IMapper _mapper;
         private readonly IRequestIndividualEstateCommandService _requestIndividualEstateCommandService;
+        private readonly IRequestIndividualCommandService _requestIndividualCommandService;
         private readonly IValidator<IndividualRequestCreateDto> _validator;
 
         public RequestIndividualCreateHandler(
             IMapper mapper,
             IRequestIndividualEstateCommandService requestIndividualEstateCommandService,
+            IRequestIndividualCommandService requestIndividualCommandService,
             IValidator<IndividualRequestCreateDto> validator)
         {
             _mapper = mapper;
@@ -25,6 +27,9 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
 
             _requestIndividualEstateCommandService = requestIndividualEstateCommandService;
             _requestIndividualEstateCommandService.NotNull(nameof(_requestIndividualEstateCommandService));
+
+            _requestIndividualCommandService = requestIndividualCommandService;
+            _requestIndividualCommandService.NotNull(nameof(_requestIndividualCommandService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -48,9 +53,26 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
             RequestIndividualEstate requestIndividualEstate = new RequestIndividualEstate()
             {
                 RequestIndividual = requestIndividual,
-                EstateId=createDto.EstateId,
-                IndividualEstateRelationTypeId=createDto.IndividualEstateRelationTypeId,
+                EstateId = createDto.EstateId,
+                IndividualEstateRelationTypeId = createDto.IndividualEstateRelationTypeId,
             };
+
+
+            createDto.TagIds.ForEach(tags =>
+            {
+                RequestIndividualTag requestIndividualTag = new RequestIndividualTag()
+                {
+                    RequestIndividual = requestIndividual,
+                    IndividualTagDefinitionId = tags,
+                    Hash = "-",
+                    InsertLogInfo = "-",
+                    ValidFrom = DateTime.Now,
+                };
+                requestIndividual.IndividualTags.Add(requestIndividualTag);
+            });
+
+
+            await _requestIndividualCommandService.Add(requestIndividual);
             await _requestIndividualEstateCommandService.Add(requestIndividualEstate);
         }
     }

@@ -23,6 +23,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Draft.Queries.Implementations
         {
             return await _uow.FindOrThrowAsync<RequestIndividualTag>(id);
         }
+        public async Task<ICollection<RequestIndividualTag>> GetByIndividualId(int id)
+        {
+            return await _requestIndividualTag
+                .Where(x => x.IndividualId == id)
+                .ToListAsync();
+        }
 
         public async Task<ICollection<RequestIndividualTag>> Get()
         {

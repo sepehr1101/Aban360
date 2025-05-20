@@ -45,6 +45,19 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
             requestWaterMeter.InsertLogInfo = "-";
             requestWaterMeter.ValidFrom = DateTime.Now;
 
+            createDto.TagIds.ForEach(tags =>
+            { 
+                RequestWaterMeterTag requestWaterMeterTag = new RequestWaterMeterTag()
+                {
+                    RequestWaterMeter= requestWaterMeter,
+                    WaterMeterTagDefinitionId=tags,
+                    Hash = "-",
+                    InsertLogInfo = "-",
+                    ValidFrom = DateTime.Now,
+                };
+                requestWaterMeter.WaterMeterTags.Add(requestWaterMeterTag);
+            });
+
             await _requestWaterMeterCommandService.Add(requestWaterMeter);
         }
     }

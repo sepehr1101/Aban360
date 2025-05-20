@@ -5,6 +5,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Draft.Commands.Contracts
     public interface IRequestIndividualEstateCommandService
     {
         Task Add(RequestIndividualEstate requestIndividualEstate);
-        Task Remove(RequestIndividualEstate requestIndividualEstate);
+        void Remove(RequestIndividualEstate requestIndividualEstate);
     }
 }

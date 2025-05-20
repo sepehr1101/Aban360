@@ -24,7 +24,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Draft.Commands.Implementations
             await _requestWaterMeter.AddAsync(requestWaterMeter);
         }
 
-        public async Task Remove(RequestWaterMeter requestWaterMeter)
+        public void Remove(RequestWaterMeter requestWaterMeter)
         {
             _requestWaterMeter.Remove(requestWaterMeter);
         }

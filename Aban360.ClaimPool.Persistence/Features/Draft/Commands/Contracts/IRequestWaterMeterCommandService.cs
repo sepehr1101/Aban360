@@ -5,6 +5,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Draft.Commands.Contracts
     public interface IRequestWaterMeterCommandService
     {
         Task Add(RequestWaterMeter requestWaterMeter);
-        Task Remove(RequestWaterMeter requestWaterMeter);
+        void Remove(RequestWaterMeter requestWaterMeter);
     }
 }
