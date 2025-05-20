@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
 {
     [Route("v1/customer")]
-    public class SubscriptionSummaryInfoController : BaseController
+    public class CustomerSummaryInfoController : BaseController
     {
         private readonly IConsumerSummaryQueryService _consumerSummeryQueryService;
-        public SubscriptionSummaryInfoController(IConsumerSummaryQueryService consumerSummaryQueryService)
+        public CustomerSummaryInfoController(IConsumerSummaryQueryService consumerSummaryQueryService)
         {
             _consumerSummeryQueryService = consumerSummaryQueryService;
             _consumerSummeryQueryService.NotNull(nameof(_consumerSummeryQueryService));
@@ -20,7 +20,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [HttpPost]
         [Route("summary")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ConsumerSummaryDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetSummaryInfo([FromBody] SearchInput searchInput)
+        public async Task<IActionResult> GetSummaryInfo([FromBody] SearchInput searchInput, CancellationToken cancellationToken)
         {
             ConsumerSummaryDto summary = await _consumerSummeryQueryService.GetInfo(searchInput.Input);
             return Ok(summary);
