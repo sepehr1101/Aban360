@@ -11,8 +11,8 @@
         BranchCode=7,
         ChannelType=8,//PaymentMethodId
         PayDate=9,
-        BillID=10,
-        PaymentID=11,
+        BillId=10,
+        PaymentId=11,
         RefCode=12,
     }
 }

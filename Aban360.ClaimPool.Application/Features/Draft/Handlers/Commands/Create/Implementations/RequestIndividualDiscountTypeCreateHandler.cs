@@ -44,6 +44,7 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
             individualDiscountType.Hash = "hash";
             individualDiscountType.ValidFrom = DateTime.Now;
             individualDiscountType.InsertLogInfo = "insertLogInfo";
+
             await _requestIndividualDiscountTypeCommandService.Add(individualDiscountType);
         }
     }

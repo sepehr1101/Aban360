@@ -12,19 +12,19 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
     internal sealed class RequestIndividualCreateHandler : IRequestIndividualCreateHandler
     {
         private readonly IMapper _mapper;
-        private readonly IRequestIndividualCommandService _requestIndividualCommandService;
+        private readonly IRequestIndividualEstateCommandService _requestIndividualEstateCommandService;
         private readonly IValidator<IndividualRequestCreateDto> _validator;
 
         public RequestIndividualCreateHandler(
             IMapper mapper,
-            IRequestIndividualCommandService requestIndividualCommandService,
+            IRequestIndividualEstateCommandService requestIndividualEstateCommandService,
             IValidator<IndividualRequestCreateDto> validator)
         {
             _mapper = mapper;
             _mapper.NotNull(nameof(_mapper));
 
-            _requestIndividualCommandService = requestIndividualCommandService;
-            _requestIndividualCommandService.NotNull(nameof(_requestIndividualCommandService));
+            _requestIndividualEstateCommandService = requestIndividualEstateCommandService;
+            _requestIndividualEstateCommandService.NotNull(nameof(_requestIndividualEstateCommandService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -41,7 +41,17 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
             }
 
             var requestIndividual = _mapper.Map<RequestIndividual>(createDto);
-            await _requestIndividualCommandService.Add(requestIndividual);
+            requestIndividual.Hash = "-";
+            requestIndividual.InsertLogInfo = "-";
+            requestIndividual.ValidFrom = DateTime.Now;
+
+            RequestIndividualEstate requestIndividualEstate = new RequestIndividualEstate()
+            {
+                RequestIndividual = requestIndividual,
+                EstateId=createDto.EstateId,
+                IndividualEstateRelationTypeId=createDto.IndividualEstateRelationTypeId,
+            };
+            await _requestIndividualEstateCommandService.Add(requestIndividualEstate);
         }
     }
 }

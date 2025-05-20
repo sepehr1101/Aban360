@@ -42,8 +42,8 @@ namespace Aban360.PaymentPool.Persistence.DbSeeder.Implementations
                 new BankFileStructure(){FromIndex=0,ToIndex=6,StringLenght=6,Title="کد شعبه دریافت کننده قبض",IsHeader=false,BankStructureItemId=BankStructureItemEnum.BranchCode},
                 new BankFileStructure(){FromIndex=6,ToIndex=8,StringLenght=2,Title="روش پرداخت",IsHeader=false,BankStructureItemId=BankStructureItemEnum.ChannelType},
                 new BankFileStructure(){FromIndex=8,ToIndex=14,StringLenght=6,Title="تاریخ پرداخت قبض",IsHeader=false,BankStructureItemId=BankStructureItemEnum.PayDate},
-                new BankFileStructure(){FromIndex=14,ToIndex=27,StringLenght=13,Title="شناسه قبض",IsHeader=false,BankStructureItemId=BankStructureItemEnum.BillID},
-                new BankFileStructure(){FromIndex=27,ToIndex=40,StringLenght=13,Title="شناسه پرداخت",IsHeader=false,BankStructureItemId=BankStructureItemEnum.PaymentID},
+                new BankFileStructure(){FromIndex=14,ToIndex=27,StringLenght=13,Title="شناسه قبض",IsHeader=false,BankStructureItemId=BankStructureItemEnum.BillId},
+                new BankFileStructure(){FromIndex=27,ToIndex=40,StringLenght=13,Title="شناسه پرداخت",IsHeader=false,BankStructureItemId=BankStructureItemEnum.PaymentId},
                 new BankFileStructure(){FromIndex=40,ToIndex=46,StringLenght=6,Title="شماره پیگیری",IsHeader=false,BankStructureItemId=BankStructureItemEnum.RefCode},
             };
             _bankFileStructure.AddRange(bankFileStructures);

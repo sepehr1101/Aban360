@@ -14,10 +14,12 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
         private readonly IMapper _mapper;
         private readonly IRequestSiphonCommandService _requestSiphonCommandService;
         private readonly IValidator<SiphonRequestCreateDto> _validator;
+        private readonly IRequestWaterMeterSiphonCommandService _requestWaterMeterSiphonCommandService;
 
         public RequestSiphonCreateHandler(
             IMapper mapper,
             IRequestSiphonCommandService requestSiphonCommandService,
+            IRequestWaterMeterSiphonCommandService requestWaterMeterSiphonCommandService,
             IValidator<SiphonRequestCreateDto> validator)
         {
             _mapper = mapper;
@@ -25,6 +27,9 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
 
             _requestSiphonCommandService = requestSiphonCommandService;
             _requestSiphonCommandService.NotNull(nameof(_requestSiphonCommandService));
+
+            _requestWaterMeterSiphonCommandService = requestWaterMeterSiphonCommandService;
+            _requestWaterMeterSiphonCommandService.NotNull(nameof(_requestWaterMeterSiphonCommandService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -40,8 +45,19 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
                 throw new CustomeValidationException(message);
             }
 
-            var requestSiphon = _mapper.Map<RequestSiphon>(createDto);
-            await _requestSiphonCommandService.Add(requestSiphon);
+            RequestSiphon requestSiphon = _mapper.Map<RequestSiphon>(createDto);
+            requestSiphon.Hash = "-";
+            requestSiphon.InsertLogInfo = "-";
+            requestSiphon.ValidFrom = DateTime.Now;
+
+            RequestWaterMeterSiphon requestWaterMeterSiphon = new RequestWaterMeterSiphon()
+            {
+                RequestSiphon = requestSiphon,
+                WaterMeterId=createDto.WaterMeterId
+            };
+
+            //await _requestSiphonCommandService.Add(requestSiphon);
+            await _requestWaterMeterSiphonCommandService.Add(requestWaterMeterSiphon);
         }
     }
 }
