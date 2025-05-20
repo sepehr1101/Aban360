@@ -216,6 +216,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aban360.InstallationPool.Ga
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aban360.InstallationPool.Persistence", "Aban360.InstallationPool.Persistence\Aban360.InstallationPool.Persistence.csproj", "{9D4D72B8-DFE7-4E22-968F-CD9722F5097F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aban360.BrdigeApi", "Aban360.BrdigeApi\Aban360.BrdigeApi.csproj", "{CF0A9E6D-E04C-4371-A620-8D2B7B4B5ECA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -458,6 +460,10 @@ Global
 		{9D4D72B8-DFE7-4E22-968F-CD9722F5097F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D4D72B8-DFE7-4E22-968F-CD9722F5097F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D4D72B8-DFE7-4E22-968F-CD9722F5097F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF0A9E6D-E04C-4371-A620-8D2B7B4B5ECA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF0A9E6D-E04C-4371-A620-8D2B7B4B5ECA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF0A9E6D-E04C-4371-A620-8D2B7B4B5ECA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF0A9E6D-E04C-4371-A620-8D2B7B4B5ECA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -565,6 +571,7 @@ Global
 		{B618C43C-2CAF-4010-808F-8DA0F2942725} = {62E88FE5-27C9-42D3-9869-A85E51A4C135}
 		{2744A504-71FF-4664-822D-1A5685B36BD8} = {62E88FE5-27C9-42D3-9869-A85E51A4C135}
 		{9D4D72B8-DFE7-4E22-968F-CD9722F5097F} = {62E88FE5-27C9-42D3-9869-A85E51A4C135}
+		{CF0A9E6D-E04C-4371-A620-8D2B7B4B5ECA} = {D0B7CD7A-FDB1-4FC3-8B88-FACB4AEA4E0B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C0F258BB-DDA6-4E35-A9D0-53DD876EE11C}

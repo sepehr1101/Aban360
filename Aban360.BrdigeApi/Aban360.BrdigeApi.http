@@ -1,0 +1,6 @@
+@Aban360.BrdigeApi_HostAddress = http://localhost:5240
+
+GET {{Aban360.BrdigeApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
