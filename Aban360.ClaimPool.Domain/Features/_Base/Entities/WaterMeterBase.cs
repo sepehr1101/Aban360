@@ -10,6 +10,8 @@ namespace Aban360.ClaimPool.Domain.Features._Base.Entities
 
         public int CustomerNumber { get; set; }
 
+        public int SealNumber { get; set; }
+
         public string BillId { get; set; } = null!;
 
         public int EstateId { get; set; }

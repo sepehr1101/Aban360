@@ -35,6 +35,8 @@ namespace Aban360.ClaimPool.Domain.Features.Draft.Dto.Commands
 
         public int CustomerNumber { get; set; }
 
+        public int SealNumber { get; set; }
+
         public string BillId { get; set; } = null!;
 
         public int EstateId { get; set; }

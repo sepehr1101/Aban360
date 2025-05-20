@@ -10,6 +10,8 @@ namespace Aban360.ClaimPool.Domain.Features.Metering.Dto.Queries
 
         public string? BodySerial { get; set; }
 
+        public int SealNumber { get; set; }
+
         public string? InstallationDate { get; set; }
 
         public string? ProductDate { get; set; }

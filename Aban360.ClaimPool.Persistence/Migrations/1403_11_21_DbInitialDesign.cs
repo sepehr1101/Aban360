@@ -237,6 +237,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
               .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
               .WithColumn("ReadingNumber").AsAnsiString(_31).Nullable()
               .WithColumn("CustomerNumber").AsInt32().NotNullable()
+              .WithColumn("SealNumber").AsInt32().NotNullable()
               .WithColumn("BillId").AsString(15).NotNullable()
               .WithColumn("EstateId").AsInt32().NotNullable()
                   .ForeignKey(NamingHelper.Fk(estateTable, table), _schema, estateName, Id)

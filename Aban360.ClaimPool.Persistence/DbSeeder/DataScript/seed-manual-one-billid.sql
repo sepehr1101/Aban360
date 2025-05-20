@@ -14,7 +14,7 @@ INSERT [ClaimPool].[IndividualEstate] ( [IndividualId], [EstateId], [IndividualE
 GO
 INSERT [ClaimPool].[IndividualEstate] ( [IndividualId], [EstateId], [IndividualEstateRelationTypeId]) VALUES (1, 1, 1)
 GO
-INSERT [ClaimPool].[WaterMeter] ( [ReadingNumber], [CustomerNumber], [BillId], [EstateId], [UseStateId], [SubscriptionTypeId], [InstallationLocation], [BodySerial], [InstallationDate], [ProductDate], [GuaranteeDate], [MeterDiameterId], [MeterProducerId], [MeterTypeId], [MeterMaterialId], [MeterUseTypeId], [ParentId], [UserId], [PreviousId],[WaterMeterInstallationMethodId] ,[ValidFrom], [ValidTo], [InsertLogInfo], [RemoveLogInfo], [Hash]) VALUES (N'10025698', 1455669, N'100189916315', 1, 1, 1, N'درب اصلی', N'123456', N'1400/01/01', N'1399/01/01', N'1409/01/01', 1, 1, 1, 1, 1, NULL, N'9eaaaa8c-4c95-4678-911c-048a035d877f', NULL,1, CAST(N'2025-02-23T13:31:00.6170000' AS DateTime2), NULL, N'', NULL, N'')
+INSERT [ClaimPool].[WaterMeter] ([SealNumber], [ReadingNumber], [CustomerNumber], [BillId], [EstateId], [UseStateId], [SubscriptionTypeId], [InstallationLocation], [BodySerial], [InstallationDate], [ProductDate], [GuaranteeDate], [MeterDiameterId], [MeterProducerId], [MeterTypeId], [MeterMaterialId], [MeterUseTypeId], [ParentId], [UserId], [PreviousId],[WaterMeterInstallationMethodId] ,[ValidFrom], [ValidTo], [InsertLogInfo], [RemoveLogInfo], [Hash]) VALUES (1,N'10025698', 1455669, N'100189916315', 1, 1, 1, N'درب اصلی', N'123456', N'1400/01/01', N'1399/01/01', N'1409/01/01', 1, 1, 1, 1, 1, NULL, N'9eaaaa8c-4c95-4678-911c-048a035d877f', NULL,1, CAST(N'2025-02-23T13:31:00.6170000' AS DateTime2), NULL, N'', NULL, N'')
 GO
 INSERT [ClaimPool].[IndividualTagDefinition] ( [Title], [Color]) VALUES (N'بدحساب', N'red')
 GO
