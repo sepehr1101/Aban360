@@ -21,12 +21,17 @@ namespace Aban360.PaymentPool.Persistence.Features.NegotiableInstrument.Queries.
 
         public async Task<BankAccount> Get(short id)
         {
-            return await _uow.FindOrThrowAsync<BankAccount>(id);
+            return await _bankAccount
+                .Include(b => b.AccountType)
+                .Where(b => b.Id == id)
+                .SingleAsync();//todo: type of return
         }
 
         public async Task<ICollection<BankAccount>> Get()
         {
-            return await _bankAccount.ToListAsync();
+            return await _bankAccount
+                .Include(b => b.AccountType)
+                .ToListAsync();
         }
     }
 }
