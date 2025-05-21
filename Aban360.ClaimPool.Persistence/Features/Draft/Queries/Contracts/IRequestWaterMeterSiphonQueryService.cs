@@ -7,5 +7,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Draft.Queries.Contracts
         Task<RequestWaterMeterSiphon> Get(int id);
         Task<RequestWaterMeterSiphon> GetBySiphonId(int id);
         Task<ICollection<RequestWaterMeterSiphon>> Get();
+        Task<ICollection<RequestWaterMeterSiphon>> GetByWaterMeterId(int waterMeterId);
     }
 }

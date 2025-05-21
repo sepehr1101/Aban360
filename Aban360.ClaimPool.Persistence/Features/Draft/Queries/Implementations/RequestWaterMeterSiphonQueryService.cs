@@ -31,6 +31,14 @@ namespace Aban360.ClaimPool.Persistence.Features.Draft.Queries.Implementations
                 .SingleOrDefaultAsync();
         }
 
+        public async Task<ICollection<RequestWaterMeterSiphon>> GetByWaterMeterId(int waterMeterId)
+        {
+            return await _requestWaterMeterSiphon
+                .Include(r => r.RequestSiphon)
+                .Where(r => r.WaterMeterId == waterMeterId)
+                .ToListAsync();
+        }
+        
         public async Task<ICollection<RequestWaterMeterSiphon>> Get()
         {
             return await _requestWaterMeterSiphon.ToListAsync();

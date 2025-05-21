@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<EstateRequestUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] EstateRequestUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _requestEstateUpdateHandler.Handle(updateDto, cancellationToken);
+            await _requestEstateUpdateHandler.Handle(CurrentUser,updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);

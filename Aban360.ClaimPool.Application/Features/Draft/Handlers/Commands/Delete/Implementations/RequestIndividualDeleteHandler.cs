@@ -44,18 +44,6 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Delete.
 
         public async Task Handle(IndividualRequestDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            RequestIndividualEstate requestIndividualEstate = await _requestIndividualEstateQueryService.GetByIndividualId(deleteDto.Id);
-            if (requestIndividualEstate != null)
-            {
-                _requestIndividualEstateCommandService.Remove(requestIndividualEstate);
-            }
-
-            ICollection<RequestIndividualTag> requestIndividualTags = await _requestIndividualTagQueryService.GetByIndividualId(deleteDto.Id);
-            if (requestIndividualTags != null)
-            {
-                _requestIndividualTagCommandService.Remove(requestIndividualTags);
-            }
-
             var requestIndividual = await _requestIndividualQueryService.Get(deleteDto.Id);
             _requestIndividualCommandService.Remove(requestIndividual);
         }

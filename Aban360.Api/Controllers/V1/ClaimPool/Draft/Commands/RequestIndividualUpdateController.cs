@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<IndividualRequestUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] IndividualRequestUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _requestIndividualUpdateHandler.Handle(updateDto, cancellationToken);
+            await _requestIndividualUpdateHandler.Handle(CurrentUser,updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);

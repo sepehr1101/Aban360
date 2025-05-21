@@ -14,5 +14,7 @@ namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
 
         public virtual RequestIndividual? Previous { get; set; }
         public virtual ICollection<RequestIndividualTag> IndividualTags { get; set; } = new List<RequestIndividualTag>();
+
+        public virtual ICollection<RequestIndividualDiscountType> IndividualDiscountTypes { get; set; }= new List<RequestIndividualDiscountType>();
     }
 }

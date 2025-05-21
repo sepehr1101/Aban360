@@ -39,6 +39,7 @@ namespace Aban360.CalculationPool.Persistence.DbSeeder.Implementations
                 new InvoiceLineItemInsertMode(){Id=InvoiceLineItemInsertModeEnum.ByUser,Title="توسط کاربر"},
                 new InvoiceLineItemInsertMode(){Id=InvoiceLineItemInsertModeEnum.BySystem,Title="بصورت سیستمی"},
                 new InvoiceLineItemInsertMode(){Id=InvoiceLineItemInsertModeEnum.ByConvert,Title="Convert"},
+                new InvoiceLineItemInsertMode(){Id=InvoiceLineItemInsertModeEnum.Prediction,Title="برآورد"},
             };
 
             return InvoiceLineItemInsertModes;

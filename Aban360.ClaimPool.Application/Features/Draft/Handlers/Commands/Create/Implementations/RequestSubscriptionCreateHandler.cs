@@ -2,6 +2,7 @@
 using Aban360.ClaimPool.Domain.Features.Draft.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Draft.Entites;
 using Aban360.ClaimPool.Persistence.Features.Draft.Commands.Contracts;
+using Aban360.Common.ApplicationUser;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using AutoMapper;
@@ -60,44 +61,46 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
                 requestWaterMeter.WaterMeterTags.Add(requestWaterMeterTag);
             });
         }
-        private RequestEstate GetEstate(EstateRequestCreateDto estateDto)
+        private RequestEstate GetEstate(IAppUser currentUser, EstateRequestCreateDto estateDto)
         {
             RequestEstate estate = _mapper.Map<RequestEstate>(estateDto);
             estate.UserId = Guid.Parse("7DE99BA5-024F-47DA-AACE-23AB662D619C");
             estate.InsertLogInfo = "sample";
+            estate.UserId = currentUser.UserId;
 
             return estate;
         }
-        private ICollection<RequestWaterMeter> GetWaterMeter(WaterMeterRequestCreateDto waterMeterDto, RequestEstate estate)
+        private ICollection<RequestWaterMeter> GetWaterMeter(IAppUser currentUser, WaterMeterRequestCreateDto waterMeterDto, RequestEstate estate)
         {
             RequestWaterMeter requestWaterMeter = _mapper.Map<RequestWaterMeter>(waterMeterDto);
             requestWaterMeter.InsertLogInfo = "loginfo";
-            requestWaterMeter.UserId = Guid.Parse("7DE99BA5-024F-47DA-AACE-23AB662D619C");
+            requestWaterMeter.UserId = currentUser.UserId;
 
             ICollection<RequestWaterMeter> requestWaterMeters = new List<RequestWaterMeter>() { requestWaterMeter };
             estate.WaterMeters = requestWaterMeters;
             return requestWaterMeters;
         }
-        private void GetIndividualsAndIndividualEstate(ICollection<IndividualRequestCreateDto> individualDto, RequestEstate requestEstatestate, RequestWaterMeter requestWaterMeter)
+        private void GetIndividualsAndIndividualEstate(IAppUser currentUser, ICollection<IndividualRequestCreateDto> individualDto, RequestEstate requestEstatestate, RequestWaterMeter requestWaterMeter)
         {
             ICollection<RequestIndividual> individuals = _mapper.Map<ICollection<RequestIndividual>>(individualDto);
             int number = 0;
             foreach (var item in individuals)
             {
-                GetIndividual(item, requestEstatestate, requestWaterMeter,individualDto.ElementAt(number));
-              
+                GetIndividual(currentUser, item, requestEstatestate, requestWaterMeter, individualDto.ElementAt(number));
+
                 var individualTags = individualDto.ElementAt(number).TagIds.ToList();
                 GetIndividualTags(number, individualTags, item);
 
                 number++;
             }
         }
-       
-        private void GetIndividual(RequestIndividual individual, RequestEstate requestEstatestate, RequestWaterMeter requestWaterMeter, IndividualRequestCreateDto individualDto)
+
+        private void GetIndividual(IAppUser currentUser, RequestIndividual individual, RequestEstate requestEstatestate, RequestWaterMeter requestWaterMeter, IndividualRequestCreateDto individualDto)
         {
             individual.InsertLogInfo = "loginfo";
             individual.UserId = Guid.Parse("7DE99BA5-024F-47DA-AACE-23AB662D619C");
             individual.Hash = "hash";
+            individual.UserId = currentUser.UserId;
 
             individual.IndividualTypeId = individualDto.IndividualTypeId;
 
@@ -107,6 +110,27 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
                 RequestIndividual = individual,
                 IndividualEstateRelationTypeId = individualDto.IndividualEstateRelationTypeId,
             };
+            individual.IndividualDiscountTypes.ForEach(discountType =>
+            {
+                discountType.Individual = individual;
+                discountType.UserId=currentUser.UserId;
+                discountType.Hash = "-";
+                discountType.InsertLogInfo = "-";
+                discountType.ValidFrom= DateTime.Now;
+
+                //RequestIndividualDiscountType requestIndividualDiscountType = new RequestIndividualDiscountType()
+                //{
+                //    Individual = individual,
+                //    DiscountTypeId = discountType.DiscountTypeId,
+                //    ExpireDate = discountType.ExpireDate,
+                //    Hash="-",
+                //    InsertLogInfo="-",
+                //    ValidFrom=DateTime.Now,
+                //    UserId=currentUser.UserId
+                //};
+                //individual.IndividualDiscountTypes.Add(requestIndividualDiscountType);
+            });
+
             requestEstatestate.IndividualEstates.Add(requestIndividualEstate);
 
         }
@@ -114,7 +138,7 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
         {
             individualTagsId.ForEach(tagId =>
             {
-                if(tagId==0) return;
+                if (tagId == 0) return;
                 RequestIndividualTag requestIndividualTag = new()
                 {
                     InsertLogInfo = "loginfo",
@@ -125,7 +149,7 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
                 requestIndividual.IndividualTags.Add(requestIndividualTag);
             });
         }
-        private void GetSiphon(ICollection<SiphonRequestCreateDto> siphonDto, RequestWaterMeter requestWaterMeter)
+        private void GetSiphon(IAppUser currentUser, ICollection<SiphonRequestCreateDto> siphonDto, RequestWaterMeter requestWaterMeter)
         {
             ICollection<RequestSiphon> siphons = _mapper.Map<ICollection<RequestSiphon>>(siphonDto);
             foreach (var item in siphons)
@@ -133,6 +157,7 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
                 item.InsertLogInfo = "loginfo";
                 item.UserId = Guid.Parse("7DE99BA5-024F-47DA-AACE-23AB662D619C");
                 item.Hash = "hash";
+                item.UserId = currentUser.UserId;
 
                 RequestWaterMeterSiphon requestWaterMeterSiphon = new RequestWaterMeterSiphon()
                 {
@@ -142,9 +167,9 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
                 requestWaterMeter.WaterMeterSiphons.Add(requestWaterMeterSiphon);
             }
         }
-        public async Task Handle(RequestSubscriptionCreateDto createDto, CancellationToken cancellationToken)
+        public async Task Handle(IAppUser currentUser, RequestSubscriptionCreateDto createDto, CancellationToken cancellationToken)
         {
-            var validationResult=await _requestValidator.ValidateAsync(createDto,cancellationToken);
+            var validationResult = await _requestValidator.ValidateAsync(createDto, cancellationToken);
             if (!validationResult.IsValid)
             {
                 var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
@@ -153,13 +178,13 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
 
 
 
-            RequestEstate estate = GetEstate(createDto.Estate);
-            ICollection<RequestWaterMeter> requestWaterMeters = GetWaterMeter(createDto.WaterMeter, estate);
+            RequestEstate estate = GetEstate(currentUser, createDto.Estate);
+            ICollection<RequestWaterMeter> requestWaterMeters = GetWaterMeter(currentUser, createDto.WaterMeter, estate);
 
             GetFlats(createDto.Flats, estate);
             GetWaterMeterTags(createDto.WaterMeter, requestWaterMeters.First());
-            GetIndividualsAndIndividualEstate(createDto.Individuals, estate, requestWaterMeters.First());
-            GetSiphon(createDto.Siphons, requestWaterMeters.First());
+            GetIndividualsAndIndividualEstate(currentUser, createDto.Individuals, estate, requestWaterMeters.First());
+            GetSiphon(currentUser, createDto.Siphons, requestWaterMeters.First());
 
 
 

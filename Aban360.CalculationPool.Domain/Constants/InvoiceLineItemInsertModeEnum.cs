@@ -4,6 +4,7 @@
     {
         ByUser=1,
         BySystem=2,
-        ByConvert=3
+        ByConvert=3,
+        Prediction=4
     }
 }

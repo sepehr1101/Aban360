@@ -11,12 +11,12 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Mappings
     {
         public RequestSubscriptionMapper()
         {
+            //Create
             CreateMap<WaterMeterCommandBaseDto, RequestWaterMeter>();
             CreateMap<SiphonCommandBaseDto, RequestSiphon>();
             CreateMap<EstateCommandBaseDto, RequestEstate>();
             CreateMap<FlatCommandBaseDto, RequestFlat>();
             CreateMap<IndividualCommandBaseDto, RequestIndividual>();
-
             CreateMap<EstateCommandDto, RequestEstate>();
             CreateMap<FlatCommandDto, RequestFlat>();
             CreateMap<IndividualCommandDto, RequestIndividual>();
@@ -26,9 +26,16 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Mappings
             CreateMap<WaterMeterTagCommandDto, RequestWaterMeterTag>();
             CreateMap<IndividualEstateCommandDto, RequestIndividualEstate>();
             CreateMap<IndividualTagCommandDto, RequestIndividualTag>();
-
             CreateMap<RequestUser, RequestUserQueryDto>();
 
+            //Get
+            CreateMap<RequestWaterMeter, RequestWaterMeterGetDto>();
+            CreateMap<RequestIndividual, RequestIndividualGetDto>();
+            CreateMap<RequestIndividualTag, RequestIndividualTagGetDto>();
+            CreateMap<RequestIndividualDiscountType, RequestIndividualDiscountTypeGetDto>();
+            CreateMap<RequestEstate, RequestEstateGetDto>();
+            CreateMap<RequestFlat, RequestFlatGetDto>();
+            CreateMap<RequestSiphon, RequestSiphonGetDto>();
         }
     }
 }

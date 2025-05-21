@@ -1,8 +1,8 @@
 ﻿using Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Update.Contracts;
 using Aban360.ClaimPool.Domain.Features.Draft.Dto.Commands;
-using Aban360.ClaimPool.Domain.Features.Draft.Entites;
 using Aban360.ClaimPool.Persistence.Features.Draft.Commands.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Draft.Queries.Contracts;
+using Aban360.Common.ApplicationUser;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using AutoMapper;
@@ -42,7 +42,7 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Update.
 
         }
 
-        public async Task Handle(IndividualRequestUpdateDto updateDto, CancellationToken cancellationToken)
+        public async Task Handle(IAppUser currentUser, IndividualRequestUpdateDto updateDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(updateDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -55,32 +55,9 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Update.
             requestIndividual.Hash = "-";
             requestIndividual.InsertLogInfo = "-";
             requestIndividual.ValidFrom = DateTime.Now;
+            requestIndividual.UserId = currentUser.UserId;
 
-            //_requestIndividualEstateCommandService.Remove(requestIndividual.IndividualEstates);
-            //RequestIndividualEstate requestIndividualEstate = new RequestIndividualEstate()
-            //{
-            //    IndividualId = requestIndividual.Id,
-            //    EstateId = updateDto.EstateId,
-            //    IndividualEstateRelationTypeId = updateDto.IndividualEstateRelationTypeId,
-            //};
-
-            //ICollection<RequestIndividualTag> individualTags = new List<RequestIndividualTag>();
-            //updateDto.TagIds.ForEach(tags =>
-            //{
-            //    RequestIndividualTag requestIndividualTag = new RequestIndividualTag()
-            //    {
-            //        IndividualId = requestIndividual.Id,
-            //        IndividualTagDefinitionId = tags,
-            //        Hash = "-",
-            //        InsertLogInfo = "-",
-            //        ValidFrom = DateTime.Now,
-            //    };
-            //    individualTags.Add(requestIndividualTag);
-            //});
-
-            //_mapper.Map(updateDto, requestIndividual);
-            //_mapper.Map(requestIndividual.IndividualEstates, requestIndividualEstate);
-            //_mapper.Map(requestIndividual.IndividualTags, individualTags);
+            _mapper.Map(updateDto, requestIndividual);
         }
     }
 }
