@@ -6,5 +6,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Draft.Commands.Contracts
     {
         Task Add(RequestIndividualTag requestIndividualTag);
         Task Remove(RequestIndividualTag requestIndividualTag);
+        void Remove(ICollection<RequestIndividualTag> requestIndividualTags);
     }
 }

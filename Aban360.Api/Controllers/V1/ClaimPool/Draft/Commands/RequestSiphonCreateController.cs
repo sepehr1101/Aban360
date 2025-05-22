@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<SiphonRequestCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] SiphonRequestCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _requestSiphonCreateHandler.Handle(createDto, cancellationToken);
+            await _requestSiphonCreateHandler.Handle(CurrentUser,createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);

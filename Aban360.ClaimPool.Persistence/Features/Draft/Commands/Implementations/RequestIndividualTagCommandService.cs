@@ -28,5 +28,9 @@ namespace Aban360.ClaimPool.Persistence.Features.Draft.Commands.Implementations
         {
             _requestIndividualTag.Remove(requestIndividualTag);
         }
+        public void Remove(ICollection<RequestIndividualTag> requestIndividualTags)
+        {
+            _requestIndividualTag.RemoveRange(requestIndividualTags);
+        }
     }
 }

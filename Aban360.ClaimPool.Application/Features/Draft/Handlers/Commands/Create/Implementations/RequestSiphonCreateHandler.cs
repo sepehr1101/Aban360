@@ -2,6 +2,7 @@
 using Aban360.ClaimPool.Domain.Features.Draft.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Draft.Entites;
 using Aban360.ClaimPool.Persistence.Features.Draft.Commands.Contracts;
+using Aban360.Common.ApplicationUser;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using AutoMapper;
@@ -36,7 +37,7 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
 
         }
 
-        public async Task Handle(SiphonRequestCreateDto createDto, CancellationToken cancellationToken)
+        public async Task Handle(IAppUser currentUser, SiphonRequestCreateDto createDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(createDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -49,6 +50,7 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
             requestSiphon.Hash = "-";
             requestSiphon.InsertLogInfo = "-";
             requestSiphon.ValidFrom = DateTime.Now;
+            requestSiphon.UserId = currentUser.UserId;
 
             RequestWaterMeterSiphon requestWaterMeterSiphon = new RequestWaterMeterSiphon()
             {

@@ -1,4 +1,5 @@
-﻿using Aban360.PaymentPool.Domain.Features.Remuneration.Entities;
+﻿using Aban360.PaymentPool.Domain.Constansts;
+using Aban360.PaymentPool.Domain.Features.Remuneration.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.PaymentPool.Domain.Features.NegotiableInstrument.Entities;
@@ -16,7 +17,7 @@ public class BankAccount
     
     public string Number { get; set; } = null!;
 
-    public short AccountTypeId { get; set; }
+    public AccountTypeEnum AccountTypeId { get; set; }
 
     public int RegionId { get; set; }
 
@@ -25,4 +26,5 @@ public class BankAccount
     public string? Icon { get; set; }
 
     public virtual Bank Bank { get; set; } = null!;
+    public virtual AccountType AccountType { get; set; }
 }

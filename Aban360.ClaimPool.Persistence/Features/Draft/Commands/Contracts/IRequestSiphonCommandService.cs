@@ -5,6 +5,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Draft.Commands.Contracts
     public interface IRequestSiphonCommandService
     {
         Task Add(RequestSiphon requestSiphon);
-        Task Remove(RequestSiphon requestSiphon);
+        void Remove(RequestSiphon requestSiphon);
     }
 }

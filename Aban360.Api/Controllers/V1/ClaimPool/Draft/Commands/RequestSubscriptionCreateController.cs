@@ -30,7 +30,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft.Commands
         [AllowAnonymous]
         public async Task<IActionResult> Create([FromBody] RequestSubscriptionCreateDto requestSubscriptionCreateDto, CancellationToken cancellationToken)
         {           
-            await _requestUserCreateHandler.Handle(requestSubscriptionCreateDto, cancellationToken);
+            await _requestUserCreateHandler.Handle(CurrentUser,requestSubscriptionCreateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(requestSubscriptionCreateDto);

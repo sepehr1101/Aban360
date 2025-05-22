@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<SiphonRequestUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] SiphonRequestUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _requestSiphonUpdateHandler.Handle(updateDto, cancellationToken);
+            await _requestSiphonUpdateHandler.Handle(CurrentUser,updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);

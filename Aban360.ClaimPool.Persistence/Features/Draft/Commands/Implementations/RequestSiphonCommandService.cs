@@ -24,7 +24,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Draft.Commands.Implementations
             await _requestSiphon.AddAsync(requestSiphon);
         }
 
-        public async Task Remove(RequestSiphon requestSiphon)
+        public void Remove(RequestSiphon requestSiphon)
         {
             _requestSiphon.Remove(requestSiphon);
         }

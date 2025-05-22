@@ -18,6 +18,7 @@ namespace Aban360.ClaimPool.Domain.Features._Base.Dto
         public SubscriptionTypeEnum SubscriptionTypeId { get; set; }
         public string? ReadingNumber { get; set; }
         public int CustomerNumber { get; set; }
+        public int SealNumber { get; set; }
         public string BillId { get; set; } = null!;
         public ICollection<short>? TagIds { get; set; }
         //new

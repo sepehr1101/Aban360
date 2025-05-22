@@ -1,6 +1,7 @@
 ﻿using Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Update.Contracts;
 using Aban360.ClaimPool.Domain.Features.Draft.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Features.Draft.Queries.Contracts;
+using Aban360.Common.ApplicationUser;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using AutoMapper;
@@ -30,7 +31,7 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Update.
 
         }
 
-        public async Task Handle(EstateRequestUpdateDto updateDto, CancellationToken cancellationToken)
+        public async Task Handle(IAppUser currentUser, EstateRequestUpdateDto updateDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(updateDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -40,6 +41,8 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Update.
             }
 
             var requestEstate = await _requestEstateQueryService.Get(updateDto.Id);
+            requestEstate.UserId=currentUser.UserId;
+
             _mapper.Map(updateDto, requestEstate);
         }
     }

@@ -6,5 +6,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Draft.Commands.Contracts
     {
         Task Add(RequestWaterMeterTag requestWaterMeterTag);
         Task Remove(RequestWaterMeterTag requestWaterMeterTag);
+        void Remove(ICollection<RequestWaterMeterTag> requestWaterMeterTags);
     }
 }

@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<IndividualRequestCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] IndividualRequestCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _requestIndividualCreateHandler.Handle(createDto, cancellationToken);
+            await _requestIndividualCreateHandler.Handle(CurrentUser,createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);

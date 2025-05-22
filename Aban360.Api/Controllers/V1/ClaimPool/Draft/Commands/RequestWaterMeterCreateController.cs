@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<WaterMeterRequestCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] WaterMeterRequestCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _requestWaterMeterCreateHandler.Handle(createDto, cancellationToken);
+            await _requestWaterMeterCreateHandler.Handle(CurrentUser,createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);

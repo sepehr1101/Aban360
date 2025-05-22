@@ -12,7 +12,8 @@ namespace Aban360.PaymentPool.Application.Features.NegotiableInstrument.Mappings
             CreateMap<BankAccountCreateDto, BankAccount>();
             CreateMap<BankAccountDeleteDto, BankAccount>();
             CreateMap<BankAccountUpdateDto, BankAccount>();
-            CreateMap< BankAccount, BankAccountGetDto>();
+            CreateMap< BankAccount, BankAccountGetDto>()
+                .ForMember(dest=>dest.AccountTypeTitle,mem=>mem.MapFrom(x=>x.AccountType.Title));
         }
     }
 }

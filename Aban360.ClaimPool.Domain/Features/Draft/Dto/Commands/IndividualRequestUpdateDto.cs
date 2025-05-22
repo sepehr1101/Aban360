@@ -5,5 +5,6 @@ namespace Aban360.ClaimPool.Domain.Features.Draft.Dto.Commands
     public record IndividualRequestUpdateDto : IndividualCommandBaseDto
     {
         public int Id { get; set; }
+        public int EstateId { get; set; }
     }
 }

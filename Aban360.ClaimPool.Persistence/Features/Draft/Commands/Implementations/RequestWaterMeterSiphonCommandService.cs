@@ -24,7 +24,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Draft.Commands.Implementations
             await _requestWaterMeterSiphon.AddAsync(requestWaterMeterSiphon);
         }
 
-        public async Task Remove(RequestWaterMeterSiphon requestWaterMeterSiphon)
+        public void Remove(RequestWaterMeterSiphon requestWaterMeterSiphon)
         {
             _requestWaterMeterSiphon.Remove(requestWaterMeterSiphon);
         }

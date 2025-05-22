@@ -23,6 +23,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Draft.Queries.Implementations
         {
             return await _uow.FindOrThrowAsync<RequestFlat>(id);
         }
+        
+        public async Task<ICollection<RequestFlat>> GetByEstateId(int id)
+        {
+            return await _requestFlat
+                .Where(r => r.EstateId == id)
+                .ToListAsync();
+        }
 
         public async Task<ICollection<RequestFlat>> Get()
         {

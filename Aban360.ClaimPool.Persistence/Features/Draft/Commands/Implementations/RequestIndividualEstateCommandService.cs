@@ -24,7 +24,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Draft.Commands.Implementations
             await _requestIndividualEstate.AddAsync(requestIndividualEstate);
         }
 
-        public async Task Remove(RequestIndividualEstate requestIndividualEstate)
+        public void Remove(RequestIndividualEstate requestIndividualEstate)
         {
             _requestIndividualEstate.Remove(requestIndividualEstate);
         }

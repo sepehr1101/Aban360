@@ -24,6 +24,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Draft.Queries.Implementations
             return await _uow.FindOrThrowAsync<RequestWaterMeter>(id);
         }
 
+        public async Task<RequestWaterMeter> Get(string id)
+        {
+            return await _requestWaterMeter
+                .Where(r => r.BillId == id)
+                .SingleAsync();
+        }
+
         public async Task<ICollection<RequestWaterMeter>> Get()
         {
             return await _requestWaterMeter.ToListAsync();

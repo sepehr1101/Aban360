@@ -28,5 +28,9 @@ namespace Aban360.ClaimPool.Persistence.Features.Draft.Commands.Implementations
         {
             _requestWaterMeterTag.Remove(requestWaterMeterTag);
         }
+        public void Remove(ICollection<RequestWaterMeterTag> requestWaterMeterTags)
+        {
+            _requestWaterMeterTag.RemoveRange(requestWaterMeterTags);
+        }
     }
 }

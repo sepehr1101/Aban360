@@ -9,4 +9,6 @@ public class AccountType
     public AccountTypeEnum Id { get; set; }
 
     public string Title { get; set; } = null!;
+
+    public virtual ICollection<BankAccount> BankAccounts { get; set; }  
 }
