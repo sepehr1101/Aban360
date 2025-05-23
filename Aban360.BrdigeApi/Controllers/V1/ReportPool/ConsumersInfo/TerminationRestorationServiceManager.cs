@@ -4,37 +4,24 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
 {
-    [Route("v1/service-termination-restoration")]
-    public class TerminationRestorationServiceManager : BaseController
+    [Route("v1/service-link")]
+    public class ServiceLinkManagerController : BaseController
     {
+        string successfullyDone = "با موفقیت انجام شد";
         [HttpPost]
-        [Route("info")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ServiceTerminationRestorationDto>), StatusCodes.Status200OK)]
-        public IActionResult GetInfo([FromBody] SearchInput searchInput)
-        {
-            ServiceTerminationRestorationDto info = new()
-            {
-                BillId = searchInput.Input,
-                ServiceLinkDebt = 48000000,
-                WaterBillDebt = 590000
-            };
-            return Ok(info);
-        }
-
-        [HttpPost]
-        [Route("terminate")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ServiceTerminationRestorationDto>), StatusCodes.Status200OK)]
-        public IActionResult TerminateServiceLink([FromBody] SearchInput searchInput)
+        [Route("disconnect")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<string>), StatusCodes.Status200OK)]
+        public IActionResult Disconnect([FromBody] SearchInput searchInput)
         {           
-            return Ok(searchInput);
+            return Ok(successfullyDone);
         }
 
         [HttpPost]
-        [Route("restore")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ServiceTerminationRestorationDto>), StatusCodes.Status200OK)]
-        public IActionResult RestoreServiceLink([FromBody] SearchInput searchInput)
-        {
-            return Ok(searchInput);
+        [Route("reconnect")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<string>), StatusCodes.Status200OK)]
+        public IActionResult Reconnect([FromBody] SearchInput searchInput)
+        {            
+            return Ok(successfullyDone);
         }
     }
 }
