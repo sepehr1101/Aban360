@@ -1,4 +1,8 @@
 ﻿using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Extensions;
+using Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contracts;
+using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
@@ -6,30 +10,21 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
     [Route("v1/customer")]
     public class CustomerMobileInfoManager : BaseController
     {
+        private readonly ICustomerMobileInfoListHandler _customerMobileInfoListHandler;
+        public CustomerMobileInfoManager(ICustomerMobileInfoListHandler customerMobileInfoListHandler)
+        {
+            _customerMobileInfoListHandler = customerMobileInfoListHandler;
+            _customerMobileInfoListHandler.NotNull(nameof(_customerMobileInfoListHandler));
+        }
+
         [HttpPost]
         [Route("mobile-numbers")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<BillIdMobileDto>), StatusCodes.Status200OK)]
-        public IActionResult GetMobiles([FromBody] BillIdListDtoWrapper billIdListDtoWrapper, CancellationToken cancellationToken)
+        [AllowAnonymous]
+        public async Task<IActionResult> GetMobiles([FromBody] BillIdListDtoWrapper billIdListDtoWrapper, CancellationToken cancellationToken)
         {
-            var list = new List<BillIdMobileDto>
-            {
-                new BillIdMobileDto {BillId="123456",Mobile="09130000000" },
-                new BillIdMobileDto {BillId="9876543",Mobile="09131111111" },
-            };
-            return Ok(list);
+            IEnumerable<BillIdMobileDto> billIdMobileDtos = await _customerMobileInfoListHandler.Handle(billIdListDtoWrapper, cancellationToken);
+            return Ok(billIdMobileDtos);
         }
-    }
-    public record BillIdMobileDto
-    {
-        public string BillId { get; set; } = default!;
-        public string Mobile { get; set; } = default!;
-    }
-    public record BillIdListDto
-    {
-        public string BillId { get; set; } = default!;
-    }
-    public record BillIdListDtoWrapper
-    {
-        ICollection<BillIdListDto>? BillIdList { get; set; }
-    }
+    }  
 }
