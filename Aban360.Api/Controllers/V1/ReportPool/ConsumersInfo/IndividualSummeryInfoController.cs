@@ -1,6 +1,7 @@
 ﻿using Aban360.ClaimPool.Domain.Constants;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
+using Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contracts;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Queries.Implementations;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,8 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
     public class IndividualSummeryInfoController : BaseController
     {
         private readonly IIndividualSummeryQueryService _individualSummeryQueryService;
-        public IndividualSummeryInfoController(IIndividualSummeryQueryService individualSummeryQueryService)
+        public IndividualSummeryInfoController(
+            IIndividualSummeryQueryService individualSummeryQueryService)
         {
             _individualSummeryQueryService = individualSummeryQueryService;
             _individualSummeryQueryService.NotNull(nameof(individualSummeryQueryService));
