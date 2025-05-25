@@ -26,6 +26,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                 	i.NationalId,
                 	i.PhoneNumbers,
                 	i.MobileNumbers,
+                    e.HouseholdNumber,
                 	ier.Title AS IndividualEstateRelationType,
                 	COALESCE(d.Title, '-') AS DiscountType
                 from ClaimPool.WaterMeter w 
@@ -36,7 +37,6 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                 LEFT join ClaimPool.IndividualDiscountType idt on i.Id=idt.IndividualId
                 LEFT join ClaimPool.DiscountType d on idt.DiscountTypeId=d.Id
                 where w.BillId=@billId";
-
         }
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.BlobController.Taxonomy.Commands
 {
-    [Route("v1/document-Type")]
+    [Route("v1/document-type")]
     public class DocumentTypeCreateController : BaseController
     {
         private readonly IUnitOfWork _uow;

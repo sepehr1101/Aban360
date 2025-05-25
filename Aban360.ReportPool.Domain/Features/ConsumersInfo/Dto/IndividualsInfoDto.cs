@@ -9,8 +9,8 @@
         public string? MobileNumbers { get; set; }
         public string? IndividualEstateRelationType { get; set; }
         public short  HouseholderNumber { get; set; }
-        public short NumberOfPeople { get; set; }
+        public short NumberOfPeople { get; set; }//
         public string DiscountType { get; set; }
-        public bool IsOwnerAgent { get; set; }
+        public bool IsOwnerAgent { get; set; }//
     }
 }

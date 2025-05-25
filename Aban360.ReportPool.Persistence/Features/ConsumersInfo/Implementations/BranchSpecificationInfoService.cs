@@ -22,34 +22,44 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         private string GetBranchSpecificationSummayDtoQuery()
         {
             return @"select 
-                	w.ReadingNumber,
-                	w.SealNumber,
-                	mp.Title as 'MeterProducerTitle',
-                	md.Title as 'MeterDiameterTitle',
-                	mt.Title as 'MeterProducerTitle',
-                	mut.Title as 'MeterUseTypeTitle',
-                	mi.Title as 'WaterMeterInstallationMethodTitle',
-                	COUNT(s.InstallationDate) as N'SiphonCount',
-                	sm.Title as 'SiphonMaterialTitle'
-                from ClaimPool.WaterMeter w
-                join ClaimPool.WaterMeterSiphon ws on ws.WaterMeterId=w.Id
-                join ClaimPool.Siphon s on ws.SiphonId=s.Id
-                join ClaimPool.MeterProducer mp on w.MeterProducerId=mp.Id
-                join ClaimPool.MeterType mt on w.MeterTypeId=mt.Id
-                join ClaimPool.MeterDiameter md on w.MeterDiameterId=md.Id
-                join ClaimPool.MeterUseType mut on w.MeterUseTypeId =mut.Id
-                join ClaimPool.WaterMeterInstallationMethod mi on w.WaterMeterInstallationMethodId=mi.Id
-                join ClaimPool.SiphonMaterial sm on s.SiphonMaterialId=sm.Id
-                where w.BillId=@billId
-                group by
-                    w.ReadingNumber,
-                	w.SealNumber,
-                	mp.Title ,
-                	md.Title ,
-                	mt.Title ,
-                	mut.Title,
-                	mi.Title,
-                	sm.Title";
+			    		--water
+                    	md.Title as 'MeterDiameterTitle',
+			    		w.BodySerial,
+                    	w.SealNumber,
+                    	mt.Title as 'MeterTypeTitle',
+                    	mp.Title as 'MeterProducerTitle',
+			    		'---' as 'MeterEquipmentBrokerTitle',
+			    		'---' as 'MeterInstallationBrokerTitle',
+                    	mi.Title as 'WaterMeterInstallationMethodTitle',
+			    		6 as 'MeterLife',
+			    		N'سالم' as 'MeterStatusTitle',
+			    		'---' as 'WitnessMeter',
+			    		--siphon
+			    		'---' as 'CommonSiphon',
+                    	COUNT(s.InstallationDate) as N'SiphonCount',
+                    	sm.Title as 'SiphonMaterialTitle',
+			    		6 as 'SiphonLife',
+			    		N'---' as 'SiphonInstallationContractor',
+			    		N'---' as 'SiphonEquipmentBrokerTitle',
+			    		N'---' as 'SiphonInstallationBrokerTitle',
+			    		0 as 'LoadOfContamination'
+                    from ClaimPool.WaterMeter w
+                    join ClaimPool.WaterMeterSiphon ws on ws.WaterMeterId=w.Id
+                    join ClaimPool.Siphon s on ws.SiphonId=s.Id
+                    join ClaimPool.MeterProducer mp on w.MeterProducerId=mp.Id
+                    join ClaimPool.MeterType mt on w.MeterTypeId=mt.Id
+                    join ClaimPool.MeterDiameter md on w.MeterDiameterId=md.Id
+                    join ClaimPool.WaterMeterInstallationMethod mi on w.WaterMeterInstallationMethodId=mi.Id
+                    join ClaimPool.SiphonMaterial sm on s.SiphonMaterialId=sm.Id
+                    where w.BillId=@billId
+                    group by
+                        w.BodySerial,
+                    	w.SealNumber,
+                    	mp.Title ,
+                    	md.Title ,
+                    	mt.Title ,
+                    	mi.Title,
+                    	sm.Title";
 
         }
         private string GetSiphonDiameterCount()
