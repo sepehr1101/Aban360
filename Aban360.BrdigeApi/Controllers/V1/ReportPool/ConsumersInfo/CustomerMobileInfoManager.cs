@@ -20,7 +20,6 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
         [HttpPost]
         [Route("mobile-numbers")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<BillIdMobileDto>), StatusCodes.Status200OK)]
-        [AllowAnonymous]
         public async Task<IActionResult> GetMobiles([FromBody] BillIdListDtoWrapper billIdListDtoWrapper, CancellationToken cancellationToken)
         {
             IEnumerable<BillIdMobileDto> billIdMobileDtos = await _customerMobileInfoListHandler.Handle(billIdListDtoWrapper, cancellationToken);

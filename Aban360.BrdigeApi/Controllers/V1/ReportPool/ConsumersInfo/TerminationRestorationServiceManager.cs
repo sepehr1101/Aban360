@@ -1,5 +1,4 @@
 ﻿using Aban360.Common.Categories.ApiResponse;
-using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
@@ -11,7 +10,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
         [HttpPost]
         [Route("disconnect")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<string>), StatusCodes.Status200OK)]
-        public IActionResult Disconnect([FromBody] SearchInput searchInput)
+        public IActionResult Disconnect([FromBody] ServiceLinkConnectionInput input)
         {           
             return Ok(successfullyDone);
         }
@@ -19,9 +18,19 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
         [HttpPost]
         [Route("reconnect")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<string>), StatusCodes.Status200OK)]
-        public IActionResult Reconnect([FromBody] SearchInput searchInput)
+        public IActionResult Reconnect([FromBody] ServiceLinkConnectionInput input)
         {            
             return Ok(successfullyDone);
         }
+    }
+
+    public record ServiceLinkConnectionInput
+    {
+        public string BillId { get; set; } = default!;
+        public string? Description { get; set; }
+        public string Who { get; set; } = default!;
+        public DateTime When { get; set; }
+        public string? How { get; set; }
+        public string? Why { get; set; }
     }
 }
