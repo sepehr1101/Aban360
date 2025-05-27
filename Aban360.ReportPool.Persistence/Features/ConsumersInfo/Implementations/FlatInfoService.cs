@@ -20,7 +20,22 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         }
         private string GetFlatSummayDtoQuery()
         {
-            return @"";
+            return @"select 
+                    	f.Id as 'FlatId',
+                    	u.Title as 'UsageTitle',
+                    	N'---' as 'SecondaryWaterUse',
+                    	u.Title as 'BusinessCategory',
+                    	12 as 'Capacity',
+                    	cc.Title as 'CapacityCalculationIndexTitle',
+                    	N'---' as 'CapacityCalculationIndexValue',
+                    	e.ImprovementsCommercial as 'ImprovementUnitArea',
+                    	0 as 'VacancyStatus'
+                    from ClaimPool.WaterMeter w 
+                    join ClaimPool.Estate e on w.EstateId=e.Id
+                    join ClaimPool.Flat f on f.EstateId=e.Id
+                    join ClaimPool.Usage u on e.UsageConsumtionId=u.Id
+                    join ClaimPool.CapacityCalculationIndex cc on e.CapacityCalculationIndexId=cc.Id
+                      where w.BillId=@billId";
 
         }
     }

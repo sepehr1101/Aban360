@@ -2,6 +2,13 @@
 {
     public record ViolationInfoDto
     {
-        //other
+        public string WaterViolationType { get; set; }
+        public string WastewaterViolationType { get; set; }
+        public string PenaltyAmount { get; set; }
+        public string OutstandingViolationBalance { get; set; }
+        public string ViolationDurationDays { get; set; }
+        public short IllegalWaterConsumptionVolume { get; set; }
+        public short IllegalWastewaterDischargeVolume { get; set; }
+        public string ViolationStartDate { get; set; }
     }
 }

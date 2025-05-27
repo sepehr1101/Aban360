@@ -21,13 +21,16 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         private string GetIndividualsSummayDtoQuery()
         {
             return @"select 
-                	e.PostalCode,
-                	e.X,
-                	e.Y,
-                	e.Address
-                from ClaimPool.WaterMeter w
-                join ClaimPool.Estate e on w.EstateId=e.Id
-                    where w.BillId=@billId";
+                    	w.ReadingNumber as 'AccountNumber',--
+                     	e.PostalCode,
+                     	e.X,
+                     	e.Y,
+                    	N'---' as 'GISMap',
+                    	N'---' as 'EvaluatorSpecifications',
+                     	e.Address
+                     from ClaimPool.WaterMeter w
+                     join ClaimPool.Estate e on w.EstateId=e.Id
+                         where w.BillId=@billId";
 
         }
     }

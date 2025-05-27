@@ -2,6 +2,11 @@
 {
     public record ChangeMainInfoDto
     {
-        //other
+        public string ChangeTypeTitle { get; set; }
+        public string LastState { get; set; }
+        public string CurrentState { get; set; }
+        public string ChangeDate { get; set; }
+        public string SystemUserCode { get; set; }
+
     }
 }

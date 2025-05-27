@@ -9,22 +9,36 @@
         public string WaterRegistrationDate { get; set; }//
 
         public string WaterReplacementDate { get; set; }//
-        public string? GuaranteeDate { get; set; }
-        public string LattestBranchTemporaryOffDate { get; set; }//
+        public string GuaranteeDate { get; set; }
+        public string LastTemporaryDisconnectionDate { get; set; }//
 
-        public string LattestBranchTemporaryOnDate { get; set; }//
-        public string BranchCollectedDate { get; set; }//
-        public string LattestReadingDate { get; set; }//
+        public string LastReconnectionDate { get; set; }//
+        public string WaterSubscriptionCancellationDate { get; set; }//
+        public string LastMeterReadingDate { get; set; }//
 
-        public string LattestPayDate { get; set; }//
+        public string LastPaymentDate { get; set; }//
         public string LattestChangeMianInfoDate { get; set; }//
+        public string LastWaterBillRefundDate { get; set; }//
+
+        public string LastSubscriptionRefundDate { get; set; }//
+        public string HouseholdCountStartDate { get; set; }//
+        public string HouseholdCountEndDate { get; set; }//
+
+        public string ResidenceStartDate { get; set; }//
+        public string VacancyStartDate { get; set; }//
+        public string VacancyEndDate { get; set; }//
+
 
 
         //other
         #endregion
 
         #region Sewage
+        public string? SewageRequestDate { get; set; }
         public string? SewageInstallationDate { get; set; }
+        public string? SewageRegistrationDate { get; set; }
+
+        public string? SiphonReplacementDate { get; set; }
 
         #endregion
     }

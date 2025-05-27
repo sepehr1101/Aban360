@@ -2,11 +2,17 @@
 {
     public record FlatInfoDto
     {
-        public int Id { get; set; }
-        public string StateTitle { get; set; }
+        public int FlatId { get; set; }
+        public string UsageTitle { get; set; }
+        public string SecondaryWaterUse { get; set; }
+        public string BusinessCategory { get; set; }
+     
+        public short Capacity { get; set; }
         public string CapacityCalculationIndexTitle { get; set; }
-
-        //other
+        public string CapacityCalculationIndexValue { get; set; }
+     
+        public short ImprovementUnitArea { get; set; }
+        public bool VacancyStatus { get; set; }
 
     }    
 }
