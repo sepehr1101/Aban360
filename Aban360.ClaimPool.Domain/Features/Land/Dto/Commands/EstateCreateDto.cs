@@ -7,6 +7,7 @@ namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
         public short ConstructionTypeId { get; set; }
         public short EstateBoundTypeId { get; set; }
         public string? PostalCode { get; set; }
+        public short HandoverId { get; set; }
 
         public string? X { get; set; }
 

@@ -83,7 +83,8 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Queries.Implemen
                     return new RequestIndividualGetDto()
                     {
                         Id = individualestate.RequestIndividual.Id,
-                        FullName = individualestate.RequestIndividual.FullName,
+                        FirstName = individualestate.RequestIndividual.FirstName,
+                        Surname = individualestate.RequestIndividual.Surname,
                         NationalId = individualestate.RequestIndividual.NationalId,
                         FatherName = individualestate.RequestIndividual.FatherName,
                         PhoneNumbers = individualestate.RequestIndividual.PhoneNumbers,

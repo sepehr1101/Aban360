@@ -24,6 +24,8 @@ namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
         public virtual Usage UsageSell { get; set; } = null!;
         public virtual ICollection<RequestWaterMeter> WaterMeters { get; set; } = new List<RequestWaterMeter>();
         public virtual CapacityCalculationIndex CapacityCalculationIndex { get; set; }
+        public virtual Handover Handover { get; set; }
+
 
     }
 }

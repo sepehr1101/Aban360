@@ -1,0 +1,71 @@
+﻿using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+using Aban360.ReportPool.Persistence.Base;
+using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
+using Dapper;
+using Microsoft.Extensions.Configuration;
+
+namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
+{
+    internal sealed class SpecialConditionTagsInfoService : AbstractBaseConnection, ISpecialConditionTagsInfoService
+    {
+        public SpecialConditionTagsInfoService(IConfiguration configuration)
+            : base(configuration) { }
+
+        public async Task<SpecialConditionTagsInfoDto> GetInfo(string billId)
+        {
+            string branchHistoryQuery = GetSpecialConditionTagsSummayDtoQuery();
+            string waterMeterTagsQuery = GetWaterMeterTagsDtoQuery();
+            string individualTagsQuery = GetIndividualTagsDtoQuery();
+
+            SpecialConditionTagsInfoDto result = await _sqlConnection.QueryFirstOrDefaultAsync<SpecialConditionTagsInfoDto>(branchHistoryQuery, new { billId });
+            
+            result.tagsInfoDtos = await _sqlConnection.QueryAsync<TagsInfoDto>(waterMeterTagsQuery, new { billId });
+            result.tagsInfoDtos.Concat(await _sqlConnection.QueryAsync<TagsInfoDto>(individualTagsQuery,new { billId }));
+            return result;
+        }
+        private string GetSpecialConditionTagsSummayDtoQuery()
+        {
+            return @"select top(1)
+                    	h.Title as 'HandoverTitle',--without relation
+                    	dt.Title as 'DiscountTypeTitle',
+                    	us.Title as 'UsageStateTitle',
+                    	0 as 'SpecialBranch',
+                    	e.EmptyUnit as 'EmptyUnit',
+                    	e.HouseholdNumber as 'HouseholderNumber',
+                    	1 as 'NonSequentialFlag'
+                    from ClaimPool.WaterMeter w 
+					join ClaimPool.Estate e on w.EstateId=e.Id
+					join ClaimPool.Handover h on e.HandoverId=h.Id
+					join ClaimPool.IndividualEstate ie on ie.EstateId=e.Id
+					join ClaimPool.Individual i on ie.IndividualId=i.Id
+					join ClaimPool.IndividualDiscountType idt on idt.IndividualId=i.Id
+					join ClaimPool.DiscountType dt on idt.DiscountTypeId=dt.Id
+                    join ClaimPool.UseState us on w.UseStateId=us.Id
+                         where w.BillId=@billId";
+
+        }
+        private string GetWaterMeterTagsDtoQuery()
+        {
+            return @"select
+                    	wtd.Id,
+                    	wtd.Title
+                    from ClaimPool.WaterMeter w 
+                    join ClaimPool.WaterMeterTag wt on w.Id=wt.WaterMeterId
+                    join ClaimPool.WaterMeterTagDefinition wtd on wtd.Id=wt.WaterMeterTagDefinitionId
+                         where w.BillId=@billId";
+        
+        } private string GetIndividualTagsDtoQuery()
+        {
+            return @"select
+                    	itd.Id,
+						itd.Title
+                    from ClaimPool.WaterMeter w 
+					join ClaimPool.Estate e on w.EstateId=e.Id
+					join ClaimPool.IndividualEstate ie on e.Id=ie.EstateId
+					join ClaimPool.Individual i on ie.IndividualId=i.Id
+					join ClaimPool.IndividualTag it on it.IndividualId=i.Id
+					join ClaimPool.IndividualTagDefinition itd on it.IndividualTagDefinitionId=itd.Id
+                         where w.BillId=@billId";
+        }
+    }
+}

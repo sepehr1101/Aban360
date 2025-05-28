@@ -84,6 +84,13 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn("Description").AsString(_1023).Nullable();
         }
+        private void CreateHandover()
+        {
+            var table = TableName.Handover;
+            Create.Table(nameof(TableName.Handover)).InSchema(_schema)
+                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
+                .WithColumn("Title").AsString(_255).NotNullable();
+        }
 
         private void _CreateEstate(TableName table, string nameOfTable)
         {
@@ -103,6 +110,8 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                     .ForeignKey(NamingHelper.Fk(TableName.Usage, table) + "_Sell", _schema, nameof(TableName.Usage), Id)
                 .WithColumn("UsageConsumtionId").AsInt16().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.Usage, table) + "_Consumption", _schema, nameof(TableName.Usage), Id)
+                .WithColumn("HandoverId").AsInt16().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.Handover, table) , _schema, nameof(TableName.Handover), Id)
                 .WithColumn("UnitDomesticWater").AsInt16().NotNullable()
                 .WithColumn("UnitCommercialWater").AsInt16().NotNullable()
                 .WithColumn("UnitOtherWater").AsInt16().NotNullable()
@@ -330,7 +339,8 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).NotNullable().Identity()
                 .WithColumn("IndividualTypeId").AsInt16().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.IndividualType, table), _schema, nameof(TableName.IndividualType), Id)
-                .WithColumn("FullName").AsString(_255).NotNullable()
+                .WithColumn("FirstName").AsString(_255).NotNullable()
+                .WithColumn("Surname").AsString(_255).NotNullable()
                 .WithColumn("NationalId").AsFixedLengthAnsiString(10).Nullable()
                 .WithColumn("FatherName").AsString(_255).Nullable()
                 .WithColumn("PhoneNumbers").AsString(_1023).Nullable()
@@ -438,13 +448,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
             _CreateIndividualDiscountType(TableName.RequestIndividualDiscountType, nameof(TableName.RequestIndividualDiscountType)
                 , TableName.RequestIndividual, nameof(TableName.RequestIndividual));
         }
-        private void CreateHandover()
-        {
-            var table = TableName.Handover;
-            Create.Table(nameof(TableName.Handover)).InSchema(_schema)
-                .WithColumn("Id").AsInt16().PrimaryKey(NamingHelper.Pk(table)).NotNullable()
-                .WithColumn("Title").AsString(_255).NotNullable();
-        }
+        
 
         private void CreateSiphonDiameter()
         {

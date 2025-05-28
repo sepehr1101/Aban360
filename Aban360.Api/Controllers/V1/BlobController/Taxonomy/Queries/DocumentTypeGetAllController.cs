@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.BlobController.Queries
 {
-    [Route("v1/document-Type")]
+    [Route("v1/document-type")]
     public class DocumentTypeGetAllController : BaseController
     {
         private readonly IDocumentTypeGetAllHandler _documentTypeGetAllHandler;
