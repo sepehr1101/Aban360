@@ -22,7 +22,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         {
             return @"select
 			    		e.Premises,
-                        --آحاد کل
+                        e.UnitCommercialWater+e.UnitDomesticWater+e.UnitOtherWater as 'UnitOverall',
                     	e.ImprovementsCommercial,
                     	e.ImprovementsDomestic,
                     	e.ImprovementsOverall,

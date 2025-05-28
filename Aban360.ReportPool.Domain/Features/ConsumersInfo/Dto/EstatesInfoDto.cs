@@ -4,6 +4,7 @@
     {
         //Estate Sepecification
         public int  Premises { get; set; }
+        public int UnitOverall { get; set; }
         public int ImprovementsOverall { get; set; }
         public int ImprovementsDomestic { get; set; }
 
