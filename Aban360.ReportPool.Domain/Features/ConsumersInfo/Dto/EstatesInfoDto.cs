@@ -11,8 +11,7 @@
         public int ImprovementsOther { get; set; }
         public string OwnershipTypeTitle { get; set; }//
 
-        public short UsageSellId { get; set; }//or
-        public short UsageConsumtion { get; set; }//or
+        public string UsageSellTitle { get; set; }
         public string DebtCollectionGroupTitle { get; set; }//
         public short flatCount { get; set; }
 

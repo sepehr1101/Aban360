@@ -7,7 +7,6 @@
         public string X { get; set; }
         public string Y { get; set; }
 
-        public string GISMap { get; set; } = null!;
         public string EvaluatorSpecifications { get; set; } = null!;
         public string Address { get; set; } = null!;
 

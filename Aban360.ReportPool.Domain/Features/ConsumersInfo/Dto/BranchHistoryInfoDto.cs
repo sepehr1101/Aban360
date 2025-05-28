@@ -24,9 +24,6 @@
         public string HouseholdCountStartDate { get; set; }//
         public string HouseholdCountEndDate { get; set; }//
 
-        public string ResidenceStartDate { get; set; }//
-        public string VacancyStartDate { get; set; }//
-        public string VacancyEndDate { get; set; }//
 
 
 

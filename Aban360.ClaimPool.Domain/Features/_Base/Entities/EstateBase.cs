@@ -10,6 +10,8 @@ public class EstateBase: IHashableEntity
 
     public short EstateBoundTypeId { get; set; }
 
+    public short HandoverId { get; set; }
+
     public string? PostalCode { get; set; }
 
     public string? X { get; set; }

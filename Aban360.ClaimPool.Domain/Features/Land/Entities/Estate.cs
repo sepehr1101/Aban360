@@ -27,5 +27,6 @@ public class Estate: EstateBase
     public virtual ICollection<WaterMeter> WaterMeters { get; set; } = new List<WaterMeter>();
 
     public virtual CapacityCalculationIndex CapacityCalculationIndex { get; set; }
+    public virtual Handover Handover { get; set; }
 
 }

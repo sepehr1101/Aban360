@@ -5,7 +5,9 @@ public class IndividualBase
     public int Id { get; set; }
     public short IndividualTypeId { get; set; }
 
-    public string FullName { get; set; } = null!;
+    public string FirstName { get; set; } = null!;
+
+    public string Surname { get; set; } = null!;
 
     public string? NationalId { get; set; }
 

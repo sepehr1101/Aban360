@@ -15,27 +15,32 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         {
             string branchHistoryQuery = GetSpecialConditionTagsSummayDtoQuery();
             string waterMeterTagsQuery = GetWaterMeterTagsDtoQuery();
+            string individualTagsQuery = GetIndividualTagsDtoQuery();
 
             SpecialConditionTagsInfoDto result = await _sqlConnection.QueryFirstOrDefaultAsync<SpecialConditionTagsInfoDto>(branchHistoryQuery, new { billId });
-            result.WaterMeterTags = await _sqlConnection.QueryAsync<WaterMeterTagInfoDto>(waterMeterTagsQuery, new { billId });
             
+            result.tagsInfoDtos = await _sqlConnection.QueryAsync<TagsInfoDto>(waterMeterTagsQuery, new { billId });
+            result.tagsInfoDtos.Concat(await _sqlConnection.QueryAsync<TagsInfoDto>(individualTagsQuery,new { billId }));
             return result;
         }
         private string GetSpecialConditionTagsSummayDtoQuery()
         {
-            return @"select
-                    	N'عادی' as 'HandoverTitle',--without relation
-                    	N'---' as 'CoverageStatus',
+            return @"select top(1)
+                    	h.Title as 'HandoverTitle',--without relation
+                    	dt.Title as 'DiscountTypeTitle',
                     	us.Title as 'UsageStateTitle',
                     	0 as 'SpecialBranch',
-                    	2 as 'VacantUnitCount',
+                    	e.EmptyUnit as 'EmptyUnit',
                     	e.HouseholdNumber as 'HouseholderNumber',
                     	1 as 'NonSequentialFlag'
                     from ClaimPool.WaterMeter w 
-                    join ClaimPool.WaterMeterTag wt on w.Id=wt.WaterMeterId
-                    join ClaimPool.WaterMeterTagDefinition wtd on wtd.Id=wt.WaterMeterTagDefinitionId
+					join ClaimPool.Estate e on w.EstateId=e.Id
+					join ClaimPool.Handover h on e.HandoverId=h.Id
+					join ClaimPool.IndividualEstate ie on ie.EstateId=e.Id
+					join ClaimPool.Individual i on ie.IndividualId=i.Id
+					join ClaimPool.IndividualDiscountType idt on idt.IndividualId=i.Id
+					join ClaimPool.DiscountType dt on idt.DiscountTypeId=dt.Id
                     join ClaimPool.UseState us on w.UseStateId=us.Id
-                    join ClaimPool.Estate e on w.EstateId=e.Id
                          where w.BillId=@billId";
 
         }
@@ -47,6 +52,19 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     from ClaimPool.WaterMeter w 
                     join ClaimPool.WaterMeterTag wt on w.Id=wt.WaterMeterId
                     join ClaimPool.WaterMeterTagDefinition wtd on wtd.Id=wt.WaterMeterTagDefinitionId
+                         where w.BillId=@billId";
+        
+        } private string GetIndividualTagsDtoQuery()
+        {
+            return @"select
+                    	itd.Id,
+						itd.Title
+                    from ClaimPool.WaterMeter w 
+					join ClaimPool.Estate e on w.EstateId=e.Id
+					join ClaimPool.IndividualEstate ie on e.Id=ie.EstateId
+					join ClaimPool.Individual i on ie.IndividualId=i.Id
+					join ClaimPool.IndividualTag it on it.IndividualId=i.Id
+					join ClaimPool.IndividualTagDefinition itd on it.IndividualTagDefinitionId=itd.Id
                          where w.BillId=@billId";
         }
     }

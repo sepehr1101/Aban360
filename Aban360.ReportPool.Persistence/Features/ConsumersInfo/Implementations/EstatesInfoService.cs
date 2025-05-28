@@ -22,13 +22,13 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         {
             return @"select
 			    		e.Premises,
+                        --آحاد کل
                     	e.ImprovementsCommercial,
                     	e.ImprovementsDomestic,
                     	e.ImprovementsOverall,
                     	e.ImprovementsOther,
 			    		N'سند تک برگ' as 'OwnershipTypeTitle',
-                    	u1.Title as N'UsageConsumption',
-                    	u2.Title as N'UsageSell',
+                    	u.Title as N'UsageSellTitle',
 			    		N'---' as 'DebtCollectionGroupTitle',
 			    		count(f.Storey) as flatCount,
 			    		e.ContractualCapacity,
@@ -44,8 +44,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     from ClaimPool.WaterMeter w
                     join ClaimPool.Estate e on w.EstateId=e.Id
 			    	join ClaimPool.ConstructionType ct on e.ConstructionTypeId=ct.Id
-                    join ClaimPool.Usage u1 on e.UsageConsumtionId=u1.Id 
-                    join ClaimPool.Usage u2 on e.UsageSellId=u2.Id
+                    join ClaimPool.Usage u on e.UsageSellId=u.Id
                     join ClaimPool.Flat f on f.EstateId=e.Id
                     where w.BillId=@billId
                     group by 
@@ -54,8 +53,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	e.ImprovementsDomestic,
                     	e.ImprovementsOverall,
                     	e.ImprovementsOther,
-                    	u1.Title ,
-                    	u2.Title ,
+                    	u.Title ,
 			    		e.ContractualCapacity,
 			    		ct.Title ,
 			    		e.Storeys,

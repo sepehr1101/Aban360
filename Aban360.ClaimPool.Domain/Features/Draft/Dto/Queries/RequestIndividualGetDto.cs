@@ -6,7 +6,8 @@ namespace Aban360.ClaimPool.Domain.Features.Draft.Dto.Queries
     public record RequestIndividualGetDto
     {
         public int Id { get; set; }
-        public string FullName { get; set; } = null!;
+        public string FirstName { get; set; } = null!;
+        public string Surname { get; set; } = null!;
         public string? NationalId { get; set; }
         public string? FatherName { get; set; }
         public string? PhoneNumbers { get; set; }

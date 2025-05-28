@@ -21,14 +21,17 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         private string GetIndividualsSummayDtoQuery()
         {
             return @"select 
-                	i.FullName,
+                	i.FirstName,
+                    i.Surname,
                 	i.FatherName,
                 	i.NationalId,
                 	i.PhoneNumbers,
                 	i.MobileNumbers,
-                    e.HouseholdNumber,
                 	ier.Title AS IndividualEstateRelationType,
-                	COALESCE(d.Title, '-') AS DiscountType
+                    0 as 'NumberOfPeople',
+                    e.HouseholdNumber,
+                	COALESCE(d.Title, '-') AS DiscountType,
+                    0 as 'IsOwnerAgent'
                 from ClaimPool.WaterMeter w 
                 join ClaimPool.Estate e on w.EstateId=e.Id
                 join ClaimPool.IndividualEstate ie on ie.EstateId=e.Id

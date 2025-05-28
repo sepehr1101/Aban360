@@ -25,7 +25,6 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                      	e.PostalCode,
                      	e.X,
                      	e.Y,
-                    	N'---' as 'GISMap',
                     	N'---' as 'EvaluatorSpecifications',
                      	e.Address
                      from ClaimPool.WaterMeter w

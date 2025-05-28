@@ -118,7 +118,12 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Validations
                               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                               .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-                individual.RuleFor(f => f.FullName)
+                individual.RuleFor(f => f.Surname)
+                   .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                   .NotNull().WithMessage(ExceptionLiterals.NotNull)
+                   .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
+
+                individual.RuleFor(f => f.FirstName)
                    .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                    .NotNull().WithMessage(ExceptionLiterals.NotNull)
                    .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);

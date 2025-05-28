@@ -41,10 +41,6 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 						N'---' as 'HouseholdCountStartDate',
 						N'---' as 'HouseholdCountEndDate',
 						
-						e.ValidFrom as 'ResidenceStartDate',
-						N'---' as 'VacancyStartDate',
-						N'---' as 'VacancyEndDate',
-						
 						s.ValidFrom as 'SewageRequestDate', 
 						s.InstallationDate as 'SewageInstallationDate',
 						s.InstallationDate as 'SewageRegistrationDate',
