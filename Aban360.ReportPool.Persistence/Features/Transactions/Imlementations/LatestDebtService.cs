@@ -24,10 +24,12 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             return result;
             string GetWaterBillDebtQuery()
             {
-                string query = @"SELECT SUM(Amount) AS Debt FROM 
+                string queryOld = @"SELECT SUM(Amount) AS Debt FROM 
                                 (SELECt SumItems Amount from [172.18.12.60].CustomerWarehouse.dbo.Bills where TRIM(billId)=@BillId
                                 Union
                                 SELECT -1*Amount Amount from [172.18.12.60].CustomerWarehouse.dbo.Payments where TRIM(billId)=@BillId) X";
+
+                string query = "SELECT Debt FROM [172.18.12.60].CustomerWarehouse.dbo.WaterDebt where BillId =@BillId";
                 return query;
             }
         }
