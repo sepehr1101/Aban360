@@ -24,6 +24,8 @@ using Aban360.PaymentPool.Application.Extensions;
 using Aban360.PaymentPool.Persistence.Extensions;
 using Aban360.CalculationPool.GatewayAdhoc.Extensions;
 using Aban360.ClaimPool.GatewayAdhoc.Extensions;
+using Aban360.CommunicationPool.Application.Extensions;
+using Aban360.CommunicationPool.Persistence.Extensions;
 
 namespace Aban360.Api.Extensions
 {
@@ -42,6 +44,7 @@ namespace Aban360.Api.Extensions
             services.AddReportPoolDI();
             services.AddInstallationPoolDI();
             services.AddPaymentPoolDI();
+            services.AddCommunicationPoolDI();
         }
 
         private static void AddUserPoolDI(this IServiceCollection services)
@@ -106,6 +109,13 @@ namespace Aban360.Api.Extensions
             services.AddPaymentPoolApplicationInjections();
             services.AddPaymentPoolPersistenceInjections();
         }
+
+        private static void AddCommunicationPoolDI(this IServiceCollection services)
+        {
+            services.AddCommunicationPoolApplicationInjections();
+            services.AddCommunicationPoolPersistenceInjections();
+        }
         
+
     }
 }

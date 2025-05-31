@@ -78,6 +78,8 @@
     <ProjectReference Include="..\Aban360.ClaimPool.Persistence\Aban360.ClaimPool.Persistence.csproj" />
     <ProjectReference Include="..\Aban360.Common.Db\Aban360.Common.Db.csproj" />
     <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
+    <ProjectReference Include="..\Aban360.CommunicationPool.Application\Aban360.CommunicationPool.Application.csproj" />
+    <ProjectReference Include="..\Aban360.CommunicationPool.Persistence\Aban360.CommunicationPool.Persistence.csproj" />
     <ProjectReference Include="..\Aban360.InstallationPool.Application\Aban360.InstallationPool.Application.csproj" />
     <ProjectReference Include="..\Aban360.InstallationPool.Persistence\Aban360.InstallationPool.Persistence.csproj" />
     <ProjectReference Include="..\Aban360.LocationPool.Application\Aban360.LocationPool.Application.csproj" />
