@@ -4,6 +4,8 @@
     {
         public int Id { get; set; }
         public string FullName { get; set; } = default!;
+        public string FirstName { get; set; } = default!;
+        public string Surname{ get; set; } = default!;
         public string? FatherName { get; set; }
         public string? NationalId { get; set; }
         public string? PhoneNumbers { get; set; }
