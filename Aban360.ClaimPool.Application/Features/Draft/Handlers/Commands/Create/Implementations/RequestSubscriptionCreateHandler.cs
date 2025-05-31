@@ -167,6 +167,7 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
                 requestWaterMeter.WaterMeterSiphons.Add(requestWaterMeterSiphon);
             }
         }
+
         public async Task Handle(IAppUser currentUser, RequestSubscriptionCreateDto createDto, CancellationToken cancellationToken)
         {
             var validationResult = await _requestValidator.ValidateAsync(createDto, cancellationToken);
@@ -180,6 +181,11 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
 
             RequestEstate estate = GetEstate(currentUser, createDto.Estate);
             ICollection<RequestWaterMeter> requestWaterMeters = GetWaterMeter(currentUser, createDto.WaterMeter, estate);
+            Random random = new Random();
+            requestWaterMeters.ToList().ForEach(waterMeter =>
+            {
+                waterMeter.TrackNumber = random.Next(1, 1000001).ToString("D6");
+            });
 
             GetFlats(createDto.Flats, estate);
             GetWaterMeterTags(createDto.WaterMeter, requestWaterMeters.First());
@@ -190,5 +196,7 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.
 
             await _requestEstateCommandService.Add(estate);
         }
+
+
     }
 }

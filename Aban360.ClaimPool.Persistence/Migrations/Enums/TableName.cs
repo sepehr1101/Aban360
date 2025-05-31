@@ -36,6 +36,7 @@
         MeterUseType,
         WaterMeter,
         RequestWaterMeter,
+        RequestTracking,
         WaterMeterTagDefinition,
         WaterMeterTag,
         RequestWaterMeterTag,
