@@ -25,6 +25,8 @@
         public string UsageConsumtion { get; set; }//UsageConsumtionTitle
         public string UsageSell { get; set; }//UsageSellTitle
         public string FullName { get; set; } = default!;
+        public string FirstName { get; set; } = default!;
+        public string Surname { get; set; } = default!;
         public DateTime? SiphonInstallationDate { get; set; }
         public string? HeadquartersTitle { get; set; }
         public string? CordinalDirectionTitle { get; set; }
@@ -33,6 +35,11 @@
         public string? ZoneTitle { get; set; }
         public string? MunicipalityTitle { get; set; }
         public ICollection<string>? WaterMeterTags { get; set; }
+
+
+        public int MunicipalityId { get; set; }
+        public string PostalCode{ get; set; }
+        public string  MobileNumber { get; set; }
     }
 
 }
