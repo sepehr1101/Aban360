@@ -33,6 +33,7 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddSerilog(configuration);
 
 var app = builder.Build();
+//app.UsePathBase("/aban360");
 app.UseExceptionHandler("/error");
 app.AddSwaggerApp();
 
@@ -41,17 +42,20 @@ app.AddSwaggerApp();
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
         Path.Combine(builder.Environment.ContentRootPath, "lib")),
     RequestPath = "/lib"
 });
+
 app.UseRouting();
 app.UseCustomCors();
+app.UseSerilogInterface();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseSerilogInterface();
+
 
 app.AddHangfireDashboard(configuration);
 
