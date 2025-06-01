@@ -26,40 +26,51 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
         {
             if (!_roles.Any())
             {
-                var admin = new Role()
-                {
-                    Hash = string.Empty,
-                    InsertLogInfo = LogInfoJson.Get(),
-                    IsRemovable = false,
-                    SensitiveInfo = false,
-                    Title = "راهبر سامانه",
-                    Name = BaseRoles.Admin,
-                    ValidFrom = DateTime.Now
-                };
-                var ai = new Role()
-                {
-                    Hash = string.Empty,
-                    InsertLogInfo = LogInfoJson.Get(),
-                    IsRemovable = false,
-                    SensitiveInfo = false,
-                    Title = "دستیار هوشمند",
-                    Name = BaseRoles.Ai,
-                    ValidFrom = DateTime.Now
-                };
-                var programmer = new Role()
-                {
-                    Hash = string.Empty,
-                    InsertLogInfo = LogInfoJson.Get(),
-                    IsRemovable = false,
-                    SensitiveInfo = false,
-                    ValidFrom = DateTime.Now,
-                    Name = BaseRoles.Programmer,
-                    Title = "برنامه نویس"
-                };
-                var roles= new Role[] {admin, ai, programmer};
+                Role admin = CreateRole(BaseRoles.Admin, "راهبر سامانه");
+                Role ai = CreateRole(BaseRoles.Ai, "دستیار هوشمند");
+                Role programmer = CreateRole(BaseRoles.Programmer, "برنامه نویس");
+                Role headOfSubscribersDepartment = CreateRole(BaseRoles.HeadOfSubscribersDepartment, "رئیس اداره مشترکین");
+                Role receivablesResponsible = CreateRole(BaseRoles.ReceivablesResponsible, "مسئول وصول مطالبات");
+                Role detectionAndDistributionResponsible = CreateRole(BaseRoles.DetectionAndDistributionResponsible, "مسئول تشخیص و توزیع");
+                Role hotline1522Reception = CreateRole(BaseRoles.Hotline1522Reception, "رابط 1522/پذیرش");
+                Role receivablesSpecialist = CreateRole(BaseRoles.ReceivablesSpecialist, "کارشناس وصول مطالبات");
+                Role detectionAndDistributionSpecialist = CreateRole(BaseRoles.DetectionAndDistributionSpecialist, "کارشناس تشخیص و توزیع");
+                Role reviewer = CreateRole(BaseRoles.Reviewer, "بازبین");
+                Role serviceDesk = CreateRole(BaseRoles.ServiceDesk, "میز خدمت");
+                Role evaluator = CreateRole(BaseRoles.Evaluator, "ارزیاب");
+
+                Role[] roles =
+                [
+                    admin,
+                    ai,
+                    programmer,
+                    headOfSubscribersDepartment,
+                    receivablesResponsible,
+                    detectionAndDistributionResponsible,
+                    hotline1522Reception,
+                    receivablesSpecialist,
+                    detectionAndDistributionSpecialist,
+                    reviewer,
+                    serviceDesk,
+                    evaluator
+                ];
                 _roles.AddRange(roles);
                 _uow.SaveChanges();
             }
+        }
+
+        public Role CreateRole(string name, string title)
+        {
+            return new Role()
+            {
+                Hash = string.Empty,
+                InsertLogInfo = LogInfoJson.Get(),
+                IsRemovable = false,
+                SensitiveInfo = false,
+                ValidFrom = DateTime.Now,
+                Name = name,
+                Title = title
+            };
         }
     }
 }

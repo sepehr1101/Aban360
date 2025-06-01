@@ -27,12 +27,31 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
         {
             if (!_users.Any())
             {
-
-                ICollection<User> users = new List<User>();
-                users.Add(await GetUser("1برنامه نویس", "برنامه نویس1", "programmer1"));
-                users.Add(await GetUser("برنامه نویس2", "برنامه نویس2", "programmer2"));
-                users.Add(await GetUser("برنامه نویس3", "برنامه نویس3", "programmer3"));
-                users.Add(await GetUser("برنامه نویس4", "برنامه نویس4", "programmer4"));
+                ICollection<User> users =
+                [
+                    await GetUser("1برنامه نویس", "برنامه نویس1", "programmer1"),
+                    await GetUser("برنامه نویس2", "برنامه نویس2", "programmer2"),
+                    await GetUser("برنامه نویس3", "برنامه نویس3", "programmer3"),
+                    await GetUser("برنامه نویس4", "برنامه نویس4", "programmer4"),
+                    await GetUser("آسيه سادات ملاباشي", "آسيه سادات ملاباشي", "molabashi"),
+                    await GetUser("ميثم اعلايي", "ميثم اعلايي", "alaie"),
+                    await GetUser("مريم حبيبي نژاد", "مريم حبيبي نژاد", "habibinezhad"),
+                    await GetUser("ندا خلجي", "ندا خلجي", "khalaji"),
+                    await GetUser("شهربانو قرمزي", "شهربانو قرمزي", "qermezi"),
+                    await GetUser("نسرين حاجي باقري", "نسرين حاجي باقري", "hajbaqery"),
+                    await GetUser("توحيده حاجي شفيعي", "توحيده حاجي شفيعي", "hajishafie"),
+                    await GetUser("روح اله سعيدي", "روح اله سعيدي", "saeidi"),
+                    await GetUser("ميترا عيوضي", "ميترا عيوضي", "eivazi"),
+                    await GetUser("مرتضي شمس بگي", "مرتضي شمس بگي", "shamsbegi"),
+                    await GetUser("مهدي اميدي", "مهدي اميدي", "omidi"),
+                    await GetUser("محمد موسوي", "محمد موسوي", "mosavi"),
+                    await GetUser("رامين کريمي", "رامين کريمي", "karimi"),
+                    await GetUser("مهرداد ربيعي", "مهرداد ربيعي", "rabeie"),
+                    await GetUser("مهدي سيفي", "مهدي سيفي", "seifi"),
+                    await GetUser("محسن حيدري", "محسن حيدري", "heidari"),
+                    await GetUser("عباس بخشي", "عباس بخشي", "bakhshi"),
+                    await GetUser("esb","esb","esb","ovL2FiYW4zNjAuaXIvIiwiaWF0IjoxNzQ0NjIzMDcwLCJodHRwOi8vc2No")
+                ];
 
                 _users.AddRange(users);
                 _uow.SaveChanges();
@@ -60,7 +79,7 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
             };
             return userClaims;
         }
-        private async Task<User> GetUser(string displayName, string fullname, string userName)
+        private async Task<User> GetUser(string displayName, string fullname, string userName, string password="123456")
         {
             var logInfo = LogInfoJson.Get();
             var userId = Guid.NewGuid();
@@ -76,7 +95,7 @@ namespace Aban360.UserPool.Persistence.DbSeeder.Implementations
                 Mobile = "09130000000",
                 MobileConfirmed = false,
                 ValidFrom = DateTime.Now,
-                Password = await SecurityOperations.GetSha512Hash("123456"),
+                Password = await SecurityOperations.GetSha512Hash(password),
                 Hash = string.Empty,
                 SerialNumber = Guid.NewGuid().ToString("n"),
                 UserRoles = GetProgrammerRoles(userId, logInfo),
