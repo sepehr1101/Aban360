@@ -50,16 +50,21 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     E.UnitCommercialSewage,
                     E.UnitOtherSewage,
                     E.EmptyUnit,
+                    E.PostalCode AS PostalCode,
                     C.Title AS ConstructionType,
                     U.Title AS UsageConsumtion,
                     UU.Title AS UsageSell,
-                    I.FullName,
+                    I.FirstName AS FirstName ,
+                    I.Surname AS Surname,
+                    I.FirstName +N' ' + I.Surname AS FullName,                   
+                    I.MobileNumbers As MobileNumber,
                     S.InstallationDate AS SiphonInstallationDate,
                     CD.Title CordinalDirectionTitle,
                     H.Title AS HeadquartersTitle,
                     P.Title AS ProvinceTitle,
                     R.Title AS RegionTitle,
                     Z.Title AS ZoneTitle,
+                    M.Id AS MunicipalityId,
                     M.Title AS MunicipalityTitle
                 FROM [ClaimPool].WaterMeter W
                 JOIN [ClaimPool].Estate E ON W.EstateId = E.Id

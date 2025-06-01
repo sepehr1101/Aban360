@@ -19,12 +19,11 @@ namespace Aban360.CalculationPool.Application.Features.TestTariff.Validations
               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(i => i.CurrentWaterMeterDate)
-                .LessThan(i => i.PreviousWaterMeterDate)
-                .WithMessage(ExceptionLiterals.CurrentDateNotMoreThanPreviousDate)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(i => i.PreviousWaterMeterDate)
+                .LessThan(i => i.CurrentWaterMeterDate).WithMessage(ExceptionLiterals.CurrentDateNotMoreThanPreviousDate)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 

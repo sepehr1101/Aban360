@@ -29,7 +29,7 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
         private string GetIndividualOwnerShipQuery()
         {
             return @"SELECT
-                        I.Id, I.FullName,I.FatherName,I.NationalId,I.PhoneNumbers,I.MobileNumbers
+                        I.Id, I.FirstName , I.Surname, I.FirstName+N' '+I.Surname AS FullName,I.FatherName,I.NationalId,I.PhoneNumbers,I.MobileNumbers
                      from [ClaimPool].WaterMeter W
                      join [ClaimPool].Estate E on W.EstateId=E.Id
                      join [ClaimPool].IndividualEstate IE on E.Id=IE.EstateId
@@ -39,7 +39,7 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
         private string GetIndividualStakeHolderQuery()
         {
             return @"SELECT
-                        I.Id, I.FullName,I.FatherName,I.NationalId,I.PhoneNumbers,I.MobileNumbers
+                        I.Id, I.FirstName , I.Surname, I.FirstName+N' '+I.Surname AS FullName,I.FatherName,I.NationalId,I.PhoneNumbers,I.MobileNumbers
                      from [ClaimPool].WaterMeter W
                      left join [ClaimPool].Estate E on W.EstateId=E.Id
                      left join [ClaimPool].IndividualEstate IE on E.Id=IE.EstateId

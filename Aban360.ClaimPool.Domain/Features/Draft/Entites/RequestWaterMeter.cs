@@ -8,6 +8,8 @@ namespace Aban360.ClaimPool.Domain.Features.Draft.Entites
     [Table(nameof(RequestWaterMeter))]
     public class RequestWaterMeter : WaterMeterBase
     {
+        public string TrackNumber { get; set; } = null!;
+
         [ForeignKey(nameof(EstateId))]
         public virtual RequestEstate RequestEstate { get; set; } = null!;
         //public virtual ICollection<RequestWaterMeter> InverseParent { get; set; } = new List<RequestWaterMeter>();

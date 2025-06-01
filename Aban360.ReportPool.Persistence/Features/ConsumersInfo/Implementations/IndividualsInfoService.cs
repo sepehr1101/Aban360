@@ -23,6 +23,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             return @"select 
                 	i.FirstName,
                     i.Surname,
+                    i.FirstName+N' '+i.Surname as FullName,
+                    i.Surname,
                 	i.FatherName,
                 	i.NationalId,
                 	i.PhoneNumbers,

@@ -10,7 +10,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
     public class DbInitialDesign : Migration
     {
         string _schema = TableSchema.Name, Id = nameof(Id), Hash = nameof(Hash);
-        int _13=13,_31 = 31, _255 = 255, _1023 = 1023, _15 = 15, _10 = 10;
+        int _13 = 13, _31 = 31, _255 = 255, _1023 = 1023, _15 = 15, _10 = 10;
         public override void Up()
         {
             Create.Schema(_schema);
@@ -111,7 +111,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("UsageConsumtionId").AsInt16().NotNullable()
                     .ForeignKey(NamingHelper.Fk(TableName.Usage, table) + "_Consumption", _schema, nameof(TableName.Usage), Id)
                 .WithColumn("HandoverId").AsInt16().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.Handover, table) , _schema, nameof(TableName.Handover), Id)
+                    .ForeignKey(NamingHelper.Fk(TableName.Handover, table), _schema, nameof(TableName.Handover), Id)
                 .WithColumn("UnitDomesticWater").AsInt16().NotNullable()
                 .WithColumn("UnitCommercialWater").AsInt16().NotNullable()
                 .WithColumn("UnitOtherWater").AsInt16().NotNullable()
@@ -242,52 +242,73 @@ namespace Aban360.ClaimPool.Persistence.Migrations
 
         private void _CreateWaterMeter(TableName table, string nameOfTable, TableName estateTable, string estateName)
         {
-            Create.Table(nameOfTable).InSchema(_schema)
-              .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
-              .WithColumn("ReadingNumber").AsAnsiString(_31).Nullable()
-              .WithColumn("CustomerNumber").AsInt32().NotNullable()
-              .WithColumn("SealNumber").AsInt32().NotNullable()
-              .WithColumn("BillId").AsString(15).NotNullable()
-              .WithColumn("EstateId").AsInt32().NotNullable()
-                  .ForeignKey(NamingHelper.Fk(estateTable, table), _schema, estateName, Id)
-              .WithColumn("UseStateId").AsInt16().NotNullable()
-                  .ForeignKey(NamingHelper.Fk(TableName.UseState, table), _schema, nameof(TableName.UseState), Id)
-              .WithColumn("SubscriptionTypeId").AsInt16().NotNullable()
-                  .ForeignKey(NamingHelper.Fk(TableName.SubscriptionType, table), _schema, nameof(TableName.SubscriptionType), Id)
-              .WithColumn("InstallationLocation").AsString(_255).Nullable()
-              .WithColumn("BodySerial").AsAnsiString(_31).Nullable()
-              .WithColumn("InstallationDate").AsAnsiString(10).Nullable()
-              .WithColumn("ProductDate").AsAnsiString(10).Nullable()
-              .WithColumn("GuaranteeDate").AsAnsiString(10).Nullable()
-              .WithColumn("MeterDiameterId").AsInt16().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.MeterDiameter, table), _schema, nameof(TableName.MeterDiameter), Id)
-              .WithColumn("MeterProducerId").AsInt16().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.MeterProducer, table), _schema, nameof(TableName.MeterProducer), Id)
-              .WithColumn("MeterTypeId").AsInt16().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.MeterType, table), _schema, nameof(TableName.MeterType), Id)
-              .WithColumn("MeterMaterialId").AsInt16().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.MeterMaterial, table), _schema, nameof(TableName.MeterMaterial), Id)
-              .WithColumn("MeterUseTypeId").AsInt16().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.MeterUseType, table), _schema, nameof(TableName.MeterUseType), Id)
-              .WithColumn("ParentId").AsInt32().Nullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.WaterMeter, table), _schema, nameOfTable, Id)
-              .WithColumn("UserId").AsGuid().NotNullable()
-              .WithColumn("PreviousId").AsInt32().Nullable()
-                     .ForeignKey(NamingHelper.Fk(table, table, "PreviousId"), _schema, nameOfTable, Id)
-              .WithColumn($"{TableName.WaterMeterInstallationMethod}Id").AsInt16().NotNullable()
-                    .ForeignKey(NamingHelper.Fk(TableName.WaterMeterInstallationMethod, table), _schema, nameof(TableName.WaterMeterInstallationMethod), Id)
-              .WithColumn("ValidFrom").AsDateTime2().NotNullable()
-              .WithColumn("ValidTo").AsDateTime2().Nullable()
-              .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
-              .WithColumn("RemoveLogInfo").AsString(int.MinValue).Nullable()
-              .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
+            var tableBuilder = Create.Table(nameOfTable).InSchema(_schema)
+                 .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity().NotNullable()
+                 .WithColumn("ReadingNumber").AsAnsiString(_31).Nullable()
+                 .WithColumn("CustomerNumber").AsInt32().NotNullable()
+                 .WithColumn("SealNumber").AsInt32().NotNullable()
+                 .WithColumn("BillId").AsString(15).NotNullable()
+                 .WithColumn("EstateId").AsInt32().NotNullable()
+                     .ForeignKey(NamingHelper.Fk(estateTable, table), _schema, estateName, Id)
+                 .WithColumn("UseStateId").AsInt16().NotNullable()
+                     .ForeignKey(NamingHelper.Fk(TableName.UseState, table), _schema, nameof(TableName.UseState), Id)
+                 .WithColumn("SubscriptionTypeId").AsInt16().NotNullable()
+                     .ForeignKey(NamingHelper.Fk(TableName.SubscriptionType, table), _schema, nameof(TableName.SubscriptionType), Id)
+                 .WithColumn("InstallationLocation").AsString(_255).Nullable()
+                 .WithColumn("BodySerial").AsAnsiString(_31).Nullable()
+                 .WithColumn("InstallationDate").AsAnsiString(10).Nullable()
+                 .WithColumn("ProductDate").AsAnsiString(10).Nullable()
+                 .WithColumn("GuaranteeDate").AsAnsiString(10).Nullable()
+                 .WithColumn("MeterDiameterId").AsInt16().NotNullable()
+                       .ForeignKey(NamingHelper.Fk(TableName.MeterDiameter, table), _schema, nameof(TableName.MeterDiameter), Id)
+                 .WithColumn("MeterProducerId").AsInt16().NotNullable()
+                       .ForeignKey(NamingHelper.Fk(TableName.MeterProducer, table), _schema, nameof(TableName.MeterProducer), Id)
+                 .WithColumn("MeterTypeId").AsInt16().NotNullable()
+                       .ForeignKey(NamingHelper.Fk(TableName.MeterType, table), _schema, nameof(TableName.MeterType), Id)
+                 .WithColumn("MeterMaterialId").AsInt16().NotNullable()
+                       .ForeignKey(NamingHelper.Fk(TableName.MeterMaterial, table), _schema, nameof(TableName.MeterMaterial), Id)
+                 .WithColumn("MeterUseTypeId").AsInt16().NotNullable()
+                       .ForeignKey(NamingHelper.Fk(TableName.MeterUseType, table), _schema, nameof(TableName.MeterUseType), Id)
+                 .WithColumn("ParentId").AsInt32().Nullable()
+                       .ForeignKey(NamingHelper.Fk(TableName.WaterMeter, table), _schema, nameOfTable, Id)
+                 .WithColumn("UserId").AsGuid().NotNullable()
+                 .WithColumn("PreviousId").AsInt32().Nullable()
+                        .ForeignKey(NamingHelper.Fk(table, table, "PreviousId"), _schema, nameOfTable, Id)
+                 .WithColumn($"{TableName.WaterMeterInstallationMethod}Id").AsInt16().NotNullable()
+                       .ForeignKey(NamingHelper.Fk(TableName.WaterMeterInstallationMethod, table), _schema, nameof(TableName.WaterMeterInstallationMethod), Id)
+                 .WithColumn("ValidFrom").AsDateTime2().NotNullable()
+                 .WithColumn("ValidTo").AsDateTime2().Nullable()
+                 .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
+                 .WithColumn("RemoveLogInfo").AsString(int.MinValue).Nullable()
+                 .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
+
+            if (nameOfTable == nameof(TableName.RequestWaterMeter))
+            {
+                tableBuilder.WithColumn("TrackNumber").AsString(_31).NotNullable();//Todo: DataType
+            }
         }
+
         private void CreateWaterMeters()
         {
             _CreateWaterMeter(TableName.WaterMeter, nameof(TableName.WaterMeter), TableName.Estate, nameof(TableName.Estate));
             _CreateWaterMeter(TableName.RequestWaterMeter, nameof(TableName.RequestWaterMeter), TableName.RequestEstate, nameof(TableName.RequestEstate));
         }
 
+        private void CreateRequestTracking()
+        {
+            var table=TableName.RequestTracking;
+            Create.Table(nameof(TableName.RequestTracking)).InSchema(_schema)
+                .WithColumn(Id).AsInt32().NotNullable().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn("WaterMeterId").AsInt32().NotNullable()
+                    .ForeignKey(NamingHelper.Fk(TableName.RequestWaterMeter,table),_schema,nameof(TableName.RequestWaterMeter),Id)
+                .WithColumn("Status").AsInt16().NotNullable()
+                .WithColumn("UserId").AsGuid().NotNullable()
+                .WithColumn("ValidFrom").AsDateTime2().NotNullable()
+                .WithColumn("ValidTo").AsDateTime2().Nullable()
+                .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
+                .WithColumn("RemoveLogInfo").AsString(int.MinValue).Nullable()
+                .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
+        }
         private void CreateWaterMeterTagDefinition()
         {
             var table = TableName.WaterMeterTagDefinition;
@@ -352,7 +373,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
                 .WithColumn("ValidTo").AsDateTime2().Nullable()
                 .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
                 .WithColumn("RemoveLogInfo").AsString(int.MinValue).Nullable()
-                .WithColumn(Hash).AsString(int.MaxValue).NotNullable(); 
+                .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
         }
         private void CreateIndividuals()
         {
@@ -448,7 +469,7 @@ namespace Aban360.ClaimPool.Persistence.Migrations
             _CreateIndividualDiscountType(TableName.RequestIndividualDiscountType, nameof(TableName.RequestIndividualDiscountType)
                 , TableName.RequestIndividual, nameof(TableName.RequestIndividual));
         }
-        
+
 
         private void CreateSiphonDiameter()
         {

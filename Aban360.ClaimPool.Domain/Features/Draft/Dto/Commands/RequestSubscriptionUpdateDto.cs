@@ -1,4 +1,7 @@
-﻿namespace Aban360.ClaimPool.Domain.Features.Draft.Dto.Commands
+﻿using Aban360.ClaimPool.Domain.Features.Draft.Entites;
+using Aban360.Common.BaseEntities;
+
+namespace Aban360.ClaimPool.Domain.Features.Draft.Dto.Commands
 {
     public record RequestSubscriptionUpdateDto
     {

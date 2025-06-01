@@ -70,6 +70,7 @@ namespace Aban360.ClaimPool.Persistence.Contexts.Implementation
         public virtual DbSet<RequestWaterMeter> RequestWaterMeters { get; set; }
         public virtual DbSet<RequestWaterMeterSiphon> RequestWaterMeterSiphons { get; set; }
         public virtual DbSet<RequestWaterMeterTag> RequestWaterMeterTags { get; set; }
+        public virtual DbSet<RequestTracking> RequestTrackings{ get; set; }
 
     }
 }
