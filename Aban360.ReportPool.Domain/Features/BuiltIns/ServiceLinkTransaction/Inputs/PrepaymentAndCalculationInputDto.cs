@@ -2,6 +2,6 @@
 {
     public record PrepaymentAndCalculationInputDto
     {
-
+        public string Input { get; set; }
     }
 }

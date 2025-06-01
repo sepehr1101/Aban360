@@ -2,6 +2,6 @@
 {
     public record PrepaymentAndCalculationDataOutputDto
     {
-
+        public ICollection<PrepaymentAndCalculationItemTitleDto> ItemTitles { get; set; }
     }
 }

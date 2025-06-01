@@ -2,6 +2,6 @@
 {
     public record CalculationDetailsInputDto
     {
-
+        public string Input { get; set; }
     }
 }
