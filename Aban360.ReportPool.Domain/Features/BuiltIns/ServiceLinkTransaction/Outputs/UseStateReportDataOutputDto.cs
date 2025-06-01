@@ -13,8 +13,4 @@
         public string Address { get; set; }
 
     }
-    public record UseStateReportHeaderOutputDto
-    {
-
-    }
 }
