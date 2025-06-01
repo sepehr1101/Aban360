@@ -11,13 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\BuiltIns\PaymentsTransactions\Inputs\" />
-    <Folder Include="Features\BuiltIns\PaymentsTransactions\Outputs\" />
-    <Folder Include="Features\BuiltIns\ServiceLinkTransaction\Outputs\" />
     <Folder Include="Features\BuiltIns\WaterTransactions\Inputs\" />
     <Folder Include="Features\BuiltIns\WaterTransactions\Outputs\" />
     <Folder Include="Features\InvoiceInfo\" />
-    <Folder Include="Features\BuiltIns\ServiceLinkTransaction\Inputs\" />
   </ItemGroup>
 
   <ItemGroup>

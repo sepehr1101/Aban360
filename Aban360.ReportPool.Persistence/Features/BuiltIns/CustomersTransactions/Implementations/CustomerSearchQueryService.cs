@@ -1,4 +1,5 @@
-﻿using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
+﻿using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
@@ -14,15 +15,18 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         {
         }
 
-        public async Task<ICollection<CustomerSearchOutputDto>> GetInfo(CustomerSearchInputDto input)
+        public async Task<ReportOutput<CustomerSearchHeaderOutputDto, CustomerSearchDataOutputDto>> GetInfo(CustomerSearchInputDto input)
         {
-            string customerSearchInfoQuery = GetCustomerSearchInfo();
-            IEnumerable<CustomerSearchOutputDto> results = await _sqlConnection.QueryAsync<CustomerSearchOutputDto>(customerSearchInfoQuery);
+            string customerSearchDataInfoQuery = GetCustomerSearchDataQuery();
+            IEnumerable<CustomerSearchDataOutputDto> customerData = await _sqlConnection.QueryAsync<CustomerSearchDataOutputDto>(customerSearchDataInfoQuery);//todo: send parameters
+            CustomerSearchHeaderOutputDto customerHeader = new CustomerSearchHeaderOutputDto()
+            { };
 
-            return results.ToList();
+            var result = new ReportOutput<CustomerSearchHeaderOutputDto, CustomerSearchDataOutputDto>(ReportLiterals.CustomerSearch, customerHeader, customerData);
+            return result;
         }
 
-        private string GetCustomerSearchInfo()
+        private string GetCustomerSearchDataQuery()
         {
             return " ";
         }

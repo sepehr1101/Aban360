@@ -4,8 +4,8 @@
     {
         public string Title { get; } = default!;
         public TReportHeader ReportHeader { get; }= default!;
-        public TReportData ReportData { get; } = default!;
-        public ReportOutput(string title, TReportHeader header, TReportData data)
+        public IEnumerable<TReportData> ReportData { get; } = default!;
+        public ReportOutput(string title, TReportHeader header, IEnumerable<TReportData> data)
         {
             Title = title;
             ReportData = data;

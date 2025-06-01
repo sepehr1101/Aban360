@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Contracts;
+using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
@@ -23,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ICollection<CustomerSearchOutputDto>> Handle(CustomerSearchInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<CustomerSearchHeaderOutputDto, CustomerSearchDataOutputDto>> Handle(CustomerSearchInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -32,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
                 throw new CustomeValidationException(message);
             }
 
-            ICollection<CustomerSearchOutputDto> customers = await _customerSearchQueryService.GetInfo(input);
+            ReportOutput<CustomerSearchHeaderOutputDto, CustomerSearchDataOutputDto> customers = await _customerSearchQueryService.GetInfo(input);
             return customers;
         }
     }

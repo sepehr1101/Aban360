@@ -18,4 +18,10 @@
     <ProjectReference Include="..\Aban360.ReportPool.Persistence\Aban360.ReportPool.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\BuiltsIns\WaterTransactions\Handlers\Contracts\" />
+    <Folder Include="Features\BuiltsIns\WaterTransactions\Handlers\Implementations\" />
+    <Folder Include="Features\BuiltsIns\WaterTransactions\Validations\" />
+  </ItemGroup>
+
 </Project>

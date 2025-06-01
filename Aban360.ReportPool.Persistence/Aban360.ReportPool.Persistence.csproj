@@ -23,4 +23,9 @@
     <ProjectReference Include="..\Aban360.ReportPool.Domain\Aban360.ReportPool.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\BuiltIns\WaterTransactions\Contracts\" />
+    <Folder Include="Features\BuiltIns\WaterTransactions\Implementations\" />
+  </ItemGroup>
+
 </Project>
