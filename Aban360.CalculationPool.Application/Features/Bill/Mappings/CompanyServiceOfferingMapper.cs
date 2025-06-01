@@ -13,7 +13,8 @@ namespace Aban360.CalculationPool.Application.Features.Bil.Mappings
             CreateMap<CompanyServiceOfferingDeleteDto, CompanyServiceOffering>();
             CreateMap<CompanyServiceOfferingUpdateDto, CompanyServiceOffering>();
             CreateMap<CompanyServiceOffering,CompanyServiceOfferingGetDto>()
-                    .ForMember(dest => dest.CompanyServiceTitle, m => m.MapFrom(o => o.CompanyService.Title));
+                    .ForMember(dest => dest.CompanyServiceTitle, m => m.MapFrom(o => o.CompanyService.Title))
+                    .ForMember(dest => dest.OfferingTitle, m => m.MapFrom(o => o.Offering.Title));
 
         }
     }
