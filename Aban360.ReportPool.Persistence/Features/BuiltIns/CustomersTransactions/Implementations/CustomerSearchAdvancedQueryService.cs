@@ -17,7 +17,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         public async Task<ICollection<CustomerSearchOutputDto>> GetInfo(CustomerSearchAdvancedInputDto input)
         {
             string customerSearchInfoQuery = GetCustomerSearchInfo();
-            IEnumerable<CustomerSearchOutputDto> results = await _sqlConnection.QueryAsync<CustomerSearchOutputDto>(customerSearchInfoQuery);
+            IEnumerable<CustomerSearchOutputDto> results = await _sqlConnection.QueryAsync<CustomerSearchOutputDto>(customerSearchInfoQuery);//todo: send parameters
 
             return results.ToList();
         }
