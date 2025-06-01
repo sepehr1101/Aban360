@@ -22,15 +22,16 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
         public async Task<CompanyServiceOffering> Get(short id)
         {
             return await _companyServiceOffering
-                .Include(c => c.CompanyService)
-                .Where(c => c.Id == id)
+                .Include(cso => cso.CompanyService)
+                .Include(cso => cso.Offering)
                 .SingleAsync();
         }
 
         public async Task<ICollection<CompanyServiceOffering>> Get()
         {
             return await _companyServiceOffering
-                .Include(c => c.CompanyService)
+                .Include(cso => cso.CompanyService)
+                .Include(cso=>cso.Offering)
                 .ToListAsync();
         }
     }

@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
+using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
@@ -23,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ICollection<UseStateReportOutputDto>> Handle(UseStateReportInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<UseStateReportHeaderOutputDto, UseStateReportDataOutputDto>> Handle(UseStateReportInputDto input, CancellationToken cancellationToken)
         {
             var validationReuslt=await _validator.ValidateAsync(input,cancellationToken);
             if (!validationReuslt .IsValid)
@@ -31,7 +32,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 var message=string.Join(", ",validationReuslt.Errors.Select(x=>x.ErrorMessage));
                 throw new CustomeValidationException(message);
             }
-            ICollection<UseStateReportOutputDto> useStateReports = await _userStateReportQueryService.GetInfo(input);
+            ReportOutput<UseStateReportHeaderOutputDto, UseStateReportDataOutputDto> useStateReports = await _userStateReportQueryService.GetInfo(input);
             return useStateReports;
         }
     }

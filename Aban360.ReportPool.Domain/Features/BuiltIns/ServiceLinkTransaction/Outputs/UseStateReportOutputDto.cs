@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs
 {
-    public record UseStateReportOutputDto
+    public record UseStateReportDataOutputDto
     {
         public int CustomerNumber { get; set; }
         public string ReadingNumber { get; set; }
@@ -11,6 +11,10 @@
         public string EvenDateJalali { get; set; }
         public string DeptAmoutn { get; set; }
         public string Address { get; set; }
+
+    }
+    public record UseStateReportHeaderOutputDto
+    {
 
     }
 }

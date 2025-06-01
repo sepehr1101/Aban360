@@ -1,4 +1,5 @@
-﻿using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
+﻿using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
@@ -13,17 +14,30 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             : base(configuration)
         { }
 
-        public async Task<ICollection<UseStateReportOutputDto>> GetInfo(UseStateReportInputDto input)
+        public async Task<ReportOutput<UseStateReportHeaderOutputDto, UseStateReportDataOutputDto>> GetInfo(UseStateReportInputDto input)
         {
-            string useStateQueryString = GetUseStateQuery();
-            IEnumerable<UseStateReportOutputDto> result = await _sqlConnection.QueryAsync<UseStateReportOutputDto>(useStateQueryString, new { input.UseStateId, input.FromDate, input.ToDate });
+            string useStateQueryString = GetUseStateDataQuery();
+            IEnumerable<UseStateReportDataOutputDto> useStateData = await _sqlConnection.QueryAsync<UseStateReportDataOutputDto>(useStateQueryString, new { input.UseStateId, input.FromDate, input.ToDate });
+            UseStateReportHeaderOutputDto useStateHeader = new UseStateReportHeaderOutputDto()
+            { };
 
-            return result.ToList();
+            string useStateQuery = GetUseStateTitle();
+            string useStateTitle=await _sqlConnection.QueryFirstAsync<string>(useStateQuery,new {useStateId=input.UseStateId});
+            var result = new ReportOutput<UseStateReportHeaderOutputDto, UseStateReportDataOutputDto>(useStateTitle, useStateHeader, useStateData);
+            
+            return result;
         }
 
-        private string GetUseStateQuery()
+        private string GetUseStateDataQuery()
         {
             return " ";
+        }
+
+        private string GetUseStateTitle()
+        {
+            return @"select Title
+                     from ClaimPool.UseState 
+                     where Id=@useStateId";
         }
     }
 }
