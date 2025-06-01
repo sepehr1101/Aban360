@@ -6,5 +6,6 @@
         public static string CustomerSearch { get { return $"{Report} جستجوی مشترک"; } }
         public static string UnconfirmedSubscribers{ get { return $"{Report} مشترکین ثبت قطعی نشده"; } }
         public static string PrepaymentAndCalculation{ get { return $"{Report} ریز محاسبه و پیش پرداخت"; } }
+        public static string CalculationDetails{ get { return $"{Report} ریز محاسبه"; } }
     }
 }
