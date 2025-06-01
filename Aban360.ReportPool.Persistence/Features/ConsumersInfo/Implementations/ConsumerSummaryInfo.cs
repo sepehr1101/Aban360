@@ -22,7 +22,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 
             if (summaryInfo is not null)
             {
-                summaryInfo.WaterMeterTags = new[] { "سگ نگهبان", "گیاه اکالیپتوس" };//tags.ToList();
+                //summaryInfo.WaterMeterTags = new[] { "سگ نگهبان", "گیاه اکالیپتوس" };//tags.ToList();
             }
             return summaryInfo;
         }
@@ -65,7 +65,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     R.Title AS RegionTitle,
                     Z.Title AS ZoneTitle,
                     M.Id AS MunicipalityId,
-                    M.Title AS MunicipalityTitle
+                    M.Title AS MunicipalityTitle,
+                    IIF(S.InstallationDate IS NOT NULL AND S.InstallationDate>'1320/01/01',1,0) HasSewage
                 FROM [ClaimPool].WaterMeter W
                 JOIN [ClaimPool].Estate E ON W.EstateId = E.Id
                 LEFT JOIN [ClaimPool].IndividualEstate IE ON E.Id = IE.EstateId

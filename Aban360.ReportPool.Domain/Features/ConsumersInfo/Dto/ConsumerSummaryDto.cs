@@ -27,19 +27,20 @@
         public string FullName { get; set; } = default!;
         public string FirstName { get; set; } = default!;
         public string Surname { get; set; } = default!;
-        public DateTime? SiphonInstallationDate { get; set; }
+        public string? SiphonInstallationDate { get; set; }
         public string? HeadquartersTitle { get; set; }
         public string? CordinalDirectionTitle { get; set; }
         public string? ProvinceTitle { get; set; }
         public string? RegionTitle { get; set; }
         public string? ZoneTitle { get; set; }
         public string? MunicipalityTitle { get; set; }
+        public bool HasSewage { get; set; } = default!;
         public ICollection<string>? WaterMeterTags { get; set; }
 
 
         public int MunicipalityId { get; set; }
-        public string PostalCode{ get; set; }
-        public string  MobileNumber { get; set; }
+        public string? PostalCode{ get; set; }
+        public string? MobileNumber { get; set; }
     }
 
 }
