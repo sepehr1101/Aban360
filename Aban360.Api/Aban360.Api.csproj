@@ -109,7 +109,7 @@
   <ItemGroup>
     <Folder Include="Controllers\V1\ClaimPool\Registration\Commands\" />
     <Folder Include="Controllers\V1\ClaimPool\Registration\Queries\" />
-    <Folder Include="Controllers\V1\ReportPool\BuiltIns\PaymentsTransactions\" />
+    <Folder Include="Controllers\V1\ReportPool\BuiltIns\WaterMeterTransactions\" />
   </ItemGroup>
 
   <ItemGroup>
