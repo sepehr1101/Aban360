@@ -11,15 +11,23 @@ namespace Aban360.Api.Extensions
     {
         public static void AddSerilog(this IServiceCollection services, IConfiguration configuration)
         {
+            AddSelfDebug();
             AddService(services, configuration);
             AddUi(services);
         }
         private static void AddService(IServiceCollection services, IConfiguration configuration)
-        {
+        {            
             services.AddSerilog(options =>
             {
                 //we can configure serilog from configuration
                 options.ReadFrom.Configuration(configuration);
+            });
+        }
+        private static void AddSelfDebug()
+        {
+            Serilog.Debugging.SelfLog.Enable(msg => {
+                Console.WriteLine($"Serilog Error: {msg}");
+                System.Diagnostics.Debug.WriteLine($"Serilog Error: {msg}");
             });
         }
         private static void AddUi(IServiceCollection services)
@@ -32,9 +40,12 @@ namespace Aban360.Api.Extensions
         }
 
         public static void UseSerilogInterface(this IApplicationBuilder app)
-        {
-            app.UseSerilogUi(opts =>
-              opts.WithRoutePrefix("log")
+        {            
+            app.UseSerilogUi(opts => opts            
+                .WithRoutePrefix("log")
+                .WithAuthenticationType(Serilog.Ui.Web.Models.AuthenticationType.Custom)
+                .EnableAuthorizationOnAppRoutes()
+                .HideSerilogUiBrand()
             );
         }
     }
