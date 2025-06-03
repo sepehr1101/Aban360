@@ -10,5 +10,6 @@
         public static string DeductionsAndDiscountsReport{ get { return $"{Report} کسورات و تخفیفات"; } }
         public static string DebtorByDay { get { return $"{Report} روزنامه بدهکاران"; } }
         public static string LinkServiceStatement { get { return $"{Report} صورت وضعیت (سامانه فروش)"; } }
+        public static string PendingPayments { get { return $"{Report} مانده مطالبات"; } }
     }
 }

@@ -23,9 +23,12 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
                 !string.IsNullOrWhiteSpace(customerInputDto.MobileNumber) ||
                 !string.IsNullOrWhiteSpace(customerInputDto.Address) ||
                 (customerInputDto.CustomerNumber.HasValue&& customerInputDto.CustomerNumber > 0) ||
-                (customerInputDto.UnitDomesticWater.HasValue && customerInputDto.UnitDomesticWater > 0) ||
-                (customerInputDto.UnitDomesticWater.HasValue && customerInputDto.UnitDomesticWater > 0) ||
-                (customerInputDto.UnitOtherWater.HasValue && customerInputDto.UnitOtherWater > 0) )
+                (customerInputDto.FromUnitDomesticWater.HasValue && customerInputDto.FromUnitDomesticWater > 0) ||
+                (customerInputDto.ToUnitDomesticWater.HasValue && customerInputDto.ToUnitDomesticWater > 0) ||
+                (customerInputDto.FromUnitDomesticWater.HasValue && customerInputDto.FromUnitDomesticWater > 0) ||
+                (customerInputDto.ToUnitDomesticWater.HasValue && customerInputDto.ToUnitDomesticWater > 0) ||
+                (customerInputDto.FromUnitOtherWater.HasValue && customerInputDto.FromUnitOtherWater > 0) ||
+                (customerInputDto.ToUnitOtherWater.HasValue && customerInputDto.ToUnitOtherWater > 0) )
             {
                 return true;
             }

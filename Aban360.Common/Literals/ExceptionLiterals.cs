@@ -2,6 +2,7 @@
 {
     public static class ExceptionLiterals
     {
+        public static string WaterBillMinDate { get { return "1401/01/01"; } }
         public static string ArgumentIsNull_1 { get { return "آرگومان ارائه شده NULL است. نام آرگومان"; } }
         public static string EmptyString { get { return "نوع داده رشته ای تهی یا خالی است"; } }
         public static string AppBasePathNotFound_1 { get {return "ریشه پروژه در مسیر {0} پیدا نشد"; } }
@@ -23,6 +24,9 @@
         public static string CurrentDateIsInvalid => "تاریخ فعلی قرائت ناصحیح است";
         public static string CurrentDateNotMoreThanPreviousDate => "تاریخ دوره قبلی نمیتوان از تاریخ دوره جاری بزرگ تر باشد";
         public static string CurrentNumberNotMoreThanPreviousNumber => "رقم دوره قبلی نمیتوان از رقم دوره جاری بزرگ تر باشد";
+       
+        public static string FromDateMoreThanDate(string date) => $"تاریخ شروع باید بزرگتر از {date} باشد.";
+        public static string ToDateLessThanDate(string date) => $"تاریخ پایان باید کوچکتر از {date} باشد.";
 
         public static string MessageException(string message) => $"خطا : {message}";
 

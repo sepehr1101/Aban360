@@ -19,9 +19,9 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         }
 
         [HttpPost, HttpGet]
-        [Route("info")]
+        [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<DebtorByDayHeaderOutputDto, DebtorByDayDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetIfo(DebtorByDayInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetRaw(DebtorByDayInputDto inputDto, CancellationToken cancellationToken)
         {
             ReportOutput<DebtorByDayHeaderOutputDto, DebtorByDayDataOutputDto> debtorByDay = await _debtorByDayHandler.Handle(inputDto, cancellationToken);
             return Ok(debtorByDay);
