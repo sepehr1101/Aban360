@@ -22,5 +22,16 @@ namespace Aban360.ReportPool.Persistence.Base
                 return sqlConnection;
             }
         }
+
+        internal SqlConnection _sqlReportConnection
+        {
+            get
+            {
+                string connectionString = _configuration.GetConnectionString("ReportConnection");
+                connectionString.NotEmptyString(nameof(connectionString));
+                SqlConnection sqlConnection = new(connectionString);
+                return sqlConnection;
+            }
+        }
     }
 }
