@@ -2,18 +2,18 @@
 {
     public record CustomerSearchDataOutputDto
     {
-        public int CustomerNumber { get; set; }
-        public string ReadingNumber { get; set; }
-        public string FirstName { get; set; }
-        public string Surname { get; set; }
-        public string MeterDiameter { get; set; }
-        public string BillId { get; set; }
+        public int? CustomerNumber { get; set; }
+        public string? ReadingNumber { get; set; }
+        public string? FirstName { get; set; }
+        public string? Surname { get; set; }
+        public string? MeterDiameterTitle { get; set; }
+        public string? BillId { get; set; }
         public short UnitDomesticWater { get; set; }
-        public short UnitCommercialWater { get; set; }
-        public short UnitOtherWater { get; set; }
-        public string MobileNumber { get; set; }
-        public string Address { get; set; }
-        public bool SpecialCustomer { get; set; }
-        public bool CommonSiphon { get; set; }
+        public short? UnitCommercialWater { get; set; }
+        public short? UnitOtherWater { get; set; }
+        public string? MobileNumber { get; set; }
+        public string? Address { get; set; }
+        public bool? SpecialCustomer { get; set; }
+        public bool? CommonSiphon { get; set; }
     }
 }

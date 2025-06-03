@@ -18,9 +18,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         public async Task<ReportOutput<CustomerSearchHeaderOutputDto, CustomerSearchDataOutputDto>> GetInfo(CustomerSearchInputDto input)
         {
             string customerSearchDataInfoQuery = GetCustomerSearchDataQuery();
-            IEnumerable<CustomerSearchDataOutputDto> customerData = await _sqlConnection.QueryAsync<CustomerSearchDataOutputDto>(customerSearchDataInfoQuery);//todo: send parameters
+
+            var param = new { input = $"%{input.InputText}%" };
+            IEnumerable<CustomerSearchDataOutputDto> customerData = await _sqlConnection.QueryAsync<CustomerSearchDataOutputDto>(customerSearchDataInfoQuery, param);
             CustomerSearchHeaderOutputDto customerHeader = new CustomerSearchHeaderOutputDto()
-            { };
+            { 
+                RecordCount=customerData.Count()
+            };
 
             var result = new ReportOutput<CustomerSearchHeaderOutputDto, CustomerSearchDataOutputDto>(ReportLiterals.CustomerSearch, customerHeader, customerData);
             return result;
@@ -28,7 +32,31 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
         private string GetCustomerSearchDataQuery()
         {
-            return " ";
+            return @"select  TOP(100)
+                        c.CustomerNumber,
+                      	c.ReadingNumber,
+                      	c.FirstName,
+                      	c.SureName AS Surname,
+                      	c.WaterDiameterTitle AS MeterDiameterTitle,
+                      	c.BillId,
+                      	c.DomesticCount AS UnitDomesticWater,
+                      	c.CommercialCount AS UnitCommercialWater,
+                      	c.OtherCount AS UnitOtherWater,
+                      	c.MobileNo AS MobileNumber,
+                      	c.Address
+                      from Client1000 c
+                      where c.ToDayJalali is null
+                        or(c.CustomerNumber like @input 
+                        or c. ReadingNumber like @input
+                        or c.FirstName like @input
+                        or c.SureName like @input
+                        or c.WaterDiameterId like @input
+                        or c.BillId like @input
+                        or c.DomesticCount like @input
+                        or c.CommercialCount like @input
+                        or c.OtherCount like @input
+                        or c.MobileNo like @input
+                        or c.Address like @input)";
         }
     }
 }
