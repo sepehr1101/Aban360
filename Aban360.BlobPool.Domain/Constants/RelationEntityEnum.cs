@@ -8,5 +8,4 @@
         Request = 4,
         Metering = 5,
     }
-
 }
