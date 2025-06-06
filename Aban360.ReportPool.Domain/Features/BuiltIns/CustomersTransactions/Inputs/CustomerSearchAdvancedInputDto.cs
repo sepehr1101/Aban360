@@ -8,9 +8,12 @@
         public string? Surname { get; set; }
         public int? MeterDiameter { get; set; }
         public string? BillId { get; set; }
-        public short? UnitDomesticWater { get; set; }
-        public short? UnitCommercialWater { get; set; }
-        public short? UnitOtherWater { get; set; }
+        public short? FromUnitDomesticWater { get; set; }
+        public short? ToUnitDomesticWater { get; set; }
+        public short? FromUnitCommercialWater { get; set; }
+        public short? ToUnitCommercialWater { get; set; }
+        public short? FromUnitOtherWater { get; set; }
+        public short? ToUnitOtherWater { get; set; }
         public string? MobileNumber { get; set; }
         public string? Address { get; set; }
         public bool? SpecialCustomer { get; set; }

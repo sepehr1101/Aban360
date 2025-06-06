@@ -2,5 +2,6 @@
 {
     public record CustomerSearchHeaderOutputDto
     {
+        public int RecordCount { get; set; }
     }
 }

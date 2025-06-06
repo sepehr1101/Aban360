@@ -19,9 +19,9 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         }
 
         [HttpPost, HttpGet]
-        [Route("info")]
+        [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<PrepaymentAndCalculationHeaderOutputDto, PrepaymentAndCalculationDataOutputDto>>),StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetIfo(PrepaymentAndCalculationInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetRaw(PrepaymentAndCalculationInputDto inputDto, CancellationToken cancellationToken)
         {
             ReportOutput<PrepaymentAndCalculationHeaderOutputDto, PrepaymentAndCalculationDataOutputDto> prepaymentAndCalculation =await _prepaymentAndCalculationHandler.Handle(inputDto,cancellationToken);
             return Ok(prepaymentAndCalculation);

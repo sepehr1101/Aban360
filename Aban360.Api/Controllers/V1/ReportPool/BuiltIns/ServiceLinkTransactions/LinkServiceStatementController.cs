@@ -19,9 +19,9 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         }
 
         [HttpPost, HttpGet]
-        [Route("info")]
+        [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<LinkServiceStatementHeaderOutputDto, LinkServiceStatementDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetInfo(LinkServiceStatementInputDto input, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetRaw(LinkServiceStatementInputDto input, CancellationToken cancellationToken)
         {
             ReportOutput<LinkServiceStatementHeaderOutputDto, LinkServiceStatementDataOutputDto> linkServiceStatement = await _linkServiceStatementHandler.Handle(input, cancellationToken);
             return Ok(linkServiceStatement);

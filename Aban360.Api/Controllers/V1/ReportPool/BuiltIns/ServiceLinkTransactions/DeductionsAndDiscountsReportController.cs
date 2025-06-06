@@ -19,9 +19,9 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         }
 
         [HttpPost, HttpGet]
-        [Route("info")]
+        [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDataOutputDto>>),StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetIfo(DeductionsAndDiscountsReportInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetRaw(DeductionsAndDiscountsReportInputDto inputDto, CancellationToken cancellationToken)
         {
             ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDataOutputDto> deductionsAndDiscountsReport =await _deductionsAndDiscountsReportHandler.Handle(inputDto,cancellationToken);
             return Ok(deductionsAndDiscountsReport);

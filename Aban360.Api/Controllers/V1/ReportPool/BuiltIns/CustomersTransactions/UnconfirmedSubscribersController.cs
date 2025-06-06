@@ -19,9 +19,9 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         }
 
         [HttpPost, HttpGet]
-        [Route("info")]
+        [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<UnconfirmedSubscribersHeaderOutputDto, UnconfirmedSubscribersDataOutputDto>>),StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetInfo(UnconfirmedSubscribersInputDto input, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetRaw(UnconfirmedSubscribersInputDto input, CancellationToken cancellationToken)
         {
             ReportOutput<UnconfirmedSubscribersHeaderOutputDto, UnconfirmedSubscribersDataOutputDto> unconfirmedSubscribers = await _unconfirmedSubscribersHandler.Handle(input, cancellationToken);
             return Ok(unconfirmedSubscribers);

@@ -19,9 +19,9 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         }
 
         [HttpPost, HttpGet]
-        [Route("info")]
+        [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<CustomerSearchHeaderOutputDto, CustomerSearchDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetInfo(CustomerSearchAdvancedInputDto input, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetRaw(CustomerSearchAdvancedInputDto input, CancellationToken cancellationToken)
         {
             ReportOutput<CustomerSearchHeaderOutputDto, CustomerSearchDataOutputDto> customer = await _customerSearchAdvancedHandler.Handle(input, cancellationToken);
             return Ok(customer);
