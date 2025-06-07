@@ -1,6 +1,5 @@
 ﻿using Aban360.BlobPool.Application.Features.DMS.Handlers.Commands.Create.Contracts;
 using Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Create.Contracts;
-using Aban360.BlobPool.Domain.Features.DMS.Dto.Commands;
 using Aban360.BlobPool.Domain.Features.Taxonomy.Dto.Commands;
 using Aban360.BlobPool.Persistence.Contexts.Contracts;
 using Aban360.Common.Categories.ApiResponse;
@@ -30,6 +29,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.DMS.Commands
             _documentCreateHandler.NotNull(nameof(documentCreateHandler));
 
         }
+
         [HttpPost]
         [Route("create")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<DocumentEntityByDocumentCreateDto>), StatusCodes.Status200OK)]
