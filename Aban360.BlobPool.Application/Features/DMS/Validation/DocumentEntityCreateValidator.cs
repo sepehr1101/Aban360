@@ -13,9 +13,9 @@ namespace Aban360.BlobPool.Application.Features.DMS.Validation
                           //.NotNull().WithMessage(ExceptionLiterals.NotNull)
                           //.NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(t => t.TableId)
-               .NotNull().WithMessage(ExceptionLiterals.NotNull)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
+            //RuleFor(t => t.TableId)
+            //   .NotNull().WithMessage(ExceptionLiterals.NotNull)
+            //   .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(t => t.RelationEntityId)
                .IsInEnum().WithMessage(ExceptionLiterals.MustEnum);
