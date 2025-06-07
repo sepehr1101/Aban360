@@ -2,5 +2,7 @@
 {
     public record DeductionsAndDiscountsReportDataOutputDto
     {
+        //Other
+        public string ZoneTitle { get; set; }
     }
 }

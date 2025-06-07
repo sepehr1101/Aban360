@@ -15,6 +15,7 @@
         public int RegionId { get; set; }
         public int ZoneId { get; set; }
 
+
     }
 
 }

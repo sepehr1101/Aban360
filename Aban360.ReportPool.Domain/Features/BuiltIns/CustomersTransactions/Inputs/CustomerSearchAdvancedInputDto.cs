@@ -19,5 +19,10 @@
         public bool? SpecialCustomer { get; set; }
         public bool? CommonSiphon { get; set; }
         public int? ZoneId { get; set; }
+        public int? FromContractualCapacity { get; set; }
+        public int? ToContractualCapacity { get; set; }
+        public int? FromHousholderNumber { get; set; }
+        public int? ToHousholderNumber { get; set; }
+        public ICollection<int>? UsageIds { get; set; }
     }
 }

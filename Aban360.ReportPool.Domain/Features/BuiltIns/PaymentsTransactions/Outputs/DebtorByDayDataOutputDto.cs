@@ -2,5 +2,6 @@
 {
     public record DebtorByDayDataOutputDto
     {
+        public string ZoneTitle { get; set; }
     }
 }
