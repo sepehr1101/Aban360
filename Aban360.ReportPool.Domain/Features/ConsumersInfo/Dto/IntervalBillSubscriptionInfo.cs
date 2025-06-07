@@ -26,6 +26,10 @@
         public int MunicipalityId { get; set; }
         public int PreviousWaterMeterNumber { get; set; }
         public string? PreviousWaterMeterDateJalali { get; set; }
+        public int Consumption { get; set; }
+        public int Duration { get; set; }
+        public double AverageConsumption { get; set; }
+
         public Dictionary<short, string>? WaterMeterTags { get; set; }
         public Dictionary<short, string>? IndividualTags { get; set; }
         public Dictionary<short, string>? Discounts { get; set; }

@@ -48,6 +48,10 @@ namespace Aban360.CalculationPool.Application.Features.Base
             ConsumptionInfo consumptionInfo = GetConsumptionInfo(tariffTestInput);
 
             IntervalBillSubscriptionInfo info = await _intervalBillPrerequisiteInfoAddHocHandler.Handle(tariffTestInput.BillId, cancellationToken);
+            info.Consumption = consumptionInfo.Consumption;
+            info.AverageConsumption = consumptionInfo.AverageConsumption;
+            info.Duration = consumptionInfo.Duration;
+
             ICollection<Tariff> rawTariffs = await GetRawTariffs(tariffTestInput.PreviousReadingDate, tariffTestInput.CurrentReadingDate);
             ICollection<Tariff> tariffs = GetTariffs(rawTariffs, consumptionInfo.AverageConsumption, tariffTestInput.PreviousReadingDate, tariffTestInput.CurrentReadingDate);
             List<IntervalCalculationResult> intervalCalculationResults = await CreateCalculationResult(info, tariffs, tariffTestInput.PreviousReadingDate, tariffTestInput.CurrentReadingDate, consumptionInfo.AverageConsumption);
@@ -86,7 +90,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         private ConsumptionInfo GetConsumptionInfo(TariffTestInput tariffTestInput)
         {
             int consumption = GetConsumption(tariffTestInput.PreviousReadingNumber, tariffTestInput.CurrentReadingNumber);
-            int duration = GetDuration(tariffTestInput.PreviousReadingDate, tariffTestInput.PreviousReadingDate);
+            int duration = GetDuration(tariffTestInput.PreviousReadingDate, tariffTestInput.CurrentReadingDate);
             double average = GetDailyConsumptionAverage(consumption, duration);
             ConsumptionInfo consumptionInfo = new(tariffTestInput.PreviousReadingDate, tariffTestInput.CurrentReadingDate, consumption, duration, average);
             return consumptionInfo;
