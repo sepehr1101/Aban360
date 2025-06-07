@@ -12,10 +12,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
     internal sealed class ServiceLinkPaymentDetailHandler : IServiceLinkPaymentDetailHandler
     {
         private readonly IServiceLinkPaymentDetailQueryService _serviceLinkPaymentDetailQueryService;
-        private readonly IValidator<ServiceLinkPaymentDetailInputDto> _validator;
+        private readonly IValidator<PaymentDetailInputDto> _validator;
         public ServiceLinkPaymentDetailHandler(
             IServiceLinkPaymentDetailQueryService serviceLinkPaymentDetailQueryService,
-            IValidator<ServiceLinkPaymentDetailInputDto> validator)
+            IValidator<PaymentDetailInputDto> validator)
         {
             _serviceLinkPaymentDetailQueryService = serviceLinkPaymentDetailQueryService;
             _serviceLinkPaymentDetailQueryService.NotNull(nameof(serviceLinkPaymentDetailQueryService));
@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<ServiceLinkPaymentDetailHeaderOutputDto, ServiceLinkPaymentDetailDataOutputDto>> Handle(ServiceLinkPaymentDetailInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>> Handle(PaymentDetailInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<ServiceLinkPaymentDetailHeaderOutputDto, ServiceLinkPaymentDetailDataOutputDto> serviceLinkPaymentDetail = await _serviceLinkPaymentDetailQueryService.GetInfo(input);
+            ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto> serviceLinkPaymentDetail = await _serviceLinkPaymentDetailQueryService.GetInfo(input);
             return serviceLinkPaymentDetail;
         }
     }

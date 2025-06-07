@@ -12,10 +12,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
     internal sealed class UnspecifiedServiceLinkPaymentHandler : IUnspecifiedServiceLinkPaymentHandler
     {
         private readonly IUnspecifiedServiceLinkPaymentQueryService _unspecifiedServiceLinkPaymentQueryService;
-        private readonly IValidator<UnspecifiedServiceLinkPaymentInputDto> _validator;
+        private readonly IValidator<UnspecifiedPaymentInputDto> _validator;
         public UnspecifiedServiceLinkPaymentHandler(
             IUnspecifiedServiceLinkPaymentQueryService unspecifiedServiceLinkPaymentQueryService,
-            IValidator<UnspecifiedServiceLinkPaymentInputDto> validator)
+            IValidator<UnspecifiedPaymentInputDto> validator)
         {
             _unspecifiedServiceLinkPaymentQueryService = unspecifiedServiceLinkPaymentQueryService;
             _unspecifiedServiceLinkPaymentQueryService.NotNull(nameof(unspecifiedServiceLinkPaymentQueryService));
@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<UnspecifiedServiceLinkPaymentHeaderOutputDto, UnspecifiedServiceLinkPaymentDataOutputDto>> Handle(UnspecifiedServiceLinkPaymentInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<UnspecifiedPaymentHeaderOutputDto, UnspecifiedPaymentDataOutputDto>> Handle(UnspecifiedPaymentInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<UnspecifiedServiceLinkPaymentHeaderOutputDto, UnspecifiedServiceLinkPaymentDataOutputDto> UnspecefiedServicLink = await _unspecifiedServiceLinkPaymentQueryService.GetInfo(input);
+            ReportOutput<UnspecifiedPaymentHeaderOutputDto, UnspecifiedPaymentDataOutputDto> UnspecefiedServicLink = await _unspecifiedServiceLinkPaymentQueryService.GetInfo(input);
             return UnspecefiedServicLink;
         }
     }

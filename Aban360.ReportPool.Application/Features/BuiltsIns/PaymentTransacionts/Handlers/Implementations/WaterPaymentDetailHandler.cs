@@ -12,10 +12,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
     internal sealed class WaterPaymentDetailHandler : IWaterPaymentDetailHandler
     {
         private readonly IWaterPaymentDetailQueryService _waterPaymentDetailQueryService;
-        private readonly IValidator<WaterPaymentDetailInputDto> _validator;
+        private readonly IValidator<PaymentDetailInputDto> _validator;
         public WaterPaymentDetailHandler(
             IWaterPaymentDetailQueryService waterPaymentDetailQueryService,
-            IValidator<WaterPaymentDetailInputDto> validator)
+            IValidator<PaymentDetailInputDto> validator)
         {
             _waterPaymentDetailQueryService = waterPaymentDetailQueryService;
             _waterPaymentDetailQueryService.NotNull(nameof(waterPaymentDetailQueryService));
@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<WaterPaymentDetailHeaderOutputDto, WaterPaymentDetailDataOutputDto>> Handle(WaterPaymentDetailInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>> Handle(PaymentDetailInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<WaterPaymentDetailHeaderOutputDto, WaterPaymentDetailDataOutputDto> waterPaymentDetail = await _waterPaymentDetailQueryService.GetInfo(input);
+            ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto> waterPaymentDetail = await _waterPaymentDetailQueryService.GetInfo(input);
             return waterPaymentDetail;
         }
     }

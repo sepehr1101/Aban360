@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
 {
     public interface IUnspecifiedWaterPaymentHandler
     {
-        Task<ReportOutput<UnspecifiedWaterPaymentHeaderOutputDto, UnspecifiedWaterPaymentDataOutputDto>> Handle(UnspecifiedWaterPaymentInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<UnspecifiedPaymentHeaderOutputDto, UnspecifiedPaymentDataOutputDto>> Handle(UnspecifiedPaymentInputDto input, CancellationToken cancellationToken);
     }
 }

@@ -2,6 +2,7 @@
 {
     public record WaterPaymentReceivableInputDto
     {
-
+        public string FromDateJalali { get; set; }
+        public string ToDateJalali { get; set; }
     }
 }

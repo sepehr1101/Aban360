@@ -2,6 +2,7 @@
 {
     public record WaterUsageGroupedDataOutputDto
     {
-
+        public string UsageTitle { get; set; }
+        public long Amount { get; set; }
     }
 }

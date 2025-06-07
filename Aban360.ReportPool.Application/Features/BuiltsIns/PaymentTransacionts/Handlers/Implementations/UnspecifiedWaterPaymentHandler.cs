@@ -12,10 +12,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
     internal sealed class UnspecifiedWaterPaymentHandler : IUnspecifiedWaterPaymentHandler
     {
         private readonly IUnspecifiedWaterPaymentQueryService _unspecifiedWaterPaymentQueryService;
-        private readonly IValidator<UnspecifiedWaterPaymentInputDto> _validator;
+        private readonly IValidator<UnspecifiedPaymentInputDto> _validator;
         public UnspecifiedWaterPaymentHandler(
             IUnspecifiedWaterPaymentQueryService unspecifiedWaterPaymentQueryService,
-            IValidator<UnspecifiedWaterPaymentInputDto> validator)
+            IValidator<UnspecifiedPaymentInputDto> validator)
         {
             _unspecifiedWaterPaymentQueryService = unspecifiedWaterPaymentQueryService;
             _unspecifiedWaterPaymentQueryService.NotNull(nameof(unspecifiedWaterPaymentQueryService));
@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<UnspecifiedWaterPaymentHeaderOutputDto, UnspecifiedWaterPaymentDataOutputDto>> Handle(UnspecifiedWaterPaymentInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<UnspecifiedPaymentHeaderOutputDto, UnspecifiedPaymentDataOutputDto>> Handle(UnspecifiedPaymentInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<UnspecifiedWaterPaymentHeaderOutputDto, UnspecifiedWaterPaymentDataOutputDto> UnspecefiedServicLink = await _unspecifiedWaterPaymentQueryService.GetInfo(input);
+            ReportOutput<UnspecifiedPaymentHeaderOutputDto, UnspecifiedPaymentDataOutputDto> UnspecefiedServicLink = await _unspecifiedWaterPaymentQueryService.GetInfo(input);
             return UnspecefiedServicLink;
         }
     }

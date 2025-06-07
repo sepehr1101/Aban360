@@ -14,14 +14,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             : base(configuration)
         { }
 
-        public async Task<ReportOutput<ServiceLinkPaymentDetailHeaderOutputDto, ServiceLinkPaymentDetailDataOutputDto>> GetInfo(ServiceLinkPaymentDetailInputDto input)
+        public async Task<ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>> GetInfo(PaymentDetailInputDto input)
         {
             string serviceLinkPaymentDetails = GetServiceLinkPaymentDetailQuery();
-            IEnumerable<ServiceLinkPaymentDetailDataOutputDto> serviceLinkPaymentDetailDate = await _sqlConnection.QueryAsync<ServiceLinkPaymentDetailDataOutputDto>(serviceLinkPaymentDetails);//todo: Parameters
-            ServiceLinkPaymentDetailHeaderOutputDto serviceLinkPaymentDetailHeader = new ServiceLinkPaymentDetailHeaderOutputDto()
+            IEnumerable<PaymentDetailDataOutputDto> serviceLinkPaymentDetailDate = await _sqlConnection.QueryAsync<PaymentDetailDataOutputDto>(serviceLinkPaymentDetails);//todo: Parameters
+            PaymentDetailHeaderOutputDto serviceLinkPaymentDetailHeader = new PaymentDetailHeaderOutputDto()
             { };
 
-            var result = new ReportOutput<ServiceLinkPaymentDetailHeaderOutputDto, ServiceLinkPaymentDetailDataOutputDto>(ReportLiterals.ServiceLinkPaymentDetail, serviceLinkPaymentDetailHeader, serviceLinkPaymentDetailDate);
+            var result = new ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>(ReportLiterals.ServiceLinkPaymentDetail, serviceLinkPaymentDetailHeader, serviceLinkPaymentDetailDate);
             return result;
         }
 

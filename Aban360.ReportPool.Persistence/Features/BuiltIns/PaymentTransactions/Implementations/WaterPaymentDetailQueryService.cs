@@ -14,14 +14,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             : base(configuration)
         { }
 
-        public async Task<ReportOutput<WaterPaymentDetailHeaderOutputDto, WaterPaymentDetailDataOutputDto>> GetInfo(WaterPaymentDetailInputDto input)
+        public async Task<ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>> GetInfo(PaymentDetailInputDto input)
         {
             string waterPaymentDetails = GetWaterPaymentDetailQuery();
-            IEnumerable<WaterPaymentDetailDataOutputDto> waterPaymentDetailDate = await _sqlConnection.QueryAsync<WaterPaymentDetailDataOutputDto>(waterPaymentDetails);//todo: Parameters
-            WaterPaymentDetailHeaderOutputDto waterPaymentDetailHeader = new WaterPaymentDetailHeaderOutputDto()
+            IEnumerable<PaymentDetailDataOutputDto> waterPaymentDetailDate = await _sqlConnection.QueryAsync<PaymentDetailDataOutputDto>(waterPaymentDetails);//todo: Parameters
+            PaymentDetailHeaderOutputDto waterPaymentDetailHeader = new PaymentDetailHeaderOutputDto()
             { };
 
-            var result = new ReportOutput<WaterPaymentDetailHeaderOutputDto, WaterPaymentDetailDataOutputDto>(ReportLiterals.WaterPaymentDetail, waterPaymentDetailHeader, waterPaymentDetailDate);
+            var result = new ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>(ReportLiterals.WaterPaymentDetail, waterPaymentDetailHeader, waterPaymentDetailDate);
             return result;
         }
 

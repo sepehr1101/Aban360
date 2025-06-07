@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.C
 {
     public interface IWaterPaymentDetailQueryService
     {
-        Task<ReportOutput<WaterPaymentDetailHeaderOutputDto, WaterPaymentDetailDataOutputDto>> GetInfo(WaterPaymentDetailInputDto input);
+        Task<ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>> GetInfo(PaymentDetailInputDto input);
     }
 }

@@ -14,14 +14,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             : base(configuration)
         { }
 
-        public async Task<ReportOutput<UnspecifiedServiceLinkPaymentHeaderOutputDto, UnspecifiedServiceLinkPaymentDataOutputDto>> GetInfo(UnspecifiedServiceLinkPaymentInputDto input)
+        public async Task<ReportOutput<UnspecifiedPaymentHeaderOutputDto, UnspecifiedPaymentDataOutputDto>> GetInfo(UnspecifiedPaymentInputDto input)
         {
             string unspecifiedServiceLinkPayments = GetUnspecifiedServiceLinkPaymentQuery();
-            IEnumerable<UnspecifiedServiceLinkPaymentDataOutputDto> unspecifiedServiceLinkData = await _sqlConnection.QueryAsync<UnspecifiedServiceLinkPaymentDataOutputDto>(unspecifiedServiceLinkPayments);//todo: Parameters
-            UnspecifiedServiceLinkPaymentHeaderOutputDto unspecifiedServiceLinkHeader = new UnspecifiedServiceLinkPaymentHeaderOutputDto()
+            IEnumerable<UnspecifiedPaymentDataOutputDto> unspecifiedServiceLinkData = await _sqlConnection.QueryAsync<UnspecifiedPaymentDataOutputDto>(unspecifiedServiceLinkPayments);//todo: Parameters
+            UnspecifiedPaymentHeaderOutputDto unspecifiedServiceLinkHeader = new UnspecifiedPaymentHeaderOutputDto()
             { };
 
-            var result = new ReportOutput<UnspecifiedServiceLinkPaymentHeaderOutputDto, UnspecifiedServiceLinkPaymentDataOutputDto>(ReportLiterals.UnspecifiedServiceLinkPayment, unspecifiedServiceLinkHeader, unspecifiedServiceLinkData);
+            var result = new ReportOutput<UnspecifiedPaymentHeaderOutputDto, UnspecifiedPaymentDataOutputDto>(ReportLiterals.UnspecifiedServiceLinkPayment, unspecifiedServiceLinkHeader, unspecifiedServiceLinkData);
             return result;
         }
 

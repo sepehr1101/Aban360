@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.C
 {
     public interface IServiceLinkPaymentDetailQueryService
     {
-        Task<ReportOutput<ServiceLinkPaymentDetailHeaderOutputDto, ServiceLinkPaymentDetailDataOutputDto>> GetInfo(ServiceLinkPaymentDetailInputDto input);
+        Task<ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>> GetInfo(PaymentDetailInputDto input);
     }
 }

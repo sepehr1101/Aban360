@@ -20,10 +20,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ServiceLinkPaymentDetailHeaderOutputDto, ServiceLinkPaymentDetailDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRaw(ServiceLinkPaymentDetailInputDto inputDto, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetRaw(PaymentDetailInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<ServiceLinkPaymentDetailHeaderOutputDto, ServiceLinkPaymentDetailDataOutputDto> serviceLinkPaymentDetail = await _serviceLinkPaymentDetail.Handle(inputDto, cancellationToken);
+            ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto> serviceLinkPaymentDetail = await _serviceLinkPaymentDetail.Handle(inputDto, cancellationToken);
             return Ok(serviceLinkPaymentDetail);
         }
     }
