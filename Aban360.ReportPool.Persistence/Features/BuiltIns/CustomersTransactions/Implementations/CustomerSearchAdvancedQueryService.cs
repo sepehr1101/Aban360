@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
         public async Task<ReportOutput<CustomerSearchHeaderOutputDto, CustomerSearchDataOutputDto>> GetInfo(CustomerSearchAdvancedInputDto input)
         {
-            string customerSearchDataInfoQuery = GetCustomerSearchDataQuery();
+            string customerSearchDataInfoQuery = GetCustomerSearchDataQuery(input.UsageIds?.Any()==true);
             var @params = new
             {
                 CustomerNumber = input.CustomerNumber,
@@ -34,9 +34,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 FromOtherCount = input.FromUnitOtherWater,
                 ToOtherCount = input.ToUnitOtherWater,
                 MobileNo = input.MobileNumber,
-                Address = input.Address
+                Address = input.Address,
+                ZoneId = input.ZoneId,
+                FromContractualCapacity = input.FromContractualCapacity,
+                ToContractualCapacity = input.ToContractualCapacity,
+                FromHousholderNumber = input.FromHousholderNumber,
+                ToHousholderNumber = input.ToHousholderNumber,
+                UsageIds= input.UsageIds
             };
-
 
             IEnumerable<CustomerSearchDataOutputDto> customerData = await _sqlConnection.QueryAsync<CustomerSearchDataOutputDto>(customerSearchDataInfoQuery, @params);//todo: send parameters
             CustomerSearchHeaderOutputDto customerHeader = new CustomerSearchHeaderOutputDto()
@@ -48,9 +53,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             return result;
         }
 
-        private string GetCustomerSearchDataQuery()
+        private string GetCustomerSearchDataQuery(bool HasUsageId)
         {
-            return @"SELECT TOP(100)
+            string usageIds = HasUsageId ? "AND c.UsageId IN @UsageIds" : string.Empty;
+
+            return @$"SELECT TOP(100)
                         c.CustomerNumber,
                         c.ReadingNumber,
                         c.FirstName,
@@ -73,19 +80,23 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         AND (@Address is null OR c.Address like '%'+@Address+'%')
                         AND c.CustomerNumber=IIF(@CustomerNumber IS NULL , c.CustomerNumber,@CustomerNumber) 
                         AND c.WaterDiameterId=IIF(@WaterDiameterId IS NULL , c.WaterDiameterId,@WaterDiameterId )
-                        AND c.WaterDiameterId=IIF(@WaterDiameterId IS NULL , c.WaterDiameterId,@WaterDiameterId )
+                        AND c.ZoneId=IIF(@ZoneId IS NULL , c.ZoneId,@ZoneId)
                         AND (@FromDomesticCount IS NULL 
                              OR @ToDomesticCount IS NULL 
                              OR c.DomesticCount between @FromDomesticCount AND @ToDomesticCount)
-                        AND (@FromDomesticCount IS NULL 
-                             OR @ToDomesticCount IS NULL 
-                             OR c.DomesticCount BETWEEN @FromDomesticCount AND @ToDomesticCount)
                         AND (@FromCommercialCount IS NULL 
                              OR @ToCommercialCount IS NULL
                              OR c.CommercialCount BETWEEN @FromCommercialCount AND @ToCommercialCount)
                         AND (@FromOtherCount IS NULL  
                              OR @ToOtherCount IS NULL
-                             OR c.OtherCount BETWEEN @FromOtherCount AND @ToOtherCount)";
+                             OR c.OtherCount BETWEEN @FromOtherCount AND @ToOtherCount)
+					    AND (@FromContractualCapacity IS NULL  
+                             OR @ToContractualCapacity IS NULL
+                             OR c.ContractCapacity BETWEEN @FromContractualCapacity AND @ToContractualCapacity)
+					    AND (@FromHousholderNumber IS NULL  
+                             OR @ToHousholderNumber IS NULL
+                             OR c.FamilyCount BETWEEN @FromHousholderNumber AND @ToHousholderNumber)
+						{usageIds}";
         }
     }
 }

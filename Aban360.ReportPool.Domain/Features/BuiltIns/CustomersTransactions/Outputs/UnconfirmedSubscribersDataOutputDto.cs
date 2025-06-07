@@ -2,5 +2,7 @@
 {
     public record UnconfirmedSubscribersDataOutputDto
     {
+        //Other
+        public string ZoneTitle { get; set; }
     }
 }

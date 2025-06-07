@@ -1,4 +1,4 @@
-﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs
+﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs
 {
     public record PendingPaymentsInputDto
     {
@@ -14,6 +14,7 @@
         public int UsageSellId { get; set; }
         public int RegionId { get; set; }
         public int ZoneId { get; set; }
+
 
     }
 

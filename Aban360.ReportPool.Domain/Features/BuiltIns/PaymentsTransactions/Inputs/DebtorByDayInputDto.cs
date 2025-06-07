@@ -2,5 +2,8 @@
 {
     public record DebtorByDayInputDto
     {
+        //Other
+        public ICollection<int> ZoneIds { get; set; }
     }
 }
+

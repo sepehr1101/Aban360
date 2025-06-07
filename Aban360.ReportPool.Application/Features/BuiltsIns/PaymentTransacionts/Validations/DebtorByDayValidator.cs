@@ -9,5 +9,5 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
         {
 
         }
-    }
+    }    
 }

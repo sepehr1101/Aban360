@@ -2,5 +2,7 @@
 {
     public record UnconfirmedSubscribersInputDto
     {
+        //Other
+        public ICollection<int> ZoneIds { get; set; }
     }
 }
