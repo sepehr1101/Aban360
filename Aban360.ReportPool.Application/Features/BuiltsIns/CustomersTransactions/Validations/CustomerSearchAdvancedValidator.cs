@@ -28,6 +28,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
                 (customerInputDto.FromUnitDomesticWater.HasValue && customerInputDto.FromUnitDomesticWater > 0) ||
                 (customerInputDto.ToUnitDomesticWater.HasValue && customerInputDto.ToUnitDomesticWater > 0) ||
                 (customerInputDto.FromUnitOtherWater.HasValue && customerInputDto.FromUnitOtherWater > 0) ||
+                (customerInputDto.ZoneId.HasValue && customerInputDto.ZoneId > 0) ||
                 (customerInputDto.ToUnitOtherWater.HasValue && customerInputDto.ToUnitOtherWater > 0) )
             {
                 return true;

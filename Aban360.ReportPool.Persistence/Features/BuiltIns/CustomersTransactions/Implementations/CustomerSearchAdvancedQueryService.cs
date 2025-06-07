@@ -34,7 +34,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 FromOtherCount = input.FromUnitOtherWater,
                 ToOtherCount = input.ToUnitOtherWater,
                 MobileNo = input.MobileNumber,
-                Address = input.Address
+                Address = input.Address,
+                ZoneId = input.ZoneId
             };
 
 
@@ -73,13 +74,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         AND (@Address is null OR c.Address like '%'+@Address+'%')
                         AND c.CustomerNumber=IIF(@CustomerNumber IS NULL , c.CustomerNumber,@CustomerNumber) 
                         AND c.WaterDiameterId=IIF(@WaterDiameterId IS NULL , c.WaterDiameterId,@WaterDiameterId )
-                        AND c.WaterDiameterId=IIF(@WaterDiameterId IS NULL , c.WaterDiameterId,@WaterDiameterId )
+                        AND c.ZoneId=IIF(@ZoneId IS NULL , c.ZoneId,@ZoneId)
                         AND (@FromDomesticCount IS NULL 
                              OR @ToDomesticCount IS NULL 
                              OR c.DomesticCount between @FromDomesticCount AND @ToDomesticCount)
-                        AND (@FromDomesticCount IS NULL 
-                             OR @ToDomesticCount IS NULL 
-                             OR c.DomesticCount BETWEEN @FromDomesticCount AND @ToDomesticCount)
                         AND (@FromCommercialCount IS NULL 
                              OR @ToCommercialCount IS NULL
                              OR c.CommercialCount BETWEEN @FromCommercialCount AND @ToCommercialCount)

@@ -18,5 +18,6 @@
         public string? Address { get; set; }
         public bool? SpecialCustomer { get; set; }
         public bool? CommonSiphon { get; set; }
+        public int? ZoneId { get; set; }
     }
 }

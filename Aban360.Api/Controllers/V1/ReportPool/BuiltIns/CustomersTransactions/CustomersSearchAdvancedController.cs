@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
 {
-    [Route("v1/customres-search-advanced")]
+    [Route("v1/customers-search-advanced")]
     public class CustomersSearchAdvancedController : BaseController
     {
         private readonly ICustomerSearchAdvancedHandler _customerSearchAdvancedHandler;
