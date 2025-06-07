@@ -11,5 +11,13 @@
         public static string DebtorByDay { get { return $"{Report} روزنامه بدهکاران"; } }
         public static string LinkServiceStatement { get { return $"{Report} صورت وضعیت (سامانه فروش)"; } }
         public static string PendingPayments { get { return $"{Report} مانده مطالبات"; } }
+
+        public static string UnspecifiedWaterPayment { get { return $"{Report} ردیف نامشخص آب بهاء"; } }
+        public static string UnspecifiedServiceLinkPayment { get { return $"{Report} ردیف نامشخص حق انشعاب"; } }
+        public static string DailyBankGrouped { get { return $"{Report}  به تفکیک بانک و روز"; } }
+        public static string WaterPaymentDetail { get { return $"{Report} ریز وصولی ها - آب بهاء"; } }
+        public static string ServiceLinkPaymentDetail { get { return $"{Report} ریز وصولی ها - حق انشعاب"; } }
+        public static string WaterPaymentReceivable { get { return $"{Report} وصولی های جاری و معوقه - آب بهاء"; } }
+        public static string WaterUsageGrouped { get { return $"{Report} تفکیک کاربری - آب بهاء"; } }
     }
 }

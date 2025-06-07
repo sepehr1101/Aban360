@@ -12,9 +12,9 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
     public class DebtorByDayController : BaseController
     {
         private readonly IDebtorByDayHandler _debtorByDayHandler;
-        public DebtorByDayController(IDebtorByDayHandler DebtorByDayHandler)
+        public DebtorByDayController(IDebtorByDayHandler debtorByDayHandler)
         {
-            _debtorByDayHandler = DebtorByDayHandler;
+            _debtorByDayHandler = debtorByDayHandler;
             _debtorByDayHandler.NotNull(nameof(_debtorByDayHandler));
         }
 

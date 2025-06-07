@@ -3,11 +3,11 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Validations
 {
-    public class DebtorByDayValidator : BaseValidator<DebtorByDayInputDto>
+    public class WaterPaymentReceivableValidator : BaseValidator<WaterPaymentReceivableInputDto>
     {
-        public DebtorByDayValidator()
+        public WaterPaymentReceivableValidator()
         {
 
         }
-    }    
+    }
 }

@@ -1,6 +1,6 @@
 ﻿using Aban360.BlobPool.Application.Features.Base;
 using Aban360.Common.Literals;
-using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
+using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using DNTPersianUtils.Core;
 using FluentValidation;
 

@@ -6,3 +6,4 @@
         public ICollection<int> ZoneIds { get; set; }
     }
 }
+
