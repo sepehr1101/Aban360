@@ -2,6 +2,7 @@
 {
     public record WaterMeterReplacementsInputDto
     {
-
+        public string FromDateJalali { get; set; }
+        public string ToDateJalali { get; set; }
     }
 }

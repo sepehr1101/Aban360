@@ -73,10 +73,10 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             return @"select 
                         c.FieldArea As Premises,
                     	c.CommercialCount+c.DomesticCount+c.OtherCount AS UnitOverall,
-                    	0 AS ImprovementsOverall,--Todo
-                    	0 AS ImprovementsDomestic,--Todo
-                    	0 AS ImprovementsCommercial,--Todo
-                    	0 AS ImprovementsOther,--Todo
+                    	c.ConstructedArea AS ImprovementsOverall,
+                    	c.DomesticArea AS ImprovementsDomestic,
+                    	c.CommercialArea AS ImprovementsCommercial,
+                    	c.ConstructedArea-DomesticArea-CommercialArea AS ImprovementsOther,
                     	N'نامشخص' AS OwnershipTypeTitle,
                     	c.UsageTitle2 AS UsageSellTitle,
                     	'' AS DebtCollectionGroupTitle,

@@ -32,7 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                      	c.BranchType AS HandoverTitle,
                      	'' AS DiscountTypeTitle, --todo:
                      	c.DeletionStateTitle AS UsageStateTitle ,
-                     	0 AS SpecialBranch,--todo:
+                     	c.IsGovermental AS SpecialBranch,
                      	c.EmptyCount AS EmptyUnit,
                      	c.FamilyCount AS HouseholderNumber,
                      	0 AS NonSequentialFlag
