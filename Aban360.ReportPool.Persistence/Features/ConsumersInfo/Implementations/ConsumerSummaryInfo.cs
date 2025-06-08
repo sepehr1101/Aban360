@@ -105,11 +105,10 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	c.CustomerNumber,
                     	c.BillId,
                     	c.ReadingNumber,
-                    	c.WaterInstallDate,
+                    	c.WaterInstallDate AS InstallationDate,
                     	'' AS ProductDate,
                     	'' AS GuaranteeDate,
                     	c.Address,
-                    	'' AS LastDept,
                     	'' AS CounterState,
                     	'' AS CounterStatus,
                     	c.ContractCapacity,
@@ -122,11 +121,11 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	c.OtherCount AS UnitOtherSewage,
                     	c.EmptyCount AS EmptyUnit,
                     	'-' as ConstructionType,
-                    	c.UsageTitle AS UsageConsumption,
-                    	c.UsageTitle2 AS UsageSell,
+                    	c.UsageTitle2 AS UsageConsumption,
+                    	c.UsageTitle AS UsageSell,
                     	c.FirstName+' '+c.SureName AS FullName,
                     	c.FirstName,
-                    	c.SureName,
+                    	c.SureName AS Surname,
                     	c.SewageInstallDate AS SiphonInstallationDate,
                     	'' AS HeadquartersTitle,
                     	'' AS CordinalDirectionTitle,
@@ -138,7 +137,9 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	--c.VillageId AS	MunicipalityId,
 	                    TRY_CAST(c.VillageId AS int) AS MunicipalityId,
                     	c.PostalCode ,
-                    	c.MobileNo AS MobileNumber
+                    	c.MobileNo AS MobileNumber,
+                        c.DiscountTypeTitle AS DiscountType,
+                        c.WaterDiameterTitle AS MeterDiameterTitle
                     from [CustomerWarehouse].dbo.Clients c
                     where c.BillId=@id 
                     and c.ToDayJalali is null";
