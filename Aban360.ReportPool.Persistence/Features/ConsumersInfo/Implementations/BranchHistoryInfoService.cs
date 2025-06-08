@@ -13,12 +13,13 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 
         public async Task<BranchHistoryInfoDto> GetInfo(string billId)
         {
-            string branchHistoryQuery = GetIndividualsSummayDtoQuery();
+            //string branchHistoryQuery = GetBranchHistorySummaryDtoQuery();
+            string branchHistoryQuery = GetBranchHistorySummaryDtoWithClientDbQuery();
             BranchHistoryInfoDto result = await _sqlConnection.QueryFirstOrDefaultAsync<BranchHistoryInfoDto>(branchHistoryQuery, new { billId });
 
             return result;
         }
-        private string GetIndividualsSummayDtoQuery()
+        private string GetBranchHistorySummaryDtoQuery()
         {
             return @"select top 1
 						N'---' as 'WaterRequestDate',
@@ -55,6 +56,39 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 					order by c.ValidFrom desc";
 
         }
+
+		private string GetBranchHistorySummaryDtoWithClientDbQuery()
+		{
+			return @"select 
+						c.WaterRequestDate , 
+						c.WaterInstallDate AS WaterInstallationDate,
+						'' AS WaterRegistrationDate,
+						'' AS WaterReplacementDate,
+						'' AS GuaranteeDate,
+						'' AS LastTemporaryDisconnectionDate,
+						'' AS LastReconnectionDate,
+						'' AS WaterSubscriptionCancellationDate,
+						'' AS LastMeterReadingDate,--todo: join
+						'' AS LastPaymentDate,--todo: join
+						(select top(1)client.ToDayJalali 
+							from Client1000 client
+							where client.BillId=@billId 
+							and client.ToDayJalali is not null
+							order by client.ToDayJalali desc
+						) AS LattestChangeMianInfoDate,
+						'' AS LattestChangeMianInfoDate,
+						'' AS LastWaterBillRefundDate,
+						'' AS LastSubscriptionRefundDate,
+						'' AS HouseholdCountStartDate,
+						'' AS HouseholdCountEndDate,
+						c.SewageRequestDate SewageRequestDate,
+						c.SewageInstallDate AS SewageInstallationDate,
+						'' AS SewageRequestDate,
+						'' AS SiphonReplacementDate
+					from Client1000 c
+					where c.BillId=@billId
+					and c.ToDayJalali is null";
+		}
     
     }
 }

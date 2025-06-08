@@ -13,7 +13,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 
         public async Task<IEnumerable<IndividualsInfoDto>> GetInfo(string billId)
         {
-            string individualsQuery = GetIndividualsSummayDtoQuery();
+            //string individualsQuery = GetIndividualsSummayDtoQuery();
+            string individualsQuery = GetIndividualsSummayDtoWithClientDBQuery();
             IEnumerable<IndividualsInfoDto> result = await _sqlConnection.QueryAsync<IndividualsInfoDto>(individualsQuery, new { billId });
 
             return result;
@@ -42,6 +43,26 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                 LEFT join ClaimPool.IndividualDiscountType idt on i.Id=idt.IndividualId
                 LEFT join ClaimPool.DiscountType d on idt.DiscountTypeId=d.Id
                 where w.BillId=@billId";
+        }
+
+        private string GetIndividualsSummayDtoWithClientDBQuery()
+        {
+            return @"select 
+                    	c.FirstName,
+                    	c.SureName AS Surname,
+                    	c.FirstName+' '+c.SureName AS FullName,
+                    	c.NationalId,
+                    	c.FatherName,
+                    	c.PhoneNo AS PhoneNumbers,
+                    	c.MobileNo AS MobileNumbers,
+                    	N'مالک' AS IndividualEstateRelationType,
+                    	c.FamilyCount AS HouseholdNumber,
+                    	0 AS NumberOfPeople,
+                    	--c.OffType AS DiscountType--Todo
+                    	1 AS IsOwnerAgent
+                    from Client1000 c
+                    where c.BillId=@billId
+                    and c.ToDayJalali is null";
         }
     }
 }

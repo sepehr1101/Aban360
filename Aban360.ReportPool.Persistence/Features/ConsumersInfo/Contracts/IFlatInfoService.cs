@@ -4,6 +4,6 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 {
     public interface IFlatInfoService
     {
-        Task<FlatInfoDto> GetInfo(string billId);
+        Task<IEnumerable<FlatInfoDto>> GetInfo(string billId);
     }
 }

@@ -11,11 +11,12 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         public FlatInfoService(IConfiguration configuration)
             : base(configuration) { }
 
-        public async Task<FlatInfoDto> GetInfo(string billId)
+        public async Task<IEnumerable<FlatInfoDto>> GetInfo(string billId)
         {
             string branchHistoryQuery = GetFlatSummayDtoQuery();
-            FlatInfoDto result= await _sqlConnection.QueryFirstOrDefaultAsync<FlatInfoDto>(branchHistoryQuery, new { billId });
+           // FlatInfoDto result= await _sqlConnection.QueryFirstOrDefaultAsync<FlatInfoDto>(branchHistoryQuery, new { billId });
 
+            FlatInfoDto[] result = new[] { new FlatInfoDto() };
             return result;
         }
         private string GetFlatSummayDtoQuery()
@@ -39,5 +40,6 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                       where w.BillId=@billId";
 
         }
+        
     }
 }

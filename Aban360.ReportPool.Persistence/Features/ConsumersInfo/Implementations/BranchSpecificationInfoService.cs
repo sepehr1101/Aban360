@@ -13,7 +13,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 
         public async Task<BranchSpecificationInfoDto> GetInfo(string billId)
         {
-            string BranchSpecificationQuery = GetBranchSpecificationSummayDtoQuery();
+            //string BranchSpecificationQuery = GetBranchSpecificationSummayDtoQuery();
+            string BranchSpecificationQuery = GetBranchSpecificationSummaryDtoWithClientDbQuery();
             BranchSpecificationInfoDto result = await _sqlConnection.QueryFirstOrDefaultAsync<BranchSpecificationInfoDto>(BranchSpecificationQuery, new { billId });
 
             result.SiphonsDiameterCount=await _sqlConnection.QueryAsync< SiphonsDiameterCount>(GetSiphonDiameterCount(),new { billId });
@@ -81,6 +82,33 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                 ) AS CountedSiphons ON sd.Id = CountedSiphons.SiphonDiameterId
                 ORDER BY
                     sd.Title;";
+        }
+
+        private string GetBranchSpecificationSummaryDtoWithClientDbQuery()
+        {
+            return @"select 
+                    	c.WaterDiameterTitle AS MeterDiameterTitle,
+                    	'' AS BodySerial,
+                    	0 AS SealNumber,
+                    	c.BranchType AS MeterTypeTitle,
+                    	'' AS MeterProducerTitle,
+                    	'' AS MeterEquipmentBrokerTitle,
+                    	'' AS MeterInstallationBrokerTitle,
+                    	'' AS WaterMeterInstallationMethodTitle,
+                    	0 AS MeterLife,
+                    	N'سالم'  AS MeterStatusTitle,
+                    	'' AS WitnessMeter,
+                    	'' AS CommonSiphon,
+                    	c.Siphon200+c.Siphon150+c.Siphon100+c.Siphon125+c.Siphon8+c.Siphon7+c.Siphon6+c.Siphon5 AS SiphonCount,
+                    	'' AS SiphonMaterialTitle,
+                    	0 AS SiphonLife,
+                    	'' AS SiphonInstallationContractor,
+                    	'' AS SiphonEquipmentBrokerTitle,
+                    	'' AS SiphonInstallationBrokerTitle,
+                    	0 AS LoadOfContamination
+                    from Client1000 c
+                    where c.BillId=@billId
+                    and c.ToDayJalali is null";
         }
     }
 }

@@ -15,8 +15,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         {
             string ViolationQuery = GetViolationSummayDtoQuery();
             // IEnumerable<ViolationInfoDto> result = await _sqlConnection.QueryAsync<ViolationInfoDto>(ViolationQuery, new { billId });
-            IEnumerable<ViolationInfoDto> result = GetFakeViolationDtoQuery();
-
+            //IEnumerable<ViolationInfoDto> result = GetFakeViolationDtoQuery();
+            IEnumerable<ViolationInfoDto> result=new List<ViolationInfoDto>();
             return result;
         }
         private string GetViolationSummayDtoQuery()

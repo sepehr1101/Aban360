@@ -4,6 +4,6 @@ namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contract
 {
     public interface IFlatInfoGetHandler
     {
-        Task<FlatInfoDto> Handle(string billId, CancellationToken cancellationToken);
+        Task<IEnumerable<FlatInfoDto>> Handle(string billId, CancellationToken cancellationToken);
     }
 }

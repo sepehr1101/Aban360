@@ -19,10 +19,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
 
         [HttpPost]
         [Route("info")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<FlatInfoDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<FlatInfoDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> info( SearchInput searchInput,CancellationToken cancellationToken)
         {
-            FlatInfoDto summary = await _FlatInfoHandle.Handle(searchInput.Input, cancellationToken);
+            IEnumerable<FlatInfoDto> summary = await _FlatInfoHandle.Handle(searchInput.Input, cancellationToken);
             return Ok(summary);
         }
 
