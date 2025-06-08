@@ -19,5 +19,11 @@
         public static string ServiceLinkPaymentDetail { get { return $"{Report} ریز وصولی ها - حق انشعاب"; } }
         public static string WaterPaymentReceivable { get { return $"{Report} وصولی های جاری و معوقه - آب بهاء"; } }
         public static string WaterUsageGrouped { get { return $"{Report} تفکیک کاربری - آب بهاء"; } }
+        public static string Unpaid { get { return $"{Report} بدون پرداخت وصولی"; } }
+        public static string WaterMeterReplacements { get { return $"{Report} گزاش کنتور های تعویضی"; } }
+        public static string ModifiedBills { get { return $"{Report} "; } }//Todo: ادغام تسک 19 و 20
+        public static string Unread { get { return $"{Report} بسته و مانع طی دوره"; } }
+        public static string WithoutBill { get { return $"{Report} بدون صدور قبض"; } }
+
     }
 }

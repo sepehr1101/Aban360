@@ -13,7 +13,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 
         public async Task<LocationInfoDto> GetInfo(string billId)
         {
-            string individualsQuery = GetIndividualsSummayDtoQuery();
+            //string individualsQuery = GetIndividualsSummayDtoQuery();
+            string individualsQuery = GetIndividualsSummaryDtoWithClientDbQuery();
             LocationInfoDto result = await _sqlConnection.QueryFirstOrDefaultAsync<LocationInfoDto>(individualsQuery, new { billId });
 
             return result;
@@ -31,6 +32,19 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                      join ClaimPool.Estate e on w.EstateId=e.Id
                          where w.BillId=@billId";
 
+        }
+        private string GetIndividualsSummaryDtoWithClientDbQuery()
+        {
+            return @"select 
+                    	c.ReadingNumber,
+                    	c.PostalCode,
+                    	c.X, 
+                    	c.Y,
+                    	'' AS EvaluatorSpecifications,
+                    	c.Address 
+                    from Client1000 c
+                    where c.BillId=@billId
+                    and c.ToDayJalali is null";
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implemen
             _branchSpecificationSummaryInfoService.NotNull(nameof(branchSpecificationSummaryInfoService));
         }
 
-        public async Task<FlatInfoDto> Handle(string billId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<FlatInfoDto>> Handle(string billId, CancellationToken cancellationToken)
         {
             var flatSummaryInfo = await _branchSpecificationSummaryInfoService.GetInfo(billId);
             return flatSummaryInfo;

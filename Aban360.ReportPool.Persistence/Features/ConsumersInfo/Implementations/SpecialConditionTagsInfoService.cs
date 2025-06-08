@@ -13,17 +13,36 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 
         public async Task<SpecialConditionTagsInfoDto> GetInfo(string billId)
         {
-            string branchHistoryQuery = GetSpecialConditionTagsSummayDtoQuery();
+            //string branchHistoryQuery = GetSpecialConditionTagsSummayDtoQuery();
+            string branchHistoryQuery = GetSpecialConditionTagsSummaryDtoWithClientDbQuery();
             string waterMeterTagsQuery = GetWaterMeterTagsDtoQuery();
             string individualTagsQuery = GetIndividualTagsDtoQuery();
 
             SpecialConditionTagsInfoDto result = await _sqlConnection.QueryFirstOrDefaultAsync<SpecialConditionTagsInfoDto>(branchHistoryQuery, new { billId });
-            
-            result.tagsInfoDtos = await _sqlConnection.QueryAsync<TagsInfoDto>(waterMeterTagsQuery, new { billId });
-            result.tagsInfoDtos.Concat(await _sqlConnection.QueryAsync<TagsInfoDto>(individualTagsQuery,new { billId }));
+
+            // result.tagsInfoDtos = await _sqlConnection.QueryAsync<TagsInfoDto>(waterMeterTagsQuery, new { billId });
+            // result.tagsInfoDtos.Concat(await _sqlConnection.QueryAsync<TagsInfoDto>(individualTagsQuery,new { billId }));
+            result.tagsInfoDtos=new List<TagsInfoDto>();
+
             return result;
         }
-        private string GetSpecialConditionTagsSummayDtoQuery()
+        private string GetSpecialConditionTagsSummaryDtoWithClientDbQuery()
+        {
+            return @"select 
+                     	c.BranchType AS HandoverTitle,
+                     	'' AS DiscountTypeTitle, --todo:
+                     	c.DeletionStateTitle AS UsageStateTitle ,
+                     	c.IsGovermental AS SpecialBranch,
+                     	c.EmptyCount AS EmptyUnit,
+                     	c.FamilyCount AS HouseholderNumber,
+                     	0 AS NonSequentialFlag
+                     
+                     from Client1000 c
+                     where c.BillId=@billId
+                     and c.ToDayJalali is null";
+
+        }
+         private string GetSpecialConditionTagsSummayDtoQuery()
         {
             return @"select top(1)
                     	h.Title as 'HandoverTitle',--without relation
@@ -54,7 +73,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     join ClaimPool.WaterMeterTagDefinition wtd on wtd.Id=wt.WaterMeterTagDefinitionId
                          where w.BillId=@billId";
         
-        } private string GetIndividualTagsDtoQuery()
+        }
+        private string GetIndividualTagsDtoQuery()
         {
             return @"select
                     	itd.Id,

@@ -15,7 +15,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         {
             string ChangeMainQuery = GetChangeMainSummayDtoQuery();
             //IEnumerable<ChangeMainInfoDto> result = await _sqlConnection.QueryAsync<ChangeMainInfoDto>(ChangeMainQuery, new { billId });
-            IEnumerable<ChangeMainInfoDto> result = GetFakeChangeMainInfo();
+            //IEnumerable<ChangeMainInfoDto> result = GetFakeChangeMainInfo();
+            IEnumerable<ChangeMainInfoDto> result =new List<ChangeMainInfoDto>();
 
             return result;
         }

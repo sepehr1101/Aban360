@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
+using Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contracts;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -10,20 +11,20 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
     [Route("v1/subscription")]
     public class SubscriptionSummaryInfoController : BaseController
     {
-        private readonly IConsumerSummaryQueryService _consumerSummeryQueryService;
-        public SubscriptionSummaryInfoController(IConsumerSummaryQueryService consumerSummaryQueryService)
+        private readonly ISubscriptionSummaryInfoGetHandler _consumerSummeryHandler;
+        public SubscriptionSummaryInfoController(ISubscriptionSummaryInfoGetHandler consumerSummaryHandler)
         {
-            _consumerSummeryQueryService = consumerSummaryQueryService;
-            _consumerSummeryQueryService.NotNull(nameof(_consumerSummeryQueryService));
+            _consumerSummeryHandler = consumerSummaryHandler;
+            _consumerSummeryHandler.NotNull(nameof(_consumerSummeryHandler));
         }
 
         [HttpPost]
         [Route("summary")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ConsumerSummaryDto>), StatusCodes.Status200OK)]
         //[AllowAnonymous]
-        public async Task<IActionResult> GetSummaryInfo([FromBody] SearchInput searchInput)
+        public async Task<IActionResult> GetSummaryInfo([FromBody] SearchInput searchInput,CancellationToken cancellation)
         {
-            ConsumerSummaryDto summary = await _consumerSummeryQueryService.GetInfo(searchInput.Input);
+            ConsumerSummaryDto summary = await _consumerSummeryHandler.Handle(searchInput.Input,cancellation);
             return Ok(summary);
         }
     }

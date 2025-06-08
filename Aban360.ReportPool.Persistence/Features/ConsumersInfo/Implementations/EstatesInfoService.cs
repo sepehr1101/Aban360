@@ -13,7 +13,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 
         public async Task<IEnumerable<EstatesInfoDto>> GetInfo(string billId)
         {
-            string individualsQuery = GetIndividualsSummayDtoQuery();
+            //string individualsQuery = GetIndividualsSummayDtoQuery();
+            string individualsQuery = GetIndividualsSummayDtoWithClientDbQuery();
             IEnumerable<EstatesInfoDto> result = await _sqlConnection.QueryAsync<EstatesInfoDto>(individualsQuery, new { billId });
 
             return result;
@@ -65,6 +66,34 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	e.UnitDomesticSewage,
                 	    e.UnitOtherSewage";
                 
+        }
+
+        private string GetIndividualsSummayDtoWithClientDbQuery()
+        {
+            return @"select 
+                        c.FieldArea As Premises,
+                    	c.CommercialCount+c.DomesticCount+c.OtherCount AS UnitOverall,
+                    	c.ConstructedArea AS ImprovementsOverall,
+                    	c.DomesticArea AS ImprovementsDomestic,
+                    	c.CommercialArea AS ImprovementsCommercial,
+                    	c.ConstructedArea-DomesticArea-CommercialArea AS ImprovementsOther,
+                    	N'نامشخص' AS OwnershipTypeTitle,
+                    	c.UsageTitle2 AS UsageSellTitle,
+                    	'' AS DebtCollectionGroupTitle,
+                    	0 AS flatCount,
+                    	c.ContractCapacity AS ContractualCapacity,
+                    	N'نامشخص' AS ConstructionTypeTitle,
+                    	0 AS Storeys,
+                    	c.DomesticCount AS UnitDomesticWater,
+                    	c.DomesticCount AS UnitDomesticSewage,
+                    	c.CommercialCount AS UnitCommercialWater,
+                    	c.CommercialCount AS UnitCommercialSewage,
+                    	c.OtherCount AS UnitOtherWater,
+                    	c.OtherCount AS UnitOtherSewage                    
+                    from Client1000 c
+                    where c.BillId=@billId
+                    and c.ToDayJalali is null
+        ";
         }
     }
 }

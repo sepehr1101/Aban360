@@ -22,7 +22,7 @@
         public short UnitOtherSewage { get; set; }
         public short EmptyUnit { get; set; }
         public string ConstructionType { get; set; }
-        public string UsageConsumtion { get; set; }//UsageConsumtionTitle
+        public string UsageConsumption { get; set; }//UsageConsumtionTitle
         public string UsageSell { get; set; }//UsageSellTitle
         public string FullName { get; set; } = default!;
         public string FirstName { get; set; } = default!;
@@ -39,6 +39,7 @@
 
 
         public int MunicipalityId { get; set; }
+        public int ZoneId { get; set; }
         public string? PostalCode{ get; set; }
         public string? MobileNumber { get; set; }
     }
