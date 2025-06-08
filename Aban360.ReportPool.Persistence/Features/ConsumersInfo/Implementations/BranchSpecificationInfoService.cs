@@ -15,9 +15,9 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         {
             //string BranchSpecificationQuery = GetBranchSpecificationSummayDtoQuery();
             string BranchSpecificationQuery = GetBranchSpecificationSummaryDtoWithClientDbQuery();
-            BranchSpecificationInfoDto result = await _sqlConnection.QueryFirstOrDefaultAsync<BranchSpecificationInfoDto>(BranchSpecificationQuery, new { billId });
+            BranchSpecificationInfoDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BranchSpecificationInfoDto>(BranchSpecificationQuery, new { billId });
 
-            result.SiphonsDiameterCount=await _sqlConnection.QueryAsync< SiphonsDiameterCount>(GetSiphonDiameterCount(),new { billId });
+            result.SiphonsDiameterCount=await _sqlReportConnection.QueryAsync< SiphonsDiameterCount>(GetSiphonDiameterCountWithClientDbQuery(),new { billId });
             return result;
         }
         private string GetBranchSpecificationSummayDtoQuery()
@@ -84,6 +84,25 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     sd.Title;";
         }
 
+        private string GetSiphonDiameterCountWithClientDbQuery()
+        {
+            return @"SELECT 
+                        SiphonDiameterTitle,
+                        SiphonCount
+                    FROM
+                    (
+                        SELECT 
+                             Siphon200, Siphon150, Siphon100, Siphon125, Siphon8, Siphon7, Siphon6, Siphon5
+                        FROM [CustomerWarehouse].dbo.Client
+                        WHERE BillId = @billId AND
+                        ToDayJalali IS NULL
+                    ) src
+                    UNPIVOT
+                    (
+                        SiphonCount FOR SiphonDiameterTitle IN (Siphon200, Siphon150, Siphon100, Siphon125, Siphon8, Siphon7, Siphon6, Siphon5)
+                    ) unpvt";
+        }
+
         private string GetBranchSpecificationSummaryDtoWithClientDbQuery()
         {
             return @"select 
@@ -106,7 +125,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	'' AS SiphonEquipmentBrokerTitle,
                     	'' AS SiphonInstallationBrokerTitle,
                     	0 AS LoadOfContamination
-                    from Client1000 c
+                    from [CustomerWarehouse].dbo.Client c
                     where c.BillId=@billId
                     and c.ToDayJalali is null";
         }

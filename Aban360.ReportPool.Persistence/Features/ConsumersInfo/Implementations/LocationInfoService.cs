@@ -15,7 +15,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         {
             //string individualsQuery = GetIndividualsSummayDtoQuery();
             string individualsQuery = GetIndividualsSummaryDtoWithClientDbQuery();
-            LocationInfoDto result = await _sqlConnection.QueryFirstOrDefaultAsync<LocationInfoDto>(individualsQuery, new { billId });
+            LocationInfoDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<LocationInfoDto>(individualsQuery, new { billId });
 
             return result;
         }
@@ -42,7 +42,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	c.Y,
                     	'' AS EvaluatorSpecifications,
                     	c.Address 
-                    from Client1000 c
+                    from [CustomerWarehouse].dbo.Client c
                     where c.BillId=@billId
                     and c.ToDayJalali is null";
         }

@@ -18,10 +18,10 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             string waterMeterTagsQuery = GetWaterMeterTagsDtoQuery();
             string individualTagsQuery = GetIndividualTagsDtoQuery();
 
-            SpecialConditionTagsInfoDto result = await _sqlConnection.QueryFirstOrDefaultAsync<SpecialConditionTagsInfoDto>(branchHistoryQuery, new { billId });
+            SpecialConditionTagsInfoDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<SpecialConditionTagsInfoDto>(branchHistoryQuery, new { billId });
 
-            // result.tagsInfoDtos = await _sqlConnection.QueryAsync<TagsInfoDto>(waterMeterTagsQuery, new { billId });
-            // result.tagsInfoDtos.Concat(await _sqlConnection.QueryAsync<TagsInfoDto>(individualTagsQuery,new { billId }));
+            // result.tagsInfoDtos = await _sqlReportConnection.QueryAsync<TagsInfoDto>(waterMeterTagsQuery, new { billId });
+            // result.tagsInfoDtos.Concat(await _sqlReportConnection.QueryAsync<TagsInfoDto>(individualTagsQuery,new { billId }));
             result.tagsInfoDtos=new List<TagsInfoDto>();
 
             return result;
@@ -37,7 +37,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                      	c.FamilyCount AS HouseholderNumber,
                      	0 AS NonSequentialFlag
                      
-                     from Client1000 c
+                     from [CustomerWarehouse].dbo.Client c
                      where c.BillId=@billId
                      and c.ToDayJalali is null";
 

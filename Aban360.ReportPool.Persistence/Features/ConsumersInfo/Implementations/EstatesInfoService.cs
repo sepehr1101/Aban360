@@ -15,7 +15,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         {
             //string individualsQuery = GetIndividualsSummayDtoQuery();
             string individualsQuery = GetIndividualsSummayDtoWithClientDbQuery();
-            IEnumerable<EstatesInfoDto> result = await _sqlConnection.QueryAsync<EstatesInfoDto>(individualsQuery, new { billId });
+            IEnumerable<EstatesInfoDto> result = await _sqlReportConnection.QueryAsync<EstatesInfoDto>(individualsQuery, new { billId });
 
             return result;
         }
@@ -90,7 +90,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	c.CommercialCount AS UnitCommercialSewage,
                     	c.OtherCount AS UnitOtherWater,
                     	c.OtherCount AS UnitOtherSewage                    
-                    from Client1000 c
+                    from [CustomerWarehouse].dbo.Client c
                     where c.BillId=@billId
                     and c.ToDayJalali is null
         ";

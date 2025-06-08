@@ -16,7 +16,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         {
            // string summaryQuery = GetConsumerSummaryDtoQuery();
             string summaryQuery = GetConsumerSummaryDtoWithClientDbQuery();
-            ConsumerSummaryDto? summaryInfo = await _sqlConnection.QuerySingleOrDefaultAsync<ConsumerSummaryDto>(summaryQuery, new { id = billId });
+            ConsumerSummaryDto? summaryInfo = await _sqlReportConnection.QuerySingleOrDefaultAsync<ConsumerSummaryDto>(summaryQuery, new { id = billId });
 
             string tagQuery = GetWaterMeterTagsQuery();
             IEnumerable<string> tags = await _sqlConnection.QueryAsync<string>(tagQuery, new { id = billId });
@@ -139,7 +139,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 	                    TRY_CAST(c.VillageId AS int) AS MunicipalityId,
                     	c.PostalCode ,
                     	c.MobileNo AS MobileNumber
-                    from Client1000 c
+                    from [CustomerWarehouse].dbo.Client c
                     where c.BillId=@id 
                     and c.ToDayJalali is null";
         }
