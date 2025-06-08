@@ -42,7 +42,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	c.Y,
                     	'' AS EvaluatorSpecifications,
                     	c.Address 
-                    from [CustomerWarehouse].dbo.Client c
+                    from [CustomerWarehouse].dbo.Clients c
                     where c.BillId=@billId
                     and c.ToDayJalali is null";
         }

@@ -93,7 +93,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     (
                         SELECT 
                              Siphon200, Siphon150, Siphon100, Siphon125, Siphon8, Siphon7, Siphon6, Siphon5
-                        FROM [CustomerWarehouse].dbo.Client
+                        FROM [CustomerWarehouse].dbo.Clients
                         WHERE BillId = @billId AND
                         ToDayJalali IS NULL
                     ) src
@@ -125,7 +125,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	'' AS SiphonEquipmentBrokerTitle,
                     	'' AS SiphonInstallationBrokerTitle,
                     	0 AS LoadOfContamination
-                    from [CustomerWarehouse].dbo.Client c
+                    from [CustomerWarehouse].dbo.Clients c
                     where c.BillId=@billId
                     and c.ToDayJalali is null";
         }

@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         public async Task<ReportOutput<UseStateReportHeaderOutputDto, UseStateReportDataOutputDto>> GetInfo(UseStateReportInputDto input)
         {
             string useStateQueryString = GetUseStateDataQuery();
-            IEnumerable<UseStateReportDataOutputDto> useStateData = await _sqlConnection.QueryAsync<UseStateReportDataOutputDto>(useStateQueryString, new { useStateId=input.UseStateId, fromDate=input.FromDate, toDate=input.ToDate , zoneIds = input.ZoneIds });
+            IEnumerable<UseStateReportDataOutputDto> useStateData = await _sqlReportConnection.QueryAsync<UseStateReportDataOutputDto>(useStateQueryString, new { useStateId=input.UseStateId, fromDate=input.FromDate, toDate=input.ToDate , zoneIds = input.ZoneIds });
             UseStateReportHeaderOutputDto useStateHeader = new UseStateReportHeaderOutputDto()
             { 
                 TotalDeptAmount=useStateData.Sum(useState=>Convert.ToInt64(useState.DeptAmount)).ToString(),
@@ -48,7 +48,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.Address AS Address,
                     	c.ZoneTitle,
                     	c.DeletionStateTitle AS EventDateJalali
-                    from Client1000 c
+                    from [CustomerWarehouse].dbo.Clients c
                     where 
                        c.FromDayJalali>=@fromDate and
                        c.ToDayJalali<=@toDate and

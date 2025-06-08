@@ -20,7 +20,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             string customerSearchDataInfoQuery = GetCustomerSearchDataQuery();
 
             var param = new { input = $"%{input.InputText}%" };
-            IEnumerable<CustomerSearchDataOutputDto> customerData = await _sqlConnection.QueryAsync<CustomerSearchDataOutputDto>(customerSearchDataInfoQuery, param);
+            IEnumerable<CustomerSearchDataOutputDto> customerData = await _sqlReportConnection.QueryAsync<CustomerSearchDataOutputDto>(customerSearchDataInfoQuery, param);
             CustomerSearchHeaderOutputDto customerHeader = new CustomerSearchHeaderOutputDto()
             { 
                 RecordCount=customerData.Count()
@@ -44,7 +44,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                       	c.OtherCount AS UnitOtherWater,
                       	c.MobileNo AS MobileNumber,
                       	c.Address
-                      from Client1000 c
+                      from [CustomerWarehouse].dbo.Clients c
                       where c.ToDayJalali is null
                         or(c.CustomerNumber like @input 
                         or c. ReadingNumber like @input
