@@ -14,7 +14,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         }
         public async Task<ConsumerSummaryDto> GetInfo(string billId)
         {
-            string summaryQuery = GetConsumerSummaryDtoQuery();
+           // string summaryQuery = GetConsumerSummaryDtoQuery();
+            string summaryQuery = GetConsumerSummaryDtoWithClientDbQuery();
             ConsumerSummaryDto? summaryInfo = await _sqlConnection.QuerySingleOrDefaultAsync<ConsumerSummaryDto>(summaryQuery, new { id = billId });
 
             string tagQuery = GetWaterMeterTagsQuery();
@@ -96,6 +97,51 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                 JOIN [ClaimPool].WaterMeterTagDefinition WTD ON WT.WaterMeterTagDefinitionId = WTD.Id
                 WHERE W.BillId = @id";
             return query;
+        }
+
+        private string GetConsumerSummaryDtoWithClientDbQuery()
+        {
+            return @"select 
+                    	c.CustomerNumber,
+                    	c.BillId,
+                    	c.ReadingNumber,
+                    	c.WaterInstallDate,
+                    	'' AS ProductDate,
+                    	'' AS GuaranteeDate,
+                    	c.Address,
+                    	'' AS LastDept,
+                    	'' AS CounterState,
+                    	'' AS CounterStatus,
+                    	c.ContractCapacity,
+                    	c.FamilyCount AS HouseholdNumber,
+                    	c.DomesticCount AS UnitDomesticWater,
+                    	c.DomesticCount AS UnitDomesticSewage,
+                    	c.CommercialCount AS UnitCommercialWater,
+                    	c.CommercialCount AS UnitCommercialSewage,
+                    	c.OtherCount AS UnitOtherWater,
+                    	c.OtherCount AS UnitOtherSewage,
+                    	c.EmptyCount AS EmptyUnit,
+                    	'-' as ConstructionType,
+                    	c.UsageTitle AS UsageConsumption,
+                    	c.UsageTitle2 AS UsageSell,
+                    	c.FirstName+' '+c.SureName AS FullName,
+                    	c.FirstName,
+                    	c.SureName,
+                    	c.SewageInstallDate AS SiphonInstallationDate,
+                    	'' AS HeadquartersTitle,
+                    	'' AS CordinalDirectionTitle,
+                    	'' AS ProvinceTitle,
+                    	'' AS RegionTitle,
+                    	c.ZoneTitle AS ZoneTitle,
+                    	c.ZoneId AS ZoneId,
+                    	c.VillageName AS MunicipalityTitle,
+                    	--c.VillageId AS	MunicipalityId,
+	                    TRY_CAST(c.VillageId AS int) AS MunicipalityId,
+                    	c.PostalCode ,
+                    	c.MobileNo AS MobileNumber
+                    from Client1000 c
+                    where c.BillId=@id 
+                    and c.ToDayJalali is null";
         }
     }
 }
