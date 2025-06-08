@@ -15,7 +15,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         {
             //string individualsQuery = GetIndividualsSummayDtoQuery();
             string individualsQuery = GetIndividualsSummayDtoWithClientDBQuery();
-            IEnumerable<IndividualsInfoDto> result = await _sqlConnection.QueryAsync<IndividualsInfoDto>(individualsQuery, new { billId });
+            IEnumerable<IndividualsInfoDto> result = await _sqlReportConnection.QueryAsync<IndividualsInfoDto>(individualsQuery, new { billId });
 
             return result;
         }
@@ -60,7 +60,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	0 AS NumberOfPeople,
                     	--c.OffType AS DiscountType--Todo
                     	1 AS IsOwnerAgent
-                    from Client1000 c
+                    from [CustomerWarehouse].dbo.Client c
                     where c.BillId=@billId
                     and c.ToDayJalali is null";
         }

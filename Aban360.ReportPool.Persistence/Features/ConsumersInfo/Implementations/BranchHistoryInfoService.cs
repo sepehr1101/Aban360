@@ -15,7 +15,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         {
             //string branchHistoryQuery = GetBranchHistorySummaryDtoQuery();
             string branchHistoryQuery = GetBranchHistorySummaryDtoWithClientDbQuery();
-            BranchHistoryInfoDto result = await _sqlConnection.QueryFirstOrDefaultAsync<BranchHistoryInfoDto>(branchHistoryQuery, new { billId });
+            BranchHistoryInfoDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BranchHistoryInfoDto>(branchHistoryQuery, new { billId });
 
             return result;
         }
@@ -71,7 +71,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 						'' AS LastMeterReadingDate,--todo: join
 						'' AS LastPaymentDate,--todo: join
 						(select top(1)client.ToDayJalali 
-							from Client1000 client
+							from [CustomerWarehouse].dbo.Client client
 							where client.BillId=@billId 
 							and client.ToDayJalali is not null
 							order by client.ToDayJalali desc
@@ -85,7 +85,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 						c.SewageInstallDate AS SewageInstallationDate,
 						'' AS SewageRequestDate,
 						'' AS SiphonReplacementDate
-					from Client1000 c
+					from [CustomerWarehouse].dbo.Client c
 					where c.BillId=@billId
 					and c.ToDayJalali is null";
 		}
