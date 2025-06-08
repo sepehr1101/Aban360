@@ -17,7 +17,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         public async Task<ReportOutput<WithoutBillHeaderOutputDto, WithoutBillDataOutputDto>> GetInfo(WithoutBillInputDto input)
         {
             string withoutBill = GetWithoutBillQuery();
-            IEnumerable<WithoutBillDataOutputDto> withoutBillData = await _sqlConnection.QueryAsync<WithoutBillDataOutputDto>(withoutBill);//todo: Parameters
+            IEnumerable<WithoutBillDataOutputDto> withoutBillData = await _sqlReportConnection.QueryAsync<WithoutBillDataOutputDto>(withoutBill);//todo: Parameters
             WithoutBillHeaderOutputDto withoutBillHeader = new WithoutBillHeaderOutputDto()
             { };
 

@@ -60,7 +60,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	0 AS NumberOfPeople,
                     	--c.OffType AS DiscountType--Todo
                     	1 AS IsOwnerAgent
-                    from [CustomerWarehouse].dbo.Client c
+                    from [CustomerWarehouse].dbo.Clients c
                     where c.BillId=@billId
                     and c.ToDayJalali is null";
         }

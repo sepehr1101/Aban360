@@ -71,7 +71,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 						'' AS LastMeterReadingDate,--todo: join
 						'' AS LastPaymentDate,--todo: join
 						(select top(1)client.ToDayJalali 
-							from [CustomerWarehouse].dbo.Client client
+							from [CustomerWarehouse].dbo.Clients client
 							where client.BillId=@billId 
 							and client.ToDayJalali is not null
 							order by client.ToDayJalali desc
@@ -85,7 +85,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 						c.SewageInstallDate AS SewageInstallationDate,
 						'' AS SewageRequestDate,
 						'' AS SiphonReplacementDate
-					from [CustomerWarehouse].dbo.Client c
+					from [CustomerWarehouse].dbo.Clients c
 					where c.BillId=@billId
 					and c.ToDayJalali is null";
 		}

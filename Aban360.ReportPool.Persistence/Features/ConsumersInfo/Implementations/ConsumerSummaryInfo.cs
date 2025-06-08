@@ -139,7 +139,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 	                    TRY_CAST(c.VillageId AS int) AS MunicipalityId,
                     	c.PostalCode ,
                     	c.MobileNo AS MobileNumber
-                    from [CustomerWarehouse].dbo.Client c
+                    from [CustomerWarehouse].dbo.Clients c
                     where c.BillId=@id 
                     and c.ToDayJalali is null";
         }

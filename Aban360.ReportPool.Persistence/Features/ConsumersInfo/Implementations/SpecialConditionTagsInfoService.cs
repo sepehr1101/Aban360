@@ -37,7 +37,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                      	c.FamilyCount AS HouseholderNumber,
                      	0 AS NonSequentialFlag
                      
-                     from [CustomerWarehouse].dbo.Client c
+                     from [CustomerWarehouse].dbo.Clients c
                      where c.BillId=@billId
                      and c.ToDayJalali is null";
 
