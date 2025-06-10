@@ -55,25 +55,25 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         private string GetSubscriptionEventsQuery()
         {
             string query = @"
-            use Aban360
+            use CustomerWarehouse
             select
 	            TRIM(BillId) BillId ,Id,PreviousNumber PreviousMeterNumber,NextNumber NextMeterNumber, PreviousDay PreviousMeterDate,NextDay CurrentMeterDate,RegisterDay RegisterDate,SumItems DebtAmount,0 CreditAmount,TypeId as [Description], ConsumptionAverage, NULL BankTitle
-            from [ReportPool].Bills
+            from [CustomerWarehouse].dbo.Bills
             where (BillId)=@billId
             union
             select
 	            TRIM(BillId) BillId, Id, 0 PreviousMeterNumber,0 NextMeterNumber,NULL PreviousMeterDate,NULL CurrentMeterDate, RegisterDay RegisterDate, 0 DebtAmount, Amount CreditAmount, N'پرداخت' [Description], 0, BankName BankTitle
-            from [ReportPool].Payments
+            from [CustomerWarehouse].dbo.Payments
             where (BillId)=@billId";
             return query;
         }
         private string GetSubscriptionEventsQuerybyZoneAndRegisterDay()
         {
             string query = @"
-            use Aban360
+            use CustomerWarehouse
             select
 	            TRIM(BillId) BillId, Id,PreviousNumber PreviousMeterNumber,NextNumber NextMeterNumber, PreviousDay PreviousMeterDate,NextDay CurrentMeterDate,RegisterDay RegisterDate,SumItems DebtAmount,0 CreditAmount,TypeId as [Description], ConsumptionAverage, NULL BankTitle
-            from [ReportPool].Bills
+            from [CustomerWarehouse].dbo.Bills
             where 
 	            ZoneId=@zoneId AND 
 	            RegisterDay=@registerDate AND 
@@ -84,7 +84,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         public async Task<IEnumerable<BranchEventsDto>> GetBranchEventDtos(string billId)
         {
             string query = GetBranchEventsSummaryQuery();
-            IEnumerable<BranchEventsDto> result = await _sqlConnection.QueryAsync<BranchEventsDto>(query, new { billId = billId });
+            IEnumerable<BranchEventsDto> result = await _sqlReportConnection.QueryAsync<BranchEventsDto>(query, new { billId = billId });
             if (result.Any())
             {
                 result = result.OrderBy(i => i.RegisterDate);
@@ -99,17 +99,17 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                 WHERE BillId=@billId
                 UNION
                 SELECT N'پرداخت'+ N'('+ BankName+' '+PaymentGateway+N')' [Description], '' TrackNumber, RegisterDay RegisterDate, 0 DebtAmount, Amount CreditAmount
-                FROM ReportPool.PaymentsEn
+                FROM [CustomerWarehouse].dbo.PaymentsEn
                 WHERE BillId=@billId";
             return query;
         }
         private string GetSubscriptionEventsQuerybyZone()
         {
             string query = @"
-            use Aban360
+            use CustomerWarehouse
             select
 	            TRIM(BillId) BillId, Id,PreviousNumber PreviousMeterNumber,NextNumber NextMeterNumber, PreviousDay PreviousMeterDate,NextDay CurrentMeterDate,RegisterDay RegisterDate,SumItems DebtAmount,0 OweAmount,TypeId as [Description], ConsumptionAverage, NULL BankTitle
-            from [ReportPool].Bills
+            from [CustomerWarehouse].dbo.Bills
             where 
 	            ZoneId=@zoneId AND 
 	            TRIM(ReadingNumber) BETWEEN @fromReadingNumber AND @toReadingNumber";
