@@ -9,7 +9,6 @@
         public string? ProductDate { get; set; }
         public string? GuaranteeDate { get; set; }
         public string Address { get; set; } = default!;
-        public string? LastDept { get; set; }//new
         public string? CounterState { get; set; }//new
         public string? CounterStatus { get; set; }//new
         public short ContractualCapacity { get; set; }
@@ -42,6 +41,9 @@
         public int ZoneId { get; set; }
         public string? PostalCode{ get; set; }
         public string? MobileNumber { get; set; }
+        public string DiscountType { get; set; }
+        public string MeterDiameterTitle { get; set; }
+
     }
 
 }

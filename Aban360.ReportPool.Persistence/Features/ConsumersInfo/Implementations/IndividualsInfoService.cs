@@ -58,7 +58,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	N'مالک' AS IndividualEstateRelationType,
                     	c.FamilyCount AS HouseholdNumber,
                     	0 AS NumberOfPeople,
-                    	--c.OffType AS DiscountType--Todo
+                    	c.DiscountTypeTitle AS DiscountType
                     	1 AS IsOwnerAgent
                     from [CustomerWarehouse].dbo.Clients c
                     where c.BillId=@billId

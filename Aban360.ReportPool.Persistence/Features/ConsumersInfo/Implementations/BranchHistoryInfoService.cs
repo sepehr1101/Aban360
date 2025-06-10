@@ -76,7 +76,6 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 							and client.ToDayJalali is not null
 							order by client.ToDayJalali desc
 						) AS LattestChangeMianInfoDate,
-						'' AS LattestChangeMianInfoDate,
 						'' AS LastWaterBillRefundDate,
 						'' AS LastSubscriptionRefundDate,
 						'' AS HouseholdCountStartDate,

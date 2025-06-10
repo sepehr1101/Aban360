@@ -78,7 +78,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	c.CommercialArea AS ImprovementsCommercial,
                     	c.ConstructedArea-DomesticArea-CommercialArea AS ImprovementsOther,
                     	N'نامشخص' AS OwnershipTypeTitle,
-                    	c.UsageTitle2 AS UsageSellTitle,
+                    	c.UsageTitle AS UsageSellTitle,
                     	'' AS DebtCollectionGroupTitle,
                     	0 AS flatCount,
                     	c.ContractCapacity AS ContractualCapacity,
@@ -90,7 +90,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	c.CommercialCount AS UnitCommercialSewage,
                     	c.OtherCount AS UnitOtherWater,
                     	c.OtherCount AS UnitOtherSewage                    
-                    from [CustomerWarehouse].dbo.Client c
+                    from [CustomerWarehouse].dbo.Clients c
                     where c.BillId=@billId
                     and c.ToDayJalali is null
         ";
