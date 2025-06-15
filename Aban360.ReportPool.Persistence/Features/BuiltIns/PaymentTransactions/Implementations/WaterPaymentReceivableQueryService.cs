@@ -4,6 +4,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Contracts;
 using Dapper;
+using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Implementations
@@ -17,17 +18,46 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
         public async Task<ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableDataOutputDto>> GetInfo(WaterPaymentReceivableInputDto input)
         {
             string paymentReceivables = GetWaterPaymentReceivableQuery();
-            IEnumerable<WaterPaymentReceivableDataOutputDto> waterPaymentReceivableDate = await _sqlConnection.QueryAsync<WaterPaymentReceivableDataOutputDto>(paymentReceivables);//todo: Parameters
+            var @params = new
+            {
+                FromDate = input.FromDateJalali,
+                ToDate = input.ToDateJalali,
+            };
+            IEnumerable<WaterPaymentReceivableDataOutputDto> waterPaymentReceivableData = await _sqlConnection.QueryAsync<WaterPaymentReceivableDataOutputDto>(paymentReceivables, @params);
             WaterPaymentReceivableHeaderOutputDto waterPaymentReceivableHeader = new WaterPaymentReceivableHeaderOutputDto()
-            { };
-
-            var result = new ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableDataOutputDto>(ReportLiterals.WaterPaymentReceivable, waterPaymentReceivableHeader, waterPaymentReceivableDate);
+            {
+                FormDateJalali = input.FromDateJalali,
+                ToDateJalali = input.ToDateJalali,
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                SumTotalCount = waterPaymentReceivableData.Sum(payment => payment.TotalCount),
+                SumTotalAmount = waterPaymentReceivableData.Sum(payment => payment.TotalAmount),
+                SumOverdueCount = waterPaymentReceivableData.Sum(payment => payment.OverdueCount),
+                SumOverdueAmount = waterPaymentReceivableData.Sum(payment => payment.OverdueAmount),
+                SumCurrentAmount = waterPaymentReceivableData.Sum(payment => payment.CurrentAmount),
+            };
+            var result = new ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableDataOutputDto>(ReportLiterals.WaterPaymentReceivable, waterPaymentReceivableHeader, waterPaymentReceivableData);
             return result;
         }
 
         private string GetWaterPaymentReceivableQuery()
         {
-            return @" ";
+            //ToDo: CurrentAmount ???
+            return @"Select 
+                    	Max(b.BillId),
+                    	b.UsageTitle AS UsageTitle,
+                    	COUNT(DISTINCT b.BillId) AS TotalCount,
+                        COUNT(DISTINCT p.BillId) AS PaidBills, 
+                        COUNT(DISTINCT b.BillId) - COUNT(DISTINCT p.BillId) AS OverdueCount ,
+                    	SUM(DISTINCT b.Payable) AS TotalAmount,
+                        SUM(DISTINCT p.Amount) AS Paid, 
+                        SUM(DISTINCT b.Payable) - COUNT(DISTINCT p.Amount) AS OverdueAmount 
+                    From [CustomerWarehouse].dbo.Bills b
+                    LEFT JOIN [CustomerWarehouse].dbo.Payments p ON p.BillTableId=b.Id
+                    WHERE
+                    	@FromDate IS NULL
+                    	OR @ToDate IS NULL 
+                    	OR p.RegisterDay BETWEEN @FromDate AND @ToDate
+                    GROUP BY b.UsageTitle";
         }
     }
 }
