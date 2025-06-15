@@ -41,6 +41,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         private string GetServiceLinkPaymentDetailQuery()
         {
+            //ToDo: choise ServiceLink Payment
             return @"Select
                      	p.CustomerNumber As CustomerNumber,
                     	p.RegisterDay AS BankDateJalali,

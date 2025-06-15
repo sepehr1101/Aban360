@@ -42,7 +42,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
         }
 
         private string GetWaterPaymentDetailQuery()
-        {//todo: Choise WaterPayment
+        {
+            //todo: Choise WaterPayment
             return @"Select
                      	p.CustomerNumber As CustomerNumber,
                     	p.RegisterDay AS BankDateJalali,
