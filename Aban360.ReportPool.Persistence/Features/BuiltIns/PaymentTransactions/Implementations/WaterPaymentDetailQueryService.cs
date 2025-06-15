@@ -17,17 +17,59 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
         public async Task<ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>> GetInfo(PaymentDetailInputDto input)
         {
             string waterPaymentDetails = GetWaterPaymentDetailQuery();
-            IEnumerable<PaymentDetailDataOutputDto> waterPaymentDetailDate = await _sqlConnection.QueryAsync<PaymentDetailDataOutputDto>(waterPaymentDetails);//todo: Parameters
+            var @params = new
+            {
+                FromDate = input.FromDateJalali,
+                ToDate = input.ToDateJalali,
+                FromAmount = input.FromAmount,
+                ToAmount = input.ToAmount,
+            };
+            IEnumerable<PaymentDetailDataOutputDto> waterPaymentDetailData = await _sqlReportConnection.QueryAsync<PaymentDetailDataOutputDto>(waterPaymentDetails, @params);
+            // string? bankName = await _sqlConnection.QueryFirstAsync(GetBankTitle(), new { bankCode = waterPaymentDetailData.FirstOrDefault()?.BankCode.ToString() });
             PaymentDetailHeaderOutputDto waterPaymentDetailHeader = new PaymentDetailHeaderOutputDto()
-            { };
+            {
+                FromDateJalali = input.FromDateJalali,
+                ToDateJalali = input.ToDateJalali,
+                FromBankTitle = "---",//
+                FromAmount = input.FromAmount,
+                ToAmount = input.ToAmount,
+                RecordCount = waterPaymentDetailData.Count(),
+                TotalRegisterAmount = waterPaymentDetailData.Sum(payment => Convert.ToUInt32(payment.RegisterAmount)),
+            };
 
-            var result = new ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>(ReportLiterals.WaterPaymentDetail, waterPaymentDetailHeader, waterPaymentDetailDate);
+            var result = new ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>(ReportLiterals.WaterPaymentDetail, waterPaymentDetailHeader, waterPaymentDetailData);
             return result;
         }
 
         private string GetWaterPaymentDetailQuery()
         {
-            return @" ";
+            //todo: Choise WaterPayment
+            return @"Select
+                     	p.CustomerNumber As CustomerNumber,
+                    	p.RegisterDay AS BankDateJalali,
+                    	p.BankBranchCode AS BankCode,--BankCode?
+                    	p.RegisterDay AS EventBankDateJalali,
+                    	p.BankBranchCode AS SerialNumber,--SerialBank?
+                    	p.BillId AS BillId,
+                    	p.PaymentGateway AS PaymentMethodTitle,
+                    	p.RegisterDay AS PaymentDate,--PaymentDate
+                    	p.Amount AS RegisterAmount
+                    From [CustomerWarehouse].dbo.Payments p
+                    WHERE 
+                    	(@FromDate IS  NULL 
+                    		OR @ToDate IS NULL 
+                    		OR p.RegisterDay BETWEEN @FromDate AND @ToDate) 
+                    	AND(@FromAmount IS  NULL 
+                    		OR @ToAmount IS NULL 
+                    		OR p.Amount BETWEEN @FromAmount AND @ToAmount)";
+        }
+
+        private string GetBankTitle()
+        {
+            return @"Select 
+                    	b.BankName
+                    From [Aban360].PaymentPool.Bank b
+                    WHERE b.CentralBankCode=@bankCode";
         }
     }
 }

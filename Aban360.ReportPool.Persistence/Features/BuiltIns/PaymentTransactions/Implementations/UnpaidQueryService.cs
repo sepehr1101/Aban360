@@ -4,6 +4,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Contracts;
 using Dapper;
+using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Implementations
@@ -29,7 +30,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             };
             IEnumerable<UnpaidDataOutputDto> unpaidData = await _sqlReportConnection.QueryAsync<UnpaidDataOutputDto>(unpaids,@params);
             UnpaidHeaderOutputDto unpaidHeader = new UnpaidHeaderOutputDto()
-            { };
+            {
+                FromDateTime = input.FromDateJalali,
+                ToDateTime = input.ToDateJalali,
+                FromAmount=input.FromAmount,
+                ToAmount=input.ToAmount,
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
+                RecordCount = unpaidData.Count(),
+                ReportDate = DateTime.Now.ToShortPersianDateString()
+            };
 
             var result = new ReportOutput<UnpaidHeaderOutputDto, UnpaidDataOutputDto>(ReportLiterals.Unpaid, unpaidHeader, unpaidData);
             return result;
@@ -42,18 +52,21 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             return @$"SELECT 
                     	MAX(b.CustomerNumber) AS CustomerNumber,
                     	MAX(b.ReadingNumber) AS ReadingNumber,
-                    	--b.FirstName +' '+b.SureName AS FullName--todo: firstName Surename not in database
+                    	(max(c.FirstName) +' '+max(c.SureName)) AS FullName,
                     	 MAX(b.WaterDiameterTitle) AS MeterDiameterTitle,
                     	 MAX(b.UsageTitle) AS UsageSellTitle,
                     	 MAX(b.PreDebt) AS DebtAmount,--todo: yes?
-                    	--b.Address --todo: not in datebase
+                    	max(c.Address) AS Address ,
                     	COUNT(b.BillId) AS PeriodCount,
                     	MAX(b.BillId) AS BillId
-                    
                     FROM [CustomerWarehouse].dbo.bills as b
                     LEFT JOIN [CustomerWarehouse].dbo.payments as p ON p.BillTableId = b.id
+					join [CustomerWarehouse].dbo.Clients c on b.BillId=c.BillId
                     WHERE 
                     p.id IS NULL
+                    AND (@FromDateTime is null or
+	     	    	   	 @ToDateTime is null or 
+			    	   	 b.RegisterDay BETWEEN @FromDateTime and @ToDateTime)
                     AND (@FromAmount is null or
                     	 @ToAmount is null or 
                     	 b.Payable BETWEEN @FromAmount and @ToAmount)

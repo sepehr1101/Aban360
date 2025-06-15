@@ -17,17 +17,49 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
         public async Task<ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>> GetInfo(PaymentDetailInputDto input)
         {
             string serviceLinkPaymentDetails = GetServiceLinkPaymentDetailQuery();
-            IEnumerable<PaymentDetailDataOutputDto> serviceLinkPaymentDetailDate = await _sqlConnection.QueryAsync<PaymentDetailDataOutputDto>(serviceLinkPaymentDetails);//todo: Parameters
+            var @params = new
+            {
+                FromDate = input.FromDateJalali,
+                ToDate = input.ToDateJalali,
+                FromAmount = input.FromAmount,
+                ToAmount = input.ToAmount,
+            };
+            IEnumerable<PaymentDetailDataOutputDto> serviceLinkPaymentDetailData = await _sqlReportConnection.QueryAsync<PaymentDetailDataOutputDto>(serviceLinkPaymentDetails, @params);
             PaymentDetailHeaderOutputDto serviceLinkPaymentDetailHeader = new PaymentDetailHeaderOutputDto()
-            { };
-
-            var result = new ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>(ReportLiterals.ServiceLinkPaymentDetail, serviceLinkPaymentDetailHeader, serviceLinkPaymentDetailDate);
+            {
+                FromDateJalali = input.FromDateJalali,
+                ToDateJalali = input.ToDateJalali,
+                FromBankTitle = "---",//
+                FromAmount = input.FromAmount,
+                ToAmount = input.ToAmount,
+                RecordCount = serviceLinkPaymentDetailData.Count(),
+                TotalRegisterAmount = serviceLinkPaymentDetailData.Sum(payment => Convert.ToUInt32(payment.RegisterAmount)),
+            };
+            var result = new ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>(ReportLiterals.ServiceLinkPaymentDetail, serviceLinkPaymentDetailHeader, serviceLinkPaymentDetailData);
             return result;
         }
 
         private string GetServiceLinkPaymentDetailQuery()
         {
-            return @" ";
+            //ToDo: choise ServiceLink Payment
+            return @"Select
+                     	p.CustomerNumber As CustomerNumber,
+                    	p.RegisterDay AS BankDateJalali,
+                    	p.BankBranchCode AS BankCode,--BankCode?
+                    	p.RegisterDay AS EventBankDateJalali,
+                    	p.BankBranchCode AS SerialNumber,--SerialBank?
+                    	p.BillId AS BillId,
+                    	p.PaymentGateway AS PaymentMethodTitle,
+                    	p.RegisterDay AS PaymentDate,--PaymentDate
+                    	p.Amount AS RegisterAmount
+                    From [CustomerWarehouse].dbo.Payments p
+                    WHERE 
+                    	(@FromDate IS  NULL 
+                    		OR @ToDate IS NULL 
+                    		OR p.RegisterDay BETWEEN @FromDate AND @ToDate) 
+                    	AND(@FromAmount IS  NULL 
+                    		OR @ToAmount IS NULL 
+                    		OR p.Amount BETWEEN @FromAmount AND @ToAmount)";
         }
     }
 }
