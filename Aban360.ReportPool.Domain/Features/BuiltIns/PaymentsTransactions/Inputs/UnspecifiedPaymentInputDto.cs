@@ -8,7 +8,8 @@
         public long? FromAmount { get; set; }
         public long? ToAmount { get; set; }
 
-        public ICollection<string> BankTitles { get; set; }
+        public string FromBankId { get; set; }
+        public string ToBankId { get; set; }
 
     }
 }

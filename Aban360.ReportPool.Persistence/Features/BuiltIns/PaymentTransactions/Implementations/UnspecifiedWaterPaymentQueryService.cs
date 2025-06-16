@@ -16,14 +16,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<UnspecifiedPaymentHeaderOutputDto, UnspecifiedPaymentDataOutputDto>> GetInfo(UnspecifiedPaymentInputDto input)
         {
-            string unspecifiedWaterPayments = GetUnspecifiedWaterPaymentQuery(input.BankTitles?.Any()==true);
+            string unspecifiedWaterPayments = GetUnspecifiedWaterPaymentQuery();
             var @params = new
             {
                 FromDate = input.FromDateJalali,
                 ToDate = input.ToDateJalali,
                 FromAmount = input.FromAmount,
                 ToAmount = input.ToAmount,
-                BankNames = input.BankTitles,
+                FromBankId = input.FromBankId,
+                ToBankId = input.ToBankId,
             };
             IEnumerable<UnspecifiedPaymentDataOutputDto> unspecifiedWaterData = await _sqlConnection.QueryAsync<UnspecifiedPaymentDataOutputDto>(unspecifiedWaterPayments,@params);
             UnspecifiedPaymentHeaderOutputDto unspecifiedWaterHeader = new UnspecifiedPaymentHeaderOutputDto()
@@ -42,10 +43,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             var result = new ReportOutput<UnspecifiedPaymentHeaderOutputDto, UnspecifiedPaymentDataOutputDto>(ReportLiterals.UnspecifiedWaterPayment, unspecifiedWaterHeader, unspecifiedWaterData);
             return result;
         }
-        private string GetUnspecifiedWaterPaymentQuery(bool hasBank)
+        private string GetUnspecifiedWaterPaymentQuery()
         {
-            string bankQuery = hasBank ? "AND BankName in @bankNames" : string.Empty;
-
             return @$"Select
 						p.CustomerNumber AS CustomerNumber,
 						p.RegisterDay AS EventDateJalali,
@@ -82,8 +81,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 							OR 
 							(@FromAmount IS NULL AND
 								@ToAmount IS NULL)
-						)
-						{bankQuery}";
+						)";
         }
     }
 }
