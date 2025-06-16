@@ -16,18 +16,74 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<UnspecifiedPaymentHeaderOutputDto, UnspecifiedPaymentDataOutputDto>> GetInfo(UnspecifiedPaymentInputDto input)
         {
-            string unspecifiedServiceLinkPayments = GetUnspecifiedServiceLinkPaymentQuery();
-            IEnumerable<UnspecifiedPaymentDataOutputDto> unspecifiedServiceLinkData = await _sqlConnection.QueryAsync<UnspecifiedPaymentDataOutputDto>(unspecifiedServiceLinkPayments);//todo: Parameters
-            UnspecifiedPaymentHeaderOutputDto unspecifiedServiceLinkHeader = new UnspecifiedPaymentHeaderOutputDto()
-            { };
+            string unspecifiedServiceLinkPayments = GetUnspecifiedServiceLinkPaymentQuery(input.BankIds?.Any()==true);
+            var @params = new
+            {
+                FromDate = input.FromDateJalali,
+                ToDate = input.ToDateJalali,
+                FromAmount = input.FromAmount,
+                ToAmount = input.ToAmount,
+                BankNames = input.BankIds,
+            };
+            IEnumerable<UnspecifiedPaymentDataOutputDto> unspecifiedServiceLinkData = await _sqlReportConnection.QueryAsync<UnspecifiedPaymentDataOutputDto>(unspecifiedServiceLinkPayments,@params);
+			UnspecifiedPaymentHeaderOutputDto unspecifiedServiceLinkHeader = new UnspecifiedPaymentHeaderOutputDto()
+			{
+				FromDateJalali = input.FromDateJalali,
+				ToDateJalali = input.ToDateJalali,
+				FromAmount = input.FromAmount,
+				ToAmount = input.ToAmount,
+				RecordCount = unspecifiedServiceLinkData.Count(),
+				TotalAmount = unspecifiedServiceLinkData.Sum(serviceLink => serviceLink.Amount),
+				TotalRegisterAmount = unspecifiedServiceLinkData.Sum(serviceLink => serviceLink.Amount),
+				FileName = "-"
+			};
 
             var result = new ReportOutput<UnspecifiedPaymentHeaderOutputDto, UnspecifiedPaymentDataOutputDto>(ReportLiterals.UnspecifiedServiceLinkPayment, unspecifiedServiceLinkHeader, unspecifiedServiceLinkData);
             return result;
         }
 
-        private string GetUnspecifiedServiceLinkPaymentQuery()
+        private string GetUnspecifiedServiceLinkPaymentQuery(bool hasBank)
         {
-            return @" ";
+			string bankQuery =hasBank ?"AND BankName in @bankNames":string.Empty;
+
+            return @$"Select
+						p.CustomerNumber AS CustomerNumber,
+						p.RegisterDay AS EventDateJalali,
+						p.RegisterDay AS BankDateJalali,
+						p.BankName AS BankName,
+						p.BankBranchCode AS BankId,--Todo
+						p.BillId AS BillId,
+						'--' AS PaymentId,--Todo
+						123 AS UnstandardCode , --Todo
+						123 AS ReferenceId ,--Todo
+						p.RegisterDay AS PaymentDateJalali,
+						p.Amount AS Amount,
+						p.Amount AS RegisterAmount,--Todo
+						p.PaymentGateway AS PaymentGateway
+					From [CustomerWarehouse].dbo.Payments p
+					LEFT JOIN [CustomerWarehouse].dbo.Clients c 
+						ON p.BillId=c.BillId
+					WHERE
+						c.Id IS NULL
+						AND
+						(
+							(@FromDate IS NOT NULL AND
+								@ToDate IS NOT NULL AND
+								p.RegisterDay BETWEEN @FromDate AND @ToDate)
+							OR
+							(@FromDate IS NULL AND
+								@ToDate IS NULL)
+						)
+						AND
+						(
+							(@FromAmount IS NOT NULL AND
+							  @ToAmount IS NOT NULL AND
+							  p.Amount BETWEEN @FromAmount AND @ToAmount)
+							OR 
+							(@FromAmount IS NULL AND
+								@ToAmount IS NULL)
+						)
+						{bankQuery}";
         }
     }
 }
