@@ -15,7 +15,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         public async Task<IEnumerable<EventsSummaryDto>> GetEventsSummaryDtos(string billId)
         {
             string query = GetSubscriptionEventsQuery();
-            IEnumerable<EventsSummaryDto> result = await _sqlConnection.QueryAsync<EventsSummaryDto>(query, new { billId = billId });
+            IEnumerable<EventsSummaryDto> result = await _sqlReportConnection.QueryAsync<EventsSummaryDto>(query, new { billId = billId });
             if (result.Any())
             {
                 result = result.OrderBy(i => i.RegisterDate);
@@ -25,7 +25,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         public async Task<IEnumerable<EventsSummaryDto>> GetBillDto(string billId)
         {
             string query = GetSubscriptionEventsQuery();
-            IEnumerable<EventsSummaryDto> result = await _sqlConnection.QueryAsync<EventsSummaryDto>(query, new { billId = billId });
+            IEnumerable<EventsSummaryDto> result = await _sqlReportConnection.QueryAsync<EventsSummaryDto>(query, new { billId = billId });
             if (result.Any())
             {
                 result = result.OrderBy(i => i.RegisterDate);
@@ -35,7 +35,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         public async Task<IEnumerable<EventsSummaryDto>> GetBillDto(int zoneId, string registerDate, string fromReadingNumber, string toReadingNumber)
         {
             string query = GetSubscriptionEventsQuerybyZoneAndRegisterDay();
-            IEnumerable<EventsSummaryDto> result = await _sqlConnection.QueryAsync<EventsSummaryDto>(query, new { zoneId, registerDate, fromReadingNumber, toReadingNumber });
+            IEnumerable<EventsSummaryDto> result = await _sqlReportConnection.QueryAsync<EventsSummaryDto>(query, new { zoneId, registerDate, fromReadingNumber, toReadingNumber });
             if (result.Any())
             {
                 result = result.OrderBy(i => i.RegisterDate);
@@ -45,7 +45,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         public async Task<IEnumerable<EventsSummaryDto>> GetBillDto(int zoneId, string fromReadingNumber, string toReadingNumber)
         {
             string query = GetSubscriptionEventsQuerybyZone();
-            IEnumerable<EventsSummaryDto> result = await _sqlConnection.QueryAsync<EventsSummaryDto>(query, new { zoneId, fromReadingNumber, toReadingNumber });
+            IEnumerable<EventsSummaryDto> result = await _sqlReportConnection.QueryAsync<EventsSummaryDto>(query, new { zoneId, fromReadingNumber, toReadingNumber });
             if (result.Any())
             {
                 result = result.OrderBy(i => i.RegisterDate);
