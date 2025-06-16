@@ -41,16 +41,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         private string GetWaterPaymentReceivableQuery()
         {
-            //ToDo: CurrentAmount ???
             return @"Select 
                     	Max(b.BillId),
                     	b.UsageTitle AS UsageTitle,
-                    	COUNT(DISTINCT b.BillId) AS TotalCount,
-                        COUNT(DISTINCT p.BillId) AS PaidBills, 
+						SUM(DISTINCT b.Payable) AS TotalAmount,
                         COUNT(DISTINCT b.BillId) - COUNT(DISTINCT p.BillId) AS OverdueCount ,
-                    	SUM(DISTINCT b.Payable) AS TotalAmount,
-                        SUM(DISTINCT p.Amount) AS Paid, 
-                        SUM(DISTINCT b.Payable) - COUNT(DISTINCT p.Amount) AS OverdueAmount 
+                        SUM(DISTINCT b.Payable) - SUM(DISTINCT p.Amount) AS OverdueAmount ,
+						SUM(DISTINCT p.Amount) AS CurrentAmount,
+						COUNT(DISTINCT b.BillId) AS TotalCount
                     From [CustomerWarehouse].dbo.Bills b
                     LEFT JOIN [CustomerWarehouse].dbo.Payments p ON p.BillTableId=b.Id
                     WHERE
