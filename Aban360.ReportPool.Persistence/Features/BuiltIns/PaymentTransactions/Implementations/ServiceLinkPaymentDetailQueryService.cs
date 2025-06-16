@@ -29,7 +29,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
-                FromBankTitle = "---",//
                 FromAmount = input.FromAmount,
                 ToAmount = input.ToAmount,
                 RecordCount = serviceLinkPaymentDetailData.Count(),
@@ -51,7 +50,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     	p.BillId AS BillId,
                     	p.PaymentGateway AS PaymentMethodTitle,
                     	p.RegisterDay AS PaymentDate,--PaymentDate
-                    	p.Amount AS RegisterAmount
+                    	p.Amount AS RegisterAmount,
+                        p.BankName AS BankName
                     From [CustomerWarehouse].dbo.Payments p
                     WHERE 
                     	(@FromDate IS  NULL 

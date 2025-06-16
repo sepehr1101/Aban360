@@ -11,7 +11,7 @@
         public string PaymentMethodTitle { get; set; }
         public string PaymentDate { get; set; }
         public string RegisterAmount { get; set; }
-
+        public string BankName { get; set; }
 
 
     }

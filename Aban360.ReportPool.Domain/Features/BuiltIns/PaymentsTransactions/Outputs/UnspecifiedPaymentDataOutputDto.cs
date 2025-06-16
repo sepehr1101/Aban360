@@ -6,6 +6,7 @@
         public string EventDateJalali { get; set; }
         public string BankDateJalali { get; set; }
         public int BankId { get; set; }
+        public string BankName{ get; set; }
         public string BillId { get; set; }
         public string PaymentId { get; set; }
         public int UnstandardCode { get; set; }
@@ -13,7 +14,7 @@
         public string PaymentDateJalali { get; set; }
         public long Amount { get; set; }
         public long RegisterAmount { get; set; }
-
+        public string PaymentGateway { get; set; }
 
     }
 }

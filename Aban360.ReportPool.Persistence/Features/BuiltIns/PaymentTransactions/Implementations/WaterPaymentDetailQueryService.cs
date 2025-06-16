@@ -25,12 +25,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ToAmount = input.ToAmount,
             };
             IEnumerable<PaymentDetailDataOutputDto> waterPaymentDetailData = await _sqlReportConnection.QueryAsync<PaymentDetailDataOutputDto>(waterPaymentDetails, @params);
-            // string? bankName = await _sqlConnection.QueryFirstAsync(GetBankTitle(), new { bankCode = waterPaymentDetailData.FirstOrDefault()?.BankCode.ToString() });
             PaymentDetailHeaderOutputDto waterPaymentDetailHeader = new PaymentDetailHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
-                FromBankTitle = "---",//
                 FromAmount = input.FromAmount,
                 ToAmount = input.ToAmount,
                 RecordCount = waterPaymentDetailData.Count(),
@@ -53,7 +51,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     	p.BillId AS BillId,
                     	p.PaymentGateway AS PaymentMethodTitle,
                     	p.RegisterDay AS PaymentDate,--PaymentDate
-                    	p.Amount AS RegisterAmount
+                    	p.Amount AS RegisterAmount,
+                        p.BankName AS BankName
                     From [CustomerWarehouse].dbo.Payments p
                     WHERE 
                     	(@FromDate IS  NULL 
@@ -62,14 +61,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     	AND(@FromAmount IS  NULL 
                     		OR @ToAmount IS NULL 
                     		OR p.Amount BETWEEN @FromAmount AND @ToAmount)";
-        }
-
-        private string GetBankTitle()
-        {
-            return @"Select 
-                    	b.BankName
-                    From [Aban360].PaymentPool.Bank b
-                    WHERE b.CentralBankCode=@bankCode";
         }
     }
 }
