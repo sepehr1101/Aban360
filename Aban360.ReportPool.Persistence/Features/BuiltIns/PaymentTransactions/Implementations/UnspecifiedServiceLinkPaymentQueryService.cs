@@ -16,14 +16,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<UnspecifiedPaymentHeaderOutputDto, UnspecifiedPaymentDataOutputDto>> GetInfo(UnspecifiedPaymentInputDto input)
         {
-            string unspecifiedServiceLinkPayments = GetUnspecifiedServiceLinkPaymentQuery(input.BankIds?.Any()==true);
+            string unspecifiedServiceLinkPayments = GetUnspecifiedServiceLinkPaymentQuery(input.BankTitles?.Any()==true);
             var @params = new
             {
                 FromDate = input.FromDateJalali,
                 ToDate = input.ToDateJalali,
                 FromAmount = input.FromAmount,
                 ToAmount = input.ToAmount,
-                BankNames = input.BankIds,
+                BankNames = input.BankTitles,
             };
             IEnumerable<UnspecifiedPaymentDataOutputDto> unspecifiedServiceLinkData = await _sqlReportConnection.QueryAsync<UnspecifiedPaymentDataOutputDto>(unspecifiedServiceLinkPayments,@params);
 			UnspecifiedPaymentHeaderOutputDto unspecifiedServiceLinkHeader = new UnspecifiedPaymentHeaderOutputDto()
