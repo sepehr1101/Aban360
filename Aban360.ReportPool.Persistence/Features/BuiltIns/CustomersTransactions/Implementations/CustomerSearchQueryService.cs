@@ -32,31 +32,34 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
         private string GetCustomerSearchDataQuery()
         {
-            return @"select  TOP(100)
+            return @"select TOP(100)
                         c.CustomerNumber,
                       	c.ReadingNumber,
                       	c.FirstName,
                       	c.SureName AS Surname,
                       	c.WaterDiameterTitle AS MeterDiameterTitle,
                       	c.BillId,
-                      	c.DomesticCount AS UnitDomesticWater,
-                      	c.CommercialCount AS UnitCommercialWater,
-                      	c.OtherCount AS UnitOtherWater,
+                      	c.DomesticCount AS DomesticUnit,
+                      	c.CommercialCount AS CommercialUnit,
+                      	c.OtherCount AS OtherUnit,
                       	c.MobileNo AS MobileNumber,
                       	c.Address
                       from [CustomerWarehouse].dbo.Clients c
-                      where c.ToDayJalali is null
-                        or(c.CustomerNumber like @input 
-                        or c. ReadingNumber like @input
-                        or c.FirstName like @input
-                        or c.SureName like @input
-                        or c.WaterDiameterId like @input
-                        or c.BillId like @input
-                        or c.DomesticCount like @input
-                        or c.CommercialCount like @input
-                        or c.OtherCount like @input
-                        or c.MobileNo like @input
-                        or c.Address like @input)";
+                      where 
+                            c.ToDayJalali is null AND
+                            (
+                                c.CustomerNumber like @input 
+                                or c. ReadingNumber like @input
+                                or c.FirstName like @input
+                                or c.SureName like @input
+                                or c.WaterDiameterId like @input
+                                or c.BillId like @input
+                                or c.DomesticCount like @input
+                                or c.CommercialCount like @input
+                                or c.OtherCount like @input
+                                or c.MobileNo like @input
+                                or c.Address like @input
+                            )";
         }
     }
 }

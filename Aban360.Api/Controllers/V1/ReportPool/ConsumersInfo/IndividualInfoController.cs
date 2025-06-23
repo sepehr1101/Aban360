@@ -9,7 +9,6 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
     [Route("v1/individual")]
     public class IndividualInfoController : BaseController
     {
-
         private readonly IIndividualsInfoGetHandler _individualsSummaryInfoGetHandler;
         public IndividualInfoController(IIndividualsInfoGetHandler individualsSummaryInfoGetHandler)
         {
