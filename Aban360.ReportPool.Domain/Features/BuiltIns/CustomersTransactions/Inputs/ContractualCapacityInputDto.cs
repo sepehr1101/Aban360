@@ -11,6 +11,7 @@
         public string FromDateJalali { get; set; }
         public string ToDateJalali { get; set; }
 
+        public ICollection<int> UsageSellIds { get; set; }
         public ICollection<int> ZoneIds { get; set; }
     }
 }
