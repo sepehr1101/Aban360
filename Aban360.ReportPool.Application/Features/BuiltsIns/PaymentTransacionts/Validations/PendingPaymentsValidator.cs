@@ -29,15 +29,11 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
              .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(payment => payment.UsageConsumptionId)
+            RuleFor(payment => payment.UsageConsumptionIds)
              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
              .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(payment => payment.UsageSellId)
-             .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-             .NotNull().WithMessage(ExceptionLiterals.NotNull);
-
-            RuleFor(payment => payment.RegionId)
+            RuleFor(payment => payment.UsageSellIds)
              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
              .NotNull().WithMessage(ExceptionLiterals.NotNull);
 

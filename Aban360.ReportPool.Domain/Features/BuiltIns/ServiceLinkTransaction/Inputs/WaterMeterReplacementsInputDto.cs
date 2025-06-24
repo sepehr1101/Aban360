@@ -2,7 +2,8 @@
 {
     public record WaterMeterReplacementsInputDto
     {
-        public string FromDateJalali { get; set; }
-        public string ToDateJalali { get; set; }
+        public bool BasedOnChange { get; set; }
+        public string FromDateJalali { get; set; } = null!;
+        public string ToDateJalali { get; set; } = null!;
     }
 }

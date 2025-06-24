@@ -24,6 +24,11 @@
         public static string ModifiedBills { get { return $"{Report} "; } }//Todo: ادغام تسک 19 و 20
         public static string Unread { get { return $"{Report} بسته و مانع طی دوره"; } }
         public static string WithoutBill { get { return $"{Report} بدون صدور قبض"; } }
+        public static string ContractualCapacity { get { return $"{Report} ظرفیت قراردادی"; } }
+        public static string Usage { get { return $"{Report} باغ و اقامتگاه"; } }
+        public static string HouseholdNumber { get { return $"{Report} خانوار"; } }
+
+
 
     }
 }

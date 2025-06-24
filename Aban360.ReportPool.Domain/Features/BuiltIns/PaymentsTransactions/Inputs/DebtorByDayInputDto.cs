@@ -2,8 +2,9 @@
 {
     public record DebtorByDayInputDto
     {
-        //Other
         public ICollection<int> ZoneIds { get; set; }
+        public string FromDateJalali { get; set; } = null!;
+        public string ToDateJalali { get; set; } = null!;
     }
 }
 
