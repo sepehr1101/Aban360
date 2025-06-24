@@ -34,8 +34,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
             IEnumerable<ContractualCapacityDataOutputDto> contractualCapacityData = await _sqlReportConnection.QueryAsync<ContractualCapacityDataOutputDto>(contractualCapacityQuery,@params);
             ContractualCapacityHeaderOutputDto contractualCapacityHeader = new ContractualCapacityHeaderOutputDto()
-            { 
-                RecordCount=contractualCapacityData.Count(),
+            {
+                FromDateJalali=input.FromDateJalali,
+                ToDateJalali=input.ToDateJalali,
+                FromContractualCapacity=input.FromContractualCapacity,
+                ToContractualCapacity=input.ToContractualCapacity,
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
+                RecordCount =contractualCapacityData.Count(),
                 ReportDate=DateTime.Now.ToShortPersianDateString()
             };
 

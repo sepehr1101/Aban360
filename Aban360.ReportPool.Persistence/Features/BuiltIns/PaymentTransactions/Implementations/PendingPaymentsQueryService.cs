@@ -37,9 +37,18 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             IEnumerable<PendingPaymentsDataOutputDto> pendingPaymentsData = await _sqlConnection.QueryAsync<PendingPaymentsDataOutputDto>(pendingPaymentsQueryString,@params);//todo: parameters
             PendingPaymentsHeaderOutputDto pendingPaymentsHeader = new PendingPaymentsHeaderOutputDto()
             {
+				FromReadingNumber=input.FromReadingNumber,
+				ToReadingNumber=input.ToReadingNumber,
+				FromDateJalali=input.FromDateJalali,
+				ToDateJalali=input.ToDateJalali,
+				FromAmount=input.FromAmount,
+				ToAmount=input.ToAmount,
+				FromDebtPeriodCount=input.FromDebtPeriodCount,
+				ToDebtPeriodCount=input.ToDebtPeriodCount,
+				ZoneTitle=pendingPaymentsData.First().ZoneTitle,
                 RecordCount = pendingPaymentsData.Count(),
                 TotalBeginDebt = pendingPaymentsData.Sum(payment => payment.BeginDebt),
-                TotalDeptPeriodCount = pendingPaymentsData.Sum(payment => payment.DebtPeriodCount),
+                TotalDebtPeriodCount = pendingPaymentsData.Sum(payment => payment.DebtPeriodCount),
                 TotalEndingDebt = pendingPaymentsData.Sum(payment => payment.EndingDebt),
                 TotalPayedAmount = pendingPaymentsData.Sum(payment => payment.PayedAmount),
             };
