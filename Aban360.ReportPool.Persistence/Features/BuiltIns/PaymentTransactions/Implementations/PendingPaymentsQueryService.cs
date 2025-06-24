@@ -30,8 +30,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ToAmount = input.ToAmount,
                 FromDebtPeriodCount = input.FromDebtPeriodCount,
                 ToDebtPeriodCount = input.ToDebtPeriodCount,
-                UsageConsumptionIds =  input.UsageConsumptionIds,//string.Join(",", input.UsageConsumptionIds),
-                UsageSellIds = input.UsageSellIds,//string.Join(",", input.UsageSellIds),
+                UsageConsumptionIds =  input.UsageConsumptionIds,
+                UsageSellIds = input.UsageSellIds,
                 ZoneId = input.ZoneId
             };
             IEnumerable<PendingPaymentsDataOutputDto> pendingPaymentsData = await _sqlConnection.QueryAsync<PendingPaymentsDataOutputDto>(pendingPaymentsQueryString,@params);//todo: parameters
