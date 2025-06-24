@@ -1,9 +1,9 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs
 {
-    public record ContractualCapacityHeaderOutputDto
+    public record EmptyUnitHeaderOutputDto
     {
-        public string FromContractualCapacity { get; set; }
-        public string ToContractualCapacity { get; set; }
+        public string FromEmptyUnit { get; set; }
+        public string ToEmptyUnit { get; set; }
 
         public string FromReadingNumber { get; set; }
         public string ToReadingNumber { get; set; }

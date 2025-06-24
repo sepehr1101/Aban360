@@ -27,6 +27,7 @@
         public static string ContractualCapacity { get { return $"{Report} ظرفیت قراردادی"; } }
         public static string Usage { get { return $"{Report} باغ و اقامتگاه"; } }
         public static string HouseholdNumber { get { return $"{Report} خانوار"; } }
+        public static string EmptyUnit { get { return $"{Report} خالی از سکنه"; } }
 
 
 

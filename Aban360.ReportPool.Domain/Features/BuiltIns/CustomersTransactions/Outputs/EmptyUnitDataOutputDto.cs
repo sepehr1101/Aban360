@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs
 {
-    public record HouseholdNumberDataOutputDto
+    public record EmptyUnitDataOutputDto
     {
         public int CustomerNumber { get; set; }
         public string ReadingNumber { get; set; }
@@ -17,8 +17,6 @@
         public int OtherUnit { get; set; }
         public string BillId { get; set; }
         public string UseStateTitle { get; set; }
-        public string HouseholdDateJalali { get; set; }
-        public int HouseholdCount { get; set; }
-
+        public int EmptyUnit { get; set; }
     }
 }

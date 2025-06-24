@@ -1,4 +1,7 @@
-﻿using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Implementations;
+﻿using Aban360.Common.Categories.ApiResponse;
+using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Implementations;
+using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 using Aban360.UserPool.Persistence.Constants.Enums;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,9 +15,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
 
         [HttpGet, HttpPost]
         [Route("raw")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<UserZoneIdsOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw()
         {
-            List<int> zoneIds=await UserZoneIdsHandler.Handler(CurrentUser.UserId,(short)ClaimType.ZoneId);
+            ICollection<UserZoneIdsOutputDto> zoneIds =await UserZoneIdsHandler.Handler(CurrentUser.UserId,(short)ClaimType.DefaultZoneId);
             return Ok(zoneIds);
         }
     }
