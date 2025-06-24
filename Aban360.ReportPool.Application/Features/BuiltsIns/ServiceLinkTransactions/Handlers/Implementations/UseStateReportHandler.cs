@@ -34,7 +34,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 throw new CustomeValidationException(message);
             }
             ReportOutput<UseStateReportHeaderOutputDto, UseStateReportDataOutputDto> useStateReports = await _userStateReportQueryService.GetInfo(input);
-            useStateReports.ReportHeader.ReportDateJalili = DateTime.Now.FormatDateToShortPersianDate();
+            useStateReports.ReportHeader.ReportDateJalali = DateTime.Now.FormatDateToShortPersianDate();
             return useStateReports;
         }
     }

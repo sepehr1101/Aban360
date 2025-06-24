@@ -5,7 +5,6 @@ using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
 using Dapper;
 using Microsoft.Extensions.Configuration;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Implementations
 {
@@ -64,14 +63,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         c.SureName AS Surname,
                         c.WaterDiameterTitle AS MeterDiameterTitle,
                         c.BillId,
-                        c.DomesticCount AS UnitDomesticWater,
-                        c.CommercialCount AS UnitCommercialWater,
-                        c.OtherCount AS UnitOtherWater,
+                        c.DomesticCount AS DomesticUnit,
+                        c.CommercialCount AS CommercialUnit,
+                        c.OtherCount AS OtherUnit,
                         c.MobileNo AS MobileNumber,
                         c.Address
                     FROM [CustomerWarehouse].dbo.Clients c
                     WHERE 
-                            c.ToDayJalali is null
+                        c.ToDayJalali is null
                         AND (@ReadingNumber is null OR c.ReadingNumber like '%'+@ReadingNumber+'%')
                         AND (@FirstName is null OR c.FirstName like '%'+@FirstName+'%')
                         AND (@SureName is null OR c.SureName like '%'+@SureName+'%')
