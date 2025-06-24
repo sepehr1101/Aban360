@@ -28,7 +28,8 @@
         public static string Usage { get { return $"{Report} باغ و اقامتگاه"; } }
         public static string HouseholdNumber { get { return $"{Report} خانوار"; } }
         public static string EmptyUnit { get { return $"{Report} خالی از سکنه"; } }
-
+        public static string UsageDetail { get { return $"{Report} جزئیات کاربری"; } }
+        public static string UsageSummary { get { return $"{Report} خلاصه گزارش"; } }
 
 
     }
