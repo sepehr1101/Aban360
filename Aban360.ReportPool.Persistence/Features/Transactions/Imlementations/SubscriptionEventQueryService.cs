@@ -56,15 +56,57 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         {
             string query = @"
             use CustomerWarehouse
-            select
-	            TRIM(BillId) BillId ,Id,PreviousNumber PreviousMeterNumber,NextNumber NextMeterNumber, PreviousDay PreviousMeterDate,NextDay CurrentMeterDate,RegisterDay RegisterDate,SumItems DebtAmount,0 CreditAmount,TypeId as [Description], ConsumptionAverage, NULL BankTitle
-            from [CustomerWarehouse].dbo.Bills
-            where (BillId)=@billId
-            union
-            select
-	            TRIM(BillId) BillId, Id, 0 PreviousMeterNumber,0 NextMeterNumber,NULL PreviousMeterDate,NULL CurrentMeterDate, RegisterDay RegisterDate, 0 DebtAmount, Amount CreditAmount, N'پرداخت' [Description], 0, BankName BankTitle
-            from [CustomerWarehouse].dbo.Payments
-            where (BillId)=@billId";
+             select
+                 TRIM(BillId) BillId ,
+	             Id,
+	             PreviousNumber PreviousMeterNumber,
+	             NextNumber NextMeterNumber, 
+	             PreviousDay PreviousMeterDate,
+	             NextDay CurrentMeterDate,
+	             RegisterDay RegisterDate,
+	             SumItems DebtAmount,
+	             0 CreditAmount,
+	             TypeId as [Description],
+	             ConsumptionAverage, 
+	             NULL BankTitle,
+	             CommercialCount CommercialUnit,
+	             DomesticCount DomesticUnit,
+	             OtherCount OtherUnit,
+	             EmptyCount EmptyUnit,
+	             0 HouseholderNumber,
+	             ContractCapacity,
+	             UsageId UsageSellId,
+	             UsageId2 UsageConsumptionId,
+	             UsageTitle UsageSellTitle,
+	             UsageTitle2 UsageConsumptionTitle
+             from [CustomerWarehouse].dbo.Bills
+             where (BillId)=@billId
+             union
+             select
+                 TRIM(BillId) BillId,
+	             Id,
+	             0 PreviousMeterNumber,
+	             0 NextMeterNumber,
+	             NULL PreviousMeterDate,
+	             NULL CurrentMeterDate,
+	             RegisterDay RegisterDate,
+	             0 DebtAmount, 
+	             Amount CreditAmount,
+	             N'پرداخت' [Description],
+	             0 ConsumptionAverage,
+	             BankName BankTitle,
+	             0 CommercialUnit,
+	             0 DomesticUnit,
+	             0 OtherUnit,
+	             0 EmptyUnit,
+	             0 HouseholderNumber,
+	             0 ContractCapacity,
+	             0 UsageSellId,
+	             0 UsageConsumptionId,
+	             '' UsageSellTitle,
+	             '' UsageConsumptionTitle
+             from [CustomerWarehouse].dbo.Payments
+             where (BillId)=@billId";
             return query;
         }
         private string GetSubscriptionEventsQuerybyZoneAndRegisterDay()
@@ -95,12 +137,24 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         private string GetBranchEventsSummaryQuery()
         {
             string query =
-                @"SELECT N'صدور صورتحساب' [Description],TrackNumber, RegisterDay RegisterDate, AmountSum DebtAmount , 0 CreditAmount from ReportPool.BillsEn
-                WHERE BillId=@billId
+                @"USE [CustomerWarehouse]
+                SELECT 
+                    N'صدور صورتحساب' [Description],
+                    TrackNumber, 
+                    RegisterDay RegisterDate,
+                    AmountSum DebtAmount ,
+                    0 CreditAmount 
+                from [TerminatedRequestsV2]
+                WHERE TRIM(BillId)=@billId
                 UNION
-                SELECT N'پرداخت'+ N'('+ BankName+' '+PaymentGateway+N')' [Description], '' TrackNumber, RegisterDay RegisterDate, 0 DebtAmount, Amount CreditAmount
-                FROM [CustomerWarehouse].dbo.PaymentsEn
-                WHERE BillId=@billId";
+                SELECT 
+                    N'پرداخت'+ N'('+ BankName+' '+PaymentGateway+N')' [Description],
+                    '' TrackNumber,
+                    RegisterDay RegisterDate,
+                    0 DebtAmount, 
+                    Amount CreditAmount
+                FROM [PaymentsEn]
+                WHERE TRIM(BillId)=@billId";
             return query;
         }
         private string GetSubscriptionEventsQuerybyZone()

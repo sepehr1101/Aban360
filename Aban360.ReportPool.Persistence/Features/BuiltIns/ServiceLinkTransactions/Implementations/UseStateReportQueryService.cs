@@ -4,7 +4,6 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
 using Dapper;
-using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
@@ -13,18 +12,19 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
     {
         public UseStateReportQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<UseStateReportHeaderOutputDto, UseStateReportDataOutputDto>> GetInfo(UseStateReportInputDto input)
         {
             string useStateQueryString = GetUseStateDataQuery();
-            IEnumerable<UseStateReportDataOutputDto> useStateData = await _sqlReportConnection.QueryAsync<UseStateReportDataOutputDto>(useStateQueryString, new { useStateId=input.UseStateId, fromDate=input.FromDate, toDate=input.ToDate , zoneIds = input.ZoneIds });
+            IEnumerable<UseStateReportDataOutputDto> useStateData = await _sqlReportConnection.QueryAsync<UseStateReportDataOutputDto>(useStateQueryString, new { useStateId=input.UseStateId, fromDate=input.FromDate, toDate=input.ToDate , zoneIds = input.ZoneIds, fromReadingNumber=input.FromReadingNumber, toReadingNumber=input.ToReadingNumber });
             UseStateReportHeaderOutputDto useStateHeader = new UseStateReportHeaderOutputDto()
             { 
-                TotalDeptAmount=useStateData.Sum(useState=>Convert.ToInt64(useState.DeptAmount)).ToString(),
+                TotalDebtAmount=useStateData.Sum(useState=>useState.DebtAmount),
                 FromDateJalali=input.FromDate,
                 ToDateJalali = input.ToDate,
-                RecordCount=useStateData.   Count(),
+                RecordCount=useStateData.Count(),
             };
 
             string useStateQuery = GetUseStateTitle();
@@ -36,24 +36,34 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         private string GetUseStateDataQuery()
         {
-            return @"select 
+            return @";WITH CTE AS 
+                     (SELECT 
                     	c.CustomerNumber,
                     	c.ReadingNumber,
-                    	c.FirstName AS FirstName,
-                    	c.SureName As Surname,
+                    	TRIM(c.FirstName) AS FirstName,
+                    	TRIM(c.SureName) As Surname,
                     	c.UsageTitle,
-                    	c.WaterDiameterTitle,
+                    	c.WaterDiameterTitle MeterDiameterTitle,
                     	c.RegisterDayJalali AS EventDateJalali,
-                    	'0' AS DeptAmount,--c.DeptAmount
-                    	c.Address AS Address,
+                    	0 AS DebtAmount,
+                    	TRIM(c.Address) AS Address,
                     	c.ZoneTitle,
-                    	c.DeletionStateTitle AS EventDateJalali
-                    from [CustomerWarehouse].dbo.Clients c
-                    where 
+                    	c.DeletionStateId,
+                        c.DeletionStateTitle AS DeletionStateTitle,
+                        c.DomesticCount DomesticUnit,
+	                    c.CommercialCount CommercialUnit,
+	                    c.OtherCount OtherUnit,
+	                    TRIM(c.BillId) BillId,
+	                    RN=ROW_NUMBER() OVER (PARTITION BY ZoneId, CustomerNumber ORDER BY RegisterDayJalali DESC)
+                    FROM [CustomerWarehouse].dbo.Clients c
+                    WHERE 
                        c.FromDayJalali>=@fromDate and
                        c.ToDayJalali<=@toDate and
                        c.DeletionStateId=@useStateId and
-                       c.ZoneId in @zoneIds;";
+                       --c.ReadingNumber BETWEEN @fromReadingNumber and @toReadingNumber AND
+                       c.ZoneId in @zoneIds)
+                    SELECT * FROM CTE
+                    WHERE RN=1 AND DeletionStateId=@useStateId ";
         }
 
         private string GetUseStateTitle()
