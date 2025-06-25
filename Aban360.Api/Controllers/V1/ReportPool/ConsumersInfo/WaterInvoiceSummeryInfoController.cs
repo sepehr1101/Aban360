@@ -24,5 +24,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
             WaterInvoiceDto waterInvoice = _waterInvoiceQueryService.Get();
             return Ok(waterInvoice);
         }
+
+        [HttpPost]
+        [Route("summery-2")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<WaterInvoiceDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetSummary2([FromBody] SearchInput searchInput)
+        {
+            WaterInvoiceDto waterInvoice =await _waterInvoiceQueryService.Get(searchInput.Input);
+            return Ok(waterInvoice);
+        }
     }
 }

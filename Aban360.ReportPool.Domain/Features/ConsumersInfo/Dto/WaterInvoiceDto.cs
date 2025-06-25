@@ -5,6 +5,7 @@
         public string Headquarters { get; set; }
         public string EconomicalNumber { get; set; }
 
+        public int ZoneId { get; set; }
         public string ZoneTitle { get; set; }
         public string FullName { get; set; }
         public string Address { get; set; }

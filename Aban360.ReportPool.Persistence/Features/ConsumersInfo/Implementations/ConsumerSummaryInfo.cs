@@ -108,7 +108,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	c.WaterInstallDate AS InstallationDate,
                     	'' AS ProductDate,
                     	'' AS GuaranteeDate,
-                    	c.Address,
+                    	c.Address AS Address,
                     	'' AS CounterState,
                     	'' AS CounterStatus,
                     	c.ContractCapacity,

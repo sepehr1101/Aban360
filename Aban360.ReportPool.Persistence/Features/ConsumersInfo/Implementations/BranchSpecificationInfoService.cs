@@ -2,6 +2,7 @@
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 using Dapper;
+using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
@@ -17,7 +18,14 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             string BranchSpecificationQuery = GetBranchSpecificationSummaryDtoWithClientDbQuery();
             BranchSpecificationInfoDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BranchSpecificationInfoDto>(BranchSpecificationQuery, new { billId });
 
-            result.SiphonsDiameterCount=await _sqlReportConnection.QueryAsync< SiphonsDiameterCount>(GetSiphonDiameterCountWithClientDbQuery(),new { billId });
+            string siphonInstallationDate = result.SiphonInstallationDate;
+            string dateNow = DateTime.Now.ToShortPersianDateString();
+            result.SiphonLife= Convert.ToInt16((Convert.ToDateTime(dateNow)- Convert.ToDateTime(siphonInstallationDate)).Days);
+
+            string waterInstallationDate = result.WaterInstallDate;
+            result.MeterLife = Convert.ToInt16((Convert.ToDateTime(dateNow)-Convert.ToDateTime(waterInstallationDate)).Days);
+
+            result.SiphonsDiameterCount = await _sqlReportConnection.QueryAsync<SiphonsDiameterCount>(GetSiphonDiameterCountWithClientDbQuery(), new { billId });
             return result;
         }
         private string GetBranchSpecificationSummayDtoQuery()
@@ -43,7 +51,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 			    		N'---' as 'SiphonInstallationContractor',
 			    		N'---' as 'SiphonEquipmentBrokerTitle',
 			    		N'---' as 'SiphonInstallationBrokerTitle',
-			    		0 as 'LoadOfContamination'
+			    		0 as 'LoadOfContamination',
+						s.InstallationDate as 'SiphonInstallationDate'
                     from ClaimPool.WaterMeter w
                     join ClaimPool.WaterMeterSiphon ws on ws.WaterMeterId=w.Id
                     join ClaimPool.Siphon s on ws.SiphonId=s.Id
@@ -60,7 +69,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	md.Title ,
                     	mt.Title ,
                     	mi.Title,
-                    	sm.Title";
+                    	sm.Title,
+                        s.InstallationDate";
 
         }
         private string GetSiphonDiameterCount()
@@ -107,6 +117,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         {
             return @"select 
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
+                        c.MeterSerialBody AS BodySerial,
                     	'' AS BodySerial,
                     	0 AS SealNumber,
                     	c.BranchType AS MeterTypeTitle,
@@ -124,6 +135,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	'' AS SiphonInstallationContractor,
                     	'' AS SiphonEquipmentBrokerTitle,
                     	'' AS SiphonInstallationBrokerTitle,
+						c.SewageInstallDate AS SiphonInstallationDate,
                     	0 AS LoadOfContamination
                     from [CustomerWarehouse].dbo.Clients c
                     where c.BillId=@billId

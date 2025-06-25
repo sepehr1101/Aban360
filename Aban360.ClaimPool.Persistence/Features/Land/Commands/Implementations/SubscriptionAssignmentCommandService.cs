@@ -4,6 +4,7 @@ using Aban360.Common.Db.Dapper;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using System.Globalization;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 {
@@ -13,13 +14,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             : base(configuration)
         { }
 
-        public async Task Update(SubscriptionAssignmentUpdateDto updateDto)
+        public async Task Update(SubscriptionAssignmentUpdateDto updateDto, string date)
         {
+
             string zoneIdQuery = GetZoneIdQuery();
             int zoneId = await _sqlReportConnection.QueryFirstAsync<int>(zoneIdQuery, new { billId = updateDto.BillId });
 
             string insertQuery = GetInsertQuery(zoneId);
-            var insertResult = await _sqlReportConnection.ExecuteAsync(insertQuery, new { id = updateDto.Id });
 
             var @params = new
             {
@@ -30,10 +31,21 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                 firstName = updateDto.FirstName,
                 surName = updateDto.SurName,
                 address = updateDto.Address,
-                date = GetPersianDate()
+                date = date//GetPersianDate()
             };
             string updateQuery = GetUpdateQuery(zoneId);
-            var updateResult = await _sqlReportConnection.ExecuteAsync(updateQuery, @params);
+
+
+            if (_sqlReportConnection.State != System.Data.ConnectionState.Open)
+                await _sqlReportConnection.OpenAsync();
+
+            using (var transaction = _sqlReportConnection.BeginTransaction())
+            {
+                var insertResult = await _sqlReportConnection.ExecuteAsync(insertQuery, new { id = updateDto.Id, date = date }, transaction);
+                var updateResult = await _sqlReportConnection.ExecuteAsync(updateQuery, @params, transaction);
+
+                await transaction.CommitAsync();
+            }
         }
 
         private string GetPersianDate()
@@ -66,7 +78,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                            tedad_vahd, tedad_mas, ted_khane, tedad_tej, date_sabt, arse, aian, aian_mas,
                            aian_tej, ask_ab, inst_ab, ask_fas, inst_fas, address, pelak, bed_bes, edareh_k,
                            hasf, n_ab, n_faz, noe_va, master_sif, sif_1, sif_2, sif_3, sif_4, sif_mosh_1,
-                           fix_mas, group1, serial_co, G_inst_ab, G_inst_fas, operator, GETDATE() AS date_roz, POST_COD,
+                           fix_mas, group1, serial_co, G_inst_ab, G_inst_fas, operator, @date AS date_roz, POST_COD,
                            PHONE_NO, MOBILE, MELI_COD, oRadif, sif_5, sif_6, sif_7, sif_8, bill_id, MOJAVZ,
                            DATEINS, c20, balansing, tmp_date_sabt, tmp_ask_ab, tmp_ask_fas, tmp_inst_ab,
                            tmp_inst_fas, tmp_g_inst_ab, tmp_g_inst_fas, tmp_date_sabt, Khali_s, Senf, date_KHANE

@@ -12,15 +12,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
     [Route("v1/subscription-assignment")]
     public class SubscriptionAssignmentUpdateController : ControllerBase
     {
-        private readonly IUnitOfWork _uow;
         private readonly ISubscriptionAssignmentUpdateHandler _updateHandler;
-        public SubscriptionAssignmentUpdateController(
-            IUnitOfWork uow,
-            ISubscriptionAssignmentUpdateHandler updateHandler)
+        public SubscriptionAssignmentUpdateController(ISubscriptionAssignmentUpdateHandler updateHandler)
         {
-            _uow = uow;
-            _uow.NotNull(nameof(_uow));
-
             _updateHandler = updateHandler;
             _updateHandler.NotNull(nameof(_updateHandler));
         }
@@ -30,19 +24,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<SubscriptionAssignmentUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] SubscriptionAssignmentUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            using (var transactionScope = new TransactionScope(
-        TransactionScopeOption.Required,
-        new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted },
-        TransactionScopeAsyncFlowOption.Enabled))
-            {
-                await _updateHandler.Handle(updateDto, cancellationToken);
-                await _uow.SaveChangesAsync(cancellationToken);
-
-                transactionScope.Complete();
-            }
-    
-            //await _updateHandler.Handle(updateDto, cancellationToken);
-            //await _uow.SaveChangesAsync(cancellationToken);
+            await _updateHandler.Handle(updateDto, cancellationToken);
             return Ok(updateDto);
         }
     }

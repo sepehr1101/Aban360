@@ -6,6 +6,7 @@ using Aban360.ClaimPool.Persistence.Features.Land.Commands.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using DNTPersianUtils.Core;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations
 {
@@ -33,7 +34,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             }
 
             //update
-            _subscriptionAssignmentCommandService.Update(updateDto);
+            await _subscriptionAssignmentCommandService.Update(updateDto, DateTime.Now.ToShortPersianDateString());
         }
     }
 }

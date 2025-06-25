@@ -1,4 +1,5 @@
-﻿using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+﻿using Aban360.Common.Extensions;
+using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.Transactions.Contracts;
 using Dapper;
@@ -18,7 +19,10 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             IEnumerable<EventsSummaryDto> result = await _sqlReportConnection.QueryAsync<EventsSummaryDto>(query, new { billId = billId });
             if (result.Any())
             {
-                result = result.OrderBy(i => i.RegisterDate);
+                result = result
+                    .OrderBy(i => i.RegisterDate);
+
+                result.ForEach(summary => summary.Remained = (summary.CreditAmount - summary.DebtAmount).GetValueOrDefault());
             }
             return result;
         }
