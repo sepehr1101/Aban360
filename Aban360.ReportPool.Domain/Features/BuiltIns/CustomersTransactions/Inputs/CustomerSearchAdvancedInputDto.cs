@@ -3,7 +3,8 @@
     public record CustomerSearchAdvancedInputDto
     {
         public int? CustomerNumber { get; set; }
-        public string? ReadingNumber { get; set; }
+        public string? FromReadingNumber { get; set; }
+        public string? ToReadingNumber { get; set; }
         public string? FirstName { get; set; }
         public string? Surname { get; set; }
         public int? MeterDiameter { get; set; }
@@ -18,7 +19,7 @@
         public string? Address { get; set; }
         public bool? SpecialCustomer { get; set; }
         public bool? CommonSiphon { get; set; }
-        public int? ZoneId { get; set; }
+        public ICollection<int>? ZoneIds { get; set; }
         public int? FromContractualCapacity { get; set; }
         public int? ToContractualCapacity { get; set; }
         public int? FromHousholderNumber { get; set; }

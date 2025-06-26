@@ -2,13 +2,9 @@
 {
     public record UsageDetailHeaderOutputDto
     {
-        public string FromReadingNumber { get; set; }
-        public string ToReadingNumber { get; set; }
-
-        public string FromDateJalali { get; set; }
-        public string ToDateJalali { get; set; }
-
-        public string ReportDate { get; set; }
+        public string? FromReadingNumber { get; set; }
+        public string? ToReadingNumber { get; set; }
+        public string ReportDate { get; set; } = default!;
         public int RecordCount { get; set; }
     }
 }

@@ -1,10 +1,9 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Contracts;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Extensions;
 using Dapper;
 using Microsoft.Extensions.Configuration;
-using System.Globalization;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 {
@@ -12,7 +11,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
     {
         public SubscriptionAssignmentCommandService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task Update(SubscriptionAssignmentUpdateDto updateDto, string date)
         {
@@ -31,28 +31,20 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                 firstName = updateDto.FirstName,
                 surName = updateDto.SurName,
                 address = updateDto.Address,
-                date = date//GetPersianDate()
+                date = date
             };
             string updateQuery = GetUpdateQuery(zoneId);
 
+            //if (_sqlReportConnection.State != System.Data.ConnectionState.Open)
+            //    await _sqlReportConnection.OpenAsync();
 
-            if (_sqlReportConnection.State != System.Data.ConnectionState.Open)
-                await _sqlReportConnection.OpenAsync();
-
-            using (var transaction = _sqlReportConnection.BeginTransaction())
+            using (var transaction= TransactionBuilder.Create(0,10))
             {
-                var insertResult = await _sqlReportConnection.ExecuteAsync(insertQuery, new { id = updateDto.Id, date = date }, transaction);
-                var updateResult = await _sqlReportConnection.ExecuteAsync(updateQuery, @params, transaction);
-
-                await transaction.CommitAsync();
+                var insertResult = await _sqlReportConnection.ExecuteAsync(insertQuery, new { id = updateDto.Id, date });
+                var updateResult = await _sqlReportConnection.ExecuteAsync(updateQuery, @params);
+                transaction.Complete();
+                //await transaction.CommitAsync();
             }
-        }
-
-        private string GetPersianDate()
-        {
-            PersianCalendar pc = new PersianCalendar();
-            DateTime now = DateTime.Now;
-            return $"{pc.GetYear(now) % 100:00}/{pc.GetMonth(now):00}/{pc.GetDayOfMonth(now):00}";
         }
 
         private string GetZoneIdQuery()
