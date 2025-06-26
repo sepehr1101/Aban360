@@ -18,6 +18,7 @@
 
         public string MeterStatusTitle { get; set; }//
         public string WitnessMeter { get; set; }//
+        public string WaterInstallDate { get; set; }
         #endregion
 
         #region Sewage
@@ -31,6 +32,8 @@
 
         public string SiphonInstallationBrokerTitle { get; set; }//
         public bool LoadOfContamination { get; set; }//
+        public string SiphonInstallationDate { get; set; }
+
         #endregion
 
         //SiphonCount
