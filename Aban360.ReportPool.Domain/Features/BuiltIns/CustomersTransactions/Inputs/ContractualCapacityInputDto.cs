@@ -2,16 +2,13 @@
 {
     public record ContractualCapacityInputDto
     {
-        public string FromContractualCapacity { get; set; }
-        public string ToContractualCapacity { get; set; }
+        public int FromContractualCapacity { get; set; }
+        public int ToContractualCapacity { get; set; }
 
-        public string FromReadingNumber { get; set; }
-        public string ToReadingNumber { get; set; }
+        public string? FromReadingNumber { get; set; }
+        public string? ToReadingNumber { get; set; }
 
-        public string FromDateJalali { get; set; }
-        public string ToDateJalali { get; set; }
-
-        public ICollection<int> UsageSellIds { get; set; }
-        public ICollection<int> ZoneIds { get; set; }
+        public ICollection<int> UsageSellIds { get; set; } = default!;
+        public ICollection<int> ZoneIds { get; set; } = default!;
     }
 }

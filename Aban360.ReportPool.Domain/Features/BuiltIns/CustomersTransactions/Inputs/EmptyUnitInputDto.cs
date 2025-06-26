@@ -2,16 +2,13 @@
 {
     public record EmptyUnitInputDto
     {
-        public string FromEmptyUnit { get; set; }
-        public string ToEmptyUnit { get; set; }
+        public int FromEmptyUnit { get; set; }
+        public int ToEmptyUnit { get; set; }
 
-        public string FromReadingNumber { get; set; }
-        public string ToReadingNumber { get; set; }
+        public string? FromReadingNumber { get; set; }
+        public string? ToReadingNumber { get; set; }
 
-        public string FromDateJalali { get; set; }
-        public string ToDateJalali { get; set; }
-
-        public ICollection<int> UsageSellIds { get; set; }
-        public ICollection<int> ZoneIds { get; set; }
+        public ICollection<int>? UsageSellIds { get; set; }
+        public ICollection<int>? ZoneIds { get; set; }
     }
 }

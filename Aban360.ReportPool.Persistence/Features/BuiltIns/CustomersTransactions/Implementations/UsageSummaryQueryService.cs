@@ -13,7 +13,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
     {
         public UsageSummaryQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
         public async Task<ReportOutput<UsageSummaryHeaderOutputDto, UsageSummaryDataOutputDto>> GetInfo(UsageSummaryInputDto input)
         {
             string usageSummaryQuery = GetUsageSummaryQuery();
@@ -21,19 +22,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             {
                 input.FromReadingNumber,
                 input.ToReadingNumber,
-
-                input.FromDateJalali,
-                input.ToDateJalali,
-
                 UsageIds = input.UsageSellIds,
                 input.ZoneIds
             };
 
             IEnumerable<UsageSummaryDataOutputDto> usageSummaryData = await _sqlReportConnection.QueryAsync<UsageSummaryDataOutputDto>(usageSummaryQuery, @params);
             UsageSummaryHeaderOutputDto usageSummaryHeader = new UsageSummaryHeaderOutputDto()
-            {
-                FromDateJalali = input.FromDateJalali,
-                ToDateJalali = input.ToDateJalali,
+            {               
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 RecordCount = usageSummaryData.Count(),

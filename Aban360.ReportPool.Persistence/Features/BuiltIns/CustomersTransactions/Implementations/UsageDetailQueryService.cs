@@ -13,7 +13,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
     {
         public UsageDetailQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+        }
         public async Task<ReportOutput<UsageDetailHeaderOutputDto, UsageDetailDataOutputDto>> GetInfo(UsageDetailInputDto input)
         {
             string usageDetailQuery = GetUsageDetailQuery();
@@ -31,9 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
             IEnumerable<UsageDetailDataOutputDto> usageDetailData = await _sqlReportConnection.QueryAsync<UsageDetailDataOutputDto>(usageDetailQuery, @params);
             UsageDetailHeaderOutputDto usageDetailHeader = new UsageDetailHeaderOutputDto()
-            {
-                FromDateJalali = input.FromDateJalali,
-                ToDateJalali = input.ToDateJalali,
+            {                
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 RecordCount = usageDetailData.Count(),

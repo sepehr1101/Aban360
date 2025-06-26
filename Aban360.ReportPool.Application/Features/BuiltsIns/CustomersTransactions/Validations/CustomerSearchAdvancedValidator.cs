@@ -16,8 +16,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
 
         private bool CustomerSearchAdvancedValidations(CustomerSearchAdvancedInputDto customerInputDto)
         {
-            if (!string.IsNullOrWhiteSpace(customerInputDto.ReadingNumber) ||
-                !string.IsNullOrWhiteSpace(customerInputDto.FirstName) ||
+            if (!string.IsNullOrWhiteSpace(customerInputDto.FirstName) ||
                 !string.IsNullOrWhiteSpace(customerInputDto.Surname) ||
                 !string.IsNullOrWhiteSpace(customerInputDto.BillId) ||
                 !string.IsNullOrWhiteSpace(customerInputDto.MobileNumber) ||
@@ -27,8 +26,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
                 (customerInputDto.ToUnitDomesticWater.HasValue && customerInputDto.ToUnitDomesticWater > 0) ||
                 (customerInputDto.FromUnitDomesticWater.HasValue && customerInputDto.FromUnitDomesticWater > 0) ||
                 (customerInputDto.ToUnitDomesticWater.HasValue && customerInputDto.ToUnitDomesticWater > 0) ||
-                (customerInputDto.FromUnitOtherWater.HasValue && customerInputDto.FromUnitOtherWater > 0) ||
-                (customerInputDto.ZoneId.HasValue && customerInputDto.ZoneId > 0) ||
+                (customerInputDto.FromUnitOtherWater.HasValue && customerInputDto.FromUnitOtherWater > 0) ||              
                 (customerInputDto.ToUnitOtherWater.HasValue && customerInputDto.ToUnitOtherWater > 0) )
             {
                 return true;
