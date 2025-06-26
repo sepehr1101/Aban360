@@ -1,5 +1,4 @@
-﻿using Aban360.Common.Extensions;
-using Aban360.ReportPool.Domain.Base;
+﻿using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Base;
@@ -34,7 +33,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 UsageSellIds = input.UsageSellIds,
                 ZoneId = input.ZoneId
             };
-            IEnumerable<PendingPaymentsDataOutputDto> pendingPaymentsData = await _sqlConnection.QueryAsync<PendingPaymentsDataOutputDto>(pendingPaymentsQueryString,@params);//todo: parameters
+			IEnumerable<PendingPaymentsDataOutputDto> pendingPaymentsData = await _sqlReportConnection.QueryAsync<PendingPaymentsDataOutputDto>(pendingPaymentsQueryString, @params, null, 120);//todo: parameters
             PendingPaymentsHeaderOutputDto pendingPaymentsHeader = new PendingPaymentsHeaderOutputDto()
             {
 				FromReadingNumber=input.FromReadingNumber,
@@ -53,8 +52,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 TotalPayedAmount = pendingPaymentsData.Sum(payment => payment.PayedAmount),
             };
 
-            var result = new ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentsDataOutputDto>(ReportLiterals.PendingPayments, pendingPaymentsHeader, pendingPaymentsData);
-
+            ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentsDataOutputDto> result = new (ReportLiterals.PendingPayments, pendingPaymentsHeader, pendingPaymentsData);
             return result;
         }
 
@@ -76,8 +74,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 							WHERE ToDayJalali IS NULL
 							  AND ZoneId=@ZoneId
 							  AND TRIM(ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber
-							  AND UsageId IN @UsageSellIds--IN (SELECT value FROM STRING_SPLIT(@UsageSellIds, ','))
-							  AND UsageId2 IN @UsageConsumptionIds--IN (SELECT value FROM STRING_SPLIT(@UsageConsumptionIds, ','))
+							  AND UsageId IN @UsageSellIds
+							  --AND UsageId2 IN @UsageConsumptionIds
 						),
 						
 						-- تجمیعی قبض‌ها
