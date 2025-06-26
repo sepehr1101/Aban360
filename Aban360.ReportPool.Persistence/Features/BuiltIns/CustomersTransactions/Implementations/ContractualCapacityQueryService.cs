@@ -13,7 +13,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
     {
         public ContractualCapacityQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
         public async Task<ReportOutput<ContractualCapacityHeaderOutputDto, ContractualCapacityDataOutputDto>> GetInfo(ContractualCapacityInputDto input)
         {
             string contractualCapacityQuery = GetContractualCapacityQuery();
@@ -21,9 +22,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             {
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
-
-                FromDateJalali = input.FromDateJalali,
-                ToDateJalali = input.ToDateJalali,
 
                 FromCapacity = input.FromContractualCapacity,
                 ToCapacity = input.ToContractualCapacity,
@@ -34,9 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
             IEnumerable<ContractualCapacityDataOutputDto> contractualCapacityData = await _sqlReportConnection.QueryAsync<ContractualCapacityDataOutputDto>(contractualCapacityQuery,@params);
             ContractualCapacityHeaderOutputDto contractualCapacityHeader = new ContractualCapacityHeaderOutputDto()
-            {
-                FromDateJalali=input.FromDateJalali,
-                ToDateJalali=input.ToDateJalali,
+            {                
                 FromContractualCapacity=input.FromContractualCapacity,
                 ToContractualCapacity=input.ToContractualCapacity,
                 FromReadingNumber = input.FromReadingNumber,
@@ -46,7 +42,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             };
 
             var result = new ReportOutput<ContractualCapacityHeaderOutputDto, ContractualCapacityDataOutputDto>(ReportLiterals.ContractualCapacity, contractualCapacityHeader, contractualCapacityData);
-
             return result;
         }
 

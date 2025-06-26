@@ -21,10 +21,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             {
                 input.FromReadingNumber,
                 input.ToReadingNumber,
-
-                input.FromDateJalali,
-                input.ToDateJalali,
-
                 input.FromEmptyUnit,
                 input.ToEmptyUnit,
 
@@ -34,9 +30,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
             IEnumerable<EmptyUnitDataOutputDto> emptyUnitData = await _sqlReportConnection.QueryAsync<EmptyUnitDataOutputDto>(emptyUnitQuery, @params);
             EmptyUnitHeaderOutputDto emptyUnitHeader = new EmptyUnitHeaderOutputDto()
-            {
-                FromDateJalali = input.FromDateJalali,
-                ToDateJalali = input.ToDateJalali,
+            {              
                 FromEmptyUnit = input.FromEmptyUnit,
                 ToEmptyUnit = input.ToEmptyUnit,
                 FromReadingNumber = input.FromReadingNumber,

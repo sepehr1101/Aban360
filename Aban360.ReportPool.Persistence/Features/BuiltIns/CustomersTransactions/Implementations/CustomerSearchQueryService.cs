@@ -20,7 +20,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             string customerSearchDataInfoQuery = GetCustomerSearchDataQuery();
 
             var param = new { input = $"%{input.InputText}%" };
-            IEnumerable<CustomerSearchDataOutputDto> customerData = await _sqlReportConnection.QueryAsync<CustomerSearchDataOutputDto>(customerSearchDataInfoQuery, param);
+            IEnumerable<CustomerSearchDataOutputDto> customerData = await _sqlReportConnection.QueryAsync<CustomerSearchDataOutputDto>(customerSearchDataInfoQuery, param,null, 120);
             CustomerSearchHeaderOutputDto customerHeader = new CustomerSearchHeaderOutputDto()
             { 
                 RecordCount=customerData.Count()
