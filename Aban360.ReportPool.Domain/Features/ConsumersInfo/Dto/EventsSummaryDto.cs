@@ -20,7 +20,7 @@
         public string? ReadingDate { get; set; }
         public long? DebtAmount{ get; set; }
         public long CreditAmount { get; set; }
-        public long  Remained { get; set; }
+        public long Remained { get; set; }
         public string Description { get; set; } = default!;
         public string?  BankTitle{ get; set; }
 

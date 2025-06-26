@@ -5,5 +5,6 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Contracts
     public interface IWaterInvoiceQueryService
     {
         WaterInvoiceDto Get();
+        Task<WaterInvoiceDto> Get(string billId);
     }
 }
