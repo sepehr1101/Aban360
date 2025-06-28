@@ -138,11 +138,18 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             return @"Select top 1
                     	c.FirstName+' '+c.SureName AS FullName,
                     	c.ReadingNumber,
+						c.BillId,
+						c.Address,
+						c.CustomerNumber,
+						c.CustomerNumber AS LastCustomerNumber,
+						c.BillId AS LastBillId,
+						c.GuildTitle AS GuildTitle,
+						'-' AS JobTitle,
                     	c.UsageTitle2 AS UsageTitle,
                     	c.CommercialCount+c.DomesticCount+c.OtherCount AS TotalUnit,
                     	c.ContractCapacity,
+						1 AS HasTag,
                     	c.EmptyCount AS EmptyUnit,
-                    	c.DiscountTypeTitle ,
                     	c.FamilyCount AS HouseholdNumber,
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
                     	c.MainSiphonTitle AS SiphonDiameterTitle,
@@ -151,9 +158,13 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	c.WaterRequestDate,
                     	c.SewageRequestDate,
                     	c.WaterInstallDate AS WaterInstallationDate,
-                    	c.SewageInstallDate AS SewageInstallationDate
+                    	c.SewageInstallDate AS SewageInstallationDate,
+						'-' AS WaterReplacementDate,
+						'-' AS WaterReplacementNumber
                     From [CustomerWarehouse].dbo.Clients c
-                    Where c.BillId=@billId";
+                    Where
+						c.ToDayJalali IS NULL AND
+						c.BillId=@billId";
         }
 
         private string GetSubscriptionEventsQuerybyZoneAndRegisterDay()
