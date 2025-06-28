@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs
 {
-    public record NonPremanentBranchHeaderOutputDto
+    public record NonPermanentBranchHeaderOutputDto
     {
         public string FromDateJalali { get; set; }
         public string ToDateJalali { get; set; }

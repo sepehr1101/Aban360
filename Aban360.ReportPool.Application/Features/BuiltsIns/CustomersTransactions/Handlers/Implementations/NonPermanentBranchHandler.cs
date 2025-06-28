@@ -9,22 +9,22 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Implementations
 {
-    internal sealed class NonPremanentBranchHandler : INonPremanentBranchHandler
+    internal sealed class NonPermanentBranchHandler : INonPermanentBranchHandler
     {
-        private readonly INonPremanentBranchQueryService _nonPremanentBranchQueryService;
-        private readonly IValidator<NonPremanentBranchInputDto> _validator;
-        public NonPremanentBranchHandler(
-            INonPremanentBranchQueryService nonPremanentBranchQueryService,
-            IValidator<NonPremanentBranchInputDto> validator)
+        private readonly INonPermanentBranchQueryService _nonPermanentBranchQueryService;
+        private readonly IValidator<NonPermanentBranchInputDto> _validator;
+        public NonPermanentBranchHandler(
+            INonPermanentBranchQueryService nonPremanentBranchQueryService,
+            IValidator<NonPermanentBranchInputDto> validator)
         {
-            _nonPremanentBranchQueryService = nonPremanentBranchQueryService;
-            _nonPremanentBranchQueryService.NotNull(nameof(nonPremanentBranchQueryService));
+            _nonPermanentBranchQueryService = nonPremanentBranchQueryService;
+            _nonPermanentBranchQueryService.NotNull(nameof(nonPremanentBranchQueryService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<NonPremanentBranchHeaderOutputDto, NonPremanentBranchDataOutputDto>> Handle(NonPremanentBranchInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchDataOutputDto>> Handle(NonPermanentBranchInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<NonPremanentBranchHeaderOutputDto, NonPremanentBranchDataOutputDto> nonPremanentBranch = await _nonPremanentBranchQueryService.GetInfo(input);
+            ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchDataOutputDto> nonPremanentBranch = await _nonPermanentBranchQueryService.GetInfo(input);
             return nonPremanentBranch;
         }
     }
