@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs
 {
-    public record NonPremanentBranchDataOutputDto
+    public record NonPermanentBranchDataOutputDto
     {
         public int CustomerNumber { get; set; }
         public string ReadingNumber { get; set; }
