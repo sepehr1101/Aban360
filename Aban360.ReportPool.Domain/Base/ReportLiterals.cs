@@ -30,6 +30,7 @@
         public static string EmptyUnit { get { return $"{Report} خالی از سکنه"; } }
         public static string UsageDetail { get { return $"{Report} جزئیات کاربری"; } }
         public static string UsageSummary { get { return $"{Report} خلاصه گزارش"; } }
+        public static string NonPremanentBranch { get { return $"{Report} انشعاب غیر دائم"; } }
 
 
     }
