@@ -41,7 +41,29 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
         private string GetNonPermanentBranchQuery()
         {
-            return @"";
+            return @"SELECT 
+                        c.CustomerNumber,
+                        c.ReadingNumber,
+                        TRIM(c.FirstName) AS FirstName,
+                        TRIM(c.SureName) As Surname,
+                        c.UsageTitle,
+                        c.WaterDiameterTitle MeterDiameterTitle,
+                        c.RegisterDayJalali AS EventDateJalali,
+                        0 AS DebtAmount,
+                        TRIM(c.Address) AS Address,
+                        c.ZoneTitle,
+                        c.DeletionStateId,
+                        c.DeletionStateTitle AS UseStateTitle,
+                        c.DomesticCount DomesticUnit,
+            	        c.CommercialCount CommercialUnit,
+            	        c.OtherCount OtherUnit,
+            	        TRIM(c.BillId) BillId
+                    FROM [CustomerWarehouse].dbo.Clients c
+                    WHERE 
+            			c.ToDayJalali IS NULL AND
+                        c.RegisterDayJalali BETWEEN @FromDate AND @ToDate AND
+                        c.ZoneId in @ZoneIds AND
+						c.IsNonPermanent=1";//Todo: check IsNonPermanent Prop
         }
     }
 }
