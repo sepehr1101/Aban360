@@ -1,5 +1,7 @@
 ﻿using Aban360.Common.Extensions;
+using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+using Aban360.ReportPool.Domain.Features.Transactions;
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.Transactions.Contracts;
 using Dapper;
@@ -13,61 +15,68 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             : base(configuration)
         {
         }
-        public async Task<IEnumerable<EventsSummaryDto>> GetEventsSummaryDtos(string billId)
+        //IEnumerable<EventsSummaryOutputDataDto>>
+        public async Task<ReportOutput<EventsSummaryOutputHeaderDto, EventsSummaryOutputDataDto>> GetEventsSummaryDtos(string billId)
         {
-            string query = GetSubscriptionEventsQuery();
-            IEnumerable<EventsSummaryDto> result = await _sqlReportConnection.QueryAsync<EventsSummaryDto>(query, new { billId = billId });
-            if (result.Any())
+            string subscriptionDataQuery = GetSubscriptionEventsDataQuery();
+            string subscriptionHeaderQuery = GetSubscriptionEventHeaderQuery();
+
+            IEnumerable<EventsSummaryOutputDataDto> data = await _sqlReportConnection.QueryAsync<EventsSummaryOutputDataDto>(subscriptionDataQuery, new { billId = billId });
+            if (data.Any())
             {
-                result = result
+                data = data
                     .OrderBy(i => i.RegisterDate);
 
-                result.ForEach(summary => summary.Remained = (summary.CreditAmount - summary.DebtAmount).GetValueOrDefault());
+                data.ForEach(summary => summary.Remained = (summary.CreditAmount - summary.DebtAmount).GetValueOrDefault());
                 long lastRemained = 0;
-                for (int i = 0; i < result.Count(); i++)
+                for (int i = 0; i < data.Count(); i++)
                 {
                     lastRemained = lastRemained +
-                                   (result.ElementAt(i).DebtAmount.Value -
-                                   result.ElementAt(i).CreditAmount);
-                    var s = result.ElementAt(i).DebtAmount.Value;
-                    var ss = result.ElementAt(i).CreditAmount;
+                                   (data.ElementAt(i).DebtAmount.Value -
+                                   data.ElementAt(i).CreditAmount);
+                    var s = data.ElementAt(i).DebtAmount.Value;
+                    var ss = data.ElementAt(i).CreditAmount;
 
-                    result.ElementAt(i).Remained = lastRemained;
+                    data.ElementAt(i).Remained = lastRemained;
                 }
             }
+            EventsSummaryOutputHeaderDto header = await _sqlReportConnection.QueryFirstAsync<EventsSummaryOutputHeaderDto>(subscriptionHeaderQuery, new { billId = billId });
+
+            var result = new ReportOutput<EventsSummaryOutputHeaderDto, EventsSummaryOutputDataDto>(ReportLiterals.SubscriptionEventSummary,header, data);
+            
             return result;
         }
-        public async Task<IEnumerable<EventsSummaryDto>> GetBillDto(string billId)
+        public async Task<IEnumerable<EventsSummaryOutputDataDto>> GetBillDto(string billId)
         {
-            string query = GetSubscriptionEventsQuery();
-            IEnumerable<EventsSummaryDto> result = await _sqlReportConnection.QueryAsync<EventsSummaryDto>(query, new { billId = billId });
+            string query = GetSubscriptionEventsDataQuery();
+            IEnumerable<EventsSummaryOutputDataDto> result = await _sqlReportConnection.QueryAsync<EventsSummaryOutputDataDto>(query, new { billId = billId });
             if (result.Any())
             {
                 result = result.OrderBy(i => i.RegisterDate);
             }
             return result;
         }
-        public async Task<IEnumerable<EventsSummaryDto>> GetBillDto(int zoneId, string registerDate, string fromReadingNumber, string toReadingNumber)
+        public async Task<IEnumerable<EventsSummaryOutputDataDto>> GetBillDto(int zoneId, string registerDate, string fromReadingNumber, string toReadingNumber)
         {
             string query = GetSubscriptionEventsQuerybyZoneAndRegisterDay();
-            IEnumerable<EventsSummaryDto> result = await _sqlReportConnection.QueryAsync<EventsSummaryDto>(query, new { zoneId, registerDate, fromReadingNumber, toReadingNumber });
+            IEnumerable<EventsSummaryOutputDataDto> result = await _sqlReportConnection.QueryAsync<EventsSummaryOutputDataDto>(query, new { zoneId, registerDate, fromReadingNumber, toReadingNumber });
             if (result.Any())
             {
                 result = result.OrderBy(i => i.RegisterDate);
             }
             return result;
         }
-        public async Task<IEnumerable<EventsSummaryDto>> GetBillDto(int zoneId, string fromReadingNumber, string toReadingNumber)
+        public async Task<IEnumerable<EventsSummaryOutputDataDto>> GetBillDto(int zoneId, string fromReadingNumber, string toReadingNumber)
         {
             string query = GetSubscriptionEventsQuerybyZone();
-            IEnumerable<EventsSummaryDto> result = await _sqlReportConnection.QueryAsync<EventsSummaryDto>(query, new { zoneId, fromReadingNumber, toReadingNumber });
+            IEnumerable<EventsSummaryOutputDataDto> result = await _sqlReportConnection.QueryAsync<EventsSummaryOutputDataDto>(query, new { zoneId, fromReadingNumber, toReadingNumber });
             if (result.Any())
             {
                 result = result.OrderBy(i => i.RegisterDate);
             }
             return result;
         }
-        private string GetSubscriptionEventsQuery()
+        private string GetSubscriptionEventsDataQuery()
         {
             string query = @"
             use CustomerWarehouse
@@ -124,6 +133,29 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
              where (BillId)=@billId";
             return query;
         }
+        private string GetSubscriptionEventHeaderQuery()
+        {
+            return @"Select top 1
+                    	c.FirstName+' '+c.SureName AS FullName,
+                    	c.ReadingNumber,
+                    	c.UsageTitle2 AS UsageTitle,
+                    	c.CommercialCount+c.DomesticCount+c.OtherCount AS TotalUnit,
+                    	c.ContractCapacity,
+                    	c.EmptyCount AS EmptyUnit,
+                    	c.DiscountTypeTitle ,
+                    	c.FamilyCount AS HouseholdNumber,
+                    	c.WaterDiameterTitle AS MeterDiameterTitle,
+                    	c.MainSiphonTitle AS SiphonDiameterTitle,
+                    	0 AS MeterTagCount,
+                    	c.BranchType AS UsageStateTitle,
+                    	c.WaterRequestDate,
+                    	c.SewageRequestDate,
+                    	c.WaterInstallDate AS WaterInstallationDate,
+                    	c.SewageInstallDate AS SewageInstallationDate
+                    From [CustomerWarehouse].dbo.Clients c
+                    Where c.BillId=@billId";
+        }
+
         private string GetSubscriptionEventsQuerybyZoneAndRegisterDay()
         {
             string query = @"
