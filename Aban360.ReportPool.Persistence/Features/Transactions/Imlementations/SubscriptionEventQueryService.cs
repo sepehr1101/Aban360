@@ -23,6 +23,17 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     .OrderBy(i => i.RegisterDate);
 
                 result.ForEach(summary => summary.Remained = (summary.CreditAmount - summary.DebtAmount).GetValueOrDefault());
+                long lastRemained = 0;
+                for (int i = 0; i < result.Count(); i++)
+                {
+                    lastRemained = lastRemained +
+                                   (result.ElementAt(i).DebtAmount.Value -
+                                   result.ElementAt(i).CreditAmount);
+                    var s = result.ElementAt(i).DebtAmount.Value;
+                    var ss = result.ElementAt(i).CreditAmount;
+
+                    result.ElementAt(i).Remained = lastRemained;
+                }
             }
             return result;
         }
@@ -69,7 +80,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 	             NextDay CurrentMeterDate,
 	             RegisterDay RegisterDate,
 	             SumItems DebtAmount,
-	             0 CreditAmount,
+	             10000 CreditAmount,
 	             TypeId as [Description],
 	             ConsumptionAverage, 
 	             NULL BankTitle,

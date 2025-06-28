@@ -23,8 +23,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 input.FromReadingNumber,
                 input.ToReadingNumber,
 
-                input.FromDateJalali,
-                input.ToDateJalali,
+               // input.FromDateJalali,
+               // input.ToDateJalali,
 
                 UsageIds = input.UsageSellIds,
                 input.ZoneIds
