@@ -14,7 +14,7 @@ namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implemen
             _changeMainSummaryInfoService.NotNull(nameof(changeMainSummaryInfoService));
         }
 
-        public async Task<IEnumerable<ChangeMainInfoDto>> Handle(string billId, CancellationToken cancellationToken)
+        public async Task<Dictionary<string, List<string>>> Handle(string billId, CancellationToken cancellationToken)
         {
             var changeMainSummaryInfo = await _changeMainSummaryInfoService.GetInfo(billId);
             return changeMainSummaryInfo;

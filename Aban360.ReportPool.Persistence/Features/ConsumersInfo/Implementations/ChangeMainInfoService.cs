@@ -2,6 +2,7 @@
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 using Dapper;
+using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
@@ -11,30 +12,24 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         public ChangeMainInfoService(IConfiguration configuration)
             : base(configuration) { }
 
-        public async Task<IEnumerable<ChangeMainInfoDto>> GetInfo(string billId)
+        public async Task<Dictionary<string, List<string>>> GetInfo(string billId)
         {
-            //string ChangeMainQuery = GetChangeMainSummayDtoQuery();
-            //IEnumerable<ChangeMainInfoDto> result = await _sqlConnection.QueryAsync<ChangeMainInfoDto>(ChangeMainQuery, new { billId });
-            //IEnumerable<ChangeMainInfoDto> result = GetFakeChangeMainInfo();
-
             string clientData = GetClientsDataQuery();
             IEnumerable<ClientDto> clients = await _sqlReportConnection.QueryAsync<ClientDto>(clientData, new { billId = billId });
-
-            IEnumerable<ChangeMainInfoDto> result = new List<ChangeMainInfoDto>();
-
+            var result=GetChangeData(clients);
             return result;
         }
 
-        private string GetChangeData(IEnumerable<ClientDto> clients)
+        private Dictionary<string, List<string>> GetChangeData(IEnumerable<ClientDto> clients)
         {
             var fieldMap = new Dictionary<string, string>
             {
                 ["Id"] = "شناسه",
                 ["ZoneId"] = "شناسه منطقه",
                 ["ZoneTitle"] = "نام منطقه",
-                ["CustomerNumber"] = "شماره اشتراک",
+                ["CustomerNumber"] = "شماره ردیف",
                 ["BillId"] = "شناسه قبض",
-                ["ReadingNumber"] = "شماره قرائت",
+                ["ReadingNumber"] = "اشتراک",
                 ["FirstName"] = "نام",
                 ["SureName"] = "نام خانوادگی",
                 ["FatherName"] = "نام پدر",
@@ -44,8 +39,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                 ["NationalId"] = "کد ملی",
                 ["UsageId"] = "نوع مصرف",
                 ["UsageId2"] = "نوع مصرف ۲",
-                ["UsageTitle"] = "عنوان مصرف",
-                ["UsageTitle2"] = "عنوان مصرف ۲",
+                ["UsageTitle"] = "کاربری فروش",
+                ["UsageTitle2"] = "کابری مصرف",
                 ["BranchType"] = "نوع انشعاب",
                 ["WaterDiameterId"] = "کد قطر آب",
                 ["WaterDiameterTitle"] = "عنوان قطر آب",
@@ -74,21 +69,21 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                 ["HasWater"] = "دارای آب",
                 ["HasSewage"] = "دارای فاضلاب",
                 ["Address"] = "آدرس",
-                ["IsGovermental"] = "دولتی است؟",
+                ["IsGovermental"] = "دولتی؟",
                 ["DeletionStateId"] = "شناسه حذف",
                 ["DeletionStateTitle"] = "وضعیت حذف",
                 ["UsageStateId"] = "وضعیت مصرف",
                 ["ContractCapacity"] = "ظرفیت قراردادی",
                 ["VillageId"] = "شناسه روستا",
                 ["VillageName"] = "نام روستا",
-                ["X"] = "مختصات X",
-                ["Y"] = "مختصات Y",
-                ["IsSpecial"] = "ویژه است؟",
+                ["X"] = "X",
+                ["Y"] = "Y",
+                ["IsSpecial"] = "انشعاب خاص",
                 ["DiscountTypeId"] = "نوع تخفیف",
                 ["DiscountTypeTitle"] = "عنوان تخفیف",
                 ["MeterSerialBody"] = "سریال کنتور",
-                ["HasCommonSiphon"] = "دارای سیفون مشترک",
-                ["IsVillage"] = "روستا است؟",
+                ["HasCommonSiphon"] = "سیفون مشترک",
+                ["IsVillage"] = "روستا؟",
                 ["TempRowNumber"] = "شماره ردیف موقت",
                 ["RegisterDayJalali"] = "تاریخ ثبت روز",
                 ["FromDayJalali"] = "از تاریخ",
@@ -99,22 +94,24 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                 ["IsNonPermanent"] = "غیر دائم",
                 ["MainSiphonTitle"] = "عنوان سیفون اصلی"
             };
+            var all=new Dictionary<string, List<string>>();
 
-
-            for (int i = 0; i < clients.Count(); i++)
+            for (int i = 1; i < clients.Count(); i++)
             {
                 ClientDto current = clients.ElementAt(i);
-                ClientDto last = clients.ElementAt(i + 1);
+                ClientDto last = clients.ElementAt(i - 1);
 
 
 
                 var differences = new List<string>();
                 var props = typeof(ClientDto).GetProperties();
+                
 
                 foreach (var prop in props)
                 {
-                    if (!fieldMap.ContainsKey(prop.Name))
-                        continue; // فقط فیلدهایی که توی map هست بررسی کن
+                    if (!fieldMap.ContainsKey(prop.Name) || prop.Name== "ToDayJalali")
+                        continue; 
+
 
                     var oldValue = prop.GetValue(last)?.ToString() ?? "خالی";
                     var newValue = prop.GetValue(current)?.ToString() ?? "خالی";
@@ -125,8 +122,13 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                         differences.Add($"{persianName}: {oldValue} → {newValue}");
                     }
                 }
+
+                all.Add(clients.ElementAt(i).ToDayJalali ?? DateTime.Now.ToShortPersianDateString()
+                        , differences);
             }
-            return " ";
+
+            return all;
+            
         }
         private string GetChangeMainSummayDtoQuery()
         {
@@ -146,17 +148,14 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         }
         private string GetClientsDataQuery()
         {
-            return @"select  *
-                     From dbo.Clients c
-                     where 
-                           c.BillId=@billId AND
-                           c.ToDayJalali IS NOT NULL
-                     Order By c.ToDayJalali ";
+            return @"select *
+                     From [CustomerWarehouse].dbo.Clients c
+                     where c.BillId=@billId 
+                     Order By c.FromDayJalali";
         }
 
         public record ClientDto
         {
-            public long Id { get; init; }
             public int ZoneId { get; init; }
             public string ZoneTitle { get; init; }
             public long CustomerNumber { get; init; }
@@ -189,7 +188,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             public int OtherCount { get; init; }
             public int EmptyCount { get; init; }
             public short FamilyCount { get; init; }
-            public string RegisterationJalaliDate { get; init; }
+           // public string RegisterationJalaliDate { get; init; }
             public int FieldArea { get; init; }
             public int ConstructedArea { get; init; }
             public int DomesticArea { get; init; }
@@ -217,8 +216,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             public bool HasCommonSiphon { get; init; }
             public bool IsVillage { get; init; }
             public int? TempRowNumber { get; init; }
-            public string RegisterDayJalali { get; init; }
-            public string FromDayJalali { get; init; }
+         //   public string RegisterDayJalali { get; init; }
+         //   public string FromDayJalali { get; init; }
             public string ToDayJalali { get; init; }
             public string HouseholdDateJalali { get; init; }
             public int? GuildId { get; init; }
