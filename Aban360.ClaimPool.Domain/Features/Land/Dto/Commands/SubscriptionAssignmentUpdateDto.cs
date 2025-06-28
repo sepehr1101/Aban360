@@ -2,7 +2,6 @@
 {
     public record SubscriptionAssignmentUpdateDto
     {
-        public int Id { get; set; }
         public string BillId { get; set; }
         public string X { get; set; }
         public string Y { get; set; }

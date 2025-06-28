@@ -33,5 +33,7 @@
         public static string NonPermanentBranch { get { return $"{Report} انشعاب غیر دائم"; } }
 
 
+        public static string SubscriptionEventSummary { get { return "کاردکس آب"; } }
+
     }
 }

@@ -7,6 +7,7 @@ using Aban360.CalculationPool.Domain.Features.Rule.Entties;
 using Aban360.CalculationPool.Persistence.Features.Rule.Queries.Contracts;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+using Aban360.ReportPool.Domain.Features.Transactions;
 using Aban360.ReportPool.GatewayAdhoc.Features.ConsumersInfo.Contracts;
 using Aban360.ReportPool.Persistence.Features.Transactions.Contracts;
 using DNTPersianUtils.Core;
@@ -43,7 +44,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
         public async Task<CaluclationIntervalDiscrepancytWrapper> Handle(TariffByDetailCreateDto testInput, CancellationToken cancellationToken)
         {
             IEnumerable<IntervalBillSubscriptionInfo> infos = await _intervalBillPrerequisiteInfoAddHocHandler.Handle(testInput.ZoneId, testInput.FromDate, testInput.ToDate, testInput.UsageId, testInput.IndividualTypeId, testInput.Handover, testInput.FromReadingNumber, testInput.ToReadingNumber,cancellationToken);
-            IEnumerable<EventsSummaryDto> eventInfos = await _eventQueryService.GetBillDto(testInput.ZoneId, testInput.FromReadingNumber, testInput.ToReadingNumber);
+            IEnumerable<EventsSummaryOutputDataDto> eventInfos = await _eventQueryService.GetBillDto(testInput.ZoneId, testInput.FromReadingNumber, testInput.ToReadingNumber);
             ICollection<CaluclationIntervalDiscrepancy> discrepancies = new List<CaluclationIntervalDiscrepancy>();
             foreach (IntervalBillSubscriptionInfo info in infos)
             {

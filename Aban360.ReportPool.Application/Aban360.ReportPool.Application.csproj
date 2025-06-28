@@ -19,4 +19,8 @@
 		<ProjectReference Include="..\Aban360.ReportPool.Persistence\Aban360.ReportPool.Persistence.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Features\Transactions\Validations\" />
+	</ItemGroup>
+
 </Project>

@@ -3,6 +3,7 @@ using Aban360.CalculationPool.Application.Features.TestTariff.Handlers.Contrats;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+using Aban360.ReportPool.Domain.Features.Transactions;
 using Aban360.ReportPool.GatewayAdhoc.Features.ConsumersInfo.Contracts;
 using Aban360.ReportPool.Persistence.Features.Transactions.Contracts;
 
@@ -30,7 +31,7 @@ namespace Aban360.CalculationPool.Application.Features.TestTariff.Handlers.Imple
         public async Task<CaluclationIntervalDiscrepancytWrapper> Handle(CaluclationIntervalBatchTestInput testInput, CancellationToken cancellationToken)
         {
             IEnumerable<IntervalBillSubscriptionInfo> infos = await _intervalBillPrerequisiteInfoAddHocHandler.Handle(testInput.ZoneId, testInput.RegisterDate, testInput.FormReadingNumber, testInput.ToReadingNumber, cancellationToken);
-            IEnumerable<EventsSummaryDto> eventInfos = await _eventQueryService.GetBillDto(testInput.ZoneId, testInput.RegisterDate, testInput.FormReadingNumber, testInput.ToReadingNumber);
+            IEnumerable<EventsSummaryOutputDataDto> eventInfos = await _eventQueryService.GetBillDto(testInput.ZoneId, testInput.RegisterDate, testInput.FormReadingNumber, testInput.ToReadingNumber);
             ICollection<CaluclationIntervalDiscrepancy> discrepancies = new List<CaluclationIntervalDiscrepancy>();
             foreach (IntervalBillSubscriptionInfo info in infos)
             {
@@ -53,7 +54,7 @@ namespace Aban360.CalculationPool.Application.Features.TestTariff.Handlers.Imple
             return res;
         }
 
-        private async Task<double> GetAmount(IntervalBillSubscriptionInfo info, EventsSummaryDto? eventInfo, CancellationToken cancellationToken)
+        private async Task<double> GetAmount(IntervalBillSubscriptionInfo info, EventsSummaryOutputDataDto? eventInfo, CancellationToken cancellationToken)
         {
             var tariffTestInput = new TariffTestInput()
             {

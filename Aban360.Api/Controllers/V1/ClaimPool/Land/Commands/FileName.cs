@@ -1,0 +1,28 @@
+﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
+using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
+using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Extensions;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
+{
+    [Route("v1/installation-date-assignment")]
+    public class InstallationDateAssignmentUpdateController : ControllerBase
+    {
+        private readonly IInstallationDateAssignmentUpdateHandler _updateHandler;
+        public InstallationDateAssignmentUpdateController(IInstallationDateAssignmentUpdateHandler updateHandler)
+        {
+            _updateHandler = updateHandler;
+            _updateHandler.NotNull(nameof(_updateHandler));
+        }
+
+        [HttpGet, HttpPost]
+        [Route("update")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<InstallationDateAssignmentUpdateDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Update([FromBody] InstallationDateAssignmentUpdateDto updateDto, CancellationToken cancellationToken)
+        {
+            await _updateHandler.Handle(updateDto, cancellationToken);
+            return Ok(updateDto);
+        }
+    }
+}
