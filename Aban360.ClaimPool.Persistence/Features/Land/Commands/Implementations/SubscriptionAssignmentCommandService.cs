@@ -24,7 +24,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 
             var @params = new
             {
-                id = updateDto.Id,
+                billId = updateDto.BillId,
                 x = updateDto.X,
                 y = updateDto.Y,
                 readingNumber = updateDto.ReadingNumber,
@@ -40,7 +40,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 
             using (var transaction= TransactionBuilder.Create(0,10))
             {
-                var insertResult = await _sqlReportConnection.ExecuteAsync(insertQuery, new { id = updateDto.Id, date });
+                var insertResult = await _sqlReportConnection.ExecuteAsync(insertQuery, new { billId = updateDto. BillId, date=date });
                 var updateResult = await _sqlReportConnection.ExecuteAsync(updateQuery, @params);
                 transaction.Complete();
                 //await transaction.CommitAsync();
@@ -49,9 +49,11 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 
         private string GetZoneIdQuery()
         {
-            return @"Select TOP 1 c.ZoneId,c.CustomerNumber
+            return @"Select c.ZoneId,c.CustomerNumber
                      From  [CustomerWarehouse].dbo.Clients c
-                     Where c.BillId=@billId";
+                     Where 
+						c.BillId=@billId AND
+						c.ToDayJalali IS NULL";
         }
         private string GetInsertQuery(int zoneId)
         {
@@ -74,8 +76,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                            PHONE_NO, MOBILE, MELI_COD, oRadif, sif_5, sif_6, sif_7, sif_8, bill_id, MOJAVZ,
                            DATEINS, c20, balansing, tmp_date_sabt, tmp_ask_ab, tmp_ask_fas, tmp_inst_ab,
                            tmp_inst_fas, tmp_g_inst_ab, tmp_g_inst_fas, tmp_date_sabt, Khali_s, Senf, date_KHANE
-                       FROM [{zoneId}].dbo.members
-                       WHERE id = @id";
+                       FROM [{zoneId}].dbo.members m
+                       WHERE m.bill_id=@billId";
         }
 
         private string GetUpdateQuery(int zoneId)
@@ -90,7 +92,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                          address = @address,
                          date_KHANE = @date,
                          DATEINS=@date
-                     WHERE id = @id";
+                     WHERE bill_id=@billId";
         }
     }
 }

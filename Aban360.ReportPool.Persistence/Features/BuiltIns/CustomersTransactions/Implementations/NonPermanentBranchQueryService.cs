@@ -63,7 +63,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             			c.ToDayJalali IS NULL AND
                         c.RegisterDayJalali BETWEEN @FromDate AND @ToDate AND
                         c.ZoneId in @ZoneIds AND
-						c.IsNonPermanent=1";//Todo: check IsNonPermanent Prop
+						c.IsNonPermanent=1";
         }
     }
 }

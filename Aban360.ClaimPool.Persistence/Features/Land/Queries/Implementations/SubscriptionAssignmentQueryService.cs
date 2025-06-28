@@ -30,9 +30,11 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
 
         private string GetZoneIdQuery()
         {
-            return @"Select TOP 1 c.ZoneId,c.CustomerNumber
+            return @"Select c.ZoneId,c.CustomerNumber
                      From  [CustomerWarehouse].dbo.Clients c
-                     Where c.BillId=@billId";
+                     Where 
+						c.BillId=@billId AND
+						c.ToDayJalali IS NULL";
         }
         private string GetSubscriptionAssignmentQuery(string zoneId)
         {
