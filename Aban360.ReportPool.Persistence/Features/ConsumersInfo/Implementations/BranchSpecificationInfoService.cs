@@ -18,12 +18,20 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             string BranchSpecificationQuery = GetBranchSpecificationSummaryDtoWithClientDbQuery();
             BranchSpecificationInfoDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BranchSpecificationInfoDto>(BranchSpecificationQuery, new { billId });
 
-            string siphonInstallationDate = result.SiphonInstallationDate;
             string dateNow = DateTime.Now.ToShortPersianDateString();
-            result.SiphonLife= Convert.ToInt16((Convert.ToDateTime(dateNow)- Convert.ToDateTime(siphonInstallationDate)).Days);
-
+            string siphonInstallationDate = result.SiphonInstallationDate;
             string waterInstallationDate = result.WaterInstallDate;
-            result.MeterLife = Convert.ToInt16((Convert.ToDateTime(dateNow)-Convert.ToDateTime(waterInstallationDate)).Days);
+
+            if (siphonInstallationDate == null || siphonInstallationDate.Trim() == string.Empty)
+                result.SiphonLife = 0;
+            else
+                result.SiphonLife = Convert.ToInt16((Convert.ToDateTime(dateNow) - Convert.ToDateTime(siphonInstallationDate)).Days);
+
+            if (waterInstallationDate == null || waterInstallationDate.Trim() == string.Empty)
+                result.MeterLife = 0;
+            else
+                result.MeterLife = Convert.ToInt16((Convert.ToDateTime(dateNow) - Convert.ToDateTime(waterInstallationDate)).Days);
+
 
             result.SiphonsDiameterCount = await _sqlReportConnection.QueryAsync<SiphonsDiameterCount>(GetSiphonDiameterCountWithClientDbQuery(), new { billId });
             return result;
