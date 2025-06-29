@@ -10,7 +10,7 @@
         public static string DeductionsAndDiscountsReport{ get { return $"{Report} کسورات و تخفیفات"; } }
         public static string DebtorByDay { get { return $"{Report} روزنامه بدهکاران"; } }//
         public static string LinkServiceStatement { get { return $"{Report} صورت وضعیت (سامانه فروش)"; } }
-        public static string PendingPayments { get { return $"{Report} مانده مطالبات"; } }
+        public static string PendingPayments { get { return $"{Report} مشترکین بدهکار"; } }
 
         public static string UnspecifiedWaterPayment { get { return $"{Report} ردیف نامشخص آب بهاء"; } }
         public static string UnspecifiedServiceLinkPayment { get { return $"{Report} ردیف نامشخص حق انشعاب"; } }
