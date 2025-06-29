@@ -32,6 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             else
                 result.MeterLife = Convert.ToInt16((Convert.ToDateTime(dateNow) - Convert.ToDateTime(waterInstallationDate)).Days);
 
+            result.MeterStatusTitle=await _sqlReportConnection.QueryFirstAsync<string>(GetBranchStatusQuery(), new {billId=billId});
 
             result.SiphonsDiameterCount = await _sqlReportConnection.QueryAsync<SiphonsDiameterCount>(GetSiphonDiameterCountWithClientDbQuery(), new { billId });
             return result;
@@ -126,7 +127,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             return @"select 
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
                         c.MeterSerialBody AS BodySerial,
-                    	'' AS BodySerial,
+                    	c.MeterSerialBody AS BodySerial,
                     	0 AS SealNumber,
                     	c.BranchType AS MeterTypeTitle,
                     	'' AS MeterProducerTitle,
@@ -136,7 +137,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	0 AS MeterLife,
                     	N'سالم'  AS MeterStatusTitle,
                     	'' AS WitnessMeter,
-                    	'' AS CommonSiphon,
+                    	c.MainSiphonTitle AS CommonSiphon,
                     	c.Siphon200+c.Siphon150+c.Siphon100+c.Siphon125+c.Siphon8+c.Siphon7+c.Siphon6+c.Siphon5 AS SiphonCount,
                     	'' AS SiphonMaterialTitle,
                     	0 AS SiphonLife,
@@ -146,8 +147,19 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 						c.SewageInstallDate AS SiphonInstallationDate,
                     	0 AS LoadOfContamination
                     from [CustomerWarehouse].dbo.Clients c
-                    where c.BillId=@billId
+                    where 
+						c.BillId=@billId
                     and c.ToDayJalali is null";
+        }
+        private string GetBranchStatusQuery()
+        {
+            return @"select top 1 
+                    	b.TypeId
+                    from [CustomerWarehouse].dbo.Bills b
+                    where
+                    	b.BillId=@billId AND
+                    	b.TypeId!='بسته مانع'
+                    Order by b.RegisterDay desc";
         }
     }
 }
