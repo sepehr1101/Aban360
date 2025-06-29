@@ -5,7 +5,7 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.Sms.Validations
 {
-     public class SendSmsToMobileValidator : BaseValidator<SendSmsToMobileInputDto>
+    public class SendSmsToMobileValidator : BaseValidator<SendSmsToMobileInputDto>
     {
         public SendSmsToMobileValidator()
         {
