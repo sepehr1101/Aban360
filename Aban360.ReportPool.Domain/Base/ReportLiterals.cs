@@ -34,6 +34,15 @@
 
 
         public static string SubscriptionEventSummary { get { return "کاردکس آب"; } }
+        public static string WaterInstallationDetail { get { return "جزئیات انشعاب آب نصب شده"; } }
+        public static string SewageInstallationDetail { get { return "جزئیات انشعاب فاضلاب نصب شده"; } }
+        public static string WaterInstallationSummary{ get { return "خلاصه انشعاب آب نصب شده"; } }
+        public static string SewageInstallationSummary { get { return "خلاصه انشعاب فاضلاب نصب شده"; } }
+
+        public static string WaterRequestDetail { get { return "جزئیات انشعاب آب واگذار شده"; } }
+        public static string SewageRequestDetail { get { return "جزئیات انشعاب فاضلاب واگذار شده"; } }
+        public static string WaterRequestSummary { get { return "خلاصه انشعاب آب واگذار شده"; } }
+        public static string SewageRequestSummary { get { return "خلاصه انشعاب فاضلاب واگذار شده"; } }
 
     }
 }
