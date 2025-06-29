@@ -10,7 +10,7 @@
         public static string DeductionsAndDiscountsReport{ get { return $"{Report} کسورات و تخفیفات"; } }
         public static string DebtorByDay { get { return $"{Report} روزنامه بدهکاران"; } }//
         public static string LinkServiceStatement { get { return $"{Report} صورت وضعیت (سامانه فروش)"; } }
-        public static string PendingPayments { get { return $"{Report} مانده مطالبات"; } }
+        public static string PendingPayments { get { return $"{Report} مشترکین بدهکار"; } }
 
         public static string UnspecifiedWaterPayment { get { return $"{Report} ردیف نامشخص آب بهاء"; } }
         public static string UnspecifiedServiceLinkPayment { get { return $"{Report} ردیف نامشخص حق انشعاب"; } }
@@ -34,6 +34,28 @@
 
 
         public static string SubscriptionEventSummary { get { return "کاردکس آب"; } }
+        public static string WaterInstallationDetail { get { return "جزئیات انشعاب آب نصب شده"; } }
+        public static string SewageInstallationDetail { get { return "جزئیات انشعاب فاضلاب نصب شده"; } }
+        public static string WaterInstallationSummary{ get { return "خلاصه انشعاب آب نصب شده"; } }
+        public static string SewageInstallationSummary { get { return "خلاصه انشعاب فاضلاب نصب شده"; } }
+
+        public static string WaterRequestDetail { get { return "جزئیات انشعاب آب واگذار شده"; } }
+        public static string SewageRequestDetail { get { return "جزئیات انشعاب فاضلاب واگذار شده"; } }
+        public static string WaterRequestSummary { get { return "خلاصه انشعاب آب واگذار شده"; } }
+        public static string SewageRequestSummary { get { return "خلاصه انشعاب فاضلاب واگذار شده"; } }
+
+        public static string WaterRequestNonInstalledDetail { get { return "جزئیات انشعاب آب واگذار شده و نصب نشده"; } }
+        public static string SewageRequestNonInstalledDetail { get { return " جزئیات انشعاب فاضلاب واگذار شده و نصب نشده"; } }
+        public static string WaterRequestNonInstalledSummary { get { return "خلاصه انشعاب آب واگذار شده و نصب نشده"; } }
+        public static string SewageRequestNonInstalledSummary { get { return "خلاصه انشعاب فاضلاب واگذار شده و نصب نشده"; } }
+       
+        public static string WithoutSewageRequestSummary { get { return "خلاصه انشعاب های بدون درخواست فاضلاب"; } }
+        public static string WithoutSewageRequestDetail { get { return "جزئیات انشعاب های بدون درخواست فاضلاب"; } }
+
+        public static string WaterDistanceRequestInstallationDetail { get { return "جزئیات فاصله واگذار تا نصب انشعاب آب"; } }
+        public static string SewageDistanceRequesteInstallationDetail { get { return "جزئیات فاصله واگذار تا نصب انشعاب فاضلاب"; } }
+        public static string WaterDistanceRequestInstallationSummary { get { return "خلاصه فاصله واگذار تا نصب انشعاب آب"; } }
+        public static string SewageDistanceRequesteInstallationSummary { get { return "خلاصه فاصله واگذار تا نصب انشعاب فاضلاب"; } }
 
     }
 }
