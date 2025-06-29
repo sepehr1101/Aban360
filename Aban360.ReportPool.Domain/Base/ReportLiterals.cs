@@ -44,5 +44,10 @@
         public static string WaterRequestSummary { get { return "خلاصه انشعاب آب واگذار شده"; } }
         public static string SewageRequestSummary { get { return "خلاصه انشعاب فاضلاب واگذار شده"; } }
 
+        public static string WaterRequestNonInstalledDetail { get { return "جزئیات انشعاب آب واگذار شده و نصب نشده"; } }
+        public static string SewageRequestNonInstalledDetail { get { return " جزئیات انشعاب فاضلاب واگذار شده و نصب نشده"; } }
+        public static string WaterRequestNonInstalledSummary { get { return "خلاصه انشعاب آب واگذار شده و نصب نشده"; } }
+        public static string SewageRequestNonInstalledSummary { get { return "خلاصه انشعاب فاضلاب واگذار شده و نصب نشده"; } }
+
     }
 }
