@@ -4,6 +4,6 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 {
     public interface IChangeMainInfoService
     {
-        Task<IEnumerable<ChangeMainInfoDto>> GetInfo(string billId);
+        Task<Dictionary<string, List<string>>> GetInfo(string billId);
     }
 }

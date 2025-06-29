@@ -73,9 +73,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 							FROM [CustomerWarehouse].dbo.Clients 
 							WHERE ToDayJalali IS NULL
 							  AND ZoneId=@ZoneId
-							  AND TRIM(ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber
-							  AND UsageId IN @UsageSellIds
-							  --AND UsageId2 IN @UsageConsumptionIds
+							  AND (@FromReadingNumber IS NULL OR @ToReadingNumber IS NULL OR TRIM(ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber)
+							  AND (@UsageSellIds IS NULL OR  UsageId IN @UsageSellIds)							  
+							 
+							  --AND TRIM(ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber
+							  --AND UsageId IN @UsageSellIds
+							  ----AND UsageId2 IN @UsageConsumptionIds
 						),
 						
 						-- تجمیعی قبض‌ها

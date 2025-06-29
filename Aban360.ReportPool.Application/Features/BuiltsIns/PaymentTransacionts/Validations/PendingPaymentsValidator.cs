@@ -13,29 +13,29 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             RuleFor(payment => payment)
                 .Must(input=>ValidationDate(input).IsValid).WithMessage(input=>ValidationDate(input).ErrorMessage);
 
-            RuleFor(payment => payment.FromAmount)
-             .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-             .NotNull().WithMessage(ExceptionLiterals.NotNull);
+            //RuleFor(payment => payment.FromAmount)
+            // .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+            // .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(payment => payment.ToAmount)
-             .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-             .NotNull().WithMessage(ExceptionLiterals.NotNull);
+            //RuleFor(payment => payment.ToAmount)
+            // .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+            // .NotNull().WithMessage(ExceptionLiterals.NotNull);
         
-            RuleFor(payment => payment.FromDebtPeriodCount)
-             .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-             .NotNull().WithMessage(ExceptionLiterals.NotNull);
+            //RuleFor(payment => payment.FromDebtPeriodCount)
+            // .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+            // .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(payment => payment.ToDebtPeriodCount)
-             .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-             .NotNull().WithMessage(ExceptionLiterals.NotNull);
+            //RuleFor(payment => payment.ToDebtPeriodCount)
+            // .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+            // .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(payment => payment.UsageConsumptionIds)
-             .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-             .NotNull().WithMessage(ExceptionLiterals.NotNull);
+            //RuleFor(payment => payment.UsageConsumptionIds)
+            // .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+            // .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(payment => payment.UsageSellIds)
-             .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-             .NotNull().WithMessage(ExceptionLiterals.NotNull);
+            //RuleFor(payment => payment.UsageSellIds)
+            // .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+            // .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(payment => payment.ZoneId)
              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)

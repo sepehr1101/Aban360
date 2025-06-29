@@ -18,10 +18,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
 
         [HttpPost]
         [Route("info")]//todo: change url
-        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<ChangeMainInfoDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<Dictionary<string, List<string>>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Info([FromBody] SearchInput searchInput, CancellationToken cancellationToken)
         {
-            IEnumerable<ChangeMainInfoDto> summary = await _changeMainInfoGetHandler.Handle(searchInput.Input, cancellationToken);
+            Dictionary<string, List<string>> summary = await _changeMainInfoGetHandler.Handle(searchInput.Input, cancellationToken);
             return Ok(summary);
         }
     }
