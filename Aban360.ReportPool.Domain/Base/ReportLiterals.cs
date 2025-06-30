@@ -3,6 +3,9 @@
     public static class ReportLiterals
     {
         public static string Report { get { return "گزارش"; } }
+        public static string RegisterDate { get { return "تاریخ ثبت"; } }
+        public static string ChangeDate { get { return "تاریخ تعویض"; } }
+
         public static string CustomerSearch { get { return $"{Report} جستجوی مشترک"; } }
         public static string UnconfirmedSubscribers{ get { return $"{Report} مشترکین ثبت قطعی نشده"; } }
         public static string PrepaymentAndCalculation{ get { return $"{Report} ریز محاسبه و پیش پرداخت"; } }
@@ -20,7 +23,7 @@
         public static string WaterPaymentReceivable { get { return $"{Report} وصولی های جاری و معوقه - آب بهاء"; } }
         public static string WaterUsageGrouped { get { return $"{Report} تفکیک کاربری - آب بهاء"; } }
         public static string Unpaid { get { return $"{Report} بدون پرداخت وصولی"; } }
-        public static string WaterMeterReplacements { get { return $"{Report} گزاش کنتور های تعویضی"; } }
+        public static string WaterMeterReplacements(string reason)=> $"{Report} گزاش کنتور های تعویضی بر اساس {reason}"; 
         public static string ModifiedBills { get { return $"{Report} "; } }//Todo: ادغام تسک 19 و 20
         public static string Unread { get { return $"{Report} بسته و مانع طی دوره"; } }
         public static string WithoutBill { get { return $"{Report} بدون صدور قبض"; } }
