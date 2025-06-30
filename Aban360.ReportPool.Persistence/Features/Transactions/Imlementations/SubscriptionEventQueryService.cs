@@ -20,6 +20,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         {
             string subscriptionDataQuery = GetSubscriptionEventsDataQuery();
             string subscriptionHeaderQuery = GetSubscriptionEventHeaderQuery();
+            string waterReplacementInHeaderQuery = GetWaterReplacementDateInHeaderQuery();
 
             IEnumerable<EventsSummaryOutputDataDto> data = await _sqlReportConnection.QueryAsync<EventsSummaryOutputDataDto>(subscriptionDataQuery, new { billId = billId });
             if (data.Any())
@@ -39,6 +40,9 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                 }
             }
             EventsSummaryOutputHeaderDto header = await _sqlReportConnection.QueryFirstAsync<EventsSummaryOutputHeaderDto>(subscriptionHeaderQuery, new { billId = billId });
+            WaterReplacementInfoOutputDto replacementInfo = await _sqlReportConnection.QueryFirstAsync<WaterReplacementInfoOutputDto>(waterReplacementInHeaderQuery, new { billId = billId, customerNumber = header.CustomerNumber, zoneId = header.ZoneId });
+            header.WaterReplacementDate = replacementInfo.WaterReplacementDate;
+            header.WaterReplacementNumber= replacementInfo.WaterReplacementNumber;
 
             var result = new ReportOutput<EventsSummaryOutputHeaderDto, EventsSummaryOutputDataDto>(ReportLiterals.SubscriptionEventSummary,header, data);
             
@@ -145,7 +149,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						'-' AS JobTitle,
                     	c.UsageTitle2 AS UsageTitle,
                     	c.CommercialCount+c.DomesticCount+c.OtherCount AS TotalUnit,
-                    	c.ContractCapacity,
+                    	c.ContractCapacity AS ContractualCapacity,
 						1 AS HasTag,
                     	c.EmptyCount AS EmptyUnit,
                     	c.FamilyCount AS HouseholdNumber,
@@ -158,11 +162,23 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	c.WaterInstallDate AS WaterInstallationDate,
                     	c.SewageInstallDate AS SewageInstallationDate,
 						'-' AS WaterReplacementDate,
-						'-' AS WaterReplacementNumber
+						'-' AS WaterReplacementNumber,
+                        c.ZoneId AS ZoneId
                     From [CustomerWarehouse].dbo.Clients c
                     Where
 						c.ToDayJalali IS NULL AND
 						c.BillId=@billId";
+        }
+        private string GetWaterReplacementDateInHeaderQuery()
+        {
+            return @"Select
+                    	m.ChangeDateJalali AS WaterReplacementDate,
+                    	m.MeterNumber AS WaterReplacementNumber
+                    From [CustomerWarehouse].dbo.MeterChange m
+                    Where
+                    	m.CustomerNumber=@customerNumber AND
+                    	m.ZoneId=@zoneId
+                    Order By m.RegisterDateJalali Desc";
         }
 
         private string GetSubscriptionEventsQuerybyZoneAndRegisterDay()

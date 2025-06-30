@@ -83,7 +83,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 						'' AS SewageRegistrationDate,
 						'' AS SiphonReplacementDate
 					from [CustomerWarehouse].dbo.Clients c
-					join [CustomerWarehouse].dbo.MeterChanges m on c.CustomerNumber=m.CustomerNumber and c.ZoneId=m.ZoneId
+					join [CustomerWarehouse].dbo.MeterChange m on c.CustomerNumber=m.CustomerNumber and c.ZoneId=m.ZoneId
 					join [CustomerWarehouse].dbo.Bills b on b.BillId=c.BillId
 					join [CustomerWarehouse].dbo.Payments p on p.BillTableId=b.Id
 					join [CustomerWarehouse].dbo.BillsEn be on c.BillId COLLATE SQL_Latin1_General_CP1_CI_AS = be.BillId COLLATE SQL_Latin1_General_CP1_CI_AS
