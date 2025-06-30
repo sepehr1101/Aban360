@@ -20,6 +20,7 @@
         public string WaterInstallationDate { get; set; }
         public string WaterReplacementDate { get; set; }
         public string WaterReplacementNumber { get; set; }
+        public int ZoneId { get; set; }
 
     }
 }
