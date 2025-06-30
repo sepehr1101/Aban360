@@ -74,16 +74,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 							WHERE ToDayJalali IS NULL
 							  AND ZoneId=@ZoneId
 							  AND (@FromReadingNumber IS NULL OR @ToReadingNumber IS NULL OR TRIM(ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber)
-							  AND (@UsageSellIds IS NULL OR  UsageId IN @UsageSellIds)							  
-							 
-							  --AND TRIM(ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber
-							  --AND UsageId IN @UsageSellIds
-							  ----AND UsageId2 IN @UsageConsumptionIds
+							  AND (@UsageSellIds IS NULL OR  UsageId IN @UsageSellIds)
+							  AND (@UsageConsumptionIds IS NULL OR  UsageId2 IN @UsageConsumptionIds)
 						),
 						
 						-- تجمیعی قبض‌ها
 						BillAgg AS (
-							SELECT ZoneId, CustomerNumber,
+							SELECT 
+								ZoneId,
+								CustomerNumber,
 								SUM(CASE WHEN RegisterDay < @FromDate THEN SumItems ELSE 0 END) AS BillBefore,
 								SUM(CASE WHEN RegisterDay BETWEEN @FromDate AND @ToDate THEN SumItems ELSE 0 END) AS BillBetween,
 								SUM(CASE WHEN RegisterDay > @ToDate THEN SumItems ELSE 0 END) AS BillAfter
@@ -97,10 +96,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 							SELECT ZoneId, CustomerNumber,
 								SUM(CASE WHEN RegisterDay < @FromDate 
 								THEN Amount ELSE 0 END) AS PaymentBefore,
-								SUM(CASE WHEN RegisterDay BETWEEN @FromDate AND @ToDate
+								SUM(CASE WHEN
+											RegisterDay BETWEEN @FromDate AND @ToDate
 											AND Amount BETWEEN @FromAmount AND @ToAmount 
-											THEN Amount ELSE 0 END) AS PaymentBetween,
-								SUM(CASE WHEN RegisterDay > @ToDate THEN Amount ELSE 0 END) AS PaymentAfter,
+									THEN Amount ELSE 0 END) AS PaymentBetween,
+								SUM(CASE WHEN 
+											RegisterDay > @ToDate 
+									THEN Amount ELSE 0 END) AS PaymentAfter,
 								MAX(RegisterDay) AS LastPaymentDate
 							FROM [CustomerWarehouse].dbo.Payments
 							WHERE ZoneId=@ZoneId
@@ -109,14 +111,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 						
 						-- شمارش قبض‌های ثبت‌شده بعد از آخرین پرداخت (با LEFT JOIN)
 						DebtAfterLastPayment AS (
-							SELECT b.ZoneId, b.CustomerNumber, COUNT(*) AS DebtPeriodsAfter
+							SELECT b.ZoneId, b.CustomerNumber, COUNT(1) AS DebtPeriodsAfter
 							FROM [CustomerWarehouse].dbo.Bills b
 							LEFT JOIN PaymentAgg p
 								ON b.ZoneId = p.ZoneId AND b.CustomerNumber = p.CustomerNumber
-							WHERE b.RegisterDay > ISNULL(p.LastPaymentDate, '0001/01/01')
+							WHERE 
+							  b.RegisterDay > ISNULL(p.LastPaymentDate, '0001/01/01')
 							  AND b.RegisterDay < @ToDate
 							GROUP BY b.ZoneId, b.CustomerNumber
-							HAVING COUNT(*) BETWEEN @FromDebtPeriodCount AND @ToDebtPeriodCount
+							HAVING COUNT(1) BETWEEN @FromDebtPeriodCount AND @ToDebtPeriodCount
 						)
 						
 						-- کوئری نهایی
@@ -133,8 +136,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 						LEFT JOIN PaymentAgg P
 							ON C.ZoneId = P.ZoneId AND C.CustomerNumber = P.CustomerNumber
 						LEFT JOIN DebtAfterLastPayment D
-							ON C.ZoneId = D.ZoneId AND C.CustomerNumber = D.CustomerNumber;
-						";
+							ON C.ZoneId = D.ZoneId AND C.CustomerNumber = D.CustomerNumber;";
         }
 
     }
