@@ -13,6 +13,7 @@
 
         public string UsageConsumptionTitle { get; set; }
         public string UsageSellTitle { get; set; }
+        public string UseStateTitle { get; set; }
 
         public short UnitDomesticWater { get; set; }
         public short NoneDomestic { get; set; }
@@ -64,5 +65,11 @@
         public string PaymentDateJalali { get; set; }
         public string PaymentMethod { get; set; }
 
+    }
+
+    public record WaterInvoicePaymentOutputDto
+    {
+        public string PaymentDateJalali { get; set; }
+        public string PaymentMethod { get; set; }
     }
 }

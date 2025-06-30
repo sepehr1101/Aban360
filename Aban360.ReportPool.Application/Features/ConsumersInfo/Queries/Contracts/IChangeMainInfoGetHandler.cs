@@ -4,6 +4,6 @@ namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contract
 {
     public interface IChangeMainInfoGetHandler
     {
-        Task<Dictionary<string, List<string>>> Handle(string billId, CancellationToken cancellationToken);
+        Task<ICollection<ChangeMainOutputDto>> Handle(string billId, CancellationToken cancellationToken);
     }
 }

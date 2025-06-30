@@ -22,7 +22,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             latestData.LatestMainChangeDate = await _sqlReportConnection.QueryFirstAsync<string>(latestMeterChangeDateQuery, new { billId = billId, customerNumber = latestData.CustomerNumber, zoneId = latestData.ZoneId });
             latestData.LatestTemporarilyDisconnectionBranch = await _sqlReportConnection.QueryFirstAsync<string>(latestDisconnectionBranchDateQuery, new { billId = billId });
             latestData.ConsumptionState = CalcConsumptionState(latestData.ConsumptionAverage, latestData.ContractualCapacity == 0 ? pattern : latestData.ContractualCapacity);
-            return latestData;
+           
+			return latestData;
         }
         private string GetLatestInfoQuery()
         {

@@ -22,7 +22,7 @@
         #endregion
 
         #region Sewage
-        public string  CommonSiphon { get; set; }//
+        public bool  CommonSiphon { get; set; }//
         public short  SiphonCount { get; set; }
         public string SiphonMaterialTitle { get; set; }
 

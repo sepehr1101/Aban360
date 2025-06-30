@@ -1,7 +1,7 @@
 ﻿using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
+using Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Contracts;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
-using Aban360.ReportPool.Persistence.Features.WaterInvoice.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
@@ -9,11 +9,11 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
     [Route("v1/water-invoice")]
     public class WaterInvoiceSummeryInfoController : BaseController
     {
-        private readonly IWaterInvoiceQueryService _waterInvoiceQueryService;
-        public WaterInvoiceSummeryInfoController(IWaterInvoiceQueryService waterInvoiceQueryService)
+        private readonly IWaterInvoiceHandler _waterInvoiceHandler;
+        public WaterInvoiceSummeryInfoController(IWaterInvoiceHandler waterInvoiceHandler)
         {
-            _waterInvoiceQueryService = waterInvoiceQueryService;
-            _waterInvoiceQueryService.NotNull(nameof(waterInvoiceQueryService));
+            _waterInvoiceHandler = waterInvoiceHandler;
+            _waterInvoiceHandler.NotNull(nameof(waterInvoiceHandler));
         }
 
         [HttpPost]
@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [ProducesResponseType(typeof(ApiResponseEnvelope<WaterInvoiceDto>), StatusCodes.Status200OK)]
         public IActionResult GetSummary([FromBody] SearchInput searchInput)
         {
-            WaterInvoiceDto waterInvoice = _waterInvoiceQueryService.Get();
+            WaterInvoiceDto waterInvoice = _waterInvoiceHandler.Handle();
             return Ok(waterInvoice);
         }
 
@@ -30,7 +30,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [ProducesResponseType(typeof(ApiResponseEnvelope<WaterInvoiceDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSummary2([FromBody] SearchInput searchInput)
         {
-            WaterInvoiceDto waterInvoice =await _waterInvoiceQueryService.Get(searchInput.Input);
+            WaterInvoiceDto waterInvoice =await _waterInvoiceHandler.Handle(searchInput.Input);
             return Ok(waterInvoice);
         }
     }
