@@ -135,9 +135,9 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	'' AS MeterInstallationBrokerTitle,
                     	'' AS WaterMeterInstallationMethodTitle,
                     	0 AS MeterLife,
-                    	N'سالم'  AS MeterStatusTitle,
+                    	''  AS MeterStatusTitle,
                     	'' AS WitnessMeter,
-                    	c.MainSiphonTitle AS CommonSiphon,
+                    	c.HasCommonSiphon AS CommonSiphon,
                     	c.Siphon200+c.Siphon150+c.Siphon100+c.Siphon125+c.Siphon8+c.Siphon7+c.Siphon6+c.Siphon5 AS SiphonCount,
                     	'' AS SiphonMaterialTitle,
                     	0 AS SiphonLife,
@@ -154,11 +154,11 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         private string GetBranchStatusQuery()
         {
             return @"select top 1 
-                    	b.TypeId
+                    	b.CounterStateTitle AS MeterStatusTitle
                     from [CustomerWarehouse].dbo.Bills b
                     where
                     	b.BillId=@billId AND
-                    	b.TypeId!='بسته مانع'
+                    	b.TypeId=N'قبض'
                     Order by b.RegisterDay desc";
         }
     }

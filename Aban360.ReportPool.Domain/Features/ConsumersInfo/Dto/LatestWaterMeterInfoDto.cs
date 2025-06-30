@@ -2,7 +2,36 @@
 {
     public record LatestWaterMeterInfoDto
     {
-        public string WaterMeterNumber { get; set; }//Todo : rename
-        public string  LatestDate { get; set; }
+        public string CustomerNumber { get; set; }
+        public string ZoneId { get; set; }
+        public int ContractualCapacity { get; set; }
+        public float ConsumptionAverage { get; set; }
+
+        //Latest Invoice Paid
+        public long WaterDebt { get; set; }
+        public long BranchDebt { get; set; }
+        public string LatestWaterPaid { get; set; }
+        public string ConsumptionState { get; set; }
+
+        //Latest Meter Status
+        public string MeterStateTitle { get; set; }
+        public string LatestMeterNumber { get; set; }
+        public int MeterLife { get; set; }
+        public string MeterReplacementDate { get; set; }
+        public string LatestMeterReading { get; set; }
+
+        //Latest Branch Status
+        public string UseStateTitle { get; set; }
+        public bool PossibilityEmptyUnit { get; set; }//todo
+        public string LatestTemporarilyDisconnectionBranch { get; set; }
+        public string BranchStatus { get; set; }
+        public bool CommonSiphon { get; set; }
+
+        //Other
+        public bool TagStatus { get; set; }
+        public int IsContaminated { get; set; }
+        public string LatestMainChangeDate { get; set; }
+
+
     }
 }
