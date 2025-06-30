@@ -20,27 +20,27 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         }
         private async Task<DebtDto?> GetWaterBillDebt(string billId)
         {
-            DebtDto? result = await _sqlConnection.QueryFirstOrDefaultAsync<DebtDto?>(GetWaterBillDebtQuery(), new { BillId = billId });
+            DebtDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<DebtDto?>(GetWaterBillDebtQuery(), new { BillId = billId });
             return result;
             string GetWaterBillDebtQuery()
             {
                 string queryOld = @"SELECT SUM(Amount) AS Debt FROM 
-                                (SELECt SumItems Amount from [172.18.12.60].CustomerWarehouse.dbo.Bills where TRIM(billId)=@BillId
+                                (SELECT SumItems Amount from CustomerWarehouse.dbo.Bills where TRIM(billId)=@BillId
                                 Union
-                                SELECT -1*Amount Amount from [172.18.12.60].CustomerWarehouse.dbo.Payments where TRIM(billId)=@BillId) X";
+                                SELECT -1*Amount Amount from CustomerWarehouse.dbo.Payments where TRIM(billId)=@BillId) X";
 
-                string query = "SELECT Debt FROM [172.18.12.60].CustomerWarehouse.dbo.WaterDebt where BillId =@BillId";
+                string query = "SELECT Debt FROM CustomerWarehouse.dbo.WaterDebt where BillId =@BillId";
                 return query;
             }
         }
         private async Task<DebtDto>? GetServiceLinkDebt(string billId)
         {
-            DebtDto? result = await _sqlConnection.QueryFirstOrDefaultAsync<DebtDto?>(GetServiceLinkDebtQuery(), new { BillId = billId });
+            DebtDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<DebtDto?>(GetServiceLinkDebtQuery(), new { BillId = billId });
             return result;
             string GetServiceLinkDebtQuery()
             {
                 string query = @"SELECT BedehiAll AS Debt
-                                 FROM [172.18.12.60].[CustomerWarehouse].[dbo].[VosoolEnsheabAlert] 
+                                 FROM [CustomerWarehouse].[dbo].[VosoolEnsheabAlert] 
                                  WHERE BillId=@BillId";
                 return query;
             }
