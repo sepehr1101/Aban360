@@ -20,21 +20,35 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
         public async Task<WaterInvoiceDto> Get(string billId)
         {
             string getWaterInvoiceQuery = GetWaterInvoiceQuery();
-            string getItemValueQuery = GetItemValueQuery();
+            //string getItemValueQuery = GetItemValueQuery();
+            string getItemValueQuery = GetItemsQuery();
             string getPreviousConsumptionQuery = GetPreviousConsumptionQuery();
-            string getHeadquarterQuery= GetHeadquarterQuery();
+            string getHeadquarterQuery = GetHeadquarterQuery();
+            string getPaymentQuery = GetPaymentInfoQuery();
 
             WaterInvoiceDto waterInvoice = await _sqlReportConnection.QueryFirstAsync<WaterInvoiceDto>(getWaterInvoiceQuery, new { billId = billId });
-            IEnumerable<LineItemsDto> lineitems = await _sqlReportConnection.QueryAsync<LineItemsDto>(GetItemValueQuery(), new { billId = billId });
+            IEnumerable<LineItemsDto> lineitems = await _sqlReportConnection.QueryAsync<LineItemsDto>(getItemValueQuery, new { billId = billId });
             IEnumerable<PreviousConsumptionsDto> previousConsumptions = await _sqlReportConnection.QueryAsync<PreviousConsumptionsDto>(getPreviousConsumptionQuery, new { billId = billId });
             string headquarterTitle = await _sqlReportConnection.QueryFirstAsync<string>(GetHeadquarterQuery(), new { zoneId = waterInvoice.ZoneId });
-          
+            WaterInvoicePaymentOutputDto? paymentInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterInvoicePaymentOutputDto>(getPaymentQuery, new { billId = billId, payId = waterInvoice.PayId == null ? "0" : waterInvoice.PayId });
+
             waterInvoice.LineItems = lineitems.ToList();
             waterInvoice.PreviousConsumptions = previousConsumptions.ToList();
-            waterInvoice.Sum=lineitems.Select(i=> i.Amount).Sum();
+            waterInvoice.Sum = lineitems.Select(i => i.Amount).Sum();
             waterInvoice.Headquarters = headquarterTitle;
-            waterInvoice.Duration = Convert.ToInt16((Convert.ToDateTime(waterInvoice.CurrentMeterDateJalali) - Convert.ToDateTime(waterInvoice.PreviousMeterDateJalali)).Days);
-
+            if (waterInvoice.CurrentMeterDateJalali == null || waterInvoice.CurrentMeterDateJalali.Trim() == string.Empty ||
+                waterInvoice.PreviousMeterDateJalali == null || waterInvoice.PreviousMeterDateJalali.Trim() == string.Empty)
+            {
+                waterInvoice.Duration = 0;
+            }
+            else
+            {
+                waterInvoice.Duration = Convert.ToInt16((Convert.ToDateTime(waterInvoice.CurrentMeterDateJalali) - Convert.ToDateTime(waterInvoice.PreviousMeterDateJalali)).Days);
+            }
+            waterInvoice.PaymentDateJalali = paymentInfo!=null? paymentInfo.PaymentDateJalali:"";
+            waterInvoice.PaymentMethod = paymentInfo!=null ? paymentInfo.PaymentMethod:"";
+            waterInvoice.IsPayed = paymentInfo != null ? true : false;
+            waterInvoice.Description = paymentInfo != null ? "پرداخت شد" : "پرداخت نشد";
 
             return waterInvoice;
         }
@@ -123,33 +137,39 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                     	c.PostalCode AS PostalCode,
                     	c.UsageTitle AS UsageSellTitle,
                     	c.UsageTitle2 AS UsageConsumptionTitle,
+						c.BranchType AS UseStateTitle,
                     	c.DomesticCount AS UnitDomesticWater,
-                    	0 AS NoneDomestic,--todo
+                    	c.CommercialCount+c.OtherCount AS NoneDomestic,
                     	c.EmptyCount AS EmptyUnit,
                     	c.UsageId AS UsageId,
                     	c.MeterSerialBody AS BodySerial,
                     	c.WaterDiameterId AS MeterDiameterId,
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
                     	b.CounterStateTitle AS CounterTitle,
-                    	'123456789' AS ConsumerNumber,--todo
+						c.MainSiphonTitle AS SiphonDiameterTitle,
+                    	c.CustomerNumber AS ConsumerNumber,
                     	c.ReadingNumber AS ReadingNumber,
-                    	b.RegisterDay AS CurrentMeterDateJalali,--todo
+                    	b.NextDay AS CurrentMeterDateJalali,
                     	b.PreviousDay AS PreviousMeterDateJalali,
                     	--Duration Calc in c#
-                    	b.NextNumber-b.PreviousNumber AS CurrentMeterNubmer,--todo
-                    	b.PreviousNumber AS PreviousMeterNumber,
+						b.NextNumber AS CurrentMeterNubmer,
+						b.NextNumber AS PreviousMeterNumber,
                     	b.Consumption AS ConsumptionM3,--todo
-                    	b.Consumption AS ConsumptionLiter,--todo
+                    	(b.Consumption)*1000 AS ConsumptionLiter,
                     	b.ConsumptionAverage AS ConsumptionAverage,
                     	--LineItems in secord query
-                    	--sum/discount/debtororcreditoramount in c#
+						b.SumItems AS Sum,
+						(b.ItemOff1 + b.ItemOff2 + b.ItemOff3 + b.ItemOff4 + b.ItemOff5 + b.ItemOff6 + b.ItemOff7 + b.ItemOff8 + b.ItemOff9 + b.ItemOff10 + b.ItemOff11 + b.ItemOff12 + b.ItemOff13 + b.ItemOff14 + b.ItemOff15 + b.ItemOff16 + b.ItemOff17) AS DisCount,
+						b.PreDebt AS DebtorOrCreditorAmount,
                     	b.Payable AS PayableAmount,
                     	b.Deadline AS PaymentDeadline,
                     	--consumptionState in c#
                     	--previousConsumption in secod query
                     	b.BillId AS BillId,
-                    	'123456789' AS PayId,--todo
-                    	'15236200102510141123959102' AS BarCode,
+                    	b.PayId AS PayId,
+                    	CONCAT(RIGHT(REPLICATE('0', 13) + Cast(ISNULL(c.BillId,0)As varchar), 13),
+							   RIGHT(REPLICATE('0', 13) + Cast(ISNULL(b.PayId,0)As varchar), 13))
+						AS BarCode,
                     	N'--' AS PaymentAmountText,
                     	1 As IsPayed,--todo
                     	N'--' AS Description,
@@ -159,10 +179,34 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                     join [CustomerWarehouse].dbo.Clients c on b.BillId=c.BillId
                     Where 
                     	b.BillId=@billId AND
-                    	b.NextNumber=0
+						b.TypeId In (N'قبض', N'علی الحساب')
                     order by PreviousDay desc";
         }
 
+        private string GetItemsQuery()
+        {
+            return @"SELECT v.Item, v.Amount
+                     FROM (
+                         SELECT TOP 1 *
+                         FROM [CustomerWarehouse].dbo.Bills
+                         WHERE BillId = '116416' AND TypeId IN (N'قبض', N'علی الحساب')
+                         ORDER BY PreviousDay DESC
+                     ) b
+                     CROSS APPLY (
+                         VALUES
+                             (N'بهای آب مصرفی', b.Item1 + b.Item3 + b.Item7 + b.Item9 + b.Item8 + b.Item11 + b.Item12 + b.Item13 + b.Item6),
+                             (N'بهای کارمزد دفع فاضلاب', b.Item2 + b.Item4 + b.Item14 + b.Item15),
+                             (N'مالیات',b.Item5),
+                             (N'تکالیف قانونی',b.Item10 + b.Item16 + b.Item17),
+                             (N'تخفیف',               
+                                 ISNULL(b.ItemOff1, 0) + ISNULL(b.ItemOff2, 0) + ISNULL(b.ItemOff3, 0) + ISNULL(b.ItemOff4, 0) +
+                                 ISNULL(b.ItemOff5, 0) + ISNULL(b.ItemOff6, 0) + ISNULL(b.ItemOff7, 0) + ISNULL(b.ItemOff8, 0) +
+                                 ISNULL(b.ItemOff9, 0) + ISNULL(b.ItemOff10, 0) + ISNULL(b.ItemOff11, 0) + ISNULL(b.ItemOff12, 0) +
+                                 ISNULL(b.ItemOff13, 0) + ISNULL(b.ItemOff14, 0) + ISNULL(b.ItemOff15, 0) + ISNULL(b.ItemOff16, 0) +
+                                 ISNULL(b.ItemOff17, 0)
+                             )
+                     ) v(Item, Amount)";
+        }
         private WaterInvoiceDto GetWaterInvoice()
         {
             WaterInvoiceDto waterInvoice = new WaterInvoiceDto()
@@ -246,5 +290,18 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             };
             return waterInvoice;
         }
+        private string GetPaymentInfoQuery()
+        {
+            return @"Select 
+                    	p.PaymentGateway AS PaymentMethod,
+                    	p.RegisterDay AS PaymentDateJalali
+                    From [CustomerWarehouse].dbo.Payments p
+                    Where 
+                    	p.BillId='116416' AND
+                    	p.PayId=''
+                    Order By
+                    	p.RegisterDay Desc";
+        }
+
     }
 }

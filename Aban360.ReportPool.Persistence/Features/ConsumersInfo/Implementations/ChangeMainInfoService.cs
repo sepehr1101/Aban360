@@ -12,7 +12,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         public ChangeMainInfoService(IConfiguration configuration)
             : base(configuration) { }
 
-        public async Task<Dictionary<string, List<string>>> GetInfo(string billId)
+        public async Task<ICollection<ChangeMainOutputDto>> GetInfo(string billId)
         {
             string clientData = GetClientsDataQuery();
             IEnumerable<ClientDto> clients = await _sqlReportConnection.QueryAsync<ClientDto>(clientData, new { billId = billId });
@@ -20,7 +20,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             return result;
         }
 
-        private Dictionary<string, List<string>> GetChangeData(IEnumerable<ClientDto> clients)
+        private ICollection<ChangeMainOutputDto> GetChangeData(IEnumerable<ClientDto> clients)
         {
             var fieldMap = new Dictionary<string, string>
             {
@@ -94,7 +94,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                 ["IsNonPermanent"] = "غیر دائم",
                 ["MainSiphonTitle"] = "عنوان سیفون اصلی"
             };
-            var all=new Dictionary<string, List<string>>();
+            //var all=new Dictionary<string, List<string>>();
+            ICollection<ChangeMainOutputDto> all=new List<ChangeMainOutputDto>();
 
             for (int i = 1; i < clients.Count(); i++)
             {
@@ -122,9 +123,12 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                         differences.Add($"{persianName}: {oldValue} → {newValue}");
                     }
                 }
+                all.Add(new ChangeMainOutputDto()
+                {
+                    ChangeDate = clients.ElementAt(i).ToDayJalali ?? DateTime.Now.ToShortPersianDateString(),
+                    ChangeDetail = differences
+                });
 
-                all.Add(clients.ElementAt(i).ToDayJalali ?? DateTime.Now.ToShortPersianDateString()
-                        , differences);
             }
 
             return all;
