@@ -111,7 +111,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	c.Address AS Address,
                     	'' AS CounterState,
                     	'' AS CounterStatus,
-                    	c.ContractCapacity,
+                    	c.ContractCapacity AS ContractualCapacity,
                     	c.FamilyCount AS HouseholdNumber,
                     	c.DomesticCount AS UnitDomesticWater,
                     	c.DomesticCount AS UnitDomesticSewage,
@@ -120,7 +120,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	c.OtherCount AS UnitOtherWater,
                     	c.OtherCount AS UnitOtherSewage,
                     	c.EmptyCount AS EmptyUnit,
-                    	'-' as ConstructionType,
+                    	c.BranchType as ConstructionType,
                     	c.UsageTitle2 AS UsageConsumption,
                     	c.UsageTitle AS UsageSell,
                     	c.FirstName+' '+c.SureName AS FullName,
@@ -139,7 +139,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	c.PostalCode ,
                     	c.MobileNo AS MobileNumber,
                         c.DiscountTypeTitle AS DiscountType,
-                        c.WaterDiameterTitle AS MeterDiameterTitle
+                        c.WaterDiameterTitle AS MeterDiameterTitle,
+                        c.MainSiphonTitle AS SiphonDiameterTitle
                     from [CustomerWarehouse].dbo.Clients c
                     where c.BillId=@id 
                     and c.ToDayJalali is null";

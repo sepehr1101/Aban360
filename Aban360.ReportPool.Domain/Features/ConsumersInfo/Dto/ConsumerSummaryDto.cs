@@ -43,6 +43,7 @@
         public string? MobileNumber { get; set; }
         public string DiscountType { get; set; }
         public string MeterDiameterTitle { get; set; }
+        public string SiphonDiameterTitle { get; set; }
 
     }
 

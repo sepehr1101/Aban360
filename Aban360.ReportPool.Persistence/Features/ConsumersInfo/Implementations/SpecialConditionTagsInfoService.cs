@@ -30,16 +30,17 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         {
             return @"select 
                      	c.BranchType AS HandoverTitle,
-                     	'' AS DiscountTypeTitle, --todo:
+                     	c.DiscountTypeTitle AS DiscountTypeTitle, --todo:
                      	c.DeletionStateTitle AS UsageStateTitle ,
-                     	c.IsGovermental AS SpecialBranch,
+                     	c.IsSpecial AS SpecialBranch,
                      	c.EmptyCount AS EmptyUnit,
                      	c.FamilyCount AS HouseholderNumber,
                      	0 AS NonSequentialFlag
                      
                      from [CustomerWarehouse].dbo.Clients c
-                     where c.BillId=@billId
-                     and c.ToDayJalali is null";
+                     where
+						c.BillId=@billId AND
+						c.ToDayJalali is null";
 
         }
          private string GetSpecialConditionTagsSummayDtoQuery()
