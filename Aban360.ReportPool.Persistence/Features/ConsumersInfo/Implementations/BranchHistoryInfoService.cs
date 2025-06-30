@@ -59,34 +59,42 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 
 		private string GetBranchHistorySummaryDtoWithClientDbQuery()
 		{
-			return @"select 
+			return @"select Top 1
 						c.WaterRequestDate , 
 						c.WaterInstallDate AS WaterInstallationDate,
-						'' AS WaterRegistrationDate,
-						'' AS WaterReplacementDate,
+						c.RegisterDayJalali AS WaterRegistrationDate,
+						m.ChangeDateJalali AS WaterReplacementDate,
 						'' AS GuaranteeDate,
-						'' AS LastTemporaryDisconnectionDate,
+						Case	
+							When b.BranchType=N'کمیته امداد' Then N'کمیته امداد'	
+							When b.BranchType=N'بهزیستی' Then N'بهزیستی'
+						End LastTemporaryDisconnectionDate,
 						'' AS LastReconnectionDate,
 						'' AS WaterSubscriptionCancellationDate,
-						'' AS LastMeterReadingDate,--todo: join
-						'' AS LastPaymentDate,--todo: join
-						(select top(1)client.ToDayJalali 
-							from [CustomerWarehouse].dbo.Clients client
-							where client.BillId=@billId 
-							and client.ToDayJalali is not null
-							order by client.ToDayJalali desc
-						) AS LattestChangeMianInfoDate,
-						'' AS LastWaterBillRefundDate,
-						'' AS LastSubscriptionRefundDate,
+						b.RegisterDay AS LastMeterReadingDate,
+						p.RegisterDay AS LastPaymentDate,
+						c.RegisterDayJalali AS LattestChangeMianInfoDate,
+						b.TypeId AS LastWaterBillRefundDate,--اخرین برگشتی اب بها
+						b.RegisterDay AS LastSubscriptionRefundDate,--حق انشعاب
 						'' AS HouseholdCountStartDate,
 						'' AS HouseholdCountEndDate,
 						c.SewageRequestDate SewageRequestDate,
 						c.SewageInstallDate AS SewageInstallationDate,
-						'' AS SewageRequestDate,
+						'' AS SewageRegistrationDate,
 						'' AS SiphonReplacementDate
 					from [CustomerWarehouse].dbo.Clients c
-					where c.BillId=@billId
-					and c.ToDayJalali is null";
+					join [CustomerWarehouse].dbo.MeterChanges m on c.CustomerNumber=m.CustomerNumber and c.ZoneId=m.ZoneId
+					join [CustomerWarehouse].dbo.Bills b on b.BillId=c.BillId
+					join [CustomerWarehouse].dbo.Payments p on p.BillTableId=b.Id
+					join [CustomerWarehouse].dbo.BillsEn be on c.BillId COLLATE SQL_Latin1_General_CP1_CI_AS = be.BillId COLLATE SQL_Latin1_General_CP1_CI_AS
+					where 
+						c.BillId=@billId AND
+					    c.ToDayJalali is null 
+					Order by
+						c.RegisterDayJalali Desc,
+						m.RegisterDateJalali Desc ,
+						b.RegisterDay Desc,
+						be.RegisterDay Desc";
 		}
     
     }

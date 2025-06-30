@@ -57,5 +57,7 @@
         public static string WaterDistanceRequestInstallationSummary { get { return "خلاصه فاصله واگذار تا نصب انشعاب آب"; } }
         public static string SewageDistanceRequesteInstallationSummary { get { return "خلاصه فاصله واگذار تا نصب انشعاب فاضلاب"; } }
 
+        public static string SendSmsToMobile { get { return $"{Report} پیامک ارسالی به مشترک"; } }
+
     }
 }

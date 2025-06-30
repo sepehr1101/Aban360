@@ -27,15 +27,13 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                 data = data
                     .OrderBy(i => i.RegisterDate);
 
-                data.ForEach(summary => summary.Remained = (summary.CreditAmount - summary.DebtAmount).GetValueOrDefault());
                 long lastRemained = 0;
                 for (int i = 0; i < data.Count(); i++)
                 {
                     lastRemained = lastRemained +
                                    (data.ElementAt(i).DebtAmount.Value -
                                    data.ElementAt(i).CreditAmount);
-                    var s = data.ElementAt(i).DebtAmount.Value;
-                    var ss = data.ElementAt(i).CreditAmount;
+                
 
                     data.ElementAt(i).Remained = lastRemained;
                 }
