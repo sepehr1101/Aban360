@@ -39,7 +39,6 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [HttpPost]
         [Route("latest-debt")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<LatestDebtDto>), StatusCodes.Status200OK)]
-        [AllowAnonymous]
         public async Task<IActionResult> GetLatestDebt([FromBody] SearchInput searchInput)
         {
             LatestDebtDto latestDebtDto= await _latestDebtService.GetLatestDebt(searchInput.Input);

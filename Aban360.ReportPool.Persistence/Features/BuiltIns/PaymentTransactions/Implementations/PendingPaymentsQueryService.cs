@@ -29,7 +29,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ToAmount = input.ToAmount,
                 FromDebtPeriodCount = input.FromDebtPeriodCount,
                 ToDebtPeriodCount = input.ToDebtPeriodCount,
-                UsageConsumptionIds =  input.UsageConsumptionIds,
+                //UsageConsumptionIds =  input.UsageConsumptionIds,
                 UsageSellIds = input.UsageSellIds,
                 ZoneId = input.ZoneId
             };
@@ -74,8 +74,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 							WHERE ToDayJalali IS NULL
 							  AND ZoneId=@ZoneId
 							  AND (@FromReadingNumber IS NULL OR @ToReadingNumber IS NULL OR TRIM(ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber)
-							  AND (@UsageSellIds IS NULL OR  UsageId IN @UsageSellIds)
-							  AND (@UsageConsumptionIds IS NULL OR  UsageId2 IN @UsageConsumptionIds)
+							  AND (@UsageSellIds IS NULL OR UsageId IN @UsageSellIds)
+							  --AND (@UsageConsumptionIds IS NULL OR UsageId2 IN @UsageConsumptionIds)
 						),
 						
 						-- تجمیعی قبض‌ها
@@ -138,6 +138,5 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 						LEFT JOIN DebtAfterLastPayment D
 							ON C.ZoneId = D.ZoneId AND C.CustomerNumber = D.CustomerNumber;";
         }
-
     }
 }
