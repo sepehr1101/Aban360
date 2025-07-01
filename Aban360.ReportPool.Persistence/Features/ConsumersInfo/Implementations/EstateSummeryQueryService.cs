@@ -1,4 +1,5 @@
-﻿using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+﻿using Aban360.Common.Db.Exceptions;
+using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Base;
 using Dapper;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +16,8 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
         {
             string estateQuery = GetEstateSummeryDtoQuery();
             IEnumerable<ResultEstateDto> result = await _sqlConnection.QueryAsync<ResultEstateDto>(estateQuery, new { id = billId });
+            if (!result.Any())
+                throw new InvalidIdException(); 
 
             return result;
         }

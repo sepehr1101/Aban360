@@ -1,4 +1,5 @@
-﻿using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+﻿using Aban360.Common.Db.Exceptions;
+using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 using Dapper;
@@ -17,6 +18,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
            // string summaryQuery = GetConsumerSummaryDtoQuery();
             string summaryQuery = GetConsumerSummaryDtoWithClientDbQuery();
             ConsumerSummaryDto? summaryInfo = await _sqlReportConnection.QuerySingleOrDefaultAsync<ConsumerSummaryDto>(summaryQuery, new { id = billId });
+            if (summaryInfo == null)
+                throw new InvalidIdException();
 
             string tagQuery = GetWaterMeterTagsQuery();
             IEnumerable<string> tags = await _sqlConnection.QueryAsync<string>(tagQuery, new { id = billId });

@@ -2,6 +2,7 @@
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Features.WaterInvoice.Contracts;
 using Dapper;
+using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
@@ -49,7 +50,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             waterInvoice.PaymentMethod = paymentInfo!=null ? paymentInfo.PaymentMethod:"";
             waterInvoice.IsPayed = paymentInfo != null ? true : false;
             waterInvoice.Description = paymentInfo != null ? "پرداخت شد" : "پرداخت نشد";
-
+            waterInvoice.PaymenetAmountText=waterInvoice.PayableAmount.NumberToText(Language.Persian);
             return waterInvoice;
         }
 

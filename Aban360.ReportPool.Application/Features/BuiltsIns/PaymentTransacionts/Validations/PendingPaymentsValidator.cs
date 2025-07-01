@@ -37,7 +37,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             // .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
             // .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(payment => payment.ZoneId)
+            RuleFor(payment => payment.ZoneIds)
              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
              .NotNull().WithMessage(ExceptionLiterals.NotNull);
         }

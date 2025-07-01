@@ -1,4 +1,6 @@
 ﻿using Aban360.Common.Db.Dapper;
+using Aban360.Common.Db.Exceptions;
+using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 using Dapper;
@@ -16,11 +18,30 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             string latestInfoQuery = GetLatestInfoQuery();
             string latestMeterChangeDateQuery = GetMeterChangeNumberQuery();
             string latestDisconnectionBranchDateQuery = GetLatestDisconnectionBranchQuery();
+			string waterDebtQuery = GetWaterDebtQuery();
+			string latestPaidQuery = GetLatestPaidQuery();
+            string branchDebtQuery= GetBranchDebtQuery();
+            string billsDataQuery = GetBillsDataQuery();
             double pattern = 12.5;
 
-            LatestWaterMeterInfoDto latestData = await _sqlReportConnection.QueryFirstAsync<LatestWaterMeterInfoDto>(latestInfoQuery, new { billId = billId });
-            latestData.LatestMainChangeDate = await _sqlReportConnection.QueryFirstAsync<string>(latestMeterChangeDateQuery, new { billId = billId, customerNumber = latestData.CustomerNumber, zoneId = latestData.ZoneId });
-            latestData.LatestTemporarilyDisconnectionBranch = await _sqlReportConnection.QueryFirstAsync<string>(latestDisconnectionBranchDateQuery, new { billId = billId });
+            LatestWaterMeterInfoDto latestData = await _sqlReportConnection.QueryFirstOrDefaultAsync<LatestWaterMeterInfoDto>(latestInfoQuery, new { billId = billId });
+            if (latestData == null)
+            {
+                throw new InvalidIdException();
+            }
+            
+            
+            LatestWaterMeterBillDataOutputDto LatestBillData = await _sqlReportConnection.QueryFirstOrDefaultAsync<LatestWaterMeterBillDataOutputDto>(billsDataQuery, new { billId = billId });
+            latestData.ConsumptionAverage = LatestBillData.ConsumptionAverage;
+            latestData.MeterStateTitle= LatestBillData.MeterStatusTitle;
+            latestData.LatestMeterNumber = LatestBillData.LatestMeterNumber;
+            latestData.LatestMeterReading=LatestBillData.LatestMeterReading;
+            
+            latestData.WaterDebt = await _sqlReportConnection.QueryFirstOrDefaultAsync<long>(waterDebtQuery, new { billId=billId });
+			latestData.LatestWaterPaid=await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(latestPaidQuery,new { billId=billId });
+			latestData.BranchDebt=await _sqlReportConnection.QueryFirstOrDefaultAsync<long>(branchDebtQuery,new {billId=billId});
+            latestData.LatestMainChangeDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(latestMeterChangeDateQuery, new { billId = billId, customerNumber = latestData.CustomerNumber, zoneId = latestData.ZoneId });
+            latestData.LatestTemporarilyDisconnectionBranch = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(latestDisconnectionBranchDateQuery, new { billId = billId });
             latestData.ConsumptionState = CalcConsumptionState(latestData.ConsumptionAverage, latestData.ContractualCapacity == 0 ? pattern : latestData.ContractualCapacity);
            
 			return latestData;
@@ -30,18 +51,10 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             return @"Select top 1
 						c.ZoneId AS ZoneId,
 						c.CustomerNumber AS CustomerNumber,
-						b.ConsumptionAverage AS ConsumptionAverage,
-						b.ContractCapacity AS ContractualCapacity,
-						b.ZoneId,
-						w.Debt AS WaterDebt,
-						v.BedehiAll AS BranchDebt,
-						p.RegisterDay AS LatestWaterPaid,
+						c.ContractCapacity AS ContractualCapacity,						
 						' ' AS ConsumptionState,--todo
-						b.CounterStateTitle AS MeterStatusTitle,
-						b.NextNumber AS LatestMeterNumber,
 						0 AS MeterLife,
 						' ' AS MeterReplacementDate,--complete in other query string
-						b.NextDay AS LatestMeterReading,
 						c.BranchType AS UseStateTitle,
 						0 AS PossibilityEmptyUnit,
 						' ' AS LatestTemporarilyDisconnectionBranch,--todo
@@ -51,19 +64,45 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 						0 AS IsContaminated,
 						c.RegisterDayJalali AS LatestMainChangeDate
 					From [CustomerWarehouse].dbo.Clients c
-					Join [CustomerWarehouse].dbo.Bills b on c.BillId=b.BillId
-					Join [CustomerWarehouse].dbo.Payments p on p.BillTableId=b.Id
-					Join [CustomerWarehouse].dbo.WaterDebt w on c.BillId=w.BillId
-					Join [CustomerWarehouse].dbo.VosoolEnsheabAlert v on c.BillId=b.BillId
 					Where
-						c.BillId=@billId AND
-						b.TypeId=N'قبض'
+						c.BillId=@billId
 					Order by 
-						c.RegisterDayJalali Desc,
-						b.RegisterDay Desc,
-						p.RegisterDay Desc";
+						c.RegisterDayJalali Desc";
         }
+		private string GetWaterDebtQuery()
+		{
+			return @"Select Top 1 w.Debt
+					 From [CustomerWarehouse].dbo.WaterDebt w
+					 Where w.BillId=@billId";
 
+        }
+		private string GetLatestPaidQuery()
+		{
+			return @"Select Top 1 p.RegisterDay
+				     From [CustomerWarehouse].dbo.Payments p
+				     Where p.BillId=@billId
+				     Order By p.RegisterDay";
+
+        }
+        private string GetBranchDebtQuery()
+        {
+            return @"Select v.BedehiAll
+                     From [CustomerWarehouse].dbo.VosoolEnsheabAlert v
+                     Where v.BillId=@billId";
+        }
+        private string GetBillsDataQuery()
+        {
+            return @"Select top 1
+                    	b.ConsumptionAverage AS ConsumptionAverage,
+                    	b.CounterStateTitle AS MeterStatusTitle,
+                    	b.NextNumber AS LatestMeterNumber,
+                    	b.NextDay AS LatestMeterReading
+                    From [CustomerWarehouse].dbo.Bills b
+                    Where 
+                    	b.BillId=@billId AND
+                    	b.TypeId=N'قبض'
+                    Order By b.RegisterDay Desc";
+        }
         private string GetMeterChangeNumberQuery()
         {
             return @"Select	
@@ -83,7 +122,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 						c.RegisterDayJalali
 					From [CustomerWarehouse].dbo.Clients c
 					Where 
-						c.BillId='52216419' AND
+						c.BillId=@billId AND
 						c.DeletionStateTitle=N'حذف موقت'";
 
         }

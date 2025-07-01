@@ -6,11 +6,11 @@
         public string? ToReadingNumber { get; set; }
         public string FromDateJalali { get; set; }
         public string ToDateJalali { get; set; }
-        public string? FromAmount { get; set; }
-        public string? ToAmount { get; set; }
+        public long? FromAmount { get; set; }
+        public long? ToAmount { get; set; }
         public int? FromDebtPeriodCount { get; set; }
         public int? ToDebtPeriodCount { get; set; }
-        public string ZoneTitle { get; set; }
+        public int ZoneCount { get; set; }
         public int RecordCount { get; set; }
         public long TotalDebtPeriodCount { get; set; }
         public long TotalBeginDebt { get; set; }

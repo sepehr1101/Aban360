@@ -1,4 +1,5 @@
-﻿using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+﻿using Aban360.Common.Db.Exceptions;
+using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 using Dapper;
@@ -16,6 +17,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             //string individualsQuery = GetIndividualsSummayDtoQuery();
             string individualsQuery = GetIndividualsSummayDtoWithClientDbQuery();
             IEnumerable<EstatesInfoDto> result = await _sqlReportConnection.QueryAsync<EstatesInfoDto>(individualsQuery, new { billId });
+            if (!result.Any())
+                throw new InvalidIdException();
 
             return result;
         }

@@ -1,4 +1,5 @@
-﻿using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+﻿using Aban360.Common.Db.Exceptions;
+using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 using Dapper;
@@ -16,6 +17,10 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         {
             string clientData = GetClientsDataQuery();
             IEnumerable<ClientDto> clients = await _sqlReportConnection.QueryAsync<ClientDto>(clientData, new { billId = billId });
+           if (!clients.Any())
+            {
+                throw new InvalidIdException();
+            }
             var result=GetChangeData(clients);
             return result;
         }
