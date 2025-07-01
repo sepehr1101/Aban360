@@ -1,6 +1,7 @@
 ﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -24,11 +25,11 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
         }
 
         [HttpGet, HttpPost]
-        [Route("single/{billId}")]
+        [Route("single")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<SubscriptionAssignmentGetDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetSingle(string billId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetSingle([FromBody]SearchInput input, CancellationToken cancellationToken)
         {
-            SubscriptionAssignmentGetDto subscriptionAssignment= await _getSingleHandler.Handle(billId, cancellationToken);
+            SubscriptionAssignmentGetDto subscriptionAssignment= await _getSingleHandler.Handle(input.Input, cancellationToken);
             return Ok(subscriptionAssignment);
         }
     }
