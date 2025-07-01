@@ -89,13 +89,13 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 						c.RegisterDayJalali AS LattestChangeMianInfoDate,
 						'' AS HouseholdCountStartDate,
 						'' AS HouseholdCountEndDate,
-						c.SewageRequestDate SewageRequestDate,
+						c.SewageRequestDate AS SewageRequestDate,
 						c.SewageInstallDate AS SewageInstallationDate,
 						'' AS SewageRegistrationDate,
 						'' AS SiphonReplacementDate
 					from [CustomerWarehouse].dbo.Clients c
 					where 
-						c.BillId='116416' AND
+						c.BillId=@billId
 					    c.ToDayJalali is null 
 					Order by
 						c.RegisterDayJalali Desc";
