@@ -48,7 +48,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         private string GetWaterDistanceRequestInstallationQuery()
         {
             return @"Select	
-                    	c.UsageTitle2 AS UsageTitle,
+                    	c.UsageTitle AS UsageTitle,
 						ROUND(AVG(CONVERT(float, DATEDIFF(DAY,[CustomerWarehouse].dbo.PersianToMiladi(c.WaterRequestDate), [CustomerWarehouse].dbo.PersianToMiladi(c.WaterInstallDate)))), 2) AS DistanceAverage
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
@@ -59,12 +59,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.WaterInstallDate BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds
                     Group BY
-                    	c.UsageTitle2";
+                    	c.UsageTitle";
         }
         private string GetSewageDistanceRequestInstallationQuery()
         {
             return @"Select	
-                    	c.UsageTitle2 AS UsageTitle,
+                    	c.UsageTitle AS UsageTitle,
 						ROUND(AVG(CONVERT(float, DATEDIFF(DAY, [CustomerWarehouse].dbo.PersianToMiladi(c.SewageRequestDate), [CustomerWarehouse].dbo.PersianToMiladi(c.SewageInstallDate)))), 2) AS DistanceAverage
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
@@ -75,7 +75,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.SewageInstallDate BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds
                     Group BY
-                    	c.UsageTitle2";
+                    	c.UsageTitle";
         }
     }
 }

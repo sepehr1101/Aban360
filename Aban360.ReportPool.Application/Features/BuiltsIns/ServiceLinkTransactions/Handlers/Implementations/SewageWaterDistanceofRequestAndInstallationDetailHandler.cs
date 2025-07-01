@@ -1,10 +1,13 @@
 ﻿using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
+using Aban360.Common.Timing;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
+using DNTPersianUtils.Core;
 using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Implementations
@@ -34,6 +37,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             }
 
             var result = await _sewageWaterDistanceofRequestAndInstallationDetailQuery.Get(input);
+
+            result.ReportData.ForEach(data =>
+            data.DistanceOfRequestAndInstallation = CalculationDistanceDate.CalcDistance( data.RequestDate, data.InstallationDate));
+            
             return result;
         }
     }

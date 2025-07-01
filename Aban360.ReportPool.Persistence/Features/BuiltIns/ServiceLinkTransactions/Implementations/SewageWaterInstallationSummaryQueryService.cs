@@ -47,26 +47,26 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         private string GetWaterInstallationSummaryQuery()
         {
             return @"Select	
-                    	c.UsageTitle2 AS UsageTitle,
-                    	COUNT(c.UsageTitle2) AS Count
+                    	c.UsageTitle AS UsageTitle,
+                    	COUNT(c.UsageTitle) AS Count
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
                     	c.WaterInstallDate BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds
                     Group BY
-                    	c.UsageTitle2";
+                    	c.UsageTitle";
         }
         private string GetSewageInstallationSummaryQuery()
         {
             return @"Select	
-                    	c.UsageTitle2 AS UsageTitle,
-                    	COUNT(c.UsageTitle2) AS Count
+                    	c.UsageTitle AS UsageTitle,
+                    	COUNT(c.UsageTitle) AS Count
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
                     	c.SewageInstallDate BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds
                     Group BY
-                    	c.UsageTitle2";
+                    	c.UsageTitle";
         }
     }
 }

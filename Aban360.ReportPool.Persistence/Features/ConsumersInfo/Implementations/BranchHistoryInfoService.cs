@@ -95,7 +95,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 						'' AS SiphonReplacementDate
 					from [CustomerWarehouse].dbo.Clients c
 					where 
-						c.BillId=@billId
+						c.BillId=@billId AND
 					    c.ToDayJalali is null 
 					Order by
 						c.RegisterDayJalali Desc";

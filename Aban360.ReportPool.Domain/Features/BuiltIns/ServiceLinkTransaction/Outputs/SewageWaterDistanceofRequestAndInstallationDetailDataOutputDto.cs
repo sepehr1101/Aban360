@@ -18,6 +18,6 @@
         public int ContractualCapacity { get; set; }
         public string RequestDate { get; set; }
         public string InstallationDate { get; set; }
-        public int DistanceOfRequestAndInstallation { get; set; }
+        public string DistanceOfRequestAndInstallation { get; set; }
     }
 }
