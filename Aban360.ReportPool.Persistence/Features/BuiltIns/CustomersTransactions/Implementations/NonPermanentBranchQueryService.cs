@@ -13,14 +13,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
     {
         public NonPermanentBranchQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
         public async Task<ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchDataOutputDto>> GetInfo(NonPermanentBranchInputDto input)
         {
             string nonPremanentBranchQuery = GetNonPermanentBranchQuery();
             var @params = new
             {
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
+                //fromDate = input.FromDateJalali,
+                //toDate = input.ToDateJalali,
 
                 zoneIds = input.ZoneIds
             };
