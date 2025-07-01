@@ -31,12 +31,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 zoneIds = input.ZoneIds
             };
             IEnumerable<SewageWaterDistanceofRequestAndInstallationDetailDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<SewageWaterDistanceofRequestAndInstallationDetailDataOutputDto>(distanceRequestInstallationQuery, @params);
-
-            RequestData.ForEach(data =>
-            {
-                data.DistanceOfRequestAndInstallation = CalcDistance(data.InstallationDate, data.RequestDate);
-            });
-
             SewageWaterDistanceofRequestAndInstallationHeaderOutputDto RequestHeader = new SewageWaterDistanceofRequestAndInstallationHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -50,11 +44,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 RequestData);
 
             return result;
-        }
-        private int CalcDistance(string fromDate, string toDate)
-        {
-            int distance = Convert.ToInt32((Convert.ToDateTime(fromDate) - Convert.ToDateTime(toDate)).Days);
-            return distance;
         }
         private string GetWaterDistanceRequestInstallationQuery()
         {
