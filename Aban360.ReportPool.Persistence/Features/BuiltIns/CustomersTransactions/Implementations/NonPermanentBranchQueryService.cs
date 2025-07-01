@@ -20,8 +20,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             string nonPremanentBranchQuery = GetNonPermanentBranchQuery();
             var @params = new
             {
-                //fromDate = input.FromDateJalali,
-                //toDate = input.ToDateJalali,
+                fromReadingNumber=input.FromReadingNumber,
+                toReadingNumber=input.ToReadingNumber,
 
                 zoneIds = input.ZoneIds
             };
@@ -29,8 +29,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             IEnumerable<NonPermanentBranchDataOutputDto> nonPremanentBranchData = await _sqlReportConnection.QueryAsync<NonPermanentBranchDataOutputDto>(nonPremanentBranchQuery, @params);
             NonPermanentBranchHeaderOutputDto nonPremanentBranchHeader = new NonPermanentBranchHeaderOutputDto()
             {
-                FromDateJalali = input.FromDateJalali,
-                ToDateJalali = input.ToDateJalali,
+                FromReadingNumber= input.FromReadingNumber,
+                ToReadingNumber= input.ToReadingNumber,
                 RecordCount = nonPremanentBranchData.Count(),
                 ReportDate = DateTime.Now.ToShortPersianDateString()
             };
@@ -62,7 +62,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     FROM [CustomerWarehouse].dbo.Clients c
                     WHERE 
             			c.ToDayJalali IS NULL AND
-                        c.RegisterDayJalali BETWEEN @FromDate AND @ToDate AND
+						(@fromReadingNumber IS NULL OR
+						 @toReadingNumber IS NULL OR
+						 c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
                         c.ZoneId in @ZoneIds AND
 						c.IsNonPermanent=1";
         }
