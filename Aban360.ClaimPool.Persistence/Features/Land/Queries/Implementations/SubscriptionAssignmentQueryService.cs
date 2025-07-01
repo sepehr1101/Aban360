@@ -23,14 +23,16 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                 throw new BaseException(ExceptionLiterals.BillIdNotFound);
             }
             string subscriptionAssignmentQuery = GetSubscriptionAssignmentQuery(data.ZoneId.ToString());
-            SubscriptionAssignmentGetDto subscriptionAssignmentGetDto = await _sqlConnection.QueryFirstAsync<SubscriptionAssignmentGetDto>(subscriptionAssignmentQuery, new { customerNumber = data.CustomerNumber  ,zoneId=data.ZoneId});
+            SubscriptionAssignmentGetDto subscriptionAssignmentGetDto = await _sqlReportConnection.QueryFirstAsync<SubscriptionAssignmentGetDto>(subscriptionAssignmentQuery, new { customerNumber = data.CustomerNumber  ,zoneId=data.ZoneId});
 
             return subscriptionAssignmentGetDto;
         }
 
         private string GetZoneIdQuery()
         {
-            return @"Select c.ZoneId,c.CustomerNumber
+            return @"Select 
+                        c.ZoneId,
+                        c.CustomerNumber
                      From  [CustomerWarehouse].dbo.Clients c
                      Where 
 						c.BillId=@billId AND
@@ -50,11 +52,5 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                     where m.radif=@customerNumber and m.town=@zoneId";
         }
 
-        private record ZoneIdCustomerNumber
-        {
-            public int ZoneId { get; set; }
-            public string CustomerNumber { get; set; }
-        }
     }
-
 }

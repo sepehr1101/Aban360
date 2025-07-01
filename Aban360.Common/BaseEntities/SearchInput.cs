@@ -1,4 +1,4 @@
-﻿namespace Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto
+﻿namespace Aban360.Common.BaseEntities
 {
     public record SearchInput
     {
