@@ -1,4 +1,7 @@
 ﻿using Aban360.Common.Db.Dapper;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Literals;
+using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Features.WaterInvoice.Contracts;
 using Dapper;
@@ -27,7 +30,11 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             string getHeadquarterQuery = GetHeadquarterQuery();
             string getPaymentQuery = GetPaymentInfoQuery();
 
-            WaterInvoiceDto waterInvoice = await _sqlReportConnection.QueryFirstAsync<WaterInvoiceDto>(getWaterInvoiceQuery, new { billId = billId });
+            WaterInvoiceDto waterInvoice = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterInvoiceDto>(getWaterInvoiceQuery, new { billId = billId });
+            if (waterInvoice == null)
+            {
+                throw new BaseException(ExceptionLiterals.NotFoundAnyData);
+            }
             IEnumerable<LineItemsDto> lineitems = await _sqlReportConnection.QueryAsync<LineItemsDto>(getItemValueQuery, new { billId = billId });
             IEnumerable<PreviousConsumptionsDto> previousConsumptions = await _sqlReportConnection.QueryAsync<PreviousConsumptionsDto>(getPreviousConsumptionQuery, new { billId = billId });
             string headquarterTitle = await _sqlReportConnection.QueryFirstAsync<string>(GetHeadquarterQuery(), new { zoneId = waterInvoice.ZoneId });
@@ -37,20 +44,26 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             waterInvoice.PreviousConsumptions = previousConsumptions.ToList();
             waterInvoice.Sum = lineitems.Select(i => i.Amount).Sum();
             waterInvoice.Headquarters = headquarterTitle;
-            if (waterInvoice.CurrentMeterDateJalali == null || waterInvoice.CurrentMeterDateJalali.Trim() == string.Empty ||
-                waterInvoice.PreviousMeterDateJalali == null || waterInvoice.PreviousMeterDateJalali.Trim() == string.Empty)
+
+            var currentNeterDate = waterInvoice.CurrentMeterDateJalali.ToGregorianDateOnly();
+            var previousMeterDate = waterInvoice.PreviousMeterDateJalali.ToGregorianDateOnly();
+            if (!currentNeterDate.HasValue || !previousMeterDate.HasValue)
             {
                 waterInvoice.Duration = 0;
             }
             else
             {
-                waterInvoice.Duration = Convert.ToInt16((Convert.ToDateTime(waterInvoice.CurrentMeterDateJalali) - Convert.ToDateTime(waterInvoice.PreviousMeterDateJalali)).Days);
+                waterInvoice.Duration = (currentNeterDate.Value.DayNumber) - (previousMeterDate.Value.DayNumber);
             }
+
+
             waterInvoice.PaymentDateJalali = paymentInfo!=null? paymentInfo.PaymentDateJalali:"";
             waterInvoice.PaymentMethod = paymentInfo!=null ? paymentInfo.PaymentMethod:"";
             waterInvoice.IsPayed = paymentInfo != null ? true : false;
             waterInvoice.Description = paymentInfo != null ? "پرداخت شد" : "پرداخت نشد";
             waterInvoice.PaymenetAmountText=waterInvoice.PayableAmount.NumberToText(Language.Persian);
+            waterInvoice.BarCode = (waterInvoice.BillId is null?new string('0',13):waterInvoice.BillId.PadLeft(13, '0')) + 
+                                   (waterInvoice.PayId is null?new string('0',13):waterInvoice.PayId.PadLeft(13, '0'));
             return waterInvoice;
         }
 
@@ -168,9 +181,6 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                     	--previousConsumption in secod query
                     	b.BillId AS BillId,
                     	b.PayId AS PayId,
-                    	CONCAT(RIGHT(REPLICATE('0', 13) + Cast(ISNULL(c.BillId,0)As varchar), 13),
-							   RIGHT(REPLICATE('0', 13) + Cast(ISNULL(b.PayId,0)As varchar), 13))
-						AS BarCode,
                     	N'--' AS PaymentAmountText,
                     	1 As IsPayed,--todo
                     	N'--' AS Description,

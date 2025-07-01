@@ -91,7 +91,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 	             NextDay CurrentMeterDate,
 	             RegisterDay RegisterDate,
 	             SumItems DebtAmount,
-	             10000 CreditAmount,
+	             0 CreditAmount,
 	             TypeId as [Description],
 	             ConsumptionAverage, 
 	             NULL BankTitle,

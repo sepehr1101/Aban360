@@ -1,4 +1,6 @@
 ﻿using Aban360.Common.Db.Dapper;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Features.BuiltIns.Sms.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.Sms.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.Sms.Contracts;
@@ -16,7 +18,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.Sms.Implementations
         public async Task<GetCustomerMobileOutputDto> Get(GetCustomerMobileInputDto input)
         {
             string customerMobileQuery = GetCustomerMobile();
-            GetCustomerMobileOutputDto mobileData = await _sqlReportConnection.QueryFirstAsync<GetCustomerMobileOutputDto>(customerMobileQuery, new { billId = input.BillId });
+            GetCustomerMobileOutputDto mobileData = await _sqlReportConnection.QueryFirstOrDefaultAsync<GetCustomerMobileOutputDto>(customerMobileQuery, new { billId = input.BillId });
+            if (mobileData == null)
+            {
+                throw new BaseException(ExceptionLiterals.NotFoundPhoneNumber);
+            }
             return mobileData;
         }
         private string GetCustomerMobile()

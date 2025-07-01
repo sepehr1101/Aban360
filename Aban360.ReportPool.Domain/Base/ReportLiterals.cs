@@ -62,5 +62,8 @@
 
         public static string SendSmsToMobile { get { return $"{Report} پیامک ارسالی به مشترک"; } }
 
+        public static string HandoverDetail { get { return $"{Report} جزئیات نوع واگذاری"; } }
+        public static string HandoverSummary { get { return $"{Report} خلاصه نوع واگذاری"; } }
+
     }
 }
