@@ -10,7 +10,7 @@
         public string? ToAmount { get; set; }
         public int? FromDebtPeriodCount { get; set; }
         public int? ToDebtPeriodCount { get; set; }
-        public ICollection<int>? UsageConsumptionIds { get; set; }
+        //public ICollection<int>? UsageConsumptionIds { get; set; }
         public ICollection<int>? UsageSellIds { get; set; }
         public int ZoneId { get; set; }
 

@@ -3,36 +3,36 @@
     public record BranchSpecificationInfoDto
     {
         #region Water
-        public string MeterDiameterTitle { get; set; }
+        public string MeterDiameterTitle { get; set; } = default!;
         public string? BodySerial { get; set; }
-        public int SealNumber { get; set; }
+        public string? SealNumber { get; set; }
 
-        public string MeterTypeTitle { get; set; }
-        public string MeterProducerTitle { get; set; }
-        public string MeterEquipmentBrokerTitle{ get; set; }//
+        public string? MeterTypeTitle { get; set; }
+        public string? MeterProducerTitle { get; set; }
+        public string? MeterEquipmentBrokerTitle{ get; set; }//
 
 
-        public string MeterInstallationBrokerTitle{ get; set; }//
-        public string WaterMeterInstallationMethodTitle { get; set; }
+        public string? MeterInstallationBrokerTitle{ get; set; }//
+        public string? WaterMeterInstallationMethodTitle { get; set; }
         public short MeterLife{ get; set; }//
 
-        public string MeterStatusTitle { get; set; }//
-        public string WitnessMeter { get; set; }//
-        public string WaterInstallDate { get; set; }
+        public string? MeterStatusTitle { get; set; }//
+        public string? WitnessMeter { get; set; }//
+        public string WaterInstallDate { get; set; } = default!;
         #endregion
 
         #region Sewage
         public bool  CommonSiphon { get; set; }//
         public short  SiphonCount { get; set; }
-        public string SiphonMaterialTitle { get; set; }
+        public string? SiphonMaterialTitle { get; set; }
 
         public short SiphonLife { get; set; }//
-        public string SiphonInstallationContractor { get; set; }
-        public string SiphonEquipmentBrokerTitle { get; set; }//
+        public string? SiphonInstallationContractor { get; set; }
+        public string? SiphonEquipmentBrokerTitle { get; set; }//
 
-        public string SiphonInstallationBrokerTitle { get; set; }//
+        public string? SiphonInstallationBrokerTitle { get; set; }//
         public bool LoadOfContamination { get; set; }//
-        public string SiphonInstallationDate { get; set; }
+        public string SiphonInstallationDate { get; set; } = default!;
 
         #endregion
 

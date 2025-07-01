@@ -129,17 +129,25 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 
         private string GetBranchSpecificationSummaryDtoWithClientDbQuery()
         {
+<<<<<<< HEAD
             return @"select Top 1
+=======
+            return @"select 
+                        c.WaterInstallDate AS WaterInstallDate,
+>>>>>>> 061b88dbf238b2b187d07f01121d192a2422c80f
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
-                        c.MeterSerialBody AS BodySerial,
                     	c.MeterSerialBody AS BodySerial,
-                    	0 AS SealNumber,
+                    	'' AS SealNumber,
                     	c.BranchType AS MeterTypeTitle,
                     	'' AS MeterProducerTitle,
                     	'' AS MeterEquipmentBrokerTitle,
                     	'' AS MeterInstallationBrokerTitle,
                     	'' AS WaterMeterInstallationMethodTitle,
                     	0 AS MeterLife,
+<<<<<<< HEAD
+=======
+                    	'' AS MeterStatusTitle,
+>>>>>>> 061b88dbf238b2b187d07f01121d192a2422c80f
                     	'' AS WitnessMeter,
                     	c.HasCommonSiphon AS CommonSiphon,
                     	c.Siphon200+c.Siphon150+c.Siphon100+c.Siphon125+c.Siphon8+c.Siphon7+c.Siphon6+c.Siphon5 AS SiphonCount,
