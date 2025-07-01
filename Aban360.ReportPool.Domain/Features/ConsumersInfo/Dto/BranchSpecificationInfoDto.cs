@@ -2,6 +2,9 @@
 {
     public record BranchSpecificationInfoDto
     {
+        public string  CustomerNumber { get; set; }
+        public int ZoneId { get; set; }
+        public string LatestMeterChangeDate { get; set; }
         #region Water
         public string MeterDiameterTitle { get; set; } = default!;
         public string? BodySerial { get; set; }
@@ -14,7 +17,7 @@
 
         public string? MeterInstallationBrokerTitle{ get; set; }//
         public string? WaterMeterInstallationMethodTitle { get; set; }
-        public short MeterLife{ get; set; }//
+        public string MeterLife{ get; set; }//
 
         public string? MeterStatusTitle { get; set; }//
         public string? WitnessMeter { get; set; }//
@@ -26,7 +29,7 @@
         public short  SiphonCount { get; set; }
         public string? SiphonMaterialTitle { get; set; }
 
-        public short SiphonLife { get; set; }//
+        public string SiphonLife { get; set; }//
         public string? SiphonInstallationContractor { get; set; }
         public string? SiphonEquipmentBrokerTitle { get; set; }//
 

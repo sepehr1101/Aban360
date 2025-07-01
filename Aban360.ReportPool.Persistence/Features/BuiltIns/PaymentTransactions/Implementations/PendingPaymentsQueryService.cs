@@ -18,20 +18,20 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
         {
             string usageTitleQuery = GetUsageTitleById();
 
-            string pendingPaymentsQueryString = GetPendingPaymentsDataQuery();
+            string pendingPaymentsQueryString = GetPendingPaymentsDataQuery(input.UsageSellIds?.Any()==true);
             var @params = new
             {
-                FromReadingNumber = input.FromReadingNumber,
-                ToReadingNumber = input.ToReadingNumber,
+                FromReadingNumber = string.IsNullOrWhiteSpace(input.FromReadingNumber)? input.FromReadingNumber :"0000000000",
+                ToReadingNumber = string.IsNullOrWhiteSpace(input.ToReadingNumber)? input.ToReadingNumber :"9999999999",
                 FromDate = input.FromDateJalali,
                 ToDate = input.ToDateJalali,
-                FromAmount = input.FromAmount,
-                ToAmount = input.ToAmount,
-                FromDebtPeriodCount = input.FromDebtPeriodCount,
-                ToDebtPeriodCount = input.ToDebtPeriodCount,
+                FromAmount = input.FromAmount!=null? input.FromAmount :0,
+                ToAmount = input.ToAmount!=null? input.ToAmount :long.MaxValue ,
+				FromDebtPeriodCount = input.FromDebtPeriodCount!=null? input.FromDebtPeriodCount :0,
+                ToDebtPeriodCount = input.ToDebtPeriodCount!=null? input.ToDebtPeriodCount:int.MaxValue,
                 //UsageConsumptionIds =  input.UsageConsumptionIds,
                 UsageSellIds = input.UsageSellIds,
-                ZoneId = input.ZoneId
+                ZoneIds = input.ZoneIds
             };
 			IEnumerable<PendingPaymentsDataOutputDto> pendingPaymentsData = await _sqlReportConnection.QueryAsync<PendingPaymentsDataOutputDto>(pendingPaymentsQueryString, @params, null, 120);//todo: parameters
             PendingPaymentsHeaderOutputDto pendingPaymentsHeader = new PendingPaymentsHeaderOutputDto()
@@ -44,7 +44,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 				ToAmount=input.ToAmount,
 				FromDebtPeriodCount=input.FromDebtPeriodCount,
 				ToDebtPeriodCount=input.ToDebtPeriodCount,
-				ZoneTitle=pendingPaymentsData.First().ZoneTitle,
+                ZoneCount = input.ZoneIds.Count(),
                 RecordCount = pendingPaymentsData.Count(),
                 TotalBeginDebt = pendingPaymentsData.Sum(payment => payment.BeginDebt),
                 TotalDebtPeriodCount = pendingPaymentsData.Sum(payment => payment.DebtPeriodCount),
@@ -59,22 +59,23 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
         private string GetUsageTitleById()
         {
             return @"Select u.Title
-					 From  [Aban360].ClaimPool.Usage u
-					 Where u.Id In @UsageId";
+					From  [Aban360].ClaimPool.Usage u
+					Where u.Id In @UsageId";
         }
 
-        private string GetPendingPaymentsDataQuery()
+        private string GetPendingPaymentsDataQuery(bool hasUsageId)
         {
-            return @"-- مشتریان هدف
+			string usageQuery = hasUsageId == true ? "AND (UsageId IN @UsageSellIds)" : string.Empty;
+            return @$"-- مشتریان هدف
 						WITH FilteredClients AS (
 							SELECT ZoneId,ZoneTitle, VillageName, CustomerNumber,BillId, ReadingNumber,
 								   UsageTitle AS UsageSellTitle , UsageTitle2 AS UsageConsumptionTitle,  TRIM(FirstName) As FirstName,TRIM(SureName) Surname,
 								   MobileNo AS MobileNumber, PhoneNo AS PhoneNumber, DeletionStateTitle AS UseStateTitle, '--' AS HeadquarterTitle , '--' AS RegionTitle
 							FROM [CustomerWarehouse].dbo.Clients 
 							WHERE ToDayJalali IS NULL
-							  AND ZoneId=@ZoneId
+							  AND ZoneId IN @ZoneIds
 							  AND (@FromReadingNumber IS NULL OR @ToReadingNumber IS NULL OR TRIM(ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber)
-							  AND (@UsageSellIds IS NULL OR UsageId IN @UsageSellIds)
+							  {usageQuery}
 							  --AND (@UsageConsumptionIds IS NULL OR UsageId2 IN @UsageConsumptionIds)
 						),
 						
@@ -87,7 +88,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 								SUM(CASE WHEN RegisterDay BETWEEN @FromDate AND @ToDate THEN SumItems ELSE 0 END) AS BillBetween,
 								SUM(CASE WHEN RegisterDay > @ToDate THEN SumItems ELSE 0 END) AS BillAfter
 							FROM [CustomerWarehouse].dbo.Bills
-							WHERE ZoneId =@ZoneId
+							WHERE ZoneId IN @ZoneIds
 							GROUP BY ZoneId, CustomerNumber
 						),
 						
@@ -105,7 +106,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 									THEN Amount ELSE 0 END) AS PaymentAfter,
 								MAX(RegisterDay) AS LastPaymentDate
 							FROM [CustomerWarehouse].dbo.Payments
-							WHERE ZoneId=@ZoneId
+							WHERE ZoneId IN @ZoneIds
 							GROUP BY ZoneId, CustomerNumber
 						),
 						

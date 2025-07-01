@@ -5,6 +5,7 @@ using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 {
@@ -17,27 +18,16 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         {
             //string BranchSpecificationQuery = GetBranchSpecificationSummayDtoQuery();
             string BranchSpecificationQuery = GetBranchSpecificationSummaryDtoWithClientDbQuery();
-            BranchSpecificationInfoDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BranchSpecificationInfoDto>(BranchSpecificationQuery, new { billId });
+            string meterChangeDateQuery = GetMeterChangeDateQuery();
 
+            BranchSpecificationInfoDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BranchSpecificationInfoDto>(BranchSpecificationQuery, new { billId });
             if (result == null)
                 throw new InvalidIdException();
 
-            string dateNow = DateTime.Now.ToShortPersianDateString();
-            string siphonInstallationDate = result.SiphonInstallationDate;
-            string waterInstallationDate = result.WaterInstallDate;
-
-            if (siphonInstallationDate == null || siphonInstallationDate.Trim() == string.Empty)
-                result.SiphonLife = 0;
-            else
-                result.SiphonLife = Convert.ToInt16((Convert.ToDateTime(dateNow) - Convert.ToDateTime(siphonInstallationDate)).Days);
-
-            if (waterInstallationDate == null || waterInstallationDate.Trim() == string.Empty)
-                result.MeterLife = 0;
-            else
-                result.MeterLife = Convert.ToInt16((Convert.ToDateTime(dateNow) - Convert.ToDateTime(waterInstallationDate)).Days);
-
-            result.MeterStatusTitle=await _sqlReportConnection.QueryFirstAsync<string>(GetBranchStatusQuery(), new {billId=billId});
-
+            string latestMeterChangeDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(meterChangeDateQuery, new { zoneId = result.ZoneId, customerNumber = result.CustomerNumber });
+            
+            result.LatestMeterChangeDate = latestMeterChangeDate;
+            result.MeterStatusTitle = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(GetBranchStatusQuery(), new { billId = billId });
             result.SiphonsDiameterCount = await _sqlReportConnection.QueryAsync<SiphonsDiameterCount>(GetSiphonDiameterCountWithClientDbQuery(), new { billId });
             return result;
         }
@@ -129,12 +119,10 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 
         private string GetBranchSpecificationSummaryDtoWithClientDbQuery()
         {
-<<<<<<< HEAD
             return @"select Top 1
-=======
-            return @"select 
+                        c.CustomerNumber,
+                        c.ZoneId,
                         c.WaterInstallDate AS WaterInstallDate,
->>>>>>> 061b88dbf238b2b187d07f01121d192a2422c80f
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
                     	c.MeterSerialBody AS BodySerial,
                     	'' AS SealNumber,
@@ -143,16 +131,13 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	'' AS MeterEquipmentBrokerTitle,
                     	'' AS MeterInstallationBrokerTitle,
                     	'' AS WaterMeterInstallationMethodTitle,
-                    	0 AS MeterLife,
-<<<<<<< HEAD
-=======
+                    	'0' AS MeterLife,
                     	'' AS MeterStatusTitle,
->>>>>>> 061b88dbf238b2b187d07f01121d192a2422c80f
                     	'' AS WitnessMeter,
                     	c.HasCommonSiphon AS CommonSiphon,
                     	c.Siphon200+c.Siphon150+c.Siphon100+c.Siphon125+c.Siphon8+c.Siphon7+c.Siphon6+c.Siphon5 AS SiphonCount,
                     	'' AS SiphonMaterialTitle,
-                    	0 AS SiphonLife,
+                    	'0' AS SiphonLife,
                     	'' AS SiphonInstallationContractor,
                     	'' AS SiphonEquipmentBrokerTitle,
                     	'' AS SiphonInstallationBrokerTitle,
@@ -176,5 +161,15 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	b.TypeId=N'قبض'
                     Order by b.RegisterDay desc";
         }
+        private string GetMeterChangeDateQuery()
+        {
+            return @"Select Top 1 mc.ChangeDateJalali
+                     From [CustomerWarehouse].dbo.MeterChange mc
+                     Where 
+                     	mc.ZoneId=@zoneId AND
+                     	mc.CustomerNumber=@customerNumber
+                     Order by mc.ChangeDateJalali Desc";
+        }
+      
     }
 }
