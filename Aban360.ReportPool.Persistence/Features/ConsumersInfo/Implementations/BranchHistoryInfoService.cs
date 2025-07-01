@@ -1,4 +1,5 @@
-﻿using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+﻿using Aban360.Common.Db.Exceptions;
+using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 using Dapper;
@@ -15,7 +16,24 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         {
             //string branchHistoryQuery = GetBranchHistorySummaryDtoQuery();
             string branchHistoryQuery = GetBranchHistorySummaryDtoWithClientDbQuery();
+            string lastPaymentQuery = GetLastPaymentDateQuery();
+            string waterReplacementDateQuery = GetWaterReplacementDateQuery();
+			string billsData = GetDataInBillsQuery();
+
             BranchHistoryInfoDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BranchHistoryInfoDto>(branchHistoryQuery, new { billId });
+			if (result == null)
+				throw new InvalidIdException();
+
+			BranchHistoryBillDataOutputDto historyBillData = await _sqlReportConnection.QueryFirstOrDefaultAsync<BranchHistoryBillDataOutputDto>(billsData, new {billId });
+			result.LastMeterReadingDate = historyBillData.LastMeterReadingDate;
+			result.LastWaterBillRefundDate= historyBillData.LastWaterBillRefundDate;
+			result.LastSubscriptionRefundDate= historyBillData.LastSubscriptionRefundDate;
+			result.LastTemporaryDisconnectionDate = historyBillData.LastTemporaryDisconnectionDate;
+
+            result.LastPaymentDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(lastPaymentQuery, new { billId });
+			result.WaterReplacementDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(waterReplacementDateQuery, new { zoneId = result.ZoneId, customerNumber = result.CustomerNumber });
+
+
 
             return result;
         }
@@ -57,25 +75,18 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 
         }
 
-		private string GetBranchHistorySummaryDtoWithClientDbQuery()
-		{
-			return @"select Top 1
+        private string GetBranchHistorySummaryDtoWithClientDbQuery()
+        {
+            return @"select Top 1	
+						c.ZoneId AS ZoneId,
+						c.CustomerNumber AS CustomerNumber,
 						c.WaterRequestDate , 
 						c.WaterInstallDate AS WaterInstallationDate,
 						c.RegisterDayJalali AS WaterRegistrationDate,
-						m.ChangeDateJalali AS WaterReplacementDate,
 						'' AS GuaranteeDate,
-						Case	
-							When b.BranchType=N'کمیته امداد' Then N'کمیته امداد'	
-							When b.BranchType=N'بهزیستی' Then N'بهزیستی'
-						End LastTemporaryDisconnectionDate,
 						'' AS LastReconnectionDate,
 						'' AS WaterSubscriptionCancellationDate,
-						b.RegisterDay AS LastMeterReadingDate,
-						p.RegisterDay AS LastPaymentDate,
 						c.RegisterDayJalali AS LattestChangeMianInfoDate,
-						b.TypeId AS LastWaterBillRefundDate,--اخرین برگشتی اب بها
-						b.RegisterDay AS LastSubscriptionRefundDate,--حق انشعاب
 						'' AS HouseholdCountStartDate,
 						'' AS HouseholdCountEndDate,
 						c.SewageRequestDate SewageRequestDate,
@@ -83,19 +94,51 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 						'' AS SewageRegistrationDate,
 						'' AS SiphonReplacementDate
 					from [CustomerWarehouse].dbo.Clients c
-					join [CustomerWarehouse].dbo.MeterChange m on c.CustomerNumber=m.CustomerNumber and c.ZoneId=m.ZoneId
-					join [CustomerWarehouse].dbo.Bills b on b.BillId=c.BillId
-					join [CustomerWarehouse].dbo.Payments p on p.BillTableId=b.Id
-					join [CustomerWarehouse].dbo.RequestBillDetails be on c.BillId COLLATE SQL_Latin1_General_CP1_CI_AS = be.BillId COLLATE SQL_Latin1_General_CP1_CI_AS
 					where 
-						c.BillId=@billId AND
+						c.BillId='116416' AND
 					    c.ToDayJalali is null 
 					Order by
-						c.RegisterDayJalali Desc,
-						m.RegisterDateJalali Desc ,
-						b.RegisterDay Desc,
-						be.RegisterDay Desc";
-		}
-    
+						c.RegisterDayJalali Desc";
+        }
+
+        private string GetLastPaymentDateQuery()
+        {
+            return @"Select Top 1 p.RegisterDay
+					 From [CustomerWarehouse].dbo.Payments p
+					 Where p.BillId=@billId
+					 Order By p.RegisterDay Desc";
+
+        }
+
+        private string GetWaterReplacementDateQuery()
+        {
+            return @"Select m.ChangeDateJalali
+					From [CustomerWarehouse].dbo.MeterChange m
+					Where 
+						m.ZoneId=@zoneId AND
+						m.CustomerNumber=@customerNumber
+					Order By 
+						m.RegisterDateJalali Desc";
+
+        }
+
+		private string GetDataInBillsQuery()
+		{
+			return @"Select Top 1
+						b.RegisterDay AS LastMeterReadingDate,
+						b.TypeId AS LastWaterBillRefundDate,--اخرین برگشتی اب بها
+						b.RegisterDay AS LastSubscriptionRefundDate,--حق انشعاب
+						Case	
+							When b.BranchType=N'کمیته امداد' Then N'کمیته امداد'	
+							When b.BranchType=N'بهزیستی' Then N'بهزیستی'
+						End LastTemporaryDisconnectionDate
+					From [CustomerWarehouse].dbo.Bills b
+					Where b.BillId=@billId
+					Order By b.RegisterDay Desc";
+
+        }
+
+
     }
+	
 }

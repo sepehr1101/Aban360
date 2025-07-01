@@ -1,4 +1,5 @@
-﻿using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+﻿using Aban360.Common.Db.Exceptions;
+using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 using Dapper;
@@ -17,6 +18,9 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             //string BranchSpecificationQuery = GetBranchSpecificationSummayDtoQuery();
             string BranchSpecificationQuery = GetBranchSpecificationSummaryDtoWithClientDbQuery();
             BranchSpecificationInfoDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BranchSpecificationInfoDto>(BranchSpecificationQuery, new { billId });
+
+            if (result == null)
+                throw new InvalidIdException();
 
             string dateNow = DateTime.Now.ToShortPersianDateString();
             string siphonInstallationDate = result.SiphonInstallationDate;
@@ -103,6 +107,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     sd.Title;";
         }
 
+
         private string GetSiphonDiameterCountWithClientDbQuery()
         {
             return @"SELECT 
@@ -124,7 +129,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 
         private string GetBranchSpecificationSummaryDtoWithClientDbQuery()
         {
-            return @"select 
+            return @"select Top 1
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
                         c.MeterSerialBody AS BodySerial,
                     	c.MeterSerialBody AS BodySerial,
@@ -135,7 +140,6 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	'' AS MeterInstallationBrokerTitle,
                     	'' AS WaterMeterInstallationMethodTitle,
                     	0 AS MeterLife,
-                    	''  AS MeterStatusTitle,
                     	'' AS WitnessMeter,
                     	c.HasCommonSiphon AS CommonSiphon,
                     	c.Siphon200+c.Siphon150+c.Siphon100+c.Siphon125+c.Siphon8+c.Siphon7+c.Siphon6+c.Siphon5 AS SiphonCount,
@@ -145,11 +149,14 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	'' AS SiphonEquipmentBrokerTitle,
                     	'' AS SiphonInstallationBrokerTitle,
 						c.SewageInstallDate AS SiphonInstallationDate,
+                        c.WaterInstallDate AS WaterInstallDate,
                     	0 AS LoadOfContamination
                     from [CustomerWarehouse].dbo.Clients c
                     where 
 						c.BillId=@billId
-                    and c.ToDayJalali is null";
+					    and c.ToDayJalali is null
+					Order By
+						c.RegisterDayJalali Desc";
         }
         private string GetBranchStatusQuery()
         {

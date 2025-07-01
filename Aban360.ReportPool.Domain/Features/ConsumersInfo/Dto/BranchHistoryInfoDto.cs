@@ -2,22 +2,24 @@
 {
     public record BranchHistoryInfoDto
     {
+        public string CustomerNumber { get; set; }
+        public int ZoneId { get; set; }
         #region Water
         //watermeter
         public string WaterRequestDate { get; set; }//
         public string WaterInstallationDate { get; set; }
         public string WaterRegistrationDate { get; set; }//
 
-        public string WaterReplacementDate { get; set; }//
+        public string? WaterReplacementDate { get; set; }//
         public string GuaranteeDate { get; set; }
-        public string LastTemporaryDisconnectionDate { get; set; }//
+        public string? LastTemporaryDisconnectionDate { get; set; }//
 
-        public string LastReconnectionDate { get; set; }//
-        public string WaterSubscriptionCancellationDate { get; set; }//
-        public string LastMeterReadingDate { get; set; }//
+        public string? LastReconnectionDate { get; set; }//
+        public string? WaterSubscriptionCancellationDate { get; set; }//
+        public string? LastMeterReadingDate { get; set; }//
 
-        public string LastPaymentDate { get; set; }//
-        public string LattestChangeMianInfoDate { get; set; }//
+        public string? LastPaymentDate { get; set; }//
+        public string? LattestChangeMianInfoDate { get; set; }//
         public string LastWaterBillRefundDate { get; set; }//
 
         public string LastSubscriptionRefundDate { get; set; }//

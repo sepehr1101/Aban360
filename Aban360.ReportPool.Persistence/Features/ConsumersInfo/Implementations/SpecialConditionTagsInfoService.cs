@@ -1,4 +1,5 @@
-﻿using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+﻿using Aban360.Common.Db.Exceptions;
+using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 using Dapper;
@@ -19,6 +20,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             string individualTagsQuery = GetIndividualTagsDtoQuery();
 
             SpecialConditionTagsInfoDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<SpecialConditionTagsInfoDto>(branchHistoryQuery, new { billId });
+            if (result == null)
+                throw new InvalidIdException();
 
             // result.tagsInfoDtos = await _sqlReportConnection.QueryAsync<TagsInfoDto>(waterMeterTagsQuery, new { billId });
             // result.tagsInfoDtos.Concat(await _sqlReportConnection.QueryAsync<TagsInfoDto>(individualTagsQuery,new { billId }));

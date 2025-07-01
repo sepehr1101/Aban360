@@ -2,6 +2,7 @@
 using Aban360.ReportPool.Persistence.Base;
 using Dapper;
 using Microsoft.Extensions.Configuration;
+using Aban360.Common.Db.Exceptions;
 
 namespace Aban360.ReportPool.Persistence.Queries.Implementations
 {
@@ -15,7 +16,8 @@ namespace Aban360.ReportPool.Persistence.Queries.Implementations
         {
             string estateQuery = GetWaterMetereSummeryDtoQuery();
             IEnumerable<WaterMeterSummaryDto> result = await _sqlConnection.QueryAsync<WaterMeterSummaryDto>(estateQuery , new { billId = billId, meterUseTypeId = meterUseTypeId });
-            
+            if (!result.Any())
+                throw new InvalidIdException();
             return result;
         }
 
