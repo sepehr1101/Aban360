@@ -18,7 +18,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
 
         [HttpPost]
         [Route("info")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<LatestWaterMeterInfoDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<LatestWaterMeterInfoDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Info([FromBody] SearchInput searchInput, CancellationToken cancellationToken)
         {
             LatestWaterMeterInfoDto summary = await _latestWaterMetersSummaryInfoGetHandler.Handle(searchInput.Input, cancellationToken);
