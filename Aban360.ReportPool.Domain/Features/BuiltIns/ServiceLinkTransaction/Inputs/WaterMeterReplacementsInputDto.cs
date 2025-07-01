@@ -2,8 +2,10 @@
 {
     public record WaterMeterReplacementsInputDto
     {
-        public bool BasedOnChange { get; set; }
+        public bool IsChangeDate { get; set; }
         public string FromDateJalali { get; set; } = null!;
         public string ToDateJalali { get; set; } = null!;
+
+        public ICollection<int> ZoneIds { get; set; }
     }
 }
