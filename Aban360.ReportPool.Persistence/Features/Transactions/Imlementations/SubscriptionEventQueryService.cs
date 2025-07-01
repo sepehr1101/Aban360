@@ -32,8 +32,8 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                 for (int i = 0; i < data.Count(); i++)
                 {
                     lastRemained = lastRemained +
-                                   (data.ElementAt(i).DebtAmount.Value -
-                                   data.ElementAt(i).CreditAmount);
+                                   (data.ElementAt(i).CreditAmount-
+                                   data.ElementAt(i).DebtAmount.Value );
                 
 
                     data.ElementAt(i).Remained = lastRemained;
