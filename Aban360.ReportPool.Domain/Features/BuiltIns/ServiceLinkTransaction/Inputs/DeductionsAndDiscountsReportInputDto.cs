@@ -2,7 +2,9 @@
 {
     public record DeductionsAndDiscountsReportInputDto
     {
-        //Other
+        public string FromDateJalali { get; set; }
+        public string ToDateJalali { get; set; }
+
         public ICollection<int> ZoneIds { get; set; }
     }
 }

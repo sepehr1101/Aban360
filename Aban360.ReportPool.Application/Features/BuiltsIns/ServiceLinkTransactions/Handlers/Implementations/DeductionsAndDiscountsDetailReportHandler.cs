@@ -9,12 +9,12 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Implementations
 {
-    internal sealed class DeductionsAndDiscountsReportHandler : IDeductionsAndDiscountsReportHandler
+    internal sealed class DeductionsAndDiscountsDetailReportHandler : IDeductionsAndDiscountsDetailReportHandler
     {
-        private readonly IDeductionsAndDiscountsReportQueryService _deductionsAndDiscountsReportQueryService;
+        private readonly IDeductionsAndDiscountsReportDetailQueryService _deductionsAndDiscountsReportQueryService;
         private readonly IValidator<DeductionsAndDiscountsReportInputDto> _validator;
-        public DeductionsAndDiscountsReportHandler(
-            IDeductionsAndDiscountsReportQueryService deductionsAndDiscountsReportQueryService,
+        public DeductionsAndDiscountsDetailReportHandler(
+            IDeductionsAndDiscountsReportDetailQueryService deductionsAndDiscountsReportQueryService,
             IValidator<DeductionsAndDiscountsReportInputDto> validator)
         {
             _deductionsAndDiscountsReportQueryService = deductionsAndDiscountsReportQueryService;
@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDataOutputDto>> Handle(DeductionsAndDiscountsReportInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDetailDataOutputDto>> Handle(DeductionsAndDiscountsReportInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDataOutputDto> deductionsAndDiscountsReport = await _deductionsAndDiscountsReportQueryService.GetInfo(input);
+            ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDetailDataOutputDto> deductionsAndDiscountsReport = await _deductionsAndDiscountsReportQueryService.GetInfo(input);
             return deductionsAndDiscountsReport;
         }
     }

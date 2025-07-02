@@ -18,24 +18,33 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             string branchHistoryQuery = GetBranchHistorySummaryDtoWithClientDbQuery();
             string lastPaymentQuery = GetLastPaymentDateQuery();
             string waterReplacementDateQuery = GetWaterReplacementDateQuery();
-			string billsData = GetDataInBillsQuery();
+            string billsData = GetDataInBillsQuery();
+            string latestHouseholdDateQuery = GetLatestHouseholdDateQuery();
+            string latestTemporarilyDeletionQuery = GetLatestTemporarilyDeletionDateQuery();
+            string latestReconnectionQuery = GetLatestReconnectionDateQuery();
+			string latestCancellationQuery = GetLatestCancellationDateQuery();
 
             BranchHistoryInfoDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BranchHistoryInfoDto>(branchHistoryQuery, new { billId });
-			if (result == null)
-				throw new InvalidIdException();
+            if (result == null)
+                throw new InvalidIdException();
 
-			BranchHistoryBillDataOutputDto historyBillData = await _sqlReportConnection.QueryFirstOrDefaultAsync<BranchHistoryBillDataOutputDto>(billsData, new {billId });
-			result.LastMeterReadingDate = historyBillData.LastMeterReadingDate;
-			result.LastWaterBillRefundDate= historyBillData.LastWaterBillRefundDate;
-			result.LastSubscriptionRefundDate= historyBillData.LastSubscriptionRefundDate;
-			result.LastTemporaryDisconnectionDate = historyBillData.LastTemporaryDisconnectionDate;
+            BranchHistoryBillDataOutputDto historyBillData = await _sqlReportConnection.QueryFirstOrDefaultAsync<BranchHistoryBillDataOutputDto>(billsData, new { billId });
+            if (historyBillData == null)
+                throw new InvalidIdException();
+
+            result.LastMeterReadingDate = historyBillData.LastMeterReadingDate;
+            result.LastWaterBillRefundDate = historyBillData.LastWaterBillRefundDate;
+            result.LastSubscriptionRefundDate = historyBillData.LastSubscriptionRefundDate;
+            result.LastTemporaryDisconnectionDate = historyBillData.LastTemporaryDisconnectionDate;
 
             result.LastPaymentDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(lastPaymentQuery, new { billId });
-			result.WaterReplacementDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(waterReplacementDateQuery, new { zoneId = result.ZoneId, customerNumber = result.CustomerNumber });
-
-
-
-            return result;
+            result.WaterReplacementDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(waterReplacementDateQuery, new { zoneId = result.ZoneId, customerNumber = result.CustomerNumber });
+            result.HouseholdCountStartDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(latestHouseholdDateQuery, new { billId });
+            result.LastTemporaryDisconnectionDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(latestTemporarilyDeletionQuery, new { billId });
+            result.LastReconnectionDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(latestReconnectionQuery, new { billId = billId, latestDeletionState = result.LastTemporaryDisconnectionDate });
+			result.WaterSubscriptionCancellationDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(latestCancellationQuery, new { billId });
+			
+			return result;
         }
         private string GetBranchHistorySummaryDtoQuery()
         {
@@ -122,9 +131,9 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 
         }
 
-		private string GetDataInBillsQuery()
-		{
-			return @"Select Top 1
+        private string GetDataInBillsQuery()
+        {
+            return @"Select Top 1
 						b.RegisterDay AS LastMeterReadingDate,
 						b.TypeId AS LastWaterBillRefundDate,--اخرین برگشتی اب بها
 						b.RegisterDay AS LastSubscriptionRefundDate,--حق انشعاب
@@ -135,10 +144,50 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 					From [CustomerWarehouse].dbo.Bills b
 					Where b.BillId=@billId
 					Order By b.RegisterDay Desc";
+        }
+
+        private string GetLatestHouseholdDateQuery()
+        {
+            return @"Select top 1 c.HouseholdDateJalali
+					From [CustomerWarehouse].dbo.Clients c
+					Where 
+						c.BillId=@billId AND
+						c.FamilyCount>0 AND
+						c.HouseholdDateJalali > '0001/01/01'
+					Order By c.HouseholdDateJalali Desc";
+        }
+
+        private string GetLatestTemporarilyDeletionDateQuery()
+        {
+            return @"Select Top 1 c.RegisterDayJalali
+					From [CustomerWarehouse].dbo.Clients c
+					Where 
+						c.BillId=@billId AND
+						c.DeletionStateTitle=N'حذف موقت' AND
+						c.RegisterDayJalali > '0001/01/01'
+					Order by c.RegisterDayJalali Desc";
+        }
+
+        private string GetLatestReconnectionDateQuery()
+        {
+            return @"Select top 1 c.RegisterDayJalali
+					From [CustomerWarehouse].dbo.Clients c
+					Where	
+						c.BillId=@billId AND
+						c.RegisterDayJalali>@latestDeletionState AND
+						c.DeletionStateTitle=N'انشعاب برقرار'
+					Order By c.RegisterDayJalali asc";
 
         }
 
-
+		private string GetLatestCancellationDateQuery()
+		{
+			return @"Select top 1 c.RegisterDayJalali
+					From [CustomerWarehouse].dbo.Clients c
+					Where	
+						c.BillId=@billId AND
+						c.DeletionStateTitle=N'جمع آوری'
+					Order By c.RegisterDayJalali desc";
+		}
     }
-	
 }

@@ -3,9 +3,7 @@ using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 using Dapper;
-using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
-using System.Data;
 
 namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 {
@@ -19,14 +17,16 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             //string BranchSpecificationQuery = GetBranchSpecificationSummayDtoQuery();
             string BranchSpecificationQuery = GetBranchSpecificationSummaryDtoWithClientDbQuery();
             string meterChangeDateQuery = GetMeterChangeDateQuery();
+            string lastChangelSiphonDateQuery = GetLastChangeSiphonDateQuery();
 
             BranchSpecificationInfoDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BranchSpecificationInfoDto>(BranchSpecificationQuery, new { billId });
             if (result == null)
                 throw new InvalidIdException();
 
             string latestMeterChangeDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(meterChangeDateQuery, new { zoneId = result.ZoneId, customerNumber = result.CustomerNumber });
-            
             result.LatestMeterChangeDate = latestMeterChangeDate;
+
+            result.LastChangeSiphonDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(lastChangelSiphonDateQuery, new { billId });
             result.MeterStatusTitle = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(GetBranchStatusQuery(), new { billId = billId });
             result.SiphonsDiameterCount = await _sqlReportConnection.QueryAsync<SiphonsDiameterCount>(GetSiphonDiameterCountWithClientDbQuery(), new { billId });
             return result;
@@ -143,7 +143,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	'' AS SiphonInstallationBrokerTitle,
 						c.SewageInstallDate AS SiphonInstallationDate,
                         c.WaterInstallDate AS WaterInstallDate,
-                    	0 AS LoadOfContamination
+                    	0 AS LoadOfContamination,
+                        c.HasSewage AS HasSewage
                     from [CustomerWarehouse].dbo.Clients c
                     where 
 						c.BillId=@billId
@@ -169,6 +170,15 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                      	mc.ZoneId=@zoneId AND
                      	mc.CustomerNumber=@customerNumber
                      Order by mc.ChangeDateJalali Desc";
+        }
+        private string GetLastChangeSiphonDateQuery()
+        {
+            return @"Select Top 1 r.RegisterDate
+                    From [CustomerWarehouse].dbo.RequestBillDetails r
+                    Where 
+                     	r.BillId=@billId AND
+                    	r.TypeId=2--todo:
+                    Order By r.RegisterDate Desc";
         }
       
     }

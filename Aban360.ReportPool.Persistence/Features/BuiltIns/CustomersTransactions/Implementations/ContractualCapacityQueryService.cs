@@ -23,8 +23,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
 
-                FromCapacity = input.FromContractualCapacity,
-                ToCapacity = input.ToContractualCapacity,
+                FromCapacity = input.FromContractualCapacity!=null? input.FromContractualCapacity:0,
+                ToCapacity = input.ToContractualCapacity!=null? input.ToContractualCapacity:999999,
 
                 UsageIds = input.UsageSellIds,
                 ZoneIds = input.ZoneIds
@@ -69,7 +69,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     WHERE 
             			c.ToDayJalali IS NULL AND
             			c.UsageId in @UsageIds AND
-                        c.ReadingNumber BETWEEN @FromReadingNumber AND @ToReadingNumber AND
+                        --c.ReadingNumber BETWEEN @FromReadingNumber AND @ToReadingNumber AND
+                        (@FromReadingNumber is null Or
+						@ToReadingNumber is null Or
+						c.ReadingNumber between @FromReadingNumber and @ToReadingNumber) AND
                         c.ZoneId in @ZoneIds AND
             			c.ContractCapacity BETWEEN @FromCapacity AND @ToCapacity";
         }

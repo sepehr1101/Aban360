@@ -5,7 +5,7 @@ namespace Aban360.Common.Timing
 {
     public static class CalculationDistanceDate
     {
-        public static string CalcDistance(string date)
+        public static string CalcDistance(string? date)
         {
             DateOnly? persianDate = date.ToGregorianDateOnly();
             DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
@@ -19,7 +19,7 @@ namespace Aban360.Common.Timing
 
         }
 
-        public static string CalcDistance(string fromDate, string toDate)
+        public static string CalcDistance(string? fromDate, string? toDate)
         {
             DateOnly? from = fromDate.ToGregorianDateOnly();
             DateOnly? to = toDate.ToGregorianDateOnly();

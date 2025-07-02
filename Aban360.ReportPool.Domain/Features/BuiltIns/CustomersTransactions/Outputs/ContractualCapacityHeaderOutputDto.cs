@@ -2,8 +2,8 @@
 {
     public record ContractualCapacityHeaderOutputDto
     {
-        public int FromContractualCapacity { get; set; }
-        public int ToContractualCapacity { get; set; }
+        public int? FromContractualCapacity { get; set; }
+        public int? ToContractualCapacity { get; set; }
 
         public string? FromReadingNumber { get; set; }
         public string? ToReadingNumber { get; set; }

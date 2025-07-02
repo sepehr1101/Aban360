@@ -73,7 +73,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     FROM [CustomerWarehouse].dbo.Clients c
                     WHERE 
                         c.ToDayJalali is null
-                        AND (@ReadingNumber is null OR c.ReadingNumber like '%'+@ReadingNumber+'%')
+                        --AND (@ReadingNumber is null OR c.ReadingNumber like '%'+@ReadingNumber+'%')
                         AND (@FirstName is null OR c.FirstName like '%'+@FirstName+'%')
                         AND (@SureName is null OR c.SureName like '%'+@SureName+'%')
                         AND (@BillId is null OR c.BillId like '%'+@BillId+'%')

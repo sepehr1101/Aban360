@@ -21,13 +21,22 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
                 !string.IsNullOrWhiteSpace(customerInputDto.BillId) ||
                 !string.IsNullOrWhiteSpace(customerInputDto.MobileNumber) ||
                 !string.IsNullOrWhiteSpace(customerInputDto.Address) ||
-                (customerInputDto.CustomerNumber.HasValue&& customerInputDto.CustomerNumber > 0) ||
-                (customerInputDto.FromUnitDomesticWater.HasValue && customerInputDto.FromUnitDomesticWater > 0) ||
-                (customerInputDto.ToUnitDomesticWater.HasValue && customerInputDto.ToUnitDomesticWater > 0) ||
-                (customerInputDto.FromUnitDomesticWater.HasValue && customerInputDto.FromUnitDomesticWater > 0) ||
-                (customerInputDto.ToUnitDomesticWater.HasValue && customerInputDto.ToUnitDomesticWater > 0) ||
-                (customerInputDto.FromUnitOtherWater.HasValue && customerInputDto.FromUnitOtherWater > 0) ||              
-                (customerInputDto.ToUnitOtherWater.HasValue && customerInputDto.ToUnitOtherWater > 0) )
+                !string.IsNullOrWhiteSpace(customerInputDto.FromReadingNumber) ||
+                !string.IsNullOrWhiteSpace(customerInputDto.ToReadingNumber) ||
+                (customerInputDto.MeterDiameter.HasValue&& customerInputDto.MeterDiameter >= 0) ||
+                (customerInputDto.CustomerNumber.HasValue&& customerInputDto.CustomerNumber >= 0) ||
+                (customerInputDto.FromContractualCapacity.HasValue && customerInputDto.FromContractualCapacity >= 0) ||
+                (customerInputDto.ToContractualCapacity.HasValue && customerInputDto.ToContractualCapacity >= 0) ||
+                (customerInputDto.FromHousholderNumber.HasValue && customerInputDto.FromHousholderNumber >= 0) ||
+                (customerInputDto.ToHousholderNumber.HasValue && customerInputDto.ToHousholderNumber >= 0) ||
+                (customerInputDto.FromUnitDomesticWater.HasValue && customerInputDto.FromUnitDomesticWater >= 0) ||
+                (customerInputDto.ToUnitDomesticWater.HasValue && customerInputDto.ToUnitDomesticWater >= 0) ||
+                (customerInputDto.FromUnitOtherWater.HasValue && customerInputDto.FromUnitOtherWater >= 0) ||  
+                (customerInputDto.FromUnitCommercialWater.HasValue && customerInputDto.FromUnitCommercialWater >= 0) ||
+                (customerInputDto.ToUnitCommercialWater.HasValue && customerInputDto.ToUnitCommercialWater >= 0) ||              
+                (customerInputDto.ToUnitOtherWater.HasValue && customerInputDto.ToUnitOtherWater >= 0) ||
+                 customerInputDto.ZoneIds.Count>0||
+                 customerInputDto.UsageIds.Count>0)
             {
                 return true;
             }
