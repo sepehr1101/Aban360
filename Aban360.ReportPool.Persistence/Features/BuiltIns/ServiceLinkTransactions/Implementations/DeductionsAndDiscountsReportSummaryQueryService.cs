@@ -41,7 +41,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         private string GetDeductionsAndDiscountsReportDataQuery()
         {
-            return " ";
+            return @"Select 
+                    	r.ItemTitle AS DiscountTypeTitle,
+                    	SUM(r.OffAmount ) AS SumOffAmount
+                    From [CustomerWarehouse].dbo.RequestBillDetails r
+                    Where
+                    	(r.RegisterDate BETWEEN @fromDate AND @toDate)  AND
+                    	r.ZoneId IN @zoneIds AND
+                    	r.OffAmount > 0
+                    Group By r.ItemTitle";
         }
 
     }
