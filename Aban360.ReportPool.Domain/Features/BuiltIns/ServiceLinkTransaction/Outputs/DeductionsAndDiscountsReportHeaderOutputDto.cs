@@ -7,9 +7,7 @@
         public string ReportDate { get; set; }
         public int RecordCount { get; set; }
 
-        public long TotalMeterAmount { get; set; }
-        public long TotalSewageAmount { get; set; }
-        public long TotalSumAmount { get; set; }
+        public long TotalOffAmount { get; set; }
 
     }
 }

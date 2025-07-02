@@ -4,7 +4,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts
 {
-    public interface IDeductionsAndDiscountsReportQueryService
+    public interface IDeductionsAndDiscountsReportDetailQueryService
     {
         Task<ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDetailDataOutputDto>> GetInfo(DeductionsAndDiscountsReportInputDto input);
     }

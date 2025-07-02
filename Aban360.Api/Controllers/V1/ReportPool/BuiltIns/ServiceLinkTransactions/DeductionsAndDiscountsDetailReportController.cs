@@ -8,14 +8,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 {
-    [Route("v1/deductions-and-discounts-report")]
-    public class DeductionsAndDiscountsReportController : BaseController
+    [Route("v1/deductions-and-discounts-detail-report")]
+    public class DeductionsAndDiscountsDetailReportController : BaseController
     {
-        private readonly IDeductionsAndDiscountsReportHandler _deductionsAndDiscountsReportHandler;
-        public DeductionsAndDiscountsReportController(IDeductionsAndDiscountsReportHandler deductionsAndDiscountsReportHandler)
+        private readonly IDeductionsAndDiscountsDetailReportHandler _deductionsAndDiscountsDetailReportHandler;
+        public DeductionsAndDiscountsDetailReportController(IDeductionsAndDiscountsDetailReportHandler deductionsAndDiscountsDetailReportHandler)
         {
-            _deductionsAndDiscountsReportHandler = deductionsAndDiscountsReportHandler;
-            _deductionsAndDiscountsReportHandler.NotNull(nameof(_deductionsAndDiscountsReportHandler));
+            _deductionsAndDiscountsDetailReportHandler = deductionsAndDiscountsDetailReportHandler;
+            _deductionsAndDiscountsDetailReportHandler.NotNull(nameof(_deductionsAndDiscountsDetailReportHandler));
         }
 
         [HttpPost, HttpGet]
@@ -23,8 +23,8 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDetailDataOutputDto>>),StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(DeductionsAndDiscountsReportInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDetailDataOutputDto> deductionsAndDiscountsReport =await _deductionsAndDiscountsReportHandler.Handle(inputDto,cancellationToken);
-            return Ok(deductionsAndDiscountsReport);
+            ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDetailDataOutputDto> deductionsAndDiscountsDetailReport =await _deductionsAndDiscountsDetailReportHandler.Handle(inputDto,cancellationToken);
+            return Ok(deductionsAndDiscountsDetailReport);
         }
     }
 }
