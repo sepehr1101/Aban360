@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 {
     public interface IDeductionsAndDiscountsReportQueryService
     {
-        Task<ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDataOutputDto>> GetInfo(DeductionsAndDiscountsReportInputDto input);
+        Task<ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDetailDataOutputDto>> GetInfo(DeductionsAndDiscountsReportInputDto input);
     }
 }

@@ -37,7 +37,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             }
             IEnumerable<LineItemsDto> lineitems = await _sqlReportConnection.QueryAsync<LineItemsDto>(getItemValueQuery, new { billId = billId });
             IEnumerable<PreviousConsumptionsDto> previousConsumptions = await _sqlReportConnection.QueryAsync<PreviousConsumptionsDto>(getPreviousConsumptionQuery, new { billId = billId });
-            string headquarterTitle = await _sqlReportConnection.QueryFirstAsync<string>(GetHeadquarterQuery(), new { zoneId = waterInvoice.ZoneId });
+            string headquarterTitle = await _sqlConnection.QueryFirstAsync<string>(getHeadquarterQuery, new { zoneId = waterInvoice.ZoneId });
             WaterInvoicePaymentOutputDto? paymentInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterInvoicePaymentOutputDto>(getPaymentQuery, new { billId = billId, payId = waterInvoice.PayId == null ? "0" : waterInvoice.PayId });
 
             waterInvoice.LineItems = lineitems.ToList();

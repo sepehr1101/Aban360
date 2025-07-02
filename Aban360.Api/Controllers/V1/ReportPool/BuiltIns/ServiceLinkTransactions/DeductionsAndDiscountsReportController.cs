@@ -20,10 +20,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDataOutputDto>>),StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDetailDataOutputDto>>),StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(DeductionsAndDiscountsReportInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDataOutputDto> deductionsAndDiscountsReport =await _deductionsAndDiscountsReportHandler.Handle(inputDto,cancellationToken);
+            ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDetailDataOutputDto> deductionsAndDiscountsReport =await _deductionsAndDiscountsReportHandler.Handle(inputDto,cancellationToken);
             return Ok(deductionsAndDiscountsReport);
         }
     }

@@ -14,14 +14,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             : base(configuration)
         { }
 
-        public async Task<ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDataOutputDto>> GetInfo(DeductionsAndDiscountsReportInputDto input)
+        public async Task<ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDetailDataOutputDto>> GetInfo(DeductionsAndDiscountsReportInputDto input)
         {
             string deductionsAndDiscountsReportQueryString = GetDeductionsAndDiscountsReportDataQuery();
-            IEnumerable<DeductionsAndDiscountsReportDataOutputDto> deductionsAndDiscountsReportData = await _sqlConnection.QueryAsync<DeductionsAndDiscountsReportDataOutputDto>(deductionsAndDiscountsReportQueryString);//todo: parameters
+            IEnumerable<DeductionsAndDiscountsReportDetailDataOutputDto> deductionsAndDiscountsReportData = await _sqlConnection.QueryAsync<DeductionsAndDiscountsReportDetailDataOutputDto>(deductionsAndDiscountsReportQueryString);//todo: parameters
             DeductionsAndDiscountsReportHeaderOutputDto deductionsAndDiscountsReportHeader = new DeductionsAndDiscountsReportHeaderOutputDto()
             { };
 
-            var result = new ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDataOutputDto>(ReportLiterals.DeductionsAndDiscountsReport, deductionsAndDiscountsReportHeader, deductionsAndDiscountsReportData);
+            var result = new ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDetailDataOutputDto>(ReportLiterals.DeductionsAndDiscountsReport, deductionsAndDiscountsReportHeader, deductionsAndDiscountsReportData);
 
             return result;
         }
