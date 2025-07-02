@@ -200,7 +200,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                      FROM (
                          SELECT TOP 1 *
                          FROM [CustomerWarehouse].dbo.Bills
-                         WHERE BillId = '116416' AND TypeId IN (N'قبض', N'علی الحساب')
+                         WHERE BillId = @billId  AND TypeId IN (N'قبض', N'علی الحساب')
                          ORDER BY PreviousDay DESC
                      ) b
                      CROSS APPLY (
