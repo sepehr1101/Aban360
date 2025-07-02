@@ -38,6 +38,7 @@
         public string SiphonInstallationDate { get; set; } = default!;
 
         public bool HasSewage { get; set; }
+        public string? LastChangeSiphonDate { get; set; }
 
         #endregion
 
