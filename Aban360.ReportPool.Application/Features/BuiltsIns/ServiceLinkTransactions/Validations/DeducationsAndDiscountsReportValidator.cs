@@ -9,6 +9,14 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
     {
         public DeductionsAndDiscountsReportValidator()
         {
+            RuleFor(customer => customer.FromDateJalali)
+           .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+           .NotNull().WithMessage(ExceptionLiterals.NotNull);
+
+            RuleFor(customer => customer.ToDateJalali)
+           .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+           .NotNull().WithMessage(ExceptionLiterals.NotNull);
+
             RuleFor(customer => customer.ZoneIds)
            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
            .NotNull().WithMessage(ExceptionLiterals.NotNull);
