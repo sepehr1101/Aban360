@@ -143,7 +143,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	'' AS SiphonInstallationBrokerTitle,
 						c.SewageInstallDate AS SiphonInstallationDate,
                         c.WaterInstallDate AS WaterInstallDate,
-                    	0 AS LoadOfContamination
+                    	0 AS LoadOfContamination,
+                        c.HasSewage AS HasSewage
                     from [CustomerWarehouse].dbo.Clients c
                     where 
 						c.BillId=@billId

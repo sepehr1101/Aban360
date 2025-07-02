@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.Common.Timing;
 using Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contracts;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
@@ -21,7 +22,10 @@ namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implemen
 
             result.MeterLife = CalculationDistanceDate.CalcDistance(result.LatestMeterChangeDate is null ?
                                 result.WaterInstallDate : result.LatestMeterChangeDate);
-            result.SiphonLife= CalculationDistanceDate.CalcDistance(result.SiphonInstallationDate);
+
+            result.SiphonLife = result.HasSewage == true ? (CalculationDistanceDate.CalcDistance(result.SiphonInstallationDate)) :
+                                                          ExceptionLiterals.HasNotSiphon;
+
             return result;
         }
     }
