@@ -26,7 +26,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             string latestMeterChangeDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(meterChangeDateQuery, new { zoneId = result.ZoneId, customerNumber = result.CustomerNumber });
             result.LatestMeterChangeDate = latestMeterChangeDate;
 
-            result.LastChangeSiphonDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(lastChangelSiphonDateQuery, new { billId });
+            result.LastChangeSiphonDate = null;//await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(lastChangelSiphonDateQuery, new { billId });
             result.MeterStatusTitle = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(GetBranchStatusQuery(), new { billId = billId });
             result.SiphonsDiameterCount = await _sqlReportConnection.QueryAsync<SiphonsDiameterCount>(GetSiphonDiameterCountWithClientDbQuery(), new { billId });
             return result;
