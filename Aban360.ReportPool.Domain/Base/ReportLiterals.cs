@@ -65,5 +65,15 @@
         public static string HandoverDetail { get { return $"{Report} جزئیات نوع واگذاری"; } }
         public static string HandoverSummary { get { return $"{Report} خلاصه نوع واگذاری"; } }
 
+
+        public static string WaterCollectionBranchDetail { get { return "جزئیات انشعاب آب جمع آوری شده"; } }
+        public static string SewageCollectionBranchDetail { get { return "جزئیات انشعاب فاضلاب جمع آوری شده"; } }
+        public static string WaterCollectionBranchSummary { get { return "خلاصه انشعاب آب جمع آوری شده"; } }
+        public static string SewageCollectionBranchSummary { get { return "خلاصه انشعاب فاضلاب جمع آوری شده"; } }
+
+
+        public static string ServiceLinkRawItemsDetail { get { return "جزئیات جمع ناخالص اقلام انشعاب"; } }
+        public static string ServiceLinkRawItemsSummary { get { return "خلاصه جمع ناخالص اقلام انشعاب"; } }
+
     }
 }
