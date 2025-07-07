@@ -35,7 +35,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             };
 
 			WaterCalculationDetailsHeaderOutputDto calculationDetailsHeader = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterCalculationDetailsHeaderOutputDto>(calculationHeaderDataQuery, new { Id = input.Input });
-
             var result = new ReportOutput<WaterCalculationDetailsHeaderOutputDto, WaterCalculationDetailsDataOutputDto>(ReportLiterals.CalculationDetails, calculationDetailsHeader, new List<WaterCalculationDetailsDataOutputDto> { calculationDetailsData });
             return result;
         }

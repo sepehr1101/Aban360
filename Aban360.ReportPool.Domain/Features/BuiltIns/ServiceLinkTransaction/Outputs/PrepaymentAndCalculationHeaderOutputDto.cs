@@ -34,5 +34,6 @@
         public string PayableToPersian { get; set; }
         public string BillId { get; set; }
         public string PaymentId { get; set; }
+        public int RecordCount { get; set; }
     }
 }
