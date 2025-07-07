@@ -4,8 +4,8 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts
 {
-    public interface ICalculationDetailsHandler
+    public interface IServiceLinkCalculationDetailsHandler
     {
-        Task<ReportOutput<CalculationDetailsHeaderOutputDto, CalculationDetailsDataOutputDto>> Handle(CalculationDetailsInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<ServiceLinkCalculationDetailsHeaderOutputDto, ServiceLinkCalculationDetailsDataOutputDto>> Handle(ServiceLinkCalculationDetailsInputDto input, CancellationToken cancellationToken);
     }
 }

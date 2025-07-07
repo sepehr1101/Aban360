@@ -5,9 +5,9 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Validations
 {
-    public class CalculationDetailsValidator : BaseValidator<CalculationDetailsInputDto>
+    public class ServiceLinkCalculationDetailsValidator : BaseValidator<ServiceLinkCalculationDetailsInputDto>
     {
-        public CalculationDetailsValidator()
+        public ServiceLinkCalculationDetailsValidator()
         {
             RuleFor(calc => calc.Input)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)

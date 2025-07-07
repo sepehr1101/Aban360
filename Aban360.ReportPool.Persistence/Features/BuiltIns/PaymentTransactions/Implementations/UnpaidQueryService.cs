@@ -31,8 +31,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             IEnumerable<UnpaidDataOutputDto> unpaidData = await _sqlReportConnection.QueryAsync<UnpaidDataOutputDto>(unpaids,@params);
             UnpaidHeaderOutputDto unpaidHeader = new UnpaidHeaderOutputDto()
             {
-                FromDateTime = input.FromDateJalali,
-                ToDateTime = input.ToDateJalali,
+                FromDateJalali = input.FromDateJalali,
+                ToDateJalali = input.ToDateJalali,
                 FromAmount=input.FromAmount,
                 ToAmount=input.ToAmount,
                 FromReadingNumber = input.FromReadingNumber,
@@ -64,20 +64,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 					join [CustomerWarehouse].dbo.Clients c on b.BillId=c.BillId
                     WHERE 
                     p.id IS NULL
-                    AND (@FromDateTime is null or
-	     	    	   	 @ToDateTime is null or 
-			    	   	 b.RegisterDay BETWEEN @FromDateTime and @ToDateTime)
+                    AND (b.RegisterDay BETWEEN @FromDate and @ToDate)
                     AND (@FromAmount is null or
                     	 @ToAmount is null or 
                     	 b.Payable BETWEEN @FromAmount and @ToAmount)
                     AND (@FromReadingNumber is null or
                     	 @ToReadingNumber is null or 
-                    	 TRY_CAST(b.ReadingNumber AS INT) BETWEEN @FromReadingNumber and @ToReadingNumber)
+                    	 b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber)
                     {zoneQuery}
                     group by b.BillId";
 
-            //todo: FromDate ToDate Compared With?????
-            //todo: firstName SureName Address not in DataBase
         }
     }
 }

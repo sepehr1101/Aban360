@@ -9,13 +9,13 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Implementations
 {
-    internal sealed class CalculationDetailsHandler : ICalculationDetailsHandler
+    internal sealed class ServiceLinkCalculationDetailsHandler : IServiceLinkCalculationDetailsHandler
     {
-        private readonly ICalculationDetailsQueryService _calculationDetailsQueryService;
-        private readonly IValidator<CalculationDetailsInputDto> _validator;
-        public CalculationDetailsHandler(
-            ICalculationDetailsQueryService calculationDetailsQueryService,
-            IValidator<CalculationDetailsInputDto> validator)
+        private readonly IServiceLinkCalculationDetailsQueryService _calculationDetailsQueryService;
+        private readonly IValidator<ServiceLinkCalculationDetailsInputDto> _validator;
+        public ServiceLinkCalculationDetailsHandler(
+            IServiceLinkCalculationDetailsQueryService calculationDetailsQueryService,
+            IValidator<ServiceLinkCalculationDetailsInputDto> validator)
         {
             _calculationDetailsQueryService = calculationDetailsQueryService;
             _calculationDetailsQueryService.NotNull(nameof(calculationDetailsQueryService));
@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<CalculationDetailsHeaderOutputDto, CalculationDetailsDataOutputDto>> Handle(CalculationDetailsInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<ServiceLinkCalculationDetailsHeaderOutputDto, ServiceLinkCalculationDetailsDataOutputDto>> Handle(ServiceLinkCalculationDetailsInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<CalculationDetailsHeaderOutputDto, CalculationDetailsDataOutputDto> calculationDetails = await _calculationDetailsQueryService.GetInfo(input);
+            ReportOutput<ServiceLinkCalculationDetailsHeaderOutputDto, ServiceLinkCalculationDetailsDataOutputDto> calculationDetails = await _calculationDetailsQueryService.GetInfo(input);
             return calculationDetails;
         }
     }
