@@ -7,6 +7,7 @@
         public long OffAmount { get; set; }
         public string  TypeTitle { get; set; }
         public string  ZoneTitle { get; set; }
+        public int Count { get; set; }
 
     }
 }
