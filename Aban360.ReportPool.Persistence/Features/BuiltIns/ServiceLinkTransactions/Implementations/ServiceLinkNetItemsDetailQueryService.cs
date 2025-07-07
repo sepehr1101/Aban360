@@ -4,6 +4,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
 using Dapper;
+using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
@@ -20,19 +21,41 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
             var @params = new
             {
+                fromDate = input.FromDateJalali,
+                toDate = input.ToDateJalali,
+                zoneIds = input.ZoneIds,
             };
-            IEnumerable<ServiceLinkNetItemsDetailDataOutputDto> CollectionBranchData = await _sqlReportConnection.QueryAsync<ServiceLinkNetItemsDetailDataOutputDto>(serviceLinkNetItemsDetailQuery, @params);
-            ServiceLinkNetItemsHeaderOutputDto CollectionBranchHeader = new ServiceLinkNetItemsHeaderOutputDto()
+            IEnumerable<ServiceLinkNetItemsDetailDataOutputDto> data = await _sqlReportConnection.QueryAsync<ServiceLinkNetItemsDetailDataOutputDto>(serviceLinkNetItemsDetailQuery, @params);
+            ServiceLinkNetItemsHeaderOutputDto header = new ServiceLinkNetItemsHeaderOutputDto()
             {
+                FromDataJalali = input.FromDateJalali,
+                ToDataJalali = input.ToDateJalali,
+                ReportDate = DateTime.Now.ToShortPersianDateString(),
+                RecordCount = data.Count(),
+
+                SumAmount = data.Sum(x => x.Amount),
+                SumOffAmount = data.Sum(x => x.OffAmount),
+                SumFinalAmount = data.Sum(x => x.FinalAmount),
             };
             var result = new ReportOutput<ServiceLinkNetItemsHeaderOutputDto, ServiceLinkNetItemsDetailDataOutputDto>
-                (ReportLiterals.ServiceLinkNetItemsDetail, CollectionBranchHeader, CollectionBranchData);
+                (ReportLiterals.ServiceLinkNetItemsDetail, header, data);
 
             return result;
         }
         private string GetServiceLinkNetItemsDetailQuery()
         {
-            return @"";
+            return @"Select
+                    	r.TrackNumber,
+                    	r.ZoneTitle,
+                    	r.CustomerNumber,
+                    	r.ItemTitle,
+                    	r.Amount,
+                    	r.OffAmount,
+                    	r.FinalAmount
+                    From [CustomerWarehouse].dbo.RequestBillDetails r
+                    Where	
+                    	r.RegisterDate BETWEEN @fromDate AND @toDate AND
+                    	r.ZoneId IN @zoneIds";
         }
     }
 }

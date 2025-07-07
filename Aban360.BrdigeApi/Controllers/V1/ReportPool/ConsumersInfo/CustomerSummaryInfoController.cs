@@ -1,4 +1,5 @@
 ﻿using Aban360.BrdigeApi.Controllers.V1;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;

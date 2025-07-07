@@ -21,19 +21,42 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
             var @params = new
             {
+                fromDate = input.FromDateJalali,
+                toDate = input.ToDateJalali,
+                zoneIds = input.ZoneIds,
             };
-            IEnumerable<ServiceLinkRawItemsDetailDataOutputDto> CollectionBranchData = await _sqlReportConnection.QueryAsync<ServiceLinkRawItemsDetailDataOutputDto>(serviceLinkRawItemsDetailQuery, @params);
-            ServiceLinkRawItemsHeaderOutputDto CollectionBranchHeader = new ServiceLinkRawItemsHeaderOutputDto()
+            IEnumerable<ServiceLinkRawItemsDetailDataOutputDto> data = await _sqlReportConnection.QueryAsync<ServiceLinkRawItemsDetailDataOutputDto>(serviceLinkRawItemsDetailQuery, @params);
+            ServiceLinkRawItemsHeaderOutputDto collectionBranchHeader = new ServiceLinkRawItemsHeaderOutputDto()
             {
+                FromDataJalali = input.FromDateJalali,
+                ToDataJalali = input.ToDateJalali,
+                ReportDate = DateTime.Now.ToShortPersianDateString(),
+                RecordCount = data.Count(),
+
+                SumAmount = data.Sum(x => x.Amount),
+                SumOffAmount = data.Sum(x => x.OffAmount),
+                SumFinalAmount = data.Sum(x => x.FinalAmount),
             };
             var result = new ReportOutput<ServiceLinkRawItemsHeaderOutputDto, ServiceLinkRawItemsDetailDataOutputDto>
-                (ReportLiterals.ServiceLinkRawItemsDetail, CollectionBranchHeader, CollectionBranchData);
+                (ReportLiterals.ServiceLinkRawItemsDetail, collectionBranchHeader, data);
 
             return result;
         }
         private string GetServiceLinkRawItemsDetailQuery()
         {
-            return @"";
+            return @"Select
+                    	r.TrackNumber,
+                    	r.ZoneTitle,
+                    	r.CustomerNumber,
+                    	r.ItemTitle,
+                    	r.Amount,
+                    	r.OffAmount,
+                    	r.FinalAmount
+                    From [CustomerWarehouse].dbo.RequestBillDetails r
+                    Where	
+                    	r.RegisterDate BETWEEN @fromDate AND @toDate AND
+                    	r.ZoneId IN @zoneIds AND
+                    	r.TypeCode=1 OR r.TypeCode=2";
         }
     }
 }

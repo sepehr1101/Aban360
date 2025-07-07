@@ -2,6 +2,9 @@
 {
     public record ServiceLinkRawItemsSummaryDataOutputDto
     {
-        //
+        public string ItemTitle { get; set; }
+        public long Amount { get; set; }
+        public long OffAmount { get; set; }
+        public long FinalAmount { get; set; }
     }
 }

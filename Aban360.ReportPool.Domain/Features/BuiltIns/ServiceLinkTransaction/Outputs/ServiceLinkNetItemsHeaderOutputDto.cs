@@ -2,6 +2,13 @@
 {
     public record ServiceLinkNetItemsHeaderOutputDto
     {
-        //
+        public string FromDataJalali { get; set; }
+        public string ToDataJalali { get; set; }
+        public string ReportDate { get; set; }
+        public int RecordCount { get; set; }
+
+        public long SumAmount { get; set; }
+        public long SumOffAmount { get; set; }
+        public long SumFinalAmount { get; set; }
     }
 }
