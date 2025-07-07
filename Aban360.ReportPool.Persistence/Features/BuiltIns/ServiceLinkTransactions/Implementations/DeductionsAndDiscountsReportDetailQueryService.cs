@@ -5,7 +5,6 @@ using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
-using LiteDB.Engine;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations

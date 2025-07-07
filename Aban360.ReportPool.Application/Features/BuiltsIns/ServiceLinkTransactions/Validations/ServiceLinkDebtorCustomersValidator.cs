@@ -5,15 +5,15 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Validations
 {
-    public class LinkServiceStatementValidator : BaseValidator<LinkServiceStatementInputDto>
+    public class ServiceLinkDebtorCustomersValidator : BaseValidator<ServiceLinkDebtorCustomersInputDto>
     {
-        public LinkServiceStatementValidator()
+        public ServiceLinkDebtorCustomersValidator()
         {
-            RuleFor(customer => customer.FromDateJalali)
+            RuleFor(customer => customer.FromAmout)
            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
            .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(customer => customer.ToDateJalali)
+            RuleFor(customer => customer.ToAmount)
            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
            .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
@@ -21,6 +21,5 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
            .NotNull().WithMessage(ExceptionLiterals.NotNull);
         }
-
     }
 }
