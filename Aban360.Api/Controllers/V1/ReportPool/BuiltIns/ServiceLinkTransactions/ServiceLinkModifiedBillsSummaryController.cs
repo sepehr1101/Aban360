@@ -1,0 +1,30 @@
+﻿using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Extensions;
+using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
+using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
+using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
+{
+    [Route("v1/ServiceLink-modified-bills-summary")]
+    public class ServiceLinkModifiedBillsSummaryController : BaseController
+    {
+        private readonly IServiceLinkModifiedBillsSummaryHandler _modifiedBillsHandler;
+        public ServiceLinkModifiedBillsSummaryController(IServiceLinkModifiedBillsSummaryHandler modifiedBillsHandler)
+        {
+            _modifiedBillsHandler = modifiedBillsHandler;
+            _modifiedBillsHandler.NotNull(nameof(modifiedBillsHandler));
+        }
+
+        [HttpPost, HttpGet]
+        [Route("raw")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ServiceLinkModifiedBillsHeaderOutputDto, ServiceLinkModifiedBillsDetailDataOutputDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetRaw(ServiceLinkModifiedBillsInputDto input, CancellationToken cancellationToken)
+        {
+            ReportOutput<ServiceLinkModifiedBillsHeaderOutputDto, ServiceLinkModifiedBillsSummaryDataOutputDto> modifiedBills = await _modifiedBillsHandler.Handle(input, cancellationToken);
+            return Ok(modifiedBills);
+        }
+    }
+}

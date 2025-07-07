@@ -24,7 +24,10 @@
         public static string WaterUsageGrouped { get { return $"{Report} تفکیک کاربری - آب بهاء"; } }
         public static string Unpaid { get { return $"{Report} بدون پرداخت وصولی"; } }
         public static string WaterMeterReplacements(string reason)=> $"{Report} گزاش کنتور های تعویضی بر اساس {reason}"; 
-        public static string ModifiedBills { get { return $"{Report} "; } }//Todo: ادغام تسک 19 و 20
+        public static string WaterModifiedBillsDetail { get { return $"{Report}  جزئیات برگشتی و اصلاحات - آب بها"; } }
+        public static string WaterModifiedBillsSummary { get { return $"{Report}  خلاصه برگشتی و اصلاحات - آب بها"; } }
+        public static string ServiceLinkModifiedBillsSummary { get { return $"{Report} خلاصه برگشتی و اصلاحات - انشعاب"; } }
+        public static string ServiceLinkModifiedBillsDetail { get { return $"{Report} جزئیات برگشتی و اصلاحات - انشعاب"; } }
         public static string Unread { get { return $"{Report} بسته و مانع طی دوره"; } }
         public static string WithoutBill { get { return $"{Report} بدون صدور قبض"; } }
         public static string ContractualCapacity { get { return $"{Report} ظرفیت قراردادی"; } }
@@ -72,8 +75,11 @@
         public static string SewageCollectionBranchSummary { get { return "خلاصه انشعاب فاضلاب جمع آوری شده"; } }
 
 
-        public static string ServiceLinkRawItemsDetail { get { return "جزئیات جمع ناخالص اقلام انشعاب"; } }
-        public static string ServiceLinkRawItemsSummary { get { return "خلاصه جمع ناخالص اقلام انشعاب"; } }
+        public static string ServiceLinkRawItemsDetail { get { return $"{Report} جزئیات جمع ناخالص اقلام انشعاب"; } }
+        public static string ServiceLinkRawItemsSummary { get { return $"{Report} خلاصه جمع ناخالص اقلام انشعا"; } }
+
+        public static string ServiceLinkNetItemsDetail { get { return $"{Report} جزئیات جمع خالص اقلام انشعاب"; } }
+        public static string ServiceLinkNetItemsSummary { get { return $"{Report} خلاصه جمع خالص اقلام انشعا"; } }
 
     }
 }

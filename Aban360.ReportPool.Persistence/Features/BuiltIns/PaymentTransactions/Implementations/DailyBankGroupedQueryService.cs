@@ -34,6 +34,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 FromAmount=input.FromAmount,
                 ToAmount=input.ToAmount,
                 ReportDate=DateTime.Now.ToShortPersianDateString(),
+                RecordCount=dailyBankGroupedData.Count()
             };
 
             var result = new ReportOutput<DailyBankGroupedHeaderOutputDto, DailyBankGroupedDataOutputDto>(ReportLiterals.DailyBankGrouped, dailyBankGroupedHeader, dailyBankGroupedData);
