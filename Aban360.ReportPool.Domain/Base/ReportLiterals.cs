@@ -12,7 +12,8 @@
         public static string CalculationDetails{ get { return $"{Report} ریز محاسبه"; } }
         public static string DeductionsAndDiscountsReport{ get { return $"{Report} کسورات و تخفیفات"; } }
         public static string ServiceLinkDebtorCustomers{ get { return $"{Report} مانده مطالبات سررسید شده"; } }
-        public static string DebtorByDay { get { return $"{Report} روزنامه بدهکاران"; } }//
+        public static string DebtorByDayDetail { get { return $"{Report} جزئیات روزنامه بدهکاران"; } }
+        public static string DebtorByDaySummary { get { return $"{Report} خلاصه روزنامه بدهکاران"; } }
         public static string LinkServiceStatement { get { return $"{Report} صورت وضعیت (سامانه فروش)"; } }
         public static string PendingPayments { get { return $"{Report} مشترکین بدهکار"; } }
 
