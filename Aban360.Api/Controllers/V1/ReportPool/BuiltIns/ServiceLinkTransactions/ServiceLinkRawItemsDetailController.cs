@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 {
-    [Route("v1/service-link-items-detail")]
+    [Route("v1/service-link-raw-items-detail")]
     public class ServiceLinkRawItemsDetailController : BaseController
     {
         private readonly IServiceLinkRawItemsDetailHandler _serviceLinkRawItemsDetailHandler;

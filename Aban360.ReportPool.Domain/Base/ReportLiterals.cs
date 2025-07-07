@@ -72,8 +72,11 @@
         public static string SewageCollectionBranchSummary { get { return "خلاصه انشعاب فاضلاب جمع آوری شده"; } }
 
 
-        public static string ServiceLinkRawItemsDetail { get { return "جزئیات جمع ناخالص اقلام انشعاب"; } }
-        public static string ServiceLinkRawItemsSummary { get { return "خلاصه جمع ناخالص اقلام انشعاب"; } }
+        public static string ServiceLinkRawItemsDetail { get { return $"{Report} جزئیات جمع ناخالص اقلام انشعاب"; } }
+        public static string ServiceLinkRawItemsSummary { get { return $"{Report} خلاصه جمع ناخالص اقلام انشعا"; } }
+
+        public static string ServiceLinkNetItemsDetail { get { return $"{Report} جزئیات جمع خالص اقلام انشعاب"; } }
+        public static string ServiceLinkNetItemsSummary { get { return $"{Report} خلاصه جمع خالص اقلام انشعا"; } }
 
     }
 }
