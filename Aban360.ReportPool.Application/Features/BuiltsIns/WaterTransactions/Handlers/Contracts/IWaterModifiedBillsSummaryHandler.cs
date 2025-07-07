@@ -4,8 +4,8 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts
 {
-    public interface IModifiedBillsHandler
+    public interface IWaterModifiedBillsSummaryHandler
     {
-        Task<ReportOutput<ModifiedBillsHeaderOutputDto, ModifiedBillsDataOutputDto>> Handle(ModifiedBillsInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<WaterModifiedBillsHeaderOutputDto, WaterModifiedBillsSummaryDataOutputDto>> Handle(WaterModifiedBillsInputDto input, CancellationToken cancellationToken);
     }
 }

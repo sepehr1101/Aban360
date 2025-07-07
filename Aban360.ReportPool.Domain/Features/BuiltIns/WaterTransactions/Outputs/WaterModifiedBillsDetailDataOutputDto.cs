@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs
 {
-    public record ModifiedBillsDataOutputDto
+    public record WaterModifiedBillsDetailDataOutputDto
     {
         public string ZoneTitle { get; set; }
         public string CustomerNumber { get; set; }

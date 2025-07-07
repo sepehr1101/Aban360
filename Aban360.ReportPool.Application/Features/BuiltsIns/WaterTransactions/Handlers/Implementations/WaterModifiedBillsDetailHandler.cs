@@ -9,13 +9,13 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Implementations
 {
-    internal sealed class ModifiedBillsHandler : IModifiedBillsHandler
+    internal sealed class WaterModifiedBillsDetailHandler : IWaterModifiedBillsDetailHandler
     {
-        private readonly IModifiedBillsQueryService _modifiedBillsQueryService;
-        private readonly IValidator<ModifiedBillsInputDto> _validator;
-        public ModifiedBillsHandler(
-            IModifiedBillsQueryService modifiedBillsQueryService,
-            IValidator<ModifiedBillsInputDto> validator)
+        private readonly IWaterModifiedBillsDetailQueryService _modifiedBillsQueryService;
+        private readonly IValidator<WaterModifiedBillsInputDto> _validator;
+        public WaterModifiedBillsDetailHandler(
+            IWaterModifiedBillsDetailQueryService modifiedBillsQueryService,
+            IValidator<WaterModifiedBillsInputDto> validator)
         {
             _modifiedBillsQueryService = modifiedBillsQueryService;
             _modifiedBillsQueryService.NotNull(nameof(modifiedBillsQueryService));
@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<ModifiedBillsHeaderOutputDto, ModifiedBillsDataOutputDto>> Handle(ModifiedBillsInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<WaterModifiedBillsHeaderOutputDto, WaterModifiedBillsDetailDataOutputDto>> Handle(WaterModifiedBillsInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<ModifiedBillsHeaderOutputDto, ModifiedBillsDataOutputDto> modifiedBills = await _modifiedBillsQueryService.GetInfo(input);
+            ReportOutput<WaterModifiedBillsHeaderOutputDto, WaterModifiedBillsDetailDataOutputDto> modifiedBills = await _modifiedBillsQueryService.GetInfo(input);
             return modifiedBills;
         }
     }

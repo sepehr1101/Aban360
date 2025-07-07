@@ -5,9 +5,9 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Validations
 {
-    public class ModifiedBillValidator:BaseValidator<ModifiedBillsInputDto>
+    public class WaterModifiedBillValidator:BaseValidator<WaterModifiedBillsInputDto>
     {
-        public ModifiedBillValidator()
+        public WaterModifiedBillValidator()
         {
             RuleFor(customer => customer.FromDateJalali)
           .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
