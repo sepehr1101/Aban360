@@ -45,7 +45,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	SUM(r.Amount) AS Amount,
                     	SUM(r.OffAmount) AS OffAmount,
                     	MAX(r.TypeId) AS TypeTitle,
-                    	MAX(r.ZoneTitle) AS ZoneTitle
+                    	MAX(r.ZoneTitle) AS ZoneTitle,
+                        COUNT(1) AS Count
                     From [InvoiceBranchConvert].dbo.RequestBillDetails r
                     Where 
                     	(r.RegisterDate BETWEEN @FromDateJalali AND @ToDateJalali) AND
