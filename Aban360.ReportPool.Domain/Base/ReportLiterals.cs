@@ -17,8 +17,9 @@
         public static string LinkServiceStatement { get { return $"{Report} صورت وضعیت (سامانه فروش)"; } }
         public static string PendingPayments { get { return $"{Report} مشترکین بدهکار"; } }
 
-        public static string UnspecifiedWaterPayment { get { return $"{Report} ردیف نامشخص آب بهاء"; } }
-        public static string UnspecifiedServiceLinkPayment { get { return $"{Report} ردیف نامشخص حق انشعاب"; } }
+        public static string UnspecifiedWaterPayment { get { return $"{Report} وصولی خارج سیستم _ آب بها"; } }
+        public static string UnspecifiedServiceLinkPayment { get { return $"{Report} وصولی خارج سیستم-انشعاب"; } }
+        public static string InvalidPayment { get { return $"{Report} وصولی نامعتبر"; } }
         public static string DailyBankGrouped { get { return $"{Report}  به تفکیک بانک و روز"; } }
         public static string WaterPaymentDetail { get { return $"{Report} ریز وصولی ها - آب بهاء"; } }
         public static string ServiceLinkPaymentDetail { get { return $"{Report} ریز وصولی ها - حق انشعاب"; } }//
