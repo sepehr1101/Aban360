@@ -88,5 +88,10 @@
         public static string MalfunctionMeter { get { return $"{Report} کنتورهای خراب"; } }
         public static string MalfunctionMeterByDuration { get { return $"{Report} کنتورهای خراب بر اساس دوره"; } }
 
+        public static string WaterNetSalesSummary { get { return $"خلاصه {Report} فروش خالص آب بها"; } }
+        public static string WaterRawSalesSummary { get { return $"خلاصه {Report} فروش ناخالص آب بها"; } }
+
+        public static string ExcessPattern { get { return $"خلاصه {Report} مازاد الگو"; } }
+
     }
 }
