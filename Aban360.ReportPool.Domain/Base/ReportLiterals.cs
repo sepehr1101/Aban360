@@ -83,5 +83,9 @@
         public static string ServiceLinkNetItemsDetail { get { return $"{Report} جزئیات جمع خالص اقلام انشعاب"; } }
         public static string ServiceLinkNetItemsSummary { get { return $"{Report} خلاصه جمع خالص اقلام انشعا"; } }
 
+
+        public static string MalfunctionMeter { get { return $"{Report} کنتورهای خراب"; } }
+        public static string MalfunctionMeterByDuration { get { return $"{Report} کنتورهای خراب بر اساس دوره"; } }
+
     }
 }
