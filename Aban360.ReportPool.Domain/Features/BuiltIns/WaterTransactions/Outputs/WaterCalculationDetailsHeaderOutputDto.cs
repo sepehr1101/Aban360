@@ -19,7 +19,7 @@
         public int DomesticUnit { get; set; }
         public int EmptyUnit { get; set; }
 
-        public string RegisterDay { get; set; }
+        public string IssueDateJalali { get; set; }
         public string BranchType { get; set; }
         public string ReadingStateTitle { get; set; }
 

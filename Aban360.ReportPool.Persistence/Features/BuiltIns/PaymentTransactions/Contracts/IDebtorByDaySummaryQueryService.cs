@@ -4,8 +4,8 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Contracts
 {
-    public interface IDebtorByDayQueryService
+    public interface IDebtorByDaySummaryQueryService
     {
-        Task<ReportOutput<DebtorByDayHeaderOutputDto, DebtorByDayDataOutputDto>> GetInfo(DebtorByDayInputDto input);
+        Task<ReportOutput<DebtorByDayHeaderOutputDto, DebtorByDaySummaryDataOutputDto>> GetInfo(DebtorByDayInputDto input);
     }
 }

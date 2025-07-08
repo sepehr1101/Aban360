@@ -106,7 +106,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						b.CommercialCount,
 						b.DomesticCount,
 						b.EmptyCount AS EmptyUnit,
-						b.RegisterDay,
+						b.RegisterDay AS IssueDateJalali,
 						b.BranchType,
 						b.ReadingStateTitle,
 						b.CounterStateTitle,

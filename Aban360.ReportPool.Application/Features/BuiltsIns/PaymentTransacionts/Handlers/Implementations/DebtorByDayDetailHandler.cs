@@ -9,12 +9,12 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Implementations
 {
-    internal sealed class DebtorByDayHandler : IDebtorByDayHandler
+    internal sealed class DebtorByDayDetailHandler : IDebtorByDayDetailHandler
     {
-        private readonly IDebtorByDayQueryService _debtorByDayQueryService;
+        private readonly IDebtorByDayDetailQueryService _debtorByDayQueryService;
         private readonly IValidator<DebtorByDayInputDto> _validator;
-        public DebtorByDayHandler(
-            IDebtorByDayQueryService debtorByDayQueryService,
+        public DebtorByDayDetailHandler(
+            IDebtorByDayDetailQueryService debtorByDayQueryService,
             IValidator<DebtorByDayInputDto> validator)
         {
             _debtorByDayQueryService = debtorByDayQueryService;
@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<DebtorByDayHeaderOutputDto, DebtorByDayDataOutputDto>> Handle(DebtorByDayInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<DebtorByDayHeaderOutputDto, DebtorByDayDetailDataOutputDto>> Handle(DebtorByDayInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<DebtorByDayHeaderOutputDto, DebtorByDayDataOutputDto> debtorByDay = await _debtorByDayQueryService.GetInfo(input);
+            ReportOutput<DebtorByDayHeaderOutputDto, DebtorByDayDetailDataOutputDto> debtorByDay = await _debtorByDayQueryService.GetInfo(input);
             return debtorByDay;
         }
     }

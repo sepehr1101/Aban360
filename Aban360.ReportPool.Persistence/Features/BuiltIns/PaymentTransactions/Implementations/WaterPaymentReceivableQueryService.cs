@@ -23,7 +23,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 FromDate = input.FromDateJalali,
                 ToDate = input.ToDateJalali,
             };
-            IEnumerable<WaterPaymentReceivableDataOutputDto> waterPaymentReceivableData = await _sqlConnection.QueryAsync<WaterPaymentReceivableDataOutputDto>(paymentReceivables, @params);
+            IEnumerable<WaterPaymentReceivableDataOutputDto> waterPaymentReceivableData = await _sqlReportConnection.QueryAsync<WaterPaymentReceivableDataOutputDto>(paymentReceivables, @params);
             WaterPaymentReceivableHeaderOutputDto waterPaymentReceivableHeader = new WaterPaymentReceivableHeaderOutputDto()
             {
                 FormDateJalali = input.FromDateJalali,

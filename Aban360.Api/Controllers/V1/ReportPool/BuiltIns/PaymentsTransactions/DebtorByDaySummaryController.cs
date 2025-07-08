@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
 {
-    [Route("v1/debtor-by-day")]
-    public class DebtorByDayController : BaseController
+    [Route("v1/debtor-by-day-summary")]
+    public class DebtorByDaySummaryController : BaseController
     {
-        private readonly IDebtorByDayHandler _debtorByDayHandler;
-        public DebtorByDayController(IDebtorByDayHandler debtorByDayHandler)
+        private readonly IDebtorByDaySummaryHandler _debtorByDayHandler;
+        public DebtorByDaySummaryController(IDebtorByDaySummaryHandler debtorByDayHandler)
         {
             _debtorByDayHandler = debtorByDayHandler;
             _debtorByDayHandler.NotNull(nameof(_debtorByDayHandler));
@@ -20,10 +20,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<DebtorByDayHeaderOutputDto, DebtorByDayDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<DebtorByDayHeaderOutputDto, DebtorByDaySummaryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(DebtorByDayInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<DebtorByDayHeaderOutputDto, DebtorByDayDataOutputDto> debtorByDay = await _debtorByDayHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<DebtorByDayHeaderOutputDto, DebtorByDaySummaryDataOutputDto> debtorByDay = await _debtorByDayHandler.Handle(inputDto, cancellationToken);
             return Ok(debtorByDay);
         }
     }
