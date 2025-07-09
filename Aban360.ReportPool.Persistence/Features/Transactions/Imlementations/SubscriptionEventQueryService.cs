@@ -149,7 +149,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	c.UsageTitle2 AS UsageTitle,
                     	c.CommercialCount+c.DomesticCount+c.OtherCount AS TotalUnit,
                     	c.ContractCapacity AS ContractualCapacity,
-						1 AS HasTag,
+						0 AS HasTag,
                     	c.EmptyCount AS EmptyUnit,
                     	c.FamilyCount AS HouseholdNumber,
                     	c.WaterDiameterTitle AS MeterDiameterTitle,

@@ -36,7 +36,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 ReportDate = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = RequestData.Count()
+                RecordCount = (RequestData is not null && RequestData.Any()) ? RequestData.Count() : 0
             };
             var result = new ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto>
                 (input.IsWater ? ReportLiterals.WaterDistanceRequestInstallationSummary : ReportLiterals.SewageDistanceRequesteInstallationSummary,

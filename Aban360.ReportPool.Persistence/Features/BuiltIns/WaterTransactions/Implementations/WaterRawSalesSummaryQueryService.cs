@@ -17,7 +17,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         public async Task<ReportOutput<WaterRawSalesSummaryHeaderOutputDto, WaterRawSalesSummaryDataOutputDto>> GetInfo(WaterRawSalesSummaryInputDto input)
         {
             string waterRawSalesSummarys = GetWaterRawSalesSummaryQuery();
-            IEnumerable<WaterRawSalesSummaryDataOutputDto> waterRawSalesData = await _sqlConnection.QueryAsync<WaterRawSalesSummaryDataOutputDto>(waterRawSalesSummarys);//todo: Parameters
+            IEnumerable<WaterRawSalesSummaryDataOutputDto> waterRawSalesData = await _sqlReportConnection.QueryAsync<WaterRawSalesSummaryDataOutputDto>(waterRawSalesSummarys);//todo: Parameters
             WaterRawSalesSummaryHeaderOutputDto waterRawSalesHeader = new WaterRawSalesSummaryHeaderOutputDto()
             { };
 

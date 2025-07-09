@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         public async Task<ReportOutput<ServiceLinkCalculationDetailsHeaderOutputDto, ServiceLinkCalculationDetailsDataOutputDto>> GetInfo(ServiceLinkCalculationDetailsInputDto input)
         {
             string calculationDetailsDataInfoQuery = GetCalculationDetailsDataQuery();
-            IEnumerable<ServiceLinkCalculationDetailsDataOutputDto> calculationDetailsData = await _sqlConnection.QueryAsync<ServiceLinkCalculationDetailsDataOutputDto>(calculationDetailsDataInfoQuery, new { Id = input.Input });
+            IEnumerable<ServiceLinkCalculationDetailsDataOutputDto> calculationDetailsData = await _sqlReportConnection.QueryAsync<ServiceLinkCalculationDetailsDataOutputDto>(calculationDetailsDataInfoQuery, new { Id = input.Input });
             ServiceLinkCalculationDetailsHeaderOutputDto calculationDetailsHeader = new ServiceLinkCalculationDetailsHeaderOutputDto()
 			{
 

@@ -20,7 +20,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             string calculationDetailsDataInfoQuery = GetCalculationDetailsDataQuery();
 			string calculationHeaderDataQuery = GetCalculationHeaderDataQuery();
 
-            IEnumerable<WaterCalculationDetailsDataFromSqlOutputDto> calculationDetailsDataSql = await _sqlConnection.QueryAsync<WaterCalculationDetailsDataFromSqlOutputDto>(calculationDetailsDataInfoQuery, new { Id = input.Input });
+            IEnumerable<WaterCalculationDetailsDataFromSqlOutputDto> calculationDetailsDataSql = await _sqlReportConnection.QueryAsync<WaterCalculationDetailsDataFromSqlOutputDto>(calculationDetailsDataInfoQuery, new { Id = input.Input });
             List<WaterCalculationDetailItemTitleDto> items = calculationDetailsDataSql.Select(x => new WaterCalculationDetailItemTitleDto
             {
                 ItemTitle = x.ItemTitle,

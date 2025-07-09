@@ -25,7 +25,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ToDateJalali=input.ToDateJalali,
                 ZoneIds=input.ZoneIds,
             };
-            IEnumerable<LinkServiceStatementDataOutputDto> linkServiceStatementData = await _sqlConnection.QueryAsync<LinkServiceStatementDataOutputDto>(linkServiceStatementDataInfoQuery,@params);
+            IEnumerable<LinkServiceStatementDataOutputDto> linkServiceStatementData = await _sqlReportConnection.QueryAsync<LinkServiceStatementDataOutputDto>(linkServiceStatementDataInfoQuery,@params);
             LinkServiceStatementHeaderOutputDto linkServiceStatementHeader = new LinkServiceStatementHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
