@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 toDate = input.ToDateJalali,
                 zoneIds = input.ZoneIds,
             };
-            IEnumerable<DebtorByDaySummaryDataOutputDto> debtorByDayData = await _sqlConnection.QueryAsync<DebtorByDaySummaryDataOutputDto>(debtorByDayQueryString, @params);
+            IEnumerable<DebtorByDaySummaryDataOutputDto> debtorByDayData = await _sqlReportConnection.QueryAsync<DebtorByDaySummaryDataOutputDto>(debtorByDayQueryString, @params);
             DebtorByDayHeaderOutputDto debtorByDayHeader = new DebtorByDayHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

@@ -25,7 +25,7 @@
         public static string ServiceLinkPaymentDetail { get { return $"{Report} ریز وصولی ها - حق انشعاب"; } }//
         public static string WaterPaymentReceivable { get { return $"{Report} وصولی های جاری و معوقه - آب بهاء"; } }
         public static string WaterUsageGrouped { get { return $"{Report} تفکیک کاربری - آب بهاء"; } }
-        public static string Unpaid { get { return $"{Report} بدون پرداخت وصولی"; } }
+        public static string Unpaid { get { return $"{Report} بدون وصولی"; } }
         public static string WaterMeterReplacements(string reason)=> $"{Report} گزاش کنتور های تعویضی بر اساس {reason}"; 
         public static string WaterModifiedBillsDetail { get { return $"{Report}  جزئیات برگشتی و اصلاحات - آب بها"; } }
         public static string WaterModifiedBillsSummary { get { return $"{Report}  خلاصه برگشتی و اصلاحات - آب بها"; } }

@@ -26,7 +26,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 FromBankId = input.FromBankId,
                 ToBankId = input.ToBankId,
             };
-            IEnumerable<UnspecifiedPaymentDataOutputDto> unspecifiedWaterData = await _sqlConnection.QueryAsync<UnspecifiedPaymentDataOutputDto>(unspecifiedWaterPayments,@params);
+            IEnumerable<UnspecifiedPaymentDataOutputDto> unspecifiedWaterData = await _sqlReportConnection.QueryAsync<UnspecifiedPaymentDataOutputDto>(unspecifiedWaterPayments,@params);
             UnspecifiedPaymentHeaderOutputDto unspecifiedWaterHeader = new UnspecifiedPaymentHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -81,7 +81,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 							OR 
 							(@FromAmount IS NULL AND
 								@ToAmount IS NULL)
-						)";
+						)AND
+						(p.BankCode BETWEEN @FromBankId AND @ToBankId)";
         }
     }
 }

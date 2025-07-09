@@ -17,7 +17,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         public async Task<ReportOutput<ExcessPatternHeaderOutputDto, ExcessPatternDataOutputDto>> GetInfo(ExcessPatternInputDto input)
         {
             string ExcessPatterns = GetExcessPatternQuery();
-            IEnumerable<ExcessPatternDataOutputDto> unspecifiedWaterData = await _sqlConnection.QueryAsync<ExcessPatternDataOutputDto>(ExcessPatterns);//todo: Parameters
+            IEnumerable<ExcessPatternDataOutputDto> unspecifiedWaterData = await _sqlReportConnection.QueryAsync<ExcessPatternDataOutputDto>(ExcessPatterns);//todo: Parameters
             ExcessPatternHeaderOutputDto unspecifiedWaterHeader = new ExcessPatternHeaderOutputDto()
             { };
 

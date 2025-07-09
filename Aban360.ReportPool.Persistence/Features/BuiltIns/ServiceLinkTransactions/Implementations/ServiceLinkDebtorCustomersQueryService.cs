@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 toAmount = input.ToAmount,
                 zoneIds = input.ZoneIds,
             };
-            IEnumerable<ServiceLinkDebtorCustomersDataOutputDto> debtorCustomersData = await _sqlConnection.QueryAsync<ServiceLinkDebtorCustomersDataOutputDto>(debtorCustomersQueryString, @params);
+            IEnumerable<ServiceLinkDebtorCustomersDataOutputDto> debtorCustomersData = await _sqlReportConnection.QueryAsync<ServiceLinkDebtorCustomersDataOutputDto>(debtorCustomersQueryString, @params);
             ServiceLinkDebtorCustomersHeaderOutputDto debtorCustomersHeader = new ServiceLinkDebtorCustomersHeaderOutputDto()
             {
                 FromAmount = input.FromAmout,

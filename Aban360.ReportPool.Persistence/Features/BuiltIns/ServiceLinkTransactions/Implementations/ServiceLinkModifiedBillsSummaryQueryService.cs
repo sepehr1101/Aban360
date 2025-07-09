@@ -25,7 +25,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 zoneIds = input.ZoneIds,
                 typeCode = input.TypeId,
             };
-            IEnumerable<ServiceLinkModifiedBillsSummaryDataOutputDto> modifiedBillsData = await _sqlConnection.QueryAsync<ServiceLinkModifiedBillsSummaryDataOutputDto>(modifiedBills, @params);
+            IEnumerable<ServiceLinkModifiedBillsSummaryDataOutputDto> modifiedBillsData = await _sqlReportConnection.QueryAsync<ServiceLinkModifiedBillsSummaryDataOutputDto>(modifiedBills, @params);
             ServiceLinkModifiedBillsHeaderOutputDto modifiedBillsHeader = new ServiceLinkModifiedBillsHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

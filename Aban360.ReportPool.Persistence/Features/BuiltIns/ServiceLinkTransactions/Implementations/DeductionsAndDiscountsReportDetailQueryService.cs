@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 toDate = input.ToDateJalali,
                 zoneIds= input.ZoneIds,
             };
-            IEnumerable<DeductionsAndDiscountsReportDetailDataOutputDto> deductionsAndDiscountsReportData = await _sqlConnection.QueryAsync<DeductionsAndDiscountsReportDetailDataOutputDto>(deductionsAndDiscountsReportQueryString,@params);
+            IEnumerable<DeductionsAndDiscountsReportDetailDataOutputDto> deductionsAndDiscountsReportData = await _sqlReportConnection.QueryAsync<DeductionsAndDiscountsReportDetailDataOutputDto>(deductionsAndDiscountsReportQueryString,@params);
             DeductionsAndDiscountsReportHeaderOutputDto deductionsAndDiscountsReportHeader = new DeductionsAndDiscountsReportHeaderOutputDto()
             {
                 FromDateJalali=input.FromDateJalali,

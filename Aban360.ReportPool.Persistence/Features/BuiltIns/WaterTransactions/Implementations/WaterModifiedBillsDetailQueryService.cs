@@ -17,7 +17,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         public async Task<ReportOutput<WaterModifiedBillsHeaderOutputDto, WaterModifiedBillsDetailDataOutputDto>> GetInfo(WaterModifiedBillsInputDto input)
         {
             string modifiedBills = GetWaterModifiedBillsQuery();
-            IEnumerable<WaterModifiedBillsDetailDataOutputDto> modifiedBillsData = await _sqlConnection.QueryAsync<WaterModifiedBillsDetailDataOutputDto>(modifiedBills);//todo: Parameters
+            IEnumerable<WaterModifiedBillsDetailDataOutputDto> modifiedBillsData = await _sqlReportConnection.QueryAsync<WaterModifiedBillsDetailDataOutputDto>(modifiedBills);//todo: Parameters
             WaterModifiedBillsHeaderOutputDto modifiedBillsHeader = new WaterModifiedBillsHeaderOutputDto()
             { };
 

@@ -16,7 +16,7 @@
         public int DomesticUnit { get; set; }
         public string RegisterDateJalali { get; set; }
         public int Premises { get; set; }
-        public int OverollImprovement { get; set; }
+        public int OverallImprovement { get; set; }
         public int CommercialImprovement { get; set; }
         public int DomesticImprovement { get; set; }
         public string MeterRequestDateJalali { get; set; }
@@ -54,7 +54,7 @@
         public int EmptyUnit { get; set; }
         public int Operator { get; set; }
         public int Guild { get; set; }
-        public string date_KHANE { get; set; }
+        public string HouseholdDateJalali { get; set; }
 
     }
 }

@@ -55,15 +55,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						c.ZoneTitle as ZoneTitle
 					From [CustomerWarehouse].dbo.Clients c
 					LEFt JOIN [CustomerWarehouse].dbo.Bills b
-					on c.BillId =b.BillId collate SQL_Latin1_General_CP1_CI_AS
+					on c.ZoneId=b.ZoneId AND c.CustomerNumber=b.CustomerNumber
 					where 
 						 b.Id IS NULL
 						 AND (@FromDate IS NULL or
 						   	  @ToDate IS NULL or 
-						   	  b.RegisterDay BETWEEN @FromDate and @ToDate)
+						   	  c.WaterInstallDate BETWEEN @FromDate and @ToDate)
 						 AND (@FromReadingNumber IS NULL or
 						     @ToReadingNumber IS NULL or 
-    						 TRY_CAST(c.ReadingNumber AS INT) BETWEEN @FromReadingNumber and @ToReadingNumber)
+    						 c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber)
                          {zoneQuery}";
         }
     }

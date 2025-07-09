@@ -15,7 +15,6 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             : base(configuration)
         {
         }
-        //IEnumerable<EventsSummaryOutputDataDto>>
         public async Task<ReportOutput<EventsSummaryOutputHeaderDto, EventsSummaryOutputDataDto>> GetEventsSummaryDtos(string billId)
         {
             string subscriptionDataQuery = GetSubscriptionEventsDataQuery();
@@ -23,29 +22,27 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             string waterReplacementInHeaderQuery = GetWaterReplacementDateInHeaderQuery();
 
             IEnumerable<EventsSummaryOutputDataDto> data = await _sqlReportConnection.QueryAsync<EventsSummaryOutputDataDto>(subscriptionDataQuery, new { billId = billId });
-            if (data.Any())
+            if (data is not null && data.Any())
             {
-                data = data
-                    .OrderBy(i => i.RegisterDate);
+                data = data.OrderBy(i => i.RegisterDate);
 
                 long lastRemained = 0;
                 for (int i = 0; i < data.Count(); i++)
                 {
-                    lastRemained = lastRemained +
-                                   (data.ElementAt(i).CreditAmount-
-                                   data.ElementAt(i).DebtAmount.Value );
-                
+                    EventsSummaryOutputDataDto row = data.ElementAt(i);
 
-                    data.ElementAt(i).Remained = lastRemained;
+                    lastRemained = lastRemained + (row.CreditAmount - row.DebtAmount.Value);
+                    row.EventDateJalali = row.PayDateJalali == null ? row.CurrentMeterDate : row.PayDateJalali;
+                    row.Remained = lastRemained;
                 }
             }
             EventsSummaryOutputHeaderDto header = await _sqlReportConnection.QueryFirstAsync<EventsSummaryOutputHeaderDto>(subscriptionHeaderQuery, new { billId = billId });
             WaterReplacementInfoOutputDto replacementInfo = await _sqlReportConnection.QueryFirstAsync<WaterReplacementInfoOutputDto>(waterReplacementInHeaderQuery, new { billId = billId, customerNumber = header.CustomerNumber, zoneId = header.ZoneId });
             header.WaterReplacementDate = replacementInfo.WaterReplacementDate;
-            header.WaterReplacementNumber= replacementInfo.WaterReplacementNumber;
+            header.WaterReplacementNumber = replacementInfo.WaterReplacementNumber;
 
-            var result = new ReportOutput<EventsSummaryOutputHeaderDto, EventsSummaryOutputDataDto>(ReportLiterals.SubscriptionEventSummary,header, data);
-            
+            var result = new ReportOutput<EventsSummaryOutputHeaderDto, EventsSummaryOutputDataDto>(ReportLiterals.SubscriptionEventSummary, header, data);
+
             return result;
         }
         public async Task<IEnumerable<EventsSummaryOutputDataDto>> GetBillDto(string billId)
@@ -104,7 +101,8 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 	             UsageId UsageSellId,
 	             UsageId2 UsageConsumptionId,
 	             UsageTitle UsageSellTitle,
-	             UsageTitle2 UsageConsumptionTitle
+	             UsageTitle2 UsageConsumptionTitle,
+                 NULL AS PayDateJalali
              from [CustomerWarehouse].dbo.Bills
              where (BillId)=@billId
              union
@@ -130,7 +128,8 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 	             0 UsageSellId,
 	             0 UsageConsumptionId,
 	             '' UsageSellTitle,
-	             '' UsageConsumptionTitle
+	             '' UsageConsumptionTitle,
+                 PayDateJalali
              from [CustomerWarehouse].dbo.Payments
              where (BillId)=@billId";
             return query;
@@ -150,7 +149,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	c.UsageTitle2 AS UsageTitle,
                     	c.CommercialCount+c.DomesticCount+c.OtherCount AS TotalUnit,
                     	c.ContractCapacity AS ContractualCapacity,
-						1 AS HasTag,
+						0 AS HasTag,
                     	c.EmptyCount AS EmptyUnit,
                     	c.FamilyCount AS HouseholdNumber,
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
