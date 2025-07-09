@@ -1,6 +1,6 @@
-﻿namespace Aban360.ClaimPool.Domain.Features.People.Dto.Commands
+﻿namespace Aban360.ClaimPool.Domain.Features.People.Dto.Queries
 {
-    public record CustomerInfoUpdateDto
+    public record CustomerInfoGetDto
     {
         public string BillId { get; set; }
         public int ZoneId { get; set; }
@@ -27,8 +27,8 @@
         public string HousePlate { get; set; }
         public bool IsSpecial { get; set; }
         public int DeletionStateId { get; set; }
-        public int UseStateId { get; set; }
-        public int MainSiphon { get; set; }
+        public string UseStateTitle { get; set; }//different update
+        public string MainSiphon { get; set; }
         public int Siphon1 { get; set; }
         public int Siphon2 { get; set; }
         public int Siphon3 { get; set; }

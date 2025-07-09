@@ -81,7 +81,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 							OR 
 							(@FromAmount IS NULL AND
 								@ToAmount IS NULL)
-						)";
+						)AND
+						(p.BankCode BETWEEN @FromBankId AND @ToBankId)";
         }
     }
 }

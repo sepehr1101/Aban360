@@ -30,7 +30,7 @@ namespace Aban360.ClaimPool.Persistence.Features.People.Commands.Implementation
                 domesticUnit = updateDto.DomesticUnit,
                 registerDateJalali = updateDto.RegisterDateJalali,
                 primises = updateDto.Premises,
-                overollImprovement = updateDto.OverollImprovement,
+                overallImprovement = updateDto.OverallImprovement,
                 commercialImprovement = updateDto.CommercialImprovement,
                 domesticImprovement = updateDto.DomesticImprovement,
                 meterRequestDateJalali = updateDto.MeterRequestDateJalali,
@@ -68,7 +68,7 @@ namespace Aban360.ClaimPool.Persistence.Features.People.Commands.Implementation
                 emptyUnit = updateDto.EmptyUnit,
                 Operator = updateDto.Operator,
                 guild = updateDto.Guild,
-                date_Khane = updateDto.date_KHANE
+                householdDateJalali = updateDto.HouseholdDateJalali
             };
             var result = await _sqlReportConnection.ExecuteAsync(customerInfoUpdateQueryString, @params);
         }
@@ -89,7 +89,7 @@ namespace Aban360.ClaimPool.Persistence.Features.People.Commands.Implementation
                      	tedad_tej = ISNULL(@domesticUnit, tedad_tej),
                      	date_sabt = ISNULL(@registerDateJalali, date_sabt),
                      	arse     = ISNULL(@primises, arse),
-                     	aian     = ISNULL(@overollImprovement, aian),
+                     	aian     = ISNULL(@overallImprovement, aian),
                      	aian_mas = ISNULL(@commercialImprovement, aian_mas),
                      	aian_tej = ISNULL(@domesticImprovement, aian_tej),
                      	ask_ab   = ISNULL(@meterRequestDateJalali, ask_ab),
@@ -127,7 +127,7 @@ namespace Aban360.ClaimPool.Persistence.Features.People.Commands.Implementation
                      	Khali_s = ISNULL(@emptyUnit, Khali_s),
                      	operator = ISNULL(@operator, operator),
                      	Senf  = ISNULL(@guild, Senf),
-                     	date_KHANE  = ISNULL(@date_Khane, date_KHANE)
+                     	date_KHANE  = ISNULL(@householdDateJalali, date_KHANE)
                      WHERE bill_id = @billId";
         }
     }
