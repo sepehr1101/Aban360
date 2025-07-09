@@ -9,22 +9,23 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
-    internal sealed class WaterNetSalesSummaryQueryService : AbstractBaseConnection, IWaterNetSalesSummaryQueryService
+
+    internal sealed class WaterNetSalesDetailQueryService : AbstractBaseConnection, IWaterNetSalesDetailQueryService
     {
-        public WaterNetSalesSummaryQueryService(IConfiguration configuration)
+        public WaterNetSalesDetailQueryService(IConfiguration configuration)
             : base(configuration)
         { }
 
-        public async Task<ReportOutput<WaterSalesHeaderOutputDto, WaterNetSalesSummaryDataOutputDto>> GetInfo(WaterSalesInputDto input)
+        public async Task<ReportOutput<WaterSalesHeaderOutputDto, WaterNetSalesDetailDataOutputDto>> GetInfo(WaterSalesInputDto input)
         {
-            string waterNetSalesSummarys = GetWaterNetSalesSummaryQuery();
+            string waterNetSalesDetails = GetWaterNetSalesDetailQuery();
             var @params = new
             {
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali,
                 zoneIds = input.ZoneIds,
             };
-            IEnumerable<WaterNetSalesSummaryDataOutputDto> waterNetSalesData = await _sqlReportConnection.QueryAsync<WaterNetSalesSummaryDataOutputDto>(waterNetSalesSummarys,@params);
+            IEnumerable<WaterNetSalesDetailDataOutputDto> waterNetSalesData = await _sqlReportConnection.QueryAsync<WaterNetSalesDetailDataOutputDto>(waterNetSalesDetails,@params);
             WaterSalesHeaderOutputDto waterNetSalesHeader = new WaterSalesHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -34,25 +35,24 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 SumPayable = (waterNetSalesData is not null && waterNetSalesData.Any() ? waterNetSalesData.Sum(x => x.Payable) : 0)
             };
 
-            var result = new ReportOutput<WaterSalesHeaderOutputDto, WaterNetSalesSummaryDataOutputDto>(ReportLiterals.WaterNetSalesSummary, waterNetSalesHeader, waterNetSalesData);
+            var result = new ReportOutput<WaterSalesHeaderOutputDto, WaterNetSalesDetailDataOutputDto>(ReportLiterals.WaterNetSalesDetail, waterNetSalesHeader, waterNetSalesData);
             return result;
         }
 
-        private string GetWaterNetSalesSummaryQuery()
+        private string GetWaterNetSalesDetailQuery()
         {
             return @"Select 
                     	b.UsageTitle,
                     	b.ZoneTitle,
-                    	SUM(b.Payable) AS Payable,
-                    	COUNT(1) AS Count
+                    	b.BillId,
+                    	b.Payable,
+                    	b.CustomerNumber,
+                    	b.ReadingNumber
                     From [CustomerWarehouse].dbo.Bills b
                     Where 
                     	b.TypeCode IN (3,4,5,9) AND
                     	b.RegisterDay BETWEEN @fromDate AND @toDate AND
-                    	b.ZoneId IN @zoneIds 
-                    Group By
-                    	b.ZoneTitle,
-                    	b.UsageTitle";
+                    	b.ZoneId IN @zoneIds ";
         }
     }
 }

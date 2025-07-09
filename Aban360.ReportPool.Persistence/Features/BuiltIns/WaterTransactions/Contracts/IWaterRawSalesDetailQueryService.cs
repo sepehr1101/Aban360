@@ -4,8 +4,8 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts
 {
-    public interface IWaterRawSalesSummaryQueryService
+    public interface IWaterRawSalesDetailQueryService
     {
-        Task<ReportOutput<WaterSalesHeaderOutputDto, WaterRawSalesSummaryDataOutputDto>> GetInfo(WaterSalesInputDto input);
+        Task<ReportOutput<WaterSalesHeaderOutputDto, WaterRawSalesDetailDataOutputDto>> GetInfo(WaterSalesInputDto input);
     }
 }
