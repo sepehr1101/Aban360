@@ -13,7 +13,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
     {
         public MalfunctionMeterQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<MalfunctionMeterHeaderOutputDto, MalfunctionMeterDataOutputDto>> Get(MalfunctionMeterInputDto input)
         {
@@ -39,22 +40,29 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         private string GetMalfunctionMeterQuery()
         {
-            return @"Select
-                    	b.BillId,
-                    	b.ZoneTitle,
-                    	b.CustomerNumber,
-                    	b.ReadingNumber,
-                    	b.Duration,
-                    	b.BranchType,
-                    	b.RegisterDay AS LastReadingDay,
-                    	b.Payable,
-                    	b.Consumption,
-                    	b.ConsumptionAverage
+            return @"WITH CTE AS (
+                    Select
+                        b.BillId,
+                        b.ZoneTitle,
+                        b.CustomerNumber,
+                        b.ReadingNumber,
+                        b.Duration,
+                        b.BranchType,
+                        b.RegisterDay AS LastReadingDay,
+                        b.Payable,
+	                    b.SumItems,
+                        b.Consumption,
+                        b.ConsumptionAverage,
+	                    b.CounterStateCode,
+	                    b.CounterStateTitle,
+	                    RN=ROW_NUMBER() OVER (PARTITION BY BillId ORDER BY RegisterDay DESC)
                     From [CustomerWarehouse].dbo.Bills b
                     Where 
-                    	b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
-                    	b.ZoneId IN @zoneIds AND
-                    	b.CounterStateCode=4";
+                        b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
+                        b.ZoneId IN @zoneIds AND
+                        b.CounterStateCode NOT IN (4,7,8))
+                    SELECT * FROM CTE 
+                    WHERE RN=1 AND CounterStateCode=1";
         }
     }
 }

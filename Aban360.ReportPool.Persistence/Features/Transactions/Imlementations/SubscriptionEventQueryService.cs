@@ -31,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                 {
                     EventsSummaryOutputDataDto row = data.ElementAt(i);
 
-                    lastRemained = lastRemained + (row.CreditAmount - row.DebtAmount.Value);
+                    lastRemained = lastRemained + (row.DebtAmount.Value - row.CreditAmount);
                     row.EventDateJalali = row.PayDateJalali == null ? row.CurrentMeterDate : row.PayDateJalali;
                     row.Remained = lastRemained;
                 }
