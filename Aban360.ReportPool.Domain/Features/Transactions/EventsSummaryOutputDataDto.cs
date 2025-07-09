@@ -30,5 +30,8 @@
         public string? PreviousMeterDate { get; set; }//
         public string? CurrentMeterDate { get; set; }//
         public string RegisterDate { get; set; } = default!;
+        public string? PayDateJalali { get; set; }
+        public string? EventDateJalali{ get; set; }
+
     }
 }
