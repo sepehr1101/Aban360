@@ -17,9 +17,22 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         public async Task<ReportOutput<WaterModifiedBillsHeaderOutputDto, WaterModifiedBillsSummaryDataOutputDto>> GetInfo(WaterModifiedBillsInputDto input)
         {
             string modifiedBills = GetWaterModifiedBillsQuery();
-            IEnumerable<WaterModifiedBillsSummaryDataOutputDto> modifiedBillsData = await _sqlReportConnection.QueryAsync<WaterModifiedBillsSummaryDataOutputDto>(modifiedBills);//todo: Parameters
+            var @params = new
+            {
+                fromDate = input.FromDateJalali,
+                toDate = input.ToDateJalali,
+                typeCode = input.TypeIds//ZoneId?
+            };
+            IEnumerable<WaterModifiedBillsSummaryDataOutputDto> modifiedBillsData = await _sqlReportConnection.QueryAsync<WaterModifiedBillsSummaryDataOutputDto>(modifiedBills, @params);
             WaterModifiedBillsHeaderOutputDto modifiedBillsHeader = new WaterModifiedBillsHeaderOutputDto()
-            { };
+            {
+                FromDateJalali = input.FromDateJalali,
+                ToDateJalali = input.ToDateJalali,
+                ReportDateJalali = DateTime.Now.ToShortDateString(),
+                RecordCount = modifiedBillsData.Count(),
+                Payable = modifiedBillsData.Sum(x => x.Payable),
+                SumItems = modifiedBillsData.Sum(x => x.SumItems),
+            };
 
             var result = new ReportOutput<WaterModifiedBillsHeaderOutputDto, WaterModifiedBillsSummaryDataOutputDto>(ReportLiterals.WaterModifiedBillsSummary, modifiedBillsHeader, modifiedBillsData);
             return result;
@@ -27,7 +40,22 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         private string GetWaterModifiedBillsQuery()
         {
-            return @" ";
+            return @"Select
+                    	b.ZoneTitle,
+                    	b.UsageTitle,
+                    	b.TypeId AS TypeTitle,
+                    	COUNT(1) AS Count,
+                    	SUM(b.Payable) AS Payable,
+                    	SUM(b.SumItems) AS SumItems
+                    From [CustomerWarehouse].dbo.Bills b
+                    Where	
+                    	b.RegisterDay BETWEEN @fromDate AND @toDate AND
+                    	b.TypeCode IN @typeCode
+                    Group By	
+                    	b.UsageTitle,
+                    	b.TypeId,
+                    	b.ZoneTitle";
         }
+
     }
 }

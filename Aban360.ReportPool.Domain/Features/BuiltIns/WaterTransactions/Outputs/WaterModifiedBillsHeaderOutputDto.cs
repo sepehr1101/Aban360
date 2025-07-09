@@ -2,14 +2,12 @@
 {
     public record WaterModifiedBillsHeaderOutputDto
     {
-        public string FromDataJalali { get; set; }
-        public string ToDataJalali { get; set; }
+        public string FromDateJalali { get; set; }
+        public string ToDateJalali { get; set; }
 
         public string ReportDateJalali { get; set; }
         public int RecordCount { get; set; }
-        public long TotalInstallationAmount { get; set; }
-        public long TotalServiceLinkAmount { get; set; }
-        public long TotalImpureAmount { get; set; }
-        public long TotalSumAmount { get; set; }
+        public long SumItems { get; set; }
+        public long Payable { get; set; }
     }
 }

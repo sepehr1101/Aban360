@@ -6,14 +6,8 @@
         public string CustomerNumber { get; set; }
         public string UsageSellTitle { get; set; }
         public string Date { get; set; }
-        public long InstallationAmount { get; set; }
-        public long ServiceLinkAmount { get; set; }
-        public long PreparationAmout { get; set; }
-        public long ProvincePreparationAmount { get; set; }
-        public long OtherAmount { get; set; }
-        public long ImpureAmount { get; set; }
-        public long OverdueAmount { get; set; }
-        public long SumAmount { get; set; }
+        public long Payable { get; set; }
+        public long SumItems { get; set; }
 
     }
 }
