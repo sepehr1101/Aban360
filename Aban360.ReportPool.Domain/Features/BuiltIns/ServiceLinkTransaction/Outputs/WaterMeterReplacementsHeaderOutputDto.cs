@@ -4,7 +4,7 @@
     {
         public string FromDate { get; set; }
         public string ToDate { get; set; }
-        public string ReportDate { get; set; }
+        public string ReportDateJalali { get; set; }
         public int RecordCount { get; set; }
     }
 }

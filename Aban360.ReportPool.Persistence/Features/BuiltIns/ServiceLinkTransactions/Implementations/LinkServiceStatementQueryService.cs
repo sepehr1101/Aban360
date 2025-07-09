@@ -31,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 RecordCount = linkServiceStatementData.Count(),
-                ReportDate = DateTime.Now.ToShortPersianDateString()
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString()
             };
 
             var result = new ReportOutput<LinkServiceStatementHeaderOutputDto, LinkServiceStatementDataOutputDto>(ReportLiterals.LinkServiceStatement, linkServiceStatementHeader, linkServiceStatementData);
