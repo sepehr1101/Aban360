@@ -3,7 +3,7 @@
     public record LinkServiceStatementHeaderOutputDto
     {
         public int RecordCount { get; set; }
-        public string ReportDate { get; set; }
+        public string ReportDateJalali { get; set; }
         public string FromDateJalali { get; set; }
         public string ToDateJalali { get; set; }
     }

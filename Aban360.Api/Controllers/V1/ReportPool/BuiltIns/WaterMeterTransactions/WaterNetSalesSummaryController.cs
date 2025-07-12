@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Contracts;
+using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
@@ -20,10 +21,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterNetSalesSummaryHeaderOutputDto, WaterNetSalesSummaryDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRaw(WaterNetSalesSummaryInputDto inputDto, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterSalesHeaderOutputDto, WaterNetSalesSummaryDataOutputDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetRaw(WaterSalesInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<WaterNetSalesSummaryHeaderOutputDto, WaterNetSalesSummaryDataOutputDto> waterSales = await _waterNetSalesSummary.Handle(inputDto, cancellationToken);
+            ReportOutput<WaterSalesHeaderOutputDto, WaterNetSalesSummaryDataOutputDto> waterSales = await _waterNetSalesSummary.Handle(inputDto, cancellationToken);
             return Ok(waterSales);
         }
     }

@@ -10,6 +10,7 @@
         public string ToDateJalali { get; set; }
         public long? FromAmount { get; set; }
         public long? ToAmount { get; set; }
+        public string ReportDateJalali { get; set; }
     }
 }
 

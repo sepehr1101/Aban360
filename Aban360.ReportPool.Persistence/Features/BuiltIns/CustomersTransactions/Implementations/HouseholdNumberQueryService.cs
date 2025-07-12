@@ -36,7 +36,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 FromHouseholdDateJalali = input.FromHouseholdDateJalali,
                 ToHouseholdDateJalali = input.ToHouseholdDateJalali,
                 RecordCount = householdNumberData.Count(),
-                ReportDate = DateTime.Now.ToShortPersianDateString()
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString()
             };
 
             var result = new ReportOutput<HouseholdNumberHeaderOutputDto, HouseholdNumberDataOutputDto>(ReportLiterals.HouseholdNumber, householdNumberHeader, householdNumberData);

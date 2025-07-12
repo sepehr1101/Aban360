@@ -29,7 +29,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
-                ReportDate = DateTime.Now.ToShortPersianDateString(),
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = deductionsAndDiscountsReportData.Count(),
 
             };

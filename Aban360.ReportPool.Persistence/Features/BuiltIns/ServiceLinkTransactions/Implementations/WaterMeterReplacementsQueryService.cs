@@ -31,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 FromDate = input.FromDateJalali,
                 ToDate = input.ToDateJalali,
-                ReportDate = DateTime.Now.ToShortPersianDateString(),
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount=waterMeterReplacementsData.Count()
             };
 

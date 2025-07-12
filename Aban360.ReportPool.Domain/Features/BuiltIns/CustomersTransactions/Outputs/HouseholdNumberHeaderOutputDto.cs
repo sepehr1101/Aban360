@@ -6,7 +6,7 @@
         public string ToReadingNumber { get; set; }
         public string FromHouseholdDateJalali { get; set; }
         public string ToHouseholdDateJalali { get; set; }
-        public string ReportDate { get; set; }
+        public string ReportDateJalali { get; set; }
         public int RecordCount { get; set; }
     }
 }

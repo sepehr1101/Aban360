@@ -38,7 +38,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 RecordCount =contractualCapacityData.Count(),
-                ReportDate=DateTime.Now.ToShortPersianDateString()
+                ReportDateJalali=DateTime.Now.ToShortPersianDateString()
             };
 
             var result = new ReportOutput<ContractualCapacityHeaderOutputDto, ContractualCapacityDataOutputDto>(ReportLiterals.ContractualCapacity, contractualCapacityHeader, contractualCapacityData);

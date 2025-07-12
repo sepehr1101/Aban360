@@ -2,6 +2,8 @@
 {
     public record WaterRawSalesSummaryDataOutputDto
     {
-
+        public string UsageTitle { get; set; }
+        public int Count { get; set; }
+        public long Payable { get; set; }
     }
 }

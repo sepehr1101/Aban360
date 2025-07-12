@@ -29,7 +29,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 FromAmount = input.FromAmout,
                 ToAmount = input.ToAmount,
-                ReportDate = DateTime.Now.ToShortPersianDateString(),
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = debtorCustomersData.Count(),
                 
                 SumCreditAmount= debtorCustomersData.Sum(x => x.CreditorAmount),

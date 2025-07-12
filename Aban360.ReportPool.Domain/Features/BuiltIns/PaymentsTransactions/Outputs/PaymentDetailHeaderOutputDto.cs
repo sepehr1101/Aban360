@@ -8,6 +8,7 @@
         public long ToAmount { get; set; }
         public int RecordCount { get; set; }
         public long TotalRegisterAmount { get; set; }
+        public string ReportDateJalali { get; set; }
 
     }
 }

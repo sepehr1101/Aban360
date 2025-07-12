@@ -36,7 +36,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 RecordCount = usageDetailData.Count(),
-                ReportDate = DateTime.Now.ToShortPersianDateString()
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString()
             };
 
             var result = new ReportOutput<UsageDetailHeaderOutputDto, UsageDetailDataOutputDto>(ReportLiterals.UsageDetail, usageDetailHeader, usageDetailData);
