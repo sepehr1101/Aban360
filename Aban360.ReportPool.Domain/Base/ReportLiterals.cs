@@ -16,6 +16,7 @@
         public static string DebtorByDaySummary { get { return $"{Report} خلاصه روزنامه بدهکاران"; } }
         public static string LinkServiceStatement { get { return $"{Report} صورت وضعیت (سامانه فروش)"; } }
         public static string PendingPayments { get { return $"{Report} مشترکین بدهکار"; } }
+        public static string AgentWarnings { get { return $"{Report} لیست اخطار مامور وصول"; } }
 
         public static string UnspecifiedWaterPayment { get { return $"{Report} وصولی خارج سیستم _ آب بها"; } }
         public static string UnspecifiedServiceLinkPayment { get { return $"{Report} وصولی خارج سیستم-انشعاب"; } }
@@ -88,8 +89,10 @@
         public static string MalfunctionMeter { get { return $"{Report} کنتورهای خراب"; } }
         public static string MalfunctionMeterByDuration { get { return $"{Report} کنتورهای خراب بر اساس دوره"; } }
 
-        public static string WaterNetSalesSummary { get { return $"خلاصه {Report} فروش خالص آب بها"; } }
-        public static string WaterRawSalesSummary { get { return $"خلاصه {Report} فروش ناخالص آب بها"; } }
+        public static string WaterNetSalesDetail { get { return $"خلاصه {Report} جزئیات فروش خالص آب بها"; } }
+        public static string WaterRawSalesDetail { get { return $"خلاصه {Report} جزئیات فروش ناخالص آب بها"; } }
+        public static string WaterNetSalesSummary { get { return $"خلاصه {Report} خلاصه فروش خالص آب بها"; } }
+        public static string WaterRawSalesSummary { get { return $"خلاصه {Report} جزئیات فروش ناخالص آب بها"; } }
 
         public static string ExcessPattern { get { return $"خلاصه {Report} مازاد الگو"; } }
 

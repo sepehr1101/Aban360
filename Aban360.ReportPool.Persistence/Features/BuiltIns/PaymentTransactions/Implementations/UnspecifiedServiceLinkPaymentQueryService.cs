@@ -4,6 +4,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Contracts;
 using Dapper;
+using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Implementations
@@ -36,8 +37,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 				RecordCount = unspecifiedServiceLinkData.Count(),
 				TotalAmount = unspecifiedServiceLinkData.Sum(serviceLink => serviceLink.Amount),
 				TotalRegisterAmount = unspecifiedServiceLinkData.Sum(serviceLink => serviceLink.Amount),
-				FileName = "-"
-			};
+				FileName = "-",
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString()
+            };
 
             var result = new ReportOutput<UnspecifiedPaymentHeaderOutputDto, UnspecifiedPaymentDataOutputDto>(ReportLiterals.UnspecifiedServiceLinkPayment, unspecifiedServiceLinkHeader, unspecifiedServiceLinkData);
             return result;

@@ -2,6 +2,9 @@
 {
     public record WaterNetSalesSummaryDataOutputDto
     {
-
+        public string UsageTitle { get; set; }
+        public string ZoneTitle { get; set; }
+        public long Payable { get; set; }
+        public int Count { get; set; }
     }
 }

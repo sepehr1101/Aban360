@@ -35,5 +35,6 @@
         public string BillId { get; set; }
         public string PaymentId { get; set; }
         public int RecordCount { get; set; }
+        public string ReportDateJalali { get; set; }
     }
 }

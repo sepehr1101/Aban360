@@ -4,7 +4,7 @@
     {
         public string? FromReadingNumber { get; set; }
         public string? ToReadingNumber { get; set; }
-        public string ReprotDate { get; set; }
+        public string ReprotDateJalali { get; set; }
         public int RecordCount { get; set; }
     }
 }

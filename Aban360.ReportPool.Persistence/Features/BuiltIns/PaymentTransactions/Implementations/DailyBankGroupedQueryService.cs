@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ToDateJalali=input.ToDateJalali,
                 FromAmount=input.FromAmount,
                 ToAmount=input.ToAmount,
-                ReportDate=DateTime.Now.ToShortPersianDateString(),
+                ReportDateJalali=DateTime.Now.ToShortPersianDateString(),
                 RecordCount=dailyBankGroupedData.Count()
             };
 

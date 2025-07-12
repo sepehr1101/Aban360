@@ -12,10 +12,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
     internal sealed class WaterRawSalesSummaryHandler : IWaterRawSalesSummaryHandler
     {
         private readonly IWaterRawSalesSummaryQueryService _waterRawSalesSummaryQueryService;
-        private readonly IValidator<WaterRawSalesSummaryInputDto> _validator;
+        private readonly IValidator<WaterSalesInputDto> _validator;
         public WaterRawSalesSummaryHandler(
             IWaterRawSalesSummaryQueryService waterRawSalesSummaryQueryService,
-            IValidator<WaterRawSalesSummaryInputDto> validator)
+            IValidator<WaterSalesInputDto> validator)
         {
             _waterRawSalesSummaryQueryService = waterRawSalesSummaryQueryService;
             _waterRawSalesSummaryQueryService.NotNull(nameof(waterRawSalesSummaryQueryService));
@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<WaterRawSalesSummaryHeaderOutputDto, WaterRawSalesSummaryDataOutputDto>> Handle(WaterRawSalesSummaryInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<WaterSalesHeaderOutputDto, WaterRawSalesSummaryDataOutputDto>> Handle(WaterSalesInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<WaterRawSalesSummaryHeaderOutputDto, WaterRawSalesSummaryDataOutputDto> waterRawSalesSummary = await _waterRawSalesSummaryQueryService.GetInfo(input);
+            ReportOutput<WaterSalesHeaderOutputDto, WaterRawSalesSummaryDataOutputDto> waterRawSalesSummary = await _waterRawSalesSummaryQueryService.GetInfo(input);
             return waterRawSalesSummary;
         }
     }

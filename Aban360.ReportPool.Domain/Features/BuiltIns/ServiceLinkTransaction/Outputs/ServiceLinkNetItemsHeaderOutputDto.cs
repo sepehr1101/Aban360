@@ -4,7 +4,7 @@
     {
         public string FromDataJalali { get; set; }
         public string ToDataJalali { get; set; }
-        public string ReportDate { get; set; }
+        public string ReportDateJalali { get; set; }
         public int RecordCount { get; set; }
 
         public long SumAmount { get; set; }

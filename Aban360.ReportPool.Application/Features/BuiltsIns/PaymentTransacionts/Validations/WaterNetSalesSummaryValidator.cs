@@ -3,7 +3,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Validations
 {
-    public class WaterNetSalesSummaryValidator : BaseValidator<WaterNetSalesSummaryInputDto>
+    public class WaterNetSalesSummaryValidator : BaseValidator<WaterSalesInputDto>
     {
         public WaterNetSalesSummaryValidator()
         {
