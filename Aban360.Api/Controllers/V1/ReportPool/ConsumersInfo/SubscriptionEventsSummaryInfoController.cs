@@ -23,10 +23,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
 
         [HttpPost]
         [Route("events-summary")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<EventsSummaryOutputHeaderDto, EventsSummaryOutputDataDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetEventsSummaryInfo([FromBody] SearchInput searchInput)
         {
-            ReportOutput<EventsSummaryOutputHeaderDto, EventsSummaryOutputDataDto> items = await _subscriptionEventHandler.Handle(searchInput.Input);
+            ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> items = await _subscriptionEventHandler.Handle(searchInput.Input);
             return Ok(items);
         }
     }

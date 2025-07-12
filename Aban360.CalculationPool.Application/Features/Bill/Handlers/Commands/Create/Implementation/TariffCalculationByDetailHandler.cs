@@ -44,7 +44,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
         public async Task<CaluclationIntervalDiscrepancytWrapper> Handle(TariffByDetailCreateDto testInput, CancellationToken cancellationToken)
         {
             IEnumerable<IntervalBillSubscriptionInfo> infos = await _intervalBillPrerequisiteInfoAddHocHandler.Handle(testInput.ZoneId, testInput.FromDate, testInput.ToDate, testInput.UsageId, testInput.IndividualTypeId, testInput.Handover, testInput.FromReadingNumber, testInput.ToReadingNumber,cancellationToken);
-            IEnumerable<EventsSummaryOutputDataDto> eventInfos = await _eventQueryService.GetBillDto(testInput.ZoneId, testInput.FromReadingNumber, testInput.ToReadingNumber);
+            IEnumerable<WaterEventsSummaryOutputDataDto> eventInfos = await _eventQueryService.GetBillDto(testInput.ZoneId, testInput.FromReadingNumber, testInput.ToReadingNumber);
             ICollection<CaluclationIntervalDiscrepancy> discrepancies = new List<CaluclationIntervalDiscrepancy>();
             foreach (IntervalBillSubscriptionInfo info in infos)
             {

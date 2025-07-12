@@ -15,13 +15,13 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             : base(configuration)
         {
         }
-        public async Task<ReportOutput<EventsSummaryOutputHeaderDto, EventsSummaryOutputDataDto>> GetEventsSummaryDtos(string billId)
+        public async Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> GetEventsSummaryDtos(string billId)
         {
             string subscriptionDataQuery = GetSubscriptionEventsDataQuery();
             string subscriptionHeaderQuery = GetSubscriptionEventHeaderQuery();
             string waterReplacementInHeaderQuery = GetWaterReplacementDateInHeaderQuery();
 
-            IEnumerable<EventsSummaryOutputDataDto> data = await _sqlReportConnection.QueryAsync<EventsSummaryOutputDataDto>(subscriptionDataQuery, new { billId = billId });
+            IEnumerable<WaterEventsSummaryOutputDataDto> data = await _sqlReportConnection.QueryAsync<WaterEventsSummaryOutputDataDto>(subscriptionDataQuery, new { billId = billId });
             if (data is not null && data.Any())
             {
                 data = data.OrderBy(i => i.RegisterDate);
@@ -29,46 +29,46 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                 long lastRemained = 0;
                 for (int i = 0; i < data.Count(); i++)
                 {
-                    EventsSummaryOutputDataDto row = data.ElementAt(i);
+                    WaterEventsSummaryOutputDataDto row = data.ElementAt(i);
 
                     lastRemained = lastRemained + (row.DebtAmount.Value - row.CreditAmount);
                     row.EventDateJalali = row.PayDateJalali == null ? row.CurrentMeterDate : row.PayDateJalali;
                     row.Remained = lastRemained;
                 }
             }
-            EventsSummaryOutputHeaderDto header = await _sqlReportConnection.QueryFirstAsync<EventsSummaryOutputHeaderDto>(subscriptionHeaderQuery, new { billId = billId });
+            WaterEventsSummaryOutputHeaderDto header = await _sqlReportConnection.QueryFirstAsync<WaterEventsSummaryOutputHeaderDto>(subscriptionHeaderQuery, new { billId = billId });
             WaterReplacementInfoOutputDto replacementInfo = await _sqlReportConnection.QueryFirstAsync<WaterReplacementInfoOutputDto>(waterReplacementInHeaderQuery, new { billId = billId, customerNumber = header.CustomerNumber, zoneId = header.ZoneId });
             header.WaterReplacementDate = replacementInfo.WaterReplacementDate;
             header.WaterReplacementNumber = replacementInfo.WaterReplacementNumber;
 
-            var result = new ReportOutput<EventsSummaryOutputHeaderDto, EventsSummaryOutputDataDto>(ReportLiterals.SubscriptionEventSummary, header, data);
+            var result = new ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>(ReportLiterals.SubscriptionEventSummary, header, data);
 
             return result;
         }
-        public async Task<IEnumerable<EventsSummaryOutputDataDto>> GetBillDto(string billId)
+        public async Task<IEnumerable<WaterEventsSummaryOutputDataDto>> GetBillDto(string billId)
         {
             string query = GetSubscriptionEventsDataQuery();
-            IEnumerable<EventsSummaryOutputDataDto> result = await _sqlReportConnection.QueryAsync<EventsSummaryOutputDataDto>(query, new { billId = billId });
+            IEnumerable<WaterEventsSummaryOutputDataDto> result = await _sqlReportConnection.QueryAsync<WaterEventsSummaryOutputDataDto>(query, new { billId = billId });
             if (result.Any())
             {
                 result = result.OrderBy(i => i.RegisterDate);
             }
             return result;
         }
-        public async Task<IEnumerable<EventsSummaryOutputDataDto>> GetBillDto(int zoneId, string registerDate, string fromReadingNumber, string toReadingNumber)
+        public async Task<IEnumerable<WaterEventsSummaryOutputDataDto>> GetBillDto(int zoneId, string registerDate, string fromReadingNumber, string toReadingNumber)
         {
             string query = GetSubscriptionEventsQuerybyZoneAndRegisterDay();
-            IEnumerable<EventsSummaryOutputDataDto> result = await _sqlReportConnection.QueryAsync<EventsSummaryOutputDataDto>(query, new { zoneId, registerDate, fromReadingNumber, toReadingNumber });
+            IEnumerable<WaterEventsSummaryOutputDataDto> result = await _sqlReportConnection.QueryAsync<WaterEventsSummaryOutputDataDto>(query, new { zoneId, registerDate, fromReadingNumber, toReadingNumber });
             if (result.Any())
             {
                 result = result.OrderBy(i => i.RegisterDate);
             }
             return result;
         }
-        public async Task<IEnumerable<EventsSummaryOutputDataDto>> GetBillDto(int zoneId, string fromReadingNumber, string toReadingNumber)
+        public async Task<IEnumerable<WaterEventsSummaryOutputDataDto>> GetBillDto(int zoneId, string fromReadingNumber, string toReadingNumber)
         {
             string query = GetSubscriptionEventsQuerybyZone();
-            IEnumerable<EventsSummaryOutputDataDto> result = await _sqlReportConnection.QueryAsync<EventsSummaryOutputDataDto>(query, new { zoneId, fromReadingNumber, toReadingNumber });
+            IEnumerable<WaterEventsSummaryOutputDataDto> result = await _sqlReportConnection.QueryAsync<WaterEventsSummaryOutputDataDto>(query, new { zoneId, fromReadingNumber, toReadingNumber });
             if (result.Any())
             {
                 result = result.OrderBy(i => i.RegisterDate);

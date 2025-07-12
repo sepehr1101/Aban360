@@ -2,11 +2,6 @@
 using Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contracts;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Features.Transactions.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implementations
 {

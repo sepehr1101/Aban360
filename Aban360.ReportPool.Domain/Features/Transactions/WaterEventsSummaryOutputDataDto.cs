@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.Transactions
 {
-    public record EventsSummaryOutputDataDto
+    public record WaterEventsSummaryOutputDataDto
     {
         public long Id { get; set; }
         public short CommercialUnit { get; set; }

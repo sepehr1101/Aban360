@@ -45,7 +45,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             return @"Select 
                     	r.ItemTitle AS DiscountTypeTitle,
                     	r.OffTitle AS OffTypeTitle,
-                    	r.TypeId AS ToDiscountTitle,
+                    	r.TypeId AS DiscountTitle,
                     	r.OffAmount AS OffAmount
                     From [CustomerWarehouse].dbo.RequestBillDetails r
                     Where

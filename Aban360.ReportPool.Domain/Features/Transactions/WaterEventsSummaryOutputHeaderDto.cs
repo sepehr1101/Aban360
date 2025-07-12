@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.Transactions
 {
-    public record EventsSummaryOutputHeaderDto
+    public record WaterEventsSummaryOutputHeaderDto
     {
         public string FullName { get; set; }
         public string ReadingNumber { get; set; }

@@ -31,7 +31,7 @@ namespace Aban360.CalculationPool.Application.Features.TestTariff.Handlers.Imple
         public async Task<CaluclationIntervalDiscrepancytWrapper> Handle(CaluclationIntervalBatchTestInput testInput, CancellationToken cancellationToken)
         {
             IEnumerable<IntervalBillSubscriptionInfo> infos = await _intervalBillPrerequisiteInfoAddHocHandler.Handle(testInput.ZoneId, testInput.RegisterDate, testInput.FormReadingNumber, testInput.ToReadingNumber, cancellationToken);
-            IEnumerable<EventsSummaryOutputDataDto> eventInfos = await _eventQueryService.GetBillDto(testInput.ZoneId, testInput.RegisterDate, testInput.FormReadingNumber, testInput.ToReadingNumber);
+            IEnumerable<WaterEventsSummaryOutputDataDto> eventInfos = await _eventQueryService.GetBillDto(testInput.ZoneId, testInput.RegisterDate, testInput.FormReadingNumber, testInput.ToReadingNumber);
             ICollection<CaluclationIntervalDiscrepancy> discrepancies = new List<CaluclationIntervalDiscrepancy>();
             foreach (IntervalBillSubscriptionInfo info in infos)
             {
@@ -54,7 +54,7 @@ namespace Aban360.CalculationPool.Application.Features.TestTariff.Handlers.Imple
             return res;
         }
 
-        private async Task<double> GetAmount(IntervalBillSubscriptionInfo info, EventsSummaryOutputDataDto? eventInfo, CancellationToken cancellationToken)
+        private async Task<double> GetAmount(IntervalBillSubscriptionInfo info, WaterEventsSummaryOutputDataDto? eventInfo, CancellationToken cancellationToken)
         {
             var tariffTestInput = new TariffTestInput()
             {
