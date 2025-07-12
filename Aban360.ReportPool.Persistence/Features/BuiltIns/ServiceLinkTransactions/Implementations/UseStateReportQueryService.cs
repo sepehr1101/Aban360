@@ -18,12 +18,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         public async Task<ReportOutput<UseStateReportHeaderOutputDto, UseStateReportDataOutputDto>> GetInfo(UseStateReportInputDto input)
         {
             string useStateQueryString = GetUseStateDataQuery();
-            IEnumerable<UseStateReportDataOutputDto> useStateData = await _sqlReportConnection.QueryAsync<UseStateReportDataOutputDto>(useStateQueryString, new { useStateId=input.UseStateId, fromDate=input.FromDate, toDate=input.ToDate , zoneIds = input.ZoneIds, fromReadingNumber=input.FromReadingNumber, toReadingNumber=input.ToReadingNumber });
+            IEnumerable<UseStateReportDataOutputDto> useStateData = await _sqlReportConnection.QueryAsync<UseStateReportDataOutputDto>(useStateQueryString, new { useStateId=input.UseStateId, fromDate=input.FromDateJalali, toDate=input.ToDateJalali , zoneIds = input.ZoneIds, fromReadingNumber=input.FromReadingNumber, toReadingNumber=input.ToReadingNumber });
             UseStateReportHeaderOutputDto useStateHeader = new UseStateReportHeaderOutputDto()
             { 
                 TotalDebtAmount=useStateData.Sum(useState=>useState.DebtAmount),
-                FromDateJalali=input.FromDate,
-                ToDateJalali = input.ToDate,
+                FromDateJalali=input.FromDateJalali,
+                ToDateJalali = input.ToDateJalali,
                 RecordCount=useStateData.Count(),
             };
 

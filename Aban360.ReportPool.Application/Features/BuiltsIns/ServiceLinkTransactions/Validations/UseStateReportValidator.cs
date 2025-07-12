@@ -14,12 +14,12 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
              .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(useState => useState.FromDate)
+            RuleFor(useState => useState.FromDateJalali)
              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
              .NotNull().WithMessage(ExceptionLiterals.NotNull)
              .Length(10).WithMessage(ExceptionLiterals.Equal10);
 
-            RuleFor(useState => useState.ToDate)
+            RuleFor(useState => useState.ToDateJalali)
              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
              .NotNull().WithMessage(ExceptionLiterals.NotNull)
              .Length(10).WithMessage(ExceptionLiterals.Equal10);

@@ -9,7 +9,8 @@
         public static string CustomerSearch { get { return $"{Report} جستجوی مشترک"; } }
         public static string UnconfirmedSubscribers{ get { return $"{Report} مشترکین ثبت قطعی نشده"; } }
         public static string PrepaymentAndCalculation{ get { return $"{Report} ریز محاسبه و پیش پرداخت"; } }
-        public static string CalculationDetails{ get { return $"{Report} ریز محاسبه"; } }
+        public static string WaterCalculationDetails{ get { return $"{Report} ریز محاسبه - آب بها"; } }
+        public static string ServiceLinkCalculationDetails{ get { return $"{Report} ریز محاسبه - انشعاب"; } }
         public static string DeductionsAndDiscountsReport{ get { return $"{Report} کسورات و تخفیفات"; } }
         public static string ServiceLinkDebtorCustomers{ get { return $"{Report} مانده مطالبات سررسید شده"; } }
         public static string DebtorByDayDetail { get { return $"{Report} جزئیات روزنامه بدهکاران"; } }

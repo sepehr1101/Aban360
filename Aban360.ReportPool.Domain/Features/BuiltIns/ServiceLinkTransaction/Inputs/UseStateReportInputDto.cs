@@ -3,8 +3,8 @@
     public record UseStateReportInputDto
     {
         public short UseStateId { get; set; }
-        public string FromDate { get; set; } = default!;
-        public string ToDate { get; set; } = default!;
+        public string FromDateJalali { get; set; } = default!;
+        public string ToDateJalali { get; set; } = default!;
         public string FromReadingNumber { get; set; } = default!;
         public string ToReadingNumber { get; set; } = default!;
         public ICollection<int> ZoneIds { get; set; } = default!;
