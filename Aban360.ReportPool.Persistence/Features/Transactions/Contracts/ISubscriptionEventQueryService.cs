@@ -7,9 +7,9 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Contracts
     public interface ISubscriptionEventQueryService
     {
         //Task<IEnumerable<EventsSummaryOutputDataDto>>
-        Task<ReportOutput<EventsSummaryOutputHeaderDto, EventsSummaryOutputDataDto>> GetEventsSummaryDtos(string billId);
-        Task<IEnumerable<EventsSummaryOutputDataDto>> GetBillDto(int zoneId, string registerDate, string fromReadingNumber, string toReadingNumber);
+        Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> GetEventsSummaryDtos(string billId);
+        Task<IEnumerable<WaterEventsSummaryOutputDataDto>> GetBillDto(int zoneId, string registerDate, string fromReadingNumber, string toReadingNumber);
         Task<IEnumerable<BranchEventsDto>> GetBranchEventDtos(string billId);
-        Task<IEnumerable<EventsSummaryOutputDataDto>> GetBillDto(int zoneId, string fromReadingNumber, string toReadingNumber);
+        Task<IEnumerable<WaterEventsSummaryOutputDataDto>> GetBillDto(int zoneId, string fromReadingNumber, string toReadingNumber);
     }
 }

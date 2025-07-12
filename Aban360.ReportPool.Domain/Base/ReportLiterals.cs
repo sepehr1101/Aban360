@@ -44,6 +44,7 @@
 
 
         public static string SubscriptionEventSummary { get { return "کاردکس آب"; } }
+        public static string BranchEventSummary { get { return "کاردکس انشعاب"; } }
         public static string WaterInstallationDetail { get { return "جزئیات انشعاب آب نصب شده"; } }
         public static string SewageInstallationDetail { get { return "جزئیات انشعاب فاضلاب نصب شده"; } }
         public static string WaterInstallationSummary{ get { return "خلاصه انشعاب آب نصب شده"; } }

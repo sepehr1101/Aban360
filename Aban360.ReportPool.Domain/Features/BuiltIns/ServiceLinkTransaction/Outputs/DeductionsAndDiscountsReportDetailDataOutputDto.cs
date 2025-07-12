@@ -4,7 +4,7 @@
     {
         public string DiscountTypeTitle { get; set; }
         public string OffTypeTitle { get; set; }
-        public string ToDiscountTitle { get; set; }
+        public string DiscountTitle { get; set; }
         public long OffAmount { get; set; }
 
     }

@@ -5,6 +5,6 @@ namespace Aban360.ReportPool.Application.Features.Transactions.Handler.Contracts
 {
     public interface ISubscriptionEventHandler
     {
-        Task<ReportOutput<EventsSummaryOutputHeaderDto, EventsSummaryOutputDataDto>> Handle(string input);
+        Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> Handle(string input);
     }
 }
