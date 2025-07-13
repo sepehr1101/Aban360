@@ -19,8 +19,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         public async Task<ReportOutput<ServiceLinkCalculationDetailsHeaderOutputDto, ServiceLinkCalculationDetailsDataOutputDto>> GetInfo(ServiceLinkCalculationDetailsInputDto input)
         {
             string zoneIdQueryString = GetZoneIdQuery();
-            //int zoneId = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(zoneIdQueryString, new { parNoId = input.Input });
-            int zoneId = 131211;
+            int zoneId = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(zoneIdQueryString, new { parNoId = input.Input });
 
             string siphonItemsQueryString = GetSiphonItemsQuery(zoneId);
             string billIdQueryString = GetBillIdQuery(zoneId);
@@ -180,7 +179,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         
         private string GetZoneIdQuery()
         {
-            return @"131211";
+            return @"Select r.ZoneId
+					From [CustomerWarehouse].dbo.Requests r
+					Where r.TrackNumber=@parNoId";
         }
     }
 }

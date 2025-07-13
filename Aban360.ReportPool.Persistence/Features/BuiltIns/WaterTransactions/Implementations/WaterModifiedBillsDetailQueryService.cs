@@ -44,7 +44,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	b.ZoneTitle,
 	                    b.CustomerNumber,
 	                    b.UsageTitle AS UsageSellTitle,
-	                    b.RegisterDay AS Date,
+	                    b.RegisterDay AS RegisterDateJalali,
 	                    b.Payable,
 	                    b.SumItems
                     From [CustomerWarehouse].dbo.Bills b
