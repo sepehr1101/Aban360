@@ -18,9 +18,18 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         public async Task<ReportOutput<ReadingChecklistHeaderOutputDto, ReadingChecklistDataOutputDto>> Get(ReadingChecklistInputDto input)
         {
             string ReadingChecklistQueryString = GetReadingChecklistQuery();
-            IEnumerable<ReadingChecklistDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingChecklistDataOutputDto>(ReadingChecklistQueryString);//todo:Params
+            var @params = new
+            {
+                fromReadingNumber = input.FromReadingNumber,
+                toReadingNumber = input.ToReadingNumber,
+                zoneId = input.ZoneId,
+                isShowLastNumber = input.IsShowLastNumber,
+            };
+            IEnumerable<ReadingChecklistDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingChecklistDataOutputDto>(ReadingChecklistQueryString,@params);//todo:Params
             ReadingChecklistHeaderOutputDto header = new()
             {
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = data.Count()
             };
@@ -30,7 +39,26 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         }
         private string GetReadingChecklistQuery()
         {
-            return @"";
+            return @"Select
+                     	b.ZoneTitle,
+                     	c.FirstName ,
+                     	c.SureName AS Surname,
+                     	c.FirstName+' '+c.SureName AS FullName,
+                     	c.DomesticCount AS DomesticUnit,
+                     	c.DomesticCount+c.OtherCount AS NonDomesticUnit,
+                     	c.UsageTitle,
+                     	c.WaterDiameterTitle AS MeterDiameterTitle,
+                     	b.PreviousDay AS PreviousDateJalali,
+                     	IIF(@isShowLastNumber=1,b.PreviousNumber,0) AS PreviousNumber,
+                     	b.CounterStateCode AS LastCounterStateCode,
+                     	b.CustomerNumber	
+                     
+                     From [CustomerWarehouse].dbo.Bills b
+                     join [CustomerWarehouse].dbo.Clients c on b.BillId=c.BillId
+                     Where 
+                     	b.ZoneId=@zoneId AND
+                     	b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
+                     Order By b.RegisterDay Desc";
         }
     }
 }
