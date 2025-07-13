@@ -97,6 +97,7 @@
         public static string WaterRawSalesSummary { get { return $"خلاصه {Report} جزئیات فروش ناخالص آب بها"; } }
 
         public static string ExcessPattern { get { return $"خلاصه {Report} مازاد الگو"; } }
+        public static string WaterNetIncome { get { return $"خلاصه {Report} درآمد خالص آب بها"; } }
 
     }
 }
