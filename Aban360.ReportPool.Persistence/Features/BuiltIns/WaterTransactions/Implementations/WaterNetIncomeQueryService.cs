@@ -4,6 +4,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using Dapper;
+using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
@@ -19,7 +20,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             string waterNetIncomeQueryString = GetWaterNetIncomeQuery();
             IEnumerable<WaterNetIncomeDataOutputDto> data = await _sqlReportConnection.QueryAsync<WaterNetIncomeDataOutputDto>(waterNetIncomeQueryString);//todo:Params
             WaterNetIncomeHeaderOutputDto header = new()
-            { };
+            {
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                RecordCount = data.Count()
+            };
 
             ReportOutput<WaterNetIncomeHeaderOutputDto, WaterNetIncomeDataOutputDto> result = new(ReportLiterals.WaterNetIncome, header, data);
              return result;
