@@ -41,9 +41,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         {
             return @"Select
                      	b.ZoneTitle,
-                     	c.FirstName ,
-                     	c.SureName AS Surname,
-                     	c.FirstName+' '+c.SureName AS FullName,
+                     	TRIM(c.FirstName) ,
+                     	TRIM(c.SureName) AS Surname,
+                     	TRIM(c.FirstName)+' '+TRIM(c.SureName) AS FullName,
                      	c.DomesticCount AS DomesticUnit,
                      	c.DomesticCount+c.OtherCount AS NonDomesticUnit,
                      	c.UsageTitle,
