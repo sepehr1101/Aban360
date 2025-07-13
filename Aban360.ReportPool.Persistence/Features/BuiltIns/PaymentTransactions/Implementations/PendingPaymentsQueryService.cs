@@ -13,7 +13,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
     {
         public PendingPaymentsQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+		}
 
         public async Task<ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentsDataOutputDto>> GetInfo(PendingPaymentsInputDto input)
         {
@@ -70,9 +71,22 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 			string usageQuery = hasUsageId == true ? "AND (UsageId IN @UsageSellIds)" : string.Empty;
             return @$"-- مشتریان هدف
 						WITH FilteredClients AS (
-							SELECT ZoneId,ZoneTitle, VillageName, CustomerNumber,BillId, ReadingNumber,
-								   UsageTitle AS UsageSellTitle , UsageTitle2 AS UsageConsumptionTitle,  TRIM(FirstName) As FirstName,TRIM(SureName) Surname,
-								   MobileNo AS MobileNumber, PhoneNo AS PhoneNumber, DeletionStateTitle AS UseStateTitle, '--' AS HeadquarterTitle , '--' AS RegionTitle
+							SELECT 
+								ZoneId,
+								ZoneTitle,
+								VillageName,
+								CustomerNumber,
+								BillId,
+								ReadingNumber,
+								UsageTitle AS UsageSellTitle ,
+								UsageTitle2 AS UsageConsumptionTitle,
+								TRIM(FirstName) As FirstName,
+								TRIM(SureName) Surname,
+								MobileNo AS MobileNumber,
+								PhoneNo AS PhoneNumber,
+								DeletionStateTitle AS UseStateTitle,
+								'--' AS HeadquarterTitle ,
+								'--' AS RegionTitle
 							FROM [CustomerWarehouse].dbo.Clients 
 							WHERE ToDayJalali IS NULL
 							  AND ZoneId IN @ZoneIds
@@ -96,16 +110,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 						
 						-- تجمیعی پرداخت‌ها + آخرین پرداخت
 						PaymentAgg AS (
-							SELECT ZoneId, CustomerNumber,
-								SUM(CASE WHEN RegisterDay < @FromDate 
-								THEN Amount ELSE 0 END) AS PaymentBefore,
-								SUM(CASE WHEN
-											RegisterDay BETWEEN @FromDate AND @ToDate
-											AND Amount BETWEEN @FromAmount AND @ToAmount 
-									THEN Amount ELSE 0 END) AS PaymentBetween,
-								SUM(CASE WHEN 
-											RegisterDay > @ToDate 
-									THEN Amount ELSE 0 END) AS PaymentAfter,
+							SELECT 
+								ZoneId,
+								CustomerNumber,
+								SUM(CASE WHEN RegisterDay < @FromDate THEN Amount ELSE 0 END) AS PaymentBefore,
+								SUM(CASE WHEN RegisterDay BETWEEN @FromDate AND @ToDate	THEN Amount ELSE 0 END) AS PaymentBetween,
+								SUM(CASE WHEN RegisterDay > @ToDate THEN Amount ELSE 0 END) AS PaymentAfter,
 								MAX(RegisterDay) AS LastPaymentDate
 							FROM [CustomerWarehouse].dbo.Payments
 							WHERE ZoneId IN @ZoneIds
