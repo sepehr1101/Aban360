@@ -4,6 +4,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
 using Dapper;
+using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Implementations
@@ -17,21 +18,38 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         public async Task<ReportOutput<UnconfirmedSubscribersHeaderOutputDto, UnconfirmedSubscribersDataOutputDto>> GetInfo(UnconfirmedSubscribersInputDto input)
         {
             string unconfirmedSubscribersQuery = UnconfirmedSubscribersQuery();
-            IEnumerable<UnconfirmedSubscribersDataOutputDto> unconfirmedSubscribersData = await _sqlConnection.QueryAsync<UnconfirmedSubscribersDataOutputDto>(unconfirmedSubscribersQuery);//todo: parameters
+            IEnumerable<UnconfirmedSubscribersDataOutputDto> unconfirmedSubscribersData = await _sqlReportConnection.QueryAsync<UnconfirmedSubscribersDataOutputDto>(unconfirmedSubscribersQuery, new {zoneIds=input.ZoneIds});
             UnconfirmedSubscribersHeaderOutputDto unconfirmedSubscribersHeader = new UnconfirmedSubscribersHeaderOutputDto()
-            { };
+            {
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                RecordCount = unconfirmedSubscribersData.Count(),
+                SumFinalAmount = unconfirmedSubscribersData.Sum(x => x.FinalAmount),
+                SumPreInstallmentAmount = unconfirmedSubscribersData.Sum(x => x.PreInstallmentAmount),
+            };
 
-            var result = new ReportOutput<UnconfirmedSubscribersHeaderOutputDto, UnconfirmedSubscribersDataOutputDto>
-                (ReportLiterals.UnconfirmedSubscribers,
-                 unconfirmedSubscribersHeader,
-                 unconfirmedSubscribersData);
+            ReportOutput<UnconfirmedSubscribersHeaderOutputDto, UnconfirmedSubscribersDataOutputDto> result = new 
+                (ReportLiterals.UnconfirmedSubscribers,  unconfirmedSubscribersHeader,unconfirmedSubscribersData);
 
             return result;
         }
 
         private string UnconfirmedSubscribersQuery()
         {
-            return " ";
+            return @"Select 
+                    	d.Firstname AS FirstName,
+                    	d.Surname AS Surname,
+                    	d.Firstname + ' ' + d.Surname AS FullName,
+                    	d.ZoneId, 
+                    	d.ZoneTitle,
+                    	d.FinalAmount,
+                    	d.PreInstallmentAmount,
+                    	d.Mobile,
+                    	d.Address,
+                    	d.ContractualCapacity
+                    From [CustomerWarehouse].dbo.DiscontinuedRequests d
+                    Where
+                    	d.ZoneId IN @zoneIds";
         }
+
     }
 }

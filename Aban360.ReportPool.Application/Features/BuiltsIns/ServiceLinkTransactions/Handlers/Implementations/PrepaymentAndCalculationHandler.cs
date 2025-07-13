@@ -5,6 +5,7 @@ using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
+using DNTPersianUtils.Core;
 using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Implementations
@@ -34,6 +35,15 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             }
 
             ReportOutput<PrepaymentAndCalculationHeaderOutputDto, PrepaymentAndCalculationDataOutputDto> prepaymentAndCalculation = await _prepaymentAndCalculationQueryService.GetInfo(input);
+           string? billId=prepaymentAndCalculation.ReportHeader.InstallmentHeader.BillId;
+           string? paymentId=prepaymentAndCalculation.ReportHeader.InstallmentHeader.PaymentId;
+
+            prepaymentAndCalculation.ReportHeader.PersianStringAmount = prepaymentAndCalculation.ReportHeader.InstallmentHeader.Payable.NumberToText(Language.Persian);
+            prepaymentAndCalculation.ReportHeader.ReportDateJalali = DateTime.Now.ToShortPersianDateString();
+            prepaymentAndCalculation.ReportHeader.Barcode = (billId is null ? new string('0', 13) : billId.PadLeft(13, '0')) +
+                                                          (paymentId is null ? new string('0', 13) : paymentId.PadLeft(13, '0'));
+           
+
             return prepaymentAndCalculation;
         }
     }

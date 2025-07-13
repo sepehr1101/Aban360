@@ -2,6 +2,14 @@
 {
     public record PrepaymentAndCalculationDataOutputDto
     {
-        public ICollection<PrepaymentAndCalculationItemTitleDto> ItemTitles { get; set; }
+        public string ItemTitle { get; set; }
+        public int  ItemId { get; set; }
+        public long Amount { get; set; }
+
+        public int Discount { get; set; }
+        public int InstallmentNumber { get; set; }
+        public int InstallmentCount { get; set; }
+
+
     }
 }

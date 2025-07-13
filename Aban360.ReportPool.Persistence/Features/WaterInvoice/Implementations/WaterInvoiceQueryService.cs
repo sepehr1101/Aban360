@@ -61,9 +61,9 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             waterInvoice.PaymentMethod = paymentInfo!=null ? paymentInfo.PaymentMethod:"";
             waterInvoice.IsPayed = paymentInfo != null ? true : false;
             waterInvoice.Description = paymentInfo != null ? "پرداخت شد" : "پرداخت نشد";
-            waterInvoice.PaymenetAmountText=waterInvoice.PayableAmount.NumberToText(Language.Persian);
-            waterInvoice.BarCode = (waterInvoice.BillId is null?new string('0',13):waterInvoice.BillId.PadLeft(13, '0')) + 
-                                   (waterInvoice.PayId is null?new string('0',13):waterInvoice.PayId.PadLeft(13, '0'));
+            //waterInvoice.PaymenetAmountText=waterInvoice.PayableAmount.NumberToText(Language.Persian);
+           // waterInvoice.BarCode = (waterInvoice.BillId is null?new string('0',13):waterInvoice.BillId.PadLeft(13, '0')) + 
+           //                        (waterInvoice.PayId is null?new string('0',13):waterInvoice.PayId.PadLeft(13, '0'));
             return waterInvoice;
         }
 

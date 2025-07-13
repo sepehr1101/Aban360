@@ -56,7 +56,7 @@
         public string BillId { get; set; }
         public string PayId { get; set; }
 
-        public string BarCode { get; set; }
+        public string? BarCode { get; set; }
 
         public string PaymenetAmountText { get; set; }
 

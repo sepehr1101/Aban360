@@ -17,7 +17,6 @@
         public static string DebtorByDaySummary { get { return $"{Report} خلاصه روزنامه بدهکاران"; } }
         public static string LinkServiceStatement { get { return $"{Report} صورت وضعیت (سامانه فروش)"; } }
         public static string PendingPayments { get { return $"{Report} مشترکین بدهکار"; } }
-        public static string AgentWarnings { get { return $"{Report} لیست اخطار مامور وصول"; } }
 
         public static string UnspecifiedWaterPayment { get { return $"{Report} وصولی خارج سیستم _ آب بها"; } }
         public static string UnspecifiedServiceLinkPayment { get { return $"{Report} وصولی خارج سیستم-انشعاب"; } }
@@ -97,6 +96,11 @@
         public static string WaterRawSalesSummary { get { return $"خلاصه {Report} جزئیات فروش ناخالص آب بها"; } }
 
         public static string ExcessPattern { get { return $"خلاصه {Report} مازاد الگو"; } }
+        public static string WaterNetIncome { get { return $"خلاصه {Report} درآمد خالص آب بها"; } }
+        public static string ReadingChecklist{ get { return $"خلاصه {Report} لیست کنترا قرائت"; } }
 
+
+        public static string ReadingListDetail { get { return $"خلاصه {Report} جزئیات فهرست تعداد قرائت"; } }
+        public static string ReadingListSummary { get { return $"خلاصه {Report} خلاصه فهرست تعداد قرائت"; } }
     }
 }
