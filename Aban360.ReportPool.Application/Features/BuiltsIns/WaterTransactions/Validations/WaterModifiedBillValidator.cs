@@ -16,10 +16,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Va
             RuleFor(customer => customer.ToDateJalali)
            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
            .NotNull().WithMessage(ExceptionLiterals.NotNull);
-
-            RuleFor(customer => customer.IsRetured)
-           .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-           .NotNull().WithMessage(ExceptionLiterals.NotNull);
         }
     }
 }

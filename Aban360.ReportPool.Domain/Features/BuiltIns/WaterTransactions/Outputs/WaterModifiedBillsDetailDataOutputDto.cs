@@ -5,7 +5,7 @@
         public string ZoneTitle { get; set; }
         public string CustomerNumber { get; set; }
         public string UsageSellTitle { get; set; }
-        public string Date { get; set; }
+        public string RegisterDateJalali { get; set; }
         public long Payable { get; set; }
         public long SumItems { get; set; }
 
