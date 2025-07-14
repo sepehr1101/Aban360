@@ -12,36 +12,57 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
     {
         public PrepaymentAndCalculationQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+		}
 
         public async Task<ReportOutput<PrepaymentAndCalculationHeaderOutputDto, PrepaymentAndCalculationDataOutputDto>> GetInfo(PrepaymentAndCalculationInputDto input)
         {
             string zoneIdQueryString = GetZoneIdWithParNoQuery();
-            int zoneId = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(zoneIdQueryString, new { parNoId = input.Input });
+            int? zoneId = await _sqlReportConnection.QueryFirstOrDefaultAsync<int?>(zoneIdQueryString, new { parNoId = input.Input });
 
-            string prepaymentCustomerHeaderQueryString = GetPrepaymentCustomerHeaderQuery(zoneId);
-            string prepaymentInstallmentHeaderQueryString = GetPrepaymentInstallmentHeaderQuery(zoneId);
-            string prepaymentDataueryString = GetPrepaymentDataQuery(zoneId);
-
-            IEnumerable<PrepaymentAndCalculationDataOutputDto> data = await _sqlReportConnection.QueryAsync<PrepaymentAndCalculationDataOutputDto>(prepaymentDataueryString, new { zoneId = zoneId, parNoId = input.Input });
-
-            PrepaymentAndCalculationCustomerHeaderOutputDto moshtrakHeader = await _sqlReportConnection.QueryFirstOrDefaultAsync<PrepaymentAndCalculationCustomerHeaderOutputDto>(prepaymentCustomerHeaderQueryString, new { zoneId = zoneId, parNoId = input.Input });
-            PrepaymentAndCalculationInstallmentHeaderOutputDto ghestHeader = await _sqlReportConnection.QueryFirstOrDefaultAsync<PrepaymentAndCalculationInstallmentHeaderOutputDto>(prepaymentInstallmentHeaderQueryString, new { zoneId = zoneId, parNoId = input.Input });
-
-			PrepaymentAndCalculationHeaderOutputDto header = new()
+			if(!zoneId.HasValue)
 			{
-				CustomerHeader = moshtrakHeader,
-				InstallmentHeader = ghestHeader,
+				//todo: 1.use Literal 2. Use Custom Exception
+				throw new InvalidDataException("کد درخواست ناصحیح است");
+			}
 
+            string prepaymentCustomerHeaderQueryString = GetPrepaymentCustomerHeaderQuery(zoneId.Value);
+            PrepaymentAndCalculationCustomerHeaderOutputDto? requestHeader = await _sqlReportConnection.QueryFirstOrDefaultAsync<PrepaymentAndCalculationCustomerHeaderOutputDto>(prepaymentCustomerHeaderQueryString, new { zoneId = zoneId.Value, parNoId = input.Input });
+			if(requestHeader is null)
+			{
+                //todo: 1.use Literal 2. Use Custom Exception
+                throw new InvalidDataException("کد درخواست ناصحیح است");
+            }
 
+            string installmentHeaderQuery = GetPrepaymentInstallmentHeaderQuery(zoneId.Value);
+            PrepaymentAndCalculationInstallmentHeaderOutputDto? installmentHeader = await _sqlReportConnection.QueryFirstOrDefaultAsync<PrepaymentAndCalculationInstallmentHeaderOutputDto>(installmentHeaderQuery, new { zoneId = zoneId.Value, parNoId = input.Input });
+            if (installmentHeader is null)
+            {
+                //todo: 1.use Literal 2. Use Custom Exception
+                throw new InvalidDataException("درخواست ثبت قطعی نشده است");
+            }
+
+            string prepaymentDataQuery = GetPrepaymentDataQuery(zoneId.Value);
+            IEnumerable<PrepaymentAndCalculationDataOutputDto> data = await _sqlReportConnection.QueryAsync<PrepaymentAndCalculationDataOutputDto>(prepaymentDataQuery, new { zoneId = zoneId.Value, parNoId = input.Input });
+            if (prepaymentDataQuery is null)
+            {
+                //todo: 1.use Literal 2. Use Custom Exception
+                throw new InvalidDataException("محاسبه انجام نشده است");
+            }
+
+			//todo: move it to another private method or object constructor
+            PrepaymentAndCalculationHeaderOutputDto header = new()
+			{
+				CustomerHeader = requestHeader,
+				InstallmentHeader = installmentHeader,
 				SumItemsAmount = data.Sum(x => x.Amount),
 				SumItemsDiscount = data.Sum(x => x.Discount),
 				DebtorOrCreditorAmount = 0,
-				Description = "",
-				PaymentDateJalali="",
-				GetwayToPaied="",
-				InstallmentCount = data.FirstOrDefault().InstallmentCount,
-				InstallmentNumber = data.FirstOrDefault().InstallmentNumber,
+				Description = string.Empty,// todo: get from desc/sharh of moshtrak table
+				PaymentDateJalali=string.Empty, //todo: fill it 
+				GetwayToPaied=string.Empty, //todo: rename field and get data
+				InstallmentCount = data.First().InstallmentCount,
+				InstallmentNumber = data.First().InstallmentNumber,
 			};
 
 			var result = new ReportOutput<PrepaymentAndCalculationHeaderOutputDto, PrepaymentAndCalculationDataOutputDto>(ReportLiterals.PrepaymentAndCalculation, header, data);
@@ -52,10 +73,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         {
             return @"Select r.ZoneId
 					From [CustomerWarehouse].dbo.Requests r
-					Where r.TrackNumber=@parNoId";
+					Where TRIM(r.TrackNumber)=@parNoId";
         }
         private string GetPrepaymentCustomerHeaderQuery(int zoneId)
-        {
+        {		
             return @$"Select
 						'' AS ZoneTitle,
 						m.town AS ZoneId,
@@ -85,12 +106,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 						m.BLOCK_COD AS ReadingBlock,
 						IIF(m.s0>0 , N'انشعاب جدید' ,
 					  		IIF(m.s1>0,N'فاضلاب جدید',
-					     			IIF(ISNULL(m.s0, 0) = 0 AND ISNULL(m.s1, 0) = 0,N'پس از فروش',N'هیچی')))AS ServiceDescription
+					     			IIF(ISNULL(m.s0, 0) = 0 AND ISNULL(m.s1, 0) = 0,N'پس از فروش',N'هیچی'))) AS ServiceDescription
 					
-					From [{zoneId}].dbo.moshtrak m
-					Where 
-						m.par_no=@parNoId AND
-						m.town=@zoneId";
+						From [{GetDbName(zoneId)}].dbo.moshtrak m
+						Where 
+							m.par_no=@parNoId AND
+							m.town=@zoneId";
         }
 
         private string GetPrepaymentInstallmentHeaderQuery(int zoneId)
@@ -100,7 +121,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 						TRIM(g.sh_pard1) AS PaymentId,
 						g.pard AS Payable,
 						g.mohlat AS DueDataJalali
-					From [{zoneId}].dbo.ghest g
+					From [{GetDbName(zoneId)}].dbo.ghest g
 					Where	
 						g.par_no=@parNoId AND
 						g.TOWN =@zoneId
@@ -116,12 +137,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 						k.takhfif AS Discount,
 						1 AS InstallmentNumber,
 						k.tedad_gest AS InstallmentCount
-					From [{zoneId}].dbo.karten75 k
+					From [{GetDbName(zoneId)}].dbo.karten75 k
 					Where
 						k.par_no=@parNoId AND
 						k.town =@zoneId";
         }
-
-
     }
 }

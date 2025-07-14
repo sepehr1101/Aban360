@@ -33,5 +33,10 @@ namespace Aban360.ReportPool.Persistence.Base
                 return sqlConnection;
             }
         }
+
+        internal string GetDbName(int zoneId)
+        {
+            return zoneId > 140000 ? "Abfar": zoneId.ToString();
+        }
     }
 }

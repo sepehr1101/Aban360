@@ -4,6 +4,7 @@ using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
@@ -21,6 +22,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         [HttpPost, HttpGet]
         [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<PrepaymentAndCalculationHeaderOutputDto, PrepaymentAndCalculationDataOutputDto>>),StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetRaw(PrepaymentAndCalculationInputDto inputDto, CancellationToken cancellationToken)
         {
             ReportOutput<PrepaymentAndCalculationHeaderOutputDto, PrepaymentAndCalculationDataOutputDto> prepaymentAndCalculation =await _prepaymentAndCalculationHandler.Handle(inputDto,cancellationToken);
