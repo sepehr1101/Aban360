@@ -102,5 +102,8 @@
 
         public static string ReadingListDetail { get { return $"خلاصه {Report} جزئیات فهرست تعداد قرائت"; } }
         public static string ReadingListSummary { get { return $"خلاصه {Report} خلاصه فهرست تعداد قرائت"; } }
+
+        public static string ReadingDailyStatement { get { return $"خلاصه {Report} روزنامه"; } }
+        public static string ReadingStatusStatement { get { return $"خلاصه {Report} فهرست وضعیت"; } }
     }
 }
