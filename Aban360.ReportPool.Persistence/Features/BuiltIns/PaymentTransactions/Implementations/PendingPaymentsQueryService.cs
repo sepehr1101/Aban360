@@ -20,7 +20,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
         {
             string usageTitleQuery = GetUsageTitleById();
 
-            string pendingPaymentsQueryString = GetPendingPaymentsDataQuery(input.UsageSellIds?.Any()==true);
+            string pendingPaymentsQueryString = GetPendingPaymentsDataQuery(input.UsageSellIds?.Any()==true,
+																			input.UsageConsumptionIds?.Any()==true);
             var @params = new
             {
                 FromReadingNumber = string.IsNullOrWhiteSpace(input.FromReadingNumber)? input.FromReadingNumber :"0000000000",
@@ -31,7 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ToAmount = input.ToAmount!=null? input.ToAmount :long.MaxValue ,
 				FromDebtPeriodCount = input.FromDebtPeriodCount!=null? input.FromDebtPeriodCount :0,
                 ToDebtPeriodCount = input.ToDebtPeriodCount!=null? input.ToDebtPeriodCount:int.MaxValue,
-                //UsageConsumptionIds =  input.UsageConsumptionIds,
+                UsageConsumptionIds =  input.UsageConsumptionIds,
                 UsageSellIds = input.UsageSellIds,
                 ZoneIds = input.ZoneIds
             };
@@ -66,9 +67,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 					Where u.Id In @UsageId";
         }
 
-        private string GetPendingPaymentsDataQuery(bool hasUsageId)
+        private string GetPendingPaymentsDataQuery(bool hasUsageSellId,bool hasUsageConsumptionId)
         {
-			string usageQuery = hasUsageId == true ? "AND (UsageId IN @UsageSellIds)" : string.Empty;
+			string usageSellQuery = hasUsageSellId == true ? "AND (UsageId IN @UsageSellIds)" : string.Empty;
+			string usageConsumptionQuery = hasUsageConsumptionId == true ? "AND (UsageId2 IN @UsageConsumptionIds)" : string.Empty;
             return @$"-- مشتریان هدف
 						WITH FilteredClients AS (
 							SELECT 
@@ -79,7 +81,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 								BillId,
 								ReadingNumber,
 								UsageTitle AS UsageSellTitle ,
-								UsageTitle2 AS UsageConsumptionTitle,
+								IIF(UsageId2=0,UsageTitle,UsageTitle2) AS UsageConsumptionTitle,
 								TRIM(FirstName) As FirstName,
 								TRIM(SureName) Surname,
 								MobileNo AS MobileNumber,
@@ -91,7 +93,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 							WHERE ToDayJalali IS NULL
 							  AND ZoneId IN @ZoneIds
 							  AND (@FromReadingNumber IS NULL OR @ToReadingNumber IS NULL OR TRIM(ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber)
-							  {usageQuery}
+							  {usageSellQuery}
+							  {usageConsumptionQuery}
 							  --AND (@UsageConsumptionIds IS NULL OR UsageId2 IN @UsageConsumptionIds)
 						),
 						

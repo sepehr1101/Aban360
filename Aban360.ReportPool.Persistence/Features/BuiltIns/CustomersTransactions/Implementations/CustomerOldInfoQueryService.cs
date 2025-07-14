@@ -37,7 +37,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         BillId, 
                         OldBillId, 
                         FirstName, 
-                        SureName 
+                        SureName AS Surname
                      FROM Clients 
                      WHERE 
                         ZoneId=@zoneId AND  
