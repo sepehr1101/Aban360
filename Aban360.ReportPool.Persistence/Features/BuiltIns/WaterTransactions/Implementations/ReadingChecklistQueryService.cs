@@ -13,7 +13,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
     {
         public ReadingChecklistQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<ReadingChecklistHeaderOutputDto, ReadingChecklistDataOutputDto>> Get(ReadingChecklistInputDto input)
         {
@@ -39,26 +40,32 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         }
         private string GetReadingChecklistQuery()
         {
-            return @"Select
-                     	b.ZoneTitle,
-                     	TRIM(c.FirstName) ,
-                     	TRIM(c.SureName) AS Surname,
-                     	TRIM(c.FirstName)+' '+TRIM(c.SureName) AS FullName,
-                     	c.DomesticCount AS DomesticUnit,
-                     	c.DomesticCount+c.OtherCount AS NonDomesticUnit,
-                     	c.UsageTitle,
-                     	c.WaterDiameterTitle AS MeterDiameterTitle,
-                     	b.PreviousDay AS PreviousDateJalali,
-                     	IIF(@isShowLastNumber=1,b.PreviousNumber,0) AS PreviousNumber,
-                     	b.CounterStateCode AS LastCounterStateCode,
-                     	b.CustomerNumber	
+            return @"Use CustomerWarehouse
+                        ;WITH CTE AS(
+	                        SELECT
+		                        b.ZoneTitle,
+		                        TRIM(c.FirstName) Firstname ,
+		                        TRIM(c.SureName) AS Surname,
+		                        TRIM(c.FirstName)+' '+TRIM(c.SureName) AS FullName,
+		                        c.DomesticCount AS DomesticUnit,
+		                        c.DomesticCount+c.OtherCount AS NonDomesticUnit,
+		                        c.UsageTitle,
+		                        c.WaterDiameterTitle AS MeterDiameterTitle,
+		                        b.PreviousDay AS PreviousDateJalali,
+		                        IIF(@isShowLastNumber=1,b.NextNumber,0) AS PreviousNumber,
+		                        b.CounterStateCode AS LastCounterStateCode,
+		                        b.CustomerNumber,
+		                        RN=ROW_NUMBER() OVER (PARTITION BY b.BillId ORDER BY b.RegisterDay DESC)
                      
-                     From [CustomerWarehouse].dbo.Bills b
-                     join [CustomerWarehouse].dbo.Clients c on b.BillId=c.BillId
-                     Where 
-                     	b.ZoneId=@zoneId AND
-                     	b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
-                     Order By b.RegisterDay Desc";
+	                        FROM [CustomerWarehouse].dbo.Bills b
+	                        JOIN [CustomerWarehouse].dbo.Clients c 
+		                        on b.BillId=c.BillId
+	                        WHERE 
+	                            b.CounterStateCode NOT IN(4,7,8) AND
+		                        b.ZoneId=131211 AND
+		                        b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)
+                        SELECT * FROM CTE
+                        WHERE RN=1";
         }
     }
 }
