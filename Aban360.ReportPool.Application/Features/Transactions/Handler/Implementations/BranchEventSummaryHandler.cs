@@ -18,7 +18,19 @@ namespace Aban360.ReportPool.Application.Features.Transactions.Handler.Implement
         public async Task<ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto>> Handle(string input,CancellationToken cancellationToken)
         {
             ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> result = await _branchEventSummaryQueryService.Get(input);
+            if (CanSetRamained(result))
+            {
+                result.ReportHeader.Remained = result.ReportData.Sum(data => data.DebtAmount) - result.ReportData.Sum(data => data.CreditAmount);
+            }
             return result;
+        }
+        private bool CanSetRamained(ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> result)
+        {
+            return
+                result is not null &&
+                result.ReportData is not null &&
+                result.ReportData.Any() &&
+                result.ReportHeader is not null;
         }
     }
 }
