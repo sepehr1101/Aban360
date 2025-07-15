@@ -36,7 +36,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 UsageSellIds = input.UsageSellIds,
                 ZoneIds = input.ZoneIds
             };
-			IEnumerable<PendingPaymentsDataOutputDto> pendingPaymentsData = await _sqlReportConnection.QueryAsync<PendingPaymentsDataOutputDto>(pendingPaymentsQueryString, @params, null, 120);//todo: parameters
+			IEnumerable<PendingPaymentsDataOutputDto> pendingPaymentsData = await _sqlReportConnection.QueryAsync<PendingPaymentsDataOutputDto>(pendingPaymentsQueryString, @params, null, 120);
             PendingPaymentsHeaderOutputDto pendingPaymentsHeader = new PendingPaymentsHeaderOutputDto()
             {
 				FromReadingNumber=input.FromReadingNumber,

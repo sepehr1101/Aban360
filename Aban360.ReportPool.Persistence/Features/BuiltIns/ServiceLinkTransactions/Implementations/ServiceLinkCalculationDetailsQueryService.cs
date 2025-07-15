@@ -1,4 +1,6 @@
-﻿using Aban360.ReportPool.Domain.Base;
+﻿using Aban360.Common.Exceptions;
+using Aban360.Common.Literals;
+using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
 using Aban360.ReportPool.Persistence.Base;
@@ -19,14 +21,19 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         public async Task<ReportOutput<ServiceLinkCalculationDetailsHeaderOutputDto, ServiceLinkCalculationDetailsDataOutputDto>> GetInfo(ServiceLinkCalculationDetailsInputDto input)
         {
             string zoneIdQueryString = GetZoneIdQuery();
-            int zoneId = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(zoneIdQueryString, new { parNoId = input.Input });
+            int? zoneId = await _sqlReportConnection.QueryFirstOrDefaultAsync<int?>(zoneIdQueryString, new { parNoId = input.Input });
+            if (!zoneId.HasValue)
+            {
+                throw new BaseException(ExceptionLiterals.InvalidRequestData);
+            }
+            string dataBaseName=GetDbName(zoneId.Value);
 
-            string siphonItemsQueryString = GetSiphonItemsQuery(zoneId);
-            string billIdQueryString = GetBillIdQuery(zoneId);
-            string calculationHeaderInMostarakQueryString = GetCalculatinoHeaderInMoshtarahQuery(zoneId);
-            string calculationHeaderInArchMemQueryString = GetCalculationHeaderInfoArchMemQuery(zoneId);
-            string calculationHeaderInMotherQueryString= GetCalculationHeaderInfoMotherQuery(zoneId);
-            string calculationDetailsDataInfoQuery = GetCalculationDetailsDataQuery(zoneId);
+            string siphonItemsQueryString = GetSiphonItemsQuery(dataBaseName);
+            string billIdQueryString = GetBillIdQuery(dataBaseName);
+            string calculationHeaderInMostarakQueryString = GetCalculatinoHeaderInMoshtarahQuery(dataBaseName);
+            string calculationHeaderInArchMemQueryString = GetCalculationHeaderInfoArchMemQuery(dataBaseName);
+            string calculationHeaderInMotherQueryString= GetCalculationHeaderInfoMotherQuery(dataBaseName);
+            string calculationDetailsDataInfoQuery = GetCalculationDetailsDataQuery(dataBaseName);
 
 
             IEnumerable<SiphonDetailItemTitleDto> siphonItems=await _sqlReportConnection.QueryAsync< SiphonDetailItemTitleDto >(siphonItemsQueryString,new {zoneId=zoneId, parNoId =input.Input});
@@ -38,15 +45,19 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
 
             IEnumerable<ServiceLinkCalculationDetailsDataOutputDto> calculationDetailsData = await _sqlReportConnection.QueryAsync<ServiceLinkCalculationDetailsDataOutputDto>(calculationDetailsDataInfoQuery, new { parNoId = input.Input ,zoneId=zoneId});
-            header.InstallmentAmount = calculationDetailsData.FirstOrDefault().InstallmentAmount;
-            header.InstallmentCount = calculationDetailsData.FirstOrDefault().InstallmentCount;
-            header.ReportDateJalali = DateTime.Now.ToShortPersianDateString();
-            header.SumItemAmount=calculationDetailsData.Sum (x=>x.Amount);
+            if (calculationDetailsData is not null && calculationDetailsData.Any())
+            {
+
+                header.InstallmentAmount = calculationDetailsData.FirstOrDefault().InstallmentAmount;
+                header.InstallmentCount = calculationDetailsData.FirstOrDefault().InstallmentCount;
+                header.ReportDateJalali = DateTime.Now.ToShortPersianDateString();
+                header.SumItemAmount = calculationDetailsData.Sum(x => x.Amount);
+            }
             var result = new ReportOutput<ServiceLinkCalculationDetailsHeaderOutputDto, ServiceLinkCalculationDetailsDataOutputDto>(ReportLiterals.ServiceLinkCalculationDetails, header, calculationDetailsData );
             return result;
         }
 
-        private string GetCalculationDetailsDataQuery(int zoneId)
+        private string GetCalculationDetailsDataQuery(string dataBaseName)
         {
             return @$"select
                     	k.noe_bed AS ItemId,
@@ -55,13 +66,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                         k.pish_gest AS InstallmentAmount,
                         k.tedad_gest AS InstallmentCount ,
                         k.type AS TypeId
-                    From [{zoneId}].dbo.karten75 k
+                    From [{dataBaseName}].dbo.karten75 k
                     Where	
                     	k.par_no=@parNoId AND
                     	k.town=@zoneId";
         }
 
-        private string GetCalculationHeaderInfoMotherQuery(int zoneId)
+        private string GetCalculationHeaderInfoMotherQuery(string dataBaseName)
         {
             return @$"Select 
                     	m.arse AS InheritedPrimises,
@@ -75,12 +86,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	m.fix_mas AS InheritedContractualCapacity,
                     	m.aian + m.arse AS SumInheritedPremisesImprovement,
                         m.mother_rad AS InheritedFromCustomerNumber
-                    From [{zoneId}].dbo.mother m
+                    From [{dataBaseName}].dbo.mother m
                     Where	
                     	m.par_no=@parNoId AND
                     	m.town=@zoneId";
         }
-        private string GetCalculationHeaderInfoArchMemQuery(int zoneId)
+        private string GetCalculationHeaderInfoArchMemQuery(string dataBaseName)
         {
             return @$"Select 
                     	m.arse AS PreviousPrimises,
@@ -94,16 +105,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	m.fix_mas AS PreviousContractualCapacity,
                     	m.aian + m.arse AS SumPreviousPremisesImprovement
                     
-                    From [{zoneId}].dbo.arch_mem m
+                    From [{dataBaseName}].dbo.arch_mem m
                     Where	
                     	m.par_no=@parNoId AND
                     	m.town=@zoneId";
         }
-        private string GetCalculatinoHeaderInMoshtarahQuery(int zoneId)
+        private string GetCalculatinoHeaderInMoshtarahQuery(string dataBaseName)
         {
             return @$"Select
-                    	'' AS ZoneTitle, 
-                    	0 AS ZoneId,
+                    	z.C2 AS ZoneTitle, 
+                    	m.town AS ZoneId,
                     	m.name+' ' +m.family AS FullName,
                     	m.meli_cod AS NationalCode,
                     	m.phone_no AS PhoneNumber,
@@ -134,24 +145,29 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	0 AS InheritedFromCustomerNumber,
 
                         m.noe_va AS UseStateId,
-                        	m.cod_enshab AS UsageId,
-                        	m.sharh AS Description,
-                        	IIF(m.s0>0 , N'انشعاب جدید' ,
-                        		IIF(m.s1>0,N'فاضلاب جدید',
-                        			IIF(ISNULL(m.s0, 0) = 0 AND ISNULL(m.s1, 0) = 0,N'پس از فروش',N'هیچی')))AS ServiceDescription
+                        u.C1 AS UseStateTitle,
+                        m.cod_enshab AS UsageId,
+                        t.C1 AS UsageTitle,
+                       	m.sharh AS Description,
+                       	IIF(m.s0>0 , N'انشعاب جدید' ,
+                       		IIF(m.s1>0,N'فاضلاب جدید',
+                       			IIF(ISNULL(m.s0, 0) = 0 AND ISNULL(m.s1, 0) = 0,N'پس از فروش',N'هیچی')))AS ServiceDescription
                     
-                    From [{zoneId}].dbo.moshtrak m
+                    From [{dataBaseName}].dbo.moshtrak m 
+                    Join [Db70].dbo.T41 t On m.cod_enshab=t.C0
+                    Join [Db70].dbo.T7 u On m.noe_va=u.C0
+                    Join [Db70].dbo.T51 z On m.town=z.C0
                     Where
                     	m.par_no=@parNoId AND
                     	m.town=@zoneId";
         }
 
-        private string GetSiphonItemsQuery(int zoneId)
+        private string GetSiphonItemsQuery(string dataBaseName)
         {
             return @$"select
                     	S.item AS SiphonType,
                     	S.value AS Count
-                    From [{zoneId}].dbo.moshtrak m
+                    From [{dataBaseName}].dbo.moshtrak m
                     Cross Apply
                     (
                     	values
@@ -167,11 +183,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     Where m.par_no=@parNoId";
         }
 
-        private string GetBillIdQuery(int zoneId)
+        private string GetBillIdQuery(string dataBaseName)
         {
-            return @"Select top 1
+            return @$"Select top 1
                     	g.sh_ghabs1 AS BillId
-                    From [131211].dbo.ghest g
+                    From [{dataBaseName}].dbo.ghest g
                     Where 
                     	g.par_no=@parNoId AND
                     	g.TOWN=@zoneId";

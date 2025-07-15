@@ -31,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             ReadingStatusStatementHeaderOutputDto header = new ReadingStatusStatementHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
-                ToDataJalali = input.ToDateJalali,
+                ToDateJalali = input.ToDateJalali,
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
