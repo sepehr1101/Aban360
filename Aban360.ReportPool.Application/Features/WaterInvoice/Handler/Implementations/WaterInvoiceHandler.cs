@@ -18,6 +18,7 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
         public async Task<WaterInvoiceDto> Handle(string input)
         {
             WaterInvoiceDto result = await _waterInvoiceQueryService.Get(input);
+            //todo: add new private function
             result.BarCode = (result.BillId is null ? new string('0', 13) : result.BillId.PadLeft(13, '0')) +
                              (result.PayId is null ? new string('0', 13) : result.PayId.PadLeft(13, '0'));
 
