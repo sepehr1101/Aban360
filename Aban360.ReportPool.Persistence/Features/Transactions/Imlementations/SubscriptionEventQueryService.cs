@@ -30,16 +30,20 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                 for (int i = 0; i < data.Count(); i++)
                 {
                     WaterEventsSummaryOutputDataDto row = data.ElementAt(i);
-
-                    lastRemained = lastRemained + (row.DebtAmount.Value - row.CreditAmount);
                     row.EventDateJalali = row.PayDateJalali == null ? row.CurrentMeterDate : row.PayDateJalali;
+                    if (row.TypeCode == 7)
+                    {
+                        row.Remained = lastRemained;
+                        continue;
+                    }
+                    lastRemained = lastRemained + (row.DebtAmount.Value - row.CreditAmount);                    
                     row.Remained = lastRemained;
                 }
             }
-            WaterEventsSummaryOutputHeaderDto header = await _sqlReportConnection.QueryFirstAsync<WaterEventsSummaryOutputHeaderDto>(subscriptionHeaderQuery, new { billId = billId });
-            WaterReplacementInfoOutputDto replacementInfo = await _sqlReportConnection.QueryFirstAsync<WaterReplacementInfoOutputDto>(waterReplacementInHeaderQuery, new { billId = billId, customerNumber = header.CustomerNumber, zoneId = header.ZoneId });
-            header.WaterReplacementDate = replacementInfo.WaterReplacementDate;
-            header.WaterReplacementNumber = replacementInfo.WaterReplacementNumber;
+            WaterEventsSummaryOutputHeaderDto? header = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterEventsSummaryOutputHeaderDto>(subscriptionHeaderQuery, new { billId = billId });
+            WaterReplacementInfoOutputDto? replacementInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterReplacementInfoOutputDto>(waterReplacementInHeaderQuery, new { billId = billId, customerNumber = header.CustomerNumber, zoneId = header.ZoneId });
+            header.WaterReplacementDate = replacementInfo is not null? replacementInfo.WaterReplacementDate:string.Empty;
+            header.WaterReplacementNumber = replacementInfo is not null ? replacementInfo.WaterReplacementNumber : string.Empty;
 
             var result = new ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>(ReportLiterals.SubscriptionEventSummary, header, data);
 
@@ -102,7 +106,8 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 	             UsageId2 UsageConsumptionId,
 	             UsageTitle UsageSellTitle,
 	             UsageTitle2 UsageConsumptionTitle,
-                 NULL AS PayDateJalali
+                 NULL AS PayDateJalali,
+                 TypeCode
              from [CustomerWarehouse].dbo.Bills
              where (BillId)=@billId
              union
@@ -129,18 +134,19 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 	             0 UsageConsumptionId,
 	             '' UsageSellTitle,
 	             '' UsageConsumptionTitle,
-                 PayDateJalali
+                 PayDateJalali,
+                 0 TypeCode
              from [CustomerWarehouse].dbo.Payments
              where (BillId)=@billId";
             return query;
         }
         private string GetSubscriptionEventHeaderQuery()
         {
-            return @"Select top 1
-                    	c.FirstName+' '+c.SureName AS FullName,
-                    	c.ReadingNumber,
+            return @"Select 
+                    	TRIM(c.FirstName)+' '+TRIM(c.SureName) AS FullName,
+                    	TRIM(c.ReadingNumber) ReadingNumber,
 						c.BillId,
-						c.Address,
+						TRIM(c.Address) Address,
 						c.CustomerNumber,
 						c.CustomerNumber AS LastCustomerNumber,
 						c.BillId AS LastBillId,
