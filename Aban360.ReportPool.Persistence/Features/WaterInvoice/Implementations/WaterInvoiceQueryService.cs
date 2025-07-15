@@ -45,22 +45,25 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             waterInvoice.Sum = lineitems.Select(i => i.Amount).Sum();
             waterInvoice.Headquarters = headquarterTitle;
 
-            var currentNeterDate = waterInvoice.CurrentMeterDateJalali.ToGregorianDateOnly();
+            //todo: move logic to handler
+            var currentMeterDate = waterInvoice.CurrentMeterDateJalali.ToGregorianDateOnly();
             var previousMeterDate = waterInvoice.PreviousMeterDateJalali.ToGregorianDateOnly();
-            if (!currentNeterDate.HasValue || !previousMeterDate.HasValue)
+            if (!currentMeterDate.HasValue || !previousMeterDate.HasValue)
             {
                 waterInvoice.Duration = 0;
             }
             else
             {
-                waterInvoice.Duration = (currentNeterDate.Value.DayNumber) - (previousMeterDate.Value.DayNumber);
+                waterInvoice.Duration = (currentMeterDate.Value.DayNumber) - (previousMeterDate.Value.DayNumber);
             }
 
-
-            waterInvoice.PaymentDateJalali = paymentInfo!=null? paymentInfo.PaymentDateJalali:"";
-            waterInvoice.PaymentMethod = paymentInfo!=null ? paymentInfo.PaymentMethod:"";
-            waterInvoice.IsPayed = paymentInfo != null ? true : false;
+            waterInvoice.PaymentDateJalali = paymentInfo is not null? paymentInfo.PaymentDateJalali:"";
+            waterInvoice.PaymentMethod = paymentInfo is not null ? paymentInfo.PaymentMethod:"";
+            waterInvoice.IsPayed = paymentInfo is not null;
+            //todo use literal
             waterInvoice.Description = paymentInfo != null ? "پرداخت شد" : "پرداخت نشد";
+
+            //todo: remove commented code
             //waterInvoice.PaymenetAmountText=waterInvoice.PayableAmount.NumberToText(Language.Persian);
            // waterInvoice.BarCode = (waterInvoice.BillId is null?new string('0',13):waterInvoice.BillId.PadLeft(13, '0')) + 
            //                        (waterInvoice.PayId is null?new string('0',13):waterInvoice.PayId.PadLeft(13, '0'));
@@ -190,6 +193,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                     join [CustomerWarehouse].dbo.Clients c on b.BillId=c.BillId
                     Where 
                     	b.BillId=@billId AND
+                        b.CounterStateCode NOT IN (4,7)
 						b.TypeId In (N'قبض', N'علی الحساب')
                     order by PreviousDay desc";
         }
