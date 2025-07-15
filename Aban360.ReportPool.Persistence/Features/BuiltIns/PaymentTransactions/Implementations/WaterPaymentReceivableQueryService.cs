@@ -29,7 +29,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 FormDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount=waterPaymentReceivableData.Count(),
+                RecordCount= (waterPaymentReceivableData is not null && waterPaymentReceivableData.Any()) ? waterPaymentReceivableData.Count() : 0,
                 SumTotalCount = waterPaymentReceivableData.Sum(payment => payment.TotalCount),
                 SumTotalAmount = waterPaymentReceivableData.Sum(payment => payment.TotalAmount),
                 SumOverdueCount = waterPaymentReceivableData.Sum(payment => payment.OverdueCount),

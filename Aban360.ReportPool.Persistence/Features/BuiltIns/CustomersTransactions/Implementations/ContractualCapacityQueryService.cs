@@ -37,8 +37,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 ToContractualCapacity=input.ToContractualCapacity,
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
-                RecordCount =contractualCapacityData.Count(),
-                ReportDateJalali=DateTime.Now.ToShortPersianDateString()
+                RecordCount = (contractualCapacityData is not null && contractualCapacityData.Any()) ? contractualCapacityData.Count() : 0,
+                ReportDateJalali =DateTime.Now.ToShortPersianDateString()
             };
 
             var result = new ReportOutput<ContractualCapacityHeaderOutputDto, ContractualCapacityDataOutputDto>(ReportLiterals.ContractualCapacity, contractualCapacityHeader, contractualCapacityData);
@@ -55,7 +55,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         c.UsageTitle,
                         c.WaterDiameterTitle MeterDiameterTitle,
                         c.RegisterDayJalali AS EventDateJalali,
-                        0 AS DebtAmount,
                         TRIM(c.Address) AS Address,
                         c.ZoneTitle,
                         c.DeletionStateId,

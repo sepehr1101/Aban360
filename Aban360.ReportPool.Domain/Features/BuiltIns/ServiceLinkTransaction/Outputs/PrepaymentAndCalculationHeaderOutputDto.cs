@@ -13,9 +13,8 @@
 
         public string ReportDateJalali { get; set; }
         public string PersianStringAmount { get; set; }
-        public string Description { get; set; }
         public string PaymentDateJalali { get; set; }
-        public string GetwayToPaied { get; set; }
+        public string PaymentGetway { get; set; }
 
         public int InstallmentCount { get; set; }
         public int InstallmentNumber { get; set; }
@@ -62,6 +61,8 @@
 
         public string ReadingBlock { get; set; }
         public string ServiceDescription { get; set; }
+        public string Description { get; set; }
+
 
     }
 

@@ -31,19 +31,30 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             ReadingStatusStatementHeaderOutputDto header = new ReadingStatusStatementHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
-                ToDataJalali = input.ToDateJalali,
+                ToDateJalali = input.ToDateJalali,
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
-                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = data.Count(),
-                SumClosed = data.Sum(x => x.Closed),
-                SumObstacle = data.Sum(x => x.Obstacle),
-                SumReadingNet = data.Sum(x => x.ReadingNet),
-                SumRuined = data.Sum(x => x.ReadingNet),
-                SumTemporarily = data.Sum(x => x.Temporarily),
-                SumAll = data.Sum(x => x.AllCount),
-                ZoneTitle = data.FirstOrDefault().ZoneTitle
+                //ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                //RecordCount = (data is not null && data.Any()) ? data.Count() : 0,
+                //SumClosed = data.Sum(x => x.Closed),
+                //SumObstacle = data.Sum(x => x.Obstacle),
+                //SumReadingNet = data.Sum(x => x.ReadingNet),
+                //SumRuined = data.Sum(x => x.ReadingNet),
+                //SumTemporarily = data.Sum(x => x.Temporarily),
+                //SumAll = data.Sum(x => x.AllCount),
+                //ZoneTitle = data.FirstOrDefault().ZoneTitle
             };
+            if (data.Any())
+            {
+                header.RecordCount = (data is not null && data.Any()) ? data.Count() : 0;
+                header.SumClosed = data.Sum(x => x.Closed);
+                header.SumObstacle = data.Sum(x => x.Obstacle);
+                header.SumReadingNet = data.Sum(x => x.ReadingNet);
+                header.SumRuined = data.Sum(x => x.ReadingNet);
+                header.SumTemporarily = data.Sum(x => x.Temporarily);
+                header.SumAll = data.Sum(x => x.AllCount);
+                header.ZoneTitle = data.FirstOrDefault().ZoneTitle;
+            }
 
             var result = new ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementDataOutputDto>(ReportLiterals.ReadingStatusStatement, header, data);
             return result;

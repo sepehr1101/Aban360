@@ -8,7 +8,7 @@
         public string FromDateJalali { get; set; }
         public string ToDateJalali { get; set; }
 
-        public int DurationCount { get; set; }
+        public int MalfunctionPeriodCount { get; set; }
         public ICollection<int> ZoneIds { get; set; }
     }
 }

@@ -36,7 +36,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             {
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
-                RecordCount = data.Count(),
+                RecordCount = (data is not null && data.Any()) ? data.Count() : 0,
                 ReprotDateJalali = DateTime.Now.ToShortPersianDateString()
             };
 
@@ -55,7 +55,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	(@fromReadingNumber IS NULL OR
                     	 @toReadingNumber IS NULL OR
                     	 c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-                    	 c.ZoneId IN (131211,131213)
+                    	 c.ZoneId IN @zoneIds
                     Group By 
                     	c.BranchType";
         }

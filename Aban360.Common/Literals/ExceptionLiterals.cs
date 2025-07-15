@@ -33,6 +33,9 @@
 
         public static string NotFoundPhoneNumber => $"شماره تماس این شناسه یافت نشد";
         public static string NotFoundAnyData => $"اطلاعاتی یافت نشد";
+        public static string InvalidRequestData => $"کد درخواست ناصحیح است";
+        public static string UnconfirmedRequest => $"درخواست ثبت قطعی نشده است";
+        public static string NotCalculation => $"محاسبه انجام نشده است";
 
         public static string MessageException(string message) => $"خطا : {message}";
 

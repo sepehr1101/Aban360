@@ -31,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = withoutSewageRequestData.Count()
+                RecordCount = (withoutSewageRequestData is not null && withoutSewageRequestData.Any()) ? withoutSewageRequestData.Count() : 0,
             };
             var result = new ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestDetailDataOutputDto>
                 (ReportLiterals.WithoutSewageRequestDetail, withoutSewageRequestHeader, withoutSewageRequestData);
@@ -43,11 +43,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             return @"Select
                         c.CustomerNumber, 
                     	c.ReadingNumber,
-                    	c.FirstName,
-                    	c.SureName AS Surname,
+                    	TRIM(c.FirstName) AS FirstName,
+                    	TRIM(c.SureName) AS Surname,
+                    	TRIM(c.Address) AS Address,
                     	c.UsageTitle2 AS UsageTitle,
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
-                    	c.Address,
                     	c.ZoneTitle,
                     	c.ZoneId,
                     	c.DomesticCount	AS DomesticUnit,
@@ -55,7 +55,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.OtherCount AS OtherUnit,
                     	c.BillId,
                     	c.BranchType AS UseStateTitle,
-                    	c.ContractCapacity,
+                    	c.ContractCapacity AS ContractualCapacity,
                     	c.WaterRequestDate AS WaterRequestDate,
 						c.WaterInstallDate AS WaterInstallationDate
                     From [CustomerWarehouse].dbo.Clients c

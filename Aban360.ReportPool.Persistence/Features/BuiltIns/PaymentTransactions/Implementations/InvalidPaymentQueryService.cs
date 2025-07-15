@@ -29,7 +29,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = invalidPaymentData.Count(),
+                RecordCount = (invalidPaymentData is not null && invalidPaymentData.Any()) ? invalidPaymentData.Count() : 0,
                 TotalAmount = invalidPaymentData.Sum(x => x.Amount),
             };
 

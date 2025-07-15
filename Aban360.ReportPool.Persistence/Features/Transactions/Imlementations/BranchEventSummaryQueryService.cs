@@ -1,4 +1,6 @@
 ﻿using Aban360.Common.Db.Dapper;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.Transactions;
 using Aban360.ReportPool.Persistence.Features.Transactions.Contracts;
@@ -20,6 +22,10 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             string brachSummeryDataQueryString = GetBrachEventSummaryDataQuery();
 
             ZoneIdAndCustomerNumberOutputDto zoneIdCustomerNumber = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZoneIdAndCustomerNumberOutputDto>(zoneIdAndCustomerNumberQueryString, new { billId });
+            if (zoneIdCustomerNumber is null)
+            {
+                throw new BaseException(ExceptionLiterals.BillIdNotFound);
+            }
             BranchEventSummaryHeaderOutputDto branchHeader = await _sqlReportConnection.QueryFirstAsync<BranchEventSummaryHeaderOutputDto>(brachSummeryHeaderQueryString, new { billId });
             IEnumerable<BranchEventSummaryDataOutputDto> branchData = await _sqlReportConnection.QueryAsync<BranchEventSummaryDataOutputDto>(brachSummeryDataQueryString, new { zoneId = zoneIdCustomerNumber.ZoneId, customerNumber = zoneIdCustomerNumber.CustomerNumber });
 

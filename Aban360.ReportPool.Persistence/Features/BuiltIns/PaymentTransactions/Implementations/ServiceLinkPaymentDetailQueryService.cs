@@ -31,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ToDateJalali = input.ToDateJalali,
                 FromAmount = input.FromAmount,
                 ToAmount = input.ToAmount,
-                RecordCount = serviceLinkPaymentDetailData.Count(),
+                RecordCount = (serviceLinkPaymentDetailData is not null && serviceLinkPaymentDetailData.Any()) ? serviceLinkPaymentDetailData.Count() : 0,
                 TotalRegisterAmount = serviceLinkPaymentDetailData.Sum(payment => Convert.ToUInt32(payment.RegisterAmount)),
             };
             var result = new ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>(ReportLiterals.ServiceLinkPaymentDetail, serviceLinkPaymentDetailHeader, serviceLinkPaymentDetailData);
@@ -40,19 +40,17 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         private string GetServiceLinkPaymentDetailQuery()
         {
-            //ToDo: choise ServiceLink Payment
             return @"Select
                      	p.CustomerNumber As CustomerNumber,
                     	p.RegisterDay AS BankDateJalali,
-                    	p.BankBranchCode AS BankCode,--BankCode?
+                    	p.BankCode AS BankCode,
                     	p.RegisterDay AS EventBankDateJalali,
-                    	p.BankBranchCode AS SerialNumber,--SerialBank?
                     	p.BillId AS BillId,
                     	p.PaymentGateway AS PaymentMethodTitle,
-                    	p.RegisterDay AS PaymentDate,--PaymentDate
+                    	p.RegisterDay AS PaymentDate,
                     	p.Amount AS RegisterAmount,
                         p.BankName AS BankName
-                    From [CustomerWarehouse].dbo.Payments p
+                    From [CustomerWarehouse].dbo.PaymentsEn p
                     WHERE 
                     	(@FromDate IS  NULL 
                     		OR @ToDate IS NULL 

@@ -29,7 +29,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
-                RecordCount = debtorByDayData.Count(),
+                RecordCount = (debtorByDayData is not null && debtorByDayData.Any()) ? debtorByDayData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
 
                 SumAmount = debtorByDayData.Sum(x => x.Amount),
@@ -53,7 +53,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     From [CustomerWarehouse].dbo.RequestBillDetails r
                     Where	
                     	r.RegisterDate BETWEEN @fromDate AND @toDate AND
-                    	r.ZoneId IN (131211,131213,132711) AND
+                    	r.ZoneId IN @zoneIds AND
                     	(r.TypeCode=1 OR r.TypeCode=2)
                     Group by r.RegisterDate";
         }

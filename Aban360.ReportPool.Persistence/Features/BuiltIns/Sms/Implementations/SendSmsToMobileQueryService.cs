@@ -30,7 +30,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.Sms.Implementations
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 Receiver = input.Mobile,
-                RecordCount = smsData.Count(),
+                RecordCount = (smsData is not null && smsData.Any()) ? smsData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString()
             };
 

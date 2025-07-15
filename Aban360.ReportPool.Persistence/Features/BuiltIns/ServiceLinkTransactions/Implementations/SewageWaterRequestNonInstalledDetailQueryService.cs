@@ -49,11 +49,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             return @"Select
                         c.CustomerNumber, 
                     	c.ReadingNumber,
-                    	c.FirstName,
-                    	c.SureName AS Surname,
+                    	TRIM(c.FirstName) AS FirstName,
+                    	TRIM(c.SureName) AS Surname,
+                    	TRIM(c.Address) AS Address,
                     	c.UsageTitle2 AS UsageTitle,
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
-                    	c.Address,
                     	c.ZoneTitle,
                     	c.ZoneId,
                     	c.DomesticCount	AS DomesticUnit,
@@ -61,7 +61,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.OtherCount AS OtherUnit,
                     	c.BillId,
                     	c.BranchType AS UseStateTitle,
-                    	c.ContractCapacity,
+                    	c.ContractCapacity AS ContractualCapacity,
                     	c.WaterRequestDate AS RequestDate
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
@@ -74,11 +74,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             return @"Select
                     	c.CustomerNumber, 
                     	c.ReadingNumber,
-                    	c.FirstName,
-                    	c.SureName AS Surname,
+                    	TRIM(c.FirstName) AS FirstName,
+                    	TRIM(c.SureName) AS Surname,
+                    	TRIM(c.Address) AS Address,
                     	c.UsageTitle2 AS UsageTitle,
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
-                    	c.Address,
                     	c.ZoneTitle,
                     	c.ZoneId,
                     	c.DomesticCount	AS DomesticUnit,
@@ -86,7 +86,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.OtherCount AS OtherUnit,
                     	c.BillId,
                     	c.BranchType AS UseStateTitle,
-                    	c.ContractCapacity,
+                    	c.ContractCapacity AS ContractualCapacity,
                     	c.WaterRequestDate AS RequestDate
                     From [CustomerWarehouse].dbo.Clients c
                     Where	

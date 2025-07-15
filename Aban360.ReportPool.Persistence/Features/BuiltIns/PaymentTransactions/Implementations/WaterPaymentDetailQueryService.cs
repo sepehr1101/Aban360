@@ -31,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ToDateJalali = input.ToDateJalali,
                 FromAmount = input.FromAmount,
                 ToAmount = input.ToAmount,
-                RecordCount = waterPaymentDetailData.Count(),
+                RecordCount = (waterPaymentDetailData is not null && waterPaymentDetailData.Any()) ? waterPaymentDetailData.Count() : 0,
                 TotalRegisterAmount = waterPaymentDetailData.Sum(payment => Convert.ToUInt32(payment.RegisterAmount)),
             };
 
@@ -41,16 +41,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         private string GetWaterPaymentDetailQuery()
         {
-            //todo: Choise WaterPayment
             return @"Select
                      	p.CustomerNumber As CustomerNumber,
                     	p.RegisterDay AS BankDateJalali,
-                    	p.BankBranchCode AS BankCode,--BankCode?
+                    	p.BankCode AS BankCode,
                     	p.RegisterDay AS EventBankDateJalali,
-                    	p.BankBranchCode AS SerialNumber,--SerialBank?
                     	p.BillId AS BillId,
                     	p.PaymentGateway AS PaymentMethodTitle,
-                    	p.RegisterDay AS PaymentDate,--PaymentDate
+                    	p.RegisterDay AS PaymentDate,
                     	p.Amount AS RegisterAmount,
                         p.BankName AS BankName
                     From [CustomerWarehouse].dbo.Payments p

@@ -6,6 +6,7 @@ using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Con
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Implementations
 {
@@ -35,7 +36,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 ToReadingNumber = input.ToReadingNumber,
                 FromHouseholdDateJalali = input.FromHouseholdDateJalali,
                 ToHouseholdDateJalali = input.ToHouseholdDateJalali,
-                RecordCount = householdNumberData.Count(),
+                RecordCount = (householdNumberData is not null && householdNumberData.Any()) ? householdNumberData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString()
             };
 
@@ -54,7 +55,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         c.UsageTitle,
                         c.WaterDiameterTitle MeterDiameterTitle,
                         c.RegisterDayJalali AS EventDateJalali,
-                        0 AS DebtAmount,
                         TRIM(c.Address) AS Address,
                         c.ZoneTitle,
                         c.DeletionStateId,

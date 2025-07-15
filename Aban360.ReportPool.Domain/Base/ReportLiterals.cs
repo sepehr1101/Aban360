@@ -19,7 +19,7 @@
         public static string PendingPayments { get { return $"{Report} مشترکین بدهکار"; } }
 
         public static string UnspecifiedWaterPayment { get { return $"{Report} وصولی خارج سیستم _ آب بها"; } }
-        public static string UnspecifiedServiceLinkPayment { get { return $"{Report} وصولی خارج سیستم-انشعاب"; } }
+        public static string UnspecifiedServiceLinkPayment { get { return $"{Report} وصولی خارج سیستم - انشعاب"; } }
         public static string InvalidPayment { get { return $"{Report} وصولی نامعتبر"; } }
         public static string DailyBankGrouped { get { return $"{Report}  به تفکیک بانک و روز"; } }
         public static string WaterPaymentDetail { get { return $"{Report} ریز وصولی ها - آب بهاء"; } }
@@ -100,8 +100,8 @@
         public static string ReadingChecklist{ get { return $"خلاصه {Report} لیست کنترا قرائت"; } }
 
 
-        public static string ReadingListDetail { get { return $"خلاصه {Report} جزئیات فهرست تعداد قرائت"; } }
-        public static string ReadingListSummary { get { return $"خلاصه {Report} خلاصه فهرست تعداد قرائت"; } }
+        public static string ReadingListDetail { get { return $"{Report} جزئیات فهرست تعداد قرائت"; } }
+        public static string ReadingListSummary { get { return $"{Report} خلاصه فهرست تعداد قرائت"; } }
 
         public static string ReadingDailyStatement { get { return $"خلاصه {Report} روزنامه"; } }
         public static string ReadingStatusStatement { get { return $"خلاصه {Report} فهرست وضعیت"; } }
