@@ -9,7 +9,6 @@
         public string UsageTitle { get; set; }
         public string MeterDiameterTitle { get; set; }
         public string EventDateJalali { get; set; }
-        public string DebtAmount { get; set; }
         public string Address { get; set; }
         public string ZoneTitle { get; set; }
         public int DomesticUnit { get; set; }

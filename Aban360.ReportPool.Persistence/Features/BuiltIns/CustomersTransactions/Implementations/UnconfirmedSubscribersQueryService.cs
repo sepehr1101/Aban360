@@ -6,6 +6,7 @@ using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Con
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Implementations
 {
@@ -22,7 +23,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             UnconfirmedSubscribersHeaderOutputDto unconfirmedSubscribersHeader = new UnconfirmedSubscribersHeaderOutputDto()
             {
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = unconfirmedSubscribersData.Count(),
+                RecordCount = (unconfirmedSubscribersData is not null && unconfirmedSubscribersData.Any()) ? unconfirmedSubscribersData.Count() : 0,
                 SumFinalAmount = unconfirmedSubscribersData.Sum(x => x.FinalAmount),
                 SumPreInstallmentAmount = unconfirmedSubscribersData.Sum(x => x.PreInstallmentAmount),
             };
@@ -36,15 +37,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         private string UnconfirmedSubscribersQuery()
         {
             return @"Select 
-                    	d.Firstname AS FirstName,
-                    	d.Surname AS Surname,
-                    	d.Firstname + ' ' + d.Surname AS FullName,
+                    	TRIM(d.FirstName) AS FirstName,
+                    	TRIM(d.SurName) AS Surname,
+                    	TRIM(d.Address) AS Address,
+                    	TRIM(d.Firstname) + ' ' + TRIM(d.Surname) AS FullName,
                     	d.ZoneId, 
                     	d.ZoneTitle,
                     	d.FinalAmount,
                     	d.PreInstallmentAmount,
                     	d.Mobile,
-                    	d.Address,
                     	d.ContractualCapacity
                     From [CustomerWarehouse].dbo.DiscontinuedRequests d
                     Where

@@ -34,8 +34,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 				ToDateJalali = input.ToDateJalali,
 				FromAmount = input.FromAmount,
 				ToAmount = input.ToAmount,
-				RecordCount = unspecifiedServiceLinkData.Count(),
-				TotalAmount = unspecifiedServiceLinkData.Sum(serviceLink => serviceLink.Amount),
+				RecordCount = (unspecifiedServiceLinkData is not null && unspecifiedServiceLinkData.Any()) ? unspecifiedServiceLinkData.Count() : 0,
+                TotalAmount = unspecifiedServiceLinkData.Sum(serviceLink => serviceLink.Amount),
 				TotalRegisterAmount = unspecifiedServiceLinkData.Sum(serviceLink => serviceLink.Amount),
 				FileName = "-",
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString()
@@ -52,20 +52,17 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 						p.RegisterDay AS EventDateJalali,
 						p.RegisterDay AS BankDateJalali,
 						p.BankName AS BankName,
-						p.BankBranchCode AS BankId,--Todo
+						p.BankCode AS BankId,
 						p.BillId AS BillId,
-						'--' AS PaymentId,--Todo
-						123 AS UnstandardCode , --Todo
-						123 AS ReferenceId ,--Todo
+						p.PayId AS PaymentId,
 						p.RegisterDay AS PaymentDateJalali,
 						p.Amount AS Amount,
-						p.Amount AS RegisterAmount,--Todo
 						p.PaymentGateway AS PaymentGateway
-					From [CustomerWarehouse].dbo.Payments p
-					LEFT JOIN [CustomerWarehouse].dbo.Clients c 
-						ON p.BillId=c.BillId
+					From [CustomerWarehouse].dbo.PaymentsEn p
+					LEFT JOIN [CustomerWarehouse].dbo.RequestBillDetails b 
+						ON p.PayId=b.PayId
 					WHERE
-						c.Id IS NULL
+						b.Id IS NULL
 						AND
 						(
 							(@FromDate IS NOT NULL AND
@@ -83,7 +80,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 							OR 
 							(@FromAmount IS NULL AND
 								@ToAmount IS NULL)
-						)";
+						)AND
+						(p.BankCode BETWEEN @FromBankId AND @ToBankId)";
         }
     }
 }

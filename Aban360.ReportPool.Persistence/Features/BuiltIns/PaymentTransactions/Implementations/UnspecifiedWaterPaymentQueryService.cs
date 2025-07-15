@@ -34,7 +34,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ToDateJalali = input.ToDateJalali,
                 FromAmount = input.FromAmount,
                 ToAmount = input.ToAmount,
-                RecordCount = unspecifiedWaterData.Count(),
+                RecordCount = (unspecifiedWaterData is not null && unspecifiedWaterData.Any()) ? unspecifiedWaterData.Count() : 0,
                 TotalAmount = unspecifiedWaterData.Sum(serviceLink => serviceLink.Amount),
                 TotalRegisterAmount = unspecifiedWaterData.Sum(serviceLink => serviceLink.Amount),
                 FileName = "-",
@@ -52,20 +52,17 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 						p.RegisterDay AS EventDateJalali,
 						p.RegisterDay AS BankDateJalali,
 						p.BankName AS BankName,
-						p.BankBranchCode AS BankId,--Todo
+						p.BankCode AS BankId,
 						p.BillId AS BillId,
-						'--' AS PaymentId,--Todo
-						123 AS UnstandardCode , --Todo
-						123 AS ReferenceId ,--Todo
+						p.PayId AS PaymentId,
 						p.RegisterDay AS PaymentDateJalali,
 						p.Amount AS Amount,
-						p.Amount AS RegisterAmount,--Todo
 						p.PaymentGateway AS PaymentGateway
 					From [CustomerWarehouse].dbo.Payments p
-					LEFT JOIN [CustomerWarehouse].dbo.Clients c 
-						ON p.BillId=c.BillId
+					LEFT JOIN [CustomerWarehouse].dbo.Bills b 
+						ON p.PayId=b.PayId
 					WHERE
-						c.Id IS NULL
+						b.Id IS NULL
 						AND
 						(
 							(@FromDate IS NOT NULL AND

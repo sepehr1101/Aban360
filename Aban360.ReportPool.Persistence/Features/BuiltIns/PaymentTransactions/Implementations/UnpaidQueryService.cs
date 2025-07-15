@@ -37,7 +37,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ToAmount=input.ToAmount,
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
-                RecordCount = unpaidData.Count(),
+                RecordCount = (unpaidData is not null && unpaidData.Any()) ? unpaidData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString()
             };
 
@@ -55,7 +55,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     	(max(c.FirstName) +' '+max(c.SureName)) AS FullName,
                     	 MAX(b.WaterDiameterTitle) AS MeterDiameterTitle,
                     	 MAX(b.UsageTitle) AS UsageSellTitle,
-                    	 MAX(b.PreDebt) AS DebtAmount,--todo: yes?
+                    	 MAX(b.SumItems) AS DebtAmount,
                     	max(c.Address) AS Address ,
                     	COUNT(b.BillId) AS PeriodCount,
                     	MAX(b.BillId) AS BillId

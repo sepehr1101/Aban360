@@ -2,6 +2,8 @@
 {
     public record ReadingDailyStatementDataOutputDto
     {
+        public int ZoneId { get; set; }
+        public string ZoneTitle { get; set; }
         public string ReadingNumber { get; set; }
         public string CustomerNumber { get; set; }
         public string FirstName { get; set; }

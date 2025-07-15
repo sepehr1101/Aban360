@@ -6,7 +6,6 @@
         public string BankDateJalali { get; set; }
         public int BankCode{ get; set; }
         public string EventBankDateJalali { get; set; }
-        public string SerialNumber { get; set; }
         public string BillId { get; set; }
         public string PaymentMethodTitle { get; set; }
         public string PaymentDate { get; set; }

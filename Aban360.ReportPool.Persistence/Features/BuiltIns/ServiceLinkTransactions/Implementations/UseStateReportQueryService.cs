@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 TotalDebtAmount=useStateData.Sum(useState=>useState.DebtAmount),
                 FromDateJalali=input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
-                RecordCount=useStateData.Count(),
+                RecordCount= (useStateData is not null && useStateData.Any()) ? useStateData.Count() : 0,
             };
 
             string useStateQuery = GetUseStateTitle();
@@ -69,7 +69,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         private string GetUseStateTitle()
         {
             return @"select Title
-                     from ClaimPool.UseState 
+                     from [Aban360].ClaimPool.UseState 
                      where Id=@useStateId";
         }
     }

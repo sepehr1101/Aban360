@@ -32,7 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 FromDate = input.FromDateJalali,
                 ToDate = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount=waterMeterReplacementsData.Count()
+                RecordCount= (waterMeterReplacementsData is not null && waterMeterReplacementsData.Any()) ? waterMeterReplacementsData.Count() : 0,
             };
 
             var result = new ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsDataOutputDto>(
@@ -49,7 +49,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             return @"Select 
                     	mc.CustomerNumber,
                     	c.ReadingNumber,
-                    	c.FirstName +' '+c.SureName AS FullName,
+                    	TRIM(c.FirstName) +' '+TRIM(c.SureName) AS FullName,
                     	c.UsageTitle2 AS UsageTitle,
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
                     	mc.ChangeDateJalali AS MeterChangeDate,

@@ -38,7 +38,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             }
             WaterEventsSummaryOutputHeaderDto header = await _sqlReportConnection.QueryFirstAsync<WaterEventsSummaryOutputHeaderDto>(subscriptionHeaderQuery, new { billId = billId });
             WaterReplacementInfoOutputDto replacementInfo = await _sqlReportConnection.QueryFirstAsync<WaterReplacementInfoOutputDto>(waterReplacementInHeaderQuery, new { billId = billId, customerNumber = header.CustomerNumber, zoneId = header.ZoneId });
-            header.WaterReplacementDate = replacementInfo.WaterReplacementDate;
+            header.WaterReplacementDate = replacementInfo.WaterReplacementDate??"";
             header.WaterReplacementNumber = replacementInfo.WaterReplacementNumber;
 
             var result = new ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>(ReportLiterals.SubscriptionEventSummary, header, data);

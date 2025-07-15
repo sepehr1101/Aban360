@@ -61,12 +61,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         {
             return @$"select
                     	k.noe_bed AS ItemId,
+						t.C1 AS ItemTitle,
                     	k.pard AS Amount,
                     	k.takhfif AS DiscountAmount,
                         k.pish_gest AS InstallmentAmount,
                         k.tedad_gest AS InstallmentCount ,
                         k.type AS TypeId
                     From [{dataBaseName}].dbo.karten75 k
+                    Join [Db70].dbo.T100 t on k.noe_bed=t.C0
                     Where	
                     	k.par_no=@parNoId AND
                     	k.town=@zoneId";
@@ -115,18 +117,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             return @$"Select
                     	z.C2 AS ZoneTitle, 
                     	m.town AS ZoneId,
-                    	m.name+' ' +m.family AS FullName,
+                    	TRIM(m.name)+' ' +TRIM(m.family) AS FullName,
                     	m.meli_cod AS NationalCode,
                     	m.phone_no AS PhoneNumber,
                     	m.post_cod AS PostalCode, 
-                    	m.address AS Address,
-                    	'' AS ServiceDescription, --
+                    	TRIM(m.address) AS Address,
                     	m.BLOCK_COD AS ReadingBlock,
                     	m.cod_enshab AS MeterDiameterTitle,
                     	
                     	m.radif AS CustomerNumber,
                     	m.eshtrak AS ReadingNumber,
-                    	'' AS BillId,--
                     	m.barge AS PageNumber,
                     	m.par_no AS RequestNumber,
                     	m.date_ask AS RequestDateJalali,

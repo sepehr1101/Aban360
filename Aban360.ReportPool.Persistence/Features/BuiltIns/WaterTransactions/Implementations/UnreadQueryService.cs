@@ -6,6 +6,7 @@ using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contrac
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
@@ -31,7 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 FromReadingNumber=input.FromReadingNumber,
                 ToReadingNumber= input.ToReadingNumber,
                 ReportDateJalali=DateTime.Now.ToShortPersianDateString(),
-                RecordCount=unreadData.Count()
+                RecordCount= (unreadData is not null && unreadData.Any()) ? unreadData.Count() : 0,
             };
 
             var result = new ReportOutput<UnreadHeaderOutputDto, UnreadDataOutputDto>(ReportLiterals.Unread, unreadHeader, unreadData);

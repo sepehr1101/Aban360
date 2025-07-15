@@ -22,7 +22,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             WaterNetIncomeHeaderOutputDto header = new()
             {
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = data.Count()
+                RecordCount = (data is not null && data.Any()) ? data.Count() : 0,
             };
 
             ReportOutput<WaterNetIncomeHeaderOutputDto, WaterNetIncomeDataOutputDto> result = new(ReportLiterals.WaterNetIncome, header, data);

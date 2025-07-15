@@ -35,7 +35,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 ToEmptyUnit = input.ToEmptyUnit,
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
-                RecordCount = emptyUnitData.Count(),
+                RecordCount = (emptyUnitData is not null && emptyUnitData.Any()) ? emptyUnitData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString()
             };
 
@@ -54,7 +54,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         c.UsageTitle,
                         c.WaterDiameterTitle MeterDiameterTitle,
                         c.RegisterDayJalali AS EventDateJalali,
-                        0 AS DebtAmount,
                         TRIM(c.Address) AS Address,
                         c.ZoneTitle,
                         c.DeletionStateId,

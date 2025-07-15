@@ -5,6 +5,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using Dapper;
 using Microsoft.Extensions.Configuration;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
@@ -21,7 +22,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             {
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali,
-                typeCode = input.TypeIds//ZoneId?
+                typeCode = input.TypeIds,
+                zoneIds=input.ZoneIds,
             };
             IEnumerable<WaterModifiedBillsSummaryDataOutputDto> modifiedBillsData = await _sqlReportConnection.QueryAsync<WaterModifiedBillsSummaryDataOutputDto>(modifiedBills, @params);
             WaterModifiedBillsHeaderOutputDto modifiedBillsHeader = new WaterModifiedBillsHeaderOutputDto()
@@ -29,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortDateString(),
-                RecordCount = modifiedBillsData.Count(),
+                RecordCount = (modifiedBillsData is not null && modifiedBillsData.Any()) ? modifiedBillsData.Count() : 0,
                 Payable = modifiedBillsData.Sum(x => x.Payable),
                 SumItems = modifiedBillsData.Sum(x => x.SumItems),
             };
@@ -50,12 +52,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     From [CustomerWarehouse].dbo.Bills b
                     Where	
                     	b.RegisterDay BETWEEN @fromDate AND @toDate AND
-                    	b.TypeCode IN @typeCode
+                    	b.TypeCode IN @typeCode AND
+                        b.ZoneId IN @zoneIds
                     Group By	
                     	b.UsageTitle,
                     	b.TypeId,
-                    	b.ZoneTitle";
+                    	b.ZoneTitle,
+                        b.ZoneId";
         }
-
     }
 }

@@ -48,7 +48,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 				FromDebtPeriodCount=input.FromDebtPeriodCount,
 				ToDebtPeriodCount=input.ToDebtPeriodCount,
                 ZoneCount = input.ZoneIds.Count(),
-                RecordCount = pendingPaymentsData.Count(),
+                RecordCount = (pendingPaymentsData is not null && pendingPaymentsData.Any()) ? pendingPaymentsData.Count() : 0,
                 TotalBeginDebt = pendingPaymentsData.Sum(payment => payment.BeginDebt),
                 TotalDebtPeriodCount = pendingPaymentsData.Sum(payment => payment.DebtPeriodCount),
                 TotalEndingDebt = pendingPaymentsData.Sum(payment => payment.EndingDebt),

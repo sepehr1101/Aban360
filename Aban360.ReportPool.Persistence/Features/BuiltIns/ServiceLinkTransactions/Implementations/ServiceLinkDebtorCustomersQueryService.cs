@@ -6,6 +6,7 @@ using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.C
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {
@@ -30,9 +31,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 FromAmount = input.FromAmout,
                 ToAmount = input.ToAmount,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = debtorCustomersData.Count(),
-                
-                SumCreditAmount= debtorCustomersData.Sum(x => x.CreditorAmount),
+                RecordCount = (debtorCustomersData is not null && debtorCustomersData.Any()) ? debtorCustomersData.Count() : 0,
+
+                SumCreditAmount = debtorCustomersData.Sum(x => x.CreditorAmount),
                 SumInstallmentDebtAmout= debtorCustomersData.Sum(x => x.InstallmentDebtAmout),
                 SumPrincipalDebt = debtorCustomersData.Sum(x => x.PrincipalDebt),
                 SumTotalDebt= debtorCustomersData.Sum(x => x.TotalDebt),
