@@ -5,6 +5,6 @@
         public string FromDateJalali { get; set; }
         public string ToDateJalali { get; set; }
         public ICollection<int> ZoneIds { get; set; }
-        public int  TypeId { get; set; }
+        public ICollection<int>  TypeIds { get; set; }
     }
 }

@@ -5,6 +5,10 @@
         public string FromReadingNumber { get; set; }
         public string ToReadingNumber { get; set; }
 
+        public string FromDateJalali { get; set; }
+        public string ToDateJalali { get; set; }
+
+        public int DurationCount { get; set; }
         public ICollection<int> ZoneIds { get; set; }
     }
 }

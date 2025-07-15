@@ -52,7 +52,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         private string GetReadingStatusStatementQuery()
         {
             return @"Select 
-                    	Max(b.ZoneTitle),
+                    	Max(b.ZoneTitle) AS ZoneTitle,
                     	(Case When @isRegisterDate=1 Then b.RegisterDay Else b.NextDay End  )AS EventDateJalali,
                     	COUNT(Case When b.CounterStateCode NOT IN (1,4,7,8) Then 1 End)AS ReadingNet,
                     	COUNT(Case When b.CounterStateCode=4 Then 1 End)AS Closed,

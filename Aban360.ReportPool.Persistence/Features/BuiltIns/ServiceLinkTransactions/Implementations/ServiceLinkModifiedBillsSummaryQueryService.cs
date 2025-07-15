@@ -23,7 +23,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali,
                 zoneIds = input.ZoneIds,
-                typeCode = input.TypeId,
+                typeCodes = input.TypeIds,
             };
             IEnumerable<ServiceLinkModifiedBillsSummaryDataOutputDto> modifiedBillsData = await _sqlReportConnection.QueryAsync<ServiceLinkModifiedBillsSummaryDataOutputDto>(modifiedBills, @params);
             ServiceLinkModifiedBillsHeaderOutputDto modifiedBillsHeader = new ServiceLinkModifiedBillsHeaderOutputDto()
@@ -54,7 +54,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     Where
                     	r.RegisterDate BETWEEN @fromDate AND @toDate AND
                     	r.ZoneId IN @zoneIds AND
-                    	r.TypeCode=@typeCode
+                    	r.TypeCode IN @typeCodes
                     Group By
                     	r.ItemTitle,
                     	r.ZoneTitle";
