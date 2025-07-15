@@ -37,15 +37,17 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             return @"select TOP(100)
                         c.CustomerNumber,
                       	c.ReadingNumber,
-                      	c.FirstName,
-                      	c.SureName AS Surname,
+                      	TRIM(c.FirstName) AS FirstName,
+                      	TRIM(c.SureName) AS Surname,
                       	c.WaterDiameterTitle AS MeterDiameterTitle,
                       	c.BillId,
                       	c.DomesticCount AS DomesticUnit,
                       	c.CommercialCount AS CommercialUnit,
                       	c.OtherCount AS OtherUnit,
                       	c.MobileNo AS MobileNumber,
-                      	c.Address
+                      	TRIM(c.Address) AS Address,
+                        c.HasCommonSiphon AS CommonSiphon,
+						c.IsSpecial AS SpecialCustomer
                       from [CustomerWarehouse].dbo.Clients c
                       where 
                             c.ToDayJalali is null AND

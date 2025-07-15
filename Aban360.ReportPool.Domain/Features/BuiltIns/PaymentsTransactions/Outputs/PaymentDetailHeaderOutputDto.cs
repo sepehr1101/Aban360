@@ -7,7 +7,7 @@
         public long FromAmount { get; set; }
         public long ToAmount { get; set; }
         public int RecordCount { get; set; }
-        public long TotalRegisterAmount { get; set; }
+        public long TotalAmount { get; set; }
         public string ReportDateJalali { get; set; }
 
     }

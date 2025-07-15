@@ -9,7 +9,7 @@
         public string BillId { get; set; }
         public string PaymentMethodTitle { get; set; }
         public string PaymentDate { get; set; }
-        public string RegisterAmount { get; set; }
+        public string Amount { get; set; }
         public string BankName { get; set; }
 
 

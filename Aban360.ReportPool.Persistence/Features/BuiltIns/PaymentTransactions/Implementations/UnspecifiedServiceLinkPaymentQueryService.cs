@@ -36,7 +36,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 				ToAmount = input.ToAmount,
 				RecordCount = (unspecifiedServiceLinkData is not null && unspecifiedServiceLinkData.Any()) ? unspecifiedServiceLinkData.Count() : 0,
                 TotalAmount = unspecifiedServiceLinkData.Sum(serviceLink => serviceLink.Amount),
-				TotalRegisterAmount = unspecifiedServiceLinkData.Sum(serviceLink => serviceLink.Amount),
 				FileName = "-",
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString()
             };

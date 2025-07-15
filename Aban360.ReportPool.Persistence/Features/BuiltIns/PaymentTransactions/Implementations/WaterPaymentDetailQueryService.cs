@@ -32,7 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 FromAmount = input.FromAmount,
                 ToAmount = input.ToAmount,
                 RecordCount = (waterPaymentDetailData is not null && waterPaymentDetailData.Any()) ? waterPaymentDetailData.Count() : 0,
-                TotalRegisterAmount = waterPaymentDetailData.Sum(payment => Convert.ToUInt32(payment.RegisterAmount)),
+                TotalAmount = waterPaymentDetailData.Sum(payment => Convert.ToUInt32(payment.Amount)),
             };
 
             var result = new ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>(ReportLiterals.WaterPaymentDetail, waterPaymentDetailHeader, waterPaymentDetailData);
@@ -49,7 +49,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     	p.BillId AS BillId,
                     	p.PaymentGateway AS PaymentMethodTitle,
                     	p.RegisterDay AS PaymentDate,
-                    	p.Amount AS RegisterAmount,
+                    	p.Amount AS Amount,
                         p.BankName AS BankName
                     From [CustomerWarehouse].dbo.Payments p
                     WHERE 

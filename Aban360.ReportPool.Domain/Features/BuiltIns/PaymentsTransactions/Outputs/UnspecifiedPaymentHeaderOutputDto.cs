@@ -5,7 +5,6 @@
         public string FileName { get; set; }
         public int RecordCount { get; set; }
         public long TotalAmount { get; set; }
-        public long TotalRegisterAmount { get; set; }
         public string FromDateJalali { get; set; }
         public string ToDateJalali { get; set; }
         public long? FromAmount { get; set; }
