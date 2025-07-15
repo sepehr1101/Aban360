@@ -97,7 +97,7 @@
 
         public static string ExcessPattern { get { return $"خلاصه {Report} مازاد الگو"; } }
         public static string WaterNetIncome { get { return $"خلاصه {Report} درآمد خالص آب بها"; } }
-        public static string ReadingChecklist{ get { return $"خلاصه {Report} لیست کنترا قرائت"; } }
+        public static string ReadingChecklist{ get { return $"خلاصه {Report} لیست کنترل قرائت"; } }
 
 
         public static string ReadingListDetail { get { return $"{Report} جزئیات فهرست تعداد قرائت"; } }
