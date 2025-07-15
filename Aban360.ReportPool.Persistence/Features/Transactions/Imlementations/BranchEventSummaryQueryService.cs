@@ -11,10 +11,12 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
     {
         public BranchEventSummaryQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+        }
 
         public async Task<ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto>> Get(string billId)
         {
+            //todo: چک کردن مشابه پیش پرداخت و ریز محاسبه
             string zoneIdAndCustomerNumberQueryString = GetZoneIdAndCustomerNumberQuery();
             string brachSummeryHeaderQueryString = GetBrachEventSummaryHeaderQuery();
             string brachSummeryDataQueryString = GetBrachEventSummaryDataQuery();
@@ -38,10 +40,11 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         }
         private string GetBrachEventSummaryHeaderQuery()
         {
+            //todo: SiphonDiameterTitle from mainSiphon 
             return @"Select 
                     	c.FirstName ,
                     	c.SureName AS Surname,
-                    	c.FirstName + ' ' + c.SureName AS FullName,
+                    	TRIM(c.FirstName) + ' ' + TRIM(c.SureName) AS FullName,
                     	c.ZoneTitle ,
                     	c.BillId,
                     	c.ReadingNumber,
@@ -54,7 +57,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	c.CommercialCount AS CommercialUnit,
                     	c.OtherCount AS OtherUnit,
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
-                    	'' AS SiphonDiameterTitle
+                    	'' AS SiphonDiameterTitle 
                     From [CustomerWarehouse].dbo.Clients c
                     Where 
                     	c.ToDayJalali IS NULL AND
