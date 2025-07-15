@@ -107,7 +107,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 								SUM(CASE WHEN RegisterDay BETWEEN @FromDate AND @ToDate THEN SumItems ELSE 0 END) AS BillBetween,
 								SUM(CASE WHEN RegisterDay > @ToDate THEN SumItems ELSE 0 END) AS BillAfter
 							FROM [CustomerWarehouse].dbo.Bills
-							WHERE ZoneId IN @ZoneIds
+							WHERE TypeCode NOT IN(7,8) AND ZoneId IN @ZoneIds
 							GROUP BY ZoneId, CustomerNumber
 						),
 						
@@ -134,6 +134,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 							WHERE 
 							  b.RegisterDay > ISNULL(p.LastPaymentDate, '0001/01/01')
 							  AND b.RegisterDay < @ToDate
+							  AND b.TypeCode NOT IN(7,8)
 							GROUP BY b.ZoneId, b.CustomerNumber
 							HAVING COUNT(1) BETWEEN @FromDebtPeriodCount AND @ToDebtPeriodCount
 						)

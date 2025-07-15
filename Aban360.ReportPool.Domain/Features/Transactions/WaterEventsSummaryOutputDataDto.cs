@@ -32,6 +32,6 @@
         public string RegisterDate { get; set; } = default!;
         public string? PayDateJalali { get; set; }
         public string? EventDateJalali{ get; set; }
-
+        public int TypeCode { get; set; }
     }
 }
