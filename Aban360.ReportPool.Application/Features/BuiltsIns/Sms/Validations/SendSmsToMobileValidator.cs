@@ -20,6 +20,12 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.Sms.Validations
             RuleFor(installation => installation.Mobile)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
+
+            RuleFor(input => input)
+              .Must(input => FromToDateJalaliValidation.DateValidation(new FromToDateJalaliDto(input.FromDateJalali,
+                                                                                              input.ToDateJalali)).IsValid)
+              .WithMessage(input => FromToDateJalaliValidation.DateValidation(new FromToDateJalaliDto(input.FromDateJalali,
+                                                                                       input.ToDateJalali)).ErrorMessage);
         }
     }
 }

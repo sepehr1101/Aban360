@@ -21,18 +21,18 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             string withoutBill = GetWithoutBillQuery(input.ZoneIds?.Any()==true);
             var @params = new
             { 
-                @FromDate=input.FromDateJalali,
-                @ToDate=input.ToDateJalali,
-                @FromReadingNumber=input.FromReadingNumber,
-                @ToReadingNumber=input.ToReadingNumber,
-                @ZoneIds=input.ZoneIds,
+                FromDate=input.FromDateJalali,
+                ToDate=input.ToDateJalali,
+                FromReadingNumber=input.FromReadingNumber,
+                ToReadingNumber=input.ToReadingNumber,
+                ZoneIds=input.ZoneIds,
             };
 
             IEnumerable<WithoutBillDataOutputDto> withoutBillData = await _sqlReportConnection.QueryAsync<WithoutBillDataOutputDto>(withoutBill,@params);
             WithoutBillHeaderOutputDto withoutBillHeader = new WithoutBillHeaderOutputDto()
             {
-                FromDateTime=input.FromDateJalali,
-                ToDateTime=input.ToDateJalali,
+                FromDateJalali=input.FromDateJalali,
+                ToDateJalali=input.ToDateJalali,
                 FromReadingNumber=input.FromReadingNumber,
                 ToReadingNumber=input.ToReadingNumber,
                 RecordCount= (withoutBillData is not null && withoutBillData.Any()) ? withoutBillData.Count() : 0,

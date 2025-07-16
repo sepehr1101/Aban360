@@ -30,6 +30,7 @@
 
         public static string FromDateMoreThanDate(string date) => $"تاریخ شروع باید بزرگتر از {date} باشد.";
         public static string ToDateLessThanDate(string date) => $"تاریخ پایان باید کوچکتر از {date} باشد.";
+        public static string ToDateMoreThanFromDate => $"تاریخ پایان باید بزرگتر از تاریخ شروع باشد.";
 
         public static string NotFoundPhoneNumber => $"شماره تماس این شناسه یافت نشد";
         public static string NotFoundAnyData => $"اطلاعاتی یافت نشد";

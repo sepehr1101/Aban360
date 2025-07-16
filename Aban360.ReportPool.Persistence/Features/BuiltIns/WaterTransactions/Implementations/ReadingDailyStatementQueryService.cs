@@ -19,27 +19,27 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         {
             string readingDailyStatements = GetReadingDailyStatementQuery();
             var @params = new
-            { 
-                fromReadingNumber=input.FromReadingNumber,
-                toReadingNumber=input.ToReadingNumber,
-                fromConsumption=input.FromConsumption,
-                toConsumption=input.ToConsumption,
-                fromDate=input.FromDateJalali,
-                todate=input.ToDateJalali,
-                zoneIds=input.ZoneIds,
+            {
+                fromReadingNumber = input.FromReadingNumber,
+                toReadingNumber = input.ToReadingNumber,
+                fromConsumption = input.FromConsumption,
+                toConsumption = input.ToConsumption,
+                fromDate = input.FromDateJalali,
+                toDate = input.ToDateJalali,
+                zoneIds = input.ZoneIds,
             };
-            IEnumerable<ReadingDailyStatementDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingDailyStatementDataOutputDto>(readingDailyStatements,@params);
+            IEnumerable<ReadingDailyStatementDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingDailyStatementDataOutputDto>(readingDailyStatements, @params);
             ReadingDailyStatementHeaderOutputDto header = new ReadingDailyStatementHeaderOutputDto()
-            { 
-                FromConsumption=input .FromConsumption,
-                ToConsumption=input .ToConsumption,
-                FromDateJalali=input .ToDateJalali,
-                ToDateJalali= input .ToDateJalali,
-                FromReadingNumber=input .FromReadingNumber,
-                ToReadingNumber=input .ToReadingNumber,
-                
-                ReportDateJalali=DateTime.Now.ToShortPersianDateString(),
-                RecordCount= (data is not null && data.Any()) ? data.Count() : 0,
+            {
+                FromConsumption = input.FromConsumption,
+                ToConsumption = input.ToConsumption,
+                FromDateJalali = input.FromDateJalali,
+                ToDateJalali = input.ToDateJalali,
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
+
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                RecordCount = (data is not null && data.Any()) ? data.Count() : 0,
             };
 
             var result = new ReportOutput<ReadingDailyStatementHeaderOutputDto, ReadingDailyStatementDataOutputDto>(ReportLiterals.ReadingDailyStatement, header, data);

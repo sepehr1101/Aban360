@@ -2,8 +2,8 @@
 {
     public record ServiceLinkRawItemsHeaderOutputDto
     {
-        public string FromDataJalali { get; set; }
-        public string ToDataJalali { get; set; }
+        public string FromDateJalali { get; set; }
+        public string ToDateJalali { get; set; }
         public string ReportDateJalali { get; set; }
         public int RecordCount { get; set; }
 

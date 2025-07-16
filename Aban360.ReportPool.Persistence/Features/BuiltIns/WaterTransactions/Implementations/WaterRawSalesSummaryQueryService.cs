@@ -43,6 +43,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             return @"Select 
                     	b.UsageTitle,
                     	b.ZoneId,
+                        b.ZoneTitle,
                     	COUNT(1) AS Count,
                     	SUM(b.Payable) AS Payable
                     From [CustomerWarehouse].dbo.Bills b
@@ -52,7 +53,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	b.ZoneId IN @zoneIds
                     Group By
                     	b.UsageTitle ,
-                    	b.ZoneId";
+                    	b.ZoneId,
+                        b.ZoneTitle";
         }
 
      
