@@ -53,14 +53,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						b.ZoneTitle,
                     	b.ReadingNumber,
                     	b.CustomerNumber,
-                    	TRIM(c.FirstName),
+                    	TRIM(c.FirstName) FirstName,
                     	TRIM(c.SureName) AS Surname,
                     	TRIM(c.FirstName) + ' ' + TRIM(c.SureName) AS FullName,
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
                     	b.Consumption,
                     	b.ConsumptionAverage,
                     	b.SumItems AS InvoiceAmount,
-                    	c.Address
+                    	TRIM(c.Address) AS Address
                     From [CustomerWarehouse].dbo.Bills b
                     Join [CustomerWarehouse].dbo.Clients c on b.BillId=c.BillId
                     Where 

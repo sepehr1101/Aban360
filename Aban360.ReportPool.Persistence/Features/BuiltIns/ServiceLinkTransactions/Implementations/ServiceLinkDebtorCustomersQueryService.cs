@@ -21,23 +21,25 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             string debtorCustomersQueryString = GetServiceLinkdebtorCustomersQuery();
             var @params = new
             {
-                fromAmount = input.FromAmout < 10000 ? 10000 : input.FromAmout,
+                fromAmount = input.FromAmount < 10000 ? 10000 : input.FromAmount,
                 toAmount = input.ToAmount,
                 zoneIds = input.ZoneIds,
             };
             IEnumerable<ServiceLinkDebtorCustomersDataOutputDto> debtorCustomersData = await _sqlReportConnection.QueryAsync<ServiceLinkDebtorCustomersDataOutputDto>(debtorCustomersQueryString, @params);
             ServiceLinkDebtorCustomersHeaderOutputDto debtorCustomersHeader = new ServiceLinkDebtorCustomersHeaderOutputDto()
             {
-                FromAmount = input.FromAmout,
+                FromAmount = input.FromAmount,
                 ToAmount = input.ToAmount,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (debtorCustomersData is not null && debtorCustomersData.Any()) ? debtorCustomersData.Count() : 0,
-
-                SumCreditAmount = debtorCustomersData.Sum(x => x.CreditorAmount),
-                SumInstallmentDebtAmout= debtorCustomersData.Sum(x => x.InstallmentDebtAmout),
-                SumPrincipalDebt = debtorCustomersData.Sum(x => x.PrincipalDebt),
-                SumTotalDebt= debtorCustomersData.Sum(x => x.TotalDebt),
             };
+            if (debtorCustomersData is not null && debtorCustomersData.Any())
+            {
+                debtorCustomersHeader.SumCreditAmount = debtorCustomersData.Sum(x => x.CreditorAmount);                   
+                debtorCustomersHeader.SumInstallmentDebtAmout = debtorCustomersData.Sum(x => x.InstallmentDebtAmout);
+                debtorCustomersHeader.SumPrincipalDebt = debtorCustomersData.Sum(x => x.PrincipalDebt);
+                debtorCustomersHeader.SumTotalDebt = debtorCustomersData.Sum(x => x.TotalDebt);
+            }
 
             var result = new ReportOutput<ServiceLinkDebtorCustomersHeaderOutputDto, ServiceLinkDebtorCustomersDataOutputDto>(ReportLiterals.ServiceLinkDebtorCustomers, debtorCustomersHeader, debtorCustomersData);
 
