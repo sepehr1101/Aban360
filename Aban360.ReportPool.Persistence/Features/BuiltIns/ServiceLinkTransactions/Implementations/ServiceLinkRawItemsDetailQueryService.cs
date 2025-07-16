@@ -56,7 +56,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     Where	
                     	r.RegisterDate BETWEEN @fromDate AND @toDate AND
                     	r.ZoneId IN @zoneIds AND
-                    	r.TypeCode=1 OR r.TypeCode=2";
+                    	r.TypeCode IN (1,2)";
         }
     }
 }

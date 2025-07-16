@@ -20,8 +20,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             string unpaids = GetUnpaidQuery(input.ZoneIds?.Any()==true);
             var @params = new
             {
-                FromAmount = input.FromAmount,
-                ToAmount = input.ToAmount,
+                FromAmount = input.FromAmount??0,
+                ToAmount = input.ToAmount??long.MaxValue,
                 FromDate=input.FromDateJalali,
                 ToDate=input.ToDateJalali,
                 FromReadingNumber=input.FromReadingNumber,

@@ -105,5 +105,7 @@
 
         public static string ReadingDailyStatement { get { return $"خلاصه {Report} روزنامه"; } }
         public static string ReadingStatusStatement { get { return $"خلاصه {Report} فهرست وضعیت"; } }
+
+        public static string RuinedMeterIncome { get { return $"خلاصه {Report} درآمد کنتور خراب"; } }
     }
 }
