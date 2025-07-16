@@ -28,6 +28,12 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             RuleFor(customer => customer.ZoneIds)
            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
            .NotNull().WithMessage(ExceptionLiterals.NotNull);
+
+            RuleFor(input => input)
+               .Must(input => FromToDateJalaliValidation.DateValidation(new FromToDateJalaliDto(input. FromHouseholdDateJalali,
+                                                                                               input.ToHouseholdDateJalali)).IsValid)
+               .WithMessage(input => FromToDateJalaliValidation.DateValidation(new FromToDateJalaliDto(input.FromHouseholdDateJalali,
+                                                                                               input.ToHouseholdDateJalali)).ErrorMessage);
         }
     }
 }

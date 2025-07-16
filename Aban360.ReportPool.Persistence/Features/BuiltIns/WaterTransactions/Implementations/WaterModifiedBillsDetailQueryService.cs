@@ -4,6 +4,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using Dapper;
+using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -29,7 +30,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
-                ReportDateJalali = DateTime.Now.ToShortDateString(),
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (modifiedBillsData is not null && modifiedBillsData.Any()) ? modifiedBillsData.Count() : 0,
                 Payable = modifiedBillsData.Sum(x => x.Payable),
                 SumItems = modifiedBillsData.Sum(x => x.SumItems),

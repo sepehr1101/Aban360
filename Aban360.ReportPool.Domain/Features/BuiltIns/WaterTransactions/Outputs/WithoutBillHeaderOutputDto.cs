@@ -2,8 +2,8 @@
 {
     public record WithoutBillHeaderOutputDto
     {
-        public string FromDateTime { get; set; }
-        public string ToDateTime { get; set; }
+        public string FromDateJalali { get; set; }
+        public string ToDateJalali { get; set; }
 
         //public long FromAmount { get; set; }
         //public long ToAmount { get; set; }

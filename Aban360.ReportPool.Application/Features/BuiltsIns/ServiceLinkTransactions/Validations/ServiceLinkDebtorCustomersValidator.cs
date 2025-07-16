@@ -9,7 +9,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
     {
         public ServiceLinkDebtorCustomersValidator()
         {
-            RuleFor(customer => customer.FromAmout)
+            RuleFor(customer => customer.FromAmount)
            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
            .NotNull().WithMessage(ExceptionLiterals.NotNull);
 

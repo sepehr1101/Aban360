@@ -28,8 +28,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             IEnumerable<ServiceLinkRawItemsSummaryDataOutputDto> data = await _sqlReportConnection.QueryAsync<ServiceLinkRawItemsSummaryDataOutputDto>(serviceLinkRawItemsSummaryQuery, @params);
             ServiceLinkRawItemsHeaderOutputDto header = new ServiceLinkRawItemsHeaderOutputDto()
             {
-                FromDataJalali = input.FromDateJalali,
-                ToDataJalali = input.ToDateJalali,
+                FromDateJalali = input.FromDateJalali,
+                ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (data is not null && data.Any()) ? data.Count() : 0,
 

@@ -2,7 +2,7 @@
 {
     public record WaterPaymentReceivableHeaderOutputDto
     {
-        public string FormDateJalali { get; set; }
+        public string FromDateJalali { get; set; }
         public string ToDateJalali { get; set; }
 
         public string ReportDateJalali { get; set; }

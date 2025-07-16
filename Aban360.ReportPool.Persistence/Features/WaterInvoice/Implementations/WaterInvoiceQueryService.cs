@@ -24,7 +24,6 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
         public async Task<WaterInvoiceDto> Get(string billId)
         {
             string getWaterInvoiceQuery = GetWaterInvoiceQuery();
-            //string getItemValueQuery = GetItemValueQuery();
             string getItemValueQuery = GetItemsQuery();
             string getPreviousConsumptionQuery = GetPreviousConsumptionQuery();
             string getHeadquarterQuery = GetHeadquarterQuery();
@@ -45,28 +44,11 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             waterInvoice.Sum = lineitems.Select(i => i.Amount).Sum();
             waterInvoice.Headquarters = headquarterTitle;
 
-            //todo: move logic to handler
-            var currentMeterDate = waterInvoice.CurrentMeterDateJalali.ToGregorianDateOnly();
-            var previousMeterDate = waterInvoice.PreviousMeterDateJalali.ToGregorianDateOnly();
-            if (!currentMeterDate.HasValue || !previousMeterDate.HasValue)
-            {
-                waterInvoice.Duration = 0;
-            }
-            else
-            {
-                waterInvoice.Duration = (currentMeterDate.Value.DayNumber) - (previousMeterDate.Value.DayNumber);
-            }
-
             waterInvoice.PaymentDateJalali = paymentInfo is not null? paymentInfo.PaymentDateJalali:"";
             waterInvoice.PaymentMethod = paymentInfo is not null ? paymentInfo.PaymentMethod:"";
             waterInvoice.IsPayed = paymentInfo is not null;
-            //todo use literal
-            waterInvoice.Description = paymentInfo != null ? "پرداخت شد" : "پرداخت نشد";
+            waterInvoice.Description = paymentInfo != null ?ExceptionLiterals.SuccessedPay : ExceptionLiterals.UnsuccessedPay;
 
-            //todo: remove commented code
-            //waterInvoice.PaymenetAmountText=waterInvoice.PayableAmount.NumberToText(Language.Persian);
-           // waterInvoice.BarCode = (waterInvoice.BillId is null?new string('0',13):waterInvoice.BillId.PadLeft(13, '0')) + 
-           //                        (waterInvoice.PayId is null?new string('0',13):waterInvoice.PayId.PadLeft(13, '0'));
             return waterInvoice;
         }
 

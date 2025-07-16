@@ -28,8 +28,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             IEnumerable<ServiceLinkRawItemsDetailDataOutputDto> data = await _sqlReportConnection.QueryAsync<ServiceLinkRawItemsDetailDataOutputDto>(serviceLinkRawItemsDetailQuery, @params);
             ServiceLinkRawItemsHeaderOutputDto collectionBranchHeader = new ServiceLinkRawItemsHeaderOutputDto()
             {
-                FromDataJalali = input.FromDateJalali,
-                ToDataJalali = input.ToDateJalali,
+                FromDateJalali = input.FromDateJalali,
+                ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (data is not null && data.Any()) ? data.Count() : 0,
 
@@ -56,7 +56,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     Where	
                     	r.RegisterDate BETWEEN @fromDate AND @toDate AND
                     	r.ZoneId IN @zoneIds AND
-                    	r.TypeCode=1 OR r.TypeCode=2";
+                    	r.TypeCode IN (1,2)";
         }
     }
 }

@@ -31,6 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             { 
                 FromReadingNumber=input.FromReadingNumber,
                 ToReadingNumber= input.ToReadingNumber,
+                PeriodCount= input.PeriodCount,
                 ReportDateJalali=DateTime.Now.ToShortPersianDateString(),
                 RecordCount= (unreadData is not null && unreadData.Any()) ? unreadData.Count() : 0,
             };
