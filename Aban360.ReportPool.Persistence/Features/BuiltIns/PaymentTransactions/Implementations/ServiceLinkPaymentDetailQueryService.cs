@@ -32,7 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 FromAmount = input.FromAmount,
                 ToAmount = input.ToAmount,
                 RecordCount = (serviceLinkPaymentDetailData is not null && serviceLinkPaymentDetailData.Any()) ? serviceLinkPaymentDetailData.Count() : 0,
-                TotalRegisterAmount = serviceLinkPaymentDetailData.Sum(payment => Convert.ToUInt32(payment.RegisterAmount)),
+                TotalAmount = serviceLinkPaymentDetailData.Sum(payment => Convert.ToUInt32(payment.Amount)),
             };
             var result = new ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>(ReportLiterals.ServiceLinkPaymentDetail, serviceLinkPaymentDetailHeader, serviceLinkPaymentDetailData);
             return result;
@@ -48,7 +48,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     	p.BillId AS BillId,
                     	p.PaymentGateway AS PaymentMethodTitle,
                     	p.RegisterDay AS PaymentDate,
-                    	p.Amount AS RegisterAmount,
+                    	p.Amount AS Amount,
                         p.BankName AS BankName
                     From [CustomerWarehouse].dbo.PaymentsEn p
                     WHERE 
