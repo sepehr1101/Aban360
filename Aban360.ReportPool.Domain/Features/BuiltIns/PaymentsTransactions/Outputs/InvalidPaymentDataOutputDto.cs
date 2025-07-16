@@ -5,6 +5,7 @@
         public string CustomerNumber { get; set; }
         public string BillId { get; set; }
         public int ZoneId { get; set; }
+        public string ZoneTitle { get; set; }
         public string PayId { get; set; }
         public string BankAbbriviation { get; set; }
         public int BankCode { get; set; }

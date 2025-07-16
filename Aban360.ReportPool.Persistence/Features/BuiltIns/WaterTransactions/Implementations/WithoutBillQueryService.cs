@@ -45,14 +45,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         private string GetWithoutBillQuery(bool hasZone)
         {
-            string zoneQuery = hasZone ? "AND b.ZoneId IN @ZoneIds" : string.Empty;
+            string zoneQuery = hasZone ? "AND c.ZoneId IN @ZoneIds" : string.Empty;
 
             return @$"Select 
 						c.CustomerNumber as CustomerNumber,
-						c.FirstName +' '+c.SureName as FullName,
+                        c.ReadingNumber,
+						TRIM(c.FirstName) +' '+TRIM(c.SureName) as FullName,
 						c.WaterDiameterTitle as MeterDiameterTitle,
 						c.UsageTitle2 as UsageSellTitle,
-						c.Address as Address,
+						TRIM(c.Address) as Address,
 						c.ZoneTitle as ZoneTitle
 					From [CustomerWarehouse].dbo.Clients c
 					LEFt JOIN [CustomerWarehouse].dbo.Bills b
