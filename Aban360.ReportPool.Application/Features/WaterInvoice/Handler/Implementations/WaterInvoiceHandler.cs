@@ -18,18 +18,30 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
         public async Task<WaterInvoiceDto> Handle(string input)
         {
             WaterInvoiceDto result = await _waterInvoiceQueryService.Get(input);
-            //todo: add new private function
-            result.BarCode = (result.BillId is null ? new string('0', 13) : result.BillId.PadLeft(13, '0')) +
-                             (result.PayId is null ? new string('0', 13) : result.PayId.PadLeft(13, '0'));
-
-            result.PaymenetAmountText= result.PayableAmount.NumberToText(Language.Persian);
-
+            result=GetWaterInvoiceData(result);
+           
             return result;
         }
         public WaterInvoiceDto Handle()
         {
             WaterInvoiceDto result =  _waterInvoiceQueryService.Get();
             return result;
+        }
+        private WaterInvoiceDto GetWaterInvoiceData(WaterInvoiceDto input)
+        {
+            input.BarCode = (input.BillId is null ? new string('0', 13) : input.BillId.PadLeft(13, '0')) +
+                            (input.PayId is null ? new string('0', 13) : input.PayId.PadLeft(13, '0'));
+
+            input.PaymenetAmountText = input.PayableAmount.NumberToText(Language.Persian);
+
+            var currentMeterDate = input.CurrentMeterDateJalali.ToGregorianDateOnly();
+            var previousMeterDate = input.PreviousMeterDateJalali.ToGregorianDateOnly();
+            if (!currentMeterDate.HasValue || !previousMeterDate.HasValue)
+                input.Duration = 0;
+            else
+                input.Duration = (currentMeterDate.Value.DayNumber) - (previousMeterDate.Value.DayNumber);
+
+            return input; 
         }
     }
 }
