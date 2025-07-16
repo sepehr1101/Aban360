@@ -49,7 +49,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     	i.BankCode,
                     	i.CheckState,
                         i.Amount
-                    From [vosoli].dbo.InvalidCredit i
+                    From [vosoli].dbo.V_InvalidCredit i
                     Where 
                     	i.RegisterDateJalali BETWEEN @fromDate AND @toDate ";
         }
