@@ -46,7 +46,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	d.FinalAmount,
                     	d.PreInstallmentAmount,
                     	d.Mobile,
-                    	d.ContractualCapacity
+                    	d.ContractualCapacity,
+                        d.TrackNumber,
+						d.RequestDateJalali
                     From [CustomerWarehouse].dbo.DiscontinuedRequests d
                     Where
                     	d.ZoneId IN @zoneIds";

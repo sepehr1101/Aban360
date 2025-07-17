@@ -6,5 +6,8 @@
         public long Amount { get; set; }
         public long OffAmount { get; set; }
         public long FinalAmount { get; set; }
+        public int CustomerNumber   { get; set; }
+        public string ItemTitle { get; set; }
+        public string TrackNumber { get; set; }
     }
 }

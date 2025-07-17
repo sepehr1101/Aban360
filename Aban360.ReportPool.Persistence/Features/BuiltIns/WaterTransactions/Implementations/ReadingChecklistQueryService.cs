@@ -63,7 +63,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 		                        on b.BillId=c.BillId
 	                        WHERE 
 	                            b.CounterStateCode NOT IN(4,7,8) AND
-		                        b.ZoneId=131211 AND
+		                        b.ZoneId=@zoneId AND
 		                        b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)
                         SELECT * FROM CTE
                         WHERE RN=1";

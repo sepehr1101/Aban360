@@ -29,13 +29,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount= (waterPaymentReceivableData is not null && waterPaymentReceivableData.Any()) ? waterPaymentReceivableData.Count() : 0,
-                SumTotalCount = waterPaymentReceivableData.Sum(payment => payment.TotalCount),
-                SumTotalAmount = waterPaymentReceivableData.Sum(payment => payment.TotalAmount),
-                SumOverdueCount = waterPaymentReceivableData.Sum(payment => payment.OverdueCount),
-                SumOverdueAmount = waterPaymentReceivableData.Sum(payment => payment.OverdueAmount),
-                SumCurrentAmount = waterPaymentReceivableData.Sum(payment => payment.CurrentAmount),
             };
+            if (waterPaymentReceivableData is not null && waterPaymentReceivableData.Any())
+            {
+                waterPaymentReceivableHeader.RecordCount = (waterPaymentReceivableData is not null && waterPaymentReceivableData.Any()) ? waterPaymentReceivableData.Count() : 0;  
+                waterPaymentReceivableHeader.SumTotalCount = waterPaymentReceivableData.Sum(payment => payment.TotalCount);
+                waterPaymentReceivableHeader.SumTotalAmount = waterPaymentReceivableData.Sum(payment => payment.TotalAmount);
+                waterPaymentReceivableHeader.SumOverdueCount = waterPaymentReceivableData.Sum(payment => payment.OverdueCount);
+                waterPaymentReceivableHeader.SumOverdueAmount = waterPaymentReceivableData.Sum(payment => payment.OverdueAmount);
+                waterPaymentReceivableHeader.SumCurrentAmount = waterPaymentReceivableData.Sum(payment => payment.CurrentAmount);
+            }
             var result = new ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableDataOutputDto>(ReportLiterals.WaterPaymentReceivable, waterPaymentReceivableHeader, waterPaymentReceivableData);
             return result;
         }

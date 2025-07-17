@@ -33,6 +33,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (malfunctionMeterData is not null && malfunctionMeterData.Any()) ? malfunctionMeterData.Count() : 0,
             };
+            if (malfunctionMeterData is not null && !malfunctionMeterData.Any())
+            {
+                malfunctionMeterHeader.TotalPayable = malfunctionMeterData.Sum(x => x.Payable);
+            }
 
             ReportOutput<MalfunctionMeterHeaderOutputDto, MalfunctionMeterDataOutputDto> result = new ReportOutput<MalfunctionMeterHeaderOutputDto, MalfunctionMeterDataOutputDto>(ReportLiterals.MalfunctionMeter, malfunctionMeterHeader, malfunctionMeterData);
             return result;
