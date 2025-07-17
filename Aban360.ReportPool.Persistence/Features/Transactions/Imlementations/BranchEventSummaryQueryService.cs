@@ -92,7 +92,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	0 AS UsageId,
                     	'' AS TrackNumber,
                     	p.RegisterDay AS RegisterDateJalali,
-                    	IIF(p.Amount<0,p.Amount,0)  AS CreditAmount,
+                    	IIF(p.Amount>0,p.Amount,0)  AS CreditAmount,
                     	0 AS DebtAmount,
                     	p.RegisterDay AS BankDateJalali,
                     	p.BankName,

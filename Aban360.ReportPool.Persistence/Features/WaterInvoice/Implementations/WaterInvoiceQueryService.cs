@@ -175,7 +175,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                     join [CustomerWarehouse].dbo.Clients c on b.BillId=c.BillId
                     Where 
                     	b.BillId=@billId AND
-                        b.CounterStateCode NOT IN (4,7)
+                        b.CounterStateCode NOT IN (4,7) And
 						b.TypeId In (N'قبض', N'علی الحساب')
                     order by PreviousDay desc";
         }

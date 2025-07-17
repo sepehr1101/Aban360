@@ -43,6 +43,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     	i.CustomerNumber,
                     	i.BillId,
                     	i.ZoneId,
+                        i.ZoneTitle,
                     	i.BankDateJalali,
                     	i.PayId,
                     	i.BankAbbriviation,

@@ -22,6 +22,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             {
                 fromReadingNumber = input.FromReadingNumber,
                 toReadingNumber = input.ToReadingNumber,
+                fromDate=input.FromDateJalali,
+                toDate=input.ToDateJalali,
                 zoneIds = input.ZoneIds,
                 malfunctionPeriodCount=input.MalfunctionPeriodCount
             };
