@@ -58,14 +58,21 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         c.WaterDiameterTitle MeterDiameterTitle,
                         c.RegisterDayJalali AS EventDateJalali,
                         TRIM(c.Address) AS Address,
-                        c.ZoneTitle,
                         c.DeletionStateId,
                         c.DeletionStateTitle AS UseStateTitle,
                         c.DomesticCount DomesticUnit,
             	        c.CommercialCount CommercialUnit,
             	        c.OtherCount OtherUnit,
             	        TRIM(c.BillId) BillId,
-            			c.EmptyCount As EmptyUnit
+            			c.EmptyCount As EmptyUnit,
+                        c.ZoneId,
+						c.ZoneTitle,
+                        0 AS RegionId,
+                        '-' AS RegionTitle,
+						c.NationalId AS NationalCode,
+						c.PostalCode , 
+						c.PhoneNo AS PhoneNumber,
+						c.FatherName 
                     FROM [CustomerWarehouse].dbo.Clients c
                     WHERE 
             			c.ToDayJalali IS NULL AND

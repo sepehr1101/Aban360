@@ -15,7 +15,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         public HouseholdNumberQueryService(IConfiguration configuration)
             : base(configuration)
         { }
-        public async Task<ReportOutput<HouseholdNumberHeaderOutputDto, HouseholdNumberDataOutputDto>> GetInfo(HouseholdNumberInputDto input)
+        public async Task<ReportOutput<HouseholdNumberHeaderOutputDto, HouseholdNumberDataOutputDto>> GetInfo(HouseholdNumberInputDto input, string lastYearJalali)
         {
             string householdNumberQuery = GetHouseholdNumberQuery();
             var @params = new
@@ -26,6 +26,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 fromHouseholdDateJalali = input.FromHouseholdDateJalali,
                 toHouseholdDateJalali = input.ToHouseholdDateJalali,
 
+                lastYearDate = lastYearJalali,
                 zoneIds = input.ZoneIds
             };
 
@@ -64,7 +65,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 	                    c.OtherCount OtherUnit,
 	                    TRIM(c.BillId) BillId,
 	            		c.HouseholdDateJalali As HouseholdDateJalali,
-	            		c.FamilyCount AS HouseholdCount
+	            		c.FamilyCount AS HouseholdCount,
+                        IIF(c.HouseholdDateJalali >@lastYearDate , 1 , 0) AS IsValid
                     FROM [CustomerWarehouse].dbo.Clients c
                     WHERE 
 	            		c.ToDayJalali IS NULL AND
