@@ -28,6 +28,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali,
+                fromReadingNumber=input.FromReadingNumber,
+                toReadingNumber=input.ToReadingNumber,
                 zoneIds = input.ZoneIds
             };
             IEnumerable<SewageWaterInstallationDetailDataOutputDto> installationData = await _sqlReportConnection.QueryAsync<SewageWaterInstallationDetailDataOutputDto>(installationDetailQuery, @params);
@@ -66,7 +68,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
                     	c.WaterInstallDate BETWEEN @fromDate AND @toDate AND
-                    	c.ZoneId IN @zoneIds";
+                    	c.ZoneId IN @zoneIds AND
+                        (@fromReadingNumber IS NULL OR
+					    @toReadingNumber IS NULL OR
+					    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)";
         }
         private string GetSewageInstallationDetailQuery()
         {
@@ -91,7 +96,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
                     	c.SewageInstallDate BETWEEN @fromDate AND @toDate AND
-                    	c.ZoneId IN @zoneIds";
+                    	c.ZoneId IN @zoneIds
+                        (@fromReadingNumber IS NULL OR
+					    @toReadingNumber IS NULL OR
+					    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)";
         }
     }
 }
