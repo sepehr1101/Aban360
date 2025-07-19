@@ -2,6 +2,7 @@
 {
     internal enum TableName
     {
-        DynamicReport
+        DynamicReport,
+        ServerReports
     }
 }

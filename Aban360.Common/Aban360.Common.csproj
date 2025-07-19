@@ -10,6 +10,7 @@
 		<PackageReference Include="DeviceDetector.NET" Version="6.4.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+		<PackageReference Include="MiniExcel" Version="1.41.3" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Scrutor" Version="6.0.1" />
 		<PackageReference Include="DNTPersianUtils.Core" Version="6.4.0" />

@@ -10,7 +10,7 @@ namespace Aban360.ReportPool.Persistence.Migrations
     public class DbInitialDesing : Migration
     {
         string _schema = TableSchema.Name, Id = nameof(Id), Hash = nameof(Hash);
-        int _255 = 255;
+        int _255 = 255,_10=10;
         public override void Up()
         {
             Create.Schema(_schema);
@@ -49,6 +49,21 @@ namespace Aban360.ReportPool.Persistence.Migrations
                 .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
                 .WithColumn("RemoveLogInfo").AsString(int.MaxValue).Nullable()
                 .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
+        }
+
+        private void CreateServerReports()
+        {
+            var table = TableName.ServerReports;
+            Create.Table(nameof(TableName.ServerReports)).InSchema(_schema)
+                .WithColumn("Id").AsGuid().NotNullable().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("UserId").AsGuid().NotNullable()
+                .WithColumn("ReportName").AsString(_255).NotNullable()
+                .WithColumn("ReportPath").AsString(_255).NotNullable()
+                .WithColumn("CompletionId").AsGuid().NotNullable()
+                .WithColumn("CompletionDateJalali").AsString(_10).Nullable()
+                .WithColumn("InsertDateJalali").AsString(_10).Nullable()
+                .WithColumn("ErrorDateJalali").AsString(_10).Nullable()
+                .WithColumn("IsInformed").AsBoolean();
         }
     }
 }

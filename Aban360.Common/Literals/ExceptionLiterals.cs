@@ -42,5 +42,11 @@
 
         public static string MessageException(string message) => $"خطا : {message}";
 
+
+        //Excel Errors
+        public static string CantGenarateExcelWithNullData => "اطلاعاتی برای ذخیره در فایل اکسل وجود ندارد";
+        public static string Header => "سرآیند";
+        public static string Page(int i) => $"صفحه {i}";
+
     }
 }
