@@ -59,7 +59,7 @@ namespace Aban360.ReportPool.Persistence.Migrations
                 .WithColumn("UserId").AsGuid().NotNullable()
                 .WithColumn("ReportName").AsString(_255).NotNullable()
                 .WithColumn("ReportPath").AsString(_255).NotNullable()
-                .WithColumn("CompletionId").AsGuid().NotNullable()
+                .WithColumn("ConnectionId").AsString(_255).NotNullable()
                 .WithColumn("CompletionDateJalali").AsString(_10).Nullable()
                 .WithColumn("InsertDateJalali").AsString(_10).Nullable()
                 .WithColumn("ErrorDateJalali").AsString(_10).Nullable()

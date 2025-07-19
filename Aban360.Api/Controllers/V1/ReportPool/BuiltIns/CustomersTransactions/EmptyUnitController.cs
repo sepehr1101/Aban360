@@ -2,6 +2,7 @@
 using Aban360.Common.Excel;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Contracts;
+using Aban360.ReportPool.Application.Features.FlatReports.Background.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
@@ -14,10 +15,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
     public class EmptyUnitController : BaseController
     {
         private readonly IEmptyUnitHandler _emptyUnit;
-        public EmptyUnitController(IEmptyUnitHandler emptyUnit)
+        private readonly IBackgroundExcel _background;
+        public EmptyUnitController(
+            IEmptyUnitHandler emptyUnit,
+            IBackgroundExcel background)
         {
             _emptyUnit = emptyUnit;
             _emptyUnit.NotNull(nameof(_emptyUnit));
+
+            _background = background;
+            _background.NotNull(nameof(_background));
         }
 
         [HttpPost, HttpGet]
@@ -33,9 +40,12 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         [Route("excel")]
         public async Task<IActionResult> GetExcel(EmptyUnitInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto> emptyUnit = await _emptyUnit.Handle(inputDto, cancellationToken);
-            var s = await ExcelManagement.ExportToExcelAsync(emptyUnit.ReportHeader, emptyUnit.ReportData,emptyUnit.Title);
-            return Ok(s);
+           // ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto> emptyUnit = await _emptyUnit.Handle(inputDto, cancellationToken);
+            // var result = await ExcelManagement.ExportToExcelAsync(emptyUnit.ReportHeader, emptyUnit.ReportData, emptyUnit.Title);
+         
+            var result = await _background.Background<IEmptyUnitHandler, EmptyUnitHeaderOutputDto
+                                                    ,EmptyUnitDataOutputDto,EmptyUnitInputDto>(_emptyUnit, inputDto, cancellationToken);
+            return Ok(result);
         }
     }
 }
