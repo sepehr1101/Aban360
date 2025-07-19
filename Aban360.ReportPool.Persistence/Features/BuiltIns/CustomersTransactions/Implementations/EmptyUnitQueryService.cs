@@ -30,14 +30,17 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
             IEnumerable<EmptyUnitDataOutputDto> emptyUnitData = await _sqlReportConnection.QueryAsync<EmptyUnitDataOutputDto>(emptyUnitQuery, @params);
             EmptyUnitHeaderOutputDto emptyUnitHeader = new EmptyUnitHeaderOutputDto()
-            {              
+            {
                 FromEmptyUnit = input.FromEmptyUnit,
                 ToEmptyUnit = input.ToEmptyUnit,
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 RecordCount = (emptyUnitData is not null && emptyUnitData.Any()) ? emptyUnitData.Count() : 0,
+                SumDomesticCount = (emptyUnitData is not null && emptyUnitData.Any()) ? emptyUnitData.Sum(x => x.DomesticUnit) : 0,
+                SumEmptyUnit = (emptyUnitData is not null && emptyUnitData.Any()) ? emptyUnitData.Sum(x => x.EmptyUnit) : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString()
             };
+
 
             var result = new ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>(ReportLiterals.EmptyUnit, emptyUnitHeader, emptyUnitData);
 
@@ -55,14 +58,21 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         c.WaterDiameterTitle MeterDiameterTitle,
                         c.RegisterDayJalali AS EventDateJalali,
                         TRIM(c.Address) AS Address,
-                        c.ZoneTitle,
                         c.DeletionStateId,
                         c.DeletionStateTitle AS UseStateTitle,
                         c.DomesticCount DomesticUnit,
             	        c.CommercialCount CommercialUnit,
             	        c.OtherCount OtherUnit,
             	        TRIM(c.BillId) BillId,
-            			c.EmptyCount As EmptyUnit
+            			c.EmptyCount As EmptyUnit,
+                        c.ZoneId,
+						c.ZoneTitle,
+                        0 AS RegionId,
+                        '-' AS RegionTitle,
+						c.NationalId AS NationalCode,
+						c.PostalCode , 
+						c.PhoneNo AS PhoneNumber,
+						c.FatherName 
                     FROM [CustomerWarehouse].dbo.Clients c
                     WHERE 
             			c.ToDayJalali IS NULL AND

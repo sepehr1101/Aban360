@@ -50,7 +50,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	r.ZoneTitle AS ZoneTitle,
                     	r.Amount AS Amount,
                     	r.OffAmount AS OffAmount,
-                    	r.FinalAmount AS FinalAmount
+                    	r.FinalAmount AS FinalAmount,
+                        r.ItemTitle,
+						r.CustomerNumber,
+						r.TrackNumber
                     From [CustomerWarehouse].dbo.RequestBillDetails r
                     Where
                     	r.RegisterDate BETWEEN @fromDate AND @toDate AND

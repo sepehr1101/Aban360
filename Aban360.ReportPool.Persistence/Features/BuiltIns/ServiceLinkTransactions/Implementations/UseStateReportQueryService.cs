@@ -45,7 +45,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.UsageTitle,
                     	c.WaterDiameterTitle MeterDiameterTitle,
                     	c.RegisterDayJalali AS EventDateJalali,
-                    	0 AS DebtAmount,
+                    	0 AS DebtAmount,-
                     	TRIM(c.Address) AS Address,
                     	c.ZoneTitle,
                     	c.DeletionStateId,

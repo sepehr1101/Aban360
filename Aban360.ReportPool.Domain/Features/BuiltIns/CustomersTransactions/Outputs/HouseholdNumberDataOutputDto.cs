@@ -18,6 +18,7 @@
         public string UseStateTitle { get; set; }
         public string HouseholdDateJalali { get; set; }
         public int HouseholdCount { get; set; }
+        public bool IsValid { get; set; }
 
     }
 }

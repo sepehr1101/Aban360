@@ -9,13 +9,20 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
     {
         public ContractualCapacityValidator()
         {
-            RuleFor(customer => customer.ZoneIds)
+            RuleFor(customer => customer.FromDateJalali)
            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
            .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(customer => customer.UsageSellIds)
+            RuleFor(customer => customer.ToDateJalali)
            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
            .NotNull().WithMessage(ExceptionLiterals.NotNull);
+
+            RuleFor(input => input)
+          .Must(input => FromToDateJalaliValidation.DateValidation(new FromToDateJalaliDto(input.FromDateJalali,
+                                                                                          input.ToDateJalali)).IsValid)
+          .WithMessage(input => FromToDateJalaliValidation.DateValidation(new FromToDateJalaliDto(input.FromDateJalali,
+                                                                                          input.ToDateJalali)).ErrorMessage);
+
         }
     }
 }

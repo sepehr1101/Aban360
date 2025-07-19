@@ -37,7 +37,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (data is not null && data.Any()) ? data.Count() : 0,
             };
-            if (data.Any())
+            if (data is not null && data.Any())
             {
                 header.SumClosed = data.Sum(x => x.Closed);
                 header.SumObstacle = data.Sum(x => x.Obstacle);

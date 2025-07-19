@@ -4,6 +4,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Contracts;
 using Dapper;
+using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Implementations
@@ -31,8 +32,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ToDateJalali = input.ToDateJalali,
                 FromAmount = input.FromAmount,
                 ToAmount = input.ToAmount,
+                ReportDateJalali=DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (waterPaymentDetailData is not null && waterPaymentDetailData.Any()) ? waterPaymentDetailData.Count() : 0,
-                TotalAmount = waterPaymentDetailData.Sum(payment => Convert.ToUInt32(payment.Amount)),
+                TotalAmount = waterPaymentDetailData.Sum(payment => Convert.ToInt32(payment.Amount)),
             };
 
             var result = new ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>(ReportLiterals.WaterPaymentDetail, waterPaymentDetailHeader, waterPaymentDetailData);

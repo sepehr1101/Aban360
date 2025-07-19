@@ -12,5 +12,7 @@
         public string Address { get; set; }
         public string Mobile { get; set; }
         public int ContractualCapacity { get; set; }
+        public string TrackNumber { get; set; }
+        public string RequestDateJalali { get; set; }
     }
 }

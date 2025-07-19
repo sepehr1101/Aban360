@@ -50,6 +50,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             string zoneQuery =hasZone? "AND b.ZoneId IN @ZoneIds":string.Empty;
 
             return @$"SELECT 
+                        MAX(b.ZoneId) AS ZoneId,
+						MAX(b.ZoneTitle) AS ZoneTitle,
                     	MAX(b.CustomerNumber) AS CustomerNumber,
                     	MAX(b.ReadingNumber) AS ReadingNumber,
                     	(max(c.FirstName) +' '+max(c.SureName)) AS FullName,

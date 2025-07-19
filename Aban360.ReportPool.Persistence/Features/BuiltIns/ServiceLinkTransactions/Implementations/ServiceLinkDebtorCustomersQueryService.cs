@@ -36,7 +36,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             if (debtorCustomersData is not null && debtorCustomersData.Any())
             {
                 debtorCustomersHeader.SumCreditAmount = debtorCustomersData.Sum(x => x.CreditorAmount);                   
-                debtorCustomersHeader.SumInstallmentDebtAmout = debtorCustomersData.Sum(x => x.InstallmentDebtAmout);
+                debtorCustomersHeader.SumInstallmentDebtAmout = debtorCustomersData.Sum(x => x.InstallmentDebtAmount);
                 debtorCustomersHeader.SumPrincipalDebt = debtorCustomersData.Sum(x => x.PrincipalDebt);
                 debtorCustomersHeader.SumTotalDebt = debtorCustomersData.Sum(x => x.TotalDebt);
             }

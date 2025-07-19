@@ -13,41 +13,47 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
     {
         public ContractualCapacityQueryService(IConfiguration configuration)
             : base(configuration)
-        { 
+        {
         }
         public async Task<ReportOutput<ContractualCapacityHeaderOutputDto, ContractualCapacityDataOutputDto>> GetInfo(ContractualCapacityInputDto input)
         {
-            string contractualCapacityQuery = GetContractualCapacityQuery();
+            string contractualCapacityQuery = GetContractualCapacityQuery(input.UsageSellIds?.Any()==true, input.ZoneIds?.Any() == true);
             var @params = new
             {
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
 
-                FromCapacity = input.FromContractualCapacity!=null? input.FromContractualCapacity:0,
-                ToCapacity = input.ToContractualCapacity!=null? input.ToContractualCapacity:999999,
+                FromCapacity = input.FromContractualCapacity != null ? input.FromContractualCapacity : 0,
+                ToCapacity = input.ToContractualCapacity != null ? input.ToContractualCapacity : 999999,
+
+                FromDate = input.FromDateJalali,
+                ToDate = input.ToDateJalali,
 
                 UsageIds = input.UsageSellIds,
                 ZoneIds = input.ZoneIds
             };
 
-            IEnumerable<ContractualCapacityDataOutputDto> contractualCapacityData = await _sqlReportConnection.QueryAsync<ContractualCapacityDataOutputDto>(contractualCapacityQuery,@params);
+            IEnumerable<ContractualCapacityDataOutputDto> contractualCapacityData = await _sqlReportConnection.QueryAsync<ContractualCapacityDataOutputDto>(contractualCapacityQuery, @params);
             ContractualCapacityHeaderOutputDto contractualCapacityHeader = new ContractualCapacityHeaderOutputDto()
-            {                
-                FromContractualCapacity=input.FromContractualCapacity,
-                ToContractualCapacity=input.ToContractualCapacity,
+            {
+                FromContractualCapacity = input.FromContractualCapacity,
+                ToContractualCapacity = input.ToContractualCapacity,
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 RecordCount = (contractualCapacityData is not null && contractualCapacityData.Any()) ? contractualCapacityData.Count() : 0,
-                ReportDateJalali =DateTime.Now.ToShortPersianDateString()
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString()
             };
 
             var result = new ReportOutput<ContractualCapacityHeaderOutputDto, ContractualCapacityDataOutputDto>(ReportLiterals.ContractualCapacity, contractualCapacityHeader, contractualCapacityData);
             return result;
         }
 
-        private string GetContractualCapacityQuery()
+        private string GetContractualCapacityQuery(bool hasUsage, bool hasZone)
         {
-            return @"SELECT 
+            string usageQuery = hasUsage ? "c.UsageId in @UsageIds AND" : string.Empty;
+            string zoneQuery = hasZone ? " c.ZoneId in @ZoneIds AND" : string.Empty;
+
+            return @$"SELECT 
                         c.CustomerNumber,
                         c.ReadingNumber,
                         TRIM(c.FirstName) AS FirstName,
@@ -66,14 +72,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             			c.ContractCapacity As ContractualCapacity
                     FROM [CustomerWarehouse].dbo.Clients c
                     WHERE 
+                        {usageQuery}
+                        {zoneQuery}
             			c.ToDayJalali IS NULL AND
-            			c.UsageId in @UsageIds AND
                         --c.ReadingNumber BETWEEN @FromReadingNumber AND @ToReadingNumber AND
                         (@FromReadingNumber is null Or
 						@ToReadingNumber is null Or
 						c.ReadingNumber between @FromReadingNumber and @ToReadingNumber) AND
-                        c.ZoneId in @ZoneIds AND
-            			c.ContractCapacity BETWEEN @FromCapacity AND @ToCapacity";
+            			c.ContractCapacity BETWEEN @FromCapacity AND @ToCapacity AND
+                        c.WaterInstallDate BETWEEN @FromDate AND @ToDate";
         }
     }
 }

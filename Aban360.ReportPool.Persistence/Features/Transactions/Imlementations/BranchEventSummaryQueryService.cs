@@ -18,7 +18,6 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 
         public async Task<ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto>> Get(string billId)
         {
-            //todo: چک کردن مشابه پیش پرداخت و ریز محاسبه
             string zoneIdAndCustomerNumberQueryString = GetZoneIdAndCustomerNumberQuery();
             string brachSummeryHeaderQueryString = GetBrachEventSummaryHeaderQuery();
             string brachSummeryDataQueryString = GetBrachEventSummaryDataQuery();
@@ -28,9 +27,14 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             {
                 throw new BaseException(ExceptionLiterals.BillIdNotFound);
             }
+            
             BranchEventSummaryHeaderOutputDto branchHeader = await _sqlReportConnection.QueryFirstAsync<BranchEventSummaryHeaderOutputDto>(brachSummeryHeaderQueryString, new { billId });
-            IEnumerable<BranchEventSummaryDataOutputDto> branchData = await _sqlReportConnection.QueryAsync<BranchEventSummaryDataOutputDto>(brachSummeryDataQueryString, new { zoneId = zoneIdCustomerNumber.ZoneId, customerNumber = zoneIdCustomerNumber.CustomerNumber });
+            if (branchHeader is null)
+            {
+                throw new BaseException(ExceptionLiterals.BillIdNotFound);
+            }
 
+            IEnumerable<BranchEventSummaryDataOutputDto> branchData = await _sqlReportConnection.QueryAsync<BranchEventSummaryDataOutputDto>(brachSummeryDataQueryString, new { zoneId = zoneIdCustomerNumber.ZoneId, customerNumber = zoneIdCustomerNumber.CustomerNumber });
             ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> result = new(ReportLiterals.BranchEventSummary, branchHeader, branchData);
             return result;
         }
@@ -46,7 +50,6 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         }
         private string GetBrachEventSummaryHeaderQuery()
         {
-            //todo: SiphonDiameterTitle from mainSiphon 
             return @"Select 
                     	c.FirstName ,
                     	c.SureName AS Surname,
@@ -63,7 +66,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	c.CommercialCount AS CommercialUnit,
                     	c.OtherCount AS OtherUnit,
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
-                    	'' AS SiphonDiameterTitle 
+                    	MainSiphonTitle AS SiphonDiameterTitle 
                     From [CustomerWarehouse].dbo.Clients c
                     Where 
                     	c.ToDayJalali IS NULL AND
