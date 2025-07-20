@@ -14,7 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\" />
+    <ProjectReference Include="..\Aban360.CommunicationPool.Domain\Aban360.CommunicationPool.Domain.csproj" />
+    <ProjectReference Include="..\Aban360.CommunicationPool.Persistence\Aban360.CommunicationPool.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

@@ -12,10 +12,10 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Implementa
             : base(configuration)
         { }
 
-        public async Task<IEnumerable<ServerReportsGetDto>> Get(Guid userId)
+        public async Task<IEnumerable<ServerReportsGetAllDto>> Get(Guid userId)
         {
             string serverReportsByIdQueryString = GetServerReportsByIdQuery();
-            IEnumerable<ServerReportsGetDto> data = await _sqlConnection.QueryAsync<ServerReportsGetDto>(serverReportsByIdQueryString, new { userId });
+            IEnumerable<ServerReportsGetAllDto> data = await _sqlConnection.QueryAsync<ServerReportsGetAllDto>(serverReportsByIdQueryString, new { userId });
             return data;
         }
         private string GetServerReportsByIdQuery()
@@ -26,10 +26,11 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Implementa
                     	s.ReportName,
                     	s.ReportPath,
                     	s.CompletionDateJalali,
-                    	s.CompletionId,
+                    	s.ConnectionId,
                     	s.ErrorDateJalali,
                     	s.InsertDateJalali,
-                    	s.IsInformed
+                    	s.IsInformed,
+						IIF(s.CompletionDateJalali IS Null,0,1) AS IsCompleted
                     From [Aban360].ReportPool.ServerReports s
                     Where s.UserId=@userId";
         }
