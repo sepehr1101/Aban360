@@ -22,7 +22,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 customerNumber = input.CustomerNumber,
             };
 
-            CustomerOldInfoOutputDto output = await _sqlReportConnection.QueryFirstOrDefaultAsync<CustomerOldInfoOutputDto>(customerOldInfoQuery, @params);
+            CustomerOldInfoOutputDto? output = await _sqlReportConnection.QueryFirstOrDefaultAsync<CustomerOldInfoOutputDto>(customerOldInfoQuery, @params);
             return output;
         }
 
@@ -37,7 +37,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         BillId, 
                         OldBillId, 
                         FirstName, 
-                        SureName AS Surname
+                        SureName AS Surname,
+                        VillageId,
+                        VillageName
                      FROM Clients 
                      WHERE 
                         ZoneId=@zoneId AND  

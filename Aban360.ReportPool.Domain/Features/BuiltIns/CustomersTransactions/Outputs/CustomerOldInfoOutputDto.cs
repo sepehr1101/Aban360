@@ -3,13 +3,15 @@
     public record CustomerOldInfoOutputDto
     {
         public int ZoneId { get; set; }
-        public string ZoneTitle { get; set; }
+        public string ZoneTitle { get; set; } = default!;
         public int CustomerNumber { get; set; }
         public int OldCustomerNumber { get; set; }
-        public string BillId { get; set; }
-        public string OldBillId { get; set; }
-        public string FirstName { get; set; }
-        public string Surname { get; set; }
+        public string BillId { get; set; } = default!;
+        public string? OldBillId { get; set; }
+        public string FirstName { get; set; } = default!;
+        public string Surname { get; set; } = default!;
+        public string? VillageId { get; set; }
+        public string? VillageName { get; set; }
 
     }
 }
