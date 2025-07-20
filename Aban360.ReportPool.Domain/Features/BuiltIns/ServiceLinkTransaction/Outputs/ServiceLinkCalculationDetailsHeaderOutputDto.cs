@@ -53,8 +53,14 @@
         public int CurrentUnitOther { get; set; }
         public int CurrentContractualCapacity { get; set; }
         public int SumCurrentPremisesImprovement { get; set; }
-        public InheritedItemsHeaderOutpuDto InheritedItems { get; set; }
-        public PreviousItemsHeaderOutpuDto PreviousItems { get; set; }
+        public ItemsHeaderOutputDto CurrentItems { get; set; }
+        public ItemsHeaderOutputDto InheritedItems { get; set; }
+        public ItemsHeaderOutputDto PreviousItems { get; set; }
+
+
+       
+
+
 
 
 
