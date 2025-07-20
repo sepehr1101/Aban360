@@ -3,6 +3,7 @@ using Aban360.ReportPool.Persistence.Extentions;
 using Aban360.ReportPool.Persistence.Migrations.Enums;
 using FluentMigrator;
 using System.Reflection;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Aban360.ReportPool.Persistence.Migrations
 {
@@ -58,8 +59,8 @@ namespace Aban360.ReportPool.Persistence.Migrations
                 .WithColumn("Id").AsGuid().NotNullable().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("UserId").AsGuid().NotNullable()
                 .WithColumn("ReportName").AsString(_255).NotNullable()
-                .WithColumn("ReportPath").AsString(_255).NotNullable()
-                .WithColumn("CompletionId").AsGuid().NotNullable()
+                .WithColumn("ReportPath").AsString(_255).Nullable()
+                .WithColumn("ConnectionId").AsString(_255).NotNullable()
                 .WithColumn("CompletionDateJalali").AsString(_10).Nullable()
                 .WithColumn("InsertDateJalali").AsString(_10).Nullable()
                 .WithColumn("ErrorDateJalali").AsString(_10).Nullable()

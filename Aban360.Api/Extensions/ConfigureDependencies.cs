@@ -26,6 +26,7 @@ using Aban360.CalculationPool.GatewayAdhoc.Extensions;
 using Aban360.ClaimPool.GatewayAdhoc.Extensions;
 using Aban360.CommunicationPool.Application.Extensions;
 using Aban360.CommunicationPool.Persistence.Extensions;
+using Aban360.Api.Cronjobs;
 
 namespace Aban360.Api.Extensions
 {
@@ -33,6 +34,7 @@ namespace Aban360.Api.Extensions
     {
         public static void AddDI(this IServiceCollection services)
         {
+            services.AddApiDI();
             services.AddUserPoolDI();
             services.AddLocationPoolDI();
             services.AddClaimPoolDI();
@@ -47,6 +49,10 @@ namespace Aban360.Api.Extensions
             services.AddCommunicationPoolDI();
         }
 
+        private static void AddApiDI(this IServiceCollection services)
+        {
+            services.AddApiInjections();
+        }
         private static void AddUserPoolDI(this IServiceCollection services)
         {
             services.AddUserPoolPersistenceInjections();

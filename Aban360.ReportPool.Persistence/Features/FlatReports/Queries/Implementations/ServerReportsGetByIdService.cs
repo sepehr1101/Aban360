@@ -15,7 +15,7 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Implementa
         public async Task<ServerReportsGetDto> GetById(Guid id)
         {
             string serverReportsByIdQueryString = GetServerReportsByIdQuery();
-            ServerReportsGetDto data = await _sqlReportConnection.QueryFirstOrDefaultAsync<ServerReportsGetDto>(serverReportsByIdQueryString, new { id });
+            ServerReportsGetDto data = await _sqlConnection.QueryFirstOrDefaultAsync<ServerReportsGetDto>(serverReportsByIdQueryString, new { id });
             return data;
         }
         private string GetServerReportsByIdQuery()

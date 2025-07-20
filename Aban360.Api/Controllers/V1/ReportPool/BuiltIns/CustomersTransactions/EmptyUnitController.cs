@@ -1,12 +1,11 @@
-﻿using Aban360.Common.Categories.ApiResponse;
-using Aban360.Common.Excel;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
 {
@@ -14,10 +13,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
     public class EmptyUnitController : BaseController
     {
         private readonly IEmptyUnitHandler _emptyUnit;
-        public EmptyUnitController(IEmptyUnitHandler emptyUnit)
+        private readonly IReportGenerator _reportGenerator;
+        public EmptyUnitController(
+            IEmptyUnitHandler emptyUnit,
+            IReportGenerator reportGenerator)
         {
             _emptyUnit = emptyUnit;
             _emptyUnit.NotNull(nameof(_emptyUnit));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
         [HttpPost, HttpGet]
@@ -30,12 +35,11 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         }
 
         [HttpPost, HttpGet]
-        [Route("excel")]
-        public async Task<IActionResult> GetExcel(EmptyUnitInputDto inputDto, CancellationToken cancellationToken)
+        [Route("excel/{connectionId}")]
+        public async Task<IActionResult> GetExcel(string connectionId,EmptyUnitInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto> emptyUnit = await _emptyUnit.Handle(inputDto, cancellationToken);
-            var s = await ExcelManagement.ExportToExcelAsync(emptyUnit.ReportHeader, emptyUnit.ReportData,emptyUnit.Title);
-            return Ok(s);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken,_emptyUnit.Handle,CurrentUser,ReportLiterals.EmptyUnit,connectionId);
+            return Ok("");
         }
     }
 }
