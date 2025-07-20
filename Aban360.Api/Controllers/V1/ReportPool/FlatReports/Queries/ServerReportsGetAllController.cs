@@ -10,15 +10,15 @@ namespace Aban360.Api.Controllers.V1.ReportPool.FlatReports.Queries
     public class ServerReportsGetAllController : BaseController
     {
         private readonly IServerReportsGetAllHandler _serverReportsGetAllHandler;
-        public ServerReportsGetAllController(IServerReportsGetAllHandler contractualCapacity)
+        public ServerReportsGetAllController(IServerReportsGetAllHandler serverReportsGetAllHandler)
         {
-            _serverReportsGetAllHandler = contractualCapacity;
+            _serverReportsGetAllHandler = serverReportsGetAllHandler;
             _serverReportsGetAllHandler.NotNull(nameof(_serverReportsGetAllHandler));
         }
 
         [ HttpGet]
         [Route("by-user-id")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<ServerReportsGetAllDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<ServerReportsGetByIdDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(CancellationToken cancellationToken)
         {
             var result = await _serverReportsGetAllHandler.Handle(CurrentUser.UserId,cancellationToken);
