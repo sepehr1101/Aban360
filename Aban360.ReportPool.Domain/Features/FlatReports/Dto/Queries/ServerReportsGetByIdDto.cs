@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.FlatReports.Dto.Queries
 {
-    public record ServerReportsGetDto
+    public record ServerReportsGetByIdDto
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }

@@ -35,14 +35,16 @@ namespace Aban360.Common.Excel
                           .Replace(':', '-')
                           .Replace(' ', '_');
 
-            var persianDateTime = DateTime
+
+            var timeNow = DateTime.Now.ToString("HH-mm-ss");
+            var persianDate = DateTime
                                         .Now
-                                        .ToShortPersianDateTimeString()
+                                        .ToShortPersianDateString()
                                         .Replace('/', '-')
                                         .Replace(':', '-')
                                         .Replace(' ', '_');
 
-            return $"{pathBase}{reportTitle}_{persianDateTime}.xlsx";
+            return $"{pathBase}{reportTitle}_{persianDate}_{timeNow}.xlsx";
         }
         private static void Validation<THeader, TData>(THeader tHeader, IEnumerable<TData> tData)
         {
