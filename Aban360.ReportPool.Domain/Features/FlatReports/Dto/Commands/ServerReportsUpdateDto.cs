@@ -3,6 +3,7 @@
     public record ServerReportsUpdateDto
     {
         public Guid Id { get; set; }
+        public string ReportPath { get; set; }
         public string CompletionId { get; set; }
         public string CompletionDateJalali { get; set; }
         public string InsertDateJalali { get; set; }

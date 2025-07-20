@@ -23,6 +23,7 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Commands.Implement
                 insertDateJalali = input.InsertDateJalali,
                 errorDateJalali = input.ErrorDateJalali,
                 isInformed = input.IsInformed,
+                reportPath=input.ReportPath,
             };
             await _sqlConnection.ExecuteAsync(UpdateQuery, @params);
         }
@@ -31,10 +32,11 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Commands.Implement
             return @"pdate [Aban360].ReportPool.ServerReports
                      Set
                      	CompletionDateJalali=@completionDateJalali,
-                     	CompletionId=@completionId,
+                     	ConnectionId=@completionId,
                      	ErrorDateJalali=@errorDateJalali,
                      	InsertDateJalali=@insertDateJalali,
-                     	IsInformed=@isInformed
+                     	IsInformed=@isInformed,
+                        ReportPath=@reportPath
                     Where Id=@id";
         }
     }

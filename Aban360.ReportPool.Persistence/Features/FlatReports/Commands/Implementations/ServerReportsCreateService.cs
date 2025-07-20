@@ -20,8 +20,7 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Commands.Implement
                 id = Guid.NewGuid(),
                 userId = input.UserId,
                 reportName = input.ReportName,
-                reportPath = input.ReportPath,
-                connectionId = string.Empty,
+                connectionId = input.ConnectionId,
                 isInformed=false
             };
             await _sqlConnection.ExecuteAsync(createQuery, @params);
@@ -29,8 +28,8 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Commands.Implement
 
         private string GetServerReportsCreateQuery()
         {
-            return @"Insert Into[Aban360].ReportPool.ServerReports(Id,UserId,ReportName,ReportPath,CompletionId,IsInformed)
-                    Values(@id,@userId,@reportName,@reportPath,@connectionId,@isInformed)";
+            return @"Insert Into[Aban360].ReportPool.ServerReports(Id,UserId,ReportName,ConnectionId,IsInformed)
+                    Values(@id,@userId,@reportName,@connectionId,@isInformed)";
         }
     }
 }
