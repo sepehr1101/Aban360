@@ -1,8 +1,9 @@
 ﻿using Aban360.Common.Extensions;
+using Aban360.ReportPool.Application.Features.FlatReports.Handler.Queries.Contracts;
 using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Queries;
 using Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Contracts;
 
-namespace Aban360.ReportPool.Application.Features.FlatReports.Handler.Queries
+namespace Aban360.ReportPool.Application.Features.FlatReports.Handler.Queries.Implementations
 {
     internal sealed class ServerReportsGetFilePathHandler : IServerReportsGetFilePathHandler
     {
@@ -13,9 +14,9 @@ namespace Aban360.ReportPool.Application.Features.FlatReports.Handler.Queries
             _serverReportsGetFilePathService.NotNull(nameof(serverReportsGetFilePathService));
         }
 
-        public async Task<ServerReportsGetFilePathDto> Handle(Guid userId, CancellationToken cancellationToken)
+        public async Task<ServerReportsGetFilePathDto> Handle(Guid id, CancellationToken cancellationToken)
         {
-            var result = await _serverReportsGetFilePathService.Get(userId);
+            ServerReportsGetFilePathDto result = await _serverReportsGetFilePathService.Get(id);
             return result;
         }
     }

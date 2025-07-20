@@ -18,9 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Commands.Implement
             var @params = new
             {
                 id = input.Id,
-                completionId = input.CompletionId,
                 completionDateJalali = input.CompletionDateJalali,
-                insertDateJalali = input.InsertDateJalali,
                 errorDateJalali = input.ErrorDateJalali,
                 isInformed = input.IsInformed,
                 reportPath=input.ReportPath,
@@ -29,12 +27,10 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Commands.Implement
         }
         private string GetServerReportsUpdateQuery()
         {
-            return @"pdate [Aban360].ReportPool.ServerReports
+            return @"Update [Aban360].ReportPool.ServerReports
                      Set
                      	CompletionDateJalali=@completionDateJalali,
-                     	ConnectionId=@completionId,
                      	ErrorDateJalali=@errorDateJalali,
-                     	InsertDateJalali=@insertDateJalali,
                      	IsInformed=@isInformed,
                         ReportPath=@reportPath
                     Where Id=@id";

@@ -4,6 +4,6 @@ namespace Aban360.ReportPool.Application.Features.FlatReports.Handler.Queries.Co
 {
     public interface IServerReportsGetFilePathHandler
     {
-        Task<ServerReportsGetFilePathDto> Handle(Guid userId, CancellationToken cancellationToken);
+        Task<ServerReportsGetFilePathDto> Handle(Guid id, CancellationToken cancellationToken);
     }
 }

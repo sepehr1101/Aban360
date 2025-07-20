@@ -15,23 +15,31 @@ namespace Aban360.Api.Cronjobs
     internal sealed class ReportGenerator : IReportGenerator
     {
         private readonly IServerReportsCreateHandler _serverReportsCreateHandler;
-        public ReportGenerator(IServerReportsCreateHandler serverReportsCreateHandler)
+        private readonly IServerReportsUpdateHandler _serverReportsUpdateHandler;
+        public ReportGenerator(
+            IServerReportsCreateHandler serverReportsCreateHandler,
+            IServerReportsUpdateHandler serverReportsUpdateHandler)
         {
             _serverReportsCreateHandler = serverReportsCreateHandler;
             _serverReportsCreateHandler.NotNull(nameof(serverReportsCreateHandler));
+
+            _serverReportsUpdateHandler = serverReportsUpdateHandler;
+            _serverReportsUpdateHandler.NotNull(nameof(serverReportsUpdateHandler));
         }
         public async Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId)
         {
-             _serverReportsCreateHandler.Handle( new ServerReportsCreateDto(appUser.UserId,reportTitle, connectionId), cancellationToken);
+            Guid id = Guid.NewGuid();
+             _serverReportsCreateHandler.Handle( new ServerReportsCreateDto(id,appUser.UserId,reportTitle, connectionId), cancellationToken);
 
 
             //Sample:  await GenerateReports.FireAndInform(inputDto, cancellationToken, _emptyUnit.Handle);
 
             //Insert ServerReport
             ReportOutput<THead, TData> reportOutput = await GetData(reportInput, cancellationToken);
-            await ExcelManagement.ExportToExcelAsync(reportOutput.ReportHeader, reportOutput.ReportData, reportOutput.Title);
+            string reportPath= await ExcelManagement.ExportToExcelAsync(reportOutput.ReportHeader, reportOutput.ReportData, reportOutput.Title);
 
             //Complete ServerReport
+            _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(id, reportPath), cancellationToken);
 
             //send events via signalR
         }

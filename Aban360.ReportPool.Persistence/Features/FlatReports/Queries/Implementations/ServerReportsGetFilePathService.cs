@@ -12,10 +12,10 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Implementa
             : base(configuration)
         { }
 
-        public async Task<ServerReportsGetFilePathDto> Get(Guid userId)
+        public async Task<ServerReportsGetFilePathDto> Get(Guid id)
         {
             string serverReportsByIdQueryString = GetServerReportsGetFilePathQuery();
-            ServerReportsGetFilePathDto data = await _sqlConnection.QueryFirstOrDefaultAsync<ServerReportsGetFilePathDto>(serverReportsByIdQueryString, new { userId });
+            ServerReportsGetFilePathDto data = await _sqlConnection.QueryFirstOrDefaultAsync<ServerReportsGetFilePathDto>(serverReportsByIdQueryString, new { id });
             return data;
         }
         private string GetServerReportsGetFilePathQuery()
@@ -24,7 +24,10 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Implementa
                     	s.Id,
                     	s.ReportPath
                     From [Aban360].ReportPool.ServerReports s
-                    Where s.UserId=@userId";
+                    Where 
+                        s.Id=@id  AND
+                        s.CompletionDateJalali Is Null AND
+						s.ErrorDateJalali Is Null";
         }
     }
 }

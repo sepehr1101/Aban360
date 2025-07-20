@@ -17,19 +17,20 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Commands.Implement
             string createQuery = GetServerReportsCreateQuery();
             var @params = new
             {
-                id = Guid.NewGuid(),
+                id = input.Id,
                 userId = input.UserId,
                 reportName = input.ReportName,
                 connectionId = input.ConnectionId,
-                isInformed=false
+                isInformed = false,
+                insertDateJalali = DateTime.Now
             };
             await _sqlConnection.ExecuteAsync(createQuery, @params);
         }
 
         private string GetServerReportsCreateQuery()
         {
-            return @"Insert Into[Aban360].ReportPool.ServerReports(Id,UserId,ReportName,ConnectionId,IsInformed)
-                    Values(@id,@userId,@reportName,@connectionId,@isInformed)";
+            return @"Insert Into[Aban360].ReportPool.ServerReports(Id,UserId,ReportName,ConnectionId,IsInformed,InsertDateJalali)
+                    Values(@id,@userId,@reportName,@connectionId,@isInformed,@insertDateJalali)";
         }
     }
 }

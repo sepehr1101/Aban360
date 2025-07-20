@@ -4,10 +4,14 @@
     {
         public Guid Id { get; set; }
         public string ReportPath { get; set; }
-        public string CompletionId { get; set; }
-        public string CompletionDateJalali { get; set; }
-        public string InsertDateJalali { get; set; }
-        public string ErrorDateJalali { get; set; }
+        public string? CompletionDateJalali { get; set; }
+        public string? ErrorDateJalali { get; set; }
         public bool IsInformed { get; set; }
+        //todo : remove nullable all prop
+        public ServerReportsUpdateDto(Guid id,string reportPath)
+        {
+            Id = id;
+            ReportPath = reportPath;
+        }
     }
 }
