@@ -4,6 +4,6 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Contracts
 {
     public interface IServerReportsGetByIdService
     {
-        Task<ServerReportsGetDto> GetById(Guid id);
+        Task<ServerReportsGetByIdDto> GetById(Guid id);
     }
 }

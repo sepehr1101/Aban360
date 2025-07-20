@@ -2,8 +2,8 @@
 
 namespace Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Contracts
 {
-    public interface IServerReportsGetAllService
+    public interface IServerReportsGetFilePathService
     {
-        Task<IEnumerable<ServerReportsGetAllDto>> Get(Guid userId);
+        Task<ServerReportsGetFilePathDto> Get(Guid userId);
     }
 }
