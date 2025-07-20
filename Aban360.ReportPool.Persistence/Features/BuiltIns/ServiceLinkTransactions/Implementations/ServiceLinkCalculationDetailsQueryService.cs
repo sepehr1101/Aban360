@@ -39,9 +39,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             IEnumerable<SiphonDetailItemTitleDto> siphonItems=await _sqlReportConnection.QueryAsync< SiphonDetailItemTitleDto >(siphonItemsQueryString,new {zoneId=zoneId, parNoId =input.Input});
             ServiceLinkCalculationDetailsHeaderOutputDto header = await _sqlReportConnection.QueryFirstOrDefaultAsync<ServiceLinkCalculationDetailsHeaderOutputDto>(calculationHeaderInMostarakQueryString, new { parNoId = input.Input,zoneId=zoneId });
             header.BillId = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(billIdQueryString, new { zoneId = zoneId, parNoId = input.Input });
-            header.PreviousItems = await _sqlReportConnection.QueryFirstOrDefaultAsync<PreviousItemsHeaderOutpuDto>(calculationHeaderInArchMemQueryString, new { parNoId = input.Input, zoneId = zoneId });
-            header.InheritedItems= await _sqlReportConnection.QueryFirstOrDefaultAsync<InheritedItemsHeaderOutpuDto>(calculationHeaderInMotherQueryString, new { parNoId = input.Input, zoneId = zoneId });
+            header.PreviousItems = await _sqlReportConnection.QueryFirstOrDefaultAsync<ItemsHeaderOutputDto>(calculationHeaderInArchMemQueryString, new { requestDateJalali=header.RequestDateJalali, zoneId = zoneId });
+            header.InheritedItems= await _sqlReportConnection.QueryFirstOrDefaultAsync<ItemsHeaderOutputDto>(calculationHeaderInMotherQueryString, new { parNoId = input.Input, zoneId = zoneId });
             header.SiphonDetails = siphonItems;
+            header.CurrentItems = GetCurrentItems(header);
+            //todo: Create Second Dto in Application to remove duplicate Prop
 
 
             IEnumerable<ServiceLinkCalculationDetailsDataOutputDto> calculationDetailsData = await _sqlReportConnection.QueryAsync<ServiceLinkCalculationDetailsDataOutputDto>(calculationDetailsDataInfoQuery, new { parNoId = input.Input ,zoneId=zoneId});
@@ -55,6 +57,23 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             }
             var result = new ReportOutput<ServiceLinkCalculationDetailsHeaderOutputDto, ServiceLinkCalculationDetailsDataOutputDto>(ReportLiterals.ServiceLinkCalculationDetails, header, calculationDetailsData );
             return result;
+        }
+
+        private ItemsHeaderOutputDto GetCurrentItems(ServiceLinkCalculationDetailsHeaderOutputDto header)
+        {
+            ItemsHeaderOutputDto currentItems = new ItemsHeaderOutputDto();
+            currentItems.Primises = header.CurrentPrimises;
+            currentItems.ImprovementOverall = header.CurrentImprovementOverall;
+            currentItems.ImprovementCommericial = header.CurrentImprovementCommericial;
+            currentItems.ImprovementDomestic = header.CurrentImprovementDomestic;
+            currentItems.ImprovementOther = header.CurrentImprovementOther;
+            currentItems.UnitCommericial = header.CurrentUnitCommericial;
+            currentItems.UnitDomestic = header.CurrentUnitDomestic;
+            currentItems.UnitOther = header.CurrentUnitOther;
+            currentItems.ContractualCapacity = header.CurrentContractualCapacity;
+            currentItems.SumPremisesImprovement = header.SumCurrentPremisesImprovement;
+
+            return currentItems;
         }
 
         private string GetCalculationDetailsDataQuery(string dataBaseName)
@@ -77,16 +96,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         private string GetCalculationHeaderInfoMotherQuery(string dataBaseName)
         {
             return @$"Select 
-                    	m.arse AS InheritedPrimises,
-                    	m.aian AS InheritedImprovementOverall,
-                    	m.aian_tej AS InheritedImprovementCommericial,
-                    	m.aian_mas AS InheritedImprovementDomestic,
-                    	m.aian-(m.aian_tej+m.aian_mas) AS InheritedImprovementOther,
-                    	m.tedad_tej AS InheritedUnitCommericial,
-                    	m.tedad_mas AS InheritedUnitDomestic,
-                    	m.tedad_vahd AS InheritedUnitOther,
-                    	m.fix_mas AS InheritedContractualCapacity,
-                    	m.aian + m.arse AS SumInheritedPremisesImprovement,
+                    	m.arse AS Primises,
+                    	m.aian AS ImprovementOverall,
+                    	m.aian_tej AS ImprovementCommericial,
+                    	m.aian_mas AS ImprovementDomestic,
+                    	m.aian-(m.aian_tej+m.aian_mas) AS ImprovementOther,
+                    	m.tedad_tej AS UnitCommericial,
+                    	m.tedad_mas AS UnitDomestic,
+                    	m.tedad_vahd AS UnitOther,
+                    	m.fix_mas AS ContractualCapacity,
+                    	m.aian + m.arse AS SumPremisesImprovement,
                         m.mother_rad AS InheritedFromCustomerNumber
                     From [{dataBaseName}].dbo.mother m
                     Where	
@@ -95,22 +114,22 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         }
         private string GetCalculationHeaderInfoArchMemQuery(string dataBaseName)
         {
-            return @$"Select 
-                    	m.arse AS PreviousPrimises,
-                    	m.aian AS PreviousImprovementOverall,
-                    	m.aian_tej AS PreviousImprovementCommericial,
-                    	m.aian_mas AS PreviousImprovementDomestic,
-                    	m.aian-(m.aian_tej+m.aian_mas) AS PreviousImprovementOther,
-                    	m.tedad_tej AS PreviousUnitCommericial,
-                    	m.tedad_mas AS PreviousUnitDomestic,
-                    	m.tedad_vahd AS PreviousUnitOther,
-                    	m.fix_mas AS PreviousContractualCapacity,
-                    	m.aian + m.arse AS SumPreviousPremisesImprovement
-                    
+            return @$"Select Top 1
+                    	m.arse AS Primises,
+                    	m.aian AS ImprovementOverall,
+                    	m.aian_tej AS ImprovementCommericial,
+                    	m.aian_mas AS ImprovementDomestic,
+                    	m.aian-(m.aian_tej+m.aian_mas) AS ImprovementOther,
+                    	m.tedad_tej AS UnitCommericial,
+                    	m.tedad_mas AS UnitDomestic,
+                    	m.tedad_vahd AS UnitOther,
+                    	m.fix_mas AS ContractualCapacity,
+                    	m.aian + m.arse AS SumPremisesImprovement
                     From [{dataBaseName}].dbo.arch_mem m
-                    Where	
-                    	m.par_no=@parNoId AND
-                    	m.town=@zoneId";
+                    Where
+                    	m.town=@zoneId AND
+                    	m.date_roz<@requestDateJalali
+                    Order By m.date_roz Desc";
         }
         private string GetCalculatinoHeaderInMoshtarahQuery(string dataBaseName)
         {

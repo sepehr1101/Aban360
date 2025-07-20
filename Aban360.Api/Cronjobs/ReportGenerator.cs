@@ -9,7 +9,7 @@ namespace Aban360.Api.Cronjobs
 {
     public interface IReportGenerator
     {
-        Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle);
+        Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle,string connectionId);
     }
 
     internal sealed class ReportGenerator : IReportGenerator
@@ -20,9 +20,9 @@ namespace Aban360.Api.Cronjobs
             _serverReportsCreateHandler = serverReportsCreateHandler;
             _serverReportsCreateHandler.NotNull(nameof(serverReportsCreateHandler));
         }
-        public async Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle)
+        public async Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId)
         {
-             _serverReportsCreateHandler.Handle( new ServerReportsCreateDto(appUser.UserId,reportTitle, "-"), cancellationToken);
+             _serverReportsCreateHandler.Handle( new ServerReportsCreateDto(appUser.UserId,reportTitle, connectionId), cancellationToken);
 
 
             //Sample:  await GenerateReports.FireAndInform(inputDto, cancellationToken, _emptyUnit.Handle);
