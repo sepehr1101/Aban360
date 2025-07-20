@@ -35,8 +35,8 @@
 
         public string UsageTitle { get; set; }
         public int UsageId { get; set; }
-        public string UseStateTitle { get; set; }
-        public int UseStateId { get; set; }
+        public string BranchTypeTitle { get; set; }
+        public int BranchTypeId { get; set; }
         public int ContractualCapacity { get; set; }
 
 

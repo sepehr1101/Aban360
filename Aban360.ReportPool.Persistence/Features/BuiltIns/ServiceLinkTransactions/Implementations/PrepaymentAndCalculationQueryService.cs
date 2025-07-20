@@ -92,8 +92,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 					
 						m.cod_enshab AS UsageId,
 						t.C1 AS UsageTitle,
-						m.noe_va AS UseStateId,
-						u.C1 AS UseStateTitle,
+						m.noe_va AS BranchTypeId,
+						u.C1 AS BranchTypeTitle,
 						m.fix_mas AS ContractualCapacity,
 						
 						m.radif AS CustomerNumber,

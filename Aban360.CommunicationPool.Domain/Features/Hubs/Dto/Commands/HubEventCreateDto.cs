@@ -4,6 +4,10 @@
     {
         public string ConnectionId { get; set; }
         public Guid UserId { get; set; }
-        public DateTime ConnectDateTime { get; set; }
+        public HubEventCreateDto(string connectionId,Guid userId)
+        {
+            ConnectionId = connectionId;
+            UserId = userId;
+        }
     }
 }
