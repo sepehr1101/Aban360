@@ -151,7 +151,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 					Join [Db70].dbo.T100 t On k.noe_bed=t.C0
 					Where
 						k.par_no=@parNoId AND
-						k.town =@zoneId";
+						k.town =@zoneId
+					Order By t.C1 ASC";
         }
     }
 }
