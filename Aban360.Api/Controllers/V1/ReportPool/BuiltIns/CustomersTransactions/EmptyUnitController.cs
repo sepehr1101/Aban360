@@ -14,15 +14,19 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
     {
         private readonly IEmptyUnitHandler _emptyUnit;
         private readonly IReportGenerator _reportGenerator;
+        private readonly IFileRemover _fileRemover;
         public EmptyUnitController(
             IEmptyUnitHandler emptyUnit,
-            IReportGenerator reportGenerator)
+            IReportGenerator reportGenerator,
+            IFileRemover fileRemover)
         {
             _emptyUnit = emptyUnit;
             _emptyUnit.NotNull(nameof(_emptyUnit));
 
             _reportGenerator = reportGenerator;
             _reportGenerator.NotNull(nameof(_reportGenerator));
+
+            _fileRemover = fileRemover;
         }
 
         [HttpPost, HttpGet]

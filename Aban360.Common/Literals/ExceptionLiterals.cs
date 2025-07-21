@@ -48,6 +48,7 @@
         public static string Header => "سرآیند";
         public static string Page(int i) => $"صفحه {i}";
         public static string NotFoundFile => "فایل پیدا نشد";
+        public static string NotFoundAddress => "آدرس پیدا نشد";
 
 
     }

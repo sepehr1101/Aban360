@@ -9,7 +9,7 @@ namespace Aban360.Api.Cronjobs
 {
     public interface IReportGenerator
     {
-        Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle,string connectionId);
+        Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId);
     }
 
     internal sealed class ReportGenerator : IReportGenerator
@@ -29,14 +29,14 @@ namespace Aban360.Api.Cronjobs
         public async Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId)
         {
             Guid id = Guid.NewGuid();
-             _serverReportsCreateHandler.Handle( new ServerReportsCreateDto(id,appUser.UserId,reportTitle, connectionId), cancellationToken);
+            _serverReportsCreateHandler.Handle(new ServerReportsCreateDto(id, appUser.UserId, reportTitle, connectionId), cancellationToken);
 
 
             //Sample:  await GenerateReports.FireAndInform(inputDto, cancellationToken, _emptyUnit.Handle);
 
             //Insert ServerReport
             ReportOutput<THead, TData> reportOutput = await GetData(reportInput, cancellationToken);
-            string reportPath= await ExcelManagement.ExportToExcelAsync(reportOutput.ReportHeader, reportOutput.ReportData, reportOutput.Title);
+            string reportPath = await ExcelManagement.ExportToExcelAsync(reportOutput.ReportHeader, reportOutput.ReportData, reportOutput.Title);
 
             //Complete ServerReport
             _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(id, reportPath), cancellationToken);

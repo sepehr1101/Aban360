@@ -61,9 +61,9 @@ namespace Aban360.ReportPool.Persistence.Migrations
                 .WithColumn("ReportName").AsString(_255).NotNullable()
                 .WithColumn("ReportPath").AsString(_255).Nullable()
                 .WithColumn("ConnectionId").AsString(_255).NotNullable()
-                .WithColumn("CompletionDateJalali").AsString(_10).Nullable()
-                .WithColumn("InsertDateJalali").AsString(_10).Nullable()
-                .WithColumn("ErrorDateJalali").AsString(_10).Nullable()
+                .WithColumn("CompletionDateTime").AsDateTime().Nullable()
+                .WithColumn("InsertDateTime").AsDateTime().Nullable()
+                .WithColumn("ErrorDateTime").AsDateTime().Nullable()
                 .WithColumn("IsInformed").AsBoolean();
         }
     }
