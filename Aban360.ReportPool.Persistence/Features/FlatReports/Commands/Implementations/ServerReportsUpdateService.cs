@@ -18,8 +18,8 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Commands.Implement
             var @params = new
             {
                 id = input.Id,
-                completionDateJalali = input.CompletionDateJalali,
-                errorDateJalali = input.ErrorDateJalali,
+                completionDateTime = input.CompletionDateTime,
+                errorDateTime = input.ErrorDateTime,
                 isInformed = input.IsInformed,
                 reportPath=input.ReportPath,
             };
@@ -29,8 +29,8 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Commands.Implement
         {
             return @"Update [Aban360].ReportPool.ServerReports
                      Set
-                     	CompletionDateJalali=@completionDateJalali,
-                     	ErrorDateJalali=@errorDateJalali,
+                     	CompletionDateTime=@completionDateTime,
+                     	ErrorDateTime=@errorDateTime,
                      	IsInformed=@isInformed,
                         ReportPath=@reportPath
                     Where Id=@id";

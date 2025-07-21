@@ -18,10 +18,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.FlatReports.Queries
 
         [ HttpGet]
         [Route("by-user-id")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<ServerReportsGetByIdDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<ServerReportsGetAllDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(CancellationToken cancellationToken)
         {
-            var result = await _serverReportsGetAllHandler.Handle(CurrentUser.UserId,cancellationToken);
+            IEnumerable<ServerReportsGetAllDto> result = await _serverReportsGetAllHandler.Handle(CurrentUser.UserId,cancellationToken);
             return Ok(result);
         }
     }

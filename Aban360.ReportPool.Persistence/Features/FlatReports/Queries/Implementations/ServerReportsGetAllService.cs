@@ -22,15 +22,12 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Implementa
         {
             return @"Select 
                     	s.Id,
-                    	s.UserId,
                     	s.ReportName,
-                    	s.ReportPath,
-                    	s.CompletionDateJalali,
-                    	s.ConnectionId,
-                    	s.ErrorDateJalali,
-                    	s.InsertDateJalali,
+						FORMAT(s.CompletionDateTime,'yyyy-MM-dd HH:mm:ss','fa-ir') as CompletionDateTimeJalali,
+						FORMAT(s.ErrorDateTime,'yyyy-MM-dd HH:mm:ss','fa-ir') as ErrorDateTimeJalali,
+						FORMAT(s.InsertDateTime,'yyyy-MM-dd HH:mm:ss','fa-ir') as InsertDateTimeJalali,
                     	s.IsInformed,
-						IIF(s.CompletionDateJalali IS Null,0,1) AS IsCompleted
+						IIF(s.CompletionDateTime IS Null,0,1) AS IsCompleted
                     From [Aban360].ReportPool.ServerReports s
                     Where s.UserId=@userId";
         }

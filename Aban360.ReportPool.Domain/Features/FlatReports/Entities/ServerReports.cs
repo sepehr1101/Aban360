@@ -10,9 +10,9 @@ namespace Aban360.ReportPool.Domain.Features.FlatReports.Entities
         public string ReportName { get; set; }
         public string ReportPath { get; set; }
         public string ConnectionId { get; set; }
-        public string CompletionDateJalali { get; set; }
-        public string InsertDateJalali { get; set; }
-        public string ErrorDateJalali { get; set; }
+        public DateTime CompletionDateTime { get; set; }
+        public DateTime InsertDateTime { get; set; }
+        public DateTime ErrorDateTime { get; set; }
         public bool IsInformed { get; set; }
     }
 }
