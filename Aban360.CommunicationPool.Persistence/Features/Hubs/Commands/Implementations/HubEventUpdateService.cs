@@ -18,7 +18,7 @@ namespace Aban360.CommunicationPool.Persistence.Features.Hubs.Commands.Implement
             var @params = new
             {
                 connectionId = input.ConnectionId,
-                disconnectDateTime = input.DisconnectDateTime,
+                disconnectDateTime = DateTime.Now,
             };
             await _sqlConnection.ExecuteAsync(UpdateQuery, @params);
         }

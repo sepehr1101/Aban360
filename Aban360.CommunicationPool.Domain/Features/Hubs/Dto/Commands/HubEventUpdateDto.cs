@@ -3,6 +3,9 @@
     public record HubEventUpdateDto
     {
         public string ConnectionId { get; set; }
-        public DateTime DisconnectDateTime { get; set; }
+        public HubEventUpdateDto(string connectionId)
+        {
+            ConnectionId = connectionId;
+        }
     }
 }

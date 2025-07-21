@@ -19,7 +19,7 @@ namespace Aban360.CommunicationPool.Persistence.Features.Hubs.Commands.Implement
             {
                 connectionId = input.ConnectionId,
                 userId = input.UserId,
-                connectDateTime = input.ConnectDateTime,
+                connectDateTime = DateTime.Now,
             };
             await _sqlConnection.ExecuteAsync(createQuery, @params);
         }
