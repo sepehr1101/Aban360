@@ -1,5 +1,6 @@
 using Aban360.Api.ExceptionHandlers;
 using Aban360.Api.Extensions;
+using Aban360.Api.Hubs.Implementations;
 using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,7 +32,7 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 //serilog
 builder.Services.AddSerilog(configuration);
-
+builder.Services.AddSignalR();    //todo: replace into configure signalR
 var app = builder.Build();
 //app.UsePathBase("/aban360");
 app.UseExceptionHandler("/error");
@@ -58,6 +59,8 @@ app.UseAuthorization();
 
 
 app.AddHangfireDashboard(configuration);
+configuration.AddCronjobs();
+app.MapHub<NotifyHub>("notify-hub");        //todo: replace into configure signalR
 
 app.MapControllers();
 app.Run();

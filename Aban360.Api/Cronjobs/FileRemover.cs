@@ -3,29 +3,17 @@ using Aban360.Common.Literals;
 
 namespace Aban360.Api.Cronjobs
 {
-    public interface IFileRemover
-    {
-        void DeleteOldExcelFiles();
-    }
+    internal static class FileRemover 
+    {   
+        public static void DeleteOldFiles(int tresholdDay, string filePath, string searchPattern)
+        {           
 
-    internal sealed class FileRemover : IFileRemover
-    {
-        private readonly IConfiguration _configuration;
-        public FileRemover(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-        public void DeleteOldExcelFiles()
-        {
-            var tresholdDay = int.Parse(_configuration["FileManagement:ExcelExpireDay"]);
-            var excelFilePath = _configuration["FileManagement:ExcelPath"].ToString();
-
-            if (!Directory.Exists(excelFilePath))
+            if (!Directory.Exists(filePath))
             {
                 throw new BaseException(ExceptionLiterals.NotFoundAddress);
             }
 
-            var files = Directory.GetFiles(excelFilePath, "*.xlsx", SearchOption.TopDirectoryOnly);
+            var files = Directory.GetFiles(filePath, searchPattern, SearchOption.TopDirectoryOnly);
 
             foreach (var file in files)
             {

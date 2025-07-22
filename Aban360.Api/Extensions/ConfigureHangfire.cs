@@ -1,4 +1,5 @@
-﻿using Aban360.Api.Extensions;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Api.Extensions;
 using Aban360.Api.Filters;
 using Aban360.UserPool.Domain.Constants;
 using Hangfire;
@@ -29,7 +30,7 @@ namespace Aban360.Api.Extensions
                     new HangfireDashboardJwtAuthorizationFilter(GetTokenValidationParameters(configuration), [BaseRoles.Admin, BaseRoles.Programmer])                   
                 ],
                 IgnoreAntiforgeryToken = true,
-                DashboardTitle="داشبورد Sms Hub",
+                DashboardTitle="داشبورد Aban360",
             };
             app.UseHangfireDashboard(_dashboardRoute, dashboardOptions);
         }
@@ -48,6 +49,5 @@ namespace Aban360.Api.Extensions
             };
             return tokenValidationParameters;
         }
-
     }
 }
