@@ -4,12 +4,14 @@ using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.FlatReports.Handler.Commands.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Commands;
+using Aban360.UserPool.Domain.Features.Auth.Entities;
+using Hangfire;
 
 namespace Aban360.Api.Cronjobs
 {
     public interface IReportGenerator
     {
-        Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId);
+        Task DirectExecute<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId);
     }
 
     internal sealed class ReportGenerator : IReportGenerator
@@ -26,7 +28,7 @@ namespace Aban360.Api.Cronjobs
             _serverReportsUpdateHandler = serverReportsUpdateHandler;
             _serverReportsUpdateHandler.NotNull(nameof(serverReportsUpdateHandler));
         }
-        public async Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId)
+        public async Task DirectExecute<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId)
         {
             Guid id = Guid.NewGuid();
             _serverReportsCreateHandler.Handle(new ServerReportsCreateDto(id, appUser.UserId, reportTitle, connectionId), cancellationToken);
@@ -42,6 +44,20 @@ namespace Aban360.Api.Cronjobs
             _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(id, reportPath), cancellationToken);
 
             //send events via signalR
+        }
+        public void FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId)
+        {
+            //BackgroundJob.Enqueue(job =>
+            //       job.ExecuteAsync<TReportInput, THead, TData>(
+            //           jobId,
+            //           reportInput,
+            //           userId,
+            //           reportTitle,
+            //           connectionId,
+            //           null! // Cancellation token not passed
+            //       )
+            //);
+            //BackgroundJob.Enqueue((x,y,z)=>)
         }
     }
 }
