@@ -2,8 +2,8 @@
 {
     public record WaterMeterReplacementsHeaderOutputDto
     {
-        public string FromDate { get; set; }
-        public string ToDate { get; set; }
+        public string FromDateJalali { get; set; }
+        public string ToDateJalali { get; set; }
         public string ReportDateJalali { get; set; }
         public int RecordCount { get; set; }
     }

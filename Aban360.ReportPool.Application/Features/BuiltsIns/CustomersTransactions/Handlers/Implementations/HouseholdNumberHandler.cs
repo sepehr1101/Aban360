@@ -45,7 +45,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
         private string ReduceYear(string jalaliDate)
         {                          
             DateOnly? lastDateJalali = jalaliDate.ToGregorianDateOnly();
-            if (lastDateJalali.HasValue)
+            if (!lastDateJalali.HasValue)
             {
                 throw new BaseException(ExceptionLiterals.InvalidDate);
             }

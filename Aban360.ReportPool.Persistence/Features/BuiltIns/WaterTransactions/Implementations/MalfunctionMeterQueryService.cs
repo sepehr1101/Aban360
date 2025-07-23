@@ -32,6 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (malfunctionMeterData is not null && malfunctionMeterData.Any()) ? malfunctionMeterData.Count() : 0,
+                TotalPayable = (malfunctionMeterData is not null && malfunctionMeterData.Any()) ? malfunctionMeterData.Sum(x => x.Payable) : 0
             };
             if (malfunctionMeterData is not null && !malfunctionMeterData.Any())
             {

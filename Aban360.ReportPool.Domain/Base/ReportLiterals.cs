@@ -50,7 +50,7 @@
         public static string WaterInstallationSummary{ get { return "خلاصه انشعاب آب نصب شده"; } }
         public static string SewageInstallationSummary { get { return "خلاصه انشعاب فاضلاب نصب شده"; } }
 
-        public static string WaterRequestDetail { get { return "جزئیات جلزیانشعاب آب واگذار شده"; } }
+        public static string WaterRequestDetail { get { return "جزئیات انشعاب آب واگذار شده"; } }
         public static string SewageRequestDetail { get { return "جزئیات انشعاب فاضلاب واگذار شده"; } }
         public static string WaterRequestSummary { get { return "خلاصه انشعاب آب واگذار شده"; } }
         public static string SewageRequestSummary { get { return "خلاصه انشعاب فاضلاب واگذار شده"; } }
@@ -93,7 +93,7 @@
         public static string WaterNetSalesDetail { get { return $"خلاصه {Report} جزئیات فروش خالص آب بها"; } }
         public static string WaterRawSalesDetail { get { return $"خلاصه {Report} جزئیات فروش ناخالص آب بها"; } }
         public static string WaterNetSalesSummary { get { return $"خلاصه {Report} خلاصه فروش خالص آب بها"; } }
-        public static string WaterRawSalesSummary { get { return $"خلاصه {Report} جزئیات فروش ناخالص آب بها"; } }
+        public static string WaterRawSalesSummary { get { return $"خلاصه {Report} خلاصه فروش ناخالص آب بها"; } }
 
         public static string ExcessPattern { get { return $"خلاصه {Report} مازاد الگو"; } }
         public static string WaterNetIncome { get { return $"خلاصه {Report} درآمد خالص آب بها"; } }
