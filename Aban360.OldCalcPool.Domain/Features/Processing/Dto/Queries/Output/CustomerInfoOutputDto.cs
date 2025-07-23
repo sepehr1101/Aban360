@@ -13,6 +13,7 @@
         public string SewageInstallationDateJalali { get; set; }
         public int WaterCount { get; set; }
         public int SewageCount { get; set; }
+        public int ContractualCapacity { get; set; }
 
     }
 }
