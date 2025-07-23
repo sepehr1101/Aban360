@@ -37,6 +37,5 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Implementation
                      Insert Into nerkh_{nerkhName}(date1,date2,ebt,ent,vaj,cod,olgo,[desc],o_vaj,o_vaj_faz)
                      Values(@date1,@date2,@ebt,@ent,@vaj,@code,@olgo,@desc,@oVaj,@oVajFaz)";
         }
-
     }
 }

@@ -12,25 +12,35 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
     {
         public UseStateReportQueryService(IConfiguration configuration)
             : base(configuration)
-        { 
+        {
         }
 
         public async Task<ReportOutput<UseStateReportHeaderOutputDto, UseStateReportDataOutputDto>> GetInfo(UseStateReportInputDto input)
         {
             string useStateQueryString = GetUseStateDataQuery();
-            IEnumerable<UseStateReportDataOutputDto> useStateData = await _sqlReportConnection.QueryAsync<UseStateReportDataOutputDto>(useStateQueryString, new { useStateId=input.UseStateId, fromDate=input.FromDateJalali, toDate=input.ToDateJalali , zoneIds = input.ZoneIds, fromReadingNumber=input.FromReadingNumber, toReadingNumber=input.ToReadingNumber });
+            var @params = new
+            {
+                useStateId = input.UseStateId,
+                fromDate = input.FromDateJalali,
+                toDate = input.ToDateJalali,
+                zoneIds = input.ZoneIds,
+                fromReadingNumber = input.FromReadingNumber,
+                toReadingNumber = input.ToReadingNumber
+            };
+
+            IEnumerable<UseStateReportDataOutputDto> useStateData = await _sqlReportConnection.QueryAsync<UseStateReportDataOutputDto>(useStateQueryString, @params);
             UseStateReportHeaderOutputDto useStateHeader = new UseStateReportHeaderOutputDto()
-            { 
-                TotalDebtAmount=useStateData.Sum(useState=>useState.DebtAmount),
-                FromDateJalali=input.FromDateJalali,
+            {
+                TotalDebtAmount = useStateData.Sum(useState => useState.DebtAmount),
+                FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
-                RecordCount= (useStateData is not null && useStateData.Any()) ? useStateData.Count() : 0,
+                RecordCount = (useStateData is not null && useStateData.Any()) ? useStateData.Count() : 0,
             };
 
             string useStateQuery = GetUseStateTitle();
-            string useStateTitle=await _sqlConnection.QueryFirstAsync<string>(useStateQuery,new {useStateId=input.UseStateId});
-            var result = new ReportOutput<UseStateReportHeaderOutputDto, UseStateReportDataOutputDto>(ReportLiterals.Report+" "+useStateTitle , useStateHeader, useStateData);
-            
+            string useStateTitle = await _sqlConnection.QueryFirstAsync<string>(useStateQuery, new { useStateId = input.UseStateId });
+            var result = new ReportOutput<UseStateReportHeaderOutputDto, UseStateReportDataOutputDto>(ReportLiterals.Report + " " + useStateTitle, useStateHeader, useStateData);
+
             return result;
         }
 
@@ -45,7 +55,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.UsageTitle,
                     	c.WaterDiameterTitle MeterDiameterTitle,
                     	c.RegisterDayJalali AS EventDateJalali,
-                    	0 AS DebtAmount,-
+                    	0 AS DebtAmount,
                     	TRIM(c.Address) AS Address,
                     	c.ZoneTitle,
                     	c.DeletionStateId,

@@ -96,7 +96,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
                     	c.SewageInstallDate BETWEEN @fromDate AND @toDate AND
-                    	c.ZoneId IN @zoneIds
+                    	c.ZoneId IN @zoneIds AND
                         (@fromReadingNumber IS NULL OR
 					    @toReadingNumber IS NULL OR
 					    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)";

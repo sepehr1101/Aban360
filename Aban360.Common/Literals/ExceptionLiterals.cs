@@ -51,5 +51,6 @@
         public static string NotFoundAddress => "آدرس پیدا نشد";
 
 
+        public static string InvalidPreviousDateInvoice(int day) => $"صدور قبل برای کمتر از {day} روز امکان پذیر نمی‌باشد.";
     }
 }
