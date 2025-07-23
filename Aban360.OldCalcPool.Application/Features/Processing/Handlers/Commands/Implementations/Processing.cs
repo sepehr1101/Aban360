@@ -9,6 +9,7 @@ using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
 using DNTPersianUtils.Core;
+using NetTopologySuite.Index.HPRtree;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
@@ -39,8 +40,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             int duration = GetDuration(intput.PreviousDateJalali, intput.CurrentDateJalali);
             double dailyAverage = GetDailyConsumptionAverage(consumption, duration);
         }
-
-
         private int GetConsumption(int previousNumber, int currentNumber)
         {
             return currentNumber - previousNumber;
@@ -55,10 +54,40 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         {
             return masraf / (double)duration;
         }
+        private void Validation(string previousDateJalali)
+        {
+            DateOnly? previousDate = previousDateJalali.ToGregorianDateOnly();
+            if (!previousDate.HasValue)
+            {
+                throw new BaseException(ExceptionLiterals.InvalidDate);
+            }
+            if (previousDate.Value > DateOnly.FromDateTime(DateTime.Now.AddDays(-thresholdDay)))
+            {
+                throw new BaseException(ExceptionLiterals.InvalidPreviousDateInvoice(thresholdDay));
+            }
+        }
+        private DateOnly ConvertJalaliToGregorian(string dateJalali)
+        {
+            DateOnly? grogorianDate = dateJalali.ToGregorianDateOnly();
+            if (!grogorianDate.HasValue)
+            {
+                throw new BaseException(ExceptionLiterals.InvalidDate);
+            }
 
+            return grogorianDate.Value;
+        }
+        private double CalcPartial(NerkhGetDto nerkh, DateOnly previousDate, DateOnly currentDate, double dailyAverage)
+        {
+            DateOnly fromDate = ConvertJalaliToGregorian(nerkh.Date1);
+            DateOnly toDate = ConvertJalaliToGregorian(nerkh.Date2);
 
+            DateOnly startSegment = fromDate > previousDate ? fromDate : previousDate;
+            DateOnly endSegment = toDate < currentDate ? toDate : currentDate;
 
-
+            int duration = endSegment.DayNumber - startSegment.DayNumber;
+            double partialConsumption = duration * dailyAverage;
+            return partialConsumption;
+        }
         //
         public async Task Handle(MeterInfoInputDto input, CancellationToken cancellationToken)
         {
@@ -78,18 +107,21 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                                                                                                                        meterInfo.PreviousDateJalali,
                                                                                                                        input.CurrentDateJalali,
                                                                                                                        monthlyAverageConsumption));
+            Tarif_Ab(allNerkh, dailyAverage, meterInfo.PreviousDateJalali, input.CurrentDateJalali);
+
         }
-        private void Validation(string previousDateJalali)
+
+        private void Tarif_Ab(IEnumerable<NerkhGetDto> allNerkh, double dailyAverage, string previousDateJalali, string currentDateJalali)
         {
-            DateOnly? previousDate = previousDateJalali.ToGregorianDateOnly();
-            if (!previousDate.HasValue)
+            DateOnly previousDate = ConvertJalaliToGregorian(previousDateJalali);
+            DateOnly currentDate = ConvertJalaliToGregorian(currentDateJalali);
+
+            List<string> s = new List<string>();
+            foreach (var item in allNerkh)
             {
-                throw new BaseException(ExceptionLiterals.InvalidDate);
-            }
-            if (previousDate.Value > DateOnly.FromDateTime(DateTime.Now.AddDays(-thresholdDay)))
-            {
-                throw new BaseException(ExceptionLiterals.InvalidPreviousDateInvoice(thresholdDay));
+                double partialConsumption = CalcPartial(item, previousDate, currentDate, dailyAverage);
             }
         }
+       
     }
 }
