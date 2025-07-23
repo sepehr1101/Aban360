@@ -13,5 +13,6 @@
         public string? Desc { get; set; }
         public string? OVaj { get; set; }
         public string? OVajFaz { get; set; }
+        public int Bodjeh_new { get; set; }
     }
 }

@@ -17,4 +17,9 @@
     <ProjectReference Include="..\Aban360.OldCalcPool.Domain\Aban360.OldCalcPool.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Processing\Commands\Contracts\" />
+    <Folder Include="Features\Processing\Commands\Implementations\" />
+  </ItemGroup>
+
 </Project>
