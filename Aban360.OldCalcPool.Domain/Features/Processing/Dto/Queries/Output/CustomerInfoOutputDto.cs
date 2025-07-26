@@ -16,6 +16,8 @@
         public int ContractualCapacity { get; set; }
         public int HouseholdNumber { get; set; }
         public string ReadingNumber { get; set; }
+        public string VillageId { get; set; }
+        public bool IsSpecial { get; set; }
 
     }
 }

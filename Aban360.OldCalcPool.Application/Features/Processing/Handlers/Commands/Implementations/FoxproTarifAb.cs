@@ -8,17 +8,16 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 {
     public static class FoxproTarifAb
     {
-        static int noe_ensh_ = 1;//UsageId
-        static int fix_mas_ = 0;//Contractual Capacity
+        static int noe_ensh_ = 1;
+        static int fix_mas_ = 0;
         static double AB1 = 1, VAJ_ = 1, O_VAJ_ = 1;
         static double mas1_ = 12.3, O_AB1 = 1, mas_fi_roz;
 
         //consumptionAverage -->rate                      //duration   //mas1->masrag maskoni
         static double rate_, olgoab, noe_va_, V_vaj1_7, V_vaj2_7, mod1_, mas1_7, mas2_7;//mas2-> masraf tejari
-        static bool Edareh_k_;//isspecial
+        static bool Edareh_k_;
         static double noe_va, AB1_7, Mas1_7, v_vaj1_7, AB2_7, Mas2_7, v_vaj2_7;
-        static //branchtype
-        NerkhGetDto TMP_NERKH;
+        static NerkhGetDto TMP_NERKH;
         static int oldvaj, tedad_khane_;
         //nerkh -> oldvaj
 
@@ -30,26 +29,26 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         static double eted_ejraei, vAb_sevom1, VZFASL_olgo, V_FASBAHA1, Abresani1;
         static double VzTadil_1, ab_takh, rosta_calc, first_olgo, abfar_x, vNewAb;
 
-        static string VillageId = "12";// members.villageid;     client->vill..
-        static string Eshtrak = "12000";// members.eshtrak;    reading
+        static string VillageId;
+        static string Eshtrak;
         static double jarime_, V_AB_10, VZARIB_D1, takhf_fasL, takhfif_fa, Gr_hes_ab;
         static double TMP_VZFASL, Bmas_fi_roz, Bmas2_7, Bmas1_7, v_bodjeh01, masraf_;
         static double VAB10, VAB20, Tmp_nFaz;
 
-        static int zrb_bodjeh;// TMP_NERKH.zrb_bodjeh        bodje_new
-        static int tedad_mas;//members.tedad_mas         domestic
-        static string date_Ga_, date_Fe_;  //curentday,nextday
+        static int zrb_bodjeh;
+        static int tedad_mas;
+        static string date_Ga_, date_Fe_;
         static string c20;//members.c20   
-        static string emrooz;//datetime.now.topershian
-        static bool TABSARE2;//TMP_NERKH.TABSARE2       ---
+        static string emrooz;
+        static bool TABSARE2;
         static bool drsd10;
-        static bool zaribfasl;// TMP_NERKH.zaribfasl    
-        static bool zTadil;// TMP_NERKH.zTadil         tadil
-        static double radif;// members.radif           customer/..
-        static string inst_fas;// members.inst_fas   sewage_installation
-        static double fazlab;// TMP_NERKH.fazlab    
-        static int ted_khane;// members.ted_khane   household
-        static int TEDAD_vahd;// members.TEDAD_vahd  other
+        static bool zaribfasl;   
+        static bool zTadil;
+        static double radif;
+        static string inst_fas;
+        static double fazlab;
+        static int ted_khane;
+        static int TEDAD_vahd;
         static double Total_Ab = 0;
         private static void MappingProperties(NerkhGetDto currentNerkh, CustomerInfoOutputDto customerInfo)
         {
@@ -58,9 +57,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             TABSARE2 = currentNerkh.Tabsare2;
             zaribfasl = currentNerkh.ZaribFasl;
             emrooz = DateTime.Now.ToShortPersianDateString();
-            zrb_bodjeh = currentNerkh.ZaribBodje ? 1 : 0;
+            zrb_bodjeh = currentNerkh.Bodjeh_new;
             oldvaj = (int.Parse)(currentNerkh.OVaj);
             rate_ = currentNerkh.PartialConsumption;
+            date_Ga_ = currentNerkh.Date1;
+            date_Fe_ = currentNerkh.Date2;
 
             TEDAD_vahd = customerInfo.OtherUnit;
             tedad_khane_ = customerInfo.HouseholdNumber;
@@ -71,14 +72,17 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             noe_ensh_ = customerInfo.UsageId;
             fix_mas_ = customerInfo.ContractualCapacity;
             noe_va_ = customerInfo.BranchType;
+            VillageId = customerInfo.VillageId;
+            Edareh_k_ = customerInfo.IsSpecial;
+
         }
 
         public static double CalclNerkhAb(IEnumerable<NerkhGetDto> nerkhs, CustomerInfoOutputDto customerInfo)
         {
             foreach (NerkhGetDto item in nerkhs)
             {
-                MappingProperties(item,customerInfo);
-                
+                MappingProperties(item, customerInfo);
+
                 TMP_NERKH = item;
                 if (mod1_ > 0)//line->1036
                 {
