@@ -64,7 +64,12 @@ namespace Aban360.ReportPool.Persistence.Migrations
                 .WithColumn("CompletionDateTime").AsDateTime().Nullable()
                 .WithColumn("InsertDateTime").AsDateTime().Nullable()
                 .WithColumn("ErrorDateTime").AsDateTime().Nullable()
-                .WithColumn("IsInformed").AsBoolean();
+                .WithColumn("IsInformed").AsBoolean()
+                .WithColumn("HeaderType").AsAnsiString(255).Nullable()
+                .WithColumn("DataType").AsAnsiString(255).Nullable()
+                .WithColumn("ReportInputType").AsAnsiString(255).Nullable()
+                .WithColumn("ReportInputJson").AsAnsiString(int.MaxValue).Nullable()
+                .WithColumn("HandlerKey").AsAnsiString(255).Nullable();
         }
     }
 }

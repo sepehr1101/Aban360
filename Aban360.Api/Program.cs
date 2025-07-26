@@ -60,7 +60,7 @@ app.UseAuthorization();
 
 app.AddHangfireDashboard(configuration);
 configuration.AddCronjobs();
-app.MapHub<NotifyHub>("notify-hub");        //todo: replace into configure signalR
+app.MapHub<NotifyHub>("/notify-hub");        //todo: replace into configure signalR
 
 app.MapControllers();
 app.Run();

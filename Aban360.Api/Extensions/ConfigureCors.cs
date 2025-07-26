@@ -13,7 +13,6 @@
                         //.WithOrigins("http://*.aban360.ir","https://*.aban360.ir", "http://*.5ch.ir", "http://192.168.13.50") //Note:  The URL must be specified without a trailing slash (/).
                         .AllowAnyMethod()
                         .AllowAnyHeader()
-                        .AllowCredentials()
                         .SetIsOriginAllowed((host) => true)
                         //.AllowCredentials()
                         .SetPreflightMaxAge(TimeSpan.FromMinutes(120))
