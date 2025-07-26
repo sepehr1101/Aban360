@@ -10,9 +10,10 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Commands.Implement
     {
         public ServerReportsCreateService(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+        }
 
-        public async void Create(ServerReportsCreateDto input)
+        public async Task Create(ServerReportsCreateDto input)
         {
             string createQuery = GetServerReportsCreateQuery();
             var @params = new
@@ -29,8 +30,9 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Commands.Implement
 
         private string GetServerReportsCreateQuery()
         {
-            return @"Insert Into[Aban360].ReportPool.ServerReports(Id,UserId,ReportName,ConnectionId,IsInformed,InsertDateTime)
-                    Values(@id,@userId,@reportName,@connectionId,@isInformed,@insertDateTime)";
+            return @"INSERT INTO [Aban360].ReportPool.ServerReports(
+                            Id, UserId,  ReportName,  ConnectionId,  IsInformed,  InsertDateTime, HeaderType, )
+                    VALUES(@id, @userId, @reportName, @connectionId, @isInformed, @insertDateTime)";
         }
     }
 }

@@ -4,6 +4,6 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Commands.Contracts
 {
     public interface IServerReportsCreateService
     {
-        void Create(ServerReportsCreateDto input);
+        Task Create(ServerReportsCreateDto input);
     }
 }

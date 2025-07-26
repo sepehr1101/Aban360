@@ -6,12 +6,12 @@
         public Guid UserId { get; set; }
         public string ReportName { get; set; }
         public string ConnectionId { get; set; }
-        public ServerReportsCreateDto(Guid _Id,Guid _UserId,string _ReportName,string _ConnectionId)
+        public ServerReportsCreateDto(Guid id,Guid userId,string reportName,string connectionId)
         {
-            Id = _Id;
-            UserId = _UserId;
-            ReportName = _ReportName;   
-            ConnectionId = _ConnectionId;
+            Id = id;
+            UserId = userId;
+            ReportName = reportName;   
+            ConnectionId = connectionId;
         }
     }
 }

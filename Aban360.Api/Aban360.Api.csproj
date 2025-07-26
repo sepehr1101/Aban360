@@ -112,7 +112,6 @@
     <Folder Include="AppData\Excels\" />
     <Folder Include="Controllers\V1\ClaimPool\Registration\Commands\" />
     <Folder Include="Controllers\V1\ClaimPool\Registration\Queries\" />
-    <Folder Include="Controllers\V1\CommunicationPool\Commands\" />
   </ItemGroup>
 
   <ItemGroup>
