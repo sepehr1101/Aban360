@@ -33,7 +33,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                 		n.[desc] AS [Desc],
                 		n.o_vaj AS OVaj,
                 		n.o_vaj_faz AS OVajFaz,
-                        n.bodjeh_new AS Bodjeh_new
+                        n.bodjeh_new AS Bodjeh_new,
+						n.ztadil AS ZaribTadil,
+						n.tabsare2 AS Tabsare2,
+						n.zaribfasl AS ZaribFasl,
+						n.zarib_d AS ZaribBodje
                 	From [OldCalc].dbo.nerkh_{nerkh} n
                 	Where n.Id=@id";
         }

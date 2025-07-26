@@ -14,5 +14,13 @@
         public string? OVaj { get; set; }
         public string? OVajFaz { get; set; }
         public int Bodjeh_new { get; set; }
+        public string ZaribTadil { get; set; }
+        public bool Tabsare2 { get; set; }
+        public bool ZaribFasl { get; set; }
+        public bool ZaribBodje { get; set; }
+
+        public int Duration { get; set; }
+        public double  PartialConsumption { get; set; }
+       
     }
 }

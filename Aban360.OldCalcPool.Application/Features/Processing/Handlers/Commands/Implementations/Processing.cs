@@ -76,7 +76,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             return grogorianDate.Value;
         }
-        private double CalcPartial(NerkhGetDto nerkh, DateOnly previousDate, DateOnly currentDate, double dailyAverage)
+        private (int,double) CalcPartial(NerkhGetDto nerkh, DateOnly previousDate, DateOnly currentDate, double dailyAverage)
         {
             DateOnly fromDate = ConvertJalaliToGregorian(nerkh.Date1);
             DateOnly toDate = ConvertJalaliToGregorian(nerkh.Date2);
@@ -86,7 +86,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             int duration = endSegment.DayNumber - startSegment.DayNumber;
             double partialConsumption = duration * dailyAverage;
-            return partialConsumption;
+            return (duration, partialConsumption);
         }
         //
         public async Task Handle(MeterInfoInputDto input, CancellationToken cancellationToken)
@@ -107,20 +107,21 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                                                                                                                        meterInfo.PreviousDateJalali,
                                                                                                                        input.CurrentDateJalali,
                                                                                                                        monthlyAverageConsumption));
-            Tarif_Ab(allNerkh, dailyAverage, meterInfo.PreviousDateJalali, input.CurrentDateJalali);
+            Tarif_Ab(allNerkh, dailyAverage, meterInfo.PreviousDateJalali, input.CurrentDateJalali,customerInfo);
 
         }
 
-        private void Tarif_Ab(IEnumerable<NerkhGetDto> allNerkh, double dailyAverage, string previousDateJalali, string currentDateJalali)
+        private void Tarif_Ab(IEnumerable<NerkhGetDto> allNerkh, double dailyAverage, string previousDateJalali, string currentDateJalali, CustomerInfoOutputDto customerInfo)
         {
             DateOnly previousDate = ConvertJalaliToGregorian(previousDateJalali);
             DateOnly currentDate = ConvertJalaliToGregorian(currentDateJalali);
 
-            List<string> s = new List<string>();
             foreach (var item in allNerkh)
             {
-                double partialConsumption = CalcPartial(item, previousDate, currentDate, dailyAverage);
+                (item.Duration, item.PartialConsumption) =  CalcPartial(item, previousDate, currentDate, dailyAverage);
             }
+
+            var result = FoxproTarifAb.CalclNerkhAb(allNerkh,customerInfo);
         }
        
     }
