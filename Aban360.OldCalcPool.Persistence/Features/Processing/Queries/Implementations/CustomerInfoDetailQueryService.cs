@@ -41,7 +41,12 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	m.inst_ab as WaterInstallationDateJalali,
                     	m.inst_fas as SewageInstallationDateJalali,
                     	m.n_ab as WaterCount,
-                    	m.n_faz as SewageCount
+                    	m.n_faz as SewageCount,
+						m.fix_mas as ContractualCapacity,
+                        m.ted_khane as HouseholdNumber,
+						m.eshtrak as ReadingNumber,
+                        m.VillageId as VillageId,
+						m.edareh_k as IsSpecial
                     From [{zoneId}].dbo.members m
                     Where
                     	m.bill_id=@billId";
