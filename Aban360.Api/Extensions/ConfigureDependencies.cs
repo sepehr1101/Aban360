@@ -29,6 +29,7 @@ using Aban360.CommunicationPool.Persistence.Extensions;
 using Aban360.Api.Cronjobs;
 using Aban360.OldCalcPool.Persistence.Extensions;
 using Aban360.OldCalcPool.Application.Extentions;
+using Aban360.SystemPool.Persistence.Extensions;
 
 namespace Aban360.Api.Extensions
 {
@@ -106,6 +107,7 @@ namespace Aban360.Api.Extensions
         private static void AddSystemPoolDI(this IServiceCollection services)
         {
             services.AddSystemPoolApplicationInjections();
+            services.AddSystemPoolPersistenceInjections(); 
         }
 
         private static void AddInstallationPoolDI(this IServiceCollection services)

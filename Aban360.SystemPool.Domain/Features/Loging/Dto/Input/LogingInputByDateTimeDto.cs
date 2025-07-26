@@ -1,0 +1,18 @@
+﻿using Aban360.SystemPool.Domain.Contants;
+
+namespace Aban360.SystemPool.Domain.Features.Loging.Dto.Input
+{
+    public record LogingInputByDateTimeDto
+    {
+        public DateTime FromDateTime { get; set; }
+        public DateTime ToDateTime { get; set; }
+        public LogLevelEnum LogLevel { get; set; }
+
+        public LogingInputByDateTimeDto(DateTime _from,DateTime _to,LogLevelEnum _loglevel)
+        {
+            FromDateTime = _from;
+            ToDateTime = _to;
+            LogLevel = _loglevel;
+        }
+    }
+}

@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
     <ProjectReference Include="..\Aban360.SystemPool.Domain\Aban360.SystemPool.Domain.csproj" />
+    <ProjectReference Include="..\Aban360.SystemPool.Persistence\Aban360.SystemPool.Persistence.csproj" />
   </ItemGroup>
 
 </Project>
