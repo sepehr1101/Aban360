@@ -21,6 +21,8 @@ namespace Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Imple
 
         public async Task<IEnumerable<LoggingOutputDto>> Handle(LoggingInputByStringDto inputDto, CancellationToken cancellationToken)
         {
+            //todo 1: Do not use Direct BaseException
+            //todo2: transfer data or time formatting to SQL
             DateOnly? from = inputDto.FromDate.ToGregorianDateOnly();
             DateOnly? to = inputDto.ToDate.ToGregorianDateOnly();
             if (!from.HasValue || !to.HasValue)
