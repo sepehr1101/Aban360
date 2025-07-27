@@ -21,13 +21,13 @@ namespace Aban360.Api.Hubs.Implementations
 
         public override async Task OnConnectedAsync()
         {
-            await _eventCreateHandler.Handle(new HubEventCreateDto(Context.ConnectionId, Guid.NewGuid()), CancellationToken.None);
+            //await _eventCreateHandler.Handle(new HubEventCreateDto(Context.ConnectionId, Guid.NewGuid()), CancellationToken.None);
             await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            await _eventUpdateHandler.Handle(new HubEventUpdateDto(Context.ConnectionId), CancellationToken.None);
+            //await _eventUpdateHandler.Handle(new HubEventUpdateDto(Context.ConnectionId), CancellationToken.None);
             await base.OnDisconnectedAsync(exception);
         }
     }

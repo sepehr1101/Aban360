@@ -28,8 +28,8 @@ namespace Aban360.SystemPool.Application.Features.Loging.Handlers.Queries.Implem
                 throw new BaseException(ExceptionLiterals.InvalidDate);
             }
 
-            string fromDateTimeString = $"{from.Value} {inputDto.FromTime}";
-            string toDateTimeString = $"{to.Value} {inputDto.ToTime}";
+            string fromDateTimeString = $"{from.Value:yyyy/MM/dd} {inputDto.FromTime}";
+            string toDateTimeString = $"{to.Value:yyyy/MM/dd} {inputDto.ToTime}";
 
             DateTime fromDateTime = DateTime.ParseExact(fromDateTimeString, "yyyy/MM/dd HH:mm", CultureInfo.InvariantCulture);
             DateTime toDateTime = DateTime.ParseExact(toDateTimeString, "yyyy/MM/dd HH:mm", CultureInfo.InvariantCulture);

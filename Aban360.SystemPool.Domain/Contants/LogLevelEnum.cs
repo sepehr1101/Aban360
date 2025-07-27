@@ -1,6 +1,6 @@
 ﻿namespace Aban360.SystemPool.Domain.Contants
 {
-    public enum LogLevelEnum
+    public enum LogLevelEnum:short
     {
         Trace = 1,
         Debug = 2,

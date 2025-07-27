@@ -23,6 +23,7 @@ namespace Aban360.Api.Controllers.V1.SystemPool.Loging.Queries
         [Route("get")]
         [HttpPost, HttpGet]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<LogingOutputDto>>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> Get(LogingInputByStringDto inputDto, CancellationToken cancellation)
         {
             IEnumerable<LogingOutputDto> result = await _logingHandler.Handle(inputDto, cancellation);

@@ -21,7 +21,7 @@ namespace Aban360.SystemPool.Persistence.Features.Loging.Queries.Implementations
             {
                 fromDateTime = input.FromDateTime,
                 toDateTime = input.ToDateTime,
-                logLevel = input.LogLevel
+                logLevel = input.LogLevel.ToString()
             };
             IEnumerable<LogingOutputDto> result = await _sqlConnection.QueryAsync<LogingOutputDto>(logingQueryString, @params);
             return result;

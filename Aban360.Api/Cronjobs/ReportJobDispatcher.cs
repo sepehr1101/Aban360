@@ -8,7 +8,7 @@ namespace Aban360.Api.Cronjobs
         private readonly IServiceProvider _serviceProvider;
         //private readonly IAppUserResolver _appUserResolver;
 
-        public ReportJobDispatcher(IServiceProvider serviceProvider/*, IAppUserResolver appUserResolver*/)
+        public ReportJobDispatcher(IServiceProvider serviceProvider /*,IAppUserResolver appUserResolver*/)
         {
             _serviceProvider = serviceProvider;
             //_appUserResolver = appUserResolver;
