@@ -2,7 +2,7 @@
 
 namespace Aban360.SystemPool.Domain.Features.Loging.Dto.Input
 {
-    public record LogingInputByStringDto
+    public record LoggingInputByStringDto
     {
         public string FromDate { get; set; }
         public string ToDate { get; set; }

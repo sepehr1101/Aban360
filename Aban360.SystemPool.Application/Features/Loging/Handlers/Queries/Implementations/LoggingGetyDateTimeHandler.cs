@@ -10,16 +10,16 @@ using System.Globalization;
 
 namespace Aban360.SystemPool.Application.Features.Loging.Handlers.Queries.Implementations
 {
-    internal sealed class LogingGetyDateTimeHandler : ILogingGetyDateTimeHandler
+    internal sealed class LoggingGetyDateTimeHandler : ILoggingGetyDateTimeHandler
     {
-        private readonly ILogingGetByDateTimeQueryService _logingGetByDateTimeService;
-        public LogingGetyDateTimeHandler(ILogingGetByDateTimeQueryService logingGetByDateTimeService)
+        private readonly ILoggingGetByDateTimeQueryService _loggingGetByDateTimeService;
+        public LoggingGetyDateTimeHandler(ILoggingGetByDateTimeQueryService loggingGetByDateTimeService)
         {
-            _logingGetByDateTimeService = logingGetByDateTimeService;
-            _logingGetByDateTimeService.NotNull(nameof(logingGetByDateTimeService));
+            _loggingGetByDateTimeService = loggingGetByDateTimeService;
+            _loggingGetByDateTimeService.NotNull(nameof(loggingGetByDateTimeService));
         }
 
-        public async Task<IEnumerable<LogingOutputDto>> Handle(LogingInputByStringDto inputDto, CancellationToken cancellationToken)
+        public async Task<IEnumerable<LoggingOutputDto>> Handle(LoggingInputByStringDto inputDto, CancellationToken cancellationToken)
         {
             DateOnly? from = inputDto.FromDate.ToGregorianDateOnly();
             DateOnly? to = inputDto.ToDate.ToGregorianDateOnly();
@@ -34,7 +34,7 @@ namespace Aban360.SystemPool.Application.Features.Loging.Handlers.Queries.Implem
             DateTime fromDateTime = DateTime.ParseExact(fromDateTimeString, "yyyy/MM/dd HH:mm", CultureInfo.InvariantCulture);
             DateTime toDateTime = DateTime.ParseExact(toDateTimeString, "yyyy/MM/dd HH:mm", CultureInfo.InvariantCulture);
 
-            IEnumerable<LogingOutputDto> result = await _logingGetByDateTimeService.Get(new LogingInputByDateTimeDto(fromDateTime, toDateTime, inputDto.LogLevel));
+            IEnumerable<LoggingOutputDto> result = await _loggingGetByDateTimeService.Get(new LoggingInputByDateTimeDto(fromDateTime, toDateTime, inputDto.LogLevel));
             result.ForEach(x =>
             {
                 string date = x.DateTimeGrogorian.ToString("yyyy/MM/dd");

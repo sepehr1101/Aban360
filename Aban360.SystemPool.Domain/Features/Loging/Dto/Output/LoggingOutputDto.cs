@@ -1,6 +1,6 @@
 ﻿namespace Aban360.SystemPool.Domain.Features.Loging.Dto.Output
 {
-    public record LogingOutputDto
+    public record LoggingOutputDto
     {
         public DateTime DateTimeGrogorian { get; set; }
         public string DateJalali { get; set; }
