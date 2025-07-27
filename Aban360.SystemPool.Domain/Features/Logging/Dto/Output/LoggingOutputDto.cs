@@ -1,4 +1,4 @@
-﻿namespace Aban360.SystemPool.Domain.Features.Loging.Dto.Output
+﻿namespace Aban360.SystemPool.Domain.Features.Logging.Dto.Output
 {
     public record LoggingOutputDto
     {

@@ -1,12 +1,12 @@
 ﻿using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Aban360.SystemPool.Application.Features.Loging.Handlers.Queries.Conracts;
-using Aban360.SystemPool.Domain.Features.Loging.Dto.Input;
-using Aban360.SystemPool.Domain.Features.Loging.Dto.Output;
+using Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Conracts;
+using Aban360.SystemPool.Domain.Features.Logging.Dto.Input;
+using Aban360.SystemPool.Domain.Features.Logging.Dto.Output;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Aban360.Api.Controllers.V1.SystemPool.Loging.Queries
+namespace Aban360.Api.Controllers.V1.SystemPool.Logging.Queries
 {
     [Route("v1/logging")]
     public class LoggingGetByDateTimeController : BaseController

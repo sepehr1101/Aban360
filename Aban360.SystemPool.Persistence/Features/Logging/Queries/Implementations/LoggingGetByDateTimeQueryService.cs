@@ -1,11 +1,11 @@
 ﻿using Aban360.Common.Db.Dapper;
-using Aban360.SystemPool.Domain.Features.Loging.Dto.Input;
-using Aban360.SystemPool.Domain.Features.Loging.Dto.Output;
-using Aban360.SystemPool.Persistence.Features.Loging.Queries.Contracts;
+using Aban360.SystemPool.Domain.Features.Logging.Dto.Input;
+using Aban360.SystemPool.Domain.Features.Logging.Dto.Output;
+using Aban360.SystemPool.Persistence.Features.Logging.Queries.Contracts;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
-namespace Aban360.SystemPool.Persistence.Features.Loging.Queries.Implementations
+namespace Aban360.SystemPool.Persistence.Features.Logging.Queries.Implementations
 {
     internal sealed class LoggingGetByDateTimeQueryService : AbstractBaseConnection, ILoggingGetByDateTimeQueryService
     {
