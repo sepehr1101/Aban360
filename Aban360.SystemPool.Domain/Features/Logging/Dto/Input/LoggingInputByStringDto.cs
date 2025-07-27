@@ -1,8 +1,8 @@
 ﻿using Aban360.SystemPool.Domain.Contants;
 
-namespace Aban360.SystemPool.Domain.Features.Loging.Dto.Input
+namespace Aban360.SystemPool.Domain.Features.Logging.Dto.Input
 {
-    public record LogingInputByStringDto
+    public record LoggingInputByStringDto
     {
         public string FromDate { get; set; }
         public string ToDate { get; set; }

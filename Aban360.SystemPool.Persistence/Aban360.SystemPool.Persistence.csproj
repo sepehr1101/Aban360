@@ -17,4 +17,8 @@
     <ProjectReference Include="..\Aban360.SystemPool.Domain\Aban360.SystemPool.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Loging\" />
+  </ItemGroup>
+
 </Project>
