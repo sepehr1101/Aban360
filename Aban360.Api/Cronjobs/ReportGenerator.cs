@@ -31,7 +31,8 @@ namespace Aban360.Api.Cronjobs
         public async Task DirectExecute<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId)
         {
             Guid id = Guid.NewGuid();
-            _serverReportsCreateHandler.Handle(new ServerReportsCreateDto(id, appUser.UserId, reportTitle, connectionId), cancellationToken);
+            ServerReportsCreateDto serverReportsCreateDto = CreateServerReportDto(reportInput, GetData, appUser, reportTitle, connectionId);
+            _serverReportsCreateHandler.Handle(serverReportsCreateDto, cancellationToken);
 
 
             //Sample:  await GenerateReports.FireAndInform(inputDto, cancellationToken, _emptyUnit.Handle);
@@ -58,6 +59,14 @@ namespace Aban360.Api.Cronjobs
             //       )
             //);
             //BackgroundJob.Enqueue((x,y,z)=>)
+        }
+        private ServerReportsCreateDto CreateServerReportDto<TReportInput, THead, TData>(TReportInput reportInput, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId)
+        {
+            ServerReportsCreateDto serverReportsCreateDto = new()
+            {
+
+            };
+            return serverReportsCreateDto;
         }
     }
 }
