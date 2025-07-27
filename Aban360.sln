@@ -244,6 +244,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aban360.OldCalcPool.Domain"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aban360.OldCalcPool.Persistence", "Aban360.OldCalcPool.Persistence\Aban360.OldCalcPool.Persistence.csproj", "{85898565-EE0C-4D69-8026-D06DAE7B12AF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aban360.SystemPool.Persistence", "Aban360.SystemPool.Persistence\Aban360.SystemPool.Persistence.csproj", "{E5A0A30D-F48D-4B4C-913F-3861D7A6C6C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -518,6 +520,10 @@ Global
 		{85898565-EE0C-4D69-8026-D06DAE7B12AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85898565-EE0C-4D69-8026-D06DAE7B12AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85898565-EE0C-4D69-8026-D06DAE7B12AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5A0A30D-F48D-4B4C-913F-3861D7A6C6C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5A0A30D-F48D-4B4C-913F-3861D7A6C6C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5A0A30D-F48D-4B4C-913F-3861D7A6C6C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5A0A30D-F48D-4B4C-913F-3861D7A6C6C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -639,6 +645,7 @@ Global
 		{03197B40-4900-4522-B976-A6D741E6752D} = {814B3D59-0FFE-4CBB-86A0-97F477E63DB6}
 		{2BDC1D13-E7E4-4C62-A6D4-D0592EAB6807} = {814B3D59-0FFE-4CBB-86A0-97F477E63DB6}
 		{85898565-EE0C-4D69-8026-D06DAE7B12AF} = {814B3D59-0FFE-4CBB-86A0-97F477E63DB6}
+		{E5A0A30D-F48D-4B4C-913F-3861D7A6C6C2} = {5BD280BB-7CBF-47D0-AE94-36110DD02A44}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C0F258BB-DDA6-4E35-A9D0-53DD876EE11C}
