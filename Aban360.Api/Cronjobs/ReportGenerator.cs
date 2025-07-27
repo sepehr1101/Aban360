@@ -6,11 +6,8 @@ using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Commands;
 using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Queries;
 using Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Contracts;
-using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Hangfire;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using System.Threading.Tasks;
 
 namespace Aban360.Api.Cronjobs
 {
@@ -18,7 +15,6 @@ namespace Aban360.Api.Cronjobs
     {
         Task DirectExecute<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId);
         Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId);
-
     }
 
     internal sealed class ReportGenerator : IReportGenerator
@@ -45,13 +41,13 @@ namespace Aban360.Api.Cronjobs
             _serverReportsGetByIdServices.NotNull(nameof(serverReportsGetByIdServices));
 
             _serviceProvider = serviceProvider;
-
+            _serviceProvider.NotNull(nameof(serviceProvider));
         }
         public async Task DirectExecute<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId)
         {
             Guid id = Guid.NewGuid();
             ServerReportsCreateDto serverReportsCreateDto = CreateServerReportDto(id, reportInput, GetData, appUser, reportTitle, connectionId);
-            _serverReportsCreateHandler.Handle(serverReportsCreateDto, cancellationToken);
+            await _serverReportsCreateHandler.Handle(serverReportsCreateDto, cancellationToken);
 
 
             //Sample:  await GenerateReports.FireAndInform(inputDto, cancellationToken, _emptyUnit.Handle);
@@ -69,14 +65,19 @@ namespace Aban360.Api.Cronjobs
         {
             ServerReportsCreateDto serverReportsCreateDto = CreateServerReportDto(Guid.NewGuid(), reportInput, GetData, appUser, reportTitle, connectionId);
             await _serverReportsCreateHandler.Handle(serverReportsCreateDto, cancellationToken);
+            BackgroundJob.Enqueue(() => DoFireAndInform(serverReportsCreateDto));
+            //await DoFireAndInform(serverReportsCreateDto);
+        }
 
+        private async Task DoFireAndInform(ServerReportsCreateDto serverReportsCreateDto)
+        {
             ServerReportsGetByIdDto serverReportsGetByIdDto = await _serverReportsGetByIdServices.GetById(serverReportsCreateDto.Id);
 
             var interfaceType = AppDomain.CurrentDomain
-         .GetAssemblies()
-         .SelectMany(a => a.GetTypes())
-         .FirstOrDefault(t => t.IsInterface && t.FullName == serverReportsGetByIdDto.HandlerKey)
-         ?? throw new Exception($"Interface '{serverReportsGetByIdDto.HeaderType}' not found.");
+             .GetAssemblies()
+             .SelectMany(a => a.GetTypes())
+             .FirstOrDefault(t => t.IsInterface && t.FullName == serverReportsGetByIdDto.HandlerKey)
+                 ?? throw new Exception($"Interface '{serverReportsGetByIdDto.HandlerKey}' not found.");
 
             var handlerInstance = _serviceProvider.GetRequiredService(interfaceType);
 
@@ -103,7 +104,7 @@ namespace Aban360.Api.Cronjobs
 
             var reportOutputType = typeof(ReportOutput<,>).MakeGenericType(outputHeaderDtoType, outputDataDtoType);
 
-            var result = methodName.Invoke(handlerInstance, new object[] { data, cancellationToken }) as Task;
+            var result = methodName.Invoke(handlerInstance, [ data ]) as Task;
             await result;
 
             var resultProperty = result.GetType().GetProperty("Result");
@@ -117,11 +118,10 @@ namespace Aban360.Api.Cronjobs
 
                 string reportPath = await ExcelManagement.ExportToExcelAsync(reportHeader, reportData, serverReportsGetByIdDto.ReportName);
                 _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(serverReportsGetByIdDto.Id, reportPath), cancellationToken);
-
             }
-
-
+            //inform user via signalR
         }
+
         private ServerReportsCreateDto CreateServerReportDto<TReportInput, THead, TData>(Guid id, TReportInput reportInput, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId)
         {
             ServerReportsCreateDto serverReportsCreateDto = new()
