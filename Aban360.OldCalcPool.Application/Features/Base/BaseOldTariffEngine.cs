@@ -1,11 +1,30 @@
 ﻿using Aban360.OldCalcPool.Application.Features.Base;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
+using org.matheval;
 
 namespace Aban360.CalculationPool.Application.Features.Base
 {
     internal class BaseOldTariffEngine : BaseExpressionCalculator
     {
         //todo: Do not use 'BaseException' directy
+
+        double Ab = 0;
+        double O_Ab = 0;
+        double mas_fi_roz;
+        double duration;
+        double mas1_7, mas2_7;
+        /// <summary>
+        /// mod1_ : duration
+        /// mas1_ : PartialConsumption 
+        /// noe_ensh : UsageId
+        /// fix_mas : ContractualCapacity
+        /// noe_va : BranchType
+        /// rate_ : monthlyConsumption
+        /// </summary>
+
+
 
         /// <summary>
         /// تنها تابع با دسترسی پابلیک بابت محاسبه تک رکورد جدول نرخ
@@ -22,13 +41,124 @@ namespace Aban360.CalculationPool.Application.Features.Base
         {
             throw new NotImplementedException();
         }
+        private long CalcVajExpression(string formula, double x)
+        {
+            object parameters = new { X = x };
+            Expression expression = GetExpression(formula, parameters);
+            long value = expression.Eval<long>();
+            return value;
+        }
+        private bool IsDomestic(int usageId)
+        {
+            List<int> condition = new List<int> { 0, 1, 3 };
+            if (condition.Contains(usageId))
+                return true;
+
+            return false;
+        }
+        private bool IsDomesticWithoutUnspecified(int usageId)
+        {
+            List<int> condition = new List<int> { 1, 3 };
+            if (condition.Contains(usageId))
+                return true;
+
+            return false;
+        }
+        private bool IsNotReligious(int usageId)
+        {
+            List<int> condition = new List<int> { 10, 12, 13, 32, 29 };
+            if (!condition.Contains(usageId))
+                return true;
+
+            return false;
+        }
+        private bool IsReligious(int usageId)
+        {
+            List<int> condition = new List<int> { 10, 12, 13, 32, 29 };
+            if (condition.Contains(usageId))
+                return true;
+
+            return false;
+        }
+        private bool IsNotConstruction(int branchTypeId)
+        {
+            List<int> condition = new List<int> { 4 };
+            if (condition.Contains(branchTypeId))
+                return false;
+
+            return true;
+        }
+        private bool IsCharityAndSchool(int usageId)
+        {
+            List<int> condition = new List<int> { 8, 7, 12, 13, 29, 30, 32 };
+            if (condition.Contains(usageId))
+                return true;
+
+            return false;
+        }
 
         /// <summary>
         /// از خلاصه نویسی استفاده شود
         /// </summary>
         /// <returns>عدد محاسبه شده‌ی آب‌بها</returns>
-        private long CalculateAbBaha()
+        private long CalculateAbBaha(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo)
         {
+            duration = nerkh.Duration;
+            double monthlyConsumption = nerkh.DailyConsumption * 30;
+            double ab_, o_ab_ = 0;
+
+            if (duration > 0)
+            {
+                if ((IsDomestic(customerInfo.UsageId) ||
+                    ((customerInfo.UsageId == 34 || customerInfo.UsageId == 25) && nerkh.Date1.CompareTo("1400/12/24") >= 0)) &&
+                    IsNotReligious(customerInfo.UsageId))
+                {
+                    double vaj = CalcVajExpression(nerkh.Vaj, monthlyConsumption);
+                    ab_ = vaj * nerkh.PartialConsumption;
+
+                    if (nerkh.Date2.CompareTo("1403/09/13") <= 0 && (int.Parse)(nerkh.OVaj.Trim()) != 0)
+                    {
+                        double o_vaj = CalcVajExpression(nerkh.OVaj, monthlyConsumption);
+                        o_ab_ = (nerkh.PartialConsumption * o_vaj) * 1.15;
+                    }
+                    else
+                    {
+                        o_ab_ = 0;
+                    }
+
+                    if (nerkh.Date2.CompareTo("1403/09/13") <= 0 &&
+                        monthlyConsumption <= nerkh.Olgo &&
+                        ab_ > o_ab_ &&
+                        o_ab_ > 0 &&
+                        IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
+                        IsNotConstruction(customerInfo.BranchType))
+                    {
+                        ab_ = o_ab_;
+                    }
+                }
+                else
+                {
+                    //c#: 141    foxpro:1139
+                    if ((customerInfo.ContractualCapacity > 0 && IsNotConstruction(customerInfo.BranchType)) ||
+                        IsReligious(customerInfo.UsageId))
+                    {
+                        mas_fi_roz = (customerInfo.ContractualCapacity / 30) * duration;
+
+                        if (duration > mas_fi_roz || IsCharityAndSchool(customerInfo.UsageId))
+                        {
+                            mas2_7=duration- mas_fi_roz;
+                            mas1_7 = duration - mas2_7;
+
+                            if (duration <= mas_fi_roz)
+                            {
+                                //line 158 in c#
+                            }
+                        }
+                    }
+                }
+            }
+
+
             throw new NotImplementedException();
         }
 
@@ -46,7 +176,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         {
             throw new NotImplementedException();
         }
-        private (long,long) CalculateBoodjePart1Discount()
+        private (long, long) CalculateBoodjePart1Discount()
         {
             throw new NotImplementedException();
         }
@@ -92,7 +222,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         }
         private long CalculateJavaniJamiatDiscount()
         {
-             throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         private long CalculateAvarez()
