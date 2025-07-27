@@ -23,16 +23,23 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Commands.Implement
                 reportName = input.ReportName,
                 connectionId = input.ConnectionId,
                 isInformed = false,
-                insertDateTime = DateTime.Now
+                insertDateTime = DateTime.Now,
+                headerType=input.HeaderType,
+                dataType=input.DataType,
+                reportInputType = input.ReportInputType,
+                reportInputJson = input.ReportInputJson,
+                handlerKey = input.HandlerKey,
             };
             await _sqlConnection.ExecuteAsync(createQuery, @params);
         }
 
         private string GetServerReportsCreateQuery()
         {
-            return @"INSERT INTO [Aban360].ReportPool.ServerReports(
-                            Id, UserId,  ReportName,  ConnectionId,  IsInformed,  InsertDateTime, HeaderType, )
-                    VALUES(@id, @userId, @reportName, @connectionId, @isInformed, @insertDateTime)";
+           return @"Insert Into [Aban360].ReportPool.ServerReports(
+                            Id,UserId,ReportName,ConnectionId,InsertDateTime,
+                            IsInformed,HeaderType,DataType,ReportInputType,ReportInputJson,HandlerKey)
+                    Values(@id,@userId,@reportName,@connectionId,@insertDateTime,
+                           @isInformed,@headerType,@dataType,@reportInputType,@reportInputJson,@handlerKey)";
         }
     }
 }

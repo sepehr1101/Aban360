@@ -23,7 +23,7 @@ namespace Aban360.ReportPool.Application.Features.FlatReports.Handler.Commands.I
             _validator.NotNull(nameof(validator));
         }
 
-        public async void Handle(ServerReportsCreateDto createDto, CancellationToken cancellationToken)
+        public async Task Handle(ServerReportsCreateDto createDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(createDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -32,7 +32,7 @@ namespace Aban360.ReportPool.Application.Features.FlatReports.Handler.Commands.I
                 throw new CustomeValidationException(message);
             }
 
-            _serverReportsCreateService.Create(createDto);
+            await _serverReportsCreateService.Create(createDto);
         }
     }
 }
