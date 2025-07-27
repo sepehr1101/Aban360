@@ -7,6 +7,7 @@
         public string HeadType { get; set; } = default!;        // Full type name
         public string DataType { get; set; } = default!;        // Full type name
         public string UserId { get; set; } = default!;
+
         public string ReportTitle { get; set; } = default!;
         public string? ConnectionId { get; set; }
     }
