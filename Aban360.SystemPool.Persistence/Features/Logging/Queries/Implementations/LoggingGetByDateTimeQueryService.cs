@@ -32,7 +32,8 @@ namespace Aban360.SystemPool.Persistence.Features.Logging.Queries.Implementation
                      	l.TimeStamp as DateTimeGrogorian,
                     	l.Level as LogLevel,
                     	l.Message ,
-                    	l.Exception
+                    	l.Exception,
+                        l.Properties
                     From [Aban360].dbo.Logs l
                     Where 
                     	l.TimeStamp BETWEEN @fromDateTime AND @toDateTime AND

@@ -3,10 +3,11 @@
     public record LoggingOutputDto
     {
         public DateTime DateTimeGrogorian { get; set; }
-        public string DateJalali { get; set; }
-        public string Time { get; set; }
-        public string LogLevel { get; set; }
-        public string Message { get; set; }
-        public string Exception { get; set; }
+        public string DateJalali { get; set; } = default!;
+        public string Time { get; set; }=default!;
+        public string LogLevel { get; set; } = default!;
+        public string? Message { get; set; }
+        public string? Exception { get; set; }
+        public string? Properties { get; set; }
     }
 }
