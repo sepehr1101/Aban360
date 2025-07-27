@@ -4,14 +4,12 @@
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
-        public string ReportName { get; set; }
-        public string ConnectionId { get; set; }
-        public ServerReportsCreateDto(Guid id,Guid userId,string reportName,string connectionId)
-        {
-            Id = id;
-            UserId = userId;
-            ReportName = reportName;   
-            ConnectionId = connectionId;
-        }
+        public string ReportName { get; set; } = default!;
+        public string? ConnectionId { get; set; }
+        public string HeaderType { get; set; }=default!;
+        public string DataType { get; set; } = default!;
+        public string? ReportInputType { get; set; }
+        public string? ReportInputJson { get; set; }
+        public string HandlerKey { get; set; } = default!;
     }
 }
