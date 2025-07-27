@@ -29,7 +29,12 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Implementa
                         FORMAT(s.CompletionDateTime,'yyyy-MM-dd HH:mm:ss','fa-ir') as CompletionDateTimeJalali,
 						FORMAT(s.ErrorDateTime,'yyyy-MM-dd HH:mm:ss','fa-ir') as ErrorDateTimeJalali,
 						FORMAT(s.InsertDateTime,'yyyy-MM-dd HH:mm:ss','fa-ir') as InsertDateTimeJalali,
-                    	s.IsInformed
+                    	s.IsInformed,
+						s.HeaderType,
+						s.DataType,
+						s.ReportInputType,
+						s.ReportInputJson,
+						s.HandlerKey
                     From [Aban360].ReportPool.ServerReports s
                     Where s.Id=@id";
         }

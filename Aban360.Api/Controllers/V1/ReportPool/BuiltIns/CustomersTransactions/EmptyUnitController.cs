@@ -5,6 +5,7 @@ using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Ha
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
@@ -36,9 +37,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetExcel(string connectionId,EmptyUnitInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.DirectExecute(inputDto, cancellationToken,_emptyUnit.Handle,CurrentUser,ReportLiterals.EmptyUnit,connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken,_emptyUnit.Handle,CurrentUser,ReportLiterals.EmptyUnit,connectionId);
             return Ok("");
         }
     }

@@ -4,6 +4,6 @@ namespace Aban360.ReportPool.Application.Features.FlatReports.Handler.Commands.C
 {
     public interface IServerReportsCreateHandler
     {
-        void Handle(ServerReportsCreateDto createDto,CancellationToken cancellationToken);
+       Task Handle(ServerReportsCreateDto createDto,CancellationToken cancellationToken);
     }
 }
