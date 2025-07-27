@@ -66,10 +66,9 @@ namespace Aban360.Api.Cronjobs
             ServerReportsCreateDto serverReportsCreateDto = CreateServerReportDto(Guid.NewGuid(), reportInput, GetData, appUser, reportTitle, connectionId);
             await _serverReportsCreateHandler.Handle(serverReportsCreateDto, cancellationToken);
             BackgroundJob.Enqueue(() => DoFireAndInform(serverReportsCreateDto));
-            //await DoFireAndInform(serverReportsCreateDto);
         }
 
-        private async Task DoFireAndInform(ServerReportsCreateDto serverReportsCreateDto)
+       public async Task DoFireAndInform(ServerReportsCreateDto serverReportsCreateDto )
         {
             ServerReportsGetByIdDto serverReportsGetByIdDto = await _serverReportsGetByIdServices.GetById(serverReportsCreateDto.Id);
 
@@ -104,7 +103,7 @@ namespace Aban360.Api.Cronjobs
 
             var reportOutputType = typeof(ReportOutput<,>).MakeGenericType(outputHeaderDtoType, outputDataDtoType);
 
-            var result = methodName.Invoke(handlerInstance, [ data ]) as Task;
+            var result = methodName.Invoke(handlerInstance, [ data,CancellationToken.None ]) as Task;
             await result;
 
             var resultProperty = result.GetType().GetProperty("Result");
@@ -117,7 +116,7 @@ namespace Aban360.Api.Cronjobs
                 var reportData = dynamicResult.ReportData;
 
                 string reportPath = await ExcelManagement.ExportToExcelAsync(reportHeader, reportData, serverReportsGetByIdDto.ReportName);
-                _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(serverReportsGetByIdDto.Id, reportPath), cancellationToken);
+                _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(serverReportsGetByIdDto.Id, reportPath), CancellationToken.None);
             }
             //inform user via signalR
         }

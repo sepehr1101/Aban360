@@ -10,11 +10,18 @@ namespace Aban360.CalculationPool.Application.Features.Base
     {
         //todo: Do not use 'BaseException' directy
 
-        double Ab = 0;
-        double O_Ab = 0;
-        double mas_fi_roz;
+        double Ab = 0;//?
+        double O_Ab = 0;//?
+        double mas_fi_roz;//?
         double duration;
-        double mas1_7, mas2_7;
+        double mas1_7, mas2_7;//??
+        double V_vaj1_7;//??
+        double V_vaj2_7;//??
+        double nerkh_azad;//??
+        double AB1_7;//??
+        double AB2_7;//??
+        int rosta_calc;//??
+        double first_olgo;//??
         /// <summary>
         /// mod1_ : duration
         /// mas1_ : PartialConsumption 
@@ -22,6 +29,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         /// fix_mas : ContractualCapacity
         /// noe_va : BranchType
         /// rate_ : monthlyConsumption
+        /// abfar_x ==2 then Rusta , abfar_x==1 then Shahri
         /// </summary>
 
 
@@ -47,6 +55,14 @@ namespace Aban360.CalculationPool.Application.Features.Base
             Expression expression = GetExpression(formula, parameters);
             long value = expression.Eval<long>();
             return value;
+        }
+        private bool IsVillage(int zoneId)
+        {
+            //-abfar_x==2 ? village : shahr(equal 1)
+            if (zoneId > 140000)
+                return true;
+
+            return false;
         }
         private bool IsDomestic(int usageId)
         {
@@ -96,6 +112,14 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             return false;
         }
+        private bool IsReligiousWithCharity(int usageId)
+        {
+            List<int> condition = new List<int> { 12, 13, 2, 30, 32 };
+            if (condition.Contains(usageId))
+                return true;
+
+            return false;
+        }
 
         /// <summary>
         /// از خلاصه نویسی استفاده شود
@@ -105,6 +129,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         {
             duration = nerkh.Duration;
             double monthlyConsumption = nerkh.DailyConsumption * 30;
+            double vaj = CalcVajExpression(nerkh.Vaj, monthlyConsumption);//??
             double ab_, o_ab_ = 0;
 
             if (duration > 0)
@@ -146,16 +171,72 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
                         if (duration > mas_fi_roz || IsCharityAndSchool(customerInfo.UsageId))
                         {
-                            mas2_7=duration- mas_fi_roz;
+                            mas2_7 = duration - mas_fi_roz;
                             mas1_7 = duration - mas2_7;
 
-                            if (duration <= mas_fi_roz)
+                            if (duration <= mas_fi_roz)//c#:158
                             {
-                                //line 158 in c#
+                                mas1_7 = duration;
+                                mas2_7 = 0;
                             }
+
+                            if (customerInfo.ContractualCapacity == 0 && IsReligiousWithCharity(customerInfo.UsageId))
+                            {
+                                mas1_7 = duration;
+                                mas2_7 = 0;
+                            }
+
+                            V_vaj1_7 = vaj;//???
+
+                            if (IsReligiousWithCharity(customerInfo.UsageId))
+                            {
+                                if (IsNotConstruction(customerInfo.BranchType))//c#:178  foxpro:1178
+                                {
+                                    //method Line1178()
+                                }
+                                else
+                                {
+                                    nerkh_azad = 450000;//??
+                                    V_vaj1_7 = 450000;
+                                    V_vaj2_7 = 450000;
+                                }
+                            }
+                            else
+                            {
+                                //method BigCase();
+                            }
+
+                            //c#: 195   foxpro: 1539
+                            AB1_7 = mas1_7 * V_vaj1_7;
+                            AB2_7 = mas2_7 * V_vaj2_7;
+                            Ab = AB1_7 + AB2_7;//??
+                        }
+                        else
+                        {
+                            Ab = duration * vaj;//??
                         }
                     }
+                    else
+                    {
+                        Ab = duration * vaj;//??
+                    }
+                }//c#:211   foxpro:1553
+
+                rosta_calc = 1;
+                if (nerkh.Date2.CompareTo("1403/12/30") <= 0)
+                    first_olgo = 14;
+                else
+                    first_olgo = nerkh.Olgo;//is it true? olgoab==nerkh.Olgo??
+
+                if (IsVillage(customerInfo.ZoneId) && IsDomesticWithoutUnspecified(customerInfo.UsageId) && IsNotConstruction(customerInfo.BranchType))//c#:221
+                {
+                    int cod_rosta = int.Parse(customerInfo.VillageId.Trim().Substring(0, 4));
+                    if (!IsVillage(customerInfo.ZoneId))//c#:225   
+                    {
+
+                    }
                 }
+
             }
 
 

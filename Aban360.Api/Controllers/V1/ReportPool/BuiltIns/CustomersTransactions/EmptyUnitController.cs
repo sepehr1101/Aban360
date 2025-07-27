@@ -37,7 +37,6 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
-        [AllowAnonymous]
         public async Task<IActionResult> GetExcel(string connectionId,EmptyUnitInputDto inputDto, CancellationToken cancellationToken)
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken,_emptyUnit.Handle,CurrentUser,ReportLiterals.EmptyUnit,connectionId);
