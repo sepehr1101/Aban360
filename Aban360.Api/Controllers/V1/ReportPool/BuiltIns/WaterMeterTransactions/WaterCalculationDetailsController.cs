@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -12,10 +13,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
     public class WaterCalculationDetailsController : BaseController
     {
         private readonly IWaterCalculationDetailsHandler _calculationDetailsHandler;
-        public WaterCalculationDetailsController(IWaterCalculationDetailsHandler calculationDetailsHandler)
+        private readonly IReportGenerator _reportGenerator;
+        public WaterCalculationDetailsController(
+            IWaterCalculationDetailsHandler calculationDetailsHandler,
+            IReportGenerator reportGenerator)
         {
             _calculationDetailsHandler = calculationDetailsHandler;
             _calculationDetailsHandler.NotNull(nameof(calculationDetailsHandler));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
         [HttpPost, HttpGet]
@@ -25,6 +32,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         {
             ReportOutput<WaterCalculationDetailsHeaderOutputDto, WaterCalculationDetailsDataOutputDto> calculationDetails = await _calculationDetailsHandler.Handle(input, cancellationToken);
             return Ok(calculationDetails);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("excel/{connectionId}")]
+        public async Task<IActionResult> GetExcel(string connectionId, WaterCalculationDetailsInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _calculationDetailsHandler.Handle, CurrentUser, ReportLiterals.WaterCalculationDetails, connectionId);
+            return Ok(inputDto);
         }
     }
 }

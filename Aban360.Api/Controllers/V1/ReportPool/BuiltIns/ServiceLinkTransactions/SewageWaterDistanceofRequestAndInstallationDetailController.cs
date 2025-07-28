@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -12,10 +13,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
     public class SewageWaterDistanceofRequestAndInstallationDetailController : BaseController
     {
         private readonly ISewageWaterDistanceofRequestAndInstallationDetailHandler _sewageWaterDistanceofRequestAndInstallationDetailHandler;
-        public SewageWaterDistanceofRequestAndInstallationDetailController(ISewageWaterDistanceofRequestAndInstallationDetailHandler sewageWaterDistanceofRequestAndInstallationDetailHandler)
+        private readonly IReportGenerator _reportGenerator;
+        public SewageWaterDistanceofRequestAndInstallationDetailController(
+            ISewageWaterDistanceofRequestAndInstallationDetailHandler sewageWaterDistanceofRequestAndInstallationDetailHandler,
+            IReportGenerator reportGenerator)
         {
             _sewageWaterDistanceofRequestAndInstallationDetailHandler = sewageWaterDistanceofRequestAndInstallationDetailHandler;
             _sewageWaterDistanceofRequestAndInstallationDetailHandler.NotNull(nameof(sewageWaterDistanceofRequestAndInstallationDetailHandler));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
         [HttpPost, HttpGet]
@@ -25,6 +32,15 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         {
             var result=await _sewageWaterDistanceofRequestAndInstallationDetailHandler.Handle(input, cancellationToken);
             return Ok(result);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("excel/{connectionId}")]
+        public async Task<IActionResult> GetExcel(string connectionId, SewageWaterDistanceofRequestAndInstallationInputDto inputDto, CancellationToken cancellationToken)
+        {
+            string reportName = inputDto.IsWater ? ReportLiterals.WaterDistanceRequestInstallationDetail : ReportLiterals.SewageDistanceRequesteInstallationDetail;
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _sewageWaterDistanceofRequestAndInstallationDetailHandler.Handle, CurrentUser, reportName, connectionId);
+            return Ok(inputDto);
         }
     }
 }

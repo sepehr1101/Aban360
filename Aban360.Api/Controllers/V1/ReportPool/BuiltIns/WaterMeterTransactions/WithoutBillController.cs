@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -12,10 +13,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
     public class WithoutBillController : BaseController
     {
         private readonly IWithoutBillHandler _withoutBillHandler;
-        public WithoutBillController(IWithoutBillHandler withoutBillHandler)
+        private readonly IReportGenerator _reportGenerator;
+        public WithoutBillController(
+            IWithoutBillHandler withoutBillHandler,
+            IReportGenerator reportGenerator)
         {
             _withoutBillHandler = withoutBillHandler;
             _withoutBillHandler.NotNull(nameof(withoutBillHandler));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
         [HttpPost, HttpGet]
@@ -25,6 +32,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         {
             ReportOutput<WithoutBillHeaderOutputDto, WithoutBillDataOutputDto> withoutBill = await _withoutBillHandler.Handle(input, cancellationToken);
             return Ok(withoutBill);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("excel/{connectionId}")]
+        public async Task<IActionResult> GetExcel(string connectionId, WithoutBillInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _withoutBillHandler.Handle, CurrentUser, ReportLiterals.WithoutBill, connectionId);
+            return Ok(inputDto);
         }
     }
 }

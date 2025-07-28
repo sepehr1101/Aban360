@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -13,10 +14,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
     public class UseStateReportController:BaseController
     {
         private readonly IUseStateReportHandler _useStateReportHandler;
-        public UseStateReportController(IUseStateReportHandler useStateReportHandler)
+        private readonly IReportGenerator _reportGenerator;
+        public UseStateReportController(
+            IUseStateReportHandler useStateReportHandler,
+            IReportGenerator reportGenerator)
         {
             _useStateReportHandler = useStateReportHandler;
             _useStateReportHandler.NotNull(nameof(_useStateReportHandler));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
         [HttpPost, HttpGet]
@@ -27,6 +34,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         {
             ReportOutput<UseStateReportHeaderOutputDto, UseStateReportDataOutputDto> useStates =await _useStateReportHandler.Handle(inputDto,cancellationToken);
             return Ok(useStates);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("excel/{connectionId}")]
+        public async Task<IActionResult> GetExcel(string connectionId, UseStateReportInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _useStateReportHandler.Handle, CurrentUser, ReportLiterals.UseStateReport, connectionId);
+            return Ok(inputDto);
         }
     }
 }

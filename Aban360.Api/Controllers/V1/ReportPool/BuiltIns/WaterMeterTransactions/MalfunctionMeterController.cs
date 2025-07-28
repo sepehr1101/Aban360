@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -12,10 +13,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
     public class MalfunctionMeterController : BaseController
     {
         private readonly IMalfunctionMeterHandler _malfunctionMeterHandler;
-        public MalfunctionMeterController(IMalfunctionMeterHandler malfunctionMeterHandler)
+        private readonly IReportGenerator _reportGenerator;
+        public MalfunctionMeterController(
+            IMalfunctionMeterHandler malfunctionMeterHandler,
+            IReportGenerator reportGenerator)
         {
             _malfunctionMeterHandler = malfunctionMeterHandler;
             _malfunctionMeterHandler.NotNull(nameof(malfunctionMeterHandler));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
         [HttpPost]
@@ -25,6 +32,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         {
             ReportOutput<MalfunctionMeterHeaderOutputDto, MalfunctionMeterDataOutputDto> result = await _malfunctionMeterHandler.Handle(input,cancellationToken);
             return Ok(result);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("excel/{connectionId}")]
+        public async Task<IActionResult> GetExcel(string connectionId, MalfunctionMeterInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _malfunctionMeterHandler.Handle, CurrentUser, ReportLiterals.MalfunctionMeter, connectionId);
+            return Ok(inputDto);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Aban360.Common.Categories.ApiResponse;
 using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Implementations;
-using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 using Aban360.UserPool.Persistence.Constants.Enums;
 using Microsoft.AspNetCore.Mvc;
