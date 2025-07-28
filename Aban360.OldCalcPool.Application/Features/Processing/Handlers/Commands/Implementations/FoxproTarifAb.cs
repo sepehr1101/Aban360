@@ -53,7 +53,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private static void MappingProperties(NerkhGetDto currentNerkh, CustomerInfoOutputDto customerInfo)
         {
             mod1_ = currentNerkh.Duration;
-            zTadil = currentNerkh.ZaribTadil.Trim().ToLower() == "true" ? true : false;
+            zTadil = currentNerkh.ZaribTadil;
             TABSARE2 = currentNerkh.Tabsare2;
             zaribfasl = currentNerkh.ZaribFasl;
             emrooz = DateTime.Now.ToShortPersianDateString();
@@ -310,7 +310,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                                     Bmas2_7 = 0;
                                 }
                             }
-                        }//line->1658
+                        }//line->1642
 
                         if (Bmas2_7 > 0)//agar masraf  bishtar  az zarfiat  bod
                             v_bodjeh01 = zrb_bodjeh * Bmas2_7;
@@ -560,7 +560,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                             if (VZFASL < 0)
                                 VZFASL = 0;
                         }
-                    }//line->1947
+                    }//line->1974
 
 
                     if (2 == 3)
@@ -583,7 +583,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
                         if (VAB10 != 0)
                             VAB10 = VAB10 + (TMP_VZFASL * 0.1);
-                    }//line -> 20008
+                    }//line -> 2008
 
                     if (noe_ensh_ == 30 || noe_ensh_ == 12 || noe_ensh_ == 13 || noe_ensh_ == 29 || noe_ensh_ == 32)
                     {
