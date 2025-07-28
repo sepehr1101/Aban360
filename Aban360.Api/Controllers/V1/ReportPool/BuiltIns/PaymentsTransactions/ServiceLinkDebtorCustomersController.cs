@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -12,10 +13,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
     public class ServiceLinkDebtorCustomersController : BaseController
     {
         private readonly IServiceLinkDebtorCustomersHandler _serviceLinkDebtorCustomersHandler;
-        public ServiceLinkDebtorCustomersController(IServiceLinkDebtorCustomersHandler serviceLinkDebtorCustomersHandler)
+        private readonly IReportGenerator _reportGenerator;
+        public ServiceLinkDebtorCustomersController
+            (IServiceLinkDebtorCustomersHandler serviceLinkDebtorCustomersHandler,
+            IReportGenerator reportGenerator)
         {
             _serviceLinkDebtorCustomersHandler = serviceLinkDebtorCustomersHandler;
             _serviceLinkDebtorCustomersHandler.NotNull(nameof(_serviceLinkDebtorCustomersHandler));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
         [HttpPost, HttpGet]
@@ -25,6 +32,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         {
             ReportOutput<ServiceLinkDebtorCustomersHeaderOutputDto, ServiceLinkDebtorCustomersDataOutputDto> ServiceLinkDebtorCustomers = await _serviceLinkDebtorCustomersHandler.Handle(inputDto, cancellationToken);
             return Ok(ServiceLinkDebtorCustomers);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("excel/{connectionId}")]
+        public async Task<IActionResult> GetExcel(string connectionId, ServiceLinkDebtorCustomersInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _serviceLinkDebtorCustomersHandler.Handle, CurrentUser, ReportLiterals.ServiceLinkDebtorCustomers, connectionId);
+            return Ok(inputDto);
         }
     }
 }

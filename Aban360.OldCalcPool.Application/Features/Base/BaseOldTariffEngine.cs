@@ -312,7 +312,6 @@ namespace Aban360.CalculationPool.Application.Features.Base
             return false;
         }
         /// <summary>
-<<<<<<< HEAD
         /// از خلاصه نویسی استفاده شود
         /// </summary>
         /// <returns>عدد محاسبه شده‌ی آب‌بها</returns>
@@ -697,7 +696,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 VZARIB_D1 = 0;
                 VZARIB_D1 = javan_sazi(customerInfo.ZoneId, ab_, customerInfo.UsageId, nerkh.PartialConsumption, duration, customerInfo.BranchType, monthlyConsumption, customerInfo.ContractualCapacity, customerInfo.DomesticUnit, customerInfo.OtherUnit, meterInfo.PreviousDateJalali, currentDateJalali, nerkh.Olgo, nerkh.Date2);
 
-                if (IsDolatabadOrHabibabasWithConditionEshtrak(customerInfo.ZoneId.(int.Parse)(customerInfo.ReadingNumber)))
+                if (IsDolatabadOrHabibabasWithConditionEshtrak(customerInfo.ZoneId,(int.Parse)(customerInfo.ReadingNumber)))
                 {
                     VZARIB_D1 = 0;
                 }
@@ -723,8 +722,6 @@ namespace Aban360.CalculationPool.Application.Features.Base
         }
 
         /// <summary>
-=======
->>>>>>> 9318546cc0d50bb0cd064392a8e3c5237188206c
         /// 
         /// </summary>
         /// <returns></returns>

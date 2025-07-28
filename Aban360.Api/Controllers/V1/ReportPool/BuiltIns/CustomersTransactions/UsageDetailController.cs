@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -12,10 +13,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
     public class UsageDetailController : BaseController
     {
         private readonly IUsageDetailHandler _UsageDetail;
-        public UsageDetailController(IUsageDetailHandler UsageDetail)
+        private readonly IReportGenerator _reportGenerator;
+        public UsageDetailController(
+            IUsageDetailHandler UsageDetail,
+            IReportGenerator reportGenerator)
         {
             _UsageDetail = UsageDetail;
             _UsageDetail.NotNull(nameof(_UsageDetail));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
         [HttpPost, HttpGet]
@@ -25,6 +32,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         {
             ReportOutput<UsageDetailHeaderOutputDto, UsageDetailDataOutputDto> usageDetail = await _UsageDetail.Handle(inputDto, cancellationToken);
             return Ok(usageDetail);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("excel/{connectionId}")]
+        public async Task<IActionResult> GetExcel(string connectionId, UsageDetailInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _UsageDetail.Handle, CurrentUser, ReportLiterals.UsageDetail, connectionId);
+            return Ok(inputDto);
         }
     }
 }

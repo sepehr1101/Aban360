@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -12,10 +13,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
     public class ServiceLinkRawItemsSummaryController : BaseController
     {
         private readonly IServiceLinkRawItemsSummaryHandler _serviceLinkRawItemsSummaryHandler;
-        public ServiceLinkRawItemsSummaryController(IServiceLinkRawItemsSummaryHandler serviceLinkRawItemsSummaryHandler)
+        private readonly IReportGenerator _reportGenerator;
+        public ServiceLinkRawItemsSummaryController(
+            IServiceLinkRawItemsSummaryHandler serviceLinkRawItemsSummaryHandler,
+            IReportGenerator reportGenerator)
         {
             _serviceLinkRawItemsSummaryHandler = serviceLinkRawItemsSummaryHandler;
             _serviceLinkRawItemsSummaryHandler.NotNull(nameof(serviceLinkRawItemsSummaryHandler));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
         [HttpPost, HttpGet]
@@ -25,6 +32,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         {
             var result = await _serviceLinkRawItemsSummaryHandler.Handle(input, cancellationToken);
             return Ok(result);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("excel/{connectionId}")]
+        public async Task<IActionResult> GetExcel(string connectionId, ServiceLinkRawItemsInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _serviceLinkRawItemsSummaryHandler.Handle, CurrentUser, ReportLiterals.ServiceLinkRawItemsSummary, connectionId);
+            return Ok(inputDto);
         }
     }
 }

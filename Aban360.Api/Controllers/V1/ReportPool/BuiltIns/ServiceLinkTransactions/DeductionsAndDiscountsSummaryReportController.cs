@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -12,10 +13,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
     public class DeductionsAndDiscountsSummaryReportController : BaseController
     {
         private readonly IDeductionsAndDiscountsSummaryReportHandler _deductionsAndDiscountsSummaryReportHandler;
-        public DeductionsAndDiscountsSummaryReportController(IDeductionsAndDiscountsSummaryReportHandler deductionsAndDiscountsSummaryReportHandler)
+        private readonly IReportGenerator _reportGenerator;
+        public DeductionsAndDiscountsSummaryReportController(
+            IDeductionsAndDiscountsSummaryReportHandler deductionsAndDiscountsSummaryReportHandler,
+            IReportGenerator reportGenerator)
         {
             _deductionsAndDiscountsSummaryReportHandler = deductionsAndDiscountsSummaryReportHandler;
             _deductionsAndDiscountsSummaryReportHandler.NotNull(nameof(_deductionsAndDiscountsSummaryReportHandler));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
         [HttpPost, HttpGet]
@@ -25,6 +32,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         {
             ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportSummaryDataOutputDto> deductionsAndDiscountsSummaryReport = await _deductionsAndDiscountsSummaryReportHandler.Handle(inputDto, cancellationToken);
             return Ok(deductionsAndDiscountsSummaryReport);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("eDeductionsAndDiscountcel/{connectionId}")]
+        public async Task<IActionResult> GetEDeductionsAndDiscountcel(string connectionId, DeductionsAndDiscountsReportInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _deductionsAndDiscountsSummaryReportHandler.Handle, CurrentUser, ReportLiterals.DeductionsAndDiscountsReport, connectionId);
+            return Ok(inputDto);
         }
     }
 }

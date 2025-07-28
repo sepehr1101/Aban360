@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -12,10 +13,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
     public class SewageWaterInstallationSummaryController : BaseController
     {
         private readonly ISewageWaterInstallationSummaryHandler _sewageWaterInstallationSummaryHandler;
-        public SewageWaterInstallationSummaryController(ISewageWaterInstallationSummaryHandler sewageWaterInstallationSummaryHandler)
+        private readonly IReportGenerator _reportGenerator;
+        public SewageWaterInstallationSummaryController(
+            ISewageWaterInstallationSummaryHandler sewageWaterInstallationSummaryHandler,
+            IReportGenerator reportGenerator)
         {
             _sewageWaterInstallationSummaryHandler = sewageWaterInstallationSummaryHandler;
             _sewageWaterInstallationSummaryHandler.NotNull(nameof(sewageWaterInstallationSummaryHandler));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
         [HttpPost, HttpGet]
@@ -25,6 +32,15 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         {
             var result = await _sewageWaterInstallationSummaryHandler.Handle(input, cancellationToken);
             return Ok(result);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("excel/{connectionId}")]
+        public async Task<IActionResult> GetExcel(string connectionId, SewageWaterInstallationInputDto inputDto, CancellationToken cancellationToken)
+        {
+            string reportName = inputDto.IsWater ? ReportLiterals.WaterInstallationSummary: ReportLiterals.SewageInstallationSummary;
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _sewageWaterInstallationSummaryHandler.Handle, CurrentUser, reportName, connectionId);
+            return Ok(inputDto);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -12,10 +13,15 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
     public class HouseholdNumberController : BaseController
     {
         private readonly IHouseholdNumberHandler _householdNumber;
-        public HouseholdNumberController(IHouseholdNumberHandler householdNumber)
+        private readonly IReportGenerator _reportGenerator;
+        public HouseholdNumberController(IHouseholdNumberHandler householdNumber,
+            IReportGenerator reportGenerator)
         {
             _householdNumber = householdNumber;
             _householdNumber.NotNull(nameof(_householdNumber));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
         [HttpPost, HttpGet]
@@ -25,6 +31,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         {
             ReportOutput<HouseholdNumberHeaderOutputDto, HouseholdNumberDataOutputDto> householdNumber = await _householdNumber.Handle(inputDto, cancellationToken);
             return Ok(householdNumber);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("excel/{connectionId}")]
+        public async Task<IActionResult> GetExcel(string connectionId, HouseholdNumberInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _householdNumber.Handle, CurrentUser, ReportLiterals.HouseholdNumber, connectionId);
+            return Ok(inputDto);
         }
     }
 }

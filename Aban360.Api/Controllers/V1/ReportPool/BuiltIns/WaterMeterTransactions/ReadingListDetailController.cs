@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -12,7 +13,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
     public class ReadingListDetailController : BaseController
     {
         private readonly IReadingListDetailHandler _readingListDetail;
-        public ReadingListDetailController(IReadingListDetailHandler readingListDetail)
+        private readonly IReportGenerator _reportGenerator;
+        public ReadingListDetailController(
+            IReadingListDetailHandler readingListDetail,
+            IReportGenerator reportGenerator)
         {
             _readingListDetail = readingListDetail;
             _readingListDetail.NotNull(nameof(_readingListDetail));
@@ -25,6 +29,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         {
             ReportOutput<ReadingListHeaderOutputDto, ReadingListDetailDataOutputDto> waterSales = await _readingListDetail.Handle(inputDto, cancellationToken);
             return Ok(waterSales);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("excel/{connectionId}")]
+        public async Task<IActionResult> GetExcel(string connectionId, ReadingListInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _readingListDetail.Handle, CurrentUser, ReportLiterals.ReadingListDetail, connectionId);
+            return Ok(inputDto);
         }
     }
 }

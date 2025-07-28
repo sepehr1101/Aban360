@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -12,10 +13,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
     public class LinkServiceStatementController : BaseController
     {
         private readonly ILinkServiceStatementHandler _linkServiceStatementHandler;
-        public LinkServiceStatementController(ILinkServiceStatementHandler linkServiceStatementHandler)
+        private readonly IReportGenerator _reportGenerator;
+        public LinkServiceStatementController(
+            ILinkServiceStatementHandler linkServiceStatementHandler,
+            IReportGenerator reportGenerator)
         {
             _linkServiceStatementHandler = linkServiceStatementHandler;
             _linkServiceStatementHandler.NotNull(nameof(linkServiceStatementHandler));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
         [HttpPost, HttpGet]
@@ -25,6 +32,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         {
             ReportOutput<LinkServiceStatementHeaderOutputDto, LinkServiceStatementDataOutputDto> linkServiceStatement = await _linkServiceStatementHandler.Handle(input, cancellationToken);
             return Ok(linkServiceStatement);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("excel/{connectionId}")]
+        public async Task<IActionResult> GetExcel(string connectionId, LinkServiceStatementInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _linkServiceStatementHandler.Handle, CurrentUser, ReportLiterals.LinkServiceStatement, connectionId);
+            return Ok(inputDto);
         }
     }
 }
