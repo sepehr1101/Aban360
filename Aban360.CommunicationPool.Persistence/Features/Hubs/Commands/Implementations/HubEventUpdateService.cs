@@ -10,7 +10,8 @@ namespace Aban360.CommunicationPool.Persistence.Features.Hubs.Commands.Implement
     {
         public HubEventUpdateService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task Update(HubEventUpdateDto input)
         {

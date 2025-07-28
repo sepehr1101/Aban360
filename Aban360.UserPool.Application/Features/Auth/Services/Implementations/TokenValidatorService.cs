@@ -4,6 +4,7 @@ using Aban360.UserPool.Domain.Constants;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.JsonWebTokens;
+using System.IO;
 using System.Security.Claims;
 
 namespace Aban360.UserPool.Application.Features.Auth.Services.Implementations
@@ -60,7 +61,11 @@ namespace Aban360.UserPool.Application.Features.Auth.Services.Implementations
             }
 
             var (controller, action) = GetControllerAction(context);
-            if (string.IsNullOrWhiteSpace(controller) || string.IsNullOrWhiteSpace(action))
+            if (
+                 !context.HttpContext.Request.Path.StartsWithSegments("/notify-hub") &&
+                 !context.HttpContext.Request.Path.StartsWithSegments("/aban360/notify-hub") &&
+                 (string.IsNullOrWhiteSpace(controller) || string.IsNullOrWhiteSpace(action))
+               )
             {               
                 failureReasonId = TokenFailureTypeEnum.NoActionOrController;
                 return failureReasonId;

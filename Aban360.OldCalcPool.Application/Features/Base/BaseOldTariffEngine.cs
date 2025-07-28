@@ -312,6 +312,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             return false;
         }
         /// <summary>
+<<<<<<< HEAD
         /// از خلاصه نویسی استفاده شود
         /// </summary>
         /// <returns>عدد محاسبه شده‌ی آب‌بها</returns>
@@ -722,6 +723,8 @@ namespace Aban360.CalculationPool.Application.Features.Base
         }
 
         /// <summary>
+=======
+>>>>>>> 9318546cc0d50bb0cd064392a8e3c5237188206c
         /// 
         /// </summary>
         /// <returns></returns>
