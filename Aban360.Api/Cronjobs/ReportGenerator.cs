@@ -147,7 +147,7 @@ namespace Aban360.Api.Cronjobs
         }
         private void NotifyUser(ServerReportsGetByIdDto serverReportsGetByIdDto)
         {
-            ReportCompletionNotification reportCompletionNotification = new(serverReportsGetByIdDto.ReportName,serverReportsGetByIdDto.Id) 
+            ReportCompletionNotification reportCompletionNotification = new(serverReportsGetByIdDto.ReportName, serverReportsGetByIdDto.Id); 
             if(!string.IsNullOrWhiteSpace(serverReportsGetByIdDto.ConnectionId))
             {
                 _notifyHub.Clients.Client(serverReportsGetByIdDto.ConnectionId).InformReportCompletion(reportCompletionNotification);
