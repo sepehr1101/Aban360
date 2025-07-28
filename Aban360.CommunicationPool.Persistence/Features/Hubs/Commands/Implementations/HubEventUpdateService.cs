@@ -26,7 +26,7 @@ namespace Aban360.CommunicationPool.Persistence.Features.Hubs.Commands.Implement
 
         private string GetHubEventUpdateQuery()
         {
-            return @"Update [Aban360].Communication.HubEvent
+            return @"Update [Aban360].CommunicationPool.HubEvent
                     Set DisconnectDateTime=@disconnectDateTime                  
                     Where ConnectionId=@connectionId";
         }
