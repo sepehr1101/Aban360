@@ -1,11 +1,14 @@
 ﻿using Aban360.Api.Hubs.Contracts;
+using Aban360.Common.ApplicationUser;
 using Aban360.Common.Extensions;
 using Aban360.CommunicationPool.Application.Features.Hubs.Handlers.Commands.Contracts;
 using Aban360.CommunicationPool.Domain.Features.Hubs.Dto.Commands;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Aban360.Api.Hubs.Implementations
 {
+    [Authorize]
     public sealed class NotifyHub : Hub<INotifyHub>
     {
         private readonly IHubEventCreateHandler _eventCreateHandler;
@@ -21,14 +24,22 @@ namespace Aban360.Api.Hubs.Implementations
 
         public override async Task OnConnectedAsync()
         {
-            //await _eventCreateHandler.Handle(new HubEventCreateDto(Context.ConnectionId, Guid.NewGuid()), CancellationToken.None);
+            await _eventCreateHandler.Handle(new HubEventCreateDto(Context.ConnectionId, CurrentUser.UserId), CancellationToken.None);
             await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            //await _eventUpdateHandler.Handle(new HubEventUpdateDto(Context.ConnectionId), CancellationToken.None);
+            await _eventUpdateHandler.Handle(new HubEventUpdateDto(Context.ConnectionId), CancellationToken.None);
             await base.OnDisconnectedAsync(exception);
+        }
+
+        private IAppUser CurrentUser
+        {
+            get
+            {
+                return new AppUser(Context.User);
+            }
         }
     }
 }

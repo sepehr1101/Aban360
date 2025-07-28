@@ -1,12 +1,16 @@
-﻿using Aban360.Common.ApplicationUser;
+﻿using Aban360.Api.Hubs.Contracts;
+using Aban360.Api.Hubs.Implementations;
+using Aban360.Common.ApplicationUser;
 using Aban360.Common.Excel;
 using Aban360.Common.Extensions;
+using Aban360.CommunicationPool.Domain.Features.Hubs.Dto.Commands;
 using Aban360.ReportPool.Application.Features.FlatReports.Handler.Commands.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Commands;
 using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Queries;
 using Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Contracts;
 using Hangfire;
+using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 
 namespace Aban360.Api.Cronjobs
@@ -23,13 +27,15 @@ namespace Aban360.Api.Cronjobs
         private readonly IServerReportsUpdateHandler _serverReportsUpdateHandler;
         private readonly IServerReportsGetByIdService _serverReportsGetByIdServices;
         private readonly IServiceProvider _serviceProvider;
+        private IHubContext<NotifyHub, INotifyHub> _notifyHub { get; }
         private static string MethodName = "Handle";
 
         public ReportGenerator(
             IServerReportsCreateHandler serverReportsCreateHandler,
             IServerReportsUpdateHandler serverReportsUpdateHandler,
             IServerReportsGetByIdService serverReportsGetByIdServices,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            IHubContext<NotifyHub, INotifyHub> notifyHub)
         {
             _serverReportsCreateHandler = serverReportsCreateHandler;
             _serverReportsCreateHandler.NotNull(nameof(serverReportsCreateHandler));
@@ -42,6 +48,9 @@ namespace Aban360.Api.Cronjobs
 
             _serviceProvider = serviceProvider;
             _serviceProvider.NotNull(nameof(serviceProvider));
+
+            _notifyHub = notifyHub;
+            _notifyHub.NotNull(nameof(notifyHub)); 
         }
         public async Task DirectExecute<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId)
         {
@@ -58,8 +67,6 @@ namespace Aban360.Api.Cronjobs
 
             //Complete ServerReport
             _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(id, reportPath), cancellationToken);
-
-            //send events via signalR
         }
         public async Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId)
         {
@@ -68,7 +75,8 @@ namespace Aban360.Api.Cronjobs
             BackgroundJob.Enqueue(() => DoFireAndInform(serverReportsCreateDto));
         }
 
-       public async Task DoFireAndInform(ServerReportsCreateDto serverReportsCreateDto )
+
+        public async Task DoFireAndInform(ServerReportsCreateDto serverReportsCreateDto)
         {
             ServerReportsGetByIdDto serverReportsGetByIdDto = await _serverReportsGetByIdServices.GetById(serverReportsCreateDto.Id);
 
@@ -118,7 +126,7 @@ namespace Aban360.Api.Cronjobs
                 string reportPath = await ExcelManagement.ExportToExcelAsync(reportHeader, reportData, serverReportsGetByIdDto.ReportName);
                 _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(serverReportsGetByIdDto.Id, reportPath), CancellationToken.None);
             }
-            //inform user via signalR
+            NotifyUser(serverReportsGetByIdDto);
         }
 
         private ServerReportsCreateDto CreateServerReportDto<TReportInput, THead, TData>(Guid id, TReportInput reportInput, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId)
@@ -136,6 +144,14 @@ namespace Aban360.Api.Cronjobs
                 HandlerKey = GetData.Target.GetType().GetInterfaces().FirstOrDefault().FullName
             };
             return serverReportsCreateDto;
+        }
+        private void NotifyUser(ServerReportsGetByIdDto serverReportsGetByIdDto)
+        {
+            ReportCompletionNotification reportCompletionNotification = new(serverReportsGetByIdDto.ReportName,serverReportsGetByIdDto.Id) 
+            if(!string.IsNullOrWhiteSpace(serverReportsGetByIdDto.ConnectionId))
+            {
+                _notifyHub.Clients.Client(serverReportsGetByIdDto.ConnectionId).InformReportCompletion(reportCompletionNotification);
+            }
         }
     }
 }
