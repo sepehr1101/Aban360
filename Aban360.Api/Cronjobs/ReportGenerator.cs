@@ -73,8 +73,8 @@ namespace Aban360.Api.Cronjobs
             ServerReportsCreateDto serverReportsCreateDto = CreateServerReportDto(Guid.NewGuid(), reportInput, GetData, appUser, reportTitle, connectionId);
             await _serverReportsCreateHandler.Handle(serverReportsCreateDto, cancellationToken);
             BackgroundJob.Enqueue(() => DoFireAndInform(serverReportsCreateDto));
-            //await DoFireAndInform(serverReportsCreateDto);
         }
+
 
         public async Task DoFireAndInform(ServerReportsCreateDto serverReportsCreateDto)
         {
@@ -111,7 +111,7 @@ namespace Aban360.Api.Cronjobs
 
             var reportOutputType = typeof(ReportOutput<,>).MakeGenericType(outputHeaderDtoType, outputDataDtoType);
 
-            var result = methodName.Invoke(handlerInstance, [ data ]) as Task;
+            var result = methodName.Invoke(handlerInstance, [ data,CancellationToken.None ]) as Task;
             await result;
 
             var resultProperty = result.GetType().GetProperty("Result");
