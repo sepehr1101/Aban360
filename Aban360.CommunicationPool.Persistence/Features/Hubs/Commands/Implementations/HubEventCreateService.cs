@@ -10,7 +10,8 @@ namespace Aban360.CommunicationPool.Persistence.Features.Hubs.Commands.Implement
     {
         public HubEventCreateService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task Create(HubEventCreateDto input)
         {
@@ -26,7 +27,8 @@ namespace Aban360.CommunicationPool.Persistence.Features.Hubs.Commands.Implement
 
         private string GetHubEventCreateQuery()
         {
-            return @"Insert Into [Aban360].Communication.EventHub(ConnectionId,UserId,ConnectDateTime)
+            return @"Insert Into [Aban360].CommunicationPool.HubEvent
+                          (ConnectionId, UserId, ConnectDateTime)
                     Values(@connectionId,@userId,@connectDateTime)";
         }
     }

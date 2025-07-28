@@ -33,7 +33,7 @@ namespace Aban360.CommunicationPool.Persistence.Migrations
             tableNames.ForEach(t => Delete.Table(t));
         }
 
-        private void CreateHunEvent()
+        private void CreateHubEvent()
         {
             var table = TableName.HubEvent;
             Create.Table(nameof(TableName.HubEvent)).InSchema(_schema)

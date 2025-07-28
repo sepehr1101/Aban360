@@ -2,6 +2,6 @@
 {
     internal static class TableSchema
     {
-        internal const string Name = "Communication"; 
+        internal const string Name = "CommunicationPool"; 
     }
 }
