@@ -21,13 +21,11 @@ namespace Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Imple
 
         public async Task<IEnumerable<LoggingOutputDto>> Handle(LoggingInputByStringDto inputDto, CancellationToken cancellationToken)
         {
-            //todo 1: Do not use Direct BaseException
-            //todo2: transfer data or time formatting to SQL
             DateOnly? from = inputDto.FromDate.ToGregorianDateOnly();
             DateOnly? to = inputDto.ToDate.ToGregorianDateOnly();
             if (!from.HasValue || !to.HasValue)
             {
-                throw new BaseException(ExceptionLiterals.InvalidDate);
+                throw new InvalidDateException(ExceptionLiterals.InvalidDate);
             }
 
             string fromDateTimeString = $"{from.Value:yyyy/MM/dd} {inputDto.FromTime}";
@@ -37,12 +35,6 @@ namespace Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Imple
             DateTime toDateTime = DateTime.ParseExact(toDateTimeString, "yyyy/MM/dd HH:mm", CultureInfo.InvariantCulture);
 
             IEnumerable<LoggingOutputDto> result = await _loggingGetByDateTimeService.Get(new LoggingInputByDateTimeDto(fromDateTime, toDateTime, inputDto.LogLevel));
-            result.ForEach(x =>
-            {
-                string date = x.DateTimeGrogorian.ToString("yyyy/MM/dd");
-                x.DateJalali = date.ToGregorianDateOnly().ToShortPersianDateString();
-                x.Time = x.DateTimeGrogorian.ToString("HH:mm:ss");
-            });
             return result;
         }
     }

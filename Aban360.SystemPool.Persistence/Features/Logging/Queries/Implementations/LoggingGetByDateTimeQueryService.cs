@@ -29,7 +29,8 @@ namespace Aban360.SystemPool.Persistence.Features.Logging.Queries.Implementation
         private string GetLoggingQuery()
         {
             return @"Select
-                     	l.TimeStamp as DateTimeGrogorian,
+                        Format(l.TimeStamp ,'yyyy/MM/dd', 'fa-IR') as DateJalali,
+                        Format(l.TimeStamp,'HH:mm','fa-IR') as Time,
                     	l.Level as LogLevel,
                     	l.Message ,
                     	l.Exception,
