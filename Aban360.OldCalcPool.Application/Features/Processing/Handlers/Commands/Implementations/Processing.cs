@@ -118,7 +118,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             foreach (var item in allNerkh)
             {
-                item.DailyConsumption = dailyAverage;
+                item.DailyAverageConsumption = dailyAverage;
                 (item.Duration, item.PartialConsumption) =  CalcPartial(item, previousDate, currentDate, dailyAverage);
             }
 
