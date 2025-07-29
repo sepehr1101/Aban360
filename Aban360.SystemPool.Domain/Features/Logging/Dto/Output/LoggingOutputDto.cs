@@ -2,7 +2,6 @@
 {
     public record LoggingOutputDto
     {
-        public DateTime DateTimeGrogorian { get; set; }
         public string DateJalali { get; set; } = default!;
         public string Time { get; set; }=default!;
         public string LogLevel { get; set; } = default!;

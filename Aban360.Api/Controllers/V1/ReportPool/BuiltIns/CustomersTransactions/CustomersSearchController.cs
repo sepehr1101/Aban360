@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -12,19 +13,33 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
     public class CustomersSearchController : BaseController
     {
         private readonly ICustomerSearchHandler _customerSearchHandler;
-        public CustomersSearchController(ICustomerSearchHandler customerSearchHandler)
+        private readonly IReportGenerator _reportGenerator;
+        public CustomersSearchController(
+            ICustomerSearchHandler customerSearchHandler,
+            IReportGenerator reportGenerator)
         {
             _customerSearchHandler = customerSearchHandler;
             _customerSearchHandler.NotNull(nameof(customerSearchHandler));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<CustomerSearchHeaderOutputDto, CustomerSearchDataOutputDto>>),StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<CustomerSearchHeaderOutputDto, CustomerSearchDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(CustomerSearchInputDto input, CancellationToken cancellationToken)
         {
             ReportOutput<CustomerSearchHeaderOutputDto, CustomerSearchDataOutputDto> customer = await _customerSearchHandler.Handle(input, cancellationToken);
             return Ok(customer);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("excel/{connectionId}")]
+        public async Task<IActionResult> GetExcel(string connectionId, CustomerSearchInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _customerSearchHandler.Handle, CurrentUser, ReportLiterals.CustomerSearch, connectionId);
+            return Ok(inputDto);
         }
     }
 }

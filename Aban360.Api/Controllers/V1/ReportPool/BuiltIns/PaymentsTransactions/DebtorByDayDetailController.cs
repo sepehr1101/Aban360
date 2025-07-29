@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -11,11 +12,17 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
     [Route("v1/debtor-by-day-detail")]
     public class DebtorByDayDetailController : BaseController
     {
-        private readonly IDebtorByDayDetailHandler _debtorByDayHandler;
-        public DebtorByDayDetailController(IDebtorByDayDetailHandler debtorByDayHandler)
+        private readonly IDebtorByDayDetailHandler _DebtorByDayHandler;
+        private readonly IReportGenerator _reportGenerator;
+        public DebtorByDayDetailController(
+            IDebtorByDayDetailHandler DebtorByDayHandler,
+            IReportGenerator reportGenerator)
         {
-            _debtorByDayHandler = debtorByDayHandler;
-            _debtorByDayHandler.NotNull(nameof(_debtorByDayHandler));
+            _DebtorByDayHandler = DebtorByDayHandler;
+            _DebtorByDayHandler.NotNull(nameof(_DebtorByDayHandler));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
         [HttpPost, HttpGet]
@@ -23,8 +30,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<DebtorByDayHeaderOutputDto, DebtorByDayDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(DebtorByDayInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<DebtorByDayHeaderOutputDto, DebtorByDayDetailDataOutputDto> debtorByDay = await _debtorByDayHandler.Handle(inputDto, cancellationToken);
-            return Ok(debtorByDay);
+            ReportOutput<DebtorByDayHeaderOutputDto, DebtorByDayDetailDataOutputDto> DebtorByDay = await _DebtorByDayHandler.Handle(inputDto, cancellationToken);
+            return Ok(DebtorByDay);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("excel/{connectionId}")]
+        public async Task<IActionResult> GetExcel(string connectionId, DebtorByDayInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _DebtorByDayHandler.Handle, CurrentUser, ReportLiterals.DebtorByDayDetail, connectionId);
+            return Ok(inputDto);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -12,10 +13,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterByDurationTra
     public class MalfunctionMeterByDurationController : BaseController
     {
         private readonly IMalfunctionMeterByDurationHandler _malfunctionMeterByDurationHandler;
-        public MalfunctionMeterByDurationController(IMalfunctionMeterByDurationHandler malfunctionMeterByDurationHandler)
+        private readonly IReportGenerator _reportGenerator;
+        public MalfunctionMeterByDurationController(
+            IMalfunctionMeterByDurationHandler malfunctionMeterByDurationHandler,
+            IReportGenerator reportGenerator)
         {
             _malfunctionMeterByDurationHandler = malfunctionMeterByDurationHandler;
             _malfunctionMeterByDurationHandler.NotNull(nameof(malfunctionMeterByDurationHandler));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
         [HttpPost]
@@ -25,6 +32,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterByDurationTra
         {
             ReportOutput<MalfunctionMeterByDurationHeaderOutputDto, MalfunctionMeterByDurationDataOutputDto> result = await _malfunctionMeterByDurationHandler.Handle(input, cancellationToken);
             return Ok(result);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("excel/{connectionId}")]
+        public async Task<IActionResult> GetExcel(string connectionId, MalfunctionMeterByDurationInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _malfunctionMeterByDurationHandler.Handle, CurrentUser, ReportLiterals.MalfunctionMeterByDuration, connectionId);
+            return Ok(inputDto);
         }
     }
 }

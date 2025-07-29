@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -11,11 +12,17 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
     [Route("v1/invalid-payment")]
     public class InvalidPaymentController : BaseController
     {
-        private readonly IInvalidPaymentHandler _invalidPayment;
-        public InvalidPaymentController(IInvalidPaymentHandler invalidPayment)
+        private readonly IInvalidPaymentHandler _InvalidPayment;
+        private readonly IReportGenerator _reportGenerator;
+        public InvalidPaymentController(
+            IInvalidPaymentHandler InvalidPayment,
+            IReportGenerator reportGenerator)
         {
-            _invalidPayment = invalidPayment;
-            _invalidPayment.NotNull(nameof(_invalidPayment));
+            _InvalidPayment = InvalidPayment;
+            _InvalidPayment.NotNull(nameof(_InvalidPayment));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
         [HttpPost, HttpGet]
@@ -23,8 +30,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<InvalidPaymentHeaderOutputDto, InvalidPaymentDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(InvalidPaymentInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<InvalidPaymentHeaderOutputDto, InvalidPaymentDataOutputDto> invalidPayment = await _invalidPayment.Handle(inputDto, cancellationToken);
-            return Ok(invalidPayment);
+            ReportOutput<InvalidPaymentHeaderOutputDto, InvalidPaymentDataOutputDto> InvalidPayment = await _InvalidPayment.Handle(inputDto, cancellationToken);
+            return Ok(InvalidPayment);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("excel/{connectionId}")]
+        public async Task<IActionResult> GetExcel(string connectionId, InvalidPaymentInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _InvalidPayment.Handle, CurrentUser, ReportLiterals.InvalidPayment, connectionId);
+            return Ok(inputDto);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -12,10 +13,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
     public class ServiceLinkModifiedBillsSummaryController : BaseController
     {
         private readonly IServiceLinkModifiedBillsSummaryHandler _modifiedBillsHandler;
-        public ServiceLinkModifiedBillsSummaryController(IServiceLinkModifiedBillsSummaryHandler modifiedBillsHandler)
+        private readonly IReportGenerator _reportGenerator;
+        public ServiceLinkModifiedBillsSummaryController(
+            IServiceLinkModifiedBillsSummaryHandler modifiedBillsHandler,
+            IReportGenerator reportGenerator)
         {
             _modifiedBillsHandler = modifiedBillsHandler;
             _modifiedBillsHandler.NotNull(nameof(modifiedBillsHandler));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
         [HttpPost, HttpGet]
@@ -25,6 +32,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         {
             ReportOutput<ServiceLinkModifiedBillsHeaderOutputDto, ServiceLinkModifiedBillsSummaryDataOutputDto> modifiedBills = await _modifiedBillsHandler.Handle(input, cancellationToken);
             return Ok(modifiedBills);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("excel/{connectionId}")]
+        public async Task<IActionResult> GetExcel(string connectionId, ServiceLinkModifiedBillsInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _modifiedBillsHandler.Handle, CurrentUser, ReportLiterals.ServiceLinkModifiedBillsSummary, connectionId);
+            return Ok(inputDto);
         }
     }
 }

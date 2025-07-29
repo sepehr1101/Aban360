@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -12,10 +13,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
     public class ReadingDailyStatementController : BaseController
     {
         private readonly IReadingDailyStatementHandler _readingDailyStatement;
-        public ReadingDailyStatementController(IReadingDailyStatementHandler readingDailyStatement)
+        private readonly IReportGenerator _reportGenerator;
+        public ReadingDailyStatementController(
+            IReadingDailyStatementHandler readingDailyStatement,
+            IReportGenerator reportGenerator)
         {
             _readingDailyStatement = readingDailyStatement;
             _readingDailyStatement.NotNull(nameof(_readingDailyStatement));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
         [HttpPost]
@@ -25,6 +32,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         {
             ReportOutput<ReadingDailyStatementHeaderOutputDto, ReadingDailyStatementDataOutputDto> dailyStatement = await _readingDailyStatement.Handle(inputDto, cancellationToken);
             return Ok(dailyStatement);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("excel/{connectionId}")]
+        public async Task<IActionResult> GetExcel(string connectionId, ReadingDailyStatementInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _readingDailyStatement.Handle, CurrentUser, ReportLiterals.ReadingDailyStatement, connectionId);
+            return Ok(inputDto);
         }
     }
 }

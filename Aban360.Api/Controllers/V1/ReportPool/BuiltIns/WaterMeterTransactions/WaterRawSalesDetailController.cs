@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -12,10 +13,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
     public class WaterRawSalesDetailController : BaseController
     {
         private readonly IWaterRawSalesDetailHandler _waterRawSalesDetail;
-        public WaterRawSalesDetailController(IWaterRawSalesDetailHandler waterRawSalesDetail)
+        private readonly IReportGenerator _reportGenerator;
+        public WaterRawSalesDetailController(
+            IWaterRawSalesDetailHandler waterRawSalesDetail,
+            IReportGenerator reportGenerator)
         {
             _waterRawSalesDetail = waterRawSalesDetail;
             _waterRawSalesDetail.NotNull(nameof(_waterRawSalesDetail));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
         [HttpPost, HttpGet]
@@ -25,6 +32,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         {
             ReportOutput<WaterSalesHeaderOutputDto, WaterRawSalesDetailDataOutputDto> waterSales = await _waterRawSalesDetail.Handle(inputDto, cancellationToken);
             return Ok(waterSales);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("excel/{connectionId}")]
+        public async Task<IActionResult> GetExcel(string connectionId, WaterSalesInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _waterRawSalesDetail.Handle, CurrentUser, ReportLiterals.WaterNetSalesDetail, connectionId);
+            return Ok(inputDto);
         }
     }
 }
