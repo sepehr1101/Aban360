@@ -2,8 +2,7 @@
 {
     public record MeterInfoOutputDto
     {
-        public string PreviousDateJalali { get; set; }
+        public string PreviousDateJalali { get; set; } = default!;
         public int PreviousNumber { get; set; }
-        public string BranchType { get; set; }
     }
 }

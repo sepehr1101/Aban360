@@ -21,7 +21,7 @@
 
         public int Duration { get; set; }
         public double  PartialConsumption { get; set; }
-        public double  DailyConsumption { get; set; }
+        public double  DailyAverageConsumption { get; set; }
 
     }
 }
