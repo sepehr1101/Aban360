@@ -12,7 +12,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
             : base(configuration)
         { }
 
-        public async Task<IEnumerable<NerkhGetDto>> Get(NerkhByConsumptionInputDto input)
+        public async Task<(IEnumerable<NerkhGetDto>, IEnumerable<AbAzadGetDto>)> Get(NerkhByConsumptionInputDto input)
         {
             string nerkhTableIdQueryString = GetNerkhTableIdQuery();
             int nerkhTableId = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(nerkhTableIdQueryString, new { zoneId = input.ZoneId });
@@ -26,8 +26,24 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                 averageConsumption = input.AverageConsumption,
             };
             IEnumerable<NerkhGetDto> result = await _sqlReportConnection.QueryAsync<NerkhGetDto>(nerkhGetQueryString, @params);
+            IEnumerable<AbAzadGetDto> abAzad = await GetAbAzad(result, nerkhTableId);
+            return (result,abAzad);
+        }
+        private async Task<IEnumerable<AbAzadGetDto>> GetAbAzad(IEnumerable<NerkhGetDto> nerkh, int nerkhTableId)
+        {
+            string abAzadQueryString = GetAbAzadQuery(nerkhTableId);
+            ICollection<AbAzadGetDto> abAzad = new List<AbAzadGetDto>();
+            foreach (NerkhGetDto nerkhItem in nerkh)
+            {
+                var @abAzadParams = new
+                {
+                    @fromDate = nerkhItem.Date1,
+                    @toDate = nerkhItem.Date2,
+                };
+                abAzad.Add(await _sqlReportConnection.QueryFirstOrDefaultAsync<AbAzadGetDto>(abAzadQueryString, @abAzadParams));
+            }
 
-            return result;
+            return abAzad.ToList();
         }
         private string GetNerkhGetQuery(int nerkh)
         {
@@ -55,6 +71,16 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
             return @"Select t.olgo
                     From [OldCalc].dbo.table1 t
                     Where t.town=@zoneId";
+        }
+        private string GetAbAzadQuery(int nerkh)
+        {
+            return @$"SELECT
+                        MAX(CASE WHEN cod = 39 THEN vaj END) AS Azad,
+                        MAX(CASE WHEN cod = 8 THEN vaj END) AS Amozesh
+                    FROM [OldCalc].dbo.nerkh_{nerkh}
+                    WHERE
+                        date1 >= @fromDate
+                        AND date2 <= @toDate";
         }
 
     }
