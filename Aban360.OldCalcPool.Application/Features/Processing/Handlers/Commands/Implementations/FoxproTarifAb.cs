@@ -42,7 +42,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         static string emrooz;
         static bool TABSARE2;
         static bool drsd10;
-        static bool zaribfasl;   
+        static bool zaribfasl;
         static bool zTadil;
         static double radif;
         static string inst_fas;
@@ -1227,6 +1227,352 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 V_vaj2_7 = nerkh_azad;//&& ab azad
 
             }
+            //end line 1532
+        }
+
+        private static bool _IsEducation(int usageId)
+        {
+            int[] collection = [7, 8, 41];
+            return collection.Contains(usageId);
+
+        }
+        private static bool _IsEducationOrBath(int usageId)
+        {
+            int[] collection = [7, 8, 41, 11];
+            return collection.Contains(usageId);
+        }
+        private static (long, long) _BigCase(int usageId, string nerkhDate1, string nerkhDate2, bool isSpecial)
+        {
+            //start line 1228
+            //1                                                  
+            if ((_IsEducation(usageId) &&
+            nerkhDate2.CompareTo("1399/01/31") > 0 &&//TMP_NERKH.Date2 > '1399/01/31'
+            nerkhDate2.CompareTo("1400/01/31") <= 0))//TMP_NERKH.Date2 <= '1400/01/31'
+            {
+                if (usageId == 9 && isSpecial)
+                {
+                    return (10953, 45000);
+                }
+                else if (usageId == 9 && !isSpecial)
+                {
+                    return (9525, 45000);
+                }
+                else if (usageId == 41 && isSpecial)
+                {
+                    return (10953, 45000);
+                }
+                else if (usageId == 41 && !isSpecial)
+                {
+                    return (3529, 45000);
+                }
+                else if (usageId == 8 && isSpecial)
+                {
+                    return (10953, 45000);
+                }
+                else if (usageId == 8 && !isSpecial)
+                {
+                    return (3529, 45000);
+                }
+                else if (usageId == 7 && isSpecial)
+                {
+                    return (10953, 45000);
+                }
+                else if (usageId == 7 && !isSpecial)
+                {
+                    return (3529, 45000);
+                }
+            }
+            //2
+            else if (_IsEducation(usageId) &&
+                     nerkhDate2.CompareTo("1400/01/31") > 0 &&//TMP_NERKH.Date2 > '1400/01/31'
+                     nerkhDate2.CompareTo("1400/12/24") <= 0)//TMP_NERKH.Date2 <= '1400/12/24'
+            {
+                if (usageId == 9 && isSpecial)
+                {
+                    return (11720, 133255);
+                }
+                else if (usageId == 9 && !isSpecial)
+                {
+                    return (11720, 133255);
+                }
+                else if (usageId == 41 && isSpecial)
+                {
+                    return (3776, 133255);
+                }
+                else if (usageId == 41 && !isSpecial)
+                {
+                    return (3776, 133255);
+                }
+                else if (usageId == 8 && isSpecial)
+                {
+                    return (11720, 133255);
+                }
+                else if (usageId == 8 && !isSpecial)
+                {
+                    return (3776, 133255);
+                }
+                else if (usageId == 7 && isSpecial)
+                {
+                    return (3776, 133255);
+                }
+                else if (usageId == 7 && !isSpecial)
+                {
+                    return (3776, 133255);
+                }
+            }
+            // 3
+            else if (_IsEducation(usageId) &&
+                     nerkhDate2.CompareTo("1400/12/24") > 0 &&
+                     nerkhDate2.CompareTo("1401/12/27") <= 0)
+            {
+                if (usageId == 9 && isSpecial)
+                {
+                    return (33622, 168110);
+                }
+                else if (usageId == 9 && !isSpecial)
+                {
+                    return (33622, 168110);
+                }
+                else if (usageId == 41 && isSpecial)
+                {
+                    return (3776, 168110);
+                }
+                else if (usageId == 41 && !isSpecial)
+                {
+                    return (3776, 168110);
+                }
+                else if (usageId == 8 && isSpecial)
+                {
+                    return (3776, 168110);
+                }
+                else if (usageId == 8 && !isSpecial)
+                {
+                    return (3776, 168110);
+                }
+                else if (usageId == 7 && isSpecial)
+                {
+                    return (3776, 168110);
+                }
+                else if (usageId == 7 && !isSpecial)
+                {
+                    return (3776, 168110);
+                }
+            }
+
+            // 4
+            else if (_IsEducationOrBath(usageId) &&
+                     nerkhDate2.CompareTo("1401/12/27") > 0 &&
+                     nerkhDate2.CompareTo("1402/04/23") <= 0)
+            {
+                if (usageId == 9 && isSpecial)
+                {
+                    return (33622, 168110);
+                }
+                else if (usageId == 9 && !isSpecial)
+                {
+                    return (33622, 168110);
+                }
+                else if (usageId == 41 && isSpecial)
+                {
+                    return (4040, 168110);
+                }
+                else if (usageId == 41 && !isSpecial)
+                {
+                    return (3776, 168110);
+                }
+                else if (usageId == 8 && isSpecial)
+                {
+                    return (4040, 168110);
+                }
+                else if (usageId == 8 && !isSpecial)
+                {
+                    return (4040, 168110);
+                }
+                else if (usageId == 7 && isSpecial)
+                {
+                    return (4040, 168110);
+                }
+                else if (usageId == 7 && !isSpecial)
+                {
+                    return (4040, 168110);
+                }
+                else if (usageId == 11)
+                {
+                    return (8644, 8644);
+                }
+            }
+
+            // 5
+            else if (_IsEducationOrBath(usageId) &&
+                     nerkhDate2.CompareTo("1402/04/23") > 0 &&
+                     nerkhDate2.CompareTo("1403/06/25") <= 0)
+            {
+                if (usageId == 9 && isSpecial)
+                {
+                    return (4323, 225000);
+                }
+                else if (usageId == 9 && !isSpecial)
+                {
+                    return (45000, 225000);
+                }
+                else if (usageId == 41 && isSpecial)
+                {
+                    return (4323, 225000);
+                }
+                else if (usageId == 41 && !isSpecial)
+                {
+                    return (4323, 225000);
+                }
+                else if (usageId == 8 && isSpecial)
+                {
+                    return (4323, 225000);
+                }
+                else if (usageId == 8 && !isSpecial)
+                {
+                    return (4323, 225000);
+                }
+                else if (usageId == 7 && isSpecial)
+                {
+                    return (4323, 225000);
+                }
+                else if (usageId == 7 && !isSpecial)
+                {
+                    return (4323, 225000);
+                }
+                else if (usageId == 11)
+                {
+                    return (8644, 8644);
+                }
+            }
+
+            // 6
+            else if (_IsEducationOrBath(usageId) &&
+                     nerkhDate2.CompareTo("1403/06/25") > 0 &&
+                     nerkhDate2.CompareTo("1403/09/13") <= 0)
+            {
+                if (usageId == 9 && isSpecial)
+                {
+                    return (4323, 350000);
+                }
+                else if (usageId == 9 && !isSpecial)
+                {
+                    return (45000, 350000);
+                }
+                else if (usageId == 41 && isSpecial)
+                {
+                    return (4323, 350000);
+                }
+                else if (usageId == 41 && !isSpecial)
+                {
+                    return (4323, 350000);
+                }
+                else if (usageId == 8 && isSpecial)
+                {
+                    return (4323, 350000);
+                }
+                else if (usageId == 8 && !isSpecial)
+                {
+                    return (4323, 350000);
+                }
+                else if (usageId == 7 && isSpecial)
+                {
+                    return (4323, 350000);
+                }
+                else if (usageId == 7 && !isSpecial)
+                {
+                    return (4323, 350000);
+                }
+                else if (usageId == 11)
+                {
+                    return (8644, 8644);
+                }
+            }
+
+            // 7
+            else if (_IsEducationOrBath(usageId) &&
+                     nerkhDate2.CompareTo("1403/09/13") > 0 &&
+                     nerkhDate2.CompareTo("1404/02/31") <= 0)
+            {
+                if (usageId == 9 && isSpecial)
+                {
+                    return (7000, 350000);
+                }
+                else if (usageId == 9 && !isSpecial)
+                {
+                    return (45000, 350000);
+                }
+                else if (usageId == 41 && isSpecial)
+                {
+                    return (7000, 350000);
+                }
+                else if (usageId == 41 && !isSpecial)
+                {
+                    return (7000, 350000);
+                }
+                else if (usageId == 8 && isSpecial)
+                {
+                    return (7000, 350000);
+                }
+                else if (usageId == 8 && !isSpecial)
+                {
+                    return (7000, 350000);
+                }
+                else if (usageId == 7 && isSpecial)
+                {
+                    return (7000, 350000);
+                }
+                else if (usageId == 11)
+                {
+                    return (7000, 350000);
+                }
+            }
+
+            // 8
+            else if (_IsEducationOrBath(usageId) &&
+                     nerkhDate2.CompareTo("1404/02/31") > 0)
+            {
+                if (usageId == 9 && isSpecial)
+                {
+                    return (9000, 450000);
+                }
+                else if (usageId == 9 && !isSpecial)
+                {
+                    return (45000, 450000);
+                }
+                else if (usageId == 41 && isSpecial)
+                {
+                    return (9000, 450000);
+                }
+                else if (usageId == 41 && !isSpecial)
+                {
+                    return (9000, 450000);
+                }
+                else if (usageId == 8 && isSpecial)
+                {
+                    return (9000, 450000);
+                }
+                else if (usageId == 8 && !isSpecial)
+                {
+                    return (9000, 450000);
+                }
+                else if (usageId == 7 && isSpecial)
+                {
+                    return (9000, 450000);
+                }
+                else if (usageId == 11)
+                {
+                    return (9000, 450000);
+                }
+            }
+
+
+            else
+            {
+                nerkh_azad = abazad(nerkhDate1, nerkhDate2, 39);//&& ab azad sakht va saz  && ab azad omomi kargahi** dar  tarikh 1398 / 01 / 31
+                return (0, nerkh_azad);
+
+            }
+            return (0, 0);
             //end line 1532
         }
         private static int abazad(string date1, string date2, int kar)
