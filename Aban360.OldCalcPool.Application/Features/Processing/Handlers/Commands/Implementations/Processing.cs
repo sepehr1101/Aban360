@@ -102,12 +102,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             int domesticUnitTemp = customerInfo.DomesticUnit < 1 ? 1 : customerInfo.DomesticUnit;
             double monthlyAverageConsumption = dailyAverage * 30 / domesticUnitTemp;
 
-            IEnumerable<NerkhGetDto> allNerkh = await _nerkhGetByConsumptionService.Get(new NerkhByConsumptionInputDto(customerInfo.ZoneId,
+            (IEnumerable<NerkhGetDto>,IEnumerable<AbAzadGetDto>) allNerkhAbAbAzad = await _nerkhGetByConsumptionService.Get(new NerkhByConsumptionInputDto(customerInfo.ZoneId,
                                                                                                                        customerInfo.UsageId,
                                                                                                                        meterInfo.PreviousDateJalali,
                                                                                                                        input.CurrentDateJalali,
                                                                                                                        monthlyAverageConsumption));
-            Tarif_Ab(allNerkh, dailyAverage, meterInfo.PreviousDateJalali, input.CurrentDateJalali,customerInfo);
+            Tarif_Ab(allNerkhAbAbAzad.Item1, dailyAverage, meterInfo.PreviousDateJalali, input.CurrentDateJalali,customerInfo);
 
         }
 

@@ -781,7 +781,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         {
             return 140000;
         }
-        private static bool Rosta_shahr(int city, string eshtrak, int rosta)
+        private static m Rosta_shahr(int city, string eshtrak, int rosta)
         {
             return false;
         }
@@ -797,6 +797,41 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             if (zoneId > 14000)
                 return false;
             return true;
+        }
+        private static bool _IsBetween(int baseZoneId, int zoneIdParam, string readingNumber, string fromNumber, string toNumber)
+        {
+            return
+                baseZoneId == zoneIdParam &&
+                readingNumber.Trim().CompareTo(fromNumber) >= 0 &&
+                readingNumber.Trim().CompareTo(toNumber) <= 0;
+        }
+        private static bool _RuralButIsMetro(int zoneId, string readingNumber)//readingNumber Must Trim
+        {
+            return
+                _IsBetween(141911, zoneId, readingNumber, "10340005001", "10340908000") ||
+                _IsBetween(141914, zoneId, readingNumber, "10610001000", "10610800000") ||
+                _IsBetween(144015, zoneId, readingNumber, "60000000000", "60999999999") ||
+                _IsBetween(144015, zoneId, readingNumber, "62000000000", "62999999999") ||
+                _IsBetween(144016, zoneId, readingNumber, "22000000000", "22999999999") ||
+                _IsBetween(144016, zoneId, readingNumber, "24000000000", "24999999999") ||
+                _IsBetween(141611, zoneId, readingNumber, "10060001000", "10060797000") ||
+                _IsBetween(144411, zoneId, readingNumber, "10160001000", "10161024000") ||
+                _IsBetween(143411, zoneId, readingNumber, "10930000000", "10939999999") ||
+                _IsBetween(143411, zoneId, readingNumber, "71093000000", "71093999999") ||
+                _IsBetween(143411, zoneId, readingNumber, "81093000000", "81093999999") ||
+                _IsBetween(143411, zoneId, readingNumber, "10900000000", "10909999999") ||
+                _IsBetween(143411, zoneId, readingNumber, "71090000000", "71090999999") ||
+                _IsBetween(143411, zoneId, readingNumber, "81090000000", "81090999999") ||
+                _IsBetween(143012, zoneId, readingNumber, "10100000000", "10109999999") ||
+                _IsBetween(143012, zoneId, readingNumber, "10170000000", "10179999999") ||
+                _IsBetween(143012, zoneId, readingNumber, "10160000000", "10169999999") ||
+                _IsBetween(143012, zoneId, readingNumber, "10290000000", "10299999999") ||
+                _IsBetween(143012, zoneId, readingNumber, "10130000000", "10139999999") ||
+                _IsBetween(142211, zoneId, readingNumber, "10340000000", "10349999999") ||
+                _IsBetween(142211, zoneId, readingNumber, "10370000000", "10379999999") ||
+                _IsBetween(142211, zoneId, readingNumber, "10380000000", "10389999999") ||
+                _IsBetween(142215, zoneId, readingNumber, "10220000000", "10229999999");
+
         }
         private static void Line1178()
         {
