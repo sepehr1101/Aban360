@@ -249,36 +249,25 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 (zoneId == 134016 && IsBetween(readingNumber, 57000000, 57999999)) ||
                 IsMetroButRural(zoneId, readingNumber.ToString(), 4);
         }
-        /// <summary>
-        /// مناطق شهری که اشتراک آنها باید روستایی محاسبه گردد
-        /// </summary>
-        /// <returns></returns>
-        private bool IsMetroButRural(int zoneId, string readingNumber, int trimLenFromLeft)
+        private double Multiplier(ZaribGetDto zarib, int olgo, bool isDomestic, bool isVillage, double monthlyConsumption)
         {
-            int villageCode = int.Parse(readingNumber.Trim().Substring(0, trimLenFromLeft));
-            if (zoneId == 132220 &&
-                (IsBetween(villageCode, 1610, 1628) ||
-                 IsBetween(villageCode, 1633, 1648) ||
-                 IsBetween(villageCode, 1651, 1661) ||
-                 IsBetween(villageCode, 6042, 6052) ||
-                 IsBetween(villageCode, 6060, 6072)) 
-                )                 
-                return true;
-            if (zoneId == 132211 && 
-                (
-                 IsBetween(villageCode, 1103, 1108) ||
-                 IsBetween(villageCode, 1109, 1113) ||
-                 IsBetween(villageCode, 1143, 1165) ||
-                 IsBetween(villageCode, 1161, 1184) ||
-                 IsBetween(villageCode, 1403, 1499) ||
-                 IsBetween(villageCode, 1450, 1472) ||
-                 IsBetween(villageCode, 1574, 1599))
-                )
-                return true;
+            double zbSelection = 1;
 
-            return false;
+            zbSelection = isVillage ? zarib.Zarib_baha : 1;
+            zbSelection = !isDomestic && !isVillage ? zarib.Zb : 1;
+            if (isDomestic && !isVillage)
+            {
+                zbSelection = IsBetween(monthlyConsumption, 0, 5) ? zarib.Zb1 : 1;
+                zbSelection = IsBetween(monthlyConsumption, 5, 10) ? zarib.Zb2 : 1;
+                zbSelection = IsBetween(monthlyConsumption, 10, olgo) ? zarib.Zb3 : 1;
+                zbSelection = IsBetween(monthlyConsumption, olgo, olgo * 1.5) ? zarib.Zb4 : 1;
+                zbSelection = IsBetween(monthlyConsumption, olgo * 1.5, olgo * 2) ? zarib.Zb5 : 1;
+                zbSelection = IsBetween(monthlyConsumption, olgo * 2, olgo * 3) ? zarib.Zb6 : 1;
+                zbSelection = monthlyConsumption > olgo * 3 ? zarib.Zb7 : 1;
+            }
+
+            return zbSelection;
         }
-
 
         //written by mhnds Gharibi
         private bool Rosta_shahr(int zoneId, int readingNumber, int number)
