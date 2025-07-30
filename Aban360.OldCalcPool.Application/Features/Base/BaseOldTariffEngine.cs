@@ -248,7 +248,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 (zoneId == 134016 && IsBetween(readingNumber, 57000000, 57999999)) ||
                 Rosta_shahr(zoneId, readingNumber, 4);
         }
-        private double Multiplire(ZaribGetDto zarib, int olgo, bool isDomestic, bool isVillage, double monthlyConsumption)
+        private double Multiplier(ZaribGetDto zarib, int olgo, bool isDomestic, bool isVillage, double monthlyConsumption)
         {
             double zbSelection = 1;
 
