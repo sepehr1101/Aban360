@@ -185,7 +185,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             ulong[] village142618 = [ 1037, 1038, 1039 ];
             ulong[] village144311 = [ 1090, 1093 ];
             ulong[] village144411 = [ 1016 ];
-            ulong[] village143012 = [ 1010, 1013, 1029, 1016, 1017 ];
+            ulong[] village143012 = [ 1010, 1013, 1016, 1017, 1029];
             ulong[] village142714 = [ 1019 ];
             ulong[] village141911 = [ 1034 ];
             ulong[] village141914 = [ 1061 ];
@@ -205,6 +205,10 @@ namespace Aban360.CalculationPool.Application.Features.Base
         {
             return number >= min && number <= max;
         }
+        private bool IsBetween(ulong number, ulong min, ulong max)
+        {
+            return number >= min && number <= max;
+        }
         private bool IsGardenAndResidence(int usageId)
         {
             int[] condition = [25, 34 ];
@@ -212,37 +216,67 @@ namespace Aban360.CalculationPool.Application.Features.Base
         }
 
         //todo : change it, anti pattern
-        private bool IsAbUnequal0AndDate2LestThan1403_09_13(string date2, double monthlyConsumption, double abBaha, double oldAbBaha, int firstOldoo)
+        [Obsolete]
+        private bool IsAbUnequal0AndDate2LestThan1403_09_13(string date2, double monthlyConsumption, double abBaha, double oldAbBaha, int firstOlgoo)
         {
             if (abBaha != 0)
             {
-                if (date2.CompareTo("1403/09/13") <= 0 || monthlyConsumption <= first_olgo)
+                if (date2.CompareTo("1403/09/13") <= 0 || monthlyConsumption <= firstOlgoo)
                 {
-                    Ab = (int)(abBaha / 2);//?AB? ab_?
-                    oldAbBaha = (int)(oldAbBaha / 2);
-                    rosta_calc = 2;
+                    MultiplyCalculation(abBaha, oldAbBaha, 0.5);
                 }
                 else
                 {
-                    Ab = (int)(abBaha * 0.65);
-                    oldAbBaha = (int)(oldAbBaha * 0.65);
-                    rosta_calc = 2;
+                    MultiplyCalculation(abBaha, oldAbBaha, 0.65);
                 }
             }
 
             return false;
+        }
+        private (double,double,bool) MultiplyCalculation(double abBaha, double oldAbBaha, double multiplier)
+        {
+            return (abBaha * multiplier, oldAbBaha * multiplier, true);
         }
         private bool IsTankerSaleAndVillage(int usageId)
         {
             int[] condition = [14, 15 ];
             return condition.Contains(usageId);
         }
-        private bool IsDolatabadOrHabibabadWithConditionEshtrak(int zoneId, int readingNumber)
+        private bool IsDolatabadOrHabibabadWithConditionEshtrak(int zoneId, ulong readingNumber)
         {
             return
                 (zoneId == 134013 && IsBetween(readingNumber, 57000000, 57999999)) ||
                 (zoneId == 134016 && IsBetween(readingNumber, 57000000, 57999999)) ||
-                Rosta_shahr(zoneId, readingNumber, 4);
+                IsMetroButRural(zoneId, readingNumber.ToString(), 4);
+        }
+        /// <summary>
+        /// مناطق شهری که اشتراک آنها باید روستایی محاسبه گردد
+        /// </summary>
+        /// <returns></returns>
+        private bool IsMetroButRural(int zoneId, string readingNumber, int trimLenFromLeft)
+        {
+            int villageCode = int.Parse(readingNumber.Trim().Substring(0, trimLenFromLeft));
+            if (zoneId == 132220 &&
+                (IsBetween(villageCode, 1610, 1628) ||
+                 IsBetween(villageCode, 1633, 1648) ||
+                 IsBetween(villageCode, 1651, 1661) ||
+                 IsBetween(villageCode, 6042, 6052) ||
+                 IsBetween(villageCode, 6060, 6072)) 
+                )                 
+                return true;
+            if (zoneId == 132211 && 
+                (
+                 IsBetween(villageCode, 1103, 1108) ||
+                 IsBetween(villageCode, 1109, 1113) ||
+                 IsBetween(villageCode, 1143, 1165) ||
+                 IsBetween(villageCode, 1161, 1184) ||
+                 IsBetween(villageCode, 1403, 1499) ||
+                 IsBetween(villageCode, 1450, 1472) ||
+                 IsBetween(villageCode, 1574, 1599))
+                )
+                return true;
+
+            return false;
         }
 
 
@@ -391,15 +425,15 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 else
                     first_olgo = nerkh.Olgo;//is it true? olgoab==nerkh.Olgo??
 
-                if (IsVillage(customerInfo.ZoneId) && IsDomesticWithoutUnspecified(customerInfo.UsageId) && IsNotConstruction(customerInfo.BranchType))//c#:221
+                if (IsVillage(customerInfo.ZoneId) && IsDomesticWithoutUnspecified(customerInfo.UsageId) && IsNotConstruction(customerInfo.BranchType))
                 {
                     int cod_rosta = int.Parse(customerInfo.VillageId.Trim().Substring(0, 4));
-                    if (!IsVillage(customerInfo.ZoneId) || RuralButIsMetro(customerInfo.ZoneId, (int.Parse)(customerInfo.VillageId)))//c#:225   
+                    if (RuralButIsMetro(customerInfo.ZoneId,customerInfo.ReadingNumber) || RuralButIsMetro(customerInfo.ZoneId, ulong.Parse(customerInfo.VillageId)))
                     {
                         //
                     }
                     else
-                    {
+                    {//1167
                         IsAbUnequal0AndDate2LestThan1403_09_13(nerkh.Date2, monthlyConsumption, ab_, o_ab_);//??
                     }//c#:258  foxpro:1591
                 }
@@ -700,6 +734,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         private long _CalculateAbBaha(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, long abAzad39, long abAzad8)
         {
             double abBahaAmount = 0, oldAbBahaAmount = 0, abBahaFromExpression = 0;
+            bool isVillageCalculation = false;
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
             duration = nerkh.Duration;
             double monthlyConsumption = nerkh.DailyAverageConsumption * 30;
@@ -792,116 +827,150 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 }
             }
             //L 1553
-            int roostaCalculation = 1;
+            isVillageCalculation = false;//L 1558
             int firstOlgoo = nerkh.Date2.CompareTo("1403/12/30") <= 0 ? 14 : nerkh.Olgo;
 
-            if (IsVillage(customerInfo.ZoneId) && IsDomesticWithoutUnspecified(customerInfo.UsageId) && IsNotConstruction(customerInfo.BranchType))
-            {xxxxxxxxxxxxxxx
+            if (IsVillage(customerInfo.ZoneId) && 
+                IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
+                IsNotConstruction(customerInfo.BranchType))
+            {
                 int villageCode = int.Parse(customerInfo.VillageId.Trim().Substring(0, 4));
-                if (RuralButIsMetro(customerInfo.ZoneId,customerInfo.ReadingNumber) || RuralButIsMetro(customerInfo.ZoneId, ulong.Parse(customerInfo.VillageId))) 
+                if (RuralButIsMetro(customerInfo.ZoneId,customerInfo.ReadingNumber) ||
+                    RuralButIsMetro(customerInfo.ZoneId, ulong.Parse(customerInfo.VillageId))) 
                 {
-                    //
+                    //nothing !
                 }
                 else
-                {
-                    IsAbUnequal0AndDate2LestThan1403_09_13(nerkh.Date2, monthlyConsumption, abBahaAmount, oldAbBahaAmount);//??
-                }//foxpro:1591
-            }
-
-            if (IsDolatabadOrHabibabadWithConditionEshtrak(customerInfo.ZoneId, (int.Parse)(customerInfo.ReadingNumber)))
-            {
-                if (IsDomesticWithoutUnspecified(customerInfo.UsageId) && IsNotConstruction(customerInfo.BranchType))
-                {
-                    IsAbUnequal0AndDate2LestThan1403_09_13(nerkh.Date2, monthlyConsumption, ab_, o_ab_);
+                {//1578
+                    if (abBahaAmount != 0)
+                    {
+                        if (nerkh.Date2.CompareTo("1403/09/13") <= 0 || monthlyConsumption <= firstOlgoo)
+                        {
+                            (abBahaAmount, oldAbBahaAmount, isVillageCalculation) = MultiplyCalculation(abBahaAmount, oldAbBahaAmount, 0.5);
+                        }
+                        else
+                        {
+                            (abBahaAmount, oldAbBahaAmount, isVillageCalculation) = MultiplyCalculation(abBahaAmount, oldAbBahaAmount, 0.65);
+                        }
+                    }                   
                 }
-            }//c#:289 and foxpro:1619
+            }
+            //L 1600 approximately
+            if (IsDolatabadOrHabibabadWithConditionEshtrak(customerInfo.ZoneId, ulong.Parse(customerInfo.ReadingNumber)))
+            {
+                if (IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
+                    IsNotConstruction(customerInfo.BranchType))
+                {
+                    if (abBahaAmount != 0)//L 1604
+                    {
+                        if (nerkh.Date2.CompareTo("1403/09/13") <= 0 || monthlyConsumption <= firstOlgoo)
+                        {
+                            (abBahaAmount, oldAbBahaAmount, isVillageCalculation) = MultiplyCalculation(abBahaAmount, oldAbBahaAmount, 0.5);
+                        }
+                        else
+                        {
+                            (abBahaAmount, oldAbBahaAmount, isVillageCalculation) = MultiplyCalculation(abBahaAmount, oldAbBahaAmount, 0.65);
+                        }
+                    }
+                }
+            }//foxpro:1620
 
+            double contractInDuration = 0;
+            double allowedConsumption = 0;
+            double disAllowedConsumption = 0;
+            double allowedBoodje = 0;
+            double disAllowedBoodje = 0;
+            //L 1627
             if ((!IsDomesticWithoutUnspecified(customerInfo.UsageId) && !IsGardenAndResidence(customerInfo.UsageId) && nerkh.Date2.CompareTo("1398/12/29") > 0) ||
                 (IsGardenAndResidence(customerInfo.UsageId) && nerkh.Date2.CompareTo("1400/12/29") < 0))
             {
-                Bmas2_7 = 0;
-                if (customerInfo.ContractualCapacity > 0 && IsNotConstruction(customerInfo.BranchType))
+                //Bmas2_7 = 0;
+               
+                if (customerInfo.ContractualCapacity > 0 &&
+                    IsNotConstruction(customerInfo.BranchType))
                 {
-                    Bmas_fi_roz = (customerInfo.ContractualCapacity / 30.0) * duration;
-                    if (nerkh.PartialConsumption > Bmas_fi_roz || IsSchool(customerInfo.UsageId))
+                    contractInDuration = (customerInfo.ContractualCapacity / 30.0) * nerkh.Duration;
+                    if (nerkh.PartialConsumption > contractInDuration || IsSchool(customerInfo.UsageId))
                     {
-                        Bmas2_7 = nerkh.PartialConsumption - Bmas_fi_roz;
-                        Bmas1_7 = nerkh.PartialConsumption - Bmas2_7;
-                        if (nerkh.PartialConsumption <= Bmas_fi_roz)
+                        disAllowedConsumption = nerkh.PartialConsumption - contractInDuration;
+                        allowedConsumption = nerkh.PartialConsumption - Bmas2_7;
+                        if (nerkh.PartialConsumption <= contractInDuration)
                         {
-                            Bmas1_7 = nerkh.PartialConsumption;
-                            Bmas2_7 = 0;
+                            allowedConsumption = nerkh.PartialConsumption;
+                            disAllowedConsumption = 0;
                         }
                     }
                 }//c#:313  foxpro:1642
 
-                if (Bmas2_7 > 0)
-                    v_bodjeh01 = nerkh.ZaribBodje * Bmas2_7;
+                if (disAllowedConsumption > 0)
+                    allowedBoodje = nerkh.ZaribBodje * disAllowedConsumption;
                 else
-                    v_bodjeh01 = 0;
+                    allowedBoodje = 0;
             }
             else
             {
+                double domesticConsumption = 0;
                 if ((IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId)) &&
                     nerkh.Date2.CompareTo("1398/12/29") > 0)//always false because date is invalid
                 {
-                    mas_maskoni = 0;
-                    if (IsDomesticWithoutUnspecified(customerInfo.UsageId) && monthlyConsumption >= first_olgo && customerInfo.DomesticUnit > 0)
+                    // mas_maskoni = 0;
+                    
+                    if (IsDomesticWithoutUnspecified(customerInfo.UsageId) && monthlyConsumption >= firstOlgoo && customerInfo.DomesticUnit > 0)
                     {
-                        mas_maskoni = (((monthlyConsumption - first_olgo) * customerInfo.DomesticUnit) / 30.0) * duration;
+                        domesticConsumption = (((monthlyConsumption - firstOlgoo) * customerInfo.DomesticUnit) / 30.0) * nerkh.Duration;
                     }
                     else
                     {
-                        if (monthlyConsumption > first_olgo)
-                            mas_maskoni = ((monthlyConsumption - first_olgo) / 30.0) * duration;
+                        if (monthlyConsumption > firstOlgoo)
+                            domesticConsumption = ((monthlyConsumption - firstOlgoo) / 30.0) * nerkh.Duration;
                         else
-                            mas_maskoni = 0;
+                            domesticConsumption = 0;
                     }
-                    v_bodjeh01 = nerkh.ZaribBodje * customerInfo.DomesticUnit;
+                    allowedBoodje = nerkh.ZaribBodje * domesticConsumption;
                 }
                 else
                 {
-                    v_bodjeh01 = nerkh.ZaribBodje * nerkh.PartialConsumption;
+                    allowedBoodje = nerkh.ZaribBodje * nerkh.PartialConsumption;
                 }//c#:344  foxpro:1673
             }
-            v_bodjeh01 = (int)v_bodjeh01;
             if (!IsNotConstruction(customerInfo.BranchType))
-                v_bodjeh01 = 0;
+                allowedBoodje = 0;
 
             if (IsTankerSaleAndVillage(customerInfo.UsageId))
-                v_bodjeh01 = 0;
+                allowedBoodje = 0;
 
             if (customerInfo.ZoneId == 151511)
-                v_bodjeh01 = 0;
+                allowedBoodje = 0;
 
-            if (abfar_x == 2)
+            if (IsVillage(customerInfo.ZoneId))
             {
                 int cod_rosta = int.Parse(customerInfo.VillageId.Trim().Substring(0, 4));
-                if (RuralButIsMetro(customerInfo.ZoneId, (int.Parse)(customerInfo.VillageId)))
+                if (RuralButIsMetro(customerInfo.ZoneId, ulong.Parse(customerInfo.VillageId)))
                 {
-                    //
+                    //nothing
                 }
                 else
                 {
                     if (IsDomesticWithoutUnspecified(customerInfo.UsageId))
                     {
-                        v_bodjeh01 = (int)(v_bodjeh01 / 2);
+                        allowedBoodje = (allowedBoodje / 2);
                     }
                 }
-            }//c#:386  foxpro:1712
-            if (IsDolatabadOrHabibabadWithConditionEshtrak(customerInfo.ZoneId, (int.Parse)(customerInfo.ReadingNumber)))
+            }//foxpro:1713
+            if (IsDolatabadOrHabibabadWithConditionEshtrak(customerInfo.ZoneId, ulong.Parse(customerInfo.ReadingNumber)))
             {
                 if (IsDomesticWithoutUnspecified(customerInfo.UsageId))
                 {
-                    v_bodjeh01 = (int)(v_bodjeh01 / 2);
+                    allowedBoodje = (allowedBoodje / 2);
                 }
-            }
+            }//L 1724
+            xxxxxxxxxxxxxxxxxxxxxxxxxxx
             vzarib_baha = sele_zarib(customerInfo.ZoneId, nerkh.Date1, nerkh.Date2, customerInfo.UsageId, customerInfo.BranchType, abfar_x, shandle, customerInfo.ReadingNumber, monthlyConsumption, nerkh.Olgo);
-            if (IsGardenAndResidence(customerInfo.ZoneId))
-            {
-                if (nerkh.Date2.CompareTo("1401/12/28") <= 0)
+            if (IsGardenAndResidence(customerInfo.ZoneId) &&
+                nerkh.Date2.CompareTo("1401/12/28") <= 0)
+            {               
                     vzarib_baha = 1;
-            }//c#:403  foxpro:1740
+            }//foxpro:1740
 
             ab_ = vAb_sevom + (ab_ * vzarib_baha);
             ab_Fas = ab_;
