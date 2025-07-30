@@ -1,18 +1,26 @@
 ﻿using Aban360.Common.Db.Dapper;
+using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
 using Dapper;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
 {
     internal sealed class NerkhGetByConsumptionService : AbstractBaseConnection, INerkhGetByConsumptionService
     {
-        public NerkhGetByConsumptionService(IConfiguration configuration)
+        private readonly IZaribByDateAndZoneIdQueryService _zaribByDateAndZoneIdService;
+        public NerkhGetByConsumptionService(
+            IConfiguration configuration,
+            IZaribByDateAndZoneIdQueryService zaribByDateAndZoneIdService)
             : base(configuration)
-        { }
+        {
+            _zaribByDateAndZoneIdService = zaribByDateAndZoneIdService;
+            _zaribByDateAndZoneIdService.NotNull(nameof(zaribByDateAndZoneIdService));
+        }
 
-        public async Task<(IEnumerable<NerkhGetDto>, IEnumerable<AbAzadGetDto>)> Get(NerkhByConsumptionInputDto input)
+        public async Task<(IEnumerable<NerkhGetDto>, IEnumerable<AbAzadGetDto>,IEnumerable<ZaribGetDto>)> Get(NerkhByConsumptionInputDto input)
         {
             string nerkhTableIdQueryString = GetNerkhTableIdQuery();
             int nerkhTableId = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(nerkhTableIdQueryString, new { zoneId = input.ZoneId });
@@ -25,9 +33,19 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                 input.CurrentDateJalali,
                 averageConsumption = input.AverageConsumption,
             };
-            IEnumerable<NerkhGetDto> result = await _sqlReportConnection.QueryAsync<NerkhGetDto>(nerkhGetQueryString, @params);
-            IEnumerable<AbAzadGetDto> abAzad = await GetAbAzad(result, nerkhTableId);
-            return (result,abAzad);
+            IEnumerable<NerkhGetDto> nerkh = await _sqlReportConnection.QueryAsync<NerkhGetDto>(nerkhGetQueryString, @params);
+            IEnumerable<AbAzadGetDto> abAzad = await GetAbAzad(nerkh, nerkhTableId);
+            IEnumerable<ZaribGetDto> zarib = await GetZarib(nerkh, input.ZoneId);
+            return (nerkh,abAzad,zarib);
+        }
+        private async Task<IEnumerable<ZaribGetDto>> GetZarib(IEnumerable<NerkhGetDto> nerkh,int zoneId)
+        {
+            ICollection<ZaribGetDto> zarib=new List<ZaribGetDto>();
+            foreach (NerkhGetDto item in nerkh)
+            {
+                zarib.Add(await _zaribByDateAndZoneIdService.Get(new ZaribInputDto(zoneId, item.Date1, item.Date2)));
+            }
+            return zarib.ToList();
         }
         private async Task<IEnumerable<AbAzadGetDto>> GetAbAzad(IEnumerable<NerkhGetDto> nerkh, int nerkhTableId)
         {
