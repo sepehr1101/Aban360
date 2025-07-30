@@ -781,7 +781,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         {
             return 140000;
         }
-        private static m Rosta_shahr(int city, string eshtrak, int rosta)
+        private static bool Rosta_shahr(int city, string eshtrak, int rosta)
         {
             return false;
         }
