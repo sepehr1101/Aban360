@@ -125,7 +125,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         }
         private bool IsDomestic(int usageId)
         {
-            int[] condition = [ 0, 1, 3 ];
+            int[] condition = [0, 1, 3];
             return condition.Contains(usageId);
         }
         private bool IsDomesticCategory(int usageId)
@@ -135,32 +135,32 @@ namespace Aban360.CalculationPool.Application.Features.Base
         }
         private bool IsDomesticWithoutUnspecified(int usageId)
         {
-            int[] condition = [ 1, 3 ];
+            int[] condition = [1, 3];
             return condition.Contains(usageId);
         }
         private bool IsNotReligious(int usageId)
         {
-            int[] condition = [ 10, 12, 13, 32, 29 ];
+            int[] condition = [10, 12, 13, 32, 29];
             return !condition.Contains(usageId);
         }
         private bool IsReligious(int usageId)
         {
-            int[] condition = [ 10, 12, 13, 32, 29 ];
+            int[] condition = [10, 12, 13, 32, 29];
             return condition.Contains(usageId);
         }
         private bool IsNotConstruction(int branchTypeId)
         {
-            int[] condition = [ 4 ];
-            return condition.Contains(branchTypeId) ;
+            int[] condition = [4];
+            return condition.Contains(branchTypeId);
         }
         private bool IsCharityAndSchool(int usageId)
         {
-            int[] condition = [ 8, 7, 12, 13, 29, 30, 32 ];
+            int[] condition = [8, 7, 12, 13, 29, 30, 32];
             return condition.Contains(usageId);
         }
         private bool IsHandoverDiscount(int usageId)
         {
-            int[] condition = [ 3, 6, 7 ];
+            int[] condition = [3, 6, 7];
             return condition.Contains(usageId);
         }
         private bool IsSchool(int usageId)
@@ -170,7 +170,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         }
         private bool IsReligiousWithCharity(int usageId)
         {
-            int[] condition = [ 12, 13, 29, 30, 32 ];
+            int[] condition = [12, 13, 29, 30, 32];
             return condition.Contains(usageId);
         }
 
@@ -182,14 +182,14 @@ namespace Aban360.CalculationPool.Application.Features.Base
         /// <returns></returns>
         private bool RuralButIsMetro(int zoneId, ulong villageId)
         {
-            ulong[] village142618 = [ 1037, 1038, 1039 ];
-            ulong[] village144311 = [ 1090, 1093 ];
-            ulong[] village144411 = [ 1016 ];
-            ulong[] village143012 = [ 1010, 1013, 1029, 1016, 1017 ];
-            ulong[] village142714 = [ 1019 ];
-            ulong[] village141911 = [ 1034 ];
-            ulong[] village141914 = [ 1061 ];
-            ulong[] village141611 = [ 1006 ];
+            ulong[] village142618 = [1037, 1038, 1039];
+            ulong[] village144311 = [1090, 1093];
+            ulong[] village144411 = [1016];
+            ulong[] village143012 = [1010, 1013, 1029, 1016, 1017];
+            ulong[] village142714 = [1019];
+            ulong[] village141911 = [1034];
+            ulong[] village141914 = [1061];
+            ulong[] village141611 = [1006];
 
             return
                 (zoneId == 142618 && village142618.Contains(villageId)) ||
@@ -205,9 +205,13 @@ namespace Aban360.CalculationPool.Application.Features.Base
         {
             return number >= min && number <= max;
         }
+        private bool IsBetween(double number, double min, double max)
+        {
+            return number >= min && number <= max;
+        }
         private bool IsGardenAndResidence(int usageId)
         {
-            int[] condition = [25, 34 ];
+            int[] condition = [25, 34];
             return condition.Contains(usageId);
         }
 
@@ -234,7 +238,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         }
         private bool IsTankerSaleAndVillage(int usageId)
         {
-            int[] condition = [14, 15 ];
+            int[] condition = [14, 15];
             return condition.Contains(usageId);
         }
         private bool IsDolatabadOrHabibabadWithConditionEshtrak(int zoneId, int readingNumber)
@@ -244,7 +248,25 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 (zoneId == 134016 && IsBetween(readingNumber, 57000000, 57999999)) ||
                 Rosta_shahr(zoneId, readingNumber, 4);
         }
+        private double Multiplier(ZaribGetDto zarib, int olgo, bool isDomestic, bool isVillage, double monthlyConsumption)
+        {
+            double zbSelection = 1;
 
+            zbSelection = isVillage ? zarib.Zarib_baha : 1;
+            zbSelection = !isDomestic && !isVillage ? zarib.Zb : 1;
+            if (isDomestic && !isVillage)
+            {
+                zbSelection = IsBetween(monthlyConsumption, 0, 5) ? zarib.Zb1 : 1;
+                zbSelection = IsBetween(monthlyConsumption, 5, 10) ? zarib.Zb2 : 1;
+                zbSelection = IsBetween(monthlyConsumption, 10, olgo) ? zarib.Zb3 : 1;
+                zbSelection = IsBetween(monthlyConsumption, olgo, olgo * 1.5) ? zarib.Zb4 : 1;
+                zbSelection = IsBetween(monthlyConsumption, olgo * 1.5, olgo * 2) ? zarib.Zb5 : 1;
+                zbSelection = IsBetween(monthlyConsumption, olgo * 2, olgo * 3) ? zarib.Zb6 : 1;
+                zbSelection = monthlyConsumption > olgo * 3 ? zarib.Zb7 : 1;
+            }
+
+            return zbSelection;
+        }
 
         //written by mhnds Gharibi
         private bool Rosta_shahr(int zoneId, int readingNumber, int number)
@@ -690,7 +712,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             throw new NotImplementedException();
 
-          
+
         }
 
         /// <summary>
@@ -796,9 +818,10 @@ namespace Aban360.CalculationPool.Application.Features.Base
             int firstOlgoo = nerkh.Date2.CompareTo("1403/12/30") <= 0 ? 14 : nerkh.Olgo;
 
             if (IsVillage(customerInfo.ZoneId) && IsDomesticWithoutUnspecified(customerInfo.UsageId) && IsNotConstruction(customerInfo.BranchType))
-            {xxxxxxxxxxxxxxx
+            {
+                xxxxxxxxxxxxxxx
                 int villageCode = int.Parse(customerInfo.VillageId.Trim().Substring(0, 4));
-                if (RuralButIsMetro(customerInfo.ZoneId,customerInfo.ReadingNumber) || RuralButIsMetro(customerInfo.ZoneId, ulong.Parse(customerInfo.VillageId))) 
+                if (RuralButIsMetro(customerInfo.ZoneId, customerInfo.ReadingNumber) || RuralButIsMetro(customerInfo.ZoneId, ulong.Parse(customerInfo.VillageId)))
                 {
                     //
                 }
@@ -1126,7 +1149,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             return false;
         }
-        private (long,long) Get2PartAmount(string nerkhDate2)
+        private (long, long) Get2PartAmount(string nerkhDate2)
         {
             if (StringConditionMoreThan("1400/12/25", nerkhDate2))//nerkhDate2 <= '1400/12/25'
             {
