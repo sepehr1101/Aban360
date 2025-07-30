@@ -205,10 +205,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         {
             return number >= min && number <= max;
         }
-        private bool IsBetween(double number, double min, double max)
-        {
-            return number >= min && number <= max;
-        }
+       
         private bool IsGardenAndResidence(int usageId)
         {
             int[] condition = [25, 34];
@@ -247,25 +244,6 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 (zoneId == 134013 && IsBetween(readingNumber, 57000000, 57999999)) ||
                 (zoneId == 134016 && IsBetween(readingNumber, 57000000, 57999999)) ||
                 Rosta_shahr(zoneId, readingNumber, 4);
-        }
-        private double Multiplier(ZaribGetDto zarib, int olgo, bool isDomestic, bool isVillage, double monthlyConsumption)
-        {
-            double zbSelection = 1;
-
-            zbSelection = isVillage ? zarib.Zarib_baha : 1;
-            zbSelection = !isDomestic && !isVillage ? zarib.Zb : 1;
-            if (isDomestic && !isVillage)
-            {
-                zbSelection = IsBetween(monthlyConsumption, 0, 5) ? zarib.Zb1 : 1;
-                zbSelection = IsBetween(monthlyConsumption, 5, 10) ? zarib.Zb2 : 1;
-                zbSelection = IsBetween(monthlyConsumption, 10, olgo) ? zarib.Zb3 : 1;
-                zbSelection = IsBetween(monthlyConsumption, olgo, olgo * 1.5) ? zarib.Zb4 : 1;
-                zbSelection = IsBetween(monthlyConsumption, olgo * 1.5, olgo * 2) ? zarib.Zb5 : 1;
-                zbSelection = IsBetween(monthlyConsumption, olgo * 2, olgo * 3) ? zarib.Zb6 : 1;
-                zbSelection = monthlyConsumption > olgo * 3 ? zarib.Zb7 : 1;
-            }
-
-            return zbSelection;
         }
 
         //written by mhnds Gharibi

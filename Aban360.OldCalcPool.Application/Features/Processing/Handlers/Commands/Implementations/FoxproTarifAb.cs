@@ -1642,6 +1642,29 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             return false;
         }
+        private static bool _IsBetween(double number, double min, double max)
+        {
+            return number >= min && number <= max;
+        }
+        private static double _Multiplier(ZaribGetDto zarib, int olgo, bool isDomestic, bool isVillage, double monthlyConsumption)
+        {
+            double zbSelection = 1;
+
+            zbSelection = isVillage ? zarib.Zarib_baha : 1;
+            zbSelection = !isDomestic && !isVillage ? zarib.Zb : 1;
+            if (isDomestic && !isVillage)
+            {
+                zbSelection = _IsBetween(monthlyConsumption, 0, 5) ? zarib.Zb1 : 1;
+                zbSelection = _IsBetween(monthlyConsumption, 5, 10) ? zarib.Zb2 : 1;
+                zbSelection = _IsBetween(monthlyConsumption, 10, olgo) ? zarib.Zb3 : 1;
+                zbSelection = _IsBetween(monthlyConsumption, olgo, olgo * 1.5) ? zarib.Zb4 : 1;
+                zbSelection = _IsBetween(monthlyConsumption, olgo * 1.5, olgo * 2) ? zarib.Zb5 : 1;
+                zbSelection = _IsBetween(monthlyConsumption, olgo * 2, olgo * 3) ? zarib.Zb6 : 1;
+                zbSelection = monthlyConsumption > olgo * 3 ? zarib.Zb7 : 1;
+            }
+
+            return zbSelection;
+        }
     }
 }
 
