@@ -76,7 +76,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                     	n.[desc] AS [Desc],
                     	n.o_vaj AS OVaj,
                     	n.o_vaj_faz AS OVajFaz,
-                        n.bodjeh_new AS Bodjeh_new
+                        n.bodjeh_new AS Bodjeh_new,
+                        n.vaj_faz AS VajFaz
                     From [OldCalc].dbo.nerkh_{nerkh} n
                     Where 
                     	(n.date1<=@currentDateJalali AND n.date2>@previousDateJalali)AND
