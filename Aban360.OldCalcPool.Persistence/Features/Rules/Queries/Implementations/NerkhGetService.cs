@@ -37,7 +37,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
 						n.ztadil AS ZaribTadil,
 						n.tabsare2 AS Tabsare2,
 						n.zaribfasl AS ZaribFasl,
-						n.zarib_d AS ZaribBodje
+						n.zarib_d AS ZaribBodje,
+                        n.vaj_faz AS VajFaz
                 	From [OldCalc].dbo.nerkh_{nerkh} n
                 	Where n.Id=@id";
         }

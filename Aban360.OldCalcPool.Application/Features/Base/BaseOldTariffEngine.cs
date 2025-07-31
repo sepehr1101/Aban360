@@ -314,10 +314,6 @@ namespace Aban360.CalculationPool.Application.Features.Base
         {
             return 140000;
         }
-        private double CALC_FAS(int zoneId, double shandle, string readingNumber, double ab_Fas, int modat, string date_Ga, string date_Fe, string inst_fas, double Tmp_nFaz, double Gr_hes_ab, double noe_va_, double fazlab, double mas1_)
-        {
-            return 0;
-        }
         private double z_16(double ab1, double rage, string date1, string date2, int noe_ensh)
         {
             return 0;
@@ -325,69 +321,6 @@ namespace Aban360.CalculationPool.Application.Features.Base
         private double javan_sazi(int zoneId, double ab1, int noe_ensh_, double partialConsumption, double duration, int branchType, double monthlyConsumption, int contractualConsumption, int domesticUnit, int otherUnit, string previousDate, string currentDate, double olgoo, string nerkhDate2)
         {
             return 0;
-        }
-        private (double, double) NEW_BODJ(int zoneId, int usageId, double abBahaAmount, double VZFASL, double partialConsumption, double duration, int branchType, double monthlyConsumption, int contractualConsumption, int domesticUnit, int otherUnit, string previousDate, string currentDate, double vzarib_baha, string vaj, double bodjeh_new, string nerkhDate1, string nerkhDate2, int householdNumber, double olgoab, int emptyUnit)
-        {
-            if (IsGardenAndResidence(usageId))
-            {
-                domesticUnit += otherUnit;
-                domesticUnit = domesticUnit == 0 ? 1 : domesticUnit;
-            }
-
-            domesticUnit = domesticUnit > otherUnit && IsDomesticWithoutUnspecified(usageId) ? householdNumber : domesticUnit;
-
-            domesticUnit = IsDomesticWithoutUnspecified(usageId) && emptyUnit != 0 ? domesticUnit - emptyUnit : domesticUnit;
-            domesticUnit = domesticUnit < 0 ? 1 : domesticUnit;
-
-            if (nerkhDate2.CompareTo("1403/12/30") <= 0)
-                return (0, 0);
-
-            if (zoneId == 151511)
-                return (0, 0);
-
-            double B_mod_Feli = duration;
-            double B_MAS_FEli = partialConsumption;
-            double mas_z1 = 0;
-            double mas_z2 = 0;
-
-            if (IsDomesticWithoutUnspecified(usageId) || IsGardenAndResidence(usageId))
-            {
-                double z01 = (B_mod_Feli * olgoab * domesticUnit) / 30;
-                if (z01 > B_MAS_FEli)
-                    z01 = B_MAS_FEli;
-
-                double z14 = B_MAS_FEli - z01;
-                mas_z1 = z01;
-                mas_z2 = z14;
-            }
-            if (!IsDomesticWithoutUnspecified(usageId) || !IsGardenAndResidence(usageId))
-            {
-                double z01 = (B_mod_Feli * contractualConsumption) / 30;
-                if (z01 > B_MAS_FEli)
-                    z01 = B_MAS_FEli;
-
-                double z14 = B_MAS_FEli - z01;
-                if (z14 < 0)
-                    z14 = 0;
-
-                mas_z1 = z01;
-                mas_z2 = z14;
-            }
-
-            double bha1 = 2000 * mas_z1;//L 2403
-            double bha2;
-
-            if (!IsNotConstruction(branchType) || IsUsageConstructor(usageId))
-                bha2 = 2000 * mas_z2;
-            else
-                bha2 = 4000 * mas_z2;
-
-            if (HasDiscountBranch(branchType) || IsReligiousWithCharity(usageId))
-            {
-                bha1 = 0;
-            }
-
-            return (bha1, bha2);
         }
         private double Avarez(int zoneId, double ab1, double mas1_, int noe_ensh_, double noe_va_, double rate_, string date2)
         {
@@ -1575,9 +1508,68 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 IsBetween(142215, zoneId, readingNumber, "10220000000", "10229999999");
 
         }
-        private long CalculateBoodjePart1()
+        private (double, double) CalculateBoodjePart1(int zoneId, int usageId, double partialConsumption, double duration, int branchType, int contractualConsumption, int domesticUnit,string nerkhDate2, int otherUnit, int householdNumber, double olgoab, int emptyUnit)
         {
-            //  NEW_BODJ
+            if (IsGardenAndResidence(usageId))
+            {
+                domesticUnit += otherUnit;
+                domesticUnit = domesticUnit == 0 ? 1 : domesticUnit;
+            }
+
+            domesticUnit = domesticUnit > otherUnit && IsDomesticWithoutUnspecified(usageId) ? householdNumber : domesticUnit;
+
+            domesticUnit = IsDomesticWithoutUnspecified(usageId) && emptyUnit != 0 ? domesticUnit - emptyUnit : domesticUnit;
+            domesticUnit = domesticUnit < 0 ? 1 : domesticUnit;
+
+            if (nerkhDate2.CompareTo("1403/12/30") <= 0)
+                return (0, 0);
+
+            if (zoneId == 151511)
+                return (0, 0);
+
+            double B_mod_Feli = duration;
+            double B_MAS_FEli = partialConsumption;
+            double mas_z1 = 0;
+            double mas_z2 = 0;
+
+            if (IsDomesticWithoutUnspecified(usageId) || IsGardenAndResidence(usageId))
+            {
+                double z01 = (B_mod_Feli * olgoab * domesticUnit) / 30;
+                if (z01 > B_MAS_FEli)
+                    z01 = B_MAS_FEli;
+
+                double z14 = B_MAS_FEli - z01;
+                mas_z1 = z01;
+                mas_z2 = z14;
+            }
+            if (!IsDomesticWithoutUnspecified(usageId) || !IsGardenAndResidence(usageId))
+            {
+                double z01 = (B_mod_Feli * contractualConsumption) / 30;
+                if (z01 > B_MAS_FEli)
+                    z01 = B_MAS_FEli;
+
+                double z14 = B_MAS_FEli - z01;
+                if (z14 < 0)
+                    z14 = 0;
+
+                mas_z1 = z01;
+                mas_z2 = z14;
+            }
+
+            double bha1 = 2000 * mas_z1;//L 2403
+            double bha2;
+
+            if (!IsNotConstruction(branchType) || IsUsageConstructor(usageId))
+                bha2 = 2000 * mas_z2;
+            else
+                bha2 = 4000 * mas_z2;
+
+            if (HasDiscountBranch(branchType) || IsReligiousWithCharity(usageId))
+            {
+                bha1 = 0;
+            }
+
+            return (bha1, bha2);
 
             throw new NotImplementedException();
         }
@@ -1595,9 +1587,68 @@ namespace Aban360.CalculationPool.Application.Features.Base
             throw new NotImplementedException();
         }
 
-        private long CalculateFazelab()
+        private double CalculateFazelab(NerkhGetDto nerkh, double ab_Fas, int duration, string currentDate, string sewageInstallatonDatejalali, int sewageCount, double sewagePercent, double partialConsumption)
         {
-            throw new NotImplementedException();
+            double sewageAmount = 0;
+            sewagePercent = sewagePercent / 100;
+
+            //has foreach
+            if (sewageCount == 0)
+            {
+                sewageAmount = 0;
+            }
+            else if (sewageCount == 1 && string.Compare(currentDate, sewageInstallatonDatejalali) > 0)
+            {
+                if (string.Compare(nerkh.Date2, "1389/09/27") >= 0 && string.Compare(nerkh.Date2, "1394/06/31") <= 0)
+                {
+                    string vajFazStr = string.IsNullOrWhiteSpace(nerkh.VajFaz) ? "0" : nerkh.VajFaz.Trim();
+                    double vajFaz = double.TryParse(vajFazStr, out var parsedVajFaz) ? parsedVajFaz : 0;
+
+                    if (vajFaz.ToString().Length > 8)
+                        vajFaz = 0;
+
+                    sewageAmount = partialConsumption * vajFaz;
+
+                    if (sewageAmount > 0)
+                    {
+                        int mod_as_nasb = PartTime(sewageInstallatonDatejalali, nerkh.Date2, sewageInstallatonDatejalali, currentDate);
+                        sewageAmount = (sewageAmount / nerkh.Duration) * mod_as_nasb;
+                    }
+                    else
+                    {
+                        sewageAmount = 0;
+                    }
+                }
+                else
+                {
+                    int zaman = (int.Parse)(CalculationDistanceDate.CalcDistance(sewageInstallatonDatejalali, currentDate));
+                    sewageAmount = (ab_Fas / duration) * zaman * sewagePercent;
+                }
+
+                if (string.Compare(sewageInstallatonDatejalali, nerkh.Date2) <= 0)
+                {
+                    sewageCount = 2;
+                }
+            }
+            else if (sewageCount == 2 || currentDate == sewageInstallatonDatejalali)
+            {
+                if (string.Compare(nerkh.Date2, "1389/09/27") >= 0 && string.Compare(nerkh.Date2, "1394/06/31") <= 0)
+                {
+                    string vajFazStr = string.IsNullOrWhiteSpace(nerkh.VajFaz) ? "0" : nerkh.VajFaz.Trim();
+                    double vajFaz = double.TryParse(vajFazStr, out var parsedVajFaz) ? parsedVajFaz : 0;
+
+                    if (vajFaz.ToString().Length > 8)
+                        vajFaz = 0;
+
+                    sewageAmount = partialConsumption * vajFaz;
+                }
+                else
+                {
+                    sewageAmount = ab_Fas * sewagePercent;
+                }
+            }
+
+            return sewageAmount;
         }
         private long CalculateFazelabDiscount(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double monthlyConsumption, double firstOlgoo, double abBahaDiscount, double fazelabAmount, double ab_Fas)
         {
