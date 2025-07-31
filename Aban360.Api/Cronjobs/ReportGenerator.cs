@@ -19,6 +19,7 @@ namespace Aban360.Api.Cronjobs
     {
         Task DirectExecute<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId);
         Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId);
+        Task DoFireAndInform(ServerReportsCreateDto serverReportsCreateDto);
     }
 
     internal sealed class ReportGenerator : IReportGenerator
