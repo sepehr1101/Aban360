@@ -9,6 +9,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
 using DNTPersianUtils.Core;
 using FluentValidation;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Implementations
 {
@@ -39,8 +40,11 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             var result = await _sewageWaterDistanceofRequestAndInstallationDetailQuery.Get(input);
 
             result.ReportData.ForEach(data =>
-            data.DistanceOfRequestAndInstallation = CalculationDistanceDate.CalcDistance( data.RequestDate, data.InstallationDate));
-            
+            {
+                int duration = (int.Parse)(CalculationDistanceDate.CalcDistance(data.RequestDate, data.InstallationDate));
+                data.DistanceOfRequestAndInstallation= CalculationDistanceDate.ConvertDaysToDate(duration);
+            });
+
             return result;
         }
     }
