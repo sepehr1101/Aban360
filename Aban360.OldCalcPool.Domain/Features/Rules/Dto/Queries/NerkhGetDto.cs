@@ -8,6 +8,7 @@
         public float Ebt { get; set; }
         public float Ent { get; set; }
         public string? Vaj { get; set; }
+        public string? CalcVaj { get; set; }
         public int Cod { get; set; }
         public int Olgo { get; set; }
         public string? Desc { get; set; }

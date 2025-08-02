@@ -94,9 +94,14 @@ namespace Aban360.CalculationPool.Application.Features.Base
         /// </summary>
         /// <returns>مقدار خروجی بعد از اتمام نوشتن کد، اصلاح شود</returns>
 
-        public double CalculateWaterBill(NerkhGetDto nerkh,AbAzadGetDto abAzad,ZaribGetDto zarib, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo)
+        public double CalculateWaterBill(NerkhGetDto nerkh, AbAzadGetDto abAzad, ZaribGetDto zarib, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, double dailyAverage, string currentDateJalali)
         {
-            double abBahaAmount = _CalculateAbBaha(nerkh, customerInfo,meterInfo, zarib, abAzad);
+            DateOnly previousDate = ConvertJalaliToGregorian(meterInfo.PreviousDateJalali);
+            DateOnly currentDate = ConvertJalaliToGregorian(currentDateJalali);
+            nerkh.DailyAverageConsumption = dailyAverage;
+            (nerkh, nerkh.Duration, nerkh.PartialConsumption) = CalcPartial(nerkh, previousDate, currentDate, dailyAverage);
+
+            double abBahaAmount = _CalculateAbBaha(nerkh, customerInfo, meterInfo, zarib, abAzad);
             return abBahaAmount;
 
 
@@ -300,20 +305,37 @@ namespace Aban360.CalculationPool.Application.Features.Base
         {
             double zbSelection = 1;
 
-            zbSelection = isVillage ? zarib.Zarib_baha : 1;
-            zbSelection = !isDomestic && !isVillage ? zarib.Zb : 1;
-            if (isDomestic && !isVillage)
+            if (isVillage && isDomestic)
             {
-                zbSelection = IsBetween(monthlyConsumption, 0, 5) ? zarib.Zb1 : 1;
-                zbSelection = IsBetween(monthlyConsumption, 5, 10) ? zarib.Zb2 : 1;
-                zbSelection = IsBetween(monthlyConsumption, 10, olgo) ? zarib.Zb3 : 1;
-                zbSelection = IsBetween(monthlyConsumption, olgo, olgo * 1.5) ? zarib.Zb4 : 1;
-                zbSelection = IsBetween(monthlyConsumption, olgo * 1.5, olgo * 2) ? zarib.Zb5 : 1;
-                zbSelection = IsBetween(monthlyConsumption, olgo * 2, olgo * 3) ? zarib.Zb6 : 1;
-                zbSelection = monthlyConsumption > olgo * 3 ? zarib.Zb7 : 1;
+                return zarib.Zarib_baha;
+            }
+            else if (!isDomestic && !isVillage)
+            {
+                return zarib.Zb;
+            }
+            else if (!isDomestic && isVillage)
+            {
+                return zarib.Zb_r;
+            }
+            else if (isDomestic && !isVillage)
+            {
+                if (IsBetween(monthlyConsumption, 0, 5))
+                    return zarib.Zb1;
+                else if (IsBetween(monthlyConsumption, 5, 10))
+                    return zarib.Zb2;
+                else if (IsBetween(monthlyConsumption, 10, olgo))
+                    return zarib.Zb3;
+                else if (IsBetween(monthlyConsumption, olgo, olgo * 1.5))
+                    return zarib.Zb4;
+                else if (IsBetween(monthlyConsumption, olgo * 1.5, olgo * 2))
+                    return zarib.Zb5;
+                else if (IsBetween(monthlyConsumption, olgo * 2, olgo * 3))
+                    return zarib.Zb6;
+                else if (monthlyConsumption > olgo * 3)
+                    return zarib.Zb7;
             }
 
-            return zbSelection;
+            return 1;
         }
 
         //written by mhnds Gharibi
@@ -763,6 +785,8 @@ namespace Aban360.CalculationPool.Application.Features.Base
             double duration = nerkh.Duration;
             double monthlyConsumption = nerkh.DailyAverageConsumption * 30;
             abBahaFromExpression = CalcFormulaByRate(nerkh.Vaj, monthlyConsumption);
+            int _olgoo = GetOlgoo(nerkh.Date2, nerkh.Olgo);
+            
             if (duration <= 0 ||
                 monthlyConsumption == 0 ||
                 string.IsNullOrWhiteSpace(nerkh.Vaj))
@@ -785,7 +809,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 }
 
                 if (IsLessThan1403_09_13(nerkh.Date2) &&
-                    monthlyConsumption <= nerkh.Olgo &&//todo: ask olgoab vs olgo?
+                    monthlyConsumption <= _olgoo &&//todo: ask olgoab vs olgo?
                     abBahaAmount > oldAbBahaAmount &&
                     IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
                     IsNotConstruction(customerInfo.BranchType))
@@ -852,7 +876,6 @@ namespace Aban360.CalculationPool.Application.Features.Base
             }
             //L 1553
             isVillageCalculation = false;//L 1558
-            int firstOlgoo = nerkh.Date2.CompareTo("1403/12/30") <= 0 ? 14 : nerkh.Olgo;
 
             if (IsVillage(customerInfo.ZoneId) &&
                 IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
@@ -868,7 +891,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 {//1578
                     if (abBahaAmount != 0)
                     {
-                        if (nerkh.Date2.CompareTo("1403/09/13") <= 0 || monthlyConsumption <= firstOlgoo)
+                        if (nerkh.Date2.CompareTo("1403/09/13") <= 0 || monthlyConsumption <= _olgoo)
                         {
                             (abBahaAmount, oldAbBahaAmount, isVillageCalculation) = MultiplyCalculation(abBahaAmount, oldAbBahaAmount, 0.5);
                         }
@@ -887,7 +910,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 {
                     if (abBahaAmount != 0)//L 1604
                     {
-                        if (nerkh.Date2.CompareTo("1403/09/13") <= 0 || monthlyConsumption <= firstOlgoo)
+                        if (nerkh.Date2.CompareTo("1403/09/13") <= 0 || monthlyConsumption <= _olgoo)
                         {
                             (abBahaAmount, oldAbBahaAmount, isVillageCalculation) = MultiplyCalculation(abBahaAmount, oldAbBahaAmount, 0.5);
                         }
@@ -939,14 +962,14 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 {
                     // mas_maskoni = 0;
 
-                    if (IsDomesticWithoutUnspecified(customerInfo.UsageId) && monthlyConsumption >= firstOlgoo && customerInfo.DomesticUnit > 0)
+                    if (IsDomesticWithoutUnspecified(customerInfo.UsageId) && monthlyConsumption >= _olgoo && customerInfo.DomesticUnit > 0)
                     {
-                        domesticConsumption = (((monthlyConsumption - firstOlgoo) * customerInfo.DomesticUnit) / 30.0) * nerkh.Duration;
+                        domesticConsumption = (((monthlyConsumption - _olgoo) * customerInfo.DomesticUnit) / 30.0) * nerkh.Duration;
                     }
                     else
                     {
-                        if (monthlyConsumption > firstOlgoo)
-                            domesticConsumption = ((monthlyConsumption - firstOlgoo) / 30.0) * nerkh.Duration;
+                        if (monthlyConsumption > _olgoo)
+                            domesticConsumption = ((monthlyConsumption - _olgoo) / 30.0) * nerkh.Duration;
                         else
                             domesticConsumption = 0;
                     }
@@ -987,8 +1010,8 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 {
                     allowedBoodje = (allowedBoodje / 2);
                 }
-            }//L 1724            
-            double multiplierAbBaha = Multiplier(zarib, nerkh.Olgo, IsDomestic(customerInfo.UsageId), isVillageCalculation, monthlyConsumption);
+            }//L 1724 
+            double multiplierAbBaha = Multiplier(zarib, _olgoo, IsDomestic(customerInfo.UsageId), isVillageCalculation, monthlyConsumption);
             if (IsGardenAndResidence(customerInfo.ZoneId) &&
                 nerkh.Date2.CompareTo("1401/12/28") <= 0)
             {
@@ -1002,7 +1025,36 @@ namespace Aban360.CalculationPool.Application.Features.Base
             return abBahaAmount;
 
         }
+        private int GetOlgoo(string nerkhDate2, int olgo)
+        {
+            return nerkhDate2.CompareTo("1403/12/30") <= 0 ? 14 : olgo;
 
+        }
+        private (NerkhGetDto, int, double) CalcPartial(NerkhGetDto nerkh, DateOnly previousDate, DateOnly currentDate, double dailyAverage)
+        {
+            DateOnly fromDate = ConvertJalaliToGregorian(nerkh.Date1);
+            DateOnly toDate = ConvertJalaliToGregorian(nerkh.Date2);
+
+            DateOnly startSegment = fromDate > previousDate ? fromDate : previousDate;
+            DateOnly endSegment = toDate < currentDate ? toDate : currentDate;
+
+            nerkh.Date1 = startSegment.ToDateTime(TimeOnly.MinValue).ToShortPersianDateString();
+            nerkh.Date2 = endSegment.ToDateTime(TimeOnly.MinValue).ToShortPersianDateString();
+
+            int duration = endSegment.DayNumber - startSegment.DayNumber;
+            double partialConsumption = duration * dailyAverage;
+            return (nerkh, duration, partialConsumption);
+        }
+        private DateOnly ConvertJalaliToGregorian(string dateJalali)
+        {
+            DateOnly? grogorianDate = dateJalali.ToGregorianDateOnly();
+            if (!grogorianDate.HasValue)
+            {
+                throw new BaseException(ExceptionLiterals.InvalidDate);
+            }
+
+            return grogorianDate.Value;
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -1519,7 +1571,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 IsBetween(142215, zoneId, readingNumber, "10220000000", "10229999999");
 
         }
-        private (double, double) CalculateBoodjePart1(int zoneId, int usageId, double partialConsumption, double duration, int branchType, int contractualConsumption, int domesticUnit,string nerkhDate2, int otherUnit, int householdNumber, double olgoab, int emptyUnit)
+        private (double, double) CalculateBoodjePart1(int zoneId, int usageId, double partialConsumption, double duration, int branchType, int contractualConsumption, int domesticUnit, string nerkhDate2, int otherUnit, int householdNumber, double olgoab, int emptyUnit)
         {
             if (IsGardenAndResidence(usageId))
             {
