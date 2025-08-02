@@ -11,7 +11,7 @@ using org.matheval;
 
 namespace Aban360.CalculationPool.Application.Features.Base
 {
-    internal class BaseOldTariffEngine : BaseExpressionCalculator
+    internal abstract class BaseOldTariffEngine : BaseExpressionCalculator
     {
         //todo: Do not use 'BaseException' directy
 
@@ -93,6 +93,17 @@ namespace Aban360.CalculationPool.Application.Features.Base
         /// تنها تابع با دسترسی پابلیک بابت محاسبه تک رکورد جدول نرخ
         /// </summary>
         /// <returns>مقدار خروجی بعد از اتمام نوشتن کد، اصلاح شود</returns>
+
+        public double CalculateWaterBill(NerkhGetDto nerkh,AbAzadGetDto abAzad,ZaribGetDto zarib, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo)
+        {
+            double abBahaAmount = _CalculateAbBaha(nerkh, customerInfo,meterInfo, zarib, abAzad);
+            return abBahaAmount;
+
+
+            //object parameters= new {X=consumptionAverage};
+            //long _value = expression.Eval<long>();
+            throw new NotImplementedException();
+        }
 
         private ConsumptionInfo GetConsumptionInfo()
         {
@@ -253,33 +264,33 @@ namespace Aban360.CalculationPool.Application.Features.Base
             int[] condition = [14, 15];
             return condition.Contains(usageId);
         }
-        private bool IsDolatabadOrHabibabadWithConditionEshtrak(int zoneId, ulong readingNumber, string villageId)
+        private bool IsDolatabadOrHabibabadWithConditionEshtrak(int zoneId, ulong readingNumber)
         {
             return
                 (zoneId == 134013 && IsBetween(readingNumber, 57000000, 57999999)) ||
                 (zoneId == 134016 && IsBetween(readingNumber, 57000000, 57999999)) ||
-                 MetroButIsRural(zoneId, villageId, 4);
+                 MetroButIsRural(zoneId, readingNumber, 4);
         }
-        private bool MetroButIsRural(int zoneId, string villageId, int thresholdSkip)
+        private bool MetroButIsRural(int zoneId, ulong readingNumber, int thresholdSkip)
         {
-            int villageCod = (int.Parse)(villageId.Substring(0, thresholdSkip));
+            int shortReadingNumber = (int.Parse)(readingNumber.ToString().Substring(0, thresholdSkip));
             if (zoneId == 132220 &&
-                (IsBetween(villageCod, 1610, 1628) ||
-                IsBetween(villageCod, 1633, 1648) ||
-                IsBetween(villageCod, 1651, 1661) ||
-                IsBetween(villageCod, 6042, 6052) ||
-                IsBetween(villageCod, 6060, 6072))
+                (IsBetween(shortReadingNumber, 1610, 1628) ||
+                IsBetween(shortReadingNumber, 1633, 1648) ||
+                IsBetween(shortReadingNumber, 1651, 1661) ||
+                IsBetween(shortReadingNumber, 6042, 6052) ||
+                IsBetween(shortReadingNumber, 6060, 6072))
                 )
                 return true;
 
             if (zoneId == 132211 &&
-                 (IsBetween(villageCod, 1103, 1108) ||
-                 IsBetween(villageCod, 1109, 1113) ||
-                 IsBetween(villageCod, 1143, 1165) ||
-                 IsBetween(villageCod, 1161, 1184) ||
-                 IsBetween(villageCod, 1403, 1499) ||
-                 IsBetween(villageCod, 1450, 1472) ||
-                 IsBetween(villageCod, 1574, 1599))
+                 (IsBetween(shortReadingNumber, 1103, 1108) ||
+                 IsBetween(shortReadingNumber, 1109, 1113) ||
+                 IsBetween(shortReadingNumber, 1143, 1165) ||
+                 IsBetween(shortReadingNumber, 1161, 1184) ||
+                 IsBetween(shortReadingNumber, 1403, 1499) ||
+                 IsBetween(shortReadingNumber, 1450, 1472) ||
+                 IsBetween(shortReadingNumber, 1574, 1599))
                )
                 return true;
 
@@ -744,7 +755,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         /// محاسبه آب بها 
         /// </summary>
         /// <returns>عدد محاسبه شده‌ی آب‌بها</returns>
-        private double _CalculateAbBaha(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, long abAzad39, long abAzad8)
+        private double _CalculateAbBaha(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadGetDto abAzad8And39)
         {
             double abBahaAmount = 0, oldAbBahaAmount = 0, abBahaFromExpression = 0;
             bool isVillageCalculation = false;
@@ -823,7 +834,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                         }
                         else
                         {
-                            _2Amount = BigCase(customerInfo.UsageId, nerkh.Date1, nerkh.Date2, customerInfo.IsSpecial, abAzad39);
+                            _2Amount = BigCase(customerInfo.UsageId, nerkh.Date1, nerkh.Date2, customerInfo.IsSpecial, abAzad8And39.Azad);//Azad:39
                         }
                         abBahaValues.Item1 = _2Amount.Item1 * allowedPartialConsumption;
                         abBahaValues.Item2 = _2Amount.Item2 * disallowedPartialConsumption;
@@ -869,7 +880,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 }
             }
             //L 1600 approximately
-            if (IsDolatabadOrHabibabadWithConditionEshtrak(customerInfo.ZoneId, ulong.Parse(customerInfo.ReadingNumber), customerInfo.VillageId))
+            if (IsDolatabadOrHabibabadWithConditionEshtrak(customerInfo.ZoneId, ulong.Parse(customerInfo.ReadingNumber)))
             {
                 if (IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
                     IsNotConstruction(customerInfo.BranchType))
@@ -970,7 +981,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                     }
                 }
             }//foxpro:1713
-            if (IsDolatabadOrHabibabadWithConditionEshtrak(customerInfo.ZoneId, ulong.Parse(customerInfo.ReadingNumber), customerInfo.VillageId))
+            if (IsDolatabadOrHabibabadWithConditionEshtrak(customerInfo.ZoneId, ulong.Parse(customerInfo.ReadingNumber)))
             {
                 if (IsDomesticWithoutUnspecified(customerInfo.UsageId))
                 {
@@ -1133,7 +1144,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             int[] collection = [7, 8, 41, 11];
             return collection.Contains(usageId);
         }
-        private static (long, long) BigCase(int usageId, string nerkhDate1, string nerkhDate2, bool isSpecial, long abAzad39)
+        private static (long, long) BigCase(int usageId, string nerkhDate1, string nerkhDate2, bool isSpecial, long abAzad)
         {
             //start line 1228
             //1                                                  
@@ -1461,7 +1472,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             else
             {
                 //long nerkh_azad = CalculateAzad(nerkhDate1, nerkhDate2, 39);//&& ab azad sakht va saz  && ab azad omomi kargahi** dar  tarikh 1398 / 01 / 31
-                return (0, abAzad39);
+                return (0, abAzad);
 
             }
             return (0, 0);

@@ -4,8 +4,8 @@
     {
         public int Id { get; set; }
         public int Town { get; set; }
-        public int ZoneTitle1 { get; set; }
-        public int ZoneTitle2 { get; set; }
+        public string ZoneTitle1 { get; set; }
+        public string ZoneTitle2 { get; set; }
         public float Zarib_baha { get; set; }
         public string Date1 { get; set; }
         public string Date2 { get; set; }

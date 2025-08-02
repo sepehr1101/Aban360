@@ -2,8 +2,8 @@
 {
     public record AbAzadGetDto
     {
-        public string Azad { get; set; }
-        public string Amozesh { get; set; }
+        public long Azad { get; set; }
+        public long Amozesh { get; set; }
 
     }
 }
