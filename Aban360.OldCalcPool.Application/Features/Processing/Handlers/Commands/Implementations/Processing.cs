@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Exceptions;
+﻿using Aban360.CalculationPool.Application.Features.Base;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
@@ -13,7 +14,7 @@ using NetTopologySuite.Index.HPRtree;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
-    internal sealed class Processing : IProcessing
+    internal sealed class Processing : BaseOldTariffEngine, IProcessing
     {
         private readonly ICustomerInfoDetailQueryService _customerInfoDetailQueryService;
         private readonly IMeterInfoDetailQueryService _meterInfoDetailQueryService;
@@ -76,7 +77,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             return grogorianDate.Value;
         }
-        private (int,double) CalcPartial(NerkhGetDto nerkh, DateOnly previousDate, DateOnly currentDate, double dailyAverage)
+        private (int, double) CalcPartial(NerkhGetDto nerkh, DateOnly previousDate, DateOnly currentDate, double dailyAverage)
         {
             DateOnly fromDate = ConvertJalaliToGregorian(nerkh.Date1);
             DateOnly toDate = ConvertJalaliToGregorian(nerkh.Date2);
@@ -89,7 +90,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             return (duration, partialConsumption);
         }
         //
-        public async Task Handle(MeterInfoInputDto input, CancellationToken cancellationToken)
+        public async Task<ProcessDetailOutputDto> Handle(MeterInfoInputDto input, CancellationToken cancellationToken)
         {
             CustomerInfoOutputDto customerInfo = await _customerInfoDetailQueryService.GetInfo(input.BillId);
             MeterInfoOutputDto meterInfo = await _meterInfoDetailQueryService.GetInfo(new CustomerInfoInputDto(customerInfo.ZoneId, customerInfo.Radif));
@@ -102,16 +103,18 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             int domesticUnitTemp = customerInfo.DomesticUnit < 1 ? 1 : customerInfo.DomesticUnit;
             double monthlyAverageConsumption = dailyAverage * 30 / domesticUnitTemp;
 
-            (IEnumerable<NerkhGetDto>,IEnumerable<AbAzadGetDto>,IEnumerable<ZaribGetDto>) allNerkhAbAbAzad = await _nerkhGetByConsumptionService.Get(new NerkhByConsumptionInputDto(customerInfo.ZoneId,
+            (IEnumerable<NerkhGetDto>, IEnumerable<AbAzadGetDto>, IEnumerable<ZaribGetDto>) allNerkhAbAbAzad = await _nerkhGetByConsumptionService.Get(new NerkhByConsumptionInputDto(customerInfo.ZoneId,
                                                                                                                        customerInfo.UsageId,
                                                                                                                        meterInfo.PreviousDateJalali,
                                                                                                                        input.CurrentDateJalali,
                                                                                                                        monthlyAverageConsumption));
-            Tarif_Ab(allNerkhAbAbAzad.Item1, dailyAverage, meterInfo.PreviousDateJalali, input.CurrentDateJalali,customerInfo);
-
+            ProcessDetailOutputDto result = Tarif_Ab(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, dailyAverage, meterInfo.PreviousDateJalali, input.CurrentDateJalali, customerInfo, meterInfo);
+            result.Customer = customerInfo;
+            result.MeterInfo = meterInfo;
+            return result;
         }
 
-        private void Tarif_Ab(IEnumerable<NerkhGetDto> allNerkh, double dailyAverage, string previousDateJalali, string currentDateJalali, CustomerInfoOutputDto customerInfo)
+        private ProcessDetailOutputDto Tarif_Ab(IEnumerable<NerkhGetDto> allNerkh, IEnumerable<AbAzadGetDto> abAzad, IEnumerable<ZaribGetDto> zarib, double dailyAverage, string previousDateJalali, string currentDateJalali, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo)
         {
             DateOnly previousDate = ConvertJalaliToGregorian(previousDateJalali);
             DateOnly currentDate = ConvertJalaliToGregorian(currentDateJalali);
@@ -119,11 +122,41 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             foreach (var item in allNerkh)
             {
                 item.DailyAverageConsumption = dailyAverage;
-                (item.Duration, item.PartialConsumption) =  CalcPartial(item, previousDate, currentDate, dailyAverage);
+                (item.Duration, item.PartialConsumption) = CalcPartial(item, previousDate, currentDate, dailyAverage);
             }
 
-            var result = FoxproTarifAb.CalclNerkhAb(allNerkh,customerInfo);
+            //var result = FoxproTarifAb.CalclNerkhAb(allNerkh,customerInfo);
+            int counter = 0;
+            double sumAbBaha = 0;
+            foreach (var nerkhItem in allNerkh)
+            {
+                AbAzadGetDto abAzadItem = abAzad.ElementAt(counter);
+                ZaribGetDto zaribItem = zarib.ElementAt(counter);
+                double result = CalculateWaterBill(nerkhItem, abAzadItem, zaribItem, customerInfo, meterInfo);
+                sumAbBaha += result;
+                counter++;
+            }
+
+            return new ProcessDetailOutputDto(sumAbBaha,allNerkh,abAzad,zarib);
         }
-       
+        
+    }
+    public record ProcessDetailOutputDto
+    {
+        public double InvoiceAmount { get; set; }
+        public IEnumerable<NerkhGetDto> Nerkh { get; set; }
+        public IEnumerable<AbAzadGetDto> AbAzad { get; set; }
+        public IEnumerable<ZaribGetDto> Zarib { get; set; }
+        public CustomerInfoOutputDto Customer { get; set; }
+        public MeterInfoOutputDto  MeterInfo { get; set; }
+
+
+        public ProcessDetailOutputDto(double _invoiceAmount, IEnumerable<NerkhGetDto> _nerkh, IEnumerable<AbAzadGetDto> _abAzad, IEnumerable<ZaribGetDto> _zarib)
+        {
+            InvoiceAmount = _invoiceAmount;
+            Nerkh = _nerkh;
+            AbAzad = _abAzad;
+            Zarib = _zarib;
+        }
     }
 }

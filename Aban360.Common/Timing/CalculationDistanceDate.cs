@@ -30,7 +30,7 @@ namespace Aban360.Common.Timing
             }
 
             int totalDay = to.Value.DayNumber - from.Value.DayNumber;
-            return ConvertDaysToDate(totalDay);
+            return totalDay.ToString();
         }
 
         public static string ConvertDaysToDate(int totalDay)

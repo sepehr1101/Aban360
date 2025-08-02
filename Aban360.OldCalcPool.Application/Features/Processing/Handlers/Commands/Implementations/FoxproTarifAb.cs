@@ -414,58 +414,20 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     ab_Fas = AB1;
                     O_AB1 = vAb_sevom + (O_AB1 * vzarib_baha);//line->1754
 
-                    vNewAb = (int)(vNewAb + (StringConditionMoreThan(TMP_NERKH.Date1, "1394/06/31") ? AB1 : 0));//IIF(TMP_NERKH.date1 > '1394/06/31', ab1, 0)
-                    VAB10 = 0;
-                    VAB20 = 0;
+                    double abBahaAmount = 0, oldAbBahaAmount = 0 , multiplierAbBaha=1;
+                    double fazelabAmount = abBahaAmount;
+                    oldAbBahaAmount = oldAbBahaAmount * multiplierAbBaha;// foxpro:1755
 
 
+                    ///
+                    ///  ادامه ...
+                    ///
+                    double abTakht = 0, masTakht = 0 ;
+                    int firstOlgoo = 0;
+                    NerkhGetDto nerkh = item;
 
 
-                    if (2 == 3 && emrooz == "1402/04/04")
-                        VAB10 = (drsd10 && TABSARE2 && !Edareh_k_) ? (int)((FAZLAB2(Tmp_nFaz, date_Fe_)) ? (AB1 * 0.1) : 0) : 0;
-                    else
-                        VAB10 = (drsd10 && TABSARE2 && !Edareh_k_) ? (int)(FAZLAB() ? (AB1 * 0.1) : 0) : 0;
-
-
-                    if ((city == 134013 && Between2Number(int.Parse(Eshtrak), 57000000, 57999999)) ||
-                        (city == 134016 && Between2Number(int.Parse(Eshtrak), 28000000, 28999999)) ||
-                        Rosta_shahr(city, Eshtrak, 4))
-                    {
-                        VAB10 = 0;
-                    }//line -> 1785
-
-
-                    if (rate_ <= 5 && (noe_ensh_ == 1 || noe_ensh_ == 3) &&
-                        StringConditionMoreThanEqual(TMP_NERKH.Date1, "1399/09/30") &&// TMP_NERKH.date1>="1399/09/30"
-                        StringConditionMoreThan("1401/12/27", TMP_NERKH.Date2) &&// TMP_NERKH.date2<="1401/12/27"
-                        noe_va_ != 4)
-                    {
-                        if (noe_va_ == 6 || noe_va_ == 7 || noe_va_ == 3)
-                        {
-                            takhfif_ab += AB1;
-                            if (VAB10 != 0)
-                                takhf_10 += AB1 * 0.1;
-
-                            AB1 = 0;
-                            VAB10 = 0;
-                        }
-                    }//line-> 1809
-
-
-                    if (2 == 3)
-                    {
-                        if ((noe_va_ == 6 || noe_va_ == 7 || noe_va_ == 3))
-                        {
-                            takhfif_ab = takhfif_ab + AB1;
-                            if (VAB10 != 0)
-                                takhf_10 += AB1 * 0.1;
-
-                            AB1 = 0;
-                            VAB10 = 0;
-                        }
-                    }
-                    ab_takh = 0;
-                    mas_takh = (first_olgo / 30) * mod1_;
+                    masTakht = (firstOlgoo / 30) * nerkh.Duration;
 
                     //line->1823
                     if ((noe_ensh_ == 1 || noe_ensh_ == 3) && noe_va_ != 4 && StringConditionMoreThanEqual(TMP_NERKH.Date1, "1401/12/27"))//TMP_NERKH.date1>="1401/12/27"
@@ -484,23 +446,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                                 }
                                 takhfif_ab = takhfif_ab + ab_takh;
 
-                                if (VAB10 != 0)
-                                    takhf_10 = takhf_10 + (ab_takh * 0.1);
-
                                 AB1 = AB1 - ab_takh;
-                                VAB10 = VAB10 - (ab_takh * 0.1);
-                                if (VAB10 < 0)
-                                    VAB10 = 0;
                             }
                             else
                             {
                                 takhfif_ab = takhfif_ab + AB1;
-
-                                if (VAB10 != 0)
-                                    takhf_10 = takhf_10 + (AB1 * 0.1);
-
                                 AB1 = 0;
-                                VAB10 = 0;
                             }//line -> 1879
                         }
                     }//line-> 1882
@@ -543,15 +494,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                         takhfif_ab = takhfif_ab + ab_takh;
 
 
-                        if (VAB10 != 0)
-                            takhf_10 = takhf_10 + (ab_takh * 0.1);
-
                         AB1 = AB1 - ab_takh;
-                        VAB10 = VAB10 - (ab_takh * 0.1);
-
-                        if (VAB10 < 0)
-                            VAB10 = 0;
-
                         if (VZFASL != 0)
                         {
                             takhf_fasL = takhf_fasL + VZFASL_olgo;
@@ -581,8 +524,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                                 V_FASBAHA1 = V_FASBAHA1 + (TMP_VZFASL * 1);
                         }
 
-                        if (VAB10 != 0)
-                            VAB10 = VAB10 + (TMP_VZFASL * 0.1);
                     }//line -> 2008
 
                     if (noe_ensh_ == 30 || noe_ensh_ == 12 || noe_ensh_ == 13 || noe_ensh_ == 29 || noe_ensh_ == 32)
@@ -781,7 +722,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         {
             return 140000;
         }
-        private static m Rosta_shahr(int city, string eshtrak, int rosta)
+        private static bool Rosta_shahr(int city, string eshtrak, int rosta)
         {
             return false;
         }
@@ -1665,6 +1606,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             return zbSelection;
         }
+ 
+        
     }
 }
 
