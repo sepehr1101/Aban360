@@ -90,7 +90,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             return (duration, partialConsumption);
         }
         //
-        public async Task Handle(MeterInfoInputDto input, CancellationToken cancellationToken)
+        public async Task<ProcessDetailOutputDto> Handle(MeterInfoInputDto input, CancellationToken cancellationToken)
         {
             CustomerInfoOutputDto customerInfo = await _customerInfoDetailQueryService.GetInfo(input.BillId);
             MeterInfoOutputDto meterInfo = await _meterInfoDetailQueryService.GetInfo(new CustomerInfoInputDto(customerInfo.ZoneId, customerInfo.Radif));
@@ -108,11 +108,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                                                                                                                        meterInfo.PreviousDateJalali,
                                                                                                                        input.CurrentDateJalali,
                                                                                                                        monthlyAverageConsumption));
-            Tarif_Ab(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, dailyAverage, meterInfo.PreviousDateJalali, input.CurrentDateJalali, customerInfo,meterInfo);
-
+            ProcessDetailOutputDto result = Tarif_Ab(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, dailyAverage, meterInfo.PreviousDateJalali, input.CurrentDateJalali, customerInfo, meterInfo);
+            result.Customer = customerInfo;
+            result.MeterInfo = meterInfo;
+            return result;
         }
 
-        private void Tarif_Ab(IEnumerable<NerkhGetDto> allNerkh, IEnumerable<AbAzadGetDto> abAzad, IEnumerable<ZaribGetDto> zarib, double dailyAverage, string previousDateJalali, string currentDateJalali, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo)
+        private ProcessDetailOutputDto Tarif_Ab(IEnumerable<NerkhGetDto> allNerkh, IEnumerable<AbAzadGetDto> abAzad, IEnumerable<ZaribGetDto> zarib, double dailyAverage, string previousDateJalali, string currentDateJalali, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo)
         {
             DateOnly previousDate = ConvertJalaliToGregorian(previousDateJalali);
             DateOnly currentDate = ConvertJalaliToGregorian(currentDateJalali);
@@ -135,8 +137,26 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 counter++;
             }
 
-            var x = sumAbBaha;
+            return new ProcessDetailOutputDto(sumAbBaha,allNerkh,abAzad,zarib);
         }
+        
+    }
+    public record ProcessDetailOutputDto
+    {
+        public double InvoiceAmount { get; set; }
+        public IEnumerable<NerkhGetDto> Nerkh { get; set; }
+        public IEnumerable<AbAzadGetDto> AbAzad { get; set; }
+        public IEnumerable<ZaribGetDto> Zarib { get; set; }
+        public CustomerInfoOutputDto Customer { get; set; }
+        public MeterInfoOutputDto  MeterInfo { get; set; }
 
+
+        public ProcessDetailOutputDto(double _invoiceAmount, IEnumerable<NerkhGetDto> _nerkh, IEnumerable<AbAzadGetDto> _abAzad, IEnumerable<ZaribGetDto> _zarib)
+        {
+            InvoiceAmount = _invoiceAmount;
+            Nerkh = _nerkh;
+            AbAzad = _abAzad;
+            Zarib = _zarib;
+        }
     }
 }

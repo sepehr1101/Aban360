@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
+using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,8 +22,8 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         [AllowAnonymous]
         public async Task<IActionResult> Test(MeterInfoInputDto input,CancellationToken cancellationToken)
         {
-            await _processing.Handle(input, cancellationToken);
-            return Ok();
+            ProcessDetailOutputDto result= await _processing.Handle(input, cancellationToken);
+            return Ok(result);
         }
     }
 }
