@@ -61,8 +61,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Services.Implementations
 
             var (controller, action) = GetControllerAction(context);
             if (
-                 !context.HttpContext.Request.Path.StartsWithSegments("/notify-hub") &&
-                 !context.HttpContext.Request.Path.StartsWithSegments("/aban360/notify-hub") &&
+                 !context.HttpContext.Request.Path.StartsWithSegments("/v1/notify-hub") &&
+                 !context.HttpContext.Request.Path.StartsWithSegments("/aban360/v1/notify-hub") &&
                  (string.IsNullOrWhiteSpace(controller) || string.IsNullOrWhiteSpace(action))
                )
             {               
