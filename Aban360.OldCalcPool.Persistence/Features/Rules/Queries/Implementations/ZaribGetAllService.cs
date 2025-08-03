@@ -6,16 +6,16 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
 {
-    internal sealed class ZaribGetService : AbstractBaseConnection, IZaribGetService
+    internal sealed class ZaribGetAllService : AbstractBaseConnection, IZaribGetAllService
     {
-        public ZaribGetService(IConfiguration configuration)
+        public ZaribGetAllService(IConfiguration configuration)
             : base(configuration)
         { }
 
-        public async Task<ZaribGetDto> Get(int id)
+        public async Task<IEnumerable<ZaribGetDto>> Get()
         {
             string ZaribGetQueryString = GetZaribGetQuery();
-            ZaribGetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZaribGetDto>(ZaribGetQueryString, new { id });
+            IEnumerable<ZaribGetDto> result = await _sqlReportConnection.QueryAsync<ZaribGetDto>(ZaribGetQueryString);
 
             return result;
         }

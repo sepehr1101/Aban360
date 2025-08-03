@@ -4,6 +4,6 @@ namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Contra
 {
     public interface IZaribGetHandler
     {
-        Task<IEnumerable<ZaribGetDto>> Handle(int id, CancellationToken cancellationToken);
+        Task<ZaribGetDto> Handle(int id, CancellationToken cancellationToken);
     }
 }

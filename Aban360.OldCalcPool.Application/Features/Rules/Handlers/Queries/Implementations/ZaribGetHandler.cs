@@ -1,22 +1,21 @@
 ﻿using Aban360.Common.Extensions;
-using Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
 
-namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Implementations
+namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Contracts
 {
-    internal sealed class ZaribGetHandler : IZaribGetHandler
+    internal sealed class ZaribGetHandler : IZaribGetAllHandler
     {
-        private readonly IZaribGetService _zaribGetService;
-        public ZaribGetHandler(IZaribGetService zaribGetService)
+        private readonly IZaribGetAllService _zaribGetAllService;
+        public ZaribGetHandler(IZaribGetAllService zaribGetAllService)
         {
-            _zaribGetService = zaribGetService;
-            _zaribGetService.NotNull(nameof(zaribGetService));
+            _zaribGetAllService = zaribGetAllService;
+            _zaribGetAllService.NotNull(nameof(zaribGetAllService));
         }
 
-        public async Task<IEnumerable<ZaribGetDto>> Handle(int id, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ZaribGetDto>> Handle(CancellationToken cancellationToken)
         {
-            IEnumerable<ZaribGetDto> result = await _zaribGetService.Get(id);
+            IEnumerable<ZaribGetDto> result = await _zaribGetAllService.Get();
             return result;
         }
     }

@@ -6,16 +6,16 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
 {
-    internal sealed class Table1GetService : AbstractBaseConnection, ITable1GetService
+    internal sealed class Table1GetAllService : AbstractBaseConnection, ITable1GetAllService
     {
-        public Table1GetService(IConfiguration configuration)
+        public Table1GetAllService(IConfiguration configuration)
             : base(configuration)
         { }
 
-        public async Task<Table1GetDto> Get(int id)
+        public async Task<IEnumerable<Table1GetDto>> Get()
         {
             string Table1GetQueryString = GetTable1GetQuery();
-           Table1GetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<Table1GetDto>(Table1GetQueryString, new { id });
+            IEnumerable<Table1GetDto> result = await _sqlReportConnection.QueryAsync<Table1GetDto>(Table1GetQueryString);
 
             return result;
         }
@@ -33,8 +33,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                 		n.[desc] AS [Desc],
                 		n.o_vaj AS OVaj,
                 		n.o_vaj_faz AS OVajFaz
-                	From [OldCalc].dbo.table1 n
-                	Where n.Id=@id";
+                	From [OldCalc].dbo.table1 n";
         }
     }
 }

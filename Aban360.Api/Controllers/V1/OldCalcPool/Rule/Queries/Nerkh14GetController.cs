@@ -18,10 +18,10 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule.Queries
 
         [HttpPost]
         [Route("get/{id}")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<NerkhGetDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<NerkhGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(int id, CancellationToken cancellationToken)
         {
-            IEnumerable<NerkhGetDto> result = await _nerkhGetHandler.Handle(id, 14, cancellationToken);
+            NerkhGetDto result = await _nerkhGetHandler.Handle(id, 14, cancellationToken);
             return Ok(result);
         }
     }

@@ -18,10 +18,10 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule.Queries
 
         [HttpPost]
         [Route("get/{id}")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<Table1GetDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<Table1GetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(int id, CancellationToken cancellationToken)
         {
-            IEnumerable<Table1GetDto> result = await _table1GetHandler.Handle(id, cancellationToken);
+            Table1GetDto result = await _table1GetHandler.Handle(id, cancellationToken);
             return Ok(result);
         }
     }
