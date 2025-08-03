@@ -158,21 +158,24 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private ProcessDetailOutputDto Tarif_Ab(IEnumerable<NerkhGetDto> allNerkh, IEnumerable<AbAzadGetDto> abAzad, IEnumerable<ZaribGetDto> zarib, double dailyAverage, string previousDateJalali, string currentDateJalali, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo)
         {
             int counter = 0;
-            double sumAbBaha = 0;
-            double sumFazelab = 0;
+            double sumAbBaha = 0.,sumFazelab = 0, sumHotSeason = 0;
             double sumBoodjePart1 = 0, sumBoodjePart2 = 0;
-            double sumHotSeason = 0;
+            double sumAbBahaDiscount=0,sumFazelabDiscount = 0,sumHotSeasonDiscount=0;
+
             foreach (var nerkhItem in allNerkh)
             {
                 AbAzadGetDto abAzadItem = abAzad.ElementAt(counter);
                 ZaribGetDto zaribItem = zarib.ElementAt(counter);
                 BaseOldTariffEngineOutputDto resultCalc = CalculateWaterBill(nerkhItem, abAzadItem, zaribItem, customerInfo, meterInfo, dailyAverage, currentDateJalali);
-                nerkhItem.CalcVaj = resultCalc.AbBahaAmount.ToString();
-                sumAbBaha += resultCalc.AbBahaAmount;
+                nerkhItem.CalcVaj = resultCalc.AbBahaValues.ToString();
+                sumAbBaha += resultCalc.AbBahaValues.AbBahaAmount;
                 sumFazelab += resultCalc.FazelabAmount;
                 sumBoodjePart1 += resultCalc.BoodjePart1;
                 sumBoodjePart2 += resultCalc.BoodjePart2;
                 sumHotSeason = resultCalc.HotSeasonAmount;
+                sumAbBahaDiscount += resultCalc.AbBahaDiscount;
+                sumFazelabDiscount += resultCalc.FazelabDiscount;
+                sumHotSeasonDiscount += resultCalc.HotSeasonDiscount;
 
                 counter++;
             }
