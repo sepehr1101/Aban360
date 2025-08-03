@@ -6,6 +6,7 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using DNTPersianUtils.Core;
+using Microsoft.SqlServer.Server;
 using org.matheval;
 
 namespace Aban360.CalculationPool.Application.Features.Base
@@ -44,7 +45,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             CalculateAbBahaOutputDto abBahaResult = _CalculateAbBaha(nerkh, customerInfo, meterInfo, zarib, abAzad, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, multiplierAbBaha);
             (double, double) boodje = CalculateBoodjePart1(nerkh, customerInfo, currentDateJalali);
-            double fazelab = CalculateFazelab(nerkh, customerInfo, 0.12, 12, currentDateJalali);
+            double fazelab = CalculateFazelab(nerkh, customerInfo, abBahaResult.AbBahaAmount, currentDateJalali);
             double hotSeason = CalcHotSeason(nerkh, abBahaResult.AbBahaAmount);
 
             double abBahaDiscount = CalculateAbBahaDiscount(nerkh, customerInfo, meterInfo, abBahaResult, olgoo, multiplierAbBaha, monthlyConsumption, currentDateJalali);
@@ -53,7 +54,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             double abonmanAb = CalculateAbonmanAb(nerkh, customerInfo, meterInfo, currentDateJalali, abBahaResult.AbBahaAmount, abBahaDiscount);
 
-            return new BaseOldTariffEngineOutputDto(abBahaResult, fazelab, hotSeason, boodje.Item1, boodje.Item2,abBahaDiscount,hotSeasonDiscount,fazelabDiscount,abonmanAb);
+            return new BaseOldTariffEngineOutputDto(abBahaResult, fazelab, hotSeason, boodje.Item1, boodje.Item2, abBahaDiscount, hotSeasonDiscount, fazelabDiscount, abonmanAb);
 
 
             //object parameters= new {X=consumptionAverage};
@@ -1586,70 +1587,34 @@ namespace Aban360.CalculationPool.Application.Features.Base
             throw new NotImplementedException();
         }
 
-        private double CalculateFazelab(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double sewagePercent, double ab_Fas, string currentDateJalali)
+        private double CalculateFazelab(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double abBahaAmount, string currentDateJalali)
         {
             double sewageAmount = 0;
-            sewagePercent = sewagePercent / 100;
+            double multiplier = IsDomesticWithoutUnspecified(customerInfo.UsageId) ? 0.7 : 1;
+            int _withoutSewage = 0, _firstCalculation = 1, _normal = 2;
 
             //has foreach
-            if (customerInfo.SewageCount == 0)
+            if (customerInfo.SewageCalcState == _withoutSewage)
             {
-                sewageAmount = 0;
+                return 0;
             }
-            else if (customerInfo.SewageCount == 1 && string.Compare(currentDateJalali, customerInfo.SewageInstallationDateJalali) > 0)
+            else if (customerInfo.SewageCalcState == _firstCalculation && string.Compare(currentDateJalali, customerInfo.SewageInstallationDateJalali) > 0)
             {
-                if (string.Compare(nerkh.Date2, "1389/09/27") >= 0 && string.Compare(nerkh.Date2, "1394/06/31") <= 0)
-                {
-                    string vajFazStr = string.IsNullOrWhiteSpace(nerkh.VajFaz) ? "0" : nerkh.VajFaz.Trim();
-                    double vajFaz = double.TryParse(vajFazStr, out var parsedVajFaz) ? parsedVajFaz : 0;
+                // int mod_as_nasb = PartTime(nerkh.Date1, nerkh.Date2, customerInfo.SewageInstallationDateJalali, currentDateJalali);
+                // sewageAmount = (sewageAmount / nerkh.Duration) * mod_as_nasb;
+                int duration = (int.Parse)(CalculationDistanceDate.CalcDistance(customerInfo.SewageInstallationDateJalali, currentDateJalali));
+                sewageAmount = (abBahaAmount / nerkh.Duration) * duration * multiplier;
 
-                    if (vajFaz.ToString().Length > 8)
-                        vajFaz = 0;
-
-                    sewageAmount = nerkh.PartialConsumption * vajFaz;
-
-                    if (sewageAmount > 0)
-                    {
-                        int mod_as_nasb = PartTime(nerkh.Date1, nerkh.Date2, customerInfo.SewageInstallationDateJalali, currentDateJalali);
-                        sewageAmount = (sewageAmount / nerkh.Duration) * mod_as_nasb;
-                    }
-                    else
-                    {
-                        sewageAmount = 0;
-                    }
-                }
-                else
-                {
-                    int zaman = (int.Parse)(CalculationDistanceDate.CalcDistance(customerInfo.SewageInstallationDateJalali, currentDateJalali));
-                    sewageAmount = (ab_Fas / nerkh.Duration) * zaman * sewagePercent;
-                }
-
-                if (string.Compare(customerInfo.SewageInstallationDateJalali, nerkh.Date2) <= 0)
-                {
-                    customerInfo.SewageCount = 2;
-                }
+                //Update SewageStateToNormal in DB
             }
-            else if (customerInfo.SewageCount == 2 || currentDateJalali == customerInfo.SewageInstallationDateJalali)
+            else if (customerInfo.SewageCalcState == _normal || currentDateJalali == customerInfo.SewageInstallationDateJalali)
             {
-                if (string.Compare(nerkh.Date2, "1389/09/27") >= 0 && string.Compare(nerkh.Date2, "1394/06/31") <= 0)
-                {
-                    string vajFazStr = string.IsNullOrWhiteSpace(nerkh.VajFaz) ? "0" : nerkh.VajFaz.Trim();
-                    double vajFaz = double.TryParse(vajFazStr, out var parsedVajFaz) ? parsedVajFaz : 0;
-
-                    if (vajFaz.ToString().Length > 8)
-                        vajFaz = 0;
-
-                    sewageAmount = nerkh.PartialConsumption * vajFaz;
-                }
-                else
-                {
-                    sewageAmount = ab_Fas * sewagePercent;
-                }
+                sewageAmount = abBahaAmount * multiplier;
             }
 
             return sewageAmount;
         }
-        private double  CalculateFazelabDiscount(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, CalculateAbBahaOutputDto abBahaValues, double abBahaDiscount, double fazelabAmount, double ab_Fas, int olgoo, double monthlyConsumption)
+        private double CalculateFazelabDiscount(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, CalculateAbBahaOutputDto abBahaValues, double abBahaDiscount, double fazelabAmount, double ab_Fas, int olgoo, double monthlyConsumption)
         {
             double fazelbDiscount = 0;
             //line->1916

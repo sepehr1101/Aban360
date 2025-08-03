@@ -198,7 +198,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 WaterInstallationDateJalali = input.customerInfo.WaterInstallationDateJalali,
                 SewageInstallationDateJalali = input.customerInfo.SewageInstallationDateJalali,
                 WaterCount = input.customerInfo.WaterCount,
-                SewageCount = input.customerInfo.SewageCount,
+                SewageCalcState = input.customerInfo.SewageCount,
                 ContractualCapacity = input.customerInfo.ContractualCapacity,
                 HouseholdNumber = input.customerInfo.HouseholdNumber,
                 ReadingNumber = input.customerInfo.ReadingNumber,
