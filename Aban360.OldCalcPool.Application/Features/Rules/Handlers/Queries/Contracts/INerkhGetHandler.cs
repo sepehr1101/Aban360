@@ -4,6 +4,6 @@ namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Contra
 {
     public interface INerkhGetHandler
     {
-        Task<IEnumerable<NerkhGetDto>> Handle(int id, int nerkh, CancellationToken cancellationToken);
+        Task<NerkhGetDto> Handle(int id, int nerkh, CancellationToken cancellationToken);
     }
 }

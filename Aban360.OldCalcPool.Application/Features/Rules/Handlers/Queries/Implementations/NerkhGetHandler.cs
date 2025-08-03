@@ -14,9 +14,9 @@ namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Implem
             _nerkhGetService.NotNull(nameof(nerkhGetService));
         }
 
-        public async Task<IEnumerable<NerkhGetDto>> Handle(int id, int nerkh, CancellationToken cancellationToken)
+        public async Task<NerkhGetDto> Handle(int id, int nerkh, CancellationToken cancellationToken)
         {
-            IEnumerable<NerkhGetDto> result = await _nerkhGetService.Get(id, nerkh);
+            NerkhGetDto result = await _nerkhGetService.Get(id, nerkh);
             return result;
         }
     }

@@ -14,9 +14,9 @@ namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Implem
             _table1GetService.NotNull(nameof(table1GetService));
         }
 
-        public async Task<IEnumerable<Table1GetDto>> Handle(int id, CancellationToken cancellationToken)
+        public async Task<Table1GetDto> Handle(int id, CancellationToken cancellationToken)
         {
-            IEnumerable<Table1GetDto> result = await _table1GetService.Get(id);
+            Table1GetDto result = await _table1GetService.Get(id);
             return result;
         }
     }

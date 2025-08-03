@@ -2,8 +2,8 @@
 
 namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts
 {
-    public interface ITable1GetService
+    public interface INerkhGetAllService
     {
-        Task<Table1GetDto> Get(int id);
+        Task<IEnumerable<NerkhGetDto>> Get(int nerkh);
     }
 }

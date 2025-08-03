@@ -6,21 +6,21 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
 {
-    internal sealed class Table1GetService : AbstractBaseConnection, ITable1GetService
+    internal sealed class NerkhGetAllService : AbstractBaseConnection, INerkhGetAllService
     {
-        public Table1GetService(IConfiguration configuration)
+        public NerkhGetAllService(IConfiguration configuration)
             : base(configuration)
         { }
 
-        public async Task<Table1GetDto> Get(int id)
+        public async Task<IEnumerable<NerkhGetDto>> Get(int nerkh)
         {
-            string Table1GetQueryString = GetTable1GetQuery();
-           Table1GetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<Table1GetDto>(Table1GetQueryString, new { id });
+            string nerkhGetQueryString = GetNerkhGetQuery(nerkh);
+            IEnumerable<NerkhGetDto> result = await _sqlReportConnection.QueryAsync<NerkhGetDto>(nerkhGetQueryString);
 
             return result;
         }
 
-        private string GetTable1GetQuery()
+        private string GetNerkhGetQuery(int nerkh)
         {
             return @$"Select
                 		n.date1 AS Date1,
@@ -32,9 +32,15 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                 		n.olgo AS Olgo,
                 		n.[desc] AS [Desc],
                 		n.o_vaj AS OVaj,
-                		n.o_vaj_faz AS OVajFaz
-                	From [OldCalc].dbo.table1 n
-                	Where n.Id=@id";
+                		n.o_vaj_faz AS OVajFaz,
+                        n.bodjeh_new AS Bodjeh_new,
+						n.ztadil AS ZaribTadil,
+						n.tabsare2 AS Tabsare2,
+						n.zaribfasl AS ZaribFasl,
+						n.zarib_d AS ZaribBodje,
+                        n.vaj_faz AS VajFaz
+                	From [OldCalc].dbo.nerkh_{nerkh} n";
         }
+
     }
 }

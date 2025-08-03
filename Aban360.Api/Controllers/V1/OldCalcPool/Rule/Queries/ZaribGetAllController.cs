@@ -7,21 +7,21 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule.Queries
 {
     [Route("v1/zarib")]
-    public class ZaribGetController : BaseController
+    public class ZaribGetAllController : BaseController
     {
-        private readonly IZaribGetHandler _zaribGetHandler;
-        public ZaribGetController(IZaribGetHandler zaribGetHandler)
+        private readonly IZaribGetAllHandler _zaribGetAllHandler;
+        public ZaribGetAllController(IZaribGetAllHandler zaribGetAllHandler)
         {
-            _zaribGetHandler = zaribGetHandler;
-            _zaribGetHandler.NotNull(nameof(zaribGetHandler));
+            _zaribGetAllHandler = zaribGetAllHandler;
+            _zaribGetAllHandler.NotNull(nameof(zaribGetAllHandler));
         }
 
         [HttpPost]
-        [Route("get/{id}")]
+        [Route("all")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<ZaribGetDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get(int id, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            ZaribGetDto result = await _zaribGetHandler.Handle(id, cancellationToken);
+            IEnumerable<ZaribGetDto> result = await _zaribGetAllHandler.Handle(cancellationToken);
             return Ok(result);
         }
     }

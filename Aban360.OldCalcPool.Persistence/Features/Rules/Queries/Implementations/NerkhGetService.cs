@@ -12,10 +12,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
             : base(configuration)
         { }
 
-        public async Task<IEnumerable<NerkhGetDto>> Get(int id, int nerkh)
+        public async Task<NerkhGetDto> Get(int id, int nerkh)
         {
             string nerkhGetQueryString = GetNerkhGetQuery(nerkh);
-            IEnumerable<NerkhGetDto> result = await _sqlReportConnection.QueryAsync<NerkhGetDto>(nerkhGetQueryString, new { id });
+            NerkhGetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<NerkhGetDto>(nerkhGetQueryString, new { id });
 
             return result;
         }

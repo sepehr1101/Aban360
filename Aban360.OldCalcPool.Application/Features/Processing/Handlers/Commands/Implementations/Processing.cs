@@ -158,7 +158,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private ProcessDetailOutputDto Tarif_Ab(IEnumerable<NerkhGetDto> allNerkh, IEnumerable<AbAzadGetDto> abAzad, IEnumerable<ZaribGetDto> zarib, double dailyAverage, string previousDateJalali, string currentDateJalali, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo)
         {
             int counter = 0;
-            double sumAbBaha = 0.,sumFazelab = 0, sumHotSeason = 0;
+            double sumAbBaha = 0,sumFazelab = 0, sumHotSeason = 0;
             double sumBoodjePart1 = 0, sumBoodjePart2 = 0;
             double sumAbBahaDiscount=0,sumFazelabDiscount = 0,sumHotSeasonDiscount=0;
 
