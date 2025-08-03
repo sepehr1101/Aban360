@@ -1021,16 +1021,16 @@ namespace Aban360.CalculationPool.Application.Features.Base
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
             double abBahaMultiplied = 0;
 
+            //1942
             if ((IsReligiousWithCharity(customerInfo.UsageId)) && IsNotConstruction(customerInfo.BranchType))
             {
                 abBahaMultiplied = (abBahaValues.AbBahaValues.Item1 * MultiplierAbBaha);
-                abBahaValues.AbBahaAmount = abBahaValues.AbBahaAmount - abBahaMultiplied;
+                abBahaValues.AbBahaAmount = abBahaValues.AbBahaValues.Item1 - abBahaMultiplied;
                 if (hotSeasonAmount != 0)
                 {
                 }
             }//line->1975
-
-            throw new NotImplementedException();
+            return 0;
         }
         private double CalculateAbBahaDiscount(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, CalculateAbBahaOutputDto abBahaValues, int olgoo, double multiplierAbBaha, double monthlyConsumption, string currentDateJalali)
         {
@@ -1060,7 +1060,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 else
                 {
                     abBahaDiscount = abBahaDiscount + abBahaValues.AbBahaAmount;
-                    abBahaValues.AbBahaAmount = 0;
+                    //abBahaValues.AbBahaAmount = 0;//L 1876
                 }//line -> 1879
             }//L 1883
 
@@ -1649,7 +1649,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             return sewageAmount;
         }
-        private long CalculateFazelabDiscount(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, CalculateAbBahaOutputDto abBahaValues, double abBahaDiscount, double fazelabAmount, double ab_Fas, int olgoo, double monthlyConsumption)
+        private double  CalculateFazelabDiscount(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, CalculateAbBahaOutputDto abBahaValues, double abBahaDiscount, double fazelabAmount, double ab_Fas, int olgoo, double monthlyConsumption)
         {
             double fazelbDiscount = 0;
             //line->1916
@@ -1670,7 +1670,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 }
             }
 
-
+            return fazelbDiscount;
             //TMP_NERKH.date2 > "1395/02/31" 
             //if (nerkh.Date2.CompareTo("1395/02/31") > 0 && zaribFaslAmountTemp != 0)
             //{
@@ -1713,7 +1713,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             //    if (V_FASBAHA1 < 0)
             //        V_FASBAHA1 = 0;
             //}//line-> 2050
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
 
         }
         private double CalculateAbonmanAb(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali, double abBahaAmount, double abBahaDiscount)

@@ -158,7 +158,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private ProcessDetailOutputDto Tarif_Ab(IEnumerable<NerkhGetDto> allNerkh, IEnumerable<AbAzadGetDto> abAzad, IEnumerable<ZaribGetDto> zarib, double dailyAverage, string previousDateJalali, string currentDateJalali, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo)
         {
             int counter = 0;
-            double sumAbBaha = 0,sumFazelab = 0, sumHotSeason = 0;
+            double sumAbBaha = 0,sumFazelab = 0, sumHotSeason = 0,sumAbonman=0;
             double sumBoodjePart1 = 0, sumBoodjePart2 = 0;
             double sumAbBahaDiscount=0,sumFazelabDiscount = 0,sumHotSeasonDiscount=0;
 
@@ -176,12 +176,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 sumAbBahaDiscount += resultCalc.AbBahaDiscount;
                 sumFazelabDiscount += resultCalc.FazelabDiscount;
                 sumHotSeasonDiscount += resultCalc.HotSeasonDiscount;
+                sumAbonman += resultCalc.AbonmanAbAmount;
 
                 counter++;
             }
 
 
-            return new ProcessDetailOutputDto(sumAbBaha, sumFazelab, sumBoodjePart1, sumBoodjePart2, sumHotSeason, allNerkh, abAzad, zarib);
+            return new ProcessDetailOutputDto(sumAbBaha, sumFazelab, sumBoodjePart1, sumBoodjePart2, sumHotSeason,sumAbBahaDiscount,sumHotSeasonDiscount,sumFazelabDiscount,sumAbonman, allNerkh, abAzad, zarib);
         }
         private CustomerInfoOutputDto GetCustomerInfo(BaseOldTariffEngineImaginaryInputDto input)
         {
