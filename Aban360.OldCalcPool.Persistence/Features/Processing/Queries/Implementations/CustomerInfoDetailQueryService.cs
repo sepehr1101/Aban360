@@ -16,6 +16,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 
         public async Task<CustomerInfoOutputDto> GetInfo(string billId)
         {
+            string DataBaseName = GetDbName(zoneId.Value);
             string zoneIdQueryString = GetZoneIdQuery();
             int zoneId = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(zoneIdQueryString, new { billId });
             if (zoneId == null)
