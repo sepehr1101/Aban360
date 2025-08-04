@@ -16,20 +16,20 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 
         public async Task<CustomerInfoOutputDto> GetInfo(string billId)
         {
-            string DataBaseName = GetDbName(zoneId.Value);
             string zoneIdQueryString = GetZoneIdQuery();
-            int zoneId = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(zoneIdQueryString, new { billId });
+            int? zoneId = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(zoneIdQueryString, new { billId });
             if (zoneId == null)
             {
                 throw new BaseException(ExceptionLiterals.BillIdNotFound);
             }
-            string customerInfoQueryString = GetCustomerInfoDataQuery(zoneId);
+            string DataBaseName = GetDbName(zoneId.Value);
+            string customerInfoQueryString = GetCustomerInfoDataQuery(DataBaseName);
             CustomerInfoOutputDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<CustomerInfoOutputDto>(customerInfoQueryString, new { billId });
 
             return result;
         }
 
-        private string GetCustomerInfoDataQuery(int zoneId)
+        private string GetCustomerInfoDataQuery(string zoneId)
         {
             return @$"Select
                     	m.town as ZoneId,
