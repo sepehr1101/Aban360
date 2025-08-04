@@ -16,7 +16,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule.Queries
             _zaribGetHandler.NotNull(nameof(zaribGetHandler));
         }
 
-        [HttpPost]
+        [HttpGet, HttpPost]
         [Route("get/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<ZaribGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(int id, CancellationToken cancellationToken)
