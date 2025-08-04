@@ -9,6 +9,7 @@ using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Commands;
 using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Queries;
 using Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Contracts;
+using DNTPersianUtils.Core;
 using Hangfire;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
@@ -67,7 +68,7 @@ namespace Aban360.Api.Cronjobs
             string reportPath = await ExcelManagement.ExportToExcelAsync(reportOutput.ReportHeader, reportOutput.ReportData, reportOutput.Title);
 
             //Complete ServerReport
-            _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(id, reportPath), cancellationToken);
+            _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(id, reportPath,DateTime.Now,true), cancellationToken);
         }
         public async Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId)
         {
@@ -125,7 +126,7 @@ namespace Aban360.Api.Cronjobs
                 var reportData = dynamicResult.ReportData;
 
                 string reportPath = await ExcelManagement.ExportToExcelAsync(reportHeader, reportData, serverReportsGetByIdDto.ReportName);
-                _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(serverReportsGetByIdDto.Id, reportPath), CancellationToken.None);
+                _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(serverReportsGetByIdDto.Id, reportPath, DateTime.Now,true), CancellationToken.None);
             }
             NotifyUser(serverReportsGetByIdDto);
         }
@@ -153,6 +154,13 @@ namespace Aban360.Api.Cronjobs
             {
                 _notifyHub.Clients.Client(serverReportsGetByIdDto.ConnectionId).InformReportCompletion(reportCompletionNotification);
             }
+        }
+        private string GetCurrentPersianDateTime()
+        {
+            string timeNow = DateTime.Now.ToString("HH-mm-ss");
+            string persianDate = DateTime.Now.ToShortPersianDateString();
+
+            return $"{persianDate}_{timeNow}";
         }
     }
 }
