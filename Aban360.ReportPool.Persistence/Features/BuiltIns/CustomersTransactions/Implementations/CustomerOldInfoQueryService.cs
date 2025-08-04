@@ -21,7 +21,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 zoneId = input.ZoneId,
                 customerNumber = input.CustomerNumber,
             };
-
             CustomerOldInfoOutputDto? output = await _sqlReportConnection.QueryFirstOrDefaultAsync<CustomerOldInfoOutputDto>(customerOldInfoQuery, @params);
             return output;
         }
@@ -39,8 +38,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         FirstName, 
                         SureName AS Surname,
                         VillageId,
-                        VillageName
-                     FROM Clients 
+                        VillageName,
+                        m.C0 RegionId,
+						m.C2 RegionTitle
+                     FROM Clients c
+                     LEFT OUTER JOIN Db70.dbo.T51 z
+						 ON c.ZoneId=Z.c0
+					 LEFT OUTER JOIN Db70.dbo.T46 m
+						ON z.C1=m.c0
                      WHERE 
                         ZoneId=@zoneId AND  
                         (CustomerNumber=@customerNumber OR OldCustomerNumber=@customerNumber) AND 
