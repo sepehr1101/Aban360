@@ -16,7 +16,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule.Queries
             _zaribGetAllHandler.NotNull(nameof(zaribGetAllHandler));
         }
 
-        [HttpPost]
+        [HttpGet, HttpPost]
         [Route("all")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<ZaribGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)

@@ -16,7 +16,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule.Queries
             _nerkhGetAllHandler.NotNull(nameof(nerkhGetAllHandler));
         }
 
-        [HttpPost]
+        [HttpGet, HttpPost]
         [Route("all")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<NerkhGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll( CancellationToken cancellationToken)

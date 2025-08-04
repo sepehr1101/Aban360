@@ -16,7 +16,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule.Queries
             _nerkhGetHandler.NotNull(nameof(nerkhGetHandler));
         }
 
-        [HttpPost]
+        [HttpGet, HttpPost]
         [Route("get/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<NerkhGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(int id,CancellationToken cancellationToken)
