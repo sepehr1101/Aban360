@@ -44,7 +44,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             double multiplierAbBaha = Multiplier(zarib, olgoo, IsDomestic(customerInfo.UsageId), isVillageCalculation, monthlyConsumption);
 
             CalculateAbBahaOutputDto abBahaResult = _CalculateAbBaha(nerkh, customerInfo, meterInfo, zarib, abAzad, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, multiplierAbBaha);
-            (double, double) boodje = CalculateBoodjePart1(nerkh, customerInfo, currentDateJalali);
+            (double, double) boodje = CalculateBoodje(nerkh, customerInfo, currentDateJalali,monthlyConsumption,olgoo);
             double fazelab = CalculateFazelab(nerkh, customerInfo, abBahaResult.AbBahaAmount, currentDateJalali);
             double hotSeason = CalcHotSeason(nerkh, abBahaResult.AbBahaAmount);
 
@@ -299,7 +299,21 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             return 1;
         }
-
+        private bool IsMoreThan1398_12_29(string nerkhDate2)
+        {
+            string baseDate = "1398/12/29";
+            return nerkhDate2.CompareTo(baseDate) > 0;
+        }
+        private bool IsLessThan1401_12_28(string nerkhDate2)
+        {
+            string baseDate = "1401/12/28";
+            return nerkhDate2.CompareTo(baseDate) < 0;
+        }
+        private bool IsLessThan1403_12_30(string nerkhDate2)
+        {
+            string baseDate = "1403/12/30";
+            return nerkhDate2.CompareTo(baseDate) < 0;
+        }
 
         #region
         ///// <summary>
@@ -828,7 +842,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 {//1578
                     if (abBahaAmount != 0)
                     {
-                        if (nerkh.Date2.CompareTo("1403/09/13") <= 0 || monthlyConsumption <= _olgoo)
+                        if (IsLessThan1403_09_13(nerkh.Date2) || monthlyConsumption <= _olgoo)
                         {
                             (abBahaAmount, oldAbBahaAmount, isVillageCalculation) = MultiplyCalculation(abBahaAmount, oldAbBahaAmount, 0.5);
                         }
@@ -847,7 +861,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 {
                     if (abBahaAmount != 0)//L 1604
                     {
-                        if (nerkh.Date2.CompareTo("1403/09/13") <= 0 || monthlyConsumption <= _olgoo)
+                        if (IsLessThan1403_09_13(nerkh.Date2) || monthlyConsumption <= _olgoo)
                         {
                             (abBahaAmount, oldAbBahaAmount, isVillageCalculation) = MultiplyCalculation(abBahaAmount, oldAbBahaAmount, 0.5);
                         }
@@ -858,101 +872,6 @@ namespace Aban360.CalculationPool.Application.Features.Base
                     }
                 }
             }//foxpro:1620
-
-            double contractInDuration = 0;
-            double allowedConsumption = 0;
-            double disAllowedConsumption = 0;
-            double allowedBoodje = 0;
-            double disAllowedBoodje = 0;
-            //L 1627
-            if ((!IsDomesticWithoutUnspecified(customerInfo.UsageId) && !IsGardenAndResidence(customerInfo.UsageId) && nerkh.Date2.CompareTo("1398/12/29") > 0) ||
-                (IsGardenAndResidence(customerInfo.UsageId) && nerkh.Date2.CompareTo("1400/12/29") < 0))
-            {
-                //Bmas2_7 = 0;
-
-                if (customerInfo.ContractualCapacity > 0 &&
-                    IsNotConstruction(customerInfo.BranchType))
-                {
-                    contractInDuration = (customerInfo.ContractualCapacity / 30.0) * nerkh.Duration;
-                    if (nerkh.PartialConsumption > contractInDuration || IsSchool(customerInfo.UsageId))
-                    {
-                        disAllowedConsumption = nerkh.PartialConsumption - contractInDuration;
-                        allowedConsumption = nerkh.PartialConsumption - disAllowedConsumption;
-                        if (nerkh.PartialConsumption <= contractInDuration)
-                        {
-                            allowedConsumption = nerkh.PartialConsumption;
-                            disAllowedConsumption = 0;
-                        }
-                    }
-                }//c#:313  foxpro:1642
-
-                if (disAllowedConsumption > 0)
-                    allowedBoodje = nerkh.ZaribBodje * disAllowedConsumption;
-                else
-                    allowedBoodje = 0;
-            }
-            else
-            {
-                double domesticConsumption = 0;
-                if ((IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId)) &&
-                    nerkh.Date2.CompareTo("1398/12/29") > 0)//always false because date is invalid
-                {
-                    // mas_maskoni = 0;
-
-                    if (IsDomesticWithoutUnspecified(customerInfo.UsageId) && monthlyConsumption >= _olgoo && customerInfo.DomesticUnit > 0)
-                    {
-                        domesticConsumption = (((monthlyConsumption - _olgoo) * customerInfo.DomesticUnit) / 30.0) * nerkh.Duration;
-                    }
-                    else
-                    {
-                        if (monthlyConsumption > _olgoo)
-                            domesticConsumption = ((monthlyConsumption - _olgoo) / 30.0) * nerkh.Duration;
-                        else
-                            domesticConsumption = 0;
-                    }
-                    allowedBoodje = nerkh.ZaribBodje * domesticConsumption;
-                }
-                else
-                {
-                    allowedBoodje = nerkh.ZaribBodje * nerkh.PartialConsumption;
-                }//c#:344  foxpro:1673
-            }
-            if (!IsNotConstruction(customerInfo.BranchType))
-                allowedBoodje = 0;
-
-            if (IsTankerSaleAndVillage(customerInfo.UsageId))
-                allowedBoodje = 0;
-
-            if (customerInfo.ZoneId == 151511)
-                allowedBoodje = 0;
-
-            if (IsVillage(customerInfo.ZoneId))
-            {
-                int cod_rosta = int.Parse(customerInfo.VillageId.Trim().Substring(0, 4));
-                if (RuralButIsMetro(customerInfo.ZoneId, ulong.Parse(customerInfo.VillageId)))
-                {
-                    //nothing
-                }
-                else
-                {
-                    if (IsDomesticWithoutUnspecified(customerInfo.UsageId))
-                    {
-                        allowedBoodje = (allowedBoodje / 2);
-                    }
-                }
-            }//foxpro:1713
-            if (IsDolatabadOrHabibabadWithConditionEshtrak(customerInfo.ZoneId, ulong.Parse(customerInfo.ReadingNumber)))
-            {
-                if (IsDomesticWithoutUnspecified(customerInfo.UsageId))
-                {
-                    allowedBoodje = (allowedBoodje / 2);
-                }
-            }//L 1724 
-            if (IsGardenAndResidence(customerInfo.ZoneId) &&
-                nerkh.Date2.CompareTo("1401/12/28") <= 0)
-            {
-                int vzarib_baha = 1;
-            }//foxpro:1740
 
             abBahaAmount = abBahaAmount * multiplierAbBaha;
 
@@ -1507,8 +1426,75 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 IsBetween(142215, zoneId, readingNumber, "10220000000", "10229999999");
 
         }
-        private (double, double) CalculateBoodjePart1(NerkhGetDto nerkhDto, CustomerInfoOutputDto customerInfo, string currentDateJalali)
+        private (double, double) CalculateBoodje(NerkhGetDto nerkhDto, CustomerInfoOutputDto customerInfo, string currentDateJalali, double monthlyConsumption, double olgoo)
         {
+            double allowedBoodje = 0, disAllowedBoodje = 0;
+            double contractInDuration = 0;
+            double allowedConsumption = 0;
+            double disAllowedConsumption = 0;
+            //L 1627
+
+            double domesticConsumption = 0;
+            if ((IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId)) &&
+               IsMoreThan1398_12_29(nerkhDto.Date2))//always false because date is invalid
+            {
+                // mas_maskoni = 0;
+
+                if (IsDomesticWithoutUnspecified(customerInfo.UsageId) && monthlyConsumption >= olgoo && customerInfo.DomesticUnit > 0)
+                {
+                    domesticConsumption = (((monthlyConsumption - olgoo) * customerInfo.DomesticUnit) / 30.0) * nerkhDto.Duration;
+                }
+                else
+                {
+                    if (monthlyConsumption > olgoo)
+                        domesticConsumption = ((monthlyConsumption - olgoo) / 30.0) * nerkhDto.Duration;
+                    else
+                        domesticConsumption = 0;
+                }
+                allowedBoodje = nerkhDto.ZaribBodje * domesticConsumption;
+            }
+            else
+            {
+                allowedBoodje = nerkhDto.ZaribBodje * nerkhDto.PartialConsumption;
+            }//c#:344  foxpro:1673
+
+            if (!IsNotConstruction(customerInfo.BranchType))
+                allowedBoodje = 0;
+
+            if (IsTankerSaleAndVillage(customerInfo.UsageId))
+                allowedBoodje = 0;
+
+            if (customerInfo.ZoneId == 151511)
+                allowedBoodje = 0;
+
+            if (IsVillage(customerInfo.ZoneId))
+            {
+                int cod_rosta = int.Parse(customerInfo.VillageId.Trim().Substring(0, 4));
+                if (RuralButIsMetro(customerInfo.ZoneId, ulong.Parse(customerInfo.VillageId)))
+                {
+                    //nothing
+                }
+                else
+                {
+                    if (IsDomesticWithoutUnspecified(customerInfo.UsageId))
+                    {
+                        allowedBoodje = (allowedBoodje / 2);
+                    }
+                }
+            }//foxpro:1713
+            if (IsDolatabadOrHabibabadWithConditionEshtrak(customerInfo.ZoneId, ulong.Parse(customerInfo.ReadingNumber)))
+            {
+                if (IsDomesticWithoutUnspecified(customerInfo.UsageId))
+                {
+                    allowedBoodje = (allowedBoodje / 2);
+                }
+            }//L 1724 
+            if (IsGardenAndResidence(customerInfo.ZoneId) &&
+                IsLessThan1401_12_28(nerkhDto.Date2))
+            {
+                int vzarib_baha = 1;
+            }//foxpro:1740
+
             int domesticUnit = customerInfo.DomesticUnit;
             if (IsGardenAndResidence(customerInfo.UsageId))
             {
@@ -1521,7 +1507,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             domesticUnit = IsDomesticWithoutUnspecified(customerInfo.UsageId) && customerInfo.OtherUnit != 0 ? customerInfo.DomesticUnit - customerInfo.OtherUnit : customerInfo.DomesticUnit;
             domesticUnit = customerInfo.DomesticUnit < 0 ? 1 : domesticUnit;
 
-            if (nerkhDto.Date2.CompareTo("1403/12/30") <= 0)
+            if (IsLessThan1403_12_30(nerkhDto.Date2))
                 return (0, 0);
 
             if (customerInfo.ZoneId == 151511)
@@ -1571,17 +1557,13 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             return (bha1, bha2);
 
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
         private (long, long) CalculateBoodjePart1Discount()
         {
             throw new NotImplementedException();
         }
-
-        private long CalculateBoodjePart2()
-        {
-            throw new NotImplementedException();
-        }
+        
         private (long, long) CalculateBoodjePart2Discount()
         {
             throw new NotImplementedException();
