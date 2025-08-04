@@ -23,17 +23,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
         private string GetTable1GetQuery()
         {
             return @$"Select
-                		n.date1 AS Date1,
-                		n.date2 AS Date2,
-                		n.ebt AS Ebt,
-                		n.ent AS Ent,
-                		n.vaj AS Vaj,
-                		n.cod AS Cod,
-                		n.olgo AS Olgo,
-                		n.[desc] AS [Desc],
-                		n.o_vaj AS OVaj,
-                		n.o_vaj_faz AS OVajFaz
-                	From [OldCalc].dbo.table1 n";
+                		t.Id,
+                    	t.town,
+                    	t.z1,
+                    	t.z2,
+                    	t.olgo,
+                    	t.darsa_gh
+                    From [OldCalc].dbo.table1 t";
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Exceptions;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
@@ -28,7 +29,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.FlatReports.Queries
 
             if (!System.IO.File.Exists(result.ReportPath))
             {
-                throw new BaseException(ExceptionLiterals.NotFoundFile);
+                throw new InvalidFilePathException(ExceptionLiterals.NotFoundFile);
             }
 
             string filePath = Path.GetFullPath(result.ReportPath);

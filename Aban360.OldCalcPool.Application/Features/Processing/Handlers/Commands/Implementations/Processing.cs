@@ -159,8 +159,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         {
             int counter = 0;
             double sumAbBaha = 0,sumFazelab = 0, sumHotSeason = 0,sumAbonman=0;
-            double sumBoodjePart1 = 0, sumBoodjePart2 = 0;
+            double sumBoodjePart1 = 0, sumBoodjePart2 = 0,sumAvarez=0;
             double sumAbBahaDiscount=0,sumFazelabDiscount = 0,sumHotSeasonDiscount=0;
+            double sumJavaniAmount = 0;
 
             foreach (var nerkhItem in allNerkh)
             {
@@ -177,12 +178,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 sumFazelabDiscount += resultCalc.FazelabDiscount;
                 sumHotSeasonDiscount += resultCalc.HotSeasonDiscount;
                 sumAbonman += resultCalc.AbonmanAbAmount;
+                sumAvarez += resultCalc.AvarezAmount;
+                sumJavaniAmount += resultCalc.JavaniAmount;
 
                 counter++;
             }
 
 
-            return new ProcessDetailOutputDto(sumAbBaha, sumFazelab, sumBoodjePart1, sumBoodjePart2, sumHotSeason,sumAbBahaDiscount,sumHotSeasonDiscount,sumFazelabDiscount,sumAbonman, allNerkh, abAzad, zarib);
+            return new ProcessDetailOutputDto(sumAbBaha, sumFazelab, sumBoodjePart1, sumBoodjePart2, sumHotSeason,sumAbBahaDiscount,sumHotSeasonDiscount,sumFazelabDiscount,sumAbonman,sumAvarez,sumJavaniAmount, allNerkh, abAzad, zarib);
         }
         private CustomerInfoOutputDto GetCustomerInfo(BaseOldTariffEngineImaginaryInputDto input)
         {

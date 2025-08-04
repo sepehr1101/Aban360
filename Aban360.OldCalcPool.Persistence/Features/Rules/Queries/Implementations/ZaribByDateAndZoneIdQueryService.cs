@@ -29,6 +29,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
         private string GetZaribQueryService()
         {
             return @$"Select Top 1
+                        z.id AS Id,
                     	z.town AS Town,
                     	z.zone1 AS ZoneTitle1,
                     	z.zone2 AS ZoneTitle2,
