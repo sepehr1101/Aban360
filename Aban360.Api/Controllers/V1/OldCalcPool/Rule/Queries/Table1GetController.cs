@@ -16,7 +16,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule.Queries
             _table1GetHandler.NotNull(nameof(table1GetHandler));
         }
 
-        [HttpPost]
+        [HttpGet, HttpPost]
         [Route("get/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<Table1GetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(int id, CancellationToken cancellationToken)
