@@ -23,6 +23,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
         private string GetZaribGetQuery()
         {
             return @$"Select 
+                        z.id AS Id,
                     	z.town AS Town,
                     	z.zone1 AS ZoneTitle1,
                     	z.zone2 AS ZoneTitle2,
@@ -39,7 +40,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                     	z.zb7 AS Zb7,
                     	z.zb8 AS Zb8,
                     	z.zb_r AS Zb_r
-                    From [OldCalc].dbo.zarib z";
+                    From [OldCalc].dbo.zarib z
+                    Where z.id=@id";
         }
     }
 }

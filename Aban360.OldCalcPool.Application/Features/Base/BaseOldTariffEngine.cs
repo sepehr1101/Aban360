@@ -44,7 +44,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             double multiplierAbBaha = Multiplier(zarib, olgoo, IsDomestic(customerInfo.UsageId), isVillageCalculation, monthlyConsumption);
 
             CalculateAbBahaOutputDto abBahaResult = _CalculateAbBaha(nerkh, customerInfo, meterInfo, zarib, abAzad, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, multiplierAbBaha);
-            (double, double) boodje = CalculateBoodje(nerkh, customerInfo, currentDateJalali,monthlyConsumption,olgoo);
+            (double, double) boodje = CalculateBoodje(nerkh, customerInfo, currentDateJalali, monthlyConsumption, olgoo);
             double fazelab = CalculateFazelab(nerkh, customerInfo, abBahaResult.AbBahaAmount, currentDateJalali);
             double hotSeason = CalcHotSeason(nerkh, abBahaResult.AbBahaAmount);
 
@@ -53,14 +53,16 @@ namespace Aban360.CalculationPool.Application.Features.Base
             double fazelabDiscount = CalculateFazelabDiscount(nerkh, customerInfo, abBahaResult, abBahaDiscount, fazelab, 123, olgoo, monthlyConsumption);
 
             double abonmanAb = CalculateAbonmanAb(nerkh, customerInfo, meterInfo, currentDateJalali, abBahaResult.AbBahaAmount, abBahaDiscount);
-
-            return new BaseOldTariffEngineOutputDto(abBahaResult, fazelab, hotSeason, boodje.Item1, boodje.Item2, abBahaDiscount, hotSeasonDiscount, fazelabDiscount, abonmanAb);
+            double avarez = CalculateAvarez(nerkh, customerInfo, monthlyConsumption);
+            double javani = CalculateJavaniJamiat(nerkh, customerInfo, abBahaResult.AbBahaAmount, monthlyConsumption, olgoo);
+            return new BaseOldTariffEngineOutputDto(abBahaResult, fazelab, hotSeason, boodje.Item1, boodje.Item2, abBahaDiscount, hotSeasonDiscount, fazelabDiscount, abonmanAb, avarez, javani);
 
 
             //object parameters= new {X=consumptionAverage};
             //long _value = expression.Eval<long>();
             throw new NotImplementedException();
         }
+
 
         private ConsumptionInfo GetConsumptionInfo()
         {
@@ -109,9 +111,19 @@ namespace Aban360.CalculationPool.Application.Features.Base
             int[] condition = [10, 12, 13, 32, 29];
             return condition.Contains(usageId);
         }
-        private bool IsNotConstruction(int branchTypeId)
+        private bool IsIndustrial(int usageId)
         {
             int[] condition = [4];
+            return condition.Contains(usageId);
+        }
+        private bool IsConstruction(int branchTypeId)
+        {
+            int[] condition = [4];
+            return condition.Contains(branchTypeId);
+        }
+        private bool IsCommittee(int branchTypeId)
+        {
+            int[] condition = [8];
             return condition.Contains(branchTypeId);
         }
         private bool IsCharityAndSchool(int usageId)
@@ -149,28 +161,28 @@ namespace Aban360.CalculationPool.Application.Features.Base
         /// روستاهایی که اگرچه در ناحیه روستایی هستند اما محاسبه بصورت شهری
         /// </summary>
         /// <param name="zoneId"></param>
-        /// <param name="villageId"></param>
+        /// <param name="villageCode"></param>
         /// <returns></returns>
-        private bool RuralButIsMetro(int zoneId, ulong villageId)
+        private bool RuralButIsMetro(int zoneId, int villageCode)
         {
-            ulong[] village142618 = [1037, 1038, 1039];
-            ulong[] village144311 = [1090, 1093];
-            ulong[] village144411 = [1016];
-            ulong[] village143012 = [1010, 1013, 1016, 1017, 1029];
-            ulong[] village142714 = [1019];
-            ulong[] village141911 = [1034];
-            ulong[] village141914 = [1061];
-            ulong[] village141611 = [1006];
+            int[] village142618 = [1037, 1038, 1039];
+            int[] village144311 = [1090, 1093];
+            int[] village144411 = [1016];
+            int[] village143012 = [1010, 1013, 1016, 1017, 1029];
+            int[] village142714 = [1019];
+            int[] village141911 = [1034];
+            int[] village141914 = [1061];
+            int[] village141611 = [1006];
 
             return
-                (zoneId == 142618 && village142618.Contains(villageId)) ||
-                (zoneId == 144311 && village144311.Contains(villageId)) ||
-                (zoneId == 144411 && village144411.Contains(villageId)) ||
-                (zoneId == 143012 && village143012.Contains(villageId)) ||
-                (zoneId == 142714 && village142714.Contains(villageId)) ||
-                (zoneId == 141911 && village141911.Contains(villageId)) ||
-                (zoneId == 141914 && village141914.Contains(villageId)) ||
-                (zoneId == 141611 && village141611.Contains(villageId));
+                (zoneId == 142618 && village142618.Contains(villageCode)) ||
+                (zoneId == 144311 && village144311.Contains(villageCode)) ||
+                (zoneId == 144411 && village144411.Contains(villageCode)) ||
+                (zoneId == 143012 && village143012.Contains(villageCode)) ||
+                (zoneId == 142714 && village142714.Contains(villageCode)) ||
+                (zoneId == 141911 && village141911.Contains(villageCode)) ||
+                (zoneId == 141914 && village141914.Contains(villageCode)) ||
+                (zoneId == 141611 && village141611.Contains(villageCode));
         }
         private bool IsBetween(string number, string start, string end)
         {
@@ -299,11 +311,6 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             return 1;
         }
-        private bool IsMoreThan1398_12_29(string nerkhDate2)
-        {
-            string baseDate = "1398/12/29";
-            return nerkhDate2.CompareTo(baseDate) > 0;
-        }
         private bool IsLessThan1401_12_28(string nerkhDate2)
         {
             string baseDate = "1401/12/28";
@@ -313,6 +320,17 @@ namespace Aban360.CalculationPool.Application.Features.Base
         {
             string baseDate = "1403/12/30";
             return nerkhDate2.CompareTo(baseDate) < 0;
+        }
+        private bool IsMoreThan1404_01_01(string nerkhDate2)
+        {
+            string baseDate = "1404/01/01";
+            return nerkhDate2.CompareTo(baseDate) >= 0;
+        }
+        private bool IsMoreThan1398_12_29(string nerkhDate2)
+        {
+            string baseDate = "1398/12/29";
+            return nerkhDate2.CompareTo(baseDate) > 0;
+
         }
 
         #region
@@ -763,7 +781,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                     monthlyConsumption <= _olgoo &&//todo: ask olgoab vs olgo?
                     abBahaAmount > oldAbBahaAmount &&
                     IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
-                    IsNotConstruction(customerInfo.BranchType))
+                    !IsConstruction(customerInfo.BranchType))
                 {
                     abBahaAmount = oldAbBahaAmount;
                 }
@@ -771,7 +789,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             else
             {
                 // foxpro:1139
-                if ((customerInfo.ContractualCapacity > 0 && IsNotConstruction(customerInfo.BranchType)) ||
+                if ((customerInfo.ContractualCapacity > 0 && !IsConstruction(customerInfo.BranchType)) ||
                     IsReligious(customerInfo.UsageId))
                 {
                     double contractualCapacityInDuration = (customerInfo.ContractualCapacity / 30) * duration;
@@ -798,7 +816,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                         //(double, double) abBahaValues = (0, 0);
                         if (IsReligiousWithCharity(customerInfo.UsageId))
                         {
-                            if (IsNotConstruction(customerInfo.BranchType))//  foxpro:1178
+                            if (!IsConstruction(customerInfo.BranchType))//  foxpro:1178
                             {
                                 _2Amount = Get2PartAmount(nerkh.Date2);
                             }
@@ -830,11 +848,11 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             if (IsVillage(customerInfo.ZoneId) &&
                 IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
-                IsNotConstruction(customerInfo.BranchType))
+                !IsConstruction(customerInfo.BranchType))
             {
                 int villageCode = int.Parse(customerInfo.VillageId.Trim().Substring(0, 4));
                 if (RuralButIsMetro(customerInfo.ZoneId, customerInfo.ReadingNumber) ||
-                    RuralButIsMetro(customerInfo.ZoneId, ulong.Parse(customerInfo.VillageId)))
+                    RuralButIsMetro(customerInfo.ZoneId, villageCode))
                 {
                     //nothing !
                 }
@@ -857,7 +875,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             if (IsDolatabadOrHabibabadWithConditionEshtrak(customerInfo.ZoneId, ulong.Parse(customerInfo.ReadingNumber)))
             {
                 if (IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
-                    IsNotConstruction(customerInfo.BranchType))
+                    !IsConstruction(customerInfo.BranchType))
                 {
                     if (abBahaAmount != 0)//L 1604
                     {
@@ -882,7 +900,8 @@ namespace Aban360.CalculationPool.Application.Features.Base
         }
         private int GetOlgoo(string nerkhDate2, int olgo)
         {
-            return nerkhDate2.CompareTo("1403/12/30") <= 0 ? 14 : olgo;
+            string baseDate = "1403/12/30";
+            return nerkhDate2.CompareTo(baseDate) <= 0 ? 14 : olgo;
 
         }
         private (NerkhGetDto, int, double) CalcPartial(NerkhGetDto nerkh, DateOnly previousDate, DateOnly currentDate, double dailyAverage)
@@ -928,8 +947,10 @@ namespace Aban360.CalculationPool.Application.Features.Base
         }
         private double CalcHotSeason(NerkhGetDto nerkh, double abBahaAmount)
         {
-            string hotSeasonStart = nerkh.Date2.Substring(0, 4) + "/02/31";
-            string hotSeasonEnd = nerkh.Date2.Substring(0, 4) + "/06/31";
+            string date_02_31 = "/02/31";
+            string date_06_31 = "/06/31";
+            string hotSeasonStart = nerkh.Date2.Substring(0, 4) + date_02_31;
+            string hotSeasonEnd = nerkh.Date2.Substring(0, 4) + date_06_31;
 
             int hotSeasonDuration = PartTime(hotSeasonStart, hotSeasonEnd, nerkh.Date1, nerkh.Date2);
             return hotSeasonDuration > 0 && PartTime(hotSeasonStart, hotSeasonEnd, nerkh.Date1, nerkh.Date2) > 0 ? (int)((hotSeasonDuration * abBahaAmount / nerkh.Duration) * 0.2) : 0;
@@ -942,7 +963,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             double abBahaMultiplied = 0;
 
             //1942
-            if ((IsReligiousWithCharity(customerInfo.UsageId)) && IsNotConstruction(customerInfo.BranchType))
+            if ((IsReligiousWithCharity(customerInfo.UsageId)) && !IsConstruction(customerInfo.BranchType))
             {
                 abBahaMultiplied = (abBahaValues.AbBahaValues.Item1 * MultiplierAbBaha);
                 abBahaValues.AbBahaAmount = abBahaValues.AbBahaValues.Item1 - abBahaMultiplied;
@@ -961,12 +982,12 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             cosumptionDiscount = (olgoo / 30) * nerkh.Duration;//L 1831
 
-            if (IsDomesticWithoutUnspecified(customerInfo.UsageId) && IsNotConstruction(customerInfo.BranchType) && nerkh.Date1.CompareTo("1401/12/27") >= 0)//nerkh.Date1>="1401/12/27"
+            if (IsDomesticWithoutUnspecified(customerInfo.UsageId) && !IsConstruction(customerInfo.BranchType) && nerkh.Date1.CompareTo("1401/12/27") >= 0)//nerkh.Date1>="1401/12/27"
             {
                 if (IsHandoverDiscount(customerInfo.BranchType))
                 {
                     if (monthlyConsumption > olgoo)
-                        if (nerkh.Date2.CompareTo("1403/09/13") <= 0)//TMP_NERKH.date2<="1403/09/13"
+                        if (IsLessThan1403_09_13(nerkh.Date2))
                         {
                             abBahaDiscountTemp = (int)((cosumptionDiscount * ((((3706 * olgoo) - 13845) / olgoo) * 1.15) * multiplierAbBaha) / divider);
                         }
@@ -1014,27 +1035,33 @@ namespace Aban360.CalculationPool.Application.Features.Base
         }
         private (long, long) Get2PartAmount(string nerkhDate2)
         {
-            if (StringConditionMoreThan("1400/12/25", nerkhDate2))//nerkhDate2 <= '1400/12/25'
+            string date1400_12_25 = "1400/12/25";
+            string date1402_04_23 = "1402/04/23";
+            string date1403_06_25 = "1403/06/25";
+            string date1403_09_13 = "1403/09/13";
+            string date1404_02_31 = "1404/02/31";
+
+            if (StringConditionMoreThan(date1400_12_25, nerkhDate2))
             {
                 return (3776, 168110);
             }
-            else if (StringConditionMoreThan(nerkhDate2, "1400/12/25") && StringConditionMoreThan("1402/04/23", nerkhDate2))//nerkhDate2 > '1400/12/25'   AND nerkhDate2 <= '1402/04/23'
+            else if (StringConditionMoreThan(nerkhDate2, date1400_12_25) && StringConditionMoreThan(date1402_04_23, nerkhDate2))
             {
                 return (4040, 168110);
             }
-            else if (StringConditionMoreThan(nerkhDate2, "1402/04/23") && StringConditionMoreThan("1403/06/25", nerkhDate2))//nerkhDate2 > '1402/04/23' AND nerkhDate2 <= '1403/06/25'
+            else if (StringConditionMoreThan(nerkhDate2, date1402_04_23) && StringConditionMoreThan(date1403_06_25, nerkhDate2))
             {
                 return (4040, 168110);
             }
-            else if (StringConditionMoreThan(nerkhDate2, "1403/06/25") && StringConditionMoreThan("1403/09/13", nerkhDate2))//(nerkhDate2 > '1403/06/25' AND nerkhDate2 <= '1403/09/13'
+            else if (StringConditionMoreThan(nerkhDate2, date1403_06_25) && StringConditionMoreThan(date1403_09_13, nerkhDate2))
             {
                 return (4323, 350000);
             }
-            else if (StringConditionMoreThan(nerkhDate2, "1403/09/13") && StringConditionMoreThan("1404/02/31", nerkhDate2))//nerkhDate2 > '1403/09/13' AND nerkhDate2 <= '1404/02/31'
+            else if (StringConditionMoreThan(nerkhDate2, date1403_09_13) && StringConditionMoreThan(date1404_02_31, nerkhDate2))
             {
                 return (7000, 350000);
             }
-            else if (StringConditionMoreThan(nerkhDate2, "1404/02/31")) //nerkhDate2 > '1404/02/31'
+            else if (StringConditionMoreThan(nerkhDate2, date1404_02_31)) //nerkhDate2 > '1404/02/31'
             {
                 return (9000, 450000);
             }
@@ -1051,13 +1078,22 @@ namespace Aban360.CalculationPool.Application.Features.Base
             int[] collection = [7, 8, 41, 11];
             return collection.Contains(usageId);
         }
-        private static (long, long) BigCase(int usageId, string nerkhDate1, string nerkhDate2, bool isSpecial, long abAzad)
+        private (long, long) BigCase(int usageId, string nerkhDate1, string nerkhDate2, bool isSpecial, long abAzad)
         {
+            string date1399_01_31 = "1399/01/31";
+            string date1400_01_31 = "1400/01/31";
+            string date1400_12_24 = "1400/12/24";
+            string date1401_12_27 = "1401/12/27";
+            string date1402_04_23 = "1402/04/23";
+            string date1403_06_25 = "1403/06/25";
+            string date1403_09_13 = "1403/09/13";
+            string date1404_02_31 = "1404/02/31";
+
             //start line 1228
             //1                                                  
             if ((IsEducation(usageId) &&
-            nerkhDate2.CompareTo("1399/01/31") > 0 &&//TMP_NERKH.Date2 > '1399/01/31'
-            nerkhDate2.CompareTo("1400/01/31") <= 0))//TMP_NERKH.Date2 <= '1400/01/31'
+            nerkhDate2.CompareTo(date1399_01_31) > 0 &&//TMP_NERKH.Date2 > '1399/01/31'
+            nerkhDate2.CompareTo(date1400_01_31) <= 0))//TMP_NERKH.Date2 <= '1400/01/31'
             {
                 if (usageId == 9 && isSpecial)
                 {
@@ -1094,8 +1130,8 @@ namespace Aban360.CalculationPool.Application.Features.Base
             }
             //2
             else if (IsEducation(usageId) &&
-                     nerkhDate2.CompareTo("1400/01/31") > 0 &&//TMP_NERKH.Date2 > '1400/01/31'
-                     nerkhDate2.CompareTo("1400/12/24") <= 0)//TMP_NERKH.Date2 <= '1400/12/24'
+                     nerkhDate2.CompareTo(date1400_01_31) > 0 &&//TMP_NERKH.Date2 > '1400/01/31'
+                     nerkhDate2.CompareTo(date1400_12_24) <= 0)//TMP_NERKH.Date2 <= '1400/12/24'
             {
                 if (usageId == 9 && isSpecial)
                 {
@@ -1132,8 +1168,8 @@ namespace Aban360.CalculationPool.Application.Features.Base
             }
             // 3
             else if (IsEducation(usageId) &&
-                     nerkhDate2.CompareTo("1400/12/24") > 0 &&
-                     nerkhDate2.CompareTo("1401/12/27") <= 0)
+                     nerkhDate2.CompareTo(date1400_12_24) > 0 &&
+                     nerkhDate2.CompareTo(date1401_12_27) <= 0)
             {
                 if (usageId == 9 && isSpecial)
                 {
@@ -1171,8 +1207,8 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             // 4
             else if (IsEducationOrBath(usageId) &&
-                     nerkhDate2.CompareTo("1401/12/27") > 0 &&
-                     nerkhDate2.CompareTo("1402/04/23") <= 0)
+                     nerkhDate2.CompareTo(date1401_12_27) > 0 &&
+                     nerkhDate2.CompareTo(date1402_04_23) <= 0)
             {
                 if (usageId == 9 && isSpecial)
                 {
@@ -1214,8 +1250,8 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             // 5
             else if (IsEducationOrBath(usageId) &&
-                     nerkhDate2.CompareTo("1402/04/23") > 0 &&
-                     nerkhDate2.CompareTo("1403/06/25") <= 0)
+                     nerkhDate2.CompareTo(date1402_04_23) > 0 &&
+                     nerkhDate2.CompareTo(date1403_06_25) <= 0)
             {
                 if (usageId == 9 && isSpecial)
                 {
@@ -1257,8 +1293,8 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             // 6
             else if (IsEducationOrBath(usageId) &&
-                     nerkhDate2.CompareTo("1403/06/25") > 0 &&
-                     nerkhDate2.CompareTo("1403/09/13") <= 0)
+                     nerkhDate2.CompareTo(date1403_06_25) > 0 &&
+                     nerkhDate2.CompareTo(date1403_09_13) <= 0)
             {
                 if (usageId == 9 && isSpecial)
                 {
@@ -1300,8 +1336,8 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             // 7
             else if (IsEducationOrBath(usageId) &&
-                     nerkhDate2.CompareTo("1403/09/13") > 0 &&
-                     nerkhDate2.CompareTo("1404/02/31") <= 0)
+                     nerkhDate2.CompareTo(date1403_09_13) > 0 &&
+                     nerkhDate2.CompareTo(date1404_02_31) <= 0)
             {
                 if (usageId == 9 && isSpecial)
                 {
@@ -1339,7 +1375,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             // 8
             else if (IsEducationOrBath(usageId) &&
-                     nerkhDate2.CompareTo("1404/02/31") > 0)
+                     nerkhDate2.CompareTo(date1404_02_31) > 0)
             {
                 if (usageId == 9 && isSpecial)
                 {
@@ -1458,7 +1494,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 allowedBoodje = nerkhDto.ZaribBodje * nerkhDto.PartialConsumption;
             }//c#:344  foxpro:1673
 
-            if (!IsNotConstruction(customerInfo.BranchType))
+            if (IsConstruction(customerInfo.BranchType))
                 allowedBoodje = 0;
 
             if (IsTankerSaleAndVillage(customerInfo.UsageId))
@@ -1469,8 +1505,8 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             if (IsVillage(customerInfo.ZoneId))
             {
-                int cod_rosta = int.Parse(customerInfo.VillageId.Trim().Substring(0, 4));
-                if (RuralButIsMetro(customerInfo.ZoneId, ulong.Parse(customerInfo.VillageId)))
+                int villageCode = int.Parse(customerInfo.VillageId.Trim().Substring(0, 4));
+                if (RuralButIsMetro(customerInfo.ZoneId, villageCode))
                 {
                     //nothing
                 }
@@ -1545,7 +1581,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             double bha1 = 2000 * mas_z1;//L 2403
             double bha2;
 
-            if (!IsNotConstruction(customerInfo.BranchType) || IsUsageConstructor(customerInfo.UsageId))
+            if (IsConstruction(customerInfo.BranchType) || IsUsageConstructor(customerInfo.UsageId))
                 bha2 = 2000 * mas_z2;
             else
                 bha2 = 4000 * mas_z2;
@@ -1563,7 +1599,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         {
             throw new NotImplementedException();
         }
-        
+
         private (long, long) CalculateBoodjePart2Discount()
         {
             throw new NotImplementedException();
@@ -1618,6 +1654,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             }
 
             return fazelbDiscount;
+            #region 
             //TMP_NERKH.date2 > "1395/02/31" 
             //if (nerkh.Date2.CompareTo("1395/02/31") > 0 && zaribFaslAmountTemp != 0)
             //{
@@ -1661,37 +1698,42 @@ namespace Aban360.CalculationPool.Application.Features.Base
             //        V_FASBAHA1 = 0;
             //}//line-> 2050
             //throw new NotImplementedException();
-
+            #endregion
         }
         private double CalculateAbonmanAb(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali, double abBahaAmount, double abBahaDiscount)
         {
-            if (IsNotConstruction(customerInfo.BranchType) && IsTankerSale(customerInfo.UsageId))
+            string date1400_01_01 = "1400/01/01";
+            string date1403_12_01 = "1403/12/01";
+            string date1403_12_30 = "1403/12/30";
+            string date1404_02_14 = "1404/02/14";
+            string date1404_02_31 = "1404/02/31";
+            string date1404_12_29 = "1404/12/29";
+
+            if (!IsConstruction(customerInfo.BranchType) && IsTankerSale(customerInfo.UsageId))
                 return 0;
 
             double abonAbAmount = 0, abonAbDiscount = 0;
             double zabon_1 = 0, zabon_2 = 0, zabon_3 = 0, zabon_4 = 0;
 
-            zabon_1 = PartTime("1400/01/01", "1403/12/01", meterInfo.PreviousDateJalali, currentDateJalali);
-            zabon_2 = PartTime("1403/12/01", "1403/12/30", meterInfo.PreviousDateJalali, currentDateJalali);
+            zabon_1 = PartTime(date1400_01_01, date1403_12_01, meterInfo.PreviousDateJalali, currentDateJalali);
+            zabon_2 = PartTime(date1403_12_01, date1403_12_30, meterInfo.PreviousDateJalali, currentDateJalali);
 
             if (IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId))
-                zabon_3 = PartTime("1403/12/30", "1404/02/14", meterInfo.PreviousDateJalali, currentDateJalali);
+                zabon_3 = PartTime(date1403_12_30, date1404_02_14, meterInfo.PreviousDateJalali, currentDateJalali);
             else
-                zabon_3 = PartTime("1403/12/30", "1404/02/31", meterInfo.PreviousDateJalali, currentDateJalali);
-
+                zabon_3 = PartTime(date1403_12_30, date1404_02_31, meterInfo.PreviousDateJalali, currentDateJalali);
 
             if (IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId))
-                zabon_4 = PartTime("1404/02/14", "1404/12/29", meterInfo.PreviousDateJalali, currentDateJalali);
+                zabon_4 = PartTime(date1404_02_14, date1404_12_29, meterInfo.PreviousDateJalali, currentDateJalali);
             else
-                zabon_4 = PartTime("1404/02/31", "1404/12/29", meterInfo.PreviousDateJalali, currentDateJalali);
-
+                zabon_4 = PartTime(date1404_02_31, date1404_12_29, meterInfo.PreviousDateJalali, currentDateJalali);
 
             zabon_1 = Math.Max(zabon_1, 0);
             zabon_2 = Math.Max(zabon_2, 0);
             zabon_3 = Math.Max(zabon_3, 0);
             zabon_4 = Math.Max(zabon_4, 0);
 
-            if (IsNotConstruction(customerInfo.BranchType) &&
+            if (!IsConstruction(customerInfo.BranchType) &&
                 ((IsReligiousWithCharity(customerInfo.UsageId)) ||
                      HasDiscountBranch(customerInfo.BranchType) && IsDomesticWithoutUnspecified(customerInfo.UsageId)))
             {
@@ -1712,7 +1754,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                     }
                 }
 
-                if (IsReligiousWithCharity(customerInfo.UsageId) && IsNotConstruction(customerInfo.BranchType))
+                if (IsReligiousWithCharity(customerInfo.UsageId) && !IsConstruction(customerInfo.BranchType))
                 {
                     if (abBahaAmount <= 0 && abBahaDiscount != 0)
                     {
@@ -1739,7 +1781,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             if (abonAbAmount < 0)
                 abonAbAmount = 0;
 
-            if (!IsNotConstruction(customerInfo.BranchType) || IsUsageConstructor(customerInfo.UsageId))
+            if (IsConstruction(customerInfo.BranchType) || IsUsageConstructor(customerInfo.UsageId))
                 abonAbAmount *= 2;
 
             return abonAbAmount;
@@ -1759,21 +1801,66 @@ namespace Aban360.CalculationPool.Application.Features.Base
             throw new NotImplementedException();
         }
 
-        private long CalculateJavaniJamiat()
+        private double CalculateJavaniJamiat(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double abBahaAmount, double monthlyConsumption,int olgoo)
         {
-            //L 2073 javan_sazi
-            throw new NotImplementedException();
+            int domesticUnit = 0;
+            double baseAmount = 1000;
+
+            if (IsGardenAndResidence(customerInfo.UsageId))
+            {
+                domesticUnit = customerInfo.DomesticUnit + customerInfo.OtherUnit;
+                domesticUnit = domesticUnit == 0 ? 1 : domesticUnit;
+            }
+
+            //L 2608
+            if (IsUsageConstructor(customerInfo.UsageId))
+                return 0;
+            if (IsConstruction(customerInfo.UsageId))
+                return 0;
+            if (abBahaAmount == 0)
+                return 0;
+            if (customerInfo.ZoneId == 151511)
+                return 0;
+
+            if (IsVillage(customerInfo.ZoneId))
+            {
+                int villageCode = (int.Parse)(customerInfo.VillageId.ToString().Substring(0, 4));
+                if (monthlyConsumption > olgoo && domesticUnit > 1 && RuralButIsMetro(customerInfo.ZoneId, villageCode))
+                {
+                    return baseAmount * nerkh.PartialConsumption;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            //L 2642
+            if (monthlyConsumption > olgoo  && domesticUnit > 1 && (IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId)))
+            {
+                return baseAmount * nerkh.PartialConsumption;
+            }
+            if (!IsDomesticWithoutUnspecified(customerInfo.UsageId) && !IsGardenAndResidence(customerInfo.UsageId))
+            {
+                if (monthlyConsumption > customerInfo.ContractualCapacity)
+                {
+                    return baseAmount * nerkh.PartialConsumption;
+                }
+            }
+            return 0;
         }
+
         private long CalculateJavaniJamiatDiscount()
         {
             throw new NotImplementedException();
         }
 
-        private long CalculateAvarez()
+        private double CalculateAvarez(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double monthlyConsumption)
         {
-            //Avarez
-
-            throw new NotImplementedException();
+            if (IsMoreThan1404_01_01(nerkh.Date2) && IsIndustrial(customerInfo.UsageId) && IsCommittee(customerInfo.BranchType))
+            {
+                return monthlyConsumption <= 25000 ? nerkh.PartialConsumption * 2000 : nerkh.PartialConsumption * 20000;
+            }
+            return 0;
         }
         private long CalculateAvarezDiscount()
         {

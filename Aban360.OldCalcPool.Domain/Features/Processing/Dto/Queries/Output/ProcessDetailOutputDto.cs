@@ -13,6 +13,9 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         public double HotSeasonDiscount { get; set; }
         public double FazelabDiscount { get; set; }
         public double AbonmanAbAmount { get; set; }
+        public double AvarezAmount { get; set; }
+        public double JavaniAmount { get; set; }
+
 
         public IEnumerable<NerkhGetDto> Nerkh { get; set; }
         public IEnumerable<AbAzadGetDto> AbAzad { get; set; }
@@ -21,7 +24,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         public MeterInfoOutputDto MeterInfo { get; set; }
 
 
-        public ProcessDetailOutputDto(double _abBahaAmount, double _fazelabAmount, double _boodjePart1Amount, double _boodjePar2Amount, double _hotSeasonAmount, double _abBahaDiscount, double _hotSeasonDiscount, double _fazelabDiscount, double _abonmanAbAmount, IEnumerable<NerkhGetDto> _nerkh, IEnumerable<AbAzadGetDto> _abAzad, IEnumerable<ZaribGetDto> _zarib)
+        public ProcessDetailOutputDto(double _abBahaAmount, double _fazelabAmount, double _boodjePart1Amount, double _boodjePar2Amount, double _hotSeasonAmount, double _abBahaDiscount, double _hotSeasonDiscount, double _fazelabDiscount, double _abonmanAbAmount, double _avarezAmount, double _javaniAmount, IEnumerable<NerkhGetDto> _nerkh, IEnumerable<AbAzadGetDto> _abAzad, IEnumerable<ZaribGetDto> _zarib)
         {
             AbBahaAmount = _abBahaAmount;
             FazelabAmount = _fazelabAmount;
@@ -32,6 +35,8 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             HotSeasonDiscount = _hotSeasonDiscount;
             FazelabDiscount = _fazelabDiscount;
             AbonmanAbAmount = _abonmanAbAmount;
+            AvarezAmount = _avarezAmount;
+            JavaniAmount= _javaniAmount;
             Nerkh = _nerkh;
             AbAzad = _abAzad;
             Zarib = _zarib;
