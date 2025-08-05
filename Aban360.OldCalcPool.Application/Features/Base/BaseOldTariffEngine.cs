@@ -983,36 +983,31 @@ namespace Aban360.CalculationPool.Application.Features.Base
         private double CalculateAbBahaDiscount(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, CalculateAbBahaOutputDto abBahaValues, int olgoo, double multiplierAbBaha, double monthlyConsumption, string currentDateJalali)
         {
             double fazelabAmount = abBahaValues.AbBahaAmount;
-            double cosumptionDiscount = 0, abBahaDiscountTemp = 0, abBahaDiscount = 0, fazelbDiscount = 0;
             bool isVillage = IsVillage(customerInfo.ZoneId);
+            double partialOlgoo = olgoo / 30 * nerkh.Duration;
+            string date1401_12_27 = "1401/12/27";
             int divider = isVillage ? 2 : 1;
+            double abBahaDiscount = 0;
 
-            cosumptionDiscount = (olgoo / 30) * nerkh.Duration;//L 1831
-
-            if (IsDomesticWithoutUnspecified(customerInfo.UsageId) && !IsConstruction(customerInfo.BranchType) && nerkh.Date1.CompareTo("1401/12/27") >= 0)//nerkh.Date1>="1401/12/27"
+            double consumptionDiscount = nerkh.PartialConsumption > partialOlgoo ? partialOlgoo : nerkh.PartialConsumption;
+            if (MeetCondition(nerkh, customerInfo, date1401_12_27))
             {
-                if (IsHandoverDiscount(customerInfo.BranchType))
-                {
-                    if (monthlyConsumption > olgoo)
-                        if (IsLessThan1403_09_13(nerkh.Date2))
-                        {
-                            abBahaDiscountTemp = (int)((cosumptionDiscount * ((((3706 * olgoo) - 13845) / olgoo) * 1.15) * multiplierAbBaha) / divider);
-                        }
-                        else
-                        {
-                            abBahaDiscountTemp = (int)((cosumptionDiscount * ((((70000 * 0.01 * olgoo)) * olgoo) / olgoo) * multiplierAbBaha) / divider);
-                        }
-                    abBahaDiscount = abBahaDiscount + abBahaDiscountTemp;
-                    abBahaValues.AbBahaAmount = abBahaValues.AbBahaAmount - abBahaDiscountTemp;
-                }
-                else
-                {
-                    abBahaDiscount = abBahaDiscount + abBahaValues.AbBahaAmount;
-                    //abBahaValues.AbBahaAmount = 0;//L 1876
-                }//line -> 1879
+                return IsLessThan1403_09_13(nerkh.Date2) ?
+                    (int)(consumptionDiscount * ((((3706 * partialOlgoo ) - 13845) / partialOlgoo ) * 1.15) * multiplierAbBaha) / divider :
+                    (int)(consumptionDiscount * ((((70000 * 0.01 * partialOlgoo)) * partialOlgoo ) / partialOlgoo ) * multiplierAbBaha) / divider;
+
             }//L 1883
 
             return abBahaDiscount;
+
+
+            bool MeetCondition(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, string date1401_12_27)
+            {
+                return IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
+                                !IsConstruction(customerInfo.BranchType) &&
+                                IsHandoverDiscount(customerInfo.BranchType) &&
+                                nerkh.Date1.CompareTo(date1401_12_27) >= 0;
+            }
         }
 
         private bool IsGardenOrDweltyAfter1400_12_24(int usageId, string nerkhDate1)

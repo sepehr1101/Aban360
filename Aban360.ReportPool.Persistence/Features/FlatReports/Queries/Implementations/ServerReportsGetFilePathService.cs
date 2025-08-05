@@ -26,7 +26,7 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Implementa
                     From [Aban360].ReportPool.ServerReports s
                     Where 
                         s.Id=@id  AND
-                        s.CompletionDateTime Is Null AND
+                        s.CompletionDateTime Is NOT Null AND
 						s.ErrorDateTime Is Null";
         }
     }
