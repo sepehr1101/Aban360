@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Aban360.OldCalcPool.Persistence\Aban360.OldCalcPool.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Exceptions\" />
+  </ItemGroup>
+
 </Project>
