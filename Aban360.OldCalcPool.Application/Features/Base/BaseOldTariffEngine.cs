@@ -47,15 +47,17 @@ namespace Aban360.CalculationPool.Application.Features.Base
             (double, double) boodje = CalculateBoodje(nerkh, customerInfo, currentDateJalali, monthlyConsumption, olgoo);
             double fazelab = CalculateFazelab(nerkh, customerInfo, abBahaResult.AbBahaAmount, currentDateJalali);
             double hotSeason = CalcHotSeason(nerkh, abBahaResult.AbBahaAmount);
+            double avarez = CalculateAvarez(nerkh, customerInfo, monthlyConsumption);
+            double javani = CalculateJavaniJamiat(nerkh, customerInfo, abBahaResult.AbBahaAmount, monthlyConsumption, olgoo);
 
             double abBahaDiscount = CalculateAbBahaDiscount(nerkh, customerInfo, meterInfo, abBahaResult, olgoo, multiplierAbBaha, monthlyConsumption, currentDateJalali);
             double hotSeasonDiscount = CalcHotSeasonDiscount(nerkh, customerInfo, meterInfo, abBahaResult, multiplierAbBaha, hotSeason);
             double fazelabDiscount = CalculateFazelabDiscount(nerkh, customerInfo, abBahaResult, abBahaDiscount, fazelab, 123, olgoo, monthlyConsumption);
 
             double abonmanAb = CalculateAbonmanAb(nerkh, customerInfo, meterInfo, currentDateJalali, abBahaResult.AbBahaAmount, abBahaDiscount);
-            double avarez = CalculateAvarez(nerkh, customerInfo, monthlyConsumption);
-            double javani = CalculateJavaniJamiat(nerkh, customerInfo, abBahaResult.AbBahaAmount, monthlyConsumption, olgoo);
-            return new BaseOldTariffEngineOutputDto(abBahaResult, fazelab, hotSeason, boodje.Item1, boodje.Item2, abBahaDiscount, hotSeasonDiscount, fazelabDiscount, abonmanAb, avarez, javani);
+            double maliat = CalcMaliat(abBahaResult.AbBahaAmount, abonmanAb, 0, hotSeason, boodje.Item1, fazelab);
+
+            return new BaseOldTariffEngineOutputDto(abBahaResult, fazelab, hotSeason, boodje.Item1, boodje.Item2, abBahaDiscount, hotSeasonDiscount, fazelabDiscount, abonmanAb, avarez, javani, maliat);
 
 
             //object parameters= new {X=consumptionAverage};
@@ -121,7 +123,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             int[] condition = [4];
             return condition.Contains(branchTypeId);
         }
-        private bool IsCommittee(int branchTypeId)
+        private bool IsSpecialIndustrial(int branchTypeId)
         {
             int[] condition = [8];
             return condition.Contains(branchTypeId);
@@ -1462,7 +1464,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 IsBetween(142215, zoneId, readingNumber, "10220000000", "10229999999");
 
         }
-        private (double, double) CalculateBoodje(NerkhGetDto nerkhDto, CustomerInfoOutputDto customerInfo, string currentDateJalali, double monthlyConsumption, double olgoo)
+        private (double, double) CalculateBoodje_V0(NerkhGetDto nerkhDto, CustomerInfoOutputDto customerInfo, string currentDateJalali, double monthlyConsumption, double olgoo)
         {
             double allowedBoodje = 0, disAllowedBoodje = 0;
             double contractInDuration = 0;
@@ -1564,7 +1566,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 mas_z1 = z01;
                 mas_z2 = z14;
             }
-            if (!IsDomesticWithoutUnspecified(customerInfo.UsageId) || !IsGardenAndResidence(customerInfo.UsageId))
+            if (!IsDomesticWithoutUnspecified(customerInfo.UsageId) && !IsGardenAndResidence(customerInfo.UsageId))
             {
                 double z01 = (B_mod_Feli * customerInfo.ContractualCapacity) / 30;
                 if (z01 > B_MAS_FEli)
@@ -1586,14 +1588,26 @@ namespace Aban360.CalculationPool.Application.Features.Base
             else
                 bha2 = 4000 * mas_z2;
 
-            if (HasDiscountBranch(customerInfo.BranchType) || IsReligiousWithCharity(customerInfo.UsageId))
-            {
-                bha1 = 0;
-            }
 
             return (bha1, bha2);
 
             //throw new NotImplementedException();
+        }
+        private (double, double) CalculateBoodje(NerkhGetDto nerkhDto, CustomerInfoOutputDto customerInfo, string currentDateJalali, double monthlyConsumption, double olgoo)
+        {
+            double allowedAmount = 0, disAlloweAmount = 0;
+
+            if (monthlyConsumption > customerInfo.ContractualCapacity)
+            {
+                allowedAmount = olgoo * 2000;
+                disAlloweAmount = (monthlyConsumption - olgoo) * 4000;
+            }
+            else
+            {
+                disAlloweAmount =monthlyConsumption  * 4000;
+            }
+
+            return (allowedAmount, disAlloweAmount);
         }
         private (long, long) CalculateBoodjePart1Discount()
         {
@@ -1801,9 +1815,9 @@ namespace Aban360.CalculationPool.Application.Features.Base
             throw new NotImplementedException();
         }
 
-        private double CalculateJavaniJamiat(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double abBahaAmount, double monthlyConsumption,int olgoo)
+        private double CalculateJavaniJamiat(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double abBahaAmount, double monthlyConsumption, int olgoo)
         {
-            int domesticUnit = 0;
+            int domesticUnit = customerInfo.DomesticUnit;
             double baseAmount = 1000;
 
             if (IsGardenAndResidence(customerInfo.UsageId))
@@ -1835,7 +1849,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 }
             }
             //L 2642
-            if (monthlyConsumption > olgoo  && domesticUnit > 1 && (IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId)))
+            if (monthlyConsumption > olgoo && domesticUnit >= 1 && (IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId)))
             {
                 return baseAmount * nerkh.PartialConsumption;
             }
@@ -1856,7 +1870,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
         private double CalculateAvarez(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double monthlyConsumption)
         {
-            if (IsMoreThan1404_01_01(nerkh.Date2) && IsIndustrial(customerInfo.UsageId) && IsCommittee(customerInfo.BranchType))
+            if (IsMoreThan1404_01_01(nerkh.Date2) && IsIndustrial(customerInfo.UsageId) && IsSpecialIndustrial(customerInfo.BranchType))
             {
                 return monthlyConsumption <= 25000 ? nerkh.PartialConsumption * 2000 : nerkh.PartialConsumption * 20000;
             }
@@ -1874,6 +1888,12 @@ namespace Aban360.CalculationPool.Application.Features.Base
         private long CalculateFasleGarmDiscount()
         {
             throw new NotImplementedException();
+        }
+
+        private double CalcMaliat(double abBahaAmount, double abonmanAmount, double jarimeAmoumt, double hotseasonAmount, double boodjeAmount, double fazelabAmount)
+        {
+            double sumAmount = abBahaAmount + abBahaAmount + jarimeAmoumt + hotseasonAmount + boodjeAmount;
+            return (sumAmount + fazelabAmount) * 0.10;
         }
     }
 }

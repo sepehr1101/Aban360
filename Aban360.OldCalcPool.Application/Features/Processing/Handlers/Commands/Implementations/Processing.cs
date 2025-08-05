@@ -157,7 +157,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             ProcessDetailOutputDto result = Tarif_Ab(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, dailyAverage, input.MeterPreviousData.PreviousDateJalali, input.MeterPreviousData.CurrentDateJalali, customerInfo, meterInfo);
             result.Customer = customerInfo;
             result.MeterInfo = meterInfo;
-            result.MonthlyConsumption=monthlyAverageConsumption;
+            result.MonthlyConsumption = monthlyAverageConsumption;
             result.DailyConsumption = dailyAverage;
             result.Duration = duration;
             return result;
@@ -166,10 +166,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private ProcessDetailOutputDto Tarif_Ab(IEnumerable<NerkhGetDto> allNerkh, IEnumerable<AbAzadGetDto> abAzad, IEnumerable<ZaribGetDto> zarib, double dailyAverage, string previousDateJalali, string currentDateJalali, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo)
         {
             int counter = 0;
-            double sumAbBaha = 0,sumFazelab = 0, sumHotSeason = 0,sumAbonman=0;
-            double sumBoodjePart1 = 0, sumBoodjePart2 = 0,sumAvarez=0;
-            double sumAbBahaDiscount=0,sumFazelabDiscount = 0,sumHotSeasonDiscount=0;
-            double sumJavaniAmount = 0;
+            double sumAbBaha = 0, sumFazelab = 0, sumHotSeason = 0, sumAbonman = 0;
+            double sumBoodjePart1 = 0, sumBoodjePart2 = 0, sumAvarez = 0;
+            double sumAbBahaDiscount = 0, sumFazelabDiscount = 0, sumHotSeasonDiscount = 0;
+            double sumJavaniAmount = 0, sumMaliatAmount = 0;
 
             foreach (var nerkhItem in allNerkh)
             {
@@ -188,12 +188,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 sumAbonman += resultCalc.AbonmanAbAmount;
                 sumAvarez += resultCalc.AvarezAmount;
                 sumJavaniAmount += resultCalc.JavaniAmount;
+                sumMaliatAmount += resultCalc.MaliatAmount;
 
                 counter++;
             }
 
 
-            return new ProcessDetailOutputDto(sumAbBaha, sumFazelab, sumBoodjePart1, sumBoodjePart2, sumHotSeason,sumAbBahaDiscount,sumHotSeasonDiscount,sumFazelabDiscount,sumAbonman,sumAvarez,sumJavaniAmount, allNerkh, abAzad, zarib);
+            return new ProcessDetailOutputDto(sumAbBaha, sumFazelab, sumBoodjePart1, sumBoodjePart2, sumHotSeason, sumAbBahaDiscount, sumHotSeasonDiscount, sumFazelabDiscount, sumAbonman, sumAvarez, sumJavaniAmount, sumMaliatAmount, allNerkh, abAzad, zarib);
         }
         private CustomerInfoOutputDto GetCustomerInfo(BaseOldTariffEngineImaginaryInputDto input)
         {

@@ -11,8 +11,9 @@
         public double HotSeasonDiscount { get; set; }
         public double FazelabDiscount { get; set; }
         public double AbonmanAbAmount { get; set; }
-        public double  AvarezAmount { get; set; }
+        public double AvarezAmount { get; set; }
         public double JavaniAmount { get; set; }
+        public double MaliatAmount { get; set; }
 
         public BaseOldTariffEngineOutputDto(
             CalculateAbBahaOutputDto abBahaValues,
@@ -25,7 +26,8 @@
             double fazelabDiscount,
             double abonmanAbAmount,
             double avarezAmount,
-            double javaniAmount)
+            double javaniAmount,
+            double maliatAmount)
         {
             AbBahaValues = abBahaValues;
             FazelabAmount = fazelabAmount;
@@ -37,7 +39,8 @@
             FazelabDiscount = fazelabDiscount;
             AbonmanAbAmount = abonmanAbAmount;
             AvarezAmount = avarezAmount;
-            JavaniAmount= javaniAmount;
+            JavaniAmount = javaniAmount;
+            MaliatAmount = maliatAmount;
         }
     }
 }
