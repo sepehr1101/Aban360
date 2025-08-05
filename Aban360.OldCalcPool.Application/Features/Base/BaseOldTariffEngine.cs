@@ -240,6 +240,11 @@ namespace Aban360.CalculationPool.Application.Features.Base
             int[] condition = [14, 15];
             return condition.Contains(usageId);
         }
+        private bool IsTankerSaleAndHousehold(int usageId)
+        {
+            int[] condition = [14, 15, 19];
+            return condition.Contains(usageId);
+        }
         private bool IsTankerSale(int usageId)
         {
             int[] condition = [14];
@@ -1604,7 +1609,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             }
             else
             {
-                disAlloweAmount =monthlyConsumption  * 4000;
+                disAlloweAmount = monthlyConsumption * 4000;
             }
 
             return (allowedAmount, disAlloweAmount);
@@ -1806,9 +1811,19 @@ namespace Aban360.CalculationPool.Application.Features.Base
             throw new NotImplementedException();
         }
 
-        private long CalculateAbonmanFazelab()
+        public double CalculateAbonmanFazelab(int totalDuration, CustomerInfoOutputDto customerInfo, string currentDateJalali, double abBahaConsumption)
         {
-            throw new NotImplementedException();
+            if (IsTankerSaleAndHousehold(customerInfo.UsageId) || customerInfo.SewageCalcState == 0)
+            {
+                return 0;
+            }
+            else if (customerInfo.SewageCalcState == 1)
+            {
+                int duration = (int.Parse)(CalculationDistanceDate.CalcDistance(customerInfo.SewageInstallationDateJalali, currentDateJalali));
+                return (abBahaConsumption / totalDuration) * duration;
+            }
+
+            return abBahaConsumption;
         }
         private long CalculateAbonmanFazelabDiscount()
         {

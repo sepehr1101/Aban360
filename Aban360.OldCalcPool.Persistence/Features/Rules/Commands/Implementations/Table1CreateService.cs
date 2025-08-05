@@ -17,7 +17,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Implementation
             string Table1CreateQueryString = GetTable1CreateQuery();
             var @params = new
             {
-                Id = input.Id,
                 flag = input.Flag,
                 town = input.Town,
                 modidate = input.ModiDate,
@@ -66,8 +65,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Implementation
         private string GetTable1CreateQuery()
         {
             return @$"use [OldCalc]
-                     INSERT INTO x2 (
-                        Id, flag, town, modidate, view_town, state, zone_state, 
+                     INSERT INTO table1 (
+                        flag, town, modidate, view_town, state, zone_state, 
                         z1, z2, olgo, provinse, zone1, zone2, darsa_gh, ensh_mas, ensh_nmas, 
                         fixtejari, tabs2, arse_ab, arse_fa, aian_2, groupshahr, server_nam, 
                         ready_ab, ready_fa, entegal_ab, b_entg_ab, entegal_fa, b_entg_fa, 
@@ -75,7 +74,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Implementation
                         tab_ab, tab_fa, tab_20, codmant, z_student, z_school, abfar_tag
                     )
                     VALUES (
-                        @Id, @flag, @town, @modidate, @view_town, @state, @zone_state, 
+                         @flag, @town, @modidate, @view_town, @state, @zone_state, 
                         @z1, @z2, @olgo, @provinse, @zone1, @zone2, @darsa_gh, @ensh_mas, @ensh_nmas, 
                         @fixtejari, @tabs2, @arse_ab, @arse_fa, @aian_2, @groupshahr, @server_nam, 
                         @ready_ab, @ready_fa, @entegal_ab, @b_entg_ab, @entegal_fa, @b_entg_fa, 

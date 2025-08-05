@@ -66,7 +66,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Implementation
         private string GetTable1UpdateQuery()
         {
             return @$"use [OldCalc]
-                     UPDATE TableName
+                     UPDATE table1
                     SET
                         flag = @flag,
                         town = @town,

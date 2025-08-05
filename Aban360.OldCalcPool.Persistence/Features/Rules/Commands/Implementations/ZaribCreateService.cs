@@ -42,14 +42,14 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Implementation
 
         private string GetZaribCreateQuery()
         {
-            return @"INSERT INTO [OldCalc].dbo.Zarib (town,zone1,zone2 zarib_baha, date1, date2, zb, zb1, zb2, zb3, zb4, zb5, zb6, zb7, zb8, zb_r) 
+            return @"INSERT INTO [OldCalc].dbo.Zarib (town,zone1,zone2 ,zarib_baha, date1, date2, zb, zb1, zb2, zb3, zb4, zb5, zb6, zb7, zb8, zb_r) 
                     Values(@town,@zone1,@zone2, @zarib_baha, @date1, @date2, @zb, @zb1, @zb2, @zb3, @zb4, @zb5, @zb6, @zb7, @zb8, @zb_r)";
         }
         private string GetZoneTitleQuery()
         {
             return @"Select t.C2
                     From [Db70].dbo.T51 t
-                    Where t.C0=@zoneId";
+                    Where t.C0=@id";
         }
     }
 }

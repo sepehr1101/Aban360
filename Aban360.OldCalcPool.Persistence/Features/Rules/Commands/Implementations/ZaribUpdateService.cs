@@ -21,6 +21,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Implementation
           
             var @params = new
             {
+                Id=input.Id,
                 town = input.Town,
                 zone1=zoneTitle,
                 zone2=zoneTitle,
@@ -68,7 +69,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Implementation
         {
             return @"Select t.C2
                     From [Db70].dbo.T51 t
-                    Where t.C0=@zoneId";
+                    Where t.C0=@id";
         }
     }
 }
