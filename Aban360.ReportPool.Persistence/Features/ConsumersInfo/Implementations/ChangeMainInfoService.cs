@@ -17,11 +17,11 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         {
             string clientData = GetClientsDataQuery();
             IEnumerable<ClientDto> clients = await _sqlReportConnection.QueryAsync<ClientDto>(clientData, new { billId = billId });
-           if (!clients.Any())
+            if (!clients.Any())
             {
                 throw new InvalidIdException();
             }
-            var result=GetChangeData(clients);
+            var result = GetChangeData(clients);
             return result;
         }
 
@@ -100,7 +100,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                 ["MainSiphonTitle"] = "عنوان سیفون اصلی"
             };
             //var all=new Dictionary<string, List<string>>();
-            ICollection<ChangeMainOutputDto> all=new List<ChangeMainOutputDto>();
+            ICollection<ChangeMainOutputDto> all = new List<ChangeMainOutputDto>();
 
             for (int i = 1; i < clients.Count(); i++)
             {
@@ -111,12 +111,12 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 
                 var differences = new List<string>();
                 var props = typeof(ClientDto).GetProperties();
-                
+
 
                 foreach (var prop in props)
                 {
-                    if (!fieldMap.ContainsKey(prop.Name) || prop.Name== "ToDayJalali")
-                        continue; 
+                    if (!fieldMap.ContainsKey(prop.Name) || prop.Name == "ToDayJalali")
+                        continue;
 
 
                     var oldValue = prop.GetValue(last)?.ToString() ?? "خالی";
@@ -128,16 +128,18 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                         differences.Add($"{persianName}: {oldValue} → {newValue}");
                     }
                 }
-                all.Add(new ChangeMainOutputDto()
+                if (differences.Count > 0)
                 {
-                    ChangeDate = clients.ElementAt(i).ToDayJalali ?? DateTime.Now.ToShortPersianDateString(),
-                    ChangeDetail = differences
-                });
-
+                    all.Add(new ChangeMainOutputDto()
+                    {
+                        ChangeDate = clients.ElementAt(i).ToDayJalali ?? DateTime.Now.ToShortPersianDateString(),
+                        ChangeDetail = differences
+                    });
+                }
             }
 
             return all;
-            
+
         }
         private string GetChangeMainSummayDtoQuery()
         {
@@ -197,7 +199,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             public int OtherCount { get; init; }
             public int EmptyCount { get; init; }
             public short FamilyCount { get; init; }
-           // public string RegisterationJalaliDate { get; init; }
+            // public string RegisterationJalaliDate { get; init; }
             public int FieldArea { get; init; }
             public int ConstructedArea { get; init; }
             public int DomesticArea { get; init; }
@@ -225,8 +227,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             public bool HasCommonSiphon { get; init; }
             public bool IsVillage { get; init; }
             public int? TempRowNumber { get; init; }
-         //   public string RegisterDayJalali { get; init; }
-         //   public string FromDayJalali { get; init; }
+            //   public string RegisterDayJalali { get; init; }
+            //   public string FromDayJalali { get; init; }
             public string ToDayJalali { get; init; }
             public string HouseholdDateJalali { get; init; }
             public int? GuildId { get; init; }
