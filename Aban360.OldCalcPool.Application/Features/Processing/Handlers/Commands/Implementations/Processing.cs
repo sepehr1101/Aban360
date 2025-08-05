@@ -3,7 +3,6 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Constant;
-using Aban360.OldCalcPool.Application.Exceptions;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
@@ -94,6 +93,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             ProcessDetailOutputDto result = Tarif_Ab(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, dailyAverage, meterInfo.PreviousDateJalali, input.CurrentDateJalali, customerInfo, meterInfo);
             result.Customer = customerInfo;
             result.MeterInfo = meterInfo;
+            result.MonthlyConsumption = monthlyAverageConsumption;
+            result.DailyConsumption = dailyAverage;
+            result.Duration = duration;
             return result;
         }
         public async Task<ProcessDetailOutputDto> Handle(MeterInfoByPreviousDataInputDto input, CancellationToken cancellationToken)
@@ -123,6 +125,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             ProcessDetailOutputDto result = Tarif_Ab(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, dailyAverage, input.PreviousDateJalali, input.CurrentDateJalali, customerInfo, meterInfo);
             result.Customer = customerInfo;
             result.MeterInfo = meterInfo;
+            result.MonthlyConsumption = monthlyAverageConsumption;
+            result.DailyConsumption = dailyAverage;
+            result.Duration = duration;
             return result;
         }
         public async Task<ProcessDetailOutputDto> Handle(BaseOldTariffEngineImaginaryInputDto input, CancellationToken cancellationToken)
@@ -152,6 +157,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             ProcessDetailOutputDto result = Tarif_Ab(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, dailyAverage, input.MeterPreviousData.PreviousDateJalali, input.MeterPreviousData.CurrentDateJalali, customerInfo, meterInfo);
             result.Customer = customerInfo;
             result.MeterInfo = meterInfo;
+            result.MonthlyConsumption=monthlyAverageConsumption;
+            result.DailyConsumption = dailyAverage;
+            result.Duration = duration;
             return result;
         }
 
@@ -168,7 +176,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 AbAzadGetDto abAzadItem = abAzad.ElementAt(counter);
                 ZaribGetDto zaribItem = zarib.ElementAt(counter);
                 BaseOldTariffEngineOutputDto resultCalc = CalculateWaterBill(nerkhItem, abAzadItem, zaribItem, customerInfo, meterInfo, dailyAverage, currentDateJalali);
-                nerkhItem.CalcVaj = resultCalc.AbBahaValues.ToString();
+                nerkhItem.CalcVaj = resultCalc.AbBahaValues.AbBahaAmount.ToString();
                 sumAbBaha += resultCalc.AbBahaValues.AbBahaAmount;
                 sumFazelab += resultCalc.FazelabAmount;
                 sumBoodjePart1 += resultCalc.BoodjePart1;
