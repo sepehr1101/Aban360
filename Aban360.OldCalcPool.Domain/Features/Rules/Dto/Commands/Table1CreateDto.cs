@@ -2,7 +2,6 @@
 {
     public record Table1CreateDto
     {
-        public int Id { get; set; }
         public string? Flag { get; set; }
         public int Town { get; set; }
         public string? ModiDate { get; set; }
