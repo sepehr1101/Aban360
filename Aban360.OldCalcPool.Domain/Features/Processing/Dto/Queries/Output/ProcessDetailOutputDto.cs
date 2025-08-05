@@ -16,6 +16,9 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         public double AvarezAmount { get; set; }
         public double JavaniAmount { get; set; }
 
+        public double MonthlyConsumption { get; set; }
+        public double  DailyConsumption { get; set; }
+        public int Duration { get; set; }
 
         public IEnumerable<NerkhGetDto> Nerkh { get; set; }
         public IEnumerable<AbAzadGetDto> AbAzad { get; set; }
