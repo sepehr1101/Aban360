@@ -17,18 +17,19 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         public async Task<CustomerInfoOutputDto> GetInfo(string billId)
         {
             string zoneIdQueryString = GetZoneIdQuery();
-            int zoneId = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(zoneIdQueryString, new { billId });
-            if (zoneId == null)
+            ZoneIdAndCustomerNumberOutputDto zoneIdAndCustomerNumber = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZoneIdAndCustomerNumberOutputDto>(zoneIdQueryString, new { billId });
+            if (zoneIdAndCustomerNumber == null)
             {
-                throw new BaseException(ExceptionLiterals.BillIdNotFound);
+                throw new InvalidBillIdException(ExceptionLiterals.BillIdNotFound);
             }
-            string customerInfoQueryString = GetCustomerInfoDataQuery(zoneId);
-            CustomerInfoOutputDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<CustomerInfoOutputDto>(customerInfoQueryString, new { billId });
+            string DataBaseName = GetDbName(zoneIdAndCustomerNumber.ZoneId);
+            string customerInfoQueryString = GetCustomerInfoDataQuery(DataBaseName);
+            CustomerInfoOutputDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<CustomerInfoOutputDto>(customerInfoQueryString, new { zoneId= zoneIdAndCustomerNumber.ZoneId, customerNumber= zoneIdAndCustomerNumber.CustomerNumber });
 
             return result;
         }
 
-        private string GetCustomerInfoDataQuery(int zoneId)
+        private string GetCustomerInfoDataQuery(string dataBaseName)
         {
             return @$"Select
                     	m.town as ZoneId,
@@ -47,14 +48,15 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 						m.eshtrak as ReadingNumber,
                         m.VillageId as VillageId,
 						m.edareh_k as IsSpecial
-                    From [{zoneId}].dbo.members m
+                    From [{dataBaseName}].dbo.members m
                     Where
-                    	m.bill_id=@billId";
+                    	m.town=@zoneId AND 
+						m.radif=@customerNumber";
         }
 
         private string GetZoneIdQuery()
         {
-            return @"Select c.ZoneId
+            return @"Select c.ZoneId,c.CustomerNumber
                     From [CustomerWarehouse].dbo.Clients c
                     Where 
                     	c.BillId=@billId AND

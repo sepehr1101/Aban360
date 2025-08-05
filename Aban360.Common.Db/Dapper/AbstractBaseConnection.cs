@@ -33,5 +33,10 @@ namespace Aban360.Common.Db.Dapper
                 return sqlConnection;
             }
         }
+
+        public string GetDbName(int zoneId)
+        {
+            return zoneId > 140000 ? "Abfar" : zoneId.ToString();
+        }
     }
 }

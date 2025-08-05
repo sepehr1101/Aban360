@@ -81,7 +81,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             int duration = GetDuration(meterInfo.PreviousDateJalali, input.CurrentDateJalali);
             if (duration < 5)
             {
-                throw new InvalidBillParametersException(Literals.InvalidDuration);
+                throw new InvalidBillIdException(Literals.InvalidDuration);
             }
             double dailyAverage = GetDailyConsumptionAverage(consumption, duration, customerInfo.DomesticUnit);
             double monthlyAverageConsumption = dailyAverage * 30;
@@ -105,7 +105,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             int duration = GetDuration(input.PreviousDateJalali, input.CurrentDateJalali);
             if (duration < 5)
             {
-                throw new InvalidBillParametersException(Literals.InvalidDuration);
+                throw new InvalidBillIdException(Literals.InvalidDuration);
             }
             double dailyAverage = GetDailyConsumptionAverage(consumption, duration, customerInfo.DomesticUnit);
             double monthlyAverageConsumption = dailyAverage * 30;
@@ -134,7 +134,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             int duration = GetDuration(input.MeterPreviousData.PreviousDateJalali, input.MeterPreviousData.CurrentDateJalali);
             if (duration < 5)
             {
-                throw new InvalidBillParametersException(Literals.InvalidDuration);
+                throw new InvalidBillIdException(Literals.InvalidDuration);
             }
             double dailyAverage = GetDailyConsumptionAverage(consumption, duration, customerInfo.DomesticUnit);
             double monthlyAverageConsumption = dailyAverage * 30;
