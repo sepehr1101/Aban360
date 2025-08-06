@@ -4,8 +4,10 @@
     {
         public int ZoneId { get; set; }
         public int Radif { get; set; }
+        public string  BillId { get; set; }
         public int BranchType { get; set; }
         public int UsageId { get; set; }
+        public int EmptyUnit { get; set; }
         public int DomesticUnit { get; set; }
         public int CommertialUnit { get; set; }
         public int OtherUnit { get; set; }
@@ -18,6 +20,7 @@
         public string ReadingNumber { get; set; }
         public string VillageId { get; set; }
         public bool IsSpecial { get; set; }
+        public int MeterDiameterId { get; set; }
 
     }
 }
