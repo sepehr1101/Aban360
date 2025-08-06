@@ -4,6 +4,7 @@ namespace Aban360.CommunicationPool.Persistence.Features.Hubs.Commands.Contracts
 {
     public interface IHubEventUpdateService
     {
-        Task Update(HubEventUpdateDto input);
+        Task CloseConnection(HubEventUpdateDto input);
+        Task CloseAllConnection(HubCloseConnectionsDto hubCloseConnectionsDto);
     }
 }

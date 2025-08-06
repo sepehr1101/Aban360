@@ -19,7 +19,7 @@ namespace Aban360.CommunicationPool.Application.Features.Hubs.Handlers.Commands.
 
         public async Task Handle(HubEventUpdateDto input, CancellationToken cancellationToken)
         {
-            await _hubEventQueryService.Update(input);
+            await _hubEventQueryService.CloseConnection(input);
         }
     }
 }
