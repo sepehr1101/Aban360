@@ -13,22 +13,39 @@ namespace Aban360.CommunicationPool.Persistence.Features.Hubs.Commands.Implement
         { 
         }
 
-        public async Task Update(HubEventUpdateDto input)
+        public async Task CloseConnection(HubEventUpdateDto input)
         {
-            string UpdateQuery = GetHubEventUpdateQuery();
+            string updateQuery = GetCloseConnectionQuery();
             var @params = new
             {
                 connectionId = input.ConnectionId,
                 disconnectDateTime = DateTime.Now,
             };
-            await _sqlConnection.ExecuteAsync(UpdateQuery, @params);
+            await _sqlConnection.ExecuteAsync(updateQuery, @params);
         }
 
-        private string GetHubEventUpdateQuery()
+        public async Task CloseAllConnection(HubCloseConnectionsDto hubCloseConnectionsDto)
+        {
+            string query= GetColseAllConnectionsQuery();
+            var @params = new
+            {
+                userId = hubCloseConnectionsDto,
+                disconnectDateTime = DateTime.Now,
+            };
+            await _sqlConnection.ExecuteAsync(query, @params);
+        }
+
+        private string GetCloseConnectionQuery()
         {
             return @"Update [Aban360].CommunicationPool.HubEvent
                     Set DisconnectDateTime=@disconnectDateTime                  
                     Where ConnectionId=@connectionId";
+        }
+        private string GetColseAllConnectionsQuery()
+        {
+            return @"Update [Aban360].CommunicationPool.HubEvent
+                    Set DisconnectDateTime=@disconnectDateTime                  
+                    Where UserId=@userId";
         }
     }
 }
