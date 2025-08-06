@@ -34,6 +34,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             return @$"Select
                     	m.town as ZoneId,
                     	m.radif as Radif,
+						Trim(m.bill_id) as BillId,
                     	m.noe_va as BranchType,
                     	m.cod_enshab as UsageId,
                     	m.tedad_mas as DomesticUnit,
@@ -47,7 +48,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                         m.ted_khane as HouseholdNumber,
 						m.eshtrak as ReadingNumber,
                         m.VillageId as VillageId,
-						m.edareh_k as IsSpecial
+						m.edareh_k as IsSpecial,
+						m.enshab as MeterDiameterId,
+						m.Khali_s as EmptyUnit
                     From [{dataBaseName}].dbo.members m
                     Where
                     	m.town=@zoneId AND 

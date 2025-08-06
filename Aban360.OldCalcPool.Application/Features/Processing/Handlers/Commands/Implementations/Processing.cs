@@ -4,14 +4,12 @@ using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Constant;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
-using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
 using DNTPersianUtils.Core;
-using NetTopologySuite.Index.HPRtree;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
@@ -36,12 +34,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             _nerkhGetByConsumptionService.NotNull(nameof(nerkhGetByConsumptionService));
         }
 
-        public async Task Handle(ConsumptionInputDto input, CancellationToken cancellationToken)
-        {
-            int consumption = GetConsumption(input.PreviousMeterNumber, input.CurrentMeterNumber);
-            int duration = GetDuration(input.PreviousDateJalali, input.CurrentDateJalali);
-            double dailyAverage = GetDailyConsumptionAverage(consumption, duration, 1);
-        }
         private int GetConsumption(int previousNumber, int currentNumber)
         {
             return currentNumber - previousNumber;

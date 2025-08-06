@@ -6,7 +6,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 {
     public interface IProcessing
     {
-        Task Handle(ConsumptionInputDto intput, CancellationToken cancellationToken);
         Task<ProcessDetailOutputDto> Handle(MeterInfoInputDto input, CancellationToken cancellationToken);
         Task<ProcessDetailOutputDto> Handle(MeterInfoByPreviousDataInputDto input, CancellationToken cancellationToken);
         Task<ProcessDetailOutputDto> Handle(BaseOldTariffEngineImaginaryInputDto input, CancellationToken cancellationToken);
