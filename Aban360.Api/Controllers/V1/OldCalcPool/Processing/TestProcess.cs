@@ -43,7 +43,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         public async Task<IActionResult> TestByPreviousData(MeterInfoByPreviousDataInputDto input,CancellationToken cancellationToken)
         {
             ProcessDetailOutputDto result = await _processing.Handle(input, cancellationToken);
-            await _bedBesCreateHadler.Handle(result,12, cancellationToken);
+           //await _bedBesCreateHadler.Handle(result,12, cancellationToken);
             return Ok(result);
         }
         

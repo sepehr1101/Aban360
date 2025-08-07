@@ -294,24 +294,31 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
         }
 
-
+        private bool CheckZero(double duration, double monthlyConsumption, string? vaj)
+        {
+            if (duration <= 0 ||
+              monthlyConsumption == 0 ||
+              string.IsNullOrWhiteSpace(vaj))
+            {
+                return true;
+            }
+            return false;
+        }
         /// <summary>
         /// محاسبه آب بها 
         /// </summary>
         /// <returns>عدد محاسبه شده‌ی آب‌بها</returns>
         private CalculateAbBahaOutputDto _CalculateAbBaha(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadGetDto abAzad8And39, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, double multiplierAbBaha)
         {
+            var abAzadTest = abAzad8And39;
+
             double abBahaAmount = 0, oldAbBahaAmount = 0, abBahaFromExpression = 0;
             double duration = nerkh.Duration;
             abBahaFromExpression = CalcFormulaByRate(nerkh.Vaj, monthlyConsumption);
             (double, double) abBahaValues = (0, 0);
 
-            if (duration <= 0 ||
-                monthlyConsumption == 0 ||
-                string.IsNullOrWhiteSpace(nerkh.Vaj))
-            {
+            if(CheckZero(duration,monthlyConsumption,nerkh.Vaj))
                 return new CalculateAbBahaOutputDto(0, (0, 0));
-            }
 
             if ((IsDomestic(customerInfo.UsageId) || IsGardenOrDweltyAfter1400_12_24(customerInfo.UsageId, nerkh.Date1)) &&
                 IsNotReligious(customerInfo.UsageId))
@@ -342,7 +349,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 if ((customerInfo.ContractualCapacity > 0 && !IsConstruction(customerInfo.BranchType)) ||
                     IsReligious(customerInfo.UsageId))
                 {
-                    double contractualCapacityInDuration = (customerInfo.ContractualCapacity / 30) * duration;
+                    double contractualCapacityInDuration = ((double)customerInfo.ContractualCapacity / 30) * duration;
 
                     if (nerkh.PartialConsumption > contractualCapacityInDuration ||
                         IsCharityAndSchool(customerInfo.UsageId))
@@ -377,7 +384,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                         }
                         else
                         {
-                            _2Amount = BigCase(customerInfo.UsageId, nerkh.Date1, nerkh.Date2, customerInfo.IsSpecial, abAzad8And39.Azad);//Azad:39
+                            _2Amount = BigCase(customerInfo.UsageId, nerkh.Date1, nerkh.Date2, customerInfo.IsSpecial, abAzad8And39.Azad,abBahaFromExpression);//Azad:39
                         }
                         abBahaValues.Item1 = _2Amount.Item1 * allowedPartialConsumption;
                         abBahaValues.Item2 = _2Amount.Item2 * disallowedPartialConsumption;
@@ -443,7 +450,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             abBahaAmount = abBahaAmount * multiplierAbBaha;
 
-            double fazelabAmount = abBahaAmount;
+            double fazelabAmount = abBahaAmount;//todo: remove
             oldAbBahaAmount = oldAbBahaAmount * multiplierAbBaha;// foxpro:1755
             return new CalculateAbBahaOutputDto(abBahaAmount, abBahaValues);
 
@@ -613,7 +620,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             return (0, 0);
         }
     
-        private (long, long) BigCase(int usageId, string nerkhDate1, string nerkhDate2, bool isSpecial, long abAzad)
+        private (long, long) BigCase(int usageId, string nerkhDate1, string nerkhDate2, bool isSpecial, long abAzad,double abBahaFromExpression)
         {
             string date1399_01_31 = "1399/01/31";
             string date1400_01_31 = "1400/01/31";
@@ -950,7 +957,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             else
             {
                 //long nerkh_azad = CalculateAzad(nerkhDate1, nerkhDate2, 39);//&& ab azad sakht va saz  && ab azad omomi kargahi** dar  tarikh 1398 / 01 / 31
-                return (0, abAzad);
+                return (abBahaFromExpression, abAzad);
 
             }
             return (0, 0);
