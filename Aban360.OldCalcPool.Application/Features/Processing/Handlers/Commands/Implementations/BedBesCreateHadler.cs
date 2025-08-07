@@ -60,7 +60,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             bedBesDto.Elat = 0;
             bedBesDto.Ser = 0;
             bedBesDto.Serial = 0;
-            bedBesDto.ZaribFasl = (decimal)inputDto.HotSeasonAmount;
+            bedBesDto.ZaribFasl = (decimal)inputDto.HotSeasonAbBahaAmount;
             bedBesDto.Ab10 = 0;
             bedBesDto.Ab20 = 0;
             bedBesDto.TedadVahd = inputDto.Customer.OtherUnit;
@@ -112,7 +112,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private double GetSumAll(ProcessDetailOutputDto ss)
         {
             return ss.AbBahaAmount +
-                   ss.HotSeasonAmount +
+                   ss.HotSeasonAbBahaAmount +
                    ss.AbonmanAbAmount +
                    ss.FazelabAmount +
                    ss.BoodjePart1Amount +
