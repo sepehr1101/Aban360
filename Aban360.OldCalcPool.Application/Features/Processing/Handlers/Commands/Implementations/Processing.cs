@@ -186,8 +186,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             }
             double abonmanFazelbAmount = CalculateAbonmanFazelab(duration, customerInfo, currentDateJalali, sumAbBaha);
             double AbBahaResult = sumAbBaha + sumHotSeason + sumAbonman;
+            double sumBoodje=sumBoodjePart1 + sumBoodjePart2; 
 
-            return new ProcessDetailOutputDto(AbBahaResult,sumAbBaha, sumFazelab, sumBoodjePart1, sumBoodjePart2, sumHotSeason, sumAbBahaDiscount, sumHotSeasonDiscount, sumFazelabDiscount, sumAbonman, sumAvarez, sumJavaniAmount, sumMaliatAmount, abonmanFazelbAmount, allNerkh, abAzad, zarib);
+
+            return new ProcessDetailOutputDto(AbBahaResult,sumAbBaha, sumFazelab, sumBoodjePart1, sumBoodjePart2,sumBoodje, sumHotSeason, sumAbBahaDiscount, sumHotSeasonDiscount, sumFazelabDiscount, sumAbonman, sumAvarez, sumJavaniAmount, sumMaliatAmount, abonmanFazelbAmount, allNerkh, abAzad, zarib);
         }
         private CustomerInfoOutputDto GetCustomerInfo(BaseOldTariffEngineImaginaryInputDto input)
         {
