@@ -31,18 +31,18 @@ namespace Aban360.CalculationPool.Application.Features.Base
             CalculateAbBahaOutputDto abBahaResult = _CalculateAbBaha(nerkh, customerInfo, meterInfo, zarib, abAzad, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, multiplierAbBaha);
             (double, double) boodje = CalculateBoodje(nerkh, customerInfo, currentDateJalali, monthlyConsumption, olgoo);
             double fazelab = CalculateFazelab(nerkh, customerInfo, abBahaResult.AbBahaAmount, currentDateJalali);
-            double hotSeason = CalcHotSeason(nerkh, abBahaResult.AbBahaAmount);
+            double hotSeasonAbBaha = CalcHotSeasonAbBaha(nerkh, abBahaResult.AbBahaAmount);
+            double hotSeasonFazelb = CalcHotSeasonFaselab(nerkh, customerInfo, fazelab);
             double avarez = CalculateAvarez(nerkh, customerInfo, monthlyConsumption);
             double javani = CalculateJavaniJamiat(nerkh, customerInfo, abBahaResult.AbBahaAmount, monthlyConsumption, olgoo);
 
             double abBahaDiscount = CalculateAbBahaDiscount(nerkh, customerInfo, meterInfo, abBahaResult, olgoo, multiplierAbBaha, monthlyConsumption, currentDateJalali);
-            double hotSeasonDiscount = CalcHotSeasonDiscount(nerkh, customerInfo, meterInfo, abBahaResult, multiplierAbBaha, hotSeason);
+            double hotSeasonDiscount = CalcHotSeasonDiscount(nerkh, customerInfo, meterInfo, abBahaResult, multiplierAbBaha, hotSeasonAbBaha);
             double fazelabDiscount = CalculateFazelabDiscount(nerkh, customerInfo, abBahaResult, abBahaDiscount, fazelab, 123, olgoo, monthlyConsumption);
 
             double abonmanAb = CalculateAbonmanAb(nerkh, customerInfo, meterInfo, currentDateJalali, abBahaResult.AbBahaAmount, abBahaDiscount);
-            double maliat = CalcMaliat(abBahaResult.AbBahaAmount, abonmanAb, 0, hotSeason, boodje.Item1, fazelab);
 
-            return new BaseOldTariffEngineOutputDto(abBahaResult, fazelab, hotSeason, boodje.Item1, boodje.Item2, abBahaDiscount, hotSeasonDiscount, fazelabDiscount, abonmanAb, avarez, javani, maliat);
+            return new BaseOldTariffEngineOutputDto(abBahaResult, fazelab, hotSeasonAbBaha, hotSeasonFazelb, boodje.Item1, boodje.Item2, abBahaDiscount, hotSeasonDiscount, fazelabDiscount, abonmanAb, avarez, javani);
         }
 
         /// <summary>
@@ -197,13 +197,13 @@ namespace Aban360.CalculationPool.Application.Features.Base
         {
             return number >= min && number <= max;
         }
-      
+
 
         private (double, double, bool) MultiplyCalculation(double abBaha, double oldAbBaha, double multiplier)
         {
             return (abBaha * multiplier, oldAbBaha * multiplier, true);
         }
-     
+
         private bool IsDolatabadOrHabibabadWithConditionEshtrak(int zoneId, ulong readingNumber)
         {
             return
@@ -317,7 +317,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             abBahaFromExpression = CalcFormulaByRate(nerkh.Vaj, monthlyConsumption);
             (double, double) abBahaValues = (0, 0);
 
-            if(CheckZero(duration,monthlyConsumption,nerkh.Vaj))
+            if (CheckZero(duration, monthlyConsumption, nerkh.Vaj))
                 return new CalculateAbBahaOutputDto(0, (0, 0));
 
             if ((IsDomestic(customerInfo.UsageId) || IsGardenOrDweltyAfter1400_12_24(customerInfo.UsageId, nerkh.Date1)) &&
@@ -384,7 +384,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                         }
                         else
                         {
-                            _2Amount = BigCase(customerInfo.UsageId, nerkh.Date1, nerkh.Date2, customerInfo.IsSpecial, abAzad8And39.Azad,abBahaFromExpression);//Azad:39
+                            _2Amount = BigCase(customerInfo.UsageId, nerkh.Date1, nerkh.Date2, customerInfo.IsSpecial, abAzad8And39.Azad, abBahaFromExpression);//Azad:39
                         }
                         abBahaValues.Item1 = _2Amount.Item1 * allowedPartialConsumption;
                         abBahaValues.Item2 = _2Amount.Item2 * disallowedPartialConsumption;
@@ -502,7 +502,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             return partMethod;
         }
-        private double CalcHotSeason(NerkhGetDto nerkh, double abBahaAmount)
+        private double CalcHotSeasonAbBaha(NerkhGetDto nerkh, double abBahaAmount)
         {
             string date_02_31 = "/02/31";
             string date_06_31 = "/06/31";
@@ -511,6 +511,27 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             int hotSeasonDuration = PartTime(hotSeasonStart, hotSeasonEnd, nerkh.Date1, nerkh.Date2);
             return hotSeasonDuration > 0 && PartTime(hotSeasonStart, hotSeasonEnd, nerkh.Date1, nerkh.Date2) > 0 ? (int)((hotSeasonDuration * abBahaAmount / nerkh.Duration) * 0.2) : 0;
+
+        }
+
+        private double CalcHotSeasonFaselab(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double fazelabAmount)
+        {
+            string date_02_31 = "/02/31";
+            string date_06_31 = "/06/31";
+            string hotSeasonStart = nerkh.Date2.Substring(0, 4) + date_02_31;
+            string hotSeasonEnd = nerkh.Date2.Substring(0, 4) + date_06_31;
+            int hotSeasonDuration = 0;
+
+            if (customerInfo.SewageCalcState == 0)
+                return 0;
+            else if (customerInfo.SewageCalcState == 1)
+            {
+                hotSeasonDuration = PartTime(hotSeasonStart, hotSeasonEnd, customerInfo.SewageInstallationDateJalali, nerkh.Date2);
+                return hotSeasonDuration > 0 && PartTime(hotSeasonStart, hotSeasonEnd, nerkh.Date1, nerkh.Date2) > 0 ? (int)((hotSeasonDuration * fazelabAmount / nerkh.Duration) * 0.2) : 0;
+            }
+
+            hotSeasonDuration = PartTime(hotSeasonStart, hotSeasonEnd, nerkh.Date1, nerkh.Date2);
+            return hotSeasonDuration > 0 && PartTime(hotSeasonStart, hotSeasonEnd, nerkh.Date1, nerkh.Date2) > 0 ? (int)((hotSeasonDuration * fazelabAmount / nerkh.Duration) * 0.2) : 0;
 
         }
 
@@ -619,8 +640,8 @@ namespace Aban360.CalculationPool.Application.Features.Base
             }
             return (0, 0);
         }
-    
-        private (long, long) BigCase(int usageId, string nerkhDate1, string nerkhDate2, bool isSpecial, long abAzad,double abBahaFromExpression)
+
+        private (long, long) BigCase(int usageId, string nerkhDate1, string nerkhDate2, bool isSpecial, long abAzad, double abBahaFromExpression)
         {
             string date1399_01_31 = "1399/01/31";
             string date1400_01_31 = "1400/01/31";
@@ -957,7 +978,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             else
             {
                 //long nerkh_azad = CalculateAzad(nerkhDate1, nerkhDate2, 39);//&& ab azad sakht va saz  && ab azad omomi kargahi** dar  tarikh 1398 / 01 / 31
-                return (abBahaFromExpression, abAzad);
+                return ((long)abBahaFromExpression, abAzad);
 
             }
             return (0, 0);
@@ -1131,19 +1152,15 @@ namespace Aban360.CalculationPool.Application.Features.Base
         }
         private (double, double) CalculateBoodje(NerkhGetDto nerkhDto, CustomerInfoOutputDto customerInfo, string currentDateJalali, double monthlyConsumption, double olgoo)
         {
-            double allowedAmount = 0, disAlloweAmount = 0;
+            double partialOlgoo = IsDomesticWithoutUnspecified(customerInfo.UsageId) ?
+                olgoo / 30 * nerkhDto.Duration :
+                customerInfo.ContractualCapacity / 30 * nerkhDto.Duration;
 
-            if (monthlyConsumption > customerInfo.ContractualCapacity)
-            {
-                allowedAmount = olgoo * 2000;
-                disAlloweAmount = (monthlyConsumption - olgoo) * 4000;
-            }
-            else
-            {
-                disAlloweAmount = monthlyConsumption * 4000;
-            }
 
-            return (allowedAmount, disAlloweAmount);
+            double allowedConsumption = nerkhDto.PartialConsumption > partialOlgoo ? partialOlgoo : nerkhDto.PartialConsumption;
+            double disAllowedConsumption = nerkhDto.PartialConsumption - allowedConsumption;
+
+            return (allowedConsumption * 2000, disAllowedConsumption * 4000);
         }
         private (long, long) CalculateBoodjePart1Discount()
         {
@@ -1341,7 +1358,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             throw new NotImplementedException();
         }
 
-        public double CalculateAbonmanFazelab(int totalDuration, CustomerInfoOutputDto customerInfo, string currentDateJalali, double abBahaConsumption)
+        public double CalculateAbonmanFazelab(int totalDuration, CustomerInfoOutputDto customerInfo, string currentDateJalali, double abonmanAbBaha)
         {
             if (IsTankerSaleAndHousehold(customerInfo.UsageId) || customerInfo.SewageCalcState == 0)
             {
@@ -1350,10 +1367,10 @@ namespace Aban360.CalculationPool.Application.Features.Base
             else if (customerInfo.SewageCalcState == 1)
             {
                 int duration = (int.Parse)(CalculationDistanceDate.CalcDistance(customerInfo.SewageInstallationDateJalali, currentDateJalali));
-                return (abBahaConsumption / totalDuration) * duration;
+                return (abonmanAbBaha / totalDuration) * duration;
             }
 
-            return abBahaConsumption;
+            return abonmanAbBaha;
         }
         private long CalculateAbonmanFazelabDiscount()
         {
@@ -1435,9 +1452,9 @@ namespace Aban360.CalculationPool.Application.Features.Base
             throw new NotImplementedException();
         }
 
-        private double CalcMaliat(double abBahaAmount, double abonmanAmount, double jarimeAmoumt, double hotseasonAmount, double boodjeAmount, double fazelabAmount)
+        public double CalcMaliat(double abBahaAmount, double abonmanAbBahaAmount, double hotseasonAbBahaAmount, double fazelabAmount, double abonmanFazelabAmount, double hotseasonFazelabAmount, double boodjeAmount)
         {
-            double sumAmount = abBahaAmount + abBahaAmount + jarimeAmoumt + hotseasonAmount + boodjeAmount;
+            double sumAmount = abBahaAmount + abonmanAbBahaAmount + hotseasonAbBahaAmount + fazelabAmount + abonmanFazelabAmount + hotseasonFazelabAmount + boodjeAmount;
             return (sumAmount + fazelabAmount) * 0.10;
         }
     }

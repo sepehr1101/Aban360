@@ -158,10 +158,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private ProcessDetailOutputDto Tarif_Ab(IEnumerable<NerkhGetDto> allNerkh, IEnumerable<AbAzadGetDto> abAzad, IEnumerable<ZaribGetDto> zarib, double dailyAverage, string currentDateJalali, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo,int duration)
         {
             int counter = 0;
-            double sumAbBaha = 0, sumFazelab = 0, sumHotSeason = 0, sumAbonman = 0;
+            double sumAbBaha = 0, sumFazelab = 0, sumHotSeasonAbBaha = 0, sumHotSeasonFazelab = 0, sumAbonmanAbBaha = 0;
             double sumBoodjePart1 = 0, sumBoodjePart2 = 0, sumAvarez = 0;
             double sumAbBahaDiscount = 0, sumFazelabDiscount = 0, sumHotSeasonDiscount = 0;
-            double sumJavaniAmount = 0, sumMaliatAmount = 0;
+            double sumJavaniAmount = 0;
 
             foreach (var nerkhItem in allNerkh)
             {
@@ -173,23 +173,25 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 sumFazelab += resultCalc.FazelabAmount;
                 sumBoodjePart1 += resultCalc.BoodjePart1;
                 sumBoodjePart2 += resultCalc.BoodjePart2;
-                sumHotSeason = resultCalc.HotSeasonAmount;
+                sumHotSeasonAbBaha = resultCalc.HotSeasonAbBahaAmount;
+                sumHotSeasonFazelab += resultCalc.HotSeasonFazelabAmount;
                 sumAbBahaDiscount += resultCalc.AbBahaDiscount;
                 sumFazelabDiscount += resultCalc.FazelabDiscount;
                 sumHotSeasonDiscount += resultCalc.HotSeasonDiscount;
-                sumAbonman += resultCalc.AbonmanAbAmount;
+                sumAbonmanAbBaha += resultCalc.AbonmanAbAmount;
                 sumAvarez += resultCalc.AvarezAmount;
                 sumJavaniAmount += resultCalc.JavaniAmount;
-                sumMaliatAmount += resultCalc.MaliatAmount;
 
                 counter++;
             }
-            double abonmanFazelbAmount = CalculateAbonmanFazelab(duration, customerInfo, currentDateJalali, sumAbBaha);
-            double AbBahaResult = sumAbBaha + sumHotSeason + sumAbonman;
-            double sumBoodje=sumBoodjePart1 + sumBoodjePart2; 
+            //double abonmanFazelbAmount = CalculateAbonmanFazelab(duration, customerInfo, currentDateJalali, sumAbBaha);//todo:bonmanab
+            double abonmanFazelbAmount = CalculateAbonmanFazelab(duration, customerInfo, currentDateJalali, sumAbonmanAbBaha);
+            double AbBahaResult = sumAbBaha + sumHotSeasonAbBaha + sumAbonmanAbBaha;
+            double sumBoodje=sumBoodjePart1 + sumBoodjePart2;
+            double sumMaliatAmount = CalcMaliat(sumAbBaha, sumAbonmanAbBaha, sumHotSeasonAbBaha, sumFazelab, abonmanFazelbAmount, sumHotSeasonFazelab, sumBoodje);
 
 
-            return new ProcessDetailOutputDto(AbBahaResult,sumAbBaha, sumFazelab, sumBoodjePart1, sumBoodjePart2,sumBoodje, sumHotSeason, sumAbBahaDiscount, sumHotSeasonDiscount, sumFazelabDiscount, sumAbonman, sumAvarez, sumJavaniAmount, sumMaliatAmount, abonmanFazelbAmount, allNerkh, abAzad, zarib);
+            return new ProcessDetailOutputDto(AbBahaResult,sumAbBaha, sumFazelab, sumBoodjePart1, sumBoodjePart2,sumBoodje, sumHotSeasonAbBaha, sumHotSeasonFazelab, sumAbBahaDiscount, sumHotSeasonDiscount, sumFazelabDiscount, sumAbonmanAbBaha, sumAvarez, sumJavaniAmount, sumMaliatAmount, abonmanFazelbAmount, allNerkh, abAzad, zarib);
         }
         private CustomerInfoOutputDto GetCustomerInfo(BaseOldTariffEngineImaginaryInputDto input)
         {
