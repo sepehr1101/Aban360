@@ -6,7 +6,8 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
     {
         public double SumAbBahaAmount { get; set; }
         public double AbBahaAmount { get; set; }
-        public double HotSeasonAmount { get; set; }
+        public double HotSeasonAbBahaAmount { get; set; }
+        public double HotSeasonFazelabAmount { get; set; }
         public double AbonmanAbAmount { get; set; }
 
         public double FazelabAmount { get; set; }
@@ -33,7 +34,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         public MeterInfoOutputDto MeterInfo { get; set; }
 
 
-        public ProcessDetailOutputDto(double _sumAbBahaAmount,double _abBahaAmount, double _fazelabAmount, double _boodjePart1Amount, double _boodjePar2Amount, double _sumBoodje,double _hotSeasonAmount, double _abBahaDiscount, double _hotSeasonDiscount, double _fazelabDiscount, double _abonmanAbAmount, double _avarezAmount, double _javaniAmount, double _maliatAmount, double _abonmanFazelabAmount, IEnumerable<NerkhGetDto> _nerkh, IEnumerable<AbAzadGetDto> _abAzad, IEnumerable<ZaribGetDto> _zarib)
+        public ProcessDetailOutputDto(double _sumAbBahaAmount,double _abBahaAmount, double _fazelabAmount, double _boodjePart1Amount, double _boodjePar2Amount, double _sumBoodje,double _hotSeasonAbBahaAmount, double _hotSeasonFazelabAmount, double _abBahaDiscount, double _hotSeasonDiscount, double _fazelabDiscount, double _abonmanAbAmount, double _avarezAmount, double _javaniAmount, double _maliatAmount, double _abonmanFazelabAmount, IEnumerable<NerkhGetDto> _nerkh, IEnumerable<AbAzadGetDto> _abAzad, IEnumerable<ZaribGetDto> _zarib)
         {
             SumAbBahaAmount = _sumAbBahaAmount;
             AbBahaAmount = _abBahaAmount;
@@ -41,7 +42,8 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             BoodjePart1Amount = _boodjePart1Amount;
             BoodjePart2Amount = _boodjePar2Amount;
             SumBoodje=_sumBoodje;
-            HotSeasonAmount = _hotSeasonAmount;
+            HotSeasonAbBahaAmount = _hotSeasonAbBahaAmount;
+            HotSeasonFazelabAmount = _hotSeasonFazelabAmount;
             AbBahaDiscount = _abBahaDiscount;
             HotSeasonDiscount = _hotSeasonDiscount;
             FazelabDiscount = _fazelabDiscount;
