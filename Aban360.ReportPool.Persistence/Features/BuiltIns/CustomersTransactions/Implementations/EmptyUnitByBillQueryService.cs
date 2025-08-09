@@ -51,7 +51,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         {
             string zoneQuery = hasZone ? "AND b.ZoneId in @zoneIds" : string.Empty;
             string usageQuery = hasUsage ? "AND b.UsageId in @usageIds" : string.Empty;
-            return @$"WITH EmptyUnitByBill AS
+            return @$";WITH EmptyUnitByBill AS
 					(
 					    SELECT
 							b.CustomerNumber,
