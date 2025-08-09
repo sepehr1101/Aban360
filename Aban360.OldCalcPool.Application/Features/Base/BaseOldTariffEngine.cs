@@ -5,9 +5,7 @@ using Aban360.OldCalcPool.Application.Features.Base;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using DNTPersianUtils.Core;
-using Microsoft.AspNetCore.Http;
 using org.matheval;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.CalculationPool.Application.Features.Base
 {
@@ -985,12 +983,10 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 }
             }
 
-
             else
             {
                 //long nerkh_azad = CalculateAzad(nerkhDate1, nerkhDate2, 39);//&& ab azad sakht va saz  && ab azad omomi kargahi** dar  tarikh 1398 / 01 / 31
                 return ((long)abBahaFromExpression, abAzad);
-
             }
             return (0, 0);
             //end line 1532
@@ -1080,7 +1076,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             {
                 // int mod_as_nasb = PartTime(nerkh.Date1, nerkh.Date2, customerInfo.SewageInstallationDateJalali, currentDateJalali);
                 // sewageAmount = (sewageAmount / nerkh.Duration) * mod_as_nasb;
-                int duration = (int.Parse)(CalculationDistanceDate.CalcDistance(customerInfo.SewageInstallationDateJalali, currentDateJalali));
+                int duration = int.Parse(CalculationDistanceDate.CalcDistance(customerInfo.SewageInstallationDateJalali, currentDateJalali));
                 sewageAmount = (abBahaAmount / nerkh.Duration) * duration * multiplier;
 
                 //Update SewageStateToNormal in DB
@@ -1274,8 +1270,19 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
         private double CalculateJavaniJamiat(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double abBahaAmount, double monthlyConsumption, int olgoo)
         {
+            //L 2608
+            if (IsUsageConstructor(customerInfo.UsageId))
+                return 0;
+            if (IsConstruction(customerInfo.BranchType))
+                return 0;
+            if (abBahaAmount == 0)
+                return 0;
+            if (customerInfo.ZoneId == 151511)
+                return 0;
+
             int domesticUnit = customerInfo.DomesticUnit;
             double baseAmount = 1000;
+            double olgooOrCapacity = IsDomestic(customerInfo.UsageId) ? olgoo : customerInfo.ContractualCapacity;
 
             if (IsGardenAndResidence(customerInfo.UsageId))
             {
@@ -1283,19 +1290,9 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 domesticUnit = domesticUnit == 0 ? 1 : domesticUnit;
             }
 
-            //L 2608
-            if (IsUsageConstructor(customerInfo.UsageId))
-                return 0;
-            if (IsConstruction(customerInfo.UsageId))
-                return 0;
-            if (abBahaAmount == 0)
-                return 0;
-            if (customerInfo.ZoneId == 151511)
-                return 0;
-
             if (IsVillage(customerInfo.ZoneId))
             {
-                int villageCode = (int.Parse)(customerInfo.VillageId.ToString().Substring(0, 4));
+                int villageCode = int.Parse(customerInfo.VillageId.ToString().Substring(0, 4));
                 if (monthlyConsumption > olgoo && domesticUnit > 1 && RuralButIsMetro(customerInfo.ZoneId, villageCode))
                 {
                     return baseAmount * nerkh.PartialConsumption;
