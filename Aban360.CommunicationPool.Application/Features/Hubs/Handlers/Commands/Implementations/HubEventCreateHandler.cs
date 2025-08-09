@@ -24,12 +24,12 @@ namespace Aban360.CommunicationPool.Application.Features.Hubs.Handlers.Commands.
 
         public async Task Handle(HubEventCreateDto input, CancellationToken cancellationToken)
         {
-            using (TransactionScope transaction=TransactionBuilder.Create(0, 5))
-            {
-                await _hubEventUpdateService.CloseAllConnection(input.UserId);
+            //using (TransactionScope transaction=TransactionBuilder.Create(0, 5))
+            //{
+                //await _hubEventUpdateService.CloseAllConnection(input.UserId);
                 await _hubEventQueryService.Create(input);
-                transaction.Complete();
-            }
+            //    transaction.Complete();
+            //}
         }
     }
 }
