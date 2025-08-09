@@ -70,8 +70,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                        c.FromDayJalali>=@fromDate and
                        c.ToDayJalali<=@toDate and
                        c.DeletionStateId=@useStateId and
-                       --c.ReadingNumber BETWEEN @fromReadingNumber and @toReadingNumber AND
-                       c.ZoneId in @zoneIds)
+                        (@fromReadingNumber IS NULL OR
+						@toReadingNumber IS NULL OR
+						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) and                       c.ZoneId in @zoneIds)
                     SELECT * FROM CTE
                     WHERE RN=1 AND DeletionStateId=@useStateId ";
         }
