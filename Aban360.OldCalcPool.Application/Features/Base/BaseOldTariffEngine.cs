@@ -353,7 +353,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                         IsCharityAndSchool(customerInfo.UsageId))
                     {
                         double disallowedPartialConsumption = nerkh.PartialConsumption - contractualCapacityInDuration;
-                        double allowedPartialConsumption = customerInfo.ContractualCapacity;
+                        double allowedPartialConsumption = contractualCapacityInDuration;
 
                         if (nerkh.PartialConsumption < contractualCapacityInDuration)
                         {
