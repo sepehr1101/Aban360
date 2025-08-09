@@ -1587,9 +1587,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         {
             return number >= min && number <= max;
         }
-        private static double _Multiplier(ZaribGetDto zarib, int olgo, bool isDomestic, bool isVillage, double monthlyConsumption)
+        private static decimal _Multiplier(ZaribGetDto zarib, int olgo, bool isDomestic, bool isVillage, double monthlyConsumption)
         {
-            double zbSelection = 1;
+            decimal zbSelection = 1;
 
             zbSelection = isVillage ? zarib.Zarib_baha : 1;
             zbSelection = !isDomestic && !isVillage ? zarib.Zb : 1;
