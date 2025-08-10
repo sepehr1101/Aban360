@@ -79,7 +79,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             			c.UsageId in @UsageIds AND
                         (@fromReadingNumber IS NULL OR
 						 @toReadingNumber IS NULL OR
-						 c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)                         c.ZoneId in @ZoneIds AND
+						 c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND 
+                        c.ZoneId in @ZoneIds AND
             			c.EmptyCount BETWEEN @FromEmptyUnit AND @ToEmptyUnit";
         }
     }

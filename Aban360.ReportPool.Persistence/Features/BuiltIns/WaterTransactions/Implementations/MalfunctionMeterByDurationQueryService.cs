@@ -155,7 +155,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     ) AS LastChange
                     WHERE
                        v.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
-                    	f.MalfunctionPeriodCount=@malfunctionPeriodCount AND 
+                    	f.MalfunctionPeriodCount>=@malfunctionPeriodCount AND 
                     	v.ZoneId IN @zoneIds
                     ORDER BY LastChange.ChangeDateJalali DESC";
         }

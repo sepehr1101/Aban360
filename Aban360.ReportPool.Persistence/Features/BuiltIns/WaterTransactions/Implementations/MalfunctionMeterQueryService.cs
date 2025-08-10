@@ -60,12 +60,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                         b.ConsumptionAverage,
 	                    b.CounterStateCode,
 	                    b.CounterStateTitle,
-	                    RN=ROW_NUMBER() OVER (PARTITION BY BillId ORDER BY RegisterDay DESC)
+	                    RN=ROW_NUMBER() OVER (PARTITION BY b.BillId ORDER BY b.RegisterDay DESC)
                     From [CustomerWarehouse].dbo.Bills b
+					Join [CustomerWarehouse].dbo.Clients c 
+						ON b.CustomerNumber=c.CustomerNumber AND b.ZoneId=c.ZoneId
                     Where 
                         b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
                         b.ZoneId IN @zoneIds AND
-                        b.CounterStateCode NOT IN (4,7,8))
+                        b.CounterStateCode NOT IN (4,7,8) AND
+						c.DeletionStateId IN (0,2) AND
+						c.RegisterDayJalali IS NULL)
                     SELECT * FROM CTE 
                     WHERE RN=1 AND CounterStateCode=1";
         }
