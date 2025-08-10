@@ -65,7 +65,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						   	  c.WaterInstallDate BETWEEN @FromDate and @ToDate)
 						 AND (@FromReadingNumber IS NULL or
 						     @ToReadingNumber IS NULL or 
-    						 c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber)
+    						 c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber)AND
+						c.DeletionStateId IN (0,2)AND
+						c.RegisterDayJalali IS NULL
                          {zoneQuery}";
         }
     }
