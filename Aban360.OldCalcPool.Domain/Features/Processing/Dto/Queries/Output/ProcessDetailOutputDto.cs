@@ -35,8 +35,10 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         public CustomerInfoOutputDto Customer { get; set; }
         public MeterInfoOutputDto MeterInfo { get; set; }
 
+        public long StopWatch { get; set; }
 
-        public ProcessDetailOutputDto(double _sumAbBahaAmount,double _abBahaAmount, double _fazelabAmount, double _boodjePart1Amount, double _boodjePar2Amount, double _sumBoodje,double _hotSeasonAbBahaAmount, double _hotSeasonFazelabAmount, double _abBahaDiscount, double _hotSeasonDiscount, double _fazelabDiscount, double _abonmanAbAmount, double _avarezAmount, double _javaniAmount, double _maliatAmount, double _abonmanFazelabAmount, IEnumerable<NerkhGetDto> _nerkh, IEnumerable<AbAzadGetDto> _abAzad, IEnumerable<ZaribGetDto> _zarib)
+
+        public ProcessDetailOutputDto(double _sumAbBahaAmount,double _abBahaAmount, double _fazelabAmount, double _boodjePart1Amount, double _boodjePar2Amount, double _sumBoodje,double _hotSeasonAbBahaAmount, double _hotSeasonFazelabAmount, double _abBahaDiscount, double _hotSeasonDiscount, double _fazelabDiscount, double _abonmanAbAmount, double _avarezAmount, double _javaniAmount, double _maliatAmount, double _abonmanFazelabAmount, IEnumerable<NerkhGetDto> _nerkh, IEnumerable<AbAzadGetDto> _abAzad, IEnumerable<ZaribGetDto> _zarib, long _stopWatch)
         {
             SumItems = _abBahaAmount + _fazelabAmount + _sumBoodje + _hotSeasonAbBahaAmount + _hotSeasonFazelabAmount +
                        _avarezAmount + _javaniAmount + _maliatAmount + _abonmanAbAmount + _abonmanFazelabAmount;
@@ -59,6 +61,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             Nerkh = _nerkh;
             AbAzad = _abAzad;
             Zarib = _zarib;
+            StopWatch = _stopWatch;
         }
     }
 }
