@@ -48,7 +48,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                     	z.zb_r AS Zb_r 
                     From [OldCalc].dbo.zarib z
                     Where 
-	                    z.date1<=@toDate AND z.date2>=@fromDate AND
+	                    z.date1<@toDate AND z.date2>=@fromDate AND
 	                    z.town=@zoneId
                     Order By z.date1 DESC";
         }
