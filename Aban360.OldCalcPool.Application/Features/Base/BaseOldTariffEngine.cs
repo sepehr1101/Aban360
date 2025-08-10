@@ -317,7 +317,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 return new CalculateAbBahaOutputDto(0, (0, 0));
 
             if ((IsDomestic(customerInfo.UsageId) || IsGardenOrDweltyAfter1400_12_24(customerInfo.UsageId, nerkh.Date1)) &&
-                IsNotReligious(customerInfo.UsageId))
+                !IsReligious(customerInfo.UsageId))
             {
                 abBahaFromExpression = CalcFormulaByRate(nerkh.Vaj, monthlyConsumption);
                 abBahaAmount = abBahaFromExpression * nerkh.PartialConsumption;
