@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.Common.Timing;
 using Aban360.OldCalcPool.Application.Features.Base;
@@ -21,17 +22,17 @@ namespace Aban360.CalculationPool.Application.Features.Base
             DateOnly previousDate = ConvertJalaliToGregorian(meterInfo.PreviousDateJalali);
             DateOnly currentDate = ConvertJalaliToGregorian(currentDateJalali);
             nerkh.DailyAverageConsumption = dailyAverage;
-            (nerkh, nerkh.Duration, nerkh.PartialConsumption) = CalcPartial(nerkh, previousDate, currentDate, dailyAverage, consumption,duration);
+            (nerkh, nerkh.Duration, nerkh.PartialConsumption) = CalcPartial(nerkh, previousDate, currentDate, dailyAverage, consumption, duration);
 
             int olgoo = GetOlgoo(nerkh.Date2, nerkh.Olgo);
             bool isVillageCalculation = false;
             double monthlyConsumption = nerkh.DailyAverageConsumption * 30;
-            decimal multiplierAbBaha = Multiplier(zarib, olgoo, IsDomestic(customerInfo.UsageId), isVillageCalculation, monthlyConsumption);
+            decimal multiplierAbBaha = Multiplier(zarib, olgoo, IsDomestic(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
 
             CalculateAbBahaOutputDto abBahaResult = _CalculateAbBaha(nerkh, customerInfo, meterInfo, zarib, abAzad, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, multiplierAbBaha);
             (double, double) boodje = CalculateBoodje(nerkh, customerInfo, currentDateJalali, monthlyConsumption, olgoo, consumption, duration);
             double fazelab = CalculateFazelab(nerkh, customerInfo, abBahaResult.AbBahaAmount, currentDateJalali);
-            double hotSeasonAbBaha = CalcHotSeasonAbBaha(nerkh, abBahaResult.AbBahaAmount, customerInfo, dailyAverage);
+            double hotSeasonAbBaha = CalcHotSeasonAbBaha(nerkh, abBahaResult.AbBahaAmount, customerInfo, monthlyConsumption);//change dailyAverage -> monthlyCosumption
             double hotSeasonFazelb = CalcHotSeasonFaselab(nerkh, customerInfo, fazelab, dailyAverage);
             double avarez = CalculateAvarez(nerkh, customerInfo, monthlyConsumption);
             double javani = CalculateJavaniJamiat(nerkh, customerInfo, abBahaResult.AbBahaAmount, monthlyConsumption, olgoo);
@@ -56,7 +57,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             long value = expression.Eval<long>();
             return value;
         }
-        
+
         private bool CheckConditions(int id, int[] values)
         {
             return values.Contains(id);
@@ -232,10 +233,14 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             return false;
         }
-        private decimal Multiplier(ZaribGetDto zarib, int olgo, bool isDomestic, bool isVillage, double monthlyConsumption)
+        private decimal Multiplier(ZaribGetDto zarib, int olgo, bool isDomestic, bool isVillage, double monthlyConsumption,int branchType)
         {
             double zbSelection = 1;
 
+            if (IsConstruction(branchType))
+            {
+                return zarib.Zb;
+            }
             if (isVillage && isDomestic)
             {
                 return zarib.Zarib_baha;
@@ -317,7 +322,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 return new CalculateAbBahaOutputDto(0, (0, 0));
 
             if ((IsDomestic(customerInfo.UsageId) || IsGardenOrDweltyAfter1400_12_24(customerInfo.UsageId, nerkh.Date1)) &&
-                !IsReligious(customerInfo.UsageId))
+                !IsReligious(customerInfo.UsageId)&&!IsConstruction(customerInfo.BranchType))
             {
                 abBahaFromExpression = CalcFormulaByRate(nerkh.Vaj, monthlyConsumption);
                 abBahaAmount = abBahaFromExpression * nerkh.PartialConsumption;
@@ -393,8 +398,15 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 }
                 else
                 {
-                    abBahaAmount = nerkh.PartialConsumption * abBahaFromExpression;
+                    if (!IsConstruction(customerInfo.BranchType))
+                    {
+                        abBahaAmount = nerkh.PartialConsumption * abBahaFromExpression;
+                    }
                 }
+            }
+            if (IsConstruction(customerInfo.BranchType))
+            {
+                abBahaAmount = abAzad8And39.Azad * nerkh.PartialConsumption;
             }
             //L 1553
             isVillageCalculation = false;//L 1558
@@ -467,7 +479,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             nerkh.Date2 = endSegment.ToDateTime(TimeOnly.MinValue).ToShortPersianDateString();
 
             int durationPartial = endSegment.DayNumber - startSegment.DayNumber;
-            double partialConsumption = (double)consumption/(double)duration*durationPartial;
+            double partialConsumption = (double)consumption / (double)duration * durationPartial;
             return (nerkh, durationPartial, partialConsumption);
         }
         private DateOnly ConvertJalaliToGregorian(string dateJalali)
@@ -489,23 +501,23 @@ namespace Aban360.CalculationPool.Application.Features.Base
         private int PartTime(string date1, string date2, string previousDate, string currentDate)
         {
             int partMethod = 0;
-            partMethod = IsBetween(previousDate, date1, date2) && IsBetween(currentDate, date1, date2) ? 
+            partMethod = IsBetween(previousDate, date1, date2) && IsBetween(currentDate, date1, date2) ?
                 (int.Parse)(CalculationDistanceDate.CalcDistance(previousDate, currentDate)) : partMethod;
 
-            partMethod = previousDate.CompareTo(date1) <= 0 && IsBetween(currentDate, date1, date2) ? 
+            partMethod = previousDate.CompareTo(date1) <= 0 && IsBetween(currentDate, date1, date2) ?
                 (int.Parse)(CalculationDistanceDate.CalcDistance(date1, currentDate)) : partMethod;
 
-            partMethod = currentDate.CompareTo(date2) >= 0 && IsBetween(previousDate, date1, date2) ? 
+            partMethod = currentDate.CompareTo(date2) >= 0 && IsBetween(previousDate, date1, date2) ?
                 (int.Parse)(CalculationDistanceDate.CalcDistance(previousDate, date2)) : partMethod;
 
-            partMethod = previousDate.CompareTo(date1) <= 0 && currentDate.CompareTo(date2) >= 0 ? 
+            partMethod = previousDate.CompareTo(date1) <= 0 && currentDate.CompareTo(date2) >= 0 ?
                 (int.Parse)(CalculationDistanceDate.CalcDistance(date1, date2)) : partMethod;
 
             return partMethod;
         }
-        private double CalcHotSeasonAbBaha(NerkhGetDto nerkh, double abBahaAmount, CustomerInfoOutputDto customerInfo, double dailyAverage)
+        private double CalcHotSeasonAbBaha(NerkhGetDto nerkh, double abBahaAmount, CustomerInfoOutputDto customerInfo, double monthlyConsumption)
         {
-            if (IsDomestic(customerInfo.UsageId) && dailyAverage<25)
+            if (IsDomestic(customerInfo.UsageId) && !IsConstruction(customerInfo.BranchType) && monthlyConsumption < 25)//change dailyAverage to monthlyConsumption 
             {
                 return 0;
             }
@@ -1031,17 +1043,17 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 IsBetween(142215, zoneId, readingNumber, "10220000000", "10229999999");
 
         }
-     
+
         private (double, double) CalculateBoodje(NerkhGetDto nerkhDto, CustomerInfoOutputDto customerInfo, string currentDateJalali, double monthlyConsumption, double olgoo, int consumption, int duration)
         {
             double consumptionAfter1404 = 0;
-            string _1404_01_01= "1404/01/01";
+            string _1404_01_01 = "1404/01/01";
             if (nerkhDto.Date2.CompareTo(_1404_01_01) < 0)
             {
                 return (0, 0);
             }
 
-            if (nerkhDto.Date1.CompareTo(_1404_01_01) < 0 && nerkhDto.Date2.CompareTo(_1404_01_01) >=0)
+            if (nerkhDto.Date1.CompareTo(_1404_01_01) < 0 && nerkhDto.Date2.CompareTo(_1404_01_01) >= 0)
             {
                 int durationAfter1404 = int.Parse(CalculationDistanceDate.CalcDistance(_1404_01_01, nerkhDto.Date2));
                 consumptionAfter1404 = ((double)consumption / duration) * (double)durationAfter1404;
@@ -1050,7 +1062,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             {
                 consumptionAfter1404 = nerkhDto.PartialConsumption;
             }
-            int domesticCount = (customerInfo.DomesticUnit-customerInfo.EmptyUnit) <= 0 ? 1 : customerInfo.DomesticUnit-customerInfo.EmptyUnit;
+            int domesticCount = (customerInfo.DomesticUnit - customerInfo.EmptyUnit) <= 0 ? 1 : customerInfo.DomesticUnit - customerInfo.EmptyUnit;
             double partialOlgoo = IsDomesticWithoutUnspecified(customerInfo.UsageId) ?
                 (double)domesticCount * olgoo / 30 * nerkhDto.Duration :
                 (double)customerInfo.ContractualCapacity / 30 * nerkhDto.Duration;
@@ -1060,7 +1072,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             return (allowedConsumption * 2000, disAllowedConsumption * 4000);
         }
-    
+
         private double CalculateFazelab(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double abBahaAmount, string currentDateJalali)
         {
             double sewageAmount = 0;
@@ -1223,10 +1235,10 @@ namespace Aban360.CalculationPool.Application.Features.Base
             //        abonAbDiscount = 0;
             //    }
             //}               
-        //}
-        #endregion
+            //}
+            #endregion
 
-        int sumUnit = customerInfo.OtherUnit + customerInfo.DomesticUnit + customerInfo.CommertialUnit;
+            int sumUnit = customerInfo.OtherUnit + customerInfo.DomesticUnit + customerInfo.CommertialUnit;
 
             if (IsVillageCollectorMeter(customerInfo.UsageId))
                 sumUnit = 1;

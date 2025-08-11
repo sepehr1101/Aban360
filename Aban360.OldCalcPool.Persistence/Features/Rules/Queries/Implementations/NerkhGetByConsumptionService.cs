@@ -98,8 +98,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                         MAX(CASE WHEN cod = 8 THEN vaj END) AS Amozesh
                     FROM [OldCalc].dbo.nerkh_{nerkh}
                     WHERE
-                        date1 >= @fromDate
-                        AND date2 <= @toDate";
+                        date1 < @toDate
+                        AND date2 >= @fromDate";
         }
 
     }
