@@ -49,11 +49,11 @@ namespace Aban360.CalculationPool.Application.Features.Base
         /// <param name="formula">متن فرمول که در آن X متوسط مصرف ماهانه است</param>
         /// <param name="monthlyAverageConsumption">متوسط مصرف ماهانه</param>
         /// <returns></returns>
-        private long CalcFormulaByRate(string formula, double monthlyAverageConsumption)
+        private double CalcFormulaByRate(string formula, double monthlyAverageConsumption)
         {
             object parameters = new { X = monthlyAverageConsumption };
             Expression expression = GetExpression(formula, parameters);
-            long value = expression.Eval<long>();
+            double value = expression.Eval<double>();
             return value;
         }
         
@@ -326,7 +326,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                     nerkh.OVaj.Trim() != "0" &&
                     IsLessThan1403_09_13(nerkh.Date2))
                 {
-                    long oldAbBahaFromExpression = CalcFormulaByRate(nerkh.OVaj, monthlyConsumption);
+                    double oldAbBahaFromExpression = CalcFormulaByRate(nerkh.OVaj, monthlyConsumption);
                     oldAbBahaAmount = nerkh.PartialConsumption * oldAbBahaFromExpression * 1.15;
                 }
 
@@ -1036,6 +1036,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         {
             double consumptionAfter1404 = 0;
             string _1404_01_01= "1404/01/01";
+            string _1403_12_30 = "1403/12/30";
             if (nerkhDto.Date2.CompareTo(_1404_01_01) < 0)
             {
                 return (0, 0);
@@ -1043,7 +1044,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             if (nerkhDto.Date1.CompareTo(_1404_01_01) < 0 && nerkhDto.Date2.CompareTo(_1404_01_01) >=0)
             {
-                int durationAfter1404 = int.Parse(CalculationDistanceDate.CalcDistance(_1404_01_01, nerkhDto.Date2));
+                int durationAfter1404 = int.Parse(CalculationDistanceDate.CalcDistance(_1403_12_30, nerkhDto.Date2));
                 consumptionAfter1404 = ((double)consumption / duration) * (double)durationAfter1404;
             }
             else
