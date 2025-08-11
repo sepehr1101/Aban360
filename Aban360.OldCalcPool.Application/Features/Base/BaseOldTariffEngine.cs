@@ -1063,6 +1063,10 @@ namespace Aban360.CalculationPool.Application.Features.Base
             {
                 consumptionAfter1404 = nerkhDto.PartialConsumption;
             }
+            if (IsConstruction(customerInfo.BranchType))
+            {
+                return (consumptionAfter1404 * 2000, 0);
+            }
             int domesticCount = (customerInfo.DomesticUnit - customerInfo.EmptyUnit) <= 0 ? 1 : customerInfo.DomesticUnit - customerInfo.EmptyUnit;
             double partialOlgoo = IsDomesticWithoutUnspecified(customerInfo.UsageId) ?
                 (double)domesticCount * olgoo / 30 * nerkhDto.Duration :
@@ -1080,6 +1084,10 @@ namespace Aban360.CalculationPool.Application.Features.Base
             double multiplier = IsDomesticWithoutUnspecified(customerInfo.UsageId) ? 0.7 : 1;
             int _withoutSewage = 0, _firstCalculation = 1, _normal = 2;
 
+            if (IsConstruction(customerInfo.BranchType))
+            {
+                return 0;
+            }
             //has foreach
             if (customerInfo.SewageCalcState == _withoutSewage)
             {
