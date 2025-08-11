@@ -1048,6 +1048,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         {
             double consumptionAfter1404 = 0;
             string _1404_01_01 = "1404/01/01";
+            string _1403_12_30 = "1403/12/30";
             if (nerkhDto.Date2.CompareTo(_1404_01_01) < 0)
             {
                 return (0, 0);
@@ -1055,12 +1056,16 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             if (nerkhDto.Date1.CompareTo(_1404_01_01) < 0 && nerkhDto.Date2.CompareTo(_1404_01_01) >= 0)
             {
-                int durationAfter1404 = int.Parse(CalculationDistanceDate.CalcDistance(_1404_01_01, nerkhDto.Date2));
+                int durationAfter1404 = int.Parse(CalculationDistanceDate.CalcDistance(_1403_12_30, nerkhDto.Date2));
                 consumptionAfter1404 = ((double)consumption / duration) * (double)durationAfter1404;
             }
             else
             {
                 consumptionAfter1404 = nerkhDto.PartialConsumption;
+            }
+            if (IsConstruction(customerInfo.BranchType))
+            {
+                return (consumptionAfter1404 * 2000, 0);
             }
             int domesticCount = (customerInfo.DomesticUnit - customerInfo.EmptyUnit) <= 0 ? 1 : customerInfo.DomesticUnit - customerInfo.EmptyUnit;
             double partialOlgoo = IsDomesticWithoutUnspecified(customerInfo.UsageId) ?
@@ -1079,6 +1084,10 @@ namespace Aban360.CalculationPool.Application.Features.Base
             double multiplier = IsDomesticWithoutUnspecified(customerInfo.UsageId) ? 0.7 : 1;
             int _withoutSewage = 0, _firstCalculation = 1, _normal = 2;
 
+            if (IsConstruction(customerInfo.BranchType))
+            {
+                return 0;
+            }
             //has foreach
             if (customerInfo.SewageCalcState == _withoutSewage)
             {
