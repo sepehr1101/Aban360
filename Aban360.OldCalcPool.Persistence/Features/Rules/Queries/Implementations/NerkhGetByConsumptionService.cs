@@ -99,7 +99,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                     FROM [OldCalc].dbo.nerkh_{nerkh}
                     WHERE
                         date1 < @toDate
-                        AND date2 >= @fromDate";
+                        AND date2 >= @fromDate";///
         }
 
     }
