@@ -50,11 +50,11 @@ namespace Aban360.CalculationPool.Application.Features.Base
         /// <param name="formula">متن فرمول که در آن X متوسط مصرف ماهانه است</param>
         /// <param name="monthlyAverageConsumption">متوسط مصرف ماهانه</param>
         /// <returns></returns>
-        private long CalcFormulaByRate(string formula, double monthlyAverageConsumption)
+        private double CalcFormulaByRate(string formula, double monthlyAverageConsumption)
         {
             object parameters = new { X = monthlyAverageConsumption };
             Expression expression = GetExpression(formula, parameters);
-            long value = expression.Eval<long>();
+            double value = expression.Eval<double>();
             return value;
         }
 
@@ -331,7 +331,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                     nerkh.OVaj.Trim() != "0" &&
                     IsLessThan1403_09_13(nerkh.Date2))
                 {
-                    long oldAbBahaFromExpression = CalcFormulaByRate(nerkh.OVaj, monthlyConsumption);
+                    double oldAbBahaFromExpression = CalcFormulaByRate(nerkh.OVaj, monthlyConsumption);
                     oldAbBahaAmount = nerkh.PartialConsumption * oldAbBahaFromExpression * 1.15;
                 }
 
