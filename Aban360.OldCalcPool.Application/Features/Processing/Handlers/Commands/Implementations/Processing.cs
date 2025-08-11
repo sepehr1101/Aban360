@@ -80,7 +80,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             double monthlyAverageConsumption = dailyAverage * 30;
 
             (IEnumerable<NerkhGetDto>, IEnumerable<AbAzadGetDto>, IEnumerable<ZaribGetDto>) allNerkhAbAbAzad = await _nerkhGetByConsumptionService.Get(new NerkhByConsumptionInputDto(customerInfo.ZoneId,
-                                                                                                                       customerInfo.UsageId,
+                                                                                                                      customerInfo.BranchType == 4 ? 39 : customerInfo.UsageId,
                                                                                                                        meterInfo.PreviousDateJalali,
                                                                                                                        input.CurrentDateJalali,
                                                                                                                        monthlyAverageConsumption));
@@ -107,7 +107,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             double monthlyAverageConsumption = dailyAverage * 30;
 
             (IEnumerable<NerkhGetDto>, IEnumerable<AbAzadGetDto>, IEnumerable<ZaribGetDto>) allNerkhAbAbAzad = await _nerkhGetByConsumptionService.Get(new NerkhByConsumptionInputDto(customerInfo.ZoneId,
-                                                                                                                       customerInfo.UsageId,
+                                                                                                                      customerInfo.BranchType == 4 ? 39 : customerInfo.UsageId,
                                                                                                                        input.PreviousDateJalali,
                                                                                                                        input.CurrentDateJalali,
                                                                                                                        monthlyAverageConsumption));
