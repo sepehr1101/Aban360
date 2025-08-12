@@ -68,8 +68,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                         b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
                         b.ZoneId IN @zoneIds AND
                         b.CounterStateCode NOT IN (4,7,8) AND
-						c.DeletionStateId IN (0,2) AND
-						c.RegisterDayJalali IS NULL)
+						c.DeletionStateId IN (0,2) )
                     SELECT * FROM CTE 
                     WHERE RN=1 AND CounterStateCode=1";
         }
