@@ -4,6 +4,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 {
     public interface IBedBesCreateHadler
     {
-        Task Handle(ProcessDetailOutputDto inputDto, decimal codVas, CancellationToken cancellationToken);
+        Task Handle(AbBahaCalculationDetails inputDto, decimal codVas, CancellationToken cancellationToken);
     }
 }

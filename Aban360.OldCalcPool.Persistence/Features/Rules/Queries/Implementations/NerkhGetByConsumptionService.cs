@@ -23,7 +23,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
         public async Task<(IEnumerable<NerkhGetDto>, IEnumerable<AbAzadGetDto>,IEnumerable<ZaribGetDto>)> Get(NerkhByConsumptionInputDto input)
         {
             string nerkhTableIdQueryString = GetNerkhTableIdQuery();
-            int nerkhTableId = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(nerkhTableIdQueryString, new { zoneId = input.ZoneId });
+            int nerkhTableId = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(nerkhTableIdQueryString, new { zoneId = GetMergedZoneId(input.ZoneId) });
 
             string nerkhGetQueryString = GetNerkhGetQuery(nerkhTableId);
             var @params = new
@@ -40,12 +40,12 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
         }
         private async Task<IEnumerable<ZaribGetDto>> GetZarib(IEnumerable<NerkhGetDto> nerkh,int zoneId)
         {
-            ICollection<ZaribGetDto> zarib=new List<ZaribGetDto>();
+            ICollection<ZaribGetDto> zaribs=new List<ZaribGetDto>();
             foreach (NerkhGetDto item in nerkh)
             {
-                zarib.Add(await _zaribByDateAndZoneIdService.Get(new ZaribInputDto(zoneId, item.Date1, item.Date2)));
+                zaribs.Add(await _zaribByDateAndZoneIdService.Get(new ZaribInputDto(zoneId, item.Date1, item.Date2)));
             }
-            return zarib.ToList();
+            return zaribs.ToList();
         }
         private async Task<IEnumerable<AbAzadGetDto>> GetAbAzad(IEnumerable<NerkhGetDto> nerkh, int nerkhTableId)
         {
