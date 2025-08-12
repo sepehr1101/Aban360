@@ -47,28 +47,33 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         {
             string zoneQuery = hasZone ? "AND c.ZoneId IN @ZoneIds" : string.Empty;
 
-            return @$"Select 
-						c.CustomerNumber as CustomerNumber,
+            return @$";with cte as (
+                    Select 
+                    	c.CustomerNumber as CustomerNumber,
                         c.ReadingNumber,
-						TRIM(c.FirstName) +' '+TRIM(c.SureName) as FullName,
-						c.WaterDiameterTitle as MeterDiameterTitle,
-						c.UsageTitle2 as UsageSellTitle,
-						TRIM(c.Address) as Address,
-						c.ZoneTitle as ZoneTitle
-					From [CustomerWarehouse].dbo.Clients c
-					LEFt JOIN [CustomerWarehouse].dbo.Bills b
-					on c.ZoneId=b.ZoneId AND c.CustomerNumber=b.CustomerNumber
-					where 
-						 b.Id IS NULL
-						 AND (@FromDate IS NULL or
-						   	  @ToDate IS NULL or 
-						   	  c.WaterInstallDate BETWEEN @FromDate and @ToDate)
-						 AND (@FromReadingNumber IS NULL or
-						     @ToReadingNumber IS NULL or 
-    						 c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber)AND
-						c.DeletionStateId IN (0,2)AND
-						c.RegisterDayJalali IS NULL
-                         {zoneQuery}";
+                    	TRIM(c.FirstName) +' '+TRIM(c.SureName) as FullName,
+                    	c.WaterDiameterTitle as MeterDiameterTitle,
+                    	c.UsageTitle2 as UsageSellTitle,
+                    	TRIM(c.Address) as Address,
+                    	c.ZoneTitle as ZoneTitle,
+                    	RN=ROW_NUMBER() OVER (Partition By c.CustomerNumber , c.ZoneId Order By c.CustomerNumber)
+                    From [CustomerWarehouse].dbo.Clients c
+                    LEFt JOIN [CustomerWarehouse].dbo.Bills b
+                    on c.ZoneId=b.ZoneId AND c.CustomerNumber=b.CustomerNumber
+                    where 
+                    	 b.Id IS NULL
+                    	 AND (@FromDate IS NULL or
+                    	   	  @ToDate IS NULL or 
+                    	   	  c.WaterInstallDate BETWEEN @FromDate and @ToDate)
+                    	 AND (@FromReadingNumber IS NULL or
+                    	     @ToReadingNumber IS NULL or 
+                    		 c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber)AND
+                    	c.DeletionStateId IN (0,2)
+                        {zoneQuery}
+                    )
+                    select * 
+                    From cte 
+                    where RN=1";
         }
     }
 }

@@ -96,7 +96,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						b.CustomerNumber, 
 						b.ReadingNumber,
 						b.BillId,
-						b.PayId,
+						TRIM(c.FirstName) AS FirstName,
+						TRIM(c.SureName) AS Surname,
+						TRIM(c.FirstName) +' '+TRIM(c.SureName) AS FullName,
+						TRIM(c.NationalId) AS NationalCode,
+						TRIM(c.MobileNo) AS MobileNumber,
+						TRIM(c.Address) AS Address,
+						TRIM(b.PayId) AS PayId,
 						b.ZoneTitle,
 						b.UsageTitle,
 						b.Consumption,
@@ -117,6 +123,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						b.Deadline,
 						b.WaterDiameterTitle AS MeterDiameterTitle	
 					From [CustomerWarehouse].dbo.Bills b
+					Join [CustomerWarehouse].dbo.Clients c 
+						ON b.CustomerNumber=c.CustomerNumber AND b.ZoneId=c.ZoneId
 					Where b.Id=@Id";
 		}
     }

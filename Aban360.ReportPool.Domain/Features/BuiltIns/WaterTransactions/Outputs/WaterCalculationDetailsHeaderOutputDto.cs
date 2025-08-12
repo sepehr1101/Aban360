@@ -8,6 +8,13 @@
         public string PayId { get; set; }
         public string ZoneTitle { get; set; }
 
+        public string FirstName { get; set; }
+        public string Surname { get; set; }
+        public string FullName { get; set; }
+        public string NationalCode { get; set; }
+        public string MobileNumber { get; set; }
+        public string Address { get; set; }
+
         public string UsageTitle { get; set; }
 
         public int Consumption { get; set; }
@@ -23,7 +30,7 @@
         public string BranchType { get; set; }
         public string ReadingStateTitle { get; set; }
 
-        public string  CounterStateTitle { get; set; }
+        public string CounterStateTitle { get; set; }
 
         public string PreviousDay { get; set; }
         public string CurrentDay { get; set; }
@@ -33,7 +40,7 @@
 
         public string Deadline { get; set; }
 
-        public string  MeterDiameterTitle { get; set; }
+        public string MeterDiameterTitle { get; set; }
 
     }
 }
