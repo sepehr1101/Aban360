@@ -102,6 +102,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						TRIM(c.NationalId) AS NationalCode,
 						TRIM(c.MobileNo) AS MobileNumber,
 						TRIM(c.Address) AS Address,
+						c.PostalCode,
 						TRIM(b.PayId) AS PayId,
 						b.ZoneTitle,
 						b.UsageTitle,

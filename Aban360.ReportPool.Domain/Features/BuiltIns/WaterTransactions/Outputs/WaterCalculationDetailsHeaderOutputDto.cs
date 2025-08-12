@@ -13,6 +13,7 @@
         public string FullName { get; set; }
         public string NationalCode { get; set; }
         public string MobileNumber { get; set; }
+        public string PostalCode { get; set; }
         public string Address { get; set; }
 
         public string UsageTitle { get; set; }
