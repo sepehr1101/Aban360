@@ -38,5 +38,10 @@ namespace Aban360.Common.Db.Dapper
         {
             return zoneId > 140000 ? "Abfar" : zoneId.ToString();
         }
+
+        public int GetMergedZoneId(int zoneId)
+        {
+            return zoneId > 140000 ? zoneId - 10000 : zoneId;
+        }
     }
 }

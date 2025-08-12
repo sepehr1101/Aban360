@@ -23,7 +23,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             _configuration.NotNull(nameof(_configuration));
         }
 
-        public async Task Handle(ProcessDetailOutputDto inputDto, decimal codVas, CancellationToken cancellationToken)
+        public async Task Handle(AbBahaCalculationDetails inputDto, decimal codVas, CancellationToken cancellationToken)
         {
             int dayToPay = int.Parse(_configuration["Invoice:TimeToPay"]);
 
@@ -103,13 +103,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             #endregion
             await _bedBesCreateService.Create(bedBesDto);
         }
-        private double GetSumDiscount(ProcessDetailOutputDto ss)
+        private double GetSumDiscount(AbBahaCalculationDetails ss)
         {
             return ss.AbBahaDiscount +
                    ss.HotSeasonDiscount +
                    ss.FazelabDiscount;
         }
-        private double GetSumAll(ProcessDetailOutputDto ss)
+        private double GetSumAll(AbBahaCalculationDetails ss)
         {
             return ss.AbBahaAmount +
                    ss.HotSeasonAbBahaAmount +

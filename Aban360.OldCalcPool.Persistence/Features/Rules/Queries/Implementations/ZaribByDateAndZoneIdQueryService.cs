@@ -10,14 +10,15 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
     {
         public ZaribByDateAndZoneIdQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+        }
 
         public async Task<ZaribGetDto> Get(ZaribInputDto input)
         {
             string zaribQueryService = GetZaribQueryService();
             var @params = new
             {
-                zoneId = input.ZoneId,
+                zoneId = GetMergedZoneId(GetMergedZoneId(input.ZoneId)),
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali,
             };
