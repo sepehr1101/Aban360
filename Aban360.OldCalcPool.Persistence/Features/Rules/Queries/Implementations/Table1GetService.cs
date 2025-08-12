@@ -10,13 +10,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
     {
         public Table1GetService(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+        }
 
         public async Task<Table1GetDto> Get(int id)
         {
             string Table1GetQueryString = GetTable1GetQuery();
-           Table1GetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<Table1GetDto>(Table1GetQueryString, new { id });
-
+            Table1GetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<Table1GetDto>(Table1GetQueryString, new { id });
             return result;
         }
 
