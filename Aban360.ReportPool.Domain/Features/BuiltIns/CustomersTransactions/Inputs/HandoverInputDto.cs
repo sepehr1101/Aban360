@@ -5,5 +5,6 @@
         public string? FromReadingNumber { get; set; }
         public string? ToReadingNumber { get; set; }
         public ICollection<int> ZoneIds { get; set; }
+        public ICollection<int> BranchTypeIds{ get; set; }
     }
 }

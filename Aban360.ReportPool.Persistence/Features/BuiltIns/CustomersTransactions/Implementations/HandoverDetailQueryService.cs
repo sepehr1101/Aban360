@@ -26,6 +26,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 toReadingNumber = input.ToReadingNumber,
 
                 zoneIds = input.ZoneIds,
+                branchTypeIds=input.BranchTypeIds,
             };
             IEnumerable<HandoverDetailDataOutputDto> data = await _sqlReportConnection.QueryAsync<HandoverDetailDataOutputDto>(handoverDetailQuery, @params);
             if (!data.Any())
@@ -37,7 +38,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 RecordCount = (data is not null && data.Any()) ? data.Count() : 0,
-                ReprotDateJalali = DateTime.Now.ToShortPersianDateString()
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString()
             };
 
             var result = new ReportOutput<HandoverHeaderOutputDto, HandoverDetailDataOutputDto>(ReportLiterals.HandoverDetail, header, data);
@@ -70,7 +71,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	(@fromReadingNumber IS NULL OR
                     	 @toReadingNumber IS NULL OR
                     	 c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-                    	 c.ZoneId IN @zoneIds";
+                    	 c.ZoneId IN @zoneIds AND
+						 c.UsageStateId IN @branchTypeIds";
         }
     }
 }
