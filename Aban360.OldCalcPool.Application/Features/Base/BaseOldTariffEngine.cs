@@ -311,8 +311,6 @@ namespace Aban360.CalculationPool.Application.Features.Base
         /// <returns>عدد محاسبه شده‌ی آب‌بها</returns>
         private CalculateAbBahaOutputDto _CalculateAbBaha(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadGetDto abAzad8And39, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, decimal multiplierAbBaha)
         {
-            var abAzadTest = abAzad8And39;
-
             double abBahaAmount = 0, oldAbBahaAmount = 0, abBahaFromExpression = 0;
             double duration = nerkh.Duration;
             abBahaFromExpression = CalcFormulaByRate(nerkh.Vaj, monthlyConsumption);
@@ -322,7 +320,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 return new CalculateAbBahaOutputDto(0, (0, 0));
 
             if ((IsDomestic(customerInfo.UsageId) || IsGardenOrDweltyAfter1400_12_24(customerInfo.UsageId, nerkh.Date1)) &&
-                !IsReligious(customerInfo.UsageId)&&!IsConstruction(customerInfo.BranchType))
+                !IsReligious(customerInfo.UsageId) && !IsConstruction(customerInfo.BranchType))
             {
                 abBahaFromExpression = CalcFormulaByRate(nerkh.Vaj, monthlyConsumption);
                 abBahaAmount = abBahaFromExpression * nerkh.PartialConsumption;
@@ -341,6 +339,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                     IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
                     !IsConstruction(customerInfo.BranchType))
                 {
+                    //?????
                     abBahaAmount = oldAbBahaAmount;
                 }
             }
@@ -409,7 +408,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 abBahaAmount = abAzad8And39.Azad * nerkh.PartialConsumption;
             }
             //L 1553
-            isVillageCalculation = false;//L 1558
+            //L 1558
 
             if (IsVillage(customerInfo.ZoneId) &&
                 IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
@@ -458,8 +457,11 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             abBahaAmount = abBahaAmount * (double)multiplierAbBaha;
             oldAbBahaAmount = oldAbBahaAmount * (double)multiplierAbBaha;// foxpro:1755
+            if(abBahaValues==(0,0))
+            {
+                abBahaValues = (abBahaAmount, 0);
+            }
             return new CalculateAbBahaOutputDto(abBahaAmount, abBahaValues);
-
         }
         private int GetOlgoo(string nerkhDate2, int olgo)
         {
@@ -1313,8 +1315,8 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             if (IsVillage(customerInfo.ZoneId))
             {
-                int villageCode = int.Parse(customerInfo.VillageId.ToString().Substring(0, 4));
-                if (monthlyConsumption > olgoo && domesticUnit > 1 && RuralButIsMetro(customerInfo.ZoneId, villageCode))
+                int.TryParse(customerInfo.VillageId.ToString().Substring(0, 4),out int villageCode);
+                if (villageCode>0 && monthlyConsumption > olgoo && domesticUnit > 1 && RuralButIsMetro(customerInfo.ZoneId, villageCode))
                 {
                     return baseAmount * nerkh.PartialConsumption;
                 }
