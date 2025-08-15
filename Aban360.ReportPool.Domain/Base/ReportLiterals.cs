@@ -42,7 +42,8 @@
         public static string EmptyUnitByBill { get { return $"{Report} خالی از سکنه - قبض"; } }
         public static string UsageDetail { get { return $"{Report} جزئیات کاربری"; } }
         public static string UsageSummary { get { return $"{Report} خلاصه گزارش"; } }
-        public static string NonPermanentBranch { get { return $"{Report} انشعاب غیر دائم"; } }
+        public static string NonPermanentBranchDetail { get { return $"{Report} جرئیات انشعاب غیر دائم"; } }
+        public static string NonPermanentBranchSummary { get { return $"{Report} خلاصه انشعاب غیر دائم"; } }
 
 
         public static string SubscriptionEventSummary { get { return "کاردکس آب"; } }

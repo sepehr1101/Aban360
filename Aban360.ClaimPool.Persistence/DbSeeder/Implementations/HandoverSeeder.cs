@@ -37,6 +37,7 @@ namespace Aban360.ClaimPool.Persistence.DbSeeder.Implementations
                 new Handover(){Id=5,Title="کد 5"},
                 new Handover(){Id=6,Title="بهزیستی"},
                 new Handover(){Id=7,Title="کمیته امداد"},
+                new Handover(){Id=8,Title="صنعتی خاص"},
             };
            _useState.AddRange(handover);
             _uow.SaveChanges();
