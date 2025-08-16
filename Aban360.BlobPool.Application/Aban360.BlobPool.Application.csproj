@@ -14,8 +14,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Aban260.BlobPool.Infrastructure\Aban260.BlobPool.Infrastructure.csproj" />
     <ProjectReference Include="..\Aban360.BlobPool.Domain\Aban360.BlobPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.BlobPool.Persistence\Aban360.BlobPool.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\DmsServices\Handlers\Commands\Create\Contracts\" />
+    <Folder Include="Features\DmsServices\Handlers\Commands\Create\Implementations\" />
+    <Folder Include="Features\DmsServices\Handlers\Queries\Implementation\" />
   </ItemGroup>
 
 </Project>

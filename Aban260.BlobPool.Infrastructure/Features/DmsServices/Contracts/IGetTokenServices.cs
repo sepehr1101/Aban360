@@ -4,23 +4,23 @@ using System.Text.Json;
 
 namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
 {
-    public interface IGetToken
+    public interface IGetTokenServices
     {
         Task<string> Service();
     }
-    internal sealed class GetToken : IGetToken
+    internal sealed class GetTokenServices : IGetTokenServices
     {
-        private readonly HttpClient _httpClient;
+        private readonly IHttpClientFactory _httpClientFactoryFactory;
         static string _token;//todo: remove static
         static DateTime _expireTime;
 
-        string url = "https://esb.abfaisfahan.com:8243/token";
+        string url = $"https://esb.abfaisfahan.com:8243/token";
         string _basicToken = "UEtxbkJ1enVNRXM0aEFySV9CUGZZaWhKS1lNYTpZUlFFZjcyR29zc0oyZ0dtMmhFMU5PTVZhVDhh";
         string _basic = "Basic";
-        public GetToken(HttpClient httpClient)
+        public GetTokenServices(IHttpClientFactory httpClientFactoryFactory)
         {
-            _httpClient = httpClient;
-            _httpClient.NotNull(nameof(httpClient));
+            _httpClientFactoryFactory = httpClientFactoryFactory;
+            _httpClientFactoryFactory.NotNull(nameof(httpClientFactoryFactory));
         }
 
         public async Task<string> Service()
@@ -29,7 +29,8 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
             {
                 return _token;
             }
-            _httpClient.DefaultRequestHeaders.Authorization =
+            var client = _httpClientFactoryFactory.CreateClient();
+            client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue(_basic, _basicToken);
 
             var body = new Dictionary<string, string>()
@@ -38,7 +39,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
             };
 
             var content = new FormUrlEncodedContent(body);
-            var respone = await _httpClient.PostAsync(url, content);
+            var respone = await client.PostAsync(url, content);
             respone.EnsureSuccessStatusCode();
 
             var jsonResponse = await respone.Content.ReadAsStringAsync();
