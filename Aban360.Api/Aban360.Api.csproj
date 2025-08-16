@@ -64,6 +64,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Aban260.BlobPool.Infrastructure\Aban260.BlobPool.Infrastructure.csproj" />
     <ProjectReference Include="..\Aban360.BlobPool.Application\Aban360.BlobPool.Application.csproj" />
     <ProjectReference Include="..\Aban360.BlobPool.Domain\Aban360.BlobPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.BlobPool.GatewayAddHoc\Aban360.BlobPool.GatewayAddHoc.csproj" />
