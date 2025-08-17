@@ -1,4 +1,5 @@
 ﻿using Aban360.BlobPool.Application.Features.DmsServices.Handlers.Commands.Create.Contracts;
+using Aban360.BlobPool.Domain.Features.DmsServices.Dto.Queries;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,9 +17,9 @@ namespace Aban360.Api.Controllers.V1.BlobController.DmsServices.Commands
 
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> create(string serverPath, string localFilePath)
+        public async Task<IActionResult> create(SetOnMetadataInputDto input)
         {
-            await _setOnMetadataHandler.Handle(serverPath, localFilePath);
+            await _setOnMetadataHandler.Handle(input);
             return Ok();
         }
     }

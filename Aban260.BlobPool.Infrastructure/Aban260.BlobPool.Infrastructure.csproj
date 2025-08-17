@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Implementations\" />
+    <Folder Include="Features\DmsServices\Implementations\" />
   </ItemGroup>
 
   <ItemGroup>

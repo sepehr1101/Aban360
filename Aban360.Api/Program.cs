@@ -33,12 +33,23 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 //serilog
 builder.Services.AddSerilog(configuration);
 builder.Services.AddSignalR();    //todo: replace into configure signalR
+
+//todo 
+builder.Services.AddHttpClient();//write by z-e
+
+
+
+
+
+
 var app = builder.Build();
 //app.UsePathBase("/aban360");
 app.UseExceptionHandler("/error");
 app.AddSwaggerApp();
 
 // Configure the HTTP request pipeline.
+
+
 
 
 app.UseHttpsRedirection();
