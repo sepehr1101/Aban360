@@ -3,19 +3,19 @@ using System.Net.Http.Headers;
 
 namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
 {
-    public interface IAddFileInFolderServices
+    public interface IFileInFolderCreateServices
     {
         Task Services(string serverPath, string localFilePath);
     }
-    internal sealed class AddFileInFolderServices : IAddFileInFolderServices
+    internal sealed class FileInFolderCreateServices : IFileInFolderCreateServices
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IGetTokenServices _tokenServices;
+        private readonly ITokenGetServices _tokenServices;
         string url = $"https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-AddFile/1.0/";
         string bearer ="Bearer";
         string docPath = "docPath";
         string content = "content";
-        public AddFileInFolderServices(IHttpClientFactory httpClientFactory, IGetTokenServices tokenServices)
+        public FileInFolderCreateServices(IHttpClientFactory httpClientFactory, ITokenGetServices tokenServices)
         {
             _httpClientFactory = httpClientFactory;
             _httpClientFactory.NotNull(nameof(httpClientFactory));

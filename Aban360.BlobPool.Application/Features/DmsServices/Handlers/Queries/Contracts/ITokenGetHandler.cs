@@ -1,16 +1,16 @@
 ﻿using Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts;
 using Aban360.Common.Extensions;
 
-namespace Aban360.BlobPool.Application.Features.DmsServices.Handlers.Queries.Commands
+namespace Aban360.BlobPool.Application.Features.DmsServices.Handlers.Queries.Contracts
 {
-    public interface IGetTokenHandler
+    public interface ITokenGetHandler
     {
         Task<string> Handle();
     }
-    internal sealed class GetokenHandler : IGetTokenHandler
+    internal sealed class TokenGetHandler : ITokenGetHandler
     {
-        private readonly IGetTokenServices _getTokenSevice;
-        public GetokenHandler(IGetTokenServices getTokenSevice)
+        private readonly ITokenGetServices _getTokenSevice;
+        public TokenGetHandler(ITokenGetServices getTokenSevice)
         {
             _getTokenSevice = getTokenSevice;
             _getTokenSevice.NotNull(nameof(getTokenSevice));    

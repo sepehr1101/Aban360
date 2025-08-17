@@ -4,18 +4,18 @@ using System.Text;
 
 namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
 {
-    public interface IFindUserServices
+    public interface ISearchUserServices
     {
-        Task Services(string folderPath, string property, string path);
+        Task<string> Services(string folderPath, string property, string path);
     }
-    internal sealed class FindUserServices : IFindUserServices
+    internal sealed class SearchUserServices : ISearchUserServices
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IGetTokenServices _tokenServices;
+        private readonly ITokenGetServices _tokenServices;
         string _bearer = "Bearer";
         string _content = "text/plain";
         string baseUrl = "https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-SearchByMetadataAndPath/1.0";
-        public FindUserServices(IHttpClientFactory httpClientFactory, IGetTokenServices tokenServices)
+        public SearchUserServices(IHttpClientFactory httpClientFactory, ITokenGetServices tokenServices)
         {
             _httpClientFactory = httpClientFactory;
             _httpClientFactory.NotNull(nameof(httpClientFactory));
@@ -24,7 +24,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
             _tokenServices.NotNull(nameof(httpClientFactory));
         }
 
-        public async Task Services(string folderPath, string property, string path)
+        public async Task<string> Services(string folderPath, string property, string path)
         {
             var client = _httpClientFactory.CreateClient();
             string token = await _tokenServices.Service();
@@ -38,6 +38,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
             response.EnsureSuccessStatusCode();
 
             string result = await response.Content.ReadAsStringAsync();
+            return result;
         }
     }
 }

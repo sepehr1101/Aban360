@@ -1,23 +1,21 @@
 ﻿using Aban360.Common.Extensions;
 using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
 
 namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
 {
-    public interface IGetFilesServices
+    public interface IFilesGetServices
     {
-        Task Services(string fieldId);
+        Task<string> Services(string fieldId);
     }
-    internal sealed class GetFilesServices : IGetFilesServices
+    internal sealed class FilesGetServices : IFilesGetServices
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IGetTokenServices _tokenServices;
+        private readonly ITokenGetServices _tokenServices;
         string _bearer = "Bearer";
         string _accept = "application/json";
         string _content = "application/json";
         string baseUrl = $"https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-GetFilesList/1.0/";
-        public GetFilesServices(IHttpClientFactory httpClientFactory, IGetTokenServices tokenServices)
+        public FilesGetServices(IHttpClientFactory httpClientFactory, ITokenGetServices tokenServices)
         {
             _httpClientFactory = httpClientFactory;
             _httpClientFactory.NotNull(nameof(httpClientFactory));
@@ -26,7 +24,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
             _tokenServices.NotNull(nameof(tokenServices));
         }
 
-        public async Task Services(string fieldId)
+        public async Task<string> Services(string fieldId)
         {
             var client = _httpClientFactory.CreateClient();
             string token = await _tokenServices.Service();
@@ -45,6 +43,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
             var response = await client.GetAsync(finalUrl);
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();
+            return result;
         }
     }
 }

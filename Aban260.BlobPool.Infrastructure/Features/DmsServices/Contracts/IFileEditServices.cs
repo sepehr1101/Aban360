@@ -3,20 +3,20 @@ using System.Net.Http.Headers;
 
 namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
 {
-    public interface IEditFileServices
+    public interface IFileEditServices
     {
         Task Services(string nodeId, string groupName);
     }
-    internal sealed class EditFileServices : IEditFileServices
+    internal sealed class FileEditServices : IFileEditServices
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IGetTokenServices _tokenServices;
+        private readonly ITokenGetServices _tokenServices;
         string bearer = "Bearer";
         string accept="application/xml";
         string cookie = "Cookie";
         string cookieDate = "cookiesession1=678ADA5C33A30F49D180AB6CBD34D5FC";
         string baseUrl = $"https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-CreateMetadata/1.0";     
-        public EditFileServices(IHttpClientFactory httpClientFactory, IGetTokenServices tokenServices)
+        public FileEditServices(IHttpClientFactory httpClientFactory, ITokenGetServices tokenServices)
         {
             _httpClientFactory = httpClientFactory;
             _httpClientFactory.NotNull(nameof(_httpClientFactory));

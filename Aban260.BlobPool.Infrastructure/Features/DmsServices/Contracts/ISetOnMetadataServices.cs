@@ -5,19 +5,19 @@ using System.Text;
 
 namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
 {
-    public interface ISetOnMetadateServices
+    public interface ISetOnMetadataServices
     {
         Task Service(string body, string nodeId, string groupName);
     }
-    internal sealed class SetOnMetadateServices : ISetOnMetadateServices
+    internal sealed class SetOnMetadataServices : ISetOnMetadataServices
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IGetTokenServices _tokenServices;
+        private readonly ITokenGetServices _tokenServices;
         string bearer = "Bearer";
         string accept = "application/xml";
         string textPlain = "text/plain";
         string baseUrl = "https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-SetMetadata/1.0";
-        public SetOnMetadateServices(IHttpClientFactory httpClientFactory, IGetTokenServices tokenServices)
+        public SetOnMetadataServices(IHttpClientFactory httpClientFactory, ITokenGetServices tokenServices)
         {
             _httpClientFactory = httpClientFactory;
             _httpClientFactory.NotNull(nameof(httpClientFactory));

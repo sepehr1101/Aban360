@@ -4,11 +4,11 @@ using System.Text.Json;
 
 namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
 {
-    public interface IGetTokenServices
+    public interface ITokenGetServices
     {
         Task<string> Service();
     }
-    internal sealed class GetTokenServices : IGetTokenServices
+    internal sealed class TokenGetServices : ITokenGetServices
     {
         private readonly IHttpClientFactory _httpClientFactoryFactory;
         static string _token;//todo: remove static
@@ -17,7 +17,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
         string url = $"https://esb.abfaisfahan.com:8243/token";
         string _basicToken = "UEtxbkJ1enVNRXM0aEFySV9CUGZZaWhKS1lNYTpZUlFFZjcyR29zc0oyZ0dtMmhFMU5PTVZhVDhh";
         string _basic = "Basic";
-        public GetTokenServices(IHttpClientFactory httpClientFactoryFactory)
+        public TokenGetServices(IHttpClientFactory httpClientFactoryFactory)
         {
             _httpClientFactoryFactory = httpClientFactoryFactory;
             _httpClientFactoryFactory.NotNull(nameof(httpClientFactoryFactory));

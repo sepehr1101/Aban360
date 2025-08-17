@@ -4,17 +4,17 @@ using System.Text;
 
 namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
 {
-    public interface ICreateFolderServices
+    public interface IFolderCreateServices
     {
         Task Services(string folderPath);
     }
-    internal sealed class CreateFolderServices: ICreateFolderServices
+    internal sealed class FolderCreateServices: IFolderCreateServices
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IGetTokenServices _tokenProvider;
+        private readonly ITokenGetServices _tokenProvider;
         string url = $"https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-CreateFolder/1.0";
         string bearer ="Bearer";
-        public CreateFolderServices(IHttpClientFactory httpClientFactory, IGetTokenServices tokenProvider)
+        public FolderCreateServices(IHttpClientFactory httpClientFactory, ITokenGetServices tokenProvider)
         {
             _httpClientFactory = httpClientFactory;
             _httpClientFactory.NotNull(nameof(httpClientFactory));
