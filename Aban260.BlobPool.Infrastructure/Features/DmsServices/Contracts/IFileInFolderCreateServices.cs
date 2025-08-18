@@ -10,27 +10,18 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
     internal sealed class FileInFolderCreateServices : IFileInFolderCreateServices
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ITokenGetServices _tokenServices;
         string url = $"https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-AddFile/1.0/";
-        string bearer ="Bearer";
         string docPath = "docPath";
         string content = "content";
-        public FileInFolderCreateServices(IHttpClientFactory httpClientFactory, ITokenGetServices tokenServices)
+        public FileInFolderCreateServices(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
             _httpClientFactory.NotNull(nameof(httpClientFactory));
-
-            _tokenServices = tokenServices;
-            _tokenServices.NotNull(nameof(tokenServices));
         }
 
         public async Task Services(string serverPath, string localFilePath)
         {
-            var client = _httpClientFactory.CreateClient();
-            string token = await _tokenServices.Service();
-
-            client.DefaultRequestHeaders.Authorization =
-                 new AuthenticationHeaderValue(bearer, token);
+            var client = _httpClientFactory.CreateClient("token");
 
             using var form = new MultipartFormDataContent();
 

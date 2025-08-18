@@ -1,3 +1,4 @@
+using Aban260.BlobPool.Infrastructure.Features.DmsServices;
 using Aban360.Api.ExceptionHandlers;
 using Aban360.Api.Extensions;
 using Aban360.Api.Hubs.Implementations;
@@ -35,8 +36,9 @@ builder.Services.AddSerilog(configuration);
 builder.Services.AddSignalR();    //todo: replace into configure signalR
 
 //todo 
-builder.Services.AddHttpClient();//write by z-e
-
+builder.Services.AddTransient<TokenInterceptor>();
+builder.Services.AddHttpClient("token")//write by z-e
+    .AddHttpMessageHandler<TokenInterceptor>();
 
 
 

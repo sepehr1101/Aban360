@@ -10,26 +10,19 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
     internal sealed class FilesGetServices : IFilesGetServices
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ITokenGetServices _tokenServices;
-        string _bearer = "Bearer";
         string _accept = "application/json";
         string _content = "application/json";
         string baseUrl = $"https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-GetFilesList/1.0/";
-        public FilesGetServices(IHttpClientFactory httpClientFactory, ITokenGetServices tokenServices)
+        public FilesGetServices(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
             _httpClientFactory.NotNull(nameof(httpClientFactory));
-
-            _tokenServices = tokenServices;
-            _tokenServices.NotNull(nameof(tokenServices));
         }
 
         public async Task<string> Services(string fieldId)
         {
-            var client = _httpClientFactory.CreateClient();
-            string token = await _tokenServices.Service();
+            var client = _httpClientFactory.CreateClient("token");
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_bearer, token);
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
 
             var values = new
