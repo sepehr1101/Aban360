@@ -22,8 +22,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             {
                 fromReadingNumber = input.FromReadingNumber,
                 toReadingNumber = input.ToReadingNumber,
-                fromDate=input.FromDateJalali,
-                toDate=input.ToDateJalali,
+                fromDateJalali=input.FromDateJalali,
+                toDateJalali = input.ToDateJalali,
                 zoneIds = input.ZoneIds,
                 malfunctionPeriodCount=input.MalfunctionPeriodCount
             };
@@ -62,8 +62,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                                    ROW_NUMBER() OVER (PARTITION BY BillId ORDER BY RegisterDay DESC) AS rn
                             FROM [CustomerWarehouse].dbo.Bills
                             WHERE 
-                    			ZoneId IN @zoneId AND 
-                    			CounterStateCode NOT IN (4,7,8)
+                    			ZoneId IN @zoneIds AND 
+                    			CounterStateCode NOT IN (4,7,8) AND
+		                    	RegisterDay BETWEEN @fromDateJalali AND @toDateJalali
                         ) b
                         WHERE 
                     		b.rn = 1 AND 
@@ -87,7 +88,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     		ON v.CustomerNumber = b.CustomerNumber AND v.ZoneId=b.ZoneId
                         WHERE 
                     	  b.CounterStateCode = 1 AND 
-                    	  b.RegisterDay <= v.LatestRegisterDay
+                    	  b.RegisterDay <= v.LatestRegisterDay AND
+	                      b.RegisterDay BETWEEN @fromDateJalali AND @toDateJalali
                         GROUP BY b.BillId
                     ),
                     -- اطلاعات مشتری
@@ -108,7 +110,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                         WHERE 
                     		c.ToDayJalali IS NULL AND
                     		c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
-                            c.ZoneId IN @zoneId
+                            c.ZoneId IN @zoneIds
                     )
                     SELECT 
                         v.BillId,
