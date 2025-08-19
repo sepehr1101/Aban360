@@ -52,7 +52,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
                     	c.WaterRequestDate BETWEEN @fromDate AND @toDate AND
-                    	c.ZoneId IN @zoneIds
+                    	c.ZoneId IN @zoneIds AND
+						c.ToDayJalali IS NULL
                     Group BY
                     	c.UsageTitle2";
         }
@@ -64,7 +65,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
                     	c.SewageRequestDate BETWEEN @fromDate AND @toDate AND
-                    	c.ZoneId IN @zoneIds
+                    	c.ZoneId IN @zoneIds AND
+						c.ToDayJalali IS NULL
                     Group BY
                     	c.UsageTitle2";
         }
