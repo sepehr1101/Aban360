@@ -57,7 +57,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.ZoneId IN @zoneIds AND
                         (@fromReadingNumber IS NULL OR
 					    @toReadingNumber IS NULL OR
-					    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)
+					    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
+						c.ToDayJalali IS NULL
                     Group BY
                     	c.UsageTitle";
         }
@@ -72,7 +73,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.ZoneId IN @zoneIds AND
                         (@fromReadingNumber IS NULL OR
 					    @toReadingNumber IS NULL OR
-					    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)
+					    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
+						c.ToDayJalali IS NULL
                     Group BY
                     	c.UsageTitle";
         }

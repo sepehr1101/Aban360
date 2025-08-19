@@ -62,7 +62,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     Where	
                     	c.WaterInstallDate BETWEEN @fromDate AND @toDate AND
 						(TRIM(c.SewageRequestDate)='' OR c.SewageRequestDate IS NULL) AND
-                    	c.ZoneId IN @zoneIds";
+                    	c.ZoneId IN @zoneIds AND
+						c.ToDayJalali IS NULL";
         }
     }
 }

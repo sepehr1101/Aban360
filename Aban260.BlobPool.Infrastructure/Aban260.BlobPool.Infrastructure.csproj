@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+    <PackageReference Include="Scrutor" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\DmsServices\Implementations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
+  </ItemGroup>
+
+</Project>

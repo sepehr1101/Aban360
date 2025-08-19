@@ -126,7 +126,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 					From [CustomerWarehouse].dbo.Bills b
 					Join [CustomerWarehouse].dbo.Clients c 
 						ON b.CustomerNumber=c.CustomerNumber AND b.ZoneId=c.ZoneId
-					Where b.Id=@Id";
-		}
+					Where
+						b.Id=@Id AND 
+						c.ToDayJalali IS NULL"; 
+
+        }
     }
 }
