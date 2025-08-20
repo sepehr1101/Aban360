@@ -6,7 +6,6 @@ using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contrac
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
@@ -47,8 +46,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         {
             string zoneQuery = hasZone ? "AND c.ZoneId IN @ZoneIds" : string.Empty;
 
-            return @$";with cte as (
-                    Select 
+            return @$"Select 
                     	c.CustomerNumber as CustomerNumber,
                         c.ReadingNumber,
                     	TRIM(c.FirstName) +' '+TRIM(c.SureName) as FullName,
@@ -61,19 +59,74 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     LEFt JOIN [CustomerWarehouse].dbo.Bills b
                     on c.ZoneId=b.ZoneId AND c.CustomerNumber=b.CustomerNumber
                     where 
-                    	 b.Id IS NULL
-                    	 AND (@FromDate IS NULL or
+                    	 b.Id IS NULL AND
+						 (@FromDate IS NULL or
                     	   	  @ToDate IS NULL or 
-                    	   	  c.WaterInstallDate BETWEEN @FromDate and @ToDate)
-                    	 AND (@FromReadingNumber IS NULL or
+                    	   	  c.WaterInstallDate BETWEEN @FromDate and @ToDate)AND 
+						 (@FromReadingNumber IS NULL or
                     	     @ToReadingNumber IS NULL or 
-                    		 c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber)AND
-                    	c.DeletionStateId IN (0,2)
-                        {zoneQuery}
-                    )
-                    select * 
-                    From cte 
-                    where RN=1";
+                    		 c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND
+                    	c.DeletionStateId IN (0,2)  AND
+						c.ToDayJalali IS NULL 
+                       {zoneQuery}";
+            //todo: remove 'where RN=1 but use c.todayjalali is null
         }
     }
 }
+#region last query
+/* ;with cte as (
+                   Select 
+                       c.CustomerNumber as CustomerNumber,
+                       c.ReadingNumber,
+                       TRIM(c.FirstName) +' '+TRIM(c.SureName) as FullName,
+                       c.WaterDiameterTitle as MeterDiameterTitle,
+                       c.UsageTitle2 as UsageSellTitle,
+                       TRIM(c.Address) as Address,
+                       c.ZoneTitle as ZoneTitle,
+                       RN=ROW_NUMBER() OVER (Partition By c.CustomerNumber , c.ZoneId Order By c.CustomerNumber)
+                   From [CustomerWarehouse].dbo.Clients c
+                   LEFt JOIN [CustomerWarehouse].dbo.Bills b
+                   on c.ZoneId=b.ZoneId AND c.CustomerNumber=b.CustomerNumber
+                   where 
+                        b.Id IS NULL
+                        AND (@FromDate IS NULL or
+                             @ToDate IS NULL or 
+                             c.WaterInstallDate BETWEEN @FromDate and @ToDate)
+                        AND (@FromReadingNumber IS NULL or
+                            @ToReadingNumber IS NULL or 
+                            c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber)AND
+                       c.DeletionStateId IN (0,2)
+                       {zoneQuery}
+                   )
+                   select * 
+                   From cte 
+                   where RN=1;with cte as (
+                   Select 
+                       c.CustomerNumber as CustomerNumber,
+                       c.ReadingNumber,
+                       TRIM(c.FirstName) +' '+TRIM(c.SureName) as FullName,
+                       c.WaterDiameterTitle as MeterDiameterTitle,
+                       c.UsageTitle2 as UsageSellTitle,
+                       TRIM(c.Address) as Address,
+                       c.ZoneTitle as ZoneTitle,
+                       RN=ROW_NUMBER() OVER (Partition By c.CustomerNumber , c.ZoneId Order By c.CustomerNumber)
+                   From [CustomerWarehouse].dbo.Clients c
+                   LEFt JOIN [CustomerWarehouse].dbo.Bills b
+                   on c.ZoneId=b.ZoneId AND c.CustomerNumber=b.CustomerNumber
+                   where 
+                        b.Id IS NULL
+                        AND (@FromDate IS NULL or
+                             @ToDate IS NULL or 
+                             c.WaterInstallDate BETWEEN @FromDate and @ToDate)
+                        AND (@FromReadingNumber IS NULL or
+                            @ToReadingNumber IS NULL or 
+                            c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber)AND
+                       c.DeletionStateId IN (0,2)
+                       {zoneQuery}
+                   )
+                   select * 
+                   From cte 
+                   where RN=1
+*/
+
+#endregion

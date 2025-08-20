@@ -6,7 +6,6 @@ using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.C
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {

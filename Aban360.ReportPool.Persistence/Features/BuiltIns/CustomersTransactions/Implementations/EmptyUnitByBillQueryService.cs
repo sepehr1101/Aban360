@@ -88,7 +88,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 							AND
 							(@fromReadingNumber IS NULL OR
 							@toReadingNumber IS NULL OR
-							b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) 
+							c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
+                            c.ToDayJalali is null
 							{zoneQuery}	
 							{usageQuery}
 					)

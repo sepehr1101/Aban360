@@ -43,7 +43,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 distances.Add(item.DistanceAverage);
             }
             int averageDistance = (int)distances.Sum() / (result.ReportHeader.RecordCount <= 0 ? 1 : result.ReportHeader.RecordCount);
-            result.ReportHeader.AvergeDistance=CalculationDistanceDate.ConvertDaysToDate(averageDistance);
+            result.ReportHeader.AverageDistance=CalculationDistanceDate.ConvertDaysToDate(averageDistance);
             result.ReportHeader.MaxDistance = CalculationDistanceDate.ConvertDaysToDate((int)distances.Max());
 
             return result;

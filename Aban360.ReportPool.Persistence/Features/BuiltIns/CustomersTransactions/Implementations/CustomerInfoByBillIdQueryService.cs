@@ -26,8 +26,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	c.ReadingNumber
                     From [CustomerWarehouse].dbo.Clients c
                     Where 
-                    	c.ToDayJalali IS NOT NULL AND
+                    	c.ToDayJalali IS NULL AND
                     	c.BillId=@billId";
+            //todo: last: IS NOT NULL?
         }
     }
 }

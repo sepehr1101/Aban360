@@ -6,7 +6,7 @@
         public string ToDateJalali { get; set; }
         public string ReportDateJalali { get; set; }
         public int RecordCount { get; set; }
-        public string AvergeDistance { get; set; }
+        public string AverageDistance { get; set; }
         public string MaxDistance { get; set; }
     }
 }

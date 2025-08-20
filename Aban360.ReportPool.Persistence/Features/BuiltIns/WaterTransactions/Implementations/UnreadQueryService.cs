@@ -6,7 +6,6 @@ using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contrac
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
@@ -59,13 +58,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     JOIN [CustomerWarehouse].dbo.Clients c ON b.BillId=c.BillId
                     LEFT JOIN [CustomerWarehouse].dbo.payments as p ON p.BillTableId = b.id
                     WHERE
-                    	p.id IS NULL
-                    	AND	b.TypeId=N'بسته مانع'
-                    	AND
+            			c.ToDayJalali IS NULL AND
+                    	p.id IS NULL AND
+                        b.TypeId=N'بسته مانع' AND
                          (
                          	(@FromReadingNumber IS NOT NULL AND
                          		@ToReadingNumber IS NOT NULL AND
-                         		b.ReadingNumber BETWEEN @FromReadingNumber AND @ToReadingNumber)
+                         		c.ReadingNumber BETWEEN @FromReadingNumber AND @ToReadingNumber)
                          	OR
                          	(@FromReadingNumber IS NULL AND
                          		@ToReadingNumber IS NULL)

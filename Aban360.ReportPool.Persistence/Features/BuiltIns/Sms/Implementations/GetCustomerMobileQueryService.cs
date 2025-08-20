@@ -27,10 +27,19 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.Sms.Implementations
         }
         private string GetCustomerMobile()
         {
-            return @"Select Top 1
+            return @"Select
                     	c.MobileNo AS Mobile
                     From [CustomerWarehouse].dbo.Clients c
-                    where c.BillId=@billId";
+                    where 
+                        c.BillId=@billId AND
+						c.ToDayJalali IS NULL";
         }
     }
 }
+#region
+/*
+Select Top 1
+	c.MobileNo AS Mobile
+From [CustomerWarehouse].dbo.Clients c
+where c.BillId=@billId*/
+#endregion

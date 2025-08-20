@@ -72,7 +72,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     	 b.Payable BETWEEN @FromAmount and @ToAmount)
                     AND (@FromReadingNumber is null or
                     	 @ToReadingNumber is null or 
-                    	 b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber)
+                    	 c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber)
+            		AND c.ToDayJalali IS NULL                    
                     {zoneQuery}
                     group by b.BillId";
 

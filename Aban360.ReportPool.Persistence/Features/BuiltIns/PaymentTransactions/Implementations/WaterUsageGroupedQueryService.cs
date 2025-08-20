@@ -46,10 +46,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     JOIN [CustomerWarehouse].dbo.Clients c 
                     	ON p.BillId=c.BillId
                     WHERE
-                    	@FromDate IS NULL
-                    	OR @ToDate IS NULL
-                    	OR p.RegisterDay BETWEEN @FromDate and @ToDate
+                        c.ToDayJalali IS NULL AND
+                        (@FromDate IS NULL OR 
+                        @ToDate IS NULL OR
+                    	p.RegisterDay BETWEEN @FromDate and @ToDate)
                     GROUP BY c.UsageTitle";
+            //todo
         }
     }
 }

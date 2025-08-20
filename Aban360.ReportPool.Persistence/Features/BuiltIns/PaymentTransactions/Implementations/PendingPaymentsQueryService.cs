@@ -90,12 +90,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 								'--' AS HeadquarterTitle ,
 								'--' AS RegionTitle
 							FROM [CustomerWarehouse].dbo.Clients 
-							WHERE ToDayJalali IS NULL
-							  AND ZoneId IN @ZoneIds
-							  AND (@FromReadingNumber IS NULL OR @ToReadingNumber IS NULL OR TRIM(ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber)
-							  {usageSellQuery}
-							  {usageConsumptionQuery}
-							  --AND (@UsageConsumptionIds IS NULL OR UsageId2 IN @UsageConsumptionIds)
+							WHERE 
+								ToDayJalali IS NULL
+								AND ZoneId IN @ZoneIds
+								AND (@FromReadingNumber IS NULL OR @ToReadingNumber IS NULL OR TRIM(ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber)
+								{usageSellQuery}
+								{usageConsumptionQuery}
+								--AND (@UsageConsumptionIds IS NULL OR UsageId2 IN @UsageConsumptionIds)
 						),
 						
 						-- تجمیعی قبض‌ها
