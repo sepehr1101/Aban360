@@ -137,7 +137,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	c.ZoneTitle AS ZoneTitle,
                     	c.ZoneId AS ZoneId,
                     	c.VillageName AS MunicipalityTitle,
-                    	--c.VillageId AS	MunicipalityId,
+                    	--c.VillageId AS MunicipalityId,
 	                    TRY_CAST(c.VillageId AS int) AS MunicipalityId,
                     	c.PostalCode ,
                     	c.MobileNo AS MobileNumber,
