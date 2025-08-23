@@ -16,8 +16,9 @@ namespace Aban360.Api.Controllers.V1.ReportPool.FlatReports.Queries
             _serverReportsGetAllHandler.NotNull(nameof(_serverReportsGetAllHandler));
         }
 
+        [Obsolete]
         [ HttpGet]
-        [Route("by-user-id")]
+        [Route("by-user-id-old")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<ServerReportsGetAllDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(CancellationToken cancellationToken)
         {

@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.FlatReports.Queries
         }
 
         [HttpGet]
-        [Route("by-user-id-and-threshold")]
+        [Route("by-user-id")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<ServerReportsGetAllDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(CancellationToken cancellationToken)
         {
