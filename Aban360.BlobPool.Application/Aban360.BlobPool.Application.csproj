@@ -10,12 +10,17 @@
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="FluentValidation" Version="11.10.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
-    <PackageReference Include="Scrutor" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Aban260.BlobPool.Infrastructure\Aban260.BlobPool.Infrastructure.csproj" />
     <ProjectReference Include="..\Aban360.BlobPool.Domain\Aban360.BlobPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.BlobPool.Persistence\Aban360.BlobPool.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\DmsServices\Handlers\Commands\Create\Implementations\" />
+    <Folder Include="Features\DmsServices\Handlers\Queries\Implementation\" />
   </ItemGroup>
 
 </Project>

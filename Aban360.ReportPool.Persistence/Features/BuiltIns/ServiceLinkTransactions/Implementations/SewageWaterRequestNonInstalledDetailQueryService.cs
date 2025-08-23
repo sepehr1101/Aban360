@@ -67,7 +67,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     Where	
                     	c.WaterRequestDate BETWEEN @fromDate AND @toDate AND
 						(TRIM(c.WaterInstallDate)='' OR c.WaterInstallDate IS NULL) AND
-                    	c.ZoneId IN @zoneIds";
+                    	c.ZoneId IN @zoneIds  AND
+						c.ToDayJalali IS NULL";
         }
         private string GetSewageRequestNonInstalledDetailQuery()
         {
@@ -92,7 +93,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     Where	
                     	c.SewageRequestDate BETWEEN @fromDate AND @toDate AND
 						(TRIM(c.SewageInstallDate)='' OR c.SewageInstallDate IS NULL) AND
-                    	c.ZoneId IN @zoneIds";
+                    	c.ZoneId IN @zoneIds AND
+						c.ToDayJalali IS NULL";
         }
     }
 }

@@ -24,7 +24,7 @@
         public static string InvalidPayment { get { return $"{Report} وصولی نامعتبر"; } }
         public static string DailyBankGrouped { get { return $"{Report}  به تفکیک بانک و روز"; } }
         public static string WaterPaymentDetail { get { return $"{Report} ریز وصولی ها - آب بهاء"; } }
-        public static string ServiceLinkPaymentDetail { get { return $"{Report} ریز وصولی ها - حق انشعاب"; } }//
+        public static string ServiceLinkPaymentDetail { get { return $"{Report} ریز وصولی ها - حق انشعاب"; } }
         public static string WaterPaymentReceivable { get { return $"{Report} وصولی های جاری و معوقه - آب بهاء"; } }
         public static string WaterUsageGrouped { get { return $"{Report} تفکیک کاربری - آب بهاء"; } }
         public static string Unpaid { get { return $"{Report} بدون وصولی"; } }
@@ -41,12 +41,13 @@
         public static string EmptyUnit { get { return $"{Report} خالی از سکنه"; } }
         public static string EmptyUnitByBill { get { return $"{Report} خالی از سکنه - قبض"; } }
         public static string UsageDetail { get { return $"{Report} جزئیات کاربری"; } }
-        public static string UsageSummary { get { return $"{Report} خلاصه گزارش"; } }
-        public static string NonPermanentBranch { get { return $"{Report} انشعاب غیر دائم"; } }
+        public static string UsageSummary { get { return $"{Report} خلاصه کاربری"; } }
+        public static string NonPermanentBranchDetail { get { return $"{Report} جرئیات انشعاب غیر دائم"; } }
+        public static string NonPermanentBranchSummary { get { return $"{Report} خلاصه انشعاب غیر دائم"; } }
 
 
-        public static string SubscriptionEventSummary { get { return "کاردکس آب"; } }
-        public static string BranchEventSummary { get { return "کاردکس انشعاب"; } }
+        public static string SubscriptionEventSummary { get { return "کاردکس آب"; } }//
+        public static string BranchEventSummary { get { return "کاردکس انشعاب"; } }//
         public static string WaterInstallationDetail { get { return "جزئیات انشعاب آب نصب شده"; } }
         public static string SewageInstallationDetail { get { return "جزئیات انشعاب فاضلاب نصب شده"; } }
         public static string WaterInstallationSummary{ get { return "خلاصه انشعاب آب نصب شده"; } }
@@ -76,36 +77,30 @@
         public static string HandoverSummary { get { return $"{Report} خلاصه نوع واگذاری"; } }
 
 
-        public static string WaterCollectionBranchDetail { get { return "جزئیات انشعاب آب جمع آوری شده"; } }
-        public static string SewageCollectionBranchDetail { get { return "جزئیات انشعاب فاضلاب جمع آوری شده"; } }
-        public static string WaterCollectionBranchSummary { get { return "خلاصه انشعاب آب جمع آوری شده"; } }
-        public static string SewageCollectionBranchSummary { get { return "خلاصه انشعاب فاضلاب جمع آوری شده"; } }
-
-
-        public static string ServiceLinkRawItemsDetail { get { return $"{Report} جزئیات جمع ناخالص اقلام انشعاب"; } }
+        public static string ServiceLinkRawItemsDetail { get { return $"{Report} جزئیات جمع ناخالص اقلام انشعاب"; } }//
         public static string ServiceLinkRawItemsSummary { get { return $"{Report} خلاصه جمع ناخالص اقلام انشعاب"; } }
 
-        public static string ServiceLinkNetItemsDetail { get { return $"{Report} جزئیات جمع خالص اقلام انشعاب"; } }
+        public static string ServiceLinkNetItemsDetail { get { return $"{Report} جزئیات جمع خالص اقلام انشعاب"; } }//
         public static string ServiceLinkNetItemsSummary { get { return $"{Report} خلاصه جمع خالص اقلام انشعاب"; } }
 
 
         public static string MalfunctionMeter { get { return $"{Report} کنتورهای خراب"; } }
         public static string MalfunctionMeterByDuration { get { return $"{Report} کنتورهای خراب بر اساس دوره"; } }
 
-        public static string WaterNetSalesDetail { get { return $"خلاصه {Report} جزئیات فروش خالص آب بها"; } }
+        public static string WaterNetSalesDetail { get { return $"خلاصه {Report} جزئیات فروش خالص آب بها"; } }//
         public static string WaterRawSalesDetail { get { return $"خلاصه {Report} جزئیات فروش ناخالص آب بها"; } }
         public static string WaterNetSalesSummary { get { return $"خلاصه {Report} خلاصه فروش خالص آب بها"; } }
         public static string WaterRawSalesSummary { get { return $"خلاصه {Report} خلاصه فروش ناخالص آب بها"; } }
 
         public static string ExcessPattern { get { return $"خلاصه {Report} مازاد الگو"; } }
-        public static string WaterNetIncome { get { return $"خلاصه {Report} درآمد خالص آب بها"; } }
-        public static string ReadingChecklist{ get { return $"خلاصه {Report} لیست کنترل قرائت"; } }
+        public static string WaterNetIncome { get { return $"خلاصه {Report} درآمد خالص آب بها"; } }//
+        public static string ReadingChecklist{ get { return $"خلاصه {Report} لیست کنترل قرائت"; } }//
 
 
-        public static string ReadingListDetail { get { return $"{Report} جزئیات فهرست تعداد قرائت"; } }
+        public static string ReadingListDetail { get { return $"{Report} جزئیات فهرست تعداد قرائت"; } }//
         public static string ReadingListSummary { get { return $"{Report} خلاصه فهرست تعداد قرائت"; } }
 
-        public static string ReadingDailyStatement { get { return $"خلاصه {Report} روزنامه"; } }
+        public static string ReadingDailyStatement { get { return $"خلاصه {Report} روزنامه"; } }//
         public static string ReadingStatusStatement { get { return $"خلاصه {Report} فهرست وضعیت"; } }
 
         public static string RuinedMeterIncome { get { return $"خلاصه {Report} درآمد کنتور خراب"; } }

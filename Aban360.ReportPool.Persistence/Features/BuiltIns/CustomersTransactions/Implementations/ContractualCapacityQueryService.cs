@@ -22,8 +22,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             {
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
-
-                FromCapacity = input.FromContractualCapacity != null ? input.FromContractualCapacity : 0,
+                
+                //todo:When FromContracualCapacity is null Then 0 OR 1 ?
+                FromCapacity = input.FromContractualCapacity != null ? input.FromContractualCapacity : 1,
                 ToCapacity = input.ToContractualCapacity != null ? input.ToContractualCapacity : 999999,
 
                 FromDate = input.FromDateJalali,

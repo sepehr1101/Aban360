@@ -37,7 +37,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, NonPermanentBranchInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _nonPermanentBranch.Handle, CurrentUser, ReportLiterals.NonPermanentBranch, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _nonPermanentBranch.Handle, CurrentUser, ReportLiterals.NonPermanentBranchDetail, connectionId);
             return Ok(inputDto);
         }
     }

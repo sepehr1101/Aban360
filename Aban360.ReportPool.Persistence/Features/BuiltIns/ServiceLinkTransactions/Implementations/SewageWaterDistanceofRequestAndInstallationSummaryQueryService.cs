@@ -1,5 +1,4 @@
 ﻿using Aban360.Common.Db.Dapper;
-using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
@@ -57,7 +56,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 					    TRIM(c.WaterRequestDate) != '' AND
 					    TRIM(c.WaterInstallDate) != '' AND
                     	c.WaterInstallDate BETWEEN @fromDate AND @toDate AND
-                    	c.ZoneId IN @zoneIds
+                    	c.ZoneId IN @zoneIds AND
+            			c.ToDayJalali IS NULL
                     Group BY
                     	c.UsageTitle";
         }
@@ -73,9 +73,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 					    TRIM(c.SewageRequestDate) != '' AND
 					    TRIM(c.SewageInstallDate) != '' AND
                     	c.SewageInstallDate BETWEEN @fromDate AND @toDate AND
-                    	c.ZoneId IN @zoneIds
+                    	c.ZoneId IN @zoneIds AND
+            			c.ToDayJalali IS NULL
                     Group BY
                     	c.UsageTitle";
         }
+
+        //todo: both of them
     }
 }

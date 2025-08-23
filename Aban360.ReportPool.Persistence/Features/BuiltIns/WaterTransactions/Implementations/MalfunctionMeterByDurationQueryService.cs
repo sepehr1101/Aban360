@@ -22,8 +22,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             {
                 fromReadingNumber = input.FromReadingNumber,
                 toReadingNumber = input.ToReadingNumber,
-                fromDate=input.FromDateJalali,
-                toDate=input.ToDateJalali,
+                fromDateJalali=input.FromDateJalali,
+                toDateJalali = input.ToDateJalali,
                 zoneIds = input.ZoneIds,
                 malfunctionPeriodCount=input.MalfunctionPeriodCount
             };
@@ -44,120 +44,111 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         private string GetMalfunctionMeterByDurationQuery()
         {
-            return @"WITH BillsWithRowNum AS (
-                        SELECT 
+            return @"-- آخرین قبض معتبر
+                    ;WITH ValidLatestBills AS (
+                        SELECT
                             b.BillId,
                             b.CustomerNumber,
                             b.ZoneId,
-                    		b.ZoneTitle,
-                    		b.ReadingNumber,
-                    		b.UsageTitle,
-                    		b.ConsumptionAverage,
+                            b.ZoneTitle,
+                            b.ReadingNumber,
+                            b.UsageTitle,
+                            b.ConsumptionAverage,
                             b.CounterStateCode,
-                            b.RegisterDay,
-                    		b.ContractCapacity,
-                            ROW_NUMBER() OVER (PARTITION BY b.BillId ORDER BY b.RegisterDay DESC) AS rn
-                        FROM [CustomerWarehouse].dbo.Bills b
-                    ),
-                    ValidLatestBills AS (
-                        SELECT 
-                            bwr.BillId,
-                    		bwr.ZoneTitle,
-                    		bwr.ReadingNumber,
-                    		bwr.UsageTitle,
-                    		bwr.ConsumptionAverage,
-                            bwr.CounterStateCode,
-                            bwr.RegisterDay AS LatestRegisterDay,
-                            bwr.CustomerNumber,
-                            bwr.ZoneId,
-                    		bwr.ContractCapacity AS ContractualCapacity
-                        FROM BillsWithRowNum bwr
+                            b.RegisterDay AS LatestRegisterDay,
+                            b.ContractCapacity AS ContractualCapacity
+                        FROM (
+                            SELECT *,
+                                   ROW_NUMBER() OVER (PARTITION BY BillId ORDER BY RegisterDay DESC) AS rn
+                            FROM [CustomerWarehouse].dbo.Bills
+                            WHERE 
+                    			ZoneId IN @zoneIds AND 
+                    			CounterStateCode NOT IN (4,7,8) AND
+		                    	RegisterDay BETWEEN @fromDateJalali AND @toDateJalali
+                        ) b
                         WHERE 
-                            bwr.rn = 1 AND 
-                            bwr.CounterStateCode = 1 AND
-                            NOT EXISTS (
-                                SELECT 1
-                                FROM [CustomerWarehouse].dbo.MeterChange mc
-                                WHERE mc.CustomerNumber = bwr.CustomerNumber 
-                                  AND mc.ZoneId = bwr.ZoneId
-                                  AND mc.ChangeDateJalali > bwr.RegisterDay
-                            )
+                    		b.rn = 1 AND 
+                    		b.CounterStateCode = 1 AND 
+                    		NOT EXISTS (--بعد از اخرین قبض تعویض شده اند
+                              SELECT 1
+                              FROM [CustomerWarehouse].dbo.MeterChange mc
+                              WHERE 
+                    			mc.CustomerNumber = b.CustomerNumber
+                                AND mc.ZoneId = b.ZoneId
+                                AND mc.ChangeDateJalali > b.RegisterDay
+                          )
                     ),
-                    BillWithGroups AS (
-                        SELECT 
-                            b.BillId,
-                            b.RegisterDay,
-                            b.CounterStateCode,
-                            v.LatestRegisterDay,
-                            SUM(CASE WHEN b.CounterStateCode = 1 THEN 0 ELSE 1 END)
-                                OVER (PARTITION BY b.BillId ORDER BY b.RegisterDay DESC) AS group_id
-                        FROM [CustomerWarehouse].dbo.Bills b
-                        INNER JOIN ValidLatestBills v ON v.BillId = b.BillId
-                        WHERE b.RegisterDay <= v.LatestRegisterDay
-                    ),
+                    -- محاسبه تعداد دوره‌های خرابی
                     FinalCount AS (
                         SELECT 
-                            BillId,
-                            COUNT(*) AS MalfunctionPeriodCount
-                        FROM BillWithGroups
-                        WHERE CounterStateCode = 1 AND group_id = 0
-                        GROUP BY BillId
+                            b.BillId,
+                            COUNT(1) AS MalfunctionPeriodCount
+                        FROM [CustomerWarehouse].dbo.Bills b
+                        INNER JOIN ValidLatestBills v 
+                    		ON v.CustomerNumber = b.CustomerNumber AND v.ZoneId=b.ZoneId
+                        WHERE 
+                    	  b.CounterStateCode = 1 AND 
+                    	  b.RegisterDay <= v.LatestRegisterDay AND
+	                      b.RegisterDay BETWEEN @fromDateJalali AND @toDateJalali
+                        GROUP BY b.BillId
                     ),
+                    -- اطلاعات مشتری
                     ClientData AS (
-                    	SELECT 
-                    		c.BillId,
-                    		TRIM(c.FirstName)+' '+TRIM(c.SureName) AS FullName,
-                    		TRIM(c.FirstName) AS FirstName,
-                    		TRIM(c.SureName) AS Surname,
-                    		c.WaterDiameterTitle AS MeterDiameterTitle,
-                    		c.DomesticCount AS DomesticUnit,
-                    		c.CommercialCount AS CommercialUnit,
-                    		c.OtherCount AS OtherUnit,
-                    		TRIM(c.Address) AS Address,
-                    		c.PhoneNo AS PhoneNumber,
-                    		c.WaterInstallDate AS MeterInstallationDateJalali
-                    		--MeterLife in C#
-                    	FROM [CustomerWarehouse].dbo.Clients c
-                    	Where c.ToDayJalali IS NULL
-                    
+                        SELECT 
+                            c.BillId,
+                            TRIM(c.FirstName)+' '+TRIM(c.SureName) AS FullName,
+                            TRIM(c.FirstName) AS FirstName,
+                            TRIM(c.SureName) AS Surname,
+                            c.WaterDiameterTitle AS MeterDiameterTitle,
+                            c.DomesticCount AS DomesticUnit,
+                            c.CommercialCount AS CommercialUnit,
+                            c.OtherCount AS OtherUnit,
+                            TRIM(c.Address) AS Address,
+                            c.PhoneNo AS PhoneNumber,
+                            c.WaterInstallDate AS MeterInstallationDateJalali
+                        FROM [CustomerWarehouse].dbo.Clients c
+                        WHERE 
+                    		c.ToDayJalali IS NULL AND
+                    		c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
+                            c.ZoneId IN @zoneIds
                     )
                     SELECT 
                         v.BillId,
                         v.CustomerNumber,
                         v.ZoneId,
-                    	v.ZoneTitle,
-                    	v.ReadingNumber,
-                    	v.UsageTitle,
-                    	v.ConsumptionAverage,
+                        v.ZoneTitle,
+                        v.ReadingNumber,
+                        v.UsageTitle,
+                        v.ConsumptionAverage,
                         v.CounterStateCode,
-                    	v.ContractualCapacity,
+                        v.ContractualCapacity,
                         v.LatestRegisterDay,
                         f.MalfunctionPeriodCount,
-                        ISNULL(LastChange.ChangeDateJalali, 0) AS LastChangeDateJalali,
-                    	c.FullName,
-                    	c.FirstName,
-                    	c.Surname,
-                    	c.MeterDiameterTitle,
-                    	c.DomesticUnit,
-                    	c.CommercialUnit,
-                    	c.OtherUnit,
-                    	c.Address,
-                    	c.PhoneNumber,
-                    	c.MeterInstallationDateJalali--
+                        ISNULL(lc.ChangeDateJalali, 0) AS LastChangeDateJalali,
+                        c.FullName,
+                        c.FirstName,
+                        c.Surname,
+                        c.MeterDiameterTitle,
+                        c.DomesticUnit,
+                        c.CommercialUnit,
+                        c.OtherUnit,
+                        c.Address,
+                        c.PhoneNumber,
+                        c.MeterInstallationDateJalali
                     FROM ValidLatestBills v
-                    JOIN FinalCount f ON v.BillId = f.BillId
-                    JOIN ClientData c ON v.BillId = c.BillId
+                    INNER JOIN FinalCount f 
+                    	ON v.BillId = f.BillId AND f.MalfunctionPeriodCount >= @malfunctionPeriodCount
+                    INNER JOIN ClientData c 
+                    	ON v.BillId = c.BillId
                     OUTER APPLY (
                         SELECT TOP 1 mc.ChangeDateJalali
                         FROM [CustomerWarehouse].dbo.MeterChange mc
-                        WHERE mc.CustomerNumber = v.CustomerNumber AND mc.ZoneId = v.ZoneId
+                        WHERE 
+                    		mc.CustomerNumber = v.CustomerNumber AND 
+                            mc.ZoneId = v.ZoneId
                         ORDER BY mc.ChangeDateJalali DESC
-                    ) AS LastChange
-                    WHERE
-                       v.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
-                    	f.MalfunctionPeriodCount>=@malfunctionPeriodCount AND 
-                    	v.ZoneId IN @zoneIds
-                    ORDER BY LastChange.ChangeDateJalali DESC";
+                    ) lc
+                    ORDER BY lc.ChangeDateJalali DESC;";
         }
     }
 }
