@@ -248,6 +248,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aban360.SystemPool.Persiste
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aban260.BlobPool.Infrastructure", "Aban260.BlobPool.Infrastructure\Aban260.BlobPool.Infrastructure.csproj", "{33C031AA-A09F-4CB6-A560-793CB96C06D6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aban360.HealthApi", "Aban360.HealthApi\Aban360.HealthApi.csproj", "{A249297E-D0FD-414B-A1E3-6352DC8C6CF4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -530,6 +532,10 @@ Global
 		{33C031AA-A09F-4CB6-A560-793CB96C06D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33C031AA-A09F-4CB6-A560-793CB96C06D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33C031AA-A09F-4CB6-A560-793CB96C06D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A249297E-D0FD-414B-A1E3-6352DC8C6CF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A249297E-D0FD-414B-A1E3-6352DC8C6CF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A249297E-D0FD-414B-A1E3-6352DC8C6CF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A249297E-D0FD-414B-A1E3-6352DC8C6CF4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -653,6 +659,7 @@ Global
 		{85898565-EE0C-4D69-8026-D06DAE7B12AF} = {814B3D59-0FFE-4CBB-86A0-97F477E63DB6}
 		{E5A0A30D-F48D-4B4C-913F-3861D7A6C6C2} = {5BD280BB-7CBF-47D0-AE94-36110DD02A44}
 		{33C031AA-A09F-4CB6-A560-793CB96C06D6} = {D1D0B7F7-1B56-4C4F-B7D5-9889B839CB08}
+		{A249297E-D0FD-414B-A1E3-6352DC8C6CF4} = {D0B7CD7A-FDB1-4FC3-8B88-FACB4AEA4E0B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C0F258BB-DDA6-4E35-A9D0-53DD876EE11C}

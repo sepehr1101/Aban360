@@ -1,5 +1,4 @@
-﻿using Aban360.Common.Extensions;
-using Aban360.ReportPool.Domain.Base;
+﻿using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Base;

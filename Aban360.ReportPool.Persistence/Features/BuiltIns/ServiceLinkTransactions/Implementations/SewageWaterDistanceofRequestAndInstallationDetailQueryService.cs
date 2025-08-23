@@ -1,5 +1,4 @@
 ﻿using Aban360.Common.Db.Dapper;
-using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
@@ -72,7 +71,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                         c.WaterInstallDate IS NOT NULL AND
                         TRIM(c.WaterInstallDate) != '' AND
                     	c.WaterInstallDate BETWEEN @fromDate AND @toDate AND
-                    	c.ZoneId IN @zoneIds";
+                    	c.ZoneId IN @zoneIds AND
+            			c.ToDayJalali IS NULL";
         }
         private string GetSewageDistanceRequestInstallationQuery()
         {
@@ -101,7 +101,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                         c.SewageInstallDate IS NOT NULL AND
                         TRIM(c.SewageInstallDate) != '' AND
                     	c.SewageInstallDate BETWEEN @fromDate AND @toDate AND
-                    	c.ZoneId IN @zoneIds";
+                    	c.ZoneId IN @zoneIds AND
+            			c.ToDayJalali IS NULL";
+            //todo: both of them
         }
     }
 }

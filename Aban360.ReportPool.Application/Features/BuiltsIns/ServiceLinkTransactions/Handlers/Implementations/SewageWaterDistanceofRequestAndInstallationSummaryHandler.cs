@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Timing;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
@@ -34,6 +35,17 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             }
 
             var result = await _sewageWaterDistanceofRequestAndInstallationSummaryQuery.Get(input);
+
+            ICollection<float> distances=new List<float>();
+            foreach (var item in result.ReportData)
+            {
+                item.DistanceAverageText = CalculationDistanceDate.ConvertDaysToDate((int)item.DistanceAverage);
+                distances.Add(item.DistanceAverage);
+            }
+            int averageDistance = (int)distances.Sum() / (result.ReportHeader.RecordCount <= 0 ? 1 : result.ReportHeader.RecordCount);
+            result.ReportHeader.AverageDistance=CalculationDistanceDate.ConvertDaysToDate(averageDistance);
+            result.ReportHeader.MaxDistance = CalculationDistanceDate.ConvertDaysToDate((int)distances.Max());
+
             return result;
         }
     }

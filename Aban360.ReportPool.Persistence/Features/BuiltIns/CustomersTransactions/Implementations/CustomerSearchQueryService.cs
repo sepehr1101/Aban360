@@ -53,7 +53,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                             c.ToDayJalali is null AND
                             (
                                 c.CustomerNumber like @input 
-                                or c. ReadingNumber like @input
+                                or c.ReadingNumber like @input
                                 or c.FirstName like @input
                                 or c.SureName like @input
                                 or c.WaterDiameterId like @input
