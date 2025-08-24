@@ -149,7 +149,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                     	b.NextDay AS CurrentMeterDateJalali,
                     	b.PreviousDay AS PreviousMeterDateJalali,
                     	--Duration Calc in c#
-						b.NextNumber AS CurrentMeterNubmer,
+						b.NextNumber AS CurrentMeterNumber,
 						b.NextNumber AS PreviousMeterNumber,
                     	b.Consumption AS ConsumptionM3,--todo
                     	(b.Consumption)*1000 AS ConsumptionLiter,
