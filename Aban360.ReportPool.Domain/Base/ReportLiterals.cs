@@ -22,11 +22,11 @@
         public static string UnspecifiedWaterPayment { get { return $"{Report} وصولی خارج سیستم _ آب بها"; } }
         public static string UnspecifiedServiceLinkPayment { get { return $"{Report} وصولی خارج سیستم - انشعاب"; } }
         public static string InvalidPayment { get { return $"{Report} وصولی نامعتبر"; } }
-        public static string DailyBankGrouped { get { return $"{Report}  به تفکیک بانک و روز"; } }
+        public static string DailyBankGrouped { get { return $"{Report}  وصولی به تفکیک بانک و روز"; } }
         public static string WaterPaymentDetail { get { return $"{Report} ریز وصولی ها - آب بهاء"; } }
         public static string ServiceLinkPaymentDetail { get { return $"{Report} ریز وصولی ها - حق انشعاب"; } }
         public static string WaterPaymentReceivable { get { return $"{Report} وصولی های جاری و معوقه - آب بهاء"; } }
-        public static string WaterUsageGrouped { get { return $"{Report} تفکیک کاربری - آب بهاء"; } }
+        public static string WaterUsageGrouped { get { return $"{Report} وصولی به تفکیک کاربری - آب بهاء"; } }
         public static string Unpaid { get { return $"{Report} بدون وصولی"; } }
         public static string WaterMeterReplacements(string reason)=> $"{Report} گزاش کنتور های تعویضی بر اساس {reason}"; 
         public static string WaterModifiedBillsDetail { get { return $"{Report}  جزئیات برگشتی و اصلاحات - آب بها"; } }
@@ -46,8 +46,8 @@
         public static string NonPermanentBranchSummary { get { return $"{Report} خلاصه انشعاب غیر دائم"; } }
 
 
-        public static string SubscriptionEventSummary { get { return "کاردکس آب"; } }//
-        public static string BranchEventSummary { get { return "کاردکس انشعاب"; } }//
+        public static string SubscriptionEventSummary { get { return "کاردکس آب"; } }
+        public static string BranchEventSummary { get { return "کاردکس انشعاب"; } }
         public static string WaterInstallationDetail { get { return "جزئیات انشعاب آب نصب شده"; } }
         public static string SewageInstallationDetail { get { return "جزئیات انشعاب فاضلاب نصب شده"; } }
         public static string WaterInstallationSummary{ get { return "خلاصه انشعاب آب نصب شده"; } }

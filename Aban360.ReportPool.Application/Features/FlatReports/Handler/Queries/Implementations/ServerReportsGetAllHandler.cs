@@ -1,6 +1,5 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.FlatReports.Handler.Queries.Contracts;
-using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Commands;
 using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Queries;
 using Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Contracts;
 
