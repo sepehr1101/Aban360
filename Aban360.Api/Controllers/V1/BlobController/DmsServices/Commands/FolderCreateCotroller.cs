@@ -1,5 +1,6 @@
 ﻿using Aban360.BlobPool.Application.Features.DmsServices.Handlers.Commands.Create.Contracts;
 using Aban360.Common.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.BlobController.DmsServices.Commands
@@ -16,10 +17,11 @@ namespace Aban360.Api.Controllers.V1.BlobController.DmsServices.Commands
 
         [HttpPost]
         [Route("create")]
+        [AllowAnonymous]
         public async Task<IActionResult> create(string folderPath)
         {
-            await _folderCreateHandler.Handle(folderPath);
-            return Ok();
+           string result= await _folderCreateHandler.Handle(folderPath);
+            return Ok(result);
         }
     }
 }

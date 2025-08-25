@@ -5,7 +5,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
 {
     public interface IFolderCreateServices
     {
-        Task Services(string folderPath);
+        Task<string> Services(string folderPath);
     }
     internal sealed class FolderCreateServices: IFolderCreateServices
     {
@@ -18,15 +18,17 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
             _httpClientFactory.NotNull(nameof(httpClientFactory));
         }
 
-        public async Task Services(string folderPath)
+        public async Task<string> Services(string folderPath)
         {
             var client = _httpClientFactory.CreateClient("token");
 
-            var jsonContent = new StringContent($"\"{folderPath}\"", Encoding.UTF8, _content);
+            var jsonContent = new StringContent($"{folderPath}", Encoding.UTF8, _content);
 
             var response = await client.PostAsync(url, jsonContent);
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();
+
+            return result;
         }
     }
 }

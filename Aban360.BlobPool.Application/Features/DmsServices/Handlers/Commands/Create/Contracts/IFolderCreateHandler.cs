@@ -5,7 +5,7 @@ namespace Aban360.BlobPool.Application.Features.DmsServices.Handlers.Commands.Cr
 {
     public interface IFolderCreateHandler
     {
-        Task Handle(string folderPath);
+        Task<string> Handle(string folderPath);
     }
     internal sealed class FolderCreateHandler : IFolderCreateHandler
     {
@@ -16,9 +16,10 @@ namespace Aban360.BlobPool.Application.Features.DmsServices.Handlers.Commands.Cr
             _createFolderServices.NotNull(nameof(createFolderServices));
         }
 
-        public async Task Handle(string folderPath)
+        public async Task<string> Handle(string folderPath)
         {
-            await _createFolderServices.Services(folderPath);
+            string result = await _createFolderServices.Services(folderPath);
+            return result;
         }
     }
 }
