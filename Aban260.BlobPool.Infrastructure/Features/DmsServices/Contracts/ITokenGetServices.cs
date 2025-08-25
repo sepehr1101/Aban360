@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.Extensions;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
@@ -15,7 +16,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
         static DateTime _expireTime;
 
         string url = $"https://esb.abfaisfahan.com:8243/token";
-        string _basicToken = "UEtxbkJ1enVNRXM0aEFySV9CUGZZaWhKS1lNYTpZUlFFZjcyR29zc0oyZ0dtMmhFMU5PTVZhVDhh";
+        string _basicToken = "YkNPSGNGUXJmY3F2UG03OTJkdFVDNXdfZkxRYTpFTmxkUThBTVJHWVNxVk5meFN6SGI5a2VyQXdh";
         string _basic = "Basic";
         public TokenGetServices(IHttpClientFactory httpClientFactoryFactory)
         {
@@ -37,6 +38,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
             {
                 {"grant_type","client_credentials" }
             };
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls|SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 ;
 
             var content = new FormUrlEncodedContent(body);
             var respone = await client.PostAsync(url, content);
@@ -44,15 +46,15 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
 
             var jsonResponse = await respone.Content.ReadAsStringAsync();
             var tokenResponse = JsonSerializer.Deserialize<GetTokenDto>(jsonResponse);
-            _token = tokenResponse.AccessToken;
+            _token = tokenResponse.access_token;
             _expireTime = DateTime.UtcNow.AddSeconds(tokenResponse.ExpireTime);
 
-            return tokenResponse.AccessToken;
+            return tokenResponse.access_token;
         }
     }
     public record GetTokenDto
     {
         public int ExpireTime { get; set; }
-        public string AccessToken { get; set; }
+        public string access_token { get; set; }
     }
 }
