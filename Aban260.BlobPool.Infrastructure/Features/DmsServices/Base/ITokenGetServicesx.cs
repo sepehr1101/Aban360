@@ -52,10 +52,10 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Base
 
             var jsonResponse = await respone.Content.ReadAsStringAsync();
             var tokenResponse = JsonSerializer.Deserialize<GetTokenDto>(jsonResponse);
-            _token = tokenResponse.AccessToken;
+            _token = tokenResponse.access_token;
             _expireTime = DateTime.UtcNow.AddSeconds(tokenResponse.ExpireTime);
 
-            return tokenResponse.AccessToken;
+            return tokenResponse.access_token;
         }
     }
 }
