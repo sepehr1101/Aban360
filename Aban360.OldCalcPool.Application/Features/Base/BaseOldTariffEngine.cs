@@ -25,7 +25,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             (nerkh, nerkh.Duration, nerkh.PartialConsumption) = CalcPartial(nerkh, previousDate, currentDate, dailyAverage, consumption, duration);
 
             int olgoo = GetOlgoo(nerkh.Date2, nerkh.Olgo);
-            bool isVillageCalculation = false;
+            bool isVillageCalculation = IsVillage(customerInfo.ZoneId);
             double monthlyConsumption = nerkh.DailyAverageConsumption * 30;
             decimal multiplierAbBaha = Multiplier(zarib, olgoo, IsDomestic(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
 
@@ -249,7 +249,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         {
             double zbSelection = 1;
 
-            if (IsConstruction(branchType))
+            if (IsConstruction(branchType) && !isVillage)
             {
                 return zarib.Zb;
             }
@@ -449,9 +449,12 @@ namespace Aban360.CalculationPool.Application.Features.Base
             }
 
             bool IsRuralButIsMetro(CustomerInfoOutputDto customerInfo)
-            {
-                int villageCode = int.Parse(customerInfo.VillageId.Trim().Substring(0, 4));
-
+            {                
+                var (hasVillageCode, villageCode) = HasVillageCode(customerInfo.VillageId);
+                if (!hasVillageCode)
+                {
+                    return false;
+                }
                 return RuralButIsMetro(customerInfo.ZoneId, customerInfo.ReadingNumber) ||
                        RuralButIsMetro(customerInfo.ZoneId, villageCode);
             }
@@ -799,7 +802,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 return (consumptionAfter1404 * 2000, 0);
             }
             int domesticCount = (customerInfo.DomesticUnit - customerInfo.EmptyUnit) <= 0 ? 1 : customerInfo.DomesticUnit - customerInfo.EmptyUnit;
-            double partialOlgoo = IsDomesticWithoutUnspecified(customerInfo.UsageId) ?
+            double partialOlgoo = IsDomesticCategory(customerInfo.UsageId) ?
                 (double)domesticCount * olgoo / 30 * nerkhDto.Duration :
                 (double)customerInfo.ContractualCapacity / 30 * nerkhDto.Duration;
 
@@ -1043,8 +1046,13 @@ namespace Aban360.CalculationPool.Application.Features.Base
             }
 
             if (IsVillage(customerInfo.ZoneId))
-            {
-                int.TryParse(customerInfo.VillageId.ToString().Substring(0, 4), out int villageCode);
+            {                
+                var (hasVillageCode, villageCode) = HasVillageCode(customerInfo.VillageId);
+                if (!hasVillageCode)
+                {
+                    return 0;
+                }
+
                 if (villageCode > 0 && monthlyConsumption > olgoo && domesticUnit > 1 && RuralButIsMetro(customerInfo.ZoneId, villageCode))
                 {
                     return baseAmount * nerkh.PartialConsumption;
@@ -1068,7 +1076,15 @@ namespace Aban360.CalculationPool.Application.Features.Base
             }
             return 0;
         }
-
+        private (bool,int) HasVillageCode(string villageId)
+        {
+            if(string.IsNullOrWhiteSpace(villageId) || villageId.Length<5)
+            {
+                return (false,0);
+            }
+            bool canParse= int.TryParse(villageId.Substring(0, 4), out int villageCode);
+            return (canParse, villageCode);
+        }
         private long CalculateJavaniJamiatDiscount()
         {
             throw new NotImplementedException();
