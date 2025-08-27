@@ -5,17 +5,28 @@
     using Microsoft.Extensions.Diagnostics.HealthChecks;
     using HealthChecks.UI.Client;
     using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+    using System.Reflection;
 
     namespace Aban360.HealthApi.Extensions
     {
-        public static class HealthCheckExtensions
+        internal static class HealthCheckExtensions
         {
-            public static IServiceCollection AddCustomHealthChecks(this IServiceCollection services, IConfiguration configuration)
+            internal static IServiceCollection AddCustomHealthChecks(this IServiceCollection services, IConfiguration configuration)
             {
-                services.AddSqlServerHealthCheck(configuration);
-                services.AddHealthChecksUi();
+                //Methods should start with "Add" and End with "HealthCheck"
+                ExecuteMethods(services, configuration);
 
+                services.AddHealthChecksUi();
                 return services;
+            }
+            private static void ExecuteMethods(IServiceCollection services, IConfiguration configuration)
+            {
+                var methods = typeof(HealthCheckExtensions)
+                 .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
+                 .Where(m => m.Name.StartsWith("Add") && m.Name.EndsWith("HealthCheck"))
+                 .ToList();
+
+                methods.ForEach(m => m.Invoke(null, new object[] { services, configuration }));
             }
 
             // 🔒 Private helper for MSSQL health check
@@ -45,7 +56,7 @@
                 return services;
             }
 
-            public static IEndpointRouteBuilder MapCustomHealthChecks(this IEndpointRouteBuilder app)
+            internal static IEndpointRouteBuilder MapCustomHealthChecks(this IEndpointRouteBuilder app)
             {
                 app.MapHealthChecksEndpoint();
                 app.MapHealthChecksUiEndpoint();
