@@ -12,6 +12,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
 {
     internal abstract class BaseOldTariffEngine : BaseExpressionCalculator
     {
+        int monthDays = 30;
         /// <summary>
         /// تنها تابع با دسترسی پابلیک بابت محاسبه تک رکورد جدول نرخ
         /// </summary>
@@ -29,19 +30,25 @@ namespace Aban360.CalculationPool.Application.Features.Base
             double monthlyConsumption = nerkh.DailyAverageConsumption * 30;
             decimal multiplierAbBaha = Multiplier(zarib, olgoo, IsDomestic(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
 
-            CalculateAbBahaOutputDto abBahaResult = _CalculateAbBaha(nerkh, customerInfo, meterInfo, zarib, abAzad, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, multiplierAbBaha);
+            CalculateAbBahaOutputDto abBahaResult = CalculateAbBaha(nerkh, customerInfo, meterInfo, zarib, abAzad, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, multiplierAbBaha);
             (double, double) boodje = CalculateBoodje(nerkh, customerInfo, currentDateJalali, monthlyConsumption, olgoo, consumption, duration);
             double fazelab = CalculateFazelab(nerkh, customerInfo, abBahaResult.AbBahaAmount, currentDateJalali);
             double hotSeasonAbBaha = CalcHotSeasonAbBaha(nerkh, abBahaResult.AbBahaAmount, customerInfo, monthlyConsumption);//change dailyAverage -> monthlyCosumption
-            double hotSeasonFazelb = CalcHotSeasonFaselab(nerkh, customerInfo, fazelab, dailyAverage);
+            double hotSeasonFazelab = CalcHotSeasonFaselab(nerkh, customerInfo, fazelab, dailyAverage);
             double avarez = CalculateAvarez(nerkh, customerInfo, monthlyConsumption);
             double javani = CalculateJavaniJamiat(nerkh, customerInfo, abBahaResult.AbBahaAmount, monthlyConsumption, olgoo);
 
-            double abBahaDiscount = CalculateAbBahaDiscount(nerkh, customerInfo, meterInfo, abBahaResult, olgoo, multiplierAbBaha, monthlyConsumption, currentDateJalali);
+            /*double abBahaDiscount = CalculateAbBahaDiscount(nerkh, customerInfo, meterInfo, abBahaResult, olgoo, multiplierAbBaha, monthlyConsumption, currentDateJalali);
             double hotSeasonDiscount = CalcHotSeasonDiscount(nerkh, customerInfo, meterInfo, abBahaResult, multiplierAbBaha, hotSeasonAbBaha);
-            double fazelabDiscount = CalculateFazelabDiscount(nerkh, customerInfo, abBahaResult, abBahaDiscount, fazelab, 123, olgoo, monthlyConsumption);
-
-            return new BaseOldTariffEngineOutputDto(abBahaResult, fazelab, hotSeasonAbBaha, hotSeasonFazelb, boodje.Item1, boodje.Item2, abBahaDiscount, hotSeasonDiscount, fazelabDiscount, 0, avarez, javani);
+            double fazelabDiscount = CalculateFazelabDiscount(nerkh, customerInfo, abBahaResult, abBahaDiscount, fazelab, 123, olgoo, monthlyConsumption);*/
+            double abBahaDiscount = CalculateItemDiscount(customerInfo, nerkh, olgoo, (long)abBahaResult.AbBahaAmount);
+            double hotSeasonAbDiscount = CalculateItemDiscount(customerInfo, nerkh, olgoo, (long)hotSeasonAbBaha);
+            double hotSeasonFazelabDiscount = CalculateItemDiscount(customerInfo, nerkh, olgoo, (long)hotSeasonFazelab);
+            double fazelabDiscount = CalculateItemDiscount(customerInfo, nerkh, olgoo, (long)fazelab);
+            double avarezDiscount = CalculateItemDiscount(customerInfo, nerkh, olgoo, (long)avarez);
+            double javaniDiscount = CalculateItemDiscount(customerInfo,nerkh, olgoo, (long)javani);
+            return new BaseOldTariffEngineOutputDto(abBahaResult, fazelab, hotSeasonAbBaha, hotSeasonFazelab, boodje.Item1, boodje.Item2, abBahaDiscount, hotSeasonAbDiscount, fazelabDiscount, 0, avarez, javani,
+                0, 0, avarezDiscount, javaniDiscount, 0);
         }
 
         /// <summary>
@@ -317,7 +324,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         /// محاسبه آب بها 
         /// </summary>
         /// <returns>عدد محاسبه شده‌ی آب‌بها</returns>
-        private CalculateAbBahaOutputDto _CalculateAbBaha(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadGetDto abAzad8And39, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, decimal multiplierAbBaha)
+        private CalculateAbBahaOutputDto CalculateAbBaha(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadGetDto abAzad8And39, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, decimal multiplierAbBaha)
         {
             double abBahaAmount = 0, oldAbBahaAmount = 0, abBahaFromExpression = 0;
             double duration = nerkh.Duration;
@@ -1110,6 +1117,23 @@ namespace Aban360.CalculationPool.Application.Features.Base
         private long CalculateFasleGarmDiscount()
         {
             throw new NotImplementedException();
+        }
+
+        private long CalculateItemDiscount(CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, long amount)
+        {
+            int domesticCount = (customerInfo.DomesticUnit - customerInfo.EmptyUnit) <= 0 ? 1 : customerInfo.DomesticUnit - customerInfo.EmptyUnit;
+            double partialOlgoo = IsDomesticCategory(customerInfo.UsageId) ?
+               (double)domesticCount * olgoo / monthDays * nerkh.Duration :
+               (double)customerInfo.ContractualCapacity / monthDays * nerkh.Duration;
+            if(IsDomestic(customerInfo.UsageId) && nerkh.PartialConsumption<=olgoo)
+            {
+                return amount;
+            }
+            if (IsReligious(customerInfo.UsageId) && nerkh.PartialConsumption<= olgoo) 
+            {
+                return amount;
+            }
+            return 0;
         }
 
         public double CalcMaliat(double abBahaAmount, double abonmanAbBahaAmount, double hotseasonAbBahaAmount, double fazelabAmount, double abonmanFazelabAmount, double hotseasonFazelabAmount, double boodjeAmount)

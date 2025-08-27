@@ -165,7 +165,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             int counter = 0;
             double sumAbBaha = 0, sumFazelab = 0, sumHotSeasonAbBaha = 0, sumHotSeasonFazelab = 0, sumAbonmanAbBaha = 0;
             double sumBoodjePart1 = 0, sumBoodjePart2 = 0, sumAvarez = 0;
-            double sumAbBahaDiscount = 0, sumFazelabDiscount = 0, sumHotSeasonDiscount = 0;
+            double sumAbBahaDiscount = 0, sumFazelabDiscount = 0, sumHotSeasonDiscount = 0,
+                sumAbonmanAbDiscount = 0, sumAbonmanFazelabDiscount=0, sumAvarezDiscount=0, sumJavaniDiscount=0, sumBoodjeDiscount=0;
             double sumJavaniAmount = 0;
 
             foreach (var nerkhItem in allNerkh)
@@ -186,6 +187,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 sumAbonmanAbBaha += resultCalc.AbonmanAbAmount;
                 sumAvarez += resultCalc.AvarezAmount;
                 sumJavaniAmount += resultCalc.JavaniAmount;
+                sumAbonmanAbDiscount += resultCalc.AbonmanAbDiscount;
+                sumAbonmanFazelabDiscount = resultCalc.AbonmanFazelabDiscount;
+                sumAvarezDiscount += resultCalc.AvarezDiscount;
+                sumBoodjeDiscount += resultCalc.BoodjeDiscount;
+                sumJavaniDiscount += resultCalc.JavaniDiscount;
 
                 counter++;
             }
@@ -197,7 +203,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             double sumMaliatAmount = CalcMaliat(sumAbBaha, sumAbonmanAbBaha, sumHotSeasonAbBaha, sumFazelab, abonmanFazelbAmount, sumHotSeasonFazelab, sumBoodje);
 
             stopWatch.Stop();
-            return new AbBahaCalculationDetails(AbBahaResult, sumAbBaha, sumFazelab, sumBoodjePart1, sumBoodjePart2, sumBoodje, sumHotSeasonAbBaha, sumHotSeasonFazelab, sumAbBahaDiscount, sumHotSeasonDiscount, sumFazelabDiscount, sumAbonmanAbBaha, sumAvarez, sumJavaniAmount, sumMaliatAmount, abonmanFazelbAmount, allNerkh, abAzad, zarib, stopWatch.ElapsedMilliseconds);
+            return new AbBahaCalculationDetails(AbBahaResult, sumAbBaha, sumFazelab, sumBoodjePart1, sumBoodjePart2, sumBoodje, sumHotSeasonAbBaha, sumHotSeasonFazelab, sumAbBahaDiscount, sumHotSeasonDiscount, sumFazelabDiscount, sumAbonmanAbBaha, sumAvarez, sumJavaniAmount, sumMaliatAmount, abonmanFazelbAmount,
+                        sumAbonmanAbDiscount, sumAbonmanFazelabDiscount,sumAvarezDiscount,sumJavaniDiscount,allNerkh, abAzad, zarib, stopWatch.ElapsedMilliseconds);
         }
         private CustomerInfoOutputDto GetCustomerInfo(BaseOldTariffEngineImaginaryInputDto input)
         {

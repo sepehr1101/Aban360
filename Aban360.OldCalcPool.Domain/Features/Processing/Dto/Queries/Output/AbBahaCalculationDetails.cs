@@ -15,14 +15,20 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         public double BoodjePart1Amount { get; set; }
         public double BoodjePart2Amount { get; set; }
         public double SumBoodje { get; set; }
+        public double JavaniAmount { get; set; }
+        public double MaliatAmount { get; set; }
+        public double AbonmanFazelabAmount { get; set; }
+        public double AvarezAmount { get; set; }
 
         public double AbBahaDiscount { get; set; }
         public double HotSeasonDiscount { get; set; }
         public double FazelabDiscount { get; set; }
-        public double AvarezAmount { get; set; }
-        public double JavaniAmount { get; set; }
-        public double MaliatAmount { get; set; }
-        public double AbonmanFazelabAmount { get; set; }
+        public double AbonmanAbDiscount { get; set; }
+        public double AbonmanFazelabDiscount { get; set; }
+        public double AvarezDiscount { get; set; }
+        public double JavaniDiscount { get; set; }
+        public double BoodjeDiscount { get; set; }
+
 
         public double Consumption { get; set; }
         public double MonthlyConsumption { get; set; }
@@ -37,8 +43,31 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
 
         public long StopWatch { get; set; }
 
-
-        public AbBahaCalculationDetails(double _sumAbBahaAmount,double _abBahaAmount, double _fazelabAmount, double _boodjePart1Amount, double _boodjePar2Amount, double _sumBoodje,double _hotSeasonAbBahaAmount, double _hotSeasonFazelabAmount, double _abBahaDiscount, double _hotSeasonDiscount, double _fazelabDiscount, double _abonmanAbAmount, double _avarezAmount, double _javaniAmount, double _maliatAmount, double _abonmanFazelabAmount, IEnumerable<NerkhGetDto> _nerkh, IEnumerable<AbAzadGetDto> _abAzad, IEnumerable<ZaribGetDto> _zarib, long _stopWatch)
+        public AbBahaCalculationDetails(
+            double _sumAbBahaAmount,
+            double _abBahaAmount,
+            double _fazelabAmount,
+            double _boodjePart1Amount,
+            double _boodjePar2Amount,
+            double _sumBoodje,
+            double _hotSeasonAbBahaAmount,
+            double _hotSeasonFazelabAmount,
+            double _abBahaDiscount,
+            double _hotSeasonDiscount,
+            double _fazelabDiscount,
+            double _abonmanAbAmount, 
+            double _avarezAmount, 
+            double _javaniAmount,
+            double _maliatAmount,
+            double _abonmanFazelabAmount, 
+            double abonmanAbDiscount,
+            double abonmaneFazelabDiscount,
+            double avarezDiscount,
+            double javaniDiscount,
+            IEnumerable<NerkhGetDto> _nerkh,
+            IEnumerable<AbAzadGetDto> _abAzad,
+            IEnumerable<ZaribGetDto> _zarib,
+            long _stopWatch)
         {
             SumItems = _abBahaAmount + _fazelabAmount + _sumBoodje + _hotSeasonAbBahaAmount + _hotSeasonFazelabAmount +
                        _avarezAmount + _javaniAmount + _maliatAmount + _abonmanAbAmount + _abonmanFazelabAmount;
@@ -49,15 +78,22 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             BoodjePart2Amount = _boodjePar2Amount;
             SumBoodje=_sumBoodje;
             HotSeasonAbBahaAmount = _hotSeasonAbBahaAmount;
-            HotSeasonFazelabAmount = _hotSeasonFazelabAmount;
-            AbBahaDiscount = _abBahaDiscount;
-            HotSeasonDiscount = _hotSeasonDiscount;
-            FazelabDiscount = _fazelabDiscount;
+            HotSeasonFazelabAmount = _hotSeasonFazelabAmount;           
             AbonmanAbAmount = _abonmanAbAmount;
             AvarezAmount = _avarezAmount;
             JavaniAmount = _javaniAmount;
             MaliatAmount = _maliatAmount;
             AbonmanFazelabAmount = _abonmanFazelabAmount;
+
+            AbBahaDiscount = _abBahaDiscount;
+            HotSeasonDiscount = _hotSeasonDiscount;
+            FazelabDiscount = _fazelabDiscount;
+            HotSeasonDiscount = _hotSeasonDiscount;
+            AbonmanAbDiscount = abonmanAbDiscount;
+            AbonmanFazelabDiscount = abonmaneFazelabDiscount;
+            AvarezDiscount = avarezDiscount;
+            JavaniAmount = javaniDiscount;
+
             Nerkh = _nerkh;
             AbAzad = _abAzad;
             Zarib = _zarib;
