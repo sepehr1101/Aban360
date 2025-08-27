@@ -3,6 +3,7 @@
     public static class ExceptionLiterals
     {
         public static string WaterBillMinDate { get { return "1401/01/01"; } }
+        public static string Date1403_01_01 { get { return "1403/01/01"; } }
         public static string ArgumentIsNull_1 { get { return "آرگومان ارائه شده NULL است. نام آرگومان"; } }
         public static string EmptyString { get { return "نوع داده رشته ای تهی یا خالی است"; } }
         public static string AppBasePathNotFound_1 { get {return "ریشه پروژه در مسیر {0} پیدا نشد"; } }
@@ -28,6 +29,7 @@
         public static string InvalidDate => "تاریخ ناصحیح";
         public static string HasNotSiphon => "سیفون ندارد";
 
+        public static string ToDateMoreThanDate(string date) => $"تاریخ پایان باید بزرگتر از {date} باشد.";
         public static string FromDateMoreThanDate(string date) => $"تاریخ شروع باید بزرگتر از {date} باشد.";
         public static string ToDateLessThanDate(string date) => $"تاریخ پایان باید کوچکتر از {date} باشد.";
         public static string ToDateMoreThanFromDate => $"تاریخ پایان باید بزرگتر از تاریخ شروع باشد.";
