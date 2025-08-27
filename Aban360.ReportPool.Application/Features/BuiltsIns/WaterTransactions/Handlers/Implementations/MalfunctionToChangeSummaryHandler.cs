@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Exceptions;
+﻿using Aban360.Common.Excel;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Timing;
 using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts;
@@ -65,7 +66,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
                 durations.Add(int.Parse(CalculationDistanceDate.CalcDistance(m.LatestMalfunctionDateJalali, m.ChangeDateJalali)));
             });
 
-            string average = CalculationDistanceDate.ConvertDaysToDate(durations.Sum());
+            string average = CalculationDistanceDate.ConvertDaysToDate(durations.Sum()/durations.Count());
             string max = CalculationDistanceDate.ConvertDaysToDate(durations.Max());
             string min = CalculationDistanceDate.ConvertDaysToDate(durations.Min());
 

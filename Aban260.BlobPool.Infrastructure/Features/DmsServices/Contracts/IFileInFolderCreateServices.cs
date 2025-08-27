@@ -25,11 +25,17 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts
 
             using var form = new MultipartFormDataContent();
 
-            var fileBytes = await File.ReadAllBytesAsync(localFilePath);
-            var fileContent = new ByteArrayContent(fileBytes);
+
+
+            var fileStream = File.OpenRead(localFilePath);
+            var fileContent = new StreamContent(fileStream);
             fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-            form.Add(fileContent, content, Path.GetFileName(localFilePath));
-            form.Add(new StringContent(serverPath), docPath);
+
+            form.Add(fileContent, "content", Path.GetFileName(localFilePath));
+
+            form.Add(new StringContent(serverPath), "docPath");
+
+
 
             var response = await client.PostAsync(url, form);
             response.EnsureSuccessStatusCode();
