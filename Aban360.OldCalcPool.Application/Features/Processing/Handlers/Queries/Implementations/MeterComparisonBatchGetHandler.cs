@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Exceptions;
+﻿using Aban360.Common.Excel;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Contracts;
@@ -29,7 +30,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<DetailSummary<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataOutputDto>> Handle(MeterComparisonBatchInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataOutputDto>> Handle(MeterComparisonBatchInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -38,8 +39,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                 throw new CustomeValidationException(message);
             }
 
-            DetailSummary<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataOutputDto> eterComparisonBatch = await _meterComparisonBatchQueryService.Get(input);
-            foreach (var data in eterComparisonBatch.Details)
+            ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataOutputDto> meterComparisonBatch = await _meterComparisonBatchQueryService.Get(input);
+            foreach (var data in meterComparisonBatch.ReportData)
             {
                 MeterInfoByPreviousDataInputDto meterInfoByPreviousData = new()
                 {
@@ -51,9 +52,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                 };
                 var result = await _processing.Handle(meterInfoByPreviousData, cancellationToken);
                 data.CurrentAmount = result.SumItems;
+                data.IsChecked = GetTolarance(data.PreviousAmount,data.CurrentAmount,input.Tolerance);
             }
-
-            return eterComparisonBatch;
+            meterComparisonBatch.ReportHeader.SumCurrentAmount = meterComparisonBatch.ReportData.Sum(m => m.CurrentAmount);
+            return meterComparisonBatch;
+        }
+        private bool GetTolarance(double previousAmount, double currentAmount,double tolerance)
+        {
+            return Math.Abs(previousAmount - currentAmount) <= tolerance ? true : false;
         }
     }
 }

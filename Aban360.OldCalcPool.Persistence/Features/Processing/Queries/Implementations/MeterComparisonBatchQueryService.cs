@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.Db.Dapper;
+using Aban360.Common.Excel;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
@@ -15,7 +16,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             : base(configuration)
         { }
 
-        public async Task<DetailSummary<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataOutputDto>> Get(MeterComparisonBatchInputDto input)
+        public async Task<ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataOutputDto>> Get(MeterComparisonBatchInputDto input)
         {
             string perviousBillsDataQueryString = GetPreviousBillsDataQuery();
             var @params = new
@@ -27,12 +28,12 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             IEnumerable<MeterComparisonBatchDataOutputDto> details = await _sqlReportConnection.QueryAsync<MeterComparisonBatchDataOutputDto>(perviousBillsDataQueryString, @params);
             MeterComparisonBatchHeaderOutputDto summary = new()
             {
-                ReportDateJalali=DateTime.Now.ToShortPersianDateString(),
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = details.Count(),
-                ZoneTitle=details.FirstOrDefault().ZoneTitle,
-                SumPreviousAmount=details.Sum(m=>m.PreviousAmount),
+                ZoneTitle = details.FirstOrDefault().ZoneTitle,
+                SumPreviousAmount = details.Sum(m => m.PreviousAmount),
             };
-            DetailSummary<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataOutputDto> result = new(reportTitle, details, summary);
+            ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataOutputDto> result = new(reportTitle, summary, details);
             return result;
         }
 

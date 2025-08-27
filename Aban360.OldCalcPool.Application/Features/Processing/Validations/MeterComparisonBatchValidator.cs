@@ -26,8 +26,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Validations
         }
         private bool MoreThan1403(string date)
         {
-            string date1403_01_01 = ExceptionLiterals.Date1403_01_01;
-            return date.CompareTo(date1403_01_01) >= 0;
+           // string date1403_01_01 = ExceptionLiterals.Date1403_01_01;
+            string date1401_01_01 = "1401/01/01";
+            return date.CompareTo(date1401_01_01) >= 0;
         }
     }
 }
