@@ -84,6 +84,8 @@
         public static string ServiceLinkNetItemsSummary { get { return $"{Report} خلاصه جمع خالص اقلام انشعاب"; } }
 
 
+        public static string MalfunctionToChangeDetail{ get { return $"{Report} جزئیات کنتورهای خراب تعویض شده"; } }
+        public static string MalfunctionToChangeSummary{ get { return $"{Report} خلاصه کنتورهای خراب تعویض شده"; } }
         public static string MalfunctionMeter { get { return $"{Report} کنتورهای خراب"; } }
         public static string MalfunctionMeterByDuration { get { return $"{Report} کنتورهای خراب بر اساس دوره"; } }
 
