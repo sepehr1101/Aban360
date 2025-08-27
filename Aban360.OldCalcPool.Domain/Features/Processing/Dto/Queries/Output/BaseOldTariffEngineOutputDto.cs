@@ -8,12 +8,20 @@
         public double HotSeasonFazelabAmount { get; set; }
         public double BoodjePart1 { get; set; }
         public double BoodjePart2 { get; set; }
-        public double AbBahaDiscount { get; set; }
-        public double HotSeasonDiscount { get; set; }
-        public double FazelabDiscount { get; set; }
         public double AbonmanAbAmount { get; set; }
         public double AvarezAmount { get; set; }
         public double JavaniAmount { get; set; }
+
+        public double AbBahaDiscount { get; set; }
+        public double HotSeasonDiscount { get; set; }
+        public double FazelabDiscount { get; set; }
+        public double AbonmanAbDiscount { get; set; }
+        public double AbonmanFazelabDiscount { get; set; }
+        public double AvarezDiscount { get; set; }
+        public double JavaniDiscount { get; set; }
+        public double BoodjeDiscount { get; set; }
+
+     
         //public double MaliatAmount { get; set; }
 
         public BaseOldTariffEngineOutputDto(
@@ -28,7 +36,12 @@
             double fazelabDiscount,
             double abonmanAbAmount,
             double avarezAmount,
-            double javaniAmount)
+            double javaniAmount,
+            double abonmanAbDiscount,
+            double abonamenFazelabDiscount,
+            double avarezDiscount,
+            double javaniDiscount,
+            double boodjeDiscount)
            //double maliatAmount)
         {
             AbBahaValues = abBahaValues;
@@ -44,6 +57,11 @@
             AvarezAmount = avarezAmount;
             JavaniAmount = javaniAmount;
             //MaliatAmount = maliatAmount;
+            AbonmanAbAmount= abonmanAbAmount;
+            abonamenFazelabDiscount = abonmanAbDiscount;
+            AvarezDiscount = avarezDiscount;
+            JavaniDiscount = javaniDiscount;
+            BoodjeDiscount = boodjeDiscount;
         }
     }
 }
