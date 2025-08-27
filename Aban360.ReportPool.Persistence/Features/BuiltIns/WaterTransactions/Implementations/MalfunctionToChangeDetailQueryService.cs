@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 RecordCount = (MalfunctionData is not null && MalfunctionData.Any()) ? MalfunctionData.Count() : 0,
             };
 
-            ReportOutput<MalfunctionToChangeHeaderOutputDto, MalfunctionToChangeDetailDataOutputDto> result = new ReportOutput<MalfunctionToChangeHeaderOutputDto, MalfunctionToChangeDetailDataOutputDto>(ReportLiterals.MalfunctionToChange, MalfunctionHeader, MalfunctionData);
+            ReportOutput<MalfunctionToChangeHeaderOutputDto, MalfunctionToChangeDetailDataOutputDto> result = new ReportOutput<MalfunctionToChangeHeaderOutputDto, MalfunctionToChangeDetailDataOutputDto>(ReportLiterals.MalfunctionToChangeDetail, MalfunctionHeader, MalfunctionData);
             return result;
         }
 

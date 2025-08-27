@@ -34,13 +34,18 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
                 throw new CustomeValidationException(message);
             }
 
+            int sumDuration = 0;
             ReportOutput<MalfunctionToChangeHeaderOutputDto, MalfunctionToChangeDetailDataOutputDto> malfunctionToChange = await _malfunctionToChangeQueryService.Get(input);
             malfunctionToChange.ReportData.ForEach(meter =>
             {
                 int duration = int.Parse(CalculationDistanceDate.CalcDistance(meter.LatestMalfunctinDateJalali, meter.ChangeDateJalali));
                 meter.Duration = CalculationDistanceDate.ConvertDaysToDate(duration);
+
+                sumDuration += duration;
             });
-            
+            int durationCount = malfunctionToChange.ReportHeader.RecordCount == 0 ? 1 : malfunctionToChange.ReportHeader.RecordCount;
+            malfunctionToChange.ReportHeader.AverageDuration = CalculationDistanceDate.ConvertDaysToDate(sumDuration / durationCount);
+
             return malfunctionToChange;
         }
     }

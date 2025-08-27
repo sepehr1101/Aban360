@@ -38,7 +38,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterToChangeTransactio
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, MalfunctionToChangeInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _malfunctionToChangeHandler.Handle, CurrentUser, ReportLiterals.MalfunctionToChange, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _malfunctionToChangeHandler.Handle, CurrentUser, ReportLiterals.MalfunctionToChangeDetail, connectionId);
             return Ok(inputDto);
         }
     }
