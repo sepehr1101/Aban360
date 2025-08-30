@@ -52,6 +52,8 @@
         public static string SewageInstallationDetail { get { return "جزئیات انشعاب فاضلاب نصب شده"; } }
         public static string WaterInstallationSummary{ get { return "خلاصه انشعاب آب نصب شده"; } }
         public static string SewageInstallationSummary { get { return "خلاصه انشعاب فاضلاب نصب شده"; } }
+        public static string WaterInstallationSummaryByZoneId { get { return "خلاصه انشعاب آب نصب شده بر اساس منطقه"; } }
+        public static string SewageInstallationSummaryByZoneId { get { return "خلاصه انشعاب فاضلاب نصب شده بر اساس منطقه"; } }
 
         public static string WaterRequestDetail { get { return "جزئیات انشعاب آب واگذار شده"; } }
         public static string SewageRequestDetail { get { return "جزئیات انشعاب فاضلاب واگذار شده"; } }

@@ -45,7 +45,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	b.PreviousNumber AS PreviousMeterNumber,
                     	b.NextDay AS CurrentDateJalali,
                     	b.NextNumber AS CurrentMeterNumber,
-                    	b.BillId AS BillId,
+                    	TRIM(b.BillId) AS BillId,
                         b.ZoneTitle AS ZoneTitle,
                     	b.SumItems AS PreviousAmount
                     From [CustomerWarehouse].dbo.Bills b

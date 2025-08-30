@@ -4,8 +4,8 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts
 {
-    public interface IDeductionsAndDiscountsDetailReportHandler
+    public interface ISewageWaterInstallationSummaryByZoneIdHandler
     {
-        Task<ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDetailDataOutputDto>> Handle(DeductionsAndDiscountsReportInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryByZoneIdDataGroupOutputDto>> Handle(SewageWaterInstallationInputDto input, CancellationToken cancellationToken);
     }
 }
