@@ -52,6 +52,8 @@
         public static string NotFoundFile => "فایل پیدا نشد";
         public static string NotFoundAddress => "آدرس پیدا نشد";
 
+        //Configuration
+        public static string InvalidConfiguration(string item, string subItem) => $"تنظیمات راه اندازی نرم افزار اشتباه است. {item} > {subItem}";
 
         public static string InvalidPreviousDateInvoice(int day) => $"صدور قبل برای کمتر از {day} روز امکان پذیر نمی‌باشد.";
     }
