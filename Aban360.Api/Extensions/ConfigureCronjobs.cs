@@ -3,7 +3,7 @@ using Hangfire;
 
 namespace Aban360.Api.Extensions
 {
-    internal static class ConfigCronjobs
+    internal static class ConfigureCronjobs
     {
         internal static void AddCronjobs(this IConfiguration configuration)
         {
