@@ -1,8 +1,8 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs
 {
-    public record SewageWaterRequestSummaryDataOutputDto
+    public record SewageWaterInstallationSummaryByZoneIdValueDataOutputDto
     {
-        public string UsageTitle { get; set; }
+        public string ZoneTitle { get; set; }
         public int CustomerCount { get; set; }
         public int TotalUnit { get; set; }
         public int UnSpecified { get; set; }

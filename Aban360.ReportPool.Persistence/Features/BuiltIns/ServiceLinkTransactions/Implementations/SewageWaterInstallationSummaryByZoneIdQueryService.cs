@@ -10,19 +10,19 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {
-    internal sealed class SewageWaterInstallationSummaryQueryService : AbstractBaseConnection, ISewageWaterInstallationSummaryQueryService
+    internal sealed class SewageWaterInstallationSummaryByZoneIdQueryService : AbstractBaseConnection, ISewageWaterInstallationSummaryByZoneIdQueryService
     {
-        public SewageWaterInstallationSummaryQueryService(IConfiguration configuration)
+        public SewageWaterInstallationSummaryByZoneIdQueryService(IConfiguration configuration)
             : base(configuration)
         { }
 
-        public async Task<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto>> Get(SewageWaterInstallationInputDto input)
+        public async Task<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryByZoneIdDataOutputDto>> Get(SewageWaterInstallationInputDto input)
         {
-            string installationSummaryQuery;
+            string installationSummaryByZoneIdQuery;
             if (input.IsWater)
-                installationSummaryQuery = GetWaterInstallationSummaryQuery();
+                installationSummaryByZoneIdQuery = GetWaterInstallationSummaryByZoneIdQuery();
             else
-                installationSummaryQuery = GetSewageInstallationSummaryQuery();
+                installationSummaryByZoneIdQuery = GetSewageInstallationSummaryByZoneIdQuery();
 
             var @params = new
             {
@@ -32,25 +32,26 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 fromReadingNumber = input.FromReadingNumber,
                 toReadingNumber = input.ToReadingNumber,
             };
-            IEnumerable<SewageWaterInstallationSummaryDataOutputDto> installationData = await _sqlReportConnection.QueryAsync<SewageWaterInstallationSummaryDataOutputDto>(installationSummaryQuery, @params);
+            IEnumerable<SewageWaterInstallationSummaryByZoneIdDataOutputDto> installationData = await _sqlReportConnection.QueryAsync<SewageWaterInstallationSummaryByZoneIdDataOutputDto>(installationSummaryByZoneIdQuery, @params);
             SewageWaterInstallationHeaderOutputDto installationHeader = new SewageWaterInstallationHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = (installationData is not null && installationData.Any()) ? installationData.Count() : 0
+                RecordCount = installationData is not null && installationData.Any() ? installationData.Count() : 0
             };
-            var result = new ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto>
-                (input.IsWater ? ReportLiterals.WaterInstallationSummary : ReportLiterals.SewageInstallationSummary,
+            var result = new ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryByZoneIdDataOutputDto>
+                (input.IsWater ? ReportLiterals.WaterInstallationSummaryByZoneId : ReportLiterals.SewageInstallationSummaryByZoneId,
                 installationHeader,
                 installationData);
-            
+
             return result;
         }
-        private string GetWaterInstallationSummaryQuery()
+        private string GetWaterInstallationSummaryByZoneIdQuery()
         {
             return @"Select	
-                    	c.UsageTitle AS UsageTitle,
+						MAX(t46.C2) AS RegionTitle,
+                    	c.ZoneTitle AS ZoneTitle,
                     	COUNT(c.UsageTitle) AS CustomerCount,
 					    SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
 						SUM(CASE WHEN t5.C0 = 0 THEN 1 ELSE 0 END) AS UnSpecified,
@@ -67,6 +68,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     From [CustomerWarehouse].dbo.Clients c
 					Join [Db70].dbo.T5 t5
 						On t5.C0=c.WaterDiameterId
+					Join [Db70].dbo.T51 t51
+						On t51.C0=c.ZoneId
+					Join [Db70].dbo.T46 t46
+						On t51.C1=t46.C0
                     Where	
                     	c.WaterInstallDate BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
@@ -75,57 +80,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 					    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
 						c.ToDayJalali IS NULL
                     Group BY
-                    	c.UsageTitle";
-            return @"DECLARE @columns NVARCHAR(MAX), @sql NVARCHAR(MAX);
-
-                    SELECT @columns = STUFF((
-                        SELECT DISTINCT ',[' + CAST(C2 AS NVARCHAR(10)) + ']'
-                        FROM [Db70].dbo.T5
-                        FOR XML PATH(''), TYPE
-                    ).value('.', 'NVARCHAR(MAX)'), 1, 1, '');
-                    
-                    SET @sql = N'
-                        SELECT
-                            UsageTitle,
-                            ' + @columns + '
-                        FROM
-                            (
-                                SELECT
-                                    c.UsageTitle,
-                                    t5.C2 AS DiameterId
-                                FROM
-                                    [CustomerWarehouse].dbo.Clients c
-                                JOIN
-                                    [Db70].dbo.T5 t5 ON c.WaterDiameterId = t5.C0
-                                WHERE
-                                    c.WaterInstallDate BETWEEN @fromDate AND @toDate
-                                    AND c.ZoneId IN @zoneIds
-                                    AND c.ToDayJalali IS NULL
-                                    AND (
-                                        @fromReadingNumber IS NULL OR
-                                        @toReadingNumber IS NULL OR
-                                        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
-                                    )
-                            ) AS SourceData
-                        PIVOT
-                            (
-                                COUNT(DiameterId)
-                                FOR DiameterId IN (' + @columns + ')
-                            ) AS PivotTable
-                        ORDER BY
-                            UsageTitle;
-                    ';
-                    
-                    EXEC sp_executesql @sql, N'@fromDate NVARCHAR(10), @toDate NVARCHAR(10), @fromReadingNumber NVARCHAR(10), @toReadingNumber NVARCHAR(10)',
-                        @fromDate = @fromDate,
-                        @toDate = @toDate,
-                        @fromReadingNumber = @fromReadingNumber,
-                        @toReadingNumber = @toReadingNumber;";
+                    	c.ZoneId,c.ZoneTitle";
         }
-        private string GetSewageInstallationSummaryQuery()
+        private string GetSewageInstallationSummaryByZoneIdQuery()
         {
             return @"Select	
-                    	c.UsageTitle AS UsageTitle,
+                    	MAX(t46.C2) AS RegionTitle,
+                    	c.ZoneTitle AS ZoneTitle,
                     	COUNT(c.UsageTitle) AS CustomerCount,
 					    SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
 						SUM(CASE WHEN t5.C0 = 0 THEN 1 ELSE 0 END) AS UnSpecified,
@@ -142,6 +103,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     From [CustomerWarehouse].dbo.Clients c
 					Join [Db70].dbo.T5 t5
 						On t5.C0=c.WaterDiameterId
+					Join [Db70].dbo.T51 t51
+						On t51.C0=c.ZoneId
+					Join [Db70].dbo.T46 t46
+						On t51.C1=t46.C0
                     Where	
                     	c.SewageInstallDate BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND

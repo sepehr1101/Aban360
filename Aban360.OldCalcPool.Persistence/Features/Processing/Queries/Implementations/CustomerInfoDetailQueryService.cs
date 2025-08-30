@@ -20,7 +20,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             ZoneIdAndCustomerNumberOutputDto zoneIdAndCustomerNumber = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZoneIdAndCustomerNumberOutputDto>(zoneIdQueryString, new { billId });
             if (zoneIdAndCustomerNumber == null)
             {
-                throw new InvalidBillIdException(ExceptionLiterals.BillIdNotFound);
+                throw new InvalidBillIdException(ExceptionLiterals.BillIdNotFound+billId);
             }
             string DataBaseName = GetDbName(zoneIdAndCustomerNumber.ZoneId);
             string customerInfoQueryString = GetCustomerInfoDataQuery(DataBaseName);

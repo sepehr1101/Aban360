@@ -37,6 +37,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             string calculationDetailsDataInfoQuery = GetCalculationDetailsDataQuery(dataBaseName);
 
 
+            //todo: PreviousItems OrderBy
             IEnumerable<SiphonDetailItemTitleDto> siphonItems=await _sqlReportConnection.QueryAsync< SiphonDetailItemTitleDto >(siphonItemsQueryString,new {zoneId=zoneId, parNoId =input.Input});
             ServiceLinkCalculationDetailsHeaderOutputDto header = await _sqlReportConnection.QueryFirstOrDefaultAsync<ServiceLinkCalculationDetailsHeaderOutputDto>(calculationHeaderInMostarakQueryString, new { parNoId = input.Input,zoneId=zoneId });
             header.BillId = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(billIdQueryString, new { zoneId = zoneId, parNoId = input.Input });
@@ -206,7 +207,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         private string GetBillIdQuery(string dataBaseName)
         {
             return @$"Select top 1
-                    	g.sh_ghabs1 AS BillId
+                    	TRIM(g.sh_ghabs1) AS BillId
                     From [{dataBaseName}].dbo.ghest g
                     Where 
                     	g.par_no=@parNoId AND
