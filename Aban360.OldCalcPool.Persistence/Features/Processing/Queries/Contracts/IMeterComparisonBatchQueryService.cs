@@ -6,6 +6,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
 {
     public interface IMeterComparisonBatchQueryService
     {
-        Task<ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataOutputDto>> Get(MeterComparisonBatchInputDto input);
+        Task<ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataWithCustomerInfoOutputDto>> Get(MeterComparisonBatchInputDto input);
     }
 }
