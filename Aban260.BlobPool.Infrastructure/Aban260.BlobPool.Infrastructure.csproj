@@ -14,11 +14,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\DmsServices\Implementations\" />
+    <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
+    <Folder Include="Providers\OpenKm\Contracts\" />
   </ItemGroup>
 
 </Project>

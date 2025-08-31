@@ -9,11 +9,12 @@ namespace Aban360.Api.Extensions
 {
     public static class ConfigureSerilog
     {
-        public static void AddSerilog(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddSerilog(this IServiceCollection services, IConfiguration configuration)
         {
             AddSelfDebug();
             AddService(services, configuration);
             AddUi(services);
+            return services;
         }
         private static void AddService(IServiceCollection services, IConfiguration configuration)
         {            

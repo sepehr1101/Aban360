@@ -14,6 +14,9 @@
   <ItemGroup>
     <None Remove="AppData\DynamicReport\fa.xml" />
     <None Remove="AppData\DynamicReport\StiLicense.txt" />
+    <None Remove="AppData\Mrts\non-permanent-branch-report2.mrt" />
+    <None Remove="AppData\Mrts\non-permanent-branch-report4.mrt" />
+    <None Remove="AppData\Mrts\non-permanent-branch-report8.mrt" />
     <None Remove="lib\twitter-bootstrap\css\bootstrap-grid.css" />
     <None Remove="lib\twitter-bootstrap\css\bootstrap-reboot.css" />
     <None Remove="lib\twitter-bootstrap\css\bootstrap.css" />
@@ -49,6 +52,15 @@
     <Content Include="AppData\DynamicReport\StiLicense.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="AppData\Mrts\non-permanent-branch-report2.mrt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AppData\Mrts\non-permanent-branch-report4.mrt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="AppData\Mrts\non-permanent-branch-report8.mrt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Content Include="lib\twitter-bootstrap\css\bootstrap-grid.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -117,9 +129,30 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="AppData\Jsons\non-permanent-branch-report.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="AppData\Jsons\non-permanent-branch-report2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="AppData\Jsons\non-permanent-branch-report3.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="Views\V1\DynamicGenerator\DisplayDesigner.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="AppData\Mrts\non-permanent-branch-report.mrt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="AppData\Mrts\non-permanent-branch-report3.mrt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="AppData\Mrts\non-permanent-branch-report6.mrt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

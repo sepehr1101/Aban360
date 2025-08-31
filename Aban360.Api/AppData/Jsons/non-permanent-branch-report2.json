@@ -1,0 +1,973 @@
+{
+
+    "title": "گزارش جرئیات انشعاب غیر دائم",
+
+    "reportHeader": {
+
+        "fromReadingNumber": "0000000000",
+
+        "toReadingNumber": "999999999",
+
+        "reportDateJalali": "1404/06/08",
+
+        "recordCount": 21
+
+    },
+
+    "reportData": [
+
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },      
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },		
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },      
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },	
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },      
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },	
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },      
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },	
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },      
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },	
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },      
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },	
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },      
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        },
+        {
+
+            "eventDateJalali": "1403/07/02",
+
+            "customerNumber": 11496294,
+
+            "readingNumber": "199107000",
+
+            "firstName": "شهرداري",
+
+            "surname": "منطقه ?",
+
+            "usageTitle": "موقت کارگاهي عمومي",
+
+            "meterDiameterTitle": "1/2",
+
+
+            "debtAmount": "0",
+
+            "address": "22بهمن مجموعه اميرکبير\n09133682390",
+
+            "zoneTitle": "1  - منطقه يک",
+
+            "domesticUnit": 0,
+
+            "commercialUnit": 0,
+
+            "otherUnit": 1,
+
+            "billId": "1149629416312",
+
+            "useStateTitle": "انشعاب برقرار"
+
+        }	
+    ]
+
+}

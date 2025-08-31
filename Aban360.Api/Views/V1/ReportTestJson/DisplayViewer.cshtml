@@ -1,0 +1,27 @@
+﻿@using Stimulsoft.Report.Mvc;
+@using Stimulsoft.Report.Web;
+
+@{
+    ViewBag.Title = "مشاهده";
+}
+
+@Html.StiNetCoreViewer(new StiNetCoreViewerOptions()
+{
+    Actions =
+    {
+        GetReport = "display",
+        ViewerEvent="event"
+    },
+    Localization = "~/AppData/DynamicReport/fa.xml",
+    Appearance =
+    {
+        ShowTooltipsHelp = false,
+        ShowDialogsHelp = false,
+        ShowTooltips=false
+    },
+    Theme = StiViewerTheme.Office2022WhitePurple,
+    Toolbar =
+    {
+        ShowAboutButton=false,
+    }
+})

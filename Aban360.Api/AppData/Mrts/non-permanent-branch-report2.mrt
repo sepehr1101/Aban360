@@ -1,0 +1,830 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<StiSerializer version="1.02" type="Net" application="StiReport">
+  <Dictionary Ref="1" type="Dictionary" isKey="true">
+    <BusinessObjects isList="true" count="0" />
+    <Databases isList="true" count="1">
+      <non_permanent_branch_report Ref="2" type="Stimulsoft.Report.Dictionary.StiJsonDatabase" isKey="true">
+        <Alias>non-permanent-branch-report</Alias>
+        <Key>a796a7dfc50e42099352ccb6b73954da</Key>
+        <Name>non-permanent-branch-report</Name>
+        <PathData>resource://non-permanent-branch-report</PathData>
+      </non_permanent_branch_report>
+    </Databases>
+    <DataSources isList="true" count="3">
+      <root Ref="3" type="DataTableSource" isKey="true">
+        <Alias>root</Alias>
+        <Columns isList="true" count="4">
+          <value>title,System.String</value>
+          <value>reportHeader,System.String</value>
+          <value>reportData,System.String</value>
+          <value>relationId,System.String</value>
+        </Columns>
+        <Dictionary isRef="1" />
+        <Key>29d8b9b498414558b47280f9e92117c6</Key>
+        <Name>root</Name>
+        <NameInSource>non-permanent-branch-report.root</NameInSource>
+      </root>
+      <reportData Ref="4" type="DataTableSource" isKey="true">
+        <Alias>reportData</Alias>
+        <Columns isList="true" count="16">
+          <value>eventDateJalali,System.String</value>
+          <value>customerNumber,System.Double</value>
+          <value>readingNumber,System.String</value>
+          <value>firstName,System.String</value>
+          <value>surname,System.String</value>
+          <value>usageTitle,System.String</value>
+          <value>meterDiameterTitle,System.String</value>
+          <value>debtAmount,System.String</value>
+          <value>address,System.String</value>
+          <value>zoneTitle,System.String</value>
+          <value>domesticUnit,System.Double</value>
+          <value>commercialUnit,System.Double</value>
+          <value>otherUnit,System.Double</value>
+          <value>billId,System.String</value>
+          <value>useStateTitle,System.String</value>
+          <value>relationId,System.String</value>
+        </Columns>
+        <Dictionary isRef="1" />
+        <Key>03ccdece924040209ce8ee7050e64bf8</Key>
+        <Name>reportData</Name>
+        <NameInSource>non-permanent-branch-report.root_reportData</NameInSource>
+      </reportData>
+      <reportHeader Ref="5" type="DataTableSource" isKey="true">
+        <Alias>reportHeader</Alias>
+        <Columns isList="true" count="5">
+          <value>fromReadingNumber,System.String</value>
+          <value>toReadingNumber,System.String</value>
+          <value>reportDateJalali,System.String</value>
+          <value>recordCount,System.Double</value>
+          <value>relationId,System.String</value>
+        </Columns>
+        <Dictionary isRef="1" />
+        <Key>d01844a0cafc46c2be437d71ac9ed145</Key>
+        <Name>reportHeader</Name>
+        <NameInSource>non-permanent-branch-report.root_reportHeader</NameInSource>
+      </reportHeader>
+    </DataSources>
+    <Relations isList="true" count="2">
+      <root Ref="6" type="DataRelation" isKey="true">
+        <Alias>root</Alias>
+        <ChildColumns isList="true" count="1">
+          <value>relationId</value>
+        </ChildColumns>
+        <ChildSource isRef="4" />
+        <Dictionary isRef="1" />
+        <Name>root</Name>
+        <NameInSource>root_reportData</NameInSource>
+        <ParentColumns isList="true" count="1">
+          <value>reportData</value>
+        </ParentColumns>
+        <ParentSource isRef="3" />
+      </root>
+      <root Ref="7" type="DataRelation" isKey="true">
+        <Alias>root</Alias>
+        <ChildColumns isList="true" count="1">
+          <value>relationId</value>
+        </ChildColumns>
+        <ChildSource isRef="5" />
+        <Dictionary isRef="1" />
+        <Name>root</Name>
+        <NameInSource>root_reportHeader</NameInSource>
+        <ParentColumns isList="true" count="1">
+          <value>reportHeader</value>
+        </ParentColumns>
+        <ParentSource isRef="3" />
+      </root>
+    </Relations>
+    <Report isRef="0" />
+    <Resources isList="true" count="1">
+      <value>Name=non-permanent-branch-report, Alias=non-permanent-branch-report, Type=Json, Content=VSD3enVt3nBqYJQfX4yAk5rZ9y_x002F_a3i1UOdhHY1zaVcxax1N0yjHL_x002B_l5FsDK_x002F_qDoEi_x002B_YWC_x002B_NXWCYu6ltt5ojDVBih_x002F_CysUFZcZsxtetRgyxvph23zq84L3f4yyw0u6aOg62Tpn_x002B_b6ETv_x002B_p7CKlPtdACkO0CyiSruyfMtK_x002B_KoKAnHEqKRn8yLFemQ_x002B_Yvh9CMt_x002B_v6x9jdwvESFNx6mCtOGuPGeEGYb_x002B_MsrZXM5xrdCNkqdDI77w7LLKz12_x002B_rAwyk0tgYk5LVfMmXrGbvWxwN_x002B_urGaDmJ6H8xHBs9dQ3g_x002F_CKYq0Ea6Sp1BV9sj49orEXsRBwIpFcraomftBk4peBZvP6u4pAQqm9g_x002F_l0PCkraGVWURLavKw0wFY9aYAE0p_x002B_C2s7P1sIVvDn0RTrxW5rD4EBYkwL_x002B_beyLSHqorsCB8F9digmnx4bDYhiPxcYuoqufZD7NZ9Nu8Ra6fbc3eC6WaphbjFHl_x002B_ZiOLyRQ_x002F_UabF2fczlfP5nfTcijL_x002F_T4psLGzhPohsyJEqdUl9fuC5pcU3ZVwvRCj24Wl61NXKZ_x002B_aQnBxJRcJ4MYlElXAkR1gHBSHG3I_x002F_dzc5jIXU402R_x002B_hi2BHgcCF_x002F_Bb_x002F_sGvRX_x002F_TeANE3v2EfdftbzOvjXR8ZhlJTpy6khVeqdOfHNwByiaS_x002B_GO4p5AAXeG_x002B_K6s2NvGmNm_x002B_qp7FfAb9hkzeJehbMcMKJD9EaaQKwCKrEo11kSR5lkeNvQJ05sVS5FoMBqcPqQ3u_x002F_WOk66CJ5Arnm6OE9y2DXmIrZ5cT069bnSwxSEPfpLAlfb_x002B_8lCqi_x002F_I95nttHqWtc7TOTxTTbaWF6Wa5lME4qoNez2KTxiBhbR4uczEGWJ0_x002F_41A83TrRrMqQxQZsjy4wypYEVh37dvqQGX9cugLrLSbv6P38bjcGFA3AoYakQlTO7028_x003D_</value>
+    </Resources>
+    <Variables isList="true" count="0" />
+  </Dictionary>
+  <EngineVersion>EngineV2</EngineVersion>
+  <GlobalizationStrings isList="true" count="0" />
+  <Key>48d20944928c405589ef095cb5b87c6d</Key>
+  <MetaTags isList="true" count="0" />
+  <Pages isList="true" count="1">
+    <Page1 Ref="8" type="Page" isKey="true">
+      <Border>None;Black;2;Solid;False;4;Black</Border>
+      <Brush>Transparent</Brush>
+      <Components isList="true" count="21">
+        <Image1 Ref="9" type="Image" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>25.8,0,1.8,1.8</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <IconColor>68, 114, 196</IconColor>
+          <ImageBytes>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
+TkSuQmCC</ImageBytes>
+          <Margins>0,0,0,0</Margins>
+          <Name>Image1</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+        </Image1>
+        <Text2 Ref="10" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>17.8,0.4,7.8,0.4</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,12</Font>
+          <HorAlignment>Center</HorAlignment>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text2</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>وزارت نیرو-شرکت آب و فاضلاب استان اصفهان</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text2>
+        <Text3 Ref="11" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>19.6,1,4.6,0.4</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,12</Font>
+          <HorAlignment>Center</HorAlignment>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text3</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>خدمات غیرحضوری با 1522</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text3>
+        <Text4 Ref="12" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>20.4,1.6,3,0.4</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,12</Font>
+          <HorAlignment>Center</HorAlignment>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text4</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>تلفن حوادث:122</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text4>
+        <Text1 Ref="13" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>2.8,0.2,2.4,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,12</Font>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text1</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>: تاریخ گزارش</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text1>
+        <Text5 Ref="14" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>2.8,1,2.4,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,12</Font>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text5</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>: شماره ISO</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text5>
+        <Text6 Ref="15" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>25.4,2.8,2,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,12</Font>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text6</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>: از اشتراک</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text6>
+        <Text7 Ref="16" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>17.2,2.8,2,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,12</Font>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text7</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>: تا اشتراک</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text7>
+        <Text8 Ref="17" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>9,2.8,1.4,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,12</Font>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text8</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>: تعداد</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text8>
+        <Panel1 Ref="18" type="Panel" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,5,27.7,14</ClientRectangle>
+          <Components isList="true" count="1">
+            <Text23 Ref="19" type="Text" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>6.4,2.8,5,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Expressions isList="true" count="0" />
+              <Font>Arial,8</Font>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text23</Name>
+              <Page isRef="8" />
+              <Parent isRef="18" />
+              <Text>{reportHeader.reportDateJalali}</Text>
+              <TextBrush>Black</TextBrush>
+            </Text23>
+          </Components>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Name>Panel1</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+        </Panel1>
+        <Text13 Ref="20" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>26.7,4,1,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,11,Bold</Font>
+          <HorAlignment>Right</HorAlignment>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text13</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>ناحیه</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text13>
+        <Text14 Ref="21" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>23.5,4,1.2,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,11,Bold</Font>
+          <HorAlignment>Right</HorAlignment>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text14</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>کاربری</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text14>
+        <Text15 Ref="22" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>19.6,4,1.6,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,11,Bold</Font>
+          <HorAlignment>Right</HorAlignment>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text15</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>ش قبض</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text15>
+        <Text16 Ref="23" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>16.6,4,1.4,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,11,Bold</Font>
+          <HorAlignment>Right</HorAlignment>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text16</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>اشتراک</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text16>
+        <Text17 Ref="24" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>14,4,1.2,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,11,Bold</Font>
+          <HorAlignment>Right</HorAlignment>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text17</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>ردیف</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text17>
+        <Text18 Ref="25" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>11,4,1.8,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,11,Bold</Font>
+          <HorAlignment>Right</HorAlignment>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text18</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>قطر کنتور</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text18>
+        <Text19 Ref="26" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>8.2,4,2.4,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,11,Bold</Font>
+          <HorAlignment>Right</HorAlignment>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text19</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>آحاد مسکونی</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text19>
+        <Text20 Ref="27" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>5.8,4,2,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,11,Bold</Font>
+          <HorAlignment>Right</HorAlignment>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text20</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>آحاد تجاری</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text20>
+        <Text21 Ref="28" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>3.6,4,1.8,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,11,Bold</Font>
+          <HorAlignment>Right</HorAlignment>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text21</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>آحاد سایر</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text21>
+        <Text22 Ref="29" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0.6,4,2.4,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,11,Bold</Font>
+          <HorAlignment>Right</HorAlignment>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text22</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>وضعیت نصب</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text22>
+        <HorizontalLinePrimitive1 Ref="30" type="HorizontalLinePrimitive" isKey="true">
+          <ClientRectangle>0,4.8,27.7,0.0254</ClientRectangle>
+          <Color>Black</Color>
+          <Conditions isList="true" count="0" />
+          <EndCap Ref="31" type="Cap" isKey="true">
+            <Color>Black</Color>
+          </EndCap>
+          <Expressions isList="true" count="0" />
+          <Name>HorizontalLinePrimitive1</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <StartCap Ref="32" type="Cap" isKey="true">
+            <Color>Black</Color>
+          </StartCap>
+        </HorizontalLinePrimitive1>
+      </Components>
+      <Conditions isList="true" count="0" />
+      <Expressions isList="true" count="0" />
+      <Guid>db37a194f6ae40e8b11decb0e5d4b410</Guid>
+      <Margins>1,1,1,1</Margins>
+      <Name>Page1</Name>
+      <Orientation>Landscape</Orientation>
+      <PageHeight>21</PageHeight>
+      <PageWidth>29.7</PageWidth>
+      <PaperSize>A4</PaperSize>
+      <Report isRef="0" />
+    </Page1>
+  </Pages>
+  <ReferencedAssemblies isList="true" count="8">
+    <value>System.Dll</value>
+    <value>System.Drawing.Dll</value>
+    <value>System.Windows.Forms.Dll</value>
+    <value>System.Data.Dll</value>
+    <value>System.Xml.Dll</value>
+    <value>Stimulsoft.Controls.Dll</value>
+    <value>Stimulsoft.Base.Dll</value>
+    <value>Stimulsoft.Report.Dll</value>
+  </ReferencedAssemblies>
+  <ReportAlias>Report</ReportAlias>
+  <ReportChanged>8/31/2025 2:52:40 PM</ReportChanged>
+  <ReportCreated>8/30/2025 4:59:09 PM</ReportCreated>
+  <ReportFile>C:\Users\Padidar\Desktop\گزارش های ساخته شده با stimulsoft\تست\non-permanent-branch-report.mrt</ReportFile>
+  <ReportGuid>f43366badf7c4eeb9214b20e9116205d</ReportGuid>
+  <ReportName>Report</ReportName>
+  <ReportUnit>Centimeters</ReportUnit>
+  <ReportVersion>2023.1.1.0</ReportVersion>
+  <Script>using System;
+using System.Drawing;
+using System.Windows.Forms;
+using System.Data;
+using Stimulsoft.Controls;
+using Stimulsoft.Base.Drawing;
+using Stimulsoft.Report;
+using Stimulsoft.Report.Dialogs;
+using Stimulsoft.Report.Components;
+
+namespace Reports
+{
+    public class Report : Stimulsoft.Report.StiReport
+    {
+        public Report()        {
+            this.InitializeComponent();
+        }
+
+        #region StiReport Designer generated code - do not modify
+		#endregion StiReport Designer generated code - do not modify
+    }
+}
+</Script>
+  <ScriptLanguage>CSharp</ScriptLanguage>
+  <Styles isList="true" count="1">
+    <Style1 Ref="33" type="Stimulsoft.Report.StiStyle" isKey="true">
+      <Brush>Transparent</Brush>
+      <Conditions isList="true" count="0" />
+      <Font>Arial,8</Font>
+      <Name>Style1</Name>
+      <NegativeTextBrush>Red</NegativeTextBrush>
+      <TextBrush>Black</TextBrush>
+    </Style1>
+  </Styles>
+</StiSerializer>
