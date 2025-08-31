@@ -43,12 +43,17 @@ namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator
         {
             StiReport report = new ();
             string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string reportPath = Path.Combine("AppData", "Mrts", "non-permanent-branch-report8.mrt");
+            string reportPath = Path.Combine("AppData", "Mrts", "pre-payment-report3.mrt");
             report.Load(reportPath);
 
             // Load JSON data (from file or URL)
-            string jsonPath = Path.Combine("AppData", "Jsons", "non-permanent-branch-report3.json");
+            string jsonPath = Path.Combine("AppData", "Jsons", "pre-payment-report.json");
             DataSet dataSet = StiJsonToDataSetConverter.GetDataSetFromFile(jsonPath);
+
+            foreach(var table in dataSet.Tables)
+            {
+                var x = table.GetType();
+            }
 
             // Clear existing data sources
             report.Dictionary.Databases.Clear();
