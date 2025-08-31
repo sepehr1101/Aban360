@@ -1,67 +1,59 @@
-﻿using Aban260.BlobPool.Infrastructure.Features.DmsServices.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Net;
+﻿using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
-using Aban260.BlobPool.Infrastructure.Features.DmsServices.Base;
-using System.Text.Json;
+using Aban360.Common.Literals;
 
 namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
 {
     internal sealed class OpenKmQueryService
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IHttpClientConfigureServices _configureServices;
-        string _token;
-        DateTime _expireTime;
-
-        public async Task<string> GetToken()
+        private readonly HttpClient _httpClient;
+        public OpenKmQueryService(IHttpClientFactory httpClientFactory)
         {
-            string Url = $"token";
-            string Accept = $"token";
-            string _basic = "Basic";
-            string _basicToken = "UEtxbkJ1enVNRXM0aEFySV9CUGZZaWhKS1lNYTpZUlFFZjcyR29zc0oyZ0dtMmhFMU5PTVZhVDhh";
+            _httpClient = httpClientFactory.CreateClient(HttpClientNames.Kaj);
+        }
 
-            var body = new Dictionary<string, string>()
+        public async Task<string> GetToken(string username, string password)
+        {
+            const string GrantTypeKey = "grant_type";
+            const string ClientCredentialsValue = "client_credentials";
+            const string TokenEndpoint = "token";
+            const string BasicScheme = "Basic";
+            const string FormUrlEncoded = "application/x-www-form-urlencoded";
+
+            // Prepare form data
+            var formData = new Dictionary<string, string>
             {
-                {"grant_type","client_credentials" }
+                { GrantTypeKey, ClientCredentialsValue }
             };
 
-            var client = _httpClientFactory.CreateClient();
-            HttpClientParameters clientParams = new(_basicToken)
+            var request = new HttpRequestMessage(HttpMethod.Post, TokenEndpoint)
             {
-                AuthenticationType = _basic,
-                BodyData = body,
+                Content = new FormUrlEncodedContent(formData)
             };
-            _configureServices.Services(client, clientParams);
 
+            // Encode username:password for Basic Auth
+            var credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{username}:{password}"));
+            request.Headers.Authorization = new AuthenticationHeaderValue(BasicScheme, credentials);
 
+            // Explicit content type
+            request.Content.Headers.ContentType = new MediaTypeHeaderValue(FormUrlEncoded);
 
-            var content = new FormUrlEncodedContent(body);
-            var respone = await client.PostAsync(Url, content);
-            respone.EnsureSuccessStatusCode();
+            // Send request
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
 
-            var jsonResponse = await respone.Content.ReadAsStringAsync();
-            var tokenResponse = JsonSerializer.Deserialize<GetTokenDto>(jsonResponse);
-            _token = tokenResponse.access_token;
-            _expireTime = DateTime.UtcNow.AddSeconds(tokenResponse.ExpireTime);
-
-            return tokenResponse.access_token;
+            return await response.Content.ReadAsStringAsync();
         }
         public async Task<string> SearchDocuments(string folderPath, string property, string path)
         {
             string _content = "text/plain";
             string baseUrl = "https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-SearchByMetadataAndPath/1.0";
-
-            var client = _httpClientFactory.CreateClient("token");
+                       
             string finalUrl = $"{baseUrl}?property={property}&path={path}";
 
             var content = new StringContent(folderPath, Encoding.UTF8, _content);
 
-            var response = await client.PostAsync(finalUrl, content);
+            var response = await _httpClient.PostAsync(finalUrl, content);
             response.EnsureSuccessStatusCode();
 
             string result = await response.Content.ReadAsStringAsync();
@@ -71,10 +63,9 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
         {
             string _accept = "application/json";
             string _content = "application/json";
-            string baseUrl = $"https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-GetFilesList/1.0/";
-            var client = _httpClientFactory.CreateClient("token");
+            string baseUrl = $"https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-GetFilesList/1.0/";           
 
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
+            //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
 
             var values = new
             {
@@ -84,7 +75,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             string encodedFldId = Uri.EscapeDataString(fieldId);
             string finalUrl = $"{baseUrl}?fldId={encodedFldId}";
 
-            var response = await client.GetAsync(finalUrl);
+            var response = await _httpClient.GetAsync(finalUrl);
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();
             return result;
@@ -92,11 +83,9 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
         public async Task<string> GetFileBinary(string documentId)
         {
             string _baseUrl = $"https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-GetBinaryFile/1.0/";
-
-            var client = _httpClientFactory.CreateClient("token");
             string finalUrl = $"{_baseUrl}?docId={documentId}";
 
-            var response = await client.GetAsync(finalUrl);
+            var response = await _httpClient.GetAsync(finalUrl);
             response.EnsureSuccessStatusCode();
 
             var result = await response.Content.ReadAsStringAsync();
@@ -106,13 +95,11 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
         {
             string _BaseUrl = "https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-GetDownloadLinkFile/1.0";
             string _accept = "application/xml";
-
-            var client = _httpClientFactory.CreateClient("token");
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
-            client.DefaultRequestHeaders.Add("cache-control", "no-cache");
+            //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
+            //client.DefaultRequestHeaders.Add("cache-control", "no-cache");
 
             string url = $"{_BaseUrl}?uuid={uuid}&oneTimeUse={oneTimeUse.ToString().ToLower()}";
-            var response = await client.GetAsync(url);
+            var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
 
             var result = await response.Content.ReadAsStringAsync();

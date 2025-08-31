@@ -1,4 +1,4 @@
-﻿using Aban360.Common.Exceptions;
+﻿using Aban360.Api.Exceptions;
 using Aban360.Common.Literals;
 
 namespace Aban360.Api.Cronjobs
@@ -7,10 +7,9 @@ namespace Aban360.Api.Cronjobs
     {   
         public static void DeleteOldFiles(int tresholdDay, string filePath, string searchPattern)
         {           
-
             if (!Directory.Exists(filePath))
             {
-                throw new BaseException(ExceptionLiterals.NotFoundAddress);
+                throw new InvalidFilePathException(ExceptionLiterals.NotFoundAddress);
             }
 
             var files = Directory.GetFiles(filePath, searchPattern, SearchOption.TopDirectoryOnly);
@@ -20,7 +19,7 @@ namespace Aban360.Api.Cronjobs
                 DateTime creationTime = File.GetCreationTime(file);
                 if (creationTime < DateTime.Now.AddDays(-tresholdDay))
                 {
-                    File.Delete(file);//todo: Check Permission
+                    File.Delete(file);//TODO: Check Permission
                 }
             }
         }
