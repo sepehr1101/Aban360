@@ -1,4 +1,4 @@
-﻿using Aban360.Common.Excel;
+﻿using Aban360.Common.BaseEntities;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 

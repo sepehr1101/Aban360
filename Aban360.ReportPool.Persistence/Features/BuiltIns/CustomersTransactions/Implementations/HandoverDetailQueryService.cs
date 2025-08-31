@@ -1,5 +1,5 @@
-﻿using Aban360.Common.Db.Dapper;
-using Aban360.Common.Excel;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Base;

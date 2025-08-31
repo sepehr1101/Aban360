@@ -4,7 +4,7 @@
 @{
     ViewBag.Title = "مشاهده";
 }
-
+<div style="height: 90vh; overflow-y: auto;">
 @Html.StiNetCoreViewer(new StiNetCoreViewerOptions()
 {
     Actions =
@@ -25,3 +25,4 @@
         ShowAboutButton=false,
     }
 })
+</div>

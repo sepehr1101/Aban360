@@ -1,11 +1,10 @@
 ﻿using Aban360.Api.Hubs.Contracts;
 using Aban360.Api.Hubs.Implementations;
 using Aban360.Common.ApplicationUser;
-using Aban360.Common.Excel;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Extensions;
 using Aban360.CommunicationPool.Domain.Features.Hubs.Dto.Commands;
 using Aban360.ReportPool.Application.Features.FlatReports.Handler.Commands.Contracts;
-using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Commands;
 using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Queries;
 using Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Contracts;
@@ -76,7 +75,6 @@ namespace Aban360.Api.Cronjobs
             await _serverReportsCreateHandler.Handle(serverReportsCreateDto, cancellationToken);
             BackgroundJob.Enqueue(() => DoFireAndInform(serverReportsCreateDto));
         }
-
 
         public async Task DoFireAndInform(ServerReportsCreateDto serverReportsCreateDto)
         {

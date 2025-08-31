@@ -4,15 +4,15 @@ using DNTPersianUtils.Core;
 using MiniExcelLibs;
 using System.Reflection;
 
-namespace Aban360.Common.Excel
+namespace Aban360.Common.Extensions
 {
     public static class ExcelManagement
     {
-        public static string pathBase { get; set; } = $"AppData\\Excels\\";
+        public static string pathBase { get; set; } = "AppData\\Excels\\";
         public static int maxDataCount { get; set; } = 1000000;
         public static async Task<string> ExportToExcelAsync<THeader, TData>(THeader tHeader, IEnumerable<TData> tData, string reportName)
         {
-            Validation(tHeader, tData);
+            Validate(tHeader, tData);
 
             var excelfile = new Dictionary<string, object>();
             var sheetCount = tData.Count() / maxDataCount;
@@ -21,7 +21,7 @@ namespace Aban360.Common.Excel
             for (int i = 0; i < sheetCount + 1; i++)
             {
                 var sheetData = tData.Skip(i * maxDataCount).Take(maxDataCount).ToList();
-                excelfile[ExceptionLiterals.Page(i+1)] = TranslateData(sheetData);
+                excelfile[ExceptionLiterals.Page(i + 1)] = TranslateData(sheetData);
             }
 
             string path = GetPath(reportName);
@@ -46,8 +46,9 @@ namespace Aban360.Common.Excel
 
             return $"{pathBase}{reportTitle}_{persianDate}_{timeNow}.xlsx";
         }
-        private static void Validation<THeader, TData>(THeader tHeader, IEnumerable<TData> tData)
+        private static void Validate<THeader, TData>(THeader tHeader, IEnumerable<TData> tData)
         {
+            tData.NotNull(nameof(tData));
             if (tHeader == null || tData == null)
                 throw new BaseException(ExceptionLiterals.CantGenarateExcelWithNullData);
         }
@@ -96,7 +97,6 @@ namespace Aban360.Common.Excel
                       .OrderBy(p => p.MetadataToken)
                       .ToList();
         }
-
         private static Dictionary<string, string> GetPersianProperty()
         {
             return new Dictionary<string, string>()

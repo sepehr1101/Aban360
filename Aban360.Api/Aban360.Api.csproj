@@ -58,9 +58,9 @@
     <Content Include="AppData\Mrts\non-permanent-branch-report4.mrt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Resource Include="AppData\Mrts\non-permanent-branch-report8.mrt">
+    <Content Include="AppData\Mrts\non-permanent-branch-report8.mrt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    </Content>
     <Content Include="lib\twitter-bootstrap\css\bootstrap-grid.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
