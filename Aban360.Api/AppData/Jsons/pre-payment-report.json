@@ -1,0 +1,110 @@
+{
+    "title": "گزارش ریز محاسبه و پیش پرداخت",
+    "reportHeader": {
+        "customerHeader": {
+            "zoneTitle": "اردستان",
+            "zoneId": 131211,
+            "firstName": "داوود",
+            "surname": "ملايي اردستاني",
+            "fullName": "داوود ملايي اردستاني",
+            "postalCode": "            ",
+            "address": ". اردستان ميدان امام بازار روز",
+            "usageTitle": "تجاري",
+            "usageId": 2,
+            "branchTypeTitle": "مشخص نشده(عادی)",
+            "branchTypeId": 0,
+            "contractualCapacity": 5,
+            "customerNumber": 8080,
+            "readingNumber": "          ",
+            "pageNumber": 14481,
+            "requestNumber": "00006475094",
+            "unitCommeicial": 0,
+            "unitDomestic": 0,
+            "unitOther": 0,
+            "premises": 0,
+            "improvementsCommericial": 0,
+            "improvementsDomestic": 0,
+            "improvementsOverall": 25,
+            "readingBlock": "          ",
+            "serviceDescription": "انشعاب جدید",
+            "description": "                                                                 "
+        },
+        "installmentHeader": {
+            "dueDataJalali": "1401/01/30",
+            "payable": 54568636,
+            "billId": "808016419",
+            "paymentId": "5456900045"
+        },
+        "sumItemsAmount": 54568636,
+        "sumItemsDiscount": 0,
+        "debtorOrCreditorAmount": 0,
+        "reportDateJalali": "1404/06/09",
+        "persianStringAmount": "پنجاه و چهار میلیون و پانصد و شصت و هشت هزار و ششصد و سی و شش",
+        "paymentDateJalali": "",
+        "paymentGetway": "",
+        "installmentCount": 0,
+        "installmentNumber": 1,
+        "barcode": "0000808016419 0005456900045"
+    },
+    "reportData": [
+        {
+            "itemTitle": "تبصره 2",
+            "itemId": 106,
+            "amount": 22800000,
+            "discount": 0,
+            "installmentNumber": 1,
+            "installmentCount": 0
+        },
+        {
+            "itemTitle": "حق انشعاب آب",
+            "itemId": 101,
+            "amount": 2280000,
+            "discount": 0,
+            "installmentNumber": 1,
+            "installmentCount": 0
+        },
+        {
+            "itemTitle": "خدمات نصب آب",
+            "itemId": 100,
+            "amount": 37560000,
+            "discount": 0,
+            "installmentNumber": 1,
+            "installmentCount": 0
+        },
+        {
+            "itemTitle": "ماده 11 آب",
+            "itemId": 311,
+            "amount": 14500636,
+            "discount": 0,
+            "installmentNumber": 1,
+            "installmentCount": 0
+        }
+        ,
+        {
+            "itemTitle": "ماده  آب",
+            "itemId": 311,
+            "amount": 14500636,
+            "discount": 0,
+            "installmentNumber": 1,
+            "installmentCount": 0
+        }
+        ,
+        {
+            "itemTitle": "1",
+            "itemId": 311,
+            "amount": 14500636,
+            "discount": 0,
+            "installmentNumber": 1,
+            "installmentCount": 0
+        }
+        ,
+        {
+            "itemTitle": " 11 آب",
+            "itemId": 311,
+            "amount": 14500636,
+            "discount": 0,
+            "installmentNumber": 1,
+            "installmentCount": 0
+        }
+    ]
+}

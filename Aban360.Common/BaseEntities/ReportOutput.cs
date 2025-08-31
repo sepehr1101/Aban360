@@ -1,4 +1,4 @@
-﻿namespace Aban360.Common.Excel
+﻿namespace Aban360.Common.BaseEntities
 {
     public record ReportOutput<TReportHeader, TReportData>
     {

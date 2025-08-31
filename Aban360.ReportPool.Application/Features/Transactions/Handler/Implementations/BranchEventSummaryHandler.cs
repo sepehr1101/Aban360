@@ -1,4 +1,4 @@
-﻿using Aban360.Common.Excel;
+﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.Transactions.Handler.Contracts;
 using Aban360.ReportPool.Domain.Base;

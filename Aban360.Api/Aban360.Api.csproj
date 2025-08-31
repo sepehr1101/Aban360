@@ -58,9 +58,9 @@
     <Content Include="AppData\Mrts\non-permanent-branch-report4.mrt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Resource Include="AppData\Mrts\non-permanent-branch-report8.mrt">
+    <Content Include="AppData\Mrts\non-permanent-branch-report8.mrt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    </Content>
     <Content Include="lib\twitter-bootstrap\css\bootstrap-grid.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -138,6 +138,9 @@
     <Content Update="AppData\Jsons\non-permanent-branch-report3.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="AppData\Jsons\pre-payment-report.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="Views\V1\DynamicGenerator\DisplayDesigner.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -151,6 +154,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="AppData\Mrts\non-permanent-branch-report6.mrt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="AppData\Mrts\pre-payment-report.mrt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

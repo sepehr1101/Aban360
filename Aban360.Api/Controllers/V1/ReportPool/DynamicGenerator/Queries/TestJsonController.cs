@@ -32,44 +32,38 @@ namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator
 
         [Route("")]
         [HttpGet]
-        public IActionResult DisplayViewer(int? id = null)//moshahede gozaresh
+        public IActionResult DisplayViewer(Guid jsonId, int reportCode)
         {
             return View(@"~/Views/V1/ReportTestJson/DisplayViewer.cshtml");
         }
 
         [HttpGet, HttpPost]
         [Route("display")]
-        public async Task<IActionResult> DisplayReport()//namayesh
+        public async Task<IActionResult> DisplayReport(Guid jsonId, int reportCode)
         {
             StiReport report = new ();
             string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string reportPath = Path.Combine("AppData", "Mrts", "non-permanent-branch-report8.mrt");
             report.Load(reportPath);
 
-            // Load JSON data (from file or URL)
-            string jsonPath = Path.Combine("AppData", "Jsons", "non-permanent-branch-report3.json");
+            // Load JSON data 
+            string jsonPath = Path.Combine("AppData", "Jsons", $"{jsonId}.json");
             DataSet dataSet = StiJsonToDataSetConverter.GetDataSetFromFile(jsonPath);
+            dataSet.NotNull(nameof(dataSet));
 
             // Clear existing data sources
             report.Dictionary.Databases.Clear();
             report.Dictionary.DataSources.Clear();
-
-            // Register data
-            //report.RegData("root", "root", dataSet);
          
             report.RegData(dataSet);
-
             report.Dictionary.Synchronize();
-
-            // Render report
-            //report.Render();
 
             return StiNetCoreViewer.GetReportResult(this, report);
         }
 
         [HttpGet, HttpPost]
         [Route("event")]
-        public IActionResult ViewerEvent()//roydad moshahede
+        public IActionResult ViewerEvent()
         {
             return StiNetCoreViewer.ViewerEventResult(this);
         }
