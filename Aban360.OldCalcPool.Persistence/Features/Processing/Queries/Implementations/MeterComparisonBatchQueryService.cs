@@ -16,16 +16,17 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             : base(configuration)
         { }
 
-        public async Task<ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataOutputDto>> Get(MeterComparisonBatchInputDto input)
+        public async Task<ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataWithCustomerInfoOutputDto>> Get(MeterComparisonBatchInputDto input)
         {
-            string perviousBillsDataQueryString = GetPreviousBillsDataQuery();
+            string dbName = GetDbName(input.ZoneId);
+            string perviousBillsDataQueryString = GetPreviousBillsDataQuery(dbName);
             var @params = new
             {
                 fromDateJalali = input.FromDateJalali,
                 toDateJalali = input.ToDateJalali,
                 zoneId = input.ZoneId,
             };
-            IEnumerable<MeterComparisonBatchDataOutputDto> details = await _sqlReportConnection.QueryAsync<MeterComparisonBatchDataOutputDto>(perviousBillsDataQueryString, @params);
+            IEnumerable<MeterComparisonBatchDataWithCustomerInfoOutputDto> details = await _sqlReportConnection.QueryAsync<MeterComparisonBatchDataWithCustomerInfoOutputDto>(perviousBillsDataQueryString, @params);
             MeterComparisonBatchHeaderOutputDto summary = new()
             {
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
@@ -33,25 +34,47 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                 ZoneTitle = details.FirstOrDefault().ZoneTitle,
                 SumPreviousAmount = details.Sum(m => m.PreviousAmount),
             };
-            ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataOutputDto> result = new(reportTitle, summary, details);
+            ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataWithCustomerInfoOutputDto> result = new(reportTitle, summary, details);
             return result;
         }
 
-        private string GetPreviousBillsDataQuery()
+        private string GetPreviousBillsDataQuery(string dbName)
         {
-            return @"use CustomerWarehouse
-                    Select
-                    	b.PreviousDay AS PreviousDateJalali,
-                    	b.PreviousNumber AS PreviousMeterNumber,
-                    	b.NextDay AS CurrentDateJalali,
-                    	b.NextNumber AS CurrentMeterNumber,
-                    	TRIM(b.BillId) AS BillId,
-                        b.ZoneTitle AS ZoneTitle,
-                    	b.SumItems AS PreviousAmount
-                    From [CustomerWarehouse].dbo.Bills b
+            return @$"Select
+                        t51.C2 as ZoneTitle,
+                    	m.town as ZoneId,
+                    	m.radif as Radif,
+						Trim(m.bill_id) as BillId,
+                    	b.noe_va as BranchType,
+                    	b.cod_enshab as UsageId,
+                    	b.tedad_mas as DomesticUnit,
+                    	b.tedad_tej as CommertialUnit,
+                    	b.tedad_vahd as OtherUnit,
+                    	m.inst_ab as WaterInstallationDateJalali,
+                    	m.inst_fas as SewageInstallationDateJalali,
+                    	m.n_ab as WaterCount,
+                    	m.n_faz as SewageCalcState,
+						b.fix_mas as ContractualCapacity,
+                        b.ted_khane as HouseholdNumber,
+						b.eshtrak as ReadingNumber,
+                        m.VillageId as VillageId,
+						b.edareh_k as IsSpecial,
+						b.enshab as MeterDiameterId,
+						b.Khali_s as EmptyUnit,
+						b.pri_date as PreviousDateJalali,
+						b.today_date as CurrentDateJalali,
+						b.pri_no as PreviousMeterNumber,
+						b.today_no as CurrentMeterNumber,
+						b.baha as PreviousAmount
+                    From [{dbName}].dbo.bed_bes b
+					Join [{dbName}].dbo.Members m	
+						On b.town=m.town AND b.radif=m.radif
+					Join [Db70].dbo.T51 t51 
+						On m.town=t51.C0
                     Where
-                    	b.ZoneId=@zoneId AND
-                    	b.RegisterDay BETWEEN @fromDateJalali AND @toDateJalali";
+                    	m.town=@zoneId AND 
+						b.cod_vas IN (0) AND
+						b.date_bed BETWEEN @fromDatejalali AND @toDateJalali";
         }
     }
 }
