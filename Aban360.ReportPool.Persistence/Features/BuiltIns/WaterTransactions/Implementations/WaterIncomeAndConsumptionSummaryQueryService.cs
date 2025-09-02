@@ -88,7 +88,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
             return @$"use CustomerWarehouse
 					Select
-						b.{groupKey} as GroupKey,
+						{groupKey} as GroupKey,
 						Count(1) as BillCount,
 						SUM(b.Consumption) as Consumption,
 						SUM(b.ConsumptionAverage) as ConsumptionAverage,
@@ -126,19 +126,19 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						b.TypeCode IN @typeCodes  
 						{usageQuery}
 						{zoneQuery}
-					Group BY b.{groupKey}";
+					Group BY {groupKey}";
         }
 
         private string GetEnumQuery(WaterIncomeAndConsumptionSummaryEnum enumState)
         {
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.AverageConsumption)
-                return "ConsumptionAverage";
+                return "Ceiling(b.ConsumptionAverage)";
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.RegisterDay)
-                return "RegisterDay";
+                return "b.RegisterDay";
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.Zone)
-                return "ZoneTitle";
+                return "b.ZoneTitle";
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.Usage)
-                return "UsageTitle";
+                return "b.UsageTitle";
 
             return "ZoneTitle";
         }

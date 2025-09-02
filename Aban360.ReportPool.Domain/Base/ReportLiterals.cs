@@ -106,6 +106,8 @@
 
         public static string WaterIncomeAndConsumptionDetail { get { return $"{Report} جزئیات درآمد مصارف و آب‌بها"; } }
         public static string WaterIncomeAndConsumptionSummary { get { return $"{Report} خلاصه درآمد مصارف و آب‌بها"; } }
+        public static string ContractualAndOlgooLevel { get { return $"{Report} طبقات ظرفیت و الگو"; } }
+
 
         public static string ReadingDailyStatement { get { return $"خلاصه {Report} روزنامه"; } }//
         public static string ReadingStatusStatement { get { return $"خلاصه {Report} فهرست وضعیت"; } }
