@@ -104,6 +104,9 @@
         public static string ReadingListDetail { get { return $"{Report} جزئیات فهرست تعداد قرائت"; } }//
         public static string ReadingListSummary { get { return $"{Report} خلاصه فهرست تعداد قرائت"; } }
 
+        public static string WaterIncomeAndConsumptionDetail { get { return $"{Report} جزئیات درآمد مصارف و آب‌بها"; } }
+        public static string WaterIncomeAndConsumptionSummary { get { return $"{Report} خلاصه درآمد مصارف و آب‌بها"; } }
+
         public static string ReadingDailyStatement { get { return $"خلاصه {Report} روزنامه"; } }//
         public static string ReadingStatusStatement { get { return $"خلاصه {Report} فهرست وضعیت"; } }
 
