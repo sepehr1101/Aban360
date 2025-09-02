@@ -2,6 +2,8 @@
 {
     public record DeductionsAndDiscountsReportDetailDataOutputDto
     {
+        public string ZoneTitle { get; set; }
+        public string BillId { get; set; }
         public string DiscountTypeTitle { get; set; }
         public string OffTypeTitle { get; set; }
         public string DiscountTitle { get; set; }
