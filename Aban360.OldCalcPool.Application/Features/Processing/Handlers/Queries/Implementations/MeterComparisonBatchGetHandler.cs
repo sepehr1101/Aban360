@@ -15,6 +15,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
         private readonly IProcessing _processing;
         private readonly IMeterComparisonBatchQueryService _meterComparisonBatchQueryService;
         private readonly IValidator<MeterComparisonBatchInputDto> _validator;
+        float _maxPercentTelorance = (float)1.08;
+        float _minPercentTelorance = (float)0.08;
         public MeterComparisonBatchGetHandler(
             IProcessing processing,
             IMeterComparisonBatchQueryService meterComparisonBatchQueryService,
@@ -46,9 +48,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                 BaseOldTariffEngineImaginaryInputDto meterInfoData = GetMeterInfo(data);
                 var result = await _processing.Handle(meterInfoData, cancellationToken);
 
-                MeterComparisonBatchDataOutputDto comparisonBatch= GetComparisonBatch(data);
+                MeterComparisonBatchDataOutputDto comparisonBatch = GetComparisonBatch(data);
                 comparisonBatch.CurrentAmount = result.SumItems;
                 comparisonBatch.IsChecked = GetTolarance(data.PreviousAmount, data.CurrentAmount, input.Tolerance);
+                comparisonBatch.CurrentAmount = comparisonBatch.IsChecked ? comparisonBatch.PreviousAmount : comparisonBatch.CurrentAmount;
 
                 comparisonResult.Add(comparisonBatch);
             }
@@ -65,7 +68,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
             {
                 BillId = data.BillId,
                 PreviousDateJalali = data.PreviousDateJalali,
-                CurrentDateJalali=data.CurrentDateJalali,
+                CurrentDateJalali = data.CurrentDateJalali,
                 CurrentMeterNumber = data.CurrentMeterNumber,
                 PreviousMeterNumber = data.PreviousMeterNumber,
                 PreviousAmount = data.PreviousAmount,
@@ -109,6 +112,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
         }
         private bool GetTolarance(double previousAmount, double currentAmount, double tolerance)
         {
+            double maxAmount = previousAmount * _maxPercentTelorance + tolerance;
+            double minAmount = previousAmount * _minPercentTelorance - tolerance;
+
+            return currentAmount <= maxAmount && currentAmount >= minAmount ? true : false;
+
             return Math.Abs(previousAmount - currentAmount) <= tolerance ? true : false;
         }
     }

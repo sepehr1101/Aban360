@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 {
     [Route("v1/prepayment-and-calculation")]
-    public class PrepaymentAndCalculationController:BaseController
+    public class PrepaymentAndCalculationController : BaseController
     {
         private readonly IPrepaymentAndCalculationHandler _prepaymentAndCalculationHandler;
         private readonly IReportGenerator _reportGenerator;
@@ -29,11 +29,11 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<PrepaymentAndCalculationHeaderOutputDto, PrepaymentAndCalculationDataOutputDto>>),StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<PrepaymentAndCalculationHeaderOutputDto, PrepaymentAndCalculationDataOutputDto>>), StatusCodes.Status200OK)]
         [AllowAnonymous]
         public async Task<IActionResult> GetRaw(PrepaymentAndCalculationInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<PrepaymentAndCalculationHeaderOutputDto, PrepaymentAndCalculationDataOutputDto> prepaymentAndCalculation =await _prepaymentAndCalculationHandler.Handle(inputDto,cancellationToken);
+            ReportOutput<PrepaymentAndCalculationHeaderOutputDto, PrepaymentAndCalculationDataOutputDto> prepaymentAndCalculation = await _prepaymentAndCalculationHandler.Handle(inputDto, cancellationToken);
             return Ok(prepaymentAndCalculation);
         }
 
@@ -43,6 +43,17 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _prepaymentAndCalculationHandler.Handle, CurrentUser, ReportLiterals.PrepaymentAndCalculation, connectionId);
             return Ok(inputDto);
+        }
+
+        [HttpPost]
+        [Route("str")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetStiReport(PrepaymentAndCalculationInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 15;
+            ReportOutput<PrepaymentAndCalculationHeaderOutputDto, PrepaymentAndCalculationDataOutputDto> prepaymentAndCalculation = await _prepaymentAndCalculationHandler.Handle(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(prepaymentAndCalculation, cancellationToken, reportCode);
+            return Ok(reportId);
         }
     }
 }

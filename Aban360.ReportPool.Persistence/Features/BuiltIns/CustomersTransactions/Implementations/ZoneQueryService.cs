@@ -22,9 +22,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         private string GetUserZoneIdsQuery()
         {
             return @"Select	
-                 	t.C0 AS Id,
-                 	t.C2 AS Title
-                 From [Db70].dbo.T51 t";
+                     	t51.C0 AS Id,
+                     	t51.C2+' ('+t46.C2+')' AS Title
+                     From [Db70].dbo.T51 t51
+			    	 Join [Db70].dbo.T46 t46 
+			    		On t51.C1=t46.C0";
         }
     }
 }

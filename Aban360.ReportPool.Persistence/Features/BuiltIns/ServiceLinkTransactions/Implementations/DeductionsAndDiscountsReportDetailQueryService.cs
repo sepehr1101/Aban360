@@ -44,6 +44,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         private string GetDeductionsAndDiscountsReportDataQuery()
         {
             return @"Select 
+                        r.ZoneTitle,
+                        r.BillId,
                     	r.ItemTitle AS DiscountTypeTitle,
                     	r.OffTitle AS OffTypeTitle,
                     	r.TypeId AS DiscountTitle,
