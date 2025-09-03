@@ -26,7 +26,6 @@ using Aban360.CalculationPool.GatewayAdhoc.Extensions;
 using Aban360.ClaimPool.GatewayAdhoc.Extensions;
 using Aban360.CommunicationPool.Application.Extensions;
 using Aban360.CommunicationPool.Persistence.Extensions;
-using Aban360.Api.Cronjobs;
 using Aban360.OldCalcPool.Persistence.Extensions;
 using Aban360.OldCalcPool.Application.Extentions;
 using Aban360.SystemPool.Persistence.Extensions;
@@ -104,7 +103,7 @@ namespace Aban360.Api.Extensions
             services.AddBlobPoolApplicationInjections();
             services.AddBlobPoolPersistenceInjections();
             services.AddBlobPoolGatewayInjections();
-            services.AddBlobPoolInfrastructureInjectionss();
+            services.AddBlobPoolInfrastructureInjections();
         }
         private static void AddSystemPoolDI(this IServiceCollection services)
         {

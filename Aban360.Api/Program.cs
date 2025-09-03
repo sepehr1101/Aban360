@@ -35,6 +35,7 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services
     .AddSerilog(configuration)
+    .AddMemoryCache()
     .AddCustomHttpClients(configuration);
 
 builder.Services.AddSignalR();    //todo: replace into configure signalR

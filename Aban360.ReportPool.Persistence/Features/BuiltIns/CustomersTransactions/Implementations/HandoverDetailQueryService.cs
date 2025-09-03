@@ -16,7 +16,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
     {
         public HandoverDetailQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+        }
 
         public async Task<ReportOutput<HandoverHeaderOutputDto, HandoverDetailDataOutputDto>> Get(HandoverInputDto input)
         {
