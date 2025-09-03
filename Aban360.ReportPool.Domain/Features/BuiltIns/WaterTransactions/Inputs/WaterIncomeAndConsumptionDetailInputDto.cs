@@ -11,7 +11,7 @@
         public double? FromAmount { get; set; }
         public double? ToAmount { get; set; }
 
-        public bool? IsNet { get; set; }
+        public bool IsNet { get; set; }
 
         public ICollection<int> ZoneIds { get; set; }
         public ICollection<int> UsageIds { get; set; }

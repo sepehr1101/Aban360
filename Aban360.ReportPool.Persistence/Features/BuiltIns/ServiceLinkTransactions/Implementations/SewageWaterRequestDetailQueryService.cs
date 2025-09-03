@@ -36,7 +36,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = (RequestData is not null && RequestData.Any()) ? RequestData.Count() : 0
+                RecordCount = (RequestData is not null && RequestData.Any()) ? RequestData.Count() : 0,
+
+                SumCommercialUnit = RequestData.Sum(i => i.CommercialUnit),
+                SumDomesticUnit = RequestData.Sum(i => i.DomesticUnit),
+                SumOtherUnit = RequestData.Sum(i => i.OtherUnit),
             };
             var result = new ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestDetailDataOutputDto>
                 (input.IsWater ? ReportLiterals.WaterRequestDetail : ReportLiterals.SewageRequestDetail,

@@ -18,4 +18,9 @@
     <ProjectReference Include="..\Aban360.BlobPool.Persistence\Aban360.BlobPool.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\OpenKm\Handlers\Commands\Contracts\" />
+    <Folder Include="Features\OpenKm\Handlers\Commands\Implementations\" />
+  </ItemGroup>
+
 </Project>

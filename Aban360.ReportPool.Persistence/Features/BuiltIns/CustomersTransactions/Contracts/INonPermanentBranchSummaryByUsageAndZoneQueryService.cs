@@ -4,8 +4,8 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts
 {
-    public interface INonPermanentBranchSummaryQueryService
+    public interface INonPermanentBranchSummaryByUsageAndZoneQueryService
     {
-        Task<ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryDataOutputDto>> GetInfo(NonPermanentBranchInputDto input);
+        Task<ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryByUsageAndZoneDataOutputDto>> GetInfo(NonPermanentBranchByUsageAndZoneInputDto input);
     }
 }

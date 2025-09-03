@@ -12,6 +12,8 @@
         public int RecordCount { get; set; }
 
         public int SumDomesticCount { get; set; }
+        public int SumCommercialCount { get; set; }
+        public int SumOtherCount { get; set; }
         public int SumEmptyUnit { get; set; }
     }
 }

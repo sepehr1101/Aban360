@@ -29,8 +29,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali,
-                fromReadingNumber=input.FromReadingNumber,
-                toReadingNumber=input.ToReadingNumber,
+                fromReadingNumber = input.FromReadingNumber,
+                toReadingNumber = input.ToReadingNumber,
                 zoneIds = input.ZoneIds
             };
             IEnumerable<SewageWaterInstallationDetailDataOutputDto> installationData = await _sqlReportConnection.QueryAsync<SewageWaterInstallationDetailDataOutputDto>(installationDetailQuery, @params);
@@ -39,10 +39,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = (installationData is not null && installationData.Any()) ? installationData.Count() : 0
+                RecordCount = (installationData is not null && installationData.Any()) ? installationData.Count() : 0,
+
+                SumCommercialUnit = installationData.Sum(i => i.CommercialUnit),
+                SumDomesticUnit = installationData.Sum(i => i.DomesticUnit),
+                SumOtherUnit = installationData.Sum(i => i.OtherUnit),
             };
 
-            ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationDetailDataOutputDto> result = new(reportTitle, installationHeader,installationData);
+            ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationDetailDataOutputDto> result = new(reportTitle, installationHeader, installationData);
 
             return result;
         }
