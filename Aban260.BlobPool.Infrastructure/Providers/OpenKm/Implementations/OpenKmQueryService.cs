@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts;
 using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
@@ -9,7 +10,7 @@ using Microsoft.Extensions.Options;
 
 namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
 {
-    internal sealed class OpenKmQueryService
+    internal sealed class OpenKmQueryService: IOpenKmQueryService
     {
         const string applicationJson = @"application/json";
         private readonly HttpClient _httpClient;

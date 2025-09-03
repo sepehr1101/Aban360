@@ -38,6 +38,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 ToReadingNumber = input.ToReadingNumber,
                 RecordCount = emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Count() : 0,
                 SumDomesticCount = emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Sum(x => x.DomesticUnit) : 0,
+                SumCommercialCount= emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Sum(x => x.CommercialUnit) : 0,
+                SumOtherCount= emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Sum(x => x.OtherUnit) : 0,
                 SumEmptyUnit = emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Sum(x => x.EmptyUnit) : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString()
             };

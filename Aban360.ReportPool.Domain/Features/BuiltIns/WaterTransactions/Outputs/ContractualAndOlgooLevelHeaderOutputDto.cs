@@ -7,10 +7,10 @@
 
         public string FromDateJalali { get; set; }
         public string ToDateJalali { get; set; }
-        public double FromAmount { get; set; }
-        public double ToAmount { get; set; }
-        public int FromConsumption { get; set; }
-        public int ToConsumption { get; set; }
+        public double? FromAmount { get; set; }
+        public double? ToAmount { get; set; }
+        public int? FromConsumption { get; set; }
+        public int? ToConsumption { get; set; }
 
         public int SumBillCount { get; set; }
         public int SumConsumption { get; set; }
