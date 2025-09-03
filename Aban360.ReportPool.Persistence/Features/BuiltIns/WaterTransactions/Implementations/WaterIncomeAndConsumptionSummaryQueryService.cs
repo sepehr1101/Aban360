@@ -19,22 +19,22 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionSummaryDataOutputDto>> Get(WaterIncomeAndConsumptionSummaryInputDto input)
         {
-            string waterIncomeAndConsumptionSummarys = GetWaterIncomeAndConsumptionSummaryQuery(input.Inputs.ZoneIds.Any(), input.Inputs.UsageIds.Any(), input.EnumInput);
+            string waterIncomeAndConsumptionSummarys = GetWaterIncomeAndConsumptionSummaryQuery(input.ZoneIds.Any(), input.UsageIds.Any(), input.EnumInput);
             var @params = new
             {
-                fromDate = input.Inputs.FromDateJalali,
-                toDate = input.Inputs.ToDateJalali,
+                fromDate = input.FromDateJalali,
+                toDate = input.ToDateJalali,
 
-                fromConsumption = input.Inputs.FromConsumption,
-                toConsumption = input.Inputs.ToConsumption,
+                fromConsumption = input.FromConsumption,
+                toConsumption = input.ToConsumption,
 
-                fromAmount = input.Inputs.FromAmount,
-                toAmount = input.Inputs.ToAmount,
+                fromAmount = input.FromAmount,
+                toAmount = input.ToAmount,
 
-                typeCodes = input.Inputs.IsNet ? new[] { 1, 3, 4, 5 } : new[] { 1 },
+                typeCodes = input.IsNet ? new[] { 1, 3, 4, 5 } : new[] { 1 },
 
-                usageIds = input.Inputs.UsageIds,
-                zoneIds = input.Inputs.ZoneIds
+                usageIds = input.UsageIds,
+                zoneIds = input.ZoneIds
             };
             IEnumerable<WaterIncomeAndConsumptionSummaryDataOutputDto> waterIncomeAndConsumptionData = await _sqlReportConnection.QueryAsync<WaterIncomeAndConsumptionSummaryDataOutputDto>(waterIncomeAndConsumptionSummarys, @params);
             WaterIncomeAndConsumptionSummaryHeaderOutputDto waterIncomeAndConsumptionHeader = new WaterIncomeAndConsumptionSummaryHeaderOutputDto()
@@ -42,12 +42,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = waterIncomeAndConsumptionData.Count(),
 
-                FromDateJalali = input.Inputs.FromDateJalali,
-                ToDateJalali = input.Inputs.ToDateJalali,
-                FromAmount = input.Inputs.FromAmount,
-                ToAmount = input.Inputs.ToAmount,
-                FromConsumption = input.Inputs.FromConsumption,
-                ToConsumption = input.Inputs.ToConsumption,
+                FromDateJalali = input.FromDateJalali,
+                ToDateJalali = input.ToDateJalali,
+                FromAmount = input.FromAmount,
+                ToAmount = input.ToAmount,
+                FromConsumption = input.FromConsumption,
+                ToConsumption = input.ToConsumption,
 
                 SumBillCount = waterIncomeAndConsumptionData.Sum(w => w.BillCount),
                 SumConsumption = waterIncomeAndConsumptionData.Sum(w => w.Consumption),

@@ -4,6 +4,7 @@ using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
+using Azure.Core;
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
@@ -45,6 +46,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 SumDomesticUnit = installationData.Sum(i => i.DomesticUnit),
                 SumOtherUnit = installationData.Sum(i => i.OtherUnit),
             };
+            installationHeader.TotalUnit = installationHeader.SumOtherUnit + installationHeader.SumCommercialUnit + installationHeader.SumDomesticUnit;
 
             ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationDetailDataOutputDto> result = new(reportTitle, installationHeader, installationData);
 
