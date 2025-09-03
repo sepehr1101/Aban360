@@ -49,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         [AllowAnonymous]
         public async Task<IActionResult> GetStiReport(NonPermanentBranchInputDto inputDto, CancellationToken cancellationToken)
         {
-            int reportCode = 10;
+            int reportCode = 2;
             ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchDataOutputDto> nonPermanentBranch = await _nonPermanentBranch.Handle(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(nonPermanentBranch, cancellationToken, reportCode);
             return Ok(reportId);

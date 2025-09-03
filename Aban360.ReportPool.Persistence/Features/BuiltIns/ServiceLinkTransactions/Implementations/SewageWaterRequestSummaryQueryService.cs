@@ -28,7 +28,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali,
-                zoneIds = input.ZoneIds
+                zoneIds = input.ZoneIds,
+                usageIds=input.UsageIds,
             };
             IEnumerable<SewageWaterRequestSummaryDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<SewageWaterRequestSummaryDataOutputDto>(RequestSummaryQuery, @params);
             SewageWaterRequestHeaderOutputDto RequestHeader = new SewageWaterRequestHeaderOutputDto()
@@ -76,6 +77,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     Where	
                     	c.WaterRequestDate BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
+                        c.UsageId IN @usageIds AND
 						c.ToDayJalali IS NULL
                     Group BY
                     	c.UsageTitle";
@@ -103,6 +105,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     Where	
                     	c.SewageRequestDate BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
+                        c.UsageId IN @usageIds AND
 						c.ToDayJalali IS NULL
                     Group BY
                     	c.UsageTitle";

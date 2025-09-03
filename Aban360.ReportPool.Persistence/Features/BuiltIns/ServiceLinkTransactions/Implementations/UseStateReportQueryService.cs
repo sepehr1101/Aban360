@@ -63,6 +63,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                         c.DeletionStateTitle AS DeletionStateTitle,
                         c.DomesticCount DomesticUnit,
 	                    c.CommercialCount CommercialUnit,
+                        (c.CommercialCount+c.DomesticCount+c.DomesticCount) as TotalUnit,
 	                    c.OtherCount OtherUnit,
 	                    TRIM(c.BillId) BillId,
 	                    RN=ROW_NUMBER() OVER (PARTITION BY ZoneId, CustomerNumber ORDER BY RegisterDayJalali DESC)

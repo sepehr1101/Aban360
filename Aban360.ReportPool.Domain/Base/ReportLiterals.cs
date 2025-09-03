@@ -5,6 +5,8 @@
         public static string Report { get { return "گزارش"; } }
         public static string RegisterDate { get { return "تاریخ ثبت"; } }
         public static string ChangeDate { get { return "تاریخ تعویض"; } }
+        public static string ByZone { get { return "بر اساس ناحیه "; } }
+        public static string ByUsage { get { return "بر اساس کاربری "; } }
 
         public static string CustomerSearch { get { return $"{Report} جستجوی مشترک"; } }
         public static string UnconfirmedSubscribers { get { return $"{Report} مشترکین ثبت قطعی نشده"; } }
@@ -66,6 +68,7 @@
         public static string WaterRequestNonInstalledSummary { get { return "خلاصه انشعاب آب واگذار شده و نصب نشده"; } }
         public static string SewageRequestNonInstalledSummary { get { return "خلاصه انشعاب فاضلاب واگذار شده و نصب نشده"; } }
 
+        public static string WithoutSewageRequestSummaryByZone { get { return "خلاصه انشعاب های بدون درخواست فاضلاب بر اساس ناحیه"; } }
         public static string WithoutSewageRequestSummary { get { return "خلاصه انشعاب های بدون درخواست فاضلاب"; } }
         public static string WithoutSewageRequestDetail { get { return "جزئیات انشعاب های بدون درخواست فاضلاب"; } }
 

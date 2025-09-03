@@ -10,13 +10,13 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {
-    internal sealed class WithoutSewageRequestSummaryQueryService : AbstractBaseConnection, IWithoutSewageRequestSummaryQueryService
+    internal sealed class WithoutSewageRequestSummaryByZoneQueryService : AbstractBaseConnection, IWithoutSewageRequestSummaryByZoneQueryService
     {
-        public WithoutSewageRequestSummaryQueryService(IConfiguration configuration)
+        public WithoutSewageRequestSummaryByZoneQueryService(IConfiguration configuration)
             : base(configuration)
         { }
 
-        public async Task<ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestSummaryDataOutputDto>> Get(WithoutSewageRequestInputDto input)
+        public async Task<ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestSummaryByZoneDataOutputDto>> Get(WithoutSewageRequestInputDto input)
         {
             string withoutSewageRequest = GetBranchWithoutSewageRequestQuery();
 
@@ -26,28 +26,28 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 toDate = input.ToDateJalali,
                 zoneIds = input.ZoneIds
             };
-            IEnumerable<WithoutSewageRequestSummaryDataOutputDto> withoutSewageRequestData = await _sqlReportConnection.QueryAsync<WithoutSewageRequestSummaryDataOutputDto>(withoutSewageRequest, @params);
+            IEnumerable<WithoutSewageRequestSummaryByZoneDataOutputDto> withoutSewageRequestData = await _sqlReportConnection.QueryAsync<WithoutSewageRequestSummaryByZoneDataOutputDto>(withoutSewageRequest, @params);
             WithoutSewageRequestHeaderOutputDto withoutSewageRequestHeader = new WithoutSewageRequestHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = (withoutSewageRequestData is not null && withoutSewageRequestData.Any()) ? withoutSewageRequestData.Count() : 0,
+                RecordCount = withoutSewageRequestData is not null && withoutSewageRequestData.Any() ? withoutSewageRequestData.Count() : 0,
 
                 SumCommercialUnit = withoutSewageRequestData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = withoutSewageRequestData.Sum(i => i.DomesticUnit),
                 SumOtherUnit = withoutSewageRequestData.Sum(i => i.OtherUnit),
                 TotalUnit = withoutSewageRequestData.Sum(i => i.TotalUnit),
             };
-            var result = new ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestSummaryDataOutputDto>
-                (ReportLiterals.WithoutSewageRequestSummary, withoutSewageRequestHeader, withoutSewageRequestData);
+            var result = new ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestSummaryByZoneDataOutputDto>
+                (ReportLiterals.WithoutSewageRequestSummaryByZone, withoutSewageRequestHeader, withoutSewageRequestData);
 
             return result;
         }
         private string GetBranchWithoutSewageRequestQuery()
         {
             return @"Select	
-                    	c.UsageTitle AS UsageTitle,
+                    	c.ZoneTitle AS ZoneTitle,
                         COUNT(c.UsageTitle) AS CustomerCount,
 					    SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
                         SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
@@ -71,7 +71,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.ZoneId IN @zoneIds AND
 						c.ToDayJalali IS NULL
                     Group BY
-                    	c.UsageTitle";
+                    	c.ZoneTitle";
         }
     }
 }

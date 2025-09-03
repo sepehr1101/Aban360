@@ -4,8 +4,8 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts
 {
-    public interface IEmptyUnitQueryService
+    public interface IEmptyUnitByIntervalQueryService
     {
-        Task<ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>> GetInfo(EmptyUnitInputDto input);
+        Task<ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>> GetInfo(EmptyUnitByIntervalInputDto input);
     }
 }

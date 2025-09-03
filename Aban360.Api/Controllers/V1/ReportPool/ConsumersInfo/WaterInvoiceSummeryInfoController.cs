@@ -1,8 +1,12 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
+using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Contracts;
+using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
+using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
@@ -33,6 +37,19 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         {
             WaterInvoiceDto waterInvoice =await _waterInvoiceHandler.Handle(searchInput.Input);
             return Ok(waterInvoice);
+        }
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetStiReport(SearchInput inputDto, CancellationToken cancellationToken)
+        {
+            //todo: header,data
+            int reportCode = 1;
+            //ReportOutput<UnconfirmedSubscribersHeaderOutputDto, UnconfirmedSubscribersDataOutputDto> unconfirmedSubscribers = await _waterInvoiceHandler.Handle(inputDto, cancellationToken);
+            //JsonReportId reportId = await JsonOperation.ExportToJson(unconfirmedSubscribers, cancellationToken, reportCode);
+            return Ok();
         }
     }
 }

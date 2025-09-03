@@ -6,6 +6,7 @@ using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Ha
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
@@ -41,6 +42,18 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _unconfirmedSubscribersHandler.Handle, CurrentUser, ReportLiterals.UnconfirmedSubscribers, connectionId);
             return Ok(inputDto);
+        }
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetStiReport(UnconfirmedSubscribersInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 1;
+            ReportOutput<UnconfirmedSubscribersHeaderOutputDto, UnconfirmedSubscribersDataOutputDto> unconfirmedSubscribers = await _unconfirmedSubscribersHandler.Handle(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(unconfirmedSubscribers, cancellationToken, reportCode);
+            return Ok(reportId);
         }
     }
 }
