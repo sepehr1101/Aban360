@@ -1,4 +1,4 @@
-﻿using Aban360.Api.Dto;
+﻿using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.UserPool.Domain.Constants;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 
