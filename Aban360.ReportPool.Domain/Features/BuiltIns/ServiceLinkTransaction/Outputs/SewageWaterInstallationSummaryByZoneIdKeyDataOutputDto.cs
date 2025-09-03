@@ -24,6 +24,9 @@
         public string ZoneTitle { get; set; }
         public int CustomerCount { get; set; }
         public int TotalUnit { get; set; }
+        public int CommercialUnit { get; set; }
+        public int DomesticUnit { get; set; }
+        public int OtherUnit { get; set; }
         public int UnSpecified { get; set; }
         public int Field0_5 { get; set; }
         public int Field0_75 { get; set; }

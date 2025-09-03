@@ -36,7 +36,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = (RequestData is not null && RequestData.Any()) ? RequestData.Count() : 0
+                RecordCount = (RequestData is not null && RequestData.Any()) ? RequestData.Count() : 0,
+
+                SumCommercialUnit = RequestData.Sum(i => i.CommercialUnit),
+                SumDomesticUnit = RequestData.Sum(i => i.DomesticUnit),
+                SumOtherUnit = RequestData.Sum(i => i.OtherUnit),
+                TotalUnit = RequestData.Sum(i => i.TotalUnit),
             };
             var result = new ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestSummaryDataOutputDto>
                 (input.IsWater ? ReportLiterals.WaterRequestSummary : ReportLiterals.SewageRequestSummary,
@@ -51,6 +56,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.UsageTitle AS UsageTitle,
                     	COUNT(c.UsageTitle) AS CustomerCount,
 					    SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
+                        SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
+                        SUM(ISNULL(c.DomesticCount, 0)) AS DomesticUnit,
+                        SUM(ISNULL(c.OtherCount, 0)) AS OtherUnit,
 						SUM(CASE WHEN t5.C0 = 0 THEN 1 ELSE 0 END) AS UnSpecified,
 				        SUM(CASE WHEN t5.C0 = 1 THEN 1 ELSE 0 END) AS Field0_5,
 				        SUM(CASE WHEN t5.C0 = 2 THEN 1 ELSE 0 END) AS Field0_75,

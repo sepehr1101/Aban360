@@ -42,6 +42,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 SumDomesticUnit = RequestData.Sum(i => i.DomesticUnit),
                 SumOtherUnit = RequestData.Sum(i => i.OtherUnit),
             };
+            RequestHeader.TotalUnit = RequestHeader.SumOtherUnit + RequestHeader.SumCommercialUnit + RequestHeader.SumDomesticUnit;
+
             var result = new ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestDetailDataOutputDto>
                 (input.IsWater ? ReportLiterals.WaterRequestDetail : ReportLiterals.SewageRequestDetail,
                 RequestHeader,
