@@ -4,8 +4,8 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts
 {
-    public interface IExcessPatternQueryService
+    public interface IContractualAndOlgooLevelQueryService
     {
-        Task<ReportOutput<ExcessPatternHeaderOutputDto, ExcessPatternDataOutputDto>> GetInfo(ExcessPatternInputDto input);
+        Task<ReportOutput<ContractualAndOlgooLevelHeaderOutputDto, ContractualAndOlgooLevelDataOutputDto>> Get(ContractualAndOlgooLevelInputDto input);
     }
 }

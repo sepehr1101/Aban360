@@ -74,7 +74,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     From LatestMalfunction m
                     Where 
                     	m.CounterStateCode=1 AND
-                    	m.NextCounterState!=1
+                    	m.NextCounterState NoT IN (1,4,7,8)
                     )
                     Select 
                     	TRIM(c.FirstName) as FirstName,
