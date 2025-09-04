@@ -11,5 +11,6 @@
         public string Address { get; set; }
         public int PeriodCount { get; set; }
         public string ZoneTitle { get; set; }
+        public string CounterStateTitle { get; set; }
     }
 }

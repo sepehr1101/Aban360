@@ -41,7 +41,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             return result;
         }
         private string GetReadingChecklistQuery()
-        {
+        { 
             return @"Use CustomerWarehouse
                         ;WITH CTE AS(
 	                        SELECT
@@ -56,7 +56,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 		                        b.PreviousDay AS PreviousDateJalali,
 		                        IIF(@isShowLastNumber=1,b.NextNumber,0) AS PreviousNumber,
 		                        b.CounterStateCode AS LastCounterStateCode,
+                                b.CounterStateTitle AS LastCounterStateTitle,
 		                        b.CustomerNumber,
+                                c.DeletionStateTitle,
+                                c.MobileNo AS MobilePhone,
+                                TRIM(c.Address) AS Address,
+                                c.ReadingNumber,
+                                c.BillId,                            
 		                        RN=ROW_NUMBER() OVER (PARTITION BY b.BillId ORDER BY b.RegisterDay DESC)
                      
 	                        FROM [CustomerWarehouse].dbo.Bills b

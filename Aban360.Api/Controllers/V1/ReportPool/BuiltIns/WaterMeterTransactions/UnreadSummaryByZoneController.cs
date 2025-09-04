@@ -1,0 +1,46 @@
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.BaseEntities;
+using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Extensions;
+using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts;
+using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
+using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
+{
+    [Route("v1/unread-summary-by-zone")]
+    public class UnreadSummaryByZoneController : BaseController
+    {
+        private readonly IUnreadSummaryByZoneHandler _unreadSummaryByZoneHandler;
+        private readonly IReportGenerator _reportGenerator;
+        public UnreadSummaryByZoneController(
+            IUnreadSummaryByZoneHandler unreadSummaryByZoneHandler,
+            IReportGenerator reportGenerator)
+        {
+            _unreadSummaryByZoneHandler = unreadSummaryByZoneHandler;
+            _unreadSummaryByZoneHandler.NotNull(nameof(unreadSummaryByZoneHandler));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(_reportGenerator));
+        }
+
+        [HttpPost, HttpGet]
+        [Route("raw")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<UnreadSummaryHeaderOutputDto, UnreadSummaryByZoneDataOutputDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetRaw(UnreadInputDto input, CancellationToken cancellationToken)
+        {
+            ReportOutput<UnreadSummaryHeaderOutputDto, UnreadSummaryByZoneDataOutputDto> unreadSummaryByZone = await _unreadSummaryByZoneHandler.Handle(input, cancellationToken);
+            return Ok(unreadSummaryByZone);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("excel/{connectionId}")]
+        public async Task<IActionResult> GetExcel(string connectionId, UnreadInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _unreadSummaryByZoneHandler.Handle, CurrentUser, ReportLiterals.UnreadSummaryByZone, connectionId);
+            return Ok(inputDto);
+        }
+    }
+}

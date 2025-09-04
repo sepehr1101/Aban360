@@ -21,6 +21,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             string readingDailyStatements = GetReadingDailyStatementQuery();
             var @params = new
             {
+                fromAmount=input.FromAmount,
+                toAmount=input.ToAmount,
                 fromReadingNumber = input.FromReadingNumber,
                 toReadingNumber = input.ToReadingNumber,
                 fromConsumption = input.FromConsumption,
@@ -59,6 +61,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	TRIM(c.FirstName) + ' ' + TRIM(c.SureName) AS FullName,
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
                     	b.Consumption,
+                        b.UsageTitle,
+                        TRIM(b.BillId) AS BillId,
                     	b.ConsumptionAverage,
                     	b.SumItems AS InvoiceAmount,
                     	TRIM(c.Address) AS Address
@@ -69,7 +73,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
                     	b.NextDay BETWEEN @fromDate AND @toDate AND
                         b.Consumption BETWEEN @fromConsumption AND @toConsumption AND
-                    	b.ZoneId IN @zoneIds";
+                    	b.ZoneId IN @zoneIds AND
+						(@fromAmount IS NULL OR
+						@toAmount IS NULL OR
+						b.SumItems BETWEEN @fromAmount AND @toAmount)";
         }
     }
 }

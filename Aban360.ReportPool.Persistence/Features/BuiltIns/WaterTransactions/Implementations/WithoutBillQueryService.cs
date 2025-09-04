@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<WithoutBillHeaderOutputDto, WithoutBillDataOutputDto>> GetInfo(WithoutBillInputDto input)
         {
-            string withoutBill = GetWithoutBillQuery(input.ZoneIds?.Any()==true);
+            string withoutBill = GetWithoutBillQuery(input.ZoneIds?.Any()==true,input.UsageIds.Any());
             var @params = new
             { 
                 FromDate=input.FromDateJalali,
@@ -26,6 +26,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 FromReadingNumber=input.FromReadingNumber,
                 ToReadingNumber=input.ToReadingNumber,
                 ZoneIds=input.ZoneIds,
+                usageIds=input.UsageIds,
             };
 
             IEnumerable<WithoutBillDataOutputDto> withoutBillData = await _sqlReportConnection.QueryAsync<WithoutBillDataOutputDto>(withoutBill,@params);
@@ -43,9 +44,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             return result;
         }
 
-        private string GetWithoutBillQuery(bool hasZone)
+        private string GetWithoutBillQuery(bool hasZone,bool hasUsage)
         {
             string zoneQuery = hasZone ? "AND c.ZoneId IN @ZoneIds" : string.Empty;
+            string usageQuery = hasUsage ? "AND c.UsageId IN @usageIds" : string.Empty;
 
             return @$"Select 
                     	c.CustomerNumber as CustomerNumber,
@@ -69,7 +71,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     		 c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND
                     	c.DeletionStateId IN (0,2)  AND
 						c.ToDayJalali IS NULL 
-                       {zoneQuery}";
+                       {zoneQuery}
+                       {usageQuery}";
             //todo: remove 'where RN=1 but use c.todayjalali is null
         }
     }

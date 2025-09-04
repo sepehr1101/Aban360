@@ -54,7 +54,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	SUM(DISTINCT b.Payable) - SUM(DISTINCT p.Amount) AS DebtAmount,
                     	MAX(c.Address) AS Address,
                     	COUNT(b.BillId) AS PeriodCount,
-                        MAX(b.ZoneTitle) AS ZoneTitle
+                        MAX(b.ZoneTitle) AS ZoneTitle,
+                        MAX(b.CounterStateTitle) AS CounterStateTitle
                     From [CustomerWarehouse].dbo.Bills b
                     JOIN [CustomerWarehouse].dbo.Clients c ON b.BillId=c.BillId
                     LEFT JOIN [CustomerWarehouse].dbo.payments as p ON p.BillTableId = b.id
@@ -72,7 +73,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                          )
                         {zoneQuery}
                     GROUP BY b.BillId
-                    HAVING COUNT(b.BillId)=@PeriodCount";
+                    HAVING COUNT(b.BillId)>=@PeriodCount";
         }
     }
 }

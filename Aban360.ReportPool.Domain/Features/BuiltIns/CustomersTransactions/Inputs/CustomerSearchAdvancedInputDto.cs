@@ -16,6 +16,9 @@
         public short? FromUnitOtherWater { get; set; }
         public short? ToUnitOtherWater { get; set; }
         public string? MobileNumber { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? PostalCode { get; set; }
+        public string? NationalCode { get; set; }
         public string? Address { get; set; }
         public bool? SpecialCustomer { get; set; }
         public bool? CommonSiphon { get; set; }

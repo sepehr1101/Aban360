@@ -22,10 +22,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
             var @params = new
             {
+               fromReadingNumber=input.FromReadingNumber,
+               toReadingNumber=input.ToReadingNumber,
+
                 fromDate=input.FromDateJalali,
                 toDate=input.ToDateJalali,
+
                 zoneIds=input.ZoneIds,
-                isChangeDate=input.IsChangeDate?1:0,
+                usageIds=input.UsageIds,
+                isChangeDate =input.IsChangeDate?1:0,
             };
             IEnumerable<WaterMeterReplacementsDataOutputDto> waterMeterReplacementsData = await _sqlReportConnection.QueryAsync<WaterMeterReplacementsDataOutputDto>(waterMeterReplacementss,@params);
             WaterMeterReplacementsHeaderOutputDto waterMeterReplacementsHeader = new WaterMeterReplacementsHeaderOutputDto()
@@ -34,6 +39,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount= (waterMeterReplacementsData is not null && waterMeterReplacementsData.Any()) ? waterMeterReplacementsData.Count() : 0,
+               
+                SumCommercialUnit = waterMeterReplacementsData.Sum(i => i.CommercialUnit),
+                SumDomesticUnit = waterMeterReplacementsData.Sum(i => i.DomesticUnit),
+                SumOtherUnit = waterMeterReplacementsData.Sum(i => i.OtherUnit),
+                TotalUnit = waterMeterReplacementsData.Sum(i => i.TotalUnit)
             };
 
             var result = new ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsDataOutputDto>(
@@ -53,20 +63,34 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	TRIM(c.FirstName) +' '+TRIM(c.SureName) AS FullName,
                     	c.UsageTitle2 AS UsageTitle,
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
+                        c.MainSiphonTitle AS SiphonDiameterTitle,
                     	mc.ChangeDateJalali AS MeterChangeDate,
                     	mc.RegisterDateJalali AS RegistrationDate,
                     	c.MeterSerialBody AS MeterSerial,
-                    	c.ZoneTitle AS ZoneTitle
+                    	c.ZoneTitle AS ZoneTitle,
+                        mc.ChangeCauseTitle,
+                    	c.DomesticCount	AS DomesticUnit,
+                    	c.CommercialCount AS CommercialUnit,
+                    	c.OtherCount AS OtherUnit,
+                        (c.DomesticCount+c.CommercialCount +c.OtherCount) AS TotalUnit ,
+                    	c.ContractCapacity AS ContractualCapacity
                     From [CustomerWarehouse].dbo.MeterChange mc
-                    Join [CustomerWarehouse].dbo.Clients c on mc.CustomerNumber=c.CustomerNumber AND mc.ZoneId=c.ZoneId
+                    Join [CustomerWarehouse].dbo.Clients c 
+                        on mc.CustomerNumber=c.CustomerNumber AND mc.ZoneId=c.ZoneId
                     Where 
                     	(@isChangeDate=0 AND
                     	mc.RegisterDateJalali BETWEEN @fromDate AND @toDate AND
-                    	mc.ZoneId IN @zoneIds)
+                    	c.ZoneId IN @zoneIds AND
+                    	c.UsageId IN @UsageIds AND
+						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
+						c.ToDayJalali IS NULL )
                     	OR
                     	(@isChangeDate=1 AND
                     	mc.ChangeDateJalali BETWEEN @fromDate AND @toDate AND
-                    	mc.ZoneId IN @zoneIds)
+                    	c.ZoneId IN @zoneIds AND
+                    	c.UsageId IN @UsageIds AND
+						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
+						c.ToDayJalali IS NULL )
                     Order By
                     	mc.RegisterDateJalali Desc,
                     	c.RegisterDayJalali Desc";

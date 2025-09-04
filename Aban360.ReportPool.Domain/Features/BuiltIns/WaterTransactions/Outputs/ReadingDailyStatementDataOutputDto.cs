@@ -14,5 +14,7 @@
         public int ConsumptionAverage { get; set; }
         public long InvoiceAmount { get; set; }
         public string Address { get; set; }
+        public string BillId { get; set; }
+        public string UsageTitle { get; set; }
     }
 }
