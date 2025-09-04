@@ -36,7 +36,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = (RequestData is not null && RequestData.Any()) ? RequestData.Count() : 0
+                RecordCount = (RequestData is not null && RequestData.Any()) ? RequestData.Count() : 0,
+
+                SumCommercialUnit = RequestData.Sum(i => i.CommercialUnit),
+                SumDomesticUnit = RequestData.Sum(i => i.DomesticUnit),
+                SumOtherUnit = RequestData.Sum(i => i.OtherUnit),
+                TotalUnit = RequestData.Sum(i => i.TotalUnit)
             };
             var result = new ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationDetailDataOutputDto>
                 (input.IsWater ? ReportLiterals.WaterDistanceRequestInstallationDetail : ReportLiterals.SewageDistanceRequesteInstallationDetail,
@@ -55,11 +60,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	TRIM(c.Address) AS Address,
                     	c.UsageTitle2 AS UsageTitle,
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
+                        c.MainSiphonTitle AS SiphonDiameterTitle,
                     	c.ZoneTitle,
                     	c.ZoneId,
                     	c.DomesticCount	AS DomesticUnit,
                     	c.CommercialCount AS CommercialUnit,
                     	c.OtherCount AS OtherUnit,
+                        (c.DomesticCount+c.CommercialCount +c.OtherCount) AS TotalUnit ,
                     	c.BillId,
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,
@@ -85,11 +92,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	TRIM(c.Address) AS Address,
                     	c.UsageTitle2 AS UsageTitle,
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
+                        c.MainSiphonTitle AS SiphonDiameterTitle,
                     	c.ZoneTitle,
                     	c.ZoneId,
                     	c.DomesticCount	AS DomesticUnit,
                     	c.CommercialCount AS CommercialUnit,
                     	c.OtherCount AS OtherUnit,
+                        (c.DomesticCount+c.CommercialCount +c.OtherCount) AS TotalUnit ,
                     	c.BillId,
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,

@@ -39,11 +39,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 RecordCount = emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Count() : 0,
-                SumDomesticCount = emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Sum(x => x.DomesticUnit) : 0,
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+
+                SumDomesticCount = (emptyUnitData is not null && emptyUnitData.Any()) ? emptyUnitData.Sum(x => x.DomesticUnit) : 0,
                 SumCommercialCount = emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Sum(x => x.CommercialUnit) : 0,
                 SumOtherCount = emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Sum(x => x.OtherUnit) : 0,
-                SumEmptyUnit = emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Sum(x => x.EmptyUnit) : 0,
-                ReportDateJalali = DateTime.Now.ToShortPersianDateString()
+                TotalUnit = emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Sum(x => x.TotalUnit) : 0,
+                SumEmptyUnit = (emptyUnitData is not null && emptyUnitData.Any()) ? emptyUnitData.Sum(x => x.EmptyUnit) : 0,
+
             };
 
 
@@ -63,6 +66,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                             TRIM(c.SureName) As Surname,
                             c.UsageTitle,
                             c.WaterDiameterTitle MeterDiameterTitle,
+                            c.MainSiphonTitle AS SiphonDiameterTitle,
                             c.RegisterDayJalali AS EventDateJalali,
                             TRIM(c.Address) AS Address,
                             c.DeletionStateId,
@@ -70,6 +74,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                             c.DomesticCount DomesticUnit,
             	            c.CommercialCount CommercialUnit,
             	            c.OtherCount OtherUnit,
+                            (c.CommercialCount+c.DomesticCount+c.OtherCount) AS TotalUnit,
+                            c.MainSiphonTitle AS SiphonDiameterTitle,
+                            c.ContractCapacity AS ContractualCapacity,
             	            TRIM(c.BillId) BillId,
             		    	c.EmptyCount As EmptyUnit,
                             c.ZoneId,

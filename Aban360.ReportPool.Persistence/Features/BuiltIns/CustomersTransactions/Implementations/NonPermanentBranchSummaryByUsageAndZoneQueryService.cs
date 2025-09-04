@@ -37,10 +37,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 RecordCount = nonPremanentBranchData is not null && nonPremanentBranchData.Any() ? nonPremanentBranchData.Count() : 0,
-                ReportDateJalali = DateTime.Now.ToShortPersianDateString()
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+
+                SumCommercialUnit = nonPremanentBranchData.Sum(i => i.CommercialUnit),
+                SumDomesticUnit = nonPremanentBranchData.Sum(i => i.DomesticUnit),
+                SumOtherUnit = nonPremanentBranchData.Sum(i => i.OtherUnit),
+                TotalUnit = nonPremanentBranchData.Sum(i => i.TotalUnit)
             };
 
-            var result = new ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryByUsageAndZoneDataOutputDto>(ReportLiterals.NonPermanentBranchSummaryByUsageAndZone, nonPremanentBranchHeader, nonPremanentBranchData);
+            var result = new ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryByUsageAndZoneDataOutputDto>(ReportLiterals.NonPermanentBranchSummary + ReportLiterals.ByUsageAndZone, nonPremanentBranchHeader, nonPremanentBranchData);
 
             return result;
         }
@@ -51,7 +56,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         c.ZoneTitle,
 						c.UsageTitle,
 						COUNT(c.ZoneTitle) AS CustomerCount,
-						SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
+					    SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
+					    SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
+                        SUM(ISNULL(c.DomesticCount, 0)) AS DomesticUnit,
+                        SUM(ISNULL(c.OtherCount, 0)) AS OtherUnit,
 						SUM(CASE WHEN t5.C0 = 0 THEN 1 ELSE 0 END) AS UnSpecified,
 						SUM(CASE WHEN t5.C0 = 1 THEN 1 ELSE 0 END) AS Field0_5,
 						SUM(CASE WHEN t5.C0 = 2 THEN 1 ELSE 0 END) AS Field0_75,

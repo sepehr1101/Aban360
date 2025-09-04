@@ -3,11 +3,12 @@ using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
+using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
-namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts
+namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {
     internal sealed class UseStateReportSummaryByZoneQueryService : AbstractBaseConnection, IUseStateReportSummaryByZoneQueryService
     {
@@ -33,7 +34,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = (data is not null && data.Any()) ? data.Count() : 0,
+                RecordCount = data is not null && data.Any() ? data.Count() : 0,
 
                 SumCommercialUnit = data.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = data.Sum(i => i.DomesticUnit),
@@ -42,7 +43,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             };
             string useStateQuery = GetUseStateTitle();
             string useStateTitle = await _sqlConnection.QueryFirstAsync<string>(useStateQuery, new { useStateId = input.UseStateId });
-            var result = new ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryByZoneDataOutputDto>(ReportLiterals.Report + " " +ReportLiterals.ByZone + useStateTitle, header, data);
+            var result = new ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryByZoneDataOutputDto>(ReportLiterals.Report + " " + ReportLiterals.ByZone + useStateTitle, header, data);
             return result;
         }
 

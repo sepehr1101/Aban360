@@ -7,6 +7,7 @@
         public static string ChangeDate { get { return "تاریخ تعویض"; } }
         public static string ByZone { get { return "بر اساس ناحیه "; } }
         public static string ByUsage { get { return "بر اساس کاربری "; } }
+        public static string ByUsageAndZone { get { return "بر اساس کاربری و ناحیه "; } }
 
         public static string CustomerSearch { get { return $"{Report} جستجوی مشترک"; } }
         public static string UnconfirmedSubscribers { get { return $"{Report} مشترکین ثبت قطعی نشده"; } }
@@ -41,12 +42,14 @@
         public static string Usage { get { return $"{Report} باغ و اقامتگاه"; } }
         public static string HouseholdNumber { get { return $"{Report} خانوار"; } }
         public static string EmptyUnit { get { return $"{Report} خالی از سکنه"; } }
-        public static string EmptyUnitByBill { get { return $"{Report} خالی از سکنه - قبض"; } }
         public static string UsageDetail { get { return $"{Report} جزئیات کاربری"; } }
         public static string UsageSummary { get { return $"{Report} خلاصه کاربری"; } }
         public static string NonPermanentBranchDetail { get { return $"{Report} جرئیات انشعاب غیر دائم"; } }
         public static string NonPermanentBranchSummary { get { return $"{Report} خلاصه انشعاب غیر دائم"; } }
-        public static string NonPermanentBranchSummaryByUsageAndZone { get { return $"{Report} خلاصه انشعاب غیر دائم بر اساس ناحیه و کاربری"; } }
+
+        public static string EmptyUnitByBill { get { return $"{Report} خالی از سکنه - قبض"; } }
+        public static string EmptyUnitByBillZoneGrouping { get { return $"{Report} خالی از سکنه قبض بر اساس ناحیه"; } }
+        public static string EmptyUnitByBillUsageGrouping { get { return $"{Report} خالی از سکنه قبض بر اساس کاربری"; } }
 
 
         public static string SubscriptionEventSummary { get { return "کاردکس آب"; } }
@@ -60,8 +63,8 @@
 
         public static string WaterRequestDetail { get { return "جزئیات انشعاب آب واگذار شده"; } }
         public static string SewageRequestDetail { get { return "جزئیات انشعاب فاضلاب واگذار شده"; } }
-        public static string WaterRequestSummary { get { return "خلاصه انشعاب آب واگذار شده"; } }
-        public static string SewageRequestSummary { get { return "خلاصه انشعاب فاضلاب واگذار شده"; } }
+        public static string WaterRequestSummary { get { return "خلاصه انشعاب آب واگذار شده "; } }
+        public static string SewageRequestSummary { get { return "خلاصه انشعاب فاضلاب واگذار شده "; } }
 
         public static string WaterRequestNonInstalledDetail { get { return "جزئیات انشعاب آب واگذار شده و نصب نشده"; } }
         public static string SewageRequestNonInstalledDetail { get { return " جزئیات انشعاب فاضلاب واگذار شده و نصب نشده"; } }

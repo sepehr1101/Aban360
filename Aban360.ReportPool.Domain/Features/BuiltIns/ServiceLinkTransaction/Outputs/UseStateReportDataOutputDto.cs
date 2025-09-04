@@ -8,6 +8,7 @@
         public string Surname { get; set; } = default!;
         public string UsageTitle { get; set; } = default!;
         public string MeterDiameterTitle { get; set; } = default!;
+        public string SiphonDiameterTitle { get; set; }
         public string EventDateJalali { get; set; } = default!;
         public long DebtAmount { get; set; }
         public string Address { get; set; } = default!;
@@ -18,5 +19,6 @@
         public int OtherUnit { get; set; }
         public int TotalUnit { get; set; }
         public string BillId { get; set; } = default!;
+        public int ContractualCapacity { get; set; }
     }
 }
