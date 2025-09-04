@@ -14,9 +14,6 @@
   <ItemGroup>
     <None Remove="AppData\DynamicReport\fa.xml" />
     <None Remove="AppData\DynamicReport\StiLicense.txt" />
-    <None Remove="AppData\Mrts\non-permanent-branch-report2.mrt" />
-    <None Remove="AppData\Mrts\non-permanent-branch-report4.mrt" />
-    <None Remove="AppData\Mrts\non-permanent-branch-report8.mrt" />
     <None Remove="lib\twitter-bootstrap\css\bootstrap-grid.css" />
     <None Remove="lib\twitter-bootstrap\css\bootstrap-reboot.css" />
     <None Remove="lib\twitter-bootstrap\css\bootstrap.css" />
@@ -50,15 +47,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="AppData\DynamicReport\StiLicense.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="AppData\Mrts\non-permanent-branch-report2.mrt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="AppData\Mrts\non-permanent-branch-report4.mrt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="AppData\Mrts\non-permanent-branch-report8.mrt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="lib\twitter-bootstrap\css\bootstrap-grid.css">
@@ -147,16 +135,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="AppData\Mrts\non-permanent-branch-report.mrt">
+    <None Update="AppData\Mrts\2.mrt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="AppData\Mrts\non-permanent-branch-report3.mrt">
+    <None Update="AppData\Mrts\16.mrt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="AppData\Mrts\non-permanent-branch-report6.mrt">
+    <None Update="AppData\Mrts\15.mrt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="AppData\Mrts\pre-payment-report.mrt">
+    <None Update="AppData\Mrts\1.mrt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="AppData\Mrts\14.mrt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

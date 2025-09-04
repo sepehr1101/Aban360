@@ -3,12 +3,12 @@
   <Dictionary Ref="1" type="Dictionary" isKey="true">
     <BusinessObjects isList="true" count="0" />
     <Databases isList="true" count="1">
-      <Test Ref="2" type="Stimulsoft.Report.Dictionary.StiJsonDatabase" isKey="true">
-        <Alias>Test</Alias>
-        <Key />
-        <Name>Test</Name>
-        <PathData>C:\Users\Padidar\Desktop\Test.json</PathData>
-      </Test>
+      <non_permanent_branch_report Ref="2" type="Stimulsoft.Report.Dictionary.StiJsonDatabase" isKey="true">
+        <Alias>non-permanent-branch-report</Alias>
+        <Key>5afb4578259a4e729507d5cd5c180c57</Key>
+        <Name>non-permanent-branch-report</Name>
+        <PathData>C:\Users\Padidar\Desktop\گزارش های ساخته شده با stimulsoft\انشعاب غیردائم\non-permanent-branch-report.json</PathData>
+      </non_permanent_branch_report>
     </Databases>
     <DataSources isList="true" count="3">
       <root Ref="3" type="DataTableSource" isKey="true">
@@ -20,12 +20,12 @@
           <value>relationId,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
-        <Key>d99e76607d9c4b23aa6537ed4c12d3b6</Key>
+        <Key>00c89323c68c4fe5acb80d11e55877cb</Key>
         <Name>root</Name>
-        <NameInSource>Test.root</NameInSource>
+        <NameInSource>non-permanent-branch-report.root</NameInSource>
       </root>
-      <root_reportData Ref="4" type="DataTableSource" isKey="true">
-        <Alias>root_reportData</Alias>
+      <reportData Ref="4" type="DataTableSource" isKey="true">
+        <Alias>reportData</Alias>
         <Columns isList="true" count="16">
           <value>eventDateJalali,System.String</value>
           <value>customerNumber,System.Double</value>
@@ -45,12 +45,12 @@
           <value>relationId,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
-        <Key>62624d5a99a243f4b6916a737928a426</Key>
-        <Name>root_reportData</Name>
-        <NameInSource>Test.root_reportData</NameInSource>
-      </root_reportData>
-      <root_reportHeader Ref="5" type="DataTableSource" isKey="true">
-        <Alias>root_reportHeader</Alias>
+        <Key>4fe4be80ede74f53abf395709490dbd7</Key>
+        <Name>reportData</Name>
+        <NameInSource>non-permanent-branch-report.root_reportData</NameInSource>
+      </reportData>
+      <reportHeader Ref="5" type="DataTableSource" isKey="true">
+        <Alias>reportHeader</Alias>
         <Columns isList="true" count="5">
           <value>fromReadingNumber,System.String</value>
           <value>toReadingNumber,System.String</value>
@@ -59,10 +59,10 @@
           <value>relationId,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
-        <Key>a03021f2b43f4c4c911934a94330995a</Key>
-        <Name>root_reportHeader</Name>
-        <NameInSource>Test.root_reportHeader</NameInSource>
-      </root_reportHeader>
+        <Key>e4f86cbb744049bfa180de006eaeae1a</Key>
+        <Name>reportHeader</Name>
+        <NameInSource>non-permanent-branch-report.root_reportHeader</NameInSource>
+      </reportHeader>
     </DataSources>
     <Relations isList="true" count="2">
       <root Ref="6" type="DataRelation" isKey="true">
@@ -572,7 +572,7 @@ TkSuQmCC</ImageBytes>
           <Name>Text9</Name>
           <Page isRef="8" />
           <Parent isRef="8" />
-          <Text>{root_reportHeader.fromReadingNumber}</Text>
+          <Text>{reportHeader.fromReadingNumber}</Text>
           <TextBrush>Black</TextBrush>
           <VertAlignment>Center</VertAlignment>
         </Text9>
@@ -587,7 +587,7 @@ TkSuQmCC</ImageBytes>
           <Name>Text10</Name>
           <Page isRef="8" />
           <Parent isRef="8" />
-          <Text>{root_reportHeader.toReadingNumber}</Text>
+          <Text>{reportHeader.toReadingNumber}</Text>
           <TextBrush>Black</TextBrush>
           <VertAlignment>Center</VertAlignment>
         </Text10>
@@ -602,7 +602,7 @@ TkSuQmCC</ImageBytes>
           <Name>Text11</Name>
           <Page isRef="8" />
           <Parent isRef="8" />
-          <Text>{root_reportHeader.recordCount}</Text>
+          <Text>{reportHeader.recordCount}</Text>
           <TextBrush>Black</TextBrush>
           <VertAlignment>Center</VertAlignment>
         </Text11>
@@ -616,7 +616,7 @@ TkSuQmCC</ImageBytes>
           <Name>Text12</Name>
           <Page isRef="8" />
           <Parent isRef="8" />
-          <Text>{root_reportHeader.reportDateJalali}</Text>
+          <Text>{reportHeader.reportDateJalali}</Text>
           <TextBrush>Black</TextBrush>
           <VertAlignment>Center</VertAlignment>
         </Text12>
@@ -641,7 +641,7 @@ TkSuQmCC</ImageBytes>
                   <Name>Dataroot_reportData_usageTitle</Name>
                   <Page isRef="8" />
                   <Parent isRef="23" />
-                  <Text>{root_reportData.usageTitle}</Text>
+                  <Text>{reportData.usageTitle}</Text>
                   <TextBrush>Black</TextBrush>
                   <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
                   <VertAlignment>Center</VertAlignment>
@@ -658,7 +658,7 @@ TkSuQmCC</ImageBytes>
                   <Name>Dataroot_reportData_billId</Name>
                   <Page isRef="8" />
                   <Parent isRef="23" />
-                  <Text>{root_reportData.billId}</Text>
+                  <Text>{reportData.billId}</Text>
                   <TextBrush>Black</TextBrush>
                   <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
                   <VertAlignment>Center</VertAlignment>
@@ -675,7 +675,7 @@ TkSuQmCC</ImageBytes>
                   <Name>Dataroot_reportData_readingNumber</Name>
                   <Page isRef="8" />
                   <Parent isRef="23" />
-                  <Text>{root_reportData.readingNumber}</Text>
+                  <Text>{reportData.readingNumber}</Text>
                   <TextBrush>Black</TextBrush>
                   <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
                   <VertAlignment>Center</VertAlignment>
@@ -692,7 +692,7 @@ TkSuQmCC</ImageBytes>
                   <Name>Dataroot_reportData_customerNumber</Name>
                   <Page isRef="8" />
                   <Parent isRef="23" />
-                  <Text>{root_reportData.customerNumber}</Text>
+                  <Text>{reportData.customerNumber}</Text>
                   <TextBrush>Black</TextBrush>
                   <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
                   <VertAlignment>Center</VertAlignment>
@@ -709,7 +709,7 @@ TkSuQmCC</ImageBytes>
                   <Name>Dataroot_reportData_meterDiameterTitle</Name>
                   <Page isRef="8" />
                   <Parent isRef="23" />
-                  <Text>{root_reportData.meterDiameterTitle}</Text>
+                  <Text>{reportData.meterDiameterTitle}</Text>
                   <TextBrush>Black</TextBrush>
                   <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
                   <VertAlignment>Center</VertAlignment>
@@ -726,7 +726,7 @@ TkSuQmCC</ImageBytes>
                   <Name>Dataroot_reportData_domesticUnit</Name>
                   <Page isRef="8" />
                   <Parent isRef="23" />
-                  <Text>{root_reportData.domesticUnit}</Text>
+                  <Text>{reportData.domesticUnit}</Text>
                   <TextBrush>Black</TextBrush>
                   <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
                   <VertAlignment>Center</VertAlignment>
@@ -743,7 +743,7 @@ TkSuQmCC</ImageBytes>
                   <Name>Dataroot_reportData_commercialUnit</Name>
                   <Page isRef="8" />
                   <Parent isRef="23" />
-                  <Text>{root_reportData.commercialUnit}</Text>
+                  <Text>{reportData.commercialUnit}</Text>
                   <TextBrush>Black</TextBrush>
                   <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
                   <VertAlignment>Center</VertAlignment>
@@ -760,7 +760,7 @@ TkSuQmCC</ImageBytes>
                   <Name>Dataroot_reportData_otherUnit</Name>
                   <Page isRef="8" />
                   <Parent isRef="23" />
-                  <Text>{root_reportData.otherUnit}</Text>
+                  <Text>{reportData.otherUnit}</Text>
                   <TextBrush>Black</TextBrush>
                   <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
                   <VertAlignment>Center</VertAlignment>
@@ -777,7 +777,7 @@ TkSuQmCC</ImageBytes>
                   <Name>Dataroot_reportData_useStateTitle</Name>
                   <Page isRef="8" />
                   <Parent isRef="23" />
-                  <Text>{root_reportData.useStateTitle}</Text>
+                  <Text>{reportData.useStateTitle}</Text>
                   <TextBrush>Black</TextBrush>
                   <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
                   <VertAlignment>Center</VertAlignment>
@@ -794,7 +794,7 @@ TkSuQmCC</ImageBytes>
                   <Name>Dataroot_reportData_zoneTitle</Name>
                   <Page isRef="8" />
                   <Parent isRef="23" />
-                  <Text>{root_reportData.zoneTitle}</Text>
+                  <Text>{reportData.zoneTitle}</Text>
                   <TextBrush>Black</TextBrush>
                   <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
                   <VertAlignment>Center</VertAlignment>
@@ -817,7 +817,7 @@ TkSuQmCC</ImageBytes>
                 </HorizontalLinePrimitive2>
               </Components>
               <Conditions isList="true" count="0" />
-              <DataSourceName>root_reportData</DataSourceName>
+              <DataSourceName>reportData</DataSourceName>
               <Expressions isList="true" count="1">
                 <value>Brush,Line_x0020__x0025__x0020_2_x0020__x003D__x003D__x0020_0_x0020__x003F__x0020_Color.WhiteSmoke_x0020_:_x0020_Color.Transparent_x000D__x000A_</value>
               </Expressions>
@@ -1034,10 +1034,10 @@ TkSuQmCC</ImageBytes>
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>8/31/2025 9:32:56 AM</ReportChanged>
+  <ReportChanged>8/31/2025 4:19:02 PM</ReportChanged>
   <ReportCreated>8/30/2025 4:59:09 PM</ReportCreated>
-  <ReportFile>C:\Users\Padidar\Desktop\a.mrt</ReportFile>
-  <ReportGuid>723620024af74291b2e6b2e5ea4339c5</ReportGuid>
+  <ReportFile>C:\Users\Padidar\Desktop\گزارش های ساخته شده با stimulsoft\انشعاب غیردائم\non-permanent-branch-report.mrt</ReportFile>
+  <ReportGuid>f79c3ba06e8c4e5db9112257e7270d2a</ReportGuid>
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>
   <ReportVersion>2023.1.1.0</ReportVersion>

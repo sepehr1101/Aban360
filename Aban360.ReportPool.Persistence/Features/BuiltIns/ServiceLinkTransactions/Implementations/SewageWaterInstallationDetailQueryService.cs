@@ -32,7 +32,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 toDate = input.ToDateJalali,
                 fromReadingNumber = input.FromReadingNumber,
                 toReadingNumber = input.ToReadingNumber,
-                zoneIds = input.ZoneIds
+                zoneIds = input.ZoneIds,
+                usageIds=input.UsageIds,
             };
             IEnumerable<SewageWaterInstallationDetailDataOutputDto> installationData = await _sqlReportConnection.QueryAsync<SewageWaterInstallationDetailDataOutputDto>(installationDetailQuery, @params);
             SewageWaterInstallationHeaderOutputDto installationHeader = new SewageWaterInstallationHeaderOutputDto()
@@ -76,6 +77,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     Where	
                     	c.WaterInstallDate BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
+                        c.UsageId IN @usageIds AND
                         (@fromReadingNumber IS NULL OR
 					    @toReadingNumber IS NULL OR
 					    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
@@ -105,6 +107,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     Where	
                     	c.SewageInstallDate BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
+                        c.UsageId IN @usageIds AND
                         (@fromReadingNumber IS NULL OR
 					    @toReadingNumber IS NULL OR
 					    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND

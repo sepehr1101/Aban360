@@ -29,6 +29,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali,
                 zoneIds = input.ZoneIds,
+                usageIds=input.UsageIds,
                 fromReadingNumber = input.FromReadingNumber,
                 toReadingNumber = input.ToReadingNumber,
             };
@@ -61,7 +62,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 					    SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
 					    SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
                         SUM(ISNULL(c.DomesticCount, 0)) AS DomesticUnit,
-                        SUM(ISNULL(c.OtherCount, 0)) AS OtherUnit
+                        SUM(ISNULL(c.OtherCount, 0)) AS OtherUnit,
                         SUM(CASE WHEN t5.C0 = 0 THEN 1 ELSE 0 END) AS UnSpecified,
 				        SUM(CASE WHEN t5.C0 = 1 THEN 1 ELSE 0 END) AS Field0_5,
 				        SUM(CASE WHEN t5.C0 = 2 THEN 1 ELSE 0 END) AS Field0_75,
@@ -83,6 +84,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     Where	
                     	c.WaterInstallDate BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
+                        c.UsageId IN @usageIds AND
                         (@fromReadingNumber IS NULL OR
 					    @toReadingNumber IS NULL OR
 					    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
@@ -118,6 +120,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     Where	
                     	c.SewageInstallDate BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
+                        c.UsageId IN @usageIds AND
                         (@fromReadingNumber IS NULL OR
 					    @toReadingNumber IS NULL OR
 					    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
