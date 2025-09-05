@@ -42,7 +42,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 input.ToContractualCapacity,
                 input.FromHousholderNumber,
                 input.ToHousholderNumber,
-                input.UsageIds
+                input.UsageIds,
+                nationalCode = input.NationalCode,
+                postalCode = input.PostalCode,
+                phoneNumber = input.PhoneNumber,
             };
 
             IEnumerable<CustomerSearchDataOutputDto> customerData = await _sqlReportConnection.QueryAsync<CustomerSearchDataOutputDto>(customerSearchDataInfoQuery, @params, null, 120);//todo: send parameters
@@ -74,7 +77,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         c.MobileNo AS MobileNumber,
                         TRIM(c.Address) AS Address,
                         c.HasCommonSiphon AS CommonSiphon,
-						c.IsSpecial AS SpecialCustomer
+						c.IsSpecial AS SpecialCustomer,
+						c.PhoneNo AS PhoneNumber,
+						c.NationalId AS NationalCode,
+						c.PostalCode AS PostalCode
                     FROM [CustomerWarehouse].dbo.Clients c
                     WHERE 
                         c.ToDayJalali is null
@@ -86,6 +92,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         AND (@Address is null OR c.Address like '%'+@Address+'%')
                         AND c.CustomerNumber=IIF(@CustomerNumber IS NULL , c.CustomerNumber,@CustomerNumber) 
                         AND c.WaterDiameterId=IIF(@WaterDiameterId IS NULL, c.WaterDiameterId,@WaterDiameterId )
+						AND c.PhoneNo=IIF(@phoneNumber IS NULL,c.PhoneNo,@phoneNumber) 
+						AND c.PostalCode=IIF(@postalCode IS NULL,c.PostalCode,@postalCode)
+						AND c.NationalId=IIF(@nationalCode IS NULL,c.NationalId,@nationalCode)
                         {zoneIdsPartialQuery}
                         AND (@FromReadingNumber IS NULL 
                              OR @ToReadingNumber IS NULL 

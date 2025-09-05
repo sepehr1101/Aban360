@@ -11,32 +11,32 @@ using System.Runtime.InteropServices;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Implementations
 {
-    internal sealed class EmptyUnitByBillHandler : IEmptyUnitByBillHandler
-    {
-        private readonly IEmptyUnitByBillQueryService _emptyUnitByBillQueryService;
-        private readonly IValidator<EmptyUnitInputDto> _validator;
-        public EmptyUnitByBillHandler(
-            IEmptyUnitByBillQueryService emptyUnitByBillQueryService,
-            IValidator<EmptyUnitInputDto> validator)
+        internal sealed class EmptyUnitByBillHandler : IEmptyUnitByBillHandler
         {
-            _emptyUnitByBillQueryService = emptyUnitByBillQueryService;
-            _emptyUnitByBillQueryService.NotNull(nameof(emptyUnitByBillQueryService));
-
-            _validator = validator;
-            _validator.NotNull(nameof(validator));
-        }
-
-        public async Task<ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>> Handle(EmptyUnitInputDto input, [Optional] CancellationToken cancellationToken)
-        {
-            var validationResult = await _validator.ValidateAsync(input/*, cancellationToken*/);
-            if (!validationResult.IsValid)
+            private readonly IEmptyUnitByBillQueryService _emptyUnitByBillQueryService;
+            private readonly IValidator<EmptyUnitInputDto> _validator;
+            public EmptyUnitByBillHandler(
+                IEmptyUnitByBillQueryService emptyUnitByBillQueryService,
+                IValidator<EmptyUnitInputDto> validator)
             {
-                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomeValidationException(message);
+                _emptyUnitByBillQueryService = emptyUnitByBillQueryService;
+                _emptyUnitByBillQueryService.NotNull(nameof(emptyUnitByBillQueryService));
+
+                _validator = validator;
+                _validator.NotNull(nameof(validator));
             }
 
-            ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto> emptyUnit = await _emptyUnitByBillQueryService.GetInfo(input);
-            return emptyUnit;
+            public async Task<ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>> Handle(EmptyUnitInputDto input, [Optional] CancellationToken cancellationToken)
+            {
+                var validationResult = await _validator.ValidateAsync(input/*, cancellationToken*/);
+                if (!validationResult.IsValid)
+                {
+                    var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+                    throw new CustomeValidationException(message);
+                }
+
+                ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto> emptyUnit = await _emptyUnitByBillQueryService.GetInfo(input);
+                return emptyUnit;
+            }
         }
-    }
 }

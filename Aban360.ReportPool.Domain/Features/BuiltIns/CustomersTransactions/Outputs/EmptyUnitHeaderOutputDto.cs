@@ -14,6 +14,7 @@
         public int SumDomesticCount { get; set; }
         public int SumCommercialCount { get; set; }
         public int SumOtherCount { get; set; }
+        public int TotalUnit { get; set; }
         public int SumEmptyUnit { get; set; }
     }
 }

@@ -4,7 +4,6 @@ using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
-using Azure.Core;
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
@@ -46,8 +45,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 SumCommercialUnit = installationData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = installationData.Sum(i => i.DomesticUnit),
                 SumOtherUnit = installationData.Sum(i => i.OtherUnit),
+                TotalUnit=installationData.Sum(i=>i.TotalUnit)
             };
-            installationHeader.TotalUnit = installationHeader.SumOtherUnit + installationHeader.SumCommercialUnit + installationHeader.SumDomesticUnit;
 
             ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationDetailDataOutputDto> result = new(reportTitle, installationHeader, installationData);
 
@@ -61,13 +60,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	TRIM(c.FirstName) AS FirstName,
                     	TRIM(c.SureName) AS Surname,
                     	TRIM(c.Address) AS Address,
-                    	c.UsageTitle2 AS UsageTitle,
+                    	c.UsageTitle AS UsageTitle,
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
+                        c.MainSiphonTitle AS SiphonDiameterTitle,
                     	c.ZoneTitle,
                     	c.ZoneId,
                     	c.DomesticCount	AS DomesticUnit,
                     	c.CommercialCount AS CommercialUnit,
                     	c.OtherCount AS OtherUnit,
+                        (c.DomesticCount+c.CommercialCount +c.OtherCount) AS TotalUnit ,
                     	c.BillId,
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,
@@ -91,13 +92,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	TRIM(c.FirstName) AS FirstName,
                     	TRIM(c.SureName) AS Surname,
                     	TRIM(c.Address) AS Address,
-                    	c.UsageTitle2 AS UsageTitle,
+                    	c.UsageTitle AS UsageTitle,
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
+                        c.MainSiphonTitle AS SiphonDiameterTitle,
                     	c.ZoneTitle,
                     	c.ZoneId,
                     	c.DomesticCount	AS DomesticUnit,
                     	c.CommercialCount AS CommercialUnit,
                     	c.OtherCount AS OtherUnit,
+                        (c.DomesticCount+c.CommercialCount +c.OtherCount) AS TotalUnit ,
                     	c.BillId,
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,

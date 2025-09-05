@@ -14,6 +14,11 @@
         public int PreviousNumber { get; set; }
         public string LastCounterStateCode { get; set; }
         public string CustomerNumber { get; set; }
-
+        public string LastCounterStateTitle { get; set; }
+        public string DeletionStateTitle { get; set; }
+        public string MobilePhone { get; set; }
+        public string Address { get; set; }
+        public string ReadingNumber { get; set; }
+        public string BillId { get; set; }
     }
 }

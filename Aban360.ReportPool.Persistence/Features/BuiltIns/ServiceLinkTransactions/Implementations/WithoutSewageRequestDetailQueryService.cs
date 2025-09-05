@@ -33,6 +33,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (withoutSewageRequestData is not null && withoutSewageRequestData.Any()) ? withoutSewageRequestData.Count() : 0,
+
+                SumCommercialUnit = withoutSewageRequestData.Sum(i => i.CommercialUnit),
+                SumDomesticUnit = withoutSewageRequestData.Sum(i => i.DomesticUnit),
+                SumOtherUnit = withoutSewageRequestData.Sum(i => i.OtherUnit),
+                TotalUnit = withoutSewageRequestData.Sum(i => i.TotalUnit)
             };
             var result = new ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestDetailDataOutputDto>
                 (ReportLiterals.WithoutSewageRequestDetail, withoutSewageRequestHeader, withoutSewageRequestData);
@@ -49,11 +54,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	TRIM(c.Address) AS Address,
                     	c.UsageTitle2 AS UsageTitle,
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
+                        c.MainSiphonTitle AS SiphonDiameterTitle,
                     	c.ZoneTitle,
                     	c.ZoneId,
                     	c.DomesticCount	AS DomesticUnit,
                     	c.CommercialCount AS CommercialUnit,
                     	c.OtherCount AS OtherUnit,
+                        (c.DomesticCount+c.CommercialCount +c.OtherCount) AS TotalUnit ,
                     	c.BillId,
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,

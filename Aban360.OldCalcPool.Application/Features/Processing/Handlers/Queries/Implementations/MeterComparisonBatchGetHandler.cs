@@ -15,8 +15,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
         private readonly IProcessing _processing;
         private readonly IMeterComparisonBatchQueryService _meterComparisonBatchQueryService;
         private readonly IValidator<MeterComparisonBatchInputDto> _validator;
-        float _maxPercentTelorance = (float)1.08;
-        float _minPercentTelorance = (float)0.08;
+        float _percent = (float)0.08;
         public MeterComparisonBatchGetHandler(
             IProcessing processing,
             IMeterComparisonBatchQueryService meterComparisonBatchQueryService,
@@ -112,8 +111,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
         }
         private bool GetTolarance(double previousAmount, double currentAmount, double tolerance)
         {
-            double maxAmount = previousAmount * _maxPercentTelorance + tolerance;
-            double minAmount = previousAmount * _minPercentTelorance - tolerance;
+            double maxAmount = previousAmount * (1 + _percent) + tolerance;
+            double minAmount = previousAmount * (1 - _percent) - tolerance;
 
             return currentAmount <= maxAmount && currentAmount >= minAmount ? true : false;
 

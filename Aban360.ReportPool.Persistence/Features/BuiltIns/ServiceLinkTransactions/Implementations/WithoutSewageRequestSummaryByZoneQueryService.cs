@@ -65,6 +65,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 				        SUM(CASE WHEN t5.C0 = 9 THEN 1 ELSE 0 END) AS Field5,
 				        SUM(CASE WHEN t5.C0 In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6
                     From [CustomerWarehouse].dbo.Clients c
+					Join [Db70].dbo.T5 t5
+						On t5.C0=c.WaterDiameterId
                     Where	
                     	c.WaterInstallDate BETWEEN @fromDate AND @toDate AND
 						(TRIM(c.SewageRequestDate)='' OR c.SewageRequestDate IS NULL) AND

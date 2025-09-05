@@ -36,6 +36,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 RecordCount = (useStateData is not null && useStateData.Any()) ? useStateData.Count() : 0,
+           
+                SumCommercialUnit = useStateData.Sum(i => i.CommercialUnit),
+                SumDomesticUnit = useStateData.Sum(i => i.DomesticUnit),
+                SumOtherUnit = useStateData.Sum(i => i.OtherUnit),
+                TotalUnit = useStateData.Sum(i => i.TotalUnit)
             };
 
             string useStateQuery = GetUseStateTitle();
@@ -55,6 +60,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	TRIM(c.SureName) As Surname,
                     	c.UsageTitle,
                     	c.WaterDiameterTitle MeterDiameterTitle,
+                        c.MainSiphonTitle AS SiphonDiameterTitle,
                     	c.RegisterDayJalali AS EventDateJalali,
                     	0 AS DebtAmount,
                     	TRIM(c.Address) AS Address,
@@ -65,6 +71,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 	                    c.CommercialCount CommercialUnit,
                         (c.CommercialCount+c.DomesticCount+c.DomesticCount) as TotalUnit,
 	                    c.OtherCount OtherUnit,
+                    	c.ContractCapacity AS ContractualCapacity,
 	                    TRIM(c.BillId) BillId,
 	                    RN=ROW_NUMBER() OVER (PARTITION BY ZoneId, CustomerNumber ORDER BY RegisterDayJalali DESC)
                     FROM [CustomerWarehouse].dbo.Clients c

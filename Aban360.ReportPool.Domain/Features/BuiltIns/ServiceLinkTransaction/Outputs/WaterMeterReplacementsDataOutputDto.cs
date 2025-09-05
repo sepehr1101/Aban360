@@ -11,5 +11,13 @@
         public string RegistrationDate { get; set; }
         public string MeterSerial { get; set; }
         public string ZoneTitle { get; set; }
+        public string ChangeCauseTitle { get; set; }
+        public string SiphonDiameterTitle { get; set; }
+        public int DomesticUnit { get; set; }
+        public int CommercialUnit { get; set; }
+        public int OtherUnit { get; set; }
+        public int TotalUnit { get; set; }
+        public int ContractualCapacity { get; set; }
+
     }
 }

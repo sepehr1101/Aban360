@@ -50,6 +50,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	COUNT(Case When b.CounterStateCode=4 Then 1 ENd) AS CloseCount,
                     	COUNT(Case When b.CounterStateCode=7 Then 1 End) AS ObstacleCount,
                     	COUNT(Case When b.CounterStateCode=2 Then 1 ENd) AS ReplacementBranchCount,
+                    	COUNT(Case When b.CounterStateCode=1 Then 1 ENd) AS MalfunctionCount,
                     	COUNT(Case When b.CounterStateCode=8 Then 1 End) AS AdvancePaymentCount
                     From [CustomerWarehouse].dbo.Bills b
                     Where

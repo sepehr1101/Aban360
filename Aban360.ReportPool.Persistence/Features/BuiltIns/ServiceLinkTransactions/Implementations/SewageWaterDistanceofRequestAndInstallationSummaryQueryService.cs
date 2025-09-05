@@ -79,7 +79,5 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     Group BY
                     	c.UsageTitle";
         }
-
-        //todo: both of them
     }
 }

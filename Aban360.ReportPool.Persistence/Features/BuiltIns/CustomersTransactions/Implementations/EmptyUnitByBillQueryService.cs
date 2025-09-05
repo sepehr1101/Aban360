@@ -37,11 +37,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 RecordCount = emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Count() : 0,
-                SumDomesticCount = emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Sum(x => x.DomesticUnit) : 0,
-                SumCommercialCount= emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Sum(x => x.CommercialUnit) : 0,
-                SumOtherCount= emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Sum(x => x.OtherUnit) : 0,
-                SumEmptyUnit = emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Sum(x => x.EmptyUnit) : 0,
-                ReportDateJalali = DateTime.Now.ToShortPersianDateString()
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+
+                SumDomesticCount = (emptyUnitData is not null && emptyUnitData.Any()) ? emptyUnitData.Sum(x => x.DomesticUnit) : 0,
+                SumCommercialCount = emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Sum(x => x.CommercialUnit) : 0,
+                SumOtherCount = emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Sum(x => x.OtherUnit) : 0,
+                TotalUnit = emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Sum(x => x.TotalUnit) : 0,
+                SumEmptyUnit = (emptyUnitData is not null && emptyUnitData.Any()) ? emptyUnitData.Sum(x => x.EmptyUnit) : 0,
+
             };
 
 
@@ -70,6 +73,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 							b.DomesticCount DomesticUnit,
 							b.CommercialCount CommercialUnit,
 							b.OtherCount OtherUnit,
+                            (c.CommercialCount+c.DomesticCount+c.OtherCount) AS TotalUnit,
+                            c.MainSiphonTitle AS SiphonDiameterTitle,
+                            c.ContractCapacity AS ContractualCapacity,
 							TRIM(c.BillId) BillId,
 							b.EmptyCount As EmptyUnit,
 							b.ZoneId,

@@ -33,13 +33,19 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 FromReadingNumber= input.FromReadingNumber,
                 ToReadingNumber= input.ToReadingNumber,
                 RecordCount = (nonPremanentBranchData is not null && nonPremanentBranchData.Any()) ? nonPremanentBranchData.Count() : 0,
-                ReportDateJalali = DateTime.Now.ToShortPersianDateString()
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+
+                SumCommercialUnit = nonPremanentBranchData.Sum(i => i.CommercialUnit),
+                SumDomesticUnit = nonPremanentBranchData.Sum(i => i.DomesticUnit),
+                SumOtherUnit = nonPremanentBranchData.Sum(i => i.OtherUnit),
+                TotalUnit = nonPremanentBranchData.Sum(i => i.TotalUnit)
             };
 
             var result = new ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchDataOutputDto>(ReportLiterals.NonPermanentBranchDetail, nonPremanentBranchHeader, nonPremanentBranchData);
 
             return result;
         }
+
 
         private string GetNonPermanentBranchQuery()
         {
@@ -50,6 +56,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         TRIM(c.SureName) As Surname,
                         c.UsageTitle,
                         c.WaterDiameterTitle MeterDiameterTitle,
+                        c.MainSiphonTitle AS SiphonDiameterTitle,
                         c.RegisterDayJalali AS EventDateJalali,
                         c.WaterInstallDate AS WaterInstallationDate,
                         0 AS DebtAmount,
@@ -60,6 +67,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         c.DomesticCount DomesticUnit,
             	        c.CommercialCount CommercialUnit,
             	        c.OtherCount OtherUnit,
+                        (c.DomesticCount+c.CommercialCount +c.OtherCount) AS TotalUnit,
+                    	c.ContractCapacity AS ContractualCapacity,
             	        TRIM(c.BillId) BillId
                     FROM [CustomerWarehouse].dbo.Clients c
                     WHERE 

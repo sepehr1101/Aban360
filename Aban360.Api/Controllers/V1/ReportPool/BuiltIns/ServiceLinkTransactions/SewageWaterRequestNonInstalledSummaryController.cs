@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 {
-    [Route("v1/sewage-water-request-noninstalled-Summary")]
+    [Route("v1/sewage-water-request-noninstalled-summary-by-usage")]
     public class SewageWaterRequestNonInstalledSummaryController : BaseController
     {
         private readonly ISewageWaterRequestNonInstalledSummaryHandler _sewageWaterRequestNonInstalledSummaryHandler;
@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, SewageWaterRequestNonInstalledInputDto inputDto, CancellationToken cancellationToken)
         {
-            string reportName = inputDto.IsWater ? ReportLiterals.WaterRequestNonInstalledSummary : ReportLiterals.SewageRequestNonInstalledSummary;
+            string reportName = inputDto.IsWater ? ReportLiterals.WaterRequestNonInstalledSummary+ReportLiterals.ByUsage : ReportLiterals.SewageRequestNonInstalledSummary + ReportLiterals.ByUsage;
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _sewageWaterRequestNonInstalledSummaryHandler.Handle, CurrentUser, reportName, connectionId);
             return Ok(inputDto);
         }

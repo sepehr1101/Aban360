@@ -11,6 +11,9 @@
         public int FromConsumption { get; set; }
         public int ToConsumption { get; set; }
 
+        public long FromAmount { get; set; }
+        public long ToAmount { get; set; }
+
         public ICollection<int> ZoneIds { get; set; }
     }
 }
