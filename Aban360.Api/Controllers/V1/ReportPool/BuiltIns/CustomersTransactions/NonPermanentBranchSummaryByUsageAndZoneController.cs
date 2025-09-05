@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
 {
-    [Route("v1/non-premanent-branch-summary-by-usage-and-zonee")]
+    [Route("v1/non-premanent-branch-summary-by-usage-and-zone")]
     public class NonPermanentBranchSummaryByUsageAndZoneController : BaseController
     {
         private readonly INonPermanentBranchSummaryByUsageAndZoneHandler _nonPermanentBranchSummaryByUsageAndZone;

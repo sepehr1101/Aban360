@@ -47,8 +47,8 @@
         public static string EmptyUnit { get { return $"{Report} خالی از سکنه"; } }
         public static string UsageDetail { get { return $"{Report} جزئیات کاربری"; } }
         public static string UsageSummary { get { return $"{Report} خلاصه کاربری"; } }
-        public static string NonPermanentBranchDetail { get { return $"{Report} جرئیات انشعاب غیر دائم"; } }
-        public static string NonPermanentBranchSummary { get { return $"{Report} خلاصه انشعاب غیر دائم"; } }
+        public static string NonPermanentBranchDetail { get { return $"{Report} جرئیات انشعاب غیر‌دائم"; } }
+        public static string NonPermanentBranchSummary { get { return $"{Report} خلاصه انشعاب غیر‌دائم"; } }
 
         public static string EmptyUnitByBill { get { return $"{Report} خالی از سکنه - قبض"; } }
         public static string EmptyUnitByBillZoneGrouping { get { return $"{Report} خالی از سکنه قبض بر اساس ناحیه"; } }
