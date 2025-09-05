@@ -14,7 +14,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
     {
         public EmptyUnitQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
         public async Task<ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>> GetInfo(EmptyUnitInputDto input)
         {
             string emptyUnitQuery = GetEmptyUnitQuery();
