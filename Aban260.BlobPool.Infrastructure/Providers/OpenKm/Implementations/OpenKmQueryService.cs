@@ -12,11 +12,11 @@ using Microsoft.Extensions.Options;
 
 namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
 {
-    internal sealed class OpenKmQueryService: IOpenKmQueryService
+    internal sealed class OpenKmQueryService : IOpenKmQueryService
     {
         const string applicationJson = @"application/json";
         private readonly HttpClient _httpClient;
-        private readonly OpenKmOptions _options; 
+        private readonly OpenKmOptions _options;
         private readonly IMemoryCache _cache;
 
         private const string TokenCacheKey = "OpenKm_AccessToken";
@@ -194,7 +194,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
         }
         private void LogRequestToConsole(HttpRequestMessage requestMessage)
         {
-            string curl= _httpClient.GenerateCurlInString(
+            string curl = _httpClient.GenerateCurlInString(
             requestMessage,
             config =>
             {
