@@ -2,6 +2,7 @@
 using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
@@ -19,6 +20,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
         [HttpGet]
         [Route("get")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<FileListResponse>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> Get(string input, CancellationToken cancellation)
         {
             FileListResponse result = await _getFilesByBillIdHandler.Handle(input, cancellation);
