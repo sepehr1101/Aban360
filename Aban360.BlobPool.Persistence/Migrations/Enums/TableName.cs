@@ -9,5 +9,6 @@
         MimetypeCategory,// video, audio, ...
         ExecutableMimetype,//any file extention/mimetype that we can execute
         DocumentEntity,
+        OpenKmMetaData
     }
 }
