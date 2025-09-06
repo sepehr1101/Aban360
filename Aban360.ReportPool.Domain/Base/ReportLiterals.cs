@@ -10,7 +10,7 @@
         public static string ByUsageAndZone { get { return " بر اساس کاربری و ناحیه "; } }
         public static string ByChangeCause { get { return "  بر اساس علت تعویض "; } }
 
-        public static string ClientValidation { get { return $"{Report} صحت سنجی"; } }
+        public static string ClientValidation { get { return $"{Report} صحت سنجی اطلاعات پایه"; } }
         public static string CustomerSearch { get { return $"{Report} جستجوی مشترک"; } }
         public static string UnconfirmedSubscribers { get { return $"{Report} مشترکین ثبت قطعی نشده"; } }
         public static string UseStateReport { get { return $"وضعیت انشعاب"; } }

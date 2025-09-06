@@ -48,9 +48,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                 var result = await _processing.Handle(meterInfoData, cancellationToken);
 
                 MeterComparisonBatchDataOutputDto comparisonBatch = GetComparisonBatch(data);
-                comparisonBatch.CurrentAmount = result.SumItems;
-                comparisonBatch.IsChecked = GetTolarance(data.PreviousAmount, data.CurrentAmount, input.Tolerance);
-                comparisonBatch.CurrentAmount = comparisonBatch.IsChecked ? comparisonBatch.PreviousAmount : comparisonBatch.CurrentAmount;
+                comparisonBatch.IsChecked = GetTolarance(data.PreviousAmount, data.CurrentAmount, input.Tolerance, input.IsPercent);
+                // comparisonBatch.CurrentAmount = comparisonBatch.IsChecked ? comparisonBatch.PreviousAmount : comparisonBatch.CurrentAmount;
 
                 comparisonResult.Add(comparisonBatch);
             }
@@ -109,14 +108,19 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
             };
             return meterInfoData;
         }
-        private bool GetTolarance(double previousAmount, double currentAmount, double tolerance)
+        private bool GetTolarance(double previousAmount, double currentAmount, double tolerance, bool isPercent)
         {
-            double maxAmount = previousAmount * (1 + _percent) + tolerance;
-            double minAmount = previousAmount * (1 - _percent) - tolerance;
+            if (isPercent)
+            {
+                var (maxAmount,minAmount)=GetMaxMinPercent(currentAmount, tolerance);
+                return currentAmount <= maxAmount && currentAmount >= minAmount;
+            }
 
-            return currentAmount <= maxAmount && currentAmount >= minAmount ? true : false;
-
-            return Math.Abs(previousAmount - currentAmount) <= tolerance ? true : false;
+            return Math.Abs(previousAmount - currentAmount) <= tolerance;
+        }
+        private (double, double) GetMaxMinPercent(double amount, double tolerance)
+        {
+            return (amount * (1 + tolerance), amount * (1 - tolerance));
         }
     }
 }
