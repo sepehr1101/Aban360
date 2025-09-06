@@ -41,7 +41,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Implementation
                     	ebt=@ebt,
                     	ent=@ent,
                     	vaj=@vaj,
-                    	cod=@cod,
+                    	cod=@code,
                     	olgo=@olgo,
                     	[desc]=@desc,
                     	o_vaj=@oVaj,

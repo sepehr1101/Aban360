@@ -32,6 +32,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             IEnumerable<EmptyUnitByBillIdUsageGroupingDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<EmptyUnitByBillIdUsageGroupingDataOutputDto>(emptyUnitByBillIdUsageGroupingQuery, @params);
             EmptyUnitByBillIdSummaryHeaderOutputDto RequestHeader = new EmptyUnitByBillIdSummaryHeaderOutputDto()
             {
+                FromEmptyUnit = input.FromEmptyUnit,
+                ToEmptyUnit = input.ToEmptyUnit,
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
+
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = RequestData is not null && RequestData.Any() ? RequestData.Count() : 0,
 

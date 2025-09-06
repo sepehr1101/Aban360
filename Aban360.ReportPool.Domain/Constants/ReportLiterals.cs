@@ -10,6 +10,7 @@
         public static string ByUsageAndZone { get { return " بر اساس کاربری و ناحیه "; } }
         public static string ByChangeCause { get { return "  بر اساس علت تعویض "; } }
 
+        public static string ClientValidation { get { return $"{Report} صحت سنجی"; } }
         public static string CustomerSearch { get { return $"{Report} جستجوی مشترک"; } }
         public static string UnconfirmedSubscribers { get { return $"{Report} مشترکین ثبت قطعی نشده"; } }
         public static string UseStateReport { get { return $"وضعیت انشعاب"; } }
@@ -36,6 +37,9 @@
         public static string WaterModifiedBillsSummary { get { return $"{Report}  خلاصه برگشتی و اصلاحات - آب بها"; } }
         public static string ServiceLinkModifiedBillsSummary { get { return $"{Report} خلاصه برگشتی و اصلاحات - انشعاب"; } }
         public static string ServiceLinkModifiedBillsDetail { get { return $"{Report} جزئیات برگشتی و اصلاحات - انشعاب"; } }
+        
+        public static string RemovedBillSummary { get { return $"{Report} خلاصه قبوض ابطال شده"; } }
+        public static string RemovedBillDetail { get { return $"{Report} جزئیات قبوض ابطال شده"; } }
        
         public static string Unread { get { return $"{Report} بسته و مانع طی دوره"; } }
         public static string UnreadSummaryByZone { get { return $"{Report} خلاصه بسته و مانع طی دوره"; } }
@@ -50,6 +54,10 @@
         public static string NonPermanentBranchDetail { get { return $"{Report} جرئیات انشعاب غیر‌دائم"; } }
         public static string NonPermanentBranchSummary { get { return $"{Report} خلاصه انشعاب غیر‌دائم"; } }
 
+        public static string UseStateChangeHistory { get { return $"{Report} تاریخچه تغیرات نوع واگذاری"; } }
+        public static string UsageChangeHistory { get { return $"{Report} تاریخچه تغیرات کاربری"; } }
+        public static string DeletionStateChangeHistory { get { return $"{Report} تاریخچه تغیرات وضعیت انشعاب"; } }
+       
         public static string EmptyUnitByBill { get { return $"{Report} خالی از سکنه - قبض"; } }
         public static string EmptyUnitByBillZoneGrouping { get { return $"{Report} خالی از سکنه قبض بر اساس ناحیه"; } }
         public static string EmptyUnitByBillUsageGrouping { get { return $"{Report} خالی از سکنه قبض بر اساس کاربری"; } }

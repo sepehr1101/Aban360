@@ -9,5 +9,4 @@
         public long OffAmount { get; set; }
         public long FinalAmount { get; set; }
     }
-
 }
