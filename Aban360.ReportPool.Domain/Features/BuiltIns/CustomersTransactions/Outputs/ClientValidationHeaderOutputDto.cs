@@ -1,0 +1,11 @@
+﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs
+{
+    public record ClientValidationHeaderOutputDto
+    {
+        public string? FromReadingNumber { get; set; }
+        public string? ToReadingNumber { get; set; }
+
+        public string ReportDateJalali { get; set; } = default!;
+        public int RecordCount { get; set; }
+    }
+}
