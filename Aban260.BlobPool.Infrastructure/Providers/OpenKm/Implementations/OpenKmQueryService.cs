@@ -160,12 +160,12 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             // Read as byte array instead of string
             return await response.Content.ReadAsByteArrayAsync();
         }
-        public async Task<string> GetDownloadLink(string uuid, bool oneTimeUse)
+        public async Task<string> GetDownloadLink(string documentId, bool oneTimeUse)
         {
             var authHeader = await GetAuthenticationHeaderAsync();
 
             // Only append the relative path/query; BaseAddress comes from DI
-            var requestUrl = $"{_options.GetDownloadLinkEndpoint}?uuid={uuid}&oneTimeUse={oneTimeUse.ToString().ToLower()}";
+            var requestUrl = $"{_options.GetDownloadLinkEndpoint}?uuid={documentId}&oneTimeUse={oneTimeUse.ToString().ToLower()}";
 
             using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
             request.Headers.Authorization = authHeader;
@@ -173,6 +173,21 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();
+            return result;
+        }
+        public async Task<MetaDataProperties> GetMetaDataProperties(string documentId)
+        {
+            var authHeader = await GetAuthenticationHeaderAsync();
+
+            // Only append the relative path/query; BaseAddress comes from DI
+            var requestUrl = $"{_options.GeMetadataEndpoint}??nodeId={documentId}&grpName=okg%3Amoshtarakin_folder";
+
+            using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+            request.Headers.Authorization = authHeader;
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
+            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            response.EnsureSuccessStatusCode();
+            MetaDataProperties result = await response.Content.ReadFromJsonAsync<MetaDataProperties>();
             return result;
         }
 
