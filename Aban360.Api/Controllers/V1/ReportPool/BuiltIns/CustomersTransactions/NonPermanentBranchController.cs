@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
 {
-    [Route("v1/non-premanent-branch")]
+    [Route("v1/non-permanent-branch")]
     public class NonPermanentBranchController : BaseController
     {
         private readonly INonPermanentBranchHandler _nonPermanentBranch;
