@@ -1,24 +1,30 @@
 ﻿using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts;
 using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using HttpClientToCurl;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 
 namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
 {
-    internal sealed class OpenKmQueryService: IOpenKmQueryService
+    internal sealed class OpenKmQueryService : IOpenKmQueryService
     {
         const string applicationJson = @"application/json";
         private readonly HttpClient _httpClient;
-        private readonly OpenKmOptions _options; 
+        private readonly OpenKmOptions _options;
         private readonly IMemoryCache _cache;
 
         private const string TokenCacheKey = "OpenKm_AccessToken";
 
+        private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
         public OpenKmQueryService(
             IHttpClientFactory httpClientFactory,
             IOptions<OpenKmOptions> options,
@@ -83,12 +89,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             // Send request
             HttpResponseMessage response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
-            string json = await response.Content.ReadAsStringAsync();
-
-            return JsonSerializer.Deserialize<TokenResponse>(json, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            return await response.Content.ReadFromJsonAsync<TokenResponse>(_jsonOptions);
         }
         private async Task<AuthenticationHeaderValue> GetAuthenticationHeaderAsync()
         {
@@ -98,36 +99,23 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
 
         public async Task<FileListResponse> GetFilesByBillId(string billId)
         {
-            string fldId = $"{_options.BaseDirectoryPath}/{billId}";
+            string fldId = $"{_options.BaseDirectoryPath}{billId}";
             return await GetChildren(fldId);
         }
         private async Task<FileListResponse> GetChildren(string fldId)
         {
-            // Ensure Bearer token
             var authHeader = await GetAuthenticationHeaderAsync();
-            _httpClient.DefaultRequestHeaders.Authorization = authHeader;
 
-            // Set headers
-            _httpClient.DefaultRequestHeaders.Accept.Clear();
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
-            _httpClient.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue
-            {
-                NoCache = true
-            };
+            // Only append the relative path/query; BaseAddress comes from DI
+            var requestUrl = $"{_options.GetChildrenEndpoint}?fldId={Uri.EscapeDataString(fldId)}";
 
-            // Build request URL from configuration
-            string requestUrl = $"{_options.GetChildrenEndpoint}?fldId={Uri.EscapeDataString(fldId)}";
-
-            var response = await _httpClient.GetAsync(requestUrl);
+            using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+            request.Headers.Authorization = authHeader;
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
+            request.Headers.CacheControl = new CacheControlHeaderValue { NoCache = true };
+            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
-
-            var json = await response.Content.ReadAsStringAsync();
-
-            // Deserialize into strongly typed object
-            return JsonSerializer.Deserialize<FileListResponse>(json, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            return await response.Content.ReadFromJsonAsync<FileListResponse>(_jsonOptions);
         }
 
         public async Task<FileListResponse> GetFilesInDirectory(string fieldId)
@@ -140,13 +128,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
 
             var response = await _httpClient.GetAsync(requestUrl);
             response.EnsureSuccessStatusCode();
-
-            var json = await response.Content.ReadAsStringAsync();
-
-            return JsonSerializer.Deserialize<FileListResponse>(json, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            return await response.Content.ReadFromJsonAsync<FileListResponse>(_jsonOptions);
         }
         public async Task<byte[]> GetFileBinary(string documentId)
         {
@@ -163,18 +145,34 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             // Read as byte array instead of string
             return await response.Content.ReadAsByteArrayAsync();
         }
-        public async Task<string> GetDownloadLink(string uuid, bool oneTimeUse)
+        public async Task<byte[]> GetImageThumbnail(string documentId)
         {
-            string _BaseUrl = "https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-GetDownloadLinkFile/1.0";
-            string _accept = "application/xml";
-            //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
-            //client.DefaultRequestHeaders.Add("cache-control", "no-cache");
+            // Ensure Bearer token
+            AuthenticationHeaderValue authHeader = await GetAuthenticationHeaderAsync();
+            _httpClient.DefaultRequestHeaders.Authorization = authHeader;
 
-            string url = $"{_BaseUrl}?uuid={uuid}&oneTimeUse={oneTimeUse.ToString().ToLower()}";
-            var response = await _httpClient.GetAsync(url);
+            // Build URL from configuration
+            string requestUrl = $"{_options.GetThumbnailEndpoint}?docId={Uri.EscapeDataString(documentId)}";
+
+            HttpResponseMessage response = await _httpClient.GetAsync(requestUrl);
             response.EnsureSuccessStatusCode();
 
-            var result = await response.Content.ReadAsStringAsync();
+            // Read as byte array instead of string
+            return await response.Content.ReadAsByteArrayAsync();
+        }
+        public async Task<string> GetDownloadLink(string uuid, bool oneTimeUse)
+        {
+            var authHeader = await GetAuthenticationHeaderAsync();
+
+            // Only append the relative path/query; BaseAddress comes from DI
+            var requestUrl = $"{_options.GetDownloadLinkEndpoint}?uuid={uuid}&oneTimeUse={oneTimeUse.ToString().ToLower()}";
+
+            using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+            request.Headers.Authorization = authHeader;
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
+            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            response.EnsureSuccessStatusCode();
+            string result = await response.Content.ReadAsStringAsync();
             return result;
         }
 
@@ -192,15 +190,18 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
 
             var response = await _httpClient.PostAsync(requestUrl, content);
             response.EnsureSuccessStatusCode();
-
-            var json = await response.Content.ReadAsStringAsync();
-
-            // Deserialize into strongly typed model
-            return JsonSerializer.Deserialize<SearchDocumentsResponse>(json, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            return await response.Content.ReadFromJsonAsync<SearchDocumentsResponse>(_jsonOptions);
         }
-
+        private void LogRequestToConsole(HttpRequestMessage requestMessage)
+        {
+            string curl = _httpClient.GenerateCurlInString(
+            requestMessage,
+            config =>
+            {
+                config.TurnOn = true;
+                config.NeedAddDefaultHeaders = true;
+            });
+            int x = 2;
+        }
     }
 }

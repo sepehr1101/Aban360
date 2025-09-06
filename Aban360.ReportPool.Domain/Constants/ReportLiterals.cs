@@ -51,8 +51,8 @@
         public static string EmptyUnit { get { return $"{Report} خالی از سکنه"; } }
         public static string UsageDetail { get { return $"{Report} جزئیات کاربری"; } }
         public static string UsageSummary { get { return $"{Report} خلاصه کاربری"; } }
-        public static string NonPermanentBranchDetail { get { return $"{Report} جرئیات انشعاب غیر دائم"; } }
-        public static string NonPermanentBranchSummary { get { return $"{Report} خلاصه انشعاب غیر دائم"; } }
+        public static string NonPermanentBranchDetail { get { return $"{Report} جرئیات انشعاب غیر‌دائم"; } }
+        public static string NonPermanentBranchSummary { get { return $"{Report} خلاصه انشعاب غیر‌دائم"; } }
 
         public static string UseStateChangeHistory { get { return $"{Report} تاریخچه تغیرات نوع واگذاری"; } }
         public static string UsageChangeHistory { get { return $"{Report} تاریخچه تغیرات کاربری"; } }
