@@ -3,14 +3,16 @@ using Aban360.BlobPool.Persistence.Extensions;
 using Aban360.BlobPool.Persistence.Migrations.Enums;
 using FluentMigrator;
 using System.Reflection;
+using static System.Collections.Specialized.BitVector32;
+using YamlDotNet.Core.Tokens;
 
 namespace Aban360.BlobPool.Persistence.Migrations
 {
     [Migration(14040117)]
     public class DbInitialDesign : Migration
     {
-        string _schema = TableSchema.Name, Title=nameof(Title), Id = nameof(Id), Hash = nameof(Hash);
-        int _13=13,_31 = 31, _255 = 255, _1023 = 1023, _10 = 10;
+        string _schema = TableSchema.Name, Title = nameof(Title), Id = nameof(Id), Hash = nameof(Hash);
+        int _13 = 13, _31 = 31, _255 = 255, _1023 = 1023, _50 = 50, _10 = 10;
         public override void Up()
         {
             Create.Schema(_schema);
@@ -67,7 +69,7 @@ namespace Aban360.BlobPool.Persistence.Migrations
         }
         private void CreateExecutableMimetype()
         {
-            var table= TableName.ExecutableMimetype;
+            var table = TableName.ExecutableMimetype;
             Create.Table(nameof(TableName.ExecutableMimetype)).InSchema(_schema)
                 .WithColumn(Id).AsInt16().NotNullable().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn(Title).AsString(_255).NotNullable()
@@ -113,6 +115,17 @@ namespace Aban360.BlobPool.Persistence.Migrations
                 .WithColumn("TableId").AsInt64().NotNullable()
                 .WithColumn("RelationEntityId").AsInt16().NotNullable()
                 .WithColumn("BillId").AsString(_13).Nullable();
+        }
+
+        private void CreateOpenKmMetaData()
+        {
+            var table = TableName.OpenKmMetaData;
+            Create.Table(nameof(TableName.OpenKmMetaData)).InSchema(_schema)
+                .WithColumn("Id").AsInt32().NotNullable().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("Section").AsString(_255).NotNullable()
+                .WithColumn("KeyLabel").AsString(_50).NotNullable()
+                .WithColumn("Label").AsString(_255).NotNullable()
+                .WithColumn("Value").AsInt32().NotNullable();
         }
     }
 }

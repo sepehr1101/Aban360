@@ -1,4 +1,5 @@
 ﻿using Aban360.BlobPool.Domain.Features.DMS.Entities;
+using Aban360.BlobPool.Domain.Features.DmsServices.Entities;
 using Aban360.BlobPool.Domain.Features.Taxonomy.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +13,7 @@ public partial class BlobPoolContext
     public virtual DbSet<MimetypeCategory> MimetypeCategories{ get; set; }
     public virtual DbSet<Document> Documents{ get; set; }
     public virtual DbSet<DocumentEntity> DocumentEntities { get; set; }
+    public virtual DbSet<OpenKmMetaData> OpenKmMetaData { get; set; }
 
 
 }

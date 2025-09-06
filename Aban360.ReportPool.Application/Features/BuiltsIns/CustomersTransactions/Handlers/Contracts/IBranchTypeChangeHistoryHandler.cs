@@ -4,8 +4,8 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Contracts
 {
-    public interface IUseStateChangeHistoryHandler
+    public interface IBranchTypeChangeHistoryHandler
     {
-        Task<ReportOutput<UseStateChangeHistoryHeaderOutputDto, UseStateChangeHistoryDataOutputDto>> Handle(UseStateChangeHistoryInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<BranchTypeChangeHistoryHeaderOutputDto, BranchTypeChangeHistoryDataOutputDto>> Handle(BranchTypeChangeHistoryInputDto input, CancellationToken cancellationToken);
     }
 }

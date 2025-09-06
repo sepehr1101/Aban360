@@ -10,7 +10,7 @@
         public static string ByUsageAndZone { get { return " بر اساس کاربری و ناحیه "; } }
         public static string ByChangeCause { get { return "  بر اساس علت تعویض "; } }
 
-        public static string ClientValidation { get { return $"{Report} صحت سنجی"; } }
+        public static string ClientValidation { get { return $"{Report} صحت سنجی اطلاعات پایه"; } }
         public static string CustomerSearch { get { return $"{Report} جستجوی مشترک"; } }
         public static string UnconfirmedSubscribers { get { return $"{Report} مشترکین ثبت قطعی نشده"; } }
         public static string UseStateReport { get { return $"وضعیت انشعاب"; } }
@@ -54,7 +54,7 @@
         public static string NonPermanentBranchDetail { get { return $"{Report} جرئیات انشعاب غیر‌دائم"; } }
         public static string NonPermanentBranchSummary { get { return $"{Report} خلاصه انشعاب غیر‌دائم"; } }
 
-        public static string UseStateChangeHistory { get { return $"{Report} تاریخچه تغیرات نوع واگذاری"; } }
+        public static string BranchTypeChangeHistory { get { return $"{Report} تاریخچه تغیرات نوع واگذاری"; } }
         public static string UsageChangeHistory { get { return $"{Report} تاریخچه تغیرات کاربری"; } }
         public static string DeletionStateChangeHistory { get { return $"{Report} تاریخچه تغیرات وضعیت انشعاب"; } }
        

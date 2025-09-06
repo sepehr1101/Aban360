@@ -4,8 +4,8 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts
 {
-    public interface IUseStateChangeHistoryQueryService
+    public interface IBranchTypeChangeHistoryQueryService
     {
-        Task<ReportOutput<UseStateChangeHistoryHeaderOutputDto, UseStateChangeHistoryDataOutputDto>> GetInfo(UseStateChangeHistoryInputDto input);
+        Task<ReportOutput<BranchTypeChangeHistoryHeaderOutputDto, BranchTypeChangeHistoryDataOutputDto>> GetInfo(BranchTypeChangeHistoryInputDto input);
     }
 }

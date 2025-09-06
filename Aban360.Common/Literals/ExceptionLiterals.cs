@@ -42,6 +42,8 @@
         public static string SuccessedPay => $"پرداخت شد";
         public static string UnsuccessedPay => $"پرداخت نشد";
 
+        public static string InvalidPercent => $"درصد اشتباه وارد شده";
+
         public static string MessageException(string message) => $"خطا : {message}";
 
 

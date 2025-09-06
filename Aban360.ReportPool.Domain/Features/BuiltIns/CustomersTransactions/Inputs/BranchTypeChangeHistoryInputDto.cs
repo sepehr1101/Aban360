@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs
 {
-    public record UseStateChangeHistoryInputDto
+    public record BranchTypeChangeHistoryInputDto
     {
         public string? FromReadingNumber { get; set; }
         public string? ToReadingNumber { get; set; }

@@ -23,12 +23,21 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Validations
                  .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
                  .NotNull().WithMessage(ExceptionLiterals.NotNull)
                  .Must(MoreThan1403).WithMessage(ExceptionLiterals.ToDateMoreThanDate(ExceptionLiterals.Date1403_01_01));
+
+            RuleFor(input => input)
+                .Must(ChechPercent).WithMessage(ExceptionLiterals.InvalidPercent);
         }
         private bool MoreThan1403(string date)
         {
-           // string date1403_01_01 = ExceptionLiterals.Date1403_01_01;
-            string date1401_01_01 = "1401/01/01";
-            return date.CompareTo(date1401_01_01) >= 0;
+            string date1403_01_01 = ExceptionLiterals.Date1403_01_01;
+            return date.CompareTo(date1403_01_01) >= 0;
+        }
+        private bool ChechPercent(MeterComparisonBatchInputDto input)
+        {
+            if (input.IsPercent)
+                return input.Tolerance <= 100 || input.Tolerance >= 0;
+
+            return true;
         }
     }
 }
