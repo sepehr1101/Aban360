@@ -54,7 +54,7 @@
         public static string NonPermanentBranchDetail { get { return $"{Report} جرئیات انشعاب غیر‌دائم"; } }
         public static string NonPermanentBranchSummary { get { return $"{Report} خلاصه انشعاب غیر‌دائم"; } }
 
-        public static string UseStateChangeHistory { get { return $"{Report} تاریخچه تغیرات نوع واگذاری"; } }
+        public static string BranchTypeChangeHistory { get { return $"{Report} تاریخچه تغیرات نوع واگذاری"; } }
         public static string UsageChangeHistory { get { return $"{Report} تاریخچه تغیرات کاربری"; } }
         public static string DeletionStateChangeHistory { get { return $"{Report} تاریخچه تغیرات وضعیت انشعاب"; } }
        

@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs
 {
-    public record UseStateChangeHistoryDataOutputDto
+    public record BranchTypeChangeHistoryDataOutputDto
     {
         public int CustomerNumber { get; set; }
         public string ReadingNumber { get; set; }

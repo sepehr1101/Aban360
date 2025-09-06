@@ -10,17 +10,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
 {
-    [Route("v1/use-state-change-history")]
-    public class UseStateChangeHistoryController : BaseController
+    [Route("v1/branch-type-change-history")]
+    public class BranchTypeChangeHistoryController : BaseController
     {
-        private readonly IUseStateChangeHistoryHandler _useStateChangeHistory;
+        private readonly IBranchTypeChangeHistoryHandler _branchTypeChangeHistory;
         private readonly IReportGenerator _reportGenerator;
-        public UseStateChangeHistoryController(
-            IUseStateChangeHistoryHandler useStateChangeHistory,
+        public BranchTypeChangeHistoryController(
+            IBranchTypeChangeHistoryHandler branchTypeChangeHistory,
             IReportGenerator reportGenerator)
         {
-            _useStateChangeHistory = useStateChangeHistory;
-            _useStateChangeHistory.NotNull(nameof(_useStateChangeHistory));
+            _branchTypeChangeHistory = branchTypeChangeHistory;
+            _branchTypeChangeHistory.NotNull(nameof(_branchTypeChangeHistory));
 
             _reportGenerator = reportGenerator;
             _reportGenerator.NotNull(nameof(_reportGenerator));
@@ -28,18 +28,18 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<UseStateChangeHistoryHeaderOutputDto, UseStateChangeHistoryDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRaw(UseStateChangeHistoryInputDto inputDto, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<BranchTypeChangeHistoryHeaderOutputDto, BranchTypeChangeHistoryDataOutputDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetRaw(BranchTypeChangeHistoryInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<UseStateChangeHistoryHeaderOutputDto, UseStateChangeHistoryDataOutputDto> useStateChangeHistory = await _useStateChangeHistory.Handle(inputDto, cancellationToken);
-            return Ok(useStateChangeHistory);
+            ReportOutput<BranchTypeChangeHistoryHeaderOutputDto, BranchTypeChangeHistoryDataOutputDto> branchTypeChangeHistory = await _branchTypeChangeHistory.Handle(inputDto, cancellationToken);
+            return Ok(branchTypeChangeHistory);
         }
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
-        public async Task<IActionResult> GetExcel(string connectionId, UseStateChangeHistoryInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetExcel(string connectionId, BranchTypeChangeHistoryInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _useStateChangeHistory.Handle, CurrentUser, ReportLiterals.UseStateChangeHistory, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _branchTypeChangeHistory.Handle, CurrentUser, ReportLiterals.BranchTypeChangeHistory, connectionId);
             return Ok(inputDto);
         }
     }
