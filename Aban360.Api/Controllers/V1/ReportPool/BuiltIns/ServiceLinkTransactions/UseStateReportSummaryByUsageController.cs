@@ -14,10 +14,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
     [Route("v1/use-state-report-summary-by-usage")]
     public class UseStateReportSummaryByUsageController : BaseController
     {
-        private readonly IUseStateReportByUsageHandler _useStateReportSummaryByUsageHandler;
+        private readonly IUseStateReportSummaryByUsageHandler _useStateReportSummaryByUsageHandler;
         private readonly IReportGenerator _reportGenerator;
         public UseStateReportSummaryByUsageController(
-            IUseStateReportByUsageHandler useStateReportSummaryByUsageHandler,
+            IUseStateReportSummaryByUsageHandler useStateReportSummaryByUsageHandler,
             IReportGenerator reportGenerator)
         {
             _useStateReportSummaryByUsageHandler = useStateReportSummaryByUsageHandler;

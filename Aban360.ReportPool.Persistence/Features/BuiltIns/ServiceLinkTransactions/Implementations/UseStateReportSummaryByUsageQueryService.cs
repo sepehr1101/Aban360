@@ -42,7 +42,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 TotalUnit = data.Sum(i => i.TotalUnit),
             };
             string useStateQuery = GetUseStateTitle();
-            string useStateTitle = await _sqlConnection.QueryFirstAsync<string>(useStateQuery, new { useStateId = input.UseStateId });
+            string useStateTitle = await _sqlConnection.QueryFirstOrDefaultAsync<string>(useStateQuery, new { useStateId = input.UseStateId });
             var result = new ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryByUsageDataOutputDto>(ReportLiterals.Report + " " + ReportLiterals.ByUsage + useStateTitle, header, data);
             return result;
         }
@@ -70,7 +70,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 					)
                     SELECT 
 						c.UsageTitle,
-                    	COUNT(c.ZoneTitle) AS CustomerCount,
+                    	COUNT(c.UsageTitle) AS CustomerCount,
 						SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
 						SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
 						SUM(ISNULL(c.DomesticCount, 0)) AS DomesticUnit,

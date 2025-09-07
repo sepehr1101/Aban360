@@ -2,7 +2,7 @@
 {
     public record UseStateReportSummaryByUsageDataOutputDto
     {
-        public string ZoneTitle { get; set; }
+        public string UsageTitle { get; set; }
         public int CustomerCount { get; set; }
         public int TotalUnit { get; set; }
         public int CommercialUnit { get; set; }

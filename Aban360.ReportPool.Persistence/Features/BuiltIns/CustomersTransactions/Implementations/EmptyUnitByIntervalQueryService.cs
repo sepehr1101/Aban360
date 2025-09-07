@@ -67,7 +67,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                             TRIM(c.SureName) As Surname,
                             c.UsageTitle,
                             c.WaterDiameterTitle MeterDiameterTitle,
-                            c.MainSiphonTitle AS SiphonDiameterTitle,
                             c.RegisterDayJalali AS EventDateJalali,
                             TRIM(c.Address) AS Address,
                             c.DeletionStateId,
