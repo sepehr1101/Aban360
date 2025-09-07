@@ -4,6 +4,6 @@
     {
         public WaterIncomeAndConsumptionDetailInputDto Inputs { get; set; }
         public ICollection<ContractualAndOlgooLevelValuesInputDto> Values { get; set; }
-        public bool IsConsumption { get; set; }
+        public bool IsOlgoo { get; set; }
     }
 }
