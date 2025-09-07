@@ -180,7 +180,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             var authHeader = await GetAuthenticationHeaderAsync();
 
             // Only append the relative path/query; BaseAddress comes from DI
-            var requestUrl = $"{_options.GeMetadataEndpoint}??nodeId={documentId}&grpName=okg%3Amoshtarakin_folder";
+            var requestUrl = $"{_options.GeMetadataEndpoint}?nodeId={documentId}&grpName=okg%3Amoshtarakin_folder";
 
             using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
             request.Headers.Authorization = authHeader;

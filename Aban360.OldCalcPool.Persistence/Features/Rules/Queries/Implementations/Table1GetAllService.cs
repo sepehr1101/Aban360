@@ -29,7 +29,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                     	t.z2,
                     	t.olgo,
                     	t.darsa_gh
-                    From [OldCalc].dbo.table1 t";
+                    From [OldCalc].dbo.table1 t
+                    Where 
+                        t.town>0 AND
+	                    t.olgo!=0";
         }
     }
 }

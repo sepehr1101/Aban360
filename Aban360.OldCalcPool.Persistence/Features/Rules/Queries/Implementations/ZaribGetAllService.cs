@@ -40,7 +40,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                     	z.zb7 AS Zb7,
                     	z.zb8 AS Zb8,
                     	z.zb_r AS Zb_r
-                    From [OldCalc].dbo.zarib z";
+                    From [OldCalc].dbo.zarib z
+                    Where z.zone1 IS NOT NULL";
         }
     }
 }

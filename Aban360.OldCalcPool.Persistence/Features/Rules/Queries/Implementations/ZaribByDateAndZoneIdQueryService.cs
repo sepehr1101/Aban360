@@ -50,7 +50,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                     From [OldCalc].dbo.zarib z
                     Where 
 	                    z.date1<@toDate AND z.date2>=@fromDate AND
-	                    z.town=@zoneId
+	                    z.town=@zoneId AND
+                        z.zone1 IS NOT NULL
                     Order By z.date1 DESC";
         }
     }
