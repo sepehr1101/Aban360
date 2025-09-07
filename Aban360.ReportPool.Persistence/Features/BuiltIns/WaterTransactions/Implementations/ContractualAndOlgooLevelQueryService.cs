@@ -23,7 +23,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
             string getOlgooLevelQueryString = GetOlgooLevelQuery(input.Inputs.ZoneIds.Any(), input.Inputs.UsageIds.Any(), rangeValues);
             string getContractualLevelQueryString = GetContractualLevelQuery(input.Inputs.ZoneIds.Any(), input.Inputs.UsageIds.Any(), rangeValues);
-            string LevelQuery = input.IsConsumption ? getContractualLevelQueryString : getOlgooLevelQueryString;
+            string LevelQuery = input.IsOlgoo ? getContractualLevelQueryString : getOlgooLevelQueryString;
 
             var @params = new
             {
