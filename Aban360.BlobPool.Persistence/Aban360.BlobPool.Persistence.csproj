@@ -43,4 +43,10 @@
     <Folder Include="Features\SystemIntegration\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="DbSeeder\DataScript\OpenKmMetaData.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

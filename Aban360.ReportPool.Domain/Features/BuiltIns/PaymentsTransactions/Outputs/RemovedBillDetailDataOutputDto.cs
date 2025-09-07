@@ -7,8 +7,8 @@
         public string BillId { get; set; }
         public int CurrentMeterNumber { get; set; }
         public int PreviousMeterNumber { get; set; }
-        public string CurrentDayJalali { get; set; }
-        public string PreviousDayJalali { get; set; }
+        public string CurrentDateJalali { get; set; }
+        public string PreviousDateJalali { get; set; }
         public int Consumption { get; set; }
         public long Amount { get; set; }
         public string RemovedDateJalali { get; set; }

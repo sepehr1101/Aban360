@@ -10,14 +10,14 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Implementations
 {
-    internal sealed class UseStateChangeHistoryQueryService : AbstractBaseConnection, IUseStateChangeHistoryQueryService
+    internal sealed class BranchTypeChangeHistoryQueryService : AbstractBaseConnection, IBranchTypeChangeHistoryQueryService
     {
-        public UseStateChangeHistoryQueryService(IConfiguration configuration)
+        public BranchTypeChangeHistoryQueryService(IConfiguration configuration)
             : base(configuration)
         { }
-        public async Task<ReportOutput<UseStateChangeHistoryHeaderOutputDto, UseStateChangeHistoryDataOutputDto>> GetInfo(UseStateChangeHistoryInputDto input)
+        public async Task<ReportOutput<BranchTypeChangeHistoryHeaderOutputDto, BranchTypeChangeHistoryDataOutputDto>> GetInfo(BranchTypeChangeHistoryInputDto input)
         {
-            string UseStateChangeHistoryQuery = GetUseStateChangeHistoryQuery(input.ZoneIds.Any());
+            string BranchTypeChangeHistoryQuery = GetBranchTypeChangeHistoryQuery(input.ZoneIds.Any());
             var @params = new
             {
                 fromReadingNumber = input.FromReadingNumber,
@@ -32,8 +32,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 toUseStateIds = input.ToUseStateIds,
             };
 
-            IEnumerable<UseStateChangeHistoryDataOutputDto> useStateChangeHistoryData = await _sqlReportConnection.QueryAsync<UseStateChangeHistoryDataOutputDto>(UseStateChangeHistoryQuery, @params);
-            UseStateChangeHistoryHeaderOutputDto useStateChangeHistoryHeader = new UseStateChangeHistoryHeaderOutputDto()
+            IEnumerable<BranchTypeChangeHistoryDataOutputDto> BranchTypeChangeHistoryData = await _sqlReportConnection.QueryAsync<BranchTypeChangeHistoryDataOutputDto>(BranchTypeChangeHistoryQuery, @params);
+            BranchTypeChangeHistoryHeaderOutputDto BranchTypeChangeHistoryHeader = new BranchTypeChangeHistoryHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
@@ -41,21 +41,21 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
 
-                RecordCount = useStateChangeHistoryData is not null && useStateChangeHistoryData.Any() ? useStateChangeHistoryData.Count() : 0,
+                RecordCount = BranchTypeChangeHistoryData is not null && BranchTypeChangeHistoryData.Any() ? BranchTypeChangeHistoryData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
 
-                SumDomesticCount = useStateChangeHistoryData is not null && useStateChangeHistoryData.Any() ? useStateChangeHistoryData.Sum(x => x.DomesticUnit) : 0,
-                SumCommercialCount = useStateChangeHistoryData is not null && useStateChangeHistoryData.Any() ? useStateChangeHistoryData.Sum(x => x.CommercialUnit) : 0,
-                SumOtherCount = useStateChangeHistoryData is not null && useStateChangeHistoryData.Any() ? useStateChangeHistoryData.Sum(x => x.OtherUnit) : 0,
-                TotalUnit = useStateChangeHistoryData is not null && useStateChangeHistoryData.Any() ? useStateChangeHistoryData.Sum(x => x.TotalUnit) : 0,
+                SumDomesticCount = BranchTypeChangeHistoryData is not null && BranchTypeChangeHistoryData.Any() ? BranchTypeChangeHistoryData.Sum(x => x.DomesticUnit) : 0,
+                SumCommercialCount = BranchTypeChangeHistoryData is not null && BranchTypeChangeHistoryData.Any() ? BranchTypeChangeHistoryData.Sum(x => x.CommercialUnit) : 0,
+                SumOtherCount = BranchTypeChangeHistoryData is not null && BranchTypeChangeHistoryData.Any() ? BranchTypeChangeHistoryData.Sum(x => x.OtherUnit) : 0,
+                TotalUnit = BranchTypeChangeHistoryData is not null && BranchTypeChangeHistoryData.Any() ? BranchTypeChangeHistoryData.Sum(x => x.TotalUnit) : 0,
             };
 
 
-            var result = new ReportOutput<UseStateChangeHistoryHeaderOutputDto, UseStateChangeHistoryDataOutputDto>(ReportLiterals.UseStateChangeHistory, useStateChangeHistoryHeader, useStateChangeHistoryData);
+            var result = new ReportOutput<BranchTypeChangeHistoryHeaderOutputDto, BranchTypeChangeHistoryDataOutputDto>(ReportLiterals.BranchTypeChangeHistory, BranchTypeChangeHistoryHeader, BranchTypeChangeHistoryData);
 
             return result;
         }
-        private string GetUseStateChangeHistoryQuery(bool hasZone)
+        private string GetBranchTypeChangeHistoryQuery(bool hasZone)
         {
             string zoneQuery = hasZone ? "AND c1.ZoneId IN @zoneIds" : string.Empty;
 

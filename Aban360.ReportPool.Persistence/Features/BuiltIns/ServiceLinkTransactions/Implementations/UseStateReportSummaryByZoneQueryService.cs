@@ -42,7 +42,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 TotalUnit = data.Sum(i => i.TotalUnit),
             };
             string useStateQuery = GetUseStateTitle();
-            string useStateTitle = await _sqlConnection.QueryFirstAsync<string>(useStateQuery, new { useStateId = input.UseStateId });
+            string useStateTitle = await _sqlConnection.QueryFirstOrDefaultAsync<string>(useStateQuery, new { useStateId = input.UseStateId });
             var result = new ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryByZoneDataOutputDto>(ReportLiterals.Report + " " + ReportLiterals.ByZone + useStateTitle, header, data);
             return result;
         }

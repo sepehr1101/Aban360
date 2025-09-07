@@ -5,9 +5,9 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Validations
 {
-    public class UseStateChangeHistoryValidator : BaseValidator<UseStateChangeHistoryInputDto>
+    public class BranchTypeChangeHistoryValidator : BaseValidator<BranchTypeChangeHistoryInputDto>
     {
-        public UseStateChangeHistoryValidator()
+        public BranchTypeChangeHistoryValidator()
         {
             RuleFor(customer => customer.FromUseStateIds)
             .NotEmpty().WithMessage(ExceptionLiterals.NotNull)

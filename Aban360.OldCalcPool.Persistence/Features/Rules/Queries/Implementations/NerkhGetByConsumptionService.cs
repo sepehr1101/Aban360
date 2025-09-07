@@ -66,6 +66,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
         private string GetNerkhGetQuery(int nerkh)
         {
             return @$"Select
+                        n.Id,
                     	n.date1 AS Date1,
                     	n.date2 AS Date2,
                     	n.ebt AS Ebt,

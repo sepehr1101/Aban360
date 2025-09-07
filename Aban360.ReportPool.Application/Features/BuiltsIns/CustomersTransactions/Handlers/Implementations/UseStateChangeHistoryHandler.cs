@@ -10,22 +10,22 @@ using System.Runtime.InteropServices;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Implementations
 {
-    internal sealed class UseStateChangeHistoryHandler : IUseStateChangeHistoryHandler
+    internal sealed class BranchTypeChangeHistoryHandler : IBranchTypeChangeHistoryHandler
     {
-        private readonly IUseStateChangeHistoryQueryService _useStateChangeHistoryQueryService;
-        private readonly IValidator<UseStateChangeHistoryInputDto> _validator;
-        public UseStateChangeHistoryHandler(
-            IUseStateChangeHistoryQueryService useStateChangeHistoryQueryService,
-            IValidator<UseStateChangeHistoryInputDto> validator)
+        private readonly IBranchTypeChangeHistoryQueryService _branchTypeChangeHistoryQueryService;
+        private readonly IValidator<BranchTypeChangeHistoryInputDto> _validator;
+        public BranchTypeChangeHistoryHandler(
+            IBranchTypeChangeHistoryQueryService branchTypeChangeHistoryQueryService,
+            IValidator<BranchTypeChangeHistoryInputDto> validator)
         {
-            _useStateChangeHistoryQueryService = useStateChangeHistoryQueryService;
-            _useStateChangeHistoryQueryService.NotNull(nameof(useStateChangeHistoryQueryService));
+            _branchTypeChangeHistoryQueryService = branchTypeChangeHistoryQueryService;
+            _branchTypeChangeHistoryQueryService.NotNull(nameof(branchTypeChangeHistoryQueryService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<UseStateChangeHistoryHeaderOutputDto, UseStateChangeHistoryDataOutputDto>> Handle(UseStateChangeHistoryInputDto input, [Optional] CancellationToken cancellationToken)
+        public async Task<ReportOutput<BranchTypeChangeHistoryHeaderOutputDto, BranchTypeChangeHistoryDataOutputDto>> Handle(BranchTypeChangeHistoryInputDto input, [Optional] CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input/*, cancellationToken*/);
             if (!validationResult.IsValid)
@@ -34,8 +34,8 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
                 throw new CustomeValidationException(messeState);
             }
 
-            ReportOutput<UseStateChangeHistoryHeaderOutputDto, UseStateChangeHistoryDataOutputDto> useStateChangeHistory = await _useStateChangeHistoryQueryService.GetInfo(input);
-            return useStateChangeHistory;
+            ReportOutput<BranchTypeChangeHistoryHeaderOutputDto, BranchTypeChangeHistoryDataOutputDto> branchTypeChangeHistory = await _branchTypeChangeHistoryQueryService.GetInfo(input);
+            return branchTypeChangeHistory;
         }
     }
 }

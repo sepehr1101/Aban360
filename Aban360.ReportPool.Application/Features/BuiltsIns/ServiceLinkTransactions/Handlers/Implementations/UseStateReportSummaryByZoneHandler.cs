@@ -10,7 +10,7 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Implementations
 {
-    internal sealed class UseStateReportSummaryByZoneHandler : IUseStateReportByZoneHandler
+    internal sealed class UseStateReportSummaryByZoneHandler : IUseStateReportSummaryByZoneHandler
     {
         private readonly IUseStateReportSummaryByZoneQueryService _userStateReportQueryService;
         private readonly IValidator<UseStateReportInputDto> _validator;
