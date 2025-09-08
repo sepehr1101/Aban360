@@ -48,7 +48,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             };
 
 
-            var result = new ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>(ReportLiterals.EmptyUnitByBill, emptyUnitHeader, emptyUnitData);
+            var result = new ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>(ReportLiterals.EmptyUnitByBillDetail, emptyUnitHeader, emptyUnitData);
 
             return result;
         }

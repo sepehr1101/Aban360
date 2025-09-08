@@ -47,7 +47,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 EmptyUnit = RequestData.Sum(i => i.EmptyUnit),
             };
             var result = new ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdZoneGroupingDataOutputDto>
-                (ReportLiterals.EmptyUnitByBillZoneGrouping,
+                (ReportLiterals.EmptyUnitByBillSummary+ReportLiterals.ByZone,
                 RequestHeader,
                 RequestData);
 

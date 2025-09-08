@@ -3,16 +3,55 @@
   <Dictionary Ref="1" type="Dictionary" isKey="true">
     <BusinessObjects isList="true" count="0" />
     <Databases isList="true" count="1">
-      <unconfirmed_subscribers_report Ref="2" type="Stimulsoft.Report.Dictionary.StiJsonDatabase" isKey="true">
-        <Alias>unconfirmed-subscribers-report</Alias>
-        <Key>1c1673e886d944c480a669b136258ad9</Key>
-        <Name>unconfirmed-subscribers-report</Name>
-        <PathData>C:\Users\Padidar\Desktop\گزارش های ساخته شده با stimulsoft\مشترکین قطعی نشده\unconfirmed-subscribers-report.json</PathData>
-      </unconfirmed_subscribers_report>
+      <non_permanent_branch_report Ref="2" type="Stimulsoft.Report.Dictionary.StiJsonDatabase" isKey="true">
+        <Alias>non-permanent-branch-report</Alias>
+        <Key>4d50b0a4e7494810b7ee3a68b13ab2ee</Key>
+        <Name>non-permanent-branch-report</Name>
+        <PathData>C:\Users\Padidar\Desktop\کار\گزارش های ساخته شده با stimulsoft\انشعاب غیردائم\non-permanent-branch-report.json</PathData>
+      </non_permanent_branch_report>
     </Databases>
-    <DataSources isList="true" count="5">
-      <data Ref="3" type="DataTableSource" isKey="true">
-        <Alias>data</Alias>
+    <DataSources isList="true" count="3">
+      <reportData Ref="3" type="DataTableSource" isKey="true">
+        <Alias>reportData</Alias>
+        <Columns isList="true" count="16">
+          <value>address,System.String</value>
+          <value>billId,System.String</value>
+          <value>commercialUnit,System.Double</value>
+          <value>customerNumber,System.Double</value>
+          <value>debtAmount,System.String</value>
+          <value>domesticUnit,System.Double</value>
+          <value>eventDateJalali,System.String</value>
+          <value>firstName,System.String</value>
+          <value>meterDiameterTitle,System.String</value>
+          <value>otherUnit,System.Double</value>
+          <value>readingNumber,System.String</value>
+          <value>relationId,System.String</value>
+          <value>surname,System.String</value>
+          <value>usageTitle,System.String</value>
+          <value>useStateTitle,System.String</value>
+          <value>zoneTitle,System.String</value>
+        </Columns>
+        <Dictionary isRef="1" />
+        <Key>92e020128c414d35b1b9f53fdd5b1a9b</Key>
+        <Name>reportData</Name>
+        <NameInSource>non-permanent-branch-report.root_reportData</NameInSource>
+      </reportData>
+      <reportHeader Ref="4" type="DataTableSource" isKey="true">
+        <Alias>reportHeader</Alias>
+        <Columns isList="true" count="5">
+          <value>fromReadingNumber,System.String</value>
+          <value>recordCount,System.Double</value>
+          <value>relationId,System.String</value>
+          <value>reportDateJalali,System.String</value>
+          <value>toReadingNumber,System.String</value>
+        </Columns>
+        <Dictionary isRef="1" />
+        <Key>a4a01f729e084bc8838b145a340a990d</Key>
+        <Name>reportHeader</Name>
+        <NameInSource>non-permanent-branch-report.root_reportHeader</NameInSource>
+      </reportHeader>
+      <root Ref="5" type="DataTableSource" isKey="true">
+        <Alias>root</Alias>
         <Columns isList="true" count="4">
           <value>relationId,System.String</value>
           <value>reportData,System.String</value>
@@ -20,78 +59,13 @@
           <value>title,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
-        <Key>82a9984d73d0499490d5c36e4953778f</Key>
-        <Name>data</Name>
-        <NameInSource>unconfirmed-subscribers-report.root_data</NameInSource>
-      </data>
-      <data_reportData Ref="4" type="DataTableSource" isKey="true">
-        <Alias>data_reportData</Alias>
-        <Columns isList="true" count="13">
-          <value>address,System.String</value>
-          <value>contractualCapacity,System.Double</value>
-          <value>finalAmount,System.Double</value>
-          <value>firstName,System.String</value>
-          <value>fullName,System.String</value>
-          <value>mobile,System.String</value>
-          <value>preInstallmentAmount,System.Double</value>
-          <value>relationId,System.String</value>
-          <value>requestDateJalali,System.String</value>
-          <value>surname,System.String</value>
-          <value>trackNumber,System.String</value>
-          <value>zoneId,System.Double</value>
-          <value>zoneTitle,System.String</value>
-        </Columns>
-        <Dictionary isRef="1" />
-        <Key>becc636c1f7d46ca87bf66c7c81a9b38</Key>
-        <Name>data_reportData</Name>
-        <NameInSource>unconfirmed-subscribers-report.root_data_reportData</NameInSource>
-      </data_reportData>
-      <data_reportHeader Ref="5" type="DataTableSource" isKey="true">
-        <Alias>data_reportHeader</Alias>
-        <Columns isList="true" count="5">
-          <value>recordCount,System.Double</value>
-          <value>relationId,System.String</value>
-          <value>reportDateJalali,System.String</value>
-          <value>sumFinalAmount,System.Double</value>
-          <value>sumPreInstallmentAmount,System.Double</value>
-        </Columns>
-        <Dictionary isRef="1" />
-        <Key>a5c423e2dc324f0db0a4fdb0d260185a</Key>
-        <Name>data_reportHeader</Name>
-        <NameInSource>unconfirmed-subscribers-report.root_data_reportHeader</NameInSource>
-      </data_reportHeader>
-      <root Ref="6" type="DataTableSource" isKey="true">
-        <Alias>root</Alias>
-        <Columns isList="true" count="8">
-          <value>data,System.String</value>
-          <value>errors,System.String</value>
-          <value>httpStatusCode,System.Double</value>
-          <value>meta,System.String</value>
-          <value>relationId,System.String</value>
-          <value>success,System.Boolean</value>
-          <value>successMessage,System.String</value>
-          <value>warnings,System.String</value>
-        </Columns>
-        <Dictionary isRef="1" />
-        <Key>90b52a1f3e02468688e9ae7ee1d7f806</Key>
+        <Key>00b9a502e87443e4920bee1898a700a2</Key>
         <Name>root</Name>
-        <NameInSource>unconfirmed-subscribers-report.root</NameInSource>
+        <NameInSource>non-permanent-branch-report.root</NameInSource>
       </root>
-      <root_meta Ref="7" type="DataTableSource" isKey="true">
-        <Alias>root_meta</Alias>
-        <Columns isList="true" count="3">
-          <value>nextAction,System.String</value>
-          <value>relationId,System.String</value>
-          <value>serverDateTime,System.DateTime</value>
-        </Columns>
-        <Dictionary isRef="1" />
-        <Key>db8025f93b1b47328b92e71e1afa7552</Key>
-        <Name>root_meta</Name>
-        <NameInSource>unconfirmed-subscribers-report.root_meta</NameInSource>
-      </root_meta>
     </DataSources>
-    <Relations isList="true" count="4">
-      <root Ref="8" type="DataRelation" isKey="true">
+    <Relations isList="true" count="2">
+      <root Ref="6" type="DataRelation" isKey="true">
         <Alias>root</Alias>
         <ChildColumns isList="true" count="1">
           <value>relationId</value>
@@ -99,53 +73,25 @@
         <ChildSource isRef="3" />
         <Dictionary isRef="1" />
         <Name>root</Name>
-        <NameInSource>root_data</NameInSource>
+        <NameInSource>root_reportData</NameInSource>
         <ParentColumns isList="true" count="1">
-          <value>data</value>
+          <value>reportData</value>
         </ParentColumns>
-        <ParentSource isRef="6" />
+        <ParentSource isRef="5" />
       </root>
-      <root_data Ref="9" type="DataRelation" isKey="true">
-        <Alias>root_data</Alias>
+      <root Ref="7" type="DataRelation" isKey="true">
+        <Alias>root</Alias>
         <ChildColumns isList="true" count="1">
           <value>relationId</value>
         </ChildColumns>
         <ChildSource isRef="4" />
         <Dictionary isRef="1" />
-        <Name>root_data</Name>
-        <NameInSource>root_data_reportData</NameInSource>
-        <ParentColumns isList="true" count="1">
-          <value>reportData</value>
-        </ParentColumns>
-        <ParentSource isRef="3" />
-      </root_data>
-      <root_data Ref="10" type="DataRelation" isKey="true">
-        <Alias>root_data</Alias>
-        <ChildColumns isList="true" count="1">
-          <value>relationId</value>
-        </ChildColumns>
-        <ChildSource isRef="5" />
-        <Dictionary isRef="1" />
-        <Name>root_data</Name>
-        <NameInSource>root_data_reportHeader</NameInSource>
+        <Name>root</Name>
+        <NameInSource>root_reportHeader</NameInSource>
         <ParentColumns isList="true" count="1">
           <value>reportHeader</value>
         </ParentColumns>
-        <ParentSource isRef="3" />
-      </root_data>
-      <root Ref="11" type="DataRelation" isKey="true">
-        <Alias>root</Alias>
-        <ChildColumns isList="true" count="1">
-          <value>relationId</value>
-        </ChildColumns>
-        <ChildSource isRef="7" />
-        <Dictionary isRef="1" />
-        <Name>root</Name>
-        <NameInSource>root_meta</NameInSource>
-        <ParentColumns isList="true" count="1">
-          <value>meta</value>
-        </ParentColumns>
-        <ParentSource isRef="6" />
+        <ParentSource isRef="5" />
       </root>
     </Relations>
     <Report isRef="0" />
@@ -154,16 +100,16 @@
   </Dictionary>
   <EngineVersion>EngineV2</EngineVersion>
   <GlobalizationStrings isList="true" count="0" />
-  <Key>db2e9174152a412da89ec7139cb66742</Key>
+  <Key>48d20944928c405589ef095cb5b87c6d</Key>
   <MetaTags isList="true" count="0" />
   <Pages isList="true" count="1">
-    <Page1 Ref="12" type="Page" isKey="true">
+    <Page1 Ref="8" type="Page" isKey="true">
       <Border>None;Black;2;Solid;False;4;Black</Border>
       <Brush>Transparent</Brush>
-      <Components isList="true" count="20">
-        <Image1 Ref="13" type="Image" isKey="true">
+      <Components isList="true" count="25">
+        <Image1 Ref="9" type="Image" isKey="true">
           <Brush>Transparent</Brush>
-          <ClientRectangle>25.6,0.2,1.8,1.8</ClientRectangle>
+          <ClientRectangle>25.8,0,1.8,1.8</ClientRectangle>
           <Conditions isList="true" count="0" />
           <Expressions isList="true" count="0" />
           <IconColor>68, 114, 196</IconColor>
@@ -489,58 +435,58 @@ c6cT8DaspHY9FoV/AxtB/hpmzgfTh9eDtIH6Ba+0fTHUzYTORfFzjSD+H+nTJYXrvvD6AAAAAElF
 TkSuQmCC</ImageBytes>
           <Margins>0,0,0,0</Margins>
           <Name>Image1</Name>
-          <Page isRef="12" />
-          <Parent isRef="12" />
+          <Page isRef="8" />
+          <Parent isRef="8" />
         </Image1>
-        <Text2 Ref="14" type="Text" isKey="true">
+        <Text2 Ref="10" type="Text" isKey="true">
           <Brush>Transparent</Brush>
-          <ClientRectangle>17.6,0.6,7.8,0.4</ClientRectangle>
+          <ClientRectangle>17.8,0.4,7.8,0.4</ClientRectangle>
           <Conditions isList="true" count="0" />
           <Expressions isList="true" count="0" />
           <Font>Vazir FD-WOL,12</Font>
           <HorAlignment>Center</HorAlignment>
           <Margins>0,0,0,0</Margins>
           <Name>Text2</Name>
-          <Page isRef="12" />
-          <Parent isRef="12" />
+          <Page isRef="8" />
+          <Parent isRef="8" />
           <Text>وزارت نیرو-شرکت آب و فاضلاب استان اصفهان</Text>
           <TextBrush>Black</TextBrush>
           <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text2>
-        <Text3 Ref="15" type="Text" isKey="true">
+        <Text3 Ref="11" type="Text" isKey="true">
           <Brush>Transparent</Brush>
-          <ClientRectangle>19.4,1.2,4.6,0.4</ClientRectangle>
+          <ClientRectangle>19.6,1,4.6,0.4</ClientRectangle>
           <Conditions isList="true" count="0" />
           <Expressions isList="true" count="0" />
           <Font>Vazir FD-WOL,12</Font>
           <HorAlignment>Center</HorAlignment>
           <Margins>0,0,0,0</Margins>
           <Name>Text3</Name>
-          <Page isRef="12" />
-          <Parent isRef="12" />
+          <Page isRef="8" />
+          <Parent isRef="8" />
           <Text>خدمات غیرحضوری با 1522</Text>
           <TextBrush>Black</TextBrush>
           <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text3>
-        <Text4 Ref="16" type="Text" isKey="true">
+        <Text4 Ref="12" type="Text" isKey="true">
           <Brush>Transparent</Brush>
-          <ClientRectangle>20.2,1.8,3,0.4</ClientRectangle>
+          <ClientRectangle>20.4,1.6,3,0.4</ClientRectangle>
           <Conditions isList="true" count="0" />
           <Expressions isList="true" count="0" />
           <Font>Vazir FD-WOL,12</Font>
           <HorAlignment>Center</HorAlignment>
           <Margins>0,0,0,0</Margins>
           <Name>Text4</Name>
-          <Page isRef="12" />
-          <Parent isRef="12" />
+          <Page isRef="8" />
+          <Parent isRef="8" />
           <Text>تلفن حوادث:122</Text>
           <TextBrush>Black</TextBrush>
           <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text4>
-        <Text1 Ref="17" type="Text" isKey="true">
+        <Text1 Ref="13" type="Text" isKey="true">
           <Brush>Transparent</Brush>
           <ClientRectangle>2.8,0.2,2.4,0.6</ClientRectangle>
           <Conditions isList="true" count="0" />
@@ -548,14 +494,14 @@ TkSuQmCC</ImageBytes>
           <Font>Vazir FD-WOL,12</Font>
           <Margins>0,0,0,0</Margins>
           <Name>Text1</Name>
-          <Page isRef="12" />
-          <Parent isRef="12" />
+          <Page isRef="8" />
+          <Parent isRef="8" />
           <Text>: تاریخ گزارش</Text>
           <TextBrush>Black</TextBrush>
           <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text1>
-        <Text5 Ref="18" type="Text" isKey="true">
+        <Text5 Ref="14" type="Text" isKey="true">
           <Brush>Transparent</Brush>
           <ClientRectangle>2.8,1,2.4,0.6</ClientRectangle>
           <Conditions isList="true" count="0" />
@@ -563,382 +509,517 @@ TkSuQmCC</ImageBytes>
           <Font>Vazir FD-WOL,12</Font>
           <Margins>0,0,0,0</Margins>
           <Name>Text5</Name>
-          <Page isRef="12" />
-          <Parent isRef="12" />
+          <Page isRef="8" />
+          <Parent isRef="8" />
           <Text>: شماره ISO</Text>
           <TextBrush>Black</TextBrush>
           <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text5>
-        <Text13 Ref="19" type="Text" isKey="true">
+        <Text6 Ref="15" type="Text" isKey="true">
           <Brush>Transparent</Brush>
-          <ClientRectangle>26.7,4.4,1,0.6</ClientRectangle>
+          <ClientRectangle>25.4,2.8,2,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,12</Font>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text6</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>: از اشتراک</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text6>
+        <Text7 Ref="16" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>17.2,2.8,2,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,12</Font>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text7</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>: تا اشتراک</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text7>
+        <Text8 Ref="17" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>9,2.8,1.4,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,12</Font>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text8</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>: تعداد</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text8>
+        <Text9 Ref="18" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>21,2.8,4,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,12,Bold</Font>
+          <HorAlignment>Right</HorAlignment>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text9</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>{reportHeader.fromReadingNumber}</Text>
+          <TextBrush>Black</TextBrush>
+          <VertAlignment>Center</VertAlignment>
+        </Text9>
+        <Text10 Ref="19" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>12.8,2.8,4,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,12,Bold</Font>
+          <HorAlignment>Right</HorAlignment>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text10</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>{reportHeader.toReadingNumber}</Text>
+          <TextBrush>Black</TextBrush>
+          <VertAlignment>Center</VertAlignment>
+        </Text10>
+        <Text11 Ref="20" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>4.6,2.8,4,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,12,Bold</Font>
+          <HorAlignment>Right</HorAlignment>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text11</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>{reportHeader.recordCount}</Text>
+          <TextBrush>Black</TextBrush>
+          <VertAlignment>Center</VertAlignment>
+        </Text11>
+        <Text12 Ref="21" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,0.2,2.6,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,12,Bold</Font>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text12</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>{reportHeader.reportDateJalali}</Text>
+          <TextBrush>Black</TextBrush>
+          <VertAlignment>Center</VertAlignment>
+        </Text12>
+        <Panel1 Ref="22" type="Panel" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,5,27.7,14</ClientRectangle>
+          <Components isList="true" count="1">
+            <Dataroot_reportData Ref="23" type="DataBand" isKey="true">
+              <Brush>Transparent</Brush>
+              <BusinessObjectGuid isNull="true" />
+              <ClientRectangle>0,0,27.7,0.8</ClientRectangle>
+              <Components isList="true" count="11">
+                <Dataroot_reportData_usageTitle Ref="24" type="Text" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanGrow>True</CanGrow>
+                  <ClientRectangle>21.4,0.2,3.3,0.4</ClientRectangle>
+                  <Conditions isList="true" count="0" />
+                  <Expressions isList="true" count="0" />
+                  <Font>Vazir FD-WOL,8</Font>
+                  <HorAlignment>Right</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Dataroot_reportData_usageTitle</Name>
+                  <Page isRef="8" />
+                  <Parent isRef="23" />
+                  <Text>{reportData.usageTitle}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+                  <VertAlignment>Center</VertAlignment>
+                </Dataroot_reportData_usageTitle>
+                <Dataroot_reportData_billId Ref="25" type="Text" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanGrow>True</CanGrow>
+                  <ClientRectangle>18.6,0.2,2.6,0.4</ClientRectangle>
+                  <Conditions isList="true" count="0" />
+                  <Expressions isList="true" count="0" />
+                  <Font>Vazir FD-WOL,8</Font>
+                  <HorAlignment>Right</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Dataroot_reportData_billId</Name>
+                  <Page isRef="8" />
+                  <Parent isRef="23" />
+                  <Text>{reportData.billId}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+                  <VertAlignment>Center</VertAlignment>
+                </Dataroot_reportData_billId>
+                <Dataroot_reportData_readingNumber Ref="26" type="Text" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanGrow>True</CanGrow>
+                  <ClientRectangle>15.4,0.2,2.6,0.4</ClientRectangle>
+                  <Conditions isList="true" count="0" />
+                  <Expressions isList="true" count="0" />
+                  <Font>Vazir FD-WOL,8</Font>
+                  <HorAlignment>Right</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Dataroot_reportData_readingNumber</Name>
+                  <Page isRef="8" />
+                  <Parent isRef="23" />
+                  <Text>{reportData.readingNumber}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+                  <VertAlignment>Center</VertAlignment>
+                </Dataroot_reportData_readingNumber>
+                <Dataroot_reportData_customerNumber Ref="27" type="Text" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanGrow>True</CanGrow>
+                  <ClientRectangle>13,0.2,2.2,0.4</ClientRectangle>
+                  <Conditions isList="true" count="0" />
+                  <Expressions isList="true" count="0" />
+                  <Font>Vazir FD-WOL,8</Font>
+                  <HorAlignment>Right</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Dataroot_reportData_customerNumber</Name>
+                  <Page isRef="8" />
+                  <Parent isRef="23" />
+                  <Text>{reportData.customerNumber}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+                  <VertAlignment>Center</VertAlignment>
+                </Dataroot_reportData_customerNumber>
+                <Dataroot_reportData_meterDiameterTitle Ref="28" type="Text" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanGrow>True</CanGrow>
+                  <ClientRectangle>11,0.2,1.8,0.4</ClientRectangle>
+                  <Conditions isList="true" count="0" />
+                  <Expressions isList="true" count="0" />
+                  <Font>Vazir FD-WOL,8</Font>
+                  <HorAlignment>Center</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Dataroot_reportData_meterDiameterTitle</Name>
+                  <Page isRef="8" />
+                  <Parent isRef="23" />
+                  <Text>{reportData.meterDiameterTitle}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+                  <VertAlignment>Center</VertAlignment>
+                </Dataroot_reportData_meterDiameterTitle>
+                <Dataroot_reportData_domesticUnit Ref="29" type="Text" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanGrow>True</CanGrow>
+                  <ClientRectangle>8.2,0.2,2.4,0.4</ClientRectangle>
+                  <Conditions isList="true" count="0" />
+                  <Expressions isList="true" count="0" />
+                  <Font>Vazir FD-WOL,8</Font>
+                  <HorAlignment>Center</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Dataroot_reportData_domesticUnit</Name>
+                  <Page isRef="8" />
+                  <Parent isRef="23" />
+                  <Text>{reportData.domesticUnit}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+                  <VertAlignment>Center</VertAlignment>
+                </Dataroot_reportData_domesticUnit>
+                <Dataroot_reportData_commercialUnit Ref="30" type="Text" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanGrow>True</CanGrow>
+                  <ClientRectangle>5.8,0.2,2,0.4</ClientRectangle>
+                  <Conditions isList="true" count="0" />
+                  <Expressions isList="true" count="0" />
+                  <Font>Vazir FD-WOL,8</Font>
+                  <HorAlignment>Center</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Dataroot_reportData_commercialUnit</Name>
+                  <Page isRef="8" />
+                  <Parent isRef="23" />
+                  <Text>{reportData.commercialUnit}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+                  <VertAlignment>Center</VertAlignment>
+                </Dataroot_reportData_commercialUnit>
+                <Dataroot_reportData_otherUnit Ref="31" type="Text" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanGrow>True</CanGrow>
+                  <ClientRectangle>3.6,0.2,1.8,0.4</ClientRectangle>
+                  <Conditions isList="true" count="0" />
+                  <Expressions isList="true" count="0" />
+                  <Font>Vazir FD-WOL,8</Font>
+                  <HorAlignment>Center</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Dataroot_reportData_otherUnit</Name>
+                  <Page isRef="8" />
+                  <Parent isRef="23" />
+                  <Text>{reportData.otherUnit}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+                  <VertAlignment>Center</VertAlignment>
+                </Dataroot_reportData_otherUnit>
+                <Dataroot_reportData_useStateTitle Ref="32" type="Text" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanGrow>True</CanGrow>
+                  <ClientRectangle>0,0.2,3,0.4</ClientRectangle>
+                  <Conditions isList="true" count="0" />
+                  <Expressions isList="true" count="0" />
+                  <Font>Vazir FD-WOL,8</Font>
+                  <HorAlignment>Right</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Dataroot_reportData_useStateTitle</Name>
+                  <Page isRef="8" />
+                  <Parent isRef="23" />
+                  <Text>{reportData.useStateTitle}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+                  <VertAlignment>Center</VertAlignment>
+                </Dataroot_reportData_useStateTitle>
+                <Dataroot_reportData_zoneTitle Ref="33" type="Text" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanGrow>True</CanGrow>
+                  <ClientRectangle>24.9,0.2,2.8,0.4</ClientRectangle>
+                  <Conditions isList="true" count="0" />
+                  <Expressions isList="true" count="0" />
+                  <Font>Vazir FD-WOL,8</Font>
+                  <HorAlignment>Right</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Dataroot_reportData_zoneTitle</Name>
+                  <Page isRef="8" />
+                  <Parent isRef="23" />
+                  <Text>{reportData.zoneTitle}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+                  <VertAlignment>Center</VertAlignment>
+                </Dataroot_reportData_zoneTitle>
+                <HorizontalLinePrimitive2 Ref="34" type="HorizontalLinePrimitive" isKey="true">
+                  <ClientRectangle>0,0.79,27.7,0.0254</ClientRectangle>
+                  <Color>191, 191, 191</Color>
+                  <Conditions isList="true" count="0" />
+                  <EndCap Ref="35" type="Cap" isKey="true">
+                    <Color>Black</Color>
+                  </EndCap>
+                  <Expressions isList="true" count="0" />
+                  <Name>HorizontalLinePrimitive2</Name>
+                  <Page isRef="8" />
+                  <Parent isRef="23" />
+                  <Size>0.5</Size>
+                  <StartCap Ref="36" type="Cap" isKey="true">
+                    <Color>Black</Color>
+                  </StartCap>
+                </HorizontalLinePrimitive2>
+              </Components>
+              <Conditions isList="true" count="0" />
+              <DataSourceName>reportData</DataSourceName>
+              <Expressions isList="true" count="1">
+                <value>Brush,Line_x0020__x0025__x0020_2_x0020__x003D__x003D__x0020_0_x0020__x003F__x0020_Color.WhiteSmoke_x0020_:_x0020_Color.Transparent_x000D__x000A_</value>
+              </Expressions>
+              <Filters isList="true" count="0" />
+              <Name>Dataroot_reportData</Name>
+              <Page isRef="8" />
+              <Parent isRef="22" />
+              <RightToLeft>True</RightToLeft>
+              <Sort isList="true" count="0" />
+            </Dataroot_reportData>
+          </Components>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Name>Panel1</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+        </Panel1>
+        <Text13 Ref="37" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>26.7,4,1,0.6</ClientRectangle>
           <Conditions isList="true" count="0" />
           <Expressions isList="true" count="0" />
           <Font>Vazir FD-WOL,11,Bold</Font>
           <HorAlignment>Right</HorAlignment>
           <Margins>0,0,0,0</Margins>
           <Name>Text13</Name>
-          <Page isRef="12" />
-          <Parent isRef="12" />
+          <Page isRef="8" />
+          <Parent isRef="8" />
           <Text>ناحیه</Text>
           <TextBrush>Black</TextBrush>
           <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text13>
-        <Text6 Ref="20" type="Text" isKey="true">
+        <Text14 Ref="38" type="Text" isKey="true">
           <Brush>Transparent</Brush>
-          <ClientRectangle>25.6,3,1.8,0.6</ClientRectangle>
-          <Conditions isList="true" count="0" />
-          <Expressions isList="true" count="0" />
-          <Font>Vazir FD-WOL,12</Font>
-          <HorAlignment>Right</HorAlignment>
-          <Margins>0,0,0,0</Margins>
-          <Name>Text6</Name>
-          <Page isRef="12" />
-          <Parent isRef="12" />
-          <Text>: مبلغ کل</Text>
-          <TextBrush>Black</TextBrush>
-          <Type>Expression</Type>
-          <VertAlignment>Center</VertAlignment>
-        </Text6>
-        <Text7 Ref="21" type="Text" isKey="true">
-          <Brush>Transparent</Brush>
-          <ClientRectangle>16.8,3,2.4,0.6</ClientRectangle>
-          <Conditions isList="true" count="0" />
-          <Expressions isList="true" count="0" />
-          <Font>Vazir FD-WOL,12</Font>
-          <HorAlignment>Right</HorAlignment>
-          <Margins>0,0,0,0</Margins>
-          <Name>Text7</Name>
-          <Page isRef="12" />
-          <Parent isRef="12" />
-          <Text>: جمع اقساط</Text>
-          <TextBrush>Black</TextBrush>
-          <Type>Expression</Type>
-          <VertAlignment>Center</VertAlignment>
-        </Text7>
-        <Text8 Ref="22" type="Text" isKey="true">
-          <Brush>Transparent</Brush>
-          <ClientRectangle>9,3,1.4,0.6</ClientRectangle>
-          <Conditions isList="true" count="0" />
-          <Expressions isList="true" count="0" />
-          <Font>Vazir FD-WOL,12</Font>
-          <HorAlignment>Right</HorAlignment>
-          <Margins>0,0,0,0</Margins>
-          <Name>Text8</Name>
-          <Page isRef="12" />
-          <Parent isRef="12" />
-          <Text>: تعداد</Text>
-          <TextBrush>Black</TextBrush>
-          <Type>Expression</Type>
-          <VertAlignment>Center</VertAlignment>
-        </Text8>
-        <Text12 Ref="23" type="Text" isKey="true">
-          <Brush>Transparent</Brush>
-          <ClientRectangle>21.8,4.4,1.8,0.6</ClientRectangle>
-          <Conditions isList="true" count="0" />
-          <Expressions isList="true" count="0" />
-          <Font>Vazir FD-WOL,11,Bold</Font>
-          <HorAlignment>Right</HorAlignment>
-          <Margins>0,0,0,0</Margins>
-          <Name>Text12</Name>
-          <Page isRef="12" />
-          <Parent isRef="12" />
-          <Text>نام مشترک</Text>
-          <TextBrush>Black</TextBrush>
-          <Type>Expression</Type>
-          <VertAlignment>Center</VertAlignment>
-        </Text12>
-        <Text14 Ref="24" type="Text" isKey="true">
-          <Brush>Transparent</Brush>
-          <ClientRectangle>17,4.4,1.8,0.6</ClientRectangle>
+          <ClientRectangle>23.5,4,1.2,0.6</ClientRectangle>
           <Conditions isList="true" count="0" />
           <Expressions isList="true" count="0" />
           <Font>Vazir FD-WOL,11,Bold</Font>
           <HorAlignment>Right</HorAlignment>
           <Margins>0,0,0,0</Margins>
           <Name>Text14</Name>
-          <Page isRef="12" />
-          <Parent isRef="12" />
-          <Text>مبلغ نهایی</Text>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>کاربری</Text>
           <TextBrush>Black</TextBrush>
           <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text14>
-        <Text15 Ref="25" type="Text" isKey="true">
+        <Text15 Ref="39" type="Text" isKey="true">
           <Brush>Transparent</Brush>
-          <ClientRectangle>12.4,4.4,1.8,0.6</ClientRectangle>
+          <ClientRectangle>19.6,4,1.6,0.6</ClientRectangle>
           <Conditions isList="true" count="0" />
           <Expressions isList="true" count="0" />
           <Font>Vazir FD-WOL,11,Bold</Font>
           <HorAlignment>Right</HorAlignment>
           <Margins>0,0,0,0</Margins>
           <Name>Text15</Name>
-          <Page isRef="12" />
-          <Parent isRef="12" />
-          <Text>مبلغ قسط</Text>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>ش قبض</Text>
           <TextBrush>Black</TextBrush>
           <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text15>
-        <Text16 Ref="26" type="Text" isKey="true">
+        <Text16 Ref="40" type="Text" isKey="true">
           <Brush>Transparent</Brush>
-          <ClientRectangle>7.6,4.4,2,0.6</ClientRectangle>
+          <ClientRectangle>16.6,4,1.4,0.6</ClientRectangle>
           <Conditions isList="true" count="0" />
           <Expressions isList="true" count="0" />
           <Font>Vazir FD-WOL,11,Bold</Font>
           <HorAlignment>Right</HorAlignment>
           <Margins>0,0,0,0</Margins>
           <Name>Text16</Name>
-          <Page isRef="12" />
-          <Parent isRef="12" />
-          <Text>تلفن همراه</Text>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>اشتراک</Text>
           <TextBrush>Black</TextBrush>
           <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text16>
-        <Text17 Ref="27" type="Text" isKey="true">
+        <Text17 Ref="41" type="Text" isKey="true">
           <Brush>Transparent</Brush>
-          <ClientRectangle>2.2,4.4,2.6,0.6</ClientRectangle>
+          <ClientRectangle>14,4,1.2,0.6</ClientRectangle>
           <Conditions isList="true" count="0" />
           <Expressions isList="true" count="0" />
           <Font>Vazir FD-WOL,11,Bold</Font>
           <HorAlignment>Right</HorAlignment>
           <Margins>0,0,0,0</Margins>
           <Name>Text17</Name>
-          <Page isRef="12" />
-          <Parent isRef="12" />
-          <Text>ظرفیت قراردادی</Text>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>ردیف</Text>
           <TextBrush>Black</TextBrush>
           <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text17>
-        <Panel1 Ref="28" type="Panel" isKey="true">
-          <Brush>Transparent</Brush>
-          <ClientRectangle>0,5.4,27.7,13.6</ClientRectangle>
-          <Components isList="true" count="1">
-            <Datadata_reportData Ref="29" type="DataBand" isKey="true">
-              <Brush>Transparent</Brush>
-              <BusinessObjectGuid isNull="true" />
-              <ClientRectangle>0,0,27.7,0.6</ClientRectangle>
-              <Components isList="true" count="6">
-                <Datadata_reportData_zoneTitle Ref="30" type="Text" isKey="true">
-                  <Brush>Transparent</Brush>
-                  <CanGrow>True</CanGrow>
-                  <ClientRectangle>23.7,0,4,0.4</ClientRectangle>
-                  <Conditions isList="true" count="0" />
-                  <Expressions isList="true" count="0" />
-                  <Font>Arial,8</Font>
-                  <HorAlignment>Right</HorAlignment>
-                  <Margins>0,0,0,0</Margins>
-                  <Name>Datadata_reportData_zoneTitle</Name>
-                  <Page isRef="12" />
-                  <Parent isRef="29" />
-                  <Text>{data_reportData.zoneTitle}</Text>
-                  <TextBrush>Black</TextBrush>
-                  <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
-                  <VertAlignment>Center</VertAlignment>
-                </Datadata_reportData_zoneTitle>
-                <Datadata_reportData_finalAmount Ref="31" type="Text" isKey="true">
-                  <Brush>Transparent</Brush>
-                  <CanGrow>True</CanGrow>
-                  <ClientRectangle>14.4,0,4.4,0.4</ClientRectangle>
-                  <Conditions isList="true" count="0" />
-                  <Expressions isList="true" count="0" />
-                  <Font>Arial,8</Font>
-                  <HorAlignment>Right</HorAlignment>
-                  <Margins>0,0,0,0</Margins>
-                  <Name>Datadata_reportData_finalAmount</Name>
-                  <Page isRef="12" />
-                  <Parent isRef="29" />
-                  <Text>{data_reportData.finalAmount}</Text>
-                  <TextBrush>Black</TextBrush>
-                  <TextFormat Ref="32" type="NumberFormat" isKey="true">
-                    <DecimalDigits>0</DecimalDigits>
-                    <DecimalSeparator>,</DecimalSeparator>
-                    <GroupSeparator>,</GroupSeparator>
-                    <NegativePattern>3</NegativePattern>
-                    <UseLocalSetting>False</UseLocalSetting>
-                  </TextFormat>
-                  <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
-                  <VertAlignment>Center</VertAlignment>
-                </Datadata_reportData_finalAmount>
-                <Datadata_reportData_preInstallmentAmount Ref="33" type="Text" isKey="true">
-                  <Brush>Transparent</Brush>
-                  <CanGrow>True</CanGrow>
-                  <ClientRectangle>10,0,4.2,0.4</ClientRectangle>
-                  <Conditions isList="true" count="0" />
-                  <Expressions isList="true" count="0" />
-                  <Font>Arial,8</Font>
-                  <HorAlignment>Right</HorAlignment>
-                  <Margins>0,0,0,0</Margins>
-                  <Name>Datadata_reportData_preInstallmentAmount</Name>
-                  <Page isRef="12" />
-                  <Parent isRef="29" />
-                  <Text>{data_reportData.preInstallmentAmount}</Text>
-                  <TextBrush>Black</TextBrush>
-                  <TextFormat Ref="34" type="NumberFormat" isKey="true">
-                    <DecimalDigits>0</DecimalDigits>
-                    <DecimalSeparator>,</DecimalSeparator>
-                    <GroupSeparator>,</GroupSeparator>
-                    <NegativePattern>3</NegativePattern>
-                    <UseLocalSetting>False</UseLocalSetting>
-                  </TextFormat>
-                  <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
-                  <VertAlignment>Center</VertAlignment>
-                </Datadata_reportData_preInstallmentAmount>
-                <Datadata_reportData_mobile Ref="35" type="Text" isKey="true">
-                  <Brush>Transparent</Brush>
-                  <CanGrow>True</CanGrow>
-                  <ClientRectangle>5,0,4.6,0.4</ClientRectangle>
-                  <Conditions isList="true" count="0" />
-                  <Expressions isList="true" count="0" />
-                  <Font>Arial,8</Font>
-                  <HorAlignment>Right</HorAlignment>
-                  <Margins>0,0,0,0</Margins>
-                  <Name>Datadata_reportData_mobile</Name>
-                  <Page isRef="12" />
-                  <Parent isRef="29" />
-                  <Text>{data_reportData.mobile}</Text>
-                  <TextBrush>Black</TextBrush>
-                  <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
-                  <VertAlignment>Center</VertAlignment>
-                </Datadata_reportData_mobile>
-                <Datadata_reportData_contractualCapacity Ref="36" type="Text" isKey="true">
-                  <Brush>Transparent</Brush>
-                  <CanGrow>True</CanGrow>
-                  <ClientRectangle>0.2,0,4.6,0.4</ClientRectangle>
-                  <Conditions isList="true" count="0" />
-                  <Expressions isList="true" count="0" />
-                  <Font>Arial,8</Font>
-                  <HorAlignment>Right</HorAlignment>
-                  <Margins>0,0,0,0</Margins>
-                  <Name>Datadata_reportData_contractualCapacity</Name>
-                  <Page isRef="12" />
-                  <Parent isRef="29" />
-                  <Text>{data_reportData.contractualCapacity}</Text>
-                  <TextBrush>Black</TextBrush>
-                  <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
-                  <VertAlignment>Center</VertAlignment>
-                </Datadata_reportData_contractualCapacity>
-                <Text9 Ref="37" type="Text" isKey="true">
-                  <Brush>Transparent</Brush>
-                  <ClientRectangle>19.2,0,4.4,0.4</ClientRectangle>
-                  <Conditions isList="true" count="0" />
-                  <Expressions isList="true" count="0" />
-                  <Font>Arial,8</Font>
-                  <HorAlignment>Right</HorAlignment>
-                  <Margins>0,0,0,0</Margins>
-                  <Name>Text9</Name>
-                  <Page isRef="12" />
-                  <Parent isRef="29" />
-                  <Text>{data_reportData.fullName}</Text>
-                  <TextBrush>Black</TextBrush>
-                  <VertAlignment>Center</VertAlignment>
-                </Text9>
-              </Components>
-              <Conditions isList="true" count="0" />
-              <DataSourceName>data_reportData</DataSourceName>
-              <Expressions isList="true" count="1">
-                <value>Brush,Line_x0020__x0025__x0020_2_x0020__x003D__x003D__x0020_0_x0020__x003F__x0020_Color.WhiteSmoke_x0020_:_x0020_Color.Transparent</value>
-              </Expressions>
-              <Filters isList="true" count="0" />
-              <Name>Datadata_reportData</Name>
-              <Page isRef="12" />
-              <Parent isRef="28" />
-              <Sort isList="true" count="0" />
-            </Datadata_reportData>
-          </Components>
-          <Conditions isList="true" count="0" />
-          <Expressions isList="true" count="0" />
-          <Name>Panel1</Name>
-          <Page isRef="12" />
-          <Parent isRef="12" />
-        </Panel1>
-        <Text10 Ref="38" type="Text" isKey="true">
-          <Brush>Transparent</Brush>
-          <ClientRectangle>4.2,3,4.6,0.6</ClientRectangle>
-          <Conditions isList="true" count="0" />
-          <Expressions isList="true" count="0" />
-          <Font>Arial,12,Bold</Font>
-          <HorAlignment>Right</HorAlignment>
-          <Margins>0,0,0,0</Margins>
-          <Name>Text10</Name>
-          <Page isRef="12" />
-          <Parent isRef="12" />
-          <Text>{data_reportHeader.recordCount}</Text>
-          <TextBrush>Black</TextBrush>
-          <TextFormat Ref="39" type="NumberFormat" isKey="true">
-            <DecimalDigits>0</DecimalDigits>
-            <DecimalSeparator>,</DecimalSeparator>
-            <GroupSeparator>,</GroupSeparator>
-            <NegativePattern>3</NegativePattern>
-            <UseLocalSetting>False</UseLocalSetting>
-          </TextFormat>
-          <VertAlignment>Center</VertAlignment>
-        </Text10>
-        <Text11 Ref="40" type="Text" isKey="true">
-          <Brush>Transparent</Brush>
-          <ClientRectangle>20.8,3,4.4,0.6</ClientRectangle>
-          <Conditions isList="true" count="0" />
-          <Expressions isList="true" count="0" />
-          <Font>Arial,12,Bold</Font>
-          <HorAlignment>Right</HorAlignment>
-          <Margins>0,0,0,0</Margins>
-          <Name>Text11</Name>
-          <Page isRef="12" />
-          <Parent isRef="12" />
-          <Text>{data_reportHeader.sumFinalAmount}</Text>
-          <TextBrush>Black</TextBrush>
-          <TextFormat Ref="41" type="NumberFormat" isKey="true">
-            <DecimalDigits>0</DecimalDigits>
-            <DecimalSeparator>,</DecimalSeparator>
-            <GroupSeparator>,</GroupSeparator>
-            <NegativePattern>3</NegativePattern>
-            <UseLocalSetting>False</UseLocalSetting>
-          </TextFormat>
-          <VertAlignment>Center</VertAlignment>
-        </Text11>
         <Text18 Ref="42" type="Text" isKey="true">
           <Brush>Transparent</Brush>
-          <ClientRectangle>12.2,3,4.2,0.6</ClientRectangle>
+          <ClientRectangle>11,4,1.8,0.6</ClientRectangle>
           <Conditions isList="true" count="0" />
           <Expressions isList="true" count="0" />
-          <Font>Arial,12,Bold</Font>
+          <Font>Vazir FD-WOL,11,Bold</Font>
           <HorAlignment>Right</HorAlignment>
           <Margins>0,0,0,0</Margins>
           <Name>Text18</Name>
-          <Page isRef="12" />
-          <Parent isRef="12" />
-          <Text>{data_reportHeader.sumPreInstallmentAmount}</Text>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>قطر کنتور</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text18>
-        <HorizontalLinePrimitive1 Ref="43" type="HorizontalLinePrimitive" isKey="true">
-          <ClientRectangle>0,5.2,27.7,0.0254</ClientRectangle>
+        <Text19 Ref="43" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>8.2,4,2.4,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,11,Bold</Font>
+          <HorAlignment>Right</HorAlignment>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text19</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>آحاد مسکونی</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text19>
+        <Text20 Ref="44" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>5.8,4,2,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,11,Bold</Font>
+          <HorAlignment>Right</HorAlignment>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text20</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>آحاد تجاری</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text20>
+        <Text21 Ref="45" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>3.6,4,1.8,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,11,Bold</Font>
+          <HorAlignment>Right</HorAlignment>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text21</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>آحاد سایر</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text21>
+        <Text22 Ref="46" type="Text" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0.6,4,2.4,0.6</ClientRectangle>
+          <Conditions isList="true" count="0" />
+          <Expressions isList="true" count="0" />
+          <Font>Vazir FD-WOL,11,Bold</Font>
+          <HorAlignment>Right</HorAlignment>
+          <Margins>0,0,0,0</Margins>
+          <Name>Text22</Name>
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <Text>وضعیت نصب</Text>
+          <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
+          <VertAlignment>Center</VertAlignment>
+        </Text22>
+        <HorizontalLinePrimitive1 Ref="47" type="HorizontalLinePrimitive" isKey="true">
+          <ClientRectangle>0,4.8,27.7,0.0254</ClientRectangle>
           <Color>Black</Color>
           <Conditions isList="true" count="0" />
-          <EndCap Ref="44" type="Cap" isKey="true">
+          <EndCap Ref="48" type="Cap" isKey="true">
             <Color>Black</Color>
           </EndCap>
           <Expressions isList="true" count="0" />
           <Name>HorizontalLinePrimitive1</Name>
-          <Page isRef="12" />
-          <Parent isRef="12" />
-          <StartCap Ref="45" type="Cap" isKey="true">
+          <Page isRef="8" />
+          <Parent isRef="8" />
+          <StartCap Ref="49" type="Cap" isKey="true">
             <Color>Black</Color>
           </StartCap>
         </HorizontalLinePrimitive1>
       </Components>
       <Conditions isList="true" count="0" />
       <Expressions isList="true" count="0" />
-      <Guid>d05bd30b2ec24185ad8d5b5d6bdded80</Guid>
+      <Guid>db37a194f6ae40e8b11decb0e5d4b410</Guid>
       <Margins>1,1,1,1</Margins>
       <Name>Page1</Name>
       <Orientation>Landscape</Orientation>
       <PageHeight>21</PageHeight>
       <PageWidth>29.7</PageWidth>
+      <PaperSize>A4</PaperSize>
       <Report isRef="0" />
     </Page1>
   </Pages>
@@ -953,10 +1034,10 @@ TkSuQmCC</ImageBytes>
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>9/2/2025 3:50:05 PM</ReportChanged>
-  <ReportCreated>9/2/2025 2:54:58 PM</ReportCreated>
-  <ReportFile>C:\Users\Padidar\Desktop\unconfirmed-subscribers-report.mrt</ReportFile>
-  <ReportGuid>21990127f5d04ffc80fdd7673a3e08ae</ReportGuid>
+  <ReportChanged>9/8/2025 10:22:19 AM</ReportChanged>
+  <ReportCreated>8/30/2025 4:59:09 PM</ReportCreated>
+  <ReportFile>C:\Users\Padidar\Desktop\کار\گزارش های ساخته شده با stimulsoft\انشعاب غیردائم\non-permanent-branch-report.mrt</ReportFile>
+  <ReportGuid>0ac1a540b837421faa248078dbeb3710</ReportGuid>
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>
   <ReportVersion>2023.1.1.0</ReportVersion>
@@ -984,5 +1065,14 @@ namespace Reports
 }
 </Script>
   <ScriptLanguage>CSharp</ScriptLanguage>
-  <Styles isList="true" count="0" />
+  <Styles isList="true" count="1">
+    <Style1 Ref="50" type="Stimulsoft.Report.StiStyle" isKey="true">
+      <Brush>Transparent</Brush>
+      <Conditions isList="true" count="0" />
+      <Font>Arial,8</Font>
+      <Name>Style1</Name>
+      <NegativeTextBrush>Red</NegativeTextBrush>
+      <TextBrush>Black</TextBrush>
+    </Style1>
+  </Styles>
 </StiSerializer>

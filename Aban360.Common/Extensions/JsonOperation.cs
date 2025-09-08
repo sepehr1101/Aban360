@@ -20,7 +20,7 @@ namespace Aban360.Common.Extensions
             settings ??= new JsonSerializerSettings
             {
                 Formatting = Formatting.None,
-                ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver()
+                ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
             };
             return JsonConvert.SerializeObject(obj,settings);
         }

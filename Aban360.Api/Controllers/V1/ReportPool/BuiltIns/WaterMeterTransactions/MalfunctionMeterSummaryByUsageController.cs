@@ -10,17 +10,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 {
-    [Route("v1/malfunction-meter")]
-    public class MalfunctionMeterController : BaseController
+    [Route("v1/malfunction-meter-summary-by-usage")]
+    public class MalfunctionMeterSummaryByUsageController : BaseController
     {
-        private readonly IMalfunctionMeterHandler _malfunctionMeterHandler;
+        private readonly IMalfunctionMeterSummaryByUsageHandler _malfunctionMeterSummaryByUsageHandler;
         private readonly IReportGenerator _reportGenerator;
-        public MalfunctionMeterController(
-            IMalfunctionMeterHandler malfunctionMeterHandler,
+        public MalfunctionMeterSummaryByUsageController(
+            IMalfunctionMeterSummaryByUsageHandler malfunctionMeterSummaryByUsageHandler,
             IReportGenerator reportGenerator)
         {
-            _malfunctionMeterHandler = malfunctionMeterHandler;
-            _malfunctionMeterHandler.NotNull(nameof(malfunctionMeterHandler));
+            _malfunctionMeterSummaryByUsageHandler = malfunctionMeterSummaryByUsageHandler;
+            _malfunctionMeterSummaryByUsageHandler.NotNull(nameof(malfunctionMeterSummaryByUsageHandler));
 
             _reportGenerator = reportGenerator;
             _reportGenerator.NotNull(nameof(_reportGenerator));
@@ -28,10 +28,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<MalfunctionMeterHeaderOutputDto, MalfunctionMeterDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<MalfunctionMeterSummaryHeaderOutputDto, MalfunctionMeterSummaryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(MalfunctionMeterInputDto input, CancellationToken cancellationToken)
         {
-            ReportOutput<MalfunctionMeterHeaderOutputDto, MalfunctionMeterDataOutputDto> result = await _malfunctionMeterHandler.Handle(input,cancellationToken);
+            ReportOutput<MalfunctionMeterSummaryHeaderOutputDto, MalfunctionMeterSummaryDataOutputDto> result = await _malfunctionMeterSummaryByUsageHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, MalfunctionMeterInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _malfunctionMeterHandler.Handle, CurrentUser, ReportLiterals.MalfunctionMeterSummary, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _malfunctionMeterSummaryByUsageHandler.Handle, CurrentUser, ReportLiterals.MalfunctionMeterSummary + ReportLiterals.ByUsage, connectionId);
             return Ok(inputDto);
         }
     }

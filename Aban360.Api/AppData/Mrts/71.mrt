@@ -7,147 +7,147 @@
         <Alias>service-link-calculation-report</Alias>
         <Key>eb320d9fa33c47dc957fd1f117fb70b4</Key>
         <Name>service-link-calculation-report</Name>
-        <PathData>C:\Users\Padidar\Desktop\گزارش های ساخته شده با stimulsoft\ریزمحاسبه انشعاب\service-link-calculation-report.json</PathData>
+        <PathData>C:\Users\Padidar\Desktop\کار\گزارش های ساخته شده با stimulsoft\ریزمحاسبه انشعاب\( . )\service-link-calculation-report.json</PathData>
       </service_link_calculation_report>
     </Databases>
     <DataSources isList="true" count="6">
-      <root Ref="3" type="DataTableSource" isKey="true">
-        <Alias>root</Alias>
-        <Columns isList="true" count="4">
-          <value>title,System.String</value>
-          <value>reportHeader,System.String</value>
-          <value>reportData,System.String</value>
-          <value>relationId,System.String</value>
-        </Columns>
-        <Dictionary isRef="1" />
-        <Key>678e9ee5ae024ce78e776e48af68ed80</Key>
-        <Name>root</Name>
-        <NameInSource>service-link-calculation-report.root</NameInSource>
-      </root>
-      <reportData Ref="4" type="DataTableSource" isKey="true">
+      <reportData Ref="3" type="DataTableSource" isKey="true">
         <Alias>reportData</Alias>
         <Columns isList="true" count="8">
-          <value>itemTitle,System.String</value>
-          <value>itemId,System.Double</value>
           <value>amount,System.Double</value>
           <value>discountAmount,System.Double</value>
-          <value>installmentCount,System.Double</value>
           <value>installmentAmount,System.Double</value>
-          <value>typeId,System.Double</value>
+          <value>installmentCount,System.Double</value>
+          <value>itemId,System.Double</value>
+          <value>itemTitle,System.String</value>
           <value>relationId,System.String</value>
+          <value>typeId,System.Double</value>
         </Columns>
         <Dictionary isRef="1" />
         <Key>c035734063a5414994d111fe8ba20478</Key>
         <Name>reportData</Name>
         <NameInSource>service-link-calculation-report.root_reportData</NameInSource>
       </reportData>
-      <reportHeader Ref="5" type="DataTableSource" isKey="true">
+      <reportHeader Ref="4" type="DataTableSource" isKey="true">
         <Alias>reportHeader</Alias>
         <Columns isList="true" count="44">
-          <value>zoneTitle,System.String</value>
-          <value>zoneId,System.Double</value>
-          <value>fullName,System.String</value>
-          <value>nationalCode,System.String</value>
-          <value>phoneNumber,System.String</value>
-          <value>postalCode,System.String</value>
           <value>address,System.String</value>
-          <value>serviceDescription,System.String</value>
-          <value>readingBlock,System.String</value>
-          <value>meterDiameterTitle,System.String</value>
-          <value>siphonDetails,System.String</value>
-          <value>sumNetAmount,System.Double</value>
-          <value>sumRawAmount,System.Double</value>
-          <value>prepayment,System.Double</value>
-          <value>installmentCount,System.Double</value>
-          <value>installmentAmount,System.Double</value>
-          <value>readingNumber,System.String</value>
           <value>billId,System.String</value>
-          <value>customerNumber,System.Double</value>
-          <value>pageNumber,System.Double</value>
-          <value>requestNumber,System.String</value>
-          <value>requestDateJalali,System.String</value>
-          <value>registerDateJalali,System.String</value>
-          <value>usageTitle,System.String</value>
-          <value>usageId,System.Double</value>
-          <value>useStateTitle,System.String</value>
-          <value>useStateId,System.Double</value>
-          <value>reportDateJalali,System.String</value>
-          <value>currentPrimises,System.Double</value>
-          <value>currentImprovementOverall,System.Double</value>
+          <value>currentContractualCapacity,System.Double</value>
           <value>currentImprovementCommericial,System.Double</value>
           <value>currentImprovementDomestic,System.Double</value>
           <value>currentImprovementOther,System.Double</value>
+          <value>currentImprovementOverall,System.Double</value>
+          <value>currentItems,System.String</value>
+          <value>currentPrimises,System.Double</value>
           <value>currentUnitCommericial,System.Double</value>
           <value>currentUnitDomestic,System.Double</value>
           <value>currentUnitOther,System.Double</value>
-          <value>currentContractualCapacity,System.Double</value>
-          <value>sumCurrentPremisesImprovement,System.Double</value>
-          <value>currentItems,System.String</value>
-          <value>inheritedItems,System.String</value>
-          <value>previousItems,System.String</value>
-          <value>sumItemAmount,System.Double</value>
+          <value>customerNumber,System.Double</value>
           <value>description,System.String</value>
+          <value>fullName,System.String</value>
+          <value>inheritedItems,System.String</value>
+          <value>installmentAmount,System.Double</value>
+          <value>installmentCount,System.Double</value>
+          <value>meterDiameterTitle,System.String</value>
+          <value>nationalCode,System.String</value>
+          <value>pageNumber,System.Double</value>
+          <value>phoneNumber,System.String</value>
+          <value>postalCode,System.String</value>
+          <value>prepayment,System.Double</value>
+          <value>previousItems,System.String</value>
+          <value>readingBlock,System.String</value>
+          <value>readingNumber,System.String</value>
+          <value>registerDateJalali,System.String</value>
           <value>relationId,System.String</value>
+          <value>reportDateJalali,System.String</value>
+          <value>requestDateJalali,System.String</value>
+          <value>requestNumber,System.String</value>
+          <value>serviceDescription,System.String</value>
+          <value>siphonDetails,System.String</value>
+          <value>sumCurrentPremisesImprovement,System.Double</value>
+          <value>sumItemAmount,System.Double</value>
+          <value>sumNetAmount,System.Double</value>
+          <value>sumRawAmount,System.Double</value>
+          <value>usageId,System.Double</value>
+          <value>usageTitle,System.String</value>
+          <value>useStateId,System.Double</value>
+          <value>useStateTitle,System.String</value>
+          <value>zoneId,System.Double</value>
+          <value>zoneTitle,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
         <Key>7eb81a7ad00f43a6a7f5f12b3facce3e</Key>
         <Name>reportHeader</Name>
         <NameInSource>service-link-calculation-report.root_reportHeader</NameInSource>
       </reportHeader>
-      <reportHeader_currentItems Ref="6" type="DataTableSource" isKey="true">
+      <reportHeader_currentItems Ref="5" type="DataTableSource" isKey="true">
         <Alias>reportHeader_currentItems</Alias>
         <Columns isList="true" count="12">
-          <value>primises,System.Double</value>
-          <value>improvementOverall,System.Double</value>
+          <value>contractualCapacity,System.Double</value>
           <value>improvementCommericial,System.Double</value>
           <value>improvementDomestic,System.Double</value>
           <value>improvementOther,System.Double</value>
+          <value>improvementOverall,System.Double</value>
+          <value>inheritedFromCustomerNumber,System.Double</value>
+          <value>primises,System.Double</value>
+          <value>relationId,System.String</value>
+          <value>sumPremisesImprovement,System.Double</value>
           <value>unitCommericial,System.Double</value>
           <value>unitDomestic,System.Double</value>
           <value>unitOther,System.Double</value>
-          <value>contractualCapacity,System.Double</value>
-          <value>sumPremisesImprovement,System.Double</value>
-          <value>inheritedFromCustomerNumber,System.Double</value>
-          <value>relationId,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
         <Key>0a389a3e3f764234925a515f5c54767f</Key>
         <Name>reportHeader_currentItems</Name>
         <NameInSource>service-link-calculation-report.root_reportHeader_currentItems</NameInSource>
       </reportHeader_currentItems>
-      <reportHeader_previousItems Ref="7" type="DataTableSource" isKey="true">
+      <reportHeader_previousItems Ref="6" type="DataTableSource" isKey="true">
         <Alias>reportHeader_previousItems</Alias>
         <Columns isList="true" count="12">
-          <value>primises,System.Double</value>
-          <value>improvementOverall,System.Double</value>
+          <value>contractualCapacity,System.Double</value>
           <value>improvementCommericial,System.Double</value>
           <value>improvementDomestic,System.Double</value>
           <value>improvementOther,System.Double</value>
+          <value>improvementOverall,System.Double</value>
+          <value>inheritedFromCustomerNumber,System.Double</value>
+          <value>primises,System.Double</value>
+          <value>relationId,System.String</value>
+          <value>sumPremisesImprovement,System.Double</value>
           <value>unitCommericial,System.Double</value>
           <value>unitDomestic,System.Double</value>
           <value>unitOther,System.Double</value>
-          <value>contractualCapacity,System.Double</value>
-          <value>sumPremisesImprovement,System.Double</value>
-          <value>inheritedFromCustomerNumber,System.Double</value>
-          <value>relationId,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
         <Key>41fb02e940984ec0ab0f4d76e07982af</Key>
         <Name>reportHeader_previousItems</Name>
         <NameInSource>service-link-calculation-report.root_reportHeader_previousItems</NameInSource>
       </reportHeader_previousItems>
-      <reportHeader_siphonDetails Ref="8" type="DataTableSource" isKey="true">
+      <reportHeader_siphonDetails Ref="7" type="DataTableSource" isKey="true">
         <Alias>reportHeader_siphonDetails</Alias>
         <Columns isList="true" count="3">
-          <value>siphonType,System.String</value>
           <value>count,System.Double</value>
           <value>relationId,System.String</value>
+          <value>siphonType,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
         <Key>bf34b6682282413a9d487b0940527f63</Key>
         <Name>reportHeader_siphonDetails</Name>
         <NameInSource>service-link-calculation-report.root_reportHeader_siphonDetails</NameInSource>
       </reportHeader_siphonDetails>
+      <root Ref="8" type="DataTableSource" isKey="true">
+        <Alias>root</Alias>
+        <Columns isList="true" count="4">
+          <value>relationId,System.String</value>
+          <value>reportData,System.String</value>
+          <value>reportHeader,System.String</value>
+          <value>title,System.String</value>
+        </Columns>
+        <Dictionary isRef="1" />
+        <Key>678e9ee5ae024ce78e776e48af68ed80</Key>
+        <Name>root</Name>
+        <NameInSource>service-link-calculation-report.root</NameInSource>
+      </root>
     </DataSources>
     <Relations isList="true" count="5">
       <root Ref="9" type="DataRelation" isKey="true">
@@ -155,30 +155,44 @@
         <ChildColumns isList="true" count="1">
           <value>relationId</value>
         </ChildColumns>
-        <ChildSource isRef="4" />
+        <ChildSource isRef="3" />
         <Dictionary isRef="1" />
         <Name>root</Name>
         <NameInSource>root_reportData</NameInSource>
         <ParentColumns isList="true" count="1">
           <value>reportData</value>
         </ParentColumns>
-        <ParentSource isRef="3" />
+        <ParentSource isRef="8" />
       </root>
       <root Ref="10" type="DataRelation" isKey="true">
         <Alias>root</Alias>
         <ChildColumns isList="true" count="1">
           <value>relationId</value>
         </ChildColumns>
-        <ChildSource isRef="5" />
+        <ChildSource isRef="4" />
         <Dictionary isRef="1" />
         <Name>root</Name>
         <NameInSource>root_reportHeader</NameInSource>
         <ParentColumns isList="true" count="1">
           <value>reportHeader</value>
         </ParentColumns>
-        <ParentSource isRef="3" />
+        <ParentSource isRef="8" />
       </root>
       <root_reportHeader Ref="11" type="DataRelation" isKey="true">
+        <Alias>root_reportHeader</Alias>
+        <ChildColumns isList="true" count="1">
+          <value>relationId</value>
+        </ChildColumns>
+        <ChildSource isRef="5" />
+        <Dictionary isRef="1" />
+        <Name>root_reportHeader</Name>
+        <NameInSource>root_reportHeader_currentItems</NameInSource>
+        <ParentColumns isList="true" count="1">
+          <value>currentItems</value>
+        </ParentColumns>
+        <ParentSource isRef="4" />
+      </root_reportHeader>
+      <root_reportHeader Ref="12" type="DataRelation" isKey="true">
         <Alias>root_reportHeader</Alias>
         <ChildColumns isList="true" count="1">
           <value>relationId</value>
@@ -186,13 +200,13 @@
         <ChildSource isRef="6" />
         <Dictionary isRef="1" />
         <Name>root_reportHeader</Name>
-        <NameInSource>root_reportHeader_currentItems</NameInSource>
+        <NameInSource>root_reportHeader_previousItems</NameInSource>
         <ParentColumns isList="true" count="1">
-          <value>currentItems</value>
+          <value>previousItems</value>
         </ParentColumns>
-        <ParentSource isRef="5" />
+        <ParentSource isRef="4" />
       </root_reportHeader>
-      <root_reportHeader Ref="12" type="DataRelation" isKey="true">
+      <root_reportHeader Ref="13" type="DataRelation" isKey="true">
         <Alias>root_reportHeader</Alias>
         <ChildColumns isList="true" count="1">
           <value>relationId</value>
@@ -200,25 +214,11 @@
         <ChildSource isRef="7" />
         <Dictionary isRef="1" />
         <Name>root_reportHeader</Name>
-        <NameInSource>root_reportHeader_previousItems</NameInSource>
-        <ParentColumns isList="true" count="1">
-          <value>previousItems</value>
-        </ParentColumns>
-        <ParentSource isRef="5" />
-      </root_reportHeader>
-      <root_reportHeader Ref="13" type="DataRelation" isKey="true">
-        <Alias>root_reportHeader</Alias>
-        <ChildColumns isList="true" count="1">
-          <value>relationId</value>
-        </ChildColumns>
-        <ChildSource isRef="8" />
-        <Dictionary isRef="1" />
-        <Name>root_reportHeader</Name>
         <NameInSource>root_reportHeader_siphonDetails</NameInSource>
         <ParentColumns isList="true" count="1">
           <value>siphonDetails</value>
         </ParentColumns>
-        <ParentSource isRef="5" />
+        <ParentSource isRef="4" />
       </root_reportHeader>
     </Relations>
     <Report isRef="0" />
@@ -1513,6 +1513,7 @@ TkSuQmCC</ImageBytes>
           <Parent isRef="14" />
           <Text>{reportHeader.customerNumber}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text71>
         <Text72 Ref="76" type="Text" isKey="true">
@@ -1695,8 +1696,9 @@ TkSuQmCC</ImageBytes>
           <Name>Text83</Name>
           <Page isRef="14" />
           <Parent isRef="14" />
-          <Text>{reportHeader_previousItems.primises}</Text>
+          <Text>{reportHeader.previousItems.primises}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text83>
         <Text84 Ref="89" type="Text" isKey="true">
@@ -1710,8 +1712,9 @@ TkSuQmCC</ImageBytes>
           <Name>Text84</Name>
           <Page isRef="14" />
           <Parent isRef="14" />
-          <Text>{reportHeader_previousItems.improvementOverall}</Text>
+          <Text>{reportHeader.previousItems.improvementOverall}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text84>
         <Text85 Ref="90" type="Text" isKey="true">
@@ -1725,8 +1728,9 @@ TkSuQmCC</ImageBytes>
           <Name>Text85</Name>
           <Page isRef="14" />
           <Parent isRef="14" />
-          <Text>{reportHeader_previousItems.improvementDomestic}</Text>
+          <Text>{reportHeader.previousItems.improvementDomestic}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text85>
         <Text86 Ref="91" type="Text" isKey="true">
@@ -1740,8 +1744,9 @@ TkSuQmCC</ImageBytes>
           <Name>Text86</Name>
           <Page isRef="14" />
           <Parent isRef="14" />
-          <Text>{reportHeader_previousItems.improvementCommericial}</Text>
+          <Text>{reportHeader.previousItems.improvementCommericial}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text86>
         <Text87 Ref="92" type="Text" isKey="true">
@@ -1755,8 +1760,9 @@ TkSuQmCC</ImageBytes>
           <Name>Text87</Name>
           <Page isRef="14" />
           <Parent isRef="14" />
-          <Text>{reportHeader_previousItems.improvementOther}</Text>
+          <Text>{reportHeader.previousItems.improvementOther}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text87>
         <Text88 Ref="93" type="Text" isKey="true">
@@ -1770,8 +1776,9 @@ TkSuQmCC</ImageBytes>
           <Name>Text88</Name>
           <Page isRef="14" />
           <Parent isRef="14" />
-          <Text>{reportHeader_previousItems.unitDomestic}</Text>
+          <Text>{reportHeader.previousItems.unitDomestic}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text88>
         <Text89 Ref="94" type="Text" isKey="true">
@@ -1785,8 +1792,9 @@ TkSuQmCC</ImageBytes>
           <Name>Text89</Name>
           <Page isRef="14" />
           <Parent isRef="14" />
-          <Text>{reportHeader_previousItems.unitCommericial}</Text>
+          <Text>{reportHeader.previousItems.unitCommericial}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text89>
         <Text90 Ref="95" type="Text" isKey="true">
@@ -1800,8 +1808,9 @@ TkSuQmCC</ImageBytes>
           <Name>Text90</Name>
           <Page isRef="14" />
           <Parent isRef="14" />
-          <Text>{reportHeader_previousItems.unitOther}</Text>
+          <Text>{reportHeader.previousItems.unitOther}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text90>
         <Text91 Ref="96" type="Text" isKey="true">
@@ -1815,8 +1824,9 @@ TkSuQmCC</ImageBytes>
           <Name>Text91</Name>
           <Page isRef="14" />
           <Parent isRef="14" />
-          <Text>{reportHeader_previousItems.contractualCapacity}</Text>
+          <Text>{reportHeader.previousItems.contractualCapacity}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text91>
         <Text92 Ref="97" type="Text" isKey="true">
@@ -1830,8 +1840,9 @@ TkSuQmCC</ImageBytes>
           <Name>Text92</Name>
           <Page isRef="14" />
           <Parent isRef="14" />
-          <Text>{reportHeader_previousItems.sumPremisesImprovement}</Text>
+          <Text>{reportHeader.previousItems.sumPremisesImprovement}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text92>
         <Text93 Ref="98" type="Text" isKey="true">
@@ -1847,6 +1858,7 @@ TkSuQmCC</ImageBytes>
           <Parent isRef="14" />
           <Text>{reportHeader.inheritedItems}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text93>
         <Text94 Ref="99" type="Text" isKey="true">
@@ -1997,6 +2009,7 @@ TkSuQmCC</ImageBytes>
           <Parent isRef="14" />
           <Text>{reportHeader.inheritedItems}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text103>
         <Text104 Ref="109" type="Text" isKey="true">
@@ -2010,8 +2023,9 @@ TkSuQmCC</ImageBytes>
           <Name>Text104</Name>
           <Page isRef="14" />
           <Parent isRef="14" />
-          <Text>{reportHeader_currentItems.primises}</Text>
+          <Text>{reportHeader.currentItems.primises}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text104>
         <Text105 Ref="110" type="Text" isKey="true">
@@ -2025,8 +2039,9 @@ TkSuQmCC</ImageBytes>
           <Name>Text105</Name>
           <Page isRef="14" />
           <Parent isRef="14" />
-          <Text>{reportHeader_currentItems.improvementOverall}</Text>
+          <Text>{reportHeader.currentItems.improvementOverall}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text105>
         <Text106 Ref="111" type="Text" isKey="true">
@@ -2040,8 +2055,9 @@ TkSuQmCC</ImageBytes>
           <Name>Text106</Name>
           <Page isRef="14" />
           <Parent isRef="14" />
-          <Text>{reportHeader_currentItems.improvementDomestic}</Text>
+          <Text>{reportHeader.currentItems.improvementDomestic}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text106>
         <Text107 Ref="112" type="Text" isKey="true">
@@ -2055,8 +2071,9 @@ TkSuQmCC</ImageBytes>
           <Name>Text107</Name>
           <Page isRef="14" />
           <Parent isRef="14" />
-          <Text>{reportHeader_currentItems.improvementCommericial}</Text>
+          <Text>{reportHeader.currentItems.improvementCommericial}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text107>
         <Text108 Ref="113" type="Text" isKey="true">
@@ -2070,8 +2087,9 @@ TkSuQmCC</ImageBytes>
           <Name>Text108</Name>
           <Page isRef="14" />
           <Parent isRef="14" />
-          <Text>{reportHeader_currentItems.improvementOther}</Text>
+          <Text>{reportHeader.currentItems.improvementOther}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text108>
         <Text109 Ref="114" type="Text" isKey="true">
@@ -2085,8 +2103,9 @@ TkSuQmCC</ImageBytes>
           <Name>Text109</Name>
           <Page isRef="14" />
           <Parent isRef="14" />
-          <Text>{reportHeader_currentItems.unitDomestic}</Text>
+          <Text>{reportHeader.currentItems.unitDomestic}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text109>
         <Text110 Ref="115" type="Text" isKey="true">
@@ -2100,8 +2119,9 @@ TkSuQmCC</ImageBytes>
           <Name>Text110</Name>
           <Page isRef="14" />
           <Parent isRef="14" />
-          <Text>{reportHeader_currentItems.unitCommericial}</Text>
+          <Text>{reportHeader.currentItems.unitCommericial}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text110>
         <Text111 Ref="116" type="Text" isKey="true">
@@ -2115,8 +2135,9 @@ TkSuQmCC</ImageBytes>
           <Name>Text111</Name>
           <Page isRef="14" />
           <Parent isRef="14" />
-          <Text>{reportHeader_currentItems.unitOther}</Text>
+          <Text>{reportHeader.currentItems.unitOther}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text111>
         <Text112 Ref="117" type="Text" isKey="true">
@@ -2130,8 +2151,9 @@ TkSuQmCC</ImageBytes>
           <Name>Text112</Name>
           <Page isRef="14" />
           <Parent isRef="14" />
-          <Text>{reportHeader_currentItems.contractualCapacity}</Text>
+          <Text>{reportHeader.currentItems.contractualCapacity}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text112>
         <Text113 Ref="118" type="Text" isKey="true">
@@ -2145,8 +2167,9 @@ TkSuQmCC</ImageBytes>
           <Name>Text113</Name>
           <Page isRef="14" />
           <Parent isRef="14" />
-          <Text>{reportHeader_currentItems.sumPremisesImprovement}</Text>
+          <Text>{reportHeader.currentItems.sumPremisesImprovement}</Text>
           <TextBrush>Black</TextBrush>
+          <Type>Expression</Type>
           <VertAlignment>Center</VertAlignment>
         </Text113>
         <Text114 Ref="119" type="Text" isKey="true">
@@ -2884,10 +2907,10 @@ TkSuQmCC</ImageBytes>
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>8/31/2025 4:15:15 PM</ReportChanged>
+  <ReportChanged>9/8/2025 11:31:29 AM</ReportChanged>
   <ReportCreated>8/30/2025 9:03:33 AM</ReportCreated>
-  <ReportFile>C:\Users\Padidar\Desktop\گزارش های ساخته شده با stimulsoft\ریزمحاسبه انشعاب\service-link-calculation-report.mrt</ReportFile>
-  <ReportGuid>195b75838b034a418bdd534e40188085</ReportGuid>
+  <ReportFile>C:\Users\Padidar\Desktop\کار\گزارش های ساخته شده با stimulsoft\ریزمحاسبه انشعاب\( . )\service-link-calculation-report.mrt</ReportFile>
+  <ReportGuid>6e379e3f8934489cbe5d159f95b07188</ReportGuid>
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>
   <ReportVersion>2023.1.1.0</ReportVersion>

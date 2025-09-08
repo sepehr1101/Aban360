@@ -50,7 +50,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         [AllowAnonymous]
         public async Task<IActionResult> GetStiReport(UnconfirmedSubscribersInputDto inputDto, CancellationToken cancellationToken)
         {
-            int reportCode = 1;
+            int reportCode = 50;
             ReportOutput<UnconfirmedSubscribersHeaderOutputDto, UnconfirmedSubscribersDataOutputDto> unconfirmedSubscribers = await _unconfirmedSubscribersHandler.Handle(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(unconfirmedSubscribers, cancellationToken, reportCode);
             return Ok(reportId);
