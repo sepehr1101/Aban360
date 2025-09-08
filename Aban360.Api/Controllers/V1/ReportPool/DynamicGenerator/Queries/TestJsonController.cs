@@ -43,7 +43,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator
         {
             StiReport report = new ();
             string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string reportPath = Path.Combine("AppData", "Mrts", "non-permanent-branch-report8.mrt");
+            string reportPath = Path.Combine("AppData", "Mrts", $"{reportCode}.mrt");
             report.Load(reportPath);
 
             // Load JSON data 
