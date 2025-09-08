@@ -5,5 +5,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Contracts
     public interface INerkhUpdateService
     {
         Task Update(NerkhUpdateDto input, int nerkh);
+        Task Update(NerkhUpdateDto input);
     }
 }

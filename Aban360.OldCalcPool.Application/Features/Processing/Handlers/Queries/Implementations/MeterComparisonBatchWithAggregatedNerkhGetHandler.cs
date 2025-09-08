@@ -10,13 +10,13 @@ using FluentValidation;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Implementations
 {
-    internal sealed class MeterComparisonBatchGetHandler : IMeterComparisonBatchGetHandler
+    internal sealed class MeterComparisonBatchWithAggregatedNerkhGetHandler : IMeterComparisonBatchWithAggregatedNerkhGetHandler
     {
         private readonly IProcessing _processing;
         private readonly IMeterComparisonBatchQueryService _meterComparisonBatchQueryService;
         private readonly IValidator<MeterComparisonBatchInputDto> _validator;
         float _percent = (float)0.08;
-        public MeterComparisonBatchGetHandler(
+        public MeterComparisonBatchWithAggregatedNerkhGetHandler(
             IProcessing processing,
             IMeterComparisonBatchQueryService meterComparisonBatchQueryService,
             IValidator<MeterComparisonBatchInputDto> validator)
@@ -30,7 +30,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
-
         public async Task<ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataOutputDto>> Handle(MeterComparisonBatchInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
@@ -45,12 +44,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
             foreach (var data in meterComparisonBatch.ReportData)
             {
                 BaseOldTariffEngineImaginaryInputDto meterInfoData = GetMeterInfo(data);
-                var result = await _processing.Handle(meterInfoData, cancellationToken);
+                var result = await _processing.HandleWithAggregatedNerkh(meterInfoData, cancellationToken);
 
                 MeterComparisonBatchDataOutputDto comparisonBatch = GetComparisonBatch(data);
                 comparisonBatch.CurrentAmount = result.SumItems;
                 comparisonBatch.IsChecked = GetTolarance(data.PreviousAmount, data.CurrentAmount, input.Tolerance, input.IsPercent);
-                // comparisonBatch.CurrentAmount = comparisonBatch.IsChecked ? comparisonBatch.PreviousAmount : comparisonBatch.CurrentAmount;
 
                 comparisonResult.Add(comparisonBatch);
             }
@@ -113,7 +111,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
         {
             if (isPercent)
             {
-                var (maxAmount,minAmount)=GetMaxMinPercent(currentAmount, tolerance);
+                var (maxAmount, minAmount) = GetMaxMinPercent(currentAmount, tolerance);
                 return currentAmount <= maxAmount && currentAmount >= minAmount;
             }
 

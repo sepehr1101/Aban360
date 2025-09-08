@@ -20,7 +20,14 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
 
             return result;
         }
+        public async Task<IEnumerable<NerkhGetDto>> Get()
+        {
+            string nerkhGetQueryString = GetNerkhGetQuery();
+            IEnumerable<NerkhGetDto> result = await _sqlReportConnection.QueryAsync<NerkhGetDto>(nerkhGetQueryString);
 
+            return result;
+        }
+        
         private string GetNerkhGetQuery(int nerkh)
         {
             return @$"Select
@@ -42,6 +49,29 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
 						n.zarib_d AS ZaribBodje,
                         n.vaj_faz AS VajFaz
                 	From [OldCalc].dbo.nerkh_{nerkh} n
+                    Where n.date1>='{_minDate}'";
+        }
+        private string GetNerkhGetQuery()
+        {
+            return @$"Select
+                        n.Id,
+                		n.date1 AS Date1,
+                		n.date2 AS Date2,
+                		n.ebt AS Ebt,
+                		n.ent AS Ent,
+                		n.vaj AS Vaj,
+                		n.cod AS Cod,
+                		n.olgo AS Olgo,
+                		n.[desc] AS [Desc],
+                		n.o_vaj AS OVaj,
+                		n.o_vaj_faz AS OVajFaz,
+                        n.bodjeh_new AS Bodjeh_new,
+						n.ztadil AS ZaribTadil,
+						n.tabsare2 AS Tabsare2,
+						n.zaribfasl AS ZaribFasl,
+						n.zarib_d AS ZaribBodje,
+                        n.vaj_faz AS VajFaz
+                	From [OldCalc].dbo.Nerkh n
                     Where n.date1>='{_minDate}'";
         }
 
