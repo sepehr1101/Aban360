@@ -28,6 +28,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali,
+                fromReadingNumber = input.FromReadingNumber,
+                toReadingNumber = input.ToReadingNumber,
                 zoneIds = input.ZoneIds,
                 usageIds = input.UsageIds,
             };
@@ -36,6 +38,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = RequestData is not null && RequestData.Any() ? RequestData.Count() : 0,
 
@@ -43,6 +47,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 SumDomesticUnit = RequestData.Sum(i => i.DomesticUnit),
                 SumOtherUnit = RequestData.Sum(i => i.OtherUnit),
                 TotalUnit = RequestData.Sum(i => i.TotalUnit),
+                CustomerCount = RequestData.Sum(i => i.CustomerCount),
             };
             var result = new ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestSummaryByZoneDataOutputDto>
                 (input.IsWater ? ReportLiterals.WaterRequestSummary + ReportLiterals.ByZone : ReportLiterals.SewageRequestSummary + ReportLiterals.ByZone,
@@ -54,6 +59,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         private string GetWaterRequestSummaryQuery()
         {
             return @"Select	
+						MAX(t46.C2) AS RegionTitle,
                     	c.ZoneTitle AS ZoneTitle,
                     	COUNT(c.UsageTitle) AS CustomerCount,
 					    SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
@@ -74,17 +80,25 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     From [CustomerWarehouse].dbo.Clients c
 					Join [Db70].dbo.T5 t5
 						On t5.C0=c.WaterDiameterId
+                    Join [Db70].dbo.T51 t51
+						On t51.C0=c.ZoneId
+					Join [Db70].dbo.T46 t46
+						On t51.C1=t46.C0
                     Where	
                     	c.WaterRequestDate BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
                         c.UsageId IN @usageIds AND
-						c.ToDayJalali IS NULL
+						c.ToDayJalali IS NULL AND
+						(@fromReadingNumber IS NULL OR
+						@toReadingNumber IS NULL OR
+						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)
                     Group BY
                     	c.ZoneTitle";
         }
         private string GetSewageRequestSummaryQuery()
         {
             return @"Select	
+						MAX(t46.C2) AS RegionTitle,
                     	c.ZoneTitle AS ZoneTitle,
                     	COUNT(c.UsageTitle) AS CustomerCount,
 					    SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
@@ -102,11 +116,18 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     From [CustomerWarehouse].dbo.Clients c
 					Join [Db70].dbo.T5 t5
 						On t5.C0=c.WaterDiameterId
+                    Join [Db70].dbo.T51 t51
+						On t51.C0=c.ZoneId
+					Join [Db70].dbo.T46 t46
+						On t51.C1=t46.C0
                     Where	
                     	c.SewageRequestDate BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
                         c.UsageId IN @usageIds AND
-						c.ToDayJalali IS NULL
+						c.ToDayJalali IS NULL AND
+						(@fromReadingNumber IS NULL OR
+						@toReadingNumber IS NULL OR
+						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)
                     Group BY
                     	c.ZoneTitle";
         }

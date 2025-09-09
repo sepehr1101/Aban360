@@ -28,6 +28,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali,
+                fromReadingNumber=input.FromReadingNumber,
+                toReadingNumber=input.ToReadingNumber,
                 zoneIds = input.ZoneIds,
                 usageIds=input.UsageIds,
             };
@@ -36,13 +38,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
+                FromReadingNumber=input.FromReadingNumber,
+                ToReadingNumber=input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (RequestData is not null && RequestData.Any()) ? RequestData.Count() : 0,
 
                 SumCommercialUnit = RequestData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = RequestData.Sum(i => i.DomesticUnit),
                 SumOtherUnit = RequestData.Sum(i => i.OtherUnit),
-                TotalUnit = RequestData.Sum(i => i.TotalUnit)
+                TotalUnit = RequestData.Sum(i => i.TotalUnit),
+                CustomerCount = (RequestData is not null && RequestData.Any()) ? RequestData.Count() : 0,
             };
             var result = new ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestDetailDataOutputDto>
                 (input.IsWater ? ReportLiterals.WaterRequestDetail : ReportLiterals.SewageRequestDetail,
@@ -71,13 +76,22 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.BillId,
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,
-                    	c.WaterRequestDate AS RequestDate
+                    	c.WaterRequestDate AS RequestDate,
+						TRIM(c.PhoneNo) AS PhoneNumber,
+						TRIM(c.MobileNo) AS MobileNumber,
+						c.DeletionStateTitle ,
+						TRIM(c.MeterSerialBody) AS MeterSerial,
+						TRIM(c.NationalId) AS NatoinalCode,
+						TRIM(c.PostalCode) AS PostalCode
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
                     	c.WaterRequestDate BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
                         c.UsageId IN @usageIds AND
-						c.ToDayJalali IS NULL";
+						c.ToDayJalali IS NULL AND
+						(@fromReadingNumber IS NULL OR
+						@toReadingNumber IS NULL OR
+						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)";
         }
         private string GetSewageRequestDetailQuery()
         {
@@ -99,13 +113,22 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.BillId,
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,
-                    	c.SewageRequestDate AS RequestDate
+                    	c.SewageRequestDate AS RequestDate,
+						TRIM(c.PhoneNo) AS PhoneNumber,
+						TRIM(c.MobileNo) AS MobileNumber,
+						c.DeletionStateTitle ,
+						TRIM(c.MeterSerialBody) AS MeterSerial,
+						TRIM(c.NationalId) AS NatoinalCode,
+						TRIM(c.PostalCode) AS PostalCode
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
                     	c.SewageRequestDate BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
                         c.UsageId IN @usageIds AND
-						c.ToDayJalali IS NULL";
+						c.ToDayJalali IS NULL AND
+						(@fromReadingNumber IS NULL OR
+						@toReadingNumber IS NULL OR
+						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)";
         }
     }
 }

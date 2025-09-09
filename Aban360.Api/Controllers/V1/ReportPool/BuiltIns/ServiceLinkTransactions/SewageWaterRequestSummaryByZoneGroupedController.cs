@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 {
-    [Route("v1/sewage-water-request-Summary-by-zone")]
-    public class SewageWaterRequestSummaryByZoneController : BaseController
+    [Route("v1/sewage-water-request-Summary-by-zone-grouped")]
+    public class SewageWaterRequestSummaryByZoneGroupedController : BaseController
     {
-        private readonly ISewageWaterRequestSummaryByZoneHandler _sewageWaterRequestSummaryByZoneHandler;
+        private readonly ISewageWaterRequestSummaryByZoneGroupingHandler _sewageWaterRequestSummaryByZoneHandler;
         private readonly IReportGenerator _reportGenerator;
-        public SewageWaterRequestSummaryByZoneController(
-            ISewageWaterRequestSummaryByZoneHandler sewageWaterRequestSummaryByZoneHandler,
+        public SewageWaterRequestSummaryByZoneGroupedController(
+            ISewageWaterRequestSummaryByZoneGroupingHandler sewageWaterRequestSummaryByZoneHandler,
             IReportGenerator reportGenerator)
         {
             _sewageWaterRequestSummaryByZoneHandler = sewageWaterRequestSummaryByZoneHandler;
@@ -28,10 +28,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestSummaryByZoneDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterRequestHeaderOutputDto, ReportOutput<SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto>>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(SewageWaterRequestInputDto input, CancellationToken cancellationToken)
         {
-            ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestSummaryByZoneDataOutputDto> result = await _sewageWaterRequestSummaryByZoneHandler.Handle(input, cancellationToken);
+            ReportOutput<SewageWaterRequestHeaderOutputDto, ReportOutput<SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto>> result = await _sewageWaterRequestSummaryByZoneHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
