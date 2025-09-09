@@ -8,6 +8,7 @@
         public static string ByZone { get { return " بر اساس ناحیه "; } }
         public static string ByUsage { get { return " بر اساس کاربری "; } }
         public static string ByUsageAndZone { get { return " بر اساس کاربری و ناحیه "; } }
+        public static string ByUsageAndZoneAndDiameter { get { return " بر اساس کاربری و ناحیه و قطر انشعاب "; } }
         public static string ByChangeCause { get { return "  بر اساس علت تعویض "; } }
 
 

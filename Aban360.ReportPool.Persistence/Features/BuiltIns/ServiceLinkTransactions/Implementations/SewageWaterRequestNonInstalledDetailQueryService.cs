@@ -28,6 +28,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali,
+                fromReadingNumber = input.FromReadingNumber,
+                toReadingNumber = input.ToReadingNumber,
                 zoneIds = input.ZoneIds
             };
             IEnumerable<SewageWaterRequestNonInstalledDetailDataOutputDto> requestNonInstalledData = await _sqlReportConnection.QueryAsync<SewageWaterRequestNonInstalledDetailDataOutputDto>(requestNonInstalledDetailQuery, @params);
@@ -35,13 +37,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (requestNonInstalledData is not null && requestNonInstalledData.Any()) ? requestNonInstalledData.Count() : 0,
 
                 SumCommercialUnit = requestNonInstalledData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = requestNonInstalledData.Sum(i => i.DomesticUnit),
                 SumOtherUnit = requestNonInstalledData.Sum(i => i.OtherUnit),
-                TotalUnit = requestNonInstalledData.Sum(i => i.TotalUnit)
+                TotalUnit = requestNonInstalledData.Sum(i => i.TotalUnit),
+                CustomerCount = (requestNonInstalledData is not null && requestNonInstalledData.Any()) ? requestNonInstalledData.Count() : 0,
             };
             var result = new ReportOutput<SewageWaterRequestNonInstalledHeaderOutputDto, SewageWaterRequestNonInstalledDetailDataOutputDto>
                 (input.IsWater ? ReportLiterals.WaterRequestNonInstalledDetail : ReportLiterals.SewageRequestNonInstalledDetail,
@@ -70,13 +75,17 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.BillId,
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,
-                    	c.WaterRequestDate AS RequestDate
+                    	c.WaterRequestDate AS RequestDate,
+						c.RegisterationJalaliDate AS RegisterDateJalali,--todooooo: تاریخ ثبت
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
                     	c.WaterRequestDate BETWEEN @fromDate AND @toDate AND
 						(TRIM(c.WaterInstallDate)='' OR c.WaterInstallDate IS NULL) AND
                     	c.ZoneId IN @zoneIds  AND
-						c.ToDayJalali IS NULL";
+						c.ToDayJalali IS NULL AND
+						(@fromReadingNumber IS NULL OR
+						@toReadingNumber IS NULL OR
+						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)";
         }
         private string GetSewageRequestNonInstalledDetailQuery()
         {
@@ -98,13 +107,18 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.BillId,
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,
-                    	c.WaterRequestDate AS RequestDate
+                    	c.WaterRequestDate AS RequestDate,
+						c.RegisterationJalaliDate AS RegisterDateJalali,--todooooo: تاریخ ثبت
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
                     	c.SewageRequestDate BETWEEN @fromDate AND @toDate AND
 						(TRIM(c.SewageInstallDate)='' OR c.SewageInstallDate IS NULL) AND
                     	c.ZoneId IN @zoneIds AND
-						c.ToDayJalali IS NULL";
+						c.ToDayJalali IS NULL AND
+						(@fromReadingNumber IS NULL OR
+						@toReadingNumber IS NULL OR
+						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)";
+            //todo: registerDateJalaliتاریخ ثبت 
         }
     }
 }

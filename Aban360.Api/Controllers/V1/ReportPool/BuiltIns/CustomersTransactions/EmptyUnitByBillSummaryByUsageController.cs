@@ -10,17 +10,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
 {
-    [Route("v1/empty-unit-by-bill-zone-grouping")]
-    public class EmptyUnitByBillZoneGroupingController : BaseController
+    [Route("v1/empty-unit-by-bill-summary-usage")]
+    public class EmptyUnitByBillSummaryByUsageController : BaseController
     {
-        private readonly IEmptyUnitByBillIdZoneGroupingHandler _emptyUnitByBillZoneGrouping;
+        private readonly IEmptyUnitByBillIdSummaryByUsageHandler _emptyUnitByBillUsageGrouping;
         private readonly IReportGenerator _reportGenerator;
-        public EmptyUnitByBillZoneGroupingController(
-            IEmptyUnitByBillIdZoneGroupingHandler emptyUnitByBillZoneGrouping,
+        public EmptyUnitByBillSummaryByUsageController(
+            IEmptyUnitByBillIdSummaryByUsageHandler emptyUnitByBillUsageGrouping,
             IReportGenerator reportGenerator)
         {
-            _emptyUnitByBillZoneGrouping = emptyUnitByBillZoneGrouping;
-            _emptyUnitByBillZoneGrouping.NotNull(nameof(_emptyUnitByBillZoneGrouping));
+            _emptyUnitByBillUsageGrouping = emptyUnitByBillUsageGrouping;
+            _emptyUnitByBillUsageGrouping.NotNull(nameof(_emptyUnitByBillUsageGrouping));
 
             _reportGenerator = reportGenerator;
             _reportGenerator.NotNull(nameof(_reportGenerator));
@@ -28,10 +28,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdZoneGroupingDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdUsageGroupingDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(EmptyUnitInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdZoneGroupingDataOutputDto> emptyUnit = await _emptyUnitByBillZoneGrouping.Handle(inputDto, cancellationToken);
+            ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdUsageGroupingDataOutputDto> emptyUnit = await _emptyUnitByBillUsageGrouping.Handle(inputDto, cancellationToken);
             return Ok(emptyUnit);
         }
 
@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, EmptyUnitInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _emptyUnitByBillZoneGrouping.Handle, CurrentUser, ReportLiterals.EmptyUnitByBillSummary+ReportLiterals.ByZone, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _emptyUnitByBillUsageGrouping.Handle, CurrentUser, ReportLiterals.EmptyUnitByBillSummary + ReportLiterals.ByUsage, connectionId);
             return Ok(inputDto);
         }
     }

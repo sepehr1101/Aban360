@@ -1,8 +1,8 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs
 {
-    public record EmptyUnitByBillIdZoneGroupingDataOutputDto
+    public record EmptyUnitByBillIdByZoneGroupedDataOutputDto
     {
-        public string ZoneTitle { get; set; }
+        public string ItemTitle { get; set; }
         public int CustomerCount { get; set; }
         public int EmptyUnit { get; set; }
         public int TotalUnit { get; set; }

@@ -1,10 +1,11 @@
-﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs
+﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs
 {
-    public record WithoutSewageRequestSummaryByZoneDataOutputDto
+    public record EmptyUnitByBillIdByZoneDataOutputDto
     {
         public string RegionTitle { get; set; }
         public string ZoneTitle { get; set; }
         public int CustomerCount { get; set; }
+        public int EmptyUnit { get; set; }
         public int TotalUnit { get; set; }
         public int CommercialUnit { get; set; }
         public int DomesticUnit { get; set; }

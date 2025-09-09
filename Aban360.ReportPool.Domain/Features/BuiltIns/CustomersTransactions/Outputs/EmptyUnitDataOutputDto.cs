@@ -27,5 +27,8 @@
         public string PostalCode { get; set; }
         public string PhoneNumber { get; set; }
         public string FatherName { get; set; }
+        public int Consumption { get; set; }
+        public float ConsumptionAverage { get; set; }
+        public double SumItems { get; set; }
     }
 }

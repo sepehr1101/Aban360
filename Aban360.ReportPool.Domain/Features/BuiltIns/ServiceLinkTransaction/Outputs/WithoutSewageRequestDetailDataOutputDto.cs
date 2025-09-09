@@ -20,5 +20,11 @@
         public int ContractualCapacity { get; set; }
         public string WaterRequestDate { get; set; }
         public string WaterInstallationDate { get; set; }
+        public string PhoneNumber { get; set; }
+        public string MobileNumber { get; set; }
+        public string DeletionStateTitle { get; set; }
+        public string MeterSerial { get; set; }
+        public string NatoinalCode { get; set; }
+        public string PostalCode { get; set; }
     }
 }

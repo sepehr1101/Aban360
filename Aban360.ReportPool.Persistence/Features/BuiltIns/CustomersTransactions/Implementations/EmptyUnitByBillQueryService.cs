@@ -86,6 +86,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 							c.PostalCode , 
 							c.PhoneNo AS PhoneNumber,
 							c.FatherName ,
+							b.Consumption,
+							b.ConsumptionAverage,
+							b.SumItems,
 					        ROW_NUMBER() OVER (
 					            PARTITION BY b.BillId
 					            ORDER BY b.Id DESC
@@ -125,7 +128,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 							e.NationalCode,
 							e.PostalCode , 
 							e.PhoneNumber,
-							e.FatherName 
+							e.FatherName ,
+							e.Consumption,
+							e.ConsumptionAverage,
+							e.SumItems
 					FROM EmptyUnitByBill e
 					WHERE RowNum = 1;";
         }

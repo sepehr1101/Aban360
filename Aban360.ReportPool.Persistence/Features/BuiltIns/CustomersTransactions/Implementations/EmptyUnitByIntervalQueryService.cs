@@ -61,6 +61,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             return @";WITH LatestCustomer as
                         (
                         SELECT 
+					    	t46.C2 AS RegionTitle,
                             c.CustomerNumber,
                             c.ReadingNumber,
                             TRIM(c.FirstName) AS FirstName,
@@ -83,12 +84,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 					    	c.ZoneTitle,
                             0 AS RegionId,
                             '-' AS RegionTitle,
-					    	c.NationalId AS NationalCode,
-					    	c.PostalCode , 
-					    	c.PhoneNo AS PhoneNumber,
-					    	c.FatherName ,
+					    	TRIM(c.PostalCode) AS PostalCode , 
+					    	TRIM(c.NationalId) AS NationalCode,
+					    	TRIM(c.PhoneNo) AS PhoneNumber,
+					    	TRIM(c.FatherName) AS FatherName,
 					    	RN=ROW_NUMBER() OVER(PARTITION BY c.BillId Order By c.RegisterDayJalali )
                         FROM [CustomerWarehouse].dbo.Clients c
+	    				Join [Db70].dbo.T51 t51
+	    					On t51.C0=c.ZoneId
+	    				Join [Db70].dbo.T46 t46
+	    S					On t51.C1=t46.C0
                         WHERE 
             		    	c.ToDayJalali IS NULL AND
             		    	c.UsageId in (1,2,3) AND
