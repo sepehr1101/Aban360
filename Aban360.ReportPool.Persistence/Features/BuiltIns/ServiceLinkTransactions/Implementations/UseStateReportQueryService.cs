@@ -77,7 +77,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 	                    TRIM(c.BillId) BillId,
 						c.MeterSerialBody AS MeterSerial,
 						c.WaterInstallDate AS MeterInstallationDateJalali,
-						c.WaterRequestDate AS MeterRequestDateJalali
+						c.WaterRequestDate AS MeterRequestDateJalali,
 	                    RN=ROW_NUMBER() OVER (PARTITION BY ZoneId, CustomerNumber ORDER BY RegisterDayJalali DESC)
                     FROM [CustomerWarehouse].dbo.Clients c
                     WHERE 

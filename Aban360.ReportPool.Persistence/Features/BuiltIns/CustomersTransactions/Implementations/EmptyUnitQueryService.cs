@@ -77,11 +77,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             			c.EmptyCount As EmptyUnit,
                         c.ZoneId,
 						c.ZoneTitle,
-                        0 AS RegionId,
-                        '-' AS RegionTitle,
+                        t46.C0 AS RegionId,
 						TRIM(c.NationalId) AS NationalCode,
 						TRIM(c.PostalCode) AS PostalCode , 
 						TRIM(c.PhoneNo) AS PhoneNumber,
+						TRIM(c.MobileNo) AS MobileNumber,
 						TRIM(c.FatherName)AS FatherName
                     FROM [CustomerWarehouse].dbo.Clients c
 					Join [Db70].dbo.T51 t51

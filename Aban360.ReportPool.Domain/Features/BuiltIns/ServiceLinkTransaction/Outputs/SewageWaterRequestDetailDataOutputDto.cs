@@ -23,7 +23,7 @@
         public string MobileNumber { get; set; }
         public string DeletionStateTitle { get; set; }
         public string MeterSerial { get; set; }
-        public string NatoinalCode { get; set; }
+        public string NationalCode { get; set; }
         public string PostalCode { get; set; }
     }
 }

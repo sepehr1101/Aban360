@@ -55,6 +55,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             return @";WITH CTE AS 
                      (SELECT 
 						c.ZoneTitle,
+                        c.ZoneId,
 						c.WaterDiameterId,
 						c.CommercialCount,
 						c.DomesticCount,

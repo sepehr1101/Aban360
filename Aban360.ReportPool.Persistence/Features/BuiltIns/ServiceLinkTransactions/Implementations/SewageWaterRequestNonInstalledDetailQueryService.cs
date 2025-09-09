@@ -76,7 +76,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,
                     	c.WaterRequestDate AS RequestDate,
-						c.RegisterationJalaliDate AS RegisterDateJalali,--todooooo: تاریخ ثبت
+						c.RegisterationJalaliDate AS RegisterDateJalali--todooooo: تاریخ ثبت
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
                     	c.WaterRequestDate BETWEEN @fromDate AND @toDate AND
@@ -108,7 +108,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,
                     	c.WaterRequestDate AS RequestDate,
-						c.RegisterationJalaliDate AS RegisterDateJalali,--todooooo: تاریخ ثبت
+						c.RegisterationJalaliDate AS RegisterDateJalali--todooooo: تاریخ ثبت
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
                     	c.SewageRequestDate BETWEEN @fromDate AND @toDate AND

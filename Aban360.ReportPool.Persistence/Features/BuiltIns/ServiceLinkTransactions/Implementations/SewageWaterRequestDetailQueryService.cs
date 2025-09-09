@@ -81,7 +81,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 						TRIM(c.MobileNo) AS MobileNumber,
 						c.DeletionStateTitle ,
 						TRIM(c.MeterSerialBody) AS MeterSerial,
-						TRIM(c.NationalId) AS NatoinalCode,
+						TRIM(c.NationalId) AS NationalCode,
 						TRIM(c.PostalCode) AS PostalCode            
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
@@ -118,7 +118,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 						TRIM(c.MobileNo) AS MobileNumber,
 						c.DeletionStateTitle ,
 						TRIM(c.MeterSerialBody) AS MeterSerial,
-						TRIM(c.NationalId) AS NatoinalCode,
+						TRIM(c.NationalId) AS NationalCode,
 						TRIM(c.PostalCode) AS PostalCode
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
