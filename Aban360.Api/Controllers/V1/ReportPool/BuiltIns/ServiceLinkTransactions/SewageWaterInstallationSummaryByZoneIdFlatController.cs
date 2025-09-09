@@ -10,17 +10,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 {
-    [Route("v1/sewage-water-installation-summary-by-zoneId")]
-    public class SewageWaterInstallationSummaryByZoneIdController : BaseController
+    [Route("v1/sewage-water-installation-summary-by-zoneId-flat")]
+    public class SewageWaterInstallationSummaryByZoneIdFlatController : BaseController
     {
-        private readonly ISewageWaterInstallationSummaryByZoneIdGroupingHandler _sewageWaterInstallationSummaryByZoneIdGroupingHandler;
+        private readonly ISewageWaterInstallationSummaryByZoneIdHandler _sewageWaterInstallationSummaryByZoneIdHandler;
         private readonly IReportGenerator _reportGenerator;
-        public SewageWaterInstallationSummaryByZoneIdController(
-            ISewageWaterInstallationSummaryByZoneIdGroupingHandler sewageWaterInstallationSummaryByZoneIdGroupingHandler,
+        public SewageWaterInstallationSummaryByZoneIdFlatController(
+            ISewageWaterInstallationSummaryByZoneIdHandler sewageWaterInstallationSummaryByZoneIdHandler,
             IReportGenerator reportGenerator)
         {
-            _sewageWaterInstallationSummaryByZoneIdGroupingHandler = sewageWaterInstallationSummaryByZoneIdGroupingHandler;
-            _sewageWaterInstallationSummaryByZoneIdGroupingHandler.NotNull(nameof(sewageWaterInstallationSummaryByZoneIdGroupingHandler));
+            _sewageWaterInstallationSummaryByZoneIdHandler = sewageWaterInstallationSummaryByZoneIdHandler;
+            _sewageWaterInstallationSummaryByZoneIdHandler.NotNull(nameof(sewageWaterInstallationSummaryByZoneIdHandler));
 
             _reportGenerator = reportGenerator;
             _reportGenerator.NotNull(nameof(_reportGenerator));
@@ -28,10 +28,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterInstallationHeaderOutputDto, ReportOutput<SewageWaterInstallationSummaryByZoneIdDateOutputDto, SewageWaterInstallationSummaryByZoneIdDateOutputDto>>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryByZoneIdDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(SewageWaterInstallationInputDto input, CancellationToken cancellationToken)
         {
-            ReportOutput<SewageWaterInstallationHeaderOutputDto, ReportOutput<SewageWaterInstallationSummaryByZoneIdDateOutputDto, SewageWaterInstallationSummaryByZoneIdDateOutputDto>> result = await _sewageWaterInstallationSummaryByZoneIdGroupingHandler.Handle(input, cancellationToken);
+            ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryByZoneIdDataOutputDto> result = await _sewageWaterInstallationSummaryByZoneIdHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
@@ -40,7 +40,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         public async Task<IActionResult> GetExcel(string connectionId, SewageWaterInstallationInputDto inputDto, CancellationToken cancellationToken)
         {
             string reportName = inputDto.IsWater ? ReportLiterals.WaterInstallationSummaryByZoneId : ReportLiterals.SewageInstallationSummaryByZoneId;
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _sewageWaterInstallationSummaryByZoneIdGroupingHandler.Handle, CurrentUser, reportName, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _sewageWaterInstallationSummaryByZoneIdHandler.Handle, CurrentUser, reportName, connectionId);
             return Ok(inputDto);
         }
     }

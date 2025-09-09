@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryByZoneIdDataGroupOutputDto>> Handle(SewageWaterInstallationInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryByZoneIdDataOutputDto>> Handle(SewageWaterInstallationInputDto input, CancellationToken cancellationToken)
         {
             var validatioResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validatioResult.IsValid)
@@ -34,52 +34,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             }
 
             var result = await _sewageWaterInstallationSummaryByZoneIdQuery.Get(input);
-
-
-            IEnumerable<SewageWaterInstallationSummaryByZoneIdDataGroupOutputDto> dataGroup = result
-                 .ReportData
-                 .GroupBy(m => m.RegionTitle) // فقط بر اساس RegionId گروه‌بندی
-                 .Select(g => new SewageWaterInstallationSummaryByZoneIdDataGroupOutputDto()
-                 {
-                     Key = new SewageWaterInstallationSummaryByZoneIdKeyDataOutputDto
-                     {
-                         RegionTitle = g.First().RegionTitle,
-                         SumCustomerCount = g.Sum(x => x.CustomerCount),
-                         SumTotalUnit = g.Sum(x => x.TotalUnit),
-                         SumUnSpecified = g.Sum(x => x.UnSpecified),
-                         SumField0_5 = g.Sum(x => x.Field0_5),
-                         SumField0_75 = g.Sum(x => x.Field0_75),
-                         SumField1 = g.Sum(x => x.Field1),
-                         SumField1_2 = g.Sum(x => x.Field1_2),
-                         SumField1_5 = g.Sum(x => x.Field1_5),
-                         SumField2 = g.Sum(x => x.Field2),
-                         SumField3 = g.Sum(x => x.Field3),
-                         SumField4 = g.Sum(x => x.Field4),
-                         SumField5 = g.Sum(x => x.Field5),
-                         SumMoreThan6 = g.Sum(x => x.MoreThan6)
-                     },
-                     Values = g.Select(v => new SewageWaterInstallationSummaryByZoneIdValueDataOutputDto
-                     {
-                         ZoneTitle = v.ZoneTitle,
-                         CustomerCount = v.CustomerCount,
-                         TotalUnit = v.TotalUnit,
-                         UnSpecified = v.UnSpecified,
-                         Field0_5 = v.Field0_5,
-                         Field0_75 = v.Field0_75,
-                         Field1 = v.Field1,
-                         Field1_2 = v.Field1_2,
-                         Field1_5 = v.Field1_5,
-                         Field2 = v.Field2,
-                         Field3 = v.Field3,
-                         Field4 = v.Field4,
-                         Field5 = v.Field5,
-                         MoreThan6 = v.MoreThan6
-                     }).ToList()
-                 });
-
-            ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryByZoneIdDataGroupOutputDto> finalData = new(result.Title, result.ReportHeader, dataGroup);
-            return finalData;
+            return result;
         }
-
     }
 }
