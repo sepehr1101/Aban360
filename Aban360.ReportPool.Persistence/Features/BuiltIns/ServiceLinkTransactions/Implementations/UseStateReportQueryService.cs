@@ -35,6 +35,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 TotalDebtAmount = useStateData.Sum(useState => useState.DebtAmount),
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
                 RecordCount = (useStateData is not null && useStateData.Any()) ? useStateData.Count() : 0,
            
                 SumCommercialUnit = useStateData.Sum(i => i.CommercialUnit),
@@ -73,6 +75,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 	                    c.OtherCount OtherUnit,
                     	c.ContractCapacity AS ContractualCapacity,
 	                    TRIM(c.BillId) BillId,
+						c.MeterSerialBody AS MeterSerial,
+						c.WaterInstallDate AS MeterInstallationDateJalali,
+						c.WaterRequestDate AS MeterRequestDateJalali
 	                    RN=ROW_NUMBER() OVER (PARTITION BY ZoneId, CustomerNumber ORDER BY RegisterDayJalali DESC)
                     FROM [CustomerWarehouse].dbo.Clients c
                     WHERE 

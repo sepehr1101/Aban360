@@ -10,11 +10,11 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Implementations
 {
-    internal sealed class SewageWaterDistanceofRequestAndInstallationSummaryByZoneHandler : ISewageWaterDistanceofRequestAndInstallationSummaryByZoneHandler
+    internal sealed class SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedHandler : ISewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedHandler
     {
         private readonly ISewageWaterDistanceofRequestAndInstallationSummaryByZoneQueryService _sewageWaterDistanceofRequestAndInstallationSummaryByZoneQuery;
         private readonly IValidator<SewageWaterDistanceofRequestAndInstallationByZoneInputDto> _validator;
-        public SewageWaterDistanceofRequestAndInstallationSummaryByZoneHandler(
+        public SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedHandler(
             ISewageWaterDistanceofRequestAndInstallationSummaryByZoneQueryService sewageWaterDistanceofRequestAndInstallationSummaryByZoneQuery,
             IValidator<SewageWaterDistanceofRequestAndInstallationByZoneInputDto> validator)
         {
@@ -25,7 +25,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryByZoneDataOutputDto>> Handle(SewageWaterDistanceofRequestAndInstallationByZoneInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, ReportOutput<SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto>>> Handle(SewageWaterDistanceofRequestAndInstallationByZoneInputDto input, CancellationToken cancellationToken)
         {
             var validatioResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validatioResult.IsValid)
@@ -47,7 +47,36 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             result.ReportHeader.MaxDistance = CalculationDistanceDate.ConvertDaysToDate(distances.Any() ? (int)distances.Max() : 0);
             result.ReportHeader.MinDistance = CalculationDistanceDate.ConvertDaysToDate(distances.Any() ? (int)distances.Min() : 0);
 
-            return result;
+
+            IEnumerable<ReportOutput<SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto>> dataGroup = result
+                    .ReportData
+                    .GroupBy(m => m.RegionTitle) // فقط بر اساس RegionId گروه‌بندی
+                    .Select(g => new ReportOutput<SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto>
+                    (
+                        result.Title,
+                        new SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto
+                        {
+                            ItemTitle = g.First().RegionTitle,
+                            DistanceAverage = g.Sum(x => x.DistanceAverage),
+                            DistanceMedian = g.Sum(x => x.DistanceMedian),
+                        },
+                        g.Select(v => new SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto
+                        {
+                            ItemTitle = v.ZoneTitle,
+                            DistanceAverage = v.DistanceAverage,
+                            DistanceMedian = v.DistanceMedian,
+                            DistanceAverageText = v.DistanceAverageText,
+                        })
+                    ))
+                    .ToList();
+
+            dataGroup.ForEach(x =>
+            {
+                x.ReportHeader.DistanceAverageText = CalculationDistanceDate.ConvertDaysToDate((int)x.ReportHeader.DistanceAverage);
+            });
+            ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, ReportOutput<SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto>> finalData = new(result.Title, result.ReportHeader, dataGroup);
+
+            return finalData;
         }
     }
 }

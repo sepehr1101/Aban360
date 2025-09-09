@@ -8,6 +8,7 @@
         public int RecordCount { get; set; }
         public string AverageDistance { get; set; }
         public string MaxDistance { get; set; }
+        public string MinDistance { get; set; }
 
         public int SumDomesticUnit { get; set; }
         public int SumCommercialUnit { get; set; }

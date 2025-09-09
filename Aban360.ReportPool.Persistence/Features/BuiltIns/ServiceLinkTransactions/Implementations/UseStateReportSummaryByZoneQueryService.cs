@@ -33,6 +33,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = data is not null && data.Any() ? data.Count() : 0,
 
@@ -40,6 +42,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 SumDomesticUnit = data.Sum(i => i.DomesticUnit),
                 SumOtherUnit = data.Sum(i => i.OtherUnit),
                 TotalUnit = data.Sum(i => i.TotalUnit),
+                CustomerCount = data.Sum(i => i.CustomerCount),
             };
             string useStateQuery = GetUseStateTitle();
             string useStateTitle = await _sqlConnection.QueryFirstOrDefaultAsync<string>(useStateQuery, new { useStateId = input.UseStateId });
@@ -69,6 +72,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                         c.ZoneId in @zoneIds
 					)
                     SELECT 
+						MAX(t46.C2) AS RegionTitle,
 						c.ZoneTitle,
                     	COUNT(c.ZoneTitle) AS CustomerCount,
 						SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
@@ -89,6 +93,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 					FROM CTE c
 					Join [Db70].dbo.T5 t5
 						On t5.C0=c.WaterDiameterId	
+					Join [Db70].dbo.T51 t51
+						On t51.C0=c.ZoneId
+					Join [Db70].dbo.T46 t46
+						On t51.C1=t46.C0
                     WHERE 
 						c.RN=1 AND 
 						c.DeletionStateId=@useStateId 

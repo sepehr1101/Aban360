@@ -50,9 +50,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         private string GetWaterDistanceRequestInstallationQuery()
         {
             return @"Select	
+						MAX(t46.C2) AS RegionTitle,
                     	c.ZoneTitle AS ZoneTitle,
 						ROUND(AVG(CONVERT(float, DATEDIFF(DAY,[CustomerWarehouse].dbo.PersianToMiladi(c.WaterRequestDate), [CustomerWarehouse].dbo.PersianToMiladi(c.WaterInstallDate)))), 2) AS DistanceAverage
-                    From [CustomerWarehouse].dbo.Clients c
+                    From [CustomerWarehouse].dbo.Clients c	
+					Join [Db70].dbo.T51 t51
+						On t51.C0=c.ZoneId
+					Join [Db70].dbo.T46 t46
+						On t51.C1=t46.C0
                     Where	
 					    c.WaterRequestDate IS NOT NULL AND
 					    c.WaterInstallDate IS NOT NULL AND
@@ -68,9 +73,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         private string GetSewageDistanceRequestInstallationQuery()
         {
             return @"Select	
+						MAX(t46.C2) AS RegionTitle,
                     	c.ZoneTitle AS ZoneTitle,
 						ROUND(AVG(CONVERT(float, DATEDIFF(DAY, [CustomerWarehouse].dbo.PersianToMiladi(c.SewageRequestDate), [CustomerWarehouse].dbo.PersianToMiladi(c.SewageInstallDate)))), 2) AS DistanceAverage
-                    From [CustomerWarehouse].dbo.Clients c
+                    From [CustomerWarehouse].dbo.Clients c	
+					Join [Db70].dbo.T51 t51
+						On t51.C0=c.ZoneId
+					Join [Db70].dbo.T46 t46
+						On t51.C1=t46.C0
                     Where	
 					    c.SewageRequestDate IS NOT NULL AND
 					    c.SewageInstallDate IS NOT NULL AND

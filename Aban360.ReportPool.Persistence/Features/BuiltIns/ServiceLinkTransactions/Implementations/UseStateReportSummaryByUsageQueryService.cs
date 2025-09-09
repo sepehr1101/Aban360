@@ -33,6 +33,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
+                FromReadingNumber=input.FromReadingNumber,
+                ToReadingNumber=input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = data is not null && data.Any() ? data.Count() : 0,
 
@@ -40,6 +42,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 SumDomesticUnit = data.Sum(i => i.DomesticUnit),
                 SumOtherUnit = data.Sum(i => i.OtherUnit),
                 TotalUnit = data.Sum(i => i.TotalUnit),
+                CustomerCount = data.Sum(i => i.CustomerCount),
             };
             string useStateQuery = GetUseStateTitle();
             string useStateTitle = await _sqlConnection.QueryFirstOrDefaultAsync<string>(useStateQuery, new { useStateId = input.UseStateId });
