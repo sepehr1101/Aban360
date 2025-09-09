@@ -30,5 +30,17 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
             ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> items = await _subscriptionEventHandler.Handle(searchInput.Input);
             return Ok(items);
         }
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetStiReport([FromBody] SearchInput searchInput, CancellationToken cancellationToken)
+        {
+            int reportCode = 20;
+            ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> calculationDetails = await _subscriptionEventHandler.Handle(searchInput.Input);
+            JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode);
+            return Ok(reportId);
+        }
     }
 }

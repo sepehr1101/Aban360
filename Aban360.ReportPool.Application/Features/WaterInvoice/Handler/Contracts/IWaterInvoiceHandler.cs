@@ -1,10 +1,11 @@
-﻿using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 
 namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Contracts
 {
     public interface IWaterInvoiceHandler
     {
-        Task<WaterInvoiceDto> Handle(string input);
+        Task<ReportOutput<WaterInvoiceDto, LineItemsDto>> Handle(string input);
         WaterInvoiceDto Handle();
     }
 }

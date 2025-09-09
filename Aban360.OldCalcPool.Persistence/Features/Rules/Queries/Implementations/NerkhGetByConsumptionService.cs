@@ -26,6 +26,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
             int nerkhTableId = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(nerkhTableIdQueryString, new { zoneId = GetMergedZoneId(input.ZoneId) });
 
             string nerkhGetQueryString = GetNerkhGetQuery(nerkhTableId);
+            string aggregatedNerkhGetQueryString = GetNerkhGetQuery();
             var @params = new
             {
                 usageId = input.UsageId,
@@ -38,6 +39,23 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
             IEnumerable<ZaribGetDto> zarib = await GetZarib(nerkh, input.ZoneId);
             return (nerkh,abAzad,zarib);
         }
+        public async Task<(IEnumerable<NerkhGetDto>, IEnumerable<AbAzadGetDto>,IEnumerable<ZaribGetDto>)> GetWithAggregatedNerkh(NerkhByConsumptionInputDto input)
+        {
+            string nerkhGetQueryString = GetNerkhGetQuery();
+            var @params = new
+            {
+                usageId = input.UsageId,
+                previousDateJalali = input.PreviousDateJalali,
+                input.CurrentDateJalali,
+                averageConsumption = input.AverageConsumption,
+            };
+            IEnumerable<NerkhGetDto> nerkh = await _sqlReportConnection.QueryAsync<NerkhGetDto>(nerkhGetQueryString, @params);
+            IEnumerable<AbAzadGetDto> abAzad = await GetAbAzad(nerkh);
+            IEnumerable<ZaribGetDto> zarib = await GetZarib(nerkh, input.ZoneId);
+            return (nerkh,abAzad,zarib);
+        }
+
+
         private async Task<IEnumerable<ZaribGetDto>> GetZarib(IEnumerable<NerkhGetDto> nerkh,int zoneId)
         {
             ICollection<ZaribGetDto> zaribs=new List<ZaribGetDto>();
@@ -50,6 +68,22 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
         private async Task<IEnumerable<AbAzadGetDto>> GetAbAzad(IEnumerable<NerkhGetDto> nerkh, int nerkhTableId)
         {
             string abAzadQueryString = GetAbAzadQuery(nerkhTableId);
+            ICollection<AbAzadGetDto> abAzad = new List<AbAzadGetDto>();
+            foreach (NerkhGetDto nerkhItem in nerkh)
+            {
+                var @abAzadParams = new
+                {
+                    @fromDate = nerkhItem.Date1,
+                    @toDate = nerkhItem.Date2,
+                };
+                abAzad.Add(await _sqlReportConnection.QueryFirstOrDefaultAsync<AbAzadGetDto>(abAzadQueryString, @abAzadParams));
+            }
+
+            return abAzad.ToList();
+        }
+        private async Task<IEnumerable<AbAzadGetDto>> GetAbAzad(IEnumerable<NerkhGetDto> nerkh)
+        {
+            string abAzadQueryString = GetAbAzadQuery();
             ICollection<AbAzadGetDto> abAzad = new List<AbAzadGetDto>();
             foreach (NerkhGetDto nerkhItem in nerkh)
             {
@@ -85,7 +119,28 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                     	(@averageConsumption BETWEEN n.ebt AND n.ent) AND
                     	n.cod=@usageId";
         }
-
+        private string GetNerkhGetQuery()
+        {
+            return @"Select
+                        n.Id,
+                    	n.date1 AS Date1,
+                    	n.date2 AS Date2,
+                    	n.ebt AS Ebt,
+                    	n.ent AS Ent,
+                    	n.vaj AS Vaj,
+                    	n.cod AS Cod,
+                    	n.olgo AS Olgo,
+                    	n.[desc] AS [Desc],
+                    	n.o_vaj AS OVaj,
+                    	n.o_vaj_faz AS OVajFaz,
+                        n.bodjeh_new AS Bodjeh_new,
+                        n.vaj_faz AS VajFaz
+                    From [OldCalc].dbo.Nerkh n
+                    Where 
+                    	(n.date1<=@currentDateJalali AND n.date2>@previousDateJalali)AND
+                    	(@averageConsumption BETWEEN n.ebt AND n.ent) AND
+                    	n.cod=@usageId";
+        }
         private string GetNerkhTableIdQuery()
         {
             return @"Select t.olgo
@@ -98,6 +153,16 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                         MAX(CASE WHEN cod = 39 THEN vaj END) AS Azad,
                         MAX(CASE WHEN cod = 8 THEN vaj END) AS Amozesh
                     FROM [OldCalc].dbo.nerkh_{nerkh}
+                    WHERE
+                        date1 < @toDate
+                        AND date2 >= @fromDate";///
+        }
+        private string GetAbAzadQuery()
+        {
+            return @$"SELECT
+                        MAX(CASE WHEN cod = 39 THEN vaj END) AS Azad,
+                        MAX(CASE WHEN cod = 8 THEN vaj END) AS Amozesh
+                    FROM [OldCalc].dbo.Nerkh
                     WHERE
                         date1 < @toDate
                         AND date2 >= @fromDate";///

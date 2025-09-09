@@ -1,6 +1,8 @@
-﻿using Aban360.Common.Db.Dapper;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
+using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Features.WaterInvoice.Contracts;
 using Dapper;
@@ -19,7 +21,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             WaterInvoiceDto waterInvoice = GetWaterInvoice();
             return waterInvoice;
         }
-        public async Task<WaterInvoiceDto> Get(string billId)
+        public async Task<ReportOutput<WaterInvoiceDto, LineItemsDto>> Get(string billId)
         {
             string getWaterInvoiceQuery = GetWaterInvoiceQuery();
             string getItemValueQuery = GetItemsQuery();
@@ -37,7 +39,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             string headquarterTitle = await _sqlConnection.QueryFirstAsync<string>(getHeadquarterQuery, new { zoneId = waterInvoice.ZoneId });
             WaterInvoicePaymentOutputDto? paymentInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterInvoicePaymentOutputDto>(getPaymentQuery, new { billId = billId, payId = waterInvoice.PayId == null ? "0" : waterInvoice.PayId });
 
-            waterInvoice.LineItems = lineitems.ToList();
+            //waterInvoice.LineItems = lineitems.ToList();
             waterInvoice.PreviousConsumptions = previousConsumptions.ToList();
             waterInvoice.Sum = lineitems.Select(i => i.Amount).Sum();
             waterInvoice.Headquarters = headquarterTitle;
@@ -47,7 +49,9 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             waterInvoice.IsPayed = paymentInfo is not null;
             waterInvoice.Description = paymentInfo != null ?ExceptionLiterals.SuccessedPay : ExceptionLiterals.UnsuccessedPay;
 
-            return waterInvoice;
+            ReportOutput<WaterInvoiceDto, LineItemsDto> result = new(ReportLiterals.WaterInvoice, waterInvoice, lineitems);
+
+            return result;
         }
 
         private string GetHeadquarterQuery()
@@ -127,11 +131,11 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                     	411-7676-4864 AS EconomicalNumber,--todo
                     	b.ZoneTitle AS ZoneTitle,
                         b.ZoneId AS ZoneId,
-                    	c.FirstName AS FirstName,
-                    	c.SureName AS SurName,
-                    	c.FirstName + ' ' + c.SureName AS FullName,
-                    	c.Address AS Address,
-                    	c.PostalCode AS PostalCode,
+                    	TRIM(c.FirstName) AS FirstName,
+                    	TRIM(c.SureName) AS SurName,
+                    	(TRIM(c.FirstName) + ' ' + TRIM(c.SureName)) AS FullName,
+                    	TRIM(c.Address) AS Address,
+                    	TRIM(c.PostalCode) AS PostalCode,
                     	c.UsageTitle AS UsageSellTitle,
                     	c.UsageTitle2 AS UsageConsumptionTitle,
 						c.BranchType AS UseStateTitle,
@@ -162,8 +166,8 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                     	b.Deadline AS PaymentDeadline,
                     	--consumptionState in c#
                     	--previousConsumption in secod query
-                    	b.BillId AS BillId,
-                    	b.PayId AS PayId,
+                    	TRIM(b.BillId) AS BillId,
+                    	TRIM(b.PayId) AS PayId,
                     	N'--' AS PaymentAmountText,
                     	1 As IsPayed,--todo
                     	N'--' AS Description,
@@ -242,13 +246,13 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                 ConsumptionLiter = 97000,
                 ConsumptionAverage = 14,
 
-                LineItems = new List<LineItemsDto>()
-                {
-                    new LineItemsDto() {Item="آب بها",Amount=1825832},
-                    new LineItemsDto() {Item="کارمزد دفع فاضلاب",Amount=1250882},
-                    new LineItemsDto() {Item="مالیات و عوارض",Amount=1101968},
-                    new LineItemsDto() {Item="تکالیف قانونی",Amount=1002258}
-                },
+                //LineItems = new List<LineItemsDto>()
+                //{
+                //    new LineItemsDto() {Item="آب بها",Amount=1825832},
+                //    new LineItemsDto() {Item="کارمزد دفع فاضلاب",Amount=1250882},
+                //    new LineItemsDto() {Item="مالیات و عوارض",Amount=1101968},
+                //    new LineItemsDto() {Item="تکالیف قانونی",Amount=1002258}
+                //},
 
                 Sum = 1909832,
                 DisCount = 0,

@@ -50,7 +50,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetStiReport(PrepaymentAndCalculationInputDto inputDto, CancellationToken cancellationToken)
         {
-            int reportCode = 16;
+            int reportCode = 70;
             ReportOutput<PrepaymentAndCalculationHeaderOutputDto, PrepaymentAndCalculationDataOutputDto> prepaymentAndCalculation = await _prepaymentAndCalculationHandler.Handle(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(prepaymentAndCalculation, cancellationToken, reportCode);
             return Ok(reportId);

@@ -32,10 +32,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
 
         [HttpPost]
         [Route("summery-2")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<WaterInvoiceDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterInvoiceDto, LineItemsDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSummary2([FromBody] SearchInput searchInput)
         {
-            WaterInvoiceDto waterInvoice =await _waterInvoiceHandler.Handle(searchInput.Input);
+            ReportOutput<WaterInvoiceDto, LineItemsDto> waterInvoice = await _waterInvoiceHandler.Handle(searchInput.Input);
             return Ok(waterInvoice);
         }
 
@@ -45,11 +45,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [AllowAnonymous]
         public async Task<IActionResult> GetStiReport(SearchInput inputDto, CancellationToken cancellationToken)
         {
-            //todo: header,data
-            int reportCode = 1;
-            //ReportOutput<UnconfirmedSubscribersHeaderOutputDto, UnconfirmedSubscribersDataOutputDto> unconfirmedSubscribers = await _waterInvoiceHandler.Handle(inputDto, cancellationToken);
-            //JsonReportId reportId = await JsonOperation.ExportToJson(unconfirmedSubscribers, cancellationToken, reportCode);
-            return Ok();
+            int reportCode = 90;
+            ReportOutput<WaterInvoiceDto, LineItemsDto> WaterInvoiceDto = await _waterInvoiceHandler.Handle(inputDto.Input);
+            JsonReportId reportId = await JsonOperation.ExportToJson(WaterInvoiceDto, cancellationToken, reportCode);
+            return Ok(reportId);
         }
     }
 }

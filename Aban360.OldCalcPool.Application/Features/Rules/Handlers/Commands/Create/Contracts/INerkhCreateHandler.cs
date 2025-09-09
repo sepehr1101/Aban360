@@ -5,5 +5,6 @@ namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Creat
     public interface INerkhCreateHandler
     {
         Task Handle(NerkhCreateDto createDto, int nerkh, CancellationToken cancellationToken);
+        Task Handle(NerkhCreateDto createDto, CancellationToken cancellationToken);
     }
 }

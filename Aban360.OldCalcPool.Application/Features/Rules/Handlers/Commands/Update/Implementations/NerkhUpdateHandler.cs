@@ -32,5 +32,15 @@ namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Updat
             }
             await _nerkhUpdateService.Update(UpdateDto, nerkh);
         }
+        public async Task Handle(NerkhUpdateDto UpdateDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _nerkhUpdateValidator.ValidateAsync(UpdateDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new CustomeValidationException(message);
+            }
+            await _nerkhUpdateService.Update(UpdateDto);
+        }
     }
 }

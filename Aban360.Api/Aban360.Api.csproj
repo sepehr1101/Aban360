@@ -135,19 +135,31 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="AppData\Mrts\2.mrt">
+    <None Update="AppData\Mrts\50.mrt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="AppData\Mrts\16.mrt">
+    <None Update="AppData\Mrts\90.mrt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="AppData\Mrts\15.mrt">
+    <None Update="AppData\Mrts\71.mrt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="AppData\Mrts\1.mrt">
+    <None Update="AppData\Mrts\70.mrt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="AppData\Mrts\14.mrt">
+    <None Update="AppData\Mrts\17.mrt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="AppData\Mrts\80.mrt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="AppData\Mrts\100.mrt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="AppData\Mrts\19.mrt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="AppData\Mrts\20.mrt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
