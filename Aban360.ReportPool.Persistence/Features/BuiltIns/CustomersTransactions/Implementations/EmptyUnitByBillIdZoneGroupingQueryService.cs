@@ -16,7 +16,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             : base(configuration)
         { }
 
-        public async Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdZoneGroupingDataOutputDto>> Get(EmptyUnitInputDto input)
+        public async Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdByZoneDataOutputDto>> Get(EmptyUnitInputDto input)
         {
             string emptyUnitByBillIdZoneGroupingQuery = GetEmptyUnitByBillIdZoneGroupingQuery(input.ZoneIds.Any(), input.UsageSellIds.Any());
             var @params = new
@@ -29,7 +29,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 usageIds = input.UsageSellIds,
                 zoneIds = input.ZoneIds
             };
-            IEnumerable<EmptyUnitByBillIdZoneGroupingDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<EmptyUnitByBillIdZoneGroupingDataOutputDto>(emptyUnitByBillIdZoneGroupingQuery, @params);
+            IEnumerable<EmptyUnitByBillIdByZoneDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<EmptyUnitByBillIdByZoneDataOutputDto>(emptyUnitByBillIdZoneGroupingQuery, @params);
             EmptyUnitByBillIdSummaryHeaderOutputDto RequestHeader = new EmptyUnitByBillIdSummaryHeaderOutputDto()
             {
                 FromEmptyUnit = input.FromEmptyUnit,
@@ -45,8 +45,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 SumOtherUnit = RequestData.Sum(i => i.OtherUnit),
                 TotalUnit = RequestData.Sum(i => i.TotalUnit),
                 EmptyUnit = RequestData.Sum(i => i.EmptyUnit),
+                CustomerCount = RequestData.Sum(i => i.CustomerCount),
             };
-            var result = new ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdZoneGroupingDataOutputDto>
+            var result = new ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdByZoneDataOutputDto>
                 (ReportLiterals.EmptyUnitByBillSummary+ReportLiterals.ByZone,
                 RequestHeader,
                 RequestData);
@@ -78,6 +79,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                             {usageQuery}
 					)
 					SELECT 
+						MAX(t46.C2) AS RegionTitle,
 					    e.ZoneTitle AS ZoneTitle,
 						COUNT(e.ZoneTitle) AS CustomerCount,
 					    SUM(ISNULL(e.CommercialCount, 0) + ISNULL(e.DomesticCount, 0) + ISNULL(e.OtherCount, 0)) AS TotalUnit,
@@ -99,6 +101,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 			         From EmptyUnitByBill e
 		   			 Join [Db70].dbo.T5 t5
 						 On t5.C0=e.WaterDiameterId
+					Join [Db70].dbo.T51 t51
+						On t51.C0=b.ZoneId
+					Join [Db70].dbo.T46 t46
+						On t51.C1=t46.C0
 				  	 Where e.RN=1
 					 Group By e.ZoneTitle";
         }

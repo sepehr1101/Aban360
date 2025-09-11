@@ -3,6 +3,7 @@
     public record SewageWaterDistanceofRequestAndInstallationByZoneInputDto
     {
         public bool IsWater { get; set; }
+        public bool IsInstallation { get; set; }
 
         public string FromDateJalali { get; set; }
         public string ToDateJalali { get; set; }

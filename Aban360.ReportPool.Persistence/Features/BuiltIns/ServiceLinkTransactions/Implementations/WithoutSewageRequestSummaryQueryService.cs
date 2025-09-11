@@ -24,6 +24,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali,
+                fromReadingNumber = input.FromReadingNumber,
+                toReadingNumber = input.ToReadingNumber,
                 zoneIds = input.ZoneIds
             };
             IEnumerable<WithoutSewageRequestSummaryDataOutputDto> withoutSewageRequestData = await _sqlReportConnection.QueryAsync<WithoutSewageRequestSummaryDataOutputDto>(withoutSewageRequest, @params);
@@ -31,6 +33,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (withoutSewageRequestData is not null && withoutSewageRequestData.Any()) ? withoutSewageRequestData.Count() : 0,
 
@@ -38,6 +42,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 SumDomesticUnit = withoutSewageRequestData.Sum(i => i.DomesticUnit),
                 SumOtherUnit = withoutSewageRequestData.Sum(i => i.OtherUnit),
                 TotalUnit = withoutSewageRequestData.Sum(i => i.TotalUnit),
+                CustomerCount = withoutSewageRequestData.Sum(i => i.CustomerCount),
             };
             var result = new ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestSummaryDataOutputDto>
                 (ReportLiterals.WithoutSewageRequestSummary, withoutSewageRequestHeader, withoutSewageRequestData);
@@ -71,7 +76,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.WaterInstallDate BETWEEN @fromDate AND @toDate AND
 						(TRIM(c.SewageRequestDate)='' OR c.SewageRequestDate IS NULL) AND
                     	c.ZoneId IN @zoneIds AND
-						c.ToDayJalali IS NULL
+						c.ToDayJalali IS NULL AND
+						(@fromReadingNumber IS NULL OR
+						@toReadingNumber IS NULL OR
+						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)
                     Group BY
                     	c.UsageTitle";
         }

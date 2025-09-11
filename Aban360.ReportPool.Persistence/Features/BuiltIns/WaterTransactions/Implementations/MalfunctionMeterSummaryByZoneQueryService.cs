@@ -35,7 +35,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 RecordCount = malfunctionMeterData is not null && malfunctionMeterData.Any() ? malfunctionMeterData.Count() : 0,
 
                 TotalPayable = malfunctionMeterData is not null && malfunctionMeterData.Any() ? malfunctionMeterData.Sum(x => x.SumItems) : 0,
-                ConsumptionAverage = malfunctionMeterData is not null && malfunctionMeterData.Any() ? malfunctionMeterData.Sum(x => x.SumItems) : 0,
+                ConsumptionAverage = malfunctionMeterData is not null && malfunctionMeterData.Any() ? malfunctionMeterData.Average(x => x.Consumption ) : 0,
                 SumCommercialUnit = malfunctionMeterData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = malfunctionMeterData.Sum(i => i.DomesticUnit),
                 SumOtherUnit = malfunctionMeterData.Sum(i => i.OtherUnit),
@@ -70,7 +70,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     SELECT 
 						ZoneTitle as ItemTitle,
 						SUM(c.SumItems) as SumItems,
-						AVG(c.Consumption) as Consumption,
+						AVG(c.ConsumptionAverage) as Consumption,
 						COUNT(c.ZoneTitle) AS CustomerCount,
 						SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
 						SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,

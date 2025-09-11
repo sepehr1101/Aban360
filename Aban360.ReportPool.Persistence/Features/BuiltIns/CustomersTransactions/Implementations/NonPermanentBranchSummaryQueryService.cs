@@ -36,7 +36,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString()
             };
 
-            var result = new ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryDataOutputDto>(ReportLiterals.NonPermanentBranchSummary, nonPremanentBranchHeader, nonPremanentBranchData);
+            var result = new ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryDataOutputDto>(ReportLiterals.NonPermanentBranchSummary+ReportLiterals.ByUsageAndZoneAndDiameter, nonPremanentBranchHeader, nonPremanentBranchData);
 
             return result;
         }

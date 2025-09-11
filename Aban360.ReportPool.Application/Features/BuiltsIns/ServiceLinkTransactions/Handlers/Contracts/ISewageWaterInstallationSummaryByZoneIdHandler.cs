@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
 {
     public interface ISewageWaterInstallationSummaryByZoneIdHandler
     {
-        Task<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryByZoneIdDataGroupOutputDto>> Handle(SewageWaterInstallationInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryByZoneIdDataOutputDto>> Handle(SewageWaterInstallationInputDto input, CancellationToken cancellationToken);
     }
 }

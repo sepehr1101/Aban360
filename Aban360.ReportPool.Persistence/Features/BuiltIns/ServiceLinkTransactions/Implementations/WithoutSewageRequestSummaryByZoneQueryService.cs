@@ -24,6 +24,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali,
+                fromReadingNumber = input.FromReadingNumber,
+                toReadingNumber = input.ToReadingNumber,
                 zoneIds = input.ZoneIds
             };
             IEnumerable<WithoutSewageRequestSummaryByZoneDataOutputDto> withoutSewageRequestData = await _sqlReportConnection.QueryAsync<WithoutSewageRequestSummaryByZoneDataOutputDto>(withoutSewageRequest, @params);
@@ -31,6 +33,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = withoutSewageRequestData is not null && withoutSewageRequestData.Any() ? withoutSewageRequestData.Count() : 0,
 
@@ -38,6 +42,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 SumDomesticUnit = withoutSewageRequestData.Sum(i => i.DomesticUnit),
                 SumOtherUnit = withoutSewageRequestData.Sum(i => i.OtherUnit),
                 TotalUnit = withoutSewageRequestData.Sum(i => i.TotalUnit),
+                CustomerCount = withoutSewageRequestData.Sum(i => i.CustomerCount),
             };
             var result = new ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestSummaryByZoneDataOutputDto>
                 (ReportLiterals.WithoutSewageRequestSummaryByZone, withoutSewageRequestHeader, withoutSewageRequestData);
@@ -47,6 +52,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         private string GetBranchWithoutSewageRequestQuery()
         {
             return @"Select	
+						MAX(t46.C2) AS RegionTitle,
                     	c.ZoneTitle AS ZoneTitle,
                         COUNT(c.UsageTitle) AS CustomerCount,
 					    SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
@@ -67,11 +73,18 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     From [CustomerWarehouse].dbo.Clients c
 					Join [Db70].dbo.T5 t5
 						On t5.C0=c.WaterDiameterId
+                    Join [Db70].dbo.T51 t51
+						On t51.C0=c.ZoneId
+					Join [Db70].dbo.T46 t46
+						On t51.C1=t46.C0
                     Where	
                     	c.WaterInstallDate BETWEEN @fromDate AND @toDate AND
 						(TRIM(c.SewageRequestDate)='' OR c.SewageRequestDate IS NULL) AND
                     	c.ZoneId IN @zoneIds AND
-						c.ToDayJalali IS NULL
+						c.ToDayJalali IS NULL AND
+						(@fromReadingNumber IS NULL OR
+						@toReadingNumber IS NULL OR
+						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)
                     Group BY
                     	c.ZoneTitle";
         }

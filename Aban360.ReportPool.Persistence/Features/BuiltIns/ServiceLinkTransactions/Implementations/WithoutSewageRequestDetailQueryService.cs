@@ -24,6 +24,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali,
+                fromReadingNumber = input.FromReadingNumber,
+                toReadingNumber = input.ToReadingNumber,
                 zoneIds = input.ZoneIds
             };
             IEnumerable<WithoutSewageRequestDetailDataOutputDto> withoutSewageRequestData = await _sqlReportConnection.QueryAsync<WithoutSewageRequestDetailDataOutputDto>(withoutSewageRequest, @params);
@@ -31,13 +33,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (withoutSewageRequestData is not null && withoutSewageRequestData.Any()) ? withoutSewageRequestData.Count() : 0,
 
                 SumCommercialUnit = withoutSewageRequestData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = withoutSewageRequestData.Sum(i => i.DomesticUnit),
                 SumOtherUnit = withoutSewageRequestData.Sum(i => i.OtherUnit),
-                TotalUnit = withoutSewageRequestData.Sum(i => i.TotalUnit)
+                TotalUnit = withoutSewageRequestData.Sum(i => i.TotalUnit),
+                CustomerCount = (withoutSewageRequestData is not null && withoutSewageRequestData.Any()) ? withoutSewageRequestData.Count() : 0,
             };
             var result = new ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestDetailDataOutputDto>
                 (ReportLiterals.WithoutSewageRequestDetail, withoutSewageRequestHeader, withoutSewageRequestData);
@@ -65,13 +70,22 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,
                     	c.WaterRequestDate AS WaterRequestDate,
-						c.WaterInstallDate AS WaterInstallationDate
+						c.WaterInstallDate AS WaterInstallationDate,
+						TRIM(c.PhoneNo) AS PhoneNumber,
+						TRIM(c.MobileNo) AS MobileNumber,
+						c.DeletionStateTitle ,
+						TRIM(c.MeterSerialBody) AS MeterSerial,
+						TRIM(c.NationalId) AS NatoinalCode,
+						TRIM(c.PostalCode) AS PostalCode
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
                     	c.WaterInstallDate BETWEEN @fromDate AND @toDate AND
 						(TRIM(c.SewageRequestDate)='' OR c.SewageRequestDate IS NULL) AND
                     	c.ZoneId IN @zoneIds AND
-						c.ToDayJalali IS NULL";
+						c.ToDayJalali IS NULL AND
+						(@fromReadingNumber IS NULL OR
+						@toReadingNumber IS NULL OR
+						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)";
         }
     }
 }

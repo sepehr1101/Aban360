@@ -28,6 +28,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali,
+                fromReadingNumber = input.FromReadingNumber,
+                toReadingNumber = input.ToReadingNumber,
                 zoneIds = input.ZoneIds
             };
             IEnumerable<SewageWaterRequestNonInstalledSummaryByZoneDataOutputDto> requestNonInstalledData = await _sqlReportConnection.QueryAsync<SewageWaterRequestNonInstalledSummaryByZoneDataOutputDto>(requestNonInstalledQuery, @params);
@@ -35,13 +37,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = requestNonInstalledData is not null && requestNonInstalledData.Any() ? requestNonInstalledData.Count() : 0,
 
                 SumCommercialUnit = requestNonInstalledData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = requestNonInstalledData.Sum(i => i.DomesticUnit),
                 SumOtherUnit = requestNonInstalledData.Sum(i => i.OtherUnit),
-                TotalUnit = requestNonInstalledData.Sum(i => i.TotalUnit)
+                TotalUnit = requestNonInstalledData.Sum(i => i.TotalUnit),
+                CustomerCount = requestNonInstalledData.Sum(i => i.CustomerCount),
             };
             var result = new ReportOutput<SewageWaterRequestNonInstalledHeaderOutputDto, SewageWaterRequestNonInstalledSummaryByZoneDataOutputDto>
                 (input.IsWater ? ReportLiterals.WaterRequestNonInstalledSummary + ReportLiterals.ByZone : ReportLiterals.SewageRequestNonInstalledSummary + ReportLiterals.ByZone,
@@ -77,7 +82,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.WaterRequestDate BETWEEN @fromDate AND @toDate AND
 						(TRIM(c.WaterInstallDate)='' OR c.WaterInstallDate IS NULL) AND
                     	c.ZoneId IN @zoneIds AND
-						c.ToDayJalali IS NULL
+						c.ToDayJalali IS NULL AND
+						(@fromReadingNumber IS NULL OR
+						@toReadingNumber IS NULL OR
+						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)
                     Group BY
                     	c.ZoneTitle";
         }
@@ -108,7 +116,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.SewageRequestDate BETWEEN @fromDate AND @toDate AND
 						(TRIM(c.SewageInstallDate)='' OR c.SewageInstallDate IS NULL) AND
                     	c.ZoneId IN @zoneIds AND
-						c.ToDayJalali IS NULL
+						c.ToDayJalali IS NULL AND
+						(@fromReadingNumber IS NULL OR
+						@toReadingNumber IS NULL OR
+						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)
                     Group BY
                     	c.ZoneTitle";
         }

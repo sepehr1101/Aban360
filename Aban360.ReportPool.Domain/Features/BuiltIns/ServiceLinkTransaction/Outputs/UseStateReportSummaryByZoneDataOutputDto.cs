@@ -2,6 +2,7 @@
 {
     public record UseStateReportSummaryByZoneDataOutputDto
     {
+        public string RegionTitle { get; set; }
         public string ZoneTitle { get; set; }
         public int CustomerCount { get; set; }
         public int TotalUnit { get; set; }

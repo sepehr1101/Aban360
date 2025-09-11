@@ -8,6 +8,7 @@
         public static string ByZone { get { return " بر اساس ناحیه "; } }
         public static string ByUsage { get { return " بر اساس کاربری "; } }
         public static string ByUsageAndZone { get { return " بر اساس کاربری و ناحیه "; } }
+        public static string ByUsageAndZoneAndDiameter { get { return " بر اساس کاربری و ناحیه و قطر انشعاب "; } }
         public static string ByChangeCause { get { return "  بر اساس علت تعویض "; } }
 
 
@@ -99,12 +100,20 @@
         public static string WithoutSewageRequestSummary { get { return "خلاصه انشعاب های بدون درخواست فاضلاب"; } }
         public static string WithoutSewageRequestDetail { get { return "جزئیات انشعاب های بدون درخواست فاضلاب"; } }
 
-        public static string WaterDistanceRequestInstallationDetail { get { return "جزئیات فاصله واگذار تا نصب انشعاب آب"; } }
-        public static string SewageDistanceRequesteInstallationDetail { get { return "جزئیات فاصله واگذار تا نصب انشعاب فاضلاب"; } }
-        public static string WaterDistanceRequestInstallationSummary { get { return "خلاصه فاصله واگذار تا نصب انشعاب آب"; } }
-        public static string SewageDistanceRequesteInstallationSummary { get { return "خلاصه فاصله واگذار تا نصب انشعاب فاضلاب"; } }
-        public static string WaterDistanceRequestInstallationSummaryByZone { get { return "خلاصه فاصله واگذار تا نصب انشعاب آب بر اساس ناحیه"; } }
-        public static string SewageDistanceRequesteInstallationSummaryByZone { get { return "خلاصه فاصله واگذار تا نصب انشعاب فاضلاب بر اساس ناحیه"; } }
+        public static string WaterDistanceRequestRegisterDetail { get { return "جزئیات فاصله واگذار تا نصب انشعاب آب"; } }
+        public static string SewageDistanceRequesteRegisterDetail { get { return "جزئیات فاصله واگذار تا نصب انشعاب فاضلاب"; } }
+        public static string WaterDistanceRequestRegisterSummary { get { return "خلاصه فاصله واگذار تا نصب انشعاب آب"; } }
+        public static string SewageDistanceRequesteRegisterSummary { get { return "خلاصه فاصله واگذار تا نصب انشعاب فاضلاب"; } }
+        public static string WaterDistanceRequestRegisterSummaryByZone { get { return "خلاصه فاصله واگذار تا نصب انشعاب آب بر اساس ناحیه"; } }
+        public static string SewageDistanceRequestRegisterSummaryByZone { get { return "خلاصه فاصله واگذار تا نصب انشعاب فاضلاب بر اساس ناحیه"; } }
+
+        public static string WaterDistanceInstallationRegisterDetail { get { return "جزئیات فاصله ثبت تا نصب انشعاب آب"; } }
+        public static string SewageDistanceInstallationeRegisterDetail { get { return "جزئیات فاصله ثبت تا نصب انشعاب فاضلاب"; } }
+        public static string WaterDistanceInstallationRegisterSummary { get { return "خلاصه فاصله ثبت تا نصب انشعاب آب"; } }
+        public static string SewageDistanceInstallationeRegisterSummary { get { return "خلاصه فاصله ثبت تا نصب انشعاب فاضلاب"; } }
+        public static string WaterDistanceInstallationRegisterSummaryByZone { get { return "خلاصه فاصله ثبت تا نصب انشعاب آب بر اساس ناحیه"; } }
+        public static string SewageDistanceInstallationRegisterSummaryByZone { get { return "خلاصه فاصله ثبت تا نصب انشعاب فاضلاب بر اساس ناحیه"; } }
+
 
         public static string SendSmsToMobile { get { return $"{Report} پیامک ارسالی به مشترک"; } }
 
