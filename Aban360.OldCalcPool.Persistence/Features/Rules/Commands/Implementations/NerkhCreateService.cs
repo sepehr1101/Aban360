@@ -30,11 +30,35 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Implementation
             };
             await _sqlReportConnection.ExecuteAsync(nerkhCreateQueryString, @params);
         }
+         public async Task Create(NerkhCreateDto input)
+        {
+            string nerkhCreateQueryString = GetNerkhCreateQuery();
+            var @params = new
+            {
+                date1 = input.Date1,
+                date2 = input.Date2,
+                ebt = input.Ebt,
+                ent = input.Ent,
+                vaj = input.Vaj,
+                code = input.Cod,
+                olgo = input.Olgo,
+                desc = input.Desc,
+                oVaj = input.OVaj,
+                oVajFaz = input.OVajFaz,
+            };
+            await _sqlReportConnection.ExecuteAsync(nerkhCreateQueryString, @params);
+        }
 
         private string GetNerkhCreateQuery(int nerkhName)
         {
             return @$"use [OldCalc]
                      Insert Into nerkh_{nerkhName}(date1,date2,ebt,ent,vaj,cod,olgo,[desc],o_vaj,o_vaj_faz)
+                     Values(@date1,@date2,@ebt,@ent,@vaj,@code,@olgo,@desc,@oVaj,@oVajFaz)";
+        }
+        private string GetNerkhCreateQuery()
+        {
+            return @"use [OldCalc]
+                     Insert Into Nerkh(date1,date2,ebt,ent,vaj,cod,olgo,[desc],o_vaj,o_vaj_faz)
                      Values(@date1,@date2,@ebt,@ent,@vaj,@code,@olgo,@desc,@oVaj,@oVajFaz)";
         }
     }

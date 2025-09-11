@@ -5,5 +5,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts
     public interface INerkhGetAllService
     {
         Task<IEnumerable<NerkhGetDto>> Get(int nerkh);
+        Task<IEnumerable<NerkhGetDto>> Get();
     }
 }

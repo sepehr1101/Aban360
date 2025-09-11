@@ -33,5 +33,15 @@ namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Creat
             }
             await _nerkhCreateService.Create(createDto, nerkh);
         }
+        public async Task Handle(NerkhCreateDto createDto,  CancellationToken cancellationToken)
+        {
+            var validationResult = await _nerkhCreateValidator.ValidateAsync(createDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new CustomeValidationException(message);
+            }
+            await _nerkhCreateService.Create(createDto);
+        }
     }
 }

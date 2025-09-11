@@ -20,9 +20,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         {
             string distanceRequestInstallationQuery;
             if (input.IsWater)
-                distanceRequestInstallationQuery = GetWaterDistanceRequestInstallationQuery();
+                distanceRequestInstallationQuery = GetWaterDistanceRequestInstallationQuery(input.IsInstallation);
             else
-                distanceRequestInstallationQuery = GetSewageDistanceRequestInstallationQuery();
+                distanceRequestInstallationQuery = GetSewageDistanceRequestInstallationQuery(input.IsInstallation);
 
             var @params = new
             {
@@ -43,16 +43,17 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 SumOtherUnit = RequestData.Sum(i => i.OtherUnit),
                 TotalUnit = RequestData.Sum(i => i.TotalUnit)
             };
-            var result = new ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationDetailDataOutputDto>
-                (input.IsWater ? ReportLiterals.WaterDistanceRequestInstallationDetail : ReportLiterals.SewageDistanceRequesteInstallationDetail,
-                RequestHeader,
-                RequestData);
+
+
+            var result = new ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationDetailDataOutputDto>(GetTitle(input.IsWater, input.IsInstallation), RequestHeader, RequestData);
 
             return result;
         }
-        private string GetWaterDistanceRequestInstallationQuery()
+       
+        private string GetWaterDistanceRequestInstallationQuery(bool isIntallation)
         {
-            return @"Select
+            string baseDate = isIntallation ? "WaterInstallDate" : "WaterRequestDate";
+            return @$"Select
                     	c.CustomerNumber, 
                     	c.ReadingNumber,
                     	TRIM(c.FirstName) AS FirstName,
@@ -74,17 +75,19 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 						c.WaterInstallDate AS InstallationDate
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
-                        c.WaterRequestDate IS NOT NULL AND
-                        TRIM(c.WaterRequestDate) != '' AND
-                        c.WaterInstallDate IS NOT NULL AND
-                        TRIM(c.WaterInstallDate) != '' AND
-                    	c.WaterInstallDate BETWEEN @fromDate AND @toDate AND
+                        c.{baseDate} IS NOT NULL AND
+                        TRIM(c.{baseDate}) != '' AND
+                        c.WaterRegisterDateJalali IS NOT NULL AND
+                        TRIM(c.WaterRegisterDateJalali) != '' AND
+                    	c.WaterRegisterDateJalali BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
             			c.ToDayJalali IS NULL";
         }
-        private string GetSewageDistanceRequestInstallationQuery()
+        private string GetSewageDistanceRequestInstallationQuery(bool isIntallation)
         {
-            return @"Select
+            string baseDate = isIntallation ? "SewageInstallDate" : "SewageRequestDate";
+
+            return @$"Select
                     	c.CustomerNumber, 
                     	c.ReadingNumber,
                     	TRIM(c.FirstName) AS FirstName,
@@ -106,14 +109,24 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 						c.SewageInstallDate AS InstallationDate
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
-                        c.SewageRequestDate IS NOT NULL AND
-                        TRIM(c.SewageRequestDate) != '' AND
-                        c.SewageInstallDate IS NOT NULL AND
-                        TRIM(c.SewageInstallDate) != '' AND
-                    	c.SewageInstallDate BETWEEN @fromDate AND @toDate AND
+                        c.{baseDate} IS NOT NULL AND
+                        TRIM(c.{baseDate}) != '' AND
+                        c.SewageRegisterDateJalali IS NOT NULL AND
+                        TRIM(c.SewageRegisterDateJalali) != '' AND
+                    	c.SewageRegisterDateJalali BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
             			c.ToDayJalali IS NULL";
-            //todo: both of them
+        }
+        private string GetTitle(bool IsWater, bool IsInstallation)
+        {
+            if (IsWater)
+            {
+                return IsInstallation ? ReportLiterals.WaterDistanceInstallationRegisterDetail : ReportLiterals.WaterDistanceRequestRegisterDetail;
+            }
+            else
+            {
+                return IsInstallation ? ReportLiterals.SewageDistanceInstallationeRegisterDetail : ReportLiterals.SewageDistanceRequesteRegisterDetail;
+            }
         }
     }
 }

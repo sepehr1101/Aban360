@@ -19,5 +19,10 @@ namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Implem
             IEnumerable<NerkhGetDto> result = await _nerkhGetAllService.Get(nerkh);
             return result;
         }
+        public async Task<IEnumerable<NerkhGetDto>> Handle( CancellationToken cancellationToken)
+        {
+            IEnumerable<NerkhGetDto> result = await _nerkhGetAllService.Get();
+            return result;
+        }
     }
 }

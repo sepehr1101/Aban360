@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts;
 using Aban360.BlobPool.Domain.Providers.Dto;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using HttpClientToCurl;
@@ -114,6 +115,10 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
             request.Headers.CacheControl = new CacheControlHeaderValue { NoCache = true };
             using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new InvalidBillIdException(ExceptionLiterals.BillIdNotFound);
+            }
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<FileListResponse>(_jsonOptions);
         }

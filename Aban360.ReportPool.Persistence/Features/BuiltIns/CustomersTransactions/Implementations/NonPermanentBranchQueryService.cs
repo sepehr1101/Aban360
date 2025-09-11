@@ -24,6 +24,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 fromReadingNumber=input.FromReadingNumber,
                 toReadingNumber=input.ToReadingNumber,
 
+                fromDate=input.FromDateJalali,
+                toDate=input.ToDateJalali,
+
                 zoneIds = input.ZoneIds
             };
 
@@ -77,7 +80,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 						 @toReadingNumber IS NULL OR
 						 c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
                         c.ZoneId in @ZoneIds AND
-						c.IsNonPermanent=1";
+						c.IsNonPermanent=1 AND
+                        (@fromDate IS NULL OR
+                        @toDate IS NULL OR
+                        c.RegisterDayJalali BETWEEN @fromDate AND @toDate)";
         }
     }
 }

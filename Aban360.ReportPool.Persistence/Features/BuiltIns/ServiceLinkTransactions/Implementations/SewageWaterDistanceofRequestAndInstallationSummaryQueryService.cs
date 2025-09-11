@@ -20,9 +20,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         {
             string distanceRequestInstallationQuery;
             if (input.IsWater)
-                distanceRequestInstallationQuery = GetWaterDistanceRequestInstallationQuery();
+                distanceRequestInstallationQuery = GetWaterDistanceRequestInstallationQuery(input.IsInstallation);
             else
-                distanceRequestInstallationQuery = GetSewageDistanceRequestInstallationQuery();
+                distanceRequestInstallationQuery = GetSewageDistanceRequestInstallationQuery(input.IsInstallation);
 
             var @params = new
             {
@@ -39,45 +39,60 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 RecordCount = (RequestData is not null && RequestData.Any()) ? RequestData.Count() : 0
             };
             var result = new ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto>
-                (input.IsWater ? ReportLiterals.WaterDistanceRequestInstallationSummary : ReportLiterals.SewageDistanceRequesteInstallationSummary,
+                (GetTitle(input.IsWater, input.IsInstallation),
                 RequestHeader,
                 RequestData);
 
             return result;
         }
-        private string GetWaterDistanceRequestInstallationQuery()
+        private string GetWaterDistanceRequestInstallationQuery(bool isIntallation)
         {
-            return @"Select	
+            string baseDate = isIntallation ? "WaterInstallDate" : "WaterRequestDate";
+
+            return @$"Select	
                     	c.UsageTitle AS UsageTitle,
 						ROUND(AVG(CONVERT(float, DATEDIFF(DAY,[CustomerWarehouse].dbo.PersianToMiladi(c.WaterRequestDate), [CustomerWarehouse].dbo.PersianToMiladi(c.WaterInstallDate)))), 2) AS DistanceAverage
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
-					    c.WaterRequestDate IS NOT NULL AND
-					    c.WaterInstallDate IS NOT NULL AND
-					    TRIM(c.WaterRequestDate) != '' AND
-					    TRIM(c.WaterInstallDate) != '' AND
-                    	c.WaterInstallDate BETWEEN @fromDate AND @toDate AND
+					    c.{baseDate} IS NOT NULL AND
+					    c.WaterRegisterDateJalali IS NOT NULL AND
+					    TRIM(c.{baseDate}) != '' AND
+					    TRIM(c.WaterRegisterDateJalali) != '' AND
+                    	c.WaterRegisterDateJalali BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
             			c.ToDayJalali IS NULL
                     Group BY
                     	c.UsageTitle";
         }
-        private string GetSewageDistanceRequestInstallationQuery()
+        private string GetSewageDistanceRequestInstallationQuery(bool isIntallation)
         {
-            return @"Select	
+            string baseDate = isIntallation ? "SewageInstallDate" : "SewageRequestDate";
+
+            return @$"Select	
                     	c.UsageTitle AS UsageTitle,
 						ROUND(AVG(CONVERT(float, DATEDIFF(DAY, [CustomerWarehouse].dbo.PersianToMiladi(c.SewageRequestDate), [CustomerWarehouse].dbo.PersianToMiladi(c.SewageInstallDate)))), 2) AS DistanceAverage
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
-					    c.SewageRequestDate IS NOT NULL AND
-					    c.SewageInstallDate IS NOT NULL AND
-					    TRIM(c.SewageRequestDate) != '' AND
-					    TRIM(c.SewageInstallDate) != '' AND
-                    	c.SewageInstallDate BETWEEN @fromDate AND @toDate AND
+					    c.SewageRegisterDateJalali IS NOT NULL AND
+					    c.{baseDate} IS NOT NULL AND
+					    TRIM(c.SewageRegisterDateJalali) != '' AND
+					    TRIM(c.{baseDate}) != '' AND
+                    	c.SewageRegisterDateJalali BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
             			c.ToDayJalali IS NULL
                     Group BY
                     	c.UsageTitle";
+        }
+        private string GetTitle(bool IsWater, bool IsInstallation)
+        {
+            if (IsWater)
+            {
+                return IsInstallation ? ReportLiterals.WaterDistanceInstallationRegisterDetail : ReportLiterals.WaterDistanceRequestRegisterDetail;
+            }
+            else
+            {
+                return IsInstallation ? ReportLiterals.SewageDistanceInstallationeRegisterDetail : ReportLiterals.SewageDistanceRequesteRegisterDetail;
+            }
         }
     }
 }

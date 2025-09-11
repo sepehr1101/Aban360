@@ -19,5 +19,11 @@
         public string UseStateTitle { get; set; }
         public int ContractualCapacity { get; set; }
         public string RequestDate { get; set; }
+        public string PhoneNumber { get; set; }
+        public string MobileNumber { get; set; }
+        public string DeletionStateTitle { get; set; }
+        public string MeterSerial { get; set; }
+        public string NationalCode { get; set; }
+        public string PostalCode { get; set; }
     }
 }

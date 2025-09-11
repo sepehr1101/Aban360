@@ -40,7 +40,7 @@
         public int ConsumptionLiter { get; set; }
         public int ConsumptionAverage { get; set; }
 
-        public ICollection<LineItemsDto> LineItems { get; set; } = new List<LineItemsDto>();
+       // public ICollection<LineItemsDto> LineItems { get; set; } = new List<LineItemsDto>();
 
         public long Sum { get; set; }
         public long DisCount { get; set; }
@@ -65,11 +65,5 @@
         public string PaymentDateJalali { get; set; }
         public string PaymentMethod { get; set; }
 
-    }
-
-    public record WaterInvoicePaymentOutputDto
-    {
-        public string PaymentDateJalali { get; set; }
-        public string PaymentMethod { get; set; }
     }
 }

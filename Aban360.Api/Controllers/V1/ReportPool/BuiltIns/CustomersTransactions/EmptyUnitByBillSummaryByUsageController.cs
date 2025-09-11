@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
 {
-    [Route("v1/empty-unit-by-bill-usage-grouping")]
-    public class EmptyUnitByBillUsageGroupingController : BaseController
+    [Route("v1/empty-unit-by-bill-summary-usage")]
+    public class EmptyUnitByBillSummaryByUsageController : BaseController
     {
-        private readonly IEmptyUnitByBillIdUsageGroupingHandler _emptyUnitByBillUsageGrouping;
+        private readonly IEmptyUnitByBillIdSummaryByUsageHandler _emptyUnitByBillUsageGrouping;
         private readonly IReportGenerator _reportGenerator;
-        public EmptyUnitByBillUsageGroupingController(
-            IEmptyUnitByBillIdUsageGroupingHandler emptyUnitByBillUsageGrouping,
+        public EmptyUnitByBillSummaryByUsageController(
+            IEmptyUnitByBillIdSummaryByUsageHandler emptyUnitByBillUsageGrouping,
             IReportGenerator reportGenerator)
         {
             _emptyUnitByBillUsageGrouping = emptyUnitByBillUsageGrouping;
@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, EmptyUnitInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _emptyUnitByBillUsageGrouping.Handle, CurrentUser, ReportLiterals.EmptyUnitByBillUsageGrouping, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _emptyUnitByBillUsageGrouping.Handle, CurrentUser, ReportLiterals.EmptyUnitByBillSummary + ReportLiterals.ByUsage, connectionId);
             return Ok(inputDto);
         }
     }

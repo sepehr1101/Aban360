@@ -14,7 +14,7 @@ namespace Aban360.Common.Timing
                 return ExceptionLiterals.InvalidDate;
 
 
-            int totalDay=currentDate.DayNumber - persianDate.Value.DayNumber;
+            int totalDay = currentDate.DayNumber - persianDate.Value.DayNumber;
             return ConvertDaysToDate(totalDay);
 
         }
@@ -29,18 +29,18 @@ namespace Aban360.Common.Timing
                 return ExceptionLiterals.InvalidDate;
             }
 
-            int totalDay = to.Value.DayNumber - from.Value.DayNumber;
+            int totalDay = Math.Abs(to.Value.DayNumber - from.Value.DayNumber);
             return totalDay.ToString();
         }
 
         public static string ConvertDaysToDate(int totalDay)
         {
-            string years = (totalDay / (int)365)==0?string.Empty:$"{totalDay / (int)365} سال -";
+            string years = (totalDay / (int)365) == 0 ? string.Empty : $"{totalDay / (int)365} سال -";
             int remainedYear = totalDay % 365;
             string months = (remainedYear / 30) == 0 ? string.Empty : $"{remainedYear / 30} ماه -";
             int days = remainedYear % 30;
-            
-           
+
+
 
             return $"{years} {months} {days} روز";
         }

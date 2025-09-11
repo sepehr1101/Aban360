@@ -5,113 +5,113 @@
     <Databases isList="true" count="1">
       <pre_payment_report Ref="2" type="Stimulsoft.Report.Dictionary.StiJsonDatabase" isKey="true">
         <Alias>pre-payment-report</Alias>
-        <Key>144628935e354e529bc0eb79c025dc59</Key>
+        <Key>07e7573eb58a477aadf3049d37e11a80</Key>
         <Name>pre-payment-report</Name>
-        <PathData>C:\Users\Padidar\Desktop\گزارش های ساخته شده با stimulsoft\پیش پرداخت\pre-payment-report.json</PathData>
+        <PathData>C:\Users\Padidar\Desktop\کار\گزارش های ساخته شده با stimulsoft\پیش پرداخت\pre-payment-report.json</PathData>
       </pre_payment_report>
     </Databases>
     <DataSources isList="true" count="5">
-      <root Ref="3" type="DataTableSource" isKey="true">
-        <Alias>root</Alias>
-        <Columns isList="true" count="4">
-          <value>title,System.String</value>
-          <value>reportHeader,System.String</value>
-          <value>reportData,System.String</value>
-          <value>relationId,System.String</value>
-        </Columns>
-        <Dictionary isRef="1" />
-        <Key>5cea28c2c4ab44c1807648fcce71fa36</Key>
-        <Name>root</Name>
-        <NameInSource>pre-payment-report.root</NameInSource>
-      </root>
-      <reportData Ref="4" type="DataTableSource" isKey="true">
+      <reportData Ref="3" type="DataTableSource" isKey="true">
         <Alias>reportData</Alias>
         <Columns isList="true" count="7">
-          <value>itemTitle,System.String</value>
-          <value>itemId,System.Double</value>
           <value>amount,System.Double</value>
           <value>discount,System.Double</value>
-          <value>installmentNumber,System.Double</value>
           <value>installmentCount,System.Double</value>
+          <value>installmentNumber,System.Double</value>
+          <value>itemId,System.Double</value>
+          <value>itemTitle,System.String</value>
           <value>relationId,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
-        <Key>18729304183b423286ff59c802cadc9d</Key>
+        <Key>973395ab9b68477a8c3e8d17ba1b65f3</Key>
         <Name>reportData</Name>
         <NameInSource>pre-payment-report.root_reportData</NameInSource>
       </reportData>
-      <reportHeader Ref="5" type="DataTableSource" isKey="true">
+      <reportHeader Ref="4" type="DataTableSource" isKey="true">
         <Alias>reportHeader</Alias>
         <Columns isList="true" count="13">
+          <value>barcode,System.String</value>
           <value>customerHeader,System.String</value>
-          <value>installmentHeader,System.String</value>
-          <value>sumItemsAmount,System.Double</value>
-          <value>sumItemsDiscount,System.Double</value>
           <value>debtorOrCreditorAmount,System.Double</value>
-          <value>reportDateJalali,System.String</value>
-          <value>persianStringAmount,System.String</value>
+          <value>installmentCount,System.Double</value>
+          <value>installmentHeader,System.String</value>
+          <value>installmentNumber,System.Double</value>
           <value>paymentDateJalali,System.String</value>
           <value>paymentGetway,System.String</value>
-          <value>installmentCount,System.Double</value>
-          <value>installmentNumber,System.Double</value>
-          <value>barcode,System.String</value>
+          <value>persianStringAmount,System.String</value>
           <value>relationId,System.String</value>
+          <value>reportDateJalali,System.String</value>
+          <value>sumItemsAmount,System.Double</value>
+          <value>sumItemsDiscount,System.Double</value>
         </Columns>
         <Dictionary isRef="1" />
-        <Key>7625d9ee85584861a11c36c85e1b2dd0</Key>
+        <Key>639b096ba2984db8b50b19161bb2f1b3</Key>
         <Name>reportHeader</Name>
         <NameInSource>pre-payment-report.root_reportHeader</NameInSource>
       </reportHeader>
-      <reportHeader_customerHeader Ref="6" type="DataTableSource" isKey="true">
-        <Alias>reportHeader.customerHeader</Alias>
+      <reportHeader_customerHeader Ref="5" type="DataTableSource" isKey="true">
+        <Alias>reportHeader_customerHeader</Alias>
         <Columns isList="true" count="27">
-          <value>zoneTitle,System.String</value>
-          <value>zoneId,System.Double</value>
-          <value>firstName,System.String</value>
-          <value>surname,System.String</value>
-          <value>fullName,System.String</value>
-          <value>postalCode,System.String</value>
           <value>address,System.String</value>
-          <value>usageTitle,System.String</value>
-          <value>usageId,System.Double</value>
-          <value>branchTypeTitle,System.String</value>
           <value>branchTypeId,System.Double</value>
+          <value>branchTypeTitle,System.String</value>
           <value>contractualCapacity,System.Double</value>
           <value>customerNumber,System.Double</value>
-          <value>readingNumber,System.String</value>
-          <value>pageNumber,System.Double</value>
-          <value>requestNumber,System.String</value>
-          <value>unitCommeicial,System.Double</value>
-          <value>unitDomestic,System.Double</value>
-          <value>unitOther,System.Double</value>
-          <value>premises,System.Double</value>
+          <value>description,System.String</value>
+          <value>firstName,System.String</value>
+          <value>fullName,System.String</value>
           <value>improvementsCommericial,System.Double</value>
           <value>improvementsDomestic,System.Double</value>
           <value>improvementsOverall,System.Double</value>
+          <value>pageNumber,System.Double</value>
+          <value>postalCode,System.String</value>
+          <value>premises,System.Double</value>
           <value>readingBlock,System.String</value>
-          <value>serviceDescription,System.String</value>
-          <value>description,System.String</value>
+          <value>readingNumber,System.String</value>
           <value>relationId,System.String</value>
+          <value>requestNumber,System.String</value>
+          <value>serviceDescription,System.String</value>
+          <value>surname,System.String</value>
+          <value>unitCommeicial,System.Double</value>
+          <value>unitDomestic,System.Double</value>
+          <value>unitOther,System.Double</value>
+          <value>usageId,System.Double</value>
+          <value>usageTitle,System.String</value>
+          <value>zoneId,System.Double</value>
+          <value>zoneTitle,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
-        <Key>cc5b01edb22d422ebb490677ae8883f8</Key>
-        <Name>reportHeader.customerHeader</Name>
+        <Key>c032b19413654c8c81905f8d85911c63</Key>
+        <Name>reportHeader_customerHeader</Name>
         <NameInSource>pre-payment-report.root_reportHeader_customerHeader</NameInSource>
       </reportHeader_customerHeader>
-      <reportHeader_installmentHeader Ref="7" type="DataTableSource" isKey="true">
-        <Alias>reportHeader.installmentHeader</Alias>
+      <reportHeader_installmentHeader Ref="6" type="DataTableSource" isKey="true">
+        <Alias>reportHeader_installmentHeader</Alias>
         <Columns isList="true" count="5">
+          <value>billId,System.String</value>
           <value>dueDataJalali,System.String</value>
           <value>payable,System.Double</value>
-          <value>billId,System.String</value>
           <value>paymentId,System.String</value>
           <value>relationId,System.String</value>
         </Columns>
         <Dictionary isRef="1" />
-        <Key>ba407553aa7a4ee7a2dc1886f3c228d7</Key>
-        <Name>reportHeader.installmentHeader</Name>
+        <Key>a7114c93e61a4f84a288ca7bbae1ffd4</Key>
+        <Name>reportHeader_installmentHeader</Name>
         <NameInSource>pre-payment-report.root_reportHeader_installmentHeader</NameInSource>
       </reportHeader_installmentHeader>
+      <root Ref="7" type="DataTableSource" isKey="true">
+        <Alias>root</Alias>
+        <Columns isList="true" count="4">
+          <value>relationId,System.String</value>
+          <value>reportData,System.String</value>
+          <value>reportHeader,System.String</value>
+          <value>title,System.String</value>
+        </Columns>
+        <Dictionary isRef="1" />
+        <Key>82351e3cb5454987917f6306091ee6c1</Key>
+        <Name>root</Name>
+        <NameInSource>pre-payment-report.root</NameInSource>
+      </root>
     </DataSources>
     <Relations isList="true" count="4">
       <root Ref="8" type="DataRelation" isKey="true">
@@ -119,30 +119,44 @@
         <ChildColumns isList="true" count="1">
           <value>relationId</value>
         </ChildColumns>
-        <ChildSource isRef="4" />
+        <ChildSource isRef="3" />
         <Dictionary isRef="1" />
         <Name>root</Name>
         <NameInSource>root_reportData</NameInSource>
         <ParentColumns isList="true" count="1">
           <value>reportData</value>
         </ParentColumns>
-        <ParentSource isRef="3" />
+        <ParentSource isRef="7" />
       </root>
       <root Ref="9" type="DataRelation" isKey="true">
         <Alias>root</Alias>
         <ChildColumns isList="true" count="1">
           <value>relationId</value>
         </ChildColumns>
-        <ChildSource isRef="5" />
+        <ChildSource isRef="4" />
         <Dictionary isRef="1" />
         <Name>root</Name>
         <NameInSource>root_reportHeader</NameInSource>
         <ParentColumns isList="true" count="1">
           <value>reportHeader</value>
         </ParentColumns>
-        <ParentSource isRef="3" />
+        <ParentSource isRef="7" />
       </root>
       <root_reportHeader Ref="10" type="DataRelation" isKey="true">
+        <Alias>root_reportHeader</Alias>
+        <ChildColumns isList="true" count="1">
+          <value>relationId</value>
+        </ChildColumns>
+        <ChildSource isRef="5" />
+        <Dictionary isRef="1" />
+        <Name>root_reportHeader</Name>
+        <NameInSource>root_reportHeader_customerHeader</NameInSource>
+        <ParentColumns isList="true" count="1">
+          <value>customerHeader</value>
+        </ParentColumns>
+        <ParentSource isRef="4" />
+      </root_reportHeader>
+      <root_reportHeader Ref="11" type="DataRelation" isKey="true">
         <Alias>root_reportHeader</Alias>
         <ChildColumns isList="true" count="1">
           <value>relationId</value>
@@ -150,25 +164,11 @@
         <ChildSource isRef="6" />
         <Dictionary isRef="1" />
         <Name>root_reportHeader</Name>
-        <NameInSource>root_reportHeader_customerHeader</NameInSource>
-        <ParentColumns isList="true" count="1">
-          <value>customerHeader</value>
-        </ParentColumns>
-        <ParentSource isRef="5" />
-      </root_reportHeader>
-      <root_reportHeader Ref="11" type="DataRelation" isKey="true">
-        <Alias>root_reportHeader</Alias>
-        <ChildColumns isList="true" count="1">
-          <value>relationId</value>
-        </ChildColumns>
-        <ChildSource isRef="7" />
-        <Dictionary isRef="1" />
-        <Name>root_reportHeader</Name>
         <NameInSource>root_reportHeader_installmentHeader</NameInSource>
         <ParentColumns isList="true" count="1">
           <value>installmentHeader</value>
         </ParentColumns>
-        <ParentSource isRef="5" />
+        <ParentSource isRef="4" />
       </root_reportHeader>
     </Relations>
     <Report isRef="0" />
@@ -2193,10 +2193,10 @@
     <value>Stimulsoft.Report.Dll</value>
   </ReferencedAssemblies>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>8/31/2025 5:29:41 PM</ReportChanged>
+  <ReportChanged>9/8/2025 10:25:10 AM</ReportChanged>
   <ReportCreated>8/30/2025 9:03:33 AM</ReportCreated>
-  <ReportFile>C:\Users\Padidar\Desktop\گزارش های ساخته شده با stimulsoft\پیش پرداخت\pre-payment-report.mrt</ReportFile>
-  <ReportGuid>ab53736fcf8e407489f61ebab1384031</ReportGuid>
+  <ReportFile>C:\Users\Padidar\Desktop\کار\گزارش های ساخته شده با stimulsoft\پیش پرداخت\pre-payment-report.mrt</ReportFile>
+  <ReportGuid>7f038fbfdf89492da052dc0c1f654aea</ReportGuid>
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>
   <ReportVersion>2023.1.1.0</ReportVersion>

@@ -48,6 +48,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                 var result = await _processing.Handle(meterInfoData, cancellationToken);
 
                 MeterComparisonBatchDataOutputDto comparisonBatch = GetComparisonBatch(data);
+                comparisonBatch.CurrentAmount = result.SumItems;
                 comparisonBatch.IsChecked = GetTolarance(data.PreviousAmount, data.CurrentAmount, input.Tolerance, input.IsPercent);
                 // comparisonBatch.CurrentAmount = comparisonBatch.IsChecked ? comparisonBatch.PreviousAmount : comparisonBatch.CurrentAmount;
 

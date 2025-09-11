@@ -48,7 +48,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             };
 
 
-            var result = new ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>(ReportLiterals.EmptyUnitByBill, emptyUnitHeader, emptyUnitData);
+            var result = new ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>(ReportLiterals.EmptyUnitByBillDetail, emptyUnitHeader, emptyUnitData);
 
             return result;
         }
@@ -80,12 +80,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 							b.EmptyCount As EmptyUnit,
 							b.ZoneId,
 							b.ZoneTitle,
-							0 AS RegionId,
-							'-' AS RegionTitle,
 							c.NationalId AS NationalCode,
 							c.PostalCode , 
 							c.PhoneNo AS PhoneNumber,
+						    TRIM(c.MobileNo) AS MobileNumber,
 							c.FatherName ,
+							b.Consumption,
+							b.ConsumptionAverage,
+							b.SumItems,
 					        ROW_NUMBER() OVER (
 					            PARTITION BY b.BillId
 					            ORDER BY b.Id DESC
@@ -125,8 +127,18 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 							e.NationalCode,
 							e.PostalCode , 
 							e.PhoneNumber,
-							e.FatherName 
+						    e.MobileNumber,
+							e.FatherName ,
+							e.Consumption,
+							e.ConsumptionAverage,
+							e.SumItems,
+							t46.C2 AS RegionTitle,
+							t46.C0 AS RegionId
 					FROM EmptyUnitByBill e
+					Join [Db70].dbo.T51 t51
+						On t51.C0=e.ZoneId
+					Join [Db70].dbo.T46 t46
+						On t51.C1=t46.C0
 					WHERE RowNum = 1;";
         }
     }

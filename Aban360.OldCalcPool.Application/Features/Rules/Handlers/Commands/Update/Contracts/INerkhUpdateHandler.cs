@@ -5,5 +5,6 @@ namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Updat
     public interface INerkhUpdateHandler
     {
         Task Handle(NerkhUpdateDto UpdateDto, int nerkh, CancellationToken cancellationToken);
+        Task Handle(NerkhUpdateDto UpdateDto, CancellationToken cancellationToken);
     }
 }

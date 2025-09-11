@@ -10,22 +10,22 @@ using System.Runtime.InteropServices;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Implementations
 {
-    internal sealed class EmptyUnitByBillIdZoneGroupingHandler : IEmptyUnitByBillIdZoneGroupingHandler
+    internal sealed class EmptyUnitByBillIdSummaryByUsageHandler : IEmptyUnitByBillIdSummaryByUsageHandler
     {
-        private readonly IEmptyUnitByBillIdZoneGroupingQueryService _emptyUnitByBillIdZoneGroupingQueryService;
+        private readonly IEmptyUnitByBillIdUsageGroupingQueryService _emptyUnitByBillIdUsageGroupingQueryService;
         private readonly IValidator<EmptyUnitInputDto> _validator;
-        public EmptyUnitByBillIdZoneGroupingHandler(
-            IEmptyUnitByBillIdZoneGroupingQueryService emptyUnitByBillIdZoneGroupingQueryService,
+        public EmptyUnitByBillIdSummaryByUsageHandler(
+            IEmptyUnitByBillIdUsageGroupingQueryService emptyUnitByBillIdUsageGroupingQueryService,
             IValidator<EmptyUnitInputDto> validator)
         {
-            _emptyUnitByBillIdZoneGroupingQueryService = emptyUnitByBillIdZoneGroupingQueryService;
-            _emptyUnitByBillIdZoneGroupingQueryService.NotNull(nameof(emptyUnitByBillIdZoneGroupingQueryService));
+            _emptyUnitByBillIdUsageGroupingQueryService = emptyUnitByBillIdUsageGroupingQueryService;
+            _emptyUnitByBillIdUsageGroupingQueryService.NotNull(nameof(emptyUnitByBillIdUsageGroupingQueryService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdZoneGroupingDataOutputDto>> Handle(EmptyUnitInputDto input, [Optional] CancellationToken cancellationToken)
+        public async Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdUsageGroupingDataOutputDto>> Handle(EmptyUnitInputDto input, [Optional] CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input/*, cancellationToken*/);
             if (!validationResult.IsValid)
@@ -34,7 +34,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdZoneGroupingDataOutputDto> emptyUnit = await _emptyUnitByBillIdZoneGroupingQueryService.Get(input);
+            ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdUsageGroupingDataOutputDto> emptyUnit = await _emptyUnitByBillIdUsageGroupingQueryService.Get(input);
             return emptyUnit;
         }
     }

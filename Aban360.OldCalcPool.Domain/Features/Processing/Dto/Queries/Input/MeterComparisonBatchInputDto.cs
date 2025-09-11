@@ -8,5 +8,4 @@
         public double Tolerance { get; set; }
         public bool IsPercent { get; set; }
     }
-
 }

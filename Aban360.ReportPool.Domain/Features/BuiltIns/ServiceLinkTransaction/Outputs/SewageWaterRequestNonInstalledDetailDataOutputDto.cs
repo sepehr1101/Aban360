@@ -19,5 +19,6 @@
         public string UseStateTitle { get; set; }
         public int ContractualCapacity { get; set; }
         public string RequestDate { get; set; }
+        public string RegisterDateJalali { get; set; }
     }
 }
