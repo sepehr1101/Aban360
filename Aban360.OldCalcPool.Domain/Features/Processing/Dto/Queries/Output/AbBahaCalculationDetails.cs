@@ -28,6 +28,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         public double AvarezDiscount { get; set; }
         public double JavaniDiscount { get; set; }
         public double BoodjeDiscount { get; set; }
+        public double DiscountSum { get; set; }
 
 
         public double Consumption { get; set; }
@@ -86,13 +87,14 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             AbonmanFazelabAmount = _abonmanFazelabAmount;
 
             AbBahaDiscount = _abBahaDiscount;
-            HotSeasonDiscount = _hotSeasonDiscount;
             FazelabDiscount = _fazelabDiscount;
             HotSeasonDiscount = _hotSeasonDiscount;
             AbonmanAbDiscount = abonmanAbDiscount;
             AbonmanFazelabDiscount = abonmaneFazelabDiscount;
             AvarezDiscount = avarezDiscount;
             JavaniAmount = javaniDiscount;
+            DiscountSum = _abBahaDiscount + _hotSeasonDiscount + _fazelabDiscount +
+                          abonmanAbDiscount + abonmaneFazelabDiscount + avarezDiscount + javaniDiscount;
 
             Nerkh = _nerkh;
             AbAzad = _abAzad;

@@ -5,11 +5,12 @@ using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
 {
-    [Route("v1/meter-comparison-batch-with-aggregated-nerkh")]
+    [Route("v1/meter-comparison-batch-new")]
     public class MeterComparisonBatchWithAggregatedNerkhGetController : BaseController
     {
         private readonly IMeterComparisonBatchWithAggregatedNerkhGetHandler _meterComparisonBatchWithAggregatedNerkhGet;
@@ -28,6 +29,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         [HttpPost, HttpGet]
         [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataOutputDto>>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetRaw(MeterComparisonBatchInputDto inputDto, CancellationToken cancellationToken)
         {
             ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataOutputDto> meterComparisonBatchGet = await _meterComparisonBatchWithAggregatedNerkhGet.Handle(inputDto, cancellationToken);

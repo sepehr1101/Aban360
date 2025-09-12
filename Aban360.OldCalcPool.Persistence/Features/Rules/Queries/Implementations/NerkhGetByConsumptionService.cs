@@ -20,13 +20,12 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
             _zaribByDateAndZoneIdService.NotNull(nameof(zaribByDateAndZoneIdService));
         }
 
-        public async Task<(IEnumerable<NerkhGetDto>, IEnumerable<AbAzadGetDto>,IEnumerable<ZaribGetDto>)> Get(NerkhByConsumptionInputDto input)
+        public async Task<(IEnumerable<NerkhGetDto>, IEnumerable<AbAzadGetDto>,IEnumerable<ZaribGetDto>, int)> Get(NerkhByConsumptionInputDto input)
         {
-            string nerkhTableIdQueryString = GetNerkhTableIdQuery();
-            int nerkhTableId = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(nerkhTableIdQueryString, new { zoneId = GetMergedZoneId(input.ZoneId) });
+            string olgooQuery = GetOlgooQuery();
+            int olgoo = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(olgooQuery, new { zoneId = GetMergedZoneId(input.ZoneId) });
 
-            string nerkhGetQueryString = GetNerkhGetQuery(nerkhTableId);
-            string aggregatedNerkhGetQueryString = GetNerkhGetQuery();
+            string nerkhQuery = GetNerkh_n_Query(olgoo);
             var @params = new
             {
                 usageId = input.UsageId,
@@ -34,27 +33,30 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                 input.CurrentDateJalali,
                 averageConsumption = input.AverageConsumption,
             };
-            IEnumerable<NerkhGetDto> nerkh = await _sqlReportConnection.QueryAsync<NerkhGetDto>(nerkhGetQueryString, @params);
-            IEnumerable<AbAzadGetDto> abAzad = await GetAbAzad(nerkh, nerkhTableId);
+            IEnumerable<NerkhGetDto> nerkh = await _sqlReportConnection.QueryAsync<NerkhGetDto>(nerkhQuery, @params);
+            IEnumerable<AbAzadGetDto> abAzad = await GetAbAzad(nerkh, olgoo);
             IEnumerable<ZaribGetDto> zarib = await GetZarib(nerkh, input.ZoneId);
-            return (nerkh,abAzad,zarib);
+            return (nerkh,abAzad,zarib, int.Parse(nerkhQuery));
         }
-        public async Task<(IEnumerable<NerkhGetDto>, IEnumerable<AbAzadGetDto>,IEnumerable<ZaribGetDto>)> GetWithAggregatedNerkh(NerkhByConsumptionInputDto input)
+        public async Task<(IEnumerable<NerkhGetDto>, IEnumerable<AbAzadGetDto>,IEnumerable<ZaribGetDto>, int)> GetWithAggregatedNerkh(NerkhByConsumptionInputDto input)
         {
-            string nerkhGetQueryString = GetNerkhGetQuery();
+            string olgooQuery = GetOlgooQuery();
+            int olgoo = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(olgooQuery, new { zoneId = GetMergedZoneId(input.ZoneId) });
+
+            string nerkhGetQueryString = GetNerkhQuery(olgoo);
             var @params = new
             {
                 usageId = input.UsageId,
                 previousDateJalali = input.PreviousDateJalali,
                 input.CurrentDateJalali,
                 averageConsumption = input.AverageConsumption,
+                olgoo,
             };
             IEnumerable<NerkhGetDto> nerkh = await _sqlReportConnection.QueryAsync<NerkhGetDto>(nerkhGetQueryString, @params);
             IEnumerable<AbAzadGetDto> abAzad = await GetAbAzad(nerkh);
             IEnumerable<ZaribGetDto> zarib = await GetZarib(nerkh, input.ZoneId);
-            return (nerkh,abAzad,zarib);
+            return (nerkh,abAzad,zarib, olgoo);
         }
-
 
         private async Task<IEnumerable<ZaribGetDto>> GetZarib(IEnumerable<NerkhGetDto> nerkh,int zoneId)
         {
@@ -97,7 +99,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
 
             return abAzad.ToList();
         }
-        private string GetNerkhGetQuery(int nerkh)
+        private string GetNerkh_n_Query(int nerkh)
         {
             return @$"Select
                         n.Id,
@@ -119,7 +121,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                     	(@averageConsumption BETWEEN n.ebt AND n.ent) AND
                     	n.cod=@usageId";
         }
-        private string GetNerkhGetQuery()
+        private string GetNerkhQuery(int olgoo)
         {
             return @"Select
                         n.Id,
@@ -138,10 +140,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                     From [OldCalc].dbo.Nerkh n
                     Where 
                     	(n.date1<=@currentDateJalali AND n.date2>@previousDateJalali)AND
-                    	(@averageConsumption BETWEEN n.ebt AND n.ent) AND
+                    	(@averageConsumption > n.ebt*@olgoo AND @averageConsumption <= n.ent*@olgoo) AND
                     	n.cod=@usageId";
         }
-        private string GetNerkhTableIdQuery()
+        private string GetOlgooQuery()
         {
             return @"Select t.olgo
                     From [OldCalc].dbo.table1 t
@@ -167,6 +169,5 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                         date1 < @toDate
                         AND date2 >= @fromDate";///
         }
-
     }
 }
