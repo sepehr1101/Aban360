@@ -4,7 +4,6 @@ using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
 using Dapper;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
 {
@@ -20,7 +19,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
             _zaribByDateAndZoneIdService.NotNull(nameof(zaribByDateAndZoneIdService));
         }
 
-        public async Task<(IEnumerable<NerkhGetDto>, IEnumerable<AbAzadGetDto>,IEnumerable<ZaribGetDto>, int)> Get(NerkhByConsumptionInputDto input)
+        public async Task<(IEnumerable<NerkhGetDto>, IEnumerable<AbAzadFormulaDto>,IEnumerable<ZaribGetDto>, int)> Get(NerkhByConsumptionInputDto input)
         {
             string olgooQuery = GetOlgooQuery();
             int olgoo = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(olgooQuery, new { zoneId = GetMergedZoneId(input.ZoneId) });
@@ -34,11 +33,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                 averageConsumption = input.AverageConsumption,
             };
             IEnumerable<NerkhGetDto> nerkh = await _sqlReportConnection.QueryAsync<NerkhGetDto>(nerkhQuery, @params);
-            IEnumerable<AbAzadGetDto> abAzad = await GetAbAzad(nerkh, olgoo);
+            IEnumerable<AbAzadFormulaDto> abAzad = await GetAbAzad(nerkh, olgoo);
             IEnumerable<ZaribGetDto> zarib = await GetZarib(nerkh, input.ZoneId);
             return (nerkh,abAzad,zarib, int.Parse(nerkhQuery));
         }
-        public async Task<(IEnumerable<NerkhGetDto>, IEnumerable<AbAzadGetDto>,IEnumerable<ZaribGetDto>, int)> GetWithAggregatedNerkh(NerkhByConsumptionInputDto input)
+        public async Task<(IEnumerable<NerkhGetDto>, IEnumerable<AbAzadFormulaDto>,IEnumerable<ZaribGetDto>, int)> GetWithAggregatedNerkh(NerkhByConsumptionInputDto input)
         {
             string olgooQuery = GetOlgooQuery();
             int olgoo = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(olgooQuery, new { zoneId = GetMergedZoneId(input.ZoneId) });
@@ -53,7 +52,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                 olgoo,
             };
             IEnumerable<NerkhGetDto> nerkh = await _sqlReportConnection.QueryAsync<NerkhGetDto>(nerkhGetQueryString, @params);
-            IEnumerable<AbAzadGetDto> abAzad = await GetAbAzad(nerkh);
+            IEnumerable<AbAzadFormulaDto> abAzad = await GetAbAzad(nerkh);
             IEnumerable<ZaribGetDto> zarib = await GetZarib(nerkh, input.ZoneId);
             return (nerkh,abAzad,zarib, olgoo);
         }
@@ -67,10 +66,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
             }
             return zaribs.ToList();
         }
-        private async Task<IEnumerable<AbAzadGetDto>> GetAbAzad(IEnumerable<NerkhGetDto> nerkh, int nerkhTableId)
+        private async Task<IEnumerable<AbAzadFormulaDto>> GetAbAzad(IEnumerable<NerkhGetDto> nerkh, int nerkhTableId)
         {
             string abAzadQueryString = GetAbAzadQuery(nerkhTableId);
-            ICollection<AbAzadGetDto> abAzad = new List<AbAzadGetDto>();
+            ICollection<AbAzadFormulaDto> abAzad = new List<AbAzadFormulaDto>();
             foreach (NerkhGetDto nerkhItem in nerkh)
             {
                 var @abAzadParams = new
@@ -78,15 +77,15 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                     @fromDate = nerkhItem.Date1,
                     @toDate = nerkhItem.Date2,
                 };
-                abAzad.Add(await _sqlReportConnection.QueryFirstOrDefaultAsync<AbAzadGetDto>(abAzadQueryString, @abAzadParams));
+                abAzad.Add(await _sqlReportConnection.QueryFirstOrDefaultAsync<AbAzadFormulaDto>(abAzadQueryString, @abAzadParams));
             }
 
             return abAzad.ToList();
         }
-        private async Task<IEnumerable<AbAzadGetDto>> GetAbAzad(IEnumerable<NerkhGetDto> nerkh)
+        private async Task<IEnumerable<AbAzadFormulaDto>> GetAbAzad(IEnumerable<NerkhGetDto> nerkh)
         {
             string abAzadQueryString = GetAbAzadQuery();
-            ICollection<AbAzadGetDto> abAzad = new List<AbAzadGetDto>();
+            ICollection<AbAzadFormulaDto> abAzad = new List<AbAzadFormulaDto>();
             foreach (NerkhGetDto nerkhItem in nerkh)
             {
                 var @abAzadParams = new
@@ -94,7 +93,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                     @fromDate = nerkhItem.Date1,
                     @toDate = nerkhItem.Date2,
                 };
-                abAzad.Add(await _sqlReportConnection.QueryFirstOrDefaultAsync<AbAzadGetDto>(abAzadQueryString, @abAzadParams));
+                abAzad.Add(await _sqlReportConnection.QueryFirstOrDefaultAsync<AbAzadFormulaDto>(abAzadQueryString, @abAzadParams));
             }
 
             return abAzad.ToList();
@@ -151,23 +150,23 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
         }
         private string GetAbAzadQuery(int nerkh)
         {
-            return @$"SELECT
-                        MAX(CASE WHEN cod = 39 THEN vaj END) AS Azad,
-                        MAX(CASE WHEN cod = 8 THEN vaj END) AS Amozesh
+            return @$"SELECT                        
+                        MAX(vaj) AS Formula
                     FROM [OldCalc].dbo.nerkh_{nerkh}
                     WHERE
-                        date1 < @toDate
-                        AND date2 >= @fromDate";///
+                        date1 < @toDate And
+                        date2 >= @fromDate AND
+                        cod = 39";
         }
         private string GetAbAzadQuery()
         {
             return @$"SELECT
-                        MAX(CASE WHEN cod = 39 THEN vaj END) AS Azad,
-                        MAX(CASE WHEN cod = 8 THEN vaj END) AS Amozesh
+                        MAX(vaj) AS Formula
                     FROM [OldCalc].dbo.Nerkh
                     WHERE
-                        date1 < @toDate
-                        AND date2 >= @fromDate";///
+                        date1 < @toDate AND
+                        date2 >= @fromDate AND
+                        cod = 39";
         }
     }
 }
