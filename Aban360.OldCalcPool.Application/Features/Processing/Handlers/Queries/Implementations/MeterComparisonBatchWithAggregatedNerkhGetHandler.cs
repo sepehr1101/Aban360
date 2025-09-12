@@ -15,7 +15,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
         private readonly IProcessing _processing;
         private readonly IMeterComparisonBatchQueryService _meterComparisonBatchQueryService;
         private readonly IValidator<MeterComparisonBatchInputDto> _validator;
-        float _percent = (float)0.08;
+
         public MeterComparisonBatchWithAggregatedNerkhGetHandler(
             IProcessing processing,
             IMeterComparisonBatchQueryService meterComparisonBatchQueryService,
@@ -35,7 +35,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
             {
-                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+                string message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new CustomeValidationException(message);
             }
 
@@ -43,23 +43,22 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
             ICollection<MeterComparisonBatchDataOutputDto> comparisonResult = new List<MeterComparisonBatchDataOutputDto>();
             foreach (var data in meterComparisonBatch.ReportData)
             {
-                BaseOldTariffEngineImaginaryInputDto meterInfoData = GetMeterInfo(data);
-                var result = await _processing.HandleWithAggregatedNerkh(meterInfoData, cancellationToken);
+                BaseOldTariffEngineImaginaryInputDto meterInfoData = CreateImaginaryInputDtoObject(data);
+                AbBahaCalculationDetails result = await _processing.HandleWithAggregatedNerkh(meterInfoData, cancellationToken);
 
-                MeterComparisonBatchDataOutputDto comparisonBatch = GetComparisonBatch(data);
+                MeterComparisonBatchDataOutputDto comparisonBatch = CreateComparisonBatchObject(data);
                 comparisonBatch.CurrentAmount = result.SumItems;
                 comparisonBatch.IsChecked = GetTolarance(data.PreviousAmount, data.CurrentAmount, input.Tolerance, input.IsPercent);
+                comparisonBatch.CurrentDiscountAmount = result.DiscountSum;
 
                 comparisonResult.Add(comparisonBatch);
             }
             meterComparisonBatch.ReportHeader.SumCurrentAmount = comparisonResult.Sum(m => m.CurrentAmount);
-
-
             ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataOutputDto> meterComparisonResult = new(meterComparisonBatch.Title, meterComparisonBatch.ReportHeader, comparisonResult);
             return meterComparisonResult;
         }
 
-        private MeterComparisonBatchDataOutputDto GetComparisonBatch(MeterComparisonBatchDataWithCustomerInfoOutputDto data)
+        private MeterComparisonBatchDataOutputDto CreateComparisonBatchObject(MeterComparisonBatchDataWithCustomerInfoOutputDto data)
         {
             return new MeterComparisonBatchDataOutputDto()
             {
@@ -69,10 +68,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                 CurrentMeterNumber = data.CurrentMeterNumber,
                 PreviousMeterNumber = data.PreviousMeterNumber,
                 PreviousAmount = data.PreviousAmount,
-                ZoneTitle = data.ZoneTitle,
+                ZoneTitle = data.ZoneTitle
             };
         }
-        private BaseOldTariffEngineImaginaryInputDto GetMeterInfo(MeterComparisonBatchDataWithCustomerInfoOutputDto data)
+        private BaseOldTariffEngineImaginaryInputDto CreateImaginaryInputDtoObject(MeterComparisonBatchDataWithCustomerInfoOutputDto data)
         {
             BaseOldTariffEngineImaginaryInputDto meterInfoData = new()
             {
@@ -119,7 +118,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
         }
         private (double, double) GetMaxMinPercent(double amount, double tolerance)
         {
-            return (amount * (1 + tolerance), amount * (1 - tolerance));
+            return (amount * (1 + tolerance/100), amount * (1 - tolerance/100));
         }
     }
 }

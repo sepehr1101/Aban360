@@ -14,7 +14,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
     {
         public EmptyUnitByBillIdZoneGroupingQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdByZoneDataOutputDto>> Get(EmptyUnitInputDto input)
         {
@@ -61,6 +62,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             return @$";WITH EmptyUnitByBill AS
 					(
 					    SELECT
+                            b.ZoneId,
 							b.ZoneTitle,
 							b.CommercialCount,
 							b.DomesticCount,
@@ -75,7 +77,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 							(@fromReadingNumber IS NULL OR
 							@toReadingNumber IS NULL OR
 							b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) 
-                            {zoneQuery}
+                            {zoneQuery} 
                             {usageQuery}
 					)
 					SELECT 
@@ -102,7 +104,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 		   			 Join [Db70].dbo.T5 t5
 						 On t5.C0=e.WaterDiameterId
 					Join [Db70].dbo.T51 t51
-						On t51.C0=b.ZoneId
+						On t51.C0=e.ZoneId
 					Join [Db70].dbo.T46 t46
 						On t51.C1=t46.C0
 				  	 Where e.RN=1

@@ -10,7 +10,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
     {
         public NerkhGetService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<NerkhGetDto> Get(int id, int nerkh)
         {
@@ -23,7 +24,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
         {
             string nerkhGetQueryString = GetNerkhGetQuery();
             NerkhGetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<NerkhGetDto>(nerkhGetQueryString, new { id });
-
             return result;
         }
 
@@ -73,6 +73,5 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                 	From [OldCalc].dbo.Nerkh n
                 	Where n.Id=@id";
         }
-
     }
 }

@@ -15,7 +15,7 @@
         public static string EmptyUnit { get { return $"{Report} خالی از سکنه"; } }
 
         public static string EmptyUnitByBillDetail { get { return $"{Report} جزئیات از سکنه - قبض"; } }
-        public static string EmptyUnitByBillSummary { get { return $"{Report} خلاصه خالی از سکنه قبض بر اساس ناحیه"; } }
+        public static string EmptyUnitByBillSummary { get { return $"{Report} خلاصه خالی از سکنه قبض"; } }
 
 
         public static string ClientValidation { get { return $"{Report} صحت سنجی اطلاعات پایه"; } }

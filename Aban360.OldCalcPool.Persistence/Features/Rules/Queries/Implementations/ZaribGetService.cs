@@ -10,7 +10,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
     {
         public ZaribGetService(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+        }
 
         public async Task<ZaribGetDto> Get(int id)
         {

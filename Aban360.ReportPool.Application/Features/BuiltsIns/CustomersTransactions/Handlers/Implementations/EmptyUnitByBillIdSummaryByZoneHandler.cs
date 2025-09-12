@@ -27,7 +27,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
 
         public async Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdByZoneDataOutputDto>> Handle(EmptyUnitInputDto input, [Optional] CancellationToken cancellationToken)
         {
-            var validationResult = await _validator.ValidateAsync(input/*, cancellationToken*/);
+            var validationResult = await _validator.ValidateAsync(input);
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));

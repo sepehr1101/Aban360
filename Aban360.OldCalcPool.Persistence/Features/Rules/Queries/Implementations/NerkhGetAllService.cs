@@ -11,7 +11,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
         const string _minDate = "1402/12/29";
         public NerkhGetAllService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<IEnumerable<NerkhGetDto>> Get(int nerkh)
         {

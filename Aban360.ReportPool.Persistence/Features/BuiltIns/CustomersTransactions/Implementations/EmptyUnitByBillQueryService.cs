@@ -14,7 +14,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
     {
         public EmptyUnitByBillQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+		}
         public async Task<ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>> GetInfo(EmptyUnitInputDto input)
         {
             string emptyUnitQuery = GetEmptyUnitQuery(input.ZoneIds.Any(), input.UsageSellIds.Any());
@@ -47,9 +48,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
             };
 
-
             var result = new ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>(ReportLiterals.EmptyUnitByBillDetail, emptyUnitHeader, emptyUnitData);
-
             return result;
         }
 
@@ -121,9 +120,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 							e.BillId,
 							e.EmptyUnit,
 							e.ZoneId,
-							e.ZoneTitle,
-							e.RegionId,
-							e.RegionTitle,
+							e.ZoneTitle,							
+							t46.C2 AS RegionTitle,
+							t46.C0 AS RegionId,
 							e.NationalCode,
 							e.PostalCode , 
 							e.PhoneNumber,
@@ -131,9 +130,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 							e.FatherName ,
 							e.Consumption,
 							e.ConsumptionAverage,
-							e.SumItems,
-							t46.C2 AS RegionTitle,
-							t46.C0 AS RegionId
+							e.SumItems
 					FROM EmptyUnitByBill e
 					Join [Db70].dbo.T51 t51
 						On t51.C0=e.ZoneId

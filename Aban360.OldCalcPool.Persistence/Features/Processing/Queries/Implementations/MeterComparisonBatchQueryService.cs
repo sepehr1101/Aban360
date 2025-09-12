@@ -14,7 +14,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         string reportTitle = "مغایرت محاسبه";
         public MeterComparisonBatchQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+        }
 
         public async Task<ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataWithCustomerInfoOutputDto>> Get(MeterComparisonBatchInputDto input)
         {
@@ -56,7 +57,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	m.n_faz as SewageCalcState,
 						b.fix_mas as ContractualCapacity,
                         b.ted_khane as HouseholdNumber,
-						b.eshtrak as ReadingNumber,-
+						b.eshtrak as ReadingNumber,
                         m.VillageId as VillageId,
 						b.edareh_k as IsSpecial,
 						b.enshab as MeterDiameterId,
@@ -67,7 +68,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 						b.today_no as CurrentMeterNumber,
 						b.baha as PreviousAmount
                     From [{dbName}].dbo.bed_bes b
-					Join [{dbName}].dbo.Members m	
+					Join [{dbName}].dbo.members m	
 						On b.town=m.town AND b.radif=m.radif
 					Join [Db70].dbo.T51 t51 
 						On m.town=t51.C0
