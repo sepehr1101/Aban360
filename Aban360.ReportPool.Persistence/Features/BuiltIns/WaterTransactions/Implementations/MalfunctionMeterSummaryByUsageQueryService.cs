@@ -57,6 +57,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						b.OtherCount,
 						b.WaterDiameterId,
 						b.CounterStateCode,
+                        b.ConsumptionAverage,
 	                    RN=ROW_NUMBER() OVER (PARTITION BY b.BillId ORDER BY b.RegisterDay DESC)
                     From [CustomerWarehouse].dbo.Bills b
 					Join [CustomerWarehouse].dbo.Clients c 

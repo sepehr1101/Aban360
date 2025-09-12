@@ -20,7 +20,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                 fromDate = @from,
                 toDate = @to
             };
-            ZaribCQueryDto zaribCQueryDto = await _sqlReportConnection.QueryFirstAsync(query, @params);
+            ZaribCQueryDto zaribCQueryDto = await _sqlReportConnection.QueryFirstAsync<ZaribCQueryDto>(query, @params);
             return zaribCQueryDto;
         }
         private string GetQueryByFromTo()

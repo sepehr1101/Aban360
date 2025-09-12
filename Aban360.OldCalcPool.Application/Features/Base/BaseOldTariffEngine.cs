@@ -1,5 +1,4 @@
 ﻿using Aban360.Common.Exceptions;
-using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.Common.Timing;
 using Aban360.OldCalcPool.Application.Features.Base;
@@ -7,6 +6,7 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using DNTPersianUtils.Core;
 using org.matheval;
+using System.Runtime.InteropServices;
 
 namespace Aban360.CalculationPool.Application.Features.Base
 {
@@ -18,7 +18,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         /// </summary>
         /// <returns>مقدار خروجی بعد از اتمام نوشتن کد، اصلاح شود</returns>
 
-        public BaseOldTariffEngineOutputDto CalculateWaterBill(NerkhGetDto nerkh, AbAzadGetDto abAzad, ZaribGetDto zarib, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, double dailyAverage, string currentDateJalali, int consumption, int duration)
+        public BaseOldTariffEngineOutputDto CalculateWaterBill(NerkhGetDto nerkh, AbAzadFormulaDto abAzad, ZaribGetDto zarib, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, double dailyAverage, string currentDateJalali, int consumption, int duration, [Optional]int? c)
         {
             DateOnly previousDate = ConvertJalaliToGregorian(meterInfo.PreviousDateJalali);
             DateOnly currentDate = ConvertJalaliToGregorian(currentDateJalali);
@@ -27,10 +27,10 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             int olgoo = GetOlgoo(nerkh.Date2, nerkh.Olgo);
             bool isVillageCalculation = IsVillage(customerInfo.ZoneId);
-            double monthlyConsumption = nerkh.DailyAverageConsumption * 30;
+            double monthlyConsumption = nerkh.DailyAverageConsumption * monthDays;
             decimal multiplierAbBaha = Multiplier(zarib, olgoo, IsDomestic(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
 
-            CalculateAbBahaOutputDto abBahaResult = CalculateAbBaha(nerkh, customerInfo, meterInfo, zarib, abAzad, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, multiplierAbBaha);
+            CalculateAbBahaOutputDto abBahaResult = CalculateAbBaha(nerkh, customerInfo, meterInfo, zarib, abAzad, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, multiplierAbBaha, c);
             (double, double) boodje = CalculateBoodje(nerkh, customerInfo, currentDateJalali, monthlyConsumption, olgoo, consumption, duration);
             double fazelab = CalculateFazelab(nerkh, customerInfo, abBahaResult.AbBahaAmount, currentDateJalali);
             double hotSeasonAbBaha = CalcHotSeasonAbBaha(nerkh, abBahaResult.AbBahaAmount, customerInfo, monthlyConsumption);//change dailyAverage -> monthlyCosumption
@@ -57,10 +57,14 @@ namespace Aban360.CalculationPool.Application.Features.Base
         /// <param name="formula">متن فرمول که در آن X متوسط مصرف ماهانه است</param>
         /// <param name="monthlyAverageConsumption">متوسط مصرف ماهانه</param>
         /// <returns></returns>
-        private double CalcFormulaByRate(string formula, double monthlyAverageConsumption)
+        private double CalcFormulaByRate(string formula, double monthlyAverageConsumption, [Optional] int? c)
         {
             object parameters = new { X = monthlyAverageConsumption };
             Expression expression = GetExpression(formula, parameters);
+            if (c is not null)
+            {
+                expression.Bind(nameof(c).ToUpper(), c.Value);
+            }
             double value = expression.Eval<double>();
             return value;
         }
@@ -190,10 +194,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         {
             return baseString.CompareTo(from) > 0;
         }
-        private bool IsBetween(string baseString, string @from, string @to)
-        {
-            return baseString.CompareTo(from) >= 0 && baseString.CompareTo(to) <= 0;
-        }
+       
         private bool LessThanEq(string baseString, string @from)
         {
             return baseString.CompareTo(from) <= 0;
@@ -201,6 +202,11 @@ namespace Aban360.CalculationPool.Application.Features.Base
         private bool IsGtFromLqTo(string baseString, string @from, string @to)
         {
             return baseString.CompareTo(from) > 0 && baseString.CompareTo(to) <= 0;
+        }
+
+        private bool IsBetween(string baseString, string @from, string @to)
+        {
+            return baseString.CompareTo(from) >= 0 && baseString.CompareTo(to) <= 0;
         }
         private bool IsBetween(int number, int min, int max)
         {
@@ -220,33 +226,36 @@ namespace Aban360.CalculationPool.Application.Features.Base
             return (abBaha * multiplier, oldAbBaha * multiplier, true);
         }
 
-        private bool IsDolatabadOrHabibabadWithConditionEshtrak(int zoneId, ulong readingNumber)
+        private bool IsDolatabadOrHabibabadWithConditionEshtrak(int zoneId, string readingNumber)
         {
             return
-                (zoneId == 134013 && IsBetween(readingNumber, 57000000, 57999999)) ||
-                (zoneId == 134016 && IsBetween(readingNumber, 57000000, 57999999)) ||
+                (zoneId == 134013 && IsBetween(readingNumber, "57000000", "57999999")) ||
+                (zoneId == 134016 && IsBetween(readingNumber, "57000000", "57999999")) ||
                  MetroButIsRural(zoneId, readingNumber, 4);
         }
-        private bool MetroButIsRural(int zoneId, ulong readingNumber, int thresholdSkip)
+        private bool MetroButIsRural(int zoneId, string readingNumber, int thresholdSkip)
         {
-            int shortReadingNumber = (int.Parse)(readingNumber.ToString().Substring(0, thresholdSkip));
+            if(string.IsNullOrWhiteSpace(readingNumber)) return false;
+            if (readingNumber.Trim().Length < thresholdSkip) return false;
+
+            string shortReadingNumber = readingNumber.Trim().Substring(0, thresholdSkip);
             if (zoneId == 132220 &&
-                (IsBetween(shortReadingNumber, 1610, 1628) ||
-                IsBetween(shortReadingNumber, 1633, 1648) ||
-                IsBetween(shortReadingNumber, 1651, 1661) ||
-                IsBetween(shortReadingNumber, 6042, 6052) ||
-                IsBetween(shortReadingNumber, 6060, 6072))
+                (IsBetween(shortReadingNumber, "1610", "1628") ||
+                IsBetween(shortReadingNumber, "1633", "1648") ||
+                IsBetween(shortReadingNumber, "1651", "1661") ||
+                IsBetween(shortReadingNumber, "6042", "6052") ||
+                IsBetween(shortReadingNumber, "6060", "6072"))
                 )
                 return true;
 
             if (zoneId == 132211 &&
-                 (IsBetween(shortReadingNumber, 1103, 1108) ||
-                 IsBetween(shortReadingNumber, 1109, 1113) ||
-                 IsBetween(shortReadingNumber, 1143, 1165) ||
-                 IsBetween(shortReadingNumber, 1161, 1184) ||
-                 IsBetween(shortReadingNumber, 1403, 1499) ||
-                 IsBetween(shortReadingNumber, 1450, 1472) ||
-                 IsBetween(shortReadingNumber, 1574, 1599))
+                 (IsBetween(shortReadingNumber, "1103", "1108") ||
+                 IsBetween(shortReadingNumber, "1109", "1113") ||
+                 IsBetween(shortReadingNumber, "1143", "1165") ||
+                 IsBetween(shortReadingNumber, "1161", "1184") ||
+                 IsBetween(shortReadingNumber, "1403", "1499") ||
+                 IsBetween(shortReadingNumber, "1450", "1472") ||
+                 IsBetween(shortReadingNumber, "1574", "1599"))
                )
                 return true;
 
@@ -324,11 +333,11 @@ namespace Aban360.CalculationPool.Application.Features.Base
         /// محاسبه آب بها 
         /// </summary>
         /// <returns>عدد محاسبه شده‌ی آب‌بها</returns>
-        private CalculateAbBahaOutputDto CalculateAbBaha(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadGetDto abAzad8And39, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, decimal multiplierAbBaha)
+        private CalculateAbBahaOutputDto CalculateAbBaha(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, decimal multiplierAbBaha, [Optional] int? c)
         {
-            double abBahaAmount = 0, oldAbBahaAmount = 0, abBahaFromExpression = 0;
+            double abBahaAmount = 0, oldAbBahaAmount = 0, abBahaFromExpression = 0, oldAbBahaZarib=1.15;
             double duration = nerkh.Duration;
-            abBahaFromExpression = CalcFormulaByRate(nerkh.Vaj, monthlyConsumption);
+            abBahaFromExpression = CalcFormulaByRate(nerkh.Vaj, monthlyConsumption, c);
             (double, double) abBahaValues = (0, 0);
 
             if (CheckZero(duration, monthlyConsumption, nerkh.Vaj))
@@ -338,13 +347,13 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 !IsReligious(customerInfo.UsageId) &&
                 !IsConstruction(customerInfo.BranchType))
             {
-                abBahaFromExpression = CalcFormulaByRate(nerkh.Vaj, monthlyConsumption);
+                abBahaFromExpression = CalcFormulaByRate(nerkh.Vaj, monthlyConsumption, c);
                 abBahaAmount = abBahaFromExpression * nerkh.PartialConsumption;
 
                 if (IsLessThan1403_09_13AndOvajNotZero(nerkh))
                 {
                     double oldAbBahaFromExpression = CalcFormulaByRate(nerkh.OVaj, monthlyConsumption);
-                    oldAbBahaAmount = nerkh.PartialConsumption * oldAbBahaFromExpression * 1.15;
+                    oldAbBahaAmount = nerkh.PartialConsumption * oldAbBahaFromExpression * oldAbBahaZarib;
                 }
 
                 if (IsLessThan1403_09_13(nerkh.Date2) &&
@@ -363,7 +372,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 if (HasCapacityAndNotConstruction(customerInfo) ||
                     IsReligious(customerInfo.UsageId))
                 {
-                    double contractualCapacityInDuration = ((double)customerInfo.ContractualCapacity / 30) * duration;
+                    double contractualCapacityInDuration = ((double)customerInfo.ContractualCapacity / monthDays) * duration;
 
                     if (IsCharitySchoolOrConsumptionGtCapacity(nerkh, customerInfo, contractualCapacityInDuration))
                     {
@@ -398,7 +407,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             }
             if (IsConstruction(customerInfo.BranchType))
             {
-                abBahaAmount = abAzad8And39.Azad * nerkh.PartialConsumption;
+                abBahaAmount = CalcFormulaByRate(abAzad8And39.Formula, monthlyConsumption, c) * nerkh.PartialConsumption;
             }
             //L 1553
             //L 1558
@@ -439,7 +448,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             bool IsDolatabadOrHabibabadAndDomesticAndNotConstruction(CustomerInfoOutputDto customerInfo, double abBahaAmount)
             {
-                return IsDolatabadOrHabibabadWithConditionEshtrak(customerInfo.ZoneId, ulong.Parse(customerInfo.ReadingNumber)) &&
+                return IsDolatabadOrHabibabadWithConditionEshtrak(customerInfo.ZoneId, customerInfo.ReadingNumber) &&
                        IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
                        !IsConstruction(customerInfo.BranchType) &&
                        abBahaAmount != 0;
@@ -495,13 +504,13 @@ namespace Aban360.CalculationPool.Application.Features.Base
                        IsCharityOrSchool(customerInfo.UsageId);
             }
 
-            (long, long) Get2Amount(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, AbAzadGetDto abAzad8And39, double abBahaFromExpression)
+            (long, long) Get2Amount(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, AbAzadFormulaDto abAzad8And39, double abBahaFromExpression)
             {
                 if (IsReligiousWithCharity(customerInfo.UsageId))
                 {
                     return IsConstruction(customerInfo.BranchType) ? (450000, 450000) : Get2PartAmount(nerkh.Date2);//  foxpro:1178
                 }
-                return GetEducationOrBathMultiplier(customerInfo.UsageId, nerkh.Date1, nerkh.Date2, customerInfo.IsSpecial, abAzad8And39.Azad, abBahaFromExpression);//Azad:39
+                return GetEducationOrBathMultiplier(customerInfo.UsageId, nerkh.Date1, nerkh.Date2, customerInfo.IsSpecial, (long)CalcFormulaByRate(abAzad8And39.Formula, monthlyConsumption,c), abBahaFromExpression);//Azad:39
             }
             #endregion
         }
@@ -996,7 +1005,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             if (sumUnit <= 0)
                 sumUnit = 1;
 
-            abonAbAmount = (((10000.0 / 30) * zabon_1) + ((35000.0 / 30) * zabon_2) + ((45500.0 / 30) * zabon_3) + ((58500.0 / 30) * zabon_4)) * sumUnit;
+            abonAbAmount = (((10000.0 / monthDays) * zabon_1) + ((35000.0 / monthDays) * zabon_2) + ((45500.0 / monthDays) * zabon_3) + ((58500.0 / monthDays) * zabon_4)) * sumUnit;
 
             if (abonAbAmount < 0)
                 abonAbAmount = 0;

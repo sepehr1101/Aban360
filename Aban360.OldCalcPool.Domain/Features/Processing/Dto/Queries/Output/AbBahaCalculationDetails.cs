@@ -37,7 +37,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         public int Duration { get; set; }
 
         public IEnumerable<NerkhGetDto> Nerkh { get; set; }
-        public IEnumerable<AbAzadGetDto> AbAzad { get; set; }
+        public IEnumerable<AbAzadFormulaDto> AbAzad { get; set; }
         public IEnumerable<ZaribGetDto> Zarib { get; set; }
         public CustomerInfoOutputDto Customer { get; set; }
         public MeterInfoOutputDto MeterInfo { get; set; }
@@ -66,7 +66,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             double avarezDiscount,
             double javaniDiscount,
             IEnumerable<NerkhGetDto> _nerkh,
-            IEnumerable<AbAzadGetDto> _abAzad,
+            IEnumerable<AbAzadFormulaDto> _abAzad,
             IEnumerable<ZaribGetDto> _zarib,
             long _stopWatch)
         {
