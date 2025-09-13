@@ -2,9 +2,9 @@
 {
     public record MalfunctionMeterHeaderOutputDto
     {
-        public string FromReadingNumber { get; set; }
-        public string ToReadingNumber { get; set; }
-        public string ReportDateJalali { get; set; }
+        public string? FromReadingNumber { get; set; }
+        public string? ToReadingNumber { get; set; }
+        public string ReportDateJalali { get; set; } = default!;
         public int RecordCount { get; set; }
         public long TotalPayable { get; set; }
     }

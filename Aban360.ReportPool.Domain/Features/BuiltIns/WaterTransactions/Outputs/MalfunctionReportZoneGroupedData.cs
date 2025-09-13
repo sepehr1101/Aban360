@@ -1,8 +1,8 @@
-﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs
+﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs
 {
-    public record WaterMeterReplacementsSummaryByUsageDataOutputDto
+    public class MalfunctionReportZoneGroupedData
     {
-        public string UsageTitle { get; set; } = default!;
+        public string ItemTitle { get; set; } = default!;
         public int CustomerCount { get; set; }
         public int TotalUnit { get; set; }
         public int CommercialUnit { get; set; }

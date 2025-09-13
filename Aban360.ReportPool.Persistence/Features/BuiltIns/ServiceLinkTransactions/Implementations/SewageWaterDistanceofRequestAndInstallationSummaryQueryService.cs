@@ -28,7 +28,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali,
-                zoneIds = input.ZoneIds
+                zoneIds = input.ZoneIds,
+                fromReadingNumber = input.FromReadingNumber,
+                toReadingNumber = input.ToReadingNumber
             };
             IEnumerable<SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto>(distanceRequestInstallationQuery, @params);
             SewageWaterDistanceofRequestAndInstallationHeaderOutputDto RequestHeader = new SewageWaterDistanceofRequestAndInstallationHeaderOutputDto()
@@ -58,6 +60,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 					    c.WaterRegisterDateJalali IS NOT NULL AND
 					    TRIM(c.{baseDate}) != '' AND
 					    TRIM(c.WaterRegisterDateJalali) != '' AND
+                        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
                     	c.WaterRegisterDateJalali BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
             			c.ToDayJalali IS NULL
@@ -77,6 +80,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 					    c.{baseDate} IS NOT NULL AND
 					    TRIM(c.SewageRegisterDateJalali) != '' AND
 					    TRIM(c.{baseDate}) != '' AND
+                        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
                     	c.SewageRegisterDateJalali BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
             			c.ToDayJalali IS NULL

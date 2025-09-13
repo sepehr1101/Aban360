@@ -14,7 +14,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
     {
         public WaterMeterReplacementsSummaryByUsageQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsSummaryByUsageDataOutputDto>> Get(WaterMeterReplacementsInputDto input)
         {
@@ -54,7 +55,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         private string GetBranchWaterMeterReplacementsQuery()
         {
             return @"Select 
-                        c.ZoneTitle AS ZoneTitle,
+                        c.UsageTitle AS UsageTitle,
                         COUNT(c.ZoneTitle) AS CustomerCount,
                         SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
                         SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
@@ -92,7 +93,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
 						c.ToDayJalali IS NULL
 						)
-                    Group By c.ZoneTitle";
+                    Group By c.UsageTitle";
         }
     }
 }
