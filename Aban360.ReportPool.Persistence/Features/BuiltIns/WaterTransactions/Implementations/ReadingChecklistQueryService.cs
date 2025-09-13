@@ -59,7 +59,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                                 b.CounterStateTitle AS LastCounterStateTitle,
 		                        b.CustomerNumber,
                                 c.DeletionStateTitle,
-                                c.MobileNo AS MobilePhone,
+                                c.MobileNo AS MobileNumber,
                                 TRIM(c.Address) AS Address,
                                 c.ReadingNumber,
                                 c.BillId,                            
@@ -71,8 +71,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 	                        WHERE 
 	                            b.CounterStateCode NOT IN(4,7,8) AND
 		                        b.ZoneId=@zoneId AND
-		                        b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-            			        c.ToDayJalali IS NULL
+		                        b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
+            			        c.ToDayJalali IS NULL)
                         SELECT * FROM CTE
                         WHERE RN=1";
             //todo:
