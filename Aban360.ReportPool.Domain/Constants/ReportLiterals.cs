@@ -166,5 +166,8 @@
         public static string ReadingStatusStatementSummary { get { return $"خلاصه {Report} خلاصه قهرست وضعیت"; } }
 
         public static string RuinedMeterIncome { get { return $"خلاصه {Report} درآمد کنتور خراب"; } }
+
+        //فاصله قرائت تا صدور قبض
+        //registerDay   nextDay
     }
 }

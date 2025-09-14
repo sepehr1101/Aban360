@@ -48,6 +48,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             waterInvoice.PaymentMethod = paymentInfo is not null ? paymentInfo.PaymentMethod:"";
             waterInvoice.IsPayed = paymentInfo is not null;
             waterInvoice.Description = paymentInfo != null ?ExceptionLiterals.SuccessedPay : ExceptionLiterals.UnsuccessedPay;
+            waterInvoice.Title = ReportLiterals.WaterInvoice;
 
             ReportOutput<WaterInvoiceDto, LineItemsDto> result = new(ReportLiterals.WaterInvoice, waterInvoice, lineitems);
 

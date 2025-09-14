@@ -10,9 +10,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Implementations
 {
-    internal sealed class RemovedBillSummaryQueryService : AbstractBaseConnection, IRemovedBillSummaryQueryService
+    internal sealed class RemovedBillSummaryByUsageQueryService : AbstractBaseConnection, IRemovedBillSummaryByUsageQueryService
     {
-        public RemovedBillSummaryQueryService(IConfiguration configuration)
+        public RemovedBillSummaryByUsageQueryService(IConfiguration configuration)
             : base(configuration)
         { }
 
@@ -40,7 +40,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 SumAmount = RemovedBillData.Sum(x => x.Amount)
             };
 
-            var result = new ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto>(ReportLiterals.RemovedBillSummary, RemovedBillHeader, RemovedBillData);
+            var result = new ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto>(ReportLiterals.RemovedBillSummary + ReportLiterals.ByUsage, RemovedBillHeader, RemovedBillData);
 
             return result;
         }
@@ -49,7 +49,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
         {
             string zoneQuery = hasZone ? "AND c.ZoneId IN @zoneIds" : string.Empty;
             return @$"Select
-                	c.ZoneTitle,
+                	c.UsageTitle as ItemTitle,
+                    Count(c.UsageTitle) As CustomerCount,
                 	AVG(rb.Consumption) AS AverageConsumption,
                 	SUM(rb.Consumption) AS SumConsumption,
                 	SUM(rb.SumItems) AS Amount
@@ -64,8 +65,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 	@toAmount IS NULL OR
                 	rb.SumItems BETWEEN @fromAmount AND @toAmount)
                     {zoneQuery}
-                Group By c.ZoneTitle";
+                Group By c.UsageTitle";
         }
-
     }
 }

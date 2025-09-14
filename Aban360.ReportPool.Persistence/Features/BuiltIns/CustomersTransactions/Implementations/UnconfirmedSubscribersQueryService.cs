@@ -19,17 +19,18 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         public async Task<ReportOutput<UnconfirmedSubscribersHeaderOutputDto, UnconfirmedSubscribersDataOutputDto>> GetInfo(UnconfirmedSubscribersInputDto input)
         {
             string unconfirmedSubscribersQuery = UnconfirmedSubscribersQuery();
-            IEnumerable<UnconfirmedSubscribersDataOutputDto> unconfirmedSubscribersData = await _sqlReportConnection.QueryAsync<UnconfirmedSubscribersDataOutputDto>(unconfirmedSubscribersQuery, new {zoneIds=input.ZoneIds});
+            IEnumerable<UnconfirmedSubscribersDataOutputDto> unconfirmedSubscribersData = await _sqlReportConnection.QueryAsync<UnconfirmedSubscribersDataOutputDto>(unconfirmedSubscribersQuery, new { zoneIds = input.ZoneIds });
             UnconfirmedSubscribersHeaderOutputDto unconfirmedSubscribersHeader = new UnconfirmedSubscribersHeaderOutputDto()
             {
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (unconfirmedSubscribersData is not null && unconfirmedSubscribersData.Any()) ? unconfirmedSubscribersData.Count() : 0,
                 SumFinalAmount = unconfirmedSubscribersData.Sum(x => x.FinalAmount),
                 SumPreInstallmentAmount = unconfirmedSubscribersData.Sum(x => x.PreInstallmentAmount),
+                Title = ReportLiterals.UnconfirmedSubscribers
             };
 
-            ReportOutput<UnconfirmedSubscribersHeaderOutputDto, UnconfirmedSubscribersDataOutputDto> result = new 
-                (ReportLiterals.UnconfirmedSubscribers,  unconfirmedSubscribersHeader,unconfirmedSubscribersData);
+            ReportOutput<UnconfirmedSubscribersHeaderOutputDto, UnconfirmedSubscribersDataOutputDto> result = new
+                (ReportLiterals.UnconfirmedSubscribers, unconfirmedSubscribersHeader, unconfirmedSubscribersData);
 
             return result;
         }

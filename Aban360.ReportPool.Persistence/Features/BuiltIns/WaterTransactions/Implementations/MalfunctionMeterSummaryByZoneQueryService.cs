@@ -64,8 +64,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 					Join [CustomerWarehouse].dbo.Clients c 
 						ON b.CustomerNumber=c.CustomerNumber AND b.ZoneId=c.ZoneId
                     Where 
-                        b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
-                        b.ZoneId IN @zoneIds AND
+                        (@fromReadingNumber IS NULL OR
+                        @toReadingNumber IS NULL OR
+                        b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND                        b.ZoneId IN @zoneIds AND
                         b.CounterStateCode NOT IN (4,7,8) AND
 						c.DeletionStateId IN (0,2))
                     SELECT 

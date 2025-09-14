@@ -4,8 +4,8 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Contracts
 {
-    public interface IRemovedBillSummaryByZoneQueryService
+    public interface IRemovedBillSummaryByUsageQueryService
     {
-        Task<ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryByZoneDataOutputDto>> GetInfo(RemovedBillInputDto input);
+        Task<ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto>> GetInfo(RemovedBillInputDto input);
     }
 }

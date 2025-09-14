@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
 {
-    [Route("v1/removed-bill-summary")]
-    public class RemovedBillSummaryController : BaseController
+    [Route("v1/removed-bill-summary-by-usage")]
+    public class RemovedBillSummaryByUsageController : BaseController
     {
-        private readonly IRemovedBillSummaryHandler _removedBillHandler;
+        private readonly IRemovedBillSummaryByUsageHandler _removedBillHandler;
         private readonly IReportGenerator _reportGenerator;
-        public RemovedBillSummaryController(
-            IRemovedBillSummaryHandler removedBillHandler,
+        public RemovedBillSummaryByUsageController(
+            IRemovedBillSummaryByUsageHandler removedBillHandler,
             IReportGenerator reportGenerator)
         {
             _removedBillHandler = removedBillHandler;
@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, RemovedBillInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _removedBillHandler.Handle, CurrentUser, ReportLiterals.RemovedBillSummary, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _removedBillHandler.Handle, CurrentUser, ReportLiterals.RemovedBillSummary + ReportLiterals.ByUsage, connectionId);
             return Ok(inputDto);
         }
     }

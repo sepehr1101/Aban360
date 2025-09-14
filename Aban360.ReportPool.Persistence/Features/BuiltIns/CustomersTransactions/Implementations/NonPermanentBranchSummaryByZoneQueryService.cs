@@ -38,6 +38,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 ToReadingNumber = input.ToReadingNumber,
                 RecordCount = nonPremanentBranchData is not null && nonPremanentBranchData.Any() ? nonPremanentBranchData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                Title = ReportLiterals.NonPermanentBranchSummary + ReportLiterals.ByZone,
 
                 SumCommercialUnit = nonPremanentBranchData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = nonPremanentBranchData.Sum(i => i.DomesticUnit),
