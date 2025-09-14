@@ -45,6 +45,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             header.InheritedItems= await _sqlReportConnection.QueryFirstOrDefaultAsync<ItemsHeaderOutputDto>(calculationHeaderInMotherQueryString, new { parNoId = input.Input, zoneId = zoneId });
             header.SiphonDetails = siphonItems;
             header.CurrentItems = GetCurrentItems(header);
+            header.Title = ReportLiterals.ServiceLinkCalculationDetails;
             //todo: Create Second Dto in Application to remove duplicate Prop
 
 

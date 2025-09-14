@@ -98,7 +98,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	c2.RegisterDayJalali BETWEEN @fromDate AND @toDate) AND
                     	(@fromReadingNumber IS NULL OR
                     	@toReadingNumber IS NULL OR
-                    	c1.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)
+                    	c1.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
+                        c1.UsageId!=c2.UsageId
                     	{zoneQuery} ";
         }
     }

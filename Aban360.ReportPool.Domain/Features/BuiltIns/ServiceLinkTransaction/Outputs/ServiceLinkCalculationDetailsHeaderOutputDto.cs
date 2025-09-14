@@ -40,6 +40,7 @@
         public int UseStateId{ get; set; }
 
 
+        public string Title { get; set; }
         public string ReportDateJalali { get; set; }
 
 

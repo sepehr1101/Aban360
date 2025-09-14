@@ -43,5 +43,8 @@
 
         public string MeterDiameterTitle { get; set; }
 
+        public string  ReportDateJalali { get; set; }
+        public string  Title { get; set; }
+
     }
 }

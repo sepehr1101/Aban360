@@ -39,6 +39,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             IEnumerable<WaterIncomeAndConsumptionSummaryDataOutputDto> waterIncomeAndConsumptionData = await _sqlReportConnection.QueryAsync<WaterIncomeAndConsumptionSummaryDataOutputDto>(waterIncomeAndConsumptionSummarys, @params);
             WaterIncomeAndConsumptionSummaryHeaderOutputDto waterIncomeAndConsumptionHeader = new WaterIncomeAndConsumptionSummaryHeaderOutputDto()
             {
+                Title = ReportLiterals.WaterIncomeAndConsumptionSummary,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = waterIncomeAndConsumptionData.Count(),
 

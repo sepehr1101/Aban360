@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         [Route("eDeductionsAndDiscountcel/{connectionId}")]
         public async Task<IActionResult> GetEDeductionsAndDiscountcel(string connectionId, DeductionsAndDiscountsReportInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _deductionsAndDiscountsDetailReportHandler.Handle, CurrentUser, ReportLiterals.DeductionsAndDiscountsReport, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _deductionsAndDiscountsDetailReportHandler.Handle, CurrentUser, ReportLiterals.DeductionsAndDiscountsReportDetail, connectionId);
             return Ok(inputDto);
         }
     }

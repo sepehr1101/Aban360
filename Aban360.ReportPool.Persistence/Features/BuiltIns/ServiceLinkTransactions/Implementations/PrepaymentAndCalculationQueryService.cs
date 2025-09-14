@@ -70,6 +70,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 PaymentGetway = string.Empty, //todo: rename field and get data
                 InstallmentCount = data.First().InstallmentCount,
                 InstallmentNumber = data.First().InstallmentNumber,
+				Title= ReportLiterals.PrepaymentAndCalculation
             };
 			return header;
         }
