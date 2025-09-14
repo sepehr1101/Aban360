@@ -34,9 +34,17 @@
 
         public static string NonPermanentBranchDetail { get { return $"{Report} جرئیات انشعاب غیر‌دائم"; } }
         public static string NonPermanentBranchSummary { get { return $"{Report} خلاصه انشعاب غیر‌دائم"; } }
-        ///
 
-        public static string DeductionsAndDiscountsReport { get { return $"{Report} کسورات و تخفیفات"; } }
+        public static string DeductionsAndDiscountsReportDetail { get { return $"{Report} جزئیات کسورات و تخفیفات"; } }
+        public static string DeductionsAndDiscountsReportSummary { get { return $"{Report} خلاصه کسورات و تخفیفات"; } }
+
+        public static string WithoutBill { get { return $"{Report} بدون صدور قبض"; } }
+        public static string WithoutBillSummary { get { return $"{Report} خلاصه بدون صدور قبض"; } }
+
+        public static string WaterIncomeAndConsumptionDetail { get { return $"{Report} جزئیات درآمد مصارف و آب‌بها"; } }
+        public static string WaterIncomeAndConsumptionSummary { get { return $"{Report} خلاصه درآمد مصارف و آب‌بها"; } }
+        //
+
         public static string ServiceLinkDebtorCustomers { get { return $"{Report} مانده مطالبات سررسید شده"; } }
         public static string DebtorByDayDetail { get { return $"{Report} جزئیات روزنامه بدهکاران"; } }
         public static string DebtorByDaySummary { get { return $"{Report} خلاصه روزنامه بدهکاران"; } }
@@ -63,8 +71,7 @@
         public static string Unread { get { return $"{Report} بسته و مانع طی دوره"; } }
         public static string UnreadSummary { get { return $"{Report} خلاصه بسته و مانع طی دوره"; } }
 
-        public static string WithoutBill { get { return $"{Report} بدون صدور قبض"; } }
-        public static string WithoutBillSummary { get { return $"{Report} خلاصه بدون صدور قبض"; } }
+   
 
         public static string ContractualCapacity { get { return $"{Report} ظرفیت قراردادی"; } }
         public static string Usage { get { return $"{Report} باغ و اقامتگاه"; } }
@@ -150,8 +157,6 @@
         public static string ReadingListDetail { get { return $"{Report} جزئیات فهرست تعداد قرائت"; } }//
         public static string ReadingListSummary { get { return $"{Report} خلاصه فهرست تعداد قرائت"; } }
 
-        public static string WaterIncomeAndConsumptionDetail { get { return $"{Report} جزئیات درآمد مصارف و آب‌بها"; } }
-        public static string WaterIncomeAndConsumptionSummary { get { return $"{Report} خلاصه درآمد مصارف و آب‌بها"; } }
         public static string ContractualAndOlgooLevel { get { return $"{Report} طبقات ظرفیت و الگو"; } }
 
 
