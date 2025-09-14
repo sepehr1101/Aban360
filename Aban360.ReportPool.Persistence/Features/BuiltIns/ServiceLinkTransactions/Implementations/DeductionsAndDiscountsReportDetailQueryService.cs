@@ -36,7 +36,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 TotalOffAmount =deductionsAndDiscountsReportData.Sum(data=>data.OffAmount),
             };
 
-            var result = new ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDetailDataOutputDto>(ReportLiterals.DeductionsAndDiscountsReport, deductionsAndDiscountsReportHeader, deductionsAndDiscountsReportData);
+            var result = new ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportDetailDataOutputDto>(ReportLiterals.DeductionsAndDiscountsReportDetail, deductionsAndDiscountsReportHeader, deductionsAndDiscountsReportData);
 
             return result;
         }

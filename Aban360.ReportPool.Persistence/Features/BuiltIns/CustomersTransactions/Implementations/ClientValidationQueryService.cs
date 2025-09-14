@@ -41,8 +41,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             return result;
         }
         private string GetClientValidationQuery()
-        {
-            return @"Select  
+		{
+			return @"Select  
 					c.CustomerNumber,
 					c.ReadingNumber,
 					c.BillId,
@@ -99,7 +99,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 					(@fromReadingNumber IS NULL OR
 					@toReadingNumber IS NULL OR
 					c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-					c.ZoneId IN @zoneIds";
+					c.ZoneId IN @zoneIds AND
+					c.RegisterDayJalali	IS NULL";
+					
+
         }
-    }
+	}
 }

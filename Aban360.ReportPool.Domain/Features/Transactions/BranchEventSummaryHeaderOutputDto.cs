@@ -2,6 +2,9 @@
 {
     public record BranchEventSummaryHeaderOutputDto
     {
+        public string Title { get; set; }
+        public string ReportDateJalali { get; set; }
+
         public string FullName { get; set; }
         public string FirstName { get; set; }
         public string Surname { get; set; }

@@ -6,6 +6,7 @@ using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.Transactions;
 using Aban360.ReportPool.Persistence.Features.Transactions.Contracts;
 using Dapper;
+using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
@@ -34,6 +35,8 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             {
                 throw new BaseException(ExceptionLiterals.BillIdNotFound);
             }
+            branchHeader.ReportDateJalali = DateTime.Now.ToShortPersianDateString();
+            branchHeader.Title = ReportLiterals.BranchEventSummary;
 
             IEnumerable<BranchEventSummaryDataOutputDto> branchData = await _sqlReportConnection.QueryAsync<BranchEventSummaryDataOutputDto>(brachSummeryDataQueryString, new { zoneId = zoneIdCustomerNumber.ZoneId, customerNumber = zoneIdCustomerNumber.CustomerNumber });
             ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> result = new(ReportLiterals.BranchEventSummary, branchHeader, branchData);

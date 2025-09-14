@@ -11,6 +11,7 @@
         public long DebtorOrCreditorAmount { get; set; }
 
 
+        public string Title { get; set; }
         public string ReportDateJalali { get; set; }
         public string PersianStringAmount { get; set; }
         public string PaymentDateJalali { get; set; }

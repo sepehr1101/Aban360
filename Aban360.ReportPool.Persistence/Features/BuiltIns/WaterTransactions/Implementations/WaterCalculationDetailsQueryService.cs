@@ -5,6 +5,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using Dapper;
+using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
@@ -36,6 +37,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             };
 
 			WaterCalculationDetailsHeaderOutputDto calculationDetailsHeader = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterCalculationDetailsHeaderOutputDto>(calculationHeaderDataQuery, new { Id = input.Input });
+			calculationDetailsHeader.ReportDateJalali = DateTime.Now.ToShortPersianDateString();
+			calculationDetailsHeader.Title = ReportLiterals.WaterCalculationDetails;
+
             var result = new ReportOutput<WaterCalculationDetailsHeaderOutputDto, WaterCalculationDetailsDataOutputDto>(ReportLiterals.WaterCalculationDetails, calculationDetailsHeader, new List<WaterCalculationDetailsDataOutputDto> { calculationDetailsData });
             return result;
         }

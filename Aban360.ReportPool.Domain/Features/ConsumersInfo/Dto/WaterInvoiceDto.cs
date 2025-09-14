@@ -2,6 +2,8 @@
 {
     public record WaterInvoiceDto
     {
+        public string Title { get; set; }
+
         public string Headquarters { get; set; }
         public string EconomicalNumber { get; set; }
 
