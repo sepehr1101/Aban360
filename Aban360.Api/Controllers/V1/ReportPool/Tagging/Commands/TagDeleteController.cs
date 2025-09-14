@@ -11,7 +11,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Tagging.Commands
     {
         private readonly IDeleteTagHandler _deleteHandler;
 
-        public TagDeleteController(DeleteTagHandler deleteHandler)
+        public TagDeleteController(IDeleteTagHandler deleteHandler)
         {
             _deleteHandler = deleteHandler;
             _deleteHandler.NotNull(nameof(deleteHandler));

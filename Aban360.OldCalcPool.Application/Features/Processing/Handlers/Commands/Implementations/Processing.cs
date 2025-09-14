@@ -9,6 +9,7 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
+using Aban360.ReportPool.Persistence.Features.Tagging;
 using DNTPersianUtils.Core;
 using System.Diagnostics;
 
@@ -20,6 +21,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IMeterInfoDetailQueryService _meterInfoDetailQueryService;
         private readonly INerkhGetByConsumptionService _nerkhGetByConsumptionService;
         private readonly IZaribCQueryService _zaribCQueryService;
+        private readonly IBillIdTagService _tagService;
+
         int thresholdDay = 4;
         int constructionBranchType = 4;
         int azadUsageId = 39;
@@ -29,7 +32,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             ICustomerInfoDetailQueryService customerInfoDetailQueryService,
             IMeterInfoDetailQueryService meterInfoDetailQueryService,
             INerkhGetByConsumptionService nerkhGetByConsumptionService,
-            IZaribCQueryService zaribCQueryService)
+            IZaribCQueryService zaribCQueryService,
+            IBillIdTagService tagService)
         {
             _customerInfoDetailQueryService = customerInfoDetailQueryService;
             _customerInfoDetailQueryService.NotNull(nameof(customerInfoDetailQueryService));
@@ -42,6 +46,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             _zaribCQueryService = zaribCQueryService;
             _zaribCQueryService.NotNull(nameof(_zaribCQueryService));
+
+            _tagService = tagService;
+            _tagService.NotNull(nameof(_tagService));
         }
 
         private int GetConsumption(int previousNumber, int currentNumber)
@@ -265,13 +272,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             double sumAbBahaDiscount = 0, sumFazelabDiscount = 0, sumHotSeasonDiscount = 0,
                    sumAbonmanAbDiscount = 0, sumAbonmanFazelabDiscount=0, sumAvarezDiscount=0, sumJavaniDiscount=0, sumBoodjeDiscount=0;
             double sumJavaniAmount = 0;
+            IEnumerable<int> tags = await _tagService.GetIdsByBillId(customerInfo.BillId.Trim());
 
             foreach (var nerkhItem in allNerkh)
             {
                 AbAzadFormulaDto abAzadItem = abAzad.ElementAt(counter);
                 ZaribGetDto zaribItem = zarib.ElementAt(counter);
                 ZaribCQueryDto zaribC = await _zaribCQueryService.GetZaribC(nerkhItem.Date1, nerkhItem.Date2);
-                BaseOldTariffEngineOutputDto resultCalc = CalculateWaterBill(nerkhItem, abAzadItem, zaribItem, customerInfo, meterInfo, dailyAverage, currentDateJalali, consumption, duration, zaribC is not null? zaribC.C: null);
+                BaseOldTariffEngineOutputDto resultCalc = CalculateWaterBill(nerkhItem, abAzadItem, zaribItem, customerInfo, meterInfo, dailyAverage, currentDateJalali, consumption, duration, zaribC is not null? zaribC.C: null, tags);
                 nerkhItem.CalcVaj = resultCalc.AbBahaValues.AbBahaAmount.ToString();
                 sumAbBaha += resultCalc.AbBahaValues.AbBahaAmount;
                 sumFazelab += resultCalc.FazelabAmount;

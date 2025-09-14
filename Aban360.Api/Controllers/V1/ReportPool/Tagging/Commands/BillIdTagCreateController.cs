@@ -2,6 +2,7 @@
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.Tagging.Contracts;
 using Aban360.ReportPool.Domain.Features.Tagging.CustomerWarehouse.Application.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.Tagging.Commands
@@ -20,6 +21,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Tagging.Commands
         [Route("create")]
         [HttpPost, HttpPut]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CreateBillIdTagDto>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> Create([FromBody] CreateBillIdTagDto dto)
         {
             var id = await _createHandler.Handle(dto);
