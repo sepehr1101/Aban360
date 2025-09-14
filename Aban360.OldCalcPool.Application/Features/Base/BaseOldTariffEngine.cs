@@ -5,6 +5,7 @@ using Aban360.OldCalcPool.Application.Features.Base;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using DNTPersianUtils.Core;
+using DynamicExpresso;
 using org.matheval;
 using System.Runtime.InteropServices;
 
@@ -59,14 +60,23 @@ namespace Aban360.CalculationPool.Application.Features.Base
         /// <returns></returns>
         private double CalcFormulaByRate(string formula, double monthlyAverageConsumption, [Optional] int? c)
         {
-            object parameters = new { X = monthlyAverageConsumption };
-            Expression expression = GetExpression(formula, parameters);
-            if (c is not null)
+            string tag = nameof(tag);
+            if (formula.Contains(tag))
             {
-                expression.Bind(nameof(c).ToUpper(), c.Value);
+                return 0;
             }
-            double value = expression.Eval<double>();
-            return value;
+            else
+            {
+                int[] tags = [1, 2, 3];
+                object parameters = new { X = monthlyAverageConsumption };
+                Interpreter interpreter = GetExpression(formula, parameters);
+                if (c is not null)
+                {
+                    interpreter.SetVariable(nameof(c).ToUpper(), c.Value);
+                }
+                double value = interpreter.Eval<double>(formula);
+                return value;
+            }
         }
 
         private bool CheckConditions(int id, int[] values)

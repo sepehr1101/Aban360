@@ -606,7 +606,10 @@ namespace org.matheval.Common
         /// </summary>
         public const string Const_Find = "find";
 
-
+        /// <summary>
+        /// Function Contains
+        /// </summary>
+        public const string Const_Contains = "contains";
         #endregion
 
         #region Key

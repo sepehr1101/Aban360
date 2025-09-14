@@ -1,12 +1,13 @@
-﻿using DynamicExpresso;
+﻿using Aban360.OldCalcPool.Domain.Exceptions;
+using org.matheval;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace Aban360.OldCalcPool.Application.Features.Base
 {
-    internal abstract class BaseExpressionCalculator
+    internal abstract class BaseExpressionCalculatorOld
     {
-        internal Interpreter GetExpression(string formula, object info, [Optional] Dictionary<string, object>? dependencyDictionary)
+        internal Expression GetExpression(string formula, object info, [Optional] Dictionary<string, object>? dependencyDictionary)
         {
             Dictionary<string, object> propertyDictionary = GetDictionaryOfProperties(info);
             if (dependencyDictionary is not null)
@@ -15,15 +16,18 @@ namespace Aban360.OldCalcPool.Application.Features.Base
                     .Union(dependencyDictionary)
                     .ToDictionary();
             }
-            Interpreter interpreter = new ();
-            //throw new ExpressionValidationException(errors.First());
-            interpreter.Parse(formula);
-            List<string> formulaVariables = interpreter.Identifiers.Select(i=>i.Name).ToList();
+            Expression expression = new Expression(formula);
+            List<string> errors = expression.GetError();
+            if (errors != null && errors.Any())
+            {
+                throw new ExpressionValidationException(errors.First());
+            }
+            List<string> formulaVariables = expression.getVariables();
             foreach (string variable in formulaVariables)
             {
-                Bind(interpreter, variable, propertyDictionary);
+                Bind(expression, variable, propertyDictionary);
             }
-            return interpreter;
+            return expression;
         }
         private Dictionary<string, object> GetDictionaryOfProperties(object obj)
         {
@@ -41,13 +45,13 @@ namespace Aban360.OldCalcPool.Application.Features.Base
             }
             return dict;
         }
-        private void Bind(Interpreter expression, string formulaVariable, Dictionary<string, object> propertyDictionary)
+        private void Bind(Expression expression, string formulaVariable, Dictionary<string, object> propertyDictionary)
         {
             foreach (var prop in propertyDictionary)
             {
                 if (formulaVariable != null && formulaVariable.Equals(prop.Key))
                 {
-                    expression.SetVariable(prop.Key, prop.Value);
+                    expression.Bind(prop.Key, prop.Value);
                     break;
                 }
             }
