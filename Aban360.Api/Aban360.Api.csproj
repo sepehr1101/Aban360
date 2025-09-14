@@ -23,6 +23,7 @@
   <ItemGroup>
     <PackageReference Include="DNTCaptcha.Core" Version="5.2.7" />
     <PackageReference Include="DNTPersianUtils.Core" Version="6.4.0" />
+    <PackageReference Include="DynamicExpresso.Core" Version="2.19.2" />
     <PackageReference Include="Gridify.EntityFramework" Version="2.16.1" />
     <PackageReference Include="Hangfire" Version="1.8.17" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11" />
@@ -73,6 +74,7 @@
     <ProjectReference Include="..\Aban360.CalculationPool.Domain\Aban360.CalculationPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.CalculationPool.GatewayAdhoc\Aban360.CalculationPool.GatewayAdhoc.csproj" />
     <ProjectReference Include="..\Aban360.CalculationPool.Persistence\Aban360.CalculationPool.Persistence.csproj" />
+    <ProjectReference Include="..\Aban360.CalculationPoolTest.Evaluation\Aban360.CalculationPoolTest.Evaluation.csproj" />
     <ProjectReference Include="..\Aban360.ClaimPool.Application\Aban360.ClaimPool.Application.csproj" />
     <ProjectReference Include="..\Aban360.ClaimPool.Domain\Aban360.ClaimPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.ClaimPool.GatewayAdhoc\Aban360.ClaimPool.GatewayAdhoc.csproj" />

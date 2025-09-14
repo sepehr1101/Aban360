@@ -5,7 +5,6 @@ using Aban360.OldCalcPool.Application.Features.Base;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using DNTPersianUtils.Core;
-using org.matheval;
 using System.Runtime.InteropServices;
 
 namespace Aban360.CalculationPool.Application.Features.Base
@@ -18,7 +17,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         /// </summary>
         /// <returns>مقدار خروجی بعد از اتمام نوشتن کد، اصلاح شود</returns>
 
-        public BaseOldTariffEngineOutputDto CalculateWaterBill(NerkhGetDto nerkh, AbAzadFormulaDto abAzad, ZaribGetDto zarib, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, double dailyAverage, string currentDateJalali, int consumption, int duration, [Optional]int? c)
+        public BaseOldTariffEngineOutputDto CalculateWaterBill(NerkhGetDto nerkh, AbAzadFormulaDto abAzad, ZaribGetDto zarib, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, double dailyAverage, string currentDateJalali, int consumption, int duration, [Optional]int? c, [Optional] IEnumerable<int>? tagIds)
         {
             DateOnly previousDate = ConvertJalaliToGregorian(meterInfo.PreviousDateJalali);
             DateOnly currentDate = ConvertJalaliToGregorian(currentDateJalali);
@@ -30,7 +29,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             double monthlyConsumption = nerkh.DailyAverageConsumption * monthDays;
             decimal multiplierAbBaha = Multiplier(zarib, olgoo, IsDomestic(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
 
-            CalculateAbBahaOutputDto abBahaResult = CalculateAbBaha(nerkh, customerInfo, meterInfo, zarib, abAzad, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, multiplierAbBaha, c);
+            CalculateAbBahaOutputDto abBahaResult = CalculateAbBaha(nerkh, customerInfo, meterInfo, zarib, abAzad, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, multiplierAbBaha, c, tagIds);
             (double, double) boodje = CalculateBoodje(nerkh, customerInfo, currentDateJalali, monthlyConsumption, olgoo, consumption, duration);
             double fazelab = CalculateFazelab(nerkh, customerInfo, abBahaResult.AbBahaAmount, currentDateJalali);
             double hotSeasonAbBaha = CalcHotSeasonAbBaha(nerkh, abBahaResult.AbBahaAmount, customerInfo, monthlyConsumption);//change dailyAverage -> monthlyCosumption
@@ -57,15 +56,10 @@ namespace Aban360.CalculationPool.Application.Features.Base
         /// <param name="formula">متن فرمول که در آن X متوسط مصرف ماهانه است</param>
         /// <param name="monthlyAverageConsumption">متوسط مصرف ماهانه</param>
         /// <returns></returns>
-        private double CalcFormulaByRate(string formula, double monthlyAverageConsumption, [Optional] int? c)
+        private double CalcFormulaByRate(string formula, double monthlyAverageConsumption, [Optional] int? c, [Optional] IEnumerable<int> tagIds)
         {
-            object parameters = new { X = monthlyAverageConsumption };
-            Expression expression = GetExpression(formula, parameters);
-            if (c is not null)
-            {
-                expression.Bind(nameof(c).ToUpper(), c.Value);
-            }
-            double value = expression.Eval<double>();
+            object parameters = new { X = monthlyAverageConsumption, C = c, tags = tagIds.ToArray() };
+            double value = Eval<double>(formula, parameters);
             return value;
         }
 
@@ -333,11 +327,11 @@ namespace Aban360.CalculationPool.Application.Features.Base
         /// محاسبه آب بها 
         /// </summary>
         /// <returns>عدد محاسبه شده‌ی آب‌بها</returns>
-        private CalculateAbBahaOutputDto CalculateAbBaha(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, decimal multiplierAbBaha, [Optional] int? c)
+        private CalculateAbBahaOutputDto CalculateAbBaha(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, decimal multiplierAbBaha, [Optional] int? c, [Optional] IEnumerable<int> tagIds)
         {
             double abBahaAmount = 0, oldAbBahaAmount = 0, abBahaFromExpression = 0, oldAbBahaZarib=1.15;
             double duration = nerkh.Duration;
-            abBahaFromExpression = CalcFormulaByRate(nerkh.Vaj, monthlyConsumption, c);
+            abBahaFromExpression = CalcFormulaByRate(nerkh.Vaj, monthlyConsumption, c, tagIds);
             (double, double) abBahaValues = (0, 0);
 
             if (CheckZero(duration, monthlyConsumption, nerkh.Vaj))
@@ -347,12 +341,12 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 !IsReligious(customerInfo.UsageId) &&
                 !IsConstruction(customerInfo.BranchType))
             {
-                abBahaFromExpression = CalcFormulaByRate(nerkh.Vaj, monthlyConsumption, c);
+                abBahaFromExpression = CalcFormulaByRate(nerkh.Vaj, monthlyConsumption, c, tagIds);
                 abBahaAmount = abBahaFromExpression * nerkh.PartialConsumption;
 
                 if (IsLessThan1403_09_13AndOvajNotZero(nerkh))
                 {
-                    double oldAbBahaFromExpression = CalcFormulaByRate(nerkh.OVaj, monthlyConsumption);
+                    double oldAbBahaFromExpression = CalcFormulaByRate(nerkh.OVaj, monthlyConsumption, c, tagIds);
                     oldAbBahaAmount = nerkh.PartialConsumption * oldAbBahaFromExpression * oldAbBahaZarib;
                 }
 
@@ -407,7 +401,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             }
             if (IsConstruction(customerInfo.BranchType))
             {
-                abBahaAmount = CalcFormulaByRate(abAzad8And39.Formula, monthlyConsumption, c) * nerkh.PartialConsumption;
+                abBahaAmount = CalcFormulaByRate(abAzad8And39.Formula, monthlyConsumption, c, tagIds) * nerkh.PartialConsumption;
             }
             //L 1553
             //L 1558
@@ -510,7 +504,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 {
                     return IsConstruction(customerInfo.BranchType) ? (450000, 450000) : Get2PartAmount(nerkh.Date2);//  foxpro:1178
                 }
-                return GetEducationOrBathMultiplier(customerInfo.UsageId, nerkh.Date1, nerkh.Date2, customerInfo.IsSpecial, (long)CalcFormulaByRate(abAzad8And39.Formula, monthlyConsumption,c), abBahaFromExpression);//Azad:39
+                return GetEducationOrBathMultiplier(customerInfo.UsageId, nerkh.Date1, nerkh.Date2, customerInfo.IsSpecial, (long)CalcFormulaByRate(abAzad8And39.Formula, monthlyConsumption,c, tagIds), abBahaFromExpression);//Azad:39
             }
             #endregion
         }

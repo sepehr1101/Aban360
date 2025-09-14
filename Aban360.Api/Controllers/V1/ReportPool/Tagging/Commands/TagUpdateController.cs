@@ -12,7 +12,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Tagging.Commands
     {
         private readonly IUpdateTagHandler _updateHandler;
 
-        public TagUpdateController(UpdateTagHandler updateHandler)
+        public TagUpdateController(IUpdateTagHandler updateHandler)
         {
             _updateHandler = updateHandler;
             _updateHandler.NotNull(nameof(updateHandler));

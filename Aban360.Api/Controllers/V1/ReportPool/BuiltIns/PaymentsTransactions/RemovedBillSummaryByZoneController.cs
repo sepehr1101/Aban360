@@ -31,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(RemovedBillInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto> removedBill = await _removedBillHandler.Handle(inputDto, cancellationToken);
+            var removedBill = await _removedBillHandler.Handle(inputDto, cancellationToken);
             return Ok(removedBill);
         }
 

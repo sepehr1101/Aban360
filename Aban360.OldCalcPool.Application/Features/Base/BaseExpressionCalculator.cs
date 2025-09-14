@@ -1,5 +1,5 @@
 ﻿using Aban360.OldCalcPool.Domain.Exceptions;
-using org.matheval;
+using DynamicExpresso;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -7,27 +7,26 @@ namespace Aban360.OldCalcPool.Application.Features.Base
 {
     internal abstract class BaseExpressionCalculator
     {
-        internal Expression GetExpression(string formula, object info, [Optional] Dictionary<string, object>? dependencyDictionary)
+        internal T Eval<T>(string formula, object info, [Optional] Dictionary<string, object>? dependencyDictionary)
         {
-            Dictionary<string, object> propertyDictionary = GetDictionaryOfProperties(info);
-            if (dependencyDictionary is not null)
+            try
             {
-                propertyDictionary = propertyDictionary
-                    .Union(dependencyDictionary)
-                    .ToDictionary();
+                Dictionary<string, object> propertyDictionary = GetDictionaryOfProperties(info);
+                if (dependencyDictionary is not null)
+                {
+                    propertyDictionary = propertyDictionary
+                        .Union(dependencyDictionary)
+                        .ToDictionary();
+                }
+                Interpreter interpreter = new();
+                
+                BindVariables(interpreter, propertyDictionary);
+                return interpreter.Eval<T>(formula);
             }
-            Expression expression = new Expression(formula);
-            List<string> errors = expression.GetError();
-            if (errors != null && errors.Any())
+            catch (Exception e)
             {
-                throw new ExpressionValidationException(errors.First());
+                throw new ExpressionValidationException(formula);
             }
-            List<string> formulaVariables = expression.getVariables();
-            foreach (string variable in formulaVariables)
-            {
-                Bind(expression, variable, propertyDictionary);
-            }
-            return expression;
         }
         private Dictionary<string, object> GetDictionaryOfProperties(object obj)
         {
@@ -45,15 +44,11 @@ namespace Aban360.OldCalcPool.Application.Features.Base
             }
             return dict;
         }
-        private void Bind(Expression expression, string formulaVariable, Dictionary<string, object> propertyDictionary)
+        private void BindVariables(Interpreter expression, Dictionary<string, object> propertyDictionary)
         {
             foreach (var prop in propertyDictionary)
             {
-                if (formulaVariable != null && formulaVariable.Equals(prop.Key))
-                {
-                    expression.Bind(prop.Key, prop.Value);
-                    break;
-                }
+                expression.SetVariable(prop.Key, prop.Value);
             }
         }
     }
