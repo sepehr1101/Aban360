@@ -10,9 +10,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
-    internal sealed class ReadingListSummaryQueryService : AbstractBaseConnection, IReadingListSummaryQueryService
+    internal sealed class ReadingListSummaryByUsageQueryService : AbstractBaseConnection, IReadingListSummaryByUsageQueryService
     {
-        public ReadingListSummaryQueryService(IConfiguration configuration)
+        public ReadingListSummaryByUsageQueryService(IConfiguration configuration)
             : base(configuration)
         { }
 
@@ -21,11 +21,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             string modifiedBills = GetReadingListQuery();
             var @params = new
             {
-                fromReadingNumber=input.FromReadingNumber,
-                toReadingNumber=input.ToReadingNumber,
-                fromDate=input.FromDateJalali,
-                toDate=input.ToDateJalali,
-                zoneIds=input.ZoneIds,
+                fromReadingNumber = input.FromReadingNumber,
+                toReadingNumber = input.ToReadingNumber,
+                fromDate = input.FromDateJalali,
+                toDate = input.ToDateJalali,
+                zoneIds = input.ZoneIds,
             };
             IEnumerable<ReadingListSummaryDataOutputDto> readingListData = await _sqlReportConnection.QueryAsync<ReadingListSummaryDataOutputDto>(modifiedBills, @params);
             ReadingListHeaderOutputDto modifiedBillsHeader = new ReadingListHeaderOutputDto()
@@ -35,17 +35,17 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = (readingListData is not null && readingListData.Any()) ? readingListData.Count() : 0,
+                RecordCount = readingListData is not null && readingListData.Any() ? readingListData.Count() : 0,
             };
 
-            var result = new ReportOutput<ReadingListHeaderOutputDto, ReadingListSummaryDataOutputDto>(ReportLiterals.ReadingListSummary, modifiedBillsHeader, readingListData);
+            var result = new ReportOutput<ReadingListHeaderOutputDto, ReadingListSummaryDataOutputDto>(ReportLiterals.ReadingListSummary + ReportLiterals.ByUsage, modifiedBillsHeader, readingListData);
             return result;
         }
 
         private string GetReadingListQuery()
         {
             return @"Select
-                    	b.ZoneTitle,
+                    	b.UsageTitle AS ItemTitle,
                     	COUNT(1) AS ReadingCount,
                     	COUNT(Case When b.CounterStateCode=4 Then 1 ENd) AS CloseCount,
                     	COUNT(Case When b.CounterStateCode=7 Then 1 End) AS ObstacleCount,
@@ -57,8 +57,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
                     	b.RegisterDay BETWEEN @fromDate AND @toDate AND
                         b.ZoneId IN @zoneIds
-                    Group By B.ZoneTitle";
+                    Group By B.UsageTitle";
         }
-
     }
 }

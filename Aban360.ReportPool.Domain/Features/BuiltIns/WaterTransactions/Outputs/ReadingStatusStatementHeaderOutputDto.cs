@@ -11,7 +11,6 @@
         public string ReportDateJalali { get; set; }
         public int RecordCount { get; set; }
 
-        public string ZoneTitle { get; set; }
         public int SumReadingNet { get; set; }
         public int SumClosed { get; set; }
         public int SumObstacle { get; set; }

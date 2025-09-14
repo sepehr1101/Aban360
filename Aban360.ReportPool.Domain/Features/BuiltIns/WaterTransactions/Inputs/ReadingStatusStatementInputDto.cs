@@ -8,7 +8,7 @@
         public string FromReadingNumber { get; set; }
         public string ToReadingNumber { get; set; }
 
-        public int ZoneId { get; set; }
+        public ICollection<int> ZoneIds { get; set; }
         public bool IsRegisterDateJalali { get; set; }
     }
 }

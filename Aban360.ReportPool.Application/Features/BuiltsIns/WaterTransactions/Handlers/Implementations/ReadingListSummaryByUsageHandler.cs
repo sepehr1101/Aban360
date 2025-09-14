@@ -2,7 +2,6 @@
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts;
-using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
@@ -10,12 +9,12 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Implementations
 {
-    internal sealed class ReadingListSummaryHandler : IReadingListSummaryHandler
+    internal sealed class ReadingListSummaryByUsageHandler : IReadingListSummaryByUsageHandler
     {
-        private readonly IReadingListSummaryQueryService _readingListSummaryQuery;
+        private readonly IReadingListSummaryByUsageQueryService _readingListSummaryQuery;
         private readonly IValidator<ReadingListInputDto> _validator;
-        public ReadingListSummaryHandler(
-            IReadingListSummaryQueryService readingListSummaryQuery,
+        public ReadingListSummaryByUsageHandler(
+            IReadingListSummaryByUsageQueryService readingListSummaryQuery,
             IValidator<ReadingListInputDto> validator)
         {
             _readingListSummaryQuery = readingListSummaryQuery;
@@ -34,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
                 throw new CustomeValidationException(message);
             }
 
-            var result = await _readingListSummaryQuery.GetInfo(input);
+            ReportOutput<ReadingListHeaderOutputDto, ReadingListSummaryDataOutputDto> result = await _readingListSummaryQuery.GetInfo(input);
             return result;
         }
     }

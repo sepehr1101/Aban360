@@ -25,7 +25,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Va
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(meter => meter.ZoneId)
+            RuleFor(meter => meter.ZoneIds)
                 .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
 

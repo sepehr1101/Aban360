@@ -61,9 +61,11 @@
         public static string RemovedBillDetail { get { return $"{Report} جزئیات قبوض ابطال شده"; } }
 
         public static string Unread { get { return $"{Report} بسته و مانع طی دوره"; } }
-        public static string UnreadSummaryByZone { get { return $"{Report} خلاصه بسته و مانع طی دوره"; } }
+        public static string UnreadSummary { get { return $"{Report} خلاصه بسته و مانع طی دوره"; } }
 
         public static string WithoutBill { get { return $"{Report} بدون صدور قبض"; } }
+        public static string WithoutBillSummary { get { return $"{Report} خلاصه بدون صدور قبض"; } }
+
         public static string ContractualCapacity { get { return $"{Report} ظرفیت قراردادی"; } }
         public static string Usage { get { return $"{Report} باغ و اقامتگاه"; } }
         public static string HouseholdNumber { get { return $"{Report} خانوار"; } }
@@ -133,6 +135,7 @@
         public static string MalfunctionMeterSummary { get { return $"{Report} خلاصه کنتورهای خراب"; } }
         public static string MalfunctionMeterDetail { get { return $"{Report} جزئیات کنتورهای خراب"; } }
         public static string MalfunctionMeterByDuration { get { return $"{Report} کنتورهای خراب بر اساس دوره"; } }
+        public static string MalfunctionMeterByDurationSummary { get { return $"{Report} خلاصه کنتورهای خراب بر اساس دوره"; } }
 
         public static string WaterNetSalesDetail { get { return $"خلاصه {Report} جزئیات فروش خالص آب بها"; } }//
         public static string WaterRawSalesDetail { get { return $"خلاصه {Report} جزئیات فروش ناخالص آب بها"; } }
@@ -143,7 +146,7 @@
         public static string WaterNetIncome { get { return $"خلاصه {Report} درآمد خالص آب بها"; } }//
         public static string ReadingChecklist { get { return $" {Report} لیست قرائت و کنترل "; } }//
 
-
+        
         public static string ReadingListDetail { get { return $"{Report} جزئیات فهرست تعداد قرائت"; } }//
         public static string ReadingListSummary { get { return $"{Report} خلاصه فهرست تعداد قرائت"; } }
 
@@ -153,7 +156,9 @@
 
 
         public static string ReadingDailyStatement { get { return $"خلاصه {Report} روزنامه"; } }//
+
         public static string ReadingStatusStatement { get { return $"خلاصه {Report} فهرست وضعیت"; } }
+        public static string ReadingStatusStatementSummary { get { return $"خلاصه {Report} خلاصه قهرست وضعیت"; } }
 
         public static string RuinedMeterIncome { get { return $"خلاصه {Report} درآمد کنتور خراب"; } }
     }

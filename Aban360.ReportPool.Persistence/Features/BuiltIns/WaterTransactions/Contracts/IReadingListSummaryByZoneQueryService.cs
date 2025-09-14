@@ -5,8 +5,8 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts
 {
-    public interface IReadingListSummaryQueryService
+    public interface IReadingListSummaryByZoneQueryService
     {
-        Task<ReportOutput<ReadingListHeaderOutputDto, ReadingListSummaryDataOutputDto>> GetInfo(ReadingListInputDto input);
+        Task<ReportOutput<ReadingListHeaderOutputDto, ReadingListSummaryByZoneDataOutputDto>> GetInfo(ReadingListInputDto input);
     }
 }
