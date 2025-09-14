@@ -10,14 +10,13 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
-    internal sealed class ReadingStatusStatementQueryService : AbstractBaseConnection, IReadingStatusStatementQueryService
+    internal sealed class ReadingStatusStatementSummaryByZoneQueryService : AbstractBaseConnection, IReadingStatusStatementSummaryByZoneQueryService
     {
-        public ReadingStatusStatementQueryService(IConfiguration configuration)
+        public ReadingStatusStatementSummaryByZoneQueryService(IConfiguration configuration)
             : base(configuration)
-        { 
-        }
+        { }
 
-        public async Task<ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementDataOutputDto>> GetInfo(ReadingStatusStatementInputDto input)
+        public async Task<ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryByZoneDataOutputDto>> GetInfo(ReadingStatusStatementInputDto input)
         {
             string readingStatusStatements = GetReadingStatusStatementQuery();
             var @params = new
@@ -29,7 +28,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 zoneIds = input.ZoneIds,
                 isRegisterDate = input.IsRegisterDateJalali
             };
-            IEnumerable<ReadingStatusStatementDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingStatusStatementDataOutputDto>(readingStatusStatements, @params);
+            IEnumerable<ReadingStatusStatementSummaryByZoneDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingStatusStatementSummaryByZoneDataOutputDto>(readingStatusStatements, @params);
             ReadingStatusStatementHeaderOutputDto header = new ReadingStatusStatementHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -37,7 +36,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = (data is not null && data.Any()) ? data.Count() : 0,
+                RecordCount = data is not null && data.Any() ? data.Count() : 0,
             };
             if (data is not null && data.Any())
             {
@@ -49,32 +48,34 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 header.SumAll = data.Sum(x => x.AllCount);
             }
 
-            var result = new ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementDataOutputDto>(ReportLiterals.ReadingStatusStatement, header, data);
+            var result = new ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryByZoneDataOutputDto>(ReportLiterals.ReadingStatusStatement + ReportLiterals.ByZone, header, data);
             return result;
         }
 
         private string GetReadingStatusStatementQuery()
         {
             return @"Select 
-                    	b.ZoneTitle AS ZoneTitle,
-                    	(Case When @isRegisterDate=1 Then b.RegisterDay Else b.NextDay End  )AS EventDateJalali,
+						MAX(t46.C2) AS RegionTitle,
+                    	Max(b.ZoneTitle) AS ZoneTitle,
                     	COUNT(Case When b.CounterStateCode NOT IN (1,4,7,8) Then 1 End)AS ReadingNet,
                     	COUNT(Case When b.CounterStateCode=4 Then 1 End)AS Closed,
                     	COUNT(Case When b.CounterStateCode=7 Then 1 End)AS Obstacle,
                     	COUNT(Case When b.CounterStateCode=8 Then 1 End)AS Temporarily,
                     	COUNT(Case When b.CounterStateCode!=1 Then 1 End)AS AllCount,
                     	COUNT(Case When b.CounterStateCode=1 Then 1 End)AS Ruined
-                    From [CustomerWarehouse].dbo.Bills b
+                    From [CustomerWarehouse].dbo.Bills b	
+					Join [Db70].dbo.T51 t51
+						On t51.C0=b.ZoneId
+					Join [Db70].dbo.T46 t46
+						On t51.C1=t46.C0
                     Where
                     	(
                     	(@isRegisterDate=1 AND b.RegisterDay BETWEEN @fromDate AND @toDate)OR
                     	(@isRegisterDate=0 AND b.NextDay BETWEEN @fromDate AND @toDate)
                     	)AND
                     	(b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)AND
-                    	b.ZoneId IN @zoneIds
-                    Group By 
-                    	Case When @isRegisterDate=1 Then b.RegisterDay Else b.NextDay End ,
-                        b.ZoneTitle";
+                    	b.ZoneId in @zoneIds 
+                    Group By  b.ZoneId";
         }
     }
 }

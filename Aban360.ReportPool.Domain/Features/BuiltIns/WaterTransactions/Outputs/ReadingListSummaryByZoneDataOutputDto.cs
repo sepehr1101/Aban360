@@ -1,8 +1,9 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs
 {
-    public record ReadingListSummaryDataOutputDto
+    public record ReadingListSummaryByZoneDataOutputDto
     {
-        public string ItemTitle { get; set; }
+        public string RegionTitle { get; set; }
+        public string ZoneTitle { get; set; }
         public int ReadingCount { get; set; }
         public int CloseCount { get; set; }
         public int ObstacleCount { get; set; }

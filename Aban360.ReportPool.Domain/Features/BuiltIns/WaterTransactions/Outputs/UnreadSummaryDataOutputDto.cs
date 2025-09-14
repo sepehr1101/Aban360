@@ -1,9 +1,8 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs
 {
-    public record UnreadSummaryByZoneDataOutputDto
+    public record UnreadSummaryDataOutputDto
     {
-        public string RegionTitle { get; set; }
-        public string ZoneTitle { get; set; }
+        public string ItemTitle { get; set; }
         public int Closed { get; set; }
         public int Barrier { get; set; }
 

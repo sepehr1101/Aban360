@@ -10,17 +10,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 {
-    [Route("v1/unread-summary-by-zone")]
-    public class UnreadSummaryByZoneController : BaseController
+    [Route("v1/unread-summary-by-zone-grouped")]
+    public class UnreadSummaryByZoneGroupedController : BaseController
     {
-        private readonly IUnreadSummaryByZoneHandler _unreadSummaryByZoneHandler;
+        private readonly IUnreadSummaryByZoneGroupedHandler _unreadSummaryByZoneGroupedHandler;
         private readonly IReportGenerator _reportGenerator;
-        public UnreadSummaryByZoneController(
-            IUnreadSummaryByZoneHandler unreadSummaryByZoneHandler,
+        public UnreadSummaryByZoneGroupedController(
+            IUnreadSummaryByZoneGroupedHandler unreadSummaryByZoneGroupedHandler,
             IReportGenerator reportGenerator)
         {
-            _unreadSummaryByZoneHandler = unreadSummaryByZoneHandler;
-            _unreadSummaryByZoneHandler.NotNull(nameof(unreadSummaryByZoneHandler));
+            _unreadSummaryByZoneGroupedHandler = unreadSummaryByZoneGroupedHandler;
+            _unreadSummaryByZoneGroupedHandler.NotNull(nameof(unreadSummaryByZoneGroupedHandler));
 
             _reportGenerator = reportGenerator;
             _reportGenerator.NotNull(nameof(_reportGenerator));
@@ -28,18 +28,18 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<UnreadSummaryHeaderOutputDto, UnreadSummaryByZoneDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<UnreadSummaryHeaderOutputDto, ReportOutput<UnreadSummaryDataOutputDto, UnreadSummaryDataOutputDto>>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(UnreadInputDto input, CancellationToken cancellationToken)
         {
-            ReportOutput<UnreadSummaryHeaderOutputDto, UnreadSummaryByZoneDataOutputDto> unreadSummaryByZone = await _unreadSummaryByZoneHandler.Handle(input, cancellationToken);
-            return Ok(unreadSummaryByZone);
+            ReportOutput<UnreadSummaryHeaderOutputDto, ReportOutput<UnreadSummaryDataOutputDto, UnreadSummaryDataOutputDto>> unreadSummaryByZoneGrouped = await _unreadSummaryByZoneGroupedHandler.Handle(input, cancellationToken);
+            return Ok(unreadSummaryByZoneGrouped);
         }
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, UnreadInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _unreadSummaryByZoneHandler.Handle, CurrentUser, ReportLiterals.UnreadSummary + ReportLiterals.ByZone, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _unreadSummaryByZoneGroupedHandler.Handle, CurrentUser, ReportLiterals.UnreadSummary + ReportLiterals.ByZone, connectionId);
             return Ok(inputDto);
         }
     }

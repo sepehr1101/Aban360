@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 {
-    [Route("v1/reading-list-summary")]
-    public class ReadingListSummaryController : BaseController
+    [Route("v1/reading-list-summary-by-zone-grouped")]
+    public class ReadingListSummaryByZoneGroupedController : BaseController
     {
-        private readonly IReadingListSummaryHandler _readingListSummary;
+        private readonly IReadingListSummaryByZoneGroupedHandler _readingListSummary;
         private readonly IReportGenerator _reportGenerator;
-        public ReadingListSummaryController(
-            IReadingListSummaryHandler readingListSummary,
+        public ReadingListSummaryByZoneGroupedController(
+            IReadingListSummaryByZoneGroupedHandler readingListSummary,
             IReportGenerator reportGenerator)
         {
             _readingListSummary = readingListSummary;
@@ -28,10 +28,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ReadingListHeaderOutputDto, ReadingListSummaryDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ReadingListHeaderOutputDto, ReportOutput<ReadingListSummaryDataOutputDto, ReadingListSummaryDataOutputDto>>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(ReadingListInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<ReadingListHeaderOutputDto, ReadingListSummaryDataOutputDto> waterSales = await _readingListSummary.Handle(inputDto, cancellationToken);
+            ReportOutput<ReadingListHeaderOutputDto, ReportOutput<ReadingListSummaryDataOutputDto, ReadingListSummaryDataOutputDto>> waterSales = await _readingListSummary.Handle(inputDto, cancellationToken);
             return Ok(waterSales);
         }
 
@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, ReadingListInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _readingListSummary.Handle, CurrentUser, ReportLiterals.ReadingListSummary, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _readingListSummary.Handle, CurrentUser, ReportLiterals.ReadingListSummary + ReportLiterals.ByZone, connectionId);
             return Ok(inputDto);
         }
     }

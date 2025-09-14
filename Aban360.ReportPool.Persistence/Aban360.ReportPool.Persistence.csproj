@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Features\BuiltIns\WaterTransactions\Implementations\ReadingStatusStatementQueryService.cs~RF4127f6dc.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="FluentMigrator" Version="6.2.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />

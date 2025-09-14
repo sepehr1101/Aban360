@@ -1,0 +1,72 @@
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
+using Aban360.ReportPool.Application.Features.Base;
+using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts;
+using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
+using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
+using FluentValidation;
+
+namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Implementations
+{
+    internal sealed class WithoutBillSummaryByZoneGroupedHandler : IWithoutBillSummaryByZoneGroupedHandler
+    {
+        private readonly IWithoutBillSummaryByZoneQueryService _withoutBillSummaryByZoneQueryService;
+        private readonly IValidator<WithoutBillInputDto> _validator;
+        public WithoutBillSummaryByZoneGroupedHandler(
+            IWithoutBillSummaryByZoneQueryService withoutBillSummaryByZoneQueryService,
+            IValidator<WithoutBillInputDto> validator)
+        {
+            _withoutBillSummaryByZoneQueryService = withoutBillSummaryByZoneQueryService;
+            _withoutBillSummaryByZoneQueryService.NotNull(nameof(withoutBillSummaryByZoneQueryService));
+
+            _validator = validator;
+            _validator.NotNull(nameof(validator));
+        }
+
+        public async Task<ReportOutput<WithoutBillHeaderOutputDto, ReportOutput<WithoutBillSummaryDataOutputDto, WithoutBillSummaryDataOutputDto>>> Handle(WithoutBillInputDto input, CancellationToken cancellationToken)
+        {
+            var validationResult = await _validator.ValidateAsync(input, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new CustomeValidationException(message);
+            }
+
+            ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryByZoneDataOutputDto> result = await _withoutBillSummaryByZoneQueryService.GetInfo(input);
+
+            var dataGroup = result.ReportData
+              .GroupBy(m => m.RegionTitle)
+              .Select(g =>
+              {
+                  var mapped = g.Select(MappToGroup);
+                  return new ReportOutput
+                  <WithoutBillSummaryDataOutputDto,
+                  WithoutBillSummaryDataOutputDto>
+                  (
+                      result.Title,
+                    ReportAggregator.AggregateGroup(mapped, g.Key),
+                    mapped.Select(v => ReportAggregator.AggregateGroup(new[] { v }, v.ItemTitle))
+                  );
+              });
+
+            ReportOutput<WithoutBillHeaderOutputDto, ReportOutput<WithoutBillSummaryDataOutputDto, WithoutBillSummaryDataOutputDto>> finalData = new(result.Title, result.ReportHeader, dataGroup);
+
+            return finalData;
+        }
+
+        private static WithoutBillSummaryDataOutputDto MappToGroup(WithoutBillSummaryByZoneDataOutputDto input)
+        {
+            return new WithoutBillSummaryDataOutputDto()
+            {
+                ItemTitle = input.ZoneTitle,
+                CustomerCount = input.CustomerCount,
+                CommercialUnit = input.CommercialUnit,
+                DomesticUnit = input.DomesticUnit,
+                OtherUnit = input.OtherUnit,
+                TotalUnit = input.TotalUnit,
+            };
+        }
+    }
+}
