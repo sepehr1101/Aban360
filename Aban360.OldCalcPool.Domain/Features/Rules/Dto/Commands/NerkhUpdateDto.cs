@@ -5,8 +5,8 @@
         public int Id { get; set; }
         public string? Date1 { get; set; }
         public string? Date2 { get; set; }
-        public float Ebt { get; set; }
-        public float Ent { get; set; }
+        public decimal Ebt { get; set; }
+        public decimal Ent { get; set; }
         public string? Vaj { get; set; }
         public int Cod { get; set; }
         public int Olgo { get; set; }

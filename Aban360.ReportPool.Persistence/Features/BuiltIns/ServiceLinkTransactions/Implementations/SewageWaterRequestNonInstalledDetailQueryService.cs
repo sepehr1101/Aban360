@@ -76,7 +76,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,
                     	c.WaterRequestDate AS RequestDate,
-						c.RegisterationJalaliDate AS RegisterDateJalali--todooooo: تاریخ ثبت
+						c.WaterRegisterDateJalali AS RegisterDateJalali,
+                        c.WaterInstallDate AS InstallationDateJalali
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
                     	c.WaterRequestDate BETWEEN @fromDate AND @toDate AND
@@ -107,18 +108,19 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.BillId,
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,
-                    	c.WaterRequestDate AS RequestDate,
-						c.RegisterationJalaliDate AS RegisterDateJalali--todooooo: تاریخ ثبت
+                    	c.SewageRequestDate AS RequestDate,
+						c.SewageRegisterDateJalali AS RegisterDateJalali,
+                        c.SewageInstallDate AS InstallationDateJalali
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
                     	c.SewageRequestDate BETWEEN @fromDate AND @toDate AND
-						(TRIM(c.SewageInstallDate)='' OR c.SewageInstallDate IS NULL) AND
+						(TRIM(c.SewageRegisterDateJalali)='' OR c.SewageRegisterDateJalali IS NULL) AND
                     	c.ZoneId IN @zoneIds AND
 						c.ToDayJalali IS NULL AND
 						(@fromReadingNumber IS NULL OR
 						@toReadingNumber IS NULL OR
 						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)";
-            //todo: registerDateJalaliتاریخ ثبت 
+            
         }
     }
 }

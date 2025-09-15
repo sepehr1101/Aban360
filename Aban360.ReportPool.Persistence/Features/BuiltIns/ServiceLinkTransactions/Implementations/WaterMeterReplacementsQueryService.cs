@@ -37,6 +37,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
+                FromReadingNumber=input.FromReadingNumber,
+                ToReadingNumber=input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount= (waterMeterReplacementsData is not null && waterMeterReplacementsData.Any()) ? waterMeterReplacementsData.Count() : 0,
                
@@ -82,14 +84,18 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	mc.RegisterDateJalali BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
                     	c.UsageId IN @UsageIds AND
-						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
+                        (@fromReadingNumber IS NULL OR
+                        @toReadingNumber IS NULL OR
+						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
 						c.ToDayJalali IS NULL )
                     	OR
                     	(@isChangeDate=1 AND
                     	mc.ChangeDateJalali BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
                     	c.UsageId IN @UsageIds AND
-						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
+						(@fromReadingNumber IS NULL OR
+                        @toReadingNumber IS NULL OR
+						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
 						c.ToDayJalali IS NULL )
                     Order By
                     	mc.RegisterDateJalali Desc,

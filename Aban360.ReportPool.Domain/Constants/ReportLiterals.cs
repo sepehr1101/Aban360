@@ -68,8 +68,12 @@
         public static string RemovedBillSummary { get { return $"{Report} خلاصه قبوض ابطال شده"; } }
         public static string RemovedBillDetail { get { return $"{Report} جزئیات قبوض ابطال شده"; } }
 
-        public static string Unread { get { return $"{Report} بسته و مانع طی دوره"; } }
+        public static string UnreadDetail { get { return $"{Report} جزئیات بسته و مانع طی دوره"; } }
         public static string UnreadSummary { get { return $"{Report} خلاصه بسته و مانع طی دوره"; } }
+        
+        
+        public static string ReadingIssueDistanceBillDetail { get { return $"{Report} جزئیات فاصله قرائت تا صدور کنتور "; } }
+        public static string ReadingIssueDistanceBillSummary { get { return $"{Report} خلاصه فاصله قرائت تا صدور کنتور"; } }
 
    
 
@@ -160,10 +164,10 @@
         public static string ContractualAndOlgooLevel { get { return $"{Report} طبقات ظرفیت و الگو"; } }
 
 
-        public static string ReadingDailyStatement { get { return $"خلاصه {Report} روزنامه"; } }//
+        public static string ReadingDailyStatement { get { return $" {Report} روزنامه"; } }//
 
-        public static string ReadingStatusStatement { get { return $"خلاصه {Report} فهرست وضعیت"; } }
-        public static string ReadingStatusStatementSummary { get { return $"خلاصه {Report} خلاصه قهرست وضعیت"; } }
+        public static string ReadingStatusStatement { get { return $" {Report} فهرست وضعیت"; } }
+        public static string ReadingStatusStatementSummary { get { return $" {Report} خلاصه فهرست وضعیت"; } }
 
         public static string RuinedMeterIncome { get { return $"خلاصه {Report} درآمد کنتور خراب"; } }
 

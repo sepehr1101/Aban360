@@ -53,6 +53,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
 
                 comparisonResult.Add(comparisonBatch);
             }
+
             meterComparisonBatch.ReportHeader.SumCurrentAmount = comparisonResult.Sum(m => m.CurrentAmount);
             ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataOutputDto> meterComparisonResult = new(meterComparisonBatch.Title, meterComparisonBatch.ReportHeader, comparisonResult);
             return meterComparisonResult;
@@ -118,7 +119,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
         }
         private (double, double) GetMaxMinPercent(double amount, double tolerance)
         {
-            return (amount * (1 + tolerance/100), amount * (1 - tolerance/100));
+            return (amount * (1 + tolerance / 100), amount * (1 - tolerance / 100));
         }
     }
 }

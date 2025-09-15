@@ -3,5 +3,5 @@
     public record ServiceLinkCalculationDetailsInputDto
     {
         public string Input { get; set; }
-    }
+    } 
 }

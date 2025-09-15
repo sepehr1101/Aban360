@@ -26,7 +26,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 fromDateJalali = input.FromDateJalali,
                 toDateJalali = input.ToDateJalali,
                 zoneIds = input.ZoneIds,
-                malfunctionPeriodCount = input.MalfunctionPeriodCount
+                fromMalfunctionPeriodCount = input.FromMalfunctionPeriodCount,
+                toMalfunctionPeriodCount = input.ToMalfunctionPeriodCount,
             };
             IEnumerable<MalfunctionMeterByDurationSummaryDataOutputDto> malfunctionMeterByDurationData = await _sqlReportConnection.QueryAsync<MalfunctionMeterByDurationSummaryDataOutputDto>(malfunctionMeterByDurationQueryString, @params, null, 180);
             MalfunctionMeterByDurationHeaderOutputDto malfunctionMeterByDurationHeader = new MalfunctionMeterByDurationHeaderOutputDto()
@@ -110,7 +111,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 				    		SUM(CASE WHEN t5.C0 In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6
                     FROM ValidLatestBills v
                     INNER JOIN FinalCount f 
-                       	ON v.BillId = f.BillId AND f.MalfunctionPeriodCount >= @malfunctionPeriodCount
+                       	ON v.BillId = f.BillId AND (f.MalfunctionPeriodCount BETWEEN @fromMalfunctionPeriodCount AND @toMalfunctionPeriodCount)
 				    INNER JOIN [CustomerWarehouse].dbo.Clients c
 				    	On c.BillId=v.BillId
 				    Join [Db70].dbo.T5 t5

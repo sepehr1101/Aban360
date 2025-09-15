@@ -41,6 +41,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToDateJalali = input.ToDateJalali,
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
+                FromAmount=input.FromAmount,
+                ToAmount=input.ToAmount,
 
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (data is not null && data.Any()) ? data.Count() : 0,
@@ -66,12 +68,22 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                         TRIM(b.BillId) AS BillId,
                     	b.ConsumptionAverage,
                     	b.SumItems AS InvoiceAmount,
-                    	TRIM(c.Address) AS Address
+                    	TRIM(c.Address) AS Address,
+                        b.PayId AS PaymentId,
+						b.SumItems,
+						TRIM(c.MobileNo) AS MobileNumber,
+						TRIM(c.NationalId) AS NationalCode,
+						TRIM(c.PostalCode) AS PostalCode,
+						b.PreviousDay AS FromReadingDateJalali,
+						b.NextDay AS ToReadingDateJalali,
+						b.RegisterDay AS RegisterBillDateJalali
                     From [CustomerWarehouse].dbo.Bills b
                     Join [CustomerWarehouse].dbo.Clients c on b.BillId=c.BillId
                     Where 
                     	c.ToDayJalali IS NULL AND
-                    	b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
+                    	(@fromReadingNumber IS NULL OR
+                        @toReadingNumber IS NULL OR
+                        b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
                     	b.NextDay BETWEEN @fromDate AND @toDate AND
                         b.Consumption BETWEEN @fromConsumption AND @toConsumption AND
                     	b.ZoneId IN @zoneIds AND

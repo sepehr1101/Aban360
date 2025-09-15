@@ -71,6 +71,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.ContractCapacity AS ContractualCapacity,
                     	c.WaterRequestDate AS WaterRequestDate,
 						c.WaterInstallDate AS WaterInstallationDate,
+						c.WaterRegisterDateJalali AS WaterRegistrationDate,
 						TRIM(c.PhoneNo) AS PhoneNumber,
 						TRIM(c.MobileNo) AS MobileNumber,
 						c.DeletionStateTitle ,
@@ -79,7 +80,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 						TRIM(c.PostalCode) AS PostalCode
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
-                    	c.WaterInstallDate BETWEEN @fromDate AND @toDate AND
+                    	c.WaterRegisterDateJalali BETWEEN @fromDate AND @toDate AND
 						(TRIM(c.SewageRequestDate)='' OR c.SewageRequestDate IS NULL) AND
                     	c.ZoneId IN @zoneIds AND
 						c.ToDayJalali IS NULL AND
