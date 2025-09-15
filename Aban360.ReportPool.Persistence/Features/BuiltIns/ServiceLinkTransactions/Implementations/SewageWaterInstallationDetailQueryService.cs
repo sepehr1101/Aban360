@@ -74,10 +74,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,
                     	c.WaterRequestDate AS RequestDate,
-                    	c.WaterInstallDate AS InstallationDate
+                    	c.WaterRegisterDateJalali AS InstallationDate
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
-                    	c.WaterInstallDate BETWEEN @fromDate AND @toDate AND
+                    	c.WaterRegisterDateJalali BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
                         c.UsageId IN @usageIds AND
                         (@fromReadingNumber IS NULL OR
@@ -106,10 +106,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,
                     	c.SewageRequestDate AS RequestDate,
-                    	c.SewageInstallDate AS InstallationDate
+                    	c.SewageRegisterDateJalali AS InstallationDate
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
-                    	c.SewageInstallDate BETWEEN @fromDate AND @toDate AND
+                    	c.SewageRegisterDateJalali BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
                         c.UsageId IN @usageIds AND
                         (@fromReadingNumber IS NULL OR

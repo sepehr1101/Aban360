@@ -104,7 +104,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 							{usageQuery}
 					)
 					SELECT 
-						e.CustomerNumber,
+						    e.CustomerNumber,
 							e.ReadingNumber,
 							e.FirstName,
 							e.Surname,

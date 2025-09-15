@@ -80,7 +80,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 						On t5.C0=c.WaterDiameterId
                     Where	
                     	c.WaterRequestDate BETWEEN @fromDate AND @toDate AND
-						(TRIM(c.WaterInstallDate)='' OR c.WaterInstallDate IS NULL) AND
+						(TRIM(c.WaterRegisterDateJalali)='' OR c.WaterRegisterDateJalali IS NULL) AND
                     	c.ZoneId IN @zoneIds AND
 						c.ToDayJalali IS NULL AND
 						(@fromReadingNumber IS NULL OR
@@ -114,7 +114,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 						On t5.C0=c.WaterDiameterId
                     Where	
                     	c.SewageRequestDate BETWEEN @fromDate AND @toDate AND
-						(TRIM(c.SewageInstallDate)='' OR c.SewageInstallDate IS NULL) AND
+						(TRIM(c.SewageRegisterDateJalali)='' OR c.SewageRegisterDateJalali IS NULL) AND
                     	c.ZoneId IN @zoneIds AND
 						c.ToDayJalali IS NULL AND
 						(@fromReadingNumber IS NULL OR

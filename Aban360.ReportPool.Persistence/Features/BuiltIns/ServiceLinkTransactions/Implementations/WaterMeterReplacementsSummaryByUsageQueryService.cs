@@ -82,7 +82,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	mc.RegisterDateJalali BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
                     	c.UsageId IN @UsageIds AND
-						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
+						(@fromReadingNumber IS NULL OR
+                        @toReadingNumber IS NULL OR
+						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
 						c.ToDayJalali IS NULL 
 						)
                     	OR
@@ -90,7 +92,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	mc.ChangeDateJalali BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
                     	c.UsageId IN @UsageIds AND
-						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
+						(@fromReadingNumber IS NULL OR
+                        @toReadingNumber IS NULL OR
+						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
 						c.ToDayJalali IS NULL
 						)
                     Group By c.UsageTitle";

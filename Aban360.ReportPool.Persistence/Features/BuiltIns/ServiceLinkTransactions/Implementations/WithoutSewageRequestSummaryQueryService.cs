@@ -73,7 +73,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 					Join [Db70].dbo.T5 t5
 						On t5.C0=c.WaterDiameterId
                     Where	
-                    	c.WaterInstallDate BETWEEN @fromDate AND @toDate AND
+                    	c.WaterRegisterDateJalali BETWEEN @fromDate AND @toDate AND
 						(TRIM(c.SewageRequestDate)='' OR c.SewageRequestDate IS NULL) AND
                     	c.ZoneId IN @zoneIds AND
 						c.ToDayJalali IS NULL AND

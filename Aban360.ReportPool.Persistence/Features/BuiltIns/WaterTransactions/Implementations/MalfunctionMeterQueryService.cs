@@ -22,6 +22,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             string malfunctionMeterQueryString = GetMalfunctionMeterQuery();
             var @params = new
             {
+                fromDate=input.FromDateJalali,
+                toDate=input.ToDateJalali,
                 fromReadingNumber = input.FromReadingNumber,
                 toReadingNumber = input.ToReadingNumber,
                 zoneIds = input.ZoneIds,
@@ -31,6 +33,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             {
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
+                FromDateJalali=input.FromDateJalali,
+                ToDateJalali=input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (malfunctionMeterData is not null && malfunctionMeterData.Any()) ? malfunctionMeterData.Count() : 0,
                 TotalPayable = (malfunctionMeterData is not null && malfunctionMeterData.Any()) ? malfunctionMeterData.Sum(x => x.SumItems) : 0
@@ -71,7 +75,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                         b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
                         b.ZoneId IN @zoneIds AND
                         b.CounterStateCode NOT IN (4,7,8) AND
-						c.DeletionStateId IN (0,2))
+						c.DeletionStateId IN (0,2) AND
+						(@fromDate IS NULL OR
+						@toDate IS NULL OR
+						b.RegisterDay BETWEEN @fromDate AND @toDate))
                     SELECT * FROM CTE 
                     WHERE RN=1 AND CounterStateCode=1";
         }

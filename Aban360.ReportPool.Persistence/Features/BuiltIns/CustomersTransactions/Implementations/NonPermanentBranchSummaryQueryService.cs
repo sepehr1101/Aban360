@@ -35,6 +35,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 RecordCount = (nonPremanentBranchData is not null && nonPremanentBranchData.Any()) ? nonPremanentBranchData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 Title = ReportLiterals.NonPermanentBranchSummary + ReportLiterals.ByUsageAndZoneAndDiameter,
+                CustomerCount = (nonPremanentBranchData is not null && nonPremanentBranchData.Any()) ? nonPremanentBranchData.Count() : 0,
             };
 
             var result = new ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryDataOutputDto>(ReportLiterals.NonPermanentBranchSummary+ReportLiterals.ByUsageAndZoneAndDiameter, nonPremanentBranchHeader, nonPremanentBranchData);

@@ -16,5 +16,13 @@
         public string Address { get; set; }
         public string BillId { get; set; }
         public string UsageTitle { get; set; }
+        public string PaymentId { get; set; }
+        public string MobileNumber { get; set; }
+        public string NationalCode { get; set; }
+        public string PostalCode { get; set; }
+        public string FromReadingDateJalali { get; set; }
+        public string ToReadingDateJalali { get; set; }
+        public string RegisterBillDateJalali { get; set; }
+        public long SumItems { get; set; }
     }
 }

@@ -23,5 +23,8 @@
         public string MeterSerial { get; set; }
         public string MeterInstallationDateJalali { get; set; }
         public string MeterRequestDateJalali { get; set; }
+        public string PhoneNumber { get; set; }
+        public string MobileNumber { get; set; }
+        public string PostalCode { get; set; }
     }
 }

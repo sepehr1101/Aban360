@@ -84,7 +84,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 					Join [Db70].dbo.T46 t46
 						On t51.C1=t46.C0
                     Where	
-                    	c.WaterInstallDate BETWEEN @fromDate AND @toDate AND
+                    	c.WaterRegisterDateJalali BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
                         c.UsageId IN @usageIds AND
                         (@fromReadingNumber IS NULL OR
@@ -120,7 +120,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 					Join [Db70].dbo.T46 t46
 						On t51.C1=t46.C0
                     Where	
-                    	c.SewageInstallDate BETWEEN @fromDate AND @toDate AND
+                    	c.SewageRegisterDateJalali BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
                         c.UsageId IN @usageIds AND
                         (@fromReadingNumber IS NULL OR

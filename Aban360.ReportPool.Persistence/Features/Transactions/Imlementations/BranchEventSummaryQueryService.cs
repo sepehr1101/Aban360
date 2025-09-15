@@ -8,6 +8,7 @@ using Aban360.ReportPool.Persistence.Features.Transactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 {
@@ -39,6 +40,14 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             branchHeader.Title = ReportLiterals.BranchEventSummary;
 
             IEnumerable<BranchEventSummaryDataOutputDto> branchData = await _sqlReportConnection.QueryAsync<BranchEventSummaryDataOutputDto>(brachSummeryDataQueryString, new { zoneId = zoneIdCustomerNumber.ZoneId, customerNumber = zoneIdCustomerNumber.CustomerNumber });
+
+            long lastRemained = 0;
+            for (int i = 0; i < branchData.Count(); i++)
+            {
+                BranchEventSummaryDataOutputDto row = branchData.ElementAt(i);
+                lastRemained = lastRemained + (row.DebtAmount - row.CreditAmount);
+                row.Remained = lastRemained;
+            }
             ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> result = new(ReportLiterals.BranchEventSummary, branchHeader, branchData);
             return result;
         }
@@ -87,7 +96,8 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	IIF(r.FinalAmount>0,r.FinalAmount,0) AS DebtAmount,
                     	'' AS BankDateJalali,
                     	'' AS BankName,
-                    	r.ItemTitle+'('+r.TypeId+')' AS Description	
+                    	r.ItemTitle+'('+r.TypeId+')' AS Description	,
+						0 AS BankCode
                     From [CustomerWarehouse].dbo.RequestBillDetails r
                     Where
                     	r.CustomerNumber=@customerNumber AND 
@@ -103,7 +113,8 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	0 AS DebtAmount,
                     	p.RegisterDay AS BankDateJalali,
                     	p.BankName,
-                    	p.BankName +' - '+p.PaymentGateway AS Description
+                    	p.BankName +' - '+p.PaymentGateway AS Description,
+						p.BankCode
                     From [CustomerWarehouse].dbo.PaymentsEn p
                     Where 
                     	p.CustomerNumber=@customerNumber AND 

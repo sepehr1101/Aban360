@@ -20,5 +20,6 @@
         public int ContractualCapacity { get; set; }
         public string RequestDate { get; set; }
         public string RegisterDateJalali { get; set; }
+        public string InstallationDateJalali { get; set; }
     }
 }
