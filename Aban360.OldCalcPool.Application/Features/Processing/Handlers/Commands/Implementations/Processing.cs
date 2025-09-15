@@ -230,7 +230,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 CustomerInfoOutputDto customerInfo = GetCustomerInfo(input);
                 Validation(input.MeterPreviousData.PreviousDateJalali);
 
-                int consumption = GetConsumption(input.MeterPreviousData.PreviousNumber, input.MeterPreviousData.CurrentMeterNumber);
+                    int consumption = GetConsumption(input.MeterPreviousData.PreviousNumber, input.MeterPreviousData.CurrentMeterNumber);
                 int duration = GetDuration(input.MeterPreviousData.PreviousDateJalali, input.MeterPreviousData.CurrentDateJalali);
                 double dailyAverage = GetDailyConsumptionAverage(consumption, duration, customerInfo.DomesticUnit, customerInfo.EmptyUnit);
                 double monthlyAverageConsumption = dailyAverage * monthDays;
@@ -332,6 +332,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 ReadingNumber = input.customerInfo.ReadingNumber,
                 VillageId = input.customerInfo.VillageId,
                 IsSpecial = input.customerInfo.IsSpecial,
+                BillId= input.MeterPreviousData.BillId
             };
         }
     }

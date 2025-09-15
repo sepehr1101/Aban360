@@ -12,10 +12,10 @@
         public int RecordCount { get; set; }
 
         public int CustomerCount { get; set; }
-        public int SumDomesticUnit { get; set; }
-        public int SumCommercialUnit { get; set; }
-        public int SumOtherUnit { get; set; }
-        public int TotalUnit { get; set; }
+        public float SumDomesticUnit { get; set; }
+        public float SumCommercialUnit { get; set; }
+        public float SumOtherUnit { get; set; }
+        public float TotalUnit { get; set; }
 
     }
 }

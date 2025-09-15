@@ -1,7 +1,6 @@
 ﻿using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.Tagging.Contracts;
-using Aban360.ReportPool.Application.Features.Tagging.Implementations;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.Tagging.Commands
@@ -17,7 +16,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Tagging.Commands
             _deleteHandler.NotNull(nameof(deleteHandler));
         }
 
-        [HttpDelete]
+        [HttpDelete, HttpPost]
         [ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
         [Route("delete/{id:int}")]
         public async Task<IActionResult> Delete(int id)
