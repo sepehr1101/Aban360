@@ -332,6 +332,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 ReadingNumber = input.customerInfo.ReadingNumber,
                 VillageId = input.customerInfo.VillageId,
                 IsSpecial = input.customerInfo.IsSpecial,
+                BillId= input.MeterPreviousData.BillId
             };
         }
     }

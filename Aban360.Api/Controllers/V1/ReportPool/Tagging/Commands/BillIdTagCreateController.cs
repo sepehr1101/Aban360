@@ -21,7 +21,6 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Tagging.Commands
         [Route("create")]
         [HttpPost, HttpPut]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CreateBillIdTagDto>), StatusCodes.Status200OK)]
-        [AllowAnonymous]
         public async Task<IActionResult> Create([FromBody] CreateBillIdTagDto dto)
         {
             var id = await _createHandler.Handle(dto);

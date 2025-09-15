@@ -18,7 +18,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Tagging.Commands
             _updateHandler.NotNull(nameof(updateHandler));
         }
 
-        [HttpPut]
+        [HttpPut, HttpPost]
         [ProducesResponseType(typeof(ApiResponseEnvelope<UpdateTagDto>), StatusCodes.Status200OK)]
         [Route("update")]
         public async Task<IActionResult> Update([FromBody] UpdateTagDto dto)
