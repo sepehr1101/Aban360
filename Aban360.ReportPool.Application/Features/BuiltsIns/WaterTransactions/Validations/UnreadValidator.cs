@@ -9,15 +9,11 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Va
     {
         public UnreadValidator()
         {
-            RuleFor(customer => customer.FromReadingNumber)
-          .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-          .NotNull().WithMessage(ExceptionLiterals.NotNull);
-
-            RuleFor(customer => customer.ToReadingNumber)
+            RuleFor(customer => customer.FromPeriodCount)
            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
            .NotNull().WithMessage(ExceptionLiterals.NotNull);
-
-            RuleFor(customer => customer.PeriodCount)
+            
+            RuleFor(customer => customer.ToPeriodCount)
            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
            .NotNull().WithMessage(ExceptionLiterals.NotNull);
 

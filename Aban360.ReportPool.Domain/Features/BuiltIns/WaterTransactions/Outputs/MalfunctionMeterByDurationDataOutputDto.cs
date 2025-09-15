@@ -18,11 +18,15 @@
         public int CommercialUnit { get; set; }
         public int OtherUnit { get; set; }
         public float ConsumptionAverage { get; set; }
+        public int Consumption { get; set; }
         public int MalfunctionPeriodCount { get; set; }
         public string LastChangeDateJalali { get; set; }
         public string Address { get; set; }
         public string MeterLife { get; set; }
         public string PhoneNumber { get; set; }
+        public string WaterRequestDateJalali { get; set; }
+        public string DeletionStateTitle { get; set; }
+        public long SumItems { get; set; }
 
 
     }

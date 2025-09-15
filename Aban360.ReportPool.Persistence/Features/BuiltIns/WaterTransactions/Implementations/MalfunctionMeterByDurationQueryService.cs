@@ -26,7 +26,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 fromDateJalali=input.FromDateJalali,
                 toDateJalali = input.ToDateJalali,
                 zoneIds = input.ZoneIds,
-                malfunctionPeriodCount=input.MalfunctionPeriodCount
+                fromMalfunctionPeriodCount=input.FromMalfunctionPeriodCount,
+                toMalfunctionPeriodCount=input.ToMalfunctionPeriodCount,
             };
             IEnumerable<MalfunctionMeterByDurationDataOutputDto> malfunctionMeterByDurationData = await _sqlReportConnection.QueryAsync<MalfunctionMeterByDurationDataOutputDto>(malfunctionMeterByDurationQueryString, @params,null, 180);
             MalfunctionMeterByDurationHeaderOutputDto malfunctionMeterByDurationHeader = new MalfunctionMeterByDurationHeaderOutputDto()
@@ -55,6 +56,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                             b.ReadingNumber,
                             b.UsageTitle,
                             b.ConsumptionAverage,
+                            b.Consumption,
+	                        b.SumItems,
                             b.CounterStateCode,
                             b.RegisterDay AS LatestRegisterDay,
                             b.ContractCapacity AS ContractualCapacity
@@ -106,7 +109,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                             c.OtherCount AS OtherUnit,
                             TRIM(c.Address) AS Address,
                             c.PhoneNo AS PhoneNumber,
-                            c.WaterInstallDate AS MeterInstallationDateJalali
+                            c.WaterInstallDate AS MeterInstallationDateJalali,
+                            c.WaterRequestDate AS WaterRequestDateJalali,
+                            c.DeletionStateTitle
                         FROM [CustomerWarehouse].dbo.Clients c
                         WHERE 
                     		c.ToDayJalali IS NULL AND
@@ -135,10 +140,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                         c.OtherUnit,
                         c.Address,
                         c.PhoneNumber,
-                        c.MeterInstallationDateJalali
+                        c.MeterInstallationDateJalali,
+                        c.WaterRequestDateJalali,
+                        c.DeletionStateTitle,
+                        v.Consumption,
+	                    v.SumItems,
                     FROM ValidLatestBills v
                     INNER JOIN FinalCount f 
-                    	ON v.BillId = f.BillId AND f.MalfunctionPeriodCount >= @malfunctionPeriodCount
+                    	ON v.BillId = f.BillId AND (f.MalfunctionPeriodCount BETWEEN @fromMalfunctionPeriodCount AND @toMalfunctionPeriodCount)
                     INNER JOIN ClientData c 
                     	ON v.BillId = c.BillId
                     OUTER APPLY (

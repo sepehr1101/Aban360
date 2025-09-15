@@ -23,7 +23,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             {
                 input.FromReadingNumber,
                 input.ToReadingNumber,
-                input.PeriodCount,
+                FromPeriodCount = input.FromPeriodCount,
+                ToPeriodCount = input.ToPeriodCount,
                 input.ZoneIds,
             };
             IEnumerable<UnreadSummaryByZoneDataOutputDto> UnreadSummaryByZoneData = await _sqlReportConnection.QueryAsync<UnreadSummaryByZoneDataOutputDto>(UnreadSummaryByZone, @params);
@@ -31,7 +32,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             {
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
-                PeriodCount = input.PeriodCount,
+                FromPeriodCount = input.FromPeriodCount,
+                ToPeriodCount = input.ToPeriodCount,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = UnreadSummaryByZoneData is not null && UnreadSummaryByZoneData.Any() ? UnreadSummaryByZoneData.Count() : 0,
 
@@ -60,17 +62,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             		     	c.ToDayJalali IS NULL AND
                          	p.id IS NULL AND
                            b.TypeId=N'بسته مانع' AND
-                            (
-                            	(@FromReadingNumber IS NOT NULL AND
-                            		@ToReadingNumber IS NOT NULL AND
-                            		c.ReadingNumber BETWEEN @FromReadingNumber AND @ToReadingNumber)
-                            	OR
-                            	(@FromReadingNumber IS NULL AND
-                            		@ToReadingNumber IS NULL)
-                            )
+                           (@FromReadingNumber IS NULL OR
+                         	@ToReadingNumber IS NULL OR
+                         	c.ReadingNumber BETWEEN @FromReadingNumber AND @ToReadingNumber)
                            {zoneQuery}
                        GROUP BY b.BillId
-                       HAVING COUNT(b.BillId)>=@PeriodCount)
+                       HAVING COUNT(b.BillId) BETWEEN @FromPeriodCount AND @ToPeriodCount)
                     Select
 						MAX(t46.C2) AS RegionTitle,
                     	u.ZoneTitle ,
