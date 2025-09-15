@@ -12,7 +12,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Tagging
     {
         private readonly IGetTagGroupHandler _getHandler;
 
-        public TagGroupGetByIdController(GetTagGroupHandler getHandler)
+        public TagGroupGetByIdController(IGetTagGroupHandler getHandler)
         {
             _getHandler = getHandler;
             _getHandler.NotNull(nameof(getHandler));

@@ -16,7 +16,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Tagging.Commands
             _deleteHandler.NotNull(nameof(deleteHandler));
         }
 
-        [HttpDelete]
+        [HttpDelete, HttpPost]
         [Route("delete/{id:long}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<long>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(long id)
