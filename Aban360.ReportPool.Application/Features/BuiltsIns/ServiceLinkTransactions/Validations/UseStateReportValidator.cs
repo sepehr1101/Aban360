@@ -10,9 +10,9 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
     {
         public UseStateReportValidator()
         {
-            RuleFor(useState => useState.UseStateId)
-             .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-             .NotNull().WithMessage(ExceptionLiterals.NotNull);
+        //    RuleFor(useState => useState.UseStateId)
+        //     .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+        //     .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(useState => useState.FromDateJalali)
              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)

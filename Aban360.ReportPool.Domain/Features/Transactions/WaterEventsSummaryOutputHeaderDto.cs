@@ -21,6 +21,9 @@
         public string WaterReplacementDate { get; set; }
         public string WaterReplacementNumber { get; set; }
         public int ZoneId { get; set; }
+        public long Remained { get; set; }
+        public string ReportDateJalali{ get; set; }
+        public string Title{ get; set; }
 
     }
 }

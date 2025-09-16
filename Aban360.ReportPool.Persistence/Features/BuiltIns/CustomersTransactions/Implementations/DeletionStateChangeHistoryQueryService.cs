@@ -59,50 +59,68 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         {
             string zoneQuery = hasZone ? "AND c1.ZoneId IN @zoneIds" : string.Empty;
 
-            return @$"Select Distinct
-                	c1.DeletionStateId,c1.DeletionStateTitle,
-                	c1.CustomerNumber,
-                	c1.ReadingNumber,
-                	c1.BillId,
-                	c2.RegisterDayJalali AS ChangeDateJalali,
-                	c1.DeletionStateTitle AS FromDeletionStateTitle,
-                	c2.DeletionStateTitle AS ToDeletionStateTitle,
-                    c1.UsageTitle,
-                    c1.ZoneTitle,
-                    c1.ZoneId,
-                	TRIM(c1.FirstName) AS FirstName,
-                	TRIM(c1.SureName) AS Surname,
-                	TRIM(c1.FatherName) AS FatherName,
-                	TRIM(c1.FirstName)+' '+TRIM(c1.SureName) AS FullName,
-                	TRIM(c1.NationalId) AS NationalCode,
-                	TRIM(c1.PhoneNo) AS PhoneNumber,
-                	TRIM(c1.Address) AS Address,
-                	TRIM(c1.PostalCode) AS PostalCode,
-                	c1.ContractCapacity AS ContractualCapacity,
-                	c1.CommercialCount,
-                	c1.DomesticCount,
-                	c1.OtherCount,
-                	(c1.CommercialCount+c1.DomesticCount+c1.OtherCount) AS TotalCount,
-                	c1.WaterDiameterTitle AS MeterDiameterTitle,
-                	c1.MainSiphonTitle AS SiphonDiameterTitle,
-                	c1.BranchType AS UseStateTitle,
-                	c1.EmptyCount AS EmptyUnit,
-				    DATEDIFF(DAY,[CustomerWarehouse].dbo.PersianToMiladi(c1.RegisterDayJalali),[CustomerWarehouse].dbo.PersianToMiladi(c2.RegisterDayJalali)) as Distance
-                From [CustomerWarehouse].dbo.Clients c1
-                Join [CustomerWarehouse].dbo.Clients c2
-                	on c1.BillId=c2.BillId
-                Where
-                	c1.DeletionStateId IN @fromDeletionStateIds AND
-                	c2.DeletionStateId IN @toDeletionStateIds AND
-                	c2.RegisterDayJalali>c1.RegisterDayJalali AND
-                	(@fromDate IS NULL OR
-                	@toDate IS NULL OR
-                	c2.RegisterDayJalali BETWEEN @fromDate AND @toDate) AND
-                	(@fromReadingNumber IS NULL OR
-                	@toReadingNumber IS NULL OR
-                	c1.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-                    c1.DeletionStateId != c2.DeletionStateId
-                	{zoneQuery} ";
+            return $@"use CustomerWarehouse
+                    ;With FirstBillGroup as (
+                    Select 
+                    	c.DeletionStateId,
+                    	c.BillId,
+                    	c.DeletionStateTitle,
+                    	MAX(RegisterDayJalali)as RegisterDayJalali
+                    From [CustomerWarehouse].dbo.Clients c
+                    Group By c.BillId,c.DeletionStateId,DeletionStateTitle
+                    ),
+                    SecondBillGroup as (
+                    Select 
+                    	c.DeletionStateId,
+                    	c.BillId,
+                    	c.DeletionStateTitle,
+                    	MAX(RegisterDayJalali)as RegisterDayJalali
+                    From [CustomerWarehouse].dbo.Clients c
+                    Group By c.BillId,c.DeletionStateId,DeletionStateTitle
+                    )
+                    Select 
+                        c.CustomerNumber,
+                        c.ReadingNumber,
+                        c.BillId,
+                        ss.RegisterDayJalali AS ChangeDateJalali,
+                        ff.DeletionStateTitle AS FromDeletionStateTitle,
+                        ss.DeletionStateTitle AS ToDeletionStateTitle,
+                        c.ZoneTitle,
+                        c.ZoneId,
+                        TRIM(c.FirstName) AS FirstName,
+                        TRIM(c.SureName) AS Surname,
+                        TRIM(c.FirstName)+' '+TRIM(c.SureName) AS FullName,
+                        TRIM(c.FatherName) AS FatherName,
+                        TRIM(c.NationalId) AS NationalCode,
+                        TRIM(c.PhoneNo) AS PhoneNumber,
+                        TRIM(c.Address) AS Address,
+                        TRIM(c.PostalCode) AS PostalCode,
+                        c.ContractCapacity AS ContractualCapacity,
+                        c.CommercialCount,
+                        c.DomesticCount,
+                        c.OtherCount,
+                        (c.CommercialCount+c.DomesticCount+c.OtherCount) AS TotalCount,
+                        c.WaterDiameterTitle AS MeterDiameterTitle,
+                        c.MainSiphonTitle AS SiphonDiameterTitle,
+                        c.BranchType AS UseStateTitle,
+                        c.EmptyCount AS EmptyUnit
+                    From CustomerWarehouse.dbo.Clients c 
+                    Join FirstBillGroup ff 
+                    	On c.BillId=ff.BillId
+                    Join SecondBillGroup ss
+                    	On c.BillId=ss.BillId AND ff.DeletionStateId<> ss.DeletionStateId
+                    Where
+                    	c.ToDayJalali IS NULL AND
+                    	ff.DeletionStateId IN @fromDeletionStateIds AND
+                        ss.DeletionStateId IN @toDeletionStateIds AND
+                        ss.RegisterDayJalali>ff.RegisterDayJalali AND
+                        (@fromDate IS NULL OR
+                        @toDate IS NULL OR
+                        ss.RegisterDayJalali BETWEEN @fromDate AND @toDate) AND
+                        (@fromReadingNumber IS NULL OR
+                        @toReadingNumber IS NULL OR
+                        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) 
+                    	{zoneQuery} ";           
         }
     }
 }

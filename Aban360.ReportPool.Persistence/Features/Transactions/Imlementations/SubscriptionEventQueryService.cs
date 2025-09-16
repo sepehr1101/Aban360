@@ -6,6 +6,7 @@ using Aban360.ReportPool.Domain.Features.Transactions;
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.Transactions.Contracts;
 using Dapper;
+using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
@@ -22,12 +23,12 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             string subscriptionHeaderQuery = GetSubscriptionEventHeaderQuery();
             string waterReplacementInHeaderQuery = GetWaterReplacementDateInHeaderQuery();
 
+            long lastRemained = 0;
             IEnumerable<WaterEventsSummaryOutputDataDto> data = await _sqlReportConnection.QueryAsync<WaterEventsSummaryOutputDataDto>(subscriptionDataQuery, new { billId = billId });
             if (data is not null && data.Any())
             {
                 data = data.OrderBy(i => i.RegisterDate);
 
-                long lastRemained = 0;
                 for (int i = 0; i < data.Count(); i++)
                 {
                     WaterEventsSummaryOutputDataDto row = data.ElementAt(i);
@@ -45,6 +46,9 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             WaterReplacementInfoOutputDto? replacementInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterReplacementInfoOutputDto>(waterReplacementInHeaderQuery, new { billId = billId, customerNumber = header.CustomerNumber, zoneId = header.ZoneId });
             header.WaterReplacementDate = replacementInfo is not null? replacementInfo.WaterReplacementDate:string.Empty;
             header.WaterReplacementNumber = replacementInfo is not null ? replacementInfo.WaterReplacementNumber : string.Empty;
+            header.Remained = lastRemained;
+            header.ReportDateJalali = DateTime.Now.ToShortPersianDateString();
+            header.Title = ReportLiterals.SubscriptionEventSummary;
 
             var result = new ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>(ReportLiterals.SubscriptionEventSummary, header, data);
 
