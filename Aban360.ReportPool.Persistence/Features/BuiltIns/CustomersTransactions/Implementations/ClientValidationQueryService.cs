@@ -100,9 +100,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 					@toReadingNumber IS NULL OR
 					c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
 					c.ZoneId IN @zoneIds AND
-					c.RegisterDayJalali	IS NULL";
-					
-
-        }
+					c.ToDayJalali IS NULL ";
+		}
 	}
 }

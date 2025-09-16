@@ -27,5 +27,6 @@
         public string MeterSerial { get; set; }
         public string NatoinalCode { get; set; }
         public string PostalCode { get; set; }
+        public string BranchTypeTitle { get; set; }
     }
 }

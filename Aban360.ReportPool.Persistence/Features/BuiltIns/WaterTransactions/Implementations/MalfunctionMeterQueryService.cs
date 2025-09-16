@@ -49,7 +49,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         }
 
         private string GetMalfunctionMeterQuery()
-        {
+        { 
             return @"WITH CTE AS (
                     Select
                         b.BillId,
