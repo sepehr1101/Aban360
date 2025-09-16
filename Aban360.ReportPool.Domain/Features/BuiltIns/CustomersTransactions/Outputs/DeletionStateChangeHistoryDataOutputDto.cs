@@ -28,5 +28,7 @@
         public string PostalCode { get; set; }
         public string PhoneNumber { get; set; }
         public string FatherName { get; set; }
+        public int Distance { get; set; }
+        public string DistanceText { get; set; }
     }
 }

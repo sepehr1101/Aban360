@@ -37,7 +37,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 RecordCount = withoutBillData is not null && withoutBillData.Any() ? withoutBillData.Count() : 0,
-                ReportDateJalali = DateTime.Now.ToShortPersianDateString()
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+
+                SumCommercialUnit = withoutBillData.Sum(i => i.CommercialUnit),
+                SumDomesticUnit = withoutBillData.Sum(i => i.DomesticUnit),
+                SumOtherUnit = withoutBillData.Sum(i => i.OtherUnit),
+                TotalUnit = withoutBillData.Sum(i => i.TotalUnit),
+                CustomerCount = withoutBillData.Sum(i => i.CustomerCount),
             };
 
             var result = new ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryByZoneDataOutputDto>(ReportLiterals.WithoutBill + ReportLiterals.ByZone, withoutBillHeader, withoutBillData);
@@ -56,10 +62,23 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
                     	SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
                     	SUM(ISNULL(c.DomesticCount, 0)) AS DomesticUnit,
-                    	SUM(ISNULL(c.OtherCount, 0)) AS OtherUnit
+                    	SUM(ISNULL(c.OtherCount, 0)) AS OtherUnit,
+						SUM(CASE WHEN t5.C0 = 0 THEN 1 ELSE 0 END) AS UnSpecified,
+				        SUM(CASE WHEN t5.C0 = 1 THEN 1 ELSE 0 END) AS Field0_5,
+				        SUM(CASE WHEN t5.C0 = 2 THEN 1 ELSE 0 END) AS Field0_75,
+				        SUM(CASE WHEN t5.C0 = 3 THEN 1 ELSE 0 END) AS Field1,
+				        SUM(CASE WHEN t5.C0 = 4 THEN 1 ELSE 0 END) AS Field1_2,
+				        SUM(CASE WHEN t5.C0 = 5 THEN 1 ELSE 0 END) AS Field1_5,
+				        SUM(CASE WHEN t5.C0 = 6 THEN 1 ELSE 0 END) AS Field2,
+				        SUM(CASE WHEN t5.C0 = 7 THEN 1 ELSE 0 END) AS Field3,
+				        SUM(CASE WHEN t5.C0 = 8 THEN 1 ELSE 0 END) AS Field4,
+				        SUM(CASE WHEN t5.C0 = 9 THEN 1 ELSE 0 END) AS Field5,
+				        SUM(CASE WHEN t5.C0 In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6
                     From [CustomerWarehouse].dbo.Clients c
                     LEFt JOIN [CustomerWarehouse].dbo.Bills b
                     	on c.ZoneId=b.ZoneId AND c.CustomerNumber=b.CustomerNumber
+					Join [Db70].dbo.T5 t5
+						On t5.C0=c.WaterDiameterId
                     Join [Db70].dbo.T51 t51
                     	On t51.C0=c.ZoneId
                     Join [Db70].dbo.T46 t46

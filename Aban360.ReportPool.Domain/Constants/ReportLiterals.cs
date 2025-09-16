@@ -79,7 +79,10 @@
 
         public static string ContractualCapacity { get { return $"{Report} ظرفیت قراردادی"; } }
         public static string Usage { get { return $"{Report} باغ و اقامتگاه"; } }
-        public static string HouseholdNumber { get { return $"{Report} خانوار"; } }
+
+        public static string HouseholdNumberDetail { get { return $"{Report} جزئیات خانوار"; } }
+        public static string HouseholdNumberSummary { get { return $"{Report} خلاصه خانوار"; } }
+
         public static string UsageDetail { get { return $"{Report} جزئیات کاربری"; } }
         public static string UsageSummary { get { return $"{Report} خلاصه کاربری"; } }
         public static string BranchTypeChangeHistory { get { return $"{Report} تاریخچه تغیرات نوع واگذاری"; } }
@@ -169,9 +172,8 @@
         public static string ReadingStatusStatement { get { return $" {Report} فهرست وضعیت"; } }
         public static string ReadingStatusStatementSummary { get { return $" {Report} خلاصه فهرست وضعیت"; } }
 
-        public static string RuinedMeterIncome { get { return $"خلاصه {Report} درآمد کنتور خراب"; } }
+        public static string RuinedMeterIncomeDetail { get { return $" {Report} جزئیات درآمد کنتور خراب"; } }
+        public static string RuinedMeterIncomeSummary { get { return $" {Report} خلاصه درآمد کنتور خراب"; } }
 
-        //فاصله قرائت تا صدور قبض
-        //registerDay   nextDay
     }
 }

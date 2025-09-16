@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 {
-    [Route("v1/ruined-meter-income-summary")]
-    public class RuinedMeterIncomeSummaryController : BaseController
+    [Route("v1/ruined-meter-income-summary-by-zone")]
+    public class RuinedMeterIncomeSummaryByZoneController : BaseController
     {
-        private readonly IRuinedMeterIncomeSummaryHandler _ruinedMeterIncomeSummaryHandler;
+        private readonly IRuinedMeterIncomeSummaryByZoneHandler _ruinedMeterIncomeSummaryHandler;
         private readonly IReportGenerator _reportGenerator;
-        public RuinedMeterIncomeSummaryController(
-            IRuinedMeterIncomeSummaryHandler ruinedMeterIncomeSummaryHandler,
+        public RuinedMeterIncomeSummaryByZoneController(
+            IRuinedMeterIncomeSummaryByZoneHandler ruinedMeterIncomeSummaryHandler,
             IReportGenerator reportGenerator)
         {
             _ruinedMeterIncomeSummaryHandler = ruinedMeterIncomeSummaryHandler;
@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryByZoneDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(RuinedMeterIncomeInputDto input, CancellationToken cancellationToken)
         {
             var result = await _ruinedMeterIncomeSummaryHandler.Handle(input, cancellationToken);
@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, RuinedMeterIncomeInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _ruinedMeterIncomeSummaryHandler.Handle, CurrentUser, ReportLiterals.RuinedMeterIncome, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _ruinedMeterIncomeSummaryHandler.Handle, CurrentUser, ReportLiterals.RuinedMeterIncomeSummary + ReportLiterals.ByZone, connectionId);
             return Ok(inputDto);
         }
     }

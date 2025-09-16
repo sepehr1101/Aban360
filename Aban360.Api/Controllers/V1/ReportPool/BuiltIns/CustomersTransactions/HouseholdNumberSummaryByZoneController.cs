@@ -10,16 +10,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
 {
-    [Route("v1/household-number")]
-    public class HouseholdNumberController : BaseController
+    [Route("v1/household-number-summary-by-zone")]
+    public class HouseholdNumberSummaryByZoneController : BaseController
     {
-        private readonly IHouseholdNumberHandler _householdNumber;
+        private readonly IHouseholdNumberSummarybyZoneHandler _householdNumberSummaryByZone;
         private readonly IReportGenerator _reportGenerator;
-        public HouseholdNumberController(IHouseholdNumberHandler householdNumber,
+        public HouseholdNumberSummaryByZoneController(
+            IHouseholdNumberSummarybyZoneHandler householdNumberSummaryByZone,
             IReportGenerator reportGenerator)
         {
-            _householdNumber = householdNumber;
-            _householdNumber.NotNull(nameof(_householdNumber));
+            _householdNumberSummaryByZone = householdNumberSummaryByZone;
+            _householdNumberSummaryByZone.NotNull(nameof(_householdNumberSummaryByZone));
 
             _reportGenerator = reportGenerator;
             _reportGenerator.NotNull(nameof(_reportGenerator));
@@ -27,18 +28,18 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<HouseholdNumberHeaderOutputDto, HouseholdNumberDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<HouseholdNumberHeaderOutputDto, HouseholdNumberSummaryByZoneDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(HouseholdNumberInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<HouseholdNumberHeaderOutputDto, HouseholdNumberDataOutputDto> householdNumber = await _householdNumber.Handle(inputDto, cancellationToken);
-            return Ok(householdNumber);
+            ReportOutput<HouseholdNumberHeaderOutputDto, HouseholdNumberSummaryByZoneDataOutputDto> householdNumberSummaryByZone = await _householdNumberSummaryByZone.Handle(inputDto, cancellationToken);
+            return Ok(householdNumberSummaryByZone);
         }
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, HouseholdNumberInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _householdNumber.Handle, CurrentUser, ReportLiterals.HouseholdNumberDetail, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _householdNumberSummaryByZone.Handle, CurrentUser, ReportLiterals.HouseholdNumberSummary + ReportLiterals.ByZone, connectionId);
             return Ok(inputDto);
         }
     }

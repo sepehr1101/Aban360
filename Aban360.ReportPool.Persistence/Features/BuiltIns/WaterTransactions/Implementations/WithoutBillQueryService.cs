@@ -7,6 +7,7 @@ using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contrac
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Concurrent;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
@@ -50,6 +51,21 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             string usageQuery = hasUsage ? "AND c.UsageId IN @usageIds" : string.Empty;
 
             return @$"Select 
+                        c.BillId AS BillId,
+						b.CounterStateTitle AS CounterStateTitle,
+						c.WaterRequestDate AS WaterRequestDateJalali,
+						c.WaterRegisterDateJalali AS WaterInstallationDateJalali,
+						c.MobileNo as MobileNumber,
+						c.PhoneNo as PhoneNumber,
+						c.ContractCapacity as ContractualCapacity,
+						c.CommercialCount as CommercialUnit,
+						c.DomesticCount as DomesticUnit,
+						c.OtherCount as OtherUnit,
+						(c.ContractCapacity + c.DomesticCount + c.OtherCount) as TotalUnit,
+						c.HasCommonSiphon as  SiphonDiameterTitle,
+						c.UsageTitle as UsageTitle,
+						TRIM(c.NationalId) as NationalCode,
+						c.EmptyCount as EmptyUnit,
                     	c.CustomerNumber as CustomerNumber,
                         c.ReadingNumber,
                     	TRIM(c.FirstName) +' '+TRIM(c.SureName) as FullName,
@@ -57,7 +73,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	c.UsageTitle2 as UsageSellTitle,
                     	TRIM(c.Address) as Address,
                     	c.ZoneTitle as ZoneTitle,
-                    	RN=ROW_NUMBER() OVER (Partition By c.CustomerNumber , c.ZoneId Order By c.CustomerNumber)
+						b.NextDay as LatestBillDateJalali
+                    	--RN=ROW_NUMBER() OVER (Partition By c.CustomerNumber , c.ZoneId Order By c.CustomerNumber)
                     From [CustomerWarehouse].dbo.Clients c
                     LEFt JOIN [CustomerWarehouse].dbo.Bills b
                     on c.ZoneId=b.ZoneId AND c.CustomerNumber=b.CustomerNumber
@@ -72,7 +89,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	c.DeletionStateId IN (0,2)  AND
 						c.ToDayJalali IS NULL 
                        {zoneQuery}
-                       {usageQuery}";
+                       {usageQuery}
+                    Order By b.NextDay DESC";
             //todo: remove 'where RN=1 but use c.todayjalali is null
         }
     }

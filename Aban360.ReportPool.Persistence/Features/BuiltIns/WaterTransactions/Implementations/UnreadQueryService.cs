@@ -47,17 +47,30 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             string zoneQuery = hasZone ? "AND b.ZoneId in @ZoneIds" : string.Empty;
 
             return @$"Select 
-                    	b.BillId AS BillId,
+                    	c.BillId AS BillId,
                     	MAX(b.CustomerNumber) AS CustomerNumber,
                     	MAX(b.ReadingNumber) AS ReadingNumber,
                     	MAX(c.FirstName) +' '+MAX(c.Surename) AS FullName,
                     	MAX(c.WaterDiameterTitle) AS MeterDiameterTitle,
                     	MAX(c.UsageTitle2) AS UsageSellTitle,
                     	SUM(DISTINCT b.Payable) - SUM(DISTINCT p.Amount) AS DebtAmount,
-                    	MAX(c.Address) AS Address,
+                    	MAX(TRIM(c.Address)) AS Address,
                     	COUNT(b.BillId) AS PeriodCount,
                         MAX(b.ZoneTitle) AS ZoneTitle,
-                        MAX(b.CounterStateTitle) AS CounterStateTitle
+                        MAX(b.CounterStateTitle) AS CounterStateTitle,
+                        MAX(c.WaterRequestDate)  AS WaterRequestDateJalali,
+						MAX(c.WaterRegisterDateJalali) AS WaterInstallationDateJalali,
+						MAX(TRIM(c.MobileNo)) as MobileNumber,
+						MAX(TRIM(c.PhoneNo)) as PhoneNumber,
+						MAX(c.ContractCapacity) as ContractualCapacity,
+						MAX(c.CommercialCount) as CommercialUnit,
+						MAX(c.DomesticCount) as DomesticUnit,
+						MAX(c.OtherCount) as OtherUnit,
+						(MAX(c.ContractCapacity) + MAX(c.DomesticCount) + MAX(c.OtherCount)) as TotalUnit,
+						MAX(CAST(c.HasCommonSiphon as int)) as SiphonDiameterTitle,
+						MAX(c.UsageTitle) as UsageTitle,
+						MAX(TRIM(c.NationalId)) as NationalCode,
+						MAX(c.EmptyCount) as EmptyUnit
                     From [CustomerWarehouse].dbo.Bills b
                     JOIN [CustomerWarehouse].dbo.Clients c ON b.BillId=c.BillId
                     LEFT JOIN [CustomerWarehouse].dbo.payments as p ON p.BillTableId = b.id

@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Timing;
 using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
@@ -35,6 +36,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             }
 
             ReportOutput<UsageChangeHistoryHeaderOutputDto, UsageChangeHistoryDataOutputDto> usageChangeHistory = await _usageChangeHistoryQueryService.GetInfo(input);
+            usageChangeHistory.ReportData.ForEach(d =>
+            {
+                d.DistanceText = CalculationDistanceDate.ConvertDaysToDate(d.Distance);
+            });
             return usageChangeHistory;
         }
     }

@@ -1,14 +1,10 @@
-﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs
+﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs
 {
-    public record RuinedMeterIncomeSummaryDataOutputDto
+    public record HouseholdNumberSummaryByZoneDataOutputDto
     {
-        public string ItemTitle { get; set; }
-        public long SumDuration { get; set; }
-        public float AverageDuration { get; set; }
-        public long SumConsumption { get; set; }
-        public float AverageConsumption { get; set; }
-        public long Payable { get; set; }
-        public long SumItems { get; set; }
+        public string RegionTitle { get; set; }
+        public string ZoneTitle { get; set; }
+        public float HouseholdAverage { get; set; }
         public int CustomerCount { get; set; }
         public int TotalUnit { get; set; }
         public int CommercialUnit { get; set; }
@@ -25,5 +21,6 @@
         public int Field4 { get; set; }
         public int Field5 { get; set; }
         public int MoreThan6 { get; set; }
+
     }
 }

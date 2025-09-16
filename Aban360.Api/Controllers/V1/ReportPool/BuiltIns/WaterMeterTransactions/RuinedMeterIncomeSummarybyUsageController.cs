@@ -10,17 +10,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 {
-    [Route("v1/ruined-meter-income-detail")]
-    public class RuinedMeterIncomeDetailController : BaseController
+    [Route("v1/ruined-meter-income-summary-by-usage")]
+    public class RuinedMeterIncomeSummarybyUsageController : BaseController
     {
-        private readonly IRuinedMeterIncomeDetailHandler _reuinedMeterIncomeDetailHandler;
+        private readonly IRuinedMeterIncomeSummarybyUsageHandler _ruinedMeterIncomeSummarybyUsageHandler;
         private readonly IReportGenerator _reportGenerator;
-        public RuinedMeterIncomeDetailController(
-            IRuinedMeterIncomeDetailHandler reuinedMeterIncomeDetailHandler,
+        public RuinedMeterIncomeSummarybyUsageController(
+            IRuinedMeterIncomeSummarybyUsageHandler ruinedMeterIncomeSummarybyUsageHandler,
             IReportGenerator reportGenerator)
         {
-            _reuinedMeterIncomeDetailHandler = reuinedMeterIncomeDetailHandler;
-            _reuinedMeterIncomeDetailHandler.NotNull(nameof(reuinedMeterIncomeDetailHandler));
+            _ruinedMeterIncomeSummarybyUsageHandler = ruinedMeterIncomeSummarybyUsageHandler;
+            _ruinedMeterIncomeSummarybyUsageHandler.NotNull(nameof(ruinedMeterIncomeSummarybyUsageHandler));
 
             _reportGenerator = reportGenerator;
             _reportGenerator.NotNull(nameof(_reportGenerator));
@@ -28,10 +28,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeDetailDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(RuinedMeterIncomeInputDto input, CancellationToken cancellationToken)
         {
-            var result = await _reuinedMeterIncomeDetailHandler.Handle(input, cancellationToken);
+            ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryDataOutputDto> result = await _ruinedMeterIncomeSummarybyUsageHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, RuinedMeterIncomeInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _reuinedMeterIncomeDetailHandler.Handle, CurrentUser, ReportLiterals.RuinedMeterIncomeDetail, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _ruinedMeterIncomeSummarybyUsageHandler.Handle, CurrentUser, ReportLiterals.RuinedMeterIncomeSummary+ReportLiterals.ByUsage, connectionId);
             return Ok(inputDto);
         }
     }

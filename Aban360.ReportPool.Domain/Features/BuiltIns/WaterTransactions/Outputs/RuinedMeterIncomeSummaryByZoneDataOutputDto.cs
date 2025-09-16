@@ -1,8 +1,9 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs
 {
-    public record RuinedMeterIncomeSummaryDataOutputDto
+    public record RuinedMeterIncomeSummaryByZoneDataOutputDto
     {
-        public string ItemTitle { get; set; }
+        public string RegionTitle { get; set; }
+        public string ZoneTitle { get; set; }
         public long SumDuration { get; set; }
         public float AverageDuration { get; set; }
         public long SumConsumption { get; set; }

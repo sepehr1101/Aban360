@@ -41,7 +41,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ruinedMeterIncomeHeader.TotalSumItems = ruinedMeterIncomeData.Sum(x => x.SumItems);
             }
 
-            var result = new ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeDetailDataOutputDto>(ReportLiterals.RuinedMeterIncome, ruinedMeterIncomeHeader, ruinedMeterIncomeData);
+            var result = new ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeDetailDataOutputDto>(ReportLiterals.RuinedMeterIncomeDetail, ruinedMeterIncomeHeader, ruinedMeterIncomeData);
 
             return result;
         }
@@ -62,7 +62,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                         b.Consumption,
                         b.ConsumptionAverage,
 	                    b.CounterStateCode,
-	                    b.CounterStateTitle
+	                    b.CounterStateTitle,
+						b.WaterDiameterTitle,
+						b.UsageTitle
                     From [CustomerWarehouse].dbo.Bills b
                     Where 
                     	b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
