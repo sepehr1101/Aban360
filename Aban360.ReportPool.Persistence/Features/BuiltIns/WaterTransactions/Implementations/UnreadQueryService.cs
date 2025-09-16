@@ -47,7 +47,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             string zoneQuery = hasZone ? "AND b.ZoneId in @ZoneIds" : string.Empty;
 
             return @$"Select 
-                    	c.BillId AS BillId,
+                    	b.BillId AS BillId,
                     	MAX(b.CustomerNumber) AS CustomerNumber,
                     	MAX(b.ReadingNumber) AS ReadingNumber,
                     	MAX(c.FirstName) +' '+MAX(c.Surename) AS FullName,

@@ -14,7 +14,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
     {
         public UnreadSummaryByZoneQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<UnreadSummaryHeaderOutputDto, UnreadSummaryByZoneDataOutputDto>> GetInfo(UnreadInputDto input)
         {
@@ -82,7 +83,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	u.ZoneTitle ,
                     	SUM(Case When u.CounterStateId=7 then 1 else 0 end) AS Closed,
                     	SUM(Case When u.CounterStateId=4 then 1 else 0 end) AS Barrier,
-                    	COUNT(u.UsageTitle) AS CustomerCount,
+                    	COUNT(u.ZoneTitle) AS CustomerCount,
 					    SUM(ISNULL(u.CommercialCount, 0) + ISNULL(u.DomesticCount, 0) + ISNULL(u.OtherCount, 0)) AS TotalUnit,
                         SUM(ISNULL(u.CommercialCount, 0)) AS CommercialUnit,
                         SUM(ISNULL(u.DomesticCount, 0)) AS DomesticUnit,
