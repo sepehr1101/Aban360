@@ -82,7 +82,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 						c.DeletionStateTitle ,
 						TRIM(c.MeterSerialBody) AS MeterSerial,
 						TRIM(c.NationalId) AS NationalCode,
-						TRIM(c.PostalCode) AS PostalCode            
+						TRIM(c.PostalCode) AS PostalCode,
+                        c.WaterRegisterDateJalali RegisterDateJalali,
+                        c.WaterInstallDate InstallationDateJalali
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
                     	c.WaterRequestDate BETWEEN @fromDate AND @toDate AND
@@ -119,7 +121,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 						c.DeletionStateTitle ,
 						TRIM(c.MeterSerialBody) AS MeterSerial,
 						TRIM(c.NationalId) AS NationalCode,
-						TRIM(c.PostalCode) AS PostalCode
+						TRIM(c.PostalCode) AS PostalCode,
+                        c.SewageRegisterDateJalali RegisterDateJalali,
+                        c.SewageInstallDate InstallationDateJalali
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
                     	c.SewageRequestDate BETWEEN @fromDate AND @toDate AND

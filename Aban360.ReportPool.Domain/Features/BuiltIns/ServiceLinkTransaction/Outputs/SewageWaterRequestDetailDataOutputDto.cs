@@ -25,5 +25,8 @@
         public string MeterSerial { get; set; }
         public string NationalCode { get; set; }
         public string PostalCode { get; set; }
+
+        public string RegisterDateJalali { get; set; }
+        public string InstallationDateJalali { get; set; }
     }
 }

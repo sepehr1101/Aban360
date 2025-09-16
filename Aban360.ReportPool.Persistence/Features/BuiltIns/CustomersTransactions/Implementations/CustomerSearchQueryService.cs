@@ -64,6 +64,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                                 or c.OtherCount like @input
                                 or c.MobileNo like @input
                                 or c.Address like @input
+                                or c.NationalId like @input
+                                or c.PhoneNo like @input
+                                or c.PostalCode like @input
                             )";
         }
     }
