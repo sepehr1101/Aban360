@@ -71,7 +71,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                         Field2 = v.Field2,
                         Field3 = v.Field3,
                         Field4 = v.Field4,
-                        Field5 = v.Field5,
+                        Field5 = v.Field5, 
                         MoreThan6 = v.MoreThan6
                     })
                 ))

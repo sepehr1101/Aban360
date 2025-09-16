@@ -38,10 +38,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 FromHouseholdDateJalali = input.FromHouseholdDateJalali,
                 ToHouseholdDateJalali = input.ToHouseholdDateJalali,
                 RecordCount = (householdNumberData is not null && householdNumberData.Any()) ? householdNumberData.Count() : 0,
-                ReportDateJalali = DateTime.Now.ToShortPersianDateString()
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+
+                SumCommercialUnit = householdNumberData.Sum(i => i.CommercialUnit),
+                SumDomesticUnit = householdNumberData.Sum(i => i.DomesticUnit),
+                SumOtherUnit = householdNumberData.Sum(i => i.OtherUnit),
+                TotalUnit = householdNumberData.Sum(i => i.TotalUnit),
+                CustomerCount = (householdNumberData is not null && householdNumberData.Any()) ? householdNumberData.Count() : 0,
             };
 
-            var result = new ReportOutput<HouseholdNumberHeaderOutputDto, HouseholdNumberDataOutputDto>(ReportLiterals.HouseholdNumber, householdNumberHeader, householdNumberData);
+            var result = new ReportOutput<HouseholdNumberHeaderOutputDto, HouseholdNumberDataOutputDto>(ReportLiterals.HouseholdNumberDetail, householdNumberHeader, householdNumberData);
 
             return result;
         }
@@ -63,8 +69,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         c.DomesticCount DomesticUnit,
 	                    c.CommercialCount CommercialUnit,
 	                    c.OtherCount OtherUnit,
+                        (c.DomesticCount + c.CommercialCount + c.OtherCount) AS TotalUnit,
 	                    TRIM(c.BillId) BillId,
 	            		c.HouseholdDateJalali As HouseholdDateJalali,
+					    STUFF(c.HouseholdDateJalali,1,4,CAST(CAST(SUBSTRING(c.HouseholdDateJalali,1,4)AS int)+1 as nvarchar(4))) AS ToHouseholdDateJalali,
 	            		c.FamilyCount AS HouseholdCount,
                         IIF(c.HouseholdDateJalali >@lastYearDate , 1 , 0) AS IsValid
                     FROM [CustomerWarehouse].dbo.Clients c

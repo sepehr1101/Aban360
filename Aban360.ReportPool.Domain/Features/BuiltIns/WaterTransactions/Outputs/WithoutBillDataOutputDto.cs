@@ -10,5 +10,22 @@
         public string Address { get; set; }
         public string ZoneTitle { get; set; }
 
+        public string LatestBillDateJalali { get; set; }
+        public string BillId { get; set; }
+        public string CounterStateTitle { get; set; }
+        public string WaterRequestDateJalali { get; set; }
+        public string WaterInstallationDateJalali { get; set; }
+        public string MobileNumber { get; set; }
+        public string PhoneNumber { get; set; }
+        public string ContractualCapacity { get; set; }
+        public int CommercialUnit { get; set; }
+        public int DomesticUnit { get; set; }
+        public int OtherUnit { get; set; }
+        public int TotalUnit { get; set; }
+        public string SiphonDiameterTitle { get; set; }
+        public string UsageTitle { get; set; }
+        public string NationalCode { get; set; }
+        public string EmptyUnit { get; set; }
+
     }
 }

@@ -17,8 +17,10 @@
         public string BillId { get; set; }
         public string UseStateTitle { get; set; }
         public string HouseholdDateJalali { get; set; }
+        public string ToHouseholdDateJalali { get; set; }
         public int HouseholdCount { get; set; }
         public bool IsValid { get; set; }
+        public int TotalUnit { get; set; }
 
     }
 }
