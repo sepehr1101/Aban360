@@ -225,12 +225,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         }
         public async Task<AbBahaCalculationDetails> HandleWithAggregatedNerkh(BaseOldTariffEngineImaginaryInputDto input, CancellationToken cancellationToken)
         {
+            CustomerInfoOutputDto customerInfo = GetCustomerInfo(input);
             try
-            {
-                CustomerInfoOutputDto customerInfo = GetCustomerInfo(input);
+            {                
                 Validation(input.MeterPreviousData.PreviousDateJalali);
 
-                    int consumption = GetConsumption(input.MeterPreviousData.PreviousNumber, input.MeterPreviousData.CurrentMeterNumber);
+                int consumption = GetConsumption(input.MeterPreviousData.PreviousNumber, input.MeterPreviousData.CurrentMeterNumber);
                 int duration = GetDuration(input.MeterPreviousData.PreviousDateJalali, input.MeterPreviousData.CurrentDateJalali);
                 double dailyAverage = GetDailyConsumptionAverage(consumption, duration, customerInfo.DomesticUnit, customerInfo.EmptyUnit);
                 double monthlyAverageConsumption = dailyAverage * monthDays;
@@ -257,7 +257,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             }
             catch(Exception e)
             {
-                throw e;
+                throw new BaseException($"{customerInfo.BillId} {input.MeterPreviousData.PreviousDateJalali} {input.MeterPreviousData.PreviousNumber}");
             }
         }
 
