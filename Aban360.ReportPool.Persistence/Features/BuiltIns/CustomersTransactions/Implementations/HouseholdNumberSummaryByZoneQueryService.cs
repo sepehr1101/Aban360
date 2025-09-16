@@ -63,7 +63,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         c.DomesticCount DomesticUnit,
 	                    c.CommercialCount CommercialUnit,
 	                    c.OtherCount OtherUnit,
-						c.FamilyCount AS HouseholdCount,
+						c.FamilyCount AS HouseholdCount
                         IIF(c.HouseholdDateJalali >@lastYearDate , 1 , 0) AS IsValid
                     FROM [CustomerWarehouse].dbo.Clients c
                     WHERE 
@@ -75,23 +75,17 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     Select 
                     	MAX(t46.C2) AS RegionTitle,
 						h.ZoneTitle,
-						AVG(h.HouseholdCount) as HouseholdAverage,
+						SUM(h.HouseholdCount) as SumHousehold,
 						COUNT(h.ZoneTitle) AS CustomerCount,
 					    SUM(ISNULL(h.CommercialUnit, 0) + ISNULL(h.DomesticUnit, 0) + ISNULL(h.OtherUnit, 0)) AS TotalUnit,
 					    SUM(ISNULL(h.CommercialUnit, 0)) AS CommercialUnit,
                         SUM(ISNULL(h.DomesticUnit, 0)) AS DomesticUnit,
                         SUM(ISNULL(h.OtherUnit, 0)) AS OtherUnit,
-						SUM(CASE WHEN t5.C0 = 0 THEN 1 ELSE 0 END) AS UnSpecified,
-						SUM(CASE WHEN t5.C0 = 1 THEN 1 ELSE 0 END) AS Field0_5,
-						SUM(CASE WHEN t5.C0 = 2 THEN 1 ELSE 0 END) AS Field0_75,
-						SUM(CASE WHEN t5.C0 = 3 THEN 1 ELSE 0 END) AS Field1,
-						SUM(CASE WHEN t5.C0 = 4 THEN 1 ELSE 0 END) AS Field1_2,
-						SUM(CASE WHEN t5.C0 = 5 THEN 1 ELSE 0 END) AS Field1_5,
-						SUM(CASE WHEN t5.C0 = 6 THEN 1 ELSE 0 END) AS Field2,
-						SUM(CASE WHEN t5.C0 = 7 THEN 1 ELSE 0 END) AS Field3,
-						SUM(CASE WHEN t5.C0 = 8 THEN 1 ELSE 0 END) AS Field4,
-						SUM(CASE WHEN t5.C0 = 9 THEN 1 ELSE 0 END) AS Field5,
-						SUM(CASE WHEN t5.C0 In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6
+						Count(CASE WHEN h.HouseholdCount= 1 THEN 1 ELSE Null END) AS Field1,
+						Count(CASE WHEN h.HouseholdCount= 2 THEN 1 ELSE Null END) AS Field2,
+						Count(CASE WHEN h.HouseholdCount= 3 THEN 1 ELSE Null END) AS Field3,
+						Count(CASE WHEN h.HouseholdCount= 4 THEN 1 ELSE Null END) AS Field4,
+						Count(CASE WHEN h.HouseholdCount Not In (1,2,3,4) THEN 1 ELSE Null END) AS FieldMore5
                     From Households h
                     Join [Db70].dbo.T5 t5
                     	On t5.C0=h.WaterDiameterId

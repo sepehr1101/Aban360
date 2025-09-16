@@ -50,7 +50,58 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             string zoneQuery = hasZone ? "AND c.ZoneId IN @ZoneIds" : string.Empty;
             string usageQuery = hasUsage ? "AND c.UsageId IN @usageIds" : string.Empty;
 
-            return @$"Select 
+            
+            return $@"Select
+						c.BillId AS BillId,
+						c.ZoneId,
+						bb.CounterStateTitle AS CounterStateTitle,
+						c.WaterRequestDate AS WaterRequestDateJalali,
+						c.WaterRegisterDateJalali AS WaterInstallationDateJalali,
+						c.MobileNo as MobileNumber,
+						c.PhoneNo as PhoneNumber,
+						c.ContractCapacity as ContractualCapacity,
+						c.CommercialCount as CommercialUnit,
+						c.DomesticCount as DomesticUnit,
+						c.OtherCount as OtherUnit,
+						(c.ContractCapacity + c.DomesticCount + c.OtherCount) as TotalUnit,
+						c.HasCommonSiphon as  SiphonDiameterTitle,
+						c.UsageTitle as UsageTitle,
+						TRIM(c.NationalId) as NationalCode,
+						c.EmptyCount as EmptyUnit,
+                    	c.CustomerNumber as CustomerNumber,
+                        c.ReadingNumber,
+                    	TRIM(c.FirstName) +' '+TRIM(c.SureName) as FullName,
+                    	c.WaterDiameterTitle as MeterDiameterTitle,
+                    	c.UsageTitle2 as UsageSellTitle,
+                    	TRIM(c.Address) as Address,
+                    	c.ZoneTitle as ZoneTitle,
+						bb.RegisterDay as LatestBillDateJalali
+					From [CustomerWarehouse].dbo.Clients c
+					Join [CustomerWarehouse].dbo.Bills bb
+						On c.ZoneId=bb.ZoneId AND c.CustomerNumber=bb.CustomerNumber
+					Where NOT EXISTS(
+						Select 1
+						From [CustomerWarehouse].dbo.Bills b
+						Where 
+							c.ZoneId=b.ZoneId AND
+							c.CustomerNumber=b.CustomerNumber AND
+							(@FromDate IS NULL or
+                    	   	  @ToDate IS NULL or 
+                    	   	  b.RegisterDay BETWEEN @FromDate and @ToDate)AND 
+							 (@FromReadingNumber IS NULL or
+                    		  @ToReadingNumber IS NULL or 
+                    		  c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND
+                    		c.DeletionStateId IN (0,2)  AND
+							c.ToDayJalali IS NULL 
+                            {zoneQuery}
+                            {usageQuery}
+						)
+					Order By bb.RegisterDay";
+        }
+    }
+}
+#region last query
+/*return @$"Select 
                         c.BillId AS BillId,
 						b.CounterStateTitle AS CounterStateTitle,
 						c.WaterRequestDate AS WaterRequestDateJalali,
@@ -91,12 +142,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                        {zoneQuery}
                        {usageQuery}
                     Order By b.NextDay DESC";
-            //todo: remove 'where RN=1 but use c.todayjalali is null
-        }
-    }
-}
-#region last query
-/* ;with cte as (
+/////
+ * ;with cte as (
                    Select 
                        c.CustomerNumber as CustomerNumber,
                        c.ReadingNumber,

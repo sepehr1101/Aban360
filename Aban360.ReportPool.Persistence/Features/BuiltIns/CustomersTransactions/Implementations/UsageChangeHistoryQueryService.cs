@@ -60,7 +60,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             string zoneQuery = hasZone ? "AND c1.ZoneId IN @zoneIds" : string.Empty;
 
             return @$"use CustomerWarehouse
-                    Select 
+                    Select Distinct
                     	c1.CustomerNumber,
                     	c1.ReadingNumber,
                     	c1.BillId,

@@ -54,7 +54,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
                         ReportAggregator.AggregateGroup(mapped, g.Key),
                         mapped.Select(v => ReportAggregator.AggregateGroup(new[] { v }, v.ItemTitle))
                     );
-                    data.ReportHeader.HouseholdAverage = data.ReportData.Max(r => r.HouseholdAverage);
 
                     return data;
                 });
@@ -84,18 +83,12 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
                 CommercialUnit = input.CommercialUnit,
                 DomesticUnit = input.DomesticUnit,
                 OtherUnit = input.OtherUnit,
-                HouseholdAverage = input.HouseholdAverage,
-                UnSpecified = input.UnSpecified,
-                Field0_5 = input.Field0_5,
-                Field0_75 = input.Field0_75,
+                SumHousehold = input.SumHousehold,
                 Field1 = input.Field1,
-                Field1_2 = input.Field1_2,
-                Field1_5 = input.Field1_5,
                 Field2 = input.Field2,
                 Field3 = input.Field3,
                 Field4 = input.Field4,
-                Field5 = input.Field5,
-                MoreThan6 = input.MoreThan6,
+                FieldMore5=input.FieldMore5,
             };
         }
     }

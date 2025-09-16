@@ -58,7 +58,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         private string GetWaterRequestNonInstalledQuery()
         {
             return @"Select	
-                    	c.UsageTitle AS UsageTitle,
+                    	c.UsageTitle AS ItemTitle,
                     	COUNT(c.UsageTitle) AS CustomerCount,
 					    SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
                         SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
@@ -92,7 +92,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         private string GetSewageRequestNonInstalledQuery()
         {
             return @"Select	
-                    	c.UsageTitle AS UsageTitle,
+                    	c.UsageTitle AS ItemTitle,
                     	COUNT(c.UsageTitle) AS CustomerCount,
 					    SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
                         SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
