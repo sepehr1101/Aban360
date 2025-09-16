@@ -16,5 +16,7 @@
         public float ConsumptionAverage { get; set; }
         public int CounterStateCode { get; set; }
         public string CounterStateTitle { get; set; }
+        public string WaterDiameterTitle { get; set; }
+        public string UsageTitle { get; set; }
     }
 }

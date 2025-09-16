@@ -66,6 +66,17 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
                 DomesticUnit = input.DomesticUnit,
                 OtherUnit = input.OtherUnit,
                 TotalUnit = input.TotalUnit,
+                UnSpecified = input.UnSpecified,
+                Field0_5 = input.Field0_5,
+                Field0_75 = input.Field0_75,
+                Field1 = input.Field1,
+                Field1_2 = input.Field1_2,
+                Field1_5 = input.Field1_5,
+                Field2 = input.Field2,
+                Field3 = input.Field3,
+                Field4 = input.Field4,
+                Field5 = input.Field5,
+                MoreThan6 = input.MoreThan6
             };
         }
     }

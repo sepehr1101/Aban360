@@ -60,7 +60,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 					    c.WaterRegisterDateJalali IS NOT NULL AND
 					    TRIM(c.{baseDate}) != '' AND
 					    TRIM(c.WaterRegisterDateJalali) != '' AND
-                        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
+                        (@fromReadingNumber IS NULL OR
+                        @toReadingNumber IS NULL OR
+                        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
                     	c.WaterRegisterDateJalali BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
             			c.ToDayJalali IS NULL
@@ -80,7 +82,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 					    c.{baseDate} IS NOT NULL AND
 					    TRIM(c.SewageRegisterDateJalali) != '' AND
 					    TRIM(c.{baseDate}) != '' AND
-                        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
+                        (@fromReadingNumber IS NULL OR
+                        @toReadingNumber IS NULL OR
+                        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
                     	c.SewageRegisterDateJalali BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND
             			c.ToDayJalali IS NULL

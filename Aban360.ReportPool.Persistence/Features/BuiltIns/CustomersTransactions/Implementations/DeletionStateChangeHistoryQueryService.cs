@@ -59,7 +59,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         {
             string zoneQuery = hasZone ? "AND c1.ZoneId IN @zoneIds" : string.Empty;
 
-            return @$"Select 
+            return @$"Select Distinct
                 	c1.DeletionStateId,c1.DeletionStateTitle,
                 	c1.CustomerNumber,
                 	c1.ReadingNumber,
@@ -86,7 +86,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 	c1.WaterDiameterTitle AS MeterDiameterTitle,
                 	c1.MainSiphonTitle AS SiphonDiameterTitle,
                 	c1.BranchType AS UseStateTitle,
-                	c1.EmptyCount AS EmptyUnit
+                	c1.EmptyCount AS EmptyUnit,
+				    DATEDIFF(DAY,[CustomerWarehouse].dbo.PersianToMiladi(c1.RegisterDayJalali),[CustomerWarehouse].dbo.PersianToMiladi(c2.RegisterDayJalali)) as Distance
                 From [CustomerWarehouse].dbo.Clients c1
                 Join [CustomerWarehouse].dbo.Clients c2
                 	on c1.BillId=c2.BillId

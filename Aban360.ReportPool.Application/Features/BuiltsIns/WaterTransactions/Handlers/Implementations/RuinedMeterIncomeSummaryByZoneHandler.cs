@@ -10,12 +10,12 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Implementations
 {
-    internal sealed class RuinedMeterIncomeSummaryHandler : IRuinedMeterIncomeSummaryHandler
+    internal sealed class RuinedMeterIncomeSummaryByZoneHandler : IRuinedMeterIncomeSummaryByZoneHandler
     {
-        private readonly IRuinedMeterIncomeSummaryQueryService _ruinedMeterIncomeQueryService;
+        private readonly IRuinedMeterIncomeSummaryByZoneQueryService _ruinedMeterIncomeQueryService;
         private readonly IValidator<RuinedMeterIncomeInputDto> _validator;
-        public RuinedMeterIncomeSummaryHandler(
-            IRuinedMeterIncomeSummaryQueryService ruinedMeterIncomeQueryService,
+        public RuinedMeterIncomeSummaryByZoneHandler(
+            IRuinedMeterIncomeSummaryByZoneQueryService ruinedMeterIncomeQueryService,
             IValidator<RuinedMeterIncomeInputDto> validator)
         {
             _ruinedMeterIncomeQueryService = ruinedMeterIncomeQueryService;
@@ -25,7 +25,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryDataOutputDto>> Handle(RuinedMeterIncomeInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryByZoneDataOutputDto>> Handle(RuinedMeterIncomeInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -34,7 +34,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryDataOutputDto> ruinedMeterIncome = await _ruinedMeterIncomeQueryService.GetInfo(input);
+            ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryByZoneDataOutputDto> ruinedMeterIncome = await _ruinedMeterIncomeQueryService.GetInfo(input);
             return ruinedMeterIncome;
         }
     }

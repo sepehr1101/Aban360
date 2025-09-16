@@ -58,7 +58,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         private string GetWaterRequestNonInstalledQuery()
         {
             return @"Select	
+						MAX(t46.C2) AS RegionTitle,
                     	c.ZoneTitle AS ZoneTitle,
+                        c.ZoneId,
                     	COUNT(c.UsageTitle) AS CustomerCount,
 					    SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
                         SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
@@ -78,6 +80,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     From [CustomerWarehouse].dbo.Clients c
 					Join [Db70].dbo.T5 t5
 						On t5.C0=c.WaterDiameterId
+					Join [Db70].dbo.T51 t51
+						On t51.C0=c.ZoneId
+					Join [Db70].dbo.T46 t46
+						On t51.C1=t46.C0
                     Where	
                     	c.WaterRequestDate BETWEEN @fromDate AND @toDate AND
 						(TRIM(c.WaterRegisterDateJalali)='' OR c.WaterRegisterDateJalali IS NULL) AND
@@ -92,7 +98,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         private string GetSewageRequestNonInstalledQuery()
         {
             return @"Select	
+						MAX(t46.C2) AS RegionTitle,
                     	c.ZoneTitle AS ZoneTitle,
+                        c.ZoneId,
                     	COUNT(c.UsageTitle) AS CustomerCount,
 					    SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
                         SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
@@ -111,7 +119,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 				        SUM(CASE WHEN t5.C0 In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6
                     From [CustomerWarehouse].dbo.Clients c
 					Join [Db70].dbo.T5 t5
-						On t5.C0=c.WaterDiameterId
+						On t5.C0=c.WaterDiameterId	
+					Join [Db70].dbo.T51 t51
+						On t51.C0=c.ZoneId
+					Join [Db70].dbo.T46 t46
+						On t51.C1=t46.C0
                     Where	
                     	c.SewageRequestDate BETWEEN @fromDate AND @toDate AND
 						(TRIM(c.SewageRegisterDateJalali)='' OR c.SewageRegisterDateJalali IS NULL) AND
