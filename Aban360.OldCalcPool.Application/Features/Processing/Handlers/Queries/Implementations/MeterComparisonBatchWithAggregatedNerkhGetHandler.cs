@@ -48,7 +48,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
 
                 MeterComparisonBatchDataOutputDto comparisonBatch = CreateComparisonBatchObject(data);
                 comparisonBatch.CurrentAmount = result.SumItems;
-                comparisonBatch.IsChecked = GetTolarance(data.PreviousAmount, data.CurrentAmount, input.Tolerance, input.IsPercent);
+                comparisonBatch.IsChecked = GetTolarance(data.PreviousAmount, result.SumItems, input.Tolerance, input.IsPercent);
                 comparisonBatch.CurrentDiscountAmount = result.DiscountSum;
 
                 comparisonResult.Add(comparisonBatch);

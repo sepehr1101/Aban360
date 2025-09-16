@@ -33,7 +33,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
 	                C
                 FROM [OldCalc].dbo.Zarib_C
                 WHERE 
-	                FromDateJalali<@fromDate AND ToDateJalali>=@toDate AND
+	                FromDateJalali=@fromDate AND ToDateJalali=@toDate AND
 	                IsDeleted=0";
         }
     }
