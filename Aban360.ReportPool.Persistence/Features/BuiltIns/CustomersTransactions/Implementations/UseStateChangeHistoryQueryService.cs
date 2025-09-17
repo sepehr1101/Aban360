@@ -57,7 +57,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         }
         private string GetBranchTypeChangeHistoryQuery(bool hasZone)
         {
-            string zoneQuery = hasZone ? "AND c1.ZoneId IN @zoneIds" : string.Empty;
+            string zoneQuery = hasZone ? "AND c.ZoneId IN @zoneIds" : string.Empty;
 
             return $@"use CustomerWarehouse
                     ;With FirstBillGroup as (
@@ -104,7 +104,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         c.MainSiphonTitle AS SiphonDiameterTitle,
                         c.BranchType AS UseStateTitle,
                         c.EmptyCount AS EmptyUnit,
-						DATEDIFF(DAY,[CustomerWarehouse].dbo.PersianToMiladi(c1.RegisterDayJalali),[CustomerWarehouse].dbo.PersianToMiladi(c2.RegisterDayJalali)) as Distance
+					    DATEDIFF(DAY,[CustomerWarehouse].dbo.PersianToMiladi(ff.RegisterDayJalali),[CustomerWarehouse].dbo.PersianToMiladi(ss.RegisterDayJalali)) as Distance
                     From CustomerWarehouse.dbo.Clients c 
                     Join FirstBillGroup ff 
                     	On c.BillId=ff.BillId

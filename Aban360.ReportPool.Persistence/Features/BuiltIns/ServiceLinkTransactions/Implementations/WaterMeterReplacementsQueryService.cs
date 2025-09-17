@@ -19,29 +19,32 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         public async Task<ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsDataOutputDto>> GetInfo(WaterMeterReplacementsInputDto input)
         {
             string waterMeterReplacementss = GetWaterMeterReplacementsQuery();
+            string reportTitle = input.IsChangeDate == true ? ReportLiterals.WaterMeterReplacements(ReportLiterals.ChangeDate) :
+                ReportLiterals.WaterMeterReplacements(ReportLiterals.RegisterDate);
 
             var @params = new
             {
-               fromReadingNumber=input.FromReadingNumber,
-               toReadingNumber=input.ToReadingNumber,
+                fromReadingNumber = input.FromReadingNumber,
+                toReadingNumber = input.ToReadingNumber,
 
-                fromDate=input.FromDateJalali,
-                toDate=input.ToDateJalali,
+                fromDate = input.FromDateJalali,
+                toDate = input.ToDateJalali,
 
-                zoneIds=input.ZoneIds,
-                usageIds=input.UsageIds,
-                isChangeDate =input.IsChangeDate?1:0,
+                zoneIds = input.ZoneIds,
+                usageIds = input.UsageIds,
+                isChangeDate = input.IsChangeDate ? 1 : 0,
             };
-            IEnumerable<WaterMeterReplacementsDataOutputDto> waterMeterReplacementsData = await _sqlReportConnection.QueryAsync<WaterMeterReplacementsDataOutputDto>(waterMeterReplacementss,@params);
+            IEnumerable<WaterMeterReplacementsDataOutputDto> waterMeterReplacementsData = await _sqlReportConnection.QueryAsync<WaterMeterReplacementsDataOutputDto>(waterMeterReplacementss, @params);
             WaterMeterReplacementsHeaderOutputDto waterMeterReplacementsHeader = new WaterMeterReplacementsHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
-                FromReadingNumber=input.FromReadingNumber,
-                ToReadingNumber=input.ToReadingNumber,
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount= (waterMeterReplacementsData is not null && waterMeterReplacementsData.Any()) ? waterMeterReplacementsData.Count() : 0,
-               
+                RecordCount = (waterMeterReplacementsData is not null && waterMeterReplacementsData.Any()) ? waterMeterReplacementsData.Count() : 0,
+                Title = reportTitle,
+
                 SumCommercialUnit = waterMeterReplacementsData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = waterMeterReplacementsData.Sum(i => i.DomesticUnit),
                 SumOtherUnit = waterMeterReplacementsData.Sum(i => i.OtherUnit),
@@ -49,11 +52,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             };
 
             var result = new ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsDataOutputDto>(
-                input.IsChangeDate==true?  ReportLiterals.WaterMeterReplacements(ReportLiterals.ChangeDate):
-                ReportLiterals.WaterMeterReplacements(ReportLiterals.RegisterDate),
-                waterMeterReplacementsHeader, 
+                reportTitle,
+                waterMeterReplacementsHeader,
                 waterMeterReplacementsData);
-            
+
             return result;
         }
 

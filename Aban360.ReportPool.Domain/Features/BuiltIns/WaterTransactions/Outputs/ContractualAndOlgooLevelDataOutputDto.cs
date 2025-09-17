@@ -3,6 +3,8 @@
     public record ContractualAndOlgooLevelDataOutputDto
     {
         public string ZoneTitle { get; set; }
+        public float FromValue { get; set; }
+        public float ToValue { get; set; }
         public int BillCount { get; set; }
         public int Consumption { get; set; }
         public float ConsumptionAverage { get; set; }

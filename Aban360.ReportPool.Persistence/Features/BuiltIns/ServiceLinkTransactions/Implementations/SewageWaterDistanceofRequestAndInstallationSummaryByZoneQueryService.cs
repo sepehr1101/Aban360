@@ -24,6 +24,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             else
                 distanceRequestInstallationQuery = GetSewageDistanceRequestInstallationQuery(input.IsInstallation);
 
+            string reportTitle = GetTitle(input.IsWater, input.IsInstallation);
+
             var @params = new
             {
                 fromDate = input.FromDateJalali,
@@ -38,10 +40,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = RequestData is not null && RequestData.Any() ? RequestData.Count() : 0
+                RecordCount = RequestData is not null && RequestData.Any() ? RequestData.Count() : 0,
+                Title = reportTitle,
             };
             var result = new ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryByZoneDataOutputDto>
-                (GetTitle(input.IsWater, input.IsInstallation),
+                (reportTitle,
                 RequestHeader,
                 RequestData);
 
@@ -105,11 +108,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         {
             if (IsWater)
             {
-                return IsInstallation ? ReportLiterals.WaterDistanceInstallationRegisterDetail : ReportLiterals.WaterDistanceRequestRegisterDetail;
+                return IsInstallation ? ReportLiterals.WaterDistanceInstallationRegisterSummary+ReportLiterals.ByZone : ReportLiterals.WaterDistanceRequestRegisterSummary + ReportLiterals.ByZone;
             }
             else
             {
-                return IsInstallation ? ReportLiterals.SewageDistanceInstallationeRegisterDetail : ReportLiterals.SewageDistanceRequesteRegisterDetail;
+                return IsInstallation ? ReportLiterals.SewageDistanceInstallationeRegisterSummary + ReportLiterals.ByZone : ReportLiterals.SewageDistanceRequesteRegisterSummary + ReportLiterals.ByZone;
             }
         }
     }

@@ -2,10 +2,12 @@
 {
     public record RemovedBillHeaderOutputDto
     {
-        public string FromDateJalali { get; set; }
-        public string ToDateJalali { get; set; }
-        public string FromAmount { get; set; }
-        public string ToAmount { get; set; }
+        public string? FromDateJalali { get; set; }
+        public string? ToDateJalali { get; set; }
+        public string? FromReadingNumber { get; set; }
+        public string? ToReadingNumber { get; set; }
+        public string? FromAmount { get; set; }
+        public string? ToAmount { get; set; }
         public string ReportDateJalali { get; set; }
         public int RecordCount { get; set; }
 

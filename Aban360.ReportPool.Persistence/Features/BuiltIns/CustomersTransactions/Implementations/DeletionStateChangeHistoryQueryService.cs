@@ -57,7 +57,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         }
         private string GetDeletionStateChangeHistoryQuery(bool hasZone)
         {
-            string zoneQuery = hasZone ? "AND c1.ZoneId IN @zoneIds" : string.Empty;
+            string zoneQuery = hasZone ? "AND c.ZoneId IN @zoneIds" : string.Empty;
 
             return $@"use CustomerWarehouse
                     ;With FirstBillGroup as (
@@ -103,7 +103,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         c.WaterDiameterTitle AS MeterDiameterTitle,
                         c.MainSiphonTitle AS SiphonDiameterTitle,
                         c.BranchType AS UseStateTitle,
-                        c.EmptyCount AS EmptyUnit
+                        c.EmptyCount AS EmptyUnit,
+					    DATEDIFF(DAY,[CustomerWarehouse].dbo.PersianToMiladi(ff.RegisterDayJalali),[CustomerWarehouse].dbo.PersianToMiladi(ss.RegisterDayJalali)) as Distance
                     From CustomerWarehouse.dbo.Clients c 
                     Join FirstBillGroup ff 
                     	On c.BillId=ff.BillId

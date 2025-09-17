@@ -128,8 +128,6 @@
         public static string SewageDistanceInstallationeRegisterDetail { get { return "جزئیات فاصله ثبت تا نصب انشعاب فاضلاب"; } }
         public static string WaterDistanceInstallationRegisterSummary { get { return "خلاصه فاصله ثبت تا نصب انشعاب آب"; } }
         public static string SewageDistanceInstallationeRegisterSummary { get { return "خلاصه فاصله ثبت تا نصب انشعاب فاضلاب"; } }
-        public static string WaterDistanceInstallationRegisterSummaryByZone { get { return "خلاصه فاصله ثبت تا نصب انشعاب آب بر اساس ناحیه"; } }
-        public static string SewageDistanceInstallationRegisterSummaryByZone { get { return "خلاصه فاصله ثبت تا نصب انشعاب فاضلاب بر اساس ناحیه"; } }
 
 
         public static string SendSmsToMobile { get { return $"{Report} پیامک ارسالی به مشترک"; } }

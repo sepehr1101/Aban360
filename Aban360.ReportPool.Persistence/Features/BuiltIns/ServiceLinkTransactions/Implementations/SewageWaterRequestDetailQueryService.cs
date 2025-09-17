@@ -23,25 +23,27 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 RequestDetailQuery = GetWaterRequestDetailQuery();
             else
                 RequestDetailQuery = GetSewageRequestDetailQuery();
+            string reportTitle = input.IsWater ? ReportLiterals.WaterRequestDetail : ReportLiterals.SewageRequestDetail;
 
             var @params = new
             {
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali,
-                fromReadingNumber=input.FromReadingNumber,
-                toReadingNumber=input.ToReadingNumber,
+                fromReadingNumber = input.FromReadingNumber,
+                toReadingNumber = input.ToReadingNumber,
                 zoneIds = input.ZoneIds,
-                usageIds=input.UsageIds,
+                usageIds = input.UsageIds,
             };
             IEnumerable<SewageWaterRequestDetailDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<SewageWaterRequestDetailDataOutputDto>(RequestDetailQuery, @params);
             SewageWaterRequestHeaderOutputDto RequestHeader = new SewageWaterRequestHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
-                FromReadingNumber=input.FromReadingNumber,
-                ToReadingNumber=input.ToReadingNumber,
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (RequestData is not null && RequestData.Any()) ? RequestData.Count() : 0,
+                Title = reportTitle,
 
                 SumCommercialUnit = RequestData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = RequestData.Sum(i => i.DomesticUnit),
@@ -50,7 +52,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 CustomerCount = (RequestData is not null && RequestData.Any()) ? RequestData.Count() : 0,
             };
             var result = new ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestDetailDataOutputDto>
-                (input.IsWater ? ReportLiterals.WaterRequestDetail : ReportLiterals.SewageRequestDetail,
+                (reportTitle,
                 RequestHeader,
                 RequestData);
 
