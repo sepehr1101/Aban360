@@ -70,7 +70,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                         c.MainSiphonTitle AS SiphonDiameterTitle,
                     	mc.ChangeDateJalali AS MeterChangeDate,
                     	mc.RegisterDateJalali AS RegistrationDate,
-                    	c.MeterSerialBody AS MeterSerial,
+                    	TRIM(c.MeterSerialBody) AS MeterSerial,
                     	c.ZoneTitle AS ZoneTitle,
                         mc.ChangeCauseTitle,
                     	c.DomesticCount	AS DomesticUnit,
