@@ -75,7 +75,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 	                    c.OtherCount OtherUnit,
                     	c.ContractCapacity AS ContractualCapacity,
 	                    TRIM(c.BillId) BillId,
-						c.MeterSerialBody AS MeterSerial,
+						TRIM(c.MeterSerialBody( AS MeterSerial,
 						c.WaterRegisterDateJalali AS MeterInstallationDateJalali,
 						c.WaterRequestDate AS MeterRequestDateJalali,
                         TRIM(c.PhoneNo) AS PhoneNumber,

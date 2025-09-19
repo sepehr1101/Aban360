@@ -24,6 +24,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             else
                 distanceRequestInstallationQuery = GetSewageDistanceRequestInstallationQuery(input.IsInstallation);
 
+            string reportTitle = GetTitle(input.IsWater, input.IsInstallation);
+
             var @params = new
             {
                 fromDate = input.FromDateJalali,
@@ -39,6 +41,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (RequestData is not null && RequestData.Any()) ? RequestData.Count() : 0,
+                Title= reportTitle, 
 
                 SumCommercialUnit = RequestData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = RequestData.Sum(i => i.DomesticUnit),
@@ -47,7 +50,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             };
 
 
-            var result = new ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationDetailDataOutputDto>(GetTitle(input.IsWater, input.IsInstallation), RequestHeader, RequestData);
+            var result = new ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationDetailDataOutputDto>(reportTitle, RequestHeader, RequestData);
 
             return result;
         }

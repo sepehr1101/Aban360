@@ -24,6 +24,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             else
                 RequestSummaryQuery = GetSewageRequestSummaryQuery();
 
+            string reportTitle = input.IsWater ? ReportLiterals.WaterRequestSummary + ReportLiterals.ByZone : ReportLiterals.SewageRequestSummary + ReportLiterals.ByZone;
+
             var @params = new
             {
                 fromDate = input.FromDateJalali,
@@ -42,6 +44,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = RequestData is not null && RequestData.Any() ? RequestData.Count() : 0,
+                Title = reportTitle,
 
                 SumCommercialUnit = RequestData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = RequestData.Sum(i => i.DomesticUnit),
@@ -50,7 +53,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 CustomerCount = RequestData.Sum(i => i.CustomerCount),
             };
             var result = new ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestSummaryByZoneDataOutputDto>
-                (input.IsWater ? ReportLiterals.WaterRequestSummary + ReportLiterals.ByZone : ReportLiterals.SewageRequestSummary + ReportLiterals.ByZone,
+                (reportTitle,
                 RequestHeader,
                 RequestData);
 

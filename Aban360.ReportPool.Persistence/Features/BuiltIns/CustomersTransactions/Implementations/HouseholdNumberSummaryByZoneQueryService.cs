@@ -63,7 +63,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         c.DomesticCount DomesticUnit,
 	                    c.CommercialCount CommercialUnit,
 	                    c.OtherCount OtherUnit,
-						c.FamilyCount AS HouseholdCount
+						c.FamilyCount AS HouseholdCount,
                         IIF(c.HouseholdDateJalali >@lastYearDate , 1 , 0) AS IsValid
                     FROM [CustomerWarehouse].dbo.Clients c
                     WHERE 

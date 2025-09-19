@@ -19,7 +19,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         public async Task<ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsSummaryByChangeCauseDataOutputDto>> Get(WaterMeterReplacementsInputDto input)
         {
             string WaterMeterReplacements = GetBranchWaterMeterReplacementsQuery();
-
+            string reportTitle = input.IsChangeDate == true ? ReportLiterals.WaterMeterReplacements(ReportLiterals.ChangeDate) + ReportLiterals.ByChangeCause : ReportLiterals.WaterMeterReplacements(ReportLiterals.RegisterDate) + ReportLiterals.ByChangeCause;
             var @params = new
             {
                 fromReadingNumber = input.FromReadingNumber,
@@ -39,6 +39,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = waterMeterReplacementsData is not null && waterMeterReplacementsData.Any() ? waterMeterReplacementsData.Count() : 0,
+                Title = reportTitle,
 
                 SumCommercialUnit = waterMeterReplacementsData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = waterMeterReplacementsData.Sum(i => i.DomesticUnit),
@@ -46,7 +47,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 TotalUnit = waterMeterReplacementsData.Sum(i => i.TotalUnit),
             };
             var result = new ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsSummaryByChangeCauseDataOutputDto>(
-                   input.IsChangeDate == true ? ReportLiterals.WaterMeterReplacements(ReportLiterals.ChangeDate) + ReportLiterals.ByChangeCause : ReportLiterals.WaterMeterReplacements(ReportLiterals.RegisterDate) + ReportLiterals.ByChangeCause,
+                   reportTitle,
                    waterMeterReplacementsHeader,
                    waterMeterReplacementsData);
             return result;

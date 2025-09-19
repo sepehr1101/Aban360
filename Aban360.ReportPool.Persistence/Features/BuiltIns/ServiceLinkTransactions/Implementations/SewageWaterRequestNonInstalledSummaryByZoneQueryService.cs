@@ -60,7 +60,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             return @"Select	
 						MAX(t46.C2) AS RegionTitle,
                     	c.ZoneTitle AS ZoneTitle,
-                        c.ZoneId,
                     	COUNT(c.UsageTitle) AS CustomerCount,
 					    SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
                         SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,

@@ -23,6 +23,9 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
                 !string.IsNullOrWhiteSpace(customerInputDto.Address) ||
                 !string.IsNullOrWhiteSpace(customerInputDto.FromReadingNumber) ||
                 !string.IsNullOrWhiteSpace(customerInputDto.ToReadingNumber) ||
+                !string.IsNullOrWhiteSpace(customerInputDto.PhoneNumber) ||
+                !string.IsNullOrWhiteSpace(customerInputDto.PostalCode) ||
+                !string.IsNullOrWhiteSpace(customerInputDto.NationalCode) ||
                 (customerInputDto.MeterDiameter.HasValue&& customerInputDto.MeterDiameter >= 0) ||
                 (customerInputDto.CustomerNumber.HasValue&& customerInputDto.CustomerNumber >= 0) ||
                 (customerInputDto.FromContractualCapacity.HasValue && customerInputDto.FromContractualCapacity >= 0) ||
@@ -40,7 +43,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             {
                 return true;
             }
-
 
             return false;
         }

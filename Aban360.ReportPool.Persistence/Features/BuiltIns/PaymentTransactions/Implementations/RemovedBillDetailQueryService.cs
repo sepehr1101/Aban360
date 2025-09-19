@@ -23,6 +23,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             {
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali,
+                fromReadingNumber=input.FromReadingNumber,
+                toReadingNumber=input.ToReadingNumber,
                 fromAmount = input.FromAmount,
                 toAmount = input.ToAmount,
                 zoneIds = input.ZoneIds,
@@ -32,6 +34,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
+                FromReadingNumber= input.FromReadingNumber,
+                ToReadingNumber= input.ToReadingNumber,
                 FromAmount = input.FromAmount,
                 ToAmount = input.ToAmount,
                 RecordCount = RemovedBillData is not null && RemovedBillData.Any() ? RemovedBillData.Count() : 0,
@@ -75,7 +79,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 	rb.RegisterDay BETWEEN @fromDate AND @toDate) AND
                 	(@fromAmount IS NULL OR
                 	@toAmount IS NULL OR
-                	rb.SumItems BETWEEN @fromAmount AND @toAmount) 
+                	rb.SumItems BETWEEN @fromAmount AND @toAmount) AND
+                    (@fromReadingNumber IS NULL OR
+                    @toReadingNumber IS NULL OR
+                    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)
                     {zoneQuery}";
         }
 
