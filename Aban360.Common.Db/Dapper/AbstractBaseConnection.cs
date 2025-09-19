@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.Common.Db.Dapper
 {
-    public  abstract class AbstractBaseConnection
+    public abstract class AbstractBaseConnection
     {
         private readonly IConfiguration _configuration;
         protected AbstractBaseConnection(IConfiguration configuration)

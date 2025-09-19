@@ -14,15 +14,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
     {
         public SewageWaterInstallationSummaryByZoneIdQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryByZoneIdDataOutputDto>> Get(SewageWaterInstallationInputDto input)
         {
-            string installationSummaryByZoneIdQuery;
-            if (input.IsWater)
-                installationSummaryByZoneIdQuery = GetWaterInstallationSummaryByZoneIdQuery();
-            else
-                installationSummaryByZoneIdQuery = GetSewageInstallationSummaryByZoneIdQuery();
+            string query = GetQuery(input.IsWater);
 
             string reportTitle = input.IsWater ? ReportLiterals.WaterInstallationSummaryByZoneId : ReportLiterals.SewageInstallationSummaryByZoneId;
             var @params = new
@@ -34,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 fromReadingNumber = input.FromReadingNumber,
                 toReadingNumber = input.ToReadingNumber,
             };
-            IEnumerable<SewageWaterInstallationSummaryByZoneIdDataOutputDto> installationData = await _sqlReportConnection.QueryAsync<SewageWaterInstallationSummaryByZoneIdDataOutputDto>(installationSummaryByZoneIdQuery, @params);
+            IEnumerable<SewageWaterInstallationSummaryByZoneIdDataOutputDto> installationData = await _sqlReportConnection.QueryAsync<SewageWaterInstallationSummaryByZoneIdDataOutputDto>(query, @params);
             SewageWaterInstallationHeaderOutputDto installationHeader = new SewageWaterInstallationHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -57,80 +54,62 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
             return result;
         }
-        private string GetWaterInstallationSummaryByZoneIdQuery()
+        private string GetQuery(bool isWater)
         {
-            return @"Select	
-						MAX(t46.C2) AS RegionTitle,
-                    	c.ZoneTitle AS ZoneTitle,
-                    	COUNT(c.UsageTitle) AS CustomerCount,
-					    SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
-					    SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
+            string WaterRegisterDateJalali = nameof(WaterRegisterDateJalali),
+                  SewageRegisterDateJalali = nameof(SewageRegisterDateJalali);
+            string dateField = isWater ? WaterRegisterDateJalali : SewageRegisterDateJalali;
+            return $@";WITH CTE AS
+                    (
+	                    SELECT 
+		                    MaxRegisterDayJalali = MAX(RegisterDayJalali) OVER ( partition by ZoneId , CustomerNumber) ,
+                            MaxId = MAX(LocalId) over( PARTITION by ZoneId , CustomerNumber) ,
+		                    *
+                        From [CustomerWarehouse].dbo.Clients c
+	                    Where				
+		                    c.{dateField} BETWEEN @fromDate AND @toDate AND
+		                    c.ZoneId IN @zoneIds AND
+		                    c.UsageId IN @usageIds AND
+		                    (
+			                    @fromReadingNumber IS NULL OR 
+			                    @toReadingNumber IS NULL OR
+			                    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
+		                    ) AND
+		                    c.CustomerNumber<>0 AND
+		                    c.RegisterDayJalali <= @toDate
+                    )
+                    Select	
+	                    MAX(t46.C2) AS RegionTitle,
+                        c.ZoneTitle AS ZoneTitle,
+                        COUNT(c.UsageTitle) AS CustomerCount,
+	                    SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
+	                    SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
                         SUM(ISNULL(c.DomesticCount, 0)) AS DomesticUnit,
                         SUM(ISNULL(c.OtherCount, 0)) AS OtherUnit,
                         SUM(CASE WHEN t5.C0 = 0 THEN 1 ELSE 0 END) AS UnSpecified,
-				        SUM(CASE WHEN t5.C0 = 1 THEN 1 ELSE 0 END) AS Field0_5,
-				        SUM(CASE WHEN t5.C0 = 2 THEN 1 ELSE 0 END) AS Field0_75,
-				        SUM(CASE WHEN t5.C0 = 3 THEN 1 ELSE 0 END) AS Field1,
-				        SUM(CASE WHEN t5.C0 = 4 THEN 1 ELSE 0 END) AS Field1_2,
-				        SUM(CASE WHEN t5.C0 = 5 THEN 1 ELSE 0 END) AS Field1_5,
-				        SUM(CASE WHEN t5.C0 = 6 THEN 1 ELSE 0 END) AS Field2,
-				        SUM(CASE WHEN t5.C0 = 7 THEN 1 ELSE 0 END) AS Field3,
-				        SUM(CASE WHEN t5.C0 = 8 THEN 1 ELSE 0 END) AS Field4,
-				        SUM(CASE WHEN t5.C0 = 9 THEN 1 ELSE 0 END) AS Field5,
-				        SUM(CASE WHEN t5.C0 In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6
-                    From [CustomerWarehouse].dbo.Clients c
-					Join [Db70].dbo.T5 t5
-						On t5.C0=c.WaterDiameterId
-					Join [Db70].dbo.T51 t51
-						On t51.C0=c.ZoneId
-					Join [Db70].dbo.T46 t46
-						On t51.C1=t46.C0
-                    Where	
-                    	c.WaterRegisterDateJalali BETWEEN @fromDate AND @toDate AND
-                    	c.ZoneId IN @zoneIds AND
-                        c.UsageId IN @usageIds AND
-                        (@fromReadingNumber IS NULL OR
-					    @toReadingNumber IS NULL OR
-					    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-						c.ToDayJalali IS NULL
-                    Group BY
-                    	c.ZoneId,c.ZoneTitle";
-        }
-        private string GetSewageInstallationSummaryByZoneIdQuery()
-        {
-            return @"Select	
-                    	MAX(t46.C2) AS RegionTitle,
-                    	c.ZoneTitle AS ZoneTitle,
-                    	COUNT(c.UsageTitle) AS CustomerCount,
-					    SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
-						SUM(CASE WHEN t5.C0 = 0 THEN 1 ELSE 0 END) AS UnSpecified,
-				        SUM(CASE WHEN t5.C0 = 1 THEN 1 ELSE 0 END) AS Field0_5,
-				        SUM(CASE WHEN t5.C0 = 2 THEN 1 ELSE 0 END) AS Field0_75,
-				        SUM(CASE WHEN t5.C0 = 3 THEN 1 ELSE 0 END) AS Field1,
-				        SUM(CASE WHEN t5.C0 = 4 THEN 1 ELSE 0 END) AS Field1_2,
-				        SUM(CASE WHEN t5.C0 = 5 THEN 1 ELSE 0 END) AS Field1_5,
-				        SUM(CASE WHEN t5.C0 = 6 THEN 1 ELSE 0 END) AS Field2,
-				        SUM(CASE WHEN t5.C0 = 7 THEN 1 ELSE 0 END) AS Field3,
-				        SUM(CASE WHEN t5.C0 = 8 THEN 1 ELSE 0 END) AS Field4,
-				        SUM(CASE WHEN t5.C0 = 9 THEN 1 ELSE 0 END) AS Field5,
-				        SUM(CASE WHEN t5.C0 In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6
-                    From [CustomerWarehouse].dbo.Clients c
-					Join [Db70].dbo.T5 t5
-						On t5.C0=c.WaterDiameterId
-					Join [Db70].dbo.T51 t51
-						On t51.C0=c.ZoneId
-					Join [Db70].dbo.T46 t46
-						On t51.C1=t46.C0
-                    Where	
-                    	c.SewageRegisterDateJalali BETWEEN @fromDate AND @toDate AND
-                    	c.ZoneId IN @zoneIds AND
-                        c.UsageId IN @usageIds AND
-                        (@fromReadingNumber IS NULL OR
-					    @toReadingNumber IS NULL OR
-					    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-						c.ToDayJalali IS NULL
-                    Group BY
-                    	c.UsageTitle";
+	                    SUM(CASE WHEN t5.C0 = 1 THEN 1 ELSE 0 END) AS Field0_5,
+	                    SUM(CASE WHEN t5.C0 = 2 THEN 1 ELSE 0 END) AS Field0_75,
+	                    SUM(CASE WHEN t5.C0 = 3 THEN 1 ELSE 0 END) AS Field1,
+	                    SUM(CASE WHEN t5.C0 = 4 THEN 1 ELSE 0 END) AS Field1_2,
+	                    SUM(CASE WHEN t5.C0 = 5 THEN 1 ELSE 0 END) AS Field1_5,
+	                    SUM(CASE WHEN t5.C0 = 6 THEN 1 ELSE 0 END) AS Field2,
+	                    SUM(CASE WHEN t5.C0 = 7 THEN 1 ELSE 0 END) AS Field3,
+	                    SUM(CASE WHEN t5.C0 = 8 THEN 1 ELSE 0 END) AS Field4,
+	                    SUM(CASE WHEN t5.C0 = 9 THEN 1 ELSE 0 END) AS Field5,
+	                    SUM(CASE WHEN t5.C0 In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6
+                    FROM CTE c
+                    JOIN [Db70].dbo.T5 t5
+	                    On t5.C0=c.WaterDiameterId
+                    JOIN [Db70].dbo.T51 t51
+	                    On t51.C0=c.ZoneId
+                    JOIN [Db70].dbo.T46 t46
+	                    On t51.C1=t46.C0
+                    WHERE	   
+	                    c.DeletionStateId NOT IN(1,2) AND
+	                    c.LocalId=MaxId AND
+	                    c.RegisterDayJalali = MaxRegisterDayJalali
+                    GROUP BY
+                        c.ZoneId,c.ZoneTitle";
         }
     }
 }
