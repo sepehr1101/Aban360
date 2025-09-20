@@ -24,7 +24,7 @@
         public string PhoneNumber { get; set; }
         public string MobileNumber { get; set; }
         public string DeletionStateTitle { get; set; }
-        public string MeterSerial { get; set; }
+        public string BodySerial { get; set; }
         public string NatoinalCode { get; set; }
         public string PostalCode { get; set; }
         public string BranchTypeTitle { get; set; }

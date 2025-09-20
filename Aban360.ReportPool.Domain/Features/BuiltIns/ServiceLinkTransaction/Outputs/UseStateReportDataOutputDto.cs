@@ -20,7 +20,7 @@
         public int TotalUnit { get; set; }
         public string BillId { get; set; } = default!;
         public int ContractualCapacity { get; set; }
-        public string MeterSerial { get; set; }
+        public string BodySerial { get; set; }
         public string MeterInstallationDateJalali { get; set; }
         public string MeterRequestDateJalali { get; set; }
         public string PhoneNumber { get; set; }

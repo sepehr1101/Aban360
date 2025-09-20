@@ -20,7 +20,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         public async Task<ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataWithCustomerInfoOutputDto>> Get(MeterComparisonBatchInputDto input)
         {
             string dbName = GetDbName(input.ZoneId);
-            string perviousBillsDataQueryString = GetPreviousBillsDataQuery(dbName);
+            string perviousBillsDataQueryString = GetPreviousBillsDataQuery(dbName, input.IsRegisterDateJalali);
             var @params = new
             {
                 fromDateJalali = input.FromDateJalali,
@@ -31,16 +31,21 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             MeterComparisonBatchHeaderOutputDto summary = new()
             {
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = details.Count(),
-                ZoneTitle = details.FirstOrDefault().ZoneTitle,
-                SumPreviousAmount = details.Sum(m => m.PreviousAmount),
+                RecordCount = details?.Count() ?? 00,
+                ZoneTitle = details?.FirstOrDefault()?.ZoneTitle??"-",
+                SumPreviousAmount = details?.Sum(m => m.PreviousAmount) ?? 0,
             };
             ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataWithCustomerInfoOutputDto> result = new(reportTitle, summary, details);
             return result;
         }
 
-        private string GetPreviousBillsDataQuery(string dbName)
+        private string GetPreviousBillsDataQuery(string dbName, bool isRegisterDateJalali)
         {
+            string byRegisterDate = $"b.date_bed BETWEEN @fromDatejalali AND @toDateJalali ";
+            string byPreviousNextDate = $"b.pri_date>=@fromDateJalali AND b.today_date<=@toDateJalali";
+
+            string conditionDateQuery = isRegisterDateJalali ? byRegisterDate : byPreviousNextDate;
+
             return @$"Select
                         t51.C2 as ZoneTitle,
                     	m.town as ZoneId,
@@ -75,7 +80,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     Where
                     	m.town=@zoneId AND 
 						b.cod_vas IN (0) AND
-						b.date_bed BETWEEN @fromDatejalali AND @toDateJalali";
+						{conditionDateQuery}";
+            //b.date_bed BETWEEN @fromDatejalali AND @toDateJalali
         }
     }
 }
