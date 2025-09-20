@@ -45,7 +45,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             ContractualAndOlgooLevelHeaderOutputDto levelHeader = new ContractualAndOlgooLevelHeaderOutputDto()
             {
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = levelData.Count(),
+                RecordCount = levelData?.Count() ?? 0,
 
                 FromDateJalali = input.Inputs.FromDateJalali,
                 ToDateJalali = input.Inputs.ToDateJalali,
@@ -54,32 +54,34 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 FromConsumption = input.Inputs.FromConsumption,
                 ToConsumption = input.Inputs.ToConsumption,
 
-                SumBillCount = levelData.Sum(w => w.BillCount),
-                SumConsumption = levelData.Sum(w => w.Consumption),
-                ConsumptionAverage = levelData.Average(w => w.ConsumptionAverage),
-                SumDuration = levelData.Sum(w => w.Duration),
-                SumItems = levelData.Sum(w => w.SumItems),
-                SumBillUnitCounts = levelData.Sum(w => w.BillUnitCounts),
-                SumItem1 = levelData.Sum(w => w.Item1),
-                SumItem2 = levelData.Sum(w => w.Item2),
-                SumItem3 = levelData.Sum(w => w.Item3),
-                SumItem4 = levelData.Sum(w => w.Item4),
-                SumItem5 = levelData.Sum(w => w.Item5),
-                SumItem6 = levelData.Sum(w => w.Item6),
-                SumItem7 = levelData.Sum(w => w.Item7),
-                SumItem8 = levelData.Sum(w => w.Item8),
-                SumItem9 = levelData.Sum(w => w.Item9),
-                SumItem10 = levelData.Sum(w => w.Item10),
-                SumItem11 = levelData.Sum(w => w.Item11),
-                SumItem12 = levelData.Sum(w => w.Item12),
-                SumItem13 = levelData.Sum(w => w.Item13),
-                SumItem14 = levelData.Sum(w => w.Item14),
-                SumItem15 = levelData.Sum(w => w.Item15),
-                SumItem16 = levelData.Sum(w => w.Item16),
-                SumItem17 = levelData.Sum(w => w.Item17),
-                SumItem18 = levelData.Sum(w => w.Item18),
+                SumBillCount = levelData?.Sum(w => w.BillCount) ?? 0,
+                SumConsumption = levelData?.Sum(w => w.Consumption) ?? 0,
+                ConsumptionAverage = levelData?.Count() > 0 ? levelData.Average(w => w.ConsumptionAverage) : 0,
+                SumDuration = levelData?.Sum(w => w.Duration) ?? 0,
+                SumItems = levelData?.Sum(w => w.SumItems) ?? 0,
+                SumBillUnitCounts = levelData?.Sum(w => w.BillUnitCounts) ?? 0,
+                SumItem1 = levelData?.Sum(w => w.Item1) ?? 0,
+                SumItem2 = levelData?.Sum(w => w.Item2) ?? 0,
+                SumItem3 = levelData?.Sum(w => w.Item3) ?? 0,
+                SumItem4 = levelData?.Sum(w => w.Item4) ?? 0,
+                SumItem5 = levelData?.Sum(w => w.Item5) ?? 0,
+                SumItem6 = levelData?.Sum(w => w.Item6) ?? 0,
+                SumItem7 = levelData?.Sum(w => w.Item7) ?? 0,
+                SumItem8 = levelData?.Sum(w => w.Item8) ?? 0,
+                SumItem9 = levelData?.Sum(w => w.Item9) ?? 0,
+                SumItem10 = levelData?.Sum(w => w.Item10) ?? 0,
+                SumItem11 = levelData?.Sum(w => w.Item11) ?? 0,
+                SumItem12 = levelData?.Sum(w => w.Item12) ?? 0,
+                SumItem13 = levelData?.Sum(w => w.Item13) ?? 0,
+                SumItem14 = levelData?.Sum(w => w.Item14) ?? 0,
+                SumItem15 = levelData?.Sum(w => w.Item15) ?? 0,
+                SumItem16 = levelData?.Sum(w => w.Item16) ?? 0,
+                SumItem17 = levelData?.Sum(w => w.Item17) ?? 0,
+                SumItem18 = levelData?.Sum(w => w.Item18) ?? 0,
 
             };
+
+        
 
             var result = new ReportOutput<ContractualAndOlgooLevelHeaderOutputDto, ContractualAndOlgooLevelDataOutputDto>(ReportLiterals.ContractualAndOlgooLevel, levelHeader, levelData);
             return result;

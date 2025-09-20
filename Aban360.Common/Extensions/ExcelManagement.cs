@@ -129,6 +129,15 @@ namespace Aban360.Common.Extensions
                 {"ToDateJalali", "تا تاریخ"},
                 {"ReportDateJalali", "تاریخ گزارش"},
                 {"ReportCount", "تعداد سطر"},
+                {"RecordCount", "تعداد سطر"},
+                {"SumDomesticCount", "جمع آحاد تجاری"},
+                {"SumCommercialCount", "جمع آحاد مسکونی"},
+                {"SumOtherCount", "جمع آحاد سایر"},
+                {"TotalUnit", "آحاد کل"},
+                {"SumEmptyUnit", "جمع آحاد خالی"},
+                {"FromEmptyUnit", "از واحد خالی"},
+                {"ToEmptyUnit", "تا واحد خالی"},
+
             };
 
         }

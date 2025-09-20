@@ -8,8 +8,8 @@
         public string UsageTitle { get; set; }
         public string MeterDiameterTitle { get; set; }
         public string MeterChangeDate { get; set; }
-        public string RegistrationDate { get; set; }
-        public string MeterSerial { get; set; }
+        public string WaterRegistrationDate { get; set; }
+        public string BodySerial { get; set; }
         public string ZoneTitle { get; set; }
         public string ChangeCauseTitle { get; set; }
         public string SiphonDiameterTitle { get; set; }

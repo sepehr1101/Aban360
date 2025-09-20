@@ -17,6 +17,7 @@
         public double CurrentDiscountAmount { get; set; }
 
         public bool IsChecked{ get; set; }
+        public double ComparisonAmount { get; set; }
 
     }
 }

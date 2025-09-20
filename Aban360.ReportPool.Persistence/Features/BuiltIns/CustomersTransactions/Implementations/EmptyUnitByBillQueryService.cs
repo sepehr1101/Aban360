@@ -130,7 +130,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 							e.FatherName ,
 							e.Consumption,
 							e.ConsumptionAverage,
-							e.SumItems
+							e.SumItems,
+							e.SiphonDiameterTitle
 					FROM EmptyUnitByBill e
 					Join [Db70].dbo.T51 t51
 						On t51.C0=e.ZoneId
