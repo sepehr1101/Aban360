@@ -73,8 +73,8 @@
         public static string UnreadSummary { get { return $"{Report} خلاصه بسته و مانع طی دوره"; } }
         
         
-        public static string ReadingIssueDistanceBillDetail { get { return $"{Report} جزئیات فاصله قرائت تا صدور کنتور "; } }
-        public static string ReadingIssueDistanceBillSummary { get { return $"{Report} خلاصه فاصله قرائت تا صدور کنتور"; } }
+        public static string ReadingIssueDistanceBillDetail { get { return $"{Report} جزئیات فاصله قرائت تا صدور قبض "; } }
+        public static string ReadingIssueDistanceBillSummary { get { return $"{Report} خلاصه فاصله قرائت تا صدور قبض"; } }
 
    
 
@@ -147,8 +147,8 @@
         public static string MalfunctionToChangeSummary { get { return $"{Report} خلاصه کنتورهای خراب تعویض شده"; } }
         public static string MalfunctionMeterSummary { get { return $"{Report} خلاصه کنتورهای خراب"; } }
         public static string MalfunctionMeterDetail { get { return $"{Report} جزئیات کنتورهای خراب"; } }
-        public static string MalfunctionMeterByDuration { get { return $"{Report} کنتورهای خراب بر اساس دوره"; } }
-        public static string MalfunctionMeterByDurationSummary { get { return $"{Report} خلاصه کنتورهای خراب بر اساس دوره"; } }
+        public static string MalfunctionMeterByDurationDetail { get { return $"{Report} جزئیات کنتورهای خراب-دوره"; } }
+        public static string MalfunctionMeterByDurationSummary { get { return $"{Report} خلاصه کنتورهای خراب-دوره"; } }
 
         public static string WaterNetSalesDetail { get { return $"خلاصه {Report} جزئیات فروش خالص آب بها"; } }//
         public static string WaterRawSalesDetail { get { return $"خلاصه {Report} جزئیات فروش ناخالص آب بها"; } }

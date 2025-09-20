@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterByDurationTra
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, MalfunctionMeterByDurationInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _malfunctionMeterByDurationHandler.Handle, CurrentUser, ReportLiterals.MalfunctionMeterByDuration, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _malfunctionMeterByDurationHandler.Handle, CurrentUser, ReportLiterals.MalfunctionMeterByDurationDetail, connectionId);
             return Ok(inputDto);
         }
     }
