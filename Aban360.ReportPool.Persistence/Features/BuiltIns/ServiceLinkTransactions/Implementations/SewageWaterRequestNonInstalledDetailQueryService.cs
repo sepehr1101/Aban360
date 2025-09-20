@@ -14,16 +14,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
     {
         public SewageWaterRequestNonInstalledDetailQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+        }
 
         public async Task<ReportOutput<SewageWaterRequestNonInstalledHeaderOutputDto, SewageWaterRequestNonInstalledDetailDataOutputDto>> Get(SewageWaterRequestNonInstalledInputDto input)
         {
-            string requestNonInstalledDetailQuery;
-            if (input.IsWater)
-                requestNonInstalledDetailQuery = GetWaterRequestNonInstalledDetailQuery();
-            else
-                requestNonInstalledDetailQuery = GetSewageRequestNonInstalledDetailQuery();
-
+            string query = GetQuery(input.IsWater);
             var @params = new
             {
                 fromDate = input.FromDateJalali,
@@ -32,7 +28,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 toReadingNumber = input.ToReadingNumber,
                 zoneIds = input.ZoneIds
             };
-            IEnumerable<SewageWaterRequestNonInstalledDetailDataOutputDto> requestNonInstalledData = await _sqlReportConnection.QueryAsync<SewageWaterRequestNonInstalledDetailDataOutputDto>(requestNonInstalledDetailQuery, @params);
+            IEnumerable<SewageWaterRequestNonInstalledDetailDataOutputDto> requestNonInstalledData = await _sqlReportConnection.QueryAsync<SewageWaterRequestNonInstalledDetailDataOutputDto>(query, @params);
             SewageWaterRequestNonInstalledHeaderOutputDto requestNonInstalledHeader = new SewageWaterRequestNonInstalledHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -54,6 +50,44 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 requestNonInstalledData);
 
             return result;
+        }
+        private string GetQuery(bool isWater)
+        {
+            string requestDate=isWater? "WaterRequestDate" : "SewageRequestDate";
+            string registerDate=isWater? "WaterRegisterDateJalali" : "SewageRegisterDateJalali";
+            string installDate = isWater ? "WaterInstallDate" : "SewageInstallDate";
+            string query = $@"
+                    Select
+                        c.CustomerNumber, 
+                    	c.ReadingNumber,
+                    	TRIM(c.FirstName) AS FirstName,
+                    	TRIM(c.SureName) AS Surname,
+                    	TRIM(c.Address) AS Address,
+                    	c.UsageTitle AS UsageTitle,
+                    	c.WaterDiameterTitle AS MeterDiameterTitle,                       
+                        c.MainSiphonTitle AS SiphonDiameterTitle,
+                    	c.ZoneTitle,
+                    	c.ZoneId,
+                    	c.DomesticCount	AS DomesticUnit,
+                    	c.CommercialCount AS CommercialUnit,
+                    	c.OtherCount AS OtherUnit,
+                        (c.DomesticCount+c.CommercialCount +c.OtherCount) AS TotalUnit ,
+                    	c.BillId,
+                    	c.BranchType AS UseStateTitle,
+                    	c.ContractCapacity AS ContractualCapacity,
+                    	c.{requestDate} AS RequestDate,
+						c.{registerDate} AS RegisterDateJalali,
+                        c.{installDate} AS InstallationDateJalali
+                    From [CustomerWarehouse].dbo.Clients c
+                    Where	
+                    	{requestDate} BETWEEN @fromDate AND @toDate AND
+						(TRIM(c.{installDate})<'1330/01/01' OR c.{installDate} IS NULL) AND
+                    	c.ZoneId IN @zoneIds  AND
+						c.ToDayJalali IS NULL AND
+						(@fromReadingNumber IS NULL OR
+						@toReadingNumber IS NULL OR
+						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)";
+            return query;
         }
         private string GetWaterRequestNonInstalledDetailQuery()
         {
