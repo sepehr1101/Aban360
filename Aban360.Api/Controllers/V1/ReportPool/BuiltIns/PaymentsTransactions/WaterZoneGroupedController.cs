@@ -10,17 +10,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
 {
-    [Route("v1/water-usage-grouped")]
-    public class WaterUsageGroupedController : BaseController
+    [Route("v1/water-zone-grouped")]
+    public class WaterZoneGroupedController : BaseController
     {
-        private readonly IWaterUsageGroupedHandler _waterUsageGrouped;
+        private readonly IWaterZoneGroupedHandler _waterZoneGrouped;
         private readonly IReportGenerator _reportGenerator;
-        public WaterUsageGroupedController(
-            IWaterUsageGroupedHandler waterUsageGrouped,
+        public WaterZoneGroupedController(
+            IWaterZoneGroupedHandler waterZoneGrouped,
             IReportGenerator reportGenerator)
         {
-            _waterUsageGrouped = waterUsageGrouped;
-            _waterUsageGrouped.NotNull(nameof(_waterUsageGrouped));
+            _waterZoneGrouped = waterZoneGrouped;
+            _waterZoneGrouped.NotNull(nameof(_waterZoneGrouped));
 
             _reportGenerator = reportGenerator;
             _reportGenerator.NotNull(nameof(_reportGenerator));
@@ -31,15 +31,15 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterItemGroupedHeaderOutputDto, SewageWaterItemGroupedDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(SewageWaterItemGroupedInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<SewageWaterItemGroupedHeaderOutputDto, SewageWaterItemGroupedDataOutputDto> waterUsageGrouped = await _waterUsageGrouped.Handle(inputDto, cancellationToken);
-            return Ok(waterUsageGrouped);
+            ReportOutput<SewageWaterItemGroupedHeaderOutputDto, SewageWaterItemGroupedDataOutputDto> waterZoneGrouped = await _waterZoneGrouped.Handle(inputDto, cancellationToken);
+            return Ok(waterZoneGrouped);
         }
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, SewageWaterItemGroupedInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _waterUsageGrouped.Handle, CurrentUser, ReportLiterals.WaterUsageGrouped, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _waterZoneGrouped.Handle, CurrentUser, ReportLiterals.WaterZoneGrouped, connectionId);
             return Ok(inputDto);
         }
     }

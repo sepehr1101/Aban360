@@ -5,7 +5,7 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Validations
 {
-    public class WaterUsageGroupedValidator : BaseValidator<WaterUsageGroupedInputDto>
+    public class WaterUsageGroupedValidator : BaseValidator<SewageWaterItemGroupedInputDto>
     {
         public WaterUsageGroupedValidator()
         {

@@ -55,11 +55,17 @@
         public static string UnspecifiedWaterPayment { get { return $"{Report} وصولی خارج سیستم _ آب بها"; } }
         public static string UnspecifiedServiceLinkPayment { get { return $"{Report} وصولی خارج سیستم - انشعاب"; } }
         public static string InvalidPayment { get { return $"{Report} وصولی نامعتبر"; } }
-        public static string DailyBankGrouped { get { return $"{Report}  وصولی به تفکیک بانک و روز"; } }
+        public static string WaterDailyBankGrouped { get { return $"{Report}  وصولی به تفکیک بانک و روز - آب بهاء"; } }
+        public static string SewageDailyBankGrouped { get { return $"{Report}  وصولی به تفکیک بانک و روز - حق انشعاب"; } }
         public static string WaterPaymentDetail { get { return $"{Report} ریز وصولی ها - آب بهاء"; } }
         public static string ServiceLinkPaymentDetail { get { return $"{Report} ریز وصولی ها - حق انشعاب"; } }
         public static string WaterPaymentReceivable { get { return $"{Report} وصولی های جاری و معوقه - آب بهاء"; } }
         public static string WaterUsageGrouped { get { return $"{Report} وصولی به تفکیک کاربری - آب بهاء"; } }
+        public static string WaterZoneGrouped { get { return $"{Report} وصولی به تفکیک ناحیه - آب بهاء"; } }
+
+        public static string SewageUsageGrouped { get { return $"{Report} وصولی به تفکیک کاربری - انشعاب"; } }
+        public static string SewageZoneGrouped { get { return $"{Report} وصولی به تفکیک ناحیه - انشعاب"; } }
+   
         public static string Unpaid { get { return $"{Report} بدون وصولی"; } }
         public static string WaterModifiedBillsDetail { get { return $"{Report}  جزئیات برگشتی و اصلاحات - آب بها"; } }
         public static string WaterModifiedBillsSummary { get { return $"{Report}  خلاصه برگشتی و اصلاحات - آب بها"; } }
@@ -73,8 +79,8 @@
         public static string UnreadSummary { get { return $"{Report} خلاصه بسته و مانع طی دوره"; } }
         
         
-        public static string ReadingIssueDistanceBillDetail { get { return $"{Report} جزئیات فاصله قرائت تا صدور کنتور "; } }
-        public static string ReadingIssueDistanceBillSummary { get { return $"{Report} خلاصه فاصله قرائت تا صدور کنتور"; } }
+        public static string ReadingIssueDistanceBillDetail { get { return $"{Report} جزئیات فاصله قرائت تا صدور قبض "; } }
+        public static string ReadingIssueDistanceBillSummary { get { return $"{Report} خلاصه فاصله قرائت تا صدور قبض"; } }
 
    
 
@@ -147,8 +153,8 @@
         public static string MalfunctionToChangeSummary { get { return $"{Report} خلاصه کنتورهای خراب تعویض شده"; } }
         public static string MalfunctionMeterSummary { get { return $"{Report} خلاصه کنتورهای خراب"; } }
         public static string MalfunctionMeterDetail { get { return $"{Report} جزئیات کنتورهای خراب"; } }
-        public static string MalfunctionMeterByDuration { get { return $"{Report} کنتورهای خراب بر اساس دوره"; } }
-        public static string MalfunctionMeterByDurationSummary { get { return $"{Report} خلاصه کنتورهای خراب بر اساس دوره"; } }
+        public static string MalfunctionMeterByDurationDetail { get { return $"{Report} جزئیات کنتورهای خراب-دوره"; } }
+        public static string MalfunctionMeterByDurationSummary { get { return $"{Report} خلاصه کنتورهای خراب-دوره"; } }
 
         public static string WaterNetSalesDetail { get { return $"خلاصه {Report} جزئیات فروش خالص آب بها"; } }//
         public static string WaterRawSalesDetail { get { return $"خلاصه {Report} جزئیات فروش ناخالص آب بها"; } }

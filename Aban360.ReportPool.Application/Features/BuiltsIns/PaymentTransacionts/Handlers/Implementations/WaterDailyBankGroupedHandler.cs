@@ -10,12 +10,12 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Implementations
 {
-    internal sealed class DailyBankGroupedHandler : IDailyBankGroupedHandler
+    internal sealed class WaterDailyBankGroupedHandler : IWaterDailyBankGroupedHandler
     {
-        private readonly IDailyBankGroupedQueryService _dailyBankGroupedQueryService;
+        private readonly IWaterDailyBankGroupedQueryService _dailyBankGroupedQueryService;
         private readonly IValidator<DailyBankGroupedInputDto> _validator;
-        public DailyBankGroupedHandler(
-            IDailyBankGroupedQueryService dailyBankGroupedQueryService,
+        public WaterDailyBankGroupedHandler(
+            IWaterDailyBankGroupedQueryService dailyBankGroupedQueryService,
             IValidator<DailyBankGroupedInputDto> validator)
         {
             _dailyBankGroupedQueryService = dailyBankGroupedQueryService;

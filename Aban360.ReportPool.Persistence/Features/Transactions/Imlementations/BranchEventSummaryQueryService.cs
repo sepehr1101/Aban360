@@ -8,6 +8,7 @@ using Aban360.ReportPool.Persistence.Features.Transactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
@@ -30,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             {
                 throw new BaseException(ExceptionLiterals.BillIdNotFound);
             }
-            
+
             BranchEventSummaryHeaderOutputDto branchHeader = await _sqlReportConnection.QueryFirstAsync<BranchEventSummaryHeaderOutputDto>(brachSummeryHeaderQueryString, new { billId });
             if (branchHeader is null)
             {
@@ -40,11 +41,12 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             branchHeader.Title = ReportLiterals.BranchEventSummary;
 
             IEnumerable<BranchEventSummaryDataOutputDto> branchData = await _sqlReportConnection.QueryAsync<BranchEventSummaryDataOutputDto>(brachSummeryDataQueryString, new { zoneId = zoneIdCustomerNumber.ZoneId, customerNumber = zoneIdCustomerNumber.CustomerNumber });
-
+            IEnumerable < BranchEventSummaryDataOutputDto > branchDateOrder = branchData.OrderBy(t => t.RegisterDateJalali);
+         
             long lastRemained = 0;
-            for (int i = 0; i < branchData.Count(); i++)
+            for (int i = 0; i < branchDateOrder.Count(); i++)
             {
-                BranchEventSummaryDataOutputDto row = branchData.ElementAt(i);
+                BranchEventSummaryDataOutputDto row = branchDateOrder.ElementAt(i);
                 lastRemained = lastRemained + (row.DebtAmount - row.CreditAmount);
                 row.Remained = lastRemained;
             }
