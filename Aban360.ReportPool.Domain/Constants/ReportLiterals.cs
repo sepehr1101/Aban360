@@ -55,11 +55,17 @@
         public static string UnspecifiedWaterPayment { get { return $"{Report} وصولی خارج سیستم _ آب بها"; } }
         public static string UnspecifiedServiceLinkPayment { get { return $"{Report} وصولی خارج سیستم - انشعاب"; } }
         public static string InvalidPayment { get { return $"{Report} وصولی نامعتبر"; } }
-        public static string DailyBankGrouped { get { return $"{Report}  وصولی به تفکیک بانک و روز"; } }
+        public static string WaterDailyBankGrouped { get { return $"{Report}  وصولی به تفکیک بانک و روز - آب بهاء"; } }
+        public static string SewageDailyBankGrouped { get { return $"{Report}  وصولی به تفکیک بانک و روز - حق انشعاب"; } }
         public static string WaterPaymentDetail { get { return $"{Report} ریز وصولی ها - آب بهاء"; } }
         public static string ServiceLinkPaymentDetail { get { return $"{Report} ریز وصولی ها - حق انشعاب"; } }
         public static string WaterPaymentReceivable { get { return $"{Report} وصولی های جاری و معوقه - آب بهاء"; } }
         public static string WaterUsageGrouped { get { return $"{Report} وصولی به تفکیک کاربری - آب بهاء"; } }
+        public static string WaterZoneGrouped { get { return $"{Report} وصولی به تفکیک ناحیه - آب بهاء"; } }
+
+        public static string SewageUsageGrouped { get { return $"{Report} وصولی به تفکیک کاربری - انشعاب"; } }
+        public static string SewageZoneGrouped { get { return $"{Report} وصولی به تفکیک ناحیه - انشعاب"; } }
+   
         public static string Unpaid { get { return $"{Report} بدون وصولی"; } }
         public static string WaterModifiedBillsDetail { get { return $"{Report}  جزئیات برگشتی و اصلاحات - آب بها"; } }
         public static string WaterModifiedBillsSummary { get { return $"{Report}  خلاصه برگشتی و اصلاحات - آب بها"; } }

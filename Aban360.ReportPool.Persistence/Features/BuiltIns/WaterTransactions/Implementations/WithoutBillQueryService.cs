@@ -56,7 +56,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						c.ZoneId,
 						bb.CounterStateTitle AS CounterStateTitle,
 						c.WaterRequestDate AS WaterRequestDateJalali,
-						c.WaterRegisterDateJalali AS WaterInstallationDateJalali,
+						c.WaterRegisterDateJalali AS MeterInstallationDateJalali,
 						c.MobileNo as MobileNumber,
 						c.PhoneNo as PhoneNumber,
 						c.ContractCapacity as ContractualCapacity,

@@ -12,8 +12,8 @@
         public int PeriodCount { get; set; }
         public string ZoneTitle { get; set; }
         public string CounterStateTitle { get; set; }
-        public string WaterRequestDateJalali { get; set; }
-        public string WaterInstallationDateJalali { get; set; }
+        public string MeterRequestDateJalali { get; set; }
+        public string MeterInstallationDateJalali { get; set; }
         public string MobileNumber { get; set; }
         public string PhoneNumber { get; set; }
         public string ContractualCapacity { get; set; }

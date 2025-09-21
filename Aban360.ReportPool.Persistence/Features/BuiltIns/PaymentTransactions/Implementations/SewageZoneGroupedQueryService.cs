@@ -1,8 +1,8 @@
 ﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
-using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,46 +10,46 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Implementations
 {
-    internal sealed class WaterUsageGroupedQueryService : AbstractBaseConnection, IWaterUsageGroupedQueryService
+    internal sealed class SewageZoneGroupedQueryService : AbstractBaseConnection, ISewageZoneGroupedQueryService
     {
-        public WaterUsageGroupedQueryService(IConfiguration configuration)
+        public SewageZoneGroupedQueryService(IConfiguration configuration)
             : base(configuration)
         { }
 
         public async Task<ReportOutput<SewageWaterItemGroupedHeaderOutputDto, SewageWaterItemGroupedDataOutputDto>> GetInfo(SewageWaterItemGroupedInputDto input)
         {
-            string waterUsageGroupeds = GetWaterUsageGroupedQuery();
+            string sewageZoneGroupeds = GetSewageZoneGroupedQuery();
             var @params = new
             {
                 FromDate = input.FromDateJalali,
                 ToDate = input.ToDateJalali,
             };
-            IEnumerable<SewageWaterItemGroupedDataOutputDto> waterUsageGroupedData = await _sqlReportConnection.QueryAsync<SewageWaterItemGroupedDataOutputDto>(waterUsageGroupeds, @params);
-            SewageWaterItemGroupedHeaderOutputDto waterUsageGroupedHeader = new SewageWaterItemGroupedHeaderOutputDto()
+            IEnumerable<SewageWaterItemGroupedDataOutputDto> sewageZoneGroupedData = await _sqlReportConnection.QueryAsync<SewageWaterItemGroupedDataOutputDto>(sewageZoneGroupeds, @params);
+            SewageWaterItemGroupedHeaderOutputDto sewageZoneGroupedHeader = new SewageWaterItemGroupedHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
-                RecordCount = (waterUsageGroupedData is not null && waterUsageGroupedData.Any()) ? waterUsageGroupedData.Count() : 0,
+                RecordCount = sewageZoneGroupedData is not null && sewageZoneGroupedData.Any() ? sewageZoneGroupedData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                TotalAmount = waterUsageGroupedData.Sum(usage => usage.Amount),
+                TotalAmount = sewageZoneGroupedData.Sum(usage => usage.Amount),
 
-                CustomerCount = waterUsageGroupedData is not null && waterUsageGroupedData.Any() ? waterUsageGroupedData.Count() : 0,
-                SumCommercialUnit = waterUsageGroupedData?.Sum(i => i.CommercialUnit) ?? 0,
-                SumDomesticUnit = waterUsageGroupedData?.Sum(i => i.DomesticUnit) ?? 0,
-                SumOtherUnit = waterUsageGroupedData?.Sum(i => i.OtherUnit) ?? 0,
-                TotalUnit = waterUsageGroupedData?.Sum(i => i.TotalUnit) ?? 0
+                CustomerCount = sewageZoneGroupedData is not null && sewageZoneGroupedData.Any() ? sewageZoneGroupedData.Count() : 0,
+                SumCommercialUnit = sewageZoneGroupedData?.Sum(i => i.CommercialUnit) ?? 0,
+                SumDomesticUnit = sewageZoneGroupedData?.Sum(i => i.DomesticUnit) ?? 0,
+                SumOtherUnit = sewageZoneGroupedData?.Sum(i => i.OtherUnit) ?? 0,
+                TotalUnit = sewageZoneGroupedData?.Sum(i => i.TotalUnit) ?? 0
             };
 
-            var result = new ReportOutput<SewageWaterItemGroupedHeaderOutputDto, SewageWaterItemGroupedDataOutputDto>(ReportLiterals.WaterUsageGrouped, waterUsageGroupedHeader, waterUsageGroupedData);
+            var result = new ReportOutput<SewageWaterItemGroupedHeaderOutputDto, SewageWaterItemGroupedDataOutputDto>(ReportLiterals.SewageZoneGrouped, sewageZoneGroupedHeader, sewageZoneGroupedData);
             return result;
         }
 
-        private string GetWaterUsageGroupedQuery()
+        private string GetSewageZoneGroupedQuery()
         {
             return @"Select 
                     	SUM(p.Amount) AS Amount,
-                    	c.UsageTitle AS ItemTitle,
-						COUNT(c.UsageTitle) AS CustomerCount,
+                    	c.ZoneTitle AS ItemTitle,
+						COUNT(c.ZoneTitle) AS CustomerCount,
 						SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
 						SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
 						SUM(ISNULL(c.DomesticCount, 0)) AS DomesticUnit,
@@ -65,18 +65,17 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 						SUM(CASE WHEN t5.C0 = 8 THEN 1 ELSE 0 END) AS Field4,
 						SUM(CASE WHEN t5.C0 = 9 THEN 1 ELSE 0 END) AS Field5,
 						SUM(CASE WHEN t5.C0 In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6
-                    From [CustomerWarehouse].dbo.Payments p
+                    From [CustomerWarehouse].dbo.PaymentsEn p
                     JOIN [CustomerWarehouse].dbo.Clients c 
-                    	ON p.BillId=c.BillId
+                    	ON p.BillId Collate SQL_Latin1_General_CP1_CI_AS=c.BillId 
 					JOIN [Db70].dbo.T5 t5
-						ON c.WaterDiameterId=t5.C0
+						ON c.WaterDiameterId =t5.C0 
                     WHERE
                         c.ToDayJalali IS NULL AND
                         (@FromDate IS NULL OR 
                         @ToDate IS NULL OR
                     	p.RegisterDay BETWEEN @FromDate and @ToDate)
-                    GROUP BY c.UsageTitle";
-            //todo
+                    GROUP BY c.ZoneTitle";
         }
     }
 }

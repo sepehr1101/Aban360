@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
 {
-    [Route("v1/daily-bank-grouped")]
-    public class DailyBankGroupedController : BaseController
+    [Route("v1/water-daily-bank-grouped")]
+    public class WaterDailyBankGroupedController : BaseController
     {
-        private readonly IDailyBankGroupedHandler _dailyBankGrouped;
+        private readonly IWaterDailyBankGroupedHandler _dailyBankGrouped;
         private readonly IReportGenerator _reportGenerator;
-        public DailyBankGroupedController(
-            IDailyBankGroupedHandler dailyBankGrouped,
+        public WaterDailyBankGroupedController(
+            IWaterDailyBankGroupedHandler dailyBankGrouped,
             IReportGenerator reportGenerator)
         {
             _dailyBankGrouped = dailyBankGrouped;
@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, DailyBankGroupedInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _dailyBankGrouped.Handle, CurrentUser, ReportLiterals.DailyBankGrouped, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _dailyBankGrouped.Handle, CurrentUser, ReportLiterals.WaterDailyBankGrouped, connectionId);
             return Ok(inputDto);
         }
     }

@@ -10,22 +10,24 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Implementations
 {
-    internal sealed class DailyBankGroupedQueryService : AbstractBaseConnection, IDailyBankGroupedQueryService
+    internal sealed class WaterDailyBankGroupedQueryService : AbstractBaseConnection, IWaterDailyBankGroupedQueryService
     {
-        public DailyBankGroupedQueryService(IConfiguration configuration)
+        public WaterDailyBankGroupedQueryService(IConfiguration configuration)
             : base(configuration)
         { }
 
         public async Task<ReportOutput<DailyBankGroupedHeaderOutputDto, DailyBankGroupedDataOutputDto>> GetInfo(DailyBankGroupedInputDto input)
         {
-            string dailyBankGroupeds = GetDailyBankGroupedQuery(input.ZoneIds?.Any()==true);
+            string dailyBankGroupeds = GetDailyBankGroupedQuery(input.ZoneIds.Any());
             var @params = new
             { 
                 FromDate=input.FromDateJalali,
                 ToDate=input.ToDateJalali,
                 FromAmount=input.FromAmount,
                 ToAmount=input.ToAmount,
-                ZoneIds=input.ZoneIds
+                ZoneIds=input.ZoneIds,
+                fromBankId = input.FromBankId,
+                toBankId = input.ToBankId,
             };
             IEnumerable<DailyBankGroupedDataOutputDto> dailyBankGroupedData = await _sqlReportConnection.QueryAsync<DailyBankGroupedDataOutputDto>(dailyBankGroupeds,@params);
             DailyBankGroupedHeaderOutputDto dailyBankGroupedHeader = new DailyBankGroupedHeaderOutputDto()
@@ -38,7 +40,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 RecordCount= (dailyBankGroupedData is not null && dailyBankGroupedData.Any()) ? dailyBankGroupedData.Count() : 0,
             };
 
-            var result = new ReportOutput<DailyBankGroupedHeaderOutputDto, DailyBankGroupedDataOutputDto>(ReportLiterals.DailyBankGrouped, dailyBankGroupedHeader, dailyBankGroupedData);
+            var result = new ReportOutput<DailyBankGroupedHeaderOutputDto, DailyBankGroupedDataOutputDto>(ReportLiterals.WaterDailyBankGrouped, dailyBankGroupedHeader, dailyBankGroupedData);
             return result;
         }
 
@@ -51,10 +53,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     	p.RegisterDay AS BankDate,
                         p.ZoneTitle AS ZoneTitle,
                         p.BankName AS BankName,
-                    	COUNT(p.RegisterDay) AS WaterCount,
-                    	SUM(p.Amount) AS WaterAmount,
-                    	COUNT(p.RegisterDay) AS ServiceLinkCount,
-                    	SUM(p.Amount) AS ServiceLinkAmount,
+                    	COUNT(p.RegisterDay) AS ItemCount,
+                    	SUM(p.Amount) AS ItemAmount,
                     	COUNT(p.RegisterDay) AS TotalCount,
                     	SUM(p.Amount) AS TotalAmount
                     From [CustomerWarehouse].dbo.Payments p
@@ -67,7 +67,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                         (
                             (@FromAmount IS NOT NULL AND @ToAmount IS NOT NULL AND p.Amount BETWEEN @FromAmount AND @ToAmount)
                             OR (@FromAmount IS NULL AND @ToAmount IS NULL)
-                        )
+                        )AND
+						(@fromBankId IS NULL OR
+						@toBankId IS NULL OR
+						p.BankCode BETWEEN @fromBankId AND @toBankId)
                     {zoneQuery}
                     GROUP BY p.RegisterDay,
                              p.BankName,

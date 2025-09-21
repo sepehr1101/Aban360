@@ -2,7 +2,6 @@
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Contracts;
-using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Contracts;
@@ -10,16 +9,16 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Implementations
 {
-    internal sealed class WaterUsageGroupedHandler : IWaterUsageGroupedHandler
+    internal sealed class SewageZoneGroupedHandler : ISewageZoneGroupedHandler
     {
-        private readonly IWaterUsageGroupedQueryService _waterUsageGroupedQueryService;
+        private readonly ISewageZoneGroupedQueryService _sewageZoneGroupedQueryService;
         private readonly IValidator<SewageWaterItemGroupedInputDto> _validator;
-        public WaterUsageGroupedHandler(
-            IWaterUsageGroupedQueryService waterUsageGroupedQueryService,
+        public SewageZoneGroupedHandler(
+            ISewageZoneGroupedQueryService sewageZoneGroupedQueryService,
             IValidator<SewageWaterItemGroupedInputDto> validator)
         {
-            _waterUsageGroupedQueryService = waterUsageGroupedQueryService;
-            _waterUsageGroupedQueryService.NotNull(nameof(waterUsageGroupedQueryService));
+            _sewageZoneGroupedQueryService = sewageZoneGroupedQueryService;
+            _sewageZoneGroupedQueryService.NotNull(nameof(sewageZoneGroupedQueryService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -34,8 +33,8 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<SewageWaterItemGroupedHeaderOutputDto, SewageWaterItemGroupedDataOutputDto> waterUsageGrouped = await _waterUsageGroupedQueryService.GetInfo(input);
-            return waterUsageGrouped;
+            ReportOutput<SewageWaterItemGroupedHeaderOutputDto, SewageWaterItemGroupedDataOutputDto> SewageZoneGrouped = await _sewageZoneGroupedQueryService.GetInfo(input);
+            return SewageZoneGrouped;
         }
     }
 }
