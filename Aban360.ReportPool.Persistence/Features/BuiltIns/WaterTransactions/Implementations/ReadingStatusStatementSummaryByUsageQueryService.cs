@@ -56,11 +56,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         {
             return @"Select 
                     	Max(b.UsageTitle) AS ItemTitle,
+						SUM(b.SumItems) AS SumItems,
                     	COUNT(Case When b.CounterStateCode NOT IN (1,4,7,8) Then 1 End)AS ReadingNet,
                     	COUNT(Case When b.CounterStateCode=4 Then 1 End)AS Closed,
                     	COUNT(Case When b.CounterStateCode=7 Then 1 End)AS Obstacle,
                     	COUNT(Case When b.CounterStateCode=8 Then 1 End)AS Temporarily,
                     	COUNT(Case When b.CounterStateCode!=1 Then 1 End)AS AllCount,
+						COUNT(Case When b.ReadingStateTitle IN (N'خوداظهاری حضوری',N'خوداظهاری غیرحضوری')Then 1 End) as SelfClaimedCount
                     	COUNT(Case When b.CounterStateCode=1 Then 1 End)AS Ruined
                     From [CustomerWarehouse].dbo.Bills b
                     Where

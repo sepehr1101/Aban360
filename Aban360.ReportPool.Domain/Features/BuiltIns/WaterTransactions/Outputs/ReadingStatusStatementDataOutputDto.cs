@@ -10,6 +10,8 @@
         public int Temporarily{ get; set; }
         public int AllCount { get; set; }
         public int Ruined { get; set; }
+        public int SelfClaimedCount { get; set; }
+        public double SumItems { get; set; }
         //public int Settlement { get; set; }
     }
 }

@@ -52,7 +52,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	COUNT(Case When b.CounterStateCode=7 Then 1 End) AS ObstacleCount,
                     	COUNT(Case When b.CounterStateCode=2 Then 1 ENd) AS ReplacementBranchCount,
                     	COUNT(Case When b.CounterStateCode=1 Then 1 ENd) AS MalfunctionCount,
-                    	COUNT(Case When b.CounterStateCode=8 Then 1 End) AS AdvancePaymentCount
+						COUNT(Case When b.CounterStateCode NOT IN (4,7,8) Then 1 End) AS NetCount
+                    	COUNT(Case When b.CounterStateCode=8 Then 1 End) AS AdvancePaymentCount,
+						COUNT(Case When b.ReadingStateTitle IN (N'خوداظهاری حضوری',N'خوداظهاری غیرحضوری')Then 1 End) as SelfClaimedCount
                     From [CustomerWarehouse].dbo.Bills b
 					Join [Db70].dbo.T51 t51
 						On t51.C0=b.ZoneId
@@ -60,7 +62,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						On t51.C1=t46.C0
                     Where
                     	b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
-                    	b.RegisterDay BETWEEN @fromDate AND @toDate AND
+                    	b.NextDay BETWEEN @fromDate AND @toDate AND
                         b.ZoneId IN @zoneIds
                     Group By B.ZoneTitle";
         }

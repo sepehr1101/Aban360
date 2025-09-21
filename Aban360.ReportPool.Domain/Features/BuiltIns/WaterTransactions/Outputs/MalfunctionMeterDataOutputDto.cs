@@ -9,6 +9,9 @@
         public int Duration { get; set; }
         public string BranchType { get; set; }
         public string LastReadingDay { get; set; }
+        public string LatestChangeDateJalali { get; set; }
+        public string MeterInstallationDateJalali { get; set; }
+        public string MeterLife { get; set; }
         public long Payable { get; set; }
         public long SumItems { get; set; }
         public int Consumption { get; set; }
