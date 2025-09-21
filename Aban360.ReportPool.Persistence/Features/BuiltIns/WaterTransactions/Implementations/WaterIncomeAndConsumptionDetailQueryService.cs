@@ -92,7 +92,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						b.Consumption,
 						b.ConsumptionAverage,
 						b.WaterDiameterTitle as MeterDiameterTitle,
-						b.BranchType AS UseStateTitle,
+						b.BranchType AS BranchType,	
+                        c.DeletionStateTitle AS UseStateTitle
 						(b.CommercialCount+b.DomesticCount+b.OtherCount) as BillUnitCounts,
 						b.Duration,
 						b.SumItems,
@@ -116,6 +117,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						b.Item17,
 						b.Item18
 					From [CustomerWarehouse].dbo.Bills b
+					Join [CustomerWarehouse].dbo.Clients c
+						On b.BillId=c.BillId
 					Where 
 						(b.RegisterDay BETWEEN @fromDate AND @toDate) AND
 						(@fromConsumption IS NULL OR
@@ -124,7 +127,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						(@fromAmount IS NULL OR
 						@toAmount IS NULL OR
 						b.SumItems BETWEEN @fromAmount AND @toAmount) AND
-						b.TypeCode IN @typeCodes 
+						b.TypeCode IN @typeCodes AND
+                        c.ToDayJalali IS NULL
 						{usageQuery}
 						{zoneQuery}";
         }

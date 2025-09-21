@@ -10,10 +10,12 @@
         public int ContractualCapacity { get; set; }
         public string MeterInstallationDateJalali { get; set; }
         public string UsageTitle { get; set; }
+        public string BranchType { get; set; }
         public string FirstName { get; set; }
         public string Surname { get; set; }
         public string FullName { get; set; }
         public string MeterDiameterTitle { get; set; }
+        public string SiphonDiameterTitle { get; set; }
         public int DomesticUnit{ get; set; }
         public int CommercialUnit { get; set; }
         public int OtherUnit { get; set; }
@@ -24,6 +26,7 @@
         public string Address { get; set; }
         public string MeterLife { get; set; }
         public string PhoneNumber { get; set; }
+        public string MobileNumber { get; set; }
         public string WaterRequestDateJalali { get; set; }
         public string DeletionStateTitle { get; set; }
         public long SumItems { get; set; }

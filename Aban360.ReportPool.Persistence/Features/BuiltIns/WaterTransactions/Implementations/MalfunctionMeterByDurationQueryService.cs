@@ -24,8 +24,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             {
                 fromReadingNumber = input.FromReadingNumber,
                 toReadingNumber = input.ToReadingNumber,
-                fromDateJalali=input.FromDateJalali,
-                toDateJalali = input.ToDateJalali,
                 zoneIds = input.ZoneIds,
                 fromMalfunctionPeriodCount=input.FromMalfunctionPeriodCount,
                 toMalfunctionPeriodCount=input.ToMalfunctionPeriodCount,
@@ -33,8 +31,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             IEnumerable<MalfunctionMeterByDurationDataOutputDto> malfunctionMeterByDurationData = await _sqlReportConnection.QueryAsync<MalfunctionMeterByDurationDataOutputDto>(malfunctionMeterByDurationQueryString, @params,null, 180);
             MalfunctionMeterByDurationHeaderOutputDto malfunctionMeterByDurationHeader = new MalfunctionMeterByDurationHeaderOutputDto()
             {
-                FromDateJalali=input.FromDateJalali,
-                ToDateJalali=input.ToDateJalali,
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
@@ -68,8 +64,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                             FROM [CustomerWarehouse].dbo.Bills
                             WHERE 
                     			ZoneId IN @zoneIds AND 
-                    			CounterStateCode NOT IN (4,7,8) AND
-		                    	RegisterDay BETWEEN @fromDateJalali AND @toDateJalali
+                    			CounterStateCode NOT IN (4,7,8)
                         ) b
                         WHERE 
                     		b.rn = 1 AND 
@@ -93,8 +88,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     		ON v.CustomerNumber = b.CustomerNumber AND v.ZoneId=b.ZoneId
                         WHERE 
                     	  b.CounterStateCode = 1 AND 
-                    	  b.RegisterDay <= v.LatestRegisterDay AND
-	                      b.RegisterDay BETWEEN @fromDateJalali AND @toDateJalali
+                    	  b.RegisterDay <= v.LatestRegisterDay 
                         GROUP BY b.BillId
                     ),
                     -- اطلاعات مشتری
@@ -109,7 +103,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                             c.CommercialCount AS CommercialUnit,
                             c.OtherCount AS OtherUnit,
                             TRIM(c.Address) AS Address,
-                            c.PhoneNo AS PhoneNumber,
+							c.BranchType,
+							c.MainSiphonTitle AS SiphonDiameterTitle,
+                            TRIM(c.PhoneNo) AS PhoneNumber,
+                            TRIM(c.MobileNo) AS MobileNumber,
                             c.WaterInstallDate AS MeterInstallationDateJalali,
                             c.WaterRequestDate AS WaterRequestDateJalali,
                             c.DeletionStateTitle
@@ -140,7 +137,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                         c.CommercialUnit,
                         c.OtherUnit,
                         c.Address,
+                        c.BranchType,
                         c.PhoneNumber,
+                        c.MobileNumber,
+                        c.SiphonDiameterTitle,
                         c.MeterInstallationDateJalali,
                         c.WaterRequestDateJalali,
                         c.DeletionStateTitle,

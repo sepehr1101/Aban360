@@ -23,8 +23,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             {
                 fromReadingNumber = input.FromReadingNumber,
                 toReadingNumber = input.ToReadingNumber,
-                fromDateJalali = input.FromDateJalali,
-                toDateJalali = input.ToDateJalali,
                 zoneIds = input.ZoneIds,
                 fromMalfunctionPeriodCount = input.FromMalfunctionPeriodCount,
                 toMalfunctionPeriodCount = input.ToMalfunctionPeriodCount,
@@ -32,8 +30,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             IEnumerable<MalfunctionMeterByDurationSummaryDataOutputDto> malfunctionMeterByDurationData = await _sqlReportConnection.QueryAsync<MalfunctionMeterByDurationSummaryDataOutputDto>(malfunctionMeterByDurationQueryString, @params, null, 180);
             MalfunctionMeterByDurationHeaderOutputDto malfunctionMeterByDurationHeader = new MalfunctionMeterByDurationHeaderOutputDto()
             {
-                FromDateJalali = input.FromDateJalali,
-                ToDateJalali = input.ToDateJalali,
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
@@ -62,8 +58,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                             FROM [CustomerWarehouse].dbo.Bills
                             WHERE 
                        			ZoneId IN @zoneIds AND 
-                       			CounterStateCode NOT IN (4,7,8) AND
-	                        	RegisterDay BETWEEN @fromDateJalali AND @toDateJalali
+                       			CounterStateCode NOT IN (4,7,8) 
                         ) b
                         WHERE 
                        		b.rn = 1 AND 
@@ -87,8 +82,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                        		ON v.CustomerNumber = b.CustomerNumber AND v.ZoneId=b.ZoneId
                         WHERE 
                        	  b.CounterStateCode = 1 AND 
-                       	  b.RegisterDay <= v.LatestRegisterDay AND
-                          b.RegisterDay BETWEEN @fromDateJalali AND @toDateJalali
+                       	  b.RegisterDay <= v.LatestRegisterDay 
                         GROUP BY b.BillId
                     )
                     SELECT 

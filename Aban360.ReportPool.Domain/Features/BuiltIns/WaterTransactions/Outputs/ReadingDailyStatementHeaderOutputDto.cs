@@ -11,8 +11,8 @@
         public int FromConsumption { get; set; }
         public int ToConsumption { get; set; }
         
-        public long FromAmount { get; set; }
-        public long ToAmount{ get; set; }
+        public long? FromAmount { get; set; }
+        public long? ToAmount{ get; set; }
 
         public string ReportDateJalali { get; set; }
         public int RecordCount { get; set; }
