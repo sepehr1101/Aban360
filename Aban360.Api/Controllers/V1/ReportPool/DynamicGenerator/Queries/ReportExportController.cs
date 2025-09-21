@@ -9,12 +9,12 @@ using System.Data;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator
 {
-    [Route("v1/report-test-json")]
+    [Route("v1/report-export")]
     [AllowAnonymous]
-    public class TestJsonController : BaseMvcController
+    public class ReportExportController : BaseMvcController
     {        
         private readonly IDynamicReportGetTemplateJsonHandler _dynamicReportGetTemplateJsonHandler;
-        public TestJsonController(
+        public ReportExportController(
             IDynamicReportGetTemplateJsonHandler dynamicReportGetTemplateJsonHandler)
         {
             _dynamicReportGetTemplateJsonHandler = dynamicReportGetTemplateJsonHandler;
@@ -31,7 +31,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator
             }
             void ForceFonts()
             {
-                //StiFontCollection.AddFontFile(@"C:\Fonts\Vazir.ttf");
+                string basePath = AppContext.BaseDirectory;
+                string relativePath = @"\AppData\Fonts\Vazir FD-WOL.ttf";
+                string path = string.Concat(basePath, relativePath);
+                StiFontCollection.AddFontFile(path);
             }
         }
 

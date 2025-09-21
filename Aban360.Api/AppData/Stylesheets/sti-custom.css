@@ -1,0 +1,4 @@
+﻿html body #NetCoreViewerReportPanel,
+html body .stiJsViewerReportPanel {
+    overflow-y: auto !important;
+}
