@@ -10,9 +10,10 @@
         public string Address { get; set; }
         public string ZoneTitle { get; set; }
 
-        public string LatestBillDateJalali { get; set; }
+        public string? LatestBillDateJalali { get; set; }
+        public string? LatestReadingDateJalali { get; set; }
         public string BillId { get; set; }
-        public string CounterStateTitle { get; set; }
+        public string? CounterStateTitle { get; set; }
         public string MeterRequestDateJalali { get; set; }
         public string MeterInstallationDateJalali { get; set; }
         public string MobileNumber { get; set; }

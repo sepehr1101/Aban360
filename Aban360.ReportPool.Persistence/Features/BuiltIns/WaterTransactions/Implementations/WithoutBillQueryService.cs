@@ -51,11 +51,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             string usageQuery = hasUsage ? "AND c.UsageId IN @usageIds" : string.Empty;
 
             
-            return $@"Select
+            return $@"	Select
 						c.BillId AS BillId,
 						c.ZoneId,
 						bb.CounterStateTitle AS CounterStateTitle,
-						c.WaterRequestDate AS WaterRequestDateJalali,
+						c.WaterRequestDate AS MeterRequestDateJalali,
 						c.WaterRegisterDateJalali AS MeterInstallationDateJalali,
 						c.MobileNo as MobileNumber,
 						c.PhoneNo as PhoneNumber,
@@ -75,7 +75,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	c.UsageTitle2 as UsageSellTitle,
                     	TRIM(c.Address) as Address,
                     	c.ZoneTitle as ZoneTitle,
-						bb.RegisterDay as LatestBillDateJalali
+						bb.RegisterDay as LatestBillDateJalali,
+						bb.NextDay as LatestReadingDateJalali
 					From [CustomerWarehouse].dbo.Clients c
 					Join [CustomerWarehouse].dbo.Bills bb
 						On c.ZoneId=bb.ZoneId AND c.CustomerNumber=bb.CustomerNumber
@@ -92,10 +93,19 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     		  @ToReadingNumber IS NULL or 
                     		  c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND
                     		c.DeletionStateId IN (0,2)  AND
+							b.TypeCode = 1 AND
 							c.ToDayJalali IS NULL 
                             {zoneQuery}
                             {usageQuery}
-						)
+						)AND
+						 (@FromReadingNumber IS NULL or
+                    		  @ToReadingNumber IS NULL or 
+                    		  c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND
+                    		c.DeletionStateId IN (0,2)  AND
+							c.ToDayJalali IS NULL AND
+                            bb.TypeCode = 1
+							{zoneQuery}
+                            {usageQuery}
 					Order By bb.RegisterDay";
         }
     }

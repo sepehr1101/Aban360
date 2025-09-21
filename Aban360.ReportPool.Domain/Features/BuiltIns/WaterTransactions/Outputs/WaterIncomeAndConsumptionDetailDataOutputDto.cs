@@ -11,6 +11,7 @@
         public string MeterDiameterTitle { get; set; }
         public int BillUnitCounts { get; set; }
         public string UseStateTitle { get; set; }
+        public string BranchType { get; set; }
         public int Duration { get; set; }
         public long SumItems { get; set; }
         public long Item1 { get; set; }
