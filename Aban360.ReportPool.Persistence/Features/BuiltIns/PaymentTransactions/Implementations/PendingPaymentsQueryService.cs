@@ -89,8 +89,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 								PhoneNo AS PhoneNumber,
 								DeletionStateTitle AS UseStateTitle,
 								'--' AS HeadquarterTitle ,
-								'--' AS RegionTitle
+								t46.C2 AS RegionTitle
 							FROM [CustomerWarehouse].dbo.Clients 
+						    Join [Db70].dbo.T51 t51
+						    	On t51.C0=ZoneId
+						    Join [Db70].dbo.T46 t46
+						    	On t51.C1=t46.C0
 							WHERE 
 								ToDayJalali IS NULL
 								AND ZoneId IN @ZoneIds
