@@ -10,17 +10,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
 {
-    [Route("v1/water-zone-grouped")]
-    public class WaterZoneGroupedController : BaseController
+    [Route("v1/service-link-usage-grouped")]
+    public class ServiceLinkUsageGroupedController : BaseController
     {
-        private readonly IWaterZoneGroupedHandler _waterZoneGrouped;
+        private readonly IServiceLinkUsageGroupedHandler _serviceLinkUsageGrouped;
         private readonly IReportGenerator _reportGenerator;
-        public WaterZoneGroupedController(
-            IWaterZoneGroupedHandler waterZoneGrouped,
+        public ServiceLinkUsageGroupedController(
+            IServiceLinkUsageGroupedHandler serviceLinkUsageGrouped,
             IReportGenerator reportGenerator)
         {
-            _waterZoneGrouped = waterZoneGrouped;
-            _waterZoneGrouped.NotNull(nameof(_waterZoneGrouped));
+            _serviceLinkUsageGrouped = serviceLinkUsageGrouped;
+            _serviceLinkUsageGrouped.NotNull(nameof(_serviceLinkUsageGrouped));
 
             _reportGenerator = reportGenerator;
             _reportGenerator.NotNull(nameof(_reportGenerator));
@@ -31,15 +31,15 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(ServiceLinkWaterItemGroupedInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto> waterZoneGrouped = await _waterZoneGrouped.Handle(inputDto, cancellationToken);
-            return Ok(waterZoneGrouped);
+            ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto> ServiceLinkUsageGrouped = await _serviceLinkUsageGrouped.Handle(inputDto, cancellationToken);
+            return Ok(ServiceLinkUsageGrouped);
         }
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, ServiceLinkWaterItemGroupedInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _waterZoneGrouped.Handle, CurrentUser, ReportLiterals.WaterZoneGrouped, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _serviceLinkUsageGrouped.Handle, CurrentUser, ReportLiterals.ServiceLinkUsageGrouped, connectionId);
             return Ok(inputDto);
         }
     }

@@ -10,41 +10,41 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Implementations
 {
-    internal sealed class SewageUsageGroupedQueryService : AbstractBaseConnection, ISewageUsageGroupedQueryService
+    internal sealed class ServiceLinkUsageGroupedQueryService : AbstractBaseConnection, IServiceLinkUsageGroupedQueryService
     {
-        public SewageUsageGroupedQueryService(IConfiguration configuration)
+        public ServiceLinkUsageGroupedQueryService(IConfiguration configuration)
             : base(configuration)
         { }
 
-        public async Task<ReportOutput<SewageWaterItemGroupedHeaderOutputDto, SewageWaterItemGroupedDataOutputDto>> GetInfo(SewageWaterItemGroupedInputDto input)
+        public async Task<ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto>> GetInfo(ServiceLinkWaterItemGroupedInputDto input)
         {
-            string sewageUsageGroupeds = GetSewageUsageGroupedQuery();
+            string ServiceLinkUsageGroupeds = GetServiceLinkUsageGroupedQuery();
             var @params = new
             {
                 FromDate = input.FromDateJalali,
                 ToDate = input.ToDateJalali,
             };
-            IEnumerable<SewageWaterItemGroupedDataOutputDto> sewageUsageGroupedData = await _sqlReportConnection.QueryAsync<SewageWaterItemGroupedDataOutputDto>(sewageUsageGroupeds, @params);
-            SewageWaterItemGroupedHeaderOutputDto sewageUsageGroupedHeader = new SewageWaterItemGroupedHeaderOutputDto()
+            IEnumerable<ServiceLinkWaterItemGroupedDataOutputDto> serviceLinkUsageGroupedData = await _sqlReportConnection.QueryAsync<ServiceLinkWaterItemGroupedDataOutputDto>(ServiceLinkUsageGroupeds, @params);
+            ServiceLinkWaterItemGroupedHeaderOutputDto serviceLinkUsageGroupedHeader = new ServiceLinkWaterItemGroupedHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
-                RecordCount = sewageUsageGroupedData is not null && sewageUsageGroupedData.Any() ? sewageUsageGroupedData.Count() : 0,
+                RecordCount = serviceLinkUsageGroupedData is not null && serviceLinkUsageGroupedData.Any() ? serviceLinkUsageGroupedData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                TotalAmount = sewageUsageGroupedData.Sum(usage => usage.Amount),
+                TotalAmount = serviceLinkUsageGroupedData.Sum(usage => usage.Amount),
 
-                CustomerCount = sewageUsageGroupedData is not null && sewageUsageGroupedData.Any() ? sewageUsageGroupedData.Count() : 0,
-                SumCommercialUnit = sewageUsageGroupedData?.Sum(i => i.CommercialUnit) ?? 0,
-                SumDomesticUnit = sewageUsageGroupedData?.Sum(i => i.DomesticUnit) ?? 0,
-                SumOtherUnit = sewageUsageGroupedData?.Sum(i => i.OtherUnit) ?? 0,
-                TotalUnit = sewageUsageGroupedData?.Sum(i => i.TotalUnit) ?? 0
+                CustomerCount = serviceLinkUsageGroupedData is not null && serviceLinkUsageGroupedData.Any() ? serviceLinkUsageGroupedData.Count() : 0,
+                SumCommercialUnit = serviceLinkUsageGroupedData?.Sum(i => i.CommercialUnit) ?? 0,
+                SumDomesticUnit = serviceLinkUsageGroupedData?.Sum(i => i.DomesticUnit) ?? 0,
+                SumOtherUnit = serviceLinkUsageGroupedData?.Sum(i => i.OtherUnit) ?? 0,
+                TotalUnit = serviceLinkUsageGroupedData?.Sum(i => i.TotalUnit) ?? 0
             };
 
-            var result = new ReportOutput<SewageWaterItemGroupedHeaderOutputDto, SewageWaterItemGroupedDataOutputDto>(ReportLiterals.SewageUsageGrouped, sewageUsageGroupedHeader, sewageUsageGroupedData);
+            var result = new ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto>(ReportLiterals.ServiceLinkUsageGrouped, serviceLinkUsageGroupedHeader, serviceLinkUsageGroupedData);
             return result;
         }
 
-        private string GetSewageUsageGroupedQuery()
+        private string GetServiceLinkUsageGroupedQuery()
         {
             return @"Select 
                     	SUM(p.Amount) AS Amount,

@@ -63,8 +63,8 @@
         public static string WaterUsageGrouped { get { return $"{Report} وصولی به تفکیک کاربری - آب بهاء"; } }
         public static string WaterZoneGrouped { get { return $"{Report} وصولی به تفکیک ناحیه - آب بهاء"; } }
 
-        public static string SewageUsageGrouped { get { return $"{Report} وصولی به تفکیک کاربری - انشعاب"; } }
-        public static string SewageZoneGrouped { get { return $"{Report} وصولی به تفکیک ناحیه - انشعاب"; } }
+        public static string ServiceLinkUsageGrouped { get { return $"{Report} وصولی به تفکیک کاربری - انشعاب"; } }
+        public static string ServiceLinkZoneGrouped { get { return $"{Report} وصولی به تفکیک ناحیه - انشعاب"; } }
    
         public static string Unpaid { get { return $"{Report} بدون وصولی"; } }
         public static string WaterModifiedBillsDetail { get { return $"{Report}  جزئیات برگشتی و اصلاحات - آب بها"; } }

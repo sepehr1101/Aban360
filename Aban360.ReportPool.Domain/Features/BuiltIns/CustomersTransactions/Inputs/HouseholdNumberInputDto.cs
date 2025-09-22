@@ -2,8 +2,8 @@
 {
     public record HouseholdNumberInputDto
     {
-        public string FromReadingNumber { get; set; }
-        public string ToReadingNumber { get; set; }
+        public string? FromReadingNumber { get; set; }
+        public string? ToReadingNumber { get; set; }
 
         public string FromHouseholdDateJalali { get; set; }
         public string ToHouseholdDateJalali { get; set; }

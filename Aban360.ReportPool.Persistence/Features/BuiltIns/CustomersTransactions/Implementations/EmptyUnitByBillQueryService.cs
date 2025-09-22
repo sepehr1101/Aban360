@@ -131,6 +131,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 							e.Consumption,
 							e.ConsumptionAverage,
 							e.SumItems,
+							e.ContractualCapacity ,
 							e.SiphonDiameterTitle
 					FROM EmptyUnitByBill e
 					Join [Db70].dbo.T51 t51

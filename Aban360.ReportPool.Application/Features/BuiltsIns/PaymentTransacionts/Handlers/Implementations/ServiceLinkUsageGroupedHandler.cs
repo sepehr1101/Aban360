@@ -9,16 +9,16 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Implementations
 {
-    internal sealed class WaterZoneGroupedHandler : IWaterZoneGroupedHandler
+    internal sealed class ServiceLinkUsageGroupedHandler : IServiceLinkUsageGroupedHandler
     {
-        private readonly IWaterZoneGroupedQueryService _waterZoneGroupedQueryService;
+        private readonly IServiceLinkUsageGroupedQueryService _serviceLinkUsageGroupedQueryService;
         private readonly IValidator<ServiceLinkWaterItemGroupedInputDto> _validator;
-        public WaterZoneGroupedHandler(
-            IWaterZoneGroupedQueryService waterZoneGroupedQueryService,
+        public ServiceLinkUsageGroupedHandler(
+            IServiceLinkUsageGroupedQueryService serviceLinkUsageGroupedQueryService,
             IValidator<ServiceLinkWaterItemGroupedInputDto> validator)
         {
-            _waterZoneGroupedQueryService = waterZoneGroupedQueryService;
-            _waterZoneGroupedQueryService.NotNull(nameof(waterZoneGroupedQueryService));
+            _serviceLinkUsageGroupedQueryService = serviceLinkUsageGroupedQueryService;
+            _serviceLinkUsageGroupedQueryService.NotNull(nameof(serviceLinkUsageGroupedQueryService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -33,8 +33,8 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto> waterZoneGrouped = await _waterZoneGroupedQueryService.GetInfo(input);
-            return waterZoneGrouped;
+            ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto> serviceLinkUsageGrouped = await _serviceLinkUsageGroupedQueryService.GetInfo(input);
+            return serviceLinkUsageGrouped;
         }
     }
 }

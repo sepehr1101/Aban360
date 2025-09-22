@@ -18,6 +18,7 @@
         public string UsageTitle { get; set; }
         public string PaymentId { get; set; }
         public string MobileNumber { get; set; }
+        public string PhoneNumber { get; set; }
         public string NationalCode { get; set; }
         public string PostalCode { get; set; }
         public string FromReadingDateJalali { get; set; }

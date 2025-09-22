@@ -72,6 +72,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                         b.PayId AS PaymentId,
 						b.SumItems,
 						TRIM(c.MobileNo) AS MobileNumber,
+						TRIM(c.PhoneNo) AS PhoneNumber,
 						TRIM(c.NationalId) AS NationalCode,
 						TRIM(c.PostalCode) AS PostalCode,
 						b.PreviousDay AS FromReadingDateJalali,

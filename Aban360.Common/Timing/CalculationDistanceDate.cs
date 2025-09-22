@@ -1,21 +1,26 @@
-﻿using Aban360.Common.Literals;
+﻿using Aban360.Common.Exceptions;
+using Aban360.Common.Literals;
 using DNTPersianUtils.Core;
+using System.Runtime.InteropServices;
 
 namespace Aban360.Common.Timing
 {
     public static class CalculationDistanceDate
     {
-        public static string CalcDistance(string? date)
+        public static int? CalcDistance(string? date, [Optional] bool canThrow)
         {
             DateOnly? persianDate = date.ToGregorianDateOnly();
             DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
 
+            if (!persianDate.HasValue && canThrow)
+                throw new  InvalidDateException(ExceptionLiterals.InvalidDate);
+
             if (!persianDate.HasValue)
-                return ExceptionLiterals.InvalidDate;
+                return null;
 
 
             int totalDay = currentDate.DayNumber - persianDate.Value.DayNumber;
-            return ConvertDaysToDate(totalDay);
+            return totalDay;
 
         }
 

@@ -65,10 +65,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                         b.ConsumptionAverage,
 	                    b.CounterStateCode,
 	                    b.CounterStateTitle,
-	                    RN=ROW_NUMBER() OVER (PARTITION BY b.BillId ORDER BY b.RegisterDay DESC)
+						c.WaterInstallDate	AS MeterInstallationDateJalali,
+						m.ChangeDateJalali AS LatestChangeDateJalali,
+	                    RN=ROW_NUMBER() OVER (PARTITION BY b.BillId ORDER BY b.RegisterDay,m.ChangeDateJalali DESC)
                     From [CustomerWarehouse].dbo.Bills b
 					Join [CustomerWarehouse].dbo.Clients c 
 						ON b.CustomerNumber=c.CustomerNumber AND b.ZoneId=c.ZoneId
+					Join [CustomerWarehouse].dbo.MeterChange m
+						On c.ZoneId=m.ZoneId AND c.CustomerNumber=m.CustomerNumber
                     Where 
                         (@fromReadingNumber IS NULL OR
                         @toReadingNumber IS NULL OR

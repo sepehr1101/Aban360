@@ -38,6 +38,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 FromReadingNumber=input.FromReadingNumber,
                 ToReadingNumber=input.ToReadingNumber,
                 RecordCount= (withoutBillData is not null && withoutBillData.Any()) ? withoutBillData.Count() : 0,
+                CustomerCount= (withoutBillData is not null && withoutBillData.Any()) ? withoutBillData.Count() : 0,
                 ReportDateJalali =DateTime.Now.ToShortPersianDateString()
             };
 
@@ -64,7 +65,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						c.DomesticCount as DomesticUnit,
 						c.OtherCount as OtherUnit,
 						(c.ContractCapacity + c.DomesticCount + c.OtherCount) as TotalUnit,
-						c.HasCommonSiphon as  SiphonDiameterTitle,
+						c.MainSiphonTitle as  SiphonDiameterTitle,
 						c.UsageTitle as UsageTitle,
 						TRIM(c.NationalId) as NationalCode,
 						c.EmptyCount as EmptyUnit,

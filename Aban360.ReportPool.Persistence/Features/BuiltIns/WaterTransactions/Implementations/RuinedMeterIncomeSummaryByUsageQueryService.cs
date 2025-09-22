@@ -64,7 +64,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						 b.Duration	
                     From [CustomerWarehouse].dbo.Bills b
                     Where 
-                    	b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
+                        (@FromReadingNumber IS NULL or
+                    	@ToReadingNumber IS NULL or 
+                    	b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND
                     	b.RegisterDay BETWEEN @fromDate AND @toDate AND
                     	b.ZoneId IN @zoneIds AND
                     	b.CounterStateCode=1)
@@ -77,10 +79,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						AVG(m.Consumption) AS AverageConsumption,
 					    SUM(m.Payable) AS Payable,
 					    SUM(m.SumItems) AS SumItems,
-					    SUM(ISNULL(m.CommercialCount, 0) + ISNULL(m.DomesticCount, 0) + ISNULL(m.OtherCount, 0)) AS TotalCount,
-					    SUM(ISNULL(m.CommercialCount, 0)) AS CommercialCount,
-                        SUM(ISNULL(m.DomesticCount, 0)) AS DomesticCount,
-                        SUM(ISNULL(m.OtherCount, 0)) AS OtherCount,
+					    SUM(ISNULL(m.CommercialCount, 0) + ISNULL(m.DomesticCount, 0) + ISNULL(m.OtherCount, 0)) AS TotalUnit,
+					    SUM(ISNULL(m.CommercialCount, 0)) AS CommercialUnit,
+                        SUM(ISNULL(m.DomesticCount, 0)) AS DomesticUnit,
+                        SUM(ISNULL(m.OtherCount, 0)) AS OtherUnit,
 						SUM(CASE WHEN t5.C0 = 0 THEN 1 ELSE 0 END) AS UnSpecified,
 						SUM(CASE WHEN t5.C0 = 1 THEN 1 ELSE 0 END) AS Field0_5,
 						SUM(CASE WHEN t5.C0 = 2 THEN 1 ELSE 0 END) AS Field0_75,

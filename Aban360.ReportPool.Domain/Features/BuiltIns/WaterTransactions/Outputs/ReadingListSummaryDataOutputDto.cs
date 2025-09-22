@@ -9,6 +9,8 @@
         public int ReplacementBranchCount { get; set; }
         public int MalfunctionCount { get; set; }
         public int AdvancePaymentCount { get; set; }
-       // public int SettlementCount { get; set; }
+        public int NetCount { get; set; }
+        public int SelfClaimedCount { get; set; }
+        // public int SettlementCount { get; set; }
     }
 }

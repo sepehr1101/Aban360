@@ -108,12 +108,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                             TRIM(c.PhoneNo) AS PhoneNumber,
                             TRIM(c.MobileNo) AS MobileNumber,
                             c.WaterInstallDate AS MeterInstallationDateJalali,
-                            c.WaterRequestDate AS WaterRequestDateJalali,
+                            c.WaterRequestDate AS MeterRequestDateJalali,
                             c.DeletionStateTitle
                         FROM [CustomerWarehouse].dbo.Clients c
                         WHERE 
                     		c.ToDayJalali IS NULL AND
-                    		c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
+                            (@fromReadingNumber IS NULL OR
+                             @toReadingNumber IS NULL OR  
+                            c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber )AND
                             c.ZoneId IN @zoneIds
                     )
                     SELECT 
@@ -142,7 +144,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                         c.MobileNumber,
                         c.SiphonDiameterTitle,
                         c.MeterInstallationDateJalali,
-                        c.WaterRequestDateJalali,
+                        c.MeterRequestDateJalali,
                         c.DeletionStateTitle,
                         v.Consumption,
 	                    v.SumItems

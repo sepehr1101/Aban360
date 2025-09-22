@@ -16,7 +16,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             : base(configuration)
         { }
 
-        public async Task<ReportOutput<SewageWaterItemGroupedHeaderOutputDto, SewageWaterItemGroupedDataOutputDto>> GetInfo(SewageWaterItemGroupedInputDto input)
+        public async Task<ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto>> GetInfo(ServiceLinkWaterItemGroupedInputDto input)
         {
             string waterUsageGroupeds = GetWaterUsageGroupedQuery();
             var @params = new
@@ -24,8 +24,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 FromDate = input.FromDateJalali,
                 ToDate = input.ToDateJalali,
             };
-            IEnumerable<SewageWaterItemGroupedDataOutputDto> waterUsageGroupedData = await _sqlReportConnection.QueryAsync<SewageWaterItemGroupedDataOutputDto>(waterUsageGroupeds, @params);
-            SewageWaterItemGroupedHeaderOutputDto waterUsageGroupedHeader = new SewageWaterItemGroupedHeaderOutputDto()
+            IEnumerable<ServiceLinkWaterItemGroupedDataOutputDto> waterUsageGroupedData = await _sqlReportConnection.QueryAsync<ServiceLinkWaterItemGroupedDataOutputDto>(waterUsageGroupeds, @params);
+            ServiceLinkWaterItemGroupedHeaderOutputDto waterUsageGroupedHeader = new ServiceLinkWaterItemGroupedHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
@@ -40,7 +40,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 TotalUnit = waterUsageGroupedData?.Sum(i => i.TotalUnit) ?? 0
             };
 
-            var result = new ReportOutput<SewageWaterItemGroupedHeaderOutputDto, SewageWaterItemGroupedDataOutputDto>(ReportLiterals.WaterUsageGrouped, waterUsageGroupedHeader, waterUsageGroupedData);
+            var result = new ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto>(ReportLiterals.WaterUsageGrouped, waterUsageGroupedHeader, waterUsageGroupedData);
             return result;
         }
 

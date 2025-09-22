@@ -4,8 +4,8 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Contracts
 {
-    public interface ISewageDailyBankGroupedHandler
+    public interface IServiceLinkZoneGroupedHandler
     {
-        Task<ReportOutput<DailyBankGroupedHeaderOutputDto, DailyBankGroupedDataOutputDto>> Handle(DailyBankGroupedInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto>> Handle(ServiceLinkWaterItemGroupedInputDto input, CancellationToken cancellationToken);
     }
 }

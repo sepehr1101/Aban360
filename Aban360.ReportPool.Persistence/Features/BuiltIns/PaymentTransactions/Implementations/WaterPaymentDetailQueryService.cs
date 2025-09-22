@@ -23,8 +23,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             {
                 FromDate = input.FromDateJalali,
                 ToDate = input.ToDateJalali,
-                FromAmount = input.FromAmount??0,
-                ToAmount = input.ToAmount??0,
+                FromAmount = input.FromAmount,
+                ToAmount = input.ToAmount,
             };
             IEnumerable<PaymentDetailDataOutputDto> waterPaymentDetailData = await _sqlReportConnection.QueryAsync<PaymentDetailDataOutputDto>(waterPaymentDetails, @params);
             PaymentDetailHeaderOutputDto waterPaymentDetailHeader = new PaymentDetailHeaderOutputDto()

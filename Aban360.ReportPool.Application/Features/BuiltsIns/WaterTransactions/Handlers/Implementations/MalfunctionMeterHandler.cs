@@ -1,6 +1,8 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
+using Aban360.Common.Timing;
 using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
@@ -35,7 +37,19 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             }
 
             ReportOutput<MalfunctionMeterHeaderOutputDto, MalfunctionMeterDataOutputDto> malfunctionMeter = await _malfunctionMeterQueryService.Get(input);
+
+            malfunctionMeter.ReportData.ForEach(m =>
+            {
+                string maxDateJalali = GetMaxDate(m.MeterInstallationDateJalali, m.LatestChangeDateJalali);
+                int? meterLife = CalculationDistanceDate.CalcDistance(maxDateJalali);
+                m.MeterLife = meterLife.HasValue ? CalculationDistanceDate.ConvertDaysToDate(meterLife.Value) : ExceptionLiterals.Incalculable;
+            });
             return malfunctionMeter;
+        }
+
+        private string GetMaxDate(string firstDate, string twoDate)
+        {
+            return firstDate.CompareTo(twoDate) >= 0 ? firstDate : twoDate;
         }
     }
 }

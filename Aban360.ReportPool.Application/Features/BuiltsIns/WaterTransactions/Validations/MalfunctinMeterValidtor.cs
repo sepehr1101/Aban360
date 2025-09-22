@@ -10,14 +10,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Va
     {
         public MalfunctinMeterValidtor()
         {
-            RuleFor(meter => meter.FromReadingNumber)
-                .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull);
-
-            RuleFor(meter => meter.ToReadingNumber)
-                .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull);
-        
             RuleFor(meter => meter.ZoneIds)
                 .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);

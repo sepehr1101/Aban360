@@ -9,14 +9,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
     {
         public HouseholdNumberValidator()
         {
-            RuleFor(customer => customer.FromReadingNumber)
-           .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-           .NotNull().WithMessage(ExceptionLiterals.NotNull);
-
-            RuleFor(customer => customer.ToReadingNumber)
-           .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-           .NotNull().WithMessage(ExceptionLiterals.NotNull);
-            
             RuleFor(customer => customer.FromHouseholdDateJalali)
            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
            .NotNull().WithMessage(ExceptionLiterals.NotNull);
