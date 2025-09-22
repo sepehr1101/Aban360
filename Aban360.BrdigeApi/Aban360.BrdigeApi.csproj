@@ -23,40 +23,16 @@
     <ProjectReference Include="..\Aban360.BlobPool.Domain\Aban360.BlobPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.BlobPool.GatewayAddHoc\Aban360.BlobPool.GatewayAddHoc.csproj" />
     <ProjectReference Include="..\Aban360.BlobPool.Persistence\Aban360.BlobPool.Persistence.csproj" />
-    <ProjectReference Include="..\Aban360.CalculationPool.Application\Aban360.CalculationPool.Application.csproj" />
-    <ProjectReference Include="..\Aban360.CalculationPool.Domain\Aban360.CalculationPool.Domain.csproj" />
-    <ProjectReference Include="..\Aban360.CalculationPool.GatewayAdhoc\Aban360.CalculationPool.GatewayAdhoc.csproj" />
-    <ProjectReference Include="..\Aban360.CalculationPool.Persistence\Aban360.CalculationPool.Persistence.csproj" />
-    <ProjectReference Include="..\Aban360.ClaimPool.Application\Aban360.ClaimPool.Application.csproj" />
-    <ProjectReference Include="..\Aban360.ClaimPool.Domain\Aban360.ClaimPool.Domain.csproj" />
-    <ProjectReference Include="..\Aban360.ClaimPool.GatewayAdhoc\Aban360.ClaimPool.GatewayAdhoc.csproj" />
-    <ProjectReference Include="..\Aban360.ClaimPool.Persistence\Aban360.ClaimPool.Persistence.csproj" />
-    <ProjectReference Include="..\Aban360.Common.Db\Aban360.Common.Db.csproj" />
-    <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
-    <ProjectReference Include="..\Aban360.InstallationPool.Application\Aban360.InstallationPool.Application.csproj" />
-    <ProjectReference Include="..\Aban360.InstallationPool.Persistence\Aban360.InstallationPool.Persistence.csproj" />
-    <ProjectReference Include="..\Aban360.LocationPool.Application\Aban360.LocationPool.Application.csproj" />
-    <ProjectReference Include="..\Aban360.LocationPool.Domain\Aban360.LocationPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.LocationPool.GatewayAdhoc\Aban360.LocationPool.GatewayAdhoc.csproj" />
-    <ProjectReference Include="..\Aban360.LocationPool.Infrastructure\Aban360.LocationPool.Infrastructure.csproj" />
-    <ProjectReference Include="..\Aban360.LocationPool.Persistence\Aban360.LocationPool.Persistence.csproj" />
-    <ProjectReference Include="..\Aban360.MeterPool.Application\Aban360.MeterPool.Application.csproj" />
-    <ProjectReference Include="..\Aban360.MeterPool.Persistence\Aban360.MeterPool.Persistence.csproj" />
-    <ProjectReference Include="..\Aban360.PaymentPool.Application\Aban360.PaymentPool.Application.csproj" />
-    <ProjectReference Include="..\Aban360.PaymentPool.Persistence\Aban360.PaymentPool.Persistence.csproj" />
     <ProjectReference Include="..\Aban360.ReportPool.Application\Aban360.ReportPool.Application.csproj" />
+    <ProjectReference Include="..\Aban360.ReportPool.Domain\Aban360.ReportPool.Domain.csproj" />
+    <ProjectReference Include="..\Aban360.ReportPool.GatewayAdhoc\Aban360.ReportPool.GatewayAdhoc.csproj" />
     <ProjectReference Include="..\Aban360.ReportPool.Persistence\Aban360.ReportPool.Persistence.csproj" />
-    <ProjectReference Include="..\Aban360.SystemPool.Application\Aban360.SystemPool.Application.csproj" />
-    <ProjectReference Include="..\Aban360.SystemPool.Domain\Aban360.SystemPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.UserPool.Application\Aban360.UserPool.Application.csproj" />
     <ProjectReference Include="..\Aban360.UserPool.Domain\Aban360.UserPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.UserPool.GatewayAdhoc\Aban360.UserPool.GatewayAdhoc.csproj" />
     <ProjectReference Include="..\Aban360.UserPool.Infrastructure\Aban360.UserPool.Infrastructure.csproj" />
     <ProjectReference Include="..\Aban360.UserPool.Persistence\Aban360.UserPool.Persistence.csproj" />
-    <ProjectReference Include="..\Aban360.WorkflowPool.Application\Aban360.WorkflowPool.Application.csproj" />
-    <ProjectReference Include="..\Aban360.WorkflowPool.Domain\Aban360.WorkflowPool.Domain.csproj" />
-    <ProjectReference Include="..\Aban360.WorkflowPool.GatewayAdHoc\Aban360.WorkflowPool.GatewayAdHoc.csproj" />
-    <ProjectReference Include="..\Aban360.WorkflowPool.Persistence\Aban360.WorkflowPool.Persistence.csproj" />
   </ItemGroup>
 
   <ItemGroup>
