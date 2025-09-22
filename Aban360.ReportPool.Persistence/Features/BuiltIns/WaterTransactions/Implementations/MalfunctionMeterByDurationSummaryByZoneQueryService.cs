@@ -117,7 +117,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 				    	On t5.C0=c.WaterDiameterId
                     WHERE 
                     		c.ToDayJalali IS NULL AND
-                    		c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
+                            (@fromReadingNumber IS NULL OR
+                             @toReadingNumber IS NULL OR  
+                            c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber )AND
                             c.ZoneId IN @zoneIds
 				    Group by v.ZoneTitle";
         }

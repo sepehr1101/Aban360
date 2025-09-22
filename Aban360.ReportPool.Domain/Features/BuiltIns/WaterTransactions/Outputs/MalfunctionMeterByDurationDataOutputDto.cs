@@ -27,7 +27,7 @@
         public string MeterLife { get; set; }
         public string PhoneNumber { get; set; }
         public string MobileNumber { get; set; }
-        public string WaterRequestDateJalali { get; set; }
+        public string MeterRequestDateJalali { get; set; }
         public string DeletionStateTitle { get; set; }
         public long SumItems { get; set; }
 

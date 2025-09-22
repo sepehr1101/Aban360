@@ -66,8 +66,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						b.WaterDiameterTitle,
 						b.UsageTitle
                     From [CustomerWarehouse].dbo.Bills b
-                    Where 
-                    	b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
+                    Where                     	
+                        (@FromReadingNumber IS NULL or
+                    	@ToReadingNumber IS NULL or 
+                    	b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND
                     	b.RegisterDay BETWEEN @fromDate AND @toDate AND
                     	b.ZoneId IN @zoneIds AND
                     	b.CounterStateCode=1";

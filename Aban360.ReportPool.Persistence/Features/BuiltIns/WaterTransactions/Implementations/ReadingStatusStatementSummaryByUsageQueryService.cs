@@ -62,7 +62,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	COUNT(Case When b.CounterStateCode=7 Then 1 End)AS Obstacle,
                     	COUNT(Case When b.CounterStateCode=8 Then 1 End)AS Temporarily,
                     	COUNT(Case When b.CounterStateCode!=1 Then 1 End)AS AllCount,
-						COUNT(Case When b.ReadingStateTitle IN (N'خوداظهاری حضوری',N'خوداظهاری غیرحضوری')Then 1 End) as SelfClaimedCount
+						COUNT(Case When b.ReadingStateTitle IN (N'خوداظهاری حضوری',N'خوداظهاری غیرحضوری')Then 1 End) as SelfClaimedCount,
                     	COUNT(Case When b.CounterStateCode=1 Then 1 End)AS Ruined
                     From [CustomerWarehouse].dbo.Bills b
                     Where
@@ -70,7 +70,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	(@isRegisterDate=1 AND b.RegisterDay BETWEEN @fromDate AND @toDate)OR
                     	(@isRegisterDate=0 AND b.NextDay BETWEEN @fromDate AND @toDate)
                     	)AND
-                    	(b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)AND
+                        (@FromReadingNumber IS NULL or
+                    	@ToReadingNumber IS NULL or 
+                    	b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND
                     	b.ZoneId in @zoneIds
                     Group By  b.UsageTitle";
         }

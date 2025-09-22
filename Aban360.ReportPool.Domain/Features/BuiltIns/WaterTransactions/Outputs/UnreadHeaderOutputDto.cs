@@ -11,8 +11,8 @@
     }
     public record UnreadSummaryHeaderOutputDto
     {
-        public string FromReadingNumber { get; set; }
-        public string ToReadingNumber { get; set; }
+        public string? FromReadingNumber { get; set; }
+        public string? ToReadingNumber { get; set; }
 
         public int FromPeriodCount { get; set; }
         public int ToPeriodCount { get; set; }

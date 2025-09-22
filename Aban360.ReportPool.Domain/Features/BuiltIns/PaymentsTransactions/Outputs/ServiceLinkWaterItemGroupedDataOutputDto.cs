@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs
 {
-    public record SewageWaterItemGroupedDataOutputDto
+    public record ServiceLinkWaterItemGroupedDataOutputDto
     {
         public string ItemTitle { get; set; }
         public long Amount { get; set; }

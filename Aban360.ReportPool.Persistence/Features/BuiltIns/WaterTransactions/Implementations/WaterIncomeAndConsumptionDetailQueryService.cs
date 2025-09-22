@@ -93,7 +93,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						b.ConsumptionAverage,
 						b.WaterDiameterTitle as MeterDiameterTitle,
 						b.BranchType AS BranchType,	
-                        c.DeletionStateTitle AS UseStateTitle
+                        c.DeletionStateTitle AS UseStateTitle,
 						(b.CommercialCount+b.DomesticCount+b.OtherCount) as BillUnitCounts,
 						b.Duration,
 						b.SumItems,

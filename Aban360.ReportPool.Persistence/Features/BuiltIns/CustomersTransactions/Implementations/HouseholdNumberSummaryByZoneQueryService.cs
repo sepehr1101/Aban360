@@ -68,7 +68,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     FROM [CustomerWarehouse].dbo.Clients c
                     WHERE 
 	            		c.ToDayJalali IS NULL AND
-                        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber AND
+							(@fromReadingNumber IS NULL OR
+							@toReadingNumber IS NULL OR
+							c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
                         c.ZoneId in @zoneIds AND
 	            		c.HouseholdDateJalali BETWEEN @fromHouseholdDateJalali AND @toHouseholdDateJalali
                     )

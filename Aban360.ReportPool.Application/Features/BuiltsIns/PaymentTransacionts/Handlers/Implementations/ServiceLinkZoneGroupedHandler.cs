@@ -9,16 +9,16 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Implementations
 {
-    internal sealed class WaterZoneGroupedHandler : IWaterZoneGroupedHandler
+    internal sealed class ServiceLinkZoneGroupedHandler : IServiceLinkZoneGroupedHandler
     {
-        private readonly IWaterZoneGroupedQueryService _waterZoneGroupedQueryService;
+        private readonly IServiceLinkZoneGroupedQueryService _serviceLinkZoneGroupedQueryService;
         private readonly IValidator<ServiceLinkWaterItemGroupedInputDto> _validator;
-        public WaterZoneGroupedHandler(
-            IWaterZoneGroupedQueryService waterZoneGroupedQueryService,
+        public ServiceLinkZoneGroupedHandler(
+            IServiceLinkZoneGroupedQueryService serviceLinkZoneGroupedQueryService,
             IValidator<ServiceLinkWaterItemGroupedInputDto> validator)
         {
-            _waterZoneGroupedQueryService = waterZoneGroupedQueryService;
-            _waterZoneGroupedQueryService.NotNull(nameof(waterZoneGroupedQueryService));
+            _serviceLinkZoneGroupedQueryService = serviceLinkZoneGroupedQueryService;
+            _serviceLinkZoneGroupedQueryService.NotNull(nameof(serviceLinkZoneGroupedQueryService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -33,8 +33,8 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto> waterZoneGrouped = await _waterZoneGroupedQueryService.GetInfo(input);
-            return waterZoneGrouped;
+            ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto> serviceLinkZoneGrouped = await _serviceLinkZoneGroupedQueryService.GetInfo(input);
+            return serviceLinkZoneGrouped;
         }
     }
 }

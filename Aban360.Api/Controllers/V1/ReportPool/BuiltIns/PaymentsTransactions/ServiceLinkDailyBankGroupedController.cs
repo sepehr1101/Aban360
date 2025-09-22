@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
 {
-    [Route("v1/sewage-daily-bank-grouped")]
-    public class SewageDailyBankGroupedController : BaseController
+    [Route("v1/service-link-daily-bank-grouped")]
+    public class ServiceLinkDailyBankGroupedController : BaseController
     {
-        private readonly ISewageDailyBankGroupedHandler _dailyBankGrouped;
+        private readonly IServiceLinkDailyBankGroupedHandler _dailyBankGrouped;
         private readonly IReportGenerator _reportGenerator;
-        public SewageDailyBankGroupedController(
-            ISewageDailyBankGroupedHandler dailyBankGrouped,
+        public ServiceLinkDailyBankGroupedController(
+            IServiceLinkDailyBankGroupedHandler dailyBankGrouped,
             IReportGenerator reportGenerator)
         {
             _dailyBankGrouped = dailyBankGrouped;

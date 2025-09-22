@@ -72,7 +72,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	(@isRegisterDate=1 AND b.RegisterDay BETWEEN @fromDate AND @toDate)OR
                     	(@isRegisterDate=0 AND b.NextDay BETWEEN @fromDate AND @toDate)
                     	)AND
-                    	(b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)AND
+                        (@FromReadingNumber IS NULL or
+                    	@ToReadingNumber IS NULL or 
+                    	b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND
                     	b.ZoneId IN @zoneIds
                     Group By 
                     	Case When @isRegisterDate=1 Then b.RegisterDay Else b.NextDay End ,

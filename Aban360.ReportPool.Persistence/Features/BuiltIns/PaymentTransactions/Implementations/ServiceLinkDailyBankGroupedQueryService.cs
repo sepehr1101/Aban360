@@ -10,9 +10,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Implementations
 {
-    internal sealed class SewageDailyBankGroupedQueryService : AbstractBaseConnection, ISewageDailyBankGroupedQueryService
+    internal sealed class ServiceLinkDailyBankGroupedQueryService : AbstractBaseConnection, IServiceLinkDailyBankGroupedQueryService
     {
-        public SewageDailyBankGroupedQueryService(IConfiguration configuration)
+        public ServiceLinkDailyBankGroupedQueryService(IConfiguration configuration)
             : base(configuration)
         { }
 

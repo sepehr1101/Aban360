@@ -43,6 +43,7 @@
         public static string UnsuccessedPay => $"پرداخت نشد";
 
         public static string InvalidPercent => $"درصد اشتباه وارد شده";
+        public static string Incalculable => $"غیر قابل محاسبه";
 
         public static string MessageException(string message) => $"خطا : {message}";
 

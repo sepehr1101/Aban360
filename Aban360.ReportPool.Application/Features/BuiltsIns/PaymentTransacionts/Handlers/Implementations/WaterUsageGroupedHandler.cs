@@ -13,10 +13,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
     internal sealed class WaterUsageGroupedHandler : IWaterUsageGroupedHandler
     {
         private readonly IWaterUsageGroupedQueryService _waterUsageGroupedQueryService;
-        private readonly IValidator<SewageWaterItemGroupedInputDto> _validator;
+        private readonly IValidator<ServiceLinkWaterItemGroupedInputDto> _validator;
         public WaterUsageGroupedHandler(
             IWaterUsageGroupedQueryService waterUsageGroupedQueryService,
-            IValidator<SewageWaterItemGroupedInputDto> validator)
+            IValidator<ServiceLinkWaterItemGroupedInputDto> validator)
         {
             _waterUsageGroupedQueryService = waterUsageGroupedQueryService;
             _waterUsageGroupedQueryService.NotNull(nameof(waterUsageGroupedQueryService));
@@ -25,7 +25,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<SewageWaterItemGroupedHeaderOutputDto, SewageWaterItemGroupedDataOutputDto>> Handle(SewageWaterItemGroupedInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto>> Handle(ServiceLinkWaterItemGroupedInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -34,7 +34,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<SewageWaterItemGroupedHeaderOutputDto, SewageWaterItemGroupedDataOutputDto> waterUsageGrouped = await _waterUsageGroupedQueryService.GetInfo(input);
+            ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto> waterUsageGrouped = await _waterUsageGroupedQueryService.GetInfo(input);
             return waterUsageGrouped;
         }
     }

@@ -4,8 +4,8 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Contracts
 {
-    public interface ISewageZoneGroupedQueryService
+    public interface IServiceLinkUsageGroupedQueryService
     {
-        Task<ReportOutput<SewageWaterItemGroupedHeaderOutputDto, SewageWaterItemGroupedDataOutputDto>> GetInfo(SewageWaterItemGroupedInputDto input);
+        Task<ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto>> GetInfo(ServiceLinkWaterItemGroupedInputDto input);
     }
 }
