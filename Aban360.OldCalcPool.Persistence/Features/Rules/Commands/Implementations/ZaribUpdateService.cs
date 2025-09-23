@@ -3,7 +3,6 @@ using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Commands;
 using Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Contracts;
 using Dapper;
 using Microsoft.Extensions.Configuration;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Implementations
 {

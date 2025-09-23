@@ -82,7 +82,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 	rb.SumItems BETWEEN @fromAmount AND @toAmount) AND
                     (@fromReadingNumber IS NULL OR
                     @toReadingNumber IS NULL OR
-                    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)
+                    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
+					c.ToDayJalali IS NULL
                     {zoneQuery}";
         }
 

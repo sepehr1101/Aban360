@@ -5,5 +5,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts
     public interface IZaribCQueryService
     {
         Task<ZaribCQueryDto> GetZaribC(string from, string to);
+        Task<IEnumerable<ZaribCQueryDto>> GetZaribC();
     }
 }
