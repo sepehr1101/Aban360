@@ -180,5 +180,12 @@
         public static string RuinedMeterIncomeDetail { get { return $" {Report} جزئیات درآمد کنتور خراب"; } }
         public static string RuinedMeterIncomeSummary { get { return $" {Report} خلاصه درآمد کنتور خراب"; } }
 
+
+        public static string TagGroupSummary { get { return $" {Report} خلاصه گروه تگ"; } }
+        public static string TagGroupDetail { get { return $" {Report} جزئیات گروه تگ"; } }
+
+        public static string TagSummary { get { return $" {Report} خلاصه تگ"; } }
+        public static string TagDetail { get { return $" {Report} جزئیات تگ"; } }
+
     }
 }

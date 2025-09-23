@@ -28,6 +28,7 @@
         public static string BillIdNotFound => "شناسه قبض یافت نشد!";
         public static string InvalidDate => "تاریخ ناصحیح";
         public static string HasNotSiphon => "سیفون ندارد";
+        public static string DuplicateBillIdTags => "شناسه قبض با شناسه تگ جاری تکراری است.";
 
         public static string ToDateMoreThanDate(string date) => $"تاریخ پایان باید بزرگتر از {date} باشد.";
         public static string FromDateMoreThanDate(string date) => $"تاریخ شروع باید بزرگتر از {date} باشد.";

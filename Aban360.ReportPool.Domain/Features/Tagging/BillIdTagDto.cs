@@ -6,6 +6,7 @@
         {
             public long Id { get; set; }
             public string BillId { get; set; } = string.Empty;
+            public string ExpireDateJalali { get; set; }
             public int TagId { get; set; }
             public string TagTitle { get; set; } = string.Empty;
             public DateTime CreateDateTime { get; set; }
@@ -16,6 +17,7 @@
         {
             public string BillId { get; set; } = string.Empty;
             public int TagId { get; set; }
+            public string ExpireDateJalali { get; set; }
         }
     }
 
