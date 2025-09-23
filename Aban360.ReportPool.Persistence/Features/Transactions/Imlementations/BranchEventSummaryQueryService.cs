@@ -99,7 +99,9 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	'' AS BankDateJalali,
                     	'' AS BankName,
                     	r.ItemTitle+'('+r.TypeId+')' AS Description	,
-						0 AS BankCode
+						0 AS BankCode, 
+                        r.OffAmount as DiscountAmount,
+                        r.OffTitle as DiscountTitle
                     From [CustomerWarehouse].dbo.RequestBillDetails r
                     Where
                     	r.CustomerNumber=@customerNumber AND 
@@ -116,7 +118,9 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	p.RegisterDay AS BankDateJalali,
                     	p.BankName,
                     	p.BankName +' - '+p.PaymentGateway AS Description,
-						p.BankCode
+						p.BankCode,
+                        0 as DiscountAmount,
+                        '' as DiscountTitle
                     From [CustomerWarehouse].dbo.PaymentsEn p
                     Where 
                     	p.CustomerNumber=@customerNumber AND 

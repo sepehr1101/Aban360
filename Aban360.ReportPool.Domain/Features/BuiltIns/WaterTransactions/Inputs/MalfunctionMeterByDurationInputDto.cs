@@ -2,9 +2,9 @@
 {
     public record MalfunctionMeterByDurationInputDto
     {
+        public bool IsMalfunctionLatest { get; set; }
         public string? FromReadingNumber { get; set; }
         public string? ToReadingNumber { get; set; }
-
 
         public int FromMalfunctionPeriodCount { get; set; }
         public int ToMalfunctionPeriodCount { get; set; }
