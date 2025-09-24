@@ -36,7 +36,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ToDateJalali=input.ToDateJalali,
                 FromAmount=input.FromAmount,
                 ToAmount=input.ToAmount,
-                ReportDateJalali=DateTime.Now.ToShortPersianDateString(),
+                FromBankId = input.FromBankId,
+                ToBankId = input.ToBankId,
+                ReportDateJalali =DateTime.Now.ToShortPersianDateString(),
                 RecordCount= (dailyBankGroupedData is not null && dailyBankGroupedData.Any()) ? dailyBankGroupedData.Count() : 0,
             };
 

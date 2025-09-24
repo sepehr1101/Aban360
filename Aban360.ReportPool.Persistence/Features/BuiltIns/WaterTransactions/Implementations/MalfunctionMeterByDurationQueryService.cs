@@ -14,21 +14,21 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
     {
         public MalfunctionMeterByDurationQueryService(IConfiguration configuration)
             : base(configuration)
-        { 
+        {
         }
 
         public async Task<ReportOutput<MalfunctionMeterByDurationHeaderOutputDto, MalfunctionMeterByDurationDataOutputDto>> Get(MalfunctionMeterByDurationInputDto input)
         {
-            string malfunctionMeterByDurationQueryString = GetMalfunctionMeterByDurationQuery();
+            string query = input.IsMalfunctionLatest? GetQueryLatest():GetQuery();
             var @params = new
             {
                 fromReadingNumber = input.FromReadingNumber,
                 toReadingNumber = input.ToReadingNumber,
                 zoneIds = input.ZoneIds,
-                fromMalfunctionPeriodCount=input.FromMalfunctionPeriodCount,
-                toMalfunctionPeriodCount=input.ToMalfunctionPeriodCount,
+                fromMalfunctionPeriodCount = input.FromMalfunctionPeriodCount,
+                toMalfunctionPeriodCount = input.ToMalfunctionPeriodCount,
             };
-            IEnumerable<MalfunctionMeterByDurationDataOutputDto> malfunctionMeterByDurationData = await _sqlReportConnection.QueryAsync<MalfunctionMeterByDurationDataOutputDto>(malfunctionMeterByDurationQueryString, @params,null, 180);
+            IEnumerable<MalfunctionMeterByDurationDataOutputDto> malfunctionMeterByDurationData = await _sqlReportConnection.QueryAsync<MalfunctionMeterByDurationDataOutputDto>(query, @params, null, 180);
             MalfunctionMeterByDurationHeaderOutputDto malfunctionMeterByDurationHeader = new MalfunctionMeterByDurationHeaderOutputDto()
             {
                 FromReadingNumber = input.FromReadingNumber,
@@ -41,7 +41,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             return result;
         }
 
-        private string GetMalfunctionMeterByDurationQuery()
+        private string GetQueryLatest()
         {
             return @"-- آخرین قبض معتبر
                     ;WITH ValidLatestBills AS (
@@ -116,7 +116,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                             (@fromReadingNumber IS NULL OR
                              @toReadingNumber IS NULL OR  
                             c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber )AND
-                            c.ZoneId IN @zoneIds
+                            c.ZoneId IN @zoneIds AND
+							c.DeletionStateId IN (0)
                     )
                     SELECT 
                         v.BillId,
@@ -163,5 +164,109 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     ) lc
                     ORDER BY lc.ChangeDateJalali DESC;";
         }
+        private string GetQuery()
+        {
+            return @"-- آخرین قبض معتبر
+                    ;WITH ValidLatestBills AS (
+                        SELECT
+                            b.BillId,
+							COUNT(b.BillId) as MalfunctionPeriodCount,
+                            AVG(b.ConsumptionAverage)as ConsumptionAverage,
+                            SUM(b.Consumption)as Consumption,
+	                        SUM(b.SumItems)as SumItems,
+                            MAX(b.RegisterDay) AS LatestRegisterDay
+                        FROM [CustomerWarehouse].dbo.Bills b
+                        WHERE                     		
+                    		b.CounterStateCode = 1 AND 
+                    		NOT EXISTS (--بعد از اخرین قبض تعویض شده اند
+                              SELECT 1
+                              FROM [CustomerWarehouse].dbo.MeterChange mc
+                              WHERE 
+                    			mc.CustomerNumber = b.CustomerNumber
+                                AND mc.ZoneId = b.ZoneId
+                                AND mc.ChangeDateJalali > b.RegisterDay
+                          )
+						  Group By b.BillId
+						  Having COUNT(b.BillId) BETWEEN @fromMalfunctionPeriodCount AND @toMalfunctionPeriodCount
+
+                    ),
+                    -- اطلاعات مشتری
+                    ClientData AS (
+                        SELECT 
+                            c.BillId,
+                            c.CustomerNumber,
+                            c.ZoneId,
+                            c.ZoneTitle,
+                            c.ReadingNumber,
+                            c.UsageTitle,
+							c.ContractCapacity AS ContractualCapacity,
+                            TRIM(c.FirstName)+' '+TRIM(c.SureName) AS FullName,
+                            TRIM(c.FirstName) AS FirstName,
+                            TRIM(c.SureName) AS Surname,
+                            c.WaterDiameterTitle AS MeterDiameterTitle,
+                            c.DomesticCount AS DomesticUnit,
+                            c.CommercialCount AS CommercialUnit,
+                            c.OtherCount AS OtherUnit,
+                            TRIM(c.Address) AS Address,
+							c.BranchType,
+							c.MainSiphonTitle AS SiphonDiameterTitle,
+                            TRIM(c.PhoneNo) AS PhoneNumber,
+                            TRIM(c.MobileNo) AS MobileNumber,
+                            c.WaterInstallDate AS MeterInstallationDateJalali,
+                            c.WaterRequestDate AS MeterRequestDateJalali,
+                            c.DeletionStateTitle
+                        FROM [CustomerWarehouse].dbo.Clients c
+                        WHERE 
+                    		c.ToDayJalali IS NULL AND
+                            (@fromReadingNumber IS NULL OR
+                             @toReadingNumber IS NULL OR  
+                            c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber )AND
+                            c.ZoneId IN @zoneIds AND
+							c.DeletionStateId IN (0)
+                    )
+                    SELECT 
+                        c.BillId,
+                        c.CustomerNumber,
+                        c.ZoneId,
+                        c.ZoneTitle,
+                        c.ReadingNumber,
+                        c.UsageTitle,
+                        v.ConsumptionAverage,
+                        c.ContractualCapacity,
+                        v.LatestRegisterDay,
+                        v.MalfunctionPeriodCount,
+                        ISNULL(lc.ChangeDateJalali, 0) AS LastChangeDateJalali,
+                        c.FullName,
+                        c.FirstName,
+                        c.Surname,
+                        c.MeterDiameterTitle,
+                        c.DomesticUnit,
+                        c.CommercialUnit,
+                        c.OtherUnit,
+                        c.Address,
+                        c.BranchType,
+                        c.PhoneNumber,
+                        c.MobileNumber,
+                        c.SiphonDiameterTitle,
+                        c.MeterInstallationDateJalali,
+                        c.MeterRequestDateJalali,
+                        c.DeletionStateTitle,
+                        v.Consumption,
+	                    v.SumItems
+                    FROM ValidLatestBills v
+                      INNER JOIN ClientData c 
+                    	ON v.BillId = c.BillId
+                    OUTER APPLY (
+                        SELECT TOP 1 mc.ChangeDateJalali
+                        FROM [CustomerWarehouse].dbo.MeterChange mc
+                        WHERE 
+                    		mc.CustomerNumber = c.CustomerNumber AND 
+                            mc.ZoneId = c.ZoneId
+                        ORDER BY mc.ChangeDateJalali DESC
+                    ) lc
+                    ORDER BY lc.ChangeDateJalali DESC;";
+        }
+
+
     }
 }

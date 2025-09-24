@@ -1,4 +1,6 @@
-﻿using Aban360.ReportPool.Application.Features.Tagging.Contracts;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Extensions;
+using Aban360.ReportPool.Application.Features.Tagging.Contracts;
 using Aban360.ReportPool.Domain.Features.Tagging;
 using Aban360.ReportPool.Persistence.Features.Tagging;
 
@@ -67,6 +69,26 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Implementations
         public async Task<bool> Handle(int id)
         {
             return await _service.Delete(id);
+        }
+    }
+
+    public sealed class TagGroupReportsHandler: ITagGroupReportsHandler
+    {
+        private readonly ITagGroupReportQueryService _service;
+        public TagGroupReportsHandler(ITagGroupReportQueryService service)
+        {
+            _service = service;
+            _service.NotNull(nameof(service));  
+        }
+
+        public async Task<ReportOutput<TagsHeaderOutputDto, TagGroupReportDetailDataOutputDto>> Handle(TagsInputDto inputDto, CancellationToken cancellationToken)
+        {
+            return await _service.Get(inputDto);
+        }
+        
+        public async Task<ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto>> Handle(TagsInputDto inputDto,bool isZoneTitle, CancellationToken cancellationToken)
+        {
+            return await _service.Get(inputDto, isZoneTitle);
         }
     }
 }
