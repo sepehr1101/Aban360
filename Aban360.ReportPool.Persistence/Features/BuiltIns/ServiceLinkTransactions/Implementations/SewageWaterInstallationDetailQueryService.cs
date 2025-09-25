@@ -57,6 +57,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             string WaterRegisterDateJalali = nameof(WaterRegisterDateJalali),
                   SewageRegisterDateJalali = nameof(SewageRegisterDateJalali);
             string dateField = isWater ? WaterRegisterDateJalali : SewageRegisterDateJalali;
+            string requestField = isWater ? "WaterRequestDate" : "SewageRequestDate";
             return $@";WITH CTE AS
                     (
 	                    SELECT 
@@ -90,15 +91,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.DomesticCount	AS DomesticUnit,
                     	c.CommercialCount AS CommercialUnit,
                     	c.OtherCount AS OtherUnit,
-                        (c.DomesticCount+c.CommercialCount +c.OtherCount) AS TotalUnit ,
+                        IIF((c.DomesticCount+c.CommercialCount +c.OtherCount=0) ,1, (c.DomesticCount+c.CommercialCount +c.OtherCount)) AS TotalUnit,
                     	c.BillId,
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,
-                    	c.WaterRequestDate AS RequestDate,
-                    	c.WaterRegisterDateJalali AS InstallationDate
+                    	c.{requestField} AS RequestDate,
+                    	c.{dateField} AS InstallationDate
                     FROM CTE c
-                    JOIN [Db70].dbo.T5 t5
-	                    On t5.C0=c.WaterDiameterId
                     JOIN [Db70].dbo.T51 t51
 	                    On t51.C0=c.ZoneId
                     JOIN [Db70].dbo.T46 t46

@@ -14,11 +14,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
     {
         public RemovedBillDetailQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<RemovedBillHeaderOutputDto, RemovedBillDetailDataOutputDto>> GetInfo(RemovedBillInputDto input)
         {
-            string RemovedBillQueryString = GetRemovedBillDataQuery(input.ZoneIds.Any());
+            string RemovedBillQueryString = GetQuery(input.ZoneIds.Any());
             var @params = new
             {
                 fromDate = input.FromDateJalali,
@@ -49,7 +50,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             return result;
         }
 
-        private string GetRemovedBillDataQuery(bool hasZone)
+        private string GetQuery(bool hasZone)
         {
             string zoneQuery = hasZone ? "AND c.ZoneId IN @zoneIds" : string.Empty;
             return @$"Select
