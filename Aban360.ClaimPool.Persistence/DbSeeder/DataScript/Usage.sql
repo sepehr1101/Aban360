@@ -1,5 +1,6 @@
 
-
+INSERT [ClaimPool].[Usage] ([ID], [Title], [ProvinceId]) VALUES (0, N'سایر', 13)
+GO	
 INSERT [ClaimPool].[Usage] ([ID], [Title], [ProvinceId]) VALUES (1, N'مسکوني', 13)
 GO
 INSERT [ClaimPool].[Usage] ([ID], [Title], [ProvinceId]) VALUES (2, N'تجاري', 13)
