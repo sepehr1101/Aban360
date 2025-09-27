@@ -18,11 +18,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto>> GetInfo(ServiceLinkWaterItemGroupedInputDto input)
         {
-            string waterUsageGroupeds = GetWaterUsageGroupedQuery();
+            string waterUsageGroupeds = GetWaterUsageGroupedQuery(input.ZoneIds.Any());
             var @params = new
             {
                 FromDate = input.FromDateJalali,
                 ToDate = input.ToDateJalali,
+                fromBankId = input.FromBankId,
+                toBankId = input.ToBankId,
+                zoneIds = input.ZoneIds,
             };
             IEnumerable<ServiceLinkWaterItemGroupedDataOutputDto> waterUsageGroupedData = await _sqlReportConnection.QueryAsync<ServiceLinkWaterItemGroupedDataOutputDto>(waterUsageGroupeds, @params);
             ServiceLinkWaterItemGroupedHeaderOutputDto waterUsageGroupedHeader = new ServiceLinkWaterItemGroupedHeaderOutputDto()
@@ -44,9 +47,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             return result;
         }
 
-        private string GetWaterUsageGroupedQuery()
+        private string GetWaterUsageGroupedQuery(bool hasZone)
         {
-            return @"Select 
+            string zoneQuery = hasZone ? "AND p.ZoneId IN @ZoneIds" : string.Empty;
+            return @$"Select 
                     	SUM(p.Amount) AS Amount,
                     	c.UsageTitle AS ItemTitle,
 						COUNT(c.UsageTitle) AS CustomerCount,
@@ -75,6 +79,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                         (@FromDate IS NULL OR 
                         @ToDate IS NULL OR
                     	p.RegisterDay BETWEEN @FromDate and @ToDate)
+                        AND (@fromBankId IS NULL OR
+						    @toBankId IS NULL OR
+						    p.BankCode BETWEEN @fromBankId AND @toBankId)
+                        {zoneQuery}
                     GROUP BY c.UsageTitle";
             //todo
         }

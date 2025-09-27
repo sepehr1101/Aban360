@@ -54,6 +54,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 FromConsumption = input.Inputs.FromConsumption,
                 ToConsumption = input.Inputs.ToConsumption,
 
+                CustomerCount = levelData?.Sum(w => w.BillCount) ?? 0,
                 SumBillCount = levelData?.Sum(w => w.BillCount) ?? 0,
                 SumConsumption = levelData?.Sum(w => w.Consumption) ?? 0,
                 ConsumptionAverage = levelData?.Count() > 0 ? levelData.Average(w => w.ConsumptionAverage) : 0,

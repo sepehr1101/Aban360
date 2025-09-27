@@ -34,6 +34,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (data is not null && data.Any()) ? data.Count() : 0,
+                CustomerCount = (data is not null && data.Any()) ? data.Count() : 0,
                 ZoneTitle = (data is not null && data.Any()) ? data.FirstOrDefault().ZoneTitle : "",
                 Title= ReportLiterals.ReadingChecklist,
             };

@@ -7,12 +7,14 @@
 
         public string ReportDateJalali { get; set; }
         public int RecordCount { get; set; }
+        public int CustomerCount { get; set; }
+        public int BillCount { get; set; }
 
-        public int SumTotalCount { get; set; }
-        public int SumOverdueCount { get; set; }
-        public long SumOverdueAmount { get; set; }
-        public long SumCurrentAmount { get; set; }
-        public long SumTotalAmount{ get; set; }
+        public long Amount { get; set; }
+        public long OverdueAmount { get; set; }
+        public int OverdueCount { get; set; }
+        public long DueAmount { get; set; }
+        public int DueCount { get; set; }
 
 
     }

@@ -20,26 +20,30 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
         {
             string dailyBankGroupeds = GetDailyBankGroupedQuery(input.ZoneIds.Any());
             var @params = new
-            { 
-                FromDate=input.FromDateJalali,
-                ToDate=input.ToDateJalali,
-                FromAmount=input.FromAmount,
-                ToAmount=input.ToAmount,
-                ZoneIds=input.ZoneIds,
+            {
+                FromDate = input.FromDateJalali,
+                ToDate = input.ToDateJalali,
+                FromAmount = input.FromAmount,
+                ToAmount = input.ToAmount,
+                ZoneIds = input.ZoneIds,
                 fromBankId = input.FromBankId,
                 toBankId = input.ToBankId,
             };
-            IEnumerable<DailyBankGroupedDataOutputDto> dailyBankGroupedData = await _sqlReportConnection.QueryAsync<DailyBankGroupedDataOutputDto>(dailyBankGroupeds,@params);
+            IEnumerable<DailyBankGroupedDataOutputDto> dailyBankGroupedData = await _sqlReportConnection.QueryAsync<DailyBankGroupedDataOutputDto>(dailyBankGroupeds, @params);
             DailyBankGroupedHeaderOutputDto dailyBankGroupedHeader = new DailyBankGroupedHeaderOutputDto()
             {
-                FromDateJalali=input.FromDateJalali,
-                ToDateJalali=input.ToDateJalali,
-                FromAmount=input.FromAmount,
-                ToAmount=input.ToAmount,
+                FromDateJalali = input.FromDateJalali,
+                ToDateJalali = input.ToDateJalali,
+                FromAmount = input.FromAmount,
+                ToAmount = input.ToAmount,
                 FromBankId = input.FromBankId,
                 ToBankId = input.ToBankId,
-                ReportDateJalali =DateTime.Now.ToShortPersianDateString(),
-                RecordCount= (dailyBankGroupedData is not null && dailyBankGroupedData.Any()) ? dailyBankGroupedData.Count() : 0,
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                RecordCount = (dailyBankGroupedData is not null && dailyBankGroupedData.Any()) ? dailyBankGroupedData.Count() : 0,
+                CustomerCount = (dailyBankGroupedData is not null && dailyBankGroupedData.Any()) ? dailyBankGroupedData.Count() : 0,
+
+                TotalCount = dailyBankGroupedData?.Sum(r => r.TotalCount) ?? 0,
+                TotalAmount = dailyBankGroupedData?.Sum(r => r.TotalAmount) ?? 0,
             };
 
             var result = new ReportOutput<DailyBankGroupedHeaderOutputDto, DailyBankGroupedDataOutputDto>(ReportLiterals.WaterDailyBankGrouped, dailyBankGroupedHeader, dailyBankGroupedData);
@@ -65,7 +69,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                             (@FromDate IS NOT NULL AND @ToDate IS NOT NULL AND p.RegisterDay BETWEEN @FromDate AND @ToDate)
                             OR (@FromDate IS NULL AND @ToDate IS NULL)
                         )
-                        AND 
                         (
                             (@FromAmount IS NOT NULL AND @ToAmount IS NOT NULL AND p.Amount BETWEEN @FromAmount AND @ToAmount)
                             OR (@FromAmount IS NULL AND @ToAmount IS NULL)

@@ -18,13 +18,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>> GetInfo(PaymentDetailInputDto input)
         {
-            string waterPaymentDetails = GetWaterPaymentDetailQuery();
+            string waterPaymentDetails = GetWaterPaymentDetailQuery(input.ZoneIds.Any());
             var @params = new
             {
                 FromDate = input.FromDateJalali,
                 ToDate = input.ToDateJalali,
                 FromAmount = input.FromAmount,
                 ToAmount = input.ToAmount,
+                fromBankId=input.FromBankId,
+                toBankId=input.ToBankId,
+                zoneIds=input.ZoneIds,
             };
             IEnumerable<PaymentDetailDataOutputDto> waterPaymentDetailData = await _sqlReportConnection.QueryAsync<PaymentDetailDataOutputDto>(waterPaymentDetails, @params);
             PaymentDetailHeaderOutputDto waterPaymentDetailHeader = new PaymentDetailHeaderOutputDto()
@@ -35,6 +38,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ToAmount = input.ToAmount,
                 ReportDateJalali=DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (waterPaymentDetailData is not null && waterPaymentDetailData.Any()) ? waterPaymentDetailData.Count() : 0,
+                CustomerCount = (waterPaymentDetailData is not null && waterPaymentDetailData.Any()) ? waterPaymentDetailData.Count() : 0,
                 TotalAmount = waterPaymentDetailData.Sum(payment => Convert.ToInt64(payment.Amount)),
             };
 
@@ -42,9 +46,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             return result;
         }
 
-        private string GetWaterPaymentDetailQuery()
+        private string GetWaterPaymentDetailQuery(bool hasZone)
         {
-            return @"Select
+            string zoneQuery = hasZone ? "AND p.ZoneId IN @ZoneIds" : string.Empty;
+            return @$"Select
                      	p.CustomerNumber As CustomerNumber,
                     	p.RegisterDay AS BankDateJalali,
                     	p.BankCode AS BankCode,
@@ -61,7 +66,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     		OR p.RegisterDay BETWEEN @FromDate AND @ToDate) 
                     	AND(@FromAmount IS  NULL 
                     		OR @ToAmount IS NULL 
-                    		OR p.Amount BETWEEN @FromAmount AND @ToAmount)";
+                    		OR p.Amount BETWEEN @FromAmount AND @ToAmount)
+                        AND(@fromBankId IS NULL OR
+						    @toBankId IS NULL OR
+						    p.BankCode BETWEEN @fromBankId AND @toBankId)
+                        {zoneQuery}";
         }
     }
 }

@@ -38,7 +38,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 FromReadingNumber=input.FromReadingNumber,
                 ToReadingNumber=input.ToReadingNumber,
                 RecordCount= (withoutBillData is not null && withoutBillData.Any()) ? withoutBillData.Count() : 0,
-                CustomerCount= (withoutBillData is not null && withoutBillData.Any()) ? withoutBillData.Count() : 0,
+                CustomerCount = (withoutBillData is not null && withoutBillData.Any()) ? withoutBillData.Count() : 0,
                 ReportDateJalali =DateTime.Now.ToShortPersianDateString()
             };
 

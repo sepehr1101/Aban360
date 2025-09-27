@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         }
 
         public async Task<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationDetailDataOutputDto>> Get(SewageWaterInstallationInputDto input)
-        {//Todo: second Boolean Field
+        {
             string reportTitle = input.IsWater ? ReportLiterals.WaterInstallationDetail : ReportLiterals.SewageInstallationDetail;
             string query = GetDetailsQuery(input.IsWater, false);
 
@@ -39,6 +39,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                CustomerCount = (installationData is not null && installationData.Any()) ? installationData.Count() : 0,
                 RecordCount = (installationData is not null && installationData.Any()) ? installationData.Count() : 0,
                 Title = reportTitle,
 

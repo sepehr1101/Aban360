@@ -52,7 +52,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             IEnumerable<ServiceLinkCalculationDetailsDataOutputDto> calculationDetailsData = await _sqlReportConnection.QueryAsync<ServiceLinkCalculationDetailsDataOutputDto>(calculationDetailsDataInfoQuery, new { parNoId = input.Input ,zoneId=zoneId});
             if (calculationDetailsData is not null && calculationDetailsData.Any())
             {
-
                 header.InstallmentAmount = calculationDetailsData.FirstOrDefault().InstallmentAmount;
                 header.InstallmentCount = calculationDetailsData.FirstOrDefault().InstallmentCount;
                 header.ReportDateJalali = DateTime.Now.ToShortPersianDateString();

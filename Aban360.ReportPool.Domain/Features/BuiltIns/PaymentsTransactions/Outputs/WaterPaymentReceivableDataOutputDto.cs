@@ -2,12 +2,26 @@
 {
     public record WaterPaymentReceivableDataOutputDto
     {
+        public string BillId { get; set; }
+        public string PayId { get; set; }
+        public string ZoneTitle { get; set; }
         public string UsageTitle { get; set; }
-        public int TotalCount { get; set; }
-        public int OverdueCount { get; set; }//
-        public long OverdueAmount { get; set; }
-        public long CurrentAmount { get; set; }
-        public long TotalAmount { get; set; }
+        public long Amount { get; set; }
+        public string BillIssueDateJalali { get; set; }
+        public string Deadline { get; set; }
+        public string PayDateJalali { get; set; }
+        public string AmountState { get; set; }
 
+    }
+    public record WaterPaymentReceivableSummaryDataOutputDto
+    {
+        public string ItemTitle { get; set; }
+        public int BillCount { get; set; }
+        public int CustomerCount { get; set; }
+        public long Amount { get; set; }
+        public long DueAmount { get; set; }
+        public long OverdueAmount { get; set; }
+        public int DueCount { get; set; }
+        public int OverdueCount { get; set; }
     }
 }

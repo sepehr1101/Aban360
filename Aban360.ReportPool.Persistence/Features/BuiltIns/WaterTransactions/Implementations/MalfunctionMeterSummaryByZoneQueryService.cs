@@ -43,7 +43,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 SumCommercialUnit = malfunctionMeterData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = malfunctionMeterData.Sum(i => i.DomesticUnit),
                 SumOtherUnit = malfunctionMeterData.Sum(i => i.OtherUnit),
-                TotalUnit = malfunctionMeterData.Sum(i => i.TotalUnit)
+                TotalUnit = malfunctionMeterData.Sum(i => i.TotalUnit),
+                CustomerCount = malfunctionMeterData.Sum(i => i.CustomerCount)
             };
 
             ReportOutput<MalfunctionMeterSummaryHeaderOutputDto, MalfunctionMeterSummaryDataOutputDto> result = new ReportOutput<MalfunctionMeterSummaryHeaderOutputDto, MalfunctionMeterSummaryDataOutputDto>(ReportLiterals.MalfunctionMeterSummary + ReportLiterals.ByZone, malfunctionMeterHeader, malfunctionMeterData);

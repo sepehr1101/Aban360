@@ -44,6 +44,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 RecordCount = waterMeterReplacementsData is not null && waterMeterReplacementsData.Any() ? waterMeterReplacementsData.Count() : 0,
                 Title = reportTitle,
 
+                CustomerCount = waterMeterReplacementsData.Sum(i => i.CustomerCount),
                 SumCommercialUnit = waterMeterReplacementsData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = waterMeterReplacementsData.Sum(i => i.DomesticUnit),
                 SumOtherUnit = waterMeterReplacementsData.Sum(i => i.OtherUnit),

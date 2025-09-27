@@ -18,28 +18,30 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<UnpaidHeaderOutputDto, UnpaidDataOutputDto>> GetInfo(UnpaidInputDto input)
         {
-            string unpaids = GetUnpaidQuery(input.ZoneIds?.Any()==true);
+            string unpaids = GetUnpaidQuery(input.ZoneIds?.Any() == true);
             var @params = new
             {
-                FromAmount = input.FromAmount??0,
-                ToAmount = input.ToAmount??long.MaxValue,
-                FromDate=input.FromDateJalali,
-                ToDate=input.ToDateJalali,
-                FromReadingNumber=input.FromReadingNumber,
-                ToReadingNumber=input.ToReadingNumber,
-                ZoneIds=input.ZoneIds,
+                FromAmount = input.FromAmount ?? 0,
+                ToAmount = input.ToAmount ?? long.MaxValue,
+                FromDate = input.FromDateJalali,
+                ToDate = input.ToDateJalali,
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
+                ZoneIds = input.ZoneIds,
             };
-            IEnumerable<UnpaidDataOutputDto> unpaidData = await _sqlReportConnection.QueryAsync<UnpaidDataOutputDto>(unpaids,@params);
+            IEnumerable<UnpaidDataOutputDto> unpaidData = await _sqlReportConnection.QueryAsync<UnpaidDataOutputDto>(unpaids, @params);
             UnpaidHeaderOutputDto unpaidHeader = new UnpaidHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
-                FromAmount=input.FromAmount,
-                ToAmount=input.ToAmount,
+                FromAmount = input.FromAmount,
+                ToAmount = input.ToAmount,
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
+                CustomerCount = (unpaidData is not null && unpaidData.Any()) ? unpaidData.Count() : 0,
                 RecordCount = (unpaidData is not null && unpaidData.Any()) ? unpaidData.Count() : 0,
-                ReportDateJalali = DateTime.Now.ToShortPersianDateString()
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                DebtAmount = unpaidData?.Sum(r => r.DebtAmount) ?? 0
             };
 
             var result = new ReportOutput<UnpaidHeaderOutputDto, UnpaidDataOutputDto>(ReportLiterals.Unpaid, unpaidHeader, unpaidData);
@@ -48,7 +50,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         private string GetUnpaidQuery(bool hasZone)
         {
-            string zoneQuery =hasZone? "AND b.ZoneId IN @ZoneIds":string.Empty;
+            string zoneQuery = hasZone ? "AND b.ZoneId IN @ZoneIds" : string.Empty;
 
             return @$"SELECT 
                         MAX(b.ZoneId) AS ZoneId,

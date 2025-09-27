@@ -41,6 +41,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
 
+                CustomerCount = usageChangeHistoryData is not null && usageChangeHistoryData.Any() ? usageChangeHistoryData.Count() : 0,
                 RecordCount = usageChangeHistoryData is not null && usageChangeHistoryData.Any() ? usageChangeHistoryData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
 

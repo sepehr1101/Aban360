@@ -42,6 +42,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (RequestData is not null && RequestData.Any()) ? RequestData.Count() : 0,
+                CustomerCount = (RequestData is not null && RequestData.Any()) ? RequestData.Count() : 0,
                 Title= reportTitle, 
 
                 SumCommercialUnit = RequestData.Sum(i => i.CommercialUnit),

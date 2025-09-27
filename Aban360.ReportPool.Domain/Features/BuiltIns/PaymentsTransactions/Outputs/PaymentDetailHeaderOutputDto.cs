@@ -9,6 +9,7 @@
         public int RecordCount { get; set; }
         public long TotalAmount { get; set; }
         public string ReportDateJalali { get; set; }
+        public int CustomerCount { get; set; }
 
     }
 }

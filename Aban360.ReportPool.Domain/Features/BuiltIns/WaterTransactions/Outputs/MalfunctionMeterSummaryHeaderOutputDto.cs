@@ -15,5 +15,6 @@
         public int SumCommercialUnit { get; set; }
         public int SumOtherUnit { get; set; }
         public int TotalUnit { get; set; }
+        public int CustomerCount { get; set; }
     }
 }

@@ -46,6 +46,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (data is not null && data.Any()) ? data.Count() : 0,
+                CustomerCount = (data is not null && data.Any()) ? data.Count() : 0,
             };
 
             var result = new ReportOutput<ReadingDailyStatementHeaderOutputDto, ReadingDailyStatementDataOutputDto>(ReportLiterals.ReadingDailyStatement, header, data);

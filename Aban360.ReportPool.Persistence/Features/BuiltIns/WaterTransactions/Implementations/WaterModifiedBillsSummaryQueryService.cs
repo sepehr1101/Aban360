@@ -33,6 +33,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (modifiedBillsData is not null && modifiedBillsData.Any()) ? modifiedBillsData.Count() : 0,
+                CustomerCount = modifiedBillsData.Sum(x => x.Count),
                 Payable = modifiedBillsData.Sum(x => x.Payable),
                 SumItems = modifiedBillsData.Sum(x => x.SumItems),
             };

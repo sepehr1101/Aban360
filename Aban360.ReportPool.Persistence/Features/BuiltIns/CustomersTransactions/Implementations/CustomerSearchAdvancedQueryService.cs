@@ -51,6 +51,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             IEnumerable<CustomerSearchDataOutputDto> customerData = await _sqlReportConnection.QueryAsync<CustomerSearchDataOutputDto>(customerSearchDataInfoQuery, @params, null, 120);//todo: send parameters
             CustomerSearchHeaderOutputDto customerHeader = new CustomerSearchHeaderOutputDto()
             {
+                CustomerCount = (customerData is not null && customerData.Any()) ? customerData.Count() : 0,
                 RecordCount = (customerData is not null && customerData.Any()) ? customerData.Count() : 0,
                 ReportDateJalali =DateTime.Now.ToShortPersianDateString()
             };

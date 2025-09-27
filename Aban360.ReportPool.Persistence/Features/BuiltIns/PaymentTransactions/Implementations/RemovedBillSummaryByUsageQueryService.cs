@@ -41,7 +41,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 RecordCount = RemovedBillData is not null && RemovedBillData.Any() ? RemovedBillData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
 
-                SumAmount = RemovedBillData.Sum(x => x.Amount)
+                SumAmount = RemovedBillData.Sum(x => x.Amount),
+                CustomerCount = RemovedBillData.Sum(x => x.CustomerCount)
             };
 
             var result = new ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto>(ReportLiterals.RemovedBillSummary + ReportLiterals.ByUsage, RemovedBillHeader, RemovedBillData);

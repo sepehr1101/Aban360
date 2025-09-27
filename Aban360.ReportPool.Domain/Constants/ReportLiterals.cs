@@ -6,11 +6,15 @@
         public static string RegisterDate { get { return "تاریخ ثبت"; } }
         public static string ChangeDate { get { return "تاریخ تعویض"; } }
         public static string ByZone { get { return " بر اساس ناحیه "; } }
+        public static string ZoneTitle { get { return "ZoneTitle"; } }
         public static string ByDay { get { return " بر اساس روز "; } }
         public static string ByUsage { get { return " بر اساس کاربری "; } }
+        public static string UsageTitle { get { return "UsageTitle"; } }
         public static string ByUsageAndZone { get { return " بر اساس کاربری و ناحیه "; } }
         public static string ByUsageAndZoneAndDiameter { get { return " بر اساس کاربری و ناحیه و قطر انشعاب "; } }
         public static string ByChangeCause { get { return "  بر اساس علت تعویض "; } }
+        public static string Due { get { return "جاری"; } }
+        public static string Overdue{ get { return "معوقه"; } }
 
 
         public static string EmptyUnit { get { return $"{Report} خالی از سکنه"; } }
@@ -59,7 +63,8 @@
         public static string SewageDailyBankGrouped { get { return $"{Report}  وصولی به تفکیک بانک و روز - حق انشعاب"; } }
         public static string WaterPaymentDetail { get { return $"{Report} ریز وصولی ها - آب بهاء"; } }
         public static string ServiceLinkPaymentDetail { get { return $"{Report} ریز وصولی ها - حق انشعاب"; } }
-        public static string WaterPaymentReceivable { get { return $"{Report} وصولی های جاری و معوقه - آب بهاء"; } }
+        public static string WaterPaymentReceivableDetail { get { return $"{Report} جزئیات وُصولی های جاری و معوقه - آب بهاء"; } }
+        public static string WaterPaymentReceivableSummary { get { return $"{Report} خلاصه وصولی های جاری و معوقه - آب بهاء"; } }
         public static string WaterUsageGrouped { get { return $"{Report} وصولی به تفکیک کاربری - آب بهاء"; } }
         public static string WaterZoneGrouped { get { return $"{Report} وصولی به تفکیک ناحیه - آب بهاء"; } }
 
