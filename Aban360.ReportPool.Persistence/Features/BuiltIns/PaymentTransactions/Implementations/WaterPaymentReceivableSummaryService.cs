@@ -55,7 +55,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             string param = isZone ? ReportLiterals.ZoneTitle : ReportLiterals.UsageTitle;
             return @$"Select 
                         b.{param} as ItemTitle,
-                    	COUNT(1) as Count,
+                    	COUNT(1) as BillCount,
 						COUNT(Distinct b.BillId) as CustomerCount,
 						SUM(p.Amount) as Amount,
 						SUM(Case When p.PayDateJalali<=b.DeadLine Then p.Amount Else 0 End) as DueAmount,

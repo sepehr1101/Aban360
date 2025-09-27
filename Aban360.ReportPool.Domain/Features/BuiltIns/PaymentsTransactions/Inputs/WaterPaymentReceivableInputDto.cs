@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs
 {
