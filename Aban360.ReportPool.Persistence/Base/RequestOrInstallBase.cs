@@ -123,7 +123,7 @@ namespace Aban360.ReportPool.Persistence.Base
             return new QueryParams(dataField, requestField, dataField);
         }
 
-        record QueryParams
+        private record QueryParams
         {
             public string DataField { get; set; } = default!;
             public string RequestField { get; set; } = default!;
@@ -133,6 +133,10 @@ namespace Aban360.ReportPool.Persistence.Base
                 DataField = dataField;
                 RequestField = requestField;
                 RegisterField = registerField;
+            }
+            public QueryParams()
+            {
+                
             }
         }
     }

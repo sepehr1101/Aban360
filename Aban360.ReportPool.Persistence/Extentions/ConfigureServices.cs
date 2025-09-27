@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Scrutor;
+using System;
 using System.Reflection;
 
 namespace Aban360.ReportPool.Persistence.Extentions
@@ -9,8 +10,7 @@ namespace Aban360.ReportPool.Persistence.Extentions
         public static void AddReportPoolPersistenceInjections(this IServiceCollection services)
         {
             services.Scan(scan =>
-                scan
-                    .FromAssemblies(Assembly.GetExecutingAssembly())
+                    scan.FromAssemblies(Assembly.GetExecutingAssembly())
                     .AddClasses(publicOnly: false)
                     .UsingRegistrationStrategy(RegistrationStrategy.Append)
                     .AsImplementedInterfaces()
