@@ -23,6 +23,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             UnconfirmedSubscribersHeaderOutputDto unconfirmedSubscribersHeader = new UnconfirmedSubscribersHeaderOutputDto()
             {
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                CustomerCount = (unconfirmedSubscribersData is not null && unconfirmedSubscribersData.Any()) ? unconfirmedSubscribersData.Count() : 0,
                 RecordCount = (unconfirmedSubscribersData is not null && unconfirmedSubscribersData.Any()) ? unconfirmedSubscribersData.Count() : 0,
                 SumFinalAmount = unconfirmedSubscribersData.Sum(x => x.FinalAmount),
                 SumPreInstallmentAmount = unconfirmedSubscribersData.Sum(x => x.PreInstallmentAmount),

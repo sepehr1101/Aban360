@@ -38,6 +38,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ToAmount=input.ToAmount,
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
+                CustomerCount = (unpaidData is not null && unpaidData.Any()) ? unpaidData.Count() : 0,
                 RecordCount = (unpaidData is not null && unpaidData.Any()) ? unpaidData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString()
             };

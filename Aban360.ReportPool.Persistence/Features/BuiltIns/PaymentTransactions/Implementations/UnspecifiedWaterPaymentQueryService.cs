@@ -35,6 +35,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ToDateJalali = input.ToDateJalali,
                 FromAmount = input.FromAmount,
                 ToAmount = input.ToAmount,
+                CustomerCount = (unspecifiedWaterData is not null && unspecifiedWaterData.Any()) ? unspecifiedWaterData.Count() : 0,
                 RecordCount = (unspecifiedWaterData is not null && unspecifiedWaterData.Any()) ? unspecifiedWaterData.Count() : 0,
                 TotalAmount = unspecifiedWaterData.Sum(serviceLink => serviceLink.Amount),
                 FileName = "-",

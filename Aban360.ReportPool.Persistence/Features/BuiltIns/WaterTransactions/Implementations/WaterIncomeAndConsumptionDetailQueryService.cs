@@ -41,6 +41,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 Title= ReportLiterals.WaterIncomeAndConsumptionDetail,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = waterIncomeAndConsumptionData.Count(),
+                CustomerCount = waterIncomeAndConsumptionData.Count(),
 
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,

@@ -35,6 +35,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ToAmount = input.ToAmount,
                 ReportDateJalali=DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (waterPaymentDetailData is not null && waterPaymentDetailData.Any()) ? waterPaymentDetailData.Count() : 0,
+                CustomerCount = (waterPaymentDetailData is not null && waterPaymentDetailData.Any()) ? waterPaymentDetailData.Count() : 0,
                 TotalAmount = waterPaymentDetailData.Sum(payment => Convert.ToInt64(payment.Amount)),
             };
 

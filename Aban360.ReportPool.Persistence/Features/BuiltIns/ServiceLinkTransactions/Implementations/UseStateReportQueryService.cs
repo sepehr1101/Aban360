@@ -37,6 +37,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ToDateJalali = input.ToDateJalali,
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
+                CustomerCount = (useStateData is not null && useStateData.Any()) ? useStateData.Count() : 0,
                 RecordCount = (useStateData is not null && useStateData.Any()) ? useStateData.Count() : 0,
            
                 SumCommercialUnit = useStateData.Sum(i => i.CommercialUnit),

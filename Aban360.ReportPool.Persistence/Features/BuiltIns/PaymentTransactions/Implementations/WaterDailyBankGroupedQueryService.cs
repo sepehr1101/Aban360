@@ -40,6 +40,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ToBankId = input.ToBankId,
                 ReportDateJalali =DateTime.Now.ToShortPersianDateString(),
                 RecordCount= (dailyBankGroupedData is not null && dailyBankGroupedData.Any()) ? dailyBankGroupedData.Count() : 0,
+                CustomerCount = (dailyBankGroupedData is not null && dailyBankGroupedData.Any()) ? dailyBankGroupedData.Count() : 0,
             };
 
             var result = new ReportOutput<DailyBankGroupedHeaderOutputDto, DailyBankGroupedDataOutputDto>(ReportLiterals.WaterDailyBankGrouped, dailyBankGroupedHeader, dailyBankGroupedData);

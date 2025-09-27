@@ -6,5 +6,6 @@
         public string UsageTitle { get; set; }
         public string MeterDiameterTitle { get; set; }
         public int Count { get; set; }
+        //public int CustomerCount { get; set; }
     }
 }

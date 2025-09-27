@@ -26,6 +26,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             {
                 ReportDateJalali = DateTime.Now.ToShortDateString(),
                 RecordCount = modifiedBillsData.Count(),
+                CustomerCount = modifiedBillsData.Count(),
             };
 
             var result = new ReportOutput<ReadingListHeaderOutputDto, ReadingListDetailDataOutputDto>(ReportLiterals.ReadingListDetail, modifiedBillsHeader, modifiedBillsData);

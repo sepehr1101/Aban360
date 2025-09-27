@@ -43,6 +43,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 RecordCount = (contractualCapacityData is not null && contractualCapacityData.Any()) ? contractualCapacityData.Count() : 0,
+                CustomerCount = (contractualCapacityData is not null && contractualCapacityData.Any()) ? contractualCapacityData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString()
             };
 

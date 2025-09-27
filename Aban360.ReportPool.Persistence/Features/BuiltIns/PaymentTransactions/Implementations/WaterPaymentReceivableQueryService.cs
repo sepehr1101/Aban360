@@ -39,6 +39,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 waterPaymentReceivableHeader.SumOverdueCount = waterPaymentReceivableData.Sum(payment => payment.OverdueCount);
                 waterPaymentReceivableHeader.SumOverdueAmount = waterPaymentReceivableData.Sum(payment => payment.OverdueAmount);
                 waterPaymentReceivableHeader.SumCurrentAmount = waterPaymentReceivableData.Sum(payment => payment.CurrentAmount);
+                waterPaymentReceivableHeader.CustomerCount = waterPaymentReceivableData.Sum(payment => payment.TotalCount);
             }
             var result = new ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableDataOutputDto>(ReportLiterals.WaterPaymentReceivable, waterPaymentReceivableHeader, waterPaymentReceivableData);
             return result;

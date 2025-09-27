@@ -36,6 +36,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToPeriodCount= input.ToPeriodCount,
                 ReportDateJalali=DateTime.Now.ToShortPersianDateString(),
                 RecordCount= (unreadData is not null && unreadData.Any()) ? unreadData.Count() : 0,
+                CustomerCount = (unreadData is not null && unreadData.Any()) ? unreadData.Count() : 0,
             };
 
             var result = new ReportOutput<UnreadHeaderOutputDto, UnreadDataOutputDto>(ReportLiterals.UnreadDetail, unreadHeader, unreadData);

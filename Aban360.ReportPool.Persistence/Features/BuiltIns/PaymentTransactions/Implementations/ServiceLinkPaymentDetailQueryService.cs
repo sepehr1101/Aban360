@@ -34,6 +34,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ReportDateJalali=DateTime.Now.ToShortPersianDateString(),
                 FromAmount = input.FromAmount,
                 ToAmount = input.ToAmount,
+                CustomerCount = (serviceLinkPaymentDetailData is not null && serviceLinkPaymentDetailData.Any()) ? serviceLinkPaymentDetailData.Count() : 0,
                 RecordCount = (serviceLinkPaymentDetailData is not null && serviceLinkPaymentDetailData.Any()) ? serviceLinkPaymentDetailData.Count() : 0,
                 TotalAmount = serviceLinkPaymentDetailData.Sum(payment => Convert.ToUInt32(payment.Amount)),
             };

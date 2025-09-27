@@ -6,5 +6,6 @@
         public string ReportDateJalali { get; set; }
         public string FromDateJalali { get; set; }
         public string ToDateJalali { get; set; }
+        public int CustomerCount { get; set; }
     }
 }

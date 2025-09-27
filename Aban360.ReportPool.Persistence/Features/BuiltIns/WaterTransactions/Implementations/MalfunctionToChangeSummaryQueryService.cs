@@ -32,6 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (MalfunctionData is not null && MalfunctionData.Any()) ? MalfunctionData.Count() : 0,
+                CustomerCount = (MalfunctionData is not null && MalfunctionData.Any()) ? MalfunctionData.Count() : 0,
             };
 
             ReportOutput<MalfunctionToChangeHeaderOutputDto, MalfunctionToChangeSummaryDataOutputFromDataBaseDto> result = new ReportOutput<MalfunctionToChangeHeaderOutputDto, MalfunctionToChangeSummaryDataOutputFromDataBaseDto>(ReportLiterals.MalfunctionToChangeSummary, MalfunctionHeader, MalfunctionData);

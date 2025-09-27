@@ -17,6 +17,7 @@
         public long TotalEndingDebt { get; set; }
         public long TotalPayedAmount { get; set; }
         public string ReportDateJalali { get; set; }
+        public int CustomerCount { get; set; }
     }
 
 }

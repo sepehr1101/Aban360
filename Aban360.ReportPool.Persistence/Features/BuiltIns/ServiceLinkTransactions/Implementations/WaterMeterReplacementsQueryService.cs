@@ -42,6 +42,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                CustomerCount = (waterMeterReplacementsData is not null && waterMeterReplacementsData.Any()) ? waterMeterReplacementsData.Count() : 0,
                 RecordCount = (waterMeterReplacementsData is not null && waterMeterReplacementsData.Any()) ? waterMeterReplacementsData.Count() : 0,
                 Title = reportTitle,
 

@@ -31,6 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.Sms.Implementations
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 Receiver = input.Mobile,
+                CustomerCount = (smsData is not null && smsData.Any()) ? smsData.Count() : 0,
                 RecordCount = (smsData is not null && smsData.Any()) ? smsData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 Title= ReportLiterals.SendSmsToMobile

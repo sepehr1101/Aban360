@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<MalfunctionMeterByDurationHeaderOutputDto, MalfunctionMeterByDurationSummaryDataOutputDto>> Get(MalfunctionMeterByDurationInputDto input)
         {
-            string malfunctionMeterByDurationQueryString = GetMalfunctionMeterByDurationQuery();
+            string malfunctionMeterByDurationQueryString = input.IsMalfunctionLatest ? GetQueryLatest() : GetQuery();
             var @params = new
             {
                 fromReadingNumber = input.FromReadingNumber,
@@ -34,13 +34,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = malfunctionMeterByDurationData is not null && malfunctionMeterByDurationData.Any() ? malfunctionMeterByDurationData.Count() : 0,
+
+                CustomerCount=malfunctionMeterByDurationData?.Sum(r=>r.CustomerCount)??0
             };
 
             ReportOutput<MalfunctionMeterByDurationHeaderOutputDto, MalfunctionMeterByDurationSummaryDataOutputDto> result = new ReportOutput<MalfunctionMeterByDurationHeaderOutputDto, MalfunctionMeterByDurationSummaryDataOutputDto>(ReportLiterals.MalfunctionMeterByDurationSummary + ReportLiterals.ByUsage, malfunctionMeterByDurationHeader, malfunctionMeterByDurationData);
             return result;
         }
 
-        private string GetMalfunctionMeterByDurationQuery()
+        private string GetQueryLatest()
         {
             return @"-- آخرین قبض معتبر
                     ;WITH ValidLatestBills AS (
@@ -117,6 +119,88 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                             c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber )AND
                             c.ZoneId IN @zoneIds
 				    Group by v.UsageTitle";
+        }
+
+        private string GetQuery()
+        {
+            return @"-- آخرین قبض معتبر
+                    ;WITH ValidLatestBills AS (
+                        SELECT
+                            b.BillId,
+							COUNT(b.BillId) as MalfunctionPeriodCount,
+                            AVG(b.ConsumptionAverage)as ConsumptionAverage,
+                            SUM(b.Consumption)as Consumption,
+	                        SUM(b.SumItems)as SumItems,
+                            MAX(b.RegisterDay) AS LatestRegisterDay
+                        FROM [CustomerWarehouse].dbo.Bills b
+                        WHERE                     		
+                    		b.CounterStateCode = 1 AND 
+                    		NOT EXISTS (--بعد از اخرین قبض تعویض شده اند
+                              SELECT 1
+                              FROM [CustomerWarehouse].dbo.MeterChange mc
+                              WHERE 
+                    			mc.CustomerNumber = b.CustomerNumber
+                                AND mc.ZoneId = b.ZoneId
+                                AND mc.ChangeDateJalali > b.RegisterDay
+                          )
+						  Group By b.BillId
+						  Having COUNT(b.BillId) BETWEEN @fromMalfunctionPeriodCount AND @toMalfunctionPeriodCount
+                    ),
+                    -- اطلاعات مشتری
+                    ClientData AS (
+                        SELECT 
+                            c.BillId,
+                            c.CustomerNumber,
+                            c.ZoneId,
+                            c.ZoneTitle,
+                            c.UsageTitle,
+                            TRIM(c.SureName) AS Surname,
+                            c.WaterDiameterTitle AS MeterDiameterTitle,
+                            c.DomesticCount AS DomesticUnit,
+                            c.CommercialCount AS CommercialUnit,
+                            c.OtherCount AS OtherUnit,
+							c.WaterDiameterId
+                        FROM [CustomerWarehouse].dbo.Clients c
+                        WHERE 
+                    		c.ToDayJalali IS NULL AND
+                            (@fromReadingNumber IS NULL OR
+                             @toReadingNumber IS NULL OR  
+                            c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber )AND
+                            c.ZoneId IN @zoneIds AND
+							c.DeletionStateId IN (0)
+                    )
+                    SELECT 
+                            c.UsageTitle AS ItemTitle,
+                        	COUNT(c.UsageTitle) AS CustomerCount,
+				    		SUM(ISNULL(c.CommercialUnit, 0) + ISNULL(c.DomesticUnit, 0) + ISNULL(c.OtherUnit, 0)) AS TotalUnit,
+				    		SUM(ISNULL(c.CommercialUnit, 0)) AS CommercialUnit,
+				    		SUM(ISNULL(c.DomesticUnit, 0)) AS DomesticUnit,
+				    		SUM(ISNULL(c.OtherUnit, 0)) AS OtherUnit,
+				    		SUM(CASE WHEN t5.C0 = 0 THEN 1 ELSE 0 END) AS UnSpecified,
+				    		SUM(CASE WHEN t5.C0 = 1 THEN 1 ELSE 0 END) AS Field0_5,
+				    		SUM(CASE WHEN t5.C0 = 2 THEN 1 ELSE 0 END) AS Field0_75,
+				    		SUM(CASE WHEN t5.C0 = 3 THEN 1 ELSE 0 END) AS Field1,
+				    		SUM(CASE WHEN t5.C0 = 4 THEN 1 ELSE 0 END) AS Field1_2,
+				    		SUM(CASE WHEN t5.C0 = 5 THEN 1 ELSE 0 END) AS Field1_5,
+				    		SUM(CASE WHEN t5.C0 = 6 THEN 1 ELSE 0 END) AS Field2,
+				    		SUM(CASE WHEN t5.C0 = 7 THEN 1 ELSE 0 END) AS Field3,
+				    		SUM(CASE WHEN t5.C0 = 8 THEN 1 ELSE 0 END) AS Field4,
+				    		SUM(CASE WHEN t5.C0 = 9 THEN 1 ELSE 0 END) AS Field5,
+				    		SUM(CASE WHEN t5.C0 In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6
+                    FROM ValidLatestBills v
+                      INNER JOIN ClientData c 
+                    	ON v.BillId = c.BillId
+				    Join [Db70].dbo.T5 t5
+				    	On t5.C0=c.WaterDiameterId
+                    OUTER APPLY (
+                        SELECT TOP 1 mc.ChangeDateJalali
+                        FROM [CustomerWarehouse].dbo.MeterChange mc
+                        WHERE 
+                    		mc.CustomerNumber = c.CustomerNumber AND 
+                            mc.ZoneId = c.ZoneId
+                        ORDER BY mc.ChangeDateJalali DESC
+                    ) lc
+					GROUP BY c.UsageTitle";
         }
     }
 }

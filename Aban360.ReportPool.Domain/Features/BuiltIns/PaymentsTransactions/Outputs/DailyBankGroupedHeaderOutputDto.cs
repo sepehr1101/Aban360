@@ -10,5 +10,6 @@
         public int? ToBankId { get; set; }
         public long? FromAmount { get; set; }
         public long? ToAmount { get; set; }
+        public int CustomerCount { get; set; }
     }
 }

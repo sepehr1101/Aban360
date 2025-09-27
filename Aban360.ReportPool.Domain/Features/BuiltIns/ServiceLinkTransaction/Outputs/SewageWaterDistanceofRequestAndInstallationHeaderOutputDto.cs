@@ -13,6 +13,7 @@
         public string MinDistance { get; set; }
         public string Title { get; set; }
 
+        public int CustomerCount { get; set; }
         public int SumDomesticUnit { get; set; }
         public int SumCommercialUnit { get; set; }
         public int SumOtherUnit { get; set; }

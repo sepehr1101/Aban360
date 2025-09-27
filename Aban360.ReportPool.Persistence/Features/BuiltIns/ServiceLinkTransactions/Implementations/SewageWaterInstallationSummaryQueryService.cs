@@ -41,6 +41,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 RecordCount = (installationData is not null && installationData.Any()) ? installationData.Count() : 0,
                 Title=reportTitle,
 
+                CustomerCount = installationData.Sum(i => i.CustomerCount),
                 SumCommercialUnit = installationData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = installationData.Sum(i => i.DomesticUnit),
                 SumOtherUnit = installationData.Sum(i => i.OtherUnit),
