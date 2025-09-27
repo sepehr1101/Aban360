@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Timing;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
@@ -34,6 +35,11 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             }
 
             ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillDataOutputDto> result = await _readingIssueDistanceBillDetailQuery.GetInfo(input);
+            if(result is not null && result.ReportData is not null && result.ReportData.Any())
+            {
+                result.ReportData.ForEach(data => 
+                data.DistanceText = CalculationDistanceDate.CalcDistance(data.CurrentDateJalali, data.RegisterDateJalali));
+            }
             return result;
         }
     }

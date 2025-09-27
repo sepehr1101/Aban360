@@ -6,8 +6,6 @@ using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
-using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
-using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
