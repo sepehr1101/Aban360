@@ -19,7 +19,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         public async Task<ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillDataOutputDto>> GetInfo(ReadingIssueDistanceBillInputDto input)
         {
-            string readingIssueDistanceQueryString = GetReadingIssueDistanceDataQuery();
+            string readingIssueDistanceQueryString = GetQuery();
             var @params = new
             {
                 fromDate = input.FromDateJalali,
@@ -51,7 +51,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             return result;
         }
 
-        private string GetReadingIssueDistanceDataQuery()
+        private string GetQuery()
         {
             return @"Select
                 	t46.C2 AS RegionTitle,
@@ -81,7 +81,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 	b.ReadingStateTitle,
                 	TRIM(c.FirstName) as FirstName,
                 	TRIM(c.SureName) as Surname,
-                	(TRIM(c.FirstName) + TRIM(c.SureName)) as FullName,
+                	(TRIM(c.FirstName) + ' ' + TRIM(c.SureName)) as FullName,
                 	TRIM(c.NationalId) as NationalCode,
                 	TRIM(c.PostalCode) as PostalCode,
                 	TRIM(c.PhoneNo) as PhoneNumber,
@@ -95,6 +95,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 Join [Db70].dbo.T46 t46
                 	On t51.C1=t46.C0
                 Where 
+                    c.ToDayJalali IS NULL AND
                 	b.TypeCode=1 AND
                 	(@fromDate IS NULL OR
                 	@toDate IS NULL OR
@@ -104,6 +105,5 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 	b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
                 	b.ZoneId IN @zoneIds";
         }
-
     }
 }

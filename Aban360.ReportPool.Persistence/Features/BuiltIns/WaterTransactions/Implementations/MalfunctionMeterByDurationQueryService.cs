@@ -266,7 +266,5 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     ) lc
                     ORDER BY lc.ChangeDateJalali DESC;";
         }
-
-
     }
 }

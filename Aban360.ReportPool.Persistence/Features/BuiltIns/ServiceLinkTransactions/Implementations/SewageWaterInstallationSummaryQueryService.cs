@@ -3,6 +3,7 @@ using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {
-    internal sealed class SewageWaterInstallationSummaryQueryService : AbstractBaseConnection, ISewageWaterInstallationSummaryQueryService
+    internal sealed class SewageWaterInstallationSummaryQueryService : RequestOrInstallBase, ISewageWaterInstallationSummaryQueryService
     {
         public SewageWaterInstallationSummaryQueryService(IConfiguration configuration)
             : base(configuration)
@@ -19,8 +20,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         public async Task<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto>> Get(SewageWaterInstallationInputDto input)
         {
+            string UsageTitle = nameof(UsageTitle);
             string reportTitle = input.IsWater ? ReportLiterals.WaterInstallationSummary : ReportLiterals.SewageInstallationSummary;
-            string query=GetQuery(input.IsWater);            
+            string query= GetGroupedQuery(input.IsWater, false, UsageTitle);            
             var @params = new
             {
                 fromDate = input.FromDateJalali,
