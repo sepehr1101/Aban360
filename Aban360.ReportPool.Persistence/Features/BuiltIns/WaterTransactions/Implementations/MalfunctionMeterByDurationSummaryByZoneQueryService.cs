@@ -3,6 +3,7 @@ using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
-    internal sealed class MalfunctionMeterByDurationSummaryByZoneQueryService : AbstractBaseConnection, IMalfunctionMeterByDurationSummaryByZoneQueryService
+    internal sealed class MalfunctionMeterByDurationSummaryByZoneQueryService : MalfunctionByDurationBase, IMalfunctionMeterByDurationSummaryByZoneQueryService
     {
         public MalfunctionMeterByDurationSummaryByZoneQueryService(IConfiguration configuration)
             : base(configuration)
