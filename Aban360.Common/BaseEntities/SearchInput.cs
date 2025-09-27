@@ -3,5 +3,7 @@
     public record SearchInput
     {
         public string Input { get; set; } = default!;
+        public string? FromDateJalali { get; set; }
+
     }
 }

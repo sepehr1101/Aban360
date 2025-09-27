@@ -17,9 +17,9 @@ namespace Aban360.ReportPool.Application.Features.Transactions.Handler.Implement
             _subscriptionEventQueryService.NotNull(nameof(subscriptionEventQueryService));
         }
 
-        public async Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> Handle(string input)
+        public async Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> Handle(string input,string fromDate)
         {
-            ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> result = await _subscriptionEventQueryService.GetEventsSummaryDtos(input);
+            ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> result = await _subscriptionEventQueryService.GetEventsSummaryDtos(input,fromDate);
             return result;
         }
     }

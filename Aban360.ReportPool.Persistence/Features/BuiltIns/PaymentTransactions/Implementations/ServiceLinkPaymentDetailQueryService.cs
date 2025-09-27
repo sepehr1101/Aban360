@@ -18,13 +18,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>> GetInfo(PaymentDetailInputDto input)
         {
-            string serviceLinkPaymentDetails = GetServiceLinkPaymentDetailQuery();
+            string serviceLinkPaymentDetails = GetServiceLinkPaymentDetailQuery(input.ZoneIds.Any()==true);
             var @params = new
             {
                 FromDate = input.FromDateJalali,
                 ToDate = input.ToDateJalali,
                 FromAmount = input.FromAmount,
                 ToAmount = input.ToAmount,
+                zoneIds=input.ZoneIds,
             };
             IEnumerable<PaymentDetailDataOutputDto> serviceLinkPaymentDetailData = await _sqlReportConnection.QueryAsync<PaymentDetailDataOutputDto>(serviceLinkPaymentDetails, @params);
             PaymentDetailHeaderOutputDto serviceLinkPaymentDetailHeader = new PaymentDetailHeaderOutputDto()
@@ -42,9 +43,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             return result;
         }
 
-        private string GetServiceLinkPaymentDetailQuery()
+        private string GetServiceLinkPaymentDetailQuery(bool hasZone)
         {
-            return @"Select
+            string zoneQuery=hasZone? "AND p.ZoneId IN @ZoneIds":string.Empty;
+            return @$"Select
                      	p.CustomerNumber As CustomerNumber,
                     	p.RegisterDay AS BankDateJalali,
                     	p.BankCode AS BankCode,
@@ -61,7 +63,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     		OR p.RegisterDay BETWEEN @FromDate AND @ToDate) 
                     	AND(@FromAmount IS  NULL 
                     		OR @ToAmount IS NULL 
-                    		OR p.Amount BETWEEN @FromAmount AND @ToAmount)";
+                    		OR p.Amount BETWEEN @FromAmount AND @ToAmount)
+                        {zoneQuery}";
         }
     }
 }

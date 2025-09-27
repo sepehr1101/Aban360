@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
 {
-    [Route("v1/water-payment-receivable")]
-    public class WaterPaymentReceivableController : BaseController
+    [Route("v1/water-payment-receivable-summary-by-zone")]
+    public class WaterPaymentReceivableSummaryByZoneController : BaseController
     {
-        private readonly IWaterPaymentReceivableHandler _waterPaymentReceivable;
+        private readonly IWaterPaymentReceivableSummaryHandler _waterPaymentReceivable;
         private readonly IReportGenerator _reportGenerator;
-        public WaterPaymentReceivableController(
-            IWaterPaymentReceivableHandler waterPaymentReceivable,
+        public WaterPaymentReceivableSummaryByZoneController(
+            IWaterPaymentReceivableSummaryHandler waterPaymentReceivable,
             IReportGenerator reportGenerator)
         {
             _waterPaymentReceivable = waterPaymentReceivable;
@@ -28,10 +28,11 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableSummaryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(WaterPaymentReceivableInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableDataOutputDto> waterPaymentReceivable = await _waterPaymentReceivable.Handle(inputDto, cancellationToken);
+            inputDto.IsZone = true;
+            ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableSummaryDataOutputDto> waterPaymentReceivable = await _waterPaymentReceivable.Handle(inputDto, cancellationToken);
             return Ok(waterPaymentReceivable);
         }
 
@@ -39,7 +40,8 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, WaterPaymentReceivableInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _waterPaymentReceivable.Handle, CurrentUser, ReportLiterals.WaterPaymentReceivable, connectionId);
+            inputDto.IsZone = true;
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _waterPaymentReceivable.Handle, CurrentUser, ReportLiterals.WaterPaymentReceivableSummary + ReportLiterals.ByZone, connectionId);
             return Ok(inputDto);
         }
     }

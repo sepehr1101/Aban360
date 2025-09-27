@@ -1,21 +1,19 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Contracts;
-using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Contracts;
 using FluentValidation;
 
-namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Implementations
+namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Contracts
 {
-    internal sealed class WaterPaymentReceivableHandler : IWaterPaymentReceivableHandler
+    internal sealed class WaterPaymentReceivableSummaryHandler : IWaterPaymentReceivableSummaryHandler
     {
-        private readonly IWaterPaymentReceivableQueryService _waterPaymentReceivableQueryService;
+        private readonly IWaterPaymentReceivableSummaryService _waterPaymentReceivableQueryService;
         private readonly IValidator<WaterPaymentReceivableInputDto> _validator;
-        public WaterPaymentReceivableHandler(
-            IWaterPaymentReceivableQueryService waterPaymentReceivableQueryService,
+        public WaterPaymentReceivableSummaryHandler(
+            IWaterPaymentReceivableSummaryService waterPaymentReceivableQueryService,
             IValidator<WaterPaymentReceivableInputDto> validator)
         {
             _waterPaymentReceivableQueryService = waterPaymentReceivableQueryService;
@@ -25,7 +23,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableDataOutputDto>> Handle(WaterPaymentReceivableInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableSummaryDataOutputDto>> Handle(WaterPaymentReceivableInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -34,7 +32,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableDataOutputDto> waterPaymentReceivable = await _waterPaymentReceivableQueryService.GetInfo(input);
+            ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableSummaryDataOutputDto> waterPaymentReceivable = await _waterPaymentReceivableQueryService.GetInfo(input);
             return waterPaymentReceivable;
         }
     }

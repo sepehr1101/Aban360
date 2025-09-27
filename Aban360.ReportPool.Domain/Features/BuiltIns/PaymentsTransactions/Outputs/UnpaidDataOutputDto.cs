@@ -12,6 +12,7 @@
         public int PeriodCount { get; set; }
         public string ZoneTitle { get; set; }
         public int ZoneId { get; set; }
+        public string BillId { get; set; }
 
     }
 }

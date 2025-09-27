@@ -8,8 +8,8 @@
         public long? FromAmount { get; set; }
         public long? ToAmount { get; set; }
 
-        public string FromBankId { get; set; }
-        public string ToBankId { get; set; }
+        public string? FromBankId { get; set; }
+        public string? ToBankId { get; set; }
 
     }
 }
