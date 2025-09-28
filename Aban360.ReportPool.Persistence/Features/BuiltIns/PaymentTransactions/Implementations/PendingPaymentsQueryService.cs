@@ -101,7 +101,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 								AND (@FromReadingNumber IS NULL OR 
 									@ToReadingNumber IS NULL OR 
 									TRIM(ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber) AND
-								DeletionStateId NOT IN (1,2)
+									DeletionStateId NOT IN (1,2)
 								{usageSellQuery}
 								{usageConsumptionQuery}
 								--AND (@UsageConsumptionIds IS NULL OR UsageId2 IN @UsageConsumptionIds)
@@ -151,7 +151,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 							  AND b.TypeCode NOT IN(7,8) AND
 							  b.SumItems<>0
 							GROUP BY b.ZoneId, b.CustomerNumber
-							HAVING COUNT(1) BETWEEN @FromDebtPeriodCount AND @ToDebtPeriodCount
 						)
 						
 						-- کوئری نهایی
@@ -170,12 +169,20 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 						LEFT JOIN DebtAfterLastPayment D
 							ON C.ZoneId = D.ZoneId AND C.CustomerNumber = D.CustomerNumber
 						Where
-							(@FromAmount IS NULL OR
-							@ToAmount IS NULL OR
-							(ISNULL(B.BillBetween, 0) + ISNULL(B.BillBefore, 0) - ISNULL(P.PaymentBetween, 0) - ISNULL(P.PaymentBefore, 0)) BETWEEN @FromAmount AND @ToAmount) AND
-							(@FromDebtPeriodCount IS NULL OR
-							@toDebtPeriodCount IS NULL OR
-							D.DebtPeriodsAfter BETWEEN @FromDebtPeriodCount AND @toDebtPeriodCount)";
+							(
+							 @FromAmount IS NULL OR
+							 @ToAmount IS NULL OR
+							 (ISNULL(B.BillBetween, 0) + ISNULL(B.BillBefore, 0) - ISNULL(P.PaymentBetween, 0) - ISNULL(P.PaymentBefore, 0)) BETWEEN @FromAmount AND @ToAmount
+							) AND
+							(
+							 @FromDebtPeriodCount IS NULL OR
+							 @toDebtPeriodCount IS NULL OR
+							 D.DebtPeriodsAfter BETWEEN @FromDebtPeriodCount AND @toDebtPeriodCount) AND
+							(				
+							 @FromDebtPeriodCount IS NULL OR
+							 @ToDebtPeriodCount IS NULL OR 
+							 D.DebtPeriodsAfter BETWEEN @FromDebtPeriodCount AND @ToDebtPeriodCount
+							)";
         }
     }
 }
