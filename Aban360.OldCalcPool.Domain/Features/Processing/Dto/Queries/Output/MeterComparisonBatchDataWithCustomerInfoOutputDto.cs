@@ -13,6 +13,7 @@
 
         public double PreviousAmount { get; set; }
         public double CurrentAmount { get; set; }
+        public double PreviousDiscount { get; set; }
 
         public bool IsChecked{ get; set; }
 
