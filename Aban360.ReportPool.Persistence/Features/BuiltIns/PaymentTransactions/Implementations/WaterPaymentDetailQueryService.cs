@@ -51,7 +51,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             string zoneQuery = hasZone ? "AND p.ZoneId IN @ZoneIds" : string.Empty;
             return @$"Select
                      	p.CustomerNumber As CustomerNumber,
-                    	p.RegisterDay AS BankDateJalali,
+                    	p.PayDateJalali AS BankDateJalali,
                     	p.BankCode AS BankCode,
                     	p.RegisterDay AS EventBankDateJalali,
                     	p.BillId AS BillId,
