@@ -50,6 +50,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                 comparisonBatch.CurrentAmount = result.SumItems;
                 comparisonBatch.IsChecked = GetTolarance(data.PreviousAmount, result.SumItems, input.Tolerance, input.IsPercent);
                 comparisonBatch.CurrentDiscountAmount = result.DiscountSum;
+                comparisonBatch.PreviousDiscountAmount = data.PreviousDiscount;
                 comparisonBatch.ComparisonAmount = GetComparison(data.PreviousAmount, result.SumItems);
 
                 comparisonResult.Add(comparisonBatch);
@@ -112,7 +113,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
         {
             if (isPercent)
             {
-                var (maxAmount, minAmount) = GetMaxMinPercent(currentAmount, tolerance);
+                var (maxAmount, minAmount) = GetMaxMinPercent(previousAmount, tolerance);
                 return currentAmount <= maxAmount && currentAmount >= minAmount;
             }
 

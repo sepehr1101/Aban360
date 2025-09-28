@@ -100,7 +100,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 								AND ZoneId IN @ZoneIds
 								AND (@FromReadingNumber IS NULL OR 
 									@ToReadingNumber IS NULL OR 
-									TRIM(ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber)
+									TRIM(ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber) AND
+								DeletionStateId NOT IN (1,2)
 								{usageSellQuery}
 								{usageConsumptionQuery}
 								--AND (@UsageConsumptionIds IS NULL OR UsageId2 IN @UsageConsumptionIds)
@@ -115,7 +116,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 								SUM(CASE WHEN RegisterDay BETWEEN @FromDate AND @ToDate THEN SumItems ELSE 0 END) AS BillBetween,
 								SUM(CASE WHEN RegisterDay > @ToDate THEN SumItems ELSE 0 END) AS BillAfter
 							FROM [CustomerWarehouse].dbo.Bills
-							WHERE TypeCode NOT IN(7,8) AND ZoneId IN @ZoneIds
+							WHERE 
+								TypeCode NOT IN(7,8) AND 
+								ZoneId IN @ZoneIds AND
+								SumItems<>0
 							GROUP BY ZoneId, CustomerNumber
 						),
 						
@@ -129,7 +133,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 								SUM(CASE WHEN RegisterDay > @ToDate THEN Amount ELSE 0 END) AS PaymentAfter,
 								MAX(RegisterDay) AS LastPaymentDate
 							FROM [CustomerWarehouse].dbo.Payments
-							WHERE ZoneId IN @ZoneIds
+							WHERE 
+								ZoneId IN @ZoneIds AND
+								Amount<>0 
 							GROUP BY ZoneId, CustomerNumber
 						),
 						
@@ -142,7 +148,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 							WHERE 
 							  b.RegisterDay > ISNULL(p.LastPaymentDate, '0001/01/01')
 							  AND b.RegisterDay < @ToDate
-							  AND b.TypeCode NOT IN(7,8)
+							  AND b.TypeCode NOT IN(7,8) AND
+							  b.SumItems<>0
 							GROUP BY b.ZoneId, b.CustomerNumber
 							HAVING COUNT(1) BETWEEN @FromDebtPeriodCount AND @ToDebtPeriodCount
 						)
@@ -161,7 +168,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 						LEFT JOIN PaymentAgg P
 							ON C.ZoneId = P.ZoneId AND C.CustomerNumber = P.CustomerNumber
 						LEFT JOIN DebtAfterLastPayment D
-							ON C.ZoneId = D.ZoneId AND C.CustomerNumber = D.CustomerNumber;";
+							ON C.ZoneId = D.ZoneId AND C.CustomerNumber = D.CustomerNumber
+						Where
+							(@FromAmount IS NULL OR
+							@ToAmount IS NULL OR
+							(ISNULL(B.BillBetween, 0) + ISNULL(B.BillBefore, 0) - ISNULL(P.PaymentBetween, 0) - ISNULL(P.PaymentBefore, 0)) BETWEEN @FromAmount AND @ToAmount) AND
+							(@FromDebtPeriodCount IS NULL OR
+							@toDebtPeriodCount IS NULL OR
+							D.DebtPeriodsAfter BETWEEN @FromDebtPeriodCount AND @toDebtPeriodCount)";
         }
     }
 }

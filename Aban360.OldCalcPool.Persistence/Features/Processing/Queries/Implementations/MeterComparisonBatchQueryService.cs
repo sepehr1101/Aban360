@@ -71,10 +71,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 						b.today_date as CurrentDateJalali,
 						b.pri_no as PreviousMeterNumber,
 						b.today_no as CurrentMeterNumber,
-						b.baha as PreviousAmount
+						b.baha as PreviousAmount,
+						ISNULL(k.baha,0) as PreviousDiscount
                     From [{dbName}].dbo.bed_bes b
 					Join [{dbName}].dbo.members m	
 						On b.town=m.town AND b.radif=m.radif
+                    Left Outer Join [{dbName}].dbo.kasr_ha k
+						On b.town=k.TOWN AND b.radif=k.radif AND b.barge=k.barge AND b.date_bed=k.date_bed
 					Join [Db70].dbo.T51 t51 
 						On m.town=t51.C0
                     Where

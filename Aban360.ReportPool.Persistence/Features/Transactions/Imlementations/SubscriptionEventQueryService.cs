@@ -42,7 +42,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     row.Remained = lastRemained;
                 }
             }
-            WaterEventsSummaryOutputHeaderDto? header = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterEventsSummaryOutputHeaderDto>(subscriptionHeaderQuery, new { billId = billId,fromDate=fromDate });
+            WaterEventsSummaryOutputHeaderDto? header = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterEventsSummaryOutputHeaderDto>(subscriptionHeaderQuery, new { billId = billId});
             WaterReplacementInfoOutputDto? replacementInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterReplacementInfoOutputDto>(waterReplacementInHeaderQuery, new { billId = billId, customerNumber = header.CustomerNumber, zoneId = header.ZoneId });
             header.WaterReplacementDate = replacementInfo is not null? replacementInfo.WaterReplacementDate:string.Empty;
             header.WaterReplacementNumber = replacementInfo is not null ? replacementInfo.WaterReplacementNumber : string.Empty;
@@ -185,9 +185,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     From [CustomerWarehouse].dbo.Clients c
                     Where
 						c.ToDayJalali IS NULL AND
-						c.BillId=@billId AND
-		                (@fromDate IS NULL OR
-		                RegisterDay<=@fromDate)";
+						c.BillId=@billId ";
         }
         private string GetWaterReplacementDateInHeaderQuery()
         {

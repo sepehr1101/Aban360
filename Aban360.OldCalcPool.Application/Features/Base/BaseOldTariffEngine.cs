@@ -837,7 +837,9 @@ namespace Aban360.CalculationPool.Application.Features.Base
             {
                 return 0;
             }
-            else if (customerInfo.SewageCalcState == _firstCalculation && string.Compare(currentDateJalali, customerInfo.SewageInstallationDateJalali) > 0)
+            else if (customerInfo.SewageCalcState == _firstCalculation && 
+                string.Compare(currentDateJalali, customerInfo.SewageInstallationDateJalali) > 0 &&
+                customerInfo.SewageInstallationDateJalali.Trim().Length==10)
             {
                 // int mod_as_nasb = PartTime(nerkh.Date1, nerkh.Date2, customerInfo.SewageInstallationDateJalali, currentDateJalali);
                 // sewageAmount = (sewageAmount / nerkh.Duration) * mod_as_nasb;
@@ -1020,7 +1022,8 @@ namespace Aban360.CalculationPool.Application.Features.Base
             {
                 return 0;
             }
-            else if (customerInfo.SewageCalcState == 1)
+            else if (customerInfo.SewageCalcState == 1 &&
+                customerInfo.SewageInstallationDateJalali.Trim().Length==10)
             {
                 int duration = (int.Parse)(CalculationDistanceDate.CalcDistance(customerInfo.SewageInstallationDateJalali, currentDateJalali));
                 return (abonmanAbBaha / totalDuration) * duration;
