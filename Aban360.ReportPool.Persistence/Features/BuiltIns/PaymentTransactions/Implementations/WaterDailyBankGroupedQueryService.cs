@@ -56,9 +56,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
             return @$"Select 
                     	p.RegisterDay AS RegisterDate, 
-                    	p.RegisterDay AS BankDate,
+                    	p.PayDateJalali AS BankDate,
                         p.ZoneTitle AS ZoneTitle,
                         p.BankName AS BankName,
+                        p.BankCode AS BankCode,
                     	COUNT(p.RegisterDay) AS ItemCount,
                     	SUM(p.Amount) AS ItemAmount,
                     	COUNT(p.RegisterDay) AS TotalCount,
@@ -68,7 +69,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     	(
                             (@FromDate IS NOT NULL AND @ToDate IS NOT NULL AND p.RegisterDay BETWEEN @FromDate AND @ToDate)
                             OR (@FromDate IS NULL AND @ToDate IS NULL)
-                        )
+                        )AND
                         (
                             (@FromAmount IS NOT NULL AND @ToAmount IS NOT NULL AND p.Amount BETWEEN @FromAmount AND @ToAmount)
                             OR (@FromAmount IS NULL AND @ToAmount IS NULL)
@@ -78,7 +79,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 						p.BankCode BETWEEN @fromBankId AND @toBankId)
                     {zoneQuery}
                     GROUP BY p.RegisterDay,
+							 p.PayDateJalali,
                              p.BankName,
+                             p.BankCode,
                              p.ZoneTitle";
         }
     }

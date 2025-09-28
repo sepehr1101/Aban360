@@ -59,6 +59,7 @@
         public static string UnspecifiedWaterPayment { get { return $"{Report} وصولی خارج سیستم _ آب بها"; } }
         public static string UnspecifiedServiceLinkPayment { get { return $"{Report} وصولی خارج سیستم - انشعاب"; } }
         public static string InvalidPayment { get { return $"{Report} وصولی نامعتبر"; } }
+        public static string BankGrouped { get { return $"{Report}  وصولی به تفکیک بانک"; } }
         public static string WaterDailyBankGrouped { get { return $"{Report}  وصولی به تفکیک بانک و روز - آب بهاء"; } }
         public static string SewageDailyBankGrouped { get { return $"{Report}  وصولی به تفکیک بانک و روز - حق انشعاب"; } }
         public static string WaterPaymentDetail { get { return $"{Report} ریز وصولی ها - آب بهاء"; } }

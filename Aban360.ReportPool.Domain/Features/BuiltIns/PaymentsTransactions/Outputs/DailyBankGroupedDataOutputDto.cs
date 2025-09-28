@@ -10,6 +10,7 @@
         public long TotalAmount { get; set; }
         public string ZoneTitle { get; set; }
         public string BankName { get; set; }
+        public string BankCode { get; set; }
 
     }
 }
