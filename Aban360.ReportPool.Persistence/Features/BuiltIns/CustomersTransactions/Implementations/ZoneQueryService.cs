@@ -10,7 +10,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
     {
         public ZoneQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<IEnumerable<UserZoneIdsOutputDto>> Get()
         {
@@ -23,7 +24,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         {
             return @"Select	
                      	t51.C0 AS Id,
-                     	t51.C2+' ('+t46.C2+')' AS Title
+                     	t51.C2+' ('+t46.C2+')' AS Title,
+                        IIF(t51.C0>140000, 1, 0) IsVillage
                      From [Db70].dbo.T51 t51
 			    	 Join [Db70].dbo.T46 t46 
 			    		On t51.C1=t46.C0";

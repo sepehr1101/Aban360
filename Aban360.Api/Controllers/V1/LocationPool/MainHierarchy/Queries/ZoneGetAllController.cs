@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<UserZoneIdsOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllPrinciple(CancellationToken cancellationToken)
         {
-            ICollection<UserZoneIdsOutputDto> zone =( await _zoneAllHandler.Handle(cancellationToken)).ToList();
+            ICollection<UserZoneIdsOutputDto> zone =(await _zoneAllHandler.Handle(cancellationToken)).ToList();
             return Ok(zone);
         }
     }
