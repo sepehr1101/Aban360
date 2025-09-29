@@ -23,10 +23,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             {
                 FromDate = input.FromDateJalali,
                 ToDate = input.ToDateJalali,
+                fromBankId = input.FromBankId,
+                toBankId = input.ToBankId,
             };
             IEnumerable<ServiceLinkWaterItemGroupedDataOutputDto> serviceLinkUsageGroupedData = await _sqlReportConnection.QueryAsync<ServiceLinkWaterItemGroupedDataOutputDto>(ServiceLinkUsageGroupeds, @params);
             ServiceLinkWaterItemGroupedHeaderOutputDto serviceLinkUsageGroupedHeader = new ServiceLinkWaterItemGroupedHeaderOutputDto()
             {
+                FromBankId = input.FromBankId,
+                ToBankId = input.ToBankId,
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 RecordCount = serviceLinkUsageGroupedData is not null && serviceLinkUsageGroupedData.Any() ? serviceLinkUsageGroupedData.Count() : 0,
@@ -74,7 +78,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                         c.ToDayJalali IS NULL AND
                         (@FromDate IS NULL OR 
                         @ToDate IS NULL OR
-                    	p.RegisterDay BETWEEN @FromDate and @ToDate)
+                    	p.RegisterDay BETWEEN @FromDate and @ToDate)AND
+                        (@fromBankId IS NULL OR
+                        @toBankId IS NULL OR
+                        p.BankCode BETWEEN @fromBankId AND @toBankId)
                     GROUP BY c.UsageTitle";
         }
     }

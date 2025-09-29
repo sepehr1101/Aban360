@@ -64,7 +64,7 @@
         public static string SewageDailyBankGrouped { get { return $"{Report}  وصولی به تفکیک بانک و روز - حق انشعاب"; } }
         public static string WaterPaymentDetail { get { return $"{Report} ریز وصولی ها - آب بهاء"; } }
         public static string ServiceLinkPaymentDetail { get { return $"{Report} ریز وصولی ها - حق انشعاب"; } }
-        public static string WaterPaymentReceivableDetail { get { return $"{Report} جزئیات وُصولی های جاری و معوقه - آب بهاء"; } }
+        public static string WaterPaymentReceivableDetail { get { return $"{Report} جزئیات وصولی های جاری و معوقه - آب بهاء"; } }
         public static string WaterPaymentReceivableSummary { get { return $"{Report} خلاصه وصولی های جاری و معوقه - آب بهاء"; } }
         public static string WaterUsageGrouped { get { return $"{Report} وصولی به تفکیک کاربری - آب بهاء"; } }
         public static string WaterZoneGrouped { get { return $"{Report} وصولی به تفکیک ناحیه - آب بهاء"; } }

@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<WaterIncomeAndConsumptionDetailHeaderOutputDto, WaterIncomeAndConsumptionDetailDataOutputDto>> Get(WaterIncomeAndConsumptionDetailInputDto input)
         {
-            string waterIncomeAndConsumptionDetails = GetWaterIncomeAndConsumptionDetailQuery(input.ZoneIds.Any(), input.UsageIds.Any());
+            string waterIncomeAndConsumptionDetails = GetWaterIncomeAndConsumptionDetailQuery(input.ZoneIds.Any(), input.UsageIds.Any(),input.BranchTypeIds.Any());
             var @params = new
             {
                 fromDate = input.FromDateJalali,
@@ -33,7 +33,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 typeCodes = input.IsNet ? new[] { 1, 3, 4, 5 } : new[] { 1 },
 
                 usageIds = input.UsageIds,
-                zoneIds = input.ZoneIds
+                zoneIds = input.ZoneIds,
+                branchTypeIds = input.BranchTypeIds,
             };
             IEnumerable<WaterIncomeAndConsumptionDetailDataOutputDto> waterIncomeAndConsumptionData = await _sqlReportConnection.QueryAsync<WaterIncomeAndConsumptionDetailDataOutputDto>(waterIncomeAndConsumptionDetails, @params);
             WaterIncomeAndConsumptionDetailHeaderOutputDto waterIncomeAndConsumptionHeader = new WaterIncomeAndConsumptionDetailHeaderOutputDto()
@@ -79,10 +80,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             return result;
         }
 
-        private string GetWaterIncomeAndConsumptionDetailQuery(bool hasZone, bool hasUsage)
+        private string GetWaterIncomeAndConsumptionDetailQuery(bool hasZone, bool hasUsage,bool hasBranchType)
         {
             string zoneQuery = hasZone ? "AND b.ZoneId IN @zoneIds" : string.Empty;
             string usageQuery = hasUsage ? "AND b.UsageId IN @usageIds" : string.Empty;
+            string branchTypeQuery = hasBranchType ? "AND b.BranchType IN @branchTypeIds" : string.Empty;
 
             return @$"use CustomerWarehouse
 					Select
@@ -131,7 +133,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						b.TypeCode IN @typeCodes AND
                         c.ToDayJalali IS NULL
 						{usageQuery}
-						{zoneQuery}";
+						{zoneQuery}
+                        {branchTypeQuery}";
         }
     }
 }

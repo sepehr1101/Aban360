@@ -17,7 +17,8 @@ namespace Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs
 
         public ICollection<int> ZoneIds { get; set; }
         public ICollection<int> UsageIds { get; set; }
-        
+        public ICollection<int> BranchTypeIds { get; set; }
+
         public WaterIncomeAndConsumptionSummaryEnum EnumInput { get; set; }
     }
 }

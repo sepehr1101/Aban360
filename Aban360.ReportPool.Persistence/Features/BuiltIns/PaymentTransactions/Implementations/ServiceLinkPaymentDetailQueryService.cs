@@ -25,11 +25,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ToDate = input.ToDateJalali,
                 FromAmount = input.FromAmount,
                 ToAmount = input.ToAmount,
-                zoneIds=input.ZoneIds,
+                fromBankId = input.FromBankId,
+                toBankId = input.ToBankId,
+                zoneIds =input.ZoneIds,
             };
             IEnumerable<PaymentDetailDataOutputDto> serviceLinkPaymentDetailData = await _sqlReportConnection.QueryAsync<PaymentDetailDataOutputDto>(serviceLinkPaymentDetails, @params);
             PaymentDetailHeaderOutputDto serviceLinkPaymentDetailHeader = new PaymentDetailHeaderOutputDto()
             {
+                FromBankId = input.FromBankId,
+                ToBankId = input.ToBankId,
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali=DateTime.Now.ToShortPersianDateString(),
@@ -64,6 +68,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     	AND(@FromAmount IS  NULL 
                     		OR @ToAmount IS NULL 
                     		OR p.Amount BETWEEN @FromAmount AND @ToAmount)
+                        AND(@fromBankId IS NULL OR
+                        	@toBankId IS NULL OR
+                        	p.BankCode BETWEEN @fromBankId AND @toBankId)
                         {zoneQuery}";
         }
     }

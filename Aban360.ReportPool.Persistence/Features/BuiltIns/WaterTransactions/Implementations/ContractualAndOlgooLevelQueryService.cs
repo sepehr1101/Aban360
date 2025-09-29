@@ -21,8 +21,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         {
             string rangeValues = string.Join(",", input.Values.Select(v => $"({v.FromValue},{v.ToValue})"));
 
-            string getOlgooLevelQueryString = GetOlgooLevelQuery(input.Inputs.ZoneIds.Any(), input.Inputs.UsageIds.Any(), rangeValues);
-            string getContractualLevelQueryString = GetContractualLevelQuery(input.Inputs.ZoneIds.Any(), input.Inputs.UsageIds.Any(), rangeValues);
+            string getOlgooLevelQueryString = GetOlgooLevelQuery(input.Inputs.ZoneIds.Any(), input.Inputs.UsageIds.Any(), input.Inputs.BranchTypeIds.Any(), rangeValues);
+            string getContractualLevelQueryString = GetContractualLevelQuery(input.Inputs.ZoneIds.Any(), input.Inputs.BranchTypeIds.Any(), input.Inputs.UsageIds.Any(), rangeValues);
             string LevelQuery = input.IsOlgoo ? getContractualLevelQueryString : getOlgooLevelQueryString;
 
             var @params = new
@@ -40,6 +40,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
                 usageIds = input.Inputs.UsageIds,
                 zoneIds = input.Inputs.ZoneIds,
+                branchTypeIds = input.Inputs.BranchTypeIds,
             };
             IEnumerable<ContractualAndOlgooLevelDataOutputDto> levelData = await _sqlReportConnection.QueryAsync<ContractualAndOlgooLevelDataOutputDto>(LevelQuery, @params);
             ContractualAndOlgooLevelHeaderOutputDto levelHeader = new ContractualAndOlgooLevelHeaderOutputDto()
@@ -82,16 +83,17 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
             };
 
-        
+
 
             var result = new ReportOutput<ContractualAndOlgooLevelHeaderOutputDto, ContractualAndOlgooLevelDataOutputDto>(ReportLiterals.ContractualAndOlgooLevel, levelHeader, levelData);
             return result;
         }
 
-        private string GetOlgooLevelQuery(bool hasZone, bool hasUsage, string rangeValues)
+        private string GetOlgooLevelQuery(bool hasZone, bool hasUsage, bool hasBranchType, string rangeValues)
         {
             string zoneQuery = hasZone ? "AND b.ZoneId IN @zoneIds" : string.Empty;
             string usageQuery = hasUsage ? "AND b.UsageId IN @usageIds" : string.Empty;
+            string branchTypeQuery = hasBranchType ? "AND b.BranchType IN @branchTypeIds" : string.Empty;
 
             return @$"Select
                         b.ZoneTitle,
@@ -139,15 +141,17 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 				    	b.SumItems BETWEEN @fromAmount AND @toAmount)
 				    	{usageQuery}
 				        {zoneQuery}
+                        {branchTypeQuery}
 				    Group by
 				    	g.FromValue,
 				    	g.ToValue,
 				    	b.ZoneTitle";
         }
-        private string GetContractualLevelQuery(bool hasZone, bool hasUsage, string rangeValues)
+        private string GetContractualLevelQuery(bool hasZone, bool hasUsage, bool hasBranchType, string rangeValues)
         {
             string zoneQuery = hasZone ? "AND b.ZoneId IN @zoneIds" : string.Empty;
             string usageQuery = hasUsage ? "AND b.UsageId IN @usageIds" : string.Empty;
+            string branchTypeQuery = hasBranchType ? "AND b.BranchType IN @branchTypeIds" : string.Empty;
 
             return @$"Select
                         b.ZoneTitle,
@@ -193,6 +197,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 				    	b.SumItems BETWEEN @fromAmount AND @toAmount)
 				    	{usageQuery}
 				        {zoneQuery}
+                        {branchTypeQuery}
 				    Group by
 				    	g.FromValue,
 				    	g.ToValue,
