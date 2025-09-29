@@ -2,7 +2,7 @@
 
 namespace Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs
 {
-    public record WaterPaymentReceivableInputDto
+    public record ServiceLinkPaymentReceivableInputDto
     {
         [JsonIgnore]
         public bool IsZone { get; set; }
@@ -11,9 +11,6 @@ namespace Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Input
 
         public string FromDateJalali { get; set; }
         public string ToDateJalali { get; set; }
-
-        public string? FromBankId { get; set; }
-        public string? ToBankId { get; set; }
 
 
     }

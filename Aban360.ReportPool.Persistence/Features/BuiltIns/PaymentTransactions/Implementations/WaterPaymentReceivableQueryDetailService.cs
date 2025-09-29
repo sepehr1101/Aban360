@@ -56,7 +56,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 						b.RegisterDay as BillIssueDateJalali,
 						b.Deadline,
 						p.PayDateJalali,
-						IIF(p.PayDateJalali<=b.DeadLine,'{ReportLiterals.Due}' ,'{ReportLiterals.Overdue}') AS AmountState
+						IIF(p.PayDateJalali<=b.DeadLine,N'{ReportLiterals.Due}' , N'{ReportLiterals.Overdue}') AS AmountState
                     From [CustomerWarehouse].dbo.Bills b
                     LEFT JOIN [CustomerWarehouse].dbo.Payments p ON p.BillTableId=b.Id
                     WHERE

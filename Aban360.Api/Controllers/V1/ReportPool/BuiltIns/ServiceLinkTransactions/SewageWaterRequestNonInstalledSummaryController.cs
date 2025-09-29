@@ -6,6 +6,7 @@ using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
@@ -31,7 +32,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterRequestNonInstalledHeaderOutputDto, SewageWaterRequestNonInstalledSummaryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(SewageWaterRequestNonInstalledInputDto input, CancellationToken cancellationToken)
         {
-            var result = await _sewageWaterRequestNonInstalledSummaryHandler.Handle(input, cancellationToken);
+            ReportOutput<SewageWaterRequestNonInstalledHeaderOutputDto, SewageWaterRequestNonInstalledSummaryDataOutputDto> result = await _sewageWaterRequestNonInstalledSummaryHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
@@ -39,9 +40,21 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, SewageWaterRequestNonInstalledInputDto inputDto, CancellationToken cancellationToken)
         {
-            string reportName = inputDto.IsWater ? ReportLiterals.WaterRequestNonInstalledSummary+ReportLiterals.ByUsage : ReportLiterals.SewageRequestNonInstalledSummary + ReportLiterals.ByUsage;
+            string reportName = inputDto.IsWater ? ReportLiterals.WaterRequestNonInstalledSummary + ReportLiterals.ByUsage : ReportLiterals.SewageRequestNonInstalledSummary + ReportLiterals.ByUsage;
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _sewageWaterRequestNonInstalledSummaryHandler.Handle, CurrentUser, reportName, connectionId);
             return Ok(inputDto);
+        }
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetStiReport(SewageWaterRequestNonInstalledInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 311;
+            ReportOutput<SewageWaterRequestNonInstalledHeaderOutputDto, SewageWaterRequestNonInstalledSummaryDataOutputDto> result = await _sewageWaterRequestNonInstalledSummaryHandler.Handle(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
         }
     }
 }
