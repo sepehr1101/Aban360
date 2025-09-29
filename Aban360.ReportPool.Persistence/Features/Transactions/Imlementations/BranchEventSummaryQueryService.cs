@@ -8,8 +8,6 @@ using Aban360.ReportPool.Persistence.Features.Transactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 {

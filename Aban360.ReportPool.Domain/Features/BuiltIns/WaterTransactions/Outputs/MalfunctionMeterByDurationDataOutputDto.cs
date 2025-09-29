@@ -30,7 +30,5 @@
         public string MeterRequestDateJalali { get; set; }
         public string DeletionStateTitle { get; set; }
         public long SumItems { get; set; }
-
-
     }
 }

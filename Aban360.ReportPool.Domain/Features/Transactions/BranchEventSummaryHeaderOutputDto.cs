@@ -1,10 +1,9 @@
-﻿namespace Aban360.ReportPool.Domain.Features.Transactions
-{
-    public record BranchEventSummaryHeaderOutputDto
-    {
-        public string Title { get; set; }
-        public string ReportDateJalali { get; set; }
+﻿using Aban360.Common.BaseEntities;
 
+namespace Aban360.ReportPool.Domain.Features.Transactions
+{
+    public record BranchEventSummaryHeaderOutputDto: ReportHeaderBase
+    {       
         public string FullName { get; set; }
         public string FirstName { get; set; }
         public string Surname { get; set; }
