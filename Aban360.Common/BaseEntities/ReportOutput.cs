@@ -1,6 +1,6 @@
 ﻿namespace Aban360.Common.BaseEntities
 {
-    public record ReportOutput<TReportHeader, TReportData>
+    public record ReportOutput<TReportHeader, TReportData> //where TReportHeader : IReportHeaderBase
     {
         public string Title { get; } = default!;
         public TReportHeader ReportHeader { get; } = default!;
