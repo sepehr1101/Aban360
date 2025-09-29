@@ -18,6 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         public async Task<ReportOutput<SewageWaterRequestNonInstalledHeaderOutputDto, SewageWaterRequestNonInstalledSummaryDataOutputDto>> Get(SewageWaterRequestNonInstalledInputDto input)
         {
+            string reportTitle = input.IsWater ? ReportLiterals.WaterRequestNonInstalledSummary + ReportLiterals.ByUsage : ReportLiterals.SewageRequestNonInstalledSummary + ReportLiterals.ByUsage;
             string requestNonInstalledQuery;
             if (input.IsWater)
                 requestNonInstalledQuery = GetWaterRequestNonInstalledQuery();
@@ -41,6 +42,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (requestNonInstalledData is not null && requestNonInstalledData.Any()) ? requestNonInstalledData.Count() : 0,
+                Title=reportTitle,
 
                 SumCommercialUnit = requestNonInstalledData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = requestNonInstalledData.Sum(i => i.DomesticUnit),
@@ -49,7 +51,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 CustomerCount = requestNonInstalledData.Sum(i => i.CustomerCount),
             };
             var result = new ReportOutput<SewageWaterRequestNonInstalledHeaderOutputDto, SewageWaterRequestNonInstalledSummaryDataOutputDto>
-                (input.IsWater ? ReportLiterals.WaterRequestNonInstalledSummary + ReportLiterals.ByUsage : ReportLiterals.SewageRequestNonInstalledSummary + ReportLiterals.ByUsage,
+                (reportTitle,
                 requestNonInstalledHeader,
                 requestNonInstalledData);
 

@@ -13,10 +13,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
     internal sealed class ServiceLinkPaymentReceivableDetailHandler : IServiceLinkPaymentReceivableDetailHandler
     {
         private readonly IServiceLinkPaymentReceivableQueryDetailService _serviceLinkPaymentReceivableQueryService;
-        private readonly IValidator<WaterPaymentReceivableInputDto> _validator;
+        private readonly IValidator<ServiceLinkPaymentReceivableInputDto> _validator;
         public ServiceLinkPaymentReceivableDetailHandler(
             IServiceLinkPaymentReceivableQueryDetailService serviceLinkPaymentReceivableQueryService,
-            IValidator<WaterPaymentReceivableInputDto> validator)
+            IValidator<ServiceLinkPaymentReceivableInputDto> validator)
         {
             _serviceLinkPaymentReceivableQueryService = serviceLinkPaymentReceivableQueryService;
             _serviceLinkPaymentReceivableQueryService.NotNull(nameof(serviceLinkPaymentReceivableQueryService));
@@ -25,7 +25,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableDataOutputDto>> Handle(WaterPaymentReceivableInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableDataOutputDto>> Handle(ServiceLinkPaymentReceivableInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -39,6 +39,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             long dueAmount = 0, overdueAmount = 0;
             waterPaymentReceivable.ReportData.ForEach(r =>
             {
+                r.Amount=Math.Abs(r.Amount);
                 if (r.AmountState == ReportLiterals.Due)
                 {
                     dueCount++;
@@ -54,7 +55,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             waterPaymentReceivable.ReportHeader.DueCount = dueCount;
             waterPaymentReceivable.ReportHeader.OverdueAmount = overdueAmount;
             waterPaymentReceivable.ReportHeader.OverdueCount = overdueCount;
-
+            waterPaymentReceivable.ReportHeader.Amount = waterPaymentReceivable.ReportHeader.OverdueAmount + waterPaymentReceivable.ReportHeader.DueAmount;
             return waterPaymentReceivable;
         }
     }

@@ -6,6 +6,7 @@ using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
@@ -42,6 +43,18 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
             string reportName = inputDto.IsWater ? ReportLiterals.WaterRequestNonInstalledSummary + ReportLiterals.ByZone : ReportLiterals.SewageRequestNonInstalledSummary + ReportLiterals.ByZone;
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _sewageWaterRequestNonInstalledSummaryByZoneGroupedHandler.Handle, CurrentUser, reportName, connectionId);
             return Ok(inputDto);
+        }
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetStiReport(SewageWaterRequestNonInstalledInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 313;
+            ReportOutput<SewageWaterRequestNonInstalledHeaderOutputDto, ReportOutput<SewageWaterRequestNonInstalledSummaryDataOutputDto, SewageWaterRequestNonInstalledSummaryDataOutputDto>> result = await _sewageWaterRequestNonInstalledSummaryByZoneGroupedHandler.Handle(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(SewageWaterDistanceofRequestAndInstallationInputDto input,CancellationToken cancellationToken)
         {
-            var result=await _sewageWaterDistanceofRequestAndInstallationDetailHandler.Handle(input, cancellationToken);
+            ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationDetailDataOutputDto> result =await _sewageWaterDistanceofRequestAndInstallationDetailHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
@@ -43,6 +43,19 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _sewageWaterDistanceofRequestAndInstallationDetailHandler.Handle, CurrentUser, reportName, connectionId);
             return Ok(inputDto);
         }
+
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetStiReport(SewageWaterDistanceofRequestAndInstallationInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 280;
+            ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationDetailDataOutputDto> result = await _sewageWaterDistanceofRequestAndInstallationDetailHandler.Handle(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
+        }
+
         private string GetTitle(bool IsWater, bool IsInstallation)
         {
             if (IsWater)

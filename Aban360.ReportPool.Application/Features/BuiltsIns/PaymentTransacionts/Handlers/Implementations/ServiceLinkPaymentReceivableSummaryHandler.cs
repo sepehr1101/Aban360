@@ -12,10 +12,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
     internal sealed class ServiceLinkPaymentReceivableSummaryHandler : IServiceLinkPaymentReceivableSummaryHandler
     {
         private readonly IServiceLinkPaymentReceivableSummaryService _serviceLinkPaymentReceivableQueryService;
-        private readonly IValidator<WaterPaymentReceivableInputDto> _validator;
+        private readonly IValidator<ServiceLinkPaymentReceivableInputDto> _validator;
         public ServiceLinkPaymentReceivableSummaryHandler(
             IServiceLinkPaymentReceivableSummaryService serviceLinkPaymentReceivableQueryService,
-            IValidator<WaterPaymentReceivableInputDto> validator)
+            IValidator<ServiceLinkPaymentReceivableInputDto> validator)
         {
             _serviceLinkPaymentReceivableQueryService = serviceLinkPaymentReceivableQueryService;
             _serviceLinkPaymentReceivableQueryService.NotNull(nameof(serviceLinkPaymentReceivableQueryService));
@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableSummaryDataOutputDto>> Handle(WaterPaymentReceivableInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableSummaryDataOutputDto>> Handle(ServiceLinkPaymentReceivableInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -34,6 +34,16 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             }
 
             ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableSummaryDataOutputDto> waterPaymentReceivable = await _serviceLinkPaymentReceivableQueryService.GetInfo(input);
+            waterPaymentReceivable.ReportData.ForEach(r =>
+            {
+                r.DueAmount = Math.Abs(r.DueAmount);
+                r.OverdueAmount= Math.Abs(r.OverdueAmount);
+                r.Amount = r.DueAmount + r.OverdueAmount;
+            });
+            waterPaymentReceivable.ReportHeader.DueCount=waterPaymentReceivable.ReportData.Sum(r => r.DueCount);
+            waterPaymentReceivable.ReportHeader.OverdueCount=waterPaymentReceivable.ReportData.Sum(r => r.OverdueCount);
+            waterPaymentReceivable.ReportHeader.Amount=waterPaymentReceivable.ReportData.Sum(r => r.Amount);
+         
             return waterPaymentReceivable;
         }
     }

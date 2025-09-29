@@ -6,6 +6,7 @@ using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,7 +33,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(SewageWaterDistanceofRequestAndInstallationInputDto input, CancellationToken cancellationToken)
         {
-            var result = await _sewageWaterDistanceofRequestAndInstallationSummaryHandler.Handle(input, cancellationToken);
+            ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto> result = await _sewageWaterDistanceofRequestAndInstallationSummaryHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
@@ -45,6 +46,18 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
             return Ok(inputDto);
         }
 
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetStiReport(SewageWaterDistanceofRequestAndInstallationInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 281;
+            ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto> result = await _sewageWaterDistanceofRequestAndInstallationSummaryHandler.Handle(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
+        }
         private string GetTitle(bool IsWater, bool IsInstallation)
         {
             if (IsWater)

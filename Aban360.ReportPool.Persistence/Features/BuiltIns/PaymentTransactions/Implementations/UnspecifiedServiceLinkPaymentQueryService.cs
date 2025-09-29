@@ -35,6 +35,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 				ToDateJalali = input.ToDateJalali,
 				FromAmount = input.FromAmount,
 				ToAmount = input.ToAmount,
+                FromBankId = input.FromBankId,
+                ToBankId = input.ToBankId,
                 CustomerCount = (unspecifiedServiceLinkData is not null && unspecifiedServiceLinkData.Any()) ? unspecifiedServiceLinkData.Count() : 0,
 				RecordCount = (unspecifiedServiceLinkData is not null && unspecifiedServiceLinkData.Any()) ? unspecifiedServiceLinkData.Count() : 0,
                 TotalAmount = unspecifiedServiceLinkData.Sum(serviceLink => serviceLink.Amount),
@@ -82,7 +84,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 							(@FromAmount IS NULL AND
 								@ToAmount IS NULL)
 						)AND
-						(p.BankCode BETWEEN @FromBankId AND @ToBankId)";
+						(@fromBankId IS NULL OR
+                        @toBankId IS NULL OR
+                        p.BankCode BETWEEN @fromBankId AND @toBankId)";
         }
     }
 }

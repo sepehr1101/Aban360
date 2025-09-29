@@ -6,6 +6,8 @@
         public string ToDateJalali { get; set; }
         public long? FromAmount { get; set; }
         public long? ToAmount { get; set; }
+        public string? FromBankId { get; set; }
+        public string? ToBankId { get; set; }
         public int RecordCount { get; set; }
         public long TotalAmount { get; set; }
         public string ReportDateJalali { get; set; }

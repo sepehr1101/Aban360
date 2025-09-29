@@ -29,7 +29,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         [HttpPost, HttpGet]
         [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableSummaryDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRaw(WaterPaymentReceivableInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetRaw(ServiceLinkPaymentReceivableInputDto inputDto, CancellationToken cancellationToken)
         {
             inputDto.IsZone = false;
             ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableSummaryDataOutputDto> waterPaymentReceivable = await _serviceLinkPaymentReceivable.Handle(inputDto, cancellationToken);
@@ -38,7 +38,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
-        public async Task<IActionResult> GetExcel(string connectionId, WaterPaymentReceivableInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetExcel(string connectionId, ServiceLinkPaymentReceivableInputDto inputDto, CancellationToken cancellationToken)
         {
             inputDto.IsZone = false;
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _serviceLinkPaymentReceivable.Handle, CurrentUser, ReportLiterals.WaterPaymentReceivableSummary + ReportLiterals.ByUsage, connectionId);

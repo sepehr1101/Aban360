@@ -16,16 +16,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             : base(configuration)
         { }
 
-        public async Task<ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableDataOutputDto>> GetInfo(WaterPaymentReceivableInputDto input)
+        public async Task<ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableDataOutputDto>> GetInfo(ServiceLinkPaymentReceivableInputDto input)
         {
-            string paymentReceivables = GetWaterPaymentReceivableQuery(input.ZoneIds.Any());
+            string paymentReceivables = GetWaterPaymentReceivableQuery(input.ZoneIds.Any(),input.UsageIds.Any());
             var @params = new
             {
                 FromDate = input.FromDateJalali,
                 ToDate = input.ToDateJalali,
-                fromBankId = input.FromBankId,
-                toBankId = input.ToBankId,
                 zoneIds = input.ZoneIds,
+                usageIds= input.UsageIds,
             };
             IEnumerable<WaterPaymentReceivableDataOutputDto> waterPaymentReceivableData = await _sqlReportConnection.QueryAsync<WaterPaymentReceivableDataOutputDto>(paymentReceivables, @params);
             WaterPaymentReceivableHeaderOutputDto waterPaymentReceivableHeader = new WaterPaymentReceivableHeaderOutputDto()
@@ -33,21 +32,56 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                RecordCount = waterPaymentReceivableData is not null && waterPaymentReceivableData.Any() ? waterPaymentReceivableData.Count() : 0
+
             };
-            if (waterPaymentReceivableData is not null && waterPaymentReceivableData.Any())
-            {
-                waterPaymentReceivableHeader.RecordCount = waterPaymentReceivableData is not null && waterPaymentReceivableData.Any() ? waterPaymentReceivableData.Count() : 0;
-                waterPaymentReceivableHeader.CustomerCount = waterPaymentReceivableData is not null && waterPaymentReceivableData.Any() ? waterPaymentReceivableData.Count() : 0;
-                waterPaymentReceivableHeader.Amount = waterPaymentReceivableData?.Sum(r => r.Amount) ?? 0;
-            }
             var result = new ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableDataOutputDto>(ReportLiterals.WaterPaymentReceivableDetail, waterPaymentReceivableHeader, waterPaymentReceivableData);
             return result;
         }
 
-        private string GetWaterPaymentReceivableQuery(bool hasZone)
+        private string GetWaterPaymentReceivableQuery(bool hasZone,bool hasUsage)
         {
-            string zoneQuery = hasZone ? "AND p.ZoneId IN @ZoneIds" : string.Empty;
-            return @$"";
+            string zoneQuery = hasZone ? "AND ZoneId IN @ZoneIds" : string.Empty;
+            string usageQuery = hasUsage ? "AND UsageId IN @UsageIds" : string.Empty;
+
+            return @$"WITH OrderedData AS (
+                    SELECT 
+                        FullName, 
+                		CustomerNumber,
+                		ZoneId,
+                		ZoneTitle,
+                		UsageId,
+                		UsageTitle,
+                        EventDate,
+                        IsPayed,
+                        Amount,
+                        SUM(Amount) OVER (
+                            PARTITION BY ZoneId,CustomerNumber
+                            ORDER BY EventDate
+                            ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+                        ) AS SumAmount
+                	from [CustomerWarehouse].dbo.PaymentDue 
+                    Where 
+                        (@fromDate IS NULL OR
+                        @toDate IS NULL OR
+                        EventDate BETWEEN @fromDate and @toDate) 
+                        {zoneQuery}
+                        {usageQuery}
+                )
+                SELECT 
+                    FullName, 
+                	CustomerNumber,
+                	ZoneTitle,
+                	UsageTitle,
+                    EventDate as EventDateJalali,
+                    Amount,
+                	Case When SumAmount>=0 Then N'{ReportLiterals.Due}' Else N'{ReportLiterals.Overdue}' End as AmountState
+                FROM OrderedData
+                WHERE IsPayed = 1
+                ORDER BY 
+                	ZoneId,
+                	CustomerNumber, 
+                	EventDate";
         }
     }
 }

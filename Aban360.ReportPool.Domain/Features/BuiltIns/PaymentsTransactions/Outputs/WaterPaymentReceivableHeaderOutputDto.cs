@@ -7,8 +7,8 @@
 
         public string ReportDateJalali { get; set; }
         public int RecordCount { get; set; }
-        public int CustomerCount { get; set; }
-        public int BillCount { get; set; }
+        public int? CustomerCount { get; set; }
+        public int? BillCount { get; set; }
 
         public long Amount { get; set; }
         public long OverdueAmount { get; set; }

@@ -42,5 +42,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _malfunctionMeterByDurationSummaryByUsageHandler.Handle, CurrentUser, ReportLiterals.MalfunctionMeterByDurationSummary + ReportLiterals.ByUsage, connectionId);
             return Ok(inputDto);
         }
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetStiReport(MalfunctionMeterByDurationInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 301;
+            ReportOutput<MalfunctionMeterByDurationHeaderOutputDto, MalfunctionMeterByDurationSummaryDataOutputDto> calculationDetails = await _malfunctionMeterByDurationSummaryByUsageHandler.Handle(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode);
+            return Ok(reportId);
+        }
     }
 }

@@ -19,7 +19,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionSummaryDataOutputDto>> Get(WaterIncomeAndConsumptionSummaryInputDto input)
         {
-            string waterIncomeAndConsumptionSummarys = GetWaterIncomeAndConsumptionSummaryQuery(input.ZoneIds.Any(), input.UsageIds.Any(), input.EnumInput);
+            string waterIncomeAndConsumptionSummarys = GetWaterIncomeAndConsumptionSummaryQuery(input.ZoneIds.Any(), input.UsageIds.Any(), input.BranchTypeIds.Any(), input.EnumInput);
             var @params = new
             {
                 fromDate = input.FromDateJalali,
@@ -34,7 +34,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 typeCodes = input.IsNet ? new[] { 1, 3, 4, 5 } : new[] { 1 },
 
                 usageIds = input.UsageIds,
-                zoneIds = input.ZoneIds
+                zoneIds = input.ZoneIds,
+                branchTypeIds = input.BranchTypeIds,
             };
             IEnumerable<WaterIncomeAndConsumptionSummaryDataOutputDto> waterIncomeAndConsumptionData = await _sqlReportConnection.QueryAsync<WaterIncomeAndConsumptionSummaryDataOutputDto>(waterIncomeAndConsumptionSummarys, @params);
             WaterIncomeAndConsumptionSummaryHeaderOutputDto waterIncomeAndConsumptionHeader = new WaterIncomeAndConsumptionSummaryHeaderOutputDto()
@@ -82,10 +83,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             return result;
         }
 
-        private string GetWaterIncomeAndConsumptionSummaryQuery(bool hasZone, bool hasUsage, WaterIncomeAndConsumptionSummaryEnum enumState)
+        private string GetWaterIncomeAndConsumptionSummaryQuery(bool hasZone, bool hasUsage, bool hasBranchType, WaterIncomeAndConsumptionSummaryEnum enumState)
         {
             string zoneQuery = hasZone ? "AND b.ZoneId IN @zoneIds" : string.Empty;
             string usageQuery = hasUsage ? "AND b.UsageId IN @usageIds" : string.Empty;
+            string branchTypeQuery = hasBranchType ? "AND b.BranchType IN @branchTypeIds" : string.Empty;
+
             string groupKey = GetEnumQuery(enumState);
 
             return @$"use CustomerWarehouse
@@ -128,6 +131,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						b.TypeCode IN @typeCodes  
 						{usageQuery}
 						{zoneQuery}
+                        {branchTypeQuery}
 					Group BY {groupKey}";
         }
 

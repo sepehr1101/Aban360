@@ -20,6 +20,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         public async Task<ReportOutput<MalfunctionMeterByDurationHeaderOutputDto, MalfunctionMeterByDurationSummaryDataOutputDto>> Get(MalfunctionMeterByDurationInputDto input)
         {
             string malfunctionMeterByDurationQueryString = input.IsMalfunctionLatest ? GetGroupedQueryLatest(false) : GetGroupedQuery(false);
+            string reportTitle = ReportLiterals.MalfunctionMeterByDurationSummary + ReportLiterals.ByUsage;
             var @params = new
             {
                 fromReadingNumber = input.FromReadingNumber,
@@ -31,6 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             IEnumerable<MalfunctionMeterByDurationSummaryDataOutputDto> malfunctionMeterByDurationData = await _sqlReportConnection.QueryAsync<MalfunctionMeterByDurationSummaryDataOutputDto>(malfunctionMeterByDurationQueryString, @params, null, 180);
             MalfunctionMeterByDurationHeaderOutputDto malfunctionMeterByDurationHeader = new MalfunctionMeterByDurationHeaderOutputDto()
             {
+                Title = reportTitle,
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
@@ -39,7 +41,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 CustomerCount=malfunctionMeterByDurationData?.Sum(r=>r.CustomerCount)??0
             };
 
-            ReportOutput<MalfunctionMeterByDurationHeaderOutputDto, MalfunctionMeterByDurationSummaryDataOutputDto> result = new ReportOutput<MalfunctionMeterByDurationHeaderOutputDto, MalfunctionMeterByDurationSummaryDataOutputDto>(ReportLiterals.MalfunctionMeterByDurationSummary + ReportLiterals.ByUsage, malfunctionMeterByDurationHeader, malfunctionMeterByDurationData);
+            ReportOutput<MalfunctionMeterByDurationHeaderOutputDto, MalfunctionMeterByDurationSummaryDataOutputDto> result = new ReportOutput<MalfunctionMeterByDurationHeaderOutputDto, MalfunctionMeterByDurationSummaryDataOutputDto>(reportTitle, malfunctionMeterByDurationHeader, malfunctionMeterByDurationData);
             return result;
         }
     }
