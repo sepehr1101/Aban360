@@ -1,79 +1,93 @@
-﻿using Aban360.Common.Literals;
+﻿using Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts;
+using Aban360.Common.Literals;
 using System.Net.Http.Headers;
 using System.Text;
 
 namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
 {
-    internal sealed class OpenKmCommandService
-    {
-        private readonly HttpClient _httpClient;
-        public OpenKmCommandService(IHttpClientFactory httpClientFactory)
-        {
-            _httpClient = httpClientFactory.CreateClient(HttpClientNames.Kaj);
-        }
+    //public interface IOpenKmCommandService
+    //{
+    //    Task<string> AddFolder(string folderPath);
+    //}
 
-        public async Task AddFile(string serverPath, string localFilePath)
-        {
-            using var form = new MultipartFormDataContent();
+    //internal sealed class OpenKmCommandService: IOpenKmCommandService
+    //{
+    //    private readonly HttpClient _httpClient;
+    //    private readonly IOpenKmQueryService _openKmQuery;
+    //    public OpenKmCommandService(
+    //        IHttpClientFactory httpClientFactory,
+    //        IOpenKmQueryService openKmQuery)
+    //    {
+    //        _httpClient = httpClientFactory.CreateClient(HttpClientNames.Kaj);
+    //        _openKmQuery = openKmQuery;
+    //    }
 
-            var fileStream = File.OpenRead(localFilePath);
-            var fileContent = new StreamContent(fileStream);
-            fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+    //    public async Task AddFile(string serverPath, string localFilePath)
+    //    {
+    //        using var form = new MultipartFormDataContent();
 
-            form.Add(fileContent, "content", Path.GetFileName(localFilePath));
+    //        var fileStream = File.OpenRead(localFilePath);
+    //        var fileContent = new StreamContent(fileStream);
+    //        fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
 
-            form.Add(new StringContent(serverPath), "docPath");
+    //        form.Add(fileContent, "content", Path.GetFileName(localFilePath));
+
+    //        form.Add(new StringContent(serverPath), "docPath");
 
 
 
-            var response = await _httpClient.PostAsync("url", form);
-            response.EnsureSuccessStatusCode();
+    //        var response = await _httpClient.PostAsync("url", form);
+    //        response.EnsureSuccessStatusCode();
 
-            string result = await response.Content.ReadAsStringAsync();
-        }
-        public async Task<string> AddFolder(string folderPath)
-        {
-            string url = $"https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-CreateFolder/1.0";
-            string _content = "application/json";
+    //        string result = await response.Content.ReadAsStringAsync();
+    //    }
+    //    public async Task<string> AddFolder(string folderPath)
+    //    {
+    //        string url = $"https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-CreateFolder/1.0";
+    //        string _content = "application/json";
 
-            var jsonContent = new StringContent($"{folderPath}", Encoding.UTF8, _content);
+    //        var jsonContent = new StringContent($"{folderPath}", Encoding.UTF8, _content);
 
-            var response = await _httpClient.PostAsync(url, jsonContent);
-            response.EnsureSuccessStatusCode();
-            string result = await response.Content.ReadAsStringAsync();
+    //        // Ensure Bearer token
+    //        AuthenticationHeaderValue authHeader = await _openKmQuery.GetAuthenticationHeaderAsync();
+    //        _httpClient.DefaultRequestHeaders.Authorization = authHeader;
 
-            return result;
-        }
-        public async Task AddOrUpdateMetadata(string body, string nodeId, string groupName)
-        {
-            string accept = "application/xml";
-            string textPlain = "text/plain";
-            string baseUrl = "https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-SetMetadata/1.0";
+    //        var response = await _httpClient.PostAsync(url, jsonContent);
+    //        response.EnsureSuccessStatusCode();
+    //        string result = await response.Content.ReadAsStringAsync();
 
-            //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+    //        return result;
+    //    }
+    //    public async Task AddOrUpdateMetadata(string body, string nodeId, string groupName)
+    //    {
+    //        string accept = "application/xml";
+    //        string textPlain = "text/plain";
+    //        string baseUrl = "https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-SetMetadata/1.0";
 
-            var content = new StringContent(body, Encoding.UTF8, textPlain);
-            string finalUrl = $"{baseUrl}?nodeId={nodeId}&grpName={groupName}";
+    //        //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
 
-            var response = await _httpClient.PutAsync(finalUrl, content);
-            response.EnsureSuccessStatusCode();
-            string result = await response.Content.ReadAsStringAsync();
-        }
-        public async Task EditFile(string nodeId, string groupName)
-        {
-            string accept = "application/xml";
-            string cookie = "Cookie";
-            string cookieDate = "cookiesession1=678ADA5C33A30F49D180AB6CBD34D5FC";
-            string baseUrl = $"https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-CreateMetadata/1.0";
+    //        var content = new StringContent(body, Encoding.UTF8, textPlain);
+    //        string finalUrl = $"{baseUrl}?nodeId={nodeId}&grpName={groupName}";
 
-            //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
-            //client.DefaultRequestHeaders.Add(cookie, cookieDate);
+    //        var response = await _httpClient.PutAsync(finalUrl, content);
+    //        response.EnsureSuccessStatusCode();
+    //        string result = await response.Content.ReadAsStringAsync();
+    //    }
+    //    public async Task EditFile(string nodeId, string groupName)
+    //    {
+    //        string accept = "application/xml";
+    //        string cookie = "Cookie";
+    //        string cookieDate = "cookiesession1=678ADA5C33A30F49D180AB6CBD34D5FC";
+    //        string baseUrl = $"https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-CreateMetadata/1.0";
 
-            string finalUrl = $"{baseUrl}?nodeId={nodeId}&grpName={groupName}";
+    //        //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+    //        //client.DefaultRequestHeaders.Add(cookie, cookieDate);
 
-            var response = await _httpClient.PostAsync(finalUrl, null);
-            response.EnsureSuccessStatusCode();
-            var result = await response.Content.ReadAsStringAsync();
-        }
-    }
+    //        string finalUrl = $"{baseUrl}?nodeId={nodeId}&grpName={groupName}";
+
+    //        var response = await _httpClient.PostAsync(finalUrl, null);
+    //        response.EnsureSuccessStatusCode();
+    //        var result = await response.Content.ReadAsStringAsync();
+    //    }
+    //}
 }
