@@ -7,7 +7,6 @@ using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contrac
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Concurrent;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
@@ -15,7 +14,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
     {
         public WithoutBillQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<WithoutBillHeaderOutputDto, WithoutBillDataOutputDto>> GetInfo(WithoutBillInputDto input)
         {

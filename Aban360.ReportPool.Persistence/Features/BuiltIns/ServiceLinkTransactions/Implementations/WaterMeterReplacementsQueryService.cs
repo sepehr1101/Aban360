@@ -14,7 +14,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
     {
         public WaterMeterReplacementsQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+        }
 
         public async Task<ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsDataOutputDto>> GetInfo(WaterMeterReplacementsInputDto input)
         {

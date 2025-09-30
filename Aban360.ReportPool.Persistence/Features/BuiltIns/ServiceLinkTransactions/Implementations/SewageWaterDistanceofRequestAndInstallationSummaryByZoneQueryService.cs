@@ -14,7 +14,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
     {
         public SewageWaterDistanceofRequestAndInstallationSummaryByZoneQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryByZoneDataOutputDto>> Get(SewageWaterDistanceofRequestAndInstallationByZoneInputDto input)
         {
