@@ -32,7 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 toDeletionStateIds = input.ToDeletionStateIds,
             };
 
-            IEnumerable<DeletionStateChangeHistoryDataOutputDto> deletionStateChangeHistoryData = await _sqlReportConnection.QueryAsync<DeletionStateChangeHistoryDataOutputDto>(DeletionStateChangeHistoryQuery, @params);
+            IEnumerable<DeletionStateChangeHistoryDataOutputDto> deletionStateChangeHistoryData = await _sqlReportConnection.QueryAsync<DeletionStateChangeHistoryDataOutputDto>(DeletionStateChangeHistoryQuery, @params, null, 180);
             DeletionStateChangeHistoryHeaderOutputDto deletionStateChangeHistoryHeader = new DeletionStateChangeHistoryHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
