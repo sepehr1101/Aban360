@@ -17,7 +17,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         { }
         public async Task<ReportOutput<DeletionStateChangeHistoryHeaderOutputDto, DeletionStateChangeHistoryDataOutputDto>> GetInfo(DeletionStateChangeHistoryInputDto input)
         {
-            string DeletionStateChangeHistoryQuery = GetDeletionStateChangeHistoryQuery(input.ZoneIds.Any());
+            string DeletionStateChangeHistoryQuery = GetDeletionStateChangeHistoryQuery(input.ZoneIds?.Any() == true);
             var @params = new
             {
                 fromReadingNumber = input.FromReadingNumber,

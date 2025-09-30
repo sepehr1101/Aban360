@@ -1,16 +1,10 @@
-﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
-using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
-using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
+﻿using Aban360.Common.Db.Dapper;
+using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
-namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts
+namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Implementations
 {
-    public interface IHandoverQueryService
-    {
-        Task<IEnumerable<HandoverQueryDto>> Get();
-    }
     internal sealed class HandoverQueryService : AbstractBaseConnection, IHandoverQueryService
     {
         public HandoverQueryService(IConfiguration configuration)
@@ -31,7 +25,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     from [Db70].dbo.T7";
         }
     }
-
     public record HandoverQueryDto
     {
         public int Id { get; set; }

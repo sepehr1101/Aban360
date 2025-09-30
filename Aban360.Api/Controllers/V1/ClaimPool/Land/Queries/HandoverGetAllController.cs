@@ -3,7 +3,7 @@ using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Contracts;
-using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
+using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Implementations;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries

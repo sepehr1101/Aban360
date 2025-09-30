@@ -19,7 +19,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionSummaryDataOutputDto>> Get(WaterIncomeAndConsumptionSummaryInputDto input)
         {
-            string waterIncomeAndConsumptionSummarys = GetWaterIncomeAndConsumptionSummaryQuery(input.ZoneIds.Any(), input.UsageIds.Any(), input.BranchTypeIds.Any(), input.EnumInput);
+            string waterIncomeAndConsumptionSummarys = GetWaterIncomeAndConsumptionSummaryQuery(input.ZoneIds?.Any()==true, input.UsageIds?.Any() == true, input.BranchTypeIds?.Any() == true, input.EnumInput);
             var @params = new
             {
                 fromDate = input.FromDateJalali,

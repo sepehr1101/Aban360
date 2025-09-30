@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryByZoneDataOutputDto>> GetInfo(WithoutBillInputDto input)
         {
-            string withoutBill = GetWithoutBillQuery(input.ZoneIds?.Any() == true, input.UsageIds.Any());
+            string withoutBill = GetWithoutBillQuery(input.ZoneIds?.Any() == true, input.UsageIds?.Any() == true);
             var @params = new
             {
                 FromDate = input.FromDateJalali,

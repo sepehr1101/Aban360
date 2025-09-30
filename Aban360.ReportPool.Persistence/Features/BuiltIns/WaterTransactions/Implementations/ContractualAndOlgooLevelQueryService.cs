@@ -21,8 +21,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         {
             string rangeValues = string.Join(",", input.Values.Select(v => $"({v.FromValue},{v.ToValue})"));
 
-            string getOlgooLevelQueryString = GetOlgooLevelQuery(input.Inputs.ZoneIds.Any(), input.Inputs.UsageIds.Any(), input.Inputs.BranchTypeIds.Any(), rangeValues);
-            string getContractualLevelQueryString = GetContractualLevelQuery(input.Inputs.ZoneIds.Any(), input.Inputs.BranchTypeIds.Any(), input.Inputs.UsageIds.Any(), rangeValues);
+            string getOlgooLevelQueryString = GetOlgooLevelQuery(input.Inputs.ZoneIds?.Any() == true, input.Inputs.UsageIds?.Any() == true, input.Inputs.BranchTypeIds?.Any() == true, rangeValues);
+            string getContractualLevelQueryString = GetContractualLevelQuery(input.Inputs.ZoneIds?.Any() == true, input.Inputs.UsageIds?.Any() == true, input.Inputs.BranchTypeIds?.Any() == true, rangeValues);
             string LevelQuery = input.IsOlgoo ? getContractualLevelQueryString : getOlgooLevelQueryString;
 
             var @params = new
