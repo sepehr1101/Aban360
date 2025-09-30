@@ -22,4 +22,10 @@ namespace Aban360.BlobPool.Domain.Providers.Dto
         [JsonPropertyName("score")]
         public int Score { get; set; }
     }
+
+    public record AddFileDto
+    {
+        public string Uuid { get; set; }
+        public int Size { get; set; }
+    }
 }
