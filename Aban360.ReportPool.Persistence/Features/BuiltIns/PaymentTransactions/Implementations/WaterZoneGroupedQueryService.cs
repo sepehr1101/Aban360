@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto>> GetInfo(ServiceLinkWaterItemGroupedInputDto input)
         {
-            string waterZoneGroupeds = GetWaterZoneGroupedQuery(input.ZoneIds.Any());
+            string waterZoneGroupeds = GetWaterZoneGroupedQuery(input.ZoneIds?.Any() == true);
             var @params = new
             {
                 FromDate = input.FromDateJalali,
@@ -71,6 +71,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 						SUM(CASE WHEN c.WaterDiameterId In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6
                     From [CustomerWarehouse].dbo.Payments p
                     JOIN [CustomerWarehouse].dbo.Clients c 
+						On p.CustomerNumber=c.CustomerNumber AND p.ZoneId=c.ZoneId
                     WHERE
                         c.ToDayJalali IS NULL AND
                         (@FromDate IS NULL OR 

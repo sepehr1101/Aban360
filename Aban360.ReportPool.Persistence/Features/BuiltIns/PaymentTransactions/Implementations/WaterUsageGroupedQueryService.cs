@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto>> GetInfo(ServiceLinkWaterItemGroupedInputDto input)
         {
-            string waterUsageGroupeds = GetWaterUsageGroupedQuery(input.ZoneIds.Any());
+            string waterUsageGroupeds = GetWaterUsageGroupedQuery(input.ZoneIds?.Any()== true);
             var @params = new
             {
                 FromDate = input.FromDateJalali,

@@ -18,13 +18,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto>> GetInfo(ServiceLinkWaterItemGroupedInputDto input)
         {
-            string ServiceLinkZoneGroupeds = GetServiceLinkZoneGroupedQuery();
+            string ServiceLinkZoneGroupeds = GetServiceLinkZoneGroupedQuery(input.ZoneIds?.Any() == true);
             var @params = new
             {
                 FromDate = input.FromDateJalali,
                 ToDate = input.ToDateJalali,
                 fromBankId = input.FromBankId,
                 toBankId = input.ToBankId,
+                zoneIds = input.ZoneIds
             };
             IEnumerable<ServiceLinkWaterItemGroupedDataOutputDto> serviceLinkZoneGroupedData = await _sqlReportConnection.QueryAsync<ServiceLinkWaterItemGroupedDataOutputDto>(ServiceLinkZoneGroupeds, @params);
             ServiceLinkWaterItemGroupedHeaderOutputDto serviceLinkZoneGroupedHeader = new ServiceLinkWaterItemGroupedHeaderOutputDto()
@@ -48,9 +49,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             return result;
         }
 
-        private string GetServiceLinkZoneGroupedQuery()
+        private string GetServiceLinkZoneGroupedQuery(bool hasZone)
         {
-            return @"Select 
+            string zoneQuery = hasZone ? "AND p.ZoneId IN @ZoneIds" : string.Empty;
+
+            return @$"Select 
                     	SUM(p.Amount) AS Amount,
                     	c.ZoneTitle AS ItemTitle,
 						COUNT(c.ZoneTitle) AS CustomerCount,
@@ -82,6 +85,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                         (@fromBankId IS NULL OR
                         @toBankId IS NULL OR
                         p.BankCode BETWEEN @fromBankId AND @toBankId)
+                        {zoneQuery}
                     GROUP BY c.ZoneTitle";
         }
     }

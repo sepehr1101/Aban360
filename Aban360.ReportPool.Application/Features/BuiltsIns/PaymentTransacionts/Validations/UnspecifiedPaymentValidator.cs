@@ -17,14 +17,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(customer => customer.FromBankId)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull);
-
-            RuleFor(customer => customer.ToBankId)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull);
-
             RuleFor(input => input)
                 .Must(input => FromToDateJalaliValidation.DateValidation(new FromToDateJalaliDto(input.FromDateJalali,
                                                                                                 input.ToDateJalali)).IsValid)

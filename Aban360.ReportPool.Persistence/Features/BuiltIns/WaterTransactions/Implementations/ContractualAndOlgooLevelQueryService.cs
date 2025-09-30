@@ -93,7 +93,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         {
             string zoneQuery = hasZone ? "AND b.ZoneId IN @zoneIds" : string.Empty;
             string usageQuery = hasUsage ? "AND b.UsageId IN @usageIds" : string.Empty;
-            string branchTypeQuery = hasBranchType ? "AND b.BranchType IN @branchTypeIds" : string.Empty;
+            string branchTypeQuery = hasBranchType ? "AND b.BranchTypeId IN @branchTypeIds" : string.Empty;
 
             return @$"Select
                         b.ZoneTitle,
