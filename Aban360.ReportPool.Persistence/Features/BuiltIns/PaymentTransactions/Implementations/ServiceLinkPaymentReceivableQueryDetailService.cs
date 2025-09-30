@@ -18,13 +18,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableDataOutputDto>> GetInfo(ServiceLinkPaymentReceivableInputDto input)
         {
-            string paymentReceivables = GetWaterPaymentReceivableQuery(input.ZoneIds.Any(),input.UsageIds.Any());
+            string paymentReceivables = GetWaterPaymentReceivableQuery(input.ZoneIds?.Any() == true, input.UsageIds?.Any() == true);
             var @params = new
             {
                 FromDate = input.FromDateJalali,
                 ToDate = input.ToDateJalali,
                 zoneIds = input.ZoneIds,
-                usageIds= input.UsageIds,
+                usageIds = input.UsageIds,
             };
             IEnumerable<WaterPaymentReceivableDataOutputDto> waterPaymentReceivableData = await _sqlReportConnection.QueryAsync<WaterPaymentReceivableDataOutputDto>(paymentReceivables, @params);
             WaterPaymentReceivableHeaderOutputDto waterPaymentReceivableHeader = new WaterPaymentReceivableHeaderOutputDto()
@@ -39,7 +39,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             return result;
         }
 
-        private string GetWaterPaymentReceivableQuery(bool hasZone,bool hasUsage)
+        private string GetWaterPaymentReceivableQuery(bool hasZone, bool hasUsage)
         {
             string zoneQuery = hasZone ? "AND ZoneId IN @ZoneIds" : string.Empty;
             string usageQuery = hasUsage ? "AND UsageId IN @UsageIds" : string.Empty;

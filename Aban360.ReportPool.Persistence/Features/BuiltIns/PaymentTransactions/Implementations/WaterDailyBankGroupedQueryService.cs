@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<DailyBankGroupedHeaderOutputDto, DailyBankGroupedDataOutputDto>> GetInfo(DailyBankGroupedInputDto input)
         {
-            string dailyBankGroupeds = GetDailyBankGroupedQuery(input.ZoneIds.Any());
+            string dailyBankGroupeds = GetDailyBankGroupedQuery(input.ZoneIds?.Any() == true);
             var @params = new
             {
                 FromDate = input.FromDateJalali,

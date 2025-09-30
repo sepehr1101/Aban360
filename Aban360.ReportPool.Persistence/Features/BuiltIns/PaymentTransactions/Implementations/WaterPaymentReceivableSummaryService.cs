@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableSummaryDataOutputDto>> GetInfo(WaterPaymentReceivableInputDto input)
         {
-            string paymentReceivables = GetWaterPaymentReceivableQuery(input.ZoneIds.Any(), input.IsZone);
+            string paymentReceivables = GetWaterPaymentReceivableQuery(input.ZoneIds?.Any() == true, input.IsZone);
             var @params = new
             {
                 FromDate = input.FromDateJalali,
