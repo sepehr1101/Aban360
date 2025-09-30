@@ -48,7 +48,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                 lastRemained = lastRemained + (row.DebtAmount - row.CreditAmount);
                 row.Remained = lastRemained;
             }
-            ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> result = new(ReportLiterals.BranchEventSummary, branchHeader, branchData);
+            ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> result = new(ReportLiterals.BranchEventSummary, branchHeader, branchDateOrder);
             return result;
         }
         private string GetZoneIdAndCustomerNumberQuery()
@@ -92,7 +92,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	r.UsageId AS UsageId,
                     	r.TrackNumber,
                     	r.RegisterDate collate SQL_Latin1_General_CP1_CI_AS AS RegisterDateJalali,
-                    	IIF(r.FinalAmount<0,r.FinalAmount,0) AS CreditAmount,
+                    	IIF(TypeCode in (4,6) AND r.FinalAmount<0, -1*r.FinalAmount, IIF(r.finalAmount<0,r.FinalAmount,0)) AS CreditAmount,
                     	IIF(r.FinalAmount>0,r.FinalAmount,0) AS DebtAmount,
                     	'' AS BankDateJalali,
                     	'' AS BankName,
@@ -125,6 +125,5 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	p.ZoneId=@zoneId AND
                     	p.Amount!=0";
         }
-
     }
 }
