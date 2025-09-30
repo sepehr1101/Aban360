@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<WaterIncomeAndConsumptionDetailHeaderOutputDto, WaterIncomeAndConsumptionDetailDataOutputDto>> Get(WaterIncomeAndConsumptionDetailInputDto input)
         {
-            string waterIncomeAndConsumptionDetails = GetWaterIncomeAndConsumptionDetailQuery(input.ZoneIds.Any(), input.UsageIds.Any(),input.BranchTypeIds.Any());
+            string waterIncomeAndConsumptionDetails = GetWaterIncomeAndConsumptionDetailQuery(input.ZoneIds?.Any() == true, input.UsageIds?.Any() == true, input.BranchTypeIds?.Any() == true);
             var @params = new
             {
                 fromDate = input.FromDateJalali,
@@ -39,7 +39,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             IEnumerable<WaterIncomeAndConsumptionDetailDataOutputDto> waterIncomeAndConsumptionData = await _sqlReportConnection.QueryAsync<WaterIncomeAndConsumptionDetailDataOutputDto>(waterIncomeAndConsumptionDetails, @params);
             WaterIncomeAndConsumptionDetailHeaderOutputDto waterIncomeAndConsumptionHeader = new WaterIncomeAndConsumptionDetailHeaderOutputDto()
             {
-                Title= ReportLiterals.WaterIncomeAndConsumptionDetail,
+                Title = ReportLiterals.WaterIncomeAndConsumptionDetail,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = waterIncomeAndConsumptionData.Count(),
                 CustomerCount = waterIncomeAndConsumptionData.Count(),
@@ -80,7 +80,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             return result;
         }
 
-        private string GetWaterIncomeAndConsumptionDetailQuery(bool hasZone, bool hasUsage,bool hasBranchType)
+        private string GetWaterIncomeAndConsumptionDetailQuery(bool hasZone, bool hasUsage, bool hasBranchType)
         {
             string zoneQuery = hasZone ? "AND b.ZoneId IN @zoneIds" : string.Empty;
             string usageQuery = hasUsage ? "AND b.UsageId IN @usageIds" : string.Empty;

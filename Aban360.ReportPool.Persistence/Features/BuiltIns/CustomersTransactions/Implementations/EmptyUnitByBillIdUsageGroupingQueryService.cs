@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
         public async Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdUsageGroupingDataOutputDto>> Get(EmptyUnitInputDto input)
         {
-            string emptyUnitByBillIdUsageGroupingQuery = GetEmptyUnitByBillIdUsageGroupingQuery(input.ZoneIds.Any(), input.UsageSellIds.Any());
+            string emptyUnitByBillIdUsageGroupingQuery = GetEmptyUnitByBillIdUsageGroupingQuery(input.ZoneIds?.Any() == true, input.UsageSellIds?.Any() == true);
             var @params = new
             {
                 fromReadingNumber = input.FromReadingNumber,

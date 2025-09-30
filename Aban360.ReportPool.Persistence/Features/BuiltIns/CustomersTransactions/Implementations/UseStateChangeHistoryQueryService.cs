@@ -17,7 +17,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         { }
         public async Task<ReportOutput<BranchTypeChangeHistoryHeaderOutputDto, BranchTypeChangeHistoryDataOutputDto>> GetInfo(BranchTypeChangeHistoryInputDto input)
         {
-            string BranchTypeChangeHistoryQuery = GetBranchTypeChangeHistoryQuery(input.ZoneIds.Any());
+            string BranchTypeChangeHistoryQuery = GetBranchTypeChangeHistoryQuery(input.ZoneIds?.Any() == true);
             var @params = new
             {
                 fromReadingNumber = input.FromReadingNumber,
