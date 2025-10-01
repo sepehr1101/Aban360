@@ -60,7 +60,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
         {
             return new WithoutBillSummaryDataOutputDto()
             {
-                ItemTitle = input.ZoneTitle,
+                ItemTitle = input.ItemTitle,
                 CustomerCount = input.CustomerCount,
                 CommercialUnit = input.CommercialUnit,
                 DomesticUnit = input.DomesticUnit,

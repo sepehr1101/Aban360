@@ -2,7 +2,7 @@
 {
     public record WaterMeterReplacementsSummaryByChangeCauseDataOutputDto
     {
-        public string ChangeCauseTitle { get; set; }
+        public string ItemTitle { get; set; }
         public int CustomerCount { get; set; }
         public int TotalUnit { get; set; }
         public int CommercialUnit { get; set; }

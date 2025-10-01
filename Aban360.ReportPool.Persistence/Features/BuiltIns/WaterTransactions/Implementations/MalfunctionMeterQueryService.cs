@@ -3,6 +3,7 @@ using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,31 +11,33 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
-    internal sealed class MalfunctionMeterQueryService : AbstractBaseConnection, IMalfunctionMeterQueryService
+    internal sealed class MalfunctionMeterQueryService : MalfunctionMeterBase, IMalfunctionMeterQueryService
     {
         public MalfunctionMeterQueryService(IConfiguration configuration)
             : base(configuration)
-        { 
+        {
         }
 
         public async Task<ReportOutput<MalfunctionMeterHeaderOutputDto, MalfunctionMeterDataOutputDto>> Get(MalfunctionMeterInputDto input)
         {
-            string malfunctionMeterQueryString = GetMalfunctionMeterQuery();
+            string query = GetDetailQuery();
+            //string query = GetMalfunctionMeterQuery();
+
             var @params = new
             {
-                fromDate=input.FromDateJalali,
-                toDate=input.ToDateJalali,
+                fromDate = input.FromDateJalali,
+                toDate = input.ToDateJalali,
                 fromReadingNumber = input.FromReadingNumber,
                 toReadingNumber = input.ToReadingNumber,
                 zoneIds = input.ZoneIds,
             };
-            IEnumerable<MalfunctionMeterDataOutputDto> malfunctionMeterData = await _sqlReportConnection.QueryAsync<MalfunctionMeterDataOutputDto>(malfunctionMeterQueryString, @params);
+            IEnumerable<MalfunctionMeterDataOutputDto> malfunctionMeterData = await _sqlReportConnection.QueryAsync<MalfunctionMeterDataOutputDto>(query, @params);
             MalfunctionMeterHeaderOutputDto malfunctionMeterHeader = new MalfunctionMeterHeaderOutputDto()
             {
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
-                FromDateJalali=input.FromDateJalali,
-                ToDateJalali=input.ToDateJalali,
+                FromDateJalali = input.FromDateJalali,
+                ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (malfunctionMeterData is not null && malfunctionMeterData.Any()) ? malfunctionMeterData.Count() : 0,
                 CustomerCount = (malfunctionMeterData is not null && malfunctionMeterData.Any()) ? malfunctionMeterData.Count() : 0,
@@ -50,7 +53,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         }
 
         private string GetMalfunctionMeterQuery()
-        { 
+        {
             return @"WITH CTE AS (
                     Select
                         b.BillId,

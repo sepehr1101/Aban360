@@ -3,6 +3,7 @@ using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
-    internal sealed class WithoutBillSummaryByZoneQueryService : AbstractBaseConnection, IWithoutBillSummaryByZoneQueryService
+    internal sealed class WithoutBillSummaryByZoneQueryService : WithoutBillBase, IWithoutBillSummaryByZoneQueryService
     {
         public WithoutBillSummaryByZoneQueryService(IConfiguration configuration)
             : base(configuration)
@@ -19,7 +20,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryByZoneDataOutputDto>> GetInfo(WithoutBillInputDto input)
         {
-            string withoutBill = GetWithoutBillQuery(input.ZoneIds?.Any() == true, input.UsageIds?.Any() == true);
+            string query = GetGroupedQuery(input.ZoneIds?.Any() == true, input.UsageIds?.Any() == true, true);
+            //string query = GetWithoutBillQuery(input.ZoneIds?.Any() == true, input.UsageIds?.Any() == true);
+            
             var @params = new
             {
                 FromDate = input.FromDateJalali,
@@ -30,7 +33,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 usageIds = input.UsageIds,
             };
 
-            IEnumerable<WithoutBillSummaryByZoneDataOutputDto> withoutBillData = await _sqlReportConnection.QueryAsync<WithoutBillSummaryByZoneDataOutputDto>(withoutBill, @params);
+            IEnumerable<WithoutBillSummaryByZoneDataOutputDto> withoutBillData = await _sqlReportConnection.QueryAsync<WithoutBillSummaryByZoneDataOutputDto>(query, @params);
             WithoutBillHeaderOutputDto withoutBillHeader = new WithoutBillHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

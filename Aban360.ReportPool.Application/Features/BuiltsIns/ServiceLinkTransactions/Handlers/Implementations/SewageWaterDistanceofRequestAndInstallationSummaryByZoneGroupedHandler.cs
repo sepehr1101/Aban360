@@ -62,7 +62,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                         },
                         g.Select(v => new SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto
                         {
-                            ItemTitle = v.ZoneTitle,
+                            ItemTitle = v.ItemTitle,
                             DistanceAverage = v.DistanceAverage,
                             DistanceMedian = v.DistanceMedian,
                             DistanceAverageText = v.DistanceAverageText,
