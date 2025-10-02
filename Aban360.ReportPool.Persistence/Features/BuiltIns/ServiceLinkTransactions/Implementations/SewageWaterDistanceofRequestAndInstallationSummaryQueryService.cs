@@ -3,6 +3,7 @@ using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {
-    internal sealed class SewageWaterDistanceofRequestAndInstallationSummaryQueryService : AbstractBaseConnection, ISewageWaterDistanceofRequestAndInstallationSummaryQueryService
+    internal sealed class SewageWaterDistanceofRequestAndInstallationSummaryQueryService : SewageWaterDistanceofRequestAndInstallationBase, ISewageWaterDistanceofRequestAndInstallationSummaryQueryService
     {
         public SewageWaterDistanceofRequestAndInstallationSummaryQueryService(IConfiguration configuration)
             : base(configuration)
@@ -19,11 +20,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         public async Task<ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto>> Get(SewageWaterDistanceofRequestAndInstallationInputDto input)
         {
-            string distanceRequestInstallationQuery;
-            if (input.IsWater)
-                distanceRequestInstallationQuery = GetWaterDistanceRequestInstallationQuery(input.IsInstallation);
-            else
-                distanceRequestInstallationQuery = GetSewageDistanceRequestInstallationQuery(input.IsInstallation);
+            string query = GetGroupedQuery(input.IsWater, input.IsInstallation, false);
+
+            //string query;
+            //if (input.IsWater)
+            //    query = GetWaterDistanceRequestInstallationQuery(input.IsInstallation);
+            //else
+            //    query = GetSewageDistanceRequestInstallationQuery(input.IsInstallation);
 
             string reportTitle = GetTitle(input.IsWater, input.IsInstallation);
 
@@ -35,7 +38,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 fromReadingNumber = input.FromReadingNumber,
                 toReadingNumber = input.ToReadingNumber
             };
-            IEnumerable<SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto>(distanceRequestInstallationQuery, @params);
+            IEnumerable<SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto>(query, @params);
             SewageWaterDistanceofRequestAndInstallationHeaderOutputDto RequestHeader = new SewageWaterDistanceofRequestAndInstallationHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

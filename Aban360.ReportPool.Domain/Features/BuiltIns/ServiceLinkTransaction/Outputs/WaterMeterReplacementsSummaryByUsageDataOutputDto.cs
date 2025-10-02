@@ -2,7 +2,7 @@
 {
     public record WaterMeterReplacementsSummaryByUsageDataOutputDto
     {
-        public string UsageTitle { get; set; } = default!;
+        public string ItemTitle { get; set; } = default!;
         public int CustomerCount { get; set; }
         public int TotalUnit { get; set; }
         public int CommercialUnit { get; set; }

@@ -2,12 +2,12 @@
 
 namespace Aban360.ReportPool.Persistence.Base
 {
-    internal abstract class RequestOrInstallBase: AbstractBaseConnection
+    internal abstract class RequestOrInstallBase : AbstractBaseConnection
     {
         protected RequestOrInstallBase(IConfiguration configuration)
-            :base(configuration)
+            : base(configuration)
         {
-            
+
         }
         internal string GetDetailsQuery(bool isWater, bool isRequest)
         {
@@ -114,13 +114,13 @@ namespace Aban360.ReportPool.Persistence.Base
         {
             string WaterRequestDate = nameof(WaterRequestDate),
                    SewageRequestDate = nameof(SewageRequestDate),
-                   WaterRegisterDateJalali=nameof(WaterRegisterDateJalali),
-                   SewageRegisterDateJalali=nameof(SewageRegisterDateJalali);
+                   WaterRegisterDateJalali = nameof(WaterRegisterDateJalali),
+                   SewageRegisterDateJalali = nameof(SewageRegisterDateJalali);
 
             string requestField = isWater ? WaterRequestDate : SewageRequestDate;
             string registerField = isWater ? WaterRegisterDateJalali : SewageRegisterDateJalali;
             string dataField = isRequest ? requestField : registerField;
-            return new QueryParams(dataField, requestField, dataField);
+            return new QueryParams(dataField, requestField, registerField);//dataField
         }
 
         private record QueryParams
@@ -136,7 +136,7 @@ namespace Aban360.ReportPool.Persistence.Base
             }
             public QueryParams()
             {
-                
+
             }
         }
     }

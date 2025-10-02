@@ -3,6 +3,7 @@ using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {
-    internal sealed class WaterMeterReplacementsSummaryByUsageQueryService : AbstractBaseConnection, IWaterMeterReplacementsSummaryByUsageQueryService
+    internal sealed class WaterMeterReplacementsSummaryByUsageQueryService : WaterMeterReplacementsBase, IWaterMeterReplacementsSummaryByUsageQueryService
     {
         public WaterMeterReplacementsSummaryByUsageQueryService(IConfiguration configuration)
             : base(configuration)
@@ -19,7 +20,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         public async Task<ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsSummaryByUsageDataOutputDto>> Get(WaterMeterReplacementsInputDto input)
         {
-            string WaterMeterReplacements = GetBranchWaterMeterReplacementsQuery();
+            string query = GetGroupedQuery(input.IsChangeDate, "c.UsageTitle");
+            //string query = GetBranchWaterMeterReplacementsQuery();
+
             string reportTitle = input.IsChangeDate == true ? ReportLiterals.WaterMeterReplacements(ReportLiterals.ChangeDate) + ReportLiterals.ByUsage : ReportLiterals.WaterMeterReplacements(ReportLiterals.RegisterDate) + ReportLiterals.ByUsage;
             var @params = new
             {
@@ -33,7 +36,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 usageIds = input.UsageIds,
                 isChangeDate = input.IsChangeDate ? 1 : 0,
             };
-            IEnumerable<WaterMeterReplacementsSummaryByUsageDataOutputDto> waterMeterReplacementsData = await _sqlReportConnection.QueryAsync<WaterMeterReplacementsSummaryByUsageDataOutputDto>(WaterMeterReplacements, @params);
+            IEnumerable<WaterMeterReplacementsSummaryByUsageDataOutputDto> waterMeterReplacementsData = await _sqlReportConnection.QueryAsync<WaterMeterReplacementsSummaryByUsageDataOutputDto>(query, @params);
             WaterMeterReplacementsHeaderOutputDto waterMeterReplacementsHeader = new WaterMeterReplacementsHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

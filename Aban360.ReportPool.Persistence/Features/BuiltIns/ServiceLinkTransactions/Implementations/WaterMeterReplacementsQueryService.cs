@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {
-    internal sealed class WaterMeterReplacementsQueryService : AbstractBaseConnection, IWaterMeterReplacementsQueryService
+    internal sealed class WaterMeterReplacementsQueryService : WaterMeterReplacementsBase, IWaterMeterReplacementsQueryService
     {
         public WaterMeterReplacementsQueryService(IConfiguration configuration)
             : base(configuration)
@@ -19,7 +19,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         public async Task<ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsDataOutputDto>> GetInfo(WaterMeterReplacementsInputDto input)
         {
-            string waterMeterReplacementss = GetWaterMeterReplacementsQuery();
+            string query = GetDetailQuery(input.IsChangeDate);
+            //string query = GetWaterMeterReplacementsQuery();
+          
             string reportTitle = input.IsChangeDate == true ? ReportLiterals.WaterMeterReplacements(ReportLiterals.ChangeDate) :
                 ReportLiterals.WaterMeterReplacements(ReportLiterals.RegisterDate);
 
@@ -33,9 +35,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
                 zoneIds = input.ZoneIds,
                 usageIds = input.UsageIds,
-                isChangeDate = input.IsChangeDate ? 1 : 0,
+               // isChangeDate = input.IsChangeDate ? 1 : 0,
             };
-            IEnumerable<WaterMeterReplacementsDataOutputDto> waterMeterReplacementsData = await _sqlReportConnection.QueryAsync<WaterMeterReplacementsDataOutputDto>(waterMeterReplacementss, @params);
+            IEnumerable<WaterMeterReplacementsDataOutputDto> waterMeterReplacementsData = await _sqlReportConnection.QueryAsync<WaterMeterReplacementsDataOutputDto>(query, @params);
             WaterMeterReplacementsHeaderOutputDto waterMeterReplacementsHeader = new WaterMeterReplacementsHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

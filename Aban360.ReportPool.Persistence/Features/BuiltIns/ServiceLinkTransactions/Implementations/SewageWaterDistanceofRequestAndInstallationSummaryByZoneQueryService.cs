@@ -3,27 +3,31 @@ using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
+using System.Text.RegularExpressions;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {
-    internal sealed class SewageWaterDistanceofRequestAndInstallationSummaryByZoneQueryService : AbstractBaseConnection, ISewageWaterDistanceofRequestAndInstallationSummaryByZoneQueryService
+    internal sealed class SewageWaterDistanceofRequestAndInstallationSummaryByZoneQueryService : SewageWaterDistanceofRequestAndInstallationBase, ISewageWaterDistanceofRequestAndInstallationSummaryByZoneQueryService
     {
         public SewageWaterDistanceofRequestAndInstallationSummaryByZoneQueryService(IConfiguration configuration)
             : base(configuration)
-        { 
+        {
         }
 
         public async Task<ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryByZoneDataOutputDto>> Get(SewageWaterDistanceofRequestAndInstallationByZoneInputDto input)
         {
-            string distanceRequestInstallationQuery;
-            if (input.IsWater)
-                distanceRequestInstallationQuery = GetWaterDistanceRequestInstallationQuery(input.IsInstallation);
-            else
-                distanceRequestInstallationQuery = GetSewageDistanceRequestInstallationQuery(input.IsInstallation);
+            string query = GetGroupedQuery(input.IsWater, input.IsInstallation, true);
+
+            //string query;
+            //if (input.IsWater)
+            //    query = GetWaterDistanceRequestInstallationQuery(input.IsInstallation);
+            //else
+            //    query = GetSewageDistanceRequestInstallationQuery(input.IsInstallation);
 
             string reportTitle = GetTitle(input.IsWater, input.IsInstallation);
 
@@ -35,13 +39,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 toReadingNumber = input.ToReadingNumber,
                 zoneIds = input.ZoneIds
             };
-            IEnumerable<SewageWaterDistanceofRequestAndInstallationSummaryByZoneDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<SewageWaterDistanceofRequestAndInstallationSummaryByZoneDataOutputDto>(distanceRequestInstallationQuery, @params);
+            IEnumerable<SewageWaterDistanceofRequestAndInstallationSummaryByZoneDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<SewageWaterDistanceofRequestAndInstallationSummaryByZoneDataOutputDto>(query, @params);
             SewageWaterDistanceofRequestAndInstallationHeaderOutputDto RequestHeader = new SewageWaterDistanceofRequestAndInstallationHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
-                FromReadingNumber= input.FromReadingNumber,
-                ToReadingNumber= input.ToReadingNumber,
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = RequestData is not null && RequestData.Any() ? RequestData.Count() : 0,
                 CustomerCount = RequestData is not null && RequestData.Any() ? RequestData.Count() : 0,
@@ -112,7 +116,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         {
             if (IsWater)
             {
-                return IsInstallation ? ReportLiterals.WaterDistanceInstallationRegisterSummary+ReportLiterals.ByZone : ReportLiterals.WaterDistanceRequestRegisterSummary + ReportLiterals.ByZone;
+                return IsInstallation ? ReportLiterals.WaterDistanceInstallationRegisterSummary + ReportLiterals.ByZone : ReportLiterals.WaterDistanceRequestRegisterSummary + ReportLiterals.ByZone;
             }
             else
             {

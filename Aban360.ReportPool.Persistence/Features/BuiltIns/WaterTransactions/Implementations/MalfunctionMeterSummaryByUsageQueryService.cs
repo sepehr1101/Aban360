@@ -3,13 +3,14 @@ using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
-    internal sealed class MalfunctionMeterSummaryByUsageQueryService : AbstractBaseConnection, IMalfunctionMeterSummaryByUsageQueryService
+    internal sealed class MalfunctionMeterSummaryByUsageQueryService : MalfunctionMeterBase, IMalfunctionMeterSummaryByUsageQueryService
     {
         public MalfunctionMeterSummaryByUsageQueryService(IConfiguration configuration)
             : base(configuration)
@@ -18,7 +19,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<MalfunctionMeterSummaryHeaderOutputDto, MalfunctionMeterSummaryDataOutputDto>> Get(MalfunctionMeterInputDto input)
         {
-            string malfunctionMeterQueryString = GetMalfunctionMeterQuery();
+            string query = GetGroupedQuery(false);
+            //string query = GetMalfunctionMeterQuery();
+
             var @params = new
             {
                 fromDate = input.FromDateJalali,
@@ -27,7 +30,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 toReadingNumber = input.ToReadingNumber,
                 zoneIds = input.ZoneIds,
             };
-            IEnumerable<MalfunctionMeterSummaryDataOutputDto> malfunctionMeterData = await _sqlReportConnection.QueryAsync<MalfunctionMeterSummaryDataOutputDto>(malfunctionMeterQueryString, @params);
+            IEnumerable<MalfunctionMeterSummaryDataOutputDto> malfunctionMeterData = await _sqlReportConnection.QueryAsync<MalfunctionMeterSummaryDataOutputDto>(query, @params);
             MalfunctionMeterSummaryHeaderOutputDto malfunctionMeterHeader = new MalfunctionMeterSummaryHeaderOutputDto()
             {
                 FromReadingNumber = input.FromReadingNumber,

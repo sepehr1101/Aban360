@@ -3,6 +3,7 @@ using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {
-    internal sealed class ReadingIssueDistanceBillSummaryByZoneQueryService : AbstractBaseConnection, IReadingIssueDistanceBillSummaryByZoneQueryService
+    internal sealed class ReadingIssueDistanceBillSummaryByZoneQueryService : ReadingIssueDistanceBillBase, IReadingIssueDistanceBillSummaryByZoneQueryService
     {
         public ReadingIssueDistanceBillSummaryByZoneQueryService(IConfiguration configuration)
             : base(configuration)
@@ -19,7 +20,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         public async Task<ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryByZoneDataOutputDto>> GetInfo(ReadingIssueDistanceBillInputDto input)
         {
-            string readingIssueDistanceQueryString = GetReadingIssueDistanceDataQuery();
+            string query = GetGroupedQuery(true);
+            //string query = GetReadingIssueDistanceDataQuery();
+
             var @params = new
             {
                 fromDate = input.FromDateJalali,
@@ -29,7 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 zoneIds = input.ZoneIds,
             };
 
-            IEnumerable<ReadingIssueDistanceBillSummryByZoneDataOutputDto> readingIssueDistanceData = await _sqlReportConnection.QueryAsync<ReadingIssueDistanceBillSummryByZoneDataOutputDto>(readingIssueDistanceQueryString, @params, null, 180);
+            IEnumerable<ReadingIssueDistanceBillSummryByZoneDataOutputDto> readingIssueDistanceData = await _sqlReportConnection.QueryAsync<ReadingIssueDistanceBillSummryByZoneDataOutputDto>(query, @params, null, 180);
             ReadingIssueDistanceBillHeaderOutputDto readingIssueDistanceHeader = new ReadingIssueDistanceBillHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

@@ -105,7 +105,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                       },
                       g.Select(v => new ReadingIssueDistanceBillSummryDataOutputDto
                       {
-                          ItemTitle = v.ZoneTitle,
+                          ItemTitle = v.ItemTitle,
                           CustomerCount = v.CustomerCount,
                           TotalUnit = v.TotalUnit,
                           CommercialUnit = v.CommercialUnit,
@@ -144,7 +144,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
         {
             return new ReadingIssueDistanceBillSummryDataOutputDto()
             {
-                ItemTitle = input.ZoneTitle,
+                ItemTitle = input.ItemTitle,
                 CustomerCount = input.CustomerCount,
                 TotalUnit = input.TotalUnit,
                 CommercialUnit = input.CommercialUnit,
