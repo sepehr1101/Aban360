@@ -15,7 +15,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
     {
         public WaterIncomeAndConsumptionSummaryQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionSummaryDataOutputDto>> Get(WaterIncomeAndConsumptionSummaryInputDto input)
         {
@@ -96,7 +97,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						{groupKey} as GroupKey,
 						Count(1) as BillCount,
 						SUM(b.Consumption) as Consumption,
-						SUM(b.ConsumptionAverage) as ConsumptionAverage,
+						AVG(b.ConsumptionAverage) as ConsumptionAverage,
 						SUM(b.Duration) as Duration,
 						SUM(b.SumItems) as SumItems,
 						SUM(b.CommercialCount+DomesticCount+OtherCount) as BillUnitCounts,
