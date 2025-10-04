@@ -2,6 +2,7 @@
 {
     public record ReadingStatusStatementSummaryDataOutputDto
     {
+        public string ItemTitle { get; set; }
         public string RegionTitle { get; set; }
         public string UsageTitle { get; set; }
         public string ZoneTitle { get; set; }

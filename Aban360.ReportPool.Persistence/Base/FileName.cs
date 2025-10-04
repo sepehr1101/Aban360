@@ -44,7 +44,8 @@ namespace Aban360.ReportPool.Persistence.Base
 
             return @$"Select 
 						MAX(t46.C2) AS RegionTitle,
-                    	Max(b.{dataField.GroupedField}) AS {dataField.GroupedField},
+                    	b.{dataField.GroupedField} AS {dataField.GroupedField},
+                    	b.{dataField.GroupedField} AS ItemTitle ,
 						SUM(b.SumItems) AS SumItems,
                     	COUNT(Case When b.CounterStateCode NOT IN (1,4,7,8) Then 1 End)AS ReadingNet,
                     	COUNT(Case When b.CounterStateCode=4 Then 1 End)AS Closed,
