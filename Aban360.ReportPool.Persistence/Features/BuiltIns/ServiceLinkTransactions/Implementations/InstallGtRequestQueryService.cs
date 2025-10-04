@@ -14,7 +14,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
     {
         public InstallGtRequestQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<InstallGtRequestHeaderOutputDto, InstallGtRequestDataOutputDto>> GetInfo(InstallGtRequestInputDto input)
         {
@@ -35,6 +36,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 CustomerCount = installGtRequestData is not null && installGtRequestData.Any() ? installGtRequestData.Count() : 0,
                 RecordCount = installGtRequestData is not null && installGtRequestData.Any() ? installGtRequestData.Count() : 0,
                 Title = ReportLiterals.WaterInstallGtRequest,
+                Distance=input.Distance,
                 SumDistance = installGtRequestData?.Sum(i => i.Distance) ?? 0,
             };
 
