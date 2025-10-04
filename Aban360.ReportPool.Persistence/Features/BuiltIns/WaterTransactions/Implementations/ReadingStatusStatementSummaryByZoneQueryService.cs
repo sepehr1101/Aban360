@@ -3,6 +3,7 @@ using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,15 +11,17 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
-    internal sealed class ReadingStatusStatementSummaryByZoneQueryService : AbstractBaseConnection, IReadingStatusStatementSummaryByZoneQueryService
+    internal sealed class ReadingStatusStatementSummaryByZoneQueryService : ReadingStatusStatementBase, IReadingStatusStatementSummaryByZoneQueryService
     {
         public ReadingStatusStatementSummaryByZoneQueryService(IConfiguration configuration)
             : base(configuration)
         { }
 
-        public async Task<ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryByZoneDataOutputDto>> GetInfo(ReadingStatusStatementInputDto input)
+        public async Task<ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryDataOutputDto>> GetInfo(ReadingStatusStatementInputDto input)
         {
-            string readingStatusStatements = GetReadingStatusStatementQuery();
+            string query = GetGroupedQuery(input.IsRegisterDateJalali, true);
+            //string query = GetReadingStatusStatementQuery();
+
             var @params = new
             {
                 fromReadingNumber = input.FromReadingNumber,
@@ -26,9 +29,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 fromDate = input.FromDateJalali,
                 todate = input.ToDateJalali,
                 zoneIds = input.ZoneIds,
-                isRegisterDate = input.IsRegisterDateJalali
+                //isRegisterDate = input.IsRegisterDateJalali
             };
-            IEnumerable<ReadingStatusStatementSummaryByZoneDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingStatusStatementSummaryByZoneDataOutputDto>(readingStatusStatements, @params);
+            IEnumerable<ReadingStatusStatementSummaryDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingStatusStatementSummaryDataOutputDto>(query, @params);
             ReadingStatusStatementHeaderOutputDto header = new ReadingStatusStatementHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -47,9 +50,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 header.SumRuined = data.Sum(x => x.ReadingNet);
                 header.SumTemporarily = data.Sum(x => x.Temporarily);
                 header.SumAll = data.Sum(x => x.AllCount);
+                header.SumDebt = data.Sum(x => x.Debt);
+                header.SumSelfClaimed = data.Sum(x => x.SelfClaimedCount);
             }
 
-            var result = new ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryByZoneDataOutputDto>(ReportLiterals.ReadingStatusStatement + ReportLiterals.ByZone, header, data);
+            var result = new ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryDataOutputDto>(ReportLiterals.ReadingStatusStatement + ReportLiterals.ByZone, header, data);
             return result;
         }
 

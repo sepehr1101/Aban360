@@ -18,6 +18,8 @@
         public int SumTemporarily { get; set; }
         public int SumAll { get; set; }
         public int SumRuined { get; set; }
+        public int SumSelfClaimed { get; set; }
+        public double SumDebt { get; set; }
         //public int SumSettlement { get; set; }
 
 

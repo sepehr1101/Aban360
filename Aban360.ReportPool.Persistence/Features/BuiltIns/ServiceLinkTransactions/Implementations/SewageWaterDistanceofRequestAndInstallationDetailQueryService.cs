@@ -21,6 +21,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         public async Task<ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationDetailDataOutputDto>> Get(SewageWaterDistanceofRequestAndInstallationInputDto input)
         {
             string query = GetDetailQuery(input.IsWater, input.IsInstallation);
+            Console.WriteLine(query);
 
             //string query;
             //if (input.IsWater)

@@ -30,8 +30,8 @@ namespace Aban360.ReportPool.Persistence.Base
                     	c.BillId,
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,
-                    	c.{queryParams.RequestField} AS RequestDate,
-						c.{queryParams.InstallField} AS InstallationDate
+                    	c.{queryParams.DataField} AS RequestDate,
+						c.{queryParams.RegisterField} AS InstallationDate
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
                         c.{queryParams.DataField} IS NOT NULL AND
@@ -54,8 +54,8 @@ namespace Aban360.ReportPool.Persistence.Base
 						MAX(t46.C2) AS RegionTitle,
                     	c.{queryParams.GroupedField} AS ItemTitle,
 						ROUND(AVG(CONVERT(float, DATEDIFF(DAY,
-                                                 Case When LEN(c.{queryParams.RequestField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{queryParams.RequestField}) END,
-                                                 Case When LEN(c.{queryParams.InstallField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{queryParams.InstallField}) END))), 2) AS DistanceAverage
+                        Case When LEN(c.{queryParams.DataField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{queryParams.DataField}) END,
+                        Case When LEN(c.{queryParams.RegisterField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{queryParams.RegisterField}) END))), 2) AS DistanceAverage
                     From [CustomerWarehouse].dbo.Clients c	
 					Join [Db70].dbo.T51 t51
 						On t51.C0=c.ZoneId
@@ -95,21 +95,17 @@ namespace Aban360.ReportPool.Persistence.Base
 
             string groupedField = isZone ? ZoneTitle : UsageTitle;
 
-            return new QueryParams(dataField, requestField, registerField, installField, groupedField);
+            return new QueryParams(dataField, registerField, groupedField);
         }
         private record QueryParams
         {
             public string DataField { get; set; } = default!;
-            public string RequestField { get; set; } = default!;
             public string RegisterField { get; set; } = default!;
-            public string InstallField { get; set; } = default!;
             public string GroupedField { get; set; } = default!;
-            public QueryParams(string dataField, string requestField, string registerField, string installField,string groupedField)
+            public QueryParams(string dataField, string registerField,string groupedField)
             {
                 DataField = dataField;
-                RequestField = requestField;
                 RegisterField = registerField;
-                InstallField = installField;
                 GroupedField = groupedField;
             }
             public QueryParams()

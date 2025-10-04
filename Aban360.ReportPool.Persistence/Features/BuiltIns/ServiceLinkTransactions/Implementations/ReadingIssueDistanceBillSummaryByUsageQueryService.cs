@@ -32,7 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 zoneIds = input.ZoneIds,
             };
 
-            IEnumerable<ReadingIssueDistanceBillSummryDataOutputDto> readingIssueDistanceData = await _sqlReportConnection.QueryAsync<ReadingIssueDistanceBillSummryDataOutputDto>(query, @params);
+            IEnumerable<ReadingIssueDistanceBillSummryDataOutputDto> readingIssueDistanceData = await _sqlReportConnection.QueryAsync<ReadingIssueDistanceBillSummryDataOutputDto>(query, @params, null, 180);
             ReadingIssueDistanceBillHeaderOutputDto readingIssueDistanceHeader = new ReadingIssueDistanceBillHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

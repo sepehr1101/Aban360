@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Con
 {
     public interface IReadingStatusStatementSummaryByZoneQueryService
     {
-        Task<ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryByZoneDataOutputDto>> GetInfo(ReadingStatusStatementInputDto input);
+        Task<ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryDataOutputDto>> GetInfo(ReadingStatusStatementInputDto input);
     }
 }

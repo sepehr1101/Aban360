@@ -32,7 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 zoneIds = input.ZoneIds,
             };
             //todo: calc distance in handler
-            IEnumerable<ReadingIssueDistanceBillDataOutputDto> readingIssueDistanceData = await _sqlReportConnection.QueryAsync<ReadingIssueDistanceBillDataOutputDto>(query, @params);
+            IEnumerable<ReadingIssueDistanceBillDataOutputDto> readingIssueDistanceData = await _sqlReportConnection.QueryAsync<ReadingIssueDistanceBillDataOutputDto>(query, @params, null, 180);
             ReadingIssueDistanceBillHeaderOutputDto readingIssueDistanceHeader = new ReadingIssueDistanceBillHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
