@@ -42,7 +42,7 @@ namespace Aban360.ReportPool.Persistence.Base
                               WHERE 
                     			mc.CustomerNumber = b.CustomerNumber
                                 AND mc.ZoneId = b.ZoneId
-                                AND mc.ChangeDateJalali > b.NextDay
+                                AND mc.ChangeDateJalali >= b.NextDay
                           )
                     ),
                     -- محاسبه تعداد دوره‌های خرابی
@@ -151,7 +151,7 @@ namespace Aban360.ReportPool.Persistence.Base
                               WHERE 
                     			mc.CustomerNumber = b.CustomerNumber
                                 AND mc.ZoneId = b.ZoneId
-                                AND mc.ChangeDateJalali > b.RegisterDay
+                                AND mc.ChangeDateJalali >= b.RegisterDay
                           )
 						  Group By b.BillId
 						  Having COUNT(b.BillId) BETWEEN @fromMalfunctionPeriodCount AND @toMalfunctionPeriodCount
@@ -254,7 +254,7 @@ namespace Aban360.ReportPool.Persistence.Base
                               WHERE 
                     			mc.CustomerNumber = b.CustomerNumber
                                 AND mc.ZoneId = b.ZoneId
-                                AND mc.ChangeDateJalali > b.RegisterDay
+                                AND mc.ChangeDateJalali >= b.RegisterDay
                           )
 						  Group By b.BillId
 						  Having COUNT(b.BillId) BETWEEN @fromMalfunctionPeriodCount AND @toMalfunctionPeriodCount
@@ -350,7 +350,7 @@ namespace Aban360.ReportPool.Persistence.Base
                               WHERE 
                        			mc.CustomerNumber = b.CustomerNumber
                                 AND mc.ZoneId = b.ZoneId
-                                AND mc.ChangeDateJalali > b.RegisterDay
+                                AND mc.ChangeDateJalali >= b.RegisterDay
                           )
                     ),
                     -- محاسبه تعداد دوره‌های خرابی
