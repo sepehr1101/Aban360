@@ -59,13 +59,16 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
         {
             return new ReadingStatusStatementSummaryDataOutputDto()
             {
-                ItemTitle = input.ZoneTitle,
+                ItemTitle = input.ItemTitle,
                 AllCount = input.AllCount,
                 Closed = input.Closed,
                 Obstacle = input.Obstacle,
                 ReadingNet = input.ReadingNet,
                 Ruined = input.Ruined,
                 Temporarily = input.Temporarily,
+                SumItems=input.SumItems,
+                SelfClaimedCount=input.SelfClaimedCount,
+                Debt=input.Debt
             };
         }
     }

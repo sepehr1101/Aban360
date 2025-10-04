@@ -11,5 +11,6 @@
         public int Ruined { get; set; }
         public int SelfClaimedCount { get; set; }
         public double SumItems { get; set; }
+        public double Debt { get; set; }
     }
 }

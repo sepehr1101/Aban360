@@ -3,6 +3,7 @@ using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
-    internal sealed class ReadingStatusStatementQueryService : AbstractBaseConnection, IReadingStatusStatementQueryService
+    internal sealed class ReadingStatusStatementQueryService : ReadingStatusStatementBase, IReadingStatusStatementQueryService
     {
         public ReadingStatusStatementQueryService(IConfiguration configuration)
             : base(configuration)
@@ -19,7 +20,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementDataOutputDto>> GetInfo(ReadingStatusStatementInputDto input)
         {
-            string readingStatusStatements = GetReadingStatusStatementQuery();
+            string query = GetDetailQuery(input.IsRegisterDateJalali);
+            //string query = GetReadingStatusStatementQuery();
+            
             var @params = new
             {
                 fromReadingNumber = input.FromReadingNumber,
@@ -27,9 +30,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 fromDate = input.FromDateJalali,
                 todate = input.ToDateJalali,
                 zoneIds = input.ZoneIds,
-                isRegisterDate = input.IsRegisterDateJalali
+                //isRegisterDate = input.IsRegisterDateJalali
             };
-            IEnumerable<ReadingStatusStatementDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingStatusStatementDataOutputDto>(readingStatusStatements, @params);
+            IEnumerable<ReadingStatusStatementDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingStatusStatementDataOutputDto>(query, @params);
             ReadingStatusStatementHeaderOutputDto header = new ReadingStatusStatementHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -48,6 +51,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 header.SumRuined = data.Sum(x => x.ReadingNet);
                 header.SumTemporarily = data.Sum(x => x.Temporarily);
                 header.SumAll = data.Sum(x => x.AllCount);
+                header.SumSelfClaimed=data.Sum(x => x.SelfClaimedCount);
+                header.SumDebt=data.Sum(x => x.Debt);
             }
 
             var result = new ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementDataOutputDto>(ReportLiterals.ReadingStatusStatement, header, data);
