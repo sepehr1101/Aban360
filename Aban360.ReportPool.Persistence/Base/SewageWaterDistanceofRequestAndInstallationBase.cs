@@ -53,6 +53,7 @@ namespace Aban360.ReportPool.Persistence.Base
             return $@"Select	
 						MAX(t46.C2) AS RegionTitle,
                     	c.{queryParams.GroupedField} AS ItemTitle,
+                    	c.{queryParams.GroupedField} ,
 						ROUND(AVG(CONVERT(float, DATEDIFF(DAY,
                         Case When LEN(c.{queryParams.DataField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{queryParams.DataField}) END,
                         Case When LEN(c.{queryParams.RegisterField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{queryParams.RegisterField}) END))), 2) AS DistanceAverage

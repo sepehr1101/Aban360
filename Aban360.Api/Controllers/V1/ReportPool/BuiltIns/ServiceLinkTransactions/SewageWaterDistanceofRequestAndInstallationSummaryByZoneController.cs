@@ -32,10 +32,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryByZoneDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(SewageWaterDistanceofRequestAndInstallationByZoneInputDto input, CancellationToken cancellationToken)
         {
-            var result = await _sewageWaterDistanceofRequestAndInstallationSummaryByZoneHandler.Handle(input, cancellationToken);
+            ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto>  result = await _sewageWaterDistanceofRequestAndInstallationSummaryByZoneHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
@@ -55,7 +55,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         public async Task<IActionResult> GetStiReport(SewageWaterDistanceofRequestAndInstallationByZoneInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 282;
-            ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryByZoneDataOutputDto> result = await _sewageWaterDistanceofRequestAndInstallationSummaryByZoneHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto> result = await _sewageWaterDistanceofRequestAndInstallationSummaryByZoneHandler.Handle(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
             return Ok(reportId);
         }

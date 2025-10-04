@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 {
     public interface IReadingIssueDistanceBillSummaryByZoneQueryService
     {
-        Task<ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryByZoneDataOutputDto>> GetInfo(ReadingIssueDistanceBillInputDto input);
+        Task<ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryDataOutputDto>> GetInfo(ReadingIssueDistanceBillInputDto input);
     }
 }

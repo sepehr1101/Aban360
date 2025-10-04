@@ -28,10 +28,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryByZoneDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(ReadingIssueDistanceBillInputDto input, CancellationToken cancellationToken)
         {
-            ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryByZoneDataOutputDto> readingIssueDistance = await _readingIssueDistanceHandler.Handle(input, cancellationToken);
+            ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryDataOutputDto> readingIssueDistance = await _readingIssueDistanceHandler.Handle(input, cancellationToken);
             return Ok(readingIssueDistance);
         }
 
