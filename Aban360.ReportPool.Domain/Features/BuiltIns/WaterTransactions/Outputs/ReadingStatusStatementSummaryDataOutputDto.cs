@@ -2,7 +2,9 @@
 {
     public record ReadingStatusStatementSummaryDataOutputDto
     {
-        public string ItemTitle { get; set; }
+        public string RegionTitle { get; set; }
+        public string UsageTitle { get; set; }
+        public string ZoneTitle { get; set; }
         public int ReadingNet { get; set; }
         public int Closed { get; set; }
         public int Obstacle { get; set; }

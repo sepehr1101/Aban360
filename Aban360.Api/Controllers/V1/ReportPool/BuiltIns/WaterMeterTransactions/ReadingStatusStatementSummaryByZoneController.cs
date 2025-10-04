@@ -28,10 +28,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryByZoneDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(ReadingStatusStatementInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryByZoneDataOutputDto> statusStatementSummaryByZone = await _readingStatusStatementSummaryByZone.Handle(inputDto, cancellationToken);
+            ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryDataOutputDto> statusStatementSummaryByZone = await _readingStatusStatementSummaryByZone.Handle(inputDto, cancellationToken);
             return Ok(statusStatementSummaryByZone);
         }
 

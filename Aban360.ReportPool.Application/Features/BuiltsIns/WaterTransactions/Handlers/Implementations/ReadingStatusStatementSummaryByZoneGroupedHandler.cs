@@ -34,7 +34,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryByZoneDataOutputDto> result = await _readingStatusStatementSummaryByZoneQueryService.GetInfo(input);
+            ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryDataOutputDto> result = await _readingStatusStatementSummaryByZoneQueryService.GetInfo(input);
 
             var dataGroup = result.ReportData
                 .GroupBy(m => m.RegionTitle)
@@ -47,7 +47,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
                     (
                         result.Title,
                         ReportAggregator.AggregateGroup(mapped, g.Key),
-                        mapped.Select(v => ReportAggregator.AggregateGroup(new[] { v }, v.ItemTitle))
+                        mapped.Select(v => ReportAggregator.AggregateGroup(new[] { v }, v.ZoneTitle))
                     );
                 });
 
@@ -55,11 +55,11 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
 
             return finalData;
         }
-        private static ReadingStatusStatementSummaryDataOutputDto MapToGroup(ReadingStatusStatementSummaryByZoneDataOutputDto input)
+        private static ReadingStatusStatementSummaryDataOutputDto MapToGroup(ReadingStatusStatementSummaryDataOutputDto input)
         {
             return new ReadingStatusStatementSummaryDataOutputDto()
             {
-                ItemTitle = input.ItemTitle,
+                ZoneTitle = input.ZoneTitle,
                 AllCount = input.AllCount,
                 Closed = input.Closed,
                 Obstacle = input.Obstacle,

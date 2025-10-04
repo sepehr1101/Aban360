@@ -17,7 +17,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             : base(configuration)
         { }
 
-        public async Task<ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryByZoneDataOutputDto>> GetInfo(ReadingStatusStatementInputDto input)
+        public async Task<ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryDataOutputDto>> GetInfo(ReadingStatusStatementInputDto input)
         {
             string query = GetGroupedQuery(input.IsRegisterDateJalali, true);
             //string query = GetReadingStatusStatementQuery();
@@ -31,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 zoneIds = input.ZoneIds,
                 //isRegisterDate = input.IsRegisterDateJalali
             };
-            IEnumerable<ReadingStatusStatementSummaryByZoneDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingStatusStatementSummaryByZoneDataOutputDto>(query, @params);
+            IEnumerable<ReadingStatusStatementSummaryDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingStatusStatementSummaryDataOutputDto>(query, @params);
             ReadingStatusStatementHeaderOutputDto header = new ReadingStatusStatementHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -54,7 +54,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 header.SumSelfClaimed = data.Sum(x => x.SelfClaimedCount);
             }
 
-            var result = new ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryByZoneDataOutputDto>(ReportLiterals.ReadingStatusStatement + ReportLiterals.ByZone, header, data);
+            var result = new ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryDataOutputDto>(ReportLiterals.ReadingStatusStatement + ReportLiterals.ByZone, header, data);
             return result;
         }
 

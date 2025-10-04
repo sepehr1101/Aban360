@@ -26,7 +26,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						SUM(w.Debt) as Debt
                     From [CustomerWarehouse].dbo.Bills b	
 					Left Join [CustomerWarehouse].dbo.WaterDebt w
-						On TRIM(b.BillId)=w.BillId
+						On TRIM(b.BillId) Collate SQL_Latin1_General_CP1_CI_AS=w.BillId
                     Where
                     	(b.{dataField.DateField} BETWEEN @fromDate AND @toDate)AND
                         (@FromReadingNumber IS NULL or
@@ -44,7 +44,7 @@ namespace Aban360.ReportPool.Persistence.Base
 
             return @$"Select 
 						MAX(t46.C2) AS RegionTitle,
-                    	Max(b.{dataField.GroupedField}) AS ItemTitle,
+                    	Max(b.{dataField.GroupedField}) AS {dataField.GroupedField},
 						SUM(b.SumItems) AS SumItems,
                     	COUNT(Case When b.CounterStateCode NOT IN (1,4,7,8) Then 1 End)AS ReadingNet,
                     	COUNT(Case When b.CounterStateCode=4 Then 1 End)AS Closed,
@@ -60,7 +60,7 @@ namespace Aban360.ReportPool.Persistence.Base
 					Join [Db70].dbo.T46 t46
 						On t51.C1=t46.C0
 					Left Join [CustomerWarehouse].dbo.WaterDebt w
-						On TRIM(b.BillId)=w.BillId
+						On TRIM(b.BillId) Collate SQL_Latin1_General_CP1_CI_AS=w.BillId
                     Where
                     	(b.{dataField.DateField} BETWEEN @fromDate AND @toDate)AND
                         (@FromReadingNumber IS NULL or
