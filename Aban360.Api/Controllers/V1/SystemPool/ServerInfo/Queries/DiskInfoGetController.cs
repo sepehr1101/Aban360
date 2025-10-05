@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aban360.Api.Controllers.V1.SystemPool.ServerInfo.Queries
 {
     [Route("v1/disk-info")]
-    public class DiskInfoGetController:BaseController
+    public class DiskInfoGetController : BaseController
     {
         private readonly IDiskInfoHandler _distInforHandler;
         public DiskInfoGetController(IDiskInfoHandler diskInfoHandler)

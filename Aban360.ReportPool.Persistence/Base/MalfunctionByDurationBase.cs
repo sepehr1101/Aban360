@@ -167,7 +167,7 @@ namespace Aban360.ReportPool.Persistence.Base
                         v.Consumption,
 	                    v.SumItems
                     FROM ValidLatestBills v
-                      INNER JOIN [CustomerWarehouse].dbo.Clients c 
+                    INNER JOIN [CustomerWarehouse].dbo.Clients c 
                     	ON v.BillId = c.BillId
                     OUTER APPLY (
                         SELECT TOP 1 mc.ChangeDateJalali
@@ -177,7 +177,7 @@ namespace Aban360.ReportPool.Persistence.Base
                             mc.ZoneId = c.ZoneId
                         ORDER BY mc.ChangeDateJalali DESC
                     ) lc
-					 WHERE 
+					WHERE 
                     	c.ToDayJalali IS NULL AND
                         (@fromReadingNumber IS NULL OR
                          @toReadingNumber IS NULL OR  
