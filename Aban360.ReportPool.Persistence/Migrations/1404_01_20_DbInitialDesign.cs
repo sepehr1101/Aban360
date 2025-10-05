@@ -3,7 +3,6 @@ using Aban360.ReportPool.Persistence.Extentions;
 using Aban360.ReportPool.Persistence.Migrations.Enums;
 using FluentMigrator;
 using System.Reflection;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Aban360.ReportPool.Persistence.Migrations
 {
