@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Folder Include="Base\" />
+    <Folder Include="Features\Dashboard\Dtos\" />
     <Folder Include="Features\InvoiceInfo\" />
   </ItemGroup>
 
