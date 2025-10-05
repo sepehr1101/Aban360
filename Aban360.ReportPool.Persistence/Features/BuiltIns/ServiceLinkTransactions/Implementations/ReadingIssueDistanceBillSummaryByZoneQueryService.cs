@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         {
         }
 
-        public async Task<ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryByZoneDataOutputDto>> GetInfo(ReadingIssueDistanceBillInputDto input)
+        public async Task<ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryDataOutputDto>> GetInfo(ReadingIssueDistanceBillInputDto input)
         {
             string query = GetGroupedQuery(true);
             //string query = GetReadingIssueDistanceDataQuery();
@@ -32,7 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 zoneIds = input.ZoneIds,
             };
 
-            IEnumerable<ReadingIssueDistanceBillSummryByZoneDataOutputDto> readingIssueDistanceData = await _sqlReportConnection.QueryAsync<ReadingIssueDistanceBillSummryByZoneDataOutputDto>(query, @params, null, 180);
+            IEnumerable<ReadingIssueDistanceBillSummryDataOutputDto> readingIssueDistanceData = await _sqlReportConnection.QueryAsync<ReadingIssueDistanceBillSummryDataOutputDto>(query, @params, null, 180);
             ReadingIssueDistanceBillHeaderOutputDto readingIssueDistanceHeader = new ReadingIssueDistanceBillHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -41,15 +41,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ToReadingNumber = input.ToReadingNumber,
                 RecordCount = readingIssueDistanceData is not null && readingIssueDistanceData.Any() ? readingIssueDistanceData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                CustomerCount = readingIssueDistanceData is not null && readingIssueDistanceData.Any() ? readingIssueDistanceData.Count() : 0,
 
+                CustomerCount = readingIssueDistanceData.Sum(i => i.CustomerCount),
                 SumCommercialUnit = readingIssueDistanceData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = readingIssueDistanceData.Sum(i => i.DomesticUnit),
                 SumOtherUnit = readingIssueDistanceData.Sum(i => i.OtherUnit),
                 TotalUnit = readingIssueDistanceData.Sum(i => i.TotalUnit)
             };
 
-            var result = new ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryByZoneDataOutputDto>(ReportLiterals.ReadingIssueDistanceBillSummary + ReportLiterals.ByZone, readingIssueDistanceHeader, readingIssueDistanceData);
+            var result = new ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryDataOutputDto>(ReportLiterals.ReadingIssueDistanceBillSummary + ReportLiterals.ByZone, readingIssueDistanceHeader, readingIssueDistanceData);
 
             return result;
         }

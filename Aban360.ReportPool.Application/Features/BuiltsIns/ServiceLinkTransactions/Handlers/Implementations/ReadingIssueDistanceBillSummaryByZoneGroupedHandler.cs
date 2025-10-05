@@ -35,7 +35,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryByZoneDataOutputDto> result = await _readingIssueDistanceBillSummaryByZoneQuery.GetInfo(input);
+            ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryDataOutputDto> result = await _readingIssueDistanceBillSummaryByZoneQuery.GetInfo(input);
             result.ReportData.ForEach(r =>
             {
                 r.UnSpecifiedText = CalculationDistanceDate.ConvertDaysToDate(r.UnSpecified);
@@ -140,7 +140,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
 
             return finalData;
         }
-        private static ReadingIssueDistanceBillSummryDataOutputDto MapToGroupe(ReadingIssueDistanceBillSummryByZoneDataOutputDto input)
+        private static ReadingIssueDistanceBillSummryDataOutputDto MapToGroupe(ReadingIssueDistanceBillSummryDataOutputDto input)
         {
             return new ReadingIssueDistanceBillSummryDataOutputDto()
             {
