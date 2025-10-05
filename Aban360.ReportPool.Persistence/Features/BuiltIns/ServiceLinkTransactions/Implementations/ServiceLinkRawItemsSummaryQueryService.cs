@@ -3,6 +3,7 @@ using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,15 +11,17 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {
-    internal sealed class ServiceLinkRawItemsSummaryQueryService : AbstractBaseConnection, IServiceLinkRawItemsSummaryQueryService
+    internal sealed class ServiceLinkRawItemsSummaryQueryService : ServiceLinkNetRawItemsBase, IServiceLinkRawItemsSummaryQueryService
     {
         public ServiceLinkRawItemsSummaryQueryService(IConfiguration configuration)
             : base(configuration)
         { }
 
-        public async Task<ReportOutput<ServiceLinkRawItemsHeaderOutputDto, ServiceLinkRawItemsSummaryDataOutputDto>> Get(ServiceLinkRawItemsInputDto input)
+        public async Task<ReportOutput<ServiceLinkRawItemsHeaderOutputDto, ServiceLinkRawNetItemsSummaryDataOutputDto>> Get(ServiceLinkRawItemsInputDto input)
         {
-            string serviceLinkRawItemsSummaryQuery = GetServiceLinkRawItemsSummaryQuery(); ;
+            string rawCondition = @"AND	r.TypeCode ON (1,2)";
+            string query = GetGroupedQuery(rawCondition);
+            //string query = GetServiceLinkRawItemsSummaryQuery(); ;
 
             var @params = new
             {
@@ -26,7 +29,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 toDate = input.ToDateJalali,
                 zoneIds = input.ZoneIds,
             };
-            IEnumerable<ServiceLinkRawItemsSummaryDataOutputDto> data = await _sqlReportConnection.QueryAsync<ServiceLinkRawItemsSummaryDataOutputDto>(serviceLinkRawItemsSummaryQuery, @params);
+            IEnumerable<ServiceLinkRawNetItemsSummaryDataOutputDto> data = await _sqlReportConnection.QueryAsync<ServiceLinkRawNetItemsSummaryDataOutputDto>(query, @params);
             ServiceLinkRawItemsHeaderOutputDto header = new ServiceLinkRawItemsHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -39,7 +42,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 SumOffAmount = data.Sum(x => x.OffAmount),
                 SumFinalAmount = data.Sum(x => x.FinalAmount),
             };
-            var result = new ReportOutput<ServiceLinkRawItemsHeaderOutputDto, ServiceLinkRawItemsSummaryDataOutputDto>
+            var result = new ReportOutput<ServiceLinkRawItemsHeaderOutputDto, ServiceLinkRawNetItemsSummaryDataOutputDto>
                 (ReportLiterals.ServiceLinkRawItemsSummary, header, data);
 
             return result;

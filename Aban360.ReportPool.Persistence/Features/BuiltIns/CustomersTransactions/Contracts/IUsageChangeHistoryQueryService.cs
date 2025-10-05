@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 {
     public interface IUsageChangeHistoryQueryService
     {
-        Task<ReportOutput<UsageChangeHistoryHeaderOutputDto, UsageChangeHistoryDataOutputDto>> GetInfo(UsageChangeHistoryInputDto input);
+        Task<ReportOutput<UsageChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto>> GetInfo(UsageChangeHistoryInputDto input);
     }
 }

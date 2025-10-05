@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryByUsageDataOutputDto>> Handle(NonPermanentBranchByUsageAndZoneInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchGroupedDataOutputDto>> Handle(NonPermanentBranchByUsageAndZoneInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryByUsageDataOutputDto> nonPremanentBranch = await _nonPermanentBranchSummaryByUsageQueryService.GetInfo(input);
+            ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchGroupedDataOutputDto> nonPremanentBranch = await _nonPermanentBranchSummaryByUsageQueryService.GetInfo(input);
             return nonPremanentBranch;
         }
     }

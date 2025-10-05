@@ -1,8 +1,10 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Implementations
 {
-    internal sealed class ServiceLinkDailyBankGroupedQueryService : AbstractBaseConnection, IServiceLinkDailyBankGroupedQueryService
+    internal sealed class ServiceLinkDailyBankGroupedQueryService : DailyBankGroupedBase, IServiceLinkDailyBankGroupedQueryService
     {
         public ServiceLinkDailyBankGroupedQueryService(IConfiguration configuration)
             : base(configuration)
@@ -18,7 +20,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<DailyBankGroupedHeaderOutputDto, DailyBankGroupedDataOutputDto>> GetInfo(DailyBankGroupedInputDto input)
         {
-            string dailyBankGroupeds = GetDailyBankGroupedQuery(input.ZoneIds?.Any() == true);
+            string query = GetDetailQuery(input.ZoneIds?.Any() == true, GroupingFields.PaymentsEn);
+            //string query = GetDailyBankGroupedQuery(input.ZoneIds?.Any() == true);
+
             var @params = new
             {
                 FromDate = input.FromDateJalali,
@@ -29,7 +33,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 fromBankId=input.FromBankId,
                 toBankId=input.ToBankId,
             };
-            IEnumerable<DailyBankGroupedDataOutputDto> dailyBankGroupedData = await _sqlReportConnection.QueryAsync<DailyBankGroupedDataOutputDto>(dailyBankGroupeds, @params);
+            IEnumerable<DailyBankGroupedDataOutputDto> dailyBankGroupedData = await _sqlReportConnection.QueryAsync<DailyBankGroupedDataOutputDto>(query, @params);
             DailyBankGroupedHeaderOutputDto dailyBankGroupedHeader = new DailyBankGroupedHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

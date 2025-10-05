@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsSummaryByChangeCauseDataOutputDto>> Handle(WaterMeterReplacementsInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsSummaryDataOutputDto>> Handle(WaterMeterReplacementsInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsSummaryByChangeCauseDataOutputDto> waterMeterReplacementsSummaryByChangeCause = await _waterMeterReplacementsSummaryByChangeCauseQueryService.Get(input);
+            ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsSummaryDataOutputDto> waterMeterReplacementsSummaryByChangeCause = await _waterMeterReplacementsSummaryByChangeCauseQueryService.Get(input);
             return waterMeterReplacementsSummaryByChangeCause;
         }
     }

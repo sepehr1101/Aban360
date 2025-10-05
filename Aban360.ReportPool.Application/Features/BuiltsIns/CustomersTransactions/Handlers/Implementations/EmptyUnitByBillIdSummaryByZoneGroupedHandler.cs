@@ -34,7 +34,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdByZoneDataOutputDto> result = await _emptyUnitByBillIdZoneGroupingQueryService.Get(input);
+            ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdSummaryDataOutputDto> result = await _emptyUnitByBillIdZoneGroupingQueryService.Get(input);
 
             IEnumerable<ReportOutput<EmptyUnitByBillIdByZoneGroupedDataOutputDto, EmptyUnitByBillIdByZoneGroupedDataOutputDto>> dataGroup = result
               .ReportData

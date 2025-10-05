@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
 {
     public interface IDeletionStateChangeHistoryHandler
     {
-        Task<ReportOutput<DeletionStateChangeHistoryHeaderOutputDto, DeletionStateChangeHistoryDataOutputDto>> Handle(DeletionStateChangeHistoryInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<DeletionStateChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto>> Handle(DeletionStateChangeHistoryInputDto input, CancellationToken cancellationToken);
     }
 }

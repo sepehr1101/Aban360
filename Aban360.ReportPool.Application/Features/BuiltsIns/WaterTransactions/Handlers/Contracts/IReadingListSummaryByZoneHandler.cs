@@ -7,6 +7,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
 {
     public interface IReadingListSummaryByZoneHandler
     {
-        Task<ReportOutput<ReadingListHeaderOutputDto, ReadingListSummaryByZoneDataOutputDto>> Handle(ReadingListInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<ReadingListHeaderOutputDto, ReadingListSummaryDataOutputDto>> Handle(ReadingListInputDto input, CancellationToken cancellationToken);
     }
 }

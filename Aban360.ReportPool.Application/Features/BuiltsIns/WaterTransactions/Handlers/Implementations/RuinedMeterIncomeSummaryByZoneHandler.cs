@@ -25,7 +25,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryByZoneDataOutputDto>> Handle(RuinedMeterIncomeInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryDataOutputDto>> Handle(RuinedMeterIncomeInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -34,7 +34,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryByZoneDataOutputDto> ruinedMeterIncome = await _ruinedMeterIncomeQueryService.GetInfo(input);
+            ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryDataOutputDto> ruinedMeterIncome = await _ruinedMeterIncomeQueryService.GetInfo(input);
             return ruinedMeterIncome;
         }
     }

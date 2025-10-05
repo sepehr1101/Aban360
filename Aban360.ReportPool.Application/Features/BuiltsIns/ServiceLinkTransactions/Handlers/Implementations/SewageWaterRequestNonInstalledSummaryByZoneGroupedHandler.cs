@@ -34,7 +34,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<SewageWaterRequestNonInstalledHeaderOutputDto, SewageWaterRequestNonInstalledSummaryByZoneDataOutputDto> result = await _sewageWaterRequestNonInstalledSummaryByZoneQuery.Get(input);
+            ReportOutput<SewageWaterRequestNonInstalledHeaderOutputDto, SewageWaterRequestNonInstalledSummaryDataOutputDto> result = await _sewageWaterRequestNonInstalledSummaryByZoneQuery.Get(input);
             var dataGroup = result.ReportData
                 .GroupBy(m => m.RegionTitle)
                 .Select(g =>
@@ -55,7 +55,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
 
             return finalData;
         }
-        private static SewageWaterRequestNonInstalledSummaryDataOutputDto MapToGroupe(SewageWaterRequestNonInstalledSummaryByZoneDataOutputDto input)
+        private static SewageWaterRequestNonInstalledSummaryDataOutputDto MapToGroupe(SewageWaterRequestNonInstalledSummaryDataOutputDto input)
         {
             return new SewageWaterRequestNonInstalledSummaryDataOutputDto()
             {

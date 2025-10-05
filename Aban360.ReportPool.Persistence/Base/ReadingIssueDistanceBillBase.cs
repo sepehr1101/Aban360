@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using System.Reflection.Metadata;
 
 namespace Aban360.ReportPool.Persistence.Base
 {
@@ -62,15 +63,13 @@ namespace Aban360.ReportPool.Persistence.Base
                 	b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
                 	b.ZoneId IN @zoneIds";
         }
-        internal string GetGroupedQuery(bool isZone)
+        internal string GetGroupedQuery(string groupingField)
         {
-            string parameter = GetQueryParam(isZone);
-
             return $@"Select
                         MAX(t46.C2) AS RegionTitle,
-                      	b.{parameter} as ItemTitle,
-                      	b.{parameter} ,
-                      	COUNT(b.{parameter}) as CustomerCount,
+                      	b.{groupingField} as ItemTitle,
+                      	b.{groupingField} ,
+                      	COUNT(b.{groupingField}) as CustomerCount,
                       	SUM(ISNULL(b.CommercialCount, 0) + ISNULL(b.DomesticCount, 0) + ISNULL(b.OtherCount, 0)) AS TotalUnit,
                       	SUM(ISNULL(b.CommercialCount, 0)) AS CommercialUnit,
                       	SUM(ISNULL(b.DomesticCount, 0)) AS DomesticUnit,
@@ -100,15 +99,7 @@ namespace Aban360.ReportPool.Persistence.Base
                       	@toReadingNumber IS NULL OR
                       	b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
                       	b.ZoneId IN @zoneIds
-                     Group by b.{parameter}";
-        }
-
-        private string GetQueryParam(bool isZone)
-        {
-            string ZoneTitle = nameof(ZoneTitle),
-                   UsageTitle = nameof(UsageTitle);
-
-            return isZone ? ZoneTitle : UsageTitle;
+                     Group by b.{groupingField}";
         }
     }
 }

@@ -29,10 +29,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterRequestNonInstalledHeaderOutputDto, SewageWaterRequestNonInstalledSummaryByZoneDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterRequestNonInstalledHeaderOutputDto, SewageWaterRequestNonInstalledSummaryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(SewageWaterRequestNonInstalledInputDto input, CancellationToken cancellationToken)
         {
-            ReportOutput<SewageWaterRequestNonInstalledHeaderOutputDto, SewageWaterRequestNonInstalledSummaryByZoneDataOutputDto> result = await _sewageWaterRequestNonInstalledSummaryByZoneHandler.Handle(input, cancellationToken);
+            ReportOutput<SewageWaterRequestNonInstalledHeaderOutputDto, SewageWaterRequestNonInstalledSummaryDataOutputDto> result = await _sewageWaterRequestNonInstalledSummaryByZoneHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
@@ -52,7 +52,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         public async Task<IActionResult> GetStiReport(SewageWaterRequestNonInstalledInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 312;
-            ReportOutput<SewageWaterRequestNonInstalledHeaderOutputDto, SewageWaterRequestNonInstalledSummaryByZoneDataOutputDto> result = await _sewageWaterRequestNonInstalledSummaryByZoneHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<SewageWaterRequestNonInstalledHeaderOutputDto, SewageWaterRequestNonInstalledSummaryDataOutputDto> result = await _sewageWaterRequestNonInstalledSummaryByZoneHandler.Handle(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
             return Ok(reportId);
         }

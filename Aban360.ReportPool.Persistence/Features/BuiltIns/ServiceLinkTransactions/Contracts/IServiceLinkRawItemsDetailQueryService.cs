@@ -7,6 +7,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 {
     public interface IServiceLinkRawItemsDetailQueryService
     {
-        Task<ReportOutput<ServiceLinkRawItemsHeaderOutputDto, ServiceLinkRawItemsDetailDataOutputDto>> Get(ServiceLinkRawItemsInputDto input);
+        Task<ReportOutput<ServiceLinkRawItemsHeaderOutputDto, ServiceLinkRawNetItemsDetailDataOutputDto>> Get(ServiceLinkRawItemsInputDto input);
     }
 }

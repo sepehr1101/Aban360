@@ -28,10 +28,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<UsageChangeHistoryHeaderOutputDto, UsageChangeHistoryDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<UsageChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(UsageChangeHistoryInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<UsageChangeHistoryHeaderOutputDto, UsageChangeHistoryDataOutputDto> usageChangeHistory = await _usageChangeHistory.Handle(inputDto, cancellationToken);
+            ReportOutput<UsageChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto> usageChangeHistory = await _usageChangeHistory.Handle(inputDto, cancellationToken);
             return Ok(usageChangeHistory);
         }
 

@@ -1,8 +1,10 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Implementations
 {
-    internal sealed class NonPermanentBranchSummaryQueryService : AbstractBaseConnection, INonPermanentBranchSummaryQueryService
+    internal sealed class NonPermanentBranchSummaryQueryService : NonPermanentBranchBase, INonPermanentBranchSummaryQueryService
     {
         public NonPermanentBranchSummaryQueryService(IConfiguration configuration)
             : base(configuration)
@@ -18,7 +20,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         }
         public async Task<ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryDataOutputDto>> GetInfo(NonPermanentBranchInputDto input)
         {
-            string nonPremanentBranchQuery = GetNonPermanentBranchQuery();
+            string query = GetSummaryQuer();
+           // string query = GetNonPermanentBranchQuery();
+           
             var @params = new
             {
                 fromReadingNumber = input.FromReadingNumber,
@@ -27,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 zoneIds = input.ZoneIds
             };
 
-            IEnumerable<NonPermanentBranchSummaryDataOutputDto> nonPremanentBranchData = await _sqlReportConnection.QueryAsync<NonPermanentBranchSummaryDataOutputDto>(nonPremanentBranchQuery, @params);
+            IEnumerable<NonPermanentBranchSummaryDataOutputDto> nonPremanentBranchData = await _sqlReportConnection.QueryAsync<NonPermanentBranchSummaryDataOutputDto>(query, @params);
             NonPermanentBranchHeaderOutputDto nonPremanentBranchHeader = new NonPermanentBranchHeaderOutputDto()
             {
                 FromReadingNumber = input.FromReadingNumber,

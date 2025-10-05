@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 {
     public interface IWaterMeterReplacementsSummaryByZoneQueryService
     {
-        Task<ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsSummaryByZoneDataOutputDto>> Get(WaterMeterReplacementsInputDto input);
+        Task<ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsSummaryDataOutputDto>> Get(WaterMeterReplacementsInputDto input);
     }
 }

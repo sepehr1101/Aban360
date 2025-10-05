@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 var message = string.Join(", ", validationReuslt.Errors.Select(x => x.ErrorMessage));
                 throw new CustomeValidationException(message);
             }
-            ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryByZoneDataOutputDto> result = await _userStateReportQueryService.Get(input);
+            ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryDataOutputDto> result = await _userStateReportQueryService.Get(input);
 
             #region hard coded
             /* IEnumerable<ReportOutput<UseStateReportSummaryByZoneGroupedDataOutputDto, UseStateReportSummaryByZoneGroupedDataOutputDto>> dataGroup = result
@@ -109,7 +109,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             return finalData;
         }
         private static UseStateReportSummaryByZoneGroupedDataOutputDto MapToGrouped(
-            UseStateReportSummaryByZoneDataOutputDto input)
+            UseStateReportSummaryDataOutputDto input)
         {
             return new UseStateReportSummaryByZoneGroupedDataOutputDto
             {

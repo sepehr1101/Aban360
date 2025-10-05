@@ -29,11 +29,11 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryByUsageDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryDataOutputDto>>), StatusCodes.Status200OK)]
         [AllowAnonymous]
         public async Task<IActionResult> GetRaw(UseStateReportInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryByUsageDataOutputDto> useStates = await _useStateReportSummaryByUsageHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryDataOutputDto> useStates = await _useStateReportSummaryByUsageHandler.Handle(inputDto, cancellationToken);
             return Ok(useStates);
         }
 

@@ -1,8 +1,10 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,14 +12,16 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Implementations
 {
-    internal sealed class DeletionStateChangeHistoryQueryService : AbstractBaseConnection, IDeletionStateChangeHistoryQueryService
+    internal sealed class DeletionStateChangeHistoryQueryService : ChangeHistoryBase, IDeletionStateChangeHistoryQueryService
     {
         public DeletionStateChangeHistoryQueryService(IConfiguration configuration)
             : base(configuration)
         { }
-        public async Task<ReportOutput<DeletionStateChangeHistoryHeaderOutputDto, DeletionStateChangeHistoryDataOutputDto>> GetInfo(DeletionStateChangeHistoryInputDto input)
+        public async Task<ReportOutput<DeletionStateChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto>> GetInfo(DeletionStateChangeHistoryInputDto input)
         {
-            string DeletionStateChangeHistoryQuery = GetDeletionStateChangeHistoryQuery(input.ZoneIds?.Any() == true);
+            string query = GetDetailQuery(input.ZoneIds?.Any() == true, GroupingFields.DeletionStateId, GroupingFields.DeletionStateTitle);
+            //string query = GetDeletionStateChangeHistoryQuery(input.ZoneIds?.Any() == true);
+
             var @params = new
             {
                 fromReadingNumber = input.FromReadingNumber,
@@ -28,11 +32,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
                 zoneIds = input.ZoneIds,
 
-                fromDeletionStateIds = input.FromDeletionStateIds,
-                toDeletionStateIds = input.ToDeletionStateIds,
+                fromFieldIds = input.FromDeletionStateIds,
+                toFieldIds = input.ToDeletionStateIds,
+                //fromDeletionStateIds = input.FromDeletionStateIds,
+                //toDeletionStateIds = input.ToDeletionStateIds,
             };
 
-            IEnumerable<DeletionStateChangeHistoryDataOutputDto> deletionStateChangeHistoryData = await _sqlReportConnection.QueryAsync<DeletionStateChangeHistoryDataOutputDto>(DeletionStateChangeHistoryQuery, @params, null, 180);
+            IEnumerable<ChangeHistoryDataOutputDto> deletionStateChangeHistoryData = await _sqlReportConnection.QueryAsync<ChangeHistoryDataOutputDto>(query, @params, null, 180);
             DeletionStateChangeHistoryHeaderOutputDto deletionStateChangeHistoryHeader = new DeletionStateChangeHistoryHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -52,7 +58,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             };
 
 
-            var result = new ReportOutput<DeletionStateChangeHistoryHeaderOutputDto, DeletionStateChangeHistoryDataOutputDto>(ReportLiterals.DeletionStateChangeHistory, deletionStateChangeHistoryHeader, deletionStateChangeHistoryData);
+            var result = new ReportOutput<DeletionStateChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto>(ReportLiterals.DeletionStateChangeHistory, deletionStateChangeHistoryHeader, deletionStateChangeHistoryData);
 
             return result;
         }
@@ -123,7 +129,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         (@fromReadingNumber IS NULL OR
                         @toReadingNumber IS NULL OR
                         c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) 
-                    	{zoneQuery} ";           
+                    	{zoneQuery} ";
         }
     }
 }

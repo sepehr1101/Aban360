@@ -1,8 +1,10 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,14 +12,16 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Implementations
 {
-    internal sealed class UsageChangeHistoryQueryService : AbstractBaseConnection, IUsageChangeHistoryQueryService
+    internal sealed class UsageChangeHistoryQueryService : ChangeHistoryBase, IUsageChangeHistoryQueryService
     {
         public UsageChangeHistoryQueryService(IConfiguration configuration)
             : base(configuration)
         { }
-        public async Task<ReportOutput<UsageChangeHistoryHeaderOutputDto, UsageChangeHistoryDataOutputDto>> GetInfo(UsageChangeHistoryInputDto input)
+        public async Task<ReportOutput<UsageChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto>> GetInfo(UsageChangeHistoryInputDto input)
         {
-            string UsageChangeHistoryQuery = GetUsageChangeHistoryQuery(input.ZoneIds.Any());
+            string query = GetDetailQuery(input.ZoneIds?.Any() == true, GroupingFields.UsageId, GroupingFields.UsageTitle);
+            //string query = GetUsageChangeHistoryQuery(input.ZoneIds.Any());
+
             var @params = new
             {
                 fromReadingNumber = input.FromReadingNumber,
@@ -28,11 +32,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
                 zoneIds = input.ZoneIds,
 
-                fromUsageIds = input.FromUsageIds,
-                toUsageIds = input.ToUsageIds,
+                fromFieldIds = input.FromUsageIds,
+                toFieldIds = input.ToUsageIds,
+
+                //fromUsageIds = input.FromUsageIds,
+                //toUsageIds = input.ToUsageIds,
             };
 
-            IEnumerable<UsageChangeHistoryDataOutputDto> usageChangeHistoryData = await _sqlReportConnection.QueryAsync<UsageChangeHistoryDataOutputDto>(UsageChangeHistoryQuery, @params);
+            IEnumerable<ChangeHistoryDataOutputDto> usageChangeHistoryData = await _sqlReportConnection.QueryAsync<ChangeHistoryDataOutputDto>(query, @params);
             UsageChangeHistoryHeaderOutputDto usageChangeHistoryHeader = new UsageChangeHistoryHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -52,7 +59,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             };
 
 
-            var result = new ReportOutput<UsageChangeHistoryHeaderOutputDto, UsageChangeHistoryDataOutputDto>(ReportLiterals.UsageChangeHistory, usageChangeHistoryHeader, usageChangeHistoryData);
+            var result = new ReportOutput<UsageChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto>(ReportLiterals.UsageChangeHistory, usageChangeHistoryHeader, usageChangeHistoryData);
 
             return result;
         }
@@ -105,7 +112,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         c.MainSiphonTitle AS SiphonDiameterTitle,
                         c.BranchType AS UseStateTitle,
                         c.EmptyCount AS EmptyUnit,
-					    DATEDIFF(DAY,[CustomerWarehouse].dbo.PersianToMiladi(ff.RegisterDayJalali),[CustomerWarehouse].dbo.PersianToMiladi(ss.RegisterDayJalali)) as Distance                    From CustomerWarehouse.dbo.Clients c 
+					    DATEDIFF(DAY,[CustomerWarehouse].dbo.PersianToMiladi(ff.RegisterDayJalali),[CustomerWarehouse].dbo.PersianToMiladi(ss.RegisterDayJalali)) as Distance
+                    From CustomerWarehouse.dbo.Clients c 
                     Join FirstBillGroup ff 
                     	On c.BillId=ff.BillId
                     Join SecondBillGroup ss

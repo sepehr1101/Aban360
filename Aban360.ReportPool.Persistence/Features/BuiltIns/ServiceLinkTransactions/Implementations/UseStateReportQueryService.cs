@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {
-    internal sealed class UseStateReportQueryService : AbstractBaseConnection, IUseStateReportQueryService
+    internal sealed class UseStateReportQueryService : UseStateBase, IUseStateReportQueryService
     {
         public UseStateReportQueryService(IConfiguration configuration)
             : base(configuration)
@@ -18,7 +18,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         public async Task<ReportOutput<UseStateReportHeaderOutputDto, UseStateReportDataOutputDto>> GetInfo(UseStateReportInputDto input)
         {
-            string useStateQueryString = GetUseStateDataQuery();
+            string query = GetDetailQuery();
+            //string query = GetUseStateDataQuery();
+            
             var @params = new
             {
                 useStateId = input.UseStateId,
@@ -29,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 toReadingNumber = input.ToReadingNumber
             };
 
-            IEnumerable<UseStateReportDataOutputDto> useStateData = await _sqlReportConnection.QueryAsync<UseStateReportDataOutputDto>(useStateQueryString, @params);
+            IEnumerable<UseStateReportDataOutputDto> useStateData = await _sqlReportConnection.QueryAsync<UseStateReportDataOutputDto>(query, @params);
             UseStateReportHeaderOutputDto useStateHeader = new UseStateReportHeaderOutputDto()
             {
                 TotalDebtAmount = useStateData.Sum(useState => useState.DebtAmount),

@@ -3,6 +3,7 @@ using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {
-    internal sealed class WithoutSewageRequestDetailQueryService : AbstractBaseConnection, IWithoutSewageRequestDetailQueryService
+    internal sealed class WithoutSewageRequestDetailQueryService : WithoutSewageRequestBase, IWithoutSewageRequestDetailQueryService
     {
         public WithoutSewageRequestDetailQueryService(IConfiguration configuration)
             : base(configuration)
@@ -18,7 +19,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         public async Task<ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestDetailDataOutputDto>> Get(WithoutSewageRequestInputDto input)
         {
-            string withoutSewageRequest = GetBranchWithoutSewageRequestQuery();
+            string query = GetDetailQuery();
+            //string query = GetBranchWithoutSewageRequestQuery();
 
             var @params = new
             {
@@ -28,7 +30,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 toReadingNumber = input.ToReadingNumber,
                 zoneIds = input.ZoneIds
             };
-            IEnumerable<WithoutSewageRequestDetailDataOutputDto> withoutSewageRequestData = await _sqlReportConnection.QueryAsync<WithoutSewageRequestDetailDataOutputDto>(withoutSewageRequest, @params);
+            IEnumerable<WithoutSewageRequestDetailDataOutputDto> withoutSewageRequestData = await _sqlReportConnection.QueryAsync<WithoutSewageRequestDetailDataOutputDto>(query, @params);
             WithoutSewageRequestHeaderOutputDto withoutSewageRequestHeader = new WithoutSewageRequestHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

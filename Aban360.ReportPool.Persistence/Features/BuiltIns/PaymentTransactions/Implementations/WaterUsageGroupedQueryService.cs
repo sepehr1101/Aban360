@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Base;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Implementations
 {
-    internal sealed class WaterUsageGroupedQueryService : AbstractBaseConnection, IWaterUsageGroupedQueryService
+    internal sealed class WaterUsageGroupedQueryService : PaymentBase, IWaterUsageGroupedQueryService
     {
         public WaterUsageGroupedQueryService(IConfiguration configuration)
             : base(configuration)
@@ -18,7 +19,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto>> GetInfo(ServiceLinkWaterItemGroupedInputDto input)
         {
-            string waterUsageGroupeds = GetWaterUsageGroupedQuery(input.ZoneIds?.Any()== true);
+            string query = GetGroupedQuery(true, input.ZoneIds?.Any() == true, GroupingFields.UsageTitle);
+            // string query = GetWaterUsageGroupedQuery(input.ZoneIds?.Any()== true);
+
             var @params = new
             {
                 FromDate = input.FromDateJalali,
@@ -27,7 +30,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 toBankId = input.ToBankId,
                 zoneIds = input.ZoneIds,
             };
-            IEnumerable<ServiceLinkWaterItemGroupedDataOutputDto> waterUsageGroupedData = await _sqlReportConnection.QueryAsync<ServiceLinkWaterItemGroupedDataOutputDto>(waterUsageGroupeds, @params);
+            IEnumerable<ServiceLinkWaterItemGroupedDataOutputDto> waterUsageGroupedData = await _sqlReportConnection.QueryAsync<ServiceLinkWaterItemGroupedDataOutputDto>(query, @params);
             ServiceLinkWaterItemGroupedHeaderOutputDto waterUsageGroupedHeader = new ServiceLinkWaterItemGroupedHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

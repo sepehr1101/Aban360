@@ -1,8 +1,9 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Implementations
 {
-    internal sealed class WaterZoneGroupedQueryService : AbstractBaseConnection, IWaterZoneGroupedQueryService
+    internal sealed class WaterZoneGroupedQueryService : PaymentBase, IWaterZoneGroupedQueryService
     {
         public WaterZoneGroupedQueryService(IConfiguration configuration)
             : base(configuration)
@@ -18,7 +19,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto>> GetInfo(ServiceLinkWaterItemGroupedInputDto input)
         {
-            string waterZoneGroupeds = GetWaterZoneGroupedQuery(input.ZoneIds?.Any() == true);
+            string query = GetGroupedQuery(true, input.ZoneIds?.Any() == true, GroupingFields.ZoneTitle);
+           // string query = GetWaterZoneGroupedQuery(input.ZoneIds?.Any() == true);
+          
             var @params = new
             {
                 FromDate = input.FromDateJalali,
@@ -27,7 +30,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 toBankId = input.ToBankId,
                 zoneIds = input.ZoneIds,
             };
-            IEnumerable<ServiceLinkWaterItemGroupedDataOutputDto> waterZoneGroupedData = await _sqlReportConnection.QueryAsync<ServiceLinkWaterItemGroupedDataOutputDto>(waterZoneGroupeds, @params);
+            IEnumerable<ServiceLinkWaterItemGroupedDataOutputDto> waterZoneGroupedData = await _sqlReportConnection.QueryAsync<ServiceLinkWaterItemGroupedDataOutputDto>(query, @params);
             ServiceLinkWaterItemGroupedHeaderOutputDto waterZoneGroupedHeader = new ServiceLinkWaterItemGroupedHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

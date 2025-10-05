@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 {
     public interface IEmptyUnitByBillIdUsageGroupingQueryService
     {
-        Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdUsageGroupingDataOutputDto>> Get(EmptyUnitInputDto input);
+        Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdSummaryDataOutputDto>> Get(EmptyUnitInputDto input);
     }
 }

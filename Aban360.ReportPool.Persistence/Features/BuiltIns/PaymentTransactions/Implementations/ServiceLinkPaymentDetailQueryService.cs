@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Implementations
 {
-    internal sealed class ServiceLinkPaymentDetailQueryService : AbstractBaseConnection, IServiceLinkPaymentDetailQueryService
+    internal sealed class ServiceLinkPaymentDetailQueryService : PaymentBase, IServiceLinkPaymentDetailQueryService
     {
         public ServiceLinkPaymentDetailQueryService(IConfiguration configuration)
             : base(configuration)
@@ -18,7 +18,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>> GetInfo(PaymentDetailInputDto input)
         {
-            string serviceLinkPaymentDetails = GetServiceLinkPaymentDetailQuery(input.ZoneIds?.Any()==true);
+            string query = GetDetailQuery(false,input.ZoneIds?.Any()==true);
+            //string query = GetServiceLinkPaymentDetailQuery(input.ZoneIds?.Any()==true);
+            
             var @params = new
             {
                 FromDate = input.FromDateJalali,
@@ -29,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 toBankId = input.ToBankId,
                 zoneIds =input.ZoneIds,
             };
-            IEnumerable<PaymentDetailDataOutputDto> serviceLinkPaymentDetailData = await _sqlReportConnection.QueryAsync<PaymentDetailDataOutputDto>(serviceLinkPaymentDetails, @params);
+            IEnumerable<PaymentDetailDataOutputDto> serviceLinkPaymentDetailData = await _sqlReportConnection.QueryAsync<PaymentDetailDataOutputDto>(query, @params);
             PaymentDetailHeaderOutputDto serviceLinkPaymentDetailHeader = new PaymentDetailHeaderOutputDto()
             {
                 FromBankId = input.FromBankId,

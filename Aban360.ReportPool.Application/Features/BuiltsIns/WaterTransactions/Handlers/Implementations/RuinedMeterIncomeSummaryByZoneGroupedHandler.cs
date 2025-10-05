@@ -34,7 +34,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryByZoneDataOutputDto> result = await _ruinedMeterIncomeQueryService.GetInfo(input);
+            ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryDataOutputDto> result = await _ruinedMeterIncomeQueryService.GetInfo(input);
             var dataGroup = result.ReportData
                 .GroupBy(m => m.RegionTitle)
                 .Select(g =>
@@ -56,7 +56,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
 
             return finalData;
         }
-        private static RuinedMeterIncomeSummaryDataOutputDto MapToGrouped(RuinedMeterIncomeSummaryByZoneDataOutputDto input)
+        private static RuinedMeterIncomeSummaryDataOutputDto MapToGrouped(RuinedMeterIncomeSummaryDataOutputDto input)
         {
             return new RuinedMeterIncomeSummaryDataOutputDto()
             {

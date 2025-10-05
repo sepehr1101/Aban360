@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 {
     public interface IUseStateReportSummaryByUsageQueryService
     {
-        Task<ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryByUsageDataOutputDto>> Get(UseStateReportInputDto input);
+        Task<ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryDataOutputDto>> Get(UseStateReportInputDto input);
     }
 }

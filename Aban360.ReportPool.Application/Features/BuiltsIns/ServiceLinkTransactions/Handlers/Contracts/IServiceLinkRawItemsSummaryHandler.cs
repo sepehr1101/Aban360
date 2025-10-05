@@ -7,6 +7,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
 {
     public interface IServiceLinkRawItemsSummaryHandler
     {
-        Task<ReportOutput<ServiceLinkRawItemsHeaderOutputDto, ServiceLinkRawItemsSummaryDataOutputDto>> Handle(ServiceLinkRawItemsInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<ServiceLinkRawItemsHeaderOutputDto, ServiceLinkRawNetItemsSummaryDataOutputDto>> Handle(ServiceLinkRawItemsInputDto input, CancellationToken cancellationToken);
     }
 }

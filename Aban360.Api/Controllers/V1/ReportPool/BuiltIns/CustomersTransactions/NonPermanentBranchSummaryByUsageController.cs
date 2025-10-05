@@ -27,10 +27,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryByUsageDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchGroupedDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(NonPermanentBranchByUsageAndZoneInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryByUsageDataOutputDto> nonPremanentBranchSummaryByUsage = await _nonPermanentBranchSummaryByUsage.Handle(inputDto, cancellationToken);
+            ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchGroupedDataOutputDto> nonPremanentBranchSummaryByUsage = await _nonPermanentBranchSummaryByUsage.Handle(inputDto, cancellationToken);
             return Ok(nonPremanentBranchSummaryByUsage);
         }
 

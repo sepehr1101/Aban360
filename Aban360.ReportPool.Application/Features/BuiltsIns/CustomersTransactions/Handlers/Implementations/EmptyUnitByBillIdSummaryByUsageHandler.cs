@@ -25,7 +25,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdUsageGroupingDataOutputDto>> Handle(EmptyUnitInputDto input, [Optional] CancellationToken cancellationToken)
+        public async Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdSummaryDataOutputDto>> Handle(EmptyUnitInputDto input, [Optional] CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input/*, cancellationToken*/);
             if (!validationResult.IsValid)
@@ -34,7 +34,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdUsageGroupingDataOutputDto> emptyUnit = await _emptyUnitByBillIdUsageGroupingQueryService.Get(input);
+            ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdSummaryDataOutputDto> emptyUnit = await _emptyUnitByBillIdUsageGroupingQueryService.Get(input);
             return emptyUnit;
         }
     }

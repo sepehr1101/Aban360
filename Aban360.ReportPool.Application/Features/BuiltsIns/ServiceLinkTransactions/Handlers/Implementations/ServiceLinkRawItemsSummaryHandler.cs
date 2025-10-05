@@ -25,7 +25,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<ServiceLinkRawItemsHeaderOutputDto, ServiceLinkRawItemsSummaryDataOutputDto>> Handle(ServiceLinkRawItemsInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<ServiceLinkRawItemsHeaderOutputDto, ServiceLinkRawNetItemsSummaryDataOutputDto>> Handle(ServiceLinkRawItemsInputDto input, CancellationToken cancellationToken)
         {
             var validatioResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validatioResult.IsValid)

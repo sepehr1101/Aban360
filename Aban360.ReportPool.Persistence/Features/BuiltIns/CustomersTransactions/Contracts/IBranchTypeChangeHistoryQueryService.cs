@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 {
     public interface IBranchTypeChangeHistoryQueryService
     {
-        Task<ReportOutput<BranchTypeChangeHistoryHeaderOutputDto, BranchTypeChangeHistoryDataOutputDto>> GetInfo(BranchTypeChangeHistoryInputDto input);
+        Task<ReportOutput<BranchTypeChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto>> GetInfo(BranchTypeChangeHistoryInputDto input);
     }
 }

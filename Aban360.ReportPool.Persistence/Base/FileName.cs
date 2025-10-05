@@ -1,100 +1,93 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Aban360.ReportPool.Domain.Base;
+using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Base
 {
-    internal abstract class ReadingStatusStatementBase : AbstractBaseConnection
+    //????????
+    internal abstract class PaymentReceivableBase : AbstractBaseConnection
     {
-        public ReadingStatusStatementBase(IConfiguration configuration)
+        public PaymentReceivableBase(IConfiguration configuration)
             : base(configuration)
         { }
 
-        internal string GetDetailQuery(bool isRegisterDate)
+        internal string GetDetailQuery(bool isWater, bool hasZone, bool hasUsage = false)
         {
-            QueryParam dataField = GetQueryParam(isRegisterDate);
+            return isWater ? GetWaterQuery(hasZone) : GetServiceLinkQuery(hasZone, hasUsage);
+        }
 
+        internal string GetGroupedQuery()
+        {
+            return $@"";
+        }
+
+        private string GetWaterQuery(bool hasZone)
+        {
+            string zoneQuery = hasZone ? "AND p.ZoneId IN @ZoneIds" : string.Empty;
             return @$"Select 
-                    	b.ZoneTitle AS ZoneTitle,
-						SUM(b.SumItems) AS SumItems,
-                    	b.{dataField.DateField} AS EventDateJalali,
-                    	COUNT(Case When b.CounterStateCode NOT IN (1,4,7,8) Then 1 End)AS ReadingNet,
-                    	COUNT(Case When b.CounterStateCode=4 Then 1 End)AS Closed,
-                    	COUNT(Case When b.CounterStateCode=7 Then 1 End)AS Obstacle,
-                    	COUNT(Case When b.CounterStateCode=8 Then 1 End)AS Temporarily,
-                    	COUNT(Case When b.CounterStateCode!=1 Then 1 End)AS AllCount,
-                    	COUNT(Case When b.CounterStateCode=1 Then 1 End)AS Ruined,
-						COUNT(Case When b.ReadingStateTitle IN (N'خوداظهاری حضوری',N'خوداظهاری غیرحضوری')Then 1 End) as SelfClaimedCount,
-						SUM(w.Debt) as Debt
-                    From [CustomerWarehouse].dbo.Bills b	
-					Left Join [CustomerWarehouse].dbo.WaterDebt w
-						On TRIM(b.BillId) Collate SQL_Latin1_General_CP1_CI_AS=w.BillId
-                    Where
-                    	(b.{dataField.DateField} BETWEEN @fromDate AND @toDate)AND
-                        (@FromReadingNumber IS NULL or
-                    	@ToReadingNumber IS NULL or 
-                    	b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND
-                    	b.ZoneId IN @zoneIds
-                    Group By 
-                    	b.{dataField.DateField},
-                        b.ZoneTitle";
+                    	b.BillId,
+						p.PayId,
+						b.ZoneTitle,
+                    	b.UsageTitle ,
+						p.Amount,
+						b.RegisterDay as BillIssueDateJalali,
+						b.Deadline,
+						p.PayDateJalali,
+						IIF(p.PayDateJalali<=b.DeadLine,N'{ReportLiterals.Due}' , N'{ReportLiterals.Overdue}') AS AmountState
+                    From [CustomerWarehouse].dbo.Bills b
+                    LEFT JOIN [CustomerWarehouse].dbo.Payments p ON p.BillTableId=b.Id
+                    WHERE
+                        (@FromDate IS NULL
+                     	    OR @ToDate IS NULL 
+                     	    OR p.RegisterDay BETWEEN @FromDate AND @ToDate)
+                        AND (@fromBankId IS NULL OR
+						    @toBankId IS NULL OR
+						    p.BankCode BETWEEN @fromBankId AND @toBankId)
+                         {zoneQuery}";
         }
-
-        internal string GetGroupedQuery(bool isRegisterDate, bool isZone)
+        
+        private string GetServiceLinkQuery(bool hasZone, bool hasUsage)
         {
-            QueryParam dataField = GetQueryParam(isRegisterDate, isZone);
+            string zoneQuery = hasZone ? "AND ZoneId IN @ZoneIds" : string.Empty;
+            string usageQuery = hasUsage ? "AND UsageId IN @UsageIds" : string.Empty;
 
-            return @$"Select 
-						MAX(t46.C2) AS RegionTitle,
-                    	b.{dataField.GroupedField} AS {dataField.GroupedField},
-                    	b.{dataField.GroupedField} AS ItemTitle ,
-						SUM(b.SumItems) AS SumItems,
-                    	COUNT(Case When b.CounterStateCode NOT IN (1,4,7,8) Then 1 End)AS ReadingNet,
-                    	COUNT(Case When b.CounterStateCode=4 Then 1 End)AS Closed,
-                    	COUNT(Case When b.CounterStateCode=7 Then 1 End)AS Obstacle,
-                    	COUNT(Case When b.CounterStateCode=8 Then 1 End)AS Temporarily,
-                    	COUNT(Case When b.CounterStateCode!=1 Then 1 End)AS AllCount,
-						COUNT(Case When b.ReadingStateTitle IN (N'خوداظهاری حضوری',N'خوداظهاری غیرحضوری')Then 1 End) as SelfClaimedCount,
-                    	COUNT(Case When b.CounterStateCode=1 Then 1 End)AS Ruined,
-						SUM(w.Debt) as Debt
-                    From [CustomerWarehouse].dbo.Bills b	
-					Join [Db70].dbo.T51 t51
-						On t51.C0=b.ZoneId
-					Join [Db70].dbo.T46 t46
-						On t51.C1=t46.C0
-					Left Join [CustomerWarehouse].dbo.WaterDebt w
-						On TRIM(b.BillId) Collate SQL_Latin1_General_CP1_CI_AS=w.BillId
-                    Where
-                    	(b.{dataField.DateField} BETWEEN @fromDate AND @toDate)AND
-                        (@FromReadingNumber IS NULL or
-                    	@ToReadingNumber IS NULL or 
-                    	b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND
-                    	b.ZoneId in @zoneIds
-                    Group By b.{dataField.GroupedField}";
-        }
-        private QueryParam GetQueryParam(bool isRegisterDate, bool isZone = false)
-        {
-            string RegisterDay = nameof(RegisterDay),
-                   NextDay = nameof(NextDay),
-                   ZoneTitle = nameof(ZoneTitle),
-                   UsageTitle = nameof(UsageTitle);
-
-            string groupedField = isZone ? ZoneTitle : UsageTitle;
-            string dateField = isRegisterDate ? RegisterDay : NextDay;
-
-            return new QueryParam(dateField, groupedField);
-        }
-
-        private record QueryParam
-        {
-            public string DateField { get; set; }
-            public string GroupedField { get; set; }
-            public QueryParam(string dateField, string groupedField)
-            {
-                DateField = dateField;
-                GroupedField = groupedField;
-            }
-            public QueryParam()
-            {
-            }
+            return @$"WITH OrderedData AS (
+                    SELECT 
+                        FullName, 
+                		CustomerNumber,
+                		ZoneId,
+                		ZoneTitle,
+                		UsageId,
+                		UsageTitle,
+                        EventDate,
+                        IsPayed,
+                        Amount,
+                        SUM(Amount) OVER (
+                            PARTITION BY ZoneId,CustomerNumber
+                            ORDER BY EventDate
+                            ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+                        ) AS SumAmount
+                	from [CustomerWarehouse].dbo.PaymentDue 
+                    Where 
+                        (@fromDate IS NULL OR
+                        @toDate IS NULL OR
+                        EventDate BETWEEN @fromDate and @toDate) 
+                        {zoneQuery}
+                        {usageQuery}
+                )
+                SELECT 
+                    FullName, 
+                	CustomerNumber,
+                	ZoneTitle,
+                	UsageTitle,
+                    EventDate as EventDateJalali,
+                    Amount,
+                	Case When SumAmount>=0 Then N'{ReportLiterals.Due}' Else N'{ReportLiterals.Overdue}' End as AmountState
+                FROM OrderedData
+                WHERE IsPayed = 1
+                ORDER BY 
+                	ZoneId,
+                	CustomerNumber, 
+                	EventDate";
         }
     }
 }

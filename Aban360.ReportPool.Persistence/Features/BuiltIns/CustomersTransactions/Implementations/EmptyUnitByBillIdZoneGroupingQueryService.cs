@@ -1,8 +1,10 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,16 +12,18 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Implementations
 {
-    internal sealed class EmptyUnitByBillIdZoneGroupingQueryService : AbstractBaseConnection, IEmptyUnitByBillIdZoneGroupingQueryService
+    internal sealed class EmptyUnitByBillIdZoneGroupingQueryService : EmptyUnitByBillBase, IEmptyUnitByBillIdZoneGroupingQueryService
     {
         public EmptyUnitByBillIdZoneGroupingQueryService(IConfiguration configuration)
             : base(configuration)
         { 
         }
 
-        public async Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdByZoneDataOutputDto>> Get(EmptyUnitInputDto input)
+        public async Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdSummaryDataOutputDto>> Get(EmptyUnitInputDto input)
         {
-            string emptyUnitByBillIdZoneGroupingQuery = GetEmptyUnitByBillIdZoneGroupingQuery(input.ZoneIds?.Any() == true, input.UsageSellIds?.Any() == true);
+            string query = GetGroupedQuery(input.ZoneIds?.Any() == true, input.UsageSellIds?.Any() == true,GroupingFields.ZoneTitle);
+            //string query = GetEmptyUnitByBillIdZoneGroupingQuery(input.ZoneIds?.Any() == true, input.UsageSellIds?.Any() == true);
+           
             var @params = new
             {
                 fromReadingNumber = input.FromReadingNumber,
@@ -30,7 +34,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 usageIds = input.UsageSellIds,
                 zoneIds = input.ZoneIds
             };
-            IEnumerable<EmptyUnitByBillIdByZoneDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<EmptyUnitByBillIdByZoneDataOutputDto>(emptyUnitByBillIdZoneGroupingQuery, @params);
+            IEnumerable<EmptyUnitByBillIdSummaryDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<EmptyUnitByBillIdSummaryDataOutputDto>(query, @params);
             EmptyUnitByBillIdSummaryHeaderOutputDto RequestHeader = new EmptyUnitByBillIdSummaryHeaderOutputDto()
             {
                 FromEmptyUnit = input.FromEmptyUnit,
@@ -48,7 +52,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 EmptyUnit = RequestData.Sum(i => i.EmptyUnit),
                 CustomerCount = RequestData.Sum(i => i.CustomerCount),
             };
-            var result = new ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdByZoneDataOutputDto>
+            var result = new ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdSummaryDataOutputDto>
                 (ReportLiterals.EmptyUnitByBillSummary+ReportLiterals.ByZone,
                 RequestHeader,
                 RequestData);

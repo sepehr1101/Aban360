@@ -1,8 +1,10 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
-    internal sealed class RuinedMeterIncomeSummaryByUsageQueryService : AbstractBaseConnection, IRuinedMeterIncomeSummaryByUsageQueryService
+    internal sealed class RuinedMeterIncomeSummaryByUsageQueryService : RuinedMeterIncomeBase, IRuinedMeterIncomeSummaryByUsageQueryService
     {
         public RuinedMeterIncomeSummaryByUsageQueryService(IConfiguration configuration)
             : base(configuration)
@@ -18,7 +20,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryDataOutputDto>> GetInfo(RuinedMeterIncomeInputDto input)
         {
-            string ruinedMeterIncomeQueryString = GetRuinedMeterIncomeDataQuery();
+            string query = GetGroupedQuery(GroupingFields.UsageTitle);
+           // string query = GetRuinedMeterIncomeDataQuery();
+         
             var @params = new
             {
                 fromDate = input.FromDateJalali,
@@ -27,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 toReadingNumber = input.ToReadingNumber,
                 zoneIds = input.ZoneIds,
             };
-            IEnumerable<RuinedMeterIncomeSummaryDataOutputDto> ruinedMeterIncomeData = await _sqlReportConnection.QueryAsync<RuinedMeterIncomeSummaryDataOutputDto>(ruinedMeterIncomeQueryString, @params);
+            IEnumerable<RuinedMeterIncomeSummaryDataOutputDto> ruinedMeterIncomeData = await _sqlReportConnection.QueryAsync<RuinedMeterIncomeSummaryDataOutputDto>(query, @params);
             RuinedMeterIncomeHeaderOutputDto ruinedMeterIncomeHeader = new RuinedMeterIncomeHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

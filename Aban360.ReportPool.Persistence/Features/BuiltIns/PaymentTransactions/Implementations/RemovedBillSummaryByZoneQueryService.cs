@@ -1,8 +1,10 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,15 +12,17 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Implementations
 {
-    internal sealed class RemovedBillSummaryByZoneQueryService : AbstractBaseConnection, IRemovedBillSummaryByZoneQueryService
+    internal sealed class RemovedBillSummaryByZoneQueryService : RemovedBillBase, IRemovedBillSummaryByZoneQueryService
     {
         public RemovedBillSummaryByZoneQueryService(IConfiguration configuration)
             : base(configuration)
         { }
 
-        public async Task<ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryByZoneDataOutputDto>> GetInfo(RemovedBillInputDto input)
+        public async Task<ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto>> GetInfo(RemovedBillInputDto input)
         {
-            string RemovedBillQueryString = GetRemovedBillDataQuery(input.ZoneIds?.Any() == true);
+            string query = GetGroupedQuery(input.ZoneIds?.Any() == true, GroupingFields.ZoneTitle);
+            //string query = GetRemovedBillDataQuery(input.ZoneIds?.Any() == true);
+           
             var @params = new
             {
                 fromDate = input.FromDateJalali,
@@ -29,7 +33,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 toAmount = input.ToAmount,
                 zoneIds = input.ZoneIds,
             };
-            IEnumerable<RemovedBillSummaryByZoneDataOutputDto> RemovedBillData = await _sqlReportConnection.QueryAsync<RemovedBillSummaryByZoneDataOutputDto>(RemovedBillQueryString, @params);
+            IEnumerable<RemovedBillSummaryDataOutputDto> RemovedBillData = await _sqlReportConnection.QueryAsync<RemovedBillSummaryDataOutputDto>(query, @params);
             RemovedBillHeaderOutputDto RemovedBillHeader = new RemovedBillHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -45,7 +49,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 CustomerCount = RemovedBillData.Sum(x => x.CustomerCount)
             };
 
-            var result = new ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryByZoneDataOutputDto>(ReportLiterals.RemovedBillSummary + ReportLiterals.ByZone, RemovedBillHeader, RemovedBillData);
+            var result = new ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto>(ReportLiterals.RemovedBillSummary + ReportLiterals.ByZone, RemovedBillHeader, RemovedBillData);
 
             return result;
         }

@@ -1,8 +1,10 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,15 +12,17 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Implementations
 {
-    internal sealed class NonPermanentBranchSummaryByZoneQueryService : AbstractBaseConnection, INonPermanentBranchSummaryByZoneQueryService
+    internal sealed class NonPermanentBranchSummaryByZoneQueryService : NonPermanentBranchBase, INonPermanentBranchSummaryByZoneQueryService
     {
         public NonPermanentBranchSummaryByZoneQueryService(IConfiguration configuration)
             : base(configuration)
         {
         }
-        public async Task<ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryByZoneDataOutputDto>> GetInfo(NonPermanentBranchByUsageAndZoneInputDto input)
+        public async Task<ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchGroupedDataOutputDto>> GetInfo(NonPermanentBranchByUsageAndZoneInputDto input)
         {
-            string nonPremanentBranchQuery = GetNonPermanentBranchQuery();
+            string query = GetGroupedQuery(false, GroupingFields.ZoneTitle, null);
+            //string query = GetNonPermanentBranchQuery();
+           
             var @params = new
             {
                 fromReadingNumber = input.FromReadingNumber,
@@ -31,7 +35,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 input.UsageIds,
             };
 
-            IEnumerable<NonPermanentBranchSummaryByZoneDataOutputDto> nonPremanentBranchData = await _sqlReportConnection.QueryAsync<NonPermanentBranchSummaryByZoneDataOutputDto>(nonPremanentBranchQuery, @params);
+            IEnumerable<NonPermanentBranchGroupedDataOutputDto> nonPremanentBranchData = await _sqlReportConnection.QueryAsync<NonPermanentBranchGroupedDataOutputDto>(query, @params);
             NonPermanentBranchHeaderOutputDto nonPremanentBranchHeader = new NonPermanentBranchHeaderOutputDto()
             {
                 FromReadingNumber = input.FromReadingNumber,
@@ -47,7 +51,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 TotalUnit = nonPremanentBranchData.Sum(i => i.TotalUnit)
             };
 
-            var result = new ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryByZoneDataOutputDto>(ReportLiterals.NonPermanentBranchSummary + ReportLiterals.ByZone, nonPremanentBranchHeader, nonPremanentBranchData);
+            var result = new ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchGroupedDataOutputDto>(ReportLiterals.NonPermanentBranchSummary + ReportLiterals.ByZone, nonPremanentBranchHeader, nonPremanentBranchData);
 
             return result;
         }

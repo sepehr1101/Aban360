@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Implementations
 {
-    internal sealed class WaterPaymentDetailQueryService : AbstractBaseConnection, IWaterPaymentDetailQueryService
+    internal sealed class WaterPaymentDetailQueryService : PaymentBase, IWaterPaymentDetailQueryService
     {
         public WaterPaymentDetailQueryService(IConfiguration configuration)
             : base(configuration)
@@ -18,7 +18,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>> GetInfo(PaymentDetailInputDto input)
         {
-            string waterPaymentDetails = GetWaterPaymentDetailQuery(input.ZoneIds?.Any()==true);
+            string query = GetDetailQuery(true, input.ZoneIds?.Any() == true);
+           // string query = GetWaterPaymentDetailQuery(input.ZoneIds?.Any()==true);
+           
             var @params = new
             {
                 FromDate = input.FromDateJalali,
@@ -29,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 toBankId=input.ToBankId,
                 zoneIds=input.ZoneIds,
             };
-            IEnumerable<PaymentDetailDataOutputDto> waterPaymentDetailData = await _sqlReportConnection.QueryAsync<PaymentDetailDataOutputDto>(waterPaymentDetails, @params);
+            IEnumerable<PaymentDetailDataOutputDto> waterPaymentDetailData = await _sqlReportConnection.QueryAsync<PaymentDetailDataOutputDto>(query, @params);
             PaymentDetailHeaderOutputDto waterPaymentDetailHeader = new PaymentDetailHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

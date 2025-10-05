@@ -1,8 +1,8 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {
-    internal sealed class SewageWaterRequestNonInstalledDetailQueryService : AbstractBaseConnection, ISewageWaterRequestNonInstalledDetailQueryService
+    internal sealed class SewageWaterRequestNonInstalledDetailQueryService : NonInstalledBase, ISewageWaterRequestNonInstalledDetailQueryService
     {
         public SewageWaterRequestNonInstalledDetailQueryService(IConfiguration configuration)
             : base(configuration)
@@ -19,7 +19,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         public async Task<ReportOutput<SewageWaterRequestNonInstalledHeaderOutputDto, SewageWaterRequestNonInstalledDetailDataOutputDto>> Get(SewageWaterRequestNonInstalledInputDto input)
         {
-            string query = GetQuery(input.IsWater);
+            string query = GetDetailQuery(input.IsWater);
+            //string query = GetQuery(input.IsWater);
+            
             string reportTitle = input.IsWater ? ReportLiterals.WaterRequestNonInstalledDetail : ReportLiterals.SewageRequestNonInstalledDetail;
             var @params = new
             {

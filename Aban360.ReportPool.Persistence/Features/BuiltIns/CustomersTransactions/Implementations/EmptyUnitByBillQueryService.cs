@@ -3,6 +3,7 @@ using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Implementations
 {
-    internal sealed class EmptyUnitByBillQueryService : AbstractBaseConnection, IEmptyUnitByBillQueryService
+    internal sealed class EmptyUnitByBillQueryService : EmptyUnitByBillBase, IEmptyUnitByBillQueryService
     {
         public EmptyUnitByBillQueryService(IConfiguration configuration)
             : base(configuration)
@@ -18,8 +19,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 		}
         public async Task<ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>> GetInfo(EmptyUnitInputDto input)
         {
-            string emptyUnitQuery = GetEmptyUnitQuery(input.ZoneIds?.Any() == true, input.UsageSellIds?.Any() == true);
-            var @params = new
+            string query = GetDetailQuery(input.ZoneIds?.Any() == true, input.UsageSellIds?.Any() == true);
+            //string query = GetEmptyUnitQuery(input.ZoneIds?.Any() == true, input.UsageSellIds?.Any() == true);
+           
+			var @params = new
             {
                 fromReadingNumber = input.FromReadingNumber,
                 toReadingNumber = input.ToReadingNumber,
@@ -30,7 +33,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 zoneIds = input.ZoneIds
             };
 
-            IEnumerable<EmptyUnitDataOutputDto> emptyUnitData = await _sqlReportConnection.QueryAsync<EmptyUnitDataOutputDto>(emptyUnitQuery, @params);
+            IEnumerable<EmptyUnitDataOutputDto> emptyUnitData = await _sqlReportConnection.QueryAsync<EmptyUnitDataOutputDto>(query, @params);
             EmptyUnitHeaderOutputDto emptyUnitHeader = new EmptyUnitHeaderOutputDto()
             {
                 FromEmptyUnit = input.FromEmptyUnit,
