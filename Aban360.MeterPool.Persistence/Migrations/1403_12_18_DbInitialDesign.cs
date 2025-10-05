@@ -3,7 +3,6 @@ using Aban360.MeterPool.Persistence.Extentions;
 using Aban360.MeterPool.Persistence.Migrations.Enums;
 using FluentMigrator;
 using System.Reflection;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Aban360.MeterPool.Persistence.Migrations
 {
