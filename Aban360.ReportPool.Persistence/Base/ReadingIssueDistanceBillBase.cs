@@ -45,7 +45,7 @@ namespace Aban360.ReportPool.Persistence.Base
                 	TRIM(c.MobileNo) as MobileNumber,
                 	TRIM(c.Address) as Address
                 From [CustomerWarehouse].dbo.Bills b
-                Join [CustomerWarehouse].dbo.Clients c
+                Left Join [CustomerWarehouse].dbo.Clients c
                 	On c.CustomerNumber=b.CustomerNumber AND c.ZoneId=b.ZoneId
                 Join [Db70].dbo.T51 t51
                 	On t51.C0=b.ZoneId
@@ -69,6 +69,7 @@ namespace Aban360.ReportPool.Persistence.Base
             return $@"Select
                         MAX(t46.C2) AS RegionTitle,
                       	b.{parameter} as ItemTitle,
+                      	b.{parameter} ,
                       	COUNT(b.{parameter}) as CustomerCount,
                       	SUM(ISNULL(b.CommercialCount, 0) + ISNULL(b.DomesticCount, 0) + ISNULL(b.OtherCount, 0)) AS TotalUnit,
                       	SUM(ISNULL(b.CommercialCount, 0)) AS CommercialUnit,

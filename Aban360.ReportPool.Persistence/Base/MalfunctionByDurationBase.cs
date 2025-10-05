@@ -54,9 +54,9 @@ namespace Aban360.ReportPool.Persistence.Base
                         INNER JOIN ValidLatestBills v 
                     		ON v.CustomerNumber = b.CustomerNumber AND v.ZoneId=b.ZoneId
                         WHERE 
-                    	  b.CounterStateCode = 1 AND 
-                    	  b.RegisterDay <= v.LatestRegisterDay 
+                    	  b.CounterStateCode = 1 
                         GROUP BY b.BillId
+						Having COUNT(1) BETWEEN @fromMalfunctionPeriodCount AND @toMalfunctionPeriodCount
                     )
                     SELECT 
                         v.BillId,
@@ -91,7 +91,7 @@ namespace Aban360.ReportPool.Persistence.Base
 	                    v.SumItems
                     FROM ValidLatestBills v
                     INNER JOIN FinalCount f 
-                    	ON v.BillId = f.BillId AND (f.MalfunctionPeriodCount BETWEEN @fromMalfunctionPeriodCount AND @toMalfunctionPeriodCount)
+                    	ON v.BillId = f.BillId 
 					INNER JOIN [CustomerWarehouse].dbo.Clients c
 						ON v.BillId=c.BillId
                     OUTER APPLY (
@@ -215,6 +215,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     SELECT 
 				    		MAX(t46.C2) AS RegionTitle,
                             c.{parameter} AS ItemTitle,
+                            c.{parameter} ,
                         	COUNT(c.{parameter}) AS CustomerCount,
 				    		SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
 				    		SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
@@ -297,14 +298,15 @@ namespace Aban360.ReportPool.Persistence.Base
                         INNER JOIN ValidLatestBills v 
                        		ON v.CustomerNumber = b.CustomerNumber AND v.ZoneId=b.ZoneId
                         WHERE 
-                       	  b.CounterStateCode = 1 AND 
-                       	  b.RegisterDay <= v.LatestRegisterDay
+                       	  b.CounterStateCode = 1 
                         GROUP BY b.BillId
+						Having COUNT(1) BETWEEN @fromMalfunctionPeriodCount AND @toMalfunctionPeriodCount
                     )
                     SELECT 
 				    	MAX(t46.C2) AS RegionTitle,
                         v.{parameter}  AS ItemTitle,
-                        COUNT(c.{parameter}) AS CustomerCount,
+                        v.{parameter} ,
+                        COUNT(c.ZoneTitle) AS CustomerCount,
 				    	SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
 				    	SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
 				    	SUM(ISNULL(c.DomesticCount, 0)) AS DomesticUnit,
@@ -322,7 +324,7 @@ namespace Aban360.ReportPool.Persistence.Base
 				    	SUM(CASE WHEN c.WaterDiameterId In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6
                     FROM ValidLatestBills v
                     INNER JOIN FinalCount f 
-                       	ON v.BillId = f.BillId AND (f.MalfunctionPeriodCount BETWEEN @fromMalfunctionPeriodCount AND @toMalfunctionPeriodCount)
+                       	ON v.BillId = f.BillId 
 				    INNER JOIN [CustomerWarehouse].dbo.Clients c
 				    	On v.BillId=c.BillId
 				    Join [Db70].dbo.T51 t51
