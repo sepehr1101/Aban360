@@ -31,5 +31,7 @@
         public int Consumption { get; set; }
         public float ConsumptionAverage { get; set; }
         public double SumItems { get; set; }
+
     }
 }
+    

@@ -39,22 +39,33 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             string headquarterTitle = await _sqlConnection.QueryFirstAsync<string>(getHeadquarterQuery, new { zoneId = waterInvoice.ZoneId });
             WaterInvoicePaymentOutputDto? paymentInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterInvoicePaymentOutputDto>(getPaymentQuery, new { billId = billId, payId = waterInvoice.PayId == null ? "0" : waterInvoice.PayId });
 
-            //waterInvoice.LineItems = lineitems.ToList();
-            waterInvoice.PreviousConsumptions = previousConsumptions.ToList();
-            waterInvoice.Sum = lineitems.Select(i => i.Amount).Sum();
-            waterInvoice.Headquarters = headquarterTitle;
-
-            waterInvoice.PaymentDateJalali = paymentInfo is not null? paymentInfo.PaymentDateJalali:"";
-            waterInvoice.PaymentMethod = paymentInfo is not null ? paymentInfo.PaymentMethod:"";
-            waterInvoice.IsPayed = paymentInfo is not null;
-            waterInvoice.Description = paymentInfo != null ?ExceptionLiterals.SuccessedPay : ExceptionLiterals.UnsuccessedPay;
-            waterInvoice.Title = ReportLiterals.WaterInvoice;
+            waterInvoice = MappingWaterInvoice(waterInvoice, paymentInfo, previousConsumptions, lineitems, headquarterTitle);
 
             ReportOutput<WaterInvoiceDto, LineItemsDto> result = new(ReportLiterals.WaterInvoice, waterInvoice, lineitems);
 
             return result;
         }
+        public async Task<int> GetOlgo(string billId)
+        {
+            string getOlgoQuery = GetOlgoQuery();
+            int olgo = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(getOlgoQuery, new { billId = billId });
+            return olgo;
+        }
+        private WaterInvoiceDto MappingWaterInvoice(WaterInvoiceDto waterInvoice, WaterInvoicePaymentOutputDto? paymentInfo, IEnumerable<PreviousConsumptionsDto> previousConsumptions, IEnumerable<LineItemsDto> lineitems, string headquarterTitle)
+        {
+            //waterInvoice.LineItems = lineitems.ToList();
+            waterInvoice.PreviousConsumptions = previousConsumptions.ToList();
+            waterInvoice.Sum = lineitems.Select(i => i.Amount).Sum();
+            waterInvoice.Headquarters = headquarterTitle;
 
+            waterInvoice.PaymentDateJalali = paymentInfo is not null ? paymentInfo.PaymentDateJalali : "";
+            waterInvoice.PaymentMethod = paymentInfo is not null ? paymentInfo.PaymentMethod : "";
+            waterInvoice.IsPayed = paymentInfo is not null;
+            waterInvoice.Description = paymentInfo != null ? ExceptionLiterals.SuccessedPay : ExceptionLiterals.UnsuccessedPay;
+            waterInvoice.Title = ReportLiterals.WaterInvoice;
+
+            return waterInvoice;
+        }
         private string GetHeadquarterQuery()
         {
             return @"select h.Title
@@ -159,6 +170,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                     	b.Consumption AS ConsumptionM3,--todo
                     	(b.Consumption)*1000 AS ConsumptionLiter,
                     	b.ConsumptionAverage AS ConsumptionAverage,
+						c.ContractCapacity AS ContractualCapacity,
                     	--LineItems in secord query
 						b.SumItems AS Sum,
 						(b.ItemOff1 + b.ItemOff2 + b.ItemOff3 + b.ItemOff4 + b.ItemOff5 + b.ItemOff6 + b.ItemOff7 + b.ItemOff8 + b.ItemOff9 + b.ItemOff10 + b.ItemOff11 + b.ItemOff12 + b.ItemOff13 + b.ItemOff14 + b.ItemOff15 + b.ItemOff16 + b.ItemOff17) AS DisCount,
@@ -303,5 +315,11 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                     	p.RegisterDay Desc";
         }
 
+        private string GetOlgoQuery()
+        {
+            return @"Select Olgo
+                    from [OldCalc].dbo.Table1
+                    Where Town=@billId";
+        }
     }
 }
