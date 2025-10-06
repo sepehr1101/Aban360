@@ -80,7 +80,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						{groupingField} as ItemTitle,
 						SUM(c.SumItems) as SumItems,
 						AVG(c.ConsumptionAverage) as Consumption,
-						COUNT(c.{groupingField}) AS CustomerCount,
+						COUNT(1) AS CustomerCount,
 						SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
 						SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
 						SUM(ISNULL(c.DomesticCount, 0)) AS DomesticUnit,
