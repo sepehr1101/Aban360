@@ -7,5 +7,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
     public interface IMalfunctionMeterSummaryByZoneGroupedHandler
     {
         Task<ReportOutput<MalfunctionMeterSummaryHeaderOutputDto, ReportOutput<MalfunctionReportZoneGroupedData, MalfunctionReportZoneGroupedData>>> Handle(MalfunctionMeterInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<MalfunctionMeterSummaryHeaderOutputDto, MalfunctionReportZoneGroupedData>> HandleFlat(MalfunctionMeterInputDto input, CancellationToken cancellationToken);
+
     }
 }

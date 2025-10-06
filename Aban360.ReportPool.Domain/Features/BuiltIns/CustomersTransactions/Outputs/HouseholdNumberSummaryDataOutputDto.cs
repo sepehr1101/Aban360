@@ -2,6 +2,8 @@
 {
     public record HouseholdNumberSummaryDataOutputDto
     {
+        public bool IsFirstRow { get; set; }
+
         public string ItemTitle { get; set; }
         public float SumHousehold { get; set; }
         public int CustomerCount { get; set; }

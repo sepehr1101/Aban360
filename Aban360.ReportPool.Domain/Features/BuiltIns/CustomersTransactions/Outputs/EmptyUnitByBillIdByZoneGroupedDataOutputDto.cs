@@ -2,6 +2,8 @@
 {
     public record EmptyUnitByBillIdByZoneGroupedDataOutputDto
     {
+        public bool IsFirstRow { get; set; }
+
         public string ItemTitle { get; set; }
         public int CustomerCount { get; set; }
         public int EmptyUnit { get; set; }

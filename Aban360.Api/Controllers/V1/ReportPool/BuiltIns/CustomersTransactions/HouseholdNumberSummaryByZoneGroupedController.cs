@@ -31,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<HouseholdNumberHeaderOutputDto, ReportOutput<HouseholdNumberSummaryDataOutputDto, HouseholdNumberSummaryDataOutputDto>>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(HouseholdNumberInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<HouseholdNumberHeaderOutputDto, ReportOutput<HouseholdNumberSummaryDataOutputDto, HouseholdNumberSummaryDataOutputDto>> householdNumberSummaryByZoneGrouped = await _householdNumberSummaryByZoneGrouped.Handle(inputDto, cancellationToken);
+            ReportOutput<HouseholdNumberHeaderOutputDto, HouseholdNumberSummaryDataOutputDto> householdNumberSummaryByZoneGrouped = await _householdNumberSummaryByZoneGrouped.HandleFlat(inputDto, cancellationToken);
             return Ok(householdNumberSummaryByZoneGrouped);
         }
 
@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, HouseholdNumberInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _householdNumberSummaryByZoneGrouped.Handle, CurrentUser, ReportLiterals.HouseholdNumberSummary + ReportLiterals.ByZone, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _householdNumberSummaryByZoneGrouped.HandleFlat, CurrentUser, ReportLiterals.HouseholdNumberSummary + ReportLiterals.ByZone, connectionId);
             return Ok(inputDto);
         }
     }

@@ -41,7 +41,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         public async Task<IActionResult> GetExcel(string connectionId, SewageWaterRequestInputDto inputDto, CancellationToken cancellationToken)
         {
             string reportName = inputDto.IsWater ? ReportLiterals.WaterRequestSummary + ReportLiterals.ByZone : ReportLiterals.SewageRequestSummary + ReportLiterals.ByZone;
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _sewageWaterRequestSummaryByZoneHandler.Handle, CurrentUser, reportName, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _sewageWaterRequestSummaryByZoneHandler.HandleFlat, CurrentUser, reportName, connectionId, ReportLiterals.HandleFlat);
             return Ok(inputDto);
         }
 
@@ -52,7 +52,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         public async Task<IActionResult> GetStiReport(SewageWaterRequestInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 263;
-            ReportOutput<SewageWaterRequestHeaderOutputDto, ReportOutput<SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto>> result = await _sewageWaterRequestSummaryByZoneHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto> result = await _sewageWaterRequestSummaryByZoneHandler.HandleFlat(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
             return Ok(reportId);
         }
