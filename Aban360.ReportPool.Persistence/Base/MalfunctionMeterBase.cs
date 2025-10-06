@@ -70,7 +70,7 @@ namespace Aban360.ReportPool.Persistence.Base
                         (@fromReadingNumber IS NULL OR
                         @toReadingNumber IS NULL OR
                         b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-						b.ZoneId IN (131211,131301) AND
+						b.ZoneId IN @zoneIds AND
                         b.CounterStateCode NOT IN (4,7,8) AND
 						c.DeletionStateId IN (0,2) AND
 						(@fromDate IS NULL OR
