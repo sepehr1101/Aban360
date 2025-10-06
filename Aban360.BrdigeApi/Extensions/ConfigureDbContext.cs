@@ -17,7 +17,7 @@ namespace Aban360.BrdigeApi.Extensions
             services.AddUserPoolDbContext(configuration, connectionString);
             services.AddLocationPoolDbContext(configuration, connectionString);
             services.AddClaimPoolDbContext(configuration, connectionString);
-            services.AddCalculationPoolDbContext(configuration, connectionString);
+            //services.AddCalculationPoolDbContext(configuration, connectionString);
             services.AddMeterPoolDbContext(configuration, connectionString);
             services.AddWorkflowPoolDbContext(configuration, connectionString);
             services.AddBlobPoolContext(configuration, connectionString);

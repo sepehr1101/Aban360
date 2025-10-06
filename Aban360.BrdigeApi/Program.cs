@@ -13,7 +13,7 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerService();
-//builder.Services.AddCustomDbContext(configuration);
+builder.Services.AddCustomDbContext(configuration);
 
 builder.Services.AddMvc();
 builder.Services.AddRazorPages();
