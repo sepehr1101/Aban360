@@ -2,6 +2,7 @@
 using Aban360.ReportPool.Persistence.Extentions;
 using Aban360.ReportPool.Persistence.Migrations.Enums;
 using FluentMigrator;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Reflection;
 
 namespace Aban360.ReportPool.Persistence.Migrations
@@ -69,6 +70,35 @@ namespace Aban360.ReportPool.Persistence.Migrations
                 .WithColumn("ReportInputType").AsAnsiString(255).Nullable()
                 .WithColumn("ReportInputJson").AsAnsiString(int.MaxValue).Nullable()
                 .WithColumn("HandlerKey").AsAnsiString(255).Nullable();
+        }
+
+        private void CreateSkeleton()
+        {
+            var table = TableName.Skeleton;
+            Create.Table(nameof(TableName.Skeleton)).InSchema(_schema)
+                .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn("Name").AsString(_255).NotNullable()
+                .WithColumn("RoleId").AsInt32().NotNullable()
+                .WithColumn("RoleTitle").AsString(200).NotNullable()
+                .WithColumn("Content").AsString(int.MaxValue).Nullable()
+                .WithColumn("CreateDateTime").AsDateTime().NotNullable().WithDefault(SystemMethods.CurrentDateTime)
+                .WithColumn("CreatedBy").AsString(_255).NotNullable()
+                .WithColumn("DeleteDateTime").AsDateTime().Nullable()
+                .WithColumn("DeletedBy").AsString(_255).Nullable();
+        }
+
+        private void CreateTileScript()
+        {
+            var table = TableName.TileScript;
+            Create.Table(nameof(TableName.TileScript)).InSchema(_schema)
+               .WithColumn("Id").AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn("ReportCode").AsInt32().NotNullable()
+                .WithColumn("Description").AsString(_255).Nullable()
+                .WithColumn("Content").AsString(int.MaxValue).NotNullable()
+                .WithColumn("CreateDateTime").AsDateTime().NotNullable().WithDefault(SystemMethods.CurrentDateTime)
+                .WithColumn("CreatedBy").AsString(_255).NotNullable()
+                .WithColumn("DeleteDateTime").AsDateTime().Nullable()
+                .WithColumn("DeletedBy").AsString(_255).Nullable();
         }
     }
 }
