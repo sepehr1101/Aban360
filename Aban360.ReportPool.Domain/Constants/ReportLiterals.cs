@@ -2,6 +2,8 @@
 {
     public static class ReportLiterals
     {
+        public static string HandleFlat { get { return "HandleFlat"; } }
+
         public static string Report { get { return "گزارش"; } }
         public static string RegisterDate { get { return "تاریخ ثبت"; } }
         public static string ChangeDate { get { return "تاریخ تعویض"; } }
@@ -14,7 +16,7 @@
         public static string ByUsageAndZoneAndDiameter { get { return " بر اساس کاربری و ناحیه و قطر انشعاب "; } }
         public static string ByChangeCause { get { return "  بر اساس علت تعویض "; } }
         public static string Due { get { return "جاری"; } }
-        public static string Overdue{ get { return "معوقه"; } }
+        public static string Overdue { get { return "معوقه"; } }
 
 
         public static string EmptyUnit { get { return $"{Report} خالی از سکنه"; } }
@@ -71,7 +73,7 @@
 
         public static string ServiceLinkUsageGrouped { get { return $"{Report} وصولی به تفکیک کاربری - انشعاب"; } }
         public static string ServiceLinkZoneGrouped { get { return $"{Report} وصولی به تفکیک ناحیه - انشعاب"; } }
-   
+
         public static string Unpaid { get { return $"{Report} بدون وصولی"; } }
         public static string WaterModifiedBillsDetail { get { return $"{Report}  جزئیات برگشتی و اصلاحات - آب بها"; } }
         public static string WaterModifiedBillsSummary { get { return $"{Report}  خلاصه برگشتی و اصلاحات - آب بها"; } }
@@ -83,12 +85,12 @@
 
         public static string UnreadDetail { get { return $"{Report} جزئیات بسته و مانع طی دوره"; } }
         public static string UnreadSummary { get { return $"{Report} خلاصه بسته و مانع طی دوره"; } }
-        
-        
+
+
         public static string ReadingIssueDistanceBillDetail { get { return $"{Report} جزئیات فاصله قرائت تا صدور قبض "; } }
         public static string ReadingIssueDistanceBillSummary { get { return $"{Report} خلاصه فاصله قرائت تا صدور قبض"; } }
 
-   
+
 
         public static string ContractualCapacity { get { return $"{Report} ظرفیت قراردادی"; } }
         public static string Usage { get { return $"{Report} باغ و اقامتگاه"; } }
@@ -140,7 +142,7 @@
         public static string SewageDistanceInstallationeRegisterDetail { get { return "جزئیات فاصله ثبت تا نصب انشعاب فاضلاب"; } }
         public static string WaterDistanceInstallationRegisterSummary { get { return "خلاصه فاصله ثبت تا نصب انشعاب آب"; } }
         public static string SewageDistanceInstallationeRegisterSummary { get { return "خلاصه فاصله ثبت تا نصب انشعاب فاضلاب"; } }
-       
+
         public static string WaterInstallGtRequest { get { return "انشعاب آب نصب شده زودتر از واگذار"; } }
 
 
@@ -173,7 +175,7 @@
         public static string WaterNetIncome { get { return $"خلاصه {Report} درآمد خالص آب بها"; } }//
         public static string ReadingChecklist { get { return $" {Report} لیست قرائت و کنترل "; } }//
 
-        
+
         public static string ReadingListDetail { get { return $"{Report} جزئیات فهرست تعداد قرائت"; } }//
         public static string ReadingListSummary { get { return $"{Report} خلاصه فهرست تعداد قرائت"; } }
 

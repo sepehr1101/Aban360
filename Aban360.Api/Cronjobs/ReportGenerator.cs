@@ -10,16 +10,19 @@ using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Queries;
 using Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Contracts;
 using DNTPersianUtils.Core;
 using Hangfire;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
+using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace Aban360.Api.Cronjobs
 {
     public interface IReportGenerator
     {
         Task DirectExecute<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId);
-        Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId);
-        Task DoFireAndInform(ServerReportsCreateDto serverReportsCreateDto);
+        Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId,[Optional] string methodName);
+        Task DoFireAndInform(ServerReportsCreateDto serverReportsCreateDto,string myMethodName);
     }
 
     internal sealed class ReportGenerator : IReportGenerator
@@ -29,7 +32,7 @@ namespace Aban360.Api.Cronjobs
         private readonly IServerReportsGetByIdService _serverReportsGetByIdServices;
         private readonly IServiceProvider _serviceProvider;
         private IHubContext<NotifyHub, INotifyHub> _notifyHub { get; }
-        private static string MethodName = "Handle";
+        private const string MethodName = "Handle";
 
         public ReportGenerator(
             IServerReportsCreateHandler serverReportsCreateHandler,
@@ -69,14 +72,14 @@ namespace Aban360.Api.Cronjobs
             //Complete ServerReport
             _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(id, reportPath,DateTime.Now,true), cancellationToken);
         }
-        public async Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId)
+        public async Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId,string methodName=MethodName)
         {
             ServerReportsCreateDto serverReportsCreateDto = CreateServerReportDto(Guid.NewGuid(), reportInput, GetData, appUser, reportTitle, connectionId);
             await _serverReportsCreateHandler.Handle(serverReportsCreateDto, cancellationToken);
-            BackgroundJob.Enqueue(() => DoFireAndInform(serverReportsCreateDto));
+            BackgroundJob.Enqueue(() => DoFireAndInform(serverReportsCreateDto, methodName));
         }
 
-        public async Task DoFireAndInform(ServerReportsCreateDto serverReportsCreateDto)
+        public async Task DoFireAndInform(ServerReportsCreateDto serverReportsCreateDto,string myMethodName)
         {
             ServerReportsGetByIdDto serverReportsGetByIdDto = await _serverReportsGetByIdServices.GetById(serverReportsCreateDto.Id);
 
@@ -107,7 +110,7 @@ namespace Aban360.Api.Cronjobs
                 .FirstOrDefault(t => t.FullName == serverReportsGetByIdDto.DataType);
 
             object? data = System.Text.Json.JsonSerializer.Deserialize(serverReportsGetByIdDto.ReportInputJson, inputDtoType);
-            var methodName = interfaceType.GetMethod(MethodName);
+            var methodName = interfaceType.GetMethod(myMethodName);
 
             var reportOutputType = typeof(ReportOutput<,>).MakeGenericType(outputHeaderDtoType, outputDataDtoType);
 

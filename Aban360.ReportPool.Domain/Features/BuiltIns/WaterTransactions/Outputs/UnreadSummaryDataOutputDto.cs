@@ -2,6 +2,8 @@
 {
     public record UnreadSummaryDataOutputDto
     {
+        public bool IsFirstRow { get; set; }
+
         public string ItemTitle { get; set; }
         public int Closed { get; set; }
         public int Barrier { get; set; }

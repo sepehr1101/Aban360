@@ -80,5 +80,29 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
 
             return finalData;
         }
+
+        public async Task<ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto>> HandleFlat(SewageWaterRequestInputDto input, CancellationToken cancellationToken)
+        {
+            ReportOutput<SewageWaterRequestHeaderOutputDto, ReportOutput<SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto>> result = await Handle(input, cancellationToken);
+
+
+            ICollection<SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto> flatReportData = result
+                 .ReportData
+                 .SelectMany(f =>
+                 {
+                     f.ReportHeader.IsFirstRow = true;
+                     f.ReportData.Select(data => data.IsFirstRow = false);
+
+                     return new[] { f.ReportHeader }.Concat(f.ReportData);
+                 })
+                 .ToList();
+
+            ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto> flatResult = new
+                (result.Title,
+                result.ReportHeader,
+                flatReportData);
+
+            return flatResult;
+        }
     }
 }

@@ -58,8 +58,25 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
 
             return finalData;
         }
-        private MalfunctionReportZoneGroupedData MapToGrouped(
-            MalfunctionMeterSummaryDataOutputDto input)
+        public async Task<ReportOutput<MalfunctionMeterSummaryHeaderOutputDto, MalfunctionReportZoneGroupedData>> HandleFlat(MalfunctionMeterInputDto input, CancellationToken cancellationToken)
+        {
+            ReportOutput<MalfunctionMeterSummaryHeaderOutputDto, ReportOutput<MalfunctionReportZoneGroupedData, MalfunctionReportZoneGroupedData>> result = await Handle(input, cancellationToken);
+
+            ICollection<MalfunctionReportZoneGroupedData> flatData = result
+                .ReportData
+                .SelectMany(f =>
+                {
+                    f.ReportHeader.IsFirstRow = true;
+                    f.ReportData.Select(d => d.IsFirstRow = false);
+
+                    return new[] { f.ReportHeader }.Concat(f.ReportData);
+                }).ToList();
+
+            ReportOutput<MalfunctionMeterSummaryHeaderOutputDto, MalfunctionReportZoneGroupedData> flatResult = new(result.Title, result.ReportHeader, flatData) { };
+            return flatResult;
+        }
+
+        private MalfunctionReportZoneGroupedData MapToGrouped(MalfunctionMeterSummaryDataOutputDto input)
         {
             return new MalfunctionReportZoneGroupedData
             {

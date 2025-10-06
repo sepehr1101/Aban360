@@ -2,6 +2,8 @@
 {
     public record SewageWaterRequestNonInstalledSummaryDataOutputDto
     {
+        public bool IsFirstRow { get; set; }
+
         public string RegionTitle { get; set; }
         public string ZoneTitle { get; set; }
         public string UsageTitle { get; set; }

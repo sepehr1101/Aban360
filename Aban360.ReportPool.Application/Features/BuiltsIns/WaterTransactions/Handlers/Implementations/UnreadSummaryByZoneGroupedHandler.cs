@@ -56,7 +56,23 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
 
             return finalData;
         }
+        public async Task<ReportOutput<UnreadSummaryHeaderOutputDto, UnreadSummaryDataOutputDto>> HandleFlat(UnreadInputDto input, CancellationToken cancellationToken)
+        {
+            ReportOutput<UnreadSummaryHeaderOutputDto, ReportOutput<UnreadSummaryDataOutputDto, UnreadSummaryDataOutputDto>> result = await Handle(input, cancellationToken);
 
+            ICollection<UnreadSummaryDataOutputDto> flatData = result
+                .ReportData
+                .SelectMany(f =>
+                {
+                    f.ReportHeader.IsFirstRow = true;
+                    f.ReportData.Select(d => d.IsFirstRow = false);
+
+                    return new[] { f.ReportHeader }.Concat(f.ReportData);
+                }).ToList();
+
+            ReportOutput<UnreadSummaryHeaderOutputDto, UnreadSummaryDataOutputDto> flatResult = new(result.Title, result.ReportHeader, flatData) { };
+            return flatResult;
+        }
         private static UnreadSummaryDataOutputDto MapToGrouped(UnreadSummaryByZoneDataOutputDto input)
         {
             return new UnreadSummaryDataOutputDto()

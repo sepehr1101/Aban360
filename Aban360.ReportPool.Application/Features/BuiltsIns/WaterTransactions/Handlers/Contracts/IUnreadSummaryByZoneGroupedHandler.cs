@@ -7,5 +7,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
     public interface IUnreadSummaryByZoneGroupedHandler
     {
         Task<ReportOutput<UnreadSummaryHeaderOutputDto, ReportOutput<UnreadSummaryDataOutputDto, UnreadSummaryDataOutputDto>>> Handle(UnreadInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<UnreadSummaryHeaderOutputDto, UnreadSummaryDataOutputDto>> HandleFlat(UnreadInputDto input, CancellationToken cancellationToken);
     }
 }

@@ -6,6 +6,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
 using FluentValidation;
+using System.Runtime.InteropServices;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Implementations
 {
@@ -88,6 +89,23 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             ReportOutput<NonPermanentBranchHeaderOutputDto, ReportOutput<NonPermanentBranchSummaryByZoneGropedDataOutputDto, NonPermanentBranchSummaryByZoneGropedDataOutputDto>> finalData = new(result.Title, result.ReportHeader, dataGroup);
 
             return finalData;
+        }
+        public async Task<ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryByZoneGropedDataOutputDto>> HandleFlat(NonPermanentBranchByUsageAndZoneInputDto input, [Optional] CancellationToken cancellationToken)
+        {
+            ReportOutput<NonPermanentBranchHeaderOutputDto, ReportOutput<NonPermanentBranchSummaryByZoneGropedDataOutputDto, NonPermanentBranchSummaryByZoneGropedDataOutputDto>> result = await Handle(input, cancellationToken);
+
+            ICollection<NonPermanentBranchSummaryByZoneGropedDataOutputDto> flatData = result
+                .ReportData
+                .SelectMany(f =>
+                {
+                    f.ReportHeader.IsFirstRow = true;
+                    f.ReportData.Select(d => d.IsFirstRow = false);
+
+                    return new[] { f.ReportHeader }.Concat(f.ReportData);
+                }).ToList();
+
+            ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryByZoneGropedDataOutputDto> flatResult = new(result.Title, result.ReportHeader, flatData) { };
+            return flatResult;
         }
     }
 }

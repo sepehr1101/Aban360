@@ -7,5 +7,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
     public interface IReadingStatusStatementSummaryByZoneGroupedHandler
     {
         Task<ReportOutput<ReadingStatusStatementHeaderOutputDto, ReportOutput<ReadingStatusStatementSummaryDataOutputDto, ReadingStatusStatementSummaryDataOutputDto>>> Handle(ReadingStatusStatementInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryDataOutputDto>> HandleFlat(ReadingStatusStatementInputDto input, CancellationToken cancellationToken);
     }
 }
