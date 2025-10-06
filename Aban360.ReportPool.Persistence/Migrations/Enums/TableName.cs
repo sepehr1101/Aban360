@@ -3,6 +3,8 @@
     internal enum TableName
     {
         DynamicReport,
-        ServerReports
+        ServerReports,
+        Skeleton,
+        TileScript
     }
 }
