@@ -8,5 +8,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
     public interface IUseStateReportSummaryByZoneGroupedHandler
     {
         Task<ReportOutput<UseStateReportHeaderSummaryOutputDto, ReportOutput<UseStateReportSummaryByZoneGroupedDataOutputDto, UseStateReportSummaryByZoneGroupedDataOutputDto>>> Handle(UseStateReportInputDto input, CancellationToken cancellationToken);
+
+        Task<ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryByZoneGroupedDataOutputDto>> HandleFlat(UseStateReportInputDto input, CancellationToken cancellationToken);
     }
 }

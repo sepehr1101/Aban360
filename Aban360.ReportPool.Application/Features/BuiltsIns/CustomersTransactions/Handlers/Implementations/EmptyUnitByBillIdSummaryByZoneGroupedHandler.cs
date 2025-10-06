@@ -91,5 +91,23 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, ReportOutput<EmptyUnitByBillIdByZoneGroupedDataOutputDto, EmptyUnitByBillIdByZoneGroupedDataOutputDto>> finalData = new(result.Title, result.ReportHeader, dataGroup);
             return finalData;
         }
+
+        public async Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdByZoneGroupedDataOutputDto>> HandleFlat(EmptyUnitInputDto input, [Optional] CancellationToken cancellationToken)
+        {
+            ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, ReportOutput<EmptyUnitByBillIdByZoneGroupedDataOutputDto, EmptyUnitByBillIdByZoneGroupedDataOutputDto>> result = await Handle(input, cancellationToken);
+
+            ICollection<EmptyUnitByBillIdByZoneGroupedDataOutputDto> flatData = result
+                .ReportData
+                .SelectMany(f =>
+                {
+                    f.ReportHeader.IsFirstRow = true;
+                    f.ReportData.Select(d => d.IsFirstRow = false);
+
+                    return new[] { f.ReportHeader }.Concat(f.ReportData);
+                }).ToList();
+
+            ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdByZoneGroupedDataOutputDto> flatResult = new(result.Title, result.ReportHeader, flatData) { };
+            return flatResult;
+        }
     }
 }

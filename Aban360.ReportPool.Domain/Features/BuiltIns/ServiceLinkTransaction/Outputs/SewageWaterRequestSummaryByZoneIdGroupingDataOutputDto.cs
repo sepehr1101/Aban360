@@ -2,6 +2,8 @@
 {
     public record SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto
     {
+        public bool IsFirstRow { get; set; }
+
         public string ItemTitle { get; set; }
         public int CustomerCount { get; set; }
         public int TotalUnit { get; set; }

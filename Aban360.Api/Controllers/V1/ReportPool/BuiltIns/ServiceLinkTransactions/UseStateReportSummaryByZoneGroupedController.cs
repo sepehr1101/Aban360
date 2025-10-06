@@ -41,7 +41,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, UseStateReportInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _useStateReportSummaryByZoneGroupedHandler.Handle, CurrentUser, ReportLiterals.UseStateReport + ReportLiterals.ByZone, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _useStateReportSummaryByZoneGroupedHandler.HandleFlat, CurrentUser, ReportLiterals.UseStateReport + ReportLiterals.ByZone, connectionId, ReportLiterals.HandleFlat);
             return Ok(inputDto);
         }
     }

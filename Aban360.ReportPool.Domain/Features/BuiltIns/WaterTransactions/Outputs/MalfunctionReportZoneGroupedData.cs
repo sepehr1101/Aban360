@@ -1,7 +1,9 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs
 {
-    public class MalfunctionReportZoneGroupedData
+    public record MalfunctionReportZoneGroupedData
     {
+        public bool  IsFirstRow { get; set; }
+
         public string ItemTitle { get; set; } = default!;
         public int CustomerCount { get; set; }
         public int TotalUnit { get; set; }

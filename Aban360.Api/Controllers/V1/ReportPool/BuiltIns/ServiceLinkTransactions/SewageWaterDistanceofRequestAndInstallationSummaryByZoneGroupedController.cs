@@ -41,7 +41,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         public async Task<IActionResult> GetExcel(string connectionId, SewageWaterDistanceofRequestAndInstallationByZoneInputDto inputDto, CancellationToken cancellationToken)
         {
             string reportName = GetTitle(inputDto.IsWater, inputDto.IsInstallation);
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _sewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedHandler.Handle, CurrentUser, reportName, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _sewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedHandler.HandleFlat, CurrentUser, reportName, connectionId, ReportLiterals.HandleFlat);
             return Ok(inputDto);
         }
 
@@ -53,7 +53,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         public async Task<IActionResult> GetStiReport(SewageWaterDistanceofRequestAndInstallationByZoneInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 283;
-            ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, ReportOutput<SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto>> result = await _sewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto> result = await _sewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedHandler.HandleFlat(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
             return Ok(reportId);
         }

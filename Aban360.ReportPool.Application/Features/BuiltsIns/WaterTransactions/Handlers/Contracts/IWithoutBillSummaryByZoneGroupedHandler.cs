@@ -7,5 +7,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
     public interface IWithoutBillSummaryByZoneGroupedHandler
     {
         Task<ReportOutput<WithoutBillHeaderOutputDto, ReportOutput<WithoutBillSummaryDataOutputDto, WithoutBillSummaryDataOutputDto>>> Handle(WithoutBillInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryDataOutputDto>> HandleFlat(WithoutBillInputDto input, CancellationToken cancellationToken);
     }
 }

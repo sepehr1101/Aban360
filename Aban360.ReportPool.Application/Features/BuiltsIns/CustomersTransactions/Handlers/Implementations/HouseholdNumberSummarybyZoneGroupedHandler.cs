@@ -9,6 +9,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
 using DNTPersianUtils.Core;
 using FluentValidation;
+using System.Runtime.InteropServices;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Implementations
 {
@@ -61,6 +62,24 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
 
             return finalData;
         }
+        public async Task<ReportOutput<HouseholdNumberHeaderOutputDto, HouseholdNumberSummaryDataOutputDto>> HandleFlat(HouseholdNumberInputDto input, [Optional] CancellationToken cancellationToken)
+        {
+            ReportOutput<HouseholdNumberHeaderOutputDto, ReportOutput<HouseholdNumberSummaryDataOutputDto, HouseholdNumberSummaryDataOutputDto>> result = await Handle(input, cancellationToken);
+
+            ICollection<HouseholdNumberSummaryDataOutputDto> flatData = result
+                .ReportData
+                .SelectMany(f =>
+                {
+                    f.ReportHeader.IsFirstRow = true;
+                    f.ReportData.Select(d => d.IsFirstRow = false);
+
+                    return new[] { f.ReportHeader }.Concat(f.ReportData);
+                }).ToList();
+
+            ReportOutput<HouseholdNumberHeaderOutputDto, HouseholdNumberSummaryDataOutputDto> flatResult = new(result.Title, result.ReportHeader, flatData) { };
+            return flatResult;
+        }
+
         private string ReduceYear(string jalaliDate)
         {
             DateOnly? lastDateJalali = jalaliDate.ToGregorianDateOnly();

@@ -108,8 +108,25 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
 
             return finalData;
         }
-        private static UseStateReportSummaryByZoneGroupedDataOutputDto MapToGrouped(
-            UseStateReportSummaryDataOutputDto input)
+        public async Task<ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryByZoneGroupedDataOutputDto>> HandleFlat(UseStateReportInputDto input, CancellationToken cancellationToken)
+        {
+            ReportOutput<UseStateReportHeaderSummaryOutputDto, ReportOutput<UseStateReportSummaryByZoneGroupedDataOutputDto, UseStateReportSummaryByZoneGroupedDataOutputDto>> result = await Handle(input, cancellationToken);
+
+            ICollection<UseStateReportSummaryByZoneGroupedDataOutputDto> flatData = result
+                .ReportData
+                .SelectMany(f =>
+                {
+                    f.ReportHeader.IsFirstRow = true;
+                    f.ReportData.Select(d => d.IsFirstRow = false);
+
+                    return new[] { f.ReportHeader }.Concat(f.ReportData);
+                }).ToList();
+
+            ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryByZoneGroupedDataOutputDto> flatResult = new(result.Title, result.ReportHeader, flatData) { };
+            return flatResult;
+        }
+
+        private static UseStateReportSummaryByZoneGroupedDataOutputDto MapToGrouped(UseStateReportSummaryDataOutputDto input)
         {
             return new UseStateReportSummaryByZoneGroupedDataOutputDto
             {

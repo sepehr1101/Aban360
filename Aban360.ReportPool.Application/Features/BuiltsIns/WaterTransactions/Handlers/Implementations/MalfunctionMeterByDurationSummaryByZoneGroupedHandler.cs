@@ -3,6 +3,8 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.Base;
 using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts;
+using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
+using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
@@ -53,6 +55,24 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
 
             ReportOutput<MalfunctionMeterByDurationHeaderOutputDto, ReportOutput<MalfunctionMeterByDurationSummaryDataOutputDto, MalfunctionMeterByDurationSummaryDataOutputDto>> finalData = new(result.Title, result.ReportHeader, dataGrouped);
             return finalData;
+        }
+
+        public async Task<ReportOutput<MalfunctionMeterByDurationHeaderOutputDto, MalfunctionMeterByDurationSummaryDataOutputDto>> HandleFlat(MalfunctionMeterByDurationInputDto input, CancellationToken cancellationToken)
+        {
+            ReportOutput<MalfunctionMeterByDurationHeaderOutputDto, ReportOutput<MalfunctionMeterByDurationSummaryDataOutputDto, MalfunctionMeterByDurationSummaryDataOutputDto>> result = await Handle(input, cancellationToken);
+
+            ICollection<MalfunctionMeterByDurationSummaryDataOutputDto> flatData = result
+                .ReportData
+                .SelectMany(f =>
+                {
+                    f.ReportHeader.IsFirstRow = true;
+                    f.ReportData.Select(d => d.IsFirstRow = false);
+
+                    return new[] { f.ReportHeader }.Concat(f.ReportData);
+                }).ToList();
+
+            ReportOutput<MalfunctionMeterByDurationHeaderOutputDto, MalfunctionMeterByDurationSummaryDataOutputDto> flatResult = new(result.Title, result.ReportHeader, flatData) { };
+            return flatResult;
         }
         private static MalfunctionMeterByDurationSummaryDataOutputDto MapToGrouped(MalfunctionMeterByDurationSummaryByZoneDataOutputDto input)
         {

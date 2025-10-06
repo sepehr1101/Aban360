@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, MalfunctionMeterByDurationInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _malfunctionMeterByDurationSummaryByZoneGroupedHandler.Handle, CurrentUser, ReportLiterals.MalfunctionMeterByDurationSummary + ReportLiterals.ByZone, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _malfunctionMeterByDurationSummaryByZoneGroupedHandler.HandleFlat, CurrentUser, ReportLiterals.MalfunctionMeterByDurationSummary + ReportLiterals.ByZone, connectionId, ReportLiterals.HandleFlat);
             return Ok(inputDto);
         }
 
@@ -49,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         public async Task<IActionResult> GetStiReport(MalfunctionMeterByDurationInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 303;
-            ReportOutput<MalfunctionMeterByDurationHeaderOutputDto, ReportOutput<MalfunctionMeterByDurationSummaryDataOutputDto, MalfunctionMeterByDurationSummaryDataOutputDto>> calculationDetails = await _malfunctionMeterByDurationSummaryByZoneGroupedHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<MalfunctionMeterByDurationHeaderOutputDto, MalfunctionMeterByDurationSummaryDataOutputDto> calculationDetails = await _malfunctionMeterByDurationSummaryByZoneGroupedHandler.HandleFlat(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode);
             return Ok(reportId);
         }

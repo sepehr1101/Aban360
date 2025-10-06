@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, WithoutBillInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _withoutBillSummaryByZoneGroupedHandler.Handle, CurrentUser, ReportLiterals.WithoutBillSummary + ReportLiterals.ByZone, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _withoutBillSummaryByZoneGroupedHandler.HandleFlat, CurrentUser, ReportLiterals.WithoutBillSummary + ReportLiterals.ByZone, connectionId, ReportLiterals.HandleFlat);
             return Ok(inputDto);
         }
     }

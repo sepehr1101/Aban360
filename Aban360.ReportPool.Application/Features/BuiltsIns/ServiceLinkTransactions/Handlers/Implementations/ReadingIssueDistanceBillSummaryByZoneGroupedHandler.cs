@@ -4,10 +4,13 @@ using Aban360.Common.Extensions;
 using Aban360.Common.Timing;
 using Aban360.ReportPool.Application.Features.Base;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
+using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
+using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
 using FluentValidation;
+using System.Runtime.InteropServices;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Implementations
 {
@@ -140,6 +143,24 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
 
             return finalData;
         }
+        public async Task<ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryDataOutputDto>> HandleFlat(ReadingIssueDistanceBillInputDto input, CancellationToken cancellationToken)
+        {
+            ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReportOutput<ReadingIssueDistanceBillSummryDataOutputDto, ReadingIssueDistanceBillSummryDataOutputDto>> result = await Handle(input, cancellationToken);
+
+            ICollection<ReadingIssueDistanceBillSummryDataOutputDto> flatData = result
+                .ReportData
+                .SelectMany(f =>
+                {
+                    f.ReportHeader.IsFirstRow = true;
+                    f.ReportData.Select(d => d.IsFirstRow = false);
+
+                    return new[] { f.ReportHeader }.Concat(f.ReportData);
+                }).ToList();
+
+            ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryDataOutputDto> flatResult = new(result.Title, result.ReportHeader, flatData) { };
+            return flatResult;
+        }
+
         private static ReadingIssueDistanceBillSummryDataOutputDto MapToGroupe(ReadingIssueDistanceBillSummryDataOutputDto input)
         {
             return new ReadingIssueDistanceBillSummryDataOutputDto()

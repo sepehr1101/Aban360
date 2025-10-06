@@ -15,7 +15,8 @@ namespace Aban360.Common.Extensions
             Validate(tHeader, tData);
 
             var excelfile = new Dictionary<string, object>();
-            var sheetCount = tData.Count() / maxDataCount;
+            int sheetCount =tData.Count() / maxDataCount;
+
 
             excelfile[ExceptionLiterals.Header] = new List<Dictionary<string, object>> { TranslateHeader(tHeader) };
             for (int i = 0; i < sheetCount + 1; i++)
@@ -25,8 +26,16 @@ namespace Aban360.Common.Extensions
             }
 
             string path = GetPath(reportName);
-            await MiniExcel.SaveAsAsync(path, excelfile);
-            return path;
+            try
+            {
+                await MiniExcel.SaveAsAsync(path, excelfile);
+
+                return path;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
         private static string GetPath(string reportName)
         {
@@ -137,6 +146,7 @@ namespace Aban360.Common.Extensions
                 {"SumEmptyUnit", "جمع آحاد خالی"},
                 {"FromEmptyUnit", "از واحد خالی"},
                 {"ToEmptyUnit", "تا واحد خالی"},
+                {"IsFirstRow", "*"},
 
             };
 
