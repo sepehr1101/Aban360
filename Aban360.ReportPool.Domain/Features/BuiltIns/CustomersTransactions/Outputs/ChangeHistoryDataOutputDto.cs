@@ -32,8 +32,8 @@
         public string FromDeletionStateTitle { get; set; }
         public string ToDeletionStateTitle { get; set; }
 
-        public string FromUseStateTitle { get; set; }
-        public string ToUseStateTitle { get; set; }
+        public string FromBranchType { get; set; }
+        public string ToBranchType { get; set; }
 
         public string FromUsageTitle { get; set; }
         public string ToUsageTitle { get; set; }

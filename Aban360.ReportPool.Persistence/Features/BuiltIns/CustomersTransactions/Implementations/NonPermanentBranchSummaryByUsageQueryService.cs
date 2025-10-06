@@ -22,7 +22,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         {
             string query = GetGroupedQuery(false, GroupingFields.UsageTitle,null);
             //string query = GetNonPermanentBranchQuery();
-            
+            Console.WriteLine(query);
             var @params = new
             {
                 fromReadingNumber = input.FromReadingNumber,

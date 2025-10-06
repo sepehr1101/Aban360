@@ -42,6 +42,7 @@ namespace Aban360.ReportPool.Persistence.Base
             QueryParam parameters = GetQueryParam(isWater, hasZone);
 
             return $@"Select 
+						MAX(t46.C2) AS RegionTitle,
                     	SUM(p.Amount) AS Amount,
                     	c.{groupingField} AS ItemTitle,
                     	c.{groupingField} ,
@@ -63,7 +64,11 @@ namespace Aban360.ReportPool.Persistence.Base
 						SUM(CASE WHEN c.WaterDiameterId In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6
                     From [CustomerWarehouse].dbo.{parameters.TableField} p
                     JOIN [CustomerWarehouse].dbo.Clients c 
-						On p.CustomerNumber=c.CustomerNumber AND p.ZoneId=c.ZoneId
+						On p.CustomerNumber=c.CustomerNumber AND p.ZoneId=c.ZoneId	
+					Join [Db70].dbo.T51 t51
+						On t51.C0=c.ZoneId
+					Join [Db70].dbo.T46 t46
+						On t51.C1=t46.C0
                     WHERE
                         c.ToDayJalali IS NULL AND
                         (@FromDate IS NULL OR 

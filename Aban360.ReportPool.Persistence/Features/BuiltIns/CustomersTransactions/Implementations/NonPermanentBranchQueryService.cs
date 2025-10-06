@@ -30,7 +30,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 fromDate=input.FromDateJalali,
                 toDate=input.ToDateJalali,
 
-                zoneIds = input.ZoneIds
+                zoneIds = input.ZoneIds,
+                usageIds=input.UsageIds
             };
 
             IEnumerable<NonPermanentBranchDataOutputDto> nonPremanentBranchData = await _sqlReportConnection.QueryAsync<NonPermanentBranchDataOutputDto>(query, @params);

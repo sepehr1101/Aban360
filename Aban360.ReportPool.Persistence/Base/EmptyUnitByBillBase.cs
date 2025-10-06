@@ -16,7 +16,7 @@ namespace Aban360.ReportPool.Persistence.Base
 					(
 					    SELECT
 							b.CustomerNumber,
-							b.ReadingNumber,
+							TRIM(b.ReadingNumber) AS ReadingNumber,
 							TRIM(c.FirstName) AS FirstName,
 							TRIM(c.SureName) As Surname,
 							b.UsageTitle,
@@ -35,11 +35,11 @@ namespace Aban360.ReportPool.Persistence.Base
 							b.EmptyCount As EmptyUnit,
 							b.ZoneId,
 							b.ZoneTitle,
-							c.NationalId AS NationalCode,
-							c.PostalCode , 
-							c.PhoneNo AS PhoneNumber,
+							TRIM(c.NationalId) AS NationalCode,
+							TRIM(c.PostalCode) AS PostalCode , 
+							TRIM(c.PhoneNo) AS PhoneNumber,
 						    TRIM(c.MobileNo) AS MobileNumber,
-							c.FatherName ,
+							TRIM(c.FatherName) AS FatherName ,
 							b.Consumption,
 							b.ConsumptionAverage,
 							b.SumItems,
@@ -48,7 +48,7 @@ namespace Aban360.ReportPool.Persistence.Base
 					            ORDER BY b.Id DESC
 					        ) AS RowNum
 					    FROM [CustomerWarehouse].dbo.Bills b
-						Join [CustomerWarehouse].dbo.Clients c On b.CustomerNumber=c.CustomerNumber and b.ZoneId=c.ZoneId
+						LEFT Join [CustomerWarehouse].dbo.Clients c On b.CustomerNumber=c.CustomerNumber and b.ZoneId=c.ZoneId
 					    WHERE
 							(b.EmptyCount BETWEEN @fromUnit AND @toUnit)
 							AND
@@ -105,6 +105,8 @@ namespace Aban360.ReportPool.Persistence.Base
 					    SELECT
                             b.ZoneId,
 							b.ZoneTitle,
+							b.UsageTitle,
+							b.UsageId,
 							b.CommercialCount,
 							b.DomesticCount,
 							b.OtherCount,
@@ -124,7 +126,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						MAX(t46.C2) AS RegionTitle,
 					    e.{groupingField} AS ItemTitle,
 					    e.{groupingField} ,
-						COUNT(e.{groupingField}) AS CustomerCount,
+						COUNT(1) AS CustomerCount,
 					    SUM(ISNULL(e.CommercialCount, 0) + ISNULL(e.DomesticCount, 0) + ISNULL(e.OtherCount, 0)) AS TotalUnit,
 				        SUM(ISNULL(e.CommercialCount, 0)) AS CommercialUnit,
 				        SUM(ISNULL(e.DomesticCount, 0)) AS DomesticUnit,

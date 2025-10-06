@@ -1,8 +1,10 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Implementations
 {
-    internal sealed class WaterPaymentReceivableSummaryService : AbstractBaseConnection, IWaterPaymentReceivableSummaryService
+    internal sealed class WaterPaymentReceivableSummaryService : PaymentReceivableBase, IWaterPaymentReceivableSummaryService
     {
         public WaterPaymentReceivableSummaryService(IConfiguration configuration)
             : base(configuration)
@@ -18,7 +20,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableSummaryDataOutputDto>> GetInfo(WaterPaymentReceivableInputDto input)
         {
-            string paymentReceivables = GetWaterPaymentReceivableQuery(input.ZoneIds?.Any() == true, input.IsZone);
+            string groupingField = input.IsZone ? GroupingFields.ZoneTitle : GroupingFields.UsageTitle;
+            string query = GetGroupedQuery(true, input.ZoneIds?.Any() == true, groupingField);
+            //string query = GetWaterPaymentReceivableQuery(input.ZoneIds?.Any() == true, input.IsZone);
+
             var @params = new
             {
                 FromDate = input.FromDateJalali,
@@ -27,7 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 toBankId = input.ToBankId,
                 zoneIds = input.ZoneIds,
             };
-            IEnumerable<WaterPaymentReceivableSummaryDataOutputDto> waterPaymentReceivableData = await _sqlReportConnection.QueryAsync<WaterPaymentReceivableSummaryDataOutputDto>(paymentReceivables, @params);
+            IEnumerable<WaterPaymentReceivableSummaryDataOutputDto> waterPaymentReceivableData = await _sqlReportConnection.QueryAsync<WaterPaymentReceivableSummaryDataOutputDto>(query, @params);
             WaterPaymentReceivableHeaderOutputDto waterPaymentReceivableHeader = new WaterPaymentReceivableHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

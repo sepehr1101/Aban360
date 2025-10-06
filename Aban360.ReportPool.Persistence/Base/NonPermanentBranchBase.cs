@@ -38,6 +38,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						 @toReadingNumber IS NULL OR
 						 c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
                         c.ZoneId in @ZoneIds AND
+                        c.UsageId in @usageIds AND
 						c.IsNonPermanent=1 AND
                         (@fromDate IS NULL OR
                         @toDate IS NULL OR
@@ -51,6 +52,7 @@ namespace Aban360.ReportPool.Persistence.Base
             string groupingQury = isTwoField ?multipleGroupedField:singleGroupedField;
            
             return $@"SELECT 
+						MAX(t46.C2) AS RegionTitle,
                         {groupingQury},
 						COUNT(c.{firstGroupingField}) AS CustomerCount,
 					    SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
@@ -69,6 +71,10 @@ namespace Aban360.ReportPool.Persistence.Base
 						SUM(CASE WHEN c.WaterDiameterId = 9 THEN 1 ELSE 0 END) AS Field5,
 						SUM(CASE WHEN c.WaterDiameterId In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6
                     FROM [CustomerWarehouse].dbo.Clients c
+					Join [Db70].dbo.T51 t51
+						On t51.C0=c.ZoneId
+					Join [Db70].dbo.T46 t46
+						On t51.C1=t46.C0
                     WHERE 
             			c.ToDayJalali IS NULL AND
 						(@fromReadingNumber IS NULL OR
@@ -95,7 +101,9 @@ namespace Aban360.ReportPool.Persistence.Base
 						(@fromReadingNumber IS NULL OR
 						 @toReadingNumber IS NULL OR
 						 c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
+						 (c.RegisterDayJalali BETWEEN @fromDate AND @toDate) AND
 						c.ZoneId in @zoneIds AND
+                        c.UsageId in @usageIds AND
 						c.IsNonPermanent=1
 					Group By 
 						c.ZoneTitle ,

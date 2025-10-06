@@ -35,6 +35,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
+                FromBankId = input.FromBankId,
+                ToBankId = input.ToBankId,
                 RecordCount = waterZoneGroupedData is not null && waterZoneGroupedData.Any() ? waterZoneGroupedData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 TotalAmount = waterZoneGroupedData.Sum(zone => zone.Amount),

@@ -2,6 +2,7 @@
 {
     public record ServiceLinkWaterItemGroupedDataOutputDto
     {
+        public string RegionTitle { get; set; }
         public string ItemTitle { get; set; }
         public string ZoneTitle { get; set; }
         public string UsageTitle { get; set; }

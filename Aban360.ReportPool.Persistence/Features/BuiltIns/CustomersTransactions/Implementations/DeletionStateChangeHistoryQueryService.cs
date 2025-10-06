@@ -21,7 +21,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         {
             string query = GetDetailQuery(input.ZoneIds?.Any() == true, GroupingFields.DeletionStateId, GroupingFields.DeletionStateTitle);
             //string query = GetDeletionStateChangeHistoryQuery(input.ZoneIds?.Any() == true);
-
+            Console.WriteLine(query);
             var @params = new
             {
                 fromReadingNumber = input.FromReadingNumber,
