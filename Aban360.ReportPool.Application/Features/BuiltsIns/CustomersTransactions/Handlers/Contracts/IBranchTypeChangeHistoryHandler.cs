@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
 {
     public interface IBranchTypeChangeHistoryHandler
     {
-        Task<ReportOutput<BranchTypeChangeHistoryHeaderOutputDto, BranchTypeChangeHistoryDataOutputDto>> Handle(BranchTypeChangeHistoryInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<BranchTypeChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto>> Handle(BranchTypeChangeHistoryInputDto input, CancellationToken cancellationToken);
     }
 }

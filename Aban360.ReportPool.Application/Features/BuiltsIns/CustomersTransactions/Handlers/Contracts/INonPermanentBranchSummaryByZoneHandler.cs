@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
 {
     public interface INonPermanentBranchSummaryByZoneHandler
     {
-        Task<ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryByZoneDataOutputDto>> Handle(NonPermanentBranchByUsageAndZoneInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchGroupedDataOutputDto>> Handle(NonPermanentBranchByUsageAndZoneInputDto input, CancellationToken cancellationToken);
     }
 }

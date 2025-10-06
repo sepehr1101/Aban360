@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryByZoneDataOutputDto>> Handle(RemovedBillInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto>> Handle(RemovedBillInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryByZoneDataOutputDto> removedBill = await _removedBillQueryService.GetInfo(input);
+            ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto> removedBill = await _removedBillQueryService.GetInfo(input);
             return removedBill;
         }
     }

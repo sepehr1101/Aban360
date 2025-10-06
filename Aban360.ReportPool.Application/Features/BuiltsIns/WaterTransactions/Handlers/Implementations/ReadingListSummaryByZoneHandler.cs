@@ -25,7 +25,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<ReadingListHeaderOutputDto, ReadingListSummaryByZoneDataOutputDto>> Handle(ReadingListInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<ReadingListHeaderOutputDto, ReadingListSummaryDataOutputDto>> Handle(ReadingListInputDto input, CancellationToken cancellationToken)
         {
             var validatioResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validatioResult.IsValid)

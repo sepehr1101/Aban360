@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryByZoneDataOutputDto> result = await _nonPermanentBranchSummaryByZoneQueryService.GetInfo(input);
+            ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchGroupedDataOutputDto> result = await _nonPermanentBranchSummaryByZoneQueryService.GetInfo(input);
 
             IEnumerable<ReportOutput<NonPermanentBranchSummaryByZoneGropedDataOutputDto, NonPermanentBranchSummaryByZoneGropedDataOutputDto>> dataGroup = result
                .ReportData

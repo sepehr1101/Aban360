@@ -26,7 +26,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<UsageChangeHistoryHeaderOutputDto, UsageChangeHistoryDataOutputDto>> Handle(UsageChangeHistoryInputDto input, [Optional] CancellationToken cancellationToken)
+        public async Task<ReportOutput<UsageChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto>> Handle(UsageChangeHistoryInputDto input, [Optional] CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input/*, cancellationToken*/);
             if (!validationResult.IsValid)
@@ -35,7 +35,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<UsageChangeHistoryHeaderOutputDto, UsageChangeHistoryDataOutputDto> usageChangeHistory = await _usageChangeHistoryQueryService.GetInfo(input);
+            ReportOutput<UsageChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto> usageChangeHistory = await _usageChangeHistoryQueryService.GetInfo(input);
             usageChangeHistory.ReportData.ForEach(d =>
             {
                 d.DistanceText = CalculationDistanceDate.ConvertDaysToDate(d.Distance);

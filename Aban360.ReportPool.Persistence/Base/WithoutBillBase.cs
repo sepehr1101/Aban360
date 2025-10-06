@@ -170,6 +170,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     Select 
 						MAX(t46.C2) AS RegionTitle,
                     	w.{parameters.ZoneOrUsageGrouped} as ItemTitle,
+                    	w.{parameters.ZoneOrUsageGrouped},
 						COUNT(w.{parameters.ZoneOrUsageGrouped}) AS CustomerCount,
 						SUM(ISNULL(w.CommercialCount, 0) + ISNULL(w.DomesticCount, 0) + ISNULL(w.OtherCount, 0)) AS TotalUnit,
 						SUM(ISNULL(w.CommercialCount, 0)) AS CommercialUnit,

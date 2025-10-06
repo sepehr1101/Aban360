@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
 {
     public interface IWaterMeterReplacementsSummaryByZoneHandler
     {
-        Task<ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsSummaryByZoneDataOutputDto>> Handle(WaterMeterReplacementsInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsSummaryDataOutputDto>> Handle(WaterMeterReplacementsInputDto input, CancellationToken cancellationToken);
     }
 }

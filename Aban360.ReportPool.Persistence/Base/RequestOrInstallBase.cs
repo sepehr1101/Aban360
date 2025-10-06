@@ -83,6 +83,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     Select	
 	                    MAX(t46.C2) AS RegionTitle,
                         c.{groupingField},
+                        c.{groupingField} as ItemTitle,
                         COUNT(1) AS CustomerCount,
 	                    SUM(IIF((c.DomesticCount+c.CommercialCount +c.OtherCount=0) ,1, (c.DomesticCount+c.CommercialCount +c.OtherCount))) AS TotalUnit,
 	                    SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,

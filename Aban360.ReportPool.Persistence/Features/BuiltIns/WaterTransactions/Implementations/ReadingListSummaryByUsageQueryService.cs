@@ -1,8 +1,10 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
-    internal sealed class ReadingListSummaryByUsageQueryService : AbstractBaseConnection, IReadingListSummaryByUsageQueryService
+    internal sealed class ReadingListSummaryByUsageQueryService : ReadingListBase, IReadingListSummaryByUsageQueryService
     {
         public ReadingListSummaryByUsageQueryService(IConfiguration configuration)
             : base(configuration)
@@ -18,7 +20,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<ReadingListHeaderOutputDto, ReadingListSummaryDataOutputDto>> GetInfo(ReadingListInputDto input)
         {
-            string modifiedBills = GetReadingListQuery();
+            string query = GetGroupedQuery(GroupingFields.UsageTitle);
+            //string query = GetReadingListQuery();
+            
             var @params = new
             {
                 fromReadingNumber = input.FromReadingNumber,
@@ -27,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 toDate = input.ToDateJalali,
                 zoneIds = input.ZoneIds,
             };
-            IEnumerable<ReadingListSummaryDataOutputDto> readingListData = await _sqlReportConnection.QueryAsync<ReadingListSummaryDataOutputDto>(modifiedBills, @params);
+            IEnumerable<ReadingListSummaryDataOutputDto> readingListData = await _sqlReportConnection.QueryAsync<ReadingListSummaryDataOutputDto>(query, @params);
             ReadingListHeaderOutputDto modifiedBillsHeader = new ReadingListHeaderOutputDto()
             {
                 FromReadingNumber = input.FromReadingNumber,
@@ -36,7 +40,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = readingListData is not null && readingListData.Any() ? readingListData.Count() : 0,
-                CustomerCount = readingListData is not null && readingListData.Any() ? readingListData.Count() : 0,
+                CustomerCount = readingListData?.Sum(x => x.ReadingCount) ?? 0
             };
 
             var result = new ReportOutput<ReadingListHeaderOutputDto, ReadingListSummaryDataOutputDto>(ReportLiterals.ReadingListSummary + ReportLiterals.ByUsage, modifiedBillsHeader, readingListData);

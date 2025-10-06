@@ -7,6 +7,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
 {
     public interface IRuinedMeterIncomeSummaryByZoneHandler
     {
-        Task<ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryByZoneDataOutputDto>> Handle(RuinedMeterIncomeInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryDataOutputDto>> Handle(RuinedMeterIncomeInputDto input, CancellationToken cancellationToken);
     }
 }

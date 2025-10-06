@@ -3,6 +3,7 @@ using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Implementations
 {
-    internal sealed class RemovedBillDetailQueryService : AbstractBaseConnection, IRemovedBillDetailQueryService
+    internal sealed class RemovedBillDetailQueryService : RemovedBillBase, IRemovedBillDetailQueryService
     {
         public RemovedBillDetailQueryService(IConfiguration configuration)
             : base(configuration)
@@ -19,7 +20,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<RemovedBillHeaderOutputDto, RemovedBillDetailDataOutputDto>> GetInfo(RemovedBillInputDto input)
         {
-            string RemovedBillQueryString = GetQuery(input.ZoneIds?.Any() == true);
+            string query = GetDetailQuery(input.ZoneIds?.Any() == true);
+            //string query = GetQuery(input.ZoneIds?.Any() == true);
+            
             var @params = new
             {
                 fromDate = input.FromDateJalali,
@@ -30,7 +33,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 toAmount = input.ToAmount,
                 zoneIds = input.ZoneIds,
             };
-            IEnumerable<RemovedBillDetailDataOutputDto> RemovedBillData = await _sqlReportConnection.QueryAsync<RemovedBillDetailDataOutputDto>(RemovedBillQueryString, @params);
+            IEnumerable<RemovedBillDetailDataOutputDto> RemovedBillData = await _sqlReportConnection.QueryAsync<RemovedBillDetailDataOutputDto>(query, @params);
             RemovedBillHeaderOutputDto RemovedBillHeader = new RemovedBillHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -88,6 +91,5 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 					c.ToDayJalali IS NULL
                     {zoneQuery}";
         }
-
     }
 }

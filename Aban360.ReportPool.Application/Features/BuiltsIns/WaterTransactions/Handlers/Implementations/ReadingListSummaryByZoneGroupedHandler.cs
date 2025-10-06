@@ -34,7 +34,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<ReadingListHeaderOutputDto, ReadingListSummaryByZoneDataOutputDto> result = await _readingListSummaryQuery.GetInfo(input);
+            ReportOutput<ReadingListHeaderOutputDto, ReadingListSummaryDataOutputDto> result = await _readingListSummaryQuery.GetInfo(input);
 
             var dataGroup = result.ReportData
                 .GroupBy(m => m.RegionTitle)
@@ -54,7 +54,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
 
             return finalData;
         }
-        private static ReadingListSummaryDataOutputDto MapToGroup(ReadingListSummaryByZoneDataOutputDto input)
+        private static ReadingListSummaryDataOutputDto MapToGroup(ReadingListSummaryDataOutputDto input)
         {
             return new ReadingListSummaryDataOutputDto()
             {

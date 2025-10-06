@@ -1,8 +1,10 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,24 +12,26 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
-    internal sealed class RuinedMeterIncomeSummaryByZoneQueryService : AbstractBaseConnection, IRuinedMeterIncomeSummaryByZoneQueryService
+    internal sealed class RuinedMeterIncomeSummaryByZoneQueryService : RuinedMeterIncomeBase, IRuinedMeterIncomeSummaryByZoneQueryService
     {
         public RuinedMeterIncomeSummaryByZoneQueryService(IConfiguration configuration)
             : base(configuration)
         { }
 
-        public async Task<ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryByZoneDataOutputDto>> GetInfo(RuinedMeterIncomeInputDto input)
+        public async Task<ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryDataOutputDto>> GetInfo(RuinedMeterIncomeInputDto input)
         {
-            string ruinedMeterIncomeQueryString = GetRuinedMeterIncomeDataQuery();
+            string query = GetGroupedQuery(GroupingFields.ZoneTitle);
+            //string query = GetRuinedMeterIncomeDataQuery();
+
             var @params = new
             {
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali,
-                fromReadingNumber=input.FromReadingNumber,
-                toReadingNumber=input.ToReadingNumber,
+                fromReadingNumber = input.FromReadingNumber,
+                toReadingNumber = input.ToReadingNumber,
                 zoneIds = input.ZoneIds,
             };
-            IEnumerable<RuinedMeterIncomeSummaryByZoneDataOutputDto> ruinedMeterIncomeData = await _sqlReportConnection.QueryAsync<RuinedMeterIncomeSummaryByZoneDataOutputDto>(ruinedMeterIncomeQueryString, @params);
+            IEnumerable<RuinedMeterIncomeSummaryDataOutputDto> ruinedMeterIncomeData = await _sqlReportConnection.QueryAsync<RuinedMeterIncomeSummaryDataOutputDto>(query, @params);
             RuinedMeterIncomeHeaderOutputDto ruinedMeterIncomeHeader = new RuinedMeterIncomeHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -36,7 +40,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = ruinedMeterIncomeData is not null && ruinedMeterIncomeData.Any() ? ruinedMeterIncomeData.Count() : 0,
-               
+
                 TotalPayable = ruinedMeterIncomeData.Sum(x => x.Payable),
                 TotalSumItems = ruinedMeterIncomeData.Sum(x => x.SumItems),
                 SumCommercialUnit = ruinedMeterIncomeData.Sum(i => i.CommercialUnit),
@@ -45,7 +49,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 TotalUnit = ruinedMeterIncomeData.Sum(i => i.TotalUnit),
                 CustomerCount = ruinedMeterIncomeData.Sum(i => i.CustomerCount),
             };
-            var result = new ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryByZoneDataOutputDto>(ReportLiterals.RuinedMeterIncomeSummary+ReportLiterals.ByZone , ruinedMeterIncomeHeader, ruinedMeterIncomeData);
+            var result = new ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryDataOutputDto>(ReportLiterals.RuinedMeterIncomeSummary + ReportLiterals.ByZone, ruinedMeterIncomeHeader, ruinedMeterIncomeData);
 
             return result;
         }

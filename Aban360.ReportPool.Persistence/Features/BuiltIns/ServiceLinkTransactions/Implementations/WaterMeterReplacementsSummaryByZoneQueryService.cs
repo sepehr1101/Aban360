@@ -17,7 +17,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             : base(configuration)
         { }
 
-        public async Task<ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsSummaryByZoneDataOutputDto>> Get(WaterMeterReplacementsInputDto input)
+        public async Task<ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsSummaryDataOutputDto>> Get(WaterMeterReplacementsInputDto input)
         {
             string query = GetGroupedQuery(input.IsChangeDate, "c.ZoneTitle");
             //string query = GetBranchWaterMeterReplacementsQuery();
@@ -35,7 +35,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 usageIds = input.UsageIds,
                 isChangeDate = input.IsChangeDate ? 1 : 0,
             };
-            IEnumerable<WaterMeterReplacementsSummaryByZoneDataOutputDto> waterMeterReplacementsData = await _sqlReportConnection.QueryAsync<WaterMeterReplacementsSummaryByZoneDataOutputDto>(query, @params);
+            IEnumerable<WaterMeterReplacementsSummaryDataOutputDto> waterMeterReplacementsData = await _sqlReportConnection.QueryAsync<WaterMeterReplacementsSummaryDataOutputDto>(query, @params);
             WaterMeterReplacementsHeaderOutputDto waterMeterReplacementsHeader = new WaterMeterReplacementsHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -52,7 +52,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 SumOtherUnit = waterMeterReplacementsData.Sum(i => i.OtherUnit),
                 TotalUnit = waterMeterReplacementsData.Sum(i => i.TotalUnit),
             };
-            var result = new ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsSummaryByZoneDataOutputDto>(
+            var result = new ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsSummaryDataOutputDto>(
                    reportTitle,
                    waterMeterReplacementsHeader,
                    waterMeterReplacementsData);

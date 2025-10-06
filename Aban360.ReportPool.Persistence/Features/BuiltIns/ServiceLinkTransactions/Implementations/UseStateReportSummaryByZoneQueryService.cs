@@ -1,8 +1,10 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,14 +12,16 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {
-    internal sealed class UseStateReportSummaryByZoneQueryService : AbstractBaseConnection, IUseStateReportSummaryByZoneQueryService
+    internal sealed class UseStateReportSummaryByZoneQueryService : UseStateBase, IUseStateReportSummaryByZoneQueryService
     {
         public UseStateReportSummaryByZoneQueryService(IConfiguration configuration)
             : base(configuration) { }
 
-        public async Task<ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryByZoneDataOutputDto>> Get(UseStateReportInputDto input)
+        public async Task<ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryDataOutputDto>> Get(UseStateReportInputDto input)
         {
-            string useStateReportQueryString = GetUseStateReportQuery();
+            string query = GetGroupedQuery(GroupingFields.ZoneTitle);
+            //string query = GetUseStateReportQuery();
+           
             var @params = new
             {
                 useStateId = input.UseStateId,
@@ -28,7 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 toReadingNumber = input.ToReadingNumber
             };
 
-            IEnumerable<UseStateReportSummaryByZoneDataOutputDto> data = await _sqlReportConnection.QueryAsync<UseStateReportSummaryByZoneDataOutputDto>(useStateReportQueryString, @params);
+            IEnumerable<UseStateReportSummaryDataOutputDto> data = await _sqlReportConnection.QueryAsync<UseStateReportSummaryDataOutputDto>(query, @params);
             UseStateReportHeaderSummaryOutputDto header = new UseStateReportHeaderSummaryOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -46,7 +50,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             };
             string useStateQuery = GetUseStateTitle();
             string useStateTitle = await _sqlConnection.QueryFirstOrDefaultAsync<string>(useStateQuery, new { useStateId = input.UseStateId });
-            var result = new ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryByZoneDataOutputDto>(ReportLiterals.Report + " " + ReportLiterals.ByZone + useStateTitle, header, data);
+            var result = new ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryDataOutputDto>(ReportLiterals.Report + " " + ReportLiterals.ByZone + useStateTitle, header, data);
             return result;
         }
 

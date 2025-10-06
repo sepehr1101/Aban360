@@ -1,8 +1,10 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,14 +12,16 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Implementations
 {
-    internal sealed class BranchTypeChangeHistoryQueryService : AbstractBaseConnection, IBranchTypeChangeHistoryQueryService
+    internal sealed class BranchTypeChangeHistoryQueryService : ChangeHistoryBase, IBranchTypeChangeHistoryQueryService
     {
         public BranchTypeChangeHistoryQueryService(IConfiguration configuration)
             : base(configuration)
         { }
-        public async Task<ReportOutput<BranchTypeChangeHistoryHeaderOutputDto, BranchTypeChangeHistoryDataOutputDto>> GetInfo(BranchTypeChangeHistoryInputDto input)
+        public async Task<ReportOutput<BranchTypeChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto>> GetInfo(BranchTypeChangeHistoryInputDto input)
         {
-            string BranchTypeChangeHistoryQuery = GetBranchTypeChangeHistoryQuery(input.ZoneIds?.Any() == true);
+            string query = GetDetailQuery(input.ZoneIds?.Any() == true, GroupingFields.UsageStateId, GroupingFields.BranchType);
+            //string query = GetBranchTypeChangeHistoryQuery(input.ZoneIds?.Any() == true);
+
             var @params = new
             {
                 fromReadingNumber = input.FromReadingNumber,
@@ -28,11 +32,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
                 zoneIds = input.ZoneIds,
 
-                fromUseStateIds = input.FromUseStateIds,
-                toUseStateIds = input.ToUseStateIds,
+                fromFieldIds = input.FromUseStateIds,
+                toFieldIds = input.ToUseStateIds,
+
+                //fromUseStateIds = input.FromUseStateIds,
+                //toUseStateIds = input.ToUseStateIds,
             };
 
-            IEnumerable<BranchTypeChangeHistoryDataOutputDto> BranchTypeChangeHistoryData = await _sqlReportConnection.QueryAsync<BranchTypeChangeHistoryDataOutputDto>(BranchTypeChangeHistoryQuery, @params);
+            IEnumerable<ChangeHistoryDataOutputDto> BranchTypeChangeHistoryData = await _sqlReportConnection.QueryAsync<ChangeHistoryDataOutputDto>(query, @params);
             BranchTypeChangeHistoryHeaderOutputDto BranchTypeChangeHistoryHeader = new BranchTypeChangeHistoryHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -52,7 +59,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             };
 
 
-            var result = new ReportOutput<BranchTypeChangeHistoryHeaderOutputDto, BranchTypeChangeHistoryDataOutputDto>(ReportLiterals.BranchTypeChangeHistory, BranchTypeChangeHistoryHeader, BranchTypeChangeHistoryData);
+            var result = new ReportOutput<BranchTypeChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto>(ReportLiterals.BranchTypeChangeHistory, BranchTypeChangeHistoryHeader, BranchTypeChangeHistoryData);
 
             return result;
         }

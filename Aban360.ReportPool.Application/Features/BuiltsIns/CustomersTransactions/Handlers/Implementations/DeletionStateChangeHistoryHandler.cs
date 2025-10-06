@@ -26,7 +26,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<DeletionStateChangeHistoryHeaderOutputDto, DeletionStateChangeHistoryDataOutputDto>> Handle(DeletionStateChangeHistoryInputDto input, [Optional] CancellationToken cancellationToken)
+        public async Task<ReportOutput<DeletionStateChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto>> Handle(DeletionStateChangeHistoryInputDto input, [Optional] CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input/*, cancellationToken*/);
             if (!validationResult.IsValid)
@@ -35,7 +35,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<DeletionStateChangeHistoryHeaderOutputDto, DeletionStateChangeHistoryDataOutputDto> deletionStateChangeHistory = await _DeletionStateChangeHistoryQueryService.GetInfo(input);
+            ReportOutput<DeletionStateChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto> deletionStateChangeHistory = await _DeletionStateChangeHistoryQueryService.GetInfo(input);
             deletionStateChangeHistory.ReportData.ForEach(d =>
             { 
                 d.DistanceText=CalculationDistanceDate.ConvertDaysToDate(d.Distance); 

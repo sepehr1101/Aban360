@@ -48,10 +48,8 @@ namespace Aban360.ReportPool.Persistence.Base
                     WHERE RN=1 AND CounterStateCode=1";
         }
 
-        internal string GetGroupedQuery(bool isZone)
+        internal string GetGroupedQuery(string groupingField)
         {
-            string parameters = GetQueryParam(isZone);
-
             return @$";WITH CTE AS (
                     Select
                         b.ZoneTitle,
@@ -79,10 +77,10 @@ namespace Aban360.ReportPool.Persistence.Base
 						@toDate IS NULL OR
 						b.RegisterDay BETWEEN @fromDate AND @toDate))
                     SELECT 
-						{parameters} as ItemTitle,
+						{groupingField} as ItemTitle,
 						SUM(c.SumItems) as SumItems,
 						AVG(c.ConsumptionAverage) as Consumption,
-						COUNT(c.{parameters}) AS CustomerCount,
+						COUNT(c.{groupingField}) AS CustomerCount,
 						SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
 						SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
 						SUM(ISNULL(c.DomesticCount, 0)) AS DomesticUnit,
@@ -102,15 +100,8 @@ namespace Aban360.ReportPool.Persistence.Base
                     WHERE 
 						c.RN=1 AND
 						c.CounterStateCode=1 
-					Group By c.{parameters}";
+					Group By c.{groupingField}";
         }
 
-        private string GetQueryParam( bool isZone )
-        {
-            string ZoneTitle = nameof(ZoneTitle),
-                   UsageTitle = nameof(UsageTitle);
-
-            return isZone ? ZoneTitle : UsageTitle;
-        }
     }
 }

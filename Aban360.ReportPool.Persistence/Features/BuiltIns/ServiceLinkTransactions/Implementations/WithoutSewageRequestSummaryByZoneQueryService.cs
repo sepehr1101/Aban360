@@ -1,8 +1,10 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,15 +12,16 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {
-    internal sealed class WithoutSewageRequestSummaryByZoneQueryService : AbstractBaseConnection, IWithoutSewageRequestSummaryByZoneQueryService
+    internal sealed class WithoutSewageRequestSummaryByZoneQueryService : WithoutSewageRequestBase, IWithoutSewageRequestSummaryByZoneQueryService
     {
         public WithoutSewageRequestSummaryByZoneQueryService(IConfiguration configuration)
             : base(configuration)
         { }
 
-        public async Task<ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestSummaryByZoneDataOutputDto>> Get(WithoutSewageRequestInputDto input)
+        public async Task<ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestSummaryDataOutputDto>> Get(WithoutSewageRequestInputDto input)
         {
-            string withoutSewageRequest = GetBranchWithoutSewageRequestQuery();
+            string query = GetGroupedQuery(GroupingFields.ZoneTitle);
+            //string query = GetBranchWithoutSewageRequestQuery();
 
             var @params = new
             {
@@ -28,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 toReadingNumber = input.ToReadingNumber,
                 zoneIds = input.ZoneIds
             };
-            IEnumerable<WithoutSewageRequestSummaryByZoneDataOutputDto> withoutSewageRequestData = await _sqlReportConnection.QueryAsync<WithoutSewageRequestSummaryByZoneDataOutputDto>(withoutSewageRequest, @params);
+            IEnumerable<WithoutSewageRequestSummaryDataOutputDto> withoutSewageRequestData = await _sqlReportConnection.QueryAsync<WithoutSewageRequestSummaryDataOutputDto>(query, @params);
             WithoutSewageRequestHeaderOutputDto withoutSewageRequestHeader = new WithoutSewageRequestHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -44,7 +47,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 TotalUnit = withoutSewageRequestData.Sum(i => i.TotalUnit),
                 CustomerCount = withoutSewageRequestData.Sum(i => i.CustomerCount),
             };
-            var result = new ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestSummaryByZoneDataOutputDto>
+            var result = new ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestSummaryDataOutputDto>
                 (ReportLiterals.WithoutSewageRequestSummaryByZone, withoutSewageRequestHeader, withoutSewageRequestData);
 
             return result;

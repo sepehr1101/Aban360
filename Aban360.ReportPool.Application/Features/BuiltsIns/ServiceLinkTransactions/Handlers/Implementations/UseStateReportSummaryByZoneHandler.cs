@@ -25,7 +25,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryByZoneDataOutputDto>> Handle(UseStateReportInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryDataOutputDto>> Handle(UseStateReportInputDto input, CancellationToken cancellationToken)
         {
             var validationReuslt = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationReuslt.IsValid)
@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 var message = string.Join(", ", validationReuslt.Errors.Select(x => x.ErrorMessage));
                 throw new CustomeValidationException(message);
             }
-            ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryByZoneDataOutputDto> useStateReports = await _userStateReportQueryService.Get(input);
+            ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryDataOutputDto> useStateReports = await _userStateReportQueryService.Get(input);
             useStateReports.ReportHeader.ReportDateJalali = DateTime.Now.FormatDateToShortPersianDate();
             return useStateReports;
         }

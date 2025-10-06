@@ -3,6 +3,7 @@ using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
-    internal sealed class WaterRawSalesSummaryQueryService : AbstractBaseConnection, IWaterRawSalesSummaryQueryService
+    internal sealed class WaterRawSalesSummaryQueryService : WaterNetRawSalesBase, IWaterRawSalesSummaryQueryService
     {
         public WaterRawSalesSummaryQueryService(IConfiguration configuration)
             : base(configuration)
@@ -18,14 +19,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<WaterSalesHeaderOutputDto, WaterRawSalesSummaryDataOutputDto>> GetInfo(WaterSalesInputDto input)
         {
-            string waterRawSalesSummarys = GetWaterRawSalesSummaryQuery();
+            string query = GetGroupedQuery(false);
+            //string query = GetWaterRawSalesSummaryQuery();
+
             var @params = new
             {   
                 fromDate=input.FromDateJalali,
                 toDate=input.ToDateJalali,
                 zoneIds=input.ZoneIds,
             };
-            IEnumerable<WaterRawSalesSummaryDataOutputDto> waterRawSalesData = await _sqlReportConnection.QueryAsync<WaterRawSalesSummaryDataOutputDto>(waterRawSalesSummarys,@params);
+            IEnumerable<WaterRawSalesSummaryDataOutputDto> waterRawSalesData = await _sqlReportConnection.QueryAsync<WaterRawSalesSummaryDataOutputDto>(query,@params);
             WaterSalesHeaderOutputDto waterRawSalesHeader = new WaterSalesHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

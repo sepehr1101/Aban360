@@ -3,6 +3,7 @@ using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -11,22 +12,24 @@ using Microsoft.Extensions.Configuration;
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
 
-    internal sealed class WaterNetSalesDetailQueryService : AbstractBaseConnection, IWaterNetSalesDetailQueryService
+    internal sealed class WaterNetSalesDetailQueryService : WaterNetRawSalesBase, IWaterNetSalesDetailQueryService
     {
         public WaterNetSalesDetailQueryService(IConfiguration configuration)
             : base(configuration)
         { }
 
-        public async Task<ReportOutput<WaterSalesHeaderOutputDto, WaterNetSalesDetailDataOutputDto>> GetInfo(WaterSalesInputDto input)
+        public async Task<ReportOutput<WaterSalesHeaderOutputDto, WaterNetRawSalesDetailDataOutputDto>> GetInfo(WaterSalesInputDto input)
         {
-            string waterNetSalesDetails = GetWaterNetSalesDetailQuery();
+            string query = GetDetailQuery(true);
+            //string query = GetWaterNetSalesDetailQuery();
+          
             var @params = new
             {
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali,
                 zoneIds = input.ZoneIds,
             };
-            IEnumerable<WaterNetSalesDetailDataOutputDto> waterNetSalesData = await _sqlReportConnection.QueryAsync<WaterNetSalesDetailDataOutputDto>(waterNetSalesDetails,@params);
+            IEnumerable<WaterNetRawSalesDetailDataOutputDto> waterNetSalesData = await _sqlReportConnection.QueryAsync<WaterNetRawSalesDetailDataOutputDto>(query,@params);
             WaterSalesHeaderOutputDto waterNetSalesHeader = new WaterSalesHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -37,7 +40,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 SumPayable = (waterNetSalesData is not null && waterNetSalesData.Any() ? waterNetSalesData.Sum(x => x.Payable) : 0)
             };
 
-            var result = new ReportOutput<WaterSalesHeaderOutputDto, WaterNetSalesDetailDataOutputDto>(ReportLiterals.WaterNetSalesDetail, waterNetSalesHeader, waterNetSalesData);
+            var result = new ReportOutput<WaterSalesHeaderOutputDto, WaterNetRawSalesDetailDataOutputDto>(ReportLiterals.WaterNetSalesDetail, waterNetSalesHeader, waterNetSalesData);
             return result;
         }
 

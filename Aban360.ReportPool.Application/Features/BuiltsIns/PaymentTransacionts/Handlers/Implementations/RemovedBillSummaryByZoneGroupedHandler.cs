@@ -35,7 +35,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryByZoneDataOutputDto> result = await _removedBillQueryService.GetInfo(input);
+            ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto> result = await _removedBillQueryService.GetInfo(input);
 
             var dataGroup = result.ReportData
                 .GroupBy(m => m.RegionTitle)
@@ -56,7 +56,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
 
             return finalData;
         }
-        private static RemovedBillSummaryDataOutputDto MapToGroup(RemovedBillSummaryByZoneDataOutputDto input)
+        private static RemovedBillSummaryDataOutputDto MapToGroup(RemovedBillSummaryDataOutputDto input)
         {
             return new RemovedBillSummaryDataOutputDto()
             {

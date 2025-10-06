@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 {
     public interface IDeletionStateChangeHistoryQueryService
     {
-        Task<ReportOutput<DeletionStateChangeHistoryHeaderOutputDto, DeletionStateChangeHistoryDataOutputDto>> GetInfo(DeletionStateChangeHistoryInputDto input);
+        Task<ReportOutput<DeletionStateChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto>> GetInfo(DeletionStateChangeHistoryInputDto input);
     }
 }

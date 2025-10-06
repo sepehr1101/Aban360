@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Implementations
 {
-    internal sealed class WaterPaymentReceivableQueryDetailService : AbstractBaseConnection, IWaterPaymentReceivableQueryDetailService
+    internal sealed class WaterPaymentReceivableQueryDetailService : PaymentReceivableBase, IWaterPaymentReceivableQueryDetailService
     {
         public WaterPaymentReceivableQueryDetailService(IConfiguration configuration)
             : base(configuration)
@@ -18,7 +18,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableDataOutputDto>> GetInfo(WaterPaymentReceivableInputDto input)
         {
-            string paymentReceivables = GetWaterPaymentReceivableQuery(input.ZoneIds?.Any() == true);
+            string query = GetDetailQuery(true,input.ZoneIds?.Any() == true);
+            //string query = GetWaterPaymentReceivableQuery(input.ZoneIds?.Any() == true);
+            
             var @params = new
             {
                 FromDate = input.FromDateJalali,
@@ -27,7 +29,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 toBankId = input.ToBankId,
                 zoneIds = input.ZoneIds,
             };
-            IEnumerable<WaterPaymentReceivableDataOutputDto> waterPaymentReceivableData = await _sqlReportConnection.QueryAsync<WaterPaymentReceivableDataOutputDto>(paymentReceivables, @params);
+            IEnumerable<WaterPaymentReceivableDataOutputDto> waterPaymentReceivableData = await _sqlReportConnection.QueryAsync<WaterPaymentReceivableDataOutputDto>(query, @params);
             WaterPaymentReceivableHeaderOutputDto waterPaymentReceivableHeader = new WaterPaymentReceivableHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

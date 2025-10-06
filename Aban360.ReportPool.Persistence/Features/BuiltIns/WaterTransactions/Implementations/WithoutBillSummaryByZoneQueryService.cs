@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         { 
         }
 
-        public async Task<ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryByZoneDataOutputDto>> GetInfo(WithoutBillInputDto input)
+        public async Task<ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryDataOutputDto>> GetInfo(WithoutBillInputDto input)
         {
             string query = GetGroupedQuery(input.ZoneIds?.Any() == true, input.UsageIds?.Any() == true, true);
             //string query = GetWithoutBillQuery(input.ZoneIds?.Any() == true, input.UsageIds?.Any() == true);
@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 usageIds = input.UsageIds,
             };
 
-            IEnumerable<WithoutBillSummaryByZoneDataOutputDto> withoutBillData = await _sqlReportConnection.QueryAsync<WithoutBillSummaryByZoneDataOutputDto>(query, @params);
+            IEnumerable<WithoutBillSummaryDataOutputDto> withoutBillData = await _sqlReportConnection.QueryAsync<WithoutBillSummaryDataOutputDto>(query, @params);
             WithoutBillHeaderOutputDto withoutBillHeader = new WithoutBillHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -50,7 +50,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 CustomerCount = withoutBillData.Sum(i => i.CustomerCount),
             };
 
-            var result = new ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryByZoneDataOutputDto>(ReportLiterals.WithoutBill + ReportLiterals.ByZone, withoutBillHeader, withoutBillData);
+            var result = new ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryDataOutputDto>(ReportLiterals.WithoutBill + ReportLiterals.ByZone, withoutBillHeader, withoutBillData);
             return result;
         }
 

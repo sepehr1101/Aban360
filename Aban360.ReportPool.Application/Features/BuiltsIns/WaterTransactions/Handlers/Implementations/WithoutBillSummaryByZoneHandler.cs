@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryByZoneDataOutputDto>> Handle(WithoutBillInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryDataOutputDto>> Handle(WithoutBillInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryByZoneDataOutputDto> withoutBillSummaryByZone = await _withoutBillSummaryByZoneQueryService.GetInfo(input);
+            ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryDataOutputDto> withoutBillSummaryByZone = await _withoutBillSummaryByZoneQueryService.GetInfo(input);
             return withoutBillSummaryByZone;
         }
     }

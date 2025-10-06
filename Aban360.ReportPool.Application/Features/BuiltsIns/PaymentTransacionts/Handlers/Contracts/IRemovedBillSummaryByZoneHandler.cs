@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
 {
     public interface IRemovedBillSummaryByZoneHandler
     {
-        Task<ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryByZoneDataOutputDto>> Handle(RemovedBillInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto>> Handle(RemovedBillInputDto input, CancellationToken cancellationToken);
     }
 }

@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
 {
     public interface IUsageChangeHistoryHandler
     {
-        Task<ReportOutput<UsageChangeHistoryHeaderOutputDto, UsageChangeHistoryDataOutputDto>> Handle(UsageChangeHistoryInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<UsageChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto>> Handle(UsageChangeHistoryInputDto input, CancellationToken cancellationToken);
     }
 }

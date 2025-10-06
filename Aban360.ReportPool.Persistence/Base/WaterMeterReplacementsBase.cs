@@ -50,7 +50,9 @@ namespace Aban360.ReportPool.Persistence.Base
             string dateParam = GetQueryParams(isChangeDate);
 
             return $@"Select 
+						MAX(t46.C2) AS RegionTitle,
                         {prameter} AS ItemTitle,
+                        {prameter},
                         COUNT({prameter}) AS CustomerCount,
                         SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
                         SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
@@ -70,6 +72,10 @@ namespace Aban360.ReportPool.Persistence.Base
                     From [CustomerWarehouse].dbo.MeterChange mc
                     Join [CustomerWarehouse].dbo.Clients c 
 						on mc.CustomerNumber=c.CustomerNumber AND mc.ZoneId=c.ZoneId
+                    Join [Db70].dbo.T51 t51
+						On t51.C0=c.ZoneId
+					Join [Db70].dbo.T46 t46
+						On t51.C1=t46.C0
                     Where 
                     	mc.{dateParam} BETWEEN @fromDate AND @toDate AND
                     	c.ZoneId IN @zoneIds AND

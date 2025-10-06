@@ -34,13 +34,15 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
                 throw new CustomeValidationException(message);
             }
 
-            ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryByZoneDataOutputDto> result = await _withoutBillSummaryByZoneQueryService.GetInfo(input);
+            ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryDataOutputDto> result = await _withoutBillSummaryByZoneQueryService.GetInfo(input);
 
             var dataGroup = result.ReportData
               .GroupBy(m => m.RegionTitle)
               .Select(g =>
               {
                   var mapped = g.Select(MappToGroup);
+                  var mappedd = g;
+
                   return new ReportOutput
                   <WithoutBillSummaryDataOutputDto,
                   WithoutBillSummaryDataOutputDto>
@@ -56,7 +58,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             return finalData;
         }
 
-        private static WithoutBillSummaryDataOutputDto MappToGroup(WithoutBillSummaryByZoneDataOutputDto input)
+        private static WithoutBillSummaryDataOutputDto MappToGroup(WithoutBillSummaryDataOutputDto input)
         {
             return new WithoutBillSummaryDataOutputDto()
             {
