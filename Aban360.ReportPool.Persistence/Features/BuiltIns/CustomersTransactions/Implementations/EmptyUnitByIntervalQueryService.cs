@@ -89,8 +89,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 					    	TRIM(c.PhoneNo) AS PhoneNumber,
 					    	TRIM(c.MobileNo) AS MobileNumber,
 					    	TRIM(c.FatherName) AS FatherName,
+                            w.Debt SumItems,
 					    	RN=ROW_NUMBER() OVER(PARTITION BY c.BillId Order By c.RegisterDayJalali )
                         FROM [CustomerWarehouse].dbo.Clients c
+				    	LEFT JOIN [CustomerWarehouse].dbo.WaterDebt w
+				    		On c.BillId Collate SQL_Latin1_General_CP1_CI_AS= w.BillId
 	    				Join [Db70].dbo.T51 t51
 	    					On t51.C0=c.ZoneId
 	    				Join [Db70].dbo.T46 t46

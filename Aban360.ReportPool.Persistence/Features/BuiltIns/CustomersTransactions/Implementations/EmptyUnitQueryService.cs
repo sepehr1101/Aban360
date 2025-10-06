@@ -83,8 +83,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 						TRIM(c.PostalCode) AS PostalCode , 
 						TRIM(c.PhoneNo) AS PhoneNumber,
 						TRIM(c.MobileNo) AS MobileNumber,
-						TRIM(c.FatherName)AS FatherName
+						TRIM(c.FatherName)AS FatherName,
+						w.Debt as SumItems
                     FROM [CustomerWarehouse].dbo.Clients c
+					LEFT JOIN [CustomerWarehouse].dbo.WaterDebt w
+						On c.BillId Collate SQL_Latin1_General_CP1_CI_AS= w.BillId
 					Join [Db70].dbo.T51 t51
 						On t51.C0=c.ZoneId
 					Join [Db70].dbo.T46 t46
@@ -98,5 +101,5 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         c.ZoneId in @ZoneIds AND
             			c.EmptyCount BETWEEN @FromEmptyUnit AND @ToEmptyUnit";
         }
-    }
+    } 
 }
