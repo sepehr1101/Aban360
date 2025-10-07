@@ -21,9 +21,9 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Commands
         [Route("add-file")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AddFileDto>), StatusCodes.Status200OK)]
         [AllowAnonymous]
-        public async Task<IActionResult> GetDirectoryTree(string serverPath, string localFilePath, CancellationToken cancellation)
+        public async Task<IActionResult> AddFile(string billId, string localFilePath, CancellationToken cancellation)
         {
-            AddFileDto result = await _addFileHandler.Handle(serverPath,localFilePath, cancellation);
+            AddFileDto result = await _addFileHandler.Handle(billId, localFilePath, cancellation);
             return Ok(result);
         }
     }

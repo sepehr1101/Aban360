@@ -4,6 +4,6 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Contrac
 {
     public interface IAddFileHandler
     {
-        Task<AddFileDto> Handle(string serverPath, string localFilePath, CancellationToken cancellationToken);
+        Task<AddFileDto> Handle(string billId, string localFilePath, CancellationToken cancellationToken);
     }
 }

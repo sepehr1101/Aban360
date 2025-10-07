@@ -3,6 +3,7 @@
     public class OpenKmOptions
     {
         public const string SectionName = "OpenKm";
+        public string BasePath { get; set; } = default!;
         public string BaseUrl { get; set; } = string.Empty;
         public string Username { get; set; } = default!;
         public string Password { get; set; } = default!;
