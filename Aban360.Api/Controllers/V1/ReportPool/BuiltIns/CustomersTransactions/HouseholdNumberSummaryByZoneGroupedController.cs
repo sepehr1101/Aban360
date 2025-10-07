@@ -31,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<HouseholdNumberHeaderOutputDto, ReportOutput<HouseholdNumberSummaryDataOutputDto, HouseholdNumberSummaryDataOutputDto>>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(HouseholdNumberInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<HouseholdNumberHeaderOutputDto, HouseholdNumberSummaryDataOutputDto> householdNumberSummaryByZoneGrouped = await _householdNumberSummaryByZoneGrouped.HandleFlat(inputDto, cancellationToken);
+            ReportOutput<HouseholdNumberHeaderOutputDto, ReportOutput<HouseholdNumberSummaryDataOutputDto, HouseholdNumberSummaryDataOutputDto>> householdNumberSummaryByZoneGrouped = await _householdNumberSummaryByZoneGrouped.Handle(inputDto, cancellationToken);
             return Ok(householdNumberSummaryByZoneGrouped);
         }
 
