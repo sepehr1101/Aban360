@@ -14,7 +14,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
     {
         public HouseholdNumberQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
         public async Task<ReportOutput<HouseholdNumberHeaderOutputDto, HouseholdNumberDataOutputDto>> GetInfo(HouseholdNumberInputDto input, string lastYearJalali)
         {
             string householdNumberQuery = GetHouseholdNumberQuery();
@@ -23,8 +24,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 fromReadingNumber = input.FromReadingNumber,
                 toReadingNumber = input.ToReadingNumber,
 
-                fromHouseholdDateJalali = input.FromHouseholdDateJalali,
-                toHouseholdDateJalali = input.ToHouseholdDateJalali,
+                fromDate = input.FromHouseholdDateJalali,
+                toDate = input.ToHouseholdDateJalali,
 
                 lastYearDate = lastYearJalali,
                 zoneIds = input.ZoneIds
@@ -54,35 +55,54 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
         private string GetHouseholdNumberQuery()
         {
-            return @"SELECT 
-                        c.CustomerNumber,
-                        c.ReadingNumber,
-                        TRIM(c.FirstName) AS FirstName,
-                        TRIM(c.SureName) As Surname,
-                        c.UsageTitle,
-                        c.WaterDiameterTitle MeterDiameterTitle,
-                        c.RegisterDayJalali AS EventDateJalali,
-                        TRIM(c.Address) AS Address,
-                        c.ZoneTitle,
-                        c.DeletionStateId,
-                        c.DeletionStateTitle AS UseStateTitle,
-                        c.DomesticCount DomesticUnit,
-	                    c.CommercialCount CommercialUnit,
-	                    c.OtherCount OtherUnit,
-                        (c.DomesticCount + c.CommercialCount + c.OtherCount) AS TotalUnit,
-	                    TRIM(c.BillId) BillId,
-	            		c.HouseholdDateJalali As HouseholdDateJalali,
-					    STUFF(c.HouseholdDateJalali,1,4,CAST(CAST(SUBSTRING(c.HouseholdDateJalali,1,4)AS int)+1 as nvarchar(4))) AS ToHouseholdDateJalali,
-	            		c.FamilyCount AS HouseholdCount,
-                        IIF(c.HouseholdDateJalali >@lastYearDate , 1 , 0) AS IsValid
-                    FROM [CustomerWarehouse].dbo.Clients c
-                    WHERE 
-	            		c.ToDayJalali IS NULL AND
-							(@fromReadingNumber IS NULL OR
-							@toReadingNumber IS NULL OR
-							c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-                        c.ZoneId in @zoneIds AND
-	            		c.HouseholdDateJalali BETWEEN @fromHouseholdDateJalali AND @toHouseholdDateJalali";
+            return @";WITH CTE AS
+                    (
+	                    SELECT 
+		                    RN= ROW_NUMBER() OVER (PARTITION by ZoneId , CustomerNumber ORDER BY RegisterDayJalali DESC, LocalId DESC),
+		                    *
+                        From [CustomerWarehouse].dbo.Clients c
+	                    Where				
+							c.FamilyCount>0 AND
+		                    (TRIM(c.HouseholdDateJalali)='' OR c.HouseholdDateJalali BETWEEN @fromDate AND @toDate) AND
+		                    c.CustomerNumber<>0 AND
+		                    c.RegisterDayJalali <= @toDate AND
+							(	@fromReadingNumber IS NULL OR
+								@toReadingNumber IS NULL OR
+								c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
+							) AND
+							c.ZoneId in @zoneIds
+                    )
+                    Select	
+                        c.RegisterDayJalali,
+                        t46.C2 AS RegionTitle,
+	                    c.CustomerNumber,
+						c.ReadingNumber,
+						TRIM(c.FirstName) AS FirstName,
+						TRIM(c.SureName) As Surname,
+						c.UsageTitle,
+						c.WaterDiameterTitle MeterDiameterTitle,
+						c.RegisterDayJalali AS EventDateJalali,
+						TRIM(c.Address) AS Address,
+						c.ZoneTitle,
+						c.DeletionStateId,
+						c.DeletionStateTitle AS UseStateTitle,
+						c.DomesticCount DomesticUnit,
+						c.CommercialCount CommercialUnit,
+						c.OtherCount OtherUnit,
+						(c.DomesticCount + c.CommercialCount + c.OtherCount) AS TotalUnit,
+						TRIM(c.BillId) BillId,
+						c.HouseholdDateJalali As HouseholdDateJalali,
+						STUFF(TRIM(c.HouseholdDateJalali),1,4,CAST(CAST(SUBSTRING(TRIM(c.HouseholdDateJalali),1,4) AS int)+1 as nvarchar(4))) AS ToHouseholdDateJalali,
+						c.FamilyCount AS HouseholdCount,
+						IIF(c.HouseholdDateJalali >= @lastYearDate , 1 , 0) AS IsValid
+                    FROM CTE c
+                    Join [Db70].dbo.T51 t51
+						On t51.C0=c.ZoneId
+					Join [Db70].dbo.T46 t46
+						On t51.C1=t46.C0
+                    WHERE	  
+                        c.RN=1 AND
+	                    c.DeletionStateId NOT IN(1,2)";
         }
     }
 }

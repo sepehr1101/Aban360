@@ -3,13 +3,11 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Contracts;
-using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
 using DNTPersianUtils.Core;
 using FluentValidation;
-using YamlDotNet.Core.Tokens;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Implementations
 {
@@ -45,15 +43,15 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
         }
         private string ReduceYear(string jalaliDate)
         {                          
-            DateOnly? lastDateJalali = jalaliDate.ToGregorianDateOnly();
-            if (!lastDateJalali.HasValue)
+            DateOnly? gregorianDate = jalaliDate.ToGregorianDateOnly();
+            if (!gregorianDate.HasValue)
             {
                 throw new BaseException(ExceptionLiterals.InvalidDate);
             }
-            return lastDateJalali
-                              .Value
-                              .AddYears(-1)
-                              .ToShortPersianDateString();
+            return gregorianDate
+                    .Value
+                    .AddYears(-1)
+                    .ToShortPersianDateString();
         }
     }
 }

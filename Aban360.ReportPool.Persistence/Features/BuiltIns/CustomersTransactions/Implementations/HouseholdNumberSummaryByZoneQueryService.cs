@@ -14,7 +14,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
     {
         public HouseholdNumberSummaryByZoneQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
         public async Task<ReportOutput<HouseholdNumberHeaderOutputDto, HouseholdNumberSummaryByZoneDataOutputDto>> GetInfo(HouseholdNumberInputDto input, string lastYearJalali)
         {
             string householdNumberQuery = GetHouseholdNumberQuery();
@@ -23,8 +24,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 fromReadingNumber = input.FromReadingNumber,
                 toReadingNumber = input.ToReadingNumber,
 
-                fromHouseholdDateJalali = input.FromHouseholdDateJalali,
-                toHouseholdDateJalali = input.ToHouseholdDateJalali,
+                fromDate = input.FromHouseholdDateJalali,
+                toDate = input.ToHouseholdDateJalali,
 
                 lastYearDate = lastYearJalali,
                 zoneIds = input.ZoneIds
@@ -54,48 +55,47 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
         private string GetHouseholdNumberQuery()
         {
-            return @";WITH Households as(
-                    SELECT 
-                        c.UsageTitle,
-                        c.ZoneTitle,
-                        c.ZoneId,
-						c.WaterDiameterId,
-                        c.DomesticCount DomesticUnit,
-	                    c.CommercialCount CommercialUnit,
-	                    c.OtherCount OtherUnit,
-						c.FamilyCount AS HouseholdCount,
-                        IIF(c.HouseholdDateJalali >@lastYearDate , 1 , 0) AS IsValid
-                    FROM [CustomerWarehouse].dbo.Clients c
-                    WHERE 
-	            		c.ToDayJalali IS NULL AND
-							(@fromReadingNumber IS NULL OR
-							@toReadingNumber IS NULL OR
-							c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-                        c.ZoneId in @zoneIds AND
-	            		c.HouseholdDateJalali BETWEEN @fromHouseholdDateJalali AND @toHouseholdDateJalali
+            return @";WITH CTE AS
+                    (
+	                    SELECT 
+		                    RN= ROW_NUMBER() OVER (PARTITION by ZoneId , CustomerNumber ORDER BY RegisterDayJalali DESC, LocalId DESC),
+		                    *
+                        From [CustomerWarehouse].dbo.Clients c
+	                    Where				
+							c.FamilyCount>0 AND
+		                    (TRIM(c.HouseholdDateJalali)='' OR c.HouseholdDateJalali BETWEEN @fromDate AND @toDate) AND
+		                    c.CustomerNumber<>0 AND
+		                    c.RegisterDayJalali <= @toDate  AND
+							(	@fromReadingNumber IS NULL OR
+								@toReadingNumber IS NULL OR
+								c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
+							) AND
+							c.ZoneId in @zoneIds
                     )
-                    Select 
-                    	MAX(t46.C2) AS RegionTitle,
-						h.ZoneTitle,
-						SUM(h.HouseholdCount) as SumHousehold,
-						COUNT(h.ZoneTitle) AS CustomerCount,
-					    SUM(ISNULL(h.CommercialUnit, 0) + ISNULL(h.DomesticUnit, 0) + ISNULL(h.OtherUnit, 0)) AS TotalUnit,
-					    SUM(ISNULL(h.CommercialUnit, 0)) AS CommercialUnit,
-                        SUM(ISNULL(h.DomesticUnit, 0)) AS DomesticUnit,
-                        SUM(ISNULL(h.OtherUnit, 0)) AS OtherUnit,
-						Count(CASE WHEN h.HouseholdCount= 1 THEN 1 ELSE Null END) AS Field1,
-						Count(CASE WHEN h.HouseholdCount= 2 THEN 1 ELSE Null END) AS Field2,
-						Count(CASE WHEN h.HouseholdCount= 3 THEN 1 ELSE Null END) AS Field3,
-						Count(CASE WHEN h.HouseholdCount= 4 THEN 1 ELSE Null END) AS Field4,
-						Count(CASE WHEN h.HouseholdCount Not In (1,2,3,4) THEN 1 ELSE Null END) AS FieldMore5
-                    From Households h
-                    Join [Db70].dbo.T5 t5
-                    	On t5.C0=h.WaterDiameterId
+                    Select	
+						--COUNT c.HouseholdDateJalali >@lastYearDate
+						MAX(t46.C2) AS RegionTitle,
+	                    c.ZoneTitle,
+                        COUNT(1) CustomerCount,
+						SUM(c.FamilyCount) as SumHousehold,
+						SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
+						SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
+						SUM(ISNULL(c.DomesticCount, 0)) AS DomesticUnit,
+						SUM(ISNULL(c.OtherCount, 0)) AS OtherUnit,
+						Count(CASE WHEN c.FamilyCount= 1 THEN 1 ELSE Null END) AS Field1,
+						Count(CASE WHEN c.FamilyCount= 2 THEN 1 ELSE Null END) AS Field2,
+						Count(CASE WHEN c.FamilyCount= 3 THEN 1 ELSE Null END) AS Field3,
+						Count(CASE WHEN c.FamilyCount= 4 THEN 1 ELSE Null END) AS Field4,
+						Count(CASE WHEN c.FamilyCount Not In (1,2,3,4) THEN 1 ELSE Null END) AS FieldMore5						
+                    FROM CTE c
 					Join [Db70].dbo.T51 t51
-						On t51.C0=h.ZoneId
+						On t51.C0=c.ZoneId
 					Join [Db70].dbo.T46 t46
 						On t51.C1=t46.C0
-                    Group By h.ZoneTitle";
+                    WHERE	  
+                        c.RN=1 AND
+	                    c.DeletionStateId NOT IN(1,2)
+					GROUP BY c.ZoneTitle";
         }
     }
 }
