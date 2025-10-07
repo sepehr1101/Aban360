@@ -12,6 +12,7 @@ namespace Aban360.ReportPool.Persistence.Base
         {
             return @";WITH CTE AS (
                     Select
+						TRIM(c.FirstName)+TRIM(c.SureName) As FullName,
                         b.BillId,
                         b.ZoneTitle,
                         b.CustomerNumber,
@@ -31,7 +32,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     From [CustomerWarehouse].dbo.Bills b
 					Join [CustomerWarehouse].dbo.Clients c 
 						ON b.CustomerNumber=c.CustomerNumber AND b.ZoneId=c.ZoneId
-					Join [CustomerWarehouse].dbo.MeterChange m
+					Left Join [CustomerWarehouse].dbo.MeterChange m
 						On c.ZoneId=m.ZoneId AND c.CustomerNumber=m.CustomerNumber
                     Where 
                         (@fromReadingNumber IS NULL OR
@@ -39,10 +40,12 @@ namespace Aban360.ReportPool.Persistence.Base
                         b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
                         b.ZoneId in @zoneIds AND
                         b.CounterStateCode NOT IN (4,7,8) AND
-						c.DeletionStateId IN (0,2) AND
+						c.DeletionStateId IN (0,4) AND
+						c.ToDayJalali IS NULL AND
 						(@fromDate IS NULL OR
 						@toDate IS NULL OR
-						b.RegisterDay BETWEEN @fromDate AND @toDate)
+						b.RegisterDay BETWEEN @fromDate AND @toDate) AND
+						b.CounterStateCode=1
 						)
                     SELECT * FROM CTE 
                     WHERE RN=1 AND CounterStateCode=1";
@@ -72,12 +75,13 @@ namespace Aban360.ReportPool.Persistence.Base
                         b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
 						b.ZoneId IN @zoneIds AND
                         b.CounterStateCode NOT IN (4,7,8) AND
-						c.DeletionStateId IN (0,2) AND
+						c.DeletionStateId IN (0,4) AND
 						(@fromDate IS NULL OR
 						@toDate IS NULL OR
-						b.RegisterDay BETWEEN @fromDate AND @toDate))
+						b.RegisterDay BETWEEN @fromDate AND @toDate) AND
+						b.CounterStateCode=1)
                     SELECT 
-						{groupingField} as ItemTitle,
+						c.{groupingField} as ItemTitle,
 						SUM(c.SumItems) as SumItems,
 						AVG(c.ConsumptionAverage) as Consumption,
 						COUNT(1) AS CustomerCount,

@@ -47,45 +47,58 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         {
             string zoneQuery = hasZone ? "AND b.ZoneId in @ZoneIds" : string.Empty;
 
-            return @$"Select 
-                    	TRIM(b.BillId) AS BillId,
-                    	MAX(b.CustomerNumber) AS CustomerNumber,
-                    	MAX(b.ReadingNumber) AS ReadingNumber,
-                    	MAX(c.FirstName) +' '+MAX(c.Surename) AS FullName,
-						MAX(TRIM(c.FatherName)) AS FatherName,
-                    	MAX(c.WaterDiameterTitle) AS MeterDiameterTitle,
-                    	MAX(c.UsageTitle2) AS UsageSellTitle,
-                    	SUM(DISTINCT b.Payable) - SUM(DISTINCT p.Amount) AS DebtAmount,
-                    	MAX(TRIM(c.Address)) AS Address,
-                    	COUNT(b.BillId) AS PeriodCount,
-                        MAX(b.ZoneTitle) AS ZoneTitle,
-                        MAX(b.CounterStateTitle) AS CounterStateTitle,
-                        MAX(c.WaterRequestDate)  AS MeterRequestDateJalali,
-						MAX(c.WaterRegisterDateJalali) AS MeterInstallationDateJalali,
-						MAX(TRIM(c.MobileNo)) as MobileNumber,
-						MAX(TRIM(c.PhoneNo)) as PhoneNumber,
-						MAX(c.ContractCapacity) as ContractualCapacity,
-						MAX(c.CommercialCount) as CommercialUnit,
-						MAX(c.DomesticCount) as DomesticUnit,
-						MAX(c.OtherCount) as OtherUnit,
-						(MAX(c.ContractCapacity) + MAX(c.DomesticCount) + MAX(c.OtherCount)) as TotalUnit,
-						MAX(CAST(c.HasCommonSiphon as int)) as SiphonDiameterTitle,
-						MAX(c.UsageTitle) as UsageTitle,
-						MAX(TRIM(c.NationalId)) as NationalCode,
-						MAX(c.EmptyCount) as EmptyUnit
-                    From [CustomerWarehouse].dbo.Bills b
-                    JOIN [CustomerWarehouse].dbo.Clients c ON b.BillId=c.BillId
-                    LEFT JOIN [CustomerWarehouse].dbo.payments as p ON p.BillTableId = b.id
-                    WHERE
-            			c.ToDayJalali IS NULL AND
-                    	p.id IS NULL AND
-                        b.TypeId=N'بسته مانع' AND
-                         	(@FromReadingNumber IS NULL OR
-                         	@ToReadingNumber IS NULL OR
-                         	c.ReadingNumber BETWEEN @FromReadingNumber AND @ToReadingNumber)
+            return @$";WITH LatestBill AS (
+                    SELECT
+                        TRIM(b.BillId) AS BillId,
+                		b.CustomerNumber,
+                		b.ReadingNumber,
+                		b.CounterStateTitle,
+                		b.ZoneTitle,
+                		b.ZoneId,
+                        b.TypeId,
+                		b.SumItems,
+                        ROW_NUMBER() OVER (PARTITION BY TRIM(b.BillId) ORDER BY b.RegisterDay DESC) AS RN
+                    FROM [CustomerWarehouse].dbo.Bills b
+                    WHERE 
+                        (@FromReadingNumber IS NULL OR
+                         @ToReadingNumber IS NULL OR
+                         b.ReadingNumber BETWEEN @FromReadingNumber AND @ToReadingNumber)
                         {zoneQuery}
-                    GROUP BY b.BillId
-                    HAVING COUNT(b.BillId) BETWEEN @FromPeriodCount AND @ToPeriodCount";
+                )
+                    SELECT 
+                		L.BillId,
+                		MAX(L.CustomerNumber)as CustomerNumber,
+                		MAX(L.ReadingNumber)as ReadingNumber,
+                		MAX(L.CounterStateTitle)as CounterStateTitle,
+                		MAX(L.ZoneTitle)as ZoneTitle,
+                        MAX(L.TypeId)as TypeId,
+                		MAX(L.SumItems)as SumItems,
+                		MAX(TRIM(c.FirstName)) +' '+MAX(TRIM(c.Surename)) AS FullName,
+                		MAX(TRIM(c.FatherName)) as FatherName,
+                		MAX(c.WaterDiameterTitle) AS MeterDiameterTitle,
+                		MAX(c.UsageTitle) AS UsageSellTitle,
+                		MAX(TRIM(c.Address)) AS Address,
+                		MAX(c.WaterRequestDate)  AS MeterRequestDateJalali,
+                		MAX(c.WaterRegisterDateJalali) AS MeterInstallationDateJalali,
+                		MAX(TRIM(c.MobileNo)) as MobileNumber,
+                		MAX(TRIM(c.PhoneNo)) as PhoneNumber,
+                		MAX(c.ContractCapacity) as ContractualCapacity,
+                		MAX(c.CommercialCount) as CommercialUnit,
+                		MAX(c.DomesticCount) as DomesticUnit,
+                		MAX(c.OtherCount) as OtherUnit,
+                		MAX(c.ContractCapacity) as ContractualCapacity,
+                		MAX(c.UsageTitle) as UsageTitle,
+                        MAX(c.MainSiphonTitle) as SiphonDiameterTitle,
+                        MAX(c.EmptyCount) as EmptyUnit,
+                		MAX(TRIM(c.NationalId)) as NationalCode
+                    FROM LatestBill l
+                	Left Join [CustomerWarehouse].dbo.Clients c
+                		On l.ZoneId=c.ZoneId AND l.CustomerNumber=c.CustomerNumber
+                    WHERE
+                		(l.RN BETWEEN @FromPeriodCount AND @ToPeriodCount) AND 
+                		c.ToDayJalali IS NULL
+                    GROUP BY l.BillId
+                    HAVING COUNT(CASE WHEN l.TypeId = N'بسته مانع' THEN 1 END) >= @ToPeriodCount";
         }
     }
 }
