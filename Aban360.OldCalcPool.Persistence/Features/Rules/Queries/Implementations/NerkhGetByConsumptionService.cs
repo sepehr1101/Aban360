@@ -35,7 +35,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
             IEnumerable<NerkhGetDto> nerkh = await _sqlReportConnection.QueryAsync<NerkhGetDto>(nerkhQuery, @params);
             IEnumerable<AbAzadFormulaDto> abAzad = await GetAbAzad(nerkh, olgoo);
             IEnumerable<ZaribGetDto> zarib = await GetZarib(nerkh, input.ZoneId);
-            return (nerkh,abAzad,zarib, int.Parse(nerkhQuery));
+            return (nerkh,abAzad,zarib, olgoo);
         }
         public async Task<(IEnumerable<NerkhGetDto>, IEnumerable<AbAzadFormulaDto>,IEnumerable<ZaribGetDto>, int)> GetWithAggregatedNerkh(NerkhByConsumptionInputDto input)
         {

@@ -14,9 +14,9 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
             _openKmQueryService.NotNull(nameof(openKmQueryService));
         }
 
-        public async Task<AddFileDto> Handle(string serverPath, string localFilePath, CancellationToken cancellationToken)
+        public async Task<AddFileDto> Handle(string billId, string localFilePath, CancellationToken cancellationToken)
         {
-            return await _openKmQueryService.AddFile(serverPath, localFilePath);
+            return await _openKmQueryService.AddFileByBillId(billId, localFilePath);
         }
     }
 }

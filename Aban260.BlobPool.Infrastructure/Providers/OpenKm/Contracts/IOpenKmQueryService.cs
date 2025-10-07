@@ -16,7 +16,8 @@ namespace Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts
         Task<AuthenticationHeaderValue> GetAuthenticationHeaderAsync();
 
         //commands
-        Task<string> AddFolder(string folderPath);
-        Task<AddFileDto> AddFile(string serverPath, string localFilePath);
+        Task<string> AddFolderByBillId(string billId);
+        Task<AddFileDto> AddFileByBillId(string billId, string localFilePath);
+        Task AddOrUpdateMetadata(string body, string nodeId);
     }
 }

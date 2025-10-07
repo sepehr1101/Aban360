@@ -1,4 +1,5 @@
 ﻿using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Querys.Contracts;
+using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -20,10 +21,10 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Commands
         [Route("create-folder")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<string>), StatusCodes.Status200OK)]
         [AllowAnonymous]
-        public async Task<IActionResult> GetDirectoryTree(string path, CancellationToken cancellation)
+        public async Task<IActionResult> CreateFolder(string billId, CancellationToken cancellation)
         {
-            string result = await _createFolderHandler.Handle(path, cancellation);
-            return Ok(result);
+            string uuid = await _createFolderHandler.Handle(billId, cancellation);
+            return Ok(uuid);
         }
     }
 }
