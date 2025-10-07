@@ -2,6 +2,7 @@
 {
     public record HouseholdNumberDataOutputDto
     {
+        public string RegionTitle { get; set; } = default!;
         public int CustomerNumber { get; set; }
         public string ReadingNumber { get; set; }
         public string FirstName { get; set; }
