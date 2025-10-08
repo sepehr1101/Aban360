@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
-    internal sealed class UnreadQueryService : AbstractBaseConnection, IUnreadQueryService
+    internal sealed class UnreadQueryService : UnreadBase, IUnreadQueryService
     {
         public UnreadQueryService(IConfiguration configuration)
             : base(configuration)
@@ -18,7 +18,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<UnreadHeaderOutputDto, UnreadDataOutputDto>> GetInfo(UnreadInputDto input)
         {
-            string unread = GetUnreadQuery(input.ZoneIds?.Any()==true);
+            string query = GetDetailQuery(input.ZoneIds?.Any()==true);
+            //string query = GetUnreadQuery(input.ZoneIds?.Any()==true);
+
             var @params = new
             { 
                 FromReadingNumber= input.FromReadingNumber,
@@ -27,7 +29,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToPeriodCount= input.ToPeriodCount,
                 ZoneIds=input.ZoneIds,
             };
-            IEnumerable<UnreadDataOutputDto> unreadData = await _sqlReportConnection.QueryAsync<UnreadDataOutputDto>(unread,@params);
+            IEnumerable<UnreadDataOutputDto> unreadData = await _sqlReportConnection.QueryAsync<UnreadDataOutputDto>(query,@params);
             UnreadHeaderOutputDto unreadHeader = new UnreadHeaderOutputDto()
             { 
                 FromReadingNumber=input.FromReadingNumber,

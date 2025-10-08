@@ -23,5 +23,10 @@
         public int Field5 { get; set; }
         public int MoreThan6 { get; set; }
 
+
+        public int Count0 { get; set; }
+        public int Count1 { get; set; }
+        public int Count2 { get; set; }
+        public int CountMore { get; set; }
     }
 }

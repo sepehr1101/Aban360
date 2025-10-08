@@ -30,7 +30,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						m.ChangeDateJalali AS LatestChangeDateJalali,
 	                    RN=ROW_NUMBER() OVER (PARTITION BY b.BillId ORDER BY b.RegisterDay,m.ChangeDateJalali DESC)
                     From [CustomerWarehouse].dbo.Bills b
-					Join [CustomerWarehouse].dbo.Clients c 
+					Left Join [CustomerWarehouse].dbo.Clients c 
 						ON b.CustomerNumber=c.CustomerNumber AND b.ZoneId=c.ZoneId
 					Left Join [CustomerWarehouse].dbo.MeterChange m
 						On c.ZoneId=m.ZoneId AND c.CustomerNumber=m.CustomerNumber
@@ -67,7 +67,7 @@ namespace Aban360.ReportPool.Persistence.Base
                         b.ConsumptionAverage,
 	                    RN=ROW_NUMBER() OVER (PARTITION BY b.BillId ORDER BY b.RegisterDay DESC)
                     From [CustomerWarehouse].dbo.Bills b
-					Join [CustomerWarehouse].dbo.Clients c 
+					Left Join [CustomerWarehouse].dbo.Clients c 
 						ON b.CustomerNumber=c.CustomerNumber AND b.ZoneId=c.ZoneId
                     Where 
                         (@fromReadingNumber IS NULL OR
@@ -76,6 +76,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						b.ZoneId IN @zoneIds AND
                         b.CounterStateCode NOT IN (4,7,8) AND
 						c.DeletionStateId IN (0,4) AND
+						c.ToDayJalali IS NULL AND
 						(@fromDate IS NULL OR
 						@toDate IS NULL OR
 						b.RegisterDay BETWEEN @fromDate AND @toDate) AND

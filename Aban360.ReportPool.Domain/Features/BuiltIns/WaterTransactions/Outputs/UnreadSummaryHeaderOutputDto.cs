@@ -18,5 +18,10 @@
         public int SumOtherUnit { get; set; }
         public int TotalUnit { get; set; }
         public int CustomerCount { get; set; }
+
+        public int? Count0 { get; set; }
+        public int? Count1 { get; set; }
+        public int? Count2 { get; set; }
+        public int? CountMore { get; set; }
     }
 }
