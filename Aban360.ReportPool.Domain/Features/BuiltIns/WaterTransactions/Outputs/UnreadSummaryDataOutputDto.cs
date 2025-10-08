@@ -5,6 +5,9 @@
         public bool IsFirstRow { get; set; }
 
         public string ItemTitle { get; set; }
+        public string ZoneTitle { get; set; }
+        public string UsageTitle { get; set; }
+        public string RegionTitle { get; set; }
         public int Closed { get; set; }
         public int Barrier { get; set; }
         public int CustomerCount { get; set; }
@@ -23,6 +26,11 @@
         public int Field4 { get; set; }
         public int Field5 { get; set; }
         public int MoreThan6 { get; set; }
+
+        public int Count0 { get; set; }
+        public int Count1 { get; set; }
+        public int Count2 { get; set; }
+        public int CountMore { get; set; }
 
     }
 }

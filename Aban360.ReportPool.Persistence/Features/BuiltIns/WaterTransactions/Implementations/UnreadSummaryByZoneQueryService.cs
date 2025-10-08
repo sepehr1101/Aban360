@@ -1,8 +1,9 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
-    internal sealed class UnreadSummaryByZoneQueryService : AbstractBaseConnection, IUnreadSummaryByZoneQueryService
+    internal sealed class UnreadSummaryByZoneQueryService : UnreadBase, IUnreadSummaryByZoneQueryService
     {
         public UnreadSummaryByZoneQueryService(IConfiguration configuration)
             : base(configuration)
@@ -19,7 +20,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<UnreadSummaryHeaderOutputDto, UnreadSummaryByZoneDataOutputDto>> GetInfo(UnreadInputDto input)
         {
-            string UnreadSummaryByZone = GetUnreadSummaryByZoneQuery(input.ZoneIds?.Any() == true);
+            string query = GetGroupedQuery(input.ZoneIds?.Any() == true,GroupingFields.ZoneTitle);
+            //string query = GetUnreadSummaryByZoneQuery(input.ZoneIds?.Any() == true);
+            
             var @params = new
             {
                 input.FromReadingNumber,
@@ -28,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToPeriodCount = input.ToPeriodCount,
                 input.ZoneIds,
             };
-            IEnumerable<UnreadSummaryByZoneDataOutputDto> UnreadSummaryByZoneData = await _sqlReportConnection.QueryAsync<UnreadSummaryByZoneDataOutputDto>(UnreadSummaryByZone, @params);
+            IEnumerable<UnreadSummaryByZoneDataOutputDto> UnreadSummaryByZoneData = await _sqlReportConnection.QueryAsync<UnreadSummaryByZoneDataOutputDto>(query, @params);
             UnreadSummaryHeaderOutputDto UnreadSummaryByZoneHeader = new UnreadSummaryHeaderOutputDto()
             {
                 FromReadingNumber = input.FromReadingNumber,
@@ -45,6 +48,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 SumOtherUnit = UnreadSummaryByZoneData.Sum(i => i.OtherUnit),
                 TotalUnit = UnreadSummaryByZoneData.Sum(i => i.TotalUnit),
                 CustomerCount = UnreadSummaryByZoneData.Sum(i => i.CustomerCount),
+                Count0 = UnreadSummaryByZoneData?.Sum(i => i.Count0) ?? 0,
+                Count1 = UnreadSummaryByZoneData?.Sum(i => i.Count1) ?? 0,
+                Count2 = UnreadSummaryByZoneData?.Sum(i => i.Count2) ?? 0,
+                CountMore = UnreadSummaryByZoneData?.Sum(i => i.CountMore) ?? 0,
             };
 
             var result = new ReportOutput<UnreadSummaryHeaderOutputDto, UnreadSummaryByZoneDataOutputDto>(ReportLiterals.UnreadSummary + ReportLiterals.ByZone, UnreadSummaryByZoneHeader, UnreadSummaryByZoneData);

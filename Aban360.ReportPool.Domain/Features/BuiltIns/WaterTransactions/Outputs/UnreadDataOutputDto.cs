@@ -27,5 +27,6 @@
         public string NationalCode { get; set; }
         public string EmptyUnit { get; set; }
         public string BillId { get; set; }
+
     }
 }
