@@ -74,6 +74,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     c.CommercialCount AS CommercialUnit,
                     c.DomesticCount AS DomesticUnit,
                     c.OtherCount AS OtherUnit,
+                    (c.ContractCapacity + c.DomesticCount + c.OtherCount) as TotalUnit,
                 	c.UsageTitle,
                     c.MainSiphonTitle AS SiphonDiameterTitle,
                     c.EmptyCount AS EmptyUnit,

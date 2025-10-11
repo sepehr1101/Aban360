@@ -55,19 +55,19 @@ namespace Aban360.ReportPool.Persistence.Base
                     	c.{groupingField} AS ItemTitle,
                     	c.{groupingField} ,
 						ROUND(AVG(CONVERT(float, DATEDIFF(DAY,
-                        Case When LEN(c.{groupingField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{groupingField}) END,
-                        Case When LEN(c.{groupingField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{groupingField}) END))), 2) AS DistanceAverage
+                        Case When LEN(c.{queryParams.DataField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{queryParams.DataField}) END,
+                        Case When LEN(c.{queryParams.RegisterField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{queryParams.RegisterField}) END))), 2) AS DistanceAverage
                     From [CustomerWarehouse].dbo.Clients c	
 					Join [Db70].dbo.T51 t51
 						On t51.C0=c.ZoneId
 					Join [Db70].dbo.T46 t46
 						On t51.C1=t46.C0
                     Where	
-					    c.{groupingField} IS NOT NULL AND
-					    c.{groupingField} IS NOT NULL AND
-					    TRIM(c.{groupingField}) != '' AND
-					    TRIM(c.{groupingField}) != '' AND
-                    	c.{groupingField} BETWEEN @fromDate AND @toDate AND
+					    c.{queryParams.DataField} IS NOT NULL AND
+					    c.{queryParams.RegisterField} IS NOT NULL AND
+					    TRIM(c.{queryParams.DataField}) != '' AND
+					    TRIM(c.{queryParams.RegisterField}) != '' AND
+                    	c.{queryParams.RegisterField} BETWEEN @fromDate AND @toDate AND
                         (@fromReadingNumber IS NULL OR
                         @toReadingNumber IS NULL OR
                         c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
