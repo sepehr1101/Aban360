@@ -23,6 +23,7 @@
         public long Remained { get; set; }
         public string Description { get; set; } = default!;
         public string? BankTitle { get; set; }
+        public int? BankCode { get; set; }
 
         public string BillId { get; set; } = default!;
         public int? PreviousMeterNumber { get; set; }//

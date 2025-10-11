@@ -33,7 +33,6 @@ namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implemen
             return result;
         }
         private string GetDistance(string latestMeterChange, string waterInstallDate)
-
         {
             int? distance = CalculationDistanceDate.CalcDistance(string.IsNullOrWhiteSpace(latestMeterChange) ? waterInstallDate : latestMeterChange);
             return distance.HasValue ? CalculationDistanceDate.ConvertDaysToDate(distance.Value) : ExceptionLiterals.Incalculable;

@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
@@ -21,9 +22,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         {
             string rangeValues = string.Join(",", input.Values.Select(v => $"({v.FromValue},{v.ToValue})"));
 
-            string getOlgooLevelQueryString = GetOlgooLevelQuery(input.Inputs.ZoneIds?.Any() == true, input.Inputs.UsageIds?.Any() == true, input.Inputs.BranchTypeIds?.Any() == true, rangeValues);
-            string getContractualLevelQueryString = GetContractualLevelQuery(input.Inputs.ZoneIds?.Any() == true, input.Inputs.UsageIds?.Any() == true, input.Inputs.BranchTypeIds?.Any() == true, rangeValues);
-            string LevelQuery = input.IsOlgoo ? getContractualLevelQueryString : getOlgooLevelQueryString;
+			//string getOlgooLevelQueryString = GetOlgooLevelQuery(input.Inputs.ZoneIds?.Any() == true, input.Inputs.UsageIds?.Any() == true, input.Inputs.BranchTypeIds?.Any() == true, rangeValues);
+			//string getContractualLevelQueryString = GetContractualLevelQuery(input.Inputs.ZoneIds?.Any() == true, input.Inputs.UsageIds?.Any() == true, input.Inputs.BranchTypeIds?.Any() == true, rangeValues);
+			//string query = input.IsOlgoo ? getContractualLevelQueryString : getOlgooLevelQueryString;
+			string query = GetQuery(input.Inputs.ZoneIds?.Any() == true, input.Inputs.UsageIds?.Any() == true, input.Inputs.BranchTypeIds?.Any() == true, rangeValues, input.TypeLevelEnum);
+
+           // Console.WriteLine(getOlgooLevelQueryString);
 
             var @params = new
             {
@@ -42,7 +46,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 zoneIds = input.Inputs.ZoneIds,
                 branchTypeIds = input.Inputs.BranchTypeIds,
             };
-            IEnumerable<ContractualAndOlgooLevelDataOutputDto> levelData = await _sqlReportConnection.QueryAsync<ContractualAndOlgooLevelDataOutputDto>(LevelQuery, @params);
+            IEnumerable<ContractualAndOlgooLevelDataOutputDto> levelData = await _sqlReportConnection.QueryAsync<ContractualAndOlgooLevelDataOutputDto>(query, @params);
             ContractualAndOlgooLevelHeaderOutputDto levelHeader = new ContractualAndOlgooLevelHeaderOutputDto()
             {
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
@@ -88,6 +92,91 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             var result = new ReportOutput<ContractualAndOlgooLevelHeaderOutputDto, ContractualAndOlgooLevelDataOutputDto>(ReportLiterals.ContractualAndOlgooLevel, levelHeader, levelData);
             return result;
         }
+
+        private string GetQuery(bool hasZone, bool hasUsage, bool hasBranchType, string rangeValues,ContractualAndOlgooLevelInputEnum inputState)
+        {
+			string typeLevelQuery= GetTypeLevelQuery(inputState,rangeValues);
+            string zoneQuery = hasZone ? "AND b.ZoneId IN @zoneIds" : string.Empty;
+            string usageQuery = hasUsage ? "AND b.UsageId IN @usageIds" : string.Empty;
+            string branchTypeQuery = hasBranchType ? "AND b.BranchTypeId IN @branchTypeIds" : string.Empty;
+
+           
+            return $@"Select
+                        b.ZoneTitle,
+				    	g.FromValue,
+				    	g.ToValue,
+				    	Count(1) as BillCount,
+				    	SUM(b.Consumption) as Consumption,
+				    	AVG(b.ConsumptionAverage) as ConsumptionAverage,
+				    	SUM(b.Duration) as Duration,
+				    	SUM(b.SumItems) as SumItems,
+				    	SUM(b.CommercialCount+DomesticCount+OtherCount) as BillUnitCounts,
+				    	SUM(b.Item1) as Item1,
+				    	SUM(b.Item2) as Item2,
+				    	SUM(b.Item3) as Item3,
+				    	SUM(b.Item4) as Item4,
+				    	SUM(b.Item5) as Item5,
+				    	SUM(b.Item6) as Item6,
+				    	SUM(b.Item7) as Item7,
+				    	SUM(b.Item7) as Item7,
+				    	SUM(b.Item8) as Item8,
+				    	SUM(b.Item9) as Item9,
+				    	SUM(b.Item10) as Item10,
+				    	SUM(b.Item11) as Item11,
+				    	SUM(b.Item12) as Item12,
+				    	SUM(b.Item13) as Item13,
+				    	SUM(b.Item14) as Item14,
+				    	SUM(b.Item15) as Item15,
+				    	SUM(b.Item16) as Item16,
+				    	SUM(b.Item17) as Item17,
+				    	SUM(b.Item18) as Item18 
+				    From [CustomerWarehouse].dbo.Bills b
+				     {typeLevelQuery}
+                    Where
+				    	(b.RegisterDay BETWEEN @fromDate AND @toDate) AND
+				    	(@fromConsumption IS NULL OR
+				    	@toConsumption IS NULL OR
+				    	b.Consumption BETWEEn @fromConsumption AND @toConsumption) AND
+				    	(@fromAmount IS NULL OR
+				    	@toAmount IS NULL OR
+				    	b.SumItems BETWEEN @fromAmount AND @toAmount)
+				     	{usageQuery}
+				        {zoneQuery}
+                        {branchTypeQuery}
+				    Group by
+				    	g.FromValue,
+				    	g.ToValue,
+				    	b.ZoneTitle";
+        }
+
+		private string GetTypeLevelQuery(ContractualAndOlgooLevelInputEnum inputState, string rangeValues)
+        {
+            string olgooLevelSegmentQuery = @$"Join [OldCalc].dbo.table1 t
+				                             	on t.town=b.ZoneId
+				                              JOIN (
+                                                   VALUES {rangeValues}
+                                               ) AS g(FromValue, ToValue)
+                                                   ON b.ConsumptionAverage>g.FromValue*t.olgo AND ConsumptionAverage<=g.ToValue*t.olgo";
+            string contractualLevelSegmentQuery = @$" JOIN (
+                                                       VALUES {rangeValues}
+                                                   ) AS g(FromValue, ToValue)
+                                                     ON b.ConsumptionAverage >g.FromValue*b.ContractCapacity AND ConsumptionAverage<=g.ToValue*b.ContractCapacity";
+            string consumptionLevelSegmentQuery = @$" JOIN (
+                                                       VALUES {rangeValues}
+                                                   ) AS g(FromValue, ToValue)
+                                                       ON b.Consumption>g.FromValue AND ConsumptionAverage<=g.ToValue";
+
+
+            if (inputState==ContractualAndOlgooLevelInputEnum.Olgoo)
+				return olgooLevelSegmentQuery;
+			if(inputState == ContractualAndOlgooLevelInputEnum.Contractual)
+				return contractualLevelSegmentQuery;
+			if(inputState == ContractualAndOlgooLevelInputEnum.Consumption)
+				return consumptionLevelSegmentQuery;
+
+			return string.Empty;
+		}
+       
 
         private string GetOlgooLevelQuery(bool hasZone, bool hasUsage, bool hasBranchType, string rangeValues)
         {
@@ -139,7 +228,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 				    	(@fromAmount IS NULL OR
 				    	@toAmount IS NULL OR
 				    	b.SumItems BETWEEN @fromAmount AND @toAmount)
-				    	{usageQuery}
+				     	{usageQuery}
 				        {zoneQuery}
                         {branchTypeQuery}
 				    Group by
@@ -195,7 +284,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 				    	(@fromAmount IS NULL OR
 				    	@toAmount IS NULL OR
 				    	b.SumItems BETWEEN @fromAmount AND @toAmount)
-				    	{usageQuery}
+				     	{usageQuery}
 				        {zoneQuery}
                         {branchTypeQuery}
 				    Group by

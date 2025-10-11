@@ -82,7 +82,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                           DomesticUnit = g.Sum(s => s.DomesticUnit),
                           OtherUnit = g.Sum(s => s.OtherUnit),
                           TotalUnit = g.Sum(s => s.TotalUnit),
-                          CustomerCount = g.Sum(s => s.CustomerCount),
+                          BillCount = g.Sum(s => s.BillCount),
                           UnSpecified = g.Max(s => s.UnSpecified),
                           Field0_5 = g.Max(s => s.Field0_5),
                           Field0_75 = g.Max(s => s.Field0_75),
@@ -109,7 +109,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                       g.Select(v => new ReadingIssueDistanceBillSummryDataOutputDto
                       {
                           ItemTitle = v.ItemTitle,
-                          CustomerCount = v.CustomerCount,
+                          BillCount = v.BillCount,
                           TotalUnit = v.TotalUnit,
                           CommercialUnit = v.CommercialUnit,
                           DomesticUnit = v.DomesticUnit,
@@ -166,7 +166,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             return new ReadingIssueDistanceBillSummryDataOutputDto()
             {
                 ItemTitle = input.ItemTitle,
-                CustomerCount = input.CustomerCount,
+                BillCount = input.BillCount,
                 TotalUnit = input.TotalUnit,
                 CommercialUnit = input.CommercialUnit,
                 DomesticUnit = input.DomesticUnit,

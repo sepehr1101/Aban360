@@ -40,7 +40,7 @@
 
         public int ConsumptionM3 { get; set; }
         public int ConsumptionLiter { get; set; }
-        public int ConsumptionAverage { get; set; }
+        public float ConsumptionAverage { get; set; }
         public int ContractualCapacity { get; set; }
         public float ChartIndex { get; set; }
 

@@ -17,6 +17,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         {
             string latestInfoQuery = GetLatestInfoQuery();
             string latestMeterChangeDateQuery = GetMeterChangeNumberQuery();
+            string latestReplacementMeterDateQuery = GetReplacementMeterDateQuery();
             string latestDisconnectionBranchDateQuery = GetLatestDisconnectionBranchQuery();
 			string waterDebtQuery = GetWaterDebtQuery();
 			string latestPaidQuery = GetLatestPaidQuery();
@@ -40,7 +41,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             latestData.WaterDebt = await _sqlReportConnection.QueryFirstOrDefaultAsync<long>(waterDebtQuery, new { billId=billId });
 			latestData.LatestWaterPaid=await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(latestPaidQuery,new { billId=billId });
 			latestData.BranchDebt=await _sqlReportConnection.QueryFirstOrDefaultAsync<long>(branchDebtQuery,new {billId=billId});
-            latestData.LatestMainChangeDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(latestMeterChangeDateQuery, new { billId = billId, customerNumber = latestData.CustomerNumber, zoneId = latestData.ZoneId });
+            latestData.MeterReplacementDate= await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(latestMeterChangeDateQuery, new { billId = billId, customerNumber = latestData.CustomerNumber, zoneId = latestData.ZoneId });
+            latestData.LatestMainChangeDate= await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(latestReplacementMeterDateQuery, new { billId = billId, customerNumber = latestData.CustomerNumber, zoneId = latestData.ZoneId });
             latestData.LatestTemporarilyDisconnectionBranch = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(latestDisconnectionBranchDateQuery, new { billId = billId });
             latestData.ConsumptionState = CalcConsumptionState(latestData.ConsumptionAverage, latestData.ContractualCapacity == 0 ? pattern : latestData.ContractualCapacity);
            
@@ -62,7 +64,10 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 						c.HasCommonSiphon AS CommonSiphon,
 						0 AS TagStatus,
 						0 AS IsContaminated,
-						c.RegisterDayJalali AS LatestMainChangeDate
+						c.RegisterDayJalali AS LatestMainChangeDate,
+                        c.WaterInstallDate as WaterInstallationDateJalali,
+						c.DomesticCount as DomesticUnit,
+                        c.UsageId
 					From [CustomerWarehouse].dbo.Clients c
 					Where
 						c.BillId=@billId
@@ -81,7 +86,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 			return @"Select Top 1 p.RegisterDay
 				     From [CustomerWarehouse].dbo.Payments p
 				     Where p.BillId=@billId
-				     Order By p.RegisterDay";
+				     Order By p.RegisterDay Desc";
 
         }
         private string GetBranchDebtQuery()
@@ -112,7 +117,17 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 						m.ZoneId=@zoneId AND
 						m.CustomerNumber=@customerNumber
 					Order By
-						m.RegisterDateJalali";
+						m.RegisterDateJalali Desc";
+
+        }
+        
+        private string GetReplacementMeterDateQuery()
+        {
+            return @"Select c.RegisterDayJalali as LatestMainChangeDate
+                    From [CustomerWarehouse].dbo.Clients c
+                    Where	
+                    	c.BillId=@billId AND
+                    	c.ToDayJalali IS NULL";
 
         }
 

@@ -7,7 +7,8 @@ namespace Aban360.ReportPool.Persistence.Base
     {
         public ReadingIssueDistanceBillBase(IConfiguration configuration)
             :base(configuration)
-        {}
+        {
+        }
 
         internal string GetDetailQuery()
         {
@@ -69,11 +70,12 @@ namespace Aban360.ReportPool.Persistence.Base
                         MAX(t46.C2) AS RegionTitle,
                       	b.{groupingField} as ItemTitle,
                       	b.{groupingField} ,
-                      	COUNT(b.{groupingField}) as CustomerCount,
+                      	COUNT(b.{groupingField}) as BillCount,
                       	SUM(ISNULL(b.CommercialCount, 0) + ISNULL(b.DomesticCount, 0) + ISNULL(b.OtherCount, 0)) AS TotalUnit,
                       	SUM(ISNULL(b.CommercialCount, 0)) AS CommercialUnit,
                       	SUM(ISNULL(b.DomesticCount, 0)) AS DomesticUnit,
                       	SUM(ISNULL(b.OtherCount, 0)) AS OtherUnit,
+                     	AVG(CONVERT(float, DATEDIFF(DAY, [CustomerWarehouse].dbo.PersianToMiladi(b.NextDay), [CustomerWarehouse].dbo.PersianToMiladi(b.RegisterDay))) ) AS AverageAll,
                       	AVG(CASE WHEN b.WaterDiameterId = 0 THEN CONVERT(float, DATEDIFF(DAY, [CustomerWarehouse].dbo.PersianToMiladi(b.NextDay), [CustomerWarehouse].dbo.PersianToMiladi(b.RegisterDay))) ELSE null END) AS UnSpecified,
                       	AVG(CASE WHEN b.WaterDiameterId = 1 THEN CONVERT(float, DATEDIFF(DAY, [CustomerWarehouse].dbo.PersianToMiladi(b.NextDay), [CustomerWarehouse].dbo.PersianToMiladi(b.RegisterDay))) ELSE null END) AS Field0_5,
                       	AVG(CASE WHEN b.WaterDiameterId = 2 THEN CONVERT(float, DATEDIFF(DAY, [CustomerWarehouse].dbo.PersianToMiladi(b.NextDay), [CustomerWarehouse].dbo.PersianToMiladi(b.RegisterDay))) ELSE null END) AS Field0_75,

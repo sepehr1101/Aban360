@@ -33,8 +33,10 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                 throw new InvalidIdException();
 
             result.LastMeterReadingDate = historyBillData.LastMeterReadingDate;
-            result.LastWaterBillRefundDate = historyBillData.LastWaterBillRefundDate;
-            result.LastSubscriptionRefundDate = historyBillData.LastSubscriptionRefundDate;
+           // result.LastWaterBillRefundDate = historyBillData.LastWaterBillRefundDate;
+            result.LastWaterBillRefundDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(GetLatestWaterRefundDateQuery(), new { billId });
+			// result.LastSubscriptionRefundDate = historyBillData.LastSubscriptionRefundDate;
+			result.LastSubscriptionRefundDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(GetLatestServiceLinkRefundDateQuery(), new { billId });
             result.LastTemporaryDisconnectionDate = historyBillData.LastTemporaryDisconnectionDate;
 
             result.LastPaymentDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(lastPaymentQuery, new { billId });
@@ -91,7 +93,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 						c.CustomerNumber AS CustomerNumber,
 						c.WaterRequestDate , 
 						c.WaterInstallDate AS WaterInstallationDate,
-						c.RegisterDayJalali AS WaterRegistrationDate,
+						c.WaterRegisterDateJalali AS WaterRegistrationDate,
 						'' AS GuaranteeDate,
 						'' AS LastReconnectionDate,
 						'' AS WaterSubscriptionCancellationDate,
@@ -100,7 +102,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 						'' AS HouseholdCountEndDate,
 						c.SewageRequestDate AS SewageRequestDate,
 						c.SewageInstallDate AS SewageInstallationDate,
-						'' AS SewageRegistrationDate,
+						c.SewageRegisterDateJalali AS SewageRegistrationDate,
 						'' AS SiphonReplacementDate
 					from [CustomerWarehouse].dbo.Clients c
 					where 
@@ -131,20 +133,43 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 
         }
 
-        private string GetDataInBillsQuery()
+        private string GetDataInBillsQuery()//todo:check
         {
-            return @"Select Top 1
-						b.RegisterDay AS LastMeterReadingDate,
-						b.TypeId AS LastWaterBillRefundDate,--اخرین برگشتی اب بها
-						b.RegisterDay AS LastSubscriptionRefundDate,--حق انشعاب
-						Case	
-							When b.BranchType=N'کمیته امداد' Then N'کمیته امداد'	
-							When b.BranchType=N'بهزیستی' Then N'بهزیستی'
-						End LastTemporaryDisconnectionDate
-					From [CustomerWarehouse].dbo.Bills b
-					Where b.BillId=@billId
-					Order By b.RegisterDay Desc";
+				return @"Select Top 1
+							b.RegisterDay AS LastMeterReadingDate,
+							b.TypeId AS LastWaterBillRefundDate,--اخرین برگشتی اب بها
+							b.RegisterDay AS LastSubscriptionRefundDate,--حق انشعاب
+							Case	
+								When b.BranchType=N'کمیته امداد' Then N'کمیته امداد'	
+								When b.BranchType=N'بهزیستی' Then N'بهزیستی'
+							End LastTemporaryDisconnectionDate
+						From [CustomerWarehouse].dbo.Bills b
+						Where b.BillId=@billId
+						Order By b.RegisterDay Desc";
         }
+
+		private string GetLatestWaterRefundDateQuery()
+		{
+			return @"Select Top 1
+						b.RegisterDay AS LastWaterBillRefundDate--اخرین برگشتی اب بها
+					From [CustomerWarehouse].dbo.Bills b
+					Where 
+						b.BillId=@billId AND 
+						b.TypeCode = 5 
+					Order By 
+						b.RegisterDay Desc";
+		}
+		
+		private string GetLatestServiceLinkRefundDateQuery()
+		{
+			return @"Select Top 1		
+						r.RegisterDate AS LastSubscriptionRefundDate--حق انشعاب
+					From [CustomerWarehouse].dbo.RequestBillDetails r
+					Where 
+						r.BillId=@billId AND 
+						r.TypeCode = 4
+					Order By r.RegisterDate Desc";
+		}
 
         private string GetLatestHouseholdDateQuery()
         {

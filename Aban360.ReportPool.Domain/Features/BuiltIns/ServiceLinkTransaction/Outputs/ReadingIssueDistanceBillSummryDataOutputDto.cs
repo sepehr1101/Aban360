@@ -8,11 +8,12 @@
         public string ZoneTitle { get; set; }
         public string UsageTitle { get; set; }
         public string ItemTitle { get; set; }
-        public int CustomerCount { get; set; }
+        public int BillCount { get; set; }
         public int TotalUnit { get; set; }
         public int CommercialUnit { get; set; }
         public int DomesticUnit { get; set; }
         public int OtherUnit { get; set; }
+        public float AverageAll { get; set; }
 
         public int UnSpecified { get; set; }
         public string UnSpecifiedText { get; set; }
