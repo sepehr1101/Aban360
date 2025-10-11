@@ -92,14 +92,15 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	r.UsageId AS UsageId,
                     	r.TrackNumber,
                     	r.RegisterDate collate SQL_Latin1_General_CP1_CI_AS AS RegisterDateJalali,
-                    	IIF(TypeCode in (4,6) AND r.FinalAmount<0, -1*r.FinalAmount, IIF(r.finalAmount<0,r.FinalAmount,0)) AS CreditAmount,
-                    	IIF(r.FinalAmount>0,r.FinalAmount,0) AS DebtAmount,
+                        IIF(r.Amount>0, r.Amount, 0) DebtAmount,
+                        IIF(r.FinalAmount>0, r.FinalAmount,0) AS AmountAfterDiscount,  
+                    	IIF(TypeCode in (4,6) AND r.FinalAmount<0, -1*r.FinalAmount, IIF(r.finalAmount<0,r.FinalAmount,0)) AS CreditAmount,                    	                     
                     	'' AS BankDateJalali,
                     	'' AS BankName,
                     	r.ItemTitle+'('+r.TypeId+')' AS Description	,
 						0 AS BankCode, 
                         r.OffAmount as DiscountAmount,
-                        r.OffTitle as DiscountTitle
+                        IIF(r.OffAmount<>0, r.OffTitle,'') as DiscountTitle
                     From [CustomerWarehouse].dbo.RequestBillDetails r
                     Where
                     	r.CustomerNumber=@customerNumber AND 
@@ -111,8 +112,9 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	0 AS UsageId,
                     	'' AS TrackNumber,
                     	p.RegisterDay AS RegisterDateJalali,
-                    	IIF(p.Amount>0,p.Amount,0)  AS CreditAmount,
-                    	0 AS DebtAmount,
+                        0 AS DebtAmount,
+                        0 AmountAfterDiscount,
+                    	IIF(p.Amount>0,p.Amount,0) AS CreditAmount,                    	
                     	p.RegisterDay AS BankDateJalali,
                     	p.BankName,
                     	p.BankName +' - '+p.PaymentGateway AS Description,
