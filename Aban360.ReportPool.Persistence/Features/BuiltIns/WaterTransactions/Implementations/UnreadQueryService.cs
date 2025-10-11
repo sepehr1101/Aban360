@@ -29,7 +29,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToPeriodCount= input.ToPeriodCount,
                 ZoneIds=input.ZoneIds,
             };
-            IEnumerable<UnreadDataOutputDto> unreadData = await _sqlReportConnection.QueryAsync<UnreadDataOutputDto>(query,@params);
+            IEnumerable<UnreadDataOutputDto> unreadData = await _sqlReportConnection.QueryAsync<UnreadDataOutputDto>(query, @params, null, 180);
             UnreadHeaderOutputDto unreadHeader = new UnreadHeaderOutputDto()
             { 
                 FromReadingNumber=input.FromReadingNumber,
