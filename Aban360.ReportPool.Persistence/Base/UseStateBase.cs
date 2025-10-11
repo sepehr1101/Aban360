@@ -6,12 +6,14 @@ namespace Aban360.ReportPool.Persistence.Base
     {
         public UseStateBase(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         internal string GetDetailQuery()
         {
             return @";WITH CTE AS 
                      (SELECT 
+                        RN=ROW_NUMBER() OVER (PARTITION BY ZoneId, CustomerNumber ORDER BY RegisterDayJalali DESC, LocalId DESC),
                     	c.CustomerNumber,
                     	c.ReadingNumber,
                     	TRIM(c.FirstName) AS FirstName,
@@ -37,25 +39,27 @@ namespace Aban360.ReportPool.Persistence.Base
                         TRIM(c.PhoneNo) AS PhoneNumber,
 						TRIM(c.MobileNo) AS MobileNumber,
 						TRIM(c.NationalId) AS NationalCode,
-						TRIM(c.PostalCode) AS PostalCode,
-	                    RN=ROW_NUMBER() OVER (PARTITION BY ZoneId, CustomerNumber ORDER BY RegisterDayJalali DESC)
+						TRIM(c.PostalCode) AS PostalCode	                   
                     FROM [CustomerWarehouse].dbo.Clients c
                     WHERE 
-                       c.FromDayJalali>=@fromDate and
-                       c.ToDayJalali<=@toDate and
-                       c.DeletionStateId=@useStateId and
-                        (@fromReadingNumber IS NULL OR
-						@toReadingNumber IS NULL OR
-						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) and  
-                        c.ZoneId in @zoneIds)
+                       c.RegisterDayJalali Between @fromDate and @toDate AND
+                       (   @fromReadingNumber IS NULL OR
+						   @toReadingNumber IS NULL OR
+						   c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
+                       ) and  
+                        c.ZoneId in @zoneIds
+                    ) --CTE END
                     SELECT * FROM CTE
-                    WHERE RN=1 AND DeletionStateId=@useStateId";
+                    WHERE 
+                        RN=1 AND
+                        DeletionStateId=@useStateId";
         }
 
         internal string GetGroupedQuery(string groupingField)
         {
             return $@";WITH CTE AS 
                      (SELECT 
+                        RN=ROW_NUMBER() OVER (PARTITION BY ZoneId, CustomerNumber ORDER BY RegisterDayJalali DESC, LocalId DESC),
 						c.UsageTitle,
                         c.ZoneTitle,
                         c.ZoneId,
@@ -63,17 +67,15 @@ namespace Aban360.ReportPool.Persistence.Base
 						c.CommercialCount,
 						c.DomesticCount,
 						c.OtherCount,
-						c.DeletionStateId,
-	                    RN=ROW_NUMBER() OVER (PARTITION BY ZoneId, CustomerNumber ORDER BY RegisterDayJalali DESC)
+						c.DeletionStateId	                   
                     FROM [CustomerWarehouse].dbo.Clients c 
                     WHERE 
-                       c.FromDayJalali>=@fromDate and
-                       c.ToDayJalali<=@toDate and
-                       c.DeletionStateId=@useStateId and
-                        (@fromReadingNumber IS NULL OR
-						@toReadingNumber IS NULL OR
-						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) and  
-                        c.ZoneId in @zoneIds
+                       c.RegisterDayJalali Between @fromDate and @toDate AND
+                       (   @fromReadingNumber IS NULL OR
+						   @toReadingNumber IS NULL OR
+						   c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
+                       ) and  
+                       c.ZoneId in @zoneIds
 					)
                     SELECT 
 						MAX(t46.C2) AS RegionTitle,
