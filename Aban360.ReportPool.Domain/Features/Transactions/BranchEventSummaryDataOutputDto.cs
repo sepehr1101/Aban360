@@ -15,5 +15,6 @@
         public int BankCode { get; set; }
         public long DiscountAmount { get; set; }
         public string DiscountTitle { get; set; }
+        public long AmountAfterDiscount { get; set; }
     }
 }

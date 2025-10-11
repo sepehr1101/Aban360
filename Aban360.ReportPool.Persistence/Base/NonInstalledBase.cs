@@ -6,14 +6,33 @@ namespace Aban360.ReportPool.Persistence.Base
     {
         public NonInstalledBase(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
-        internal string GetDetailQuery(bool isWater)
+        internal string GetDetailsQuery(bool isWater)
         {
             QueryParam param = GetQueryParam(isWater);
-
-            return @$"Select
-                        c.CustomerNumber, 
+            return $@"
+                    ;WITH CTE AS
+                    (
+	                    SELECT 
+		                    RN= ROW_NUMBER() OVER (PARTITION by ZoneId , CustomerNumber ORDER BY RegisterDayJalali DESC, LocalId DESC),
+		                    *
+                        From [CustomerWarehouse].dbo.Clients c
+	                    Where				
+		                    c.{param.RequestDate} BETWEEN @fromDate AND @toDate AND
+		                    c.CustomerNumber<>0 AND
+		                    c.RegisterDayJalali <= @toDate AND
+                            c.ZoneId IN @zoneIds  AND
+						    c.ToDayJalali IS NULL AND
+						    (
+                                @fromReadingNumber IS NULL OR
+						        @toReadingNumber IS NULL OR
+						        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
+                            )
+                    )
+                    Select	
+	                  c.CustomerNumber, 
                     	c.ReadingNumber,
                     	TRIM(c.FirstName) AS FirstName,
                     	TRIM(c.SureName) AS Surname,
@@ -33,23 +52,40 @@ namespace Aban360.ReportPool.Persistence.Base
                     	c.{param.RequestDate} AS RequestDate,
 						c.{param.RegisterDate} AS RegisterDateJalali,
                         c.{param.InstallDate} AS InstallationDateJalali
-                    From [CustomerWarehouse].dbo.Clients c
-                    Where	
-                    	{param.RequestDate} BETWEEN @fromDate AND @toDate AND
-						(TRIM(c.{param.InstallDate})<'1330/01/01' OR c.{param.InstallDate} IS NULL) AND
-                    	c.ZoneId IN @zoneIds  AND
-						c.ToDayJalali IS NULL AND
-						(@fromReadingNumber IS NULL OR
-						@toReadingNumber IS NULL OR
-						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)";
+                    FROM CTE c
+                    JOIN [Db70].dbo.T51 t51
+	                    On t51.C0=c.ZoneId
+                    JOIN [Db70].dbo.T46 t46
+	                    On t51.C1=t46.C0
+                    WHERE	  
+                        c.RN=1 AND
+	                    c.DeletionStateId NOT IN(1,2) AND
+						(c.{param.InstallDate})<='1330/01/01' ";
         }
 
-        internal string GetGroupedQuery(bool isWater,string groupingField)
+        internal string GetGroupedQuery(bool isWater, string groupingField)
         {
             QueryParam param = GetQueryParam(isWater);
-
-            return $@"Select	
-						MAX(t46.C2) AS RegionTitle,
+            return $@"
+                    ;WITH CTE AS
+                    (
+	                    SELECT 
+		                    RN= ROW_NUMBER() OVER (PARTITION by ZoneId , CustomerNumber ORDER BY RegisterDayJalali DESC, LocalId DESC),
+		                    *
+                        From [CustomerWarehouse].dbo.Clients c
+	                    Where				
+		                    c.{param.RequestDate} BETWEEN @fromDate AND @toDate AND
+		                    c.CustomerNumber<>0 AND
+		                    c.RegisterDayJalali <= @toDate AND
+                            c.ZoneId IN @zoneIds  AND
+						    c.ToDayJalali IS NULL AND
+						    (   @fromReadingNumber IS NULL OR
+						        @toReadingNumber IS NULL OR
+						        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
+                            )
+                    )
+                    Select	
+	                    MAX(t46.C2) AS RegionTitle,
                     	c.{groupingField} as ItemTitle,
                     	c.{groupingField},
                     	COUNT(c.{groupingField}) AS CustomerCount,
@@ -68,21 +104,16 @@ namespace Aban360.ReportPool.Persistence.Base
 				        SUM(CASE WHEN c.WaterDiameterId = 8 THEN 1 ELSE 0 END) AS Field4,
 				        SUM(CASE WHEN c.WaterDiameterId = 9 THEN 1 ELSE 0 END) AS Field5,
 				        SUM(CASE WHEN c.WaterDiameterId In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6
-                    From [CustomerWarehouse].dbo.Clients c
-					Join [Db70].dbo.T51 t51
-						On t51.C0=c.ZoneId
-					Join [Db70].dbo.T46 t46
-						On t51.C1=t46.C0
-                    Where	
-                    	c.{param.RequestDate} BETWEEN @fromDate AND @toDate AND
-						(TRIM(c.{param.RegisterDate})='' OR c.{param.RegisterDate} IS NULL) AND
-                    	c.ZoneId IN @zoneIds AND
-						c.ToDayJalali IS NULL AND
-						(@fromReadingNumber IS NULL OR
-						@toReadingNumber IS NULL OR
-						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)
-                    Group BY
-                    	c.{groupingField}";
+                    FROM CTE c
+                    JOIN [Db70].dbo.T51 t51
+	                    On t51.C0=c.ZoneId
+                    JOIN [Db70].dbo.T46 t46
+	                    On t51.C1=t46.C0
+                    WHERE	  
+                        c.RN=1 AND
+	                    c.DeletionStateId NOT IN(1,2) AND
+						(c.{param.InstallDate})<='1330/01/01'
+					GROUP BY c.{groupingField}";
         }
 
         private QueryParam GetQueryParam(bool isWater)

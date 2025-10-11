@@ -19,8 +19,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         public async Task<ReportOutput<SewageWaterRequestNonInstalledHeaderOutputDto, SewageWaterRequestNonInstalledDetailDataOutputDto>> Get(SewageWaterRequestNonInstalledInputDto input)
         {
-            string query = GetDetailQuery(input.IsWater);
-            //string query = GetQuery(input.IsWater);
+            string query = GetDetailsQuery(input.IsWater);
             
             string reportTitle = input.IsWater ? ReportLiterals.WaterRequestNonInstalledDetail : ReportLiterals.SewageRequestNonInstalledDetail;
             var @params = new
