@@ -20,9 +20,9 @@
 
         public string? LastPaymentDate { get; set; }//
         public string? LattestChangeMianInfoDate { get; set; }//
-        public string LastWaterBillRefundDate { get; set; }//
+        public string? LastWaterBillRefundDate { get; set; }//
 
-        public string LastSubscriptionRefundDate { get; set; }//
+        public string? LastSubscriptionRefundDate { get; set; }//
         public string? HouseholdCountStartDate { get; set; }//
         public string HouseholdCountEndDate { get; set; }//
 

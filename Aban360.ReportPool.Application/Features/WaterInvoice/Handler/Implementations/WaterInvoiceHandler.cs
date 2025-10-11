@@ -48,16 +48,21 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
         }
         private async Task<float> GetGuageValue(float consumptionAverage, int ContractualCapacity, string billId)
         {
+            if (ContractualCapacity == 0)
+                return 0f;
+
             int olgoOrCapacity = ContractualCapacity > 0 ? ContractualCapacity : await _waterInvoiceQueryService.GetOlgo(billId);
 
-            if (consumptionAverage <= olgoOrCapacity)
+            if (consumptionAverage <= 5)
                 return 0.5f;
-            else if (consumptionAverage <= olgoOrCapacity * 2)
+            else if (consumptionAverage <= olgoOrCapacity )
                 return 1.5f;
-            else if (consumptionAverage <= olgoOrCapacity * 3)
+            else if (consumptionAverage <= olgoOrCapacity * 2)
                 return 2.5f;
-            else
+            else if (consumptionAverage <= olgoOrCapacity * 4)
                 return 3.5f;
+            else
+                return 4f;
         }
     }
 }
