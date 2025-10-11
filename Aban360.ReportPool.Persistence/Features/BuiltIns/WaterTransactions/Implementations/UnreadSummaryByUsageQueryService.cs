@@ -1,5 +1,4 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
@@ -31,8 +30,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToPeriodCount = input.ToPeriodCount,
                 input.ZoneIds,
             };
-            IEnumerable<UnreadSummaryDataOutputDto> UnreadSummaryByUsageData = await _sqlReportConnection.QueryAsync<UnreadSummaryDataOutputDto>(query,
-                                                                                                                                                 @params);
+            IEnumerable<UnreadSummaryDataOutputDto> UnreadSummaryByUsageData = await _sqlReportConnection.QueryAsync<UnreadSummaryDataOutputDto>(query, @params, null, 180);
             UnreadSummaryHeaderOutputDto UnreadSummaryByUsageHeader = new UnreadSummaryHeaderOutputDto()
             {
                 FromReadingNumber = input.FromReadingNumber,
