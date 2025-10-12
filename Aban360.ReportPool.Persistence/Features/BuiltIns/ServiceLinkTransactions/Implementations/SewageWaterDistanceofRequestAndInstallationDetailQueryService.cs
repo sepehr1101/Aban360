@@ -29,6 +29,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 zoneIds = input.ZoneIds,
                 fromReadingNumber=input.FromReadingNumber,
                 toReadingNumber=input.ToReadingNumber,
+                usageIds = input.UsageIds
             };
             IEnumerable<SewageWaterDistanceofRequestAndInstallationDetailDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<SewageWaterDistanceofRequestAndInstallationDetailDataOutputDto>(query, @params);
             SewageWaterDistanceofRequestAndInstallationHeaderOutputDto RequestHeader = new SewageWaterDistanceofRequestAndInstallationHeaderOutputDto()
@@ -54,79 +55,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             return result;
         }
        
-        private string GetWaterDistanceRequestInstallationQuery(bool isIntallation)
-        {
-            string baseDate = isIntallation ? "WaterInstallDate" : "WaterRequestDate";
-            return @$"Select
-                    	c.CustomerNumber, 
-                    	c.ReadingNumber,
-                    	TRIM(c.FirstName) AS FirstName,
-                    	TRIM(c.SureName) AS Surname,
-                    	TRIM(c.Address) AS Address,
-                    	c.UsageTitle2 AS UsageTitle,
-                    	c.WaterDiameterTitle AS MeterDiameterTitle,
-                        c.MainSiphonTitle AS SiphonDiameterTitle,
-                    	c.ZoneTitle,
-                    	c.ZoneId,
-                    	c.DomesticCount	AS DomesticUnit,
-                    	c.CommercialCount AS CommercialUnit,
-                    	c.OtherCount AS OtherUnit,
-                        (c.DomesticCount+c.CommercialCount +c.OtherCount) AS TotalUnit ,
-                    	c.BillId,
-                    	c.BranchType AS UseStateTitle,
-                    	c.ContractCapacity AS ContractualCapacity,
-                    	c.WaterRequestDate AS RequestDate,
-						c.WaterInstallDate AS InstallationDate
-                    From [CustomerWarehouse].dbo.Clients c
-                    Where	
-                        c.{baseDate} IS NOT NULL AND
-                        TRIM(c.{baseDate}) != '' AND
-                        c.WaterRegisterDateJalali IS NOT NULL AND
-                        TRIM(c.WaterRegisterDateJalali) != '' AND
-                        (@fromReadingNumber IS NULL OR
-                        @toReadingNumber IS NULL OR
-                        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-                    	c.WaterRegisterDateJalali BETWEEN @fromDate AND @toDate AND
-                    	c.ZoneId IN @zoneIds AND
-            			c.ToDayJalali IS NULL";
-        }
-        private string GetSewageDistanceRequestInstallationQuery(bool isIntallation)
-        {
-            string baseDate = isIntallation ? "SewageInstallDate" : "SewageRequestDate";
-
-            return @$"Select
-                    	c.CustomerNumber, 
-                    	c.ReadingNumber,
-                    	TRIM(c.FirstName) AS FirstName,
-                    	TRIM(c.SureName) AS Surname,
-                    	TRIM(c.Address) AS Address,
-                    	c.UsageTitle2 AS UsageTitle,
-                    	c.WaterDiameterTitle AS MeterDiameterTitle,
-                        c.MainSiphonTitle AS SiphonDiameterTitle,
-                    	c.ZoneTitle,
-                    	c.ZoneId,
-                    	c.DomesticCount	AS DomesticUnit,
-                    	c.CommercialCount AS CommercialUnit,
-                    	c.OtherCount AS OtherUnit,
-                        (c.DomesticCount+c.CommercialCount +c.OtherCount) AS TotalUnit ,
-                    	c.BillId,
-                    	c.BranchType AS UseStateTitle,
-                    	c.ContractCapacity AS ContractualCapacity,
-                    	c.SewageRequestDate AS RequestDate,
-						c.SewageInstallDate AS InstallationDate
-                    From [CustomerWarehouse].dbo.Clients c
-                    Where	
-                        c.{baseDate} IS NOT NULL AND
-                        TRIM(c.{baseDate}) != '' AND
-                        c.SewageRegisterDateJalali IS NOT NULL AND
-                        TRIM(c.SewageRegisterDateJalali) != '' AND
-                        (@fromReadingNumber IS NULL OR
-                        @toReadingNumber IS NULL OR
-                        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-                    	c.SewageRegisterDateJalali BETWEEN @fromDate AND @toDate AND
-                    	c.ZoneId IN @zoneIds AND
-            			c.ToDayJalali IS NULL";
-        }
         private string GetTitle(bool IsWater, bool IsInstallation)
         {
             if (IsWater)
