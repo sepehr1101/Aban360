@@ -6,7 +6,8 @@ namespace Aban360.ReportPool.Persistence.Base
     {
         public WaterMeterReplacementsBase(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         internal string GetDetailQuery(bool isChangeDate)
         {
@@ -45,15 +46,15 @@ namespace Aban360.ReportPool.Persistence.Base
                     	c.RegisterDayJalali Desc";
         }
 
-        internal string GetGroupedQuery(bool isChangeDate,string prameter)
+        internal string GetGroupedQuery(bool isChangeDate, string groupingFiled)
         {
             string dateParam = GetQueryParams(isChangeDate);
 
             return $@"Select 
 						MAX(t46.C2) AS RegionTitle,
-                        {prameter} AS ItemTitle,
-                        {prameter},
-                        COUNT({prameter}) AS CustomerCount,
+                        {groupingFiled} AS ItemTitle,
+                        {groupingFiled},
+                        COUNT({groupingFiled}) AS CustomerCount,
                         SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
                         SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
                         SUM(ISNULL(c.DomesticCount, 0)) AS DomesticUnit,
@@ -76,15 +77,17 @@ namespace Aban360.ReportPool.Persistence.Base
 						On t51.C0=c.ZoneId
 					Join [Db70].dbo.T46 t46
 						On t51.C1=t46.C0
-                    Where 
+                    Where                         
                     	mc.{dateParam} BETWEEN @fromDate AND @toDate AND
+                        c.ToDayJalali IS NULL AND
                     	c.ZoneId IN @zoneIds AND
                     	c.UsageId IN @UsageIds AND
-						(@fromReadingNumber IS NULL OR
-                        @toReadingNumber IS NULL OR
-						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-						c.ToDayJalali IS NULL 
-                    Group By {prameter}";
+						(
+                            @fromReadingNumber IS NULL OR
+                            @toReadingNumber IS NULL OR
+						    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
+                        )						
+                    Group By {groupingFiled}";
         }
 
         private string GetQueryParams(bool isChangeDate)
@@ -93,10 +96,6 @@ namespace Aban360.ReportPool.Persistence.Base
                    RegisterDateJalali = nameof(RegisterDateJalali);
 
             return isChangeDate ? ChangeDateJalali : RegisterDateJalali;
-        }
-        private QueryParams GetQueryParams()
-        {
-            return new QueryParams("", "");
         }
 
         private record QueryParams
