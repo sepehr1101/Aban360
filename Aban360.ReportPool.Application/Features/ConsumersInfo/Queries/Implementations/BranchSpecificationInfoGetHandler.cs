@@ -5,6 +5,7 @@ using Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contracts;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 using DNTPersianUtils.Core;
+using static Aban360.Common.Timing.CalculationDistanceDate;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implementations
@@ -28,26 +29,31 @@ namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implemen
             //                      result.SiphonInstallationDate:result.LastChangeSiphonDate);
 
 
-            result.SiphonLife = GetDistance(GetSiphonDate(result.HasSewage,result.LastChangeSiphonDate,result.SiphonInstallationDate));
+            result.SiphonLife = GetDistance(GetSiphonDate(result.HasSewage, result.LastChangeSiphonDate, result.SiphonInstallationDate));
 
             return result;
         }
         private string GetDistance(string latestMeterChange, string waterInstallDate)
         {
-            int? distance = CalculationDistanceDate.CalcDistance(string.IsNullOrWhiteSpace(latestMeterChange) ? waterInstallDate : latestMeterChange);
-            return distance.HasValue ? CalculationDistanceDate.ConvertDaysToDate(distance.Value) : ExceptionLiterals.Incalculable;
+            //int? distance = CalculationDistanceDate.CalcDistance(string.IsNullOrWhiteSpace(latestMeterChange) ? waterInstallDate : latestMeterChange);
+            //return distance.HasValue ? CalculationDistanceDate.ConvertDaysToDate(distance.Value) : ExceptionLiterals.Incalculable;
+
+            CalcDistanceResultDto calcDistance = CalculationDistanceDate.CalcDistance(string.IsNullOrWhiteSpace(latestMeterChange) ? waterInstallDate : latestMeterChange);
+            return calcDistance.HasError == false ? calcDistance.DistanceText : ExceptionLiterals.Incalculable;
         }
         private string GetDistance(string date)
-
         {
-            int? distance = CalculationDistanceDate.CalcDistance(date);
-            return distance.HasValue ? CalculationDistanceDate.ConvertDaysToDate(distance.Value) : ExceptionLiterals.Incalculable;
+            //int? distance = CalculationDistanceDate.CalcDistance(date);
+            //return distance.HasValue ? CalculationDistanceDate.ConvertDaysToDate(distance.Value) : ExceptionLiterals.Incalculable;
+
+            CalcDistanceResultDto calcDistance = CalculationDistanceDate.CalcDistance(date);
+            return calcDistance.HasError == false ? calcDistance.DistanceText : ExceptionLiterals.Incalculable;
         }
 
         private string GetSiphonDate(bool hasSewage, string lastChange, string installDate)
         {
             return hasSewage ?
-                   (lastChange.ToGregorianDateOnly() > installDate.ToGregorianDateOnly() ?lastChange :installDate) :
+                   (lastChange.ToGregorianDateOnly() > installDate.ToGregorianDateOnly() ? lastChange : installDate) :
                    (ExceptionLiterals.InvalidDate);
         }
     }

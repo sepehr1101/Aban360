@@ -4,6 +4,8 @@ using Aban360.Common.Timing;
 using Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contracts;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
+using static Aban360.Common.Timing.CalculationDistanceDate;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implementations
 {
@@ -20,17 +22,21 @@ namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implemen
         public async Task<LatestWaterMeterInfoDto> Handle(string billId, CancellationToken cancellationToken)
         {
             LatestWaterMeterInfoDto latestWaterMeterInfo = await _latestWaterMeterInfoQuery.GetInfo(billId);
-            latestWaterMeterInfo.MeterLife = GetDistance(latestWaterMeterInfo.MeterReplacementDate, latestWaterMeterInfo.WaterInstallationDateJalali);
+            //latestWaterMeterInfo.MeterLife = GetDistance(latestWaterMeterInfo.MeterReplacementDate, latestWaterMeterInfo.WaterInstallationDateJalali);
+          
+            
+            CalcDistanceResultDto calcDistance = CalculationDistanceDate.CalcDistance(string.IsNullOrWhiteSpace(latestWaterMeterInfo.MeterReplacementDate) ? latestWaterMeterInfo.WaterInstallationDateJalali : latestWaterMeterInfo.MeterReplacementDate);
+            latestWaterMeterInfo.MeterLife = calcDistance.HasError == false ? calcDistance.DistanceText : ExceptionLiterals.Incalculable;
 
             latestWaterMeterInfo.PossibilityEmptyUnit = GetPossibilityEmptyUnit(latestWaterMeterInfo.ConsumptionAverage, latestWaterMeterInfo.DomesticUnit, latestWaterMeterInfo.UsageId);
 
             return latestWaterMeterInfo;
         }
-        private string GetDistance(string latestMeterChange, string waterInstallDate)
-        {
-            int? distance = CalculationDistanceDate.CalcDistance(string.IsNullOrWhiteSpace(latestMeterChange) ? waterInstallDate : latestMeterChange);
-            return distance.HasValue ? CalculationDistanceDate.ConvertDaysToDate(distance.Value) : ExceptionLiterals.Incalculable;
-        }
+        //private string GetDistance(string latestMeterChange, string waterInstallDate)
+        //{
+        //    int? distance = CalculationDistanceDate.CalcDistance(string.IsNullOrWhiteSpace(latestMeterChange) ? waterInstallDate : latestMeterChange);
+        //    return distance.HasValue ? CalculationDistanceDate.ConvertDaysToDate(distance.Value) : ExceptionLiterals.Incalculable;
+        //}
         private bool GetPossibilityEmptyUnit(float consumptionAverage, int domesticUnit, int usageId)
         {
             if (usageId != 1 && usageId != 3)

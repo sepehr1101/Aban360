@@ -39,13 +39,13 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             ICollection<float> distances = new List<float>();
             foreach (var item in result.ReportData)
             {
-                item.DistanceAverageText = CalculationDistanceDate.ConvertDaysToDate((int)item.DistanceAverage);
+                item.DistanceAverageText = CalculationDistanceDate.ConvertDayToDate((int)item.DistanceAverage);
                 distances.Add(item.DistanceAverage);
             }
             int averageDistance = (int)distances.Sum() / (result.ReportHeader.RecordCount <= 0 ? 1 : result.ReportHeader.RecordCount);
-            result.ReportHeader.AverageDistance = CalculationDistanceDate.ConvertDaysToDate(averageDistance);
-            result.ReportHeader.MaxDistance = CalculationDistanceDate.ConvertDaysToDate(distances.Any() ? (int)distances.Max() : 0);
-            result.ReportHeader.MinDistance = CalculationDistanceDate.ConvertDaysToDate(distances.Any() ? (int)distances.Min() : 0);
+            result.ReportHeader.AverageDistance = CalculationDistanceDate.ConvertDayToDate(averageDistance);
+            result.ReportHeader.MaxDistance = CalculationDistanceDate.ConvertDayToDate(distances.Any() ? (int)distances.Max() : 0);
+            result.ReportHeader.MinDistance = CalculationDistanceDate.ConvertDayToDate(distances.Any() ? (int)distances.Min() : 0);
 
 
             IEnumerable<ReportOutput<SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto>> dataGroup = result
@@ -72,7 +72,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
 
             dataGroup.ForEach(x =>
             {
-                x.ReportHeader.DistanceAverageText = CalculationDistanceDate.ConvertDaysToDate((int)x.ReportHeader.DistanceAverage);
+                x.ReportHeader.DistanceAverageText = CalculationDistanceDate.ConvertDayToDate((int)x.ReportHeader.DistanceAverage);
             });
             ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, ReportOutput<SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto>> finalData = new(result.Title, result.ReportHeader, dataGroup);
 

@@ -5,6 +5,7 @@ using Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Contracts;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Features.WaterInvoice.Contracts;
 using DNTPersianUtils.Core;
+using static Aban360.Common.Timing.CalculationDistanceDate;
 
 namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implementations
 {
@@ -35,7 +36,10 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
                             (input.PayId is null ? new string('0', 13) : input.PayId.PadLeft(13, '0'));
 
             input.PaymenetAmountText = input.PayableAmount.NumberToText(Language.Persian);
-            input.Duration = int.Parse(CalculationDistanceDate.CalcDistance(input.CurrentMeterDateJalali, input.PreviousMeterDateJalali));
+            //input.Duration = int.Parse(CalculationDistanceDate.CalcDistance(input.CurrentMeterDateJalali, input.PreviousMeterDateJalali));
+
+            CalcDistanceResultDto calcDistance = CalculationDistanceDate.CalcDistance(input.CurrentMeterDateJalali, input.PreviousMeterDateJalali);
+            input.Duration = calcDistance.HasError ? 0 : calcDistance.Distance;
 
             //var currentMeterDate = input.CurrentMeterDateJalali.ToGregorianDateOnly();
             //var previousMeterDate = input.PreviousMeterDateJalali.ToGregorianDateOnly();
