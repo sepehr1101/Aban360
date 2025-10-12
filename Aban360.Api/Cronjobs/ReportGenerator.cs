@@ -72,8 +72,9 @@ namespace Aban360.Api.Cronjobs
             //Complete ServerReport
             _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(id, reportPath,DateTime.Now,true), cancellationToken);
         }
-        public async Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId,string methodName=MethodName)
+        public async Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId,string? methodName=MethodName)
         {
+            methodName ??= MethodName;
             ServerReportsCreateDto serverReportsCreateDto = CreateServerReportDto(Guid.NewGuid(), reportInput, GetData, appUser, reportTitle, connectionId);
             await _serverReportsCreateHandler.Handle(serverReportsCreateDto, cancellationToken);
             BackgroundJob.Enqueue(() => DoFireAndInform(serverReportsCreateDto, methodName));
