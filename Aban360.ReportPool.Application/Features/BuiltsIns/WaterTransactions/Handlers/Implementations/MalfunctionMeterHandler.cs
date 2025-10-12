@@ -9,6 +9,8 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using FluentValidation;
+using static Aban360.Common.Timing.CalculationDistanceDate;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Implementations
 {
@@ -41,8 +43,11 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             malfunctionMeter.ReportData.ForEach(m =>
             {
                 string maxDateJalali = GetMaxDate(m.MeterInstallationDateJalali, m.LatestChangeDateJalali);
-                int? meterLife = CalculationDistanceDate.CalcDistance(maxDateJalali);
-                m.MeterLife = meterLife.HasValue ? CalculationDistanceDate.ConvertDaysToDate(meterLife.Value) : ExceptionLiterals.Incalculable;
+                //int? meterLife = CalculationDistanceDate.CalcDistance(maxDateJalali);
+                //m.MeterLife = meterLife.HasValue ? CalculationDistanceDate.ConvertDaysToDate(meterLife.Value) : ExceptionLiterals.Incalculable;
+            
+                CalcDistanceResultDto calcDistance = CalculationDistanceDate.CalcDistance(maxDateJalali);
+                m.MeterLife = calcDistance.HasError == false ? calcDistance.DistanceText : ExceptionLiterals.Incalculable;
             });
             return malfunctionMeter;
         }

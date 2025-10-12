@@ -38,7 +38,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             ReportOutput<UsageChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto> usageChangeHistory = await _usageChangeHistoryQueryService.GetInfo(input);
             usageChangeHistory.ReportData.ForEach(d =>
             {
-                d.DistanceText = CalculationDistanceDate.ConvertDaysToDate(d.Distance);
+                d.DistanceText = CalculationDistanceDate.ConvertDayToDate(d.Distance);
             });
             return usageChangeHistory;
         }

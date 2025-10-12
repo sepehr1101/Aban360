@@ -7,6 +7,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
 using FluentValidation;
+using static Aban360.Common.Timing.CalculationDistanceDate;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Implementations
 {
@@ -38,7 +39,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             if(result is not null && result.ReportData is not null && result.ReportData.Any())
             {
                 result.ReportData.ForEach(data => 
-                data.DistanceText = CalculationDistanceDate.CalcDistance(data.CurrentDateJalali, data.RegisterDateJalali));
+                {
+                    CalcDistanceResultDto calcDistance= CalculationDistanceDate.CalcDistance(data.CurrentDateJalali, data.RegisterDateJalali);
+                    data.DistanceText = calcDistance.DistanceText;
+                });
             }
             return result;
         }

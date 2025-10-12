@@ -8,6 +8,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using FluentValidation;
+using static Aban360.Common.Timing.CalculationDistanceDate;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Implementations
 {
@@ -38,8 +39,11 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             ReportOutput<MalfunctionMeterByDurationHeaderOutputDto, MalfunctionMeterByDurationDataOutputDto> malfunctionMeterByDuration = await _malfunctionMeterByDurationQueryService.Get(input);
             malfunctionMeterByDuration.ReportData.ForEach(data =>
             {
-                int? distance = CalculationDistanceDate.CalcDistance(data.LastChangeDateJalali);
-                data.MeterLife = distance.HasValue ? CalculationDistanceDate.ConvertDaysToDate(distance.Value) : ExceptionLiterals.Incalculable;
+                //int? distance = CalculationDistanceDate.CalcDistance(data.LastChangeDateJalali);
+                //data.MeterLife = distance.HasValue ? CalculationDistanceDate.ConvertDaysToDate(distance.Value) : ExceptionLiterals.Incalculable;
+
+                CalcDistanceResultDto calcDistance = CalculationDistanceDate.CalcDistance(data.LastChangeDateJalali);
+                data.MeterLife = calcDistance.HasError == false ? calcDistance.DistanceText : ExceptionLiterals.Incalculable;
             });
 
             return malfunctionMeterByDuration;

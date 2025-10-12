@@ -38,7 +38,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             ReportOutput<DeletionStateChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto> deletionStateChangeHistory = await _DeletionStateChangeHistoryQueryService.GetInfo(input);
             deletionStateChangeHistory.ReportData.ForEach(d =>
             { 
-                d.DistanceText=CalculationDistanceDate.ConvertDaysToDate(d.Distance); 
+                d.DistanceText=CalculationDistanceDate.ConvertDayToDate(d.Distance); 
             });
             return deletionStateChangeHistory;
         }

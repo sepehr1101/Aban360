@@ -37,17 +37,17 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryDataOutputDto> result = await _readingIssueDistanceBillSummaryByUsageQuery.GetInfo(input);
             result.ReportData.ForEach(r =>
             {
-                r.UnSpecifiedText =  CalculationDistanceDate.ConvertDaysToDate((int)r.UnSpecified);
-                r.Field0_5Text =  CalculationDistanceDate.ConvertDaysToDate((int)r.Field0_5);
-                r.Field0_75Text =  CalculationDistanceDate.ConvertDaysToDate((int)r.Field0_75);
-                r.Field1Text =  CalculationDistanceDate.ConvertDaysToDate((int)r.Field1);
-                r.Field1_2Text =  CalculationDistanceDate.ConvertDaysToDate((int)r.Field1_2);
-                r.Field1_5Text =  CalculationDistanceDate.ConvertDaysToDate((int)r.Field1_5);
-                r.Field2Text =  CalculationDistanceDate.ConvertDaysToDate((int)r.Field2);
-                r.Field3Text =  CalculationDistanceDate.ConvertDaysToDate((int)r.Field3);
-                r.Field4Text =  CalculationDistanceDate.ConvertDaysToDate((int)r.Field4);
-                r.Field5Text =  CalculationDistanceDate.ConvertDaysToDate((int)r.Field5);
-                r.MoreThan6Text =  CalculationDistanceDate.ConvertDaysToDate((int)r.MoreThan6);
+                r.UnSpecifiedText =  CalculationDistanceDate.ConvertDayToDate((int)r.UnSpecified);
+                r.Field0_5Text =  CalculationDistanceDate.ConvertDayToDate((int)r.Field0_5);
+                r.Field0_75Text =  CalculationDistanceDate.ConvertDayToDate((int)r.Field0_75);
+                r.Field1Text =  CalculationDistanceDate.ConvertDayToDate((int)r.Field1);
+                r.Field1_2Text =  CalculationDistanceDate.ConvertDayToDate((int)r.Field1_2);
+                r.Field1_5Text =  CalculationDistanceDate.ConvertDayToDate((int)r.Field1_5);
+                r.Field2Text =  CalculationDistanceDate.ConvertDayToDate((int)r.Field2);
+                r.Field3Text =  CalculationDistanceDate.ConvertDayToDate((int)r.Field3);
+                r.Field4Text =  CalculationDistanceDate.ConvertDayToDate((int)r.Field4);
+                r.Field5Text =  CalculationDistanceDate.ConvertDayToDate((int)r.Field5);
+                r.MoreThan6Text =  CalculationDistanceDate.ConvertDayToDate((int)r.MoreThan6);
             });
             return result;
         }

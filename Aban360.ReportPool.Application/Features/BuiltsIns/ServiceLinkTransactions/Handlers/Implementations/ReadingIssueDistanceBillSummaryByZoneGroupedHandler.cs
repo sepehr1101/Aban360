@@ -41,17 +41,17 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryDataOutputDto> result = await _readingIssueDistanceBillSummaryByZoneQuery.GetInfo(input);
             result.ReportData.ForEach(r =>
             {
-                r.UnSpecifiedText = CalculationDistanceDate.ConvertDaysToDate(r.UnSpecified);
-                r.Field0_5Text = CalculationDistanceDate.ConvertDaysToDate(r.Field0_5);
-                r.Field0_75Text = CalculationDistanceDate.ConvertDaysToDate(r.Field0_75);
-                r.Field1Text = CalculationDistanceDate.ConvertDaysToDate(r.Field1);
-                r.Field1_2Text = CalculationDistanceDate.ConvertDaysToDate(r.Field1_2);
-                r.Field1_5Text = CalculationDistanceDate.ConvertDaysToDate(r.Field1_5);
-                r.Field2Text = CalculationDistanceDate.ConvertDaysToDate(r.Field2);
-                r.Field3Text = CalculationDistanceDate.ConvertDaysToDate(r.Field3);
-                r.Field4Text = CalculationDistanceDate.ConvertDaysToDate(r.Field4);
-                r.Field5Text = CalculationDistanceDate.ConvertDaysToDate(r.Field5);
-                r.MoreThan6Text = CalculationDistanceDate.ConvertDaysToDate(r.MoreThan6);
+                r.UnSpecifiedText = CalculationDistanceDate.ConvertDayToDate(r.UnSpecified);
+                r.Field0_5Text = CalculationDistanceDate.ConvertDayToDate(r.Field0_5);
+                r.Field0_75Text = CalculationDistanceDate.ConvertDayToDate(r.Field0_75);
+                r.Field1Text = CalculationDistanceDate.ConvertDayToDate(r.Field1);
+                r.Field1_2Text = CalculationDistanceDate.ConvertDayToDate(r.Field1_2);
+                r.Field1_5Text = CalculationDistanceDate.ConvertDayToDate(r.Field1_5);
+                r.Field2Text = CalculationDistanceDate.ConvertDayToDate(r.Field2);
+                r.Field3Text = CalculationDistanceDate.ConvertDayToDate(r.Field3);
+                r.Field4Text = CalculationDistanceDate.ConvertDayToDate(r.Field4);
+                r.Field5Text = CalculationDistanceDate.ConvertDayToDate(r.Field5);
+                r.MoreThan6Text = CalculationDistanceDate.ConvertDayToDate(r.MoreThan6);
             });
 
             //var dataGroup = result.ReportData
@@ -94,17 +94,17 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                           Field4 = g.Max(s => s.Field4),
                           Field5 = g.Max(s => s.Field5),
                           MoreThan6 = g.Max(s => s.MoreThan6),
-                          UnSpecifiedText = CalculationDistanceDate.ConvertDaysToDate((int)g.Max(s => s.UnSpecified)),
-                          Field0_5Text = CalculationDistanceDate.ConvertDaysToDate((int)g.Max(s => s.Field0_5)),
-                          Field0_75Text = CalculationDistanceDate.ConvertDaysToDate((int)g.Max(s => s.Field0_75)),
-                          Field1Text = CalculationDistanceDate.ConvertDaysToDate((int)g.Max(s => s.Field1)),
-                          Field1_2Text = CalculationDistanceDate.ConvertDaysToDate((int)g.Max(s => s.Field1_2)),
-                          Field1_5Text = CalculationDistanceDate.ConvertDaysToDate((int)g.Max(s => s.Field1_5)),
-                          Field2Text = CalculationDistanceDate.ConvertDaysToDate((int)g.Max(s => s.Field2)),
-                          Field3Text = CalculationDistanceDate.ConvertDaysToDate((int)g.Max(s => s.Field3)),
-                          Field4Text = CalculationDistanceDate.ConvertDaysToDate((int)g.Max(s => s.Field4)),
-                          Field5Text = CalculationDistanceDate.ConvertDaysToDate((int)g.Max(s => s.Field5)),
-                          MoreThan6Text = CalculationDistanceDate.ConvertDaysToDate((int)g.Max(s => s.MoreThan6)),
+                          UnSpecifiedText = CalculationDistanceDate.ConvertDayToDate((int)g.Max(s => s.UnSpecified)),
+                          Field0_5Text = CalculationDistanceDate.ConvertDayToDate((int)g.Max(s => s.Field0_5)),
+                          Field0_75Text = CalculationDistanceDate.ConvertDayToDate((int)g.Max(s => s.Field0_75)),
+                          Field1Text = CalculationDistanceDate.ConvertDayToDate((int)g.Max(s => s.Field1)),
+                          Field1_2Text = CalculationDistanceDate.ConvertDayToDate((int)g.Max(s => s.Field1_2)),
+                          Field1_5Text = CalculationDistanceDate.ConvertDayToDate((int)g.Max(s => s.Field1_5)),
+                          Field2Text = CalculationDistanceDate.ConvertDayToDate((int)g.Max(s => s.Field2)),
+                          Field3Text = CalculationDistanceDate.ConvertDayToDate((int)g.Max(s => s.Field3)),
+                          Field4Text = CalculationDistanceDate.ConvertDayToDate((int)g.Max(s => s.Field4)),
+                          Field5Text = CalculationDistanceDate.ConvertDayToDate((int)g.Max(s => s.Field5)),
+                          MoreThan6Text = CalculationDistanceDate.ConvertDayToDate((int)g.Max(s => s.MoreThan6)),
                       },
                       g.Select(v => new ReadingIssueDistanceBillSummryDataOutputDto
                       {

@@ -38,7 +38,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             ReportOutput<BranchTypeChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto> branchTypeChangeHistory = await _branchTypeChangeHistoryQueryService.GetInfo(input);
             branchTypeChangeHistory.ReportData.ForEach(d =>
             {
-                d.DistanceText = CalculationDistanceDate.ConvertDaysToDate(d.Distance);
+                d.DistanceText = CalculationDistanceDate.ConvertDayToDate(d.Distance);
             });
             return branchTypeChangeHistory;
         }

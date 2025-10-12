@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.Common.Timing;
 using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -8,6 +9,8 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using FluentValidation;
+using static Aban360.Common.Timing.CalculationDistanceDate;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Implementations
 {
@@ -39,13 +42,16 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             ReportOutput<MalfunctionToChangeHeaderOutputDto, MalfunctionToChangeDetailDataOutputDto> malfunctionToChange = await _malfunctionToChangeQueryService.Get(input);
             malfunctionToChange.ReportData.ForEach(meter =>
             {
-                int duration = int.Parse(CalculationDistanceDate.CalcDistance(meter.LatestMalfunctinDateJalali, meter.ChangeDateJalali));
-                meter.Duration = CalculationDistanceDate.ConvertDaysToDate(duration);
+                CalcDistanceResultDto calcDistance = CalculationDistanceDate.CalcDistance(meter.LatestMalfunctinDateJalali, meter.ChangeDateJalali);
+                meter.Duration = calcDistance.HasError ? ExceptionLiterals.Incalculable : calcDistance.DistanceText;
 
-                sumDuration += duration;
+                //int duration = int.Parse(CalculationDistanceDate.CalcDistance(meter.LatestMalfunctinDateJalali, meter.ChangeDateJalali));
+                //meter.Duration = CalculationDistanceDate.ConvertDaysToDate(duration);
+
+                sumDuration += calcDistance.HasError?0:calcDistance.Distance;
             });
             int durationCount = malfunctionToChange.ReportHeader.RecordCount == 0 ? 1 : malfunctionToChange.ReportHeader.RecordCount;
-            malfunctionToChange.ReportHeader.AverageDuration = CalculationDistanceDate.ConvertDaysToDate(sumDuration / durationCount);
+            malfunctionToChange.ReportHeader.AverageDuration = CalculationDistanceDate.ConvertDayToDate(sumDuration / durationCount);
 
             return malfunctionToChange;
         }

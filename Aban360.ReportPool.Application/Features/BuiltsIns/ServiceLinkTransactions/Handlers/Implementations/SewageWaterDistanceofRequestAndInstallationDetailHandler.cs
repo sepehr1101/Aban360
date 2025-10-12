@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.Common.Timing;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -8,6 +9,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
 using FluentValidation;
+using static Aban360.Common.Timing.CalculationDistanceDate;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Implementations
 {
@@ -40,16 +42,19 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             ICollection<int> distances = new List<int>();
             result.ReportData.ForEach(data =>
             {
-                int duration = (int.Parse)(CalculationDistanceDate.CalcDistance(data.RequestDate, data.InstallationDate));
-                data.DistanceOfRequestAndInstallation = CalculationDistanceDate.ConvertDaysToDate(duration);
+                CalcDistanceResultDto calcDistance = CalculationDistanceDate.CalcDistance(data.RequestDate, data.InstallationDate);
+                data.DistanceOfRequestAndInstallation = calcDistance.HasError ? ExceptionLiterals.Incalculable : calcDistance.DistanceText;
 
-                distances.Add(duration);
+                //int duration = (int.Parse)(CalculationDistanceDate.CalcDistance(data.RequestDate, data.InstallationDate));
+                //data.DistanceOfRequestAndInstallation = CalculationDistanceDate.ConvertDaysToDate(duration);
+
+                distances.Add(calcDistance.HasError ? 0 : calcDistance.Distance);
             });
 
             int averageDistance = (int)distances.Sum() / (result.ReportHeader.RecordCount <= 0 ? 1 : result.ReportHeader.RecordCount);
-            result.ReportHeader.AverageDistance = CalculationDistanceDate.ConvertDaysToDate(averageDistance);
-            result.ReportHeader.MaxDistance = CalculationDistanceDate.ConvertDaysToDate(distances.Any() ? distances.Max() : 0);
-            result.ReportHeader.MinDistance = CalculationDistanceDate.ConvertDaysToDate(distances.Any() ? distances.Min() : 0);
+            result.ReportHeader.AverageDistance = CalculationDistanceDate.ConvertDayToDate(averageDistance);
+            result.ReportHeader.MaxDistance = CalculationDistanceDate.ConvertDayToDate(distances.Any() ? distances.Max() : 0);
+            result.ReportHeader.MinDistance = CalculationDistanceDate.ConvertDayToDate(distances.Any() ? distances.Min() : 0);
 
             return result;
         }
