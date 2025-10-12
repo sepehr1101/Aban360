@@ -7,7 +7,6 @@ namespace Aban360.ReportPool.Persistence.Base
         protected RequestOrInstallBase(IConfiguration configuration)
             : base(configuration)
         {
-
         }
         internal string GetDetailsQuery(bool isWater, bool isRequest)
         {
