@@ -4,7 +4,7 @@
     {
         public string ZoneTitle { get; set; }
         public string EventDateJalali { get; set; }
-        public int ReadingNet { get; set; }
+        public int PureReading { get; set; }
         public int Closed { get; set; }
         public int Obstacle { get; set; }
         public int Temporarily{ get; set; }

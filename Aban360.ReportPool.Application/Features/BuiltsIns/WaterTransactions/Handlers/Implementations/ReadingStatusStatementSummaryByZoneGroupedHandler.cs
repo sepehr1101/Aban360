@@ -81,7 +81,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
                 AllCount = input.AllCount,
                 Closed = input.Closed,
                 Obstacle = input.Obstacle,
-                ReadingNet = input.ReadingNet,
+                PureReading = input.PureReading,
                 Ruined = input.Ruined,
                 Temporarily = input.Temporarily,
                 SumItems=input.SumItems,

@@ -2,79 +2,110 @@
 using Aban360.Common.Literals;
 using DNTPersianUtils.Core;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 
 namespace Aban360.Common.Timing
 {
     public static class CalculationDistanceDate
     {
-        public static CalcDistanceResultDto? CalcDistance(string? date, [Optional] bool canThrow)
-        {
-            DateOnly? persianDate = date.ToGregorianDateOnly();
-            DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
-
-            if (!persianDate.HasValue && canThrow)
-                throw new InvalidDateException(ExceptionLiterals.InvalidDate);
-
-            if (!persianDate.HasValue)
-            {
-                return new CalcDistanceResultDto(true, true, ExceptionLiterals.InvalidFromDate);
-            }
-
-            int totalDay = currentDate.DayNumber - persianDate.Value.DayNumber;
-            string distance = ConvertDayToDate(totalDay);
-
-            return new CalcDistanceResultDto(totalDay, distance);
-        }
-
-        public static CalcDistanceResultDto CalcDistance(string? fromDate, string? toDate)
+        private static int DefaultDistance = 0;
+        private static string DefaultDistanceText = ExceptionLiterals.Incalculable;
+        public static CalcDistanceResultDto CalcDistance(string? fromDate, [Optional] string toDate, [Optional] bool canThrow, [Optional] object metaData)
         {
             DateOnly? from = fromDate.ToGregorianDateOnly();
-            DateOnly? to = toDate.ToGregorianDateOnly();
+            DateOnly? to = toDate == null ? DateOnly.FromDateTime(DateTime.Now) : toDate.ToGregorianDateOnly();
+
+
+            if ((!from.HasValue || !to.HasValue) && canThrow)
+            {
+                string metaDataJson = "";
+                if (metaData is { })
+                {
+                    metaDataJson = JsonSerializer.Serialize(metaData);
+                }
+                if (!from.HasValue && canThrow)
+                    throw new InvalidDateException(ExceptionLiterals.InvalidFromDate + metaDataJson);
+                if (!to.HasValue && canThrow)
+                    throw new InvalidDateException(ExceptionLiterals.InvalidToDate + metaDataJson);
+            }
 
             if (!from.HasValue)
             {
                 if (!to.HasValue)
                 {
-                    return new CalcDistanceResultDto(true, true, ExceptionLiterals.InvalidFromAndToDate, true);
+                    return new CalcDistanceResultDto(true, ExceptionLiterals.InvalidFromAndToDate, DefaultDistance, DefaultDistanceText);
                 }
-                return new CalcDistanceResultDto(true, true, ExceptionLiterals.InvalidFromDate);
+                return new CalcDistanceResultDto(true, ExceptionLiterals.InvalidFromDate, DefaultDistance, DefaultDistanceText);
             }
             if (!to.HasValue)
             {
-                return new CalcDistanceResultDto(true, false, ExceptionLiterals.InvalidToDate, true);
+                return new CalcDistanceResultDto(true, ExceptionLiterals.InvalidToDate, DefaultDistance, DefaultDistanceText);
             }
 
 
             int totalDay = Math.Abs(to.Value.DayNumber - from.Value.DayNumber);
             string distance = ConvertDayToDate(totalDay);
 
-            return new CalcDistanceResultDto(totalDay, distance);
+            return new CalcDistanceResultDto(false, null, totalDay, distance);
+
+            #region lastCode
+            //DateOnly? persianDate = fromDate.ToGregorianDateOnly();
+            //DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
+
+            //if (!persianDate.HasValue && canThrow)
+            //    throw new InvalidDateException(ExceptionLiterals.InvalidDate);
+
+            //if (!persianDate.HasValue)
+            //{
+            //    return new CalcDistanceResultDto(true, ExceptionLiterals.InvalidFromDate, DefaultDistance, DefaultDistanceText);
+            //}
+
+            //int totalDay = currentDate.DayNumber - persianDate.Value.DayNumber;
+            //string distance = ConvertDayToDate(totalDay);
+
+            //return new CalcDistanceResultDto(false, null, totalDay, distance);
+            /////
+            #endregion
         }
 
+        #region lastMethod
+        //public static CalcDistanceResultDto CalcDistance(string? fromDate, string? toDate)
+        //{
+        //    DateOnly? from = fromDate.ToGregorianDateOnly();
+        //    DateOnly? to = toDate.ToGregorianDateOnly();
+
+        //    if (!from.HasValue)
+        //    {
+        //        if (!to.HasValue)
+        //        {
+        //            return new CalcDistanceResultDto(true, ExceptionLiterals.InvalidFromAndToDate, DefaultDistance, DefaultDistanceText);
+        //        }
+        //        return new CalcDistanceResultDto(true, ExceptionLiterals.InvalidFromDate, DefaultDistance, DefaultDistanceText);
+        //    }
+        //    if (!to.HasValue)
+        //    {
+        //        return new CalcDistanceResultDto(true, ExceptionLiterals.InvalidToDate, DefaultDistance, DefaultDistanceText);
+        //    }
+
+
+        //    int totalDay = Math.Abs(to.Value.DayNumber - from.Value.DayNumber);
+        //    string distance = ConvertDayToDate(totalDay);
+
+        //    return new CalcDistanceResultDto(false, null, totalDay, distance);
+        //}
+        #endregion
         public record CalcDistanceResultDto
         {
             public bool HasError { get; set; }
-            public bool? HasFromDateError { get; set; }
-            public bool? HasToDateError { get; set; }
             public string? ErrorText { get; set; }
             public int Distance { get; set; }
             public string DistanceText { get; set; }
-            public CalcDistanceResultDto(int distance, string distanceText)
-            {
-                HasError = false;
-                HasFromDateError = false;
-                HasToDateError = false;
-                Distance = distance;
-                DistanceText = distanceText;
-            }
-            public CalcDistanceResultDto(bool hasError, bool? hasFromDateError, string errorText, [Optional] bool? hasToDateError)
+            public CalcDistanceResultDto(bool hasError, string? errorText, int distance, string distanceText)
             {
                 HasError = hasError;
-                HasFromDateError = hasFromDateError;
-                HasToDateError = hasToDateError;
                 ErrorText = errorText;
-                Distance = 0;
-                DistanceText = "";
+                Distance = distance;
+                DistanceText = distanceText;
             }
             public CalcDistanceResultDto()
             {
