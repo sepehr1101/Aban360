@@ -1,5 +1,4 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
@@ -20,15 +19,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         public async Task<ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationDetailDataOutputDto>> Get(SewageWaterDistanceofRequestAndInstallationInputDto input)
         {
-            string query = GetDetailQuery(input.IsWater, input.IsInstallation);
-            Console.WriteLine(query);
-
-            //string query;
-            //if (input.IsWater)
-            //    query = GetWaterDistanceRequestInstallationQuery(input.IsInstallation);
-            //else
-            //    query = GetSewageDistanceRequestInstallationQuery(input.IsInstallation);
-
+            string query = GetDetailsQuery(input.IsWater, input.IsInstallation);
             string reportTitle = GetTitle(input.IsWater, input.IsInstallation);
 
             var @params = new

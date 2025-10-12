@@ -22,13 +22,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         public async Task<ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto>> Get(SewageWaterDistanceofRequestAndInstallationInputDto input)
         {
             string query = GetGroupedQuery(input.IsWater, input.IsInstallation, GroupingFields.UsageTitle);
-
-            //string query;
-            //if (input.IsWater)
-            //    query = GetWaterDistanceRequestInstallationQuery(input.IsInstallation);
-            //else
-            //    query = GetSewageDistanceRequestInstallationQuery(input.IsInstallation);
-
             string reportTitle = GetTitle(input.IsWater, input.IsInstallation);
 
             var @params = new
