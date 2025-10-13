@@ -6,14 +6,34 @@ namespace Aban360.ReportPool.Persistence.Base
     {
         public SewageWaterDistanceofRequestAndInstallationBase(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
-        internal string GetDetailQuery(bool isWater, bool isInstallation)
+        internal string GetDetailsQuery(bool isWater, bool isInstallation)
         {
             QueryParams queryParams = GetQueryParams(isWater, isInstallation);
-
-            return @$"Select
-                    	c.CustomerNumber, 
+            return $@";WITH CTE AS
+                    (
+	                    SELECT 
+		                    RN= ROW_NUMBER() OVER (PARTITION by ZoneId , CustomerNumber ORDER BY RegisterDayJalali DESC, LocalId DESC),
+		                    *
+                        From [CustomerWarehouse].dbo.Clients c
+	                    Where			
+                            c.{queryParams.DataField} BETWEEN @fromDate AND @toDate AND
+                            c.{queryParams.RegisterField} IS NOT NULL AND
+                            TRIM(c.{queryParams.RegisterField}) != '' AND		                    
+		                    c.ZoneId IN @zoneIds AND
+		                    c.UsageId IN @usageIds AND
+		                    (
+			                    @fromReadingNumber IS NULL OR 
+			                    @toReadingNumber IS NULL OR
+			                    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
+		                    ) AND
+		                    c.CustomerNumber<>0 AND
+		                    c.RegisterDayJalali <= @toDate
+                    )
+                    Select	
+	                    c.CustomerNumber, 
                     	c.ReadingNumber,
                     	TRIM(c.FirstName) AS FirstName,
                     	TRIM(c.SureName) AS Surname,
@@ -32,49 +52,57 @@ namespace Aban360.ReportPool.Persistence.Base
                     	c.ContractCapacity AS ContractualCapacity,
                     	c.{queryParams.DataField} AS RequestDate,
 						c.{queryParams.RegisterField} AS InstallationDate
-                    From [CustomerWarehouse].dbo.Clients c
-                    Where	
-                        c.{queryParams.DataField} IS NOT NULL AND
-                        TRIM(c.{queryParams.DataField}) != '' AND
-                        c.{queryParams.RegisterField} IS NOT NULL AND
-                        TRIM(c.{queryParams.RegisterField}) != '' AND
-                        (@fromReadingNumber IS NULL OR
-                        @toReadingNumber IS NULL OR
-                        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-                    	c.{queryParams.RegisterField} BETWEEN @fromDate AND @toDate AND
-                    	c.ZoneId IN @zoneIds AND
-            			c.ToDayJalali IS NULL";
+                    FROM CTE c
+                    JOIN [Db70].dbo.T51 t51
+	                    On t51.C0=c.ZoneId
+                    JOIN [Db70].dbo.T46 t46
+	                    On t51.C1=t46.C0
+                    WHERE	  
+                        c.RN=1 AND
+	                    c.DeletionStateId NOT IN(1,2)";
         }
 
         internal string GetGroupedQuery(bool isWater, bool isInstallation, string groupingField)
         {
             QueryParams queryParams = GetQueryParams(isWater, isInstallation);
 
-            return $@"Select	
-						MAX(t46.C2) AS RegionTitle,
+            return $@";WITH CTE AS
+                    (
+	                    SELECT 
+		                    RN= ROW_NUMBER() OVER (PARTITION by ZoneId , CustomerNumber ORDER BY RegisterDayJalali DESC, LocalId DESC),
+		                    *
+                        From [CustomerWarehouse].dbo.Clients c
+	                    Where			
+                            c.{queryParams.DataField} BETWEEN @fromDate AND @toDate AND
+                            c.{queryParams.RegisterField} IS NOT NULL AND
+                            TRIM(c.{queryParams.RegisterField}) != '' AND		                    
+		                    c.ZoneId IN @zoneIds AND
+		                    c.UsageId IN @usageIds AND
+		                    (
+			                    @fromReadingNumber IS NULL OR 
+			                    @toReadingNumber IS NULL OR
+			                    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
+		                    ) AND
+		                    c.CustomerNumber<>0 AND
+		                    c.RegisterDayJalali <= @toDate
+                    )
+                    SELECT
+                        MAX(t46.C2) AS RegionTitle,
                     	c.{groupingField} AS ItemTitle,
                     	c.{groupingField} ,
 						ROUND(AVG(CONVERT(float, DATEDIFF(DAY,
-                        Case When LEN(c.{queryParams.DataField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{queryParams.DataField}) END,
-                        Case When LEN(c.{queryParams.RegisterField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{queryParams.RegisterField}) END))), 2) AS DistanceAverage
-                    From [CustomerWarehouse].dbo.Clients c	
-					Join [Db70].dbo.T51 t51
-						On t51.C0=c.ZoneId
-					Join [Db70].dbo.T46 t46
-						On t51.C1=t46.C0
-                    Where	
-					    c.{queryParams.DataField} IS NOT NULL AND
-					    c.{queryParams.RegisterField} IS NOT NULL AND
-					    TRIM(c.{queryParams.DataField}) != '' AND
-					    TRIM(c.{queryParams.RegisterField}) != '' AND
-                    	c.{queryParams.RegisterField} BETWEEN @fromDate AND @toDate AND
-                        (@fromReadingNumber IS NULL OR
-                        @toReadingNumber IS NULL OR
-                        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-                    	c.ZoneId IN @zoneIds AND
-            			c.ToDayJalali IS NULL
-                    Group BY
-                    	c.{groupingField}";
+                            Case When LEN(c.{queryParams.DataField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{queryParams.DataField}) END,
+                            Case When LEN(c.{queryParams.RegisterField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{queryParams.RegisterField}) END))), 2) AS DistanceAverage
+                    FROM CTE c
+                    JOIN [Db70].dbo.T51 t51
+	                    On t51.C0=c.ZoneId
+                    JOIN [Db70].dbo.T46 t46
+	                    On t51.C1=t46.C0
+                    WHERE	  
+                        c.RN=1 AND
+	                    c.DeletionStateId NOT IN(1,2)
+                    GROUP BY
+                        c.{groupingField}";                       
         }
 
         private QueryParams GetQueryParams(bool isWater, bool isInstallation)

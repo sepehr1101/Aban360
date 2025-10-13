@@ -1,5 +1,4 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
@@ -22,13 +21,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         public async Task<ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto>> Get(SewageWaterDistanceofRequestAndInstallationInputDto input)
         {
             string query = GetGroupedQuery(input.IsWater, input.IsInstallation, GroupingFields.UsageTitle);
-
-            //string query;
-            //if (input.IsWater)
-            //    query = GetWaterDistanceRequestInstallationQuery(input.IsInstallation);
-            //else
-            //    query = GetSewageDistanceRequestInstallationQuery(input.IsInstallation);
-
             string reportTitle = GetTitle(input.IsWater, input.IsInstallation);
 
             var @params = new
@@ -37,7 +29,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 toDate = input.ToDateJalali,
                 zoneIds = input.ZoneIds,
                 fromReadingNumber = input.FromReadingNumber,
-                toReadingNumber = input.ToReadingNumber
+                toReadingNumber = input.ToReadingNumber,
+                usageIds= input.UsageIds,
             };
             IEnumerable<SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto>(query, @params);
             SewageWaterDistanceofRequestAndInstallationHeaderOutputDto RequestHeader = new SewageWaterDistanceofRequestAndInstallationHeaderOutputDto()
@@ -57,50 +50,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 RequestData);
 
             return result;
-        }
-        private string GetWaterDistanceRequestInstallationQuery(bool isIntallation)
-        {
-            string baseDate = isIntallation ? "WaterInstallDate" : "WaterRequestDate";
-
-            return @$"Select	
-                    	c.UsageTitle AS UsageTitle,
-						ROUND(AVG(CONVERT(float, DATEDIFF(DAY,[CustomerWarehouse].dbo.PersianToMiladi(c.WaterRequestDate), [CustomerWarehouse].dbo.PersianToMiladi(c.WaterInstallDate)))), 2) AS DistanceAverage
-                    From [CustomerWarehouse].dbo.Clients c
-                    Where	
-					    c.{baseDate} IS NOT NULL AND
-					    c.WaterRegisterDateJalali IS NOT NULL AND
-					    TRIM(c.{baseDate}) != '' AND
-					    TRIM(c.WaterRegisterDateJalali) != '' AND
-                        (@fromReadingNumber IS NULL OR
-                        @toReadingNumber IS NULL OR
-                        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-                    	c.WaterRegisterDateJalali BETWEEN @fromDate AND @toDate AND
-                    	c.ZoneId IN @zoneIds AND
-            			c.ToDayJalali IS NULL
-                    Group BY
-                    	c.UsageTitle";
-        }
-        private string GetSewageDistanceRequestInstallationQuery(bool isIntallation)
-        {
-            string baseDate = isIntallation ? "SewageInstallDate" : "SewageRequestDate";
-
-            return @$"Select	
-                    	c.UsageTitle AS UsageTitle,
-						ROUND(AVG(CONVERT(float, DATEDIFF(DAY, [CustomerWarehouse].dbo.PersianToMiladi(c.SewageRequestDate), [CustomerWarehouse].dbo.PersianToMiladi(c.SewageInstallDate)))), 2) AS DistanceAverage
-                    From [CustomerWarehouse].dbo.Clients c
-                    Where	
-					    c.SewageRegisterDateJalali IS NOT NULL AND
-					    c.{baseDate} IS NOT NULL AND
-					    TRIM(c.SewageRegisterDateJalali) != '' AND
-					    TRIM(c.{baseDate}) != '' AND
-                        (@fromReadingNumber IS NULL OR
-                        @toReadingNumber IS NULL OR
-                        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-                    	c.SewageRegisterDateJalali BETWEEN @fromDate AND @toDate AND
-                    	c.ZoneId IN @zoneIds AND
-            			c.ToDayJalali IS NULL
-                    Group BY
-                    	c.UsageTitle";
         }
         private string GetTitle(bool IsWater, bool IsInstallation)
         {
