@@ -28,11 +28,11 @@ namespace Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Imple
                 throw new InvalidDateException(ExceptionLiterals.InvalidDate);
             }
 
-            string fromDateTimeString = $"{from.Value:yyyy/MM/dd} {inputDto.FromTime}";
-            string toDateTimeString = $"{to.Value:yyyy/MM/dd} {inputDto.ToTime}";
+            string fromDateTimeString = $"{from.Value:yyyy-MM-dd} {inputDto.FromTime}";
+            string toDateTimeString = $"{to.Value:yyyy-MM-dd} {inputDto.ToTime}";
 
-            DateTime fromDateTime = DateTime.ParseExact(fromDateTimeString, "yyyy/MM/dd HH:mm", CultureInfo.InvariantCulture);
-            DateTime toDateTime = DateTime.ParseExact(toDateTimeString, "yyyy/MM/dd HH:mm", CultureInfo.InvariantCulture);
+            DateTime fromDateTime = DateTime.ParseExact(fromDateTimeString, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+            DateTime toDateTime = DateTime.ParseExact(toDateTimeString, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
 
             IEnumerable<LoggingOutputDto> result = await _loggingGetByDateTimeService.Get(new LoggingInputByDateTimeDto(fromDateTime, toDateTime, inputDto.LogLevel));
             return result;
