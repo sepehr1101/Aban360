@@ -11,11 +11,11 @@ namespace Aban360.SystemPool.Persistence.Features.Logging.Queries.Implementation
     {
         public LoggingGetByDateTimeQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<IEnumerable<LoggingOutputDto>> Get(LoggingInputByDateTimeDto input)
         {
-
             string loggingQueryString = GetLoggingQuery();
             var @params = new
             {
