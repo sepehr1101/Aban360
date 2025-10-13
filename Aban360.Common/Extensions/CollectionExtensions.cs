@@ -4,7 +4,10 @@
     {
         public static void ForEach<T>(this IEnumerable<T> items, Action<T> action)
         {
-            foreach (var item in items) action(item);
+            foreach (var item in items) 
+                action(item);
         }
+        public static bool HasValue<T>(this IEnumerable<T> items)
+            => items?.Any() is true;
     }
 }
