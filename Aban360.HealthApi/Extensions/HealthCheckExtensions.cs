@@ -29,16 +29,28 @@
                 methods.ForEach(m => m.Invoke(null, new object[] { services, configuration }));
             }
 
-            // 🔒 Private helper for MSSQL health check
+            // 🔒 Private helpers for MSSQL health check (called via reflection)
             private static IServiceCollection AddSqlServerHealthCheck(this IServiceCollection services, IConfiguration configuration)
             {
                 services.AddHealthChecks()
                     .AddSqlServer(
                         connectionString: configuration.GetConnectionString("DefaultConnection"),
                         healthQuery: "SELECT 1;",
-                        name: "sqlserver",
+                        name: "اتصال به پایگاه داده",
                         failureStatus: HealthStatus.Unhealthy,
-                        tags: new[] { "db", "sql", "sqlserver" });
+                        tags: new[] { "db", "sql", "sqlserver","aban360" });
+
+                return services;
+            }
+            private static IServiceCollection AddReportDbHealthCheck(this IServiceCollection services, IConfiguration configuration)
+            {
+                services.AddHealthChecks()
+                    .AddSqlServer(
+                        connectionString: configuration.GetConnectionString("ReportConnection"),
+                        healthQuery: "SELECT 1;",
+                        name: "اتصال به پایگاه داده گزارش",
+                        failureStatus: HealthStatus.Unhealthy,
+                        tags: new[] { "db", "sql", "sqlserver", "report" });
 
                 return services;
             }
