@@ -54,7 +54,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 TotalDebtPeriodCount = pendingPaymentsData.Sum(payment => payment.DebtPeriodCount),
                 TotalEndingDebt = pendingPaymentsData.Sum(payment => payment.EndingDebt),
                 TotalPayedAmount = pendingPaymentsData.Sum(payment => payment.PayedAmount),
-                ReportDateJalali=DateTime.Now.ToShortPersianDateString()
+                ReportDateJalali=DateTime.Now.ToShortPersianDateString(),
+				Title= ReportLiterals.PendingPayments
             };
 
             ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentsDataOutputDto> result = new (ReportLiterals.PendingPayments, pendingPaymentsHeader, pendingPaymentsData);

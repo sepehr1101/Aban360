@@ -21,6 +21,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
         public async Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdSummaryDataOutputDto>> Get(EmptyUnitInputDto input)
         {
+            string reportTitle = ReportLiterals.EmptyUnitByBillSummary + ReportLiterals.ByZone;
             string query = GetGroupedQuery(input.ZoneIds?.Any() == true, input.UsageSellIds?.Any() == true,GroupingFields.ZoneTitle);
             //string query = GetEmptyUnitByBillIdZoneGroupingQuery(input.ZoneIds?.Any() == true, input.UsageSellIds?.Any() == true);
            
@@ -44,6 +45,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = RequestData is not null && RequestData.Any() ? RequestData.Count() : 0,
+                Title=reportTitle,
 
                 SumCommercialUnit = RequestData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = RequestData.Sum(i => i.DomesticUnit),
@@ -53,7 +55,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 CustomerCount = RequestData.Sum(i => i.CustomerCount),
             };
             var result = new ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdSummaryDataOutputDto>
-                (ReportLiterals.EmptyUnitByBillSummary+ReportLiterals.ByZone,
+                (reportTitle,
                 RequestHeader,
                 RequestData);
 

@@ -4,6 +4,8 @@ using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
+using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Microsoft.AspNetCore.Mvc;
@@ -39,8 +41,19 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, WaterSalesInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _waterNetSalesSummary.Handle, CurrentUser, ReportLiterals.WaterNetSalesSummary , connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _waterNetSalesSummary.Handle, CurrentUser, ReportLiterals.WaterNetSalesSummary, connectionId);
             return Ok(inputDto);
+        }
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetStiReport(WaterSalesInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 538;
+            ReportOutput<WaterSalesHeaderOutputDto, WaterNetSalesSummaryDataOutputDto> result = await _waterNetSalesSummary.Handle(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
         }
     }
 }

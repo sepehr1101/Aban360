@@ -11,6 +11,7 @@
         public long SumAmount { get; set; }
         public long SumOffAmount { get; set; }
         public long SumFinalAmount { get; set; }
+        public string? Title { get; set; }
 
     }
 }

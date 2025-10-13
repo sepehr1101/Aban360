@@ -41,7 +41,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 CustomerCount = (unpaidData is not null && unpaidData.Any()) ? unpaidData.Count() : 0,
                 RecordCount = (unpaidData is not null && unpaidData.Any()) ? unpaidData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                DebtAmount = unpaidData?.Sum(r => r.DebtAmount) ?? 0
+                DebtAmount = unpaidData?.Sum(r => r.DebtAmount) ?? 0,
+                Title= ReportLiterals.Unpaid,
             };
 
             var result = new ReportOutput<UnpaidHeaderOutputDto, UnpaidDataOutputDto>(ReportLiterals.Unpaid, unpaidHeader, unpaidData);

@@ -1,5 +1,4 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
@@ -43,6 +42,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 CustomerCount = emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Count() : 0,
                 RecordCount = emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+				Title= ReportLiterals.EmptyUnitByBillDetail,
 
                 SumDomesticCount = (emptyUnitData is not null && emptyUnitData.Any()) ? emptyUnitData.Sum(x => x.DomesticUnit) : 0,
                 SumCommercialCount = emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Sum(x => x.CommercialUnit) : 0,

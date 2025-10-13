@@ -6,6 +6,7 @@ using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Ha
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
@@ -41,6 +42,19 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _emptyUnitByBillZoneGroupedGrouping.HandleFlat, CurrentUser, ReportLiterals.EmptyUnitByBillSummary + ReportLiterals.ByZone, connectionId,ReportLiterals.HandleFlat);
             return Ok(inputDto);
+        }
+
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetStiReport(EmptyUnitInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 23;
+            ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdByZoneGroupedDataOutputDto> emptyUnit = await _emptyUnitByBillZoneGroupedGrouping.HandleFlat(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(emptyUnit, cancellationToken, reportCode);
+            return Ok(reportId);
         }
     }
 }

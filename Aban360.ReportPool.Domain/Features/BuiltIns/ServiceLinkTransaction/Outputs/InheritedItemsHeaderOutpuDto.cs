@@ -12,6 +12,7 @@
         public int InheritedUnitOther { get; set; }
         public int InheritedContractualCapacity { get; set; }
         public int SumInheritedPremisesImprovement { get; set; }
+        public string? Title { get; set; }
 
     }
 }

@@ -36,6 +36,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = BankGroupedData is not null && BankGroupedData.Any() ? BankGroupedData.Count() : 0,
                 CustomerCount = BankGroupedData is not null && BankGroupedData.Any() ? BankGroupedData.Count() : 0,
+                Title= ReportLiterals.BankGrouped,
 
                 TotalAmount = BankGroupedData?.Sum(r => r.TotalAmount) ?? 0,
                 TotalCount = BankGroupedData?.Sum(r => r.TotalCount) ?? 0,

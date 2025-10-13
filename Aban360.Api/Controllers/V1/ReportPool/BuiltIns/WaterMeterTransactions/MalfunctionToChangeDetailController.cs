@@ -6,6 +6,7 @@ using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handle
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterToChangeTransactions
@@ -41,6 +42,18 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterToChangeTransactio
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _malfunctionToChangeHandler.Handle, CurrentUser, ReportLiterals.MalfunctionToChangeDetail, connectionId);
             return Ok(inputDto);
+        }
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetStiReport(MalfunctionToChangeInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 370;
+            ReportOutput<MalfunctionToChangeHeaderOutputDto, MalfunctionToChangeDetailDataOutputDto> result = await _malfunctionToChangeHandler.Handle(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
         }
     }
 }

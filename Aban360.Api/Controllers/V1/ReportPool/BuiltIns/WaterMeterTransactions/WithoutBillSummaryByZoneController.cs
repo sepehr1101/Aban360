@@ -6,6 +6,7 @@ using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handle
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
@@ -41,6 +42,18 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _withoutBillSummaryByZoneHandler.Handle, CurrentUser, ReportLiterals.WithoutBillSummary + ReportLiterals.ByZone, connectionId);
             return Ok(inputDto);
+        }
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetStiReport(WithoutBillInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 212;
+            ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryDataOutputDto> nonPermanentBranch = await _withoutBillSummaryByZoneHandler.Handle(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(nonPermanentBranch, cancellationToken, reportCode);
+            return Ok(reportId);
         }
     }
 }

@@ -20,6 +20,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableSummaryDataOutputDto>> GetInfo(WaterPaymentReceivableInputDto input)
         {
+            string reportTitle=ReportLiterals.WaterPaymentReceivableSummary + ReportLiterals.ByUsage;
             string groupingField = input.IsZone ? GroupingFields.ZoneTitle : GroupingFields.UsageTitle;
             string query = GetGroupedQuery(true, input.ZoneIds?.Any() == true, groupingField);
             //string query = GetWaterPaymentReceivableQuery(input.ZoneIds?.Any() == true, input.IsZone);
@@ -38,6 +39,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                Title=reportTitle,
             };
             if (waterPaymentReceivableData is not null && waterPaymentReceivableData.Any())
             {
@@ -50,7 +52,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 waterPaymentReceivableHeader.OverdueCount = waterPaymentReceivableData?.Sum(r => r.OverdueCount) ?? 0;
                 waterPaymentReceivableHeader.OverdueAmount = waterPaymentReceivableData?.Sum(r => r.OverdueAmount) ?? 0;
             }
-            var result = new ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableSummaryDataOutputDto>(ReportLiterals.WaterPaymentReceivableSummary + ReportLiterals.ByUsage, waterPaymentReceivableHeader, waterPaymentReceivableData);
+            var result = new ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableSummaryDataOutputDto>(reportTitle, waterPaymentReceivableHeader, waterPaymentReceivableData);
             return result;
         }
 

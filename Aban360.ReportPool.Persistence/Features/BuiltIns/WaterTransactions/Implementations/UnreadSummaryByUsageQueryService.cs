@@ -19,6 +19,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<UnreadSummaryHeaderOutputDto, UnreadSummaryDataOutputDto>> GetInfo(UnreadInputDto input)
         {
+            string reportTitle = ReportLiterals.UnreadSummary + ReportLiterals.ByUsage;
             string query = GetGroupedQuery(input.ZoneIds?.Any() == true, GroupingFields.UsageTitle);
             //string query = GetUnreadSummaryByUsageQuery(input.ZoneIds?.Any() == true);
 
@@ -39,6 +40,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToPeriodCount = input.ToPeriodCount,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = UnreadSummaryByUsageData is not null && UnreadSummaryByUsageData.Any() ? UnreadSummaryByUsageData.Count() : 0,
+                Title=reportTitle,
 
                 SumBarrier = UnreadSummaryByUsageData.Sum(u => u.Barrier),
                 SumClosed = UnreadSummaryByUsageData.Sum(u => u.Closed),
@@ -54,7 +56,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
             };
 
-            var result = new ReportOutput<UnreadSummaryHeaderOutputDto, UnreadSummaryDataOutputDto>(ReportLiterals.UnreadSummary + ReportLiterals.ByUsage, UnreadSummaryByUsageHeader, UnreadSummaryByUsageData);
+            var result = new ReportOutput<UnreadSummaryHeaderOutputDto, UnreadSummaryDataOutputDto>(reportTitle, UnreadSummaryByUsageHeader, UnreadSummaryByUsageData);
             return result;
         }
 

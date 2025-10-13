@@ -31,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(RemovedBillInputDto inputDto, CancellationToken cancellationToken)
         {
-            var removedBill = await _removedBillHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto> removedBill = await _removedBillHandler.Handle(inputDto, cancellationToken);
             return Ok(removedBill);
         }
 
@@ -41,6 +41,17 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _removedBillHandler.Handle, CurrentUser, ReportLiterals.RemovedBillSummary + ReportLiterals.ByZone, connectionId);
             return Ok(inputDto);
+        }
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetStiReport(RemovedBillInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 442;
+            ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto> result = await _removedBillHandler.Handle(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
         }
     }
 }

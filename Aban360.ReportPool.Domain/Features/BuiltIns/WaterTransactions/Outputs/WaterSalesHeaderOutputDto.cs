@@ -8,5 +8,6 @@
         public int RecordCount { get; set; }
         public int CustomerCount { get; set; }
         public long SumPayable { get; set; }
+        public string? Title { get; set; }
     }
 }

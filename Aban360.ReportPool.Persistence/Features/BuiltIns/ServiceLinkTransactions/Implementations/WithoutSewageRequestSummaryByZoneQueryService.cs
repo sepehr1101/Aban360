@@ -40,6 +40,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = withoutSewageRequestData is not null && withoutSewageRequestData.Any() ? withoutSewageRequestData.Count() : 0,
+                Title= ReportLiterals.WithoutSewageRequestSummaryByZone,
 
                 SumCommercialUnit = withoutSewageRequestData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = withoutSewageRequestData.Sum(i => i.DomesticUnit),

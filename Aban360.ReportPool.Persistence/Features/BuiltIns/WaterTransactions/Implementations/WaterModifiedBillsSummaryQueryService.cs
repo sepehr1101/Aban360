@@ -36,6 +36,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 CustomerCount = modifiedBillsData.Sum(x => x.Count),
                 Payable = modifiedBillsData.Sum(x => x.Payable),
                 SumItems = modifiedBillsData.Sum(x => x.SumItems),
+                Title= ReportLiterals.WaterModifiedBillsSummary,
             };
 
             var result = new ReportOutput<WaterModifiedBillsHeaderOutputDto, WaterModifiedBillsSummaryDataOutputDto>(ReportLiterals.WaterModifiedBillsSummary, modifiedBillsHeader, modifiedBillsData);

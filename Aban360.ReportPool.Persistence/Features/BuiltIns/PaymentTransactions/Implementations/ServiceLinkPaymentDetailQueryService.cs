@@ -44,6 +44,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 CustomerCount = (serviceLinkPaymentDetailData is not null && serviceLinkPaymentDetailData.Any()) ? serviceLinkPaymentDetailData.Count() : 0,
                 RecordCount = (serviceLinkPaymentDetailData is not null && serviceLinkPaymentDetailData.Any()) ? serviceLinkPaymentDetailData.Count() : 0,
                 TotalAmount = serviceLinkPaymentDetailData.Sum(payment => Convert.ToUInt32(payment.Amount)),
+                Title= ReportLiterals.ServiceLinkPaymentDetail,
             };
             var result = new ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>(ReportLiterals.ServiceLinkPaymentDetail, serviceLinkPaymentDetailHeader, serviceLinkPaymentDetailData);
             return result;

@@ -10,6 +10,7 @@
 
         public string ReportDateJalali { get; set; }
         public int RecordCount { get; set; }
+        public string? Title { get; set; }
 
         public int BillCount { get; set; }
         public float SumDomesticUnit { get; set; }

@@ -18,9 +18,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         public async Task<ReportOutput<UseStateReportHeaderOutputDto, UseStateReportDataOutputDto>> GetInfo(UseStateReportInputDto input)
         {
+            string reportTitle = await GetReportTitle(input.UseStateId);
+
             string query = GetDetailQuery();
             //string query = GetUseStateDataQuery();
-            
+
             var @params = new
             {
                 useStateId = input.UseStateId,
@@ -41,20 +43,26 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ToReadingNumber = input.ToReadingNumber,
                 CustomerCount = (useStateData is not null && useStateData.Any()) ? useStateData.Count() : 0,
                 RecordCount = (useStateData is not null && useStateData.Any()) ? useStateData.Count() : 0,
-           
+                Title = reportTitle,
+
                 SumCommercialUnit = useStateData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = useStateData.Sum(i => i.DomesticUnit),
                 SumOtherUnit = useStateData.Sum(i => i.OtherUnit),
                 TotalUnit = useStateData.Sum(i => i.TotalUnit)
             };
 
-            string useStateQuery = GetUseStateTitle();
-            string useStateTitle = await _sqlConnection.QueryFirstAsync<string>(useStateQuery, new { useStateId = input.UseStateId });
-            var result = new ReportOutput<UseStateReportHeaderOutputDto, UseStateReportDataOutputDto>(ReportLiterals.Report + " " + useStateTitle, useStateHeader, useStateData);
+
+            var result = new ReportOutput<UseStateReportHeaderOutputDto, UseStateReportDataOutputDto>(reportTitle, useStateHeader, useStateData);
 
             return result;
         }
+        private async Task<string> GetReportTitle(short useStateId)
+        {
+            string useStateQuery = GetUseStateTitle();
+            string useStateTitle = await _sqlConnection.QueryFirstOrDefaultAsync<string>(useStateQuery, new { useStateId = useStateId });
 
+            return ReportLiterals.Report + " " + useStateTitle;
+        }
         private string GetUseStateDataQuery()
         {
             return @";WITH CTE AS 

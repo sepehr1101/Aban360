@@ -42,6 +42,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = readingIssueDistanceData is not null && readingIssueDistanceData.Any() ? readingIssueDistanceData.Count() : 0,
                 BillCount = readingIssueDistanceData is not null && readingIssueDistanceData.Any() ? readingIssueDistanceData.Count() : 0,
+                Title= ReportLiterals.ReadingIssueDistanceBillDetail,
 
                 SumCommercialUnit = readingIssueDistanceData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = readingIssueDistanceData.Sum(i => i.DomesticUnit),

@@ -27,7 +27,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             {
                 CustomerCount = (customerData is not null && customerData.Any()) ? customerData.Count() : 0,
                 RecordCount = (customerData is not null && customerData.Any()) ? customerData.Count() : 0,
-                ReportDateJalali =DateTime.Now.ToShortPersianDateString()
+                ReportDateJalali =DateTime.Now.ToShortPersianDateString(),
+                Title = ReportLiterals.CustomerSearch
             };
 
             var result = new ReportOutput<CustomerSearchHeaderOutputDto, CustomerSearchDataOutputDto>(ReportLiterals.CustomerSearch, customerHeader, customerData);

@@ -40,6 +40,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 CustomerCount = ruinedMeterIncomeData is not null && ruinedMeterIncomeData.Any() ? ruinedMeterIncomeData.Count() : 0,
                 RecordCount = ruinedMeterIncomeData is not null && ruinedMeterIncomeData.Any() ? ruinedMeterIncomeData.Count() : 0,
+                Title= ReportLiterals.RuinedMeterIncomeDetail,
             };
             if (ruinedMeterIncomeData is not null && ruinedMeterIncomeData.Any())
             {

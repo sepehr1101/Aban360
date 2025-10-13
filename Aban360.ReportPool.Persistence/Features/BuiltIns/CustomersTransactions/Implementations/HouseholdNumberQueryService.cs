@@ -40,6 +40,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 ToHouseholdDateJalali = input.ToHouseholdDateJalali,
                 RecordCount = (householdNumberData is not null && householdNumberData.Any()) ? householdNumberData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                Title= ReportLiterals.HouseholdNumberDetail,
 
                 SumCommercialUnit = householdNumberData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = householdNumberData.Sum(i => i.DomesticUnit),

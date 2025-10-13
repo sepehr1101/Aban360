@@ -20,6 +20,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         public async Task<ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto>> GetInfo(RemovedBillInputDto input)
         {
+            string reportTitle = ReportLiterals.RemovedBillSummary + ReportLiterals.ByUsage;
             string query = GetGroupedQuery(input.ZoneIds?.Any() == true,GroupingFields.UsageTitle);
             //string query = GetRemovedBillDataQuery(input.ZoneIds?.Any() == true);
            
@@ -44,12 +45,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ToAmount = input.ToAmount,
                 RecordCount = RemovedBillData is not null && RemovedBillData.Any() ? RemovedBillData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                Title=reportTitle,
 
                 SumAmount = RemovedBillData.Sum(x => x.Amount),
                 CustomerCount = RemovedBillData.Sum(x => x.CustomerCount)
             };
 
-            var result = new ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto>(ReportLiterals.RemovedBillSummary + ReportLiterals.ByUsage, RemovedBillHeader, RemovedBillData);
+            var result = new ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto>(reportTitle, RemovedBillHeader, RemovedBillData);
 
             return result;
         }

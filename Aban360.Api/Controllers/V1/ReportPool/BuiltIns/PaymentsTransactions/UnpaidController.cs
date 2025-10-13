@@ -6,6 +6,8 @@ using Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Hand
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
+using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
+using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
@@ -41,6 +43,17 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _unpaid.Handle, CurrentUser, ReportLiterals.Unpaid, connectionId);
             return Ok(inputDto);
+        }
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetStiReport(UnpaidInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 550;
+            ReportOutput<UnpaidHeaderOutputDto, UnpaidDataOutputDto> result = await _unpaid.Handle(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
         }
     }
 }

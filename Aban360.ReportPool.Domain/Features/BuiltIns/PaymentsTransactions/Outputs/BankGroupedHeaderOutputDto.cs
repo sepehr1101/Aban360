@@ -9,6 +9,7 @@
         public int? FromBankId { get; set; }
         public int? ToBankId { get; set; }
         public int CustomerCount { get; set; }
+        public string? Title { get; set; }
 
         public int WaterCount { get; set; }
         public long WaterAmount { get; set; }

@@ -19,9 +19,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         public async Task<ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryDataOutputDto>> Get(UseStateReportInputDto input)
         {
+            string reportTitle= await GetReportTitle(input.UseStateId);
             string query = GetGroupedQuery(GroupingFields.UsageTitle);
             //string query = GetUseStateReportQuery();
-           
+
             var @params = new
             {
                 useStateId = input.UseStateId,
@@ -37,10 +38,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
-                FromReadingNumber=input.FromReadingNumber,
-                ToReadingNumber=input.ToReadingNumber,
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = data is not null && data.Any() ? data.Count() : 0,
+                Title= reportTitle,
 
                 SumCommercialUnit = data.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = data.Sum(i => i.DomesticUnit),
@@ -48,11 +50,19 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 TotalUnit = data.Sum(i => i.TotalUnit),
                 CustomerCount = data.Sum(i => i.CustomerCount),
             };
-            string useStateQuery = GetUseStateTitle();
-            string useStateTitle = await _sqlConnection.QueryFirstOrDefaultAsync<string>(useStateQuery, new { useStateId = input.UseStateId });
-            var result = new ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryDataOutputDto>(ReportLiterals.Report + " " + ReportLiterals.ByUsage + useStateTitle, header, data);
+
+            var result = new ReportOutput<UseStateReportHeaderSummaryOutputDto, UseStateReportSummaryDataOutputDto>(reportTitle, header, data);
             return result;
         }
+
+        private async Task<string> GetReportTitle(short useStateId)
+        {
+            string useStateQuery = GetUseStateTitle();
+            string useStateTitle = await _sqlConnection.QueryFirstOrDefaultAsync<string>(useStateQuery, new { useStateId = useStateId });
+
+            return ReportLiterals.Report + " " + ReportLiterals.ByUsage + useStateTitle;
+        }
+
 
         private string GetUseStateReportQuery()
         {

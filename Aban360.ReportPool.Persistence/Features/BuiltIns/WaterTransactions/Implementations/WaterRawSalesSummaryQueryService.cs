@@ -36,7 +36,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount =( waterRawSalesData is not null && waterRawSalesData.Any() ? waterRawSalesData.Count() : 0),
                 SumPayable = (waterRawSalesData is not null && waterRawSalesData.Any() ? waterRawSalesData.Sum(x=>x.Payable): 0),
-                CustomerCount = (waterRawSalesData is not null && waterRawSalesData.Any() ? waterRawSalesData.Sum(x=>x.Count) : 0)
+                CustomerCount = (waterRawSalesData is not null && waterRawSalesData.Any() ? waterRawSalesData.Sum(x=>x.Count) : 0),
+                Title= ReportLiterals.WaterRawSalesSummary,
             };
 
             var result = new ReportOutput<WaterSalesHeaderOutputDto, WaterRawSalesSummaryDataOutputDto>(ReportLiterals.WaterRawSalesSummary, waterRawSalesHeader, waterRawSalesData);

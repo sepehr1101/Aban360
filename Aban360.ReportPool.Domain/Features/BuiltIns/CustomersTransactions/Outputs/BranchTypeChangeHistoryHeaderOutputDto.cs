@@ -11,6 +11,7 @@
         public string ReportDateJalali { get; set; } = default!;
         public int RecordCount { get; set; }
         public int CustomerCount { get; set; }
+        public string? Title { get; set; }
 
         public int SumDomesticCount { get; set; }
         public int SumCommercialCount { get; set; }

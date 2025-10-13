@@ -21,6 +21,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         public async Task<ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryDataOutputDto>> GetInfo(ReadingIssueDistanceBillInputDto input)
         {
+            string reportTitle = ReportLiterals.ReadingIssueDistanceBillSummary + ReportLiterals.ByZone;
             string query = GetGroupedQuery(GroupingFields.ZoneTitle);
             //string query = GetReadingIssueDistanceDataQuery();
 
@@ -42,6 +43,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ToReadingNumber = input.ToReadingNumber,
                 RecordCount = readingIssueDistanceData is not null && readingIssueDistanceData.Any() ? readingIssueDistanceData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                Title=reportTitle,
 
                 BillCount = readingIssueDistanceData.Sum(i => i.BillCount),
                 SumCommercialUnit = readingIssueDistanceData.Sum(i => i.CommercialUnit),
@@ -50,7 +52,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 TotalUnit = readingIssueDistanceData.Sum(i => i.TotalUnit)
             };
 
-            var result = new ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryDataOutputDto>(ReportLiterals.ReadingIssueDistanceBillSummary + ReportLiterals.ByZone, readingIssueDistanceHeader, readingIssueDistanceData);
+            var result = new ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryDataOutputDto>(reportTitle, readingIssueDistanceHeader, readingIssueDistanceData);
 
             return result;
         }

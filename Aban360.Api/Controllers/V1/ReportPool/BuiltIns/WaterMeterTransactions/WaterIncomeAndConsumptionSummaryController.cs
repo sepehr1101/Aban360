@@ -8,6 +8,7 @@ using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
@@ -45,6 +46,20 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _waterIncomeAndConsumptionSummary.Handle, CurrentUser, ReportLiterals.WaterIncomeAndConsumptionSummary + reportTitle, connectionId);
             return Ok(inputDto);
         }
+
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetStiReport(WaterIncomeAndConsumptionSummaryInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 221;
+            ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionSummaryDataOutputDto> calculationDetails = await _waterIncomeAndConsumptionSummary.Handle(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode);
+            return Ok(reportId);
+        }
+
         private string GetReportTitle(WaterIncomeAndConsumptionSummaryEnum enumState)
         {
             string baseReportTitle = " بر اساس ";
