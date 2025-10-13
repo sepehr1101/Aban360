@@ -59,7 +59,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 						t46.C2 AS RegionTitle,
                         c.CustomerNumber,
                         c.ReadingNumber,
-                        TRIM(c.FirstName) + ' '+ TRIM(c.SureName) FullName
+                        TRIM(c.FirstName) + ' '+ TRIM(c.SureName) FullName,
                         TRIM(c.FirstName) AS FirstName,
                         TRIM(c.SureName) As Surname,
                         c.UsageTitle,
