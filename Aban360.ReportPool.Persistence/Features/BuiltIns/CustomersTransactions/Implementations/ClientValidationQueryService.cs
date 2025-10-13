@@ -34,6 +34,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 RecordCount = ClientValidationData is not null && ClientValidationData.Any() ? ClientValidationData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 CustomerCount = ClientValidationData is not null && ClientValidationData.Any() ? ClientValidationData.Count() : 0,
+				Title= ReportLiterals.ClientValidation
             };
 
 

@@ -42,6 +42,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 CustomerCount = emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Count() : 0,
                 RecordCount = emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                Title= ReportLiterals.EmptyUnit,
 
                 SumDomesticCount = (emptyUnitData is not null && emptyUnitData.Any()) ? emptyUnitData.Sum(x => x.DomesticUnit) : 0,
                 SumCommercialCount = emptyUnitData is not null && emptyUnitData.Any() ? emptyUnitData.Sum(x => x.CommercialUnit) : 0,

@@ -44,5 +44,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _serviceLinkPaymentReceivable.Handle, CurrentUser, ReportLiterals.ServiceLinkPaymentReceivableSummary + ReportLiterals.ByUsage, connectionId);
             return Ok(inputDto);
         }
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetStiReport(ServiceLinkPaymentReceivableInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 581;
+            ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableSummaryDataOutputDto> result = await _serviceLinkPaymentReceivable.Handle(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
+        }
     }
 }

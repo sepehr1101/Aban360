@@ -41,7 +41,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (malfunctionMeterData is not null && malfunctionMeterData.Any()) ? malfunctionMeterData.Count() : 0,
                 CustomerCount = (malfunctionMeterData is not null && malfunctionMeterData.Any()) ? malfunctionMeterData.Count() : 0,
-                TotalPayable = (malfunctionMeterData is not null && malfunctionMeterData.Any()) ? malfunctionMeterData.Sum(x => x.SumItems) : 0
+                TotalPayable = (malfunctionMeterData is not null && malfunctionMeterData.Any()) ? malfunctionMeterData.Sum(x => x.SumItems) : 0,
+                Title= ReportLiterals.MalfunctionMeterDetail,
             };
             if (malfunctionMeterData is not null && !malfunctionMeterData.Any())
             {

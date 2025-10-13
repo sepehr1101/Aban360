@@ -42,5 +42,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _pendingPaymentsHandler.Handle, CurrentUser, ReportLiterals.PendingPayments, connectionId);
             return Ok(inputDto);
         }
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetStiReport(PendingPaymentsInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 500;
+            ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentsDataOutputDto> result = await _pendingPaymentsHandler.Handle(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
+        }
     }
 }

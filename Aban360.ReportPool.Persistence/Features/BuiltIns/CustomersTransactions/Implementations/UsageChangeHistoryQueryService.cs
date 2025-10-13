@@ -51,6 +51,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 CustomerCount = usageChangeHistoryData is not null && usageChangeHistoryData.Any() ? usageChangeHistoryData.Count() : 0,
                 RecordCount = usageChangeHistoryData is not null && usageChangeHistoryData.Any() ? usageChangeHistoryData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                Title= ReportLiterals.UsageChangeHistory,
 
                 SumDomesticCount = usageChangeHistoryData is not null && usageChangeHistoryData.Any() ? usageChangeHistoryData.Sum(x => x.DomesticUnit) : 0,
                 SumCommercialCount = usageChangeHistoryData is not null && usageChangeHistoryData.Any() ? usageChangeHistoryData.Sum(x => x.CommercialUnit) : 0,

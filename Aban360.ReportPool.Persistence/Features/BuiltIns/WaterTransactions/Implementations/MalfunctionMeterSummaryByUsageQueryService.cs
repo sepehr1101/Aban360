@@ -20,6 +20,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<MalfunctionMeterSummaryHeaderOutputDto, MalfunctionMeterSummaryDataOutputDto>> Get(MalfunctionMeterInputDto input)
         {
+            string reportTitle = ReportLiterals.MalfunctionMeterSummary + ReportLiterals.ByUsage;
             string query = GetGroupedQuery(GroupingFields.UsageTitle);
             //string query = GetMalfunctionMeterQuery();
 
@@ -40,6 +41,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = malfunctionMeterData is not null && malfunctionMeterData.Any() ? malfunctionMeterData.Count() : 0,
+                Title=reportTitle,
 
                 TotalPayable = malfunctionMeterData is not null && malfunctionMeterData.Any() ? malfunctionMeterData.Sum(x => x.SumItems) : 0,
                 ConsumptionAverage = malfunctionMeterData is not null && malfunctionMeterData.Any() ? malfunctionMeterData.Average(x => x.Consumption) : 0,
@@ -50,7 +52,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 CustomerCount = malfunctionMeterData.Sum(i => i.CustomerCount)
             };
 
-            ReportOutput<MalfunctionMeterSummaryHeaderOutputDto, MalfunctionMeterSummaryDataOutputDto> result = new ReportOutput<MalfunctionMeterSummaryHeaderOutputDto, MalfunctionMeterSummaryDataOutputDto>(ReportLiterals.MalfunctionMeterSummary + ReportLiterals.ByUsage, malfunctionMeterHeader, malfunctionMeterData);
+            ReportOutput<MalfunctionMeterSummaryHeaderOutputDto, MalfunctionMeterSummaryDataOutputDto> result = new ReportOutput<MalfunctionMeterSummaryHeaderOutputDto, MalfunctionMeterSummaryDataOutputDto>(reportTitle, malfunctionMeterHeader, malfunctionMeterData);
             return result;
         }
 

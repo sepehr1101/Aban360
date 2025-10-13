@@ -33,6 +33,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (debtorCustomersData is not null && debtorCustomersData.Any()) ? debtorCustomersData.Count() : 0,
                 CustomerCount = (debtorCustomersData is not null && debtorCustomersData.Any()) ? debtorCustomersData.Count() : 0,
+                Title= ReportLiterals.ServiceLinkDebtorCustomers,
             };
             if (debtorCustomersData is not null && debtorCustomersData.Any())
             {

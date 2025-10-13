@@ -40,6 +40,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 RecordCount = (waterUsageGroupedData is not null && waterUsageGroupedData.Any()) ? waterUsageGroupedData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 TotalAmount = waterUsageGroupedData.Sum(usage => usage.Amount),
+                Title= ReportLiterals.WaterUsageGrouped,
 
                 CustomerCount = waterUsageGroupedData is not null && waterUsageGroupedData.Any() ? waterUsageGroupedData.Count() : 0,
                 SumCommercialUnit = waterUsageGroupedData?.Sum(i => i.CommercialUnit) ?? 0,

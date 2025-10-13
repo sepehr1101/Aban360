@@ -3,9 +3,12 @@ using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Contracts;
+using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
+using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
+using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
@@ -42,6 +45,17 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _contractualCapacity.Handle, CurrentUser, ReportLiterals.ContractualCapacity, connectionId);
             return Ok(inputDto);
+        }
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetStiReport(ContractualCapacityInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 30;
+            ReportOutput<ContractualCapacityHeaderOutputDto, ContractualCapacityDataOutputDto> result = await _contractualCapacity.Handle(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
         }
     }
 }

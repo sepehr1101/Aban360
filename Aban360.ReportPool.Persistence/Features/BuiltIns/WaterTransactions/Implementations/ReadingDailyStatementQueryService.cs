@@ -14,7 +14,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
     {
         public ReadingDailyStatementQueryService(IConfiguration configuration)
             : base(configuration)
-        { 
+        {
         }
 
         public async Task<ReportOutput<ReadingDailyStatementHeaderOutputDto, ReadingDailyStatementDataOutputDto>> GetInfo(ReadingDailyStatementInputDto input)
@@ -22,8 +22,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             string readingDailyStatements = GetReadingDailyStatementQuery();
             var @params = new
             {
-                fromAmount=input.FromAmount,
-                toAmount=input.ToAmount,
+                fromAmount = input.FromAmount,
+                toAmount = input.ToAmount,
                 fromReadingNumber = input.FromReadingNumber,
                 toReadingNumber = input.ToReadingNumber,
                 fromConsumption = input.FromConsumption,
@@ -41,8 +41,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToDateJalali = input.ToDateJalali,
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
-                FromAmount=input.FromAmount,
-                ToAmount=input.ToAmount,
+                FromAmount = input.FromAmount,
+                ToAmount = input.ToAmount,
+                Title = ReportLiterals.ReadingDailyStatement,
 
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (data is not null && data.Any()) ? data.Count() : 0,

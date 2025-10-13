@@ -18,6 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         }
         public async Task<ReportOutput<HouseholdNumberHeaderOutputDto, HouseholdNumberSummaryByZoneDataOutputDto>> GetInfo(HouseholdNumberInputDto input, string lastYearJalali)
         {
+            string reportTitle = ReportLiterals.HouseholdNumberSummary + ReportLiterals.ByZone;
             string householdNumberQuery = GetHouseholdNumberQuery();
             var @params = new
             {
@@ -40,6 +41,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 ToHouseholdDateJalali = input.ToHouseholdDateJalali,
                 RecordCount = householdNumberData is not null && householdNumberData.Any() ? householdNumberData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                Title=reportTitle,
 
                 SumCommercialUnit = householdNumberData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = householdNumberData.Sum(i => i.DomesticUnit),
@@ -48,7 +50,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 CustomerCount = householdNumberData.Sum(i => i.CustomerCount),
             };
 
-            var result = new ReportOutput<HouseholdNumberHeaderOutputDto, HouseholdNumberSummaryByZoneDataOutputDto>(ReportLiterals.HouseholdNumberSummary + ReportLiterals.ByZone, householdNumberHeader, householdNumberData);
+            var result = new ReportOutput<HouseholdNumberHeaderOutputDto, HouseholdNumberSummaryByZoneDataOutputDto>(reportTitle, householdNumberHeader, householdNumberData);
 
             return result;
         }

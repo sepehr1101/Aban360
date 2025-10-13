@@ -33,8 +33,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 CustomerCount = (deductionsAndDiscountsReportData is not null && deductionsAndDiscountsReportData.Any()) ? deductionsAndDiscountsReportData.Count() : 0,
                 RecordCount = (deductionsAndDiscountsReportData is not null && deductionsAndDiscountsReportData.Any()) ? deductionsAndDiscountsReportData.Count() : 0,
-                TotalOffAmount=deductionsAndDiscountsReportData.Sum(x=>x.SumOffAmount)
-
+                TotalOffAmount=deductionsAndDiscountsReportData.Sum(x=>x.SumOffAmount),
+                Title= ReportLiterals.DeductionsAndDiscountsReportSummary,
             };
 
             var result = new ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportSummaryDataOutputDto>(ReportLiterals.DeductionsAndDiscountsReportSummary, deductionsAndDiscountsReportHeader, deductionsAndDiscountsReportData);

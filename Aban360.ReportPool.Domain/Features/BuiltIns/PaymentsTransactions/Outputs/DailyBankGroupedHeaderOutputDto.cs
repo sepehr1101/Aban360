@@ -11,6 +11,7 @@
         public long? FromAmount { get; set; }
         public long? ToAmount { get; set; }
         public int CustomerCount { get; set; }
+        public string? Title { get; set; }
 
         public int TotalCount { get; set; }
         public long TotalAmount { get; set; }

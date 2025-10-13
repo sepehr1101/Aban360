@@ -42,5 +42,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _UsageSummary.Handle, CurrentUser, ReportLiterals.UsageSummary, connectionId);
             return Ok(inputDto);
         }
+
+        [HttpPost, HttpGet]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetStiReport(UsageSummaryInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 351;
+            ReportOutput<UsageSummaryHeaderOutputDto, UsageSummaryDataOutputDto> result = await _UsageSummary.Handle(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
+        }
     }
 }

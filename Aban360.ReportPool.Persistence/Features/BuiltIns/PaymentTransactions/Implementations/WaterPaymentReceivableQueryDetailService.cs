@@ -35,6 +35,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                Title= ReportLiterals.WaterPaymentReceivableDetail,
             };
             if (waterPaymentReceivableData is not null && waterPaymentReceivableData.Any())
             {

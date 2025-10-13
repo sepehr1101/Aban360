@@ -19,6 +19,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryDataOutputDto>> GetInfo(ReadingStatusStatementInputDto input)
         {
+            string reportTitle = ReportLiterals.ReadingStatusStatementSummary + ReportLiterals.ByUsage;
             string query = GetGroupedQuery(input.IsRegisterDateJalali,false);
             //string query = GetReadingStatusStatementQuery();
             
@@ -40,6 +41,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = data is not null && data.Any() ? data.Count() : 0,
+                Title=reportTitle,
             };
             if (data is not null && data.Any())
             {
@@ -53,7 +55,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 header.SumSelfClaimed = data.Sum(x => x.SelfClaimedCount);
             }
 
-            var result = new ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryDataOutputDto>(ReportLiterals.ReadingStatusStatementSummary + ReportLiterals.ByUsage, header, data);
+            var result = new ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryDataOutputDto>(reportTitle, header, data);
             return result;
         }
 

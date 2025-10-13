@@ -20,6 +20,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryDataOutputDto>> GetInfo(WithoutBillInputDto input)
         {
+            string reportTitle = ReportLiterals.WithoutBill + ReportLiterals.ByZone;
             string query = GetGroupedQuery(input.ZoneIds?.Any() == true, input.UsageIds?.Any() == true, true);
             //string query = GetWithoutBillQuery(input.ZoneIds?.Any() == true, input.UsageIds?.Any() == true);
             
@@ -42,6 +43,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToReadingNumber = input.ToReadingNumber,
                 RecordCount = withoutBillData is not null && withoutBillData.Any() ? withoutBillData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                Title=reportTitle,
 
                 SumCommercialUnit = withoutBillData.Sum(i => i.CommercialUnit),
                 SumDomesticUnit = withoutBillData.Sum(i => i.DomesticUnit),
@@ -50,7 +52,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 CustomerCount = withoutBillData.Sum(i => i.CustomerCount),
             };
 
-            var result = new ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryDataOutputDto>(ReportLiterals.WithoutBill + ReportLiterals.ByZone, withoutBillHeader, withoutBillData);
+            var result = new ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryDataOutputDto>(reportTitle, withoutBillHeader, withoutBillData);
             return result;
         }
 

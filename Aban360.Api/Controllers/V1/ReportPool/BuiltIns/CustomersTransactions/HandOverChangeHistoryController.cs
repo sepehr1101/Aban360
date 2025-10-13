@@ -10,12 +10,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
 {
-    [Route("v1/branch-type-change-history")]
-    public class BranchTypeChangeHistoryController : BaseController
+    [Route("v1/handover-change-history")]
+    public class HandOverChangeHistoryController : BaseController
     {
         private readonly IBranchTypeChangeHistoryHandler _branchTypeChangeHistory;
         private readonly IReportGenerator _reportGenerator;
-        public BranchTypeChangeHistoryController(
+        public HandOverChangeHistoryController(
             IBranchTypeChangeHistoryHandler branchTypeChangeHistory,
             IReportGenerator reportGenerator)
         {
@@ -41,6 +41,17 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _branchTypeChangeHistory.Handle, CurrentUser, ReportLiterals.BranchTypeChangeHistory, connectionId);
             return Ok(inputDto);
+        }
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetStiReport(BranchTypeChangeHistoryInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 337;
+            ReportOutput<BranchTypeChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto> result = await _branchTypeChangeHistory.Handle(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
         }
     }
 }

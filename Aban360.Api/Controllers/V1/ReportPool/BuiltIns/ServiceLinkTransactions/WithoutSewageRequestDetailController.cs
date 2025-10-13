@@ -6,6 +6,7 @@ using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
@@ -31,7 +32,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(WithoutSewageRequestInputDto input,CancellationToken cancellationToken)
         {
-            var result=await _withoutSewageRequestDetailHandler.Handle(input, cancellationToken);
+            ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestDetailDataOutputDto> result =await _withoutSewageRequestDetailHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
@@ -41,6 +42,18 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _withoutSewageRequestDetailHandler.Handle, CurrentUser, ReportLiterals.WithoutSewageRequestDetail, connectionId);
             return Ok(inputDto);
+        }
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetStiReport(WithoutSewageRequestInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 620;
+            ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestDetailDataOutputDto> result = await _withoutSewageRequestDetailHandler.Handle(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
         }
     }
 }

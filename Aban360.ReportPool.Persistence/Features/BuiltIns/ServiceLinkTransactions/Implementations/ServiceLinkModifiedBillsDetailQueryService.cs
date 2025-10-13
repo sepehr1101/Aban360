@@ -34,6 +34,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (modifiedBillsData is not null && modifiedBillsData.Any()) ? modifiedBillsData.Count() : 0,
                 CustomerCount = (modifiedBillsData is not null && modifiedBillsData.Any()) ? modifiedBillsData.Count() : 0,
+                Title= ReportLiterals.ServiceLinkModifiedBillsDetail,
 
                 SumAmount = modifiedBillsData.Sum(x => x.Amount),
                 SumOffAmount = modifiedBillsData.Sum(x => x.OffAmount),

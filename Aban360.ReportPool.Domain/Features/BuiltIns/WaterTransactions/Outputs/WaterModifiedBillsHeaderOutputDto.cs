@@ -10,5 +10,6 @@
         public int CustomerCount { get; set; }
         public long SumItems { get; set; }
         public long Payable { get; set; }
+        public string? Title { get; set; }
     }
 }

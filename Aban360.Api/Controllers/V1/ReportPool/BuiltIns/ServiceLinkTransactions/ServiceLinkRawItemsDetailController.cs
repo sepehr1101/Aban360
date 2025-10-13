@@ -31,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ServiceLinkRawItemsHeaderOutputDto, ServiceLinkRawNetItemsDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(ServiceLinkRawItemsInputDto input, CancellationToken cancellationToken)
         {
-            var result = await _serviceLinkRawItemsDetailHandler.Handle(input, cancellationToken);
+            ReportOutput<ServiceLinkRawItemsHeaderOutputDto, ServiceLinkRawNetItemsDetailDataOutputDto> result = await _serviceLinkRawItemsDetailHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
@@ -41,6 +41,17 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _serviceLinkRawItemsDetailHandler.Handle, CurrentUser, ReportLiterals.ServiceLinkRawItemsDetail, connectionId);
             return Ok(inputDto);
+        }
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetStiReport(ServiceLinkRawItemsInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 590;
+            ReportOutput<ServiceLinkRawItemsHeaderOutputDto, ServiceLinkRawNetItemsDetailDataOutputDto> result = await _serviceLinkRawItemsDetailHandler.Handle(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
         }
     }
 }

@@ -10,5 +10,6 @@
         public int CustomerCount { get; set; }
 
         public string AverageDuration { get; set; }
+        public string? Title { get; set; }
     }
 }

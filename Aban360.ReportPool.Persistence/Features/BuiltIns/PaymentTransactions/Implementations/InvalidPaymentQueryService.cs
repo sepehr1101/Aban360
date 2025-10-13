@@ -33,6 +33,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 CustomerCount = (invalidPaymentData is not null && invalidPaymentData.Any()) ? invalidPaymentData.Count() : 0,
                 RecordCount = (invalidPaymentData is not null && invalidPaymentData.Any()) ? invalidPaymentData.Count() : 0,
                 TotalAmount = invalidPaymentData.Sum(x => x.Amount),
+                Title= ReportLiterals.InvalidPayment,
             };
 
             var result = new ReportOutput<InvalidPaymentHeaderOutputDto, InvalidPaymentDataOutputDto>(ReportLiterals.InvalidPayment, invalidPaymentHeader, invalidPaymentData);

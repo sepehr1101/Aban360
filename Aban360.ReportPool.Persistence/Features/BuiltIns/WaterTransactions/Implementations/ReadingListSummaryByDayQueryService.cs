@@ -20,6 +20,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<ReadingListHeaderOutputDto, ReadingListSummaryDataOutputDto>> GetInfo(ReadingListInputDto input)
         {
+            string reportTitle = ReportLiterals.ReadingListSummary + ReportLiterals.ByDay;
             string query = GetGroupedQuery(GroupingFields.NextDay);
             //string query = GetReadingListQuery();
             
@@ -40,10 +41,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = readingListData is not null && readingListData.Any() ? readingListData.Count() : 0,
-                CustomerCount = readingListData?.Sum(x => x.ReadingCount) ?? 0
+                CustomerCount = readingListData?.Sum(x => x.ReadingCount) ?? 0,
+                Title=reportTitle,
             };
 
-            var result = new ReportOutput<ReadingListHeaderOutputDto, ReadingListSummaryDataOutputDto>(ReportLiterals.ReadingListSummary + ReportLiterals.ByDay, modifiedBillsHeader, readingListData);
+            var result = new ReportOutput<ReadingListHeaderOutputDto, ReadingListSummaryDataOutputDto>(reportTitle, modifiedBillsHeader, readingListData);
             return result;
         }
 

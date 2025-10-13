@@ -41,6 +41,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 RecordCount = serviceLinkZoneGroupedData is not null && serviceLinkZoneGroupedData.Any() ? serviceLinkZoneGroupedData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 TotalAmount = serviceLinkZoneGroupedData.Sum(usage => usage.Amount),
+                Title= ReportLiterals.ServiceLinkZoneGrouped,
 
                 CustomerCount = serviceLinkZoneGroupedData is not null && serviceLinkZoneGroupedData.Any() ? serviceLinkZoneGroupedData.Count() : 0,
                 SumCommercialUnit = serviceLinkZoneGroupedData?.Sum(i => i.CommercialUnit) ?? 0,

@@ -9,6 +9,7 @@
         public int CustomerCount { get; set; }
 
         public long TotalOffAmount { get; set; }
+        public string? Title { get; set; }
 
     }
 }

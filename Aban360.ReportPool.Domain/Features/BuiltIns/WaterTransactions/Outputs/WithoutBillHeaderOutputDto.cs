@@ -10,6 +10,7 @@
 
         public string? FromReadingNumber { get; set; }
         public string? ToReadingNumber { get; set; }
+        public string? Title { get; set; }
 
         public string ReportDateJalali { get; set; }
         public int RecordCount { get; set; }

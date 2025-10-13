@@ -20,6 +20,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<UnreadSummaryHeaderOutputDto, UnreadSummaryByZoneDataOutputDto>> GetInfo(UnreadInputDto input)
         {
+            string reportTitle = ReportLiterals.UnreadSummary + ReportLiterals.ByZone;
             string query = GetGroupedQuery(input.ZoneIds?.Any() == true,GroupingFields.ZoneTitle);
             //string query = GetUnreadSummaryByZoneQuery(input.ZoneIds?.Any() == true);
             
@@ -40,6 +41,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToPeriodCount = input.ToPeriodCount,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = UnreadSummaryByZoneData is not null && UnreadSummaryByZoneData.Any() ? UnreadSummaryByZoneData.Count() : 0,
+                Title=reportTitle,
 
                 SumBarrier = UnreadSummaryByZoneData.Sum(u => u.Barrier),
                 SumClosed = UnreadSummaryByZoneData.Sum(u => u.Closed),
@@ -54,7 +56,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 CountMore = UnreadSummaryByZoneData?.Sum(i => i.CountMore) ?? 0,
             };
 
-            var result = new ReportOutput<UnreadSummaryHeaderOutputDto, UnreadSummaryByZoneDataOutputDto>(ReportLiterals.UnreadSummary + ReportLiterals.ByZone, UnreadSummaryByZoneHeader, UnreadSummaryByZoneData);
+            var result = new ReportOutput<UnreadSummaryHeaderOutputDto, UnreadSummaryByZoneDataOutputDto>(reportTitle, UnreadSummaryByZoneHeader, UnreadSummaryByZoneData);
             return result;
         }
 

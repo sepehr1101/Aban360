@@ -42,5 +42,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _removedBillHandler.HandleFlat, CurrentUser, ReportLiterals.RemovedBillSummary + ReportLiterals.ByZone, connectionId, ReportLiterals.HandleFlat);
             return Ok(inputDto);
         }
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetStiReport(RemovedBillInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 443;
+            ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto> result = await _removedBillHandler.HandleFlat(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
+        }
     }
 }

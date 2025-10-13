@@ -6,6 +6,7 @@ using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handle
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
@@ -31,7 +32,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(RuinedMeterIncomeInputDto input, CancellationToken cancellationToken)
         {
-            var result = await _reuinedMeterIncomeDetailHandler.Handle(input, cancellationToken);
+            ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeDetailDataOutputDto> result = await _reuinedMeterIncomeDetailHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
@@ -41,6 +42,18 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _reuinedMeterIncomeDetailHandler.Handle, CurrentUser, ReportLiterals.RuinedMeterIncomeDetail, connectionId);
             return Ok(inputDto);
+        }
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetStiReport(RuinedMeterIncomeInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 410;
+            ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeDetailDataOutputDto> result = await _reuinedMeterIncomeDetailHandler.Handle(inputDto, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
         }
     }
 }

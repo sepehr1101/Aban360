@@ -15,6 +15,7 @@
         public int OverdueCount { get; set; }
         public long DueAmount { get; set; }
         public int DueCount { get; set; }
+        public string? Title { get; set; }
 
 
     }

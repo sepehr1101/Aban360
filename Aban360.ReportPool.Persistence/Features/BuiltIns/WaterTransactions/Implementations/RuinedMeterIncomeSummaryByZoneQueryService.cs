@@ -20,6 +20,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryDataOutputDto>> GetInfo(RuinedMeterIncomeInputDto input)
         {
+            string reportTitle = ReportLiterals.RuinedMeterIncomeSummary + ReportLiterals.ByZone;
             string query = GetGroupedQuery(GroupingFields.ZoneTitle);
             //string query = GetRuinedMeterIncomeDataQuery();
 
@@ -40,6 +41,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = ruinedMeterIncomeData is not null && ruinedMeterIncomeData.Any() ? ruinedMeterIncomeData.Count() : 0,
+                Title=reportTitle,
 
                 TotalPayable = ruinedMeterIncomeData.Sum(x => x.Payable),
                 TotalSumItems = ruinedMeterIncomeData.Sum(x => x.SumItems),
@@ -49,7 +51,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 TotalUnit = ruinedMeterIncomeData.Sum(i => i.TotalUnit),
                 CustomerCount = ruinedMeterIncomeData.Sum(i => i.CustomerCount),
             };
-            var result = new ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryDataOutputDto>(ReportLiterals.RuinedMeterIncomeSummary + ReportLiterals.ByZone, ruinedMeterIncomeHeader, ruinedMeterIncomeData);
+            var result = new ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryDataOutputDto>(reportTitle, ruinedMeterIncomeHeader, ruinedMeterIncomeData);
 
             return result;
         }

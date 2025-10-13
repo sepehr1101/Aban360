@@ -12,6 +12,7 @@
         public double? ToAmount { get; set; }
         public int? FromConsumption { get; set; }
         public int? ToConsumption { get; set; }
+        public string? Title { get; set; }
 
         public int SumBillCount { get; set; }
         public int SumConsumption { get; set; }

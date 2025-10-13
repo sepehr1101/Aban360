@@ -54,6 +54,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToAmount = input.Inputs.ToAmount,
                 FromConsumption = input.Inputs.FromConsumption,
                 ToConsumption = input.Inputs.ToConsumption,
+				Title= ReportLiterals.ContractualAndOlgooLevel,
 
                 CustomerCount = levelData?.Sum(w => w.BillCount) ?? 0,
                 SumBillCount = levelData?.Sum(w => w.BillCount) ?? 0,
