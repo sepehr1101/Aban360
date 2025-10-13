@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.Db.Dapper;
+using Aban360.SystemPool.Domain.Contants;
 using Aban360.SystemPool.Domain.Features.Logging.Dto.Input;
 using Aban360.SystemPool.Domain.Features.Logging.Dto.Output;
 using Aban360.SystemPool.Persistence.Features.Logging.Queries.Contracts;
@@ -16,7 +17,7 @@ namespace Aban360.SystemPool.Persistence.Features.Logging.Queries.Implementation
 
         public async Task<IEnumerable<LoggingOutputDto>> Get(LoggingInputByDateTimeDto input)
         {
-            string loggingQueryString = GetLoggingQuery();
+            string loggingQueryString = GetLoggingQuery(input.LogLevel);
             var @params = new
             {
                 fromDateTime = input.FromDateTime,
@@ -26,9 +27,10 @@ namespace Aban360.SystemPool.Persistence.Features.Logging.Queries.Implementation
             IEnumerable<LoggingOutputDto> result = await _sqlConnection.QueryAsync<LoggingOutputDto>(loggingQueryString, @params);
             return result;
         }
-        private string GetLoggingQuery()
+        private string GetLoggingQuery(LogLevelEnum logLevel)
         {
-            return @"Select
+            string logLevelQueryPart = logLevel == LogLevelEnum.None ? "" : " AND l.Level=@logLevel";
+            return @$"Select top 500
                         Format(l.TimeStamp ,'yyyy/MM/dd', 'fa-IR') as DateJalali,
                         Format(l.TimeStamp,'HH:mm','fa-IR') as Time,
                     	l.Level as LogLevel,
@@ -37,8 +39,8 @@ namespace Aban360.SystemPool.Persistence.Features.Logging.Queries.Implementation
                         l.Properties
                     From [Aban360].dbo.Logs l
                     Where 
-                    	l.TimeStamp BETWEEN @fromDateTime AND @toDateTime AND
-                    	l.Level=@logLevel";
+                    	l.TimeStamp BETWEEN @fromDateTime AND @toDateTime
+                    	{logLevelQueryPart}";
         }
     }
 }
