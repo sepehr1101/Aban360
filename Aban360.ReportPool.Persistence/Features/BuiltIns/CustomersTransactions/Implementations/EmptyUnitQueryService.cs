@@ -49,7 +49,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 SumEmptyUnit = (emptyUnitData is not null && emptyUnitData.Any()) ? emptyUnitData.Sum(x => x.EmptyUnit) : 0,
             };
 
-
             var result = new ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>(ReportLiterals.EmptyUnit, emptyUnitHeader, emptyUnitData);
 
             return result;
@@ -60,6 +59,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 						t46.C2 AS RegionTitle,
                         c.CustomerNumber,
                         c.ReadingNumber,
+                        TRIM(c.FirstName) + ' '+ TRIM(c.SureName) FullName,
                         TRIM(c.FirstName) AS FirstName,
                         TRIM(c.SureName) As Surname,
                         c.UsageTitle,
