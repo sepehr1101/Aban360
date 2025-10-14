@@ -10,15 +10,15 @@ using DNTPersianUtils.Core;
 
 namespace Aban360.OldCalcPool.Application.Features.SaveReading
 {
-    public interface ISaveHandler
+    public interface IWaterCalculationSaveHandler
     {
         Task Handle(IEnumerable<ReadingBillInputDto> inputDto, int mamorCode, CancellationToken cancellationToken);
     }
-    internal sealed class SaveHandler : ISaveHandler
+    internal sealed class WaterCalculationSaveHandler : IWaterCalculationSaveHandler
     {
         private readonly IProcessing _processing;
         private readonly IBedBesCreateService _bedBesCreateService;
-        public SaveHandler(
+        public WaterCalculationSaveHandler(
             IProcessing processing,
             IBedBesCreateService bedBesCreateService)
         {

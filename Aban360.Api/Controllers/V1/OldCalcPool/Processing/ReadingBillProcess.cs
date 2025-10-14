@@ -11,8 +11,8 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
     [Route("v1/reading-bill")]
     public class ReadingBillProcess : BaseController
     {
-        private readonly ISaveHandler _saveHandler;
-        public ReadingBillProcess(ISaveHandler saveHandler)
+        private readonly IWaterCalculationSaveHandler _saveHandler;
+        public ReadingBillProcess(IWaterCalculationSaveHandler saveHandler)
         {
             _saveHandler = saveHandler;
             _saveHandler.NotNull(nameof(saveHandler));
