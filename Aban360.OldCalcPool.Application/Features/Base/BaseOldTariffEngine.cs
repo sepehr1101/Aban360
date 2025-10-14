@@ -101,9 +101,9 @@ namespace Aban360.CalculationPool.Application.Features.Base
         {
             return CheckConditions(usageId, [8, 7, 12, 13, 29, 30, 32]);
         }
-        private bool IsHandoverDiscount(int usageId)
+        private bool IsHandoverDiscount(int branchTypeId)
         {
-            return CheckConditions(usageId, [3, 6, 7]);
+            return CheckConditions(branchTypeId, [3, 6, 7]);
         }
         private bool IsSchool(int usageId)
         {
@@ -1176,11 +1176,17 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
         private long CalculateItemDiscount(CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, long amount)
         {
+            if (amount == 0)
+            {
+                return 0;
+            }
             int domesticCount = (customerInfo.DomesticUnit - customerInfo.EmptyUnit) <= 0 ? 1 : customerInfo.DomesticUnit - customerInfo.EmptyUnit;
-            double partialOlgoo = IsDomesticCategory(customerInfo.UsageId) ?
+            double partialOlgoo = IsDomestic(customerInfo.UsageId) ?
                (double)domesticCount * olgoo / monthDays * nerkh.Duration :
                (double)customerInfo.ContractualCapacity / monthDays * nerkh.Duration;
-            if (IsDomestic(customerInfo.UsageId) && nerkh.PartialConsumption <= olgoo)
+            if (IsHandoverDiscount(customerInfo.BranchType) &&
+                IsDomesticWithoutUnspecified(customerInfo.UsageId) && 
+                nerkh.PartialConsumption <= olgoo)
             {
                 return amount;
             }
