@@ -14,8 +14,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         {
         }
         public async Task<ConsumerSummaryDto> GetInfo(string billId)
-        {
-           // string summaryQuery = GetConsumerSummaryDtoQuery();
+        {          
             string summaryQuery = GetConsumerSummaryDtoWithClientDbQuery();
             ConsumerSummaryDto? summaryInfo = await _sqlReportConnection.QuerySingleOrDefaultAsync<ConsumerSummaryDto>(summaryQuery, new { id = billId });
             if (summaryInfo == null)
@@ -108,6 +107,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	c.CustomerNumber,
                     	c.BillId,
                     	c.ReadingNumber,
+                        c.WaterRequestDate AS RequestDate,
                     	c.WaterInstallDate AS InstallationDate,
                     	'' AS ProductDate,
                     	'' AS GuaranteeDate,
@@ -129,6 +129,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	c.FirstName+' '+c.SureName AS FullName,
                     	c.FirstName,
                     	c.SureName AS Surname,
+                        c.SewageRequestDate AS SiphonRequestDate,
                     	c.SewageInstallDate AS SiphonInstallationDate,
                     	'' AS HeadquartersTitle,
                     	'' AS CordinalDirectionTitle,
