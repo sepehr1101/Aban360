@@ -15,19 +15,23 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         }
         public async Task<ConsumerSummaryDto> GetInfo(string billId)
         {
-           // string summaryQuery = GetConsumerSummaryDtoQuery();
+            // string summaryQuery = GetConsumerSummaryDtoQuery();
             string summaryQuery = GetConsumerSummaryDtoWithClientDbQuery();
             ConsumerSummaryDto? summaryInfo = await _sqlReportConnection.QuerySingleOrDefaultAsync<ConsumerSummaryDto>(summaryQuery, new { id = billId });
             if (summaryInfo == null)
                 throw new InvalidIdException();
 
-            string tagQuery = GetWaterMeterTagsQuery();
-            IEnumerable<string> tags = await _sqlConnection.QueryAsync<string>(tagQuery, new { id = billId });
+            string tagQuery = GetWaterTag();
+            IEnumerable<string> waterMeterTags = await _sqlReportConnection.QueryAsync<string>(tagQuery, new { billId });
+            summaryInfo.WaterMeterTags = waterMeterTags.ToList();
 
-            if (summaryInfo is not null)
-            {
-                //summaryInfo.WaterMeterTags = new[] { "سگ نگهبان", "گیاه اکالیپتوس" };//tags.ToList();
-            }
+            //string tagQuery = GetWaterMeterTagsQuery();
+            //IEnumerable<string> tags = await _sqlConnection.QueryAsync<string>(tagQuery, new { id = billId });
+
+            //if (summaryInfo is not null)
+            //{
+            //    //summaryInfo.WaterMeterTags = new[] { "سگ نگهبان", "گیاه اکالیپتوس" };//tags.ToList();
+            //}
             return summaryInfo;
         }
 
@@ -147,6 +151,17 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     from [CustomerWarehouse].dbo.Clients c
                     where c.BillId=@id 
                     and c.ToDayJalali is null";
+        }
+
+        private string GetWaterTag()
+        {
+            return @"Select 
+                    	bt.TagTitle
+                    FROM [CustomerWarehouse].dbo.BillIdTags bt
+                    Where
+                    	bt.BillId=@billId AND
+                    	[CustomerWarehouse].dbo.PersianToMiladi(bt.ExpireDateJalali)>GETDATE() AND
+                    	bt.DeleteDateTime IS NULL";
         }
     }
 }
