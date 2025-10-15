@@ -17,6 +17,9 @@ namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implemen
         public async Task<ConsumerSummaryDto> Handle(string billId, CancellationToken cancellationToken)
         {
             var consumerSummary = await _consumerSummaryService.GetInfo(billId);
+            consumerSummary.TotalUnitWater = consumerSummary.UnitDomesticWater + consumerSummary.UnitCommercialWater + consumerSummary.UnitOtherWater;
+            consumerSummary.TotalUnitSewage = consumerSummary.UnitDomesticSewage + consumerSummary.UnitCommercialSewage + consumerSummary.UnitOtherSewage;
+          
             return consumerSummary;
         }
     }

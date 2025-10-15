@@ -4,7 +4,7 @@
     {
         public int ZoneId { get; set; }
         public int Radif { get; set; }
-        public string  BillId { get; set; }
+        public string BillId { get; set; }
         public int BranchType { get; set; }
         public int UsageId { get; set; }
         public int EmptyUnit { get; set; }

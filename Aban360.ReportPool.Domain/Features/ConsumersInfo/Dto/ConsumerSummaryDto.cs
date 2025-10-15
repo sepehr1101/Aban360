@@ -17,9 +17,13 @@
         public short UnitDomesticWater { get; set; }
         public short UnitCommercialWater { get; set; }
         public short UnitOtherWater { get; set; }
+        public int TotalUnitWater { get; set; }
+
         public short UnitDomesticSewage { get; set; }
         public short UnitCommercialSewage { get; set; }
         public short UnitOtherSewage { get; set; }
+        public int TotalUnitSewage { get; set; }
+
         public short EmptyUnit { get; set; }
         public string ConstructionType { get; set; } = default!;
         public string UsageConsumption { get; set; } = default!;

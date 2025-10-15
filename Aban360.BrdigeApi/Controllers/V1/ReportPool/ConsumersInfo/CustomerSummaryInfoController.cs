@@ -18,10 +18,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         private readonly ILatestDebtService _latestDebtService;
 
         public CustomerSummaryInfoController(
-            IConsumerSummaryQueryService consumerSummaryQueryService,
+            IConsumerSummaryQueryService summaryQueryService,
             ILatestDebtService latestDebtService)
         {
-            _consumerSummeryQueryService = consumerSummaryQueryService;
+            _consumerSummeryQueryService = summaryQueryService;
             _consumerSummeryQueryService.NotNull(nameof(_consumerSummeryQueryService));
 
             _latestDebtService = latestDebtService;
@@ -34,6 +34,9 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         public async Task<IActionResult> GetSummaryInfo([FromBody] SearchInput searchInput, CancellationToken cancellationToken)
         {
             ConsumerSummaryDto summary = await _consumerSummeryQueryService.GetInfo(searchInput.Input);
+            summary.TotalUnitWater = summary.UnitDomesticWater + summary.UnitCommercialWater + summary.UnitOtherWater;
+            summary.TotalUnitSewage = summary.UnitDomesticSewage + summary.UnitCommercialSewage + summary.UnitOtherSewage;
+          
             return Ok(summary);
         }
 
