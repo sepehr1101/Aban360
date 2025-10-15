@@ -92,7 +92,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             AbonmanAbDiscount = abonmanAbDiscount;
             AbonmanFazelabDiscount = abonmaneFazelabDiscount;
             AvarezDiscount = avarezDiscount;
-            JavaniAmount = javaniDiscount;
+            JavaniDiscount = javaniDiscount;
             DiscountSum = _abBahaDiscount + _hotSeasonDiscount + _fazelabDiscount +
                           abonmanAbDiscount + abonmaneFazelabDiscount + avarezDiscount + javaniDiscount;
 
