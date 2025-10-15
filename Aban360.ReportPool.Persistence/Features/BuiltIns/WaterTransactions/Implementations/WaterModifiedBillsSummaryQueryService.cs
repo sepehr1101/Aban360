@@ -14,19 +14,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
     {
         public WaterModifiedBillsSummaryQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<WaterModifiedBillsHeaderOutputDto, WaterModifiedBillsSummaryDataOutputDto>> GetInfo(WaterModifiedBillsInputDto input)
         {
             string modifiedBills = GetWaterModifiedBillsQuery();
-            var @params = new
-            {
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-                typeCode = input.TypeIds,
-                zoneIds=input.ZoneIds,
-            };
-            IEnumerable<WaterModifiedBillsSummaryDataOutputDto> modifiedBillsData = await _sqlReportConnection.QueryAsync<WaterModifiedBillsSummaryDataOutputDto>(modifiedBills, @params);
+            
+            IEnumerable<WaterModifiedBillsSummaryDataOutputDto> modifiedBillsData = await _sqlReportConnection.QueryAsync<WaterModifiedBillsSummaryDataOutputDto>(modifiedBills, input);
             WaterModifiedBillsHeaderOutputDto modifiedBillsHeader = new WaterModifiedBillsHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -54,8 +49,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	SUM(b.SumItems) AS SumItems
                     From [CustomerWarehouse].dbo.Bills b
                     Where	
-                    	b.RegisterDay BETWEEN @fromDate AND @toDate AND
-                    	b.TypeCode IN @typeCode AND
+                    	b.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali AND
+                    	b.TypeCode IN @TypeIds AND
                         b.ZoneId IN @zoneIds
                     Group By	
                     	b.UsageTitle,

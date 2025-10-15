@@ -14,18 +14,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
     {
         public DeductionsAndDiscountsReportSummaryQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<DeductionsAndDiscountsReportHeaderOutputDto, DeductionsAndDiscountsReportSummaryDataOutputDto>> GetInfo(DeductionsAndDiscountsReportInputDto input)
         {
             string deductionsAndDiscountsReportQueryString = GetDeductionsAndDiscountsReportDataQuery();
-            var @params = new
-            {
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-                zoneIds = input.ZoneIds,
-            };
-            IEnumerable<DeductionsAndDiscountsReportSummaryDataOutputDto> deductionsAndDiscountsReportData = await _sqlReportConnection.QueryAsync<DeductionsAndDiscountsReportSummaryDataOutputDto>(deductionsAndDiscountsReportQueryString, @params);
+            
+            IEnumerable<DeductionsAndDiscountsReportSummaryDataOutputDto> deductionsAndDiscountsReportData = await _sqlReportConnection.QueryAsync<DeductionsAndDiscountsReportSummaryDataOutputDto>(deductionsAndDiscountsReportQueryString, input);
             DeductionsAndDiscountsReportHeaderOutputDto deductionsAndDiscountsReportHeader = new DeductionsAndDiscountsReportHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -49,7 +45,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	SUM(r.OffAmount ) AS SumOffAmount
                     From [CustomerWarehouse].dbo.RequestBillDetails r
                     Where
-                    	(r.RegisterDate BETWEEN @fromDate AND @toDate)  AND
+                    	(r.RegisterDate BETWEEN @FromDateJalali AND @ToDateJalali)  AND
                     	r.ZoneId IN @zoneIds AND
                     	r.OffAmount > 0
                     Group By r.ItemTitle";

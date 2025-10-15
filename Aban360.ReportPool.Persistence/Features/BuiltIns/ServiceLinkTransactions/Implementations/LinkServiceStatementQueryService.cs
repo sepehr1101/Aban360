@@ -20,13 +20,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         public async Task<ReportOutput<LinkServiceStatementHeaderOutputDto, LinkServiceStatementDataOutputDto>> GetInfo(LinkServiceStatementInputDto input)
         {
             string linkServiceStatementDataInfoQuery = GetLinkServiceStatementDataQuery();
-            var @params = new 
-            {
-                FromDateJalali=input.FromDateJalali,
-                ToDateJalali=input.ToDateJalali,
-                ZoneIds=input.ZoneIds,
-            };
-            IEnumerable<LinkServiceStatementDataOutputDto> linkServiceStatementData = await _sqlReportConnection.QueryAsync<LinkServiceStatementDataOutputDto>(linkServiceStatementDataInfoQuery,@params);
+
+            IEnumerable<LinkServiceStatementDataOutputDto> linkServiceStatementData = await _sqlReportConnection.QueryAsync<LinkServiceStatementDataOutputDto>(linkServiceStatementDataInfoQuery, input);
             LinkServiceStatementHeaderOutputDto linkServiceStatementHeader = new LinkServiceStatementHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

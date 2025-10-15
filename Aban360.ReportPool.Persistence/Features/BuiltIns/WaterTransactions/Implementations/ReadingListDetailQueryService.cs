@@ -19,7 +19,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         public async Task<ReportOutput<ReadingListHeaderOutputDto, ReadingListDetailDataOutputDto>> GetInfo(ReadingListInputDto input)
         {
             string query = GetDetailQuery();
-            //string query = GetReadingListQuery();
            
             var @params = new
             {

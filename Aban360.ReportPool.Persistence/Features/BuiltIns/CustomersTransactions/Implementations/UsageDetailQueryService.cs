@@ -19,16 +19,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         public async Task<ReportOutput<UsageDetailHeaderOutputDto, UsageDetailDataOutputDto>> GetInfo(UsageDetailInputDto input)
         {
             string usageDetailQuery = GetUsageDetailQuery();
-            var @params = new
-            {
-                input.FromReadingNumber,
-                input.ToReadingNumber,
 
-                UsageIds = input.UsageSellIds,
-                input.ZoneIds
-            };
-
-            IEnumerable<UsageDetailDataOutputDto> usageDetailData = await _sqlReportConnection.QueryAsync<UsageDetailDataOutputDto>(usageDetailQuery, @params);
+            IEnumerable<UsageDetailDataOutputDto> usageDetailData = await _sqlReportConnection.QueryAsync<UsageDetailDataOutputDto>(usageDetailQuery, input);
             UsageDetailHeaderOutputDto usageDetailHeader = new UsageDetailHeaderOutputDto()
             {                
                 FromReadingNumber = input.FromReadingNumber,
@@ -66,7 +58,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     FROM [CustomerWarehouse].dbo.Clients c
                     WHERE 
             			c.ToDayJalali IS NULL AND
-            			c.UsageId in @UsageIds AND
+            			c.UsageId in @UsageSellIds AND
 							(@fromReadingNumber IS NULL OR
 							@toReadingNumber IS NULL OR
 							c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND

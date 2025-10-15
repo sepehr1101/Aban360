@@ -1,5 +1,4 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
@@ -15,13 +14,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
     {
         public ReadingStatusStatementSummaryByUsageQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+        }
 
         public async Task<ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryDataOutputDto>> GetInfo(ReadingStatusStatementInputDto input)
         {
             string reportTitle = ReportLiterals.ReadingStatusStatementSummary + ReportLiterals.ByUsage;
             string query = GetGroupedQuery(input.IsRegisterDateJalali,false);
-            //string query = GetReadingStatusStatementQuery();
             
             var @params = new
             {
@@ -30,7 +29,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 fromDate = input.FromDateJalali,
                 todate = input.ToDateJalali,
                 zoneIds = input.ZoneIds,
-               // isRegisterDate = input.IsRegisterDateJalali
             };
             IEnumerable<ReadingStatusStatementSummaryDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingStatusStatementSummaryDataOutputDto>(query, @params);
             ReadingStatusStatementHeaderOutputDto header = new ReadingStatusStatementHeaderOutputDto()

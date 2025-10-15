@@ -14,18 +14,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
     {
         public WaterModifiedBillsDetailQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<WaterModifiedBillsHeaderOutputDto, WaterModifiedBillsDetailDataOutputDto>> GetInfo(WaterModifiedBillsInputDto input)
         {
             string modifiedBills = GetWaterModifiedBillsQuery();
-            var @params = new
-            {
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-                typeCode = input.TypeIds//ZoneId?
-            };
-            IEnumerable<WaterModifiedBillsDetailDataOutputDto> modifiedBillsData = await _sqlReportConnection.QueryAsync<WaterModifiedBillsDetailDataOutputDto>(modifiedBills,@params);
+            
+            IEnumerable<WaterModifiedBillsDetailDataOutputDto> modifiedBillsData = await _sqlReportConnection.QueryAsync<WaterModifiedBillsDetailDataOutputDto>(modifiedBills, input);
             WaterModifiedBillsHeaderOutputDto modifiedBillsHeader = new WaterModifiedBillsHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -53,8 +49,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 	                    b.SumItems
                     From [CustomerWarehouse].dbo.Bills b
                     Where	
-                    	b.RegisterDay BETWEEN @fromDate AND @toDate AND
-                    	b.TypeCode IN @typeCode";
+                    	b.RegisterDay BETWEEN @FromDateJalali AND @tToDateJalali AND
+                    	b.TypeCode IN @TypeIds AND
+                        b.ZoneId IN @zoneIds";
         }
     }
 }

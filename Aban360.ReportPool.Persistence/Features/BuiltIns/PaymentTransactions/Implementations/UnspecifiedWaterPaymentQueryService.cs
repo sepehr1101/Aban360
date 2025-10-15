@@ -14,21 +14,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
     {
         public UnspecifiedWaterPaymentQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+        }
 
         public async Task<ReportOutput<UnspecifiedPaymentHeaderOutputDto, UnspecifiedPaymentDataOutputDto>> GetInfo(UnspecifiedPaymentInputDto input)
         {
             string unspecifiedWaterPayments = GetUnspecifiedWaterPaymentQuery();
-            var @params = new
-            {
-                FromDate = input.FromDateJalali,
-                ToDate = input.ToDateJalali,
-                FromAmount = input.FromAmount,
-                ToAmount = input.ToAmount,
-                FromBankId = input.FromBankId,
-                ToBankId = input.ToBankId,
-            };
-            IEnumerable<UnspecifiedPaymentDataOutputDto> unspecifiedWaterData = await _sqlReportConnection.QueryAsync<UnspecifiedPaymentDataOutputDto>(unspecifiedWaterPayments,@params);
+
+            IEnumerable<UnspecifiedPaymentDataOutputDto> unspecifiedWaterData = await _sqlReportConnection.QueryAsync<UnspecifiedPaymentDataOutputDto>(unspecifiedWaterPayments, input);
             UnspecifiedPaymentHeaderOutputDto unspecifiedWaterHeader = new UnspecifiedPaymentHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -67,12 +60,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 						b.Id IS NULL
 						AND
 						(
-							(@FromDate IS NOT NULL AND
-								@ToDate IS NOT NULL AND
-								p.RegisterDay BETWEEN @FromDate AND @ToDate)
+							(@FromDateJalali IS NOT NULL AND
+								@ToDateJalali IS NOT NULL AND
+								p.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali)
 							OR
-							(@FromDate IS NULL AND
-								@ToDate IS NULL)
+							(@FromDateJalali IS NULL AND
+								@ToDateJalali IS NULL)
 						)
 						AND
 						(

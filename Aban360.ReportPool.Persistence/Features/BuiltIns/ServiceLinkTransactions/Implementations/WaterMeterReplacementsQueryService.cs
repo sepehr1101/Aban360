@@ -20,23 +20,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         public async Task<ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsDataOutputDto>> GetInfo(WaterMeterReplacementsInputDto input)
         {
             string query = GetDetailQuery(input.IsChangeDate);
-          
-            string reportTitle = input.IsChangeDate == true ? ReportLiterals.WaterMeterReplacements(ReportLiterals.ChangeDate) :
-                ReportLiterals.WaterMeterReplacements(ReportLiterals.RegisterDate);
 
-            var @params = new
-            {
-                fromReadingNumber = input.FromReadingNumber,
-                toReadingNumber = input.ToReadingNumber,
+            string reportTitle = input.IsChangeDate == true ? ReportLiterals.WaterMeterReplacements(ReportLiterals.ChangeDate) : ReportLiterals.WaterMeterReplacements(ReportLiterals.RegisterDate);
 
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-
-                zoneIds = input.ZoneIds,
-                usageIds = input.UsageIds,
-               // isChangeDate = input.IsChangeDate ? 1 : 0,
-            };
-            IEnumerable<WaterMeterReplacementsDataOutputDto> waterMeterReplacementsData = await _sqlReportConnection.QueryAsync<WaterMeterReplacementsDataOutputDto>(query, @params);
+            IEnumerable<WaterMeterReplacementsDataOutputDto> waterMeterReplacementsData = await _sqlReportConnection.QueryAsync<WaterMeterReplacementsDataOutputDto>(query, input);
             WaterMeterReplacementsHeaderOutputDto waterMeterReplacementsHeader = new WaterMeterReplacementsHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

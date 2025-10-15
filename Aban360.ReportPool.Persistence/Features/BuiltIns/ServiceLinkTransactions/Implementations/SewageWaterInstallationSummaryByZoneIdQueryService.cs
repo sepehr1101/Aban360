@@ -21,18 +21,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         {
             string ZoneTitle = nameof(ZoneTitle);
             string query = GetGroupedQuery(input.IsWater, false, ZoneTitle);
-
             string reportTitle = input.IsWater ? ReportLiterals.WaterInstallationSummaryByZoneId : ReportLiterals.SewageInstallationSummaryByZoneId;
-            var @params = new
-            {
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-                zoneIds = input.ZoneIds,
-                usageIds=input.UsageIds,
-                fromReadingNumber = input.FromReadingNumber,
-                toReadingNumber = input.ToReadingNumber,
-            };
-            IEnumerable<SewageWaterInstallationSummaryByZoneIdDataOutputDto> installationData = await _sqlReportConnection.QueryAsync<SewageWaterInstallationSummaryByZoneIdDataOutputDto>(query, @params);
+    
+            IEnumerable<SewageWaterInstallationSummaryByZoneIdDataOutputDto> installationData = await _sqlReportConnection.QueryAsync<SewageWaterInstallationSummaryByZoneIdDataOutputDto>(query, input);
             SewageWaterInstallationHeaderOutputDto installationHeader = new SewageWaterInstallationHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

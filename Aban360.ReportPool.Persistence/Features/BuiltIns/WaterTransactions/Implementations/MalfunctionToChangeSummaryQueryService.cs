@@ -20,12 +20,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         public async Task<ReportOutput<MalfunctionToChangeHeaderOutputDto, MalfunctionToChangeSummaryDataOutputFromDataBaseDto>> Get(MalfunctionToChangeInputDto input)
         {
             string MalfunctionQueryString = GetMalfunctionToChangeQuery();
-            var @params = new
-            {
-                fromDateJalali = input.FromDateJalali,
-                toDateJalali = input.ToDateJalali,
-            };
-            IEnumerable<MalfunctionToChangeSummaryDataOutputFromDataBaseDto> MalfunctionData = await _sqlReportConnection.QueryAsync<MalfunctionToChangeSummaryDataOutputFromDataBaseDto>(MalfunctionQueryString, @params);
+            
+            IEnumerable<MalfunctionToChangeSummaryDataOutputFromDataBaseDto> MalfunctionData = await _sqlReportConnection.QueryAsync<MalfunctionToChangeSummaryDataOutputFromDataBaseDto>(MalfunctionQueryString, input);
             MalfunctionToChangeHeaderOutputDto MalfunctionHeader = new MalfunctionToChangeHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

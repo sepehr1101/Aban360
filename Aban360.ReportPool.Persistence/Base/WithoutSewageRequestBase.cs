@@ -39,7 +39,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						TRIM(c.PostalCode) AS PostalCode
                     From [CustomerWarehouse].dbo.Clients c
                     Where	
-                    	c.WaterRegisterDateJalali BETWEEN @fromDate AND @toDate AND
+                    	c.WaterRegisterDateJalali BETWEEN @FromDateJalali AND @ToDateJalali AND
 						(TRIM(c.SewageRequestDate)='' OR c.SewageRequestDate IS NULL) AND
                     	c.ZoneId IN @zoneIds AND
 						c.ToDayJalali IS NULL AND
@@ -78,7 +78,7 @@ namespace Aban360.ReportPool.Persistence.Base
 					Join [Db70].dbo.T46 t46
 						On t51.C1=t46.C0
                     Where	
-                    	c.WaterRegisterDateJalali BETWEEN @fromDate AND @toDate AND
+                    	c.WaterRegisterDateJalali BETWEEN @FromDateJalali AND @ToDateJalali AND
 						(TRIM(c.SewageRequestDate)='' OR c.SewageRequestDate IS NULL) AND
                     	c.ZoneId IN @zoneIds AND
 						c.ToDayJalali IS NULL AND

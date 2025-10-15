@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
@@ -14,11 +15,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
     {
         public UnpaidQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+        }
 
         public async Task<ReportOutput<UnpaidHeaderOutputDto, UnpaidDataOutputDto>> GetInfo(UnpaidInputDto input)
         {
-            string unpaids = GetUnpaidQuery(input.ZoneIds?.Any() == true);
+            string unpaids = GetUnpaidQuery(input.ZoneIds.HasValue());
             var @params = new
             {
                 FromAmount = input.FromAmount ?? 0,
@@ -70,7 +72,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 					join [CustomerWarehouse].dbo.Clients c on b.BillId=c.BillId
                     WHERE 
                     p.id IS NULL
-                    AND (b.RegisterDay BETWEEN @FromDate and @ToDate)
+                    AND (b.RegisterDay BETWEEN @FromDateJalaliJalali and @ToDateJalaliJalali)
                     AND (@FromAmount is null or
                     	 @ToAmount is null or 
                     	 b.Payable BETWEEN @FromAmount and @ToAmount)

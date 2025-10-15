@@ -19,21 +19,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         public async Task<ReportOutput<UseStateReportHeaderOutputDto, UseStateReportDataOutputDto>> GetInfo(UseStateReportInputDto input)
         {
             string reportTitle = await GetReportTitle(input.UseStateId);
-
             string query = GetDetailQuery();
-            //string query = GetUseStateDataQuery();
 
-            var @params = new
-            {
-                useStateId = input.UseStateId,
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-                zoneIds = input.ZoneIds,
-                fromReadingNumber = input.FromReadingNumber,
-                toReadingNumber = input.ToReadingNumber
-            };
-
-            IEnumerable<UseStateReportDataOutputDto> useStateData = await _sqlReportConnection.QueryAsync<UseStateReportDataOutputDto>(query, @params);
+            IEnumerable<UseStateReportDataOutputDto> useStateData = await _sqlReportConnection.QueryAsync<UseStateReportDataOutputDto>(query, input);
             UseStateReportHeaderOutputDto useStateHeader = new UseStateReportHeaderOutputDto()
             {
                 TotalDebtAmount = useStateData.Sum(useState => useState.DebtAmount),
@@ -62,49 +50,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             string useStateTitle = await _sqlConnection.QueryFirstOrDefaultAsync<string>(useStateQuery, new { useStateId = useStateId });
 
             return ReportLiterals.Report + " " + useStateTitle;
-        }
-        private string GetUseStateDataQuery()
-        {
-            return @";WITH CTE AS 
-                     (SELECT 
-                    	c.CustomerNumber,
-                    	c.ReadingNumber,
-                    	TRIM(c.FirstName) AS FirstName,
-                    	TRIM(c.SureName) As Surname,
-                    	c.UsageTitle,
-                    	c.WaterDiameterTitle MeterDiameterTitle,
-                        c.MainSiphonTitle AS SiphonDiameterTitle,
-                    	c.RegisterDayJalali AS EventDateJalali,
-                    	0 AS DebtAmount,
-                    	TRIM(c.Address) AS Address,
-                    	c.ZoneTitle,
-                    	c.DeletionStateId,
-                        c.DeletionStateTitle AS DeletionStateTitle,
-                        c.DomesticCount DomesticUnit,
-	                    c.CommercialCount CommercialUnit,
-                        (c.CommercialCount+c.DomesticCount+c.DomesticCount) as TotalUnit,
-	                    c.OtherCount OtherUnit,
-                    	c.ContractCapacity AS ContractualCapacity,
-	                    TRIM(c.BillId) BillId,
-						TRIM(c.MeterSerialBody) AS BodySerial,
-						c.WaterRegisterDateJalali AS MeterInstallationDateJalali,
-						c.WaterRequestDate AS MeterRequestDateJalali,
-                        TRIM(c.PhoneNo) AS PhoneNumber,
-						TRIM(c.MobileNo) AS MobileNumber,
-						TRIM(c.NationalId) AS NationalCode,
-						TRIM(c.PostalCode) AS PostalCode,
-	                    RN=ROW_NUMBER() OVER (PARTITION BY ZoneId, CustomerNumber ORDER BY RegisterDayJalali DESC)
-                    FROM [CustomerWarehouse].dbo.Clients c
-                    WHERE 
-                       c.FromDayJalali>=@fromDate and
-                       c.ToDayJalali<=@toDate and
-                       c.DeletionStateId=@useStateId and
-                        (@fromReadingNumber IS NULL OR
-						@toReadingNumber IS NULL OR
-						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) and  
-                        c.ZoneId in @zoneIds)
-                    SELECT * FROM CTE
-                    WHERE RN=1 AND DeletionStateId=@useStateId ";
         }
 
         private string GetUseStateTitle()

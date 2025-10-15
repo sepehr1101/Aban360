@@ -1,5 +1,4 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
@@ -15,20 +14,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
     {
         public WaterNetSalesSummaryQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<WaterSalesHeaderOutputDto, WaterNetSalesSummaryDataOutputDto>> GetInfo(WaterSalesInputDto input)
         {
             string query = GetGroupedQuery(true);
-            //string query = GetWaterNetSalesSummaryQuery();
 
-            var @params = new
-            {
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-                zoneIds = input.ZoneIds,
-            };
-            IEnumerable<WaterNetSalesSummaryDataOutputDto> waterNetSalesData = await _sqlReportConnection.QueryAsync<WaterNetSalesSummaryDataOutputDto>(query,@params);
+            IEnumerable<WaterNetSalesSummaryDataOutputDto> waterNetSalesData = await _sqlReportConnection.QueryAsync<WaterNetSalesSummaryDataOutputDto>(query, input);
             WaterSalesHeaderOutputDto waterNetSalesHeader = new WaterSalesHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -42,23 +35,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
             var result = new ReportOutput<WaterSalesHeaderOutputDto, WaterNetSalesSummaryDataOutputDto>(ReportLiterals.WaterNetSalesSummary, waterNetSalesHeader, waterNetSalesData);
             return result;
-        }
-
-        private string GetWaterNetSalesSummaryQuery()
-        {
-            return @"Select 
-                    	b.UsageTitle,
-                    	b.ZoneTitle,
-                    	SUM(b.Payable) AS Payable,
-                    	COUNT(1) AS Count
-                    From [CustomerWarehouse].dbo.Bills b
-                    Where 
-                    	b.TypeCode IN (3,4,5,9) AND
-                    	b.RegisterDay BETWEEN @fromDate AND @toDate AND
-                    	b.ZoneId IN @zoneIds 
-                    Group By
-                    	b.ZoneTitle,
-                    	b.UsageTitle";
         }
     }
 }

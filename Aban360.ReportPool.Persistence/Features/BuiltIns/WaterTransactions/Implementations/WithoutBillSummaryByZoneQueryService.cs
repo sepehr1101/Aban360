@@ -1,5 +1,5 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
+using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
@@ -21,20 +21,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         public async Task<ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryDataOutputDto>> GetInfo(WithoutBillInputDto input)
         {
             string reportTitle = ReportLiterals.WithoutBill + ReportLiterals.ByZone;
-            string query = GetGroupedQuery(input.ZoneIds?.Any() == true, input.UsageIds?.Any() == true, true);
-            //string query = GetWithoutBillQuery(input.ZoneIds?.Any() == true, input.UsageIds?.Any() == true);
-            
-            var @params = new
-            {
-                FromDate = input.FromDateJalali,
-                ToDate = input.ToDateJalali,
-                input.FromReadingNumber,
-                input.ToReadingNumber,
-                input.ZoneIds,
-                usageIds = input.UsageIds,
-            };
+            string query = GetGroupedQuery(input.ZoneIds.HasValue(), input.UsageIds.HasValue(), true);
 
-            IEnumerable<WithoutBillSummaryDataOutputDto> withoutBillData = await _sqlReportConnection.QueryAsync<WithoutBillSummaryDataOutputDto>(query, @params);
+            IEnumerable<WithoutBillSummaryDataOutputDto> withoutBillData = await _sqlReportConnection.QueryAsync<WithoutBillSummaryDataOutputDto>(query, input);
             WithoutBillHeaderOutputDto withoutBillHeader = new WithoutBillHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -54,55 +43,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
             var result = new ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryDataOutputDto>(reportTitle, withoutBillHeader, withoutBillData);
             return result;
-        }
-
-        private string GetWithoutBillQuery(bool hasZone, bool hasUsage)
-        {
-            string zoneQuery = hasZone ? "AND c.ZoneId IN @ZoneIds" : string.Empty;
-            string usageQuery = hasUsage ? "AND c.UsageId IN @usageIds" : string.Empty;
-
-            return @$"Select	
-                    	MAX(t46.C2) AS RegionTitle,
-                       	c.ZoneTitle,
-                    	COUNT(c.ZoneTitle) AS CustomerCount,
-                    	SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
-                    	SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
-                    	SUM(ISNULL(c.DomesticCount, 0)) AS DomesticUnit,
-                    	SUM(ISNULL(c.OtherCount, 0)) AS OtherUnit,
-						SUM(CASE WHEN t5.C0 = 0 THEN 1 ELSE 0 END) AS UnSpecified,
-				        SUM(CASE WHEN t5.C0 = 1 THEN 1 ELSE 0 END) AS Field0_5,
-				        SUM(CASE WHEN t5.C0 = 2 THEN 1 ELSE 0 END) AS Field0_75,
-				        SUM(CASE WHEN t5.C0 = 3 THEN 1 ELSE 0 END) AS Field1,
-				        SUM(CASE WHEN t5.C0 = 4 THEN 1 ELSE 0 END) AS Field1_2,
-				        SUM(CASE WHEN t5.C0 = 5 THEN 1 ELSE 0 END) AS Field1_5,
-				        SUM(CASE WHEN t5.C0 = 6 THEN 1 ELSE 0 END) AS Field2,
-				        SUM(CASE WHEN t5.C0 = 7 THEN 1 ELSE 0 END) AS Field3,
-				        SUM(CASE WHEN t5.C0 = 8 THEN 1 ELSE 0 END) AS Field4,
-				        SUM(CASE WHEN t5.C0 = 9 THEN 1 ELSE 0 END) AS Field5,
-				        SUM(CASE WHEN t5.C0 In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6
-                    From [CustomerWarehouse].dbo.Clients c
-                    LEFt JOIN [CustomerWarehouse].dbo.Bills b
-                    	on c.ZoneId=b.ZoneId AND c.CustomerNumber=b.CustomerNumber
-					Join [Db70].dbo.T5 t5
-						On t5.C0=c.WaterDiameterId
-                    Join [Db70].dbo.T51 t51
-                    	On t51.C0=c.ZoneId
-                    Join [Db70].dbo.T46 t46
-                    	On t51.C1=t46.C0
-                    where 
-                       	 b.Id IS NULL AND
-                    	(@FromDate IS NULL or
-                       	@ToDate IS NULL or 
-                       	c.WaterInstallDate BETWEEN @FromDate and @ToDate)AND 
-                    	(@FromReadingNumber IS NULL or
-                       	@ToReadingNumber IS NULL or 
-                        c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND
-                       	c.DeletionStateId IN (0,2)  AND
-                    	c.ToDayJalali IS NULL
-                    	{zoneQuery}
-                        {usageQuery}
-                    Group By c.ZoneTitle ";
-
         }
     }
 }

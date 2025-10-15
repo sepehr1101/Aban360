@@ -22,7 +22,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     From [CustomerWarehouse].dbo.Bills b
                     Where 
                     	b.TypeCode IN {queryParam} AND
-                    	b.RegisterDay BETWEEN @fromDate AND @toDate AND
+                    	b.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali AND
                     	b.ZoneId IN @zoneIds";
         }
 
@@ -38,7 +38,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     From [CustomerWarehouse].dbo.Bills b
                     Where 
                     	b.TypeCode IN {queryParam} AND
-                    	b.RegisterDay BETWEEN @fromDate AND @toDate AND
+                    	b.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali AND
                     	b.ZoneId IN @zoneIds 
                     Group By
                     	b.ZoneTitle,

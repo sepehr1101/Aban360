@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
@@ -15,22 +16,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
     {
         public WaterZoneGroupedQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+        }
 
         public async Task<ReportOutput<ServiceLinkWaterItemGroupedHeaderOutputDto, ServiceLinkWaterItemGroupedDataOutputDto>> GetInfo(ServiceLinkWaterItemGroupedInputDto input)
         {
-            string query = GetGroupedQuery(true, input.ZoneIds?.Any() == true, GroupingFields.ZoneTitle);
-           // string query = GetWaterZoneGroupedQuery(input.ZoneIds?.Any() == true);
+            string query = GetGroupedQuery(true, input.ZoneIds.HasValue(), GroupingFields.ZoneTitle);
           
-            var @params = new
-            {
-                FromDate = input.FromDateJalali,
-                ToDate = input.ToDateJalali,
-                fromBankId = input.FromBankId,
-                toBankId = input.ToBankId,
-                zoneIds = input.ZoneIds,
-            };
-            IEnumerable<ServiceLinkWaterItemGroupedDataOutputDto> waterZoneGroupedData = await _sqlReportConnection.QueryAsync<ServiceLinkWaterItemGroupedDataOutputDto>(query, @params);
+            IEnumerable<ServiceLinkWaterItemGroupedDataOutputDto> waterZoneGroupedData = await _sqlReportConnection.QueryAsync<ServiceLinkWaterItemGroupedDataOutputDto>(query, input);
             ServiceLinkWaterItemGroupedHeaderOutputDto waterZoneGroupedHeader = new ServiceLinkWaterItemGroupedHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
