@@ -63,5 +63,10 @@
         public static string InvalidConfiguration(string item, string subItem) => $"تنظیمات راه اندازی نرم افزار اشتباه است. {item} > {subItem}";
 
         public static string InvalidPreviousDateInvoice(int day) => $"صدور قبل برای کمتر از {day} روز امکان پذیر نمی‌باشد.";
+
+
+
+        public static string UnSuccessfulToSave(string tableName) => $"ذخیره در جدول {tableName} با خطا روبرو شد";
+    
     }
 }

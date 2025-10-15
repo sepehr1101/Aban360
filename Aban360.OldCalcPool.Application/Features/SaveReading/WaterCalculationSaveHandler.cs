@@ -7,6 +7,7 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
 using DNTPersianUtils.Core;
+using Microsoft.Data.SqlClient;
 
 namespace Aban360.OldCalcPool.Application.Features.SaveReading
 {
@@ -18,21 +19,27 @@ namespace Aban360.OldCalcPool.Application.Features.SaveReading
     {
         private readonly IProcessing _processing;
         private readonly IBedBesCreateService _bedBesCreateService;
+        private readonly IKasrHaService _kasrHaService;
         public WaterCalculationSaveHandler(
             IProcessing processing,
-            IBedBesCreateService bedBesCreateService)
+            IBedBesCreateService bedBesCreateService,
+            IKasrHaService kasrHaService)
         {
             _processing = processing;
             _processing.NotNull(nameof(processing));
 
             _bedBesCreateService = bedBesCreateService;
             _bedBesCreateService.NotNull(nameof(bedBesCreateService));
+
+            _kasrHaService = kasrHaService;
+            _kasrHaService.NotNull(nameof(kasrHaService));
         }
 
         public async Task Handle(IEnumerable<ReadingBillInputDto> inputDto, int mamorCode, CancellationToken cancellationToken)
         {
             ICollection<AbBahaCalculationDetails> calculationDetails = new List<AbBahaCalculationDetails>();
             ICollection<BedBesCreateDto> bedBes = new List<BedBesCreateDto>();
+            ICollection<KasrHaDto> kasrHa = new List<KasrHaDto>();
             foreach (var customer in inputDto)
             {
                 MeterInfoInputDto meterInfo = new MeterInfoInputDto
@@ -43,59 +50,61 @@ namespace Aban360.OldCalcPool.Application.Features.SaveReading
                 };
                 AbBahaCalculationDetails result = await _processing.HandleWithAggregatedNerkh(meterInfo, cancellationToken);
                 calculationDetails.Add(result);
-                bedBes.Add(await CreateBedBes(result, customer, mamorCode));
+                bedBes.Add(CreateBedBes(result, customer, mamorCode));
+                kasrHa.Add(CreateKasrha(result, customer));
             }
             await _bedBesCreateService.Create(bedBes);
+            await _kasrHaService.Create(kasrHa);
         }
 
-        private async Task<BedBesCreateDto> CreateBedBes(AbBahaCalculationDetails s, ReadingBillInputDto readingBillInfo, int mamorCode)
+        private BedBesCreateDto CreateBedBes(AbBahaCalculationDetails abBahaCalculation, ReadingBillInputDto readingBillInfo, int mamorCode)
         {
             string dateNowJalali = DateTime.Now.ToShortPersianDateString();
             return new BedBesCreateDto()
             {
-                Town = s.Customer.ZoneId,
-                Radif = s.Customer.Radif,
-                Eshtrak = s.Customer.ReadingNumber,
+                Town = abBahaCalculation.Customer.ZoneId,
+                Radif = abBahaCalculation.Customer.Radif,
+                Eshtrak = abBahaCalculation.Customer.ReadingNumber,
                 Barge = 1,
-                PriNo = s.MeterInfo.PreviousNumber,
+                PriNo = abBahaCalculation.MeterInfo.PreviousNumber,
                 TodayNo = readingBillInfo.MeterNumber,
-                PriDate = s.MeterInfo.PreviousDateJalali,
+                PriDate = abBahaCalculation.MeterInfo.PreviousDateJalali,
                 TodayDate = readingBillInfo.ReadingDateJalali,
-                AbonFas = (decimal)s.AbonmanFazelabAmount,
-                FasBaha = (decimal)s.FazelabAmount,
-                AbBaha = (decimal)s.AbBahaAmount,
+                AbonFas = (decimal)abBahaCalculation.AbonmanFazelabAmount,
+                FasBaha = (decimal)abBahaCalculation.FazelabAmount,
+                AbBaha = (decimal)abBahaCalculation.AbBahaAmount,
                 //Ztadil = (decimal)s.Zarib,
-                Masraf = (decimal)s.Consumption,
+                Masraf = (decimal)abBahaCalculation.Consumption,
                 Shahrdari = 0,
-                Modat = s.Duration,
+                Modat = abBahaCalculation.Duration,
                 DateBed = DateTime.Now.ToShortPersianDateString(),//
                 JalaseNo = 0,//
-                Mohlat = GetForwardDateJalali(dateNowJalali, 10, s.Customer.BillId),
-                Baha = (decimal)s.SumItems,
-                AbonAb = (decimal)s.AbonmanAbAmount,
-                Pard = Math.Round((decimal)s.SumItems, 3),
-                Jam = (decimal)s.SumItems,//
+                Mohlat = GetForwardDateJalali(dateNowJalali, 10, abBahaCalculation.Customer.BillId),
+                Baha = (decimal)abBahaCalculation.SumItems,
+                AbonAb = (decimal)abBahaCalculation.AbonmanAbAmount,
+                Pard = Math.Round((decimal)abBahaCalculation.SumItems, 3),
+                Jam = (decimal)abBahaCalculation.SumItems,//
                 CodVas = (decimal)readingBillInfo.CounterStateId,
                 Ghabs = "",
                 Del = false,
                 Type = "1",
-                CodEnshab = s.Customer.UsageId,
-                Enshab = s.Customer.MeterDiameterId,
+                CodEnshab = abBahaCalculation.Customer.UsageId,
+                Enshab = abBahaCalculation.Customer.MeterDiameterId,
                 Elat = 0,
                 Serial = 0,
                 Ser = 0,
-                ZaribFasl = (decimal)s.HotSeasonAbBahaAmount,//
+                ZaribFasl = (decimal)abBahaCalculation.HotSeasonAbBahaAmount,//
                 Ab10 = 0,
                 Ab20 = 0,
-                TedadVahd = s.Customer.OtherUnit,
-                TedKhane = s.Customer.HouseholdNumber,
-                TedadMas = s.Customer.DomesticUnit,
-                TedadTej = s.Customer.CommertialUnit,
-                NoeVa = s.Customer.BranchType,
+                TedadVahd = abBahaCalculation.Customer.OtherUnit,
+                TedKhane = abBahaCalculation.Customer.HouseholdNumber,
+                TedadMas = abBahaCalculation.Customer.DomesticUnit,
+                TedadTej = abBahaCalculation.Customer.CommertialUnit,
+                NoeVa = abBahaCalculation.Customer.BranchType,
                 Jarime = 0,
                 Masjar = 0,
                 Sabt = 1,
-                Rate = (decimal)s.MonthlyConsumption,
+                Rate = Math.Round((decimal)abBahaCalculation.MonthlyConsumption, 3),
                 Operator = 0,
                 Mamor = mamorCode,
                 TavizDate = "",//
@@ -103,19 +112,19 @@ namespace Aban360.OldCalcPool.Application.Features.SaveReading
                 Zabresani = 0,
                 ZaribD = 0,
                 Tafavot = 0,
-                KasrHa = (decimal)s.DiscountSum,
-                FixMas = (decimal)s.Consumption,//
-                ShGhabs1 = s.Customer.BillId,
+                KasrHa = (decimal)abBahaCalculation.DiscountSum,
+                FixMas = (decimal)abBahaCalculation.Consumption,//
+                ShGhabs1 = abBahaCalculation.Customer.BillId,
                 ShPard1 = "must generate",
                 TabAbnA = 0,
                 TabAbnF = 0,
                 TabsFa = 0,
                 NewAb = 0,
                 NewFa = 0,
-                Bodjeh = (decimal)s.SumBoodje,
+                Bodjeh = (decimal)abBahaCalculation.SumBoodje,
                 Group1 = 0,
                 MasFas = 0,
-                Faz = s.FazelabAmount > 0 ? true : false,
+                Faz = abBahaCalculation.FazelabAmount > 0 ? true : false,
                 ChkKarbari = 0,
                 C200 = 0,
                 DateIns = dateNowJalali.Substring(dateNowJalali.Length - 8),
@@ -130,13 +139,54 @@ namespace Aban360.OldCalcPool.Application.Features.SaveReading
                 TmpTavizDate = "",
                 C90 = 0,
                 C101 = 0,
-                KhaliS = s.Customer.EmptyUnit,
-                EdarehK = s.Customer.IsSpecial,
-                Avarez = (decimal)s.AvarezAmount,
+                KhaliS = abBahaCalculation.Customer.EmptyUnit,
+                EdarehK = abBahaCalculation.Customer.IsSpecial,
+                Avarez = (decimal)abBahaCalculation.AvarezAmount,
                 TrackNumber = 0
             };
         }
 
+        private KasrHaDto CreateKasrha(AbBahaCalculationDetails s, ReadingBillInputDto readingBillInfo)
+        {
+            string dateNowJalali = DateTime.Now.ToShortPersianDateString();
+            return new KasrHaDto()
+            {
+                Town = s.Customer.ZoneId,
+                IdBedbes = 1,
+                Radif = s.Customer.Radif,
+                CodEnshab = 0,//
+                Barge = 0,
+                PriDate = s.MeterInfo.PreviousDateJalali,
+                TodayDate = readingBillInfo.ReadingDateJalali,
+                PriNo = s.MeterInfo.PreviousNumber,
+                TodayNo = readingBillInfo.MeterNumber,
+                Masraf = (decimal)s.Consumption,
+                AbBaha = (decimal)s.AbBahaAmount,
+                FasBaha = (decimal)s.FazelabAmount,
+                AbonAb = (decimal)s.AbonmanAbAmount,
+                AbonFas = (decimal)s.AbonmanFazelabAmount,
+                TabAbnA = 0,
+                TabAbnF = 0,
+                Ab10 = 0,
+                Shahrdari = 0,
+                Rate = 0,
+                Baha = (decimal)s.SumItems,
+                ShGhabs = s.Customer.BillId,
+                ShPard = "",
+                DateBed = "",
+                TmpDateBed = "",
+                TmpTodayDate = dateNowJalali.Substring(dateNowJalali.Length - 8),
+                TedVahd = s.Customer.OtherUnit,//
+                TedadTej = s.Customer.CommertialUnit,
+                TedadMas = s.Customer.DomesticUnit,
+                TedKhane = s.Customer.HouseholdNumber,
+                ZaribFasl = 0,//
+                NoeVa = s.Customer.BranchType,
+                Bodjeh = (decimal)s.SumBoodje,
+                TrackNumber = 0,//
+            };
+
+        }
         public string GetForwardDateJalali(string date, int day, string billId)
         {
             DateOnly? gregorianDate = date.ToGregorianDateOnly();

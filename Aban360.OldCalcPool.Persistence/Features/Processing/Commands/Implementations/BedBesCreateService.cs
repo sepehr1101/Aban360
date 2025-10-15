@@ -1,16 +1,17 @@
 ﻿using Aban360.Common.Db.Dapper;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
 using Dapper;
-using LiteDB;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations
 {
     internal sealed class BedBesCreateService : AbstractBaseConnection, IBedBesCreateService
     {
+        private static string tableName = "BedBes";
         public BedBesCreateService(IConfiguration configuration)
             : base(configuration)
         { }
@@ -123,10 +124,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     catch (Exception ex)
                     {
                         transaction.Rollback();
-                        Console.WriteLine("خطا: " + ex.Message);
-                        throw;
+                        throw new IWaterCalculationAddException(ExceptionLiterals.UnSuccessfulToSave(tableName));
                     }
                 }
+
             }
         }
 
@@ -158,5 +159,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                         @Avarez, @TrackNumber
                     )";
         }
+
     }
 }
