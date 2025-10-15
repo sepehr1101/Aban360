@@ -14,19 +14,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
     {
         public ServiceLinkModifiedBillsSummaryQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<ServiceLinkModifiedBillsHeaderOutputDto, ServiceLinkModifiedBillsSummaryDataOutputDto>> GetInfo(ServiceLinkModifiedBillsInputDto input)
         {
             string modifiedBills = GetServiceLinkModifiedBillsQuery();
-            var @params = new
-            {
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-                zoneIds = input.ZoneIds,
-                typeCodes = input.TypeIds,
-            };
-            IEnumerable<ServiceLinkModifiedBillsSummaryDataOutputDto> modifiedBillsData = await _sqlReportConnection.QueryAsync<ServiceLinkModifiedBillsSummaryDataOutputDto>(modifiedBills, @params);
+            
+            IEnumerable<ServiceLinkModifiedBillsSummaryDataOutputDto> modifiedBillsData = await _sqlReportConnection.QueryAsync<ServiceLinkModifiedBillsSummaryDataOutputDto>(modifiedBills, input);
             ServiceLinkModifiedBillsHeaderOutputDto modifiedBillsHeader = new ServiceLinkModifiedBillsHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -55,9 +50,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	SUM(r.FinalAmount) AS FinalAmount
                     From [CustomerWarehouse].dbo.RequestBillDetails r
                     Where
-                    	r.RegisterDate BETWEEN @fromDate AND @toDate AND
+                    	r.RegisterDate BETWEEN @FromDateJalali AND @ToDateJalali AND
                     	r.ZoneId IN @zoneIds AND
-                    	r.TypeCode IN @typeCodes
+                    	r.TypeCode IN @TypeIds
                     Group By
                     	r.ItemTitle,
                     	r.ZoneTitle";

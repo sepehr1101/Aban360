@@ -1,5 +1,5 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
+using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
@@ -16,11 +16,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
     {
         public UsageChangeHistoryQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+        }
         public async Task<ReportOutput<UsageChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto>> GetInfo(UsageChangeHistoryInputDto input)
         {
-            string query = GetDetailQuery(input.ZoneIds?.Any() == true, GroupingFields.UsageId, GroupingFields.UsageTitle);
-            //string query = GetUsageChangeHistoryQuery(input.ZoneIds.Any());
+            string query = GetDetailQuery(input.ZoneIds.HasValue(), GroupingFields.UsageId, GroupingFields.UsageTitle);
 
             var @params = new
             {
@@ -34,9 +34,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
                 fromFieldIds = input.FromUsageIds,
                 toFieldIds = input.ToUsageIds,
-
-                //fromUsageIds = input.FromUsageIds,
-                //toUsageIds = input.ToUsageIds,
             };
 
             IEnumerable<ChangeHistoryDataOutputDto> usageChangeHistoryData = await _sqlReportConnection.QueryAsync<ChangeHistoryDataOutputDto>(query, @params);
@@ -63,74 +60,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             var result = new ReportOutput<UsageChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto>(ReportLiterals.UsageChangeHistory, usageChangeHistoryHeader, usageChangeHistoryData);
 
             return result;
-        }
-        private string GetUsageChangeHistoryQuery(bool hasZone)
-        {
-            string zoneQuery = hasZone ? "AND c.ZoneId IN @zoneIds" : string.Empty;
-
-            return $@"use CustomerWarehouse
-                    ;With FirstBillGroup as (
-                    Select 
-                    	c.UsageId,
-                    	c.BillId,
-                    	c.UsageTitle,
-                    	MAX(RegisterDayJalali)as RegisterDayJalali
-                    From [CustomerWarehouse].dbo.Clients c
-                    Group By c.BillId,c.UsageTitle,UsageId
-                    ),
-                    SecondBillGroup as (
-                    Select 
-                    	c.UsageId,
-                    	c.BillId,
-                    	c.UsageTitle,
-                    	MAX(RegisterDayJalali)as RegisterDayJalali
-                    From [CustomerWarehouse].dbo.Clients c
-                    Group By c.BillId,c.UsageTitle,UsageId
-                    )
-                    Select 
-                        c.CustomerNumber,
-                        c.ReadingNumber,
-                        c.BillId,
-                        ss.RegisterDayJalali AS ChangeDateJalali,
-                        ff.UsageTitle AS FromUsageTitle,
-                        ss.UsageTitle AS ToUsageTitle,
-                        c.ZoneTitle,
-                        c.ZoneId,
-                        TRIM(c.FirstName) AS FirstName,
-                        TRIM(c.SureName) AS Surname,
-                        TRIM(c.FirstName)+' '+TRIM(c.SureName) AS FullName,
-                        TRIM(c.FatherName) AS FatherName,
-                        TRIM(c.NationalId) AS NationalCode,
-                        TRIM(c.PhoneNo) AS PhoneNumber,
-                        TRIM(c.Address) AS Address,
-                        TRIM(c.PostalCode) AS PostalCode,
-                        c.ContractCapacity AS ContractualCapacity,
-                        c.CommercialCount as CommercialUnit,
-                        c.DomesticCount as DomesticUnit,
-                        c.OtherCount as OtherUnit,
-                        (c.CommercialCount+c.DomesticCount+c.OtherCount) AS TotalUnit,
-                        c.WaterDiameterTitle AS MeterDiameterTitle,
-                        c.MainSiphonTitle AS SiphonDiameterTitle,
-                        c.BranchType AS UseStateTitle,
-                        c.EmptyCount AS EmptyUnit,
-					    DATEDIFF(DAY,[CustomerWarehouse].dbo.PersianToMiladi(ff.RegisterDayJalali),[CustomerWarehouse].dbo.PersianToMiladi(ss.RegisterDayJalali)) as Distance
-                    From CustomerWarehouse.dbo.Clients c 
-                    Join FirstBillGroup ff 
-                    	On c.BillId=ff.BillId
-                    Join SecondBillGroup ss
-                    	On c.BillId=ss.BillId AND ff.UsageId<> ss.UsageId
-                    Where
-                    	c.ToDayJalali IS NULL AND
-                    	ff.UsageId IN @fromUsageIds AND
-                        ss.UsageId IN @toUsageIds AND
-                        ss.RegisterDayJalali>ff.RegisterDayJalali AND
-                        (@fromDate IS NULL OR
-                        @toDate IS NULL OR
-                        ss.RegisterDayJalali BETWEEN @fromDate AND @toDate) AND
-                        (@fromReadingNumber IS NULL OR
-                        @toReadingNumber IS NULL OR
-                        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) 
-                    	{zoneQuery} ";
         }
     }
 }

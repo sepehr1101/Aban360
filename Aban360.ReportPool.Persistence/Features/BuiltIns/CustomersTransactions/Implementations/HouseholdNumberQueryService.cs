@@ -64,9 +64,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         From [CustomerWarehouse].dbo.Clients c
 	                    Where				
 							c.FamilyCount>0 AND
-		                    (TRIM(c.HouseholdDateJalali)='' OR c.HouseholdDateJalali BETWEEN @fromDate AND @toDate) AND
+		                    (TRIM(c.HouseholdDateJalali)='' OR c.HouseholdDateJalali BETWEEN @FromHouseholdDateJalali AND @ToHouseholdDateJalali) AND
 		                    c.CustomerNumber<>0 AND
-		                    c.RegisterDayJalali <= @toDate AND
+		                    c.RegisterDayJalali <= @ToHouseholdDateJalali AND
 							(	@fromReadingNumber IS NULL OR
 								@toReadingNumber IS NULL OR
 								c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber

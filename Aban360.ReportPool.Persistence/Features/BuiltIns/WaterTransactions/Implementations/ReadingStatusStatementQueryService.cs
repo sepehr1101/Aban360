@@ -1,5 +1,4 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
@@ -15,24 +14,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
     {
         public ReadingStatusStatementQueryService(IConfiguration configuration)
             : base(configuration)
-        { 
+        {
         }
 
         public async Task<ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementDataOutputDto>> GetInfo(ReadingStatusStatementInputDto input)
         {
             string query = GetDetailQuery(input.IsRegisterDateJalali);
-            //string query = GetReadingStatusStatementQuery();
-            
-            var @params = new
-            {
-                fromReadingNumber = input.FromReadingNumber,
-                toReadingNumber = input.ToReadingNumber,
-                fromDate = input.FromDateJalali,
-                todate = input.ToDateJalali,
-                zoneIds = input.ZoneIds,
-                //isRegisterDate = input.IsRegisterDateJalali
-            };
-            IEnumerable<ReadingStatusStatementDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingStatusStatementDataOutputDto>(query, @params);
+
+            IEnumerable<ReadingStatusStatementDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingStatusStatementDataOutputDto>(query, input);
             ReadingStatusStatementHeaderOutputDto header = new ReadingStatusStatementHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -41,7 +30,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (data is not null && data.Any()) ? data.Count() : 0,
-                Title= ReportLiterals.ReadingStatusStatement,
+                Title = ReportLiterals.ReadingStatusStatement,
             };
             if (data is not null && data.Any())
             {
@@ -51,40 +40,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 header.SumRuined = data.Sum(x => x.Ruined);
                 header.SumTemporarily = data.Sum(x => x.Temporarily);
                 header.SumAll = data.Sum(x => x.AllCount);
-                header.SumSelfClaimed=data.Sum(x => x.SelfClaimedCount);
-                header.SumDebt=data.Sum(x => x.Debt);
+                header.SumSelfClaimed = data.Sum(x => x.SelfClaimedCount);
+                header.SumDebt = data.Sum(x => x.Debt);
             }
 
             var result = new ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementDataOutputDto>(ReportLiterals.ReadingStatusStatement, header, data);
             return result;
-        }
-
-        private string GetReadingStatusStatementQuery()
-        {
-            return @"Select 
-                    	b.ZoneTitle AS ZoneTitle,
-						SUM(b.SumItems) AS SumItems,
-                    	(Case When @isRegisterDate=1 Then b.RegisterDay Else b.NextDay End  )AS EventDateJalali,
-                    	COUNT(Case When b.CounterStateCode NOT IN (1,4,7,8) Then 1 End)AS ReadingNet,
-                    	COUNT(Case When b.CounterStateCode=4 Then 1 End)AS Closed,
-                    	COUNT(Case When b.CounterStateCode=7 Then 1 End)AS Obstacle,
-                    	COUNT(Case When b.CounterStateCode=8 Then 1 End)AS Temporarily,
-                    	COUNT(Case When b.CounterStateCode!=1 Then 1 End)AS AllCount,
-                    	COUNT(Case When b.CounterStateCode=1 Then 1 End)AS Ruined,
-						COUNT(Case When b.ReadingStateTitle IN (N'خوداظهاری حضوری',N'خوداظهاری غیرحضوری')Then 1 End) as SelfClaimedCount
-                    From [CustomerWarehouse].dbo.Bills b
-                    Where
-                    	(
-                    	(@isRegisterDate=1 AND b.RegisterDay BETWEEN @fromDate AND @toDate)OR
-                    	(@isRegisterDate=0 AND b.NextDay BETWEEN @fromDate AND @toDate)
-                    	)AND
-                        (@FromReadingNumber IS NULL or
-                    	@ToReadingNumber IS NULL or 
-                    	b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND
-                    	b.ZoneId IN @zoneIds
-                    Group By 
-                    	Case When @isRegisterDate=1 Then b.RegisterDay Else b.NextDay End ,
-                        b.ZoneTitle";
         }
     }
 }

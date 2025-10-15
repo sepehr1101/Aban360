@@ -21,18 +21,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         public async Task<ReportOutput<SewageWaterRequestNonInstalledHeaderOutputDto, SewageWaterRequestNonInstalledSummaryDataOutputDto>> Get(SewageWaterRequestNonInstalledInputDto input)
         {
             string reportTitle = input.IsWater ? ReportLiterals.WaterRequestNonInstalledSummary + ReportLiterals.ByZone : ReportLiterals.SewageRequestNonInstalledSummary + ReportLiterals.ByZone;
-           
             string query = GetGroupedQuery(input.IsWater,GroupingFields.ZoneTitle);
 
-            var @params = new
-            {
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-                fromReadingNumber = input.FromReadingNumber,
-                toReadingNumber = input.ToReadingNumber,
-                zoneIds = input.ZoneIds
-            };
-            IEnumerable<SewageWaterRequestNonInstalledSummaryDataOutputDto> requestNonInstalledData = await _sqlReportConnection.QueryAsync<SewageWaterRequestNonInstalledSummaryDataOutputDto>(query, @params);
+            IEnumerable<SewageWaterRequestNonInstalledSummaryDataOutputDto> requestNonInstalledData = await _sqlReportConnection.QueryAsync<SewageWaterRequestNonInstalledSummaryDataOutputDto>(query, input);
             SewageWaterRequestNonInstalledHeaderOutputDto requestNonInstalledHeader = new SewageWaterRequestNonInstalledHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

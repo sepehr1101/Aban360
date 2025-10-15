@@ -19,18 +19,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         public async Task<ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>> GetInfo(EmptyUnitInputDto input)
         {
             string emptyUnitQuery = GetEmptyUnitQuery();
-            var @params = new
-            {
-                input.FromReadingNumber,
-                input.ToReadingNumber,
-                input.FromEmptyUnit,
-                input.ToEmptyUnit,
 
-                UsageIds = input.UsageSellIds,
-                input.ZoneIds
-            };
-
-            IEnumerable<EmptyUnitDataOutputDto> emptyUnitData = await _sqlReportConnection.QueryAsync<EmptyUnitDataOutputDto>(emptyUnitQuery, @params);
+            IEnumerable<EmptyUnitDataOutputDto> emptyUnitData = await _sqlReportConnection.QueryAsync<EmptyUnitDataOutputDto>(emptyUnitQuery, input);
             EmptyUnitHeaderOutputDto emptyUnitHeader = new EmptyUnitHeaderOutputDto()
             {
                 FromEmptyUnit = input.FromEmptyUnit,
@@ -95,7 +85,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 						On t51.C1=t46.C0
                     WHERE 
             			c.ToDayJalali IS NULL AND
-            			c.UsageId in @UsageIds AND
+            			c.UsageId in @UsageSellIds AND
                         (@fromReadingNumber IS NULL OR
 						 @toReadingNumber IS NULL OR
 						 c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND 

@@ -10,7 +10,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
     {
         public CustomerInfoByBillIdQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<CustomerInfoByBillIdOutputDto> Get(string billId)
         {
@@ -28,7 +29,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     Where 
                     	c.ToDayJalali IS NULL AND
                     	c.BillId=@billId";
-            //todo: last: IS NOT NULL?
         }
     }
 }

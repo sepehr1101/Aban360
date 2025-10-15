@@ -14,19 +14,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
     {
         public ClientValidationQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+		}
         public async Task<ReportOutput<ClientValidationHeaderOutputDto, ClientValidationDataOutputDto>> GetInfo(ClientValidationInputDto input)
         {
             string clientValidationQuery = GetClientValidationQuery();
-            var @params = new
-            {
-                input.FromReadingNumber,
-                input.ToReadingNumber,
 
-                input.ZoneIds
-            };
-
-            IEnumerable<ClientValidationDataOutputDto> ClientValidationData = await _sqlReportConnection.QueryAsync<ClientValidationDataOutputDto>(clientValidationQuery, @params);
+            IEnumerable<ClientValidationDataOutputDto> ClientValidationData = await _sqlReportConnection.QueryAsync<ClientValidationDataOutputDto>(clientValidationQuery, input);
             ClientValidationHeaderOutputDto ClientValidationHeader = new ClientValidationHeaderOutputDto()
             {
                 FromReadingNumber = input.FromReadingNumber,

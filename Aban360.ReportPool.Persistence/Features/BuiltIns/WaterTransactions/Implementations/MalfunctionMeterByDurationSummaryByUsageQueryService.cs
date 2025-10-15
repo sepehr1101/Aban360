@@ -21,15 +21,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         {
             string malfunctionMeterByDurationQueryString = input.IsMalfunctionLatest ? GetGroupedQueryLatest(false) : GetGroupedQuery(false);
             string reportTitle = ReportLiterals.MalfunctionMeterByDurationSummary + ReportLiterals.ByUsage;
-            var @params = new
-            {
-                fromReadingNumber = input.FromReadingNumber,
-                toReadingNumber = input.ToReadingNumber,
-                zoneIds = input.ZoneIds,
-                fromMalfunctionPeriodCount = input.FromMalfunctionPeriodCount,
-                toMalfunctionPeriodCount = input.ToMalfunctionPeriodCount,
-            };
-            IEnumerable<MalfunctionMeterByDurationSummaryDataOutputDto> malfunctionMeterByDurationData = await _sqlReportConnection.QueryAsync<MalfunctionMeterByDurationSummaryDataOutputDto>(malfunctionMeterByDurationQueryString, @params, null, 180);
+          
+            IEnumerable<MalfunctionMeterByDurationSummaryDataOutputDto> malfunctionMeterByDurationData = await _sqlReportConnection.QueryAsync<MalfunctionMeterByDurationSummaryDataOutputDto>(malfunctionMeterByDurationQueryString, input, null, 180);
             MalfunctionMeterByDurationHeaderOutputDto malfunctionMeterByDurationHeader = new MalfunctionMeterByDurationHeaderOutputDto()
             {
                 Title = reportTitle,

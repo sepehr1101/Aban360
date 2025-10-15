@@ -24,9 +24,9 @@ namespace Aban360.ReportPool.Persistence.Base
                         p.BankName AS BankName
                     From [CustomerWarehouse].dbo.{parameters.TableField} p
                     WHERE 
-                    	(@FromDate IS  NULL 
-                    		OR @ToDate IS NULL 
-                    		OR p.RegisterDay BETWEEN @FromDate AND @ToDate) 
+                    	(@FromDateJalali IS  NULL 
+                    		OR @ToDateJalali IS NULL 
+                    		OR p.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali) 
                     	AND(@FromAmount IS  NULL 
                     		OR @ToAmount IS NULL 
                     		OR p.Amount BETWEEN @FromAmount AND @ToAmount)
@@ -71,9 +71,9 @@ namespace Aban360.ReportPool.Persistence.Base
 						On t51.C1=t46.C0
                     WHERE
                         c.ToDayJalali IS NULL AND
-                        (@FromDate IS NULL OR 
-                        @ToDate IS NULL OR
-                    	p.RegisterDay BETWEEN @FromDate and @ToDate)
+                        (@FromDateJalali IS NULL OR 
+                        @ToDateJalali IS NULL OR
+                    	p.RegisterDay BETWEEN @FromDateJalali and @ToDateJalali)
                         AND (@fromBankId IS NULL OR
 						    @toBankId IS NULL OR
 						    p.BankCode BETWEEN @fromBankId AND @toBankId)

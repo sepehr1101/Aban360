@@ -19,20 +19,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         public async Task<ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>> GetInfo(EmptyUnitByIntervalInputDto input)
         {
             string emptyUnitQuery = GetEmptyUnitQuery();
-            var @params = new
-            {
-                input.FromReadingNumber,
-                input.ToReadingNumber,
-                input.FromEmptyUnit,
-                input.ToEmptyUnit,
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
 
-                UsageIds = input.UsageSellIds,
-                input.ZoneIds
-            };
-
-            IEnumerable<EmptyUnitDataOutputDto> emptyUnitData = await _sqlReportConnection.QueryAsync<EmptyUnitDataOutputDto>(emptyUnitQuery, @params);
+            IEnumerable<EmptyUnitDataOutputDto> emptyUnitData = await _sqlReportConnection.QueryAsync<EmptyUnitDataOutputDto>(emptyUnitQuery, input);
             EmptyUnitHeaderOutputDto emptyUnitHeader = new EmptyUnitHeaderOutputDto()
             {
                 FromEmptyUnit = input.FromEmptyUnit,
@@ -59,7 +47,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
             return result;
         }
-
         private string GetEmptyUnitQuery()
         {
             return @";WITH LatestCustomer as
@@ -103,13 +90,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 	    					On t51.C1=t46.C0
                         WHERE 
             		    	c.ToDayJalali IS NULL AND
-            		    	c.UsageId in (1,2,3) AND
+            		    	c.UsageId in @UsageSellIds AND
                             (@fromReadingNumber IS NULL OR
 					    	 @toReadingNumber IS NULL OR
 					    	 c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND 
-					    	 (@fromDate IS NULL OR
-					    	 @toDate IS NULL OR
-					    	 c.RegisterDayJalali BETWEEN @fromDate AND @toDate)AND
+					    	 (@FromDateJalali IS NULL OR
+					    	 @ToDateJalali IS NULL OR
+					    	 c.RegisterDayJalali BETWEEN @FromDateJalali AND @ToDateJalali)AND
                             c.ZoneId in @zoneIds AND
             		    	c.EmptyCount BETWEEN 1 AND 10
                         )

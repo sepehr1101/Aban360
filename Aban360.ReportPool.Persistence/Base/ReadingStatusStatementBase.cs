@@ -28,7 +28,7 @@ namespace Aban360.ReportPool.Persistence.Base
 					Left Join [CustomerWarehouse].dbo.WaterDebt w
 						On TRIM(b.BillId) Collate SQL_Latin1_General_CP1_CI_AS=w.BillId
                     Where
-                    	(b.{dataField.DateField} BETWEEN @fromDate AND @toDate)AND
+                    	(b.{dataField.DateField} BETWEEN @FromDateJalali AND @ToDateJalali)AND
                         (@FromReadingNumber IS NULL or
                     	@ToReadingNumber IS NULL or 
                     	b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND
@@ -63,7 +63,7 @@ namespace Aban360.ReportPool.Persistence.Base
 					Left Join [CustomerWarehouse].dbo.WaterDebt w
 						On TRIM(b.BillId) Collate SQL_Latin1_General_CP1_CI_AS=w.BillId
                     Where
-                    	(b.{dataField.DateField} BETWEEN @fromDate AND @toDate)AND
+                    	(b.{dataField.DateField} BETWEEN @FromDateJalali AND @ToDateJalali)AND
                         (@FromReadingNumber IS NULL or
                     	@ToReadingNumber IS NULL or 
                     	b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND

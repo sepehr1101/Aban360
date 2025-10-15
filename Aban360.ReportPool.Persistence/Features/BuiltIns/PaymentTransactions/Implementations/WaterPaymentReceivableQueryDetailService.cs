@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
@@ -14,22 +15,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
     {
         public WaterPaymentReceivableQueryDetailService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableDataOutputDto>> GetInfo(WaterPaymentReceivableInputDto input)
         {
-            string query = GetDetailQuery(true,input.ZoneIds?.Any() == true);
-            //string query = GetWaterPaymentReceivableQuery(input.ZoneIds?.Any() == true);
+            string query = GetDetailQuery(true,input.ZoneIds.HasValue());
             
-            var @params = new
-            {
-                FromDate = input.FromDateJalali,
-                ToDate = input.ToDateJalali,
-                fromBankId = input.FromBankId,
-                toBankId = input.ToBankId,
-                zoneIds = input.ZoneIds,
-            };
-            IEnumerable<WaterPaymentReceivableDataOutputDto> waterPaymentReceivableData = await _sqlReportConnection.QueryAsync<WaterPaymentReceivableDataOutputDto>(query, @params);
+            IEnumerable<WaterPaymentReceivableDataOutputDto> waterPaymentReceivableData = await _sqlReportConnection.QueryAsync<WaterPaymentReceivableDataOutputDto>(query, input);
             WaterPaymentReceivableHeaderOutputDto waterPaymentReceivableHeader = new WaterPaymentReceivableHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -45,31 +38,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             }
             var result = new ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableDataOutputDto>(ReportLiterals.WaterPaymentReceivableDetail, waterPaymentReceivableHeader, waterPaymentReceivableData);
             return result;
-        }
-
-        private string GetWaterPaymentReceivableQuery(bool hasZone)
-        {
-            string zoneQuery = hasZone ? "AND p.ZoneId IN @ZoneIds" : string.Empty;
-            return @$"Select 
-                    	b.BillId,
-						p.PayId,
-						b.ZoneTitle,
-                    	b.UsageTitle ,
-						p.Amount,
-						b.RegisterDay as BillIssueDateJalali,
-						b.Deadline,
-						p.PayDateJalali,
-						IIF(p.PayDateJalali<=b.DeadLine,N'{ReportLiterals.Due}' , N'{ReportLiterals.Overdue}') AS AmountState
-                    From [CustomerWarehouse].dbo.Bills b
-                    LEFT JOIN [CustomerWarehouse].dbo.Payments p ON p.BillTableId=b.Id
-                    WHERE
-                        (@FromDate IS NULL
-                     	    OR @ToDate IS NULL 
-                     	    OR p.RegisterDay BETWEEN @FromDate AND @ToDate)
-                        AND (@fromBankId IS NULL OR
-						    @toBankId IS NULL OR
-						    p.BankCode BETWEEN @fromBankId AND @toBankId)
-                         {zoneQuery}";
         }
     }
 }

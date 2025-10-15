@@ -14,17 +14,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
     {
         public InvalidPaymentQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<InvalidPaymentHeaderOutputDto, InvalidPaymentDataOutputDto>> GetInfo(InvalidPaymentInputDto input)
         {
             string invalidPayments = GetInvalidPaymentQuery();
-            var @params = new
-            {
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-            };
-            IEnumerable<InvalidPaymentDataOutputDto> invalidPaymentData = await _sqlReportConnection.QueryAsync<InvalidPaymentDataOutputDto>(invalidPayments, @params);
+
+            IEnumerable<InvalidPaymentDataOutputDto> invalidPaymentData = await _sqlReportConnection.QueryAsync<InvalidPaymentDataOutputDto>(invalidPayments, input);
             InvalidPaymentHeaderOutputDto invalidPaymentHeader = new InvalidPaymentHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -55,7 +52,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                         i.Amount
                     From [vosoli].dbo.V_InvalidCredit i
                     Where 
-                    	i.RegisterDateJalali BETWEEN @fromDate AND @toDate ";
+                    	i.RegisterDateJalali BETWEEN @FromDateJalali AND @ToDateJalali ";
         }
     }
 }

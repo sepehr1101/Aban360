@@ -1,5 +1,4 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
@@ -15,22 +14,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
     {
         public WithoutSewageRequestDetailQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestDetailDataOutputDto>> Get(WithoutSewageRequestInputDto input)
         {
             string query = GetDetailQuery();
-            //string query = GetBranchWithoutSewageRequestQuery();
 
-            var @params = new
-            {
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-                fromReadingNumber = input.FromReadingNumber,
-                toReadingNumber = input.ToReadingNumber,
-                zoneIds = input.ZoneIds
-            };
-            IEnumerable<WithoutSewageRequestDetailDataOutputDto> withoutSewageRequestData = await _sqlReportConnection.QueryAsync<WithoutSewageRequestDetailDataOutputDto>(query, @params);
+            IEnumerable<WithoutSewageRequestDetailDataOutputDto> withoutSewageRequestData = await _sqlReportConnection.QueryAsync<WithoutSewageRequestDetailDataOutputDto>(query, input);
             WithoutSewageRequestHeaderOutputDto withoutSewageRequestHeader = new WithoutSewageRequestHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -51,45 +42,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 (ReportLiterals.WithoutSewageRequestDetail, withoutSewageRequestHeader, withoutSewageRequestData);
 
             return result;
-        }
-        private string GetBranchWithoutSewageRequestQuery()
-        {
-            return @"Select
-                        c.CustomerNumber, 
-                    	c.ReadingNumber,
-                    	TRIM(c.FirstName) AS FirstName,
-                    	TRIM(c.SureName) AS Surname,
-                    	TRIM(c.Address) AS Address,
-                    	c.UsageTitle2 AS UsageTitle,
-                    	c.WaterDiameterTitle AS MeterDiameterTitle,
-                        c.MainSiphonTitle AS SiphonDiameterTitle,
-                    	c.ZoneTitle,
-                    	c.ZoneId,
-                    	c.DomesticCount	AS DomesticUnit,
-                    	c.CommercialCount AS CommercialUnit,
-                    	c.OtherCount AS OtherUnit,
-                        (c.DomesticCount+c.CommercialCount +c.OtherCount) AS TotalUnit ,
-                    	c.BillId,
-                    	c.BranchType AS BranchTypeTitle,
-                    	c.ContractCapacity AS ContractualCapacity,
-                    	c.WaterRequestDate AS WaterRequestDate,
-						c.WaterInstallDate AS WaterInstallationDate,
-						c.WaterRegisterDateJalali AS WaterRegistrationDate,
-						TRIM(c.PhoneNo) AS PhoneNumber,
-						TRIM(c.MobileNo) AS MobileNumber,
-						c.DeletionStateTitle AS UseStateTitle,
-						TRIM(c.MeterSerialBody) AS BodySerial,
-						TRIM(c.NationalId) AS NationalCode,
-						TRIM(c.PostalCode) AS PostalCode
-                    From [CustomerWarehouse].dbo.Clients c
-                    Where	
-                    	c.WaterRegisterDateJalali BETWEEN @fromDate AND @toDate AND
-						(TRIM(c.SewageRequestDate)='' OR c.SewageRequestDate IS NULL) AND
-                    	c.ZoneId IN @zoneIds AND
-						c.ToDayJalali IS NULL AND
-						(@fromReadingNumber IS NULL OR
-						@toReadingNumber IS NULL OR
-						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber)";
         }
     }
 }
