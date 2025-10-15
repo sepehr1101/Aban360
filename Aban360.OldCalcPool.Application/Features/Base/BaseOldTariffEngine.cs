@@ -29,13 +29,13 @@ namespace Aban360.CalculationPool.Application.Features.Base
             int olgoo = GetOlgoo(nerkh.Date2, nerkh.Olgo);
             bool isVillageCalculation = IsVillage(customerInfo.ZoneId);
             double monthlyConsumption = nerkh.DailyAverageConsumption * monthDays;
-            decimal multiplierAbBaha = Multiplier(zarib, olgoo, IsDomestic(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
+            decimal multiplierAbBaha = Multiplier(zarib, olgoo, IsDomesticCategory(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
 
             CalculateAbBahaOutputDto abBahaResult = CalculateAbBaha(nerkh, customerInfo, meterInfo, zarib, abAzad, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, multiplierAbBaha, c, tagIds);
             (double, double) boodje = CalculateBoodje(nerkh, customerInfo, currentDateJalali, monthlyConsumption, olgoo, consumption, duration);
             double fazelab = CalculateFazelab(nerkh, customerInfo, abBahaResult.AbBahaAmount, currentDateJalali);
             double hotSeasonAbBaha = CalcHotSeasonAbBaha(nerkh, abBahaResult.AbBahaAmount, customerInfo, monthlyConsumption);//change dailyAverage -> monthlyCosumption
-            double hotSeasonFazelab = CalcHotSeasonFaselab(nerkh, customerInfo, fazelab, dailyAverage);
+            double hotSeasonFazelab = CalcHotSeasonFaselab(nerkh, customerInfo, fazelab, monthlyConsumption);
             double avarez = CalculateAvarez(nerkh, customerInfo, monthlyConsumption);
             double javani = CalculateJavaniJamiat(nerkh, customerInfo, abBahaResult.AbBahaAmount, monthlyConsumption, olgoo);
 
@@ -79,7 +79,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         }
         private bool IsDomesticCategory(int usageId)
         {
-            return CheckConditions(usageId, [1, 3, 25, 34]);
+            return CheckConditions(usageId, [0, 1, 3, 25, 34]);
         }
         private bool IsDomesticWithoutUnspecified(int usageId)
         {
@@ -588,7 +588,9 @@ namespace Aban360.CalculationPool.Application.Features.Base
         }
         private double CalcHotSeasonAbBaha(NerkhGetDto nerkh, double abBahaAmount, CustomerInfoOutputDto customerInfo, double monthlyConsumption)
         {
-            if (IsDomestic(customerInfo.UsageId) && !IsConstruction(customerInfo.BranchType) && monthlyConsumption < 25)//change dailyAverage to monthlyConsumption 
+            if (IsDomestic(customerInfo.UsageId) && 
+                !IsConstruction(customerInfo.BranchType) && 
+                monthlyConsumption < 25)//change dailyAverage to monthlyConsumption 
             {
                 return 0;
             }
@@ -602,9 +604,9 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
         }
 
-        private double CalcHotSeasonFaselab(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double fazelabAmount, double dailyAverage)
+        private double CalcHotSeasonFaselab(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double fazelabAmount, double monthlyConsumption)
         {
-            if (IsDomestic(customerInfo.UsageId) && dailyAverage < 25)
+            if (IsDomestic(customerInfo.UsageId) && monthlyConsumption < 25)
             {
                 return 0;
             }
@@ -1115,7 +1117,10 @@ namespace Aban360.CalculationPool.Application.Features.Base
                     return 0;
                 }
 
-                if (villageCode > 0 && monthlyConsumption > olgoo && domesticUnit > 1 && RuralButIsMetro(customerInfo.ZoneId, villageCode))
+                if (villageCode > 0 && 
+                    monthlyConsumption > olgoo &&
+                    domesticUnit > 1 && 
+                    RuralButIsMetro(customerInfo.ZoneId, villageCode))
                 {
                     return baseAmount * nerkh.PartialConsumption;
                 }
@@ -1125,7 +1130,9 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 }
             }
             //L 2642
-            if (monthlyConsumption > olgoo && domesticUnit >= 1 && (IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId)))
+            if (monthlyConsumption > olgoo &&
+                domesticUnit >= 1 &&
+                (IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId)))
             {
                 return baseAmount * nerkh.PartialConsumption;
             }

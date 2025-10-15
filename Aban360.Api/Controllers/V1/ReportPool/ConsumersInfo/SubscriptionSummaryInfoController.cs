@@ -20,7 +20,6 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [HttpPost]
         [Route("summary")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ConsumerSummaryDto>), StatusCodes.Status200OK)]
-        //[AllowAnonymous]
         public async Task<IActionResult> GetSummaryInfo([FromBody] SearchInput searchInput,CancellationToken cancellation)
         {
             ConsumerSummaryDto summary = await _consumerSummeryHandler.Handle(searchInput.Input,cancellation);
