@@ -29,7 +29,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             int olgoo = GetOlgoo(nerkh.Date2, nerkh.Olgo);
             bool isVillageCalculation = IsVillage(customerInfo.ZoneId);
             double monthlyConsumption = nerkh.DailyAverageConsumption * monthDays;
-            decimal multiplierAbBaha = Multiplier(zarib, olgoo, IsDomestic(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
+            decimal multiplierAbBaha = Multiplier(zarib, olgoo, IsDomesticCategory(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
 
             CalculateAbBahaOutputDto abBahaResult = CalculateAbBaha(nerkh, customerInfo, meterInfo, zarib, abAzad, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, multiplierAbBaha, c, tagIds);
             (double, double) boodje = CalculateBoodje(nerkh, customerInfo, currentDateJalali, monthlyConsumption, olgoo, consumption, duration);
@@ -79,7 +79,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         }
         private bool IsDomesticCategory(int usageId)
         {
-            return CheckConditions(usageId, [1, 3, 25, 34]);
+            return CheckConditions(usageId, [0, 1, 3, 25, 34]);
         }
         private bool IsDomesticWithoutUnspecified(int usageId)
         {
