@@ -13,7 +13,6 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging
         Task<IEnumerable<int>> GetIdsByBillId(string billId);
         Task<bool> HasBillIdTags(string billId, int tagId);
         Task<bool> HasBillId(string billId);
-
     }
 
     internal sealed class BillIdTagService : AbstractBaseConnection, IBillIdTagService
