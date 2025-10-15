@@ -25,5 +25,7 @@
         public double  PartialConsumption { get; set; }
         public double  DailyAverageConsumption { get; set; }
 
+        public int C { get; set; }
+
     }
 }
