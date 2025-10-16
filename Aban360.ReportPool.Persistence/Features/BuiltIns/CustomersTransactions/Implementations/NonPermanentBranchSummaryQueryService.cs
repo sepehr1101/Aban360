@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         }
         public async Task<ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryDataOutputDto>> GetInfo(NonPermanentBranchInputDto input)
         {
-            string query = GetSummaryQuer();
+            string query = GetSummaryQuery();
 
             IEnumerable<NonPermanentBranchSummaryDataOutputDto> nonPremanentBranchData = await _sqlReportConnection.QueryAsync<NonPermanentBranchSummaryDataOutputDto>(query, input);
             NonPermanentBranchHeaderOutputDto nonPremanentBranchHeader = new NonPermanentBranchHeaderOutputDto()
@@ -34,27 +34,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             var result = new ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryDataOutputDto>(ReportLiterals.NonPermanentBranchSummary+ReportLiterals.ByUsageAndZoneAndDiameter, nonPremanentBranchHeader, nonPremanentBranchData);
 
             return result;
-        }
-
-        private string GetNonPermanentBranchQuery()
-        {
-            return @"SELECT 
-                        c.ZoneTitle,
-						c.UsageTitle,
-						c.WaterDiameterTitle AS MeterDiameterTitle,
-						Count(1) AS Count
-                    FROM [CustomerWarehouse].dbo.Clients c
-                    WHERE 
-            			c.ToDayJalali IS NULL AND
-						(@fromReadingNumber IS NULL OR
-						 @toReadingNumber IS NULL OR
-						 c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-						c.ZoneId in @zoneIds AND
-						c.IsNonPermanent=1
-					Group By 
-						c.ZoneTitle ,
-						c.UsageTitle,
-						c.WaterDiameterTitle";
         }
     }
 }

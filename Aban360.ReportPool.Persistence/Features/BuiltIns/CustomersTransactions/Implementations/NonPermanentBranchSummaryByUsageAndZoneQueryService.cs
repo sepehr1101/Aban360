@@ -19,7 +19,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         }
         public async Task<ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchGroupedDataOutputDto>> GetInfo(NonPermanentBranchByUsageAndZoneInputDto input)
         {
-            string query = GetGroupedQuery(true, GroupingFields.ZoneTitle, GroupingFields.UsageTitle);
+            string query = GetGroupedQuery($"c.{GroupingFields.ZoneTitle}, c.{GroupingFields.UsageTitle}");
 
             IEnumerable<NonPermanentBranchGroupedDataOutputDto> nonPremanentBranchData = await _sqlReportConnection.QueryAsync<NonPermanentBranchGroupedDataOutputDto>(query, input);
             NonPermanentBranchHeaderOutputDto nonPremanentBranchHeader = new NonPermanentBranchHeaderOutputDto()

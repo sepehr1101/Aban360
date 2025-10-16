@@ -8,6 +8,7 @@ namespace Aban360.ReportPool.Persistence.Base
             : base(configuration)
         {
         }
+
         internal string GetDetailsQuery(bool isWater, bool isRequest)
         {
             QueryParams queryParams = GetQueryParams(isWater, isRequest);
@@ -122,7 +123,6 @@ namespace Aban360.ReportPool.Persistence.Base
             string dataField = isRequest ? requestField : registerField;
             return new QueryParams(dataField, requestField, registerField);//dataField
         }
-
         private record QueryParams
         {
             public string DataField { get; set; } = default!;
