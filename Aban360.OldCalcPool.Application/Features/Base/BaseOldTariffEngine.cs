@@ -7,7 +7,6 @@ using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using DNTPersianUtils.Core;
 using System.Runtime.InteropServices;
 using static Aban360.Common.Timing.CalculationDistanceDate;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.CalculationPool.Application.Features.Base
 {
