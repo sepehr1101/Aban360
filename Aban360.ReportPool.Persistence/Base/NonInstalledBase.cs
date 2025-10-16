@@ -22,9 +22,8 @@ namespace Aban360.ReportPool.Persistence.Base
 	                    Where				
 		                    c.{param.RequestDate} BETWEEN @FromDateJalali AND @ToDateJalali AND
 		                    c.CustomerNumber<>0 AND
-		                    c.RegisterDayJalali <= @toDate AND
-                            c.ZoneId IN @zoneIds  AND
-						    c.ToDayJalali IS NULL AND
+		                    c.RegisterDayJalali <= @ToDateJalali AND
+                            c.ZoneId IN @zoneIds AND
 						    (
                                 @fromReadingNumber IS NULL OR
 						        @toReadingNumber IS NULL OR
@@ -32,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Base
                             )
                     )
                     Select	
-	                  c.CustomerNumber, 
+	                    c.CustomerNumber, 
                     	c.ReadingNumber,
                     	TRIM(c.FirstName) AS FirstName,
                     	TRIM(c.SureName) AS Surname,
@@ -60,7 +59,8 @@ namespace Aban360.ReportPool.Persistence.Base
                     WHERE	  
                         c.RN=1 AND
 	                    c.DeletionStateId NOT IN(1,2) AND
-						(c.{param.InstallDate})<='1330/01/01' ";
+						(c.{param.RegisterDate}<'1330/01/01' OR c.{param.RegisterDate}>@ToDateJalali) AND
+                        c.UsageId <> 19";
         }
 
         internal string GetGroupedQuery(bool isWater, string groupingField)
@@ -76,9 +76,8 @@ namespace Aban360.ReportPool.Persistence.Base
 	                    Where				
 		                    c.{param.RequestDate} BETWEEN @FromDateJalali AND @ToDateJalali AND
 		                    c.CustomerNumber<>0 AND
-		                    c.RegisterDayJalali <= @toDate AND
+		                    c.RegisterDayJalali <= @ToDateJalali AND
                             c.ZoneId IN @zoneIds  AND
-						    c.ToDayJalali IS NULL AND
 						    (   @fromReadingNumber IS NULL OR
 						        @toReadingNumber IS NULL OR
 						        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
@@ -112,7 +111,8 @@ namespace Aban360.ReportPool.Persistence.Base
                     WHERE	  
                         c.RN=1 AND
 	                    c.DeletionStateId NOT IN(1,2) AND
-						(c.{param.InstallDate})<='1330/01/01'
+						(c.{param.RegisterDate}<'1330/01/01' OR c.{param.RegisterDate}>@ToDateJalali) AND
+                        c.UsageId<> 19
 					GROUP BY c.{groupingField}";
         }
 
