@@ -1,5 +1,4 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
@@ -16,20 +15,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
     {
         public WaterNetSalesDetailQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<WaterSalesHeaderOutputDto, WaterNetRawSalesDetailDataOutputDto>> GetInfo(WaterSalesInputDto input)
         {
             string query = GetDetailQuery(true);
-            //string query = GetWaterNetSalesDetailQuery();
           
-            var @params = new
-            {
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-                zoneIds = input.ZoneIds,
-            };
-            IEnumerable<WaterNetRawSalesDetailDataOutputDto> waterNetSalesData = await _sqlReportConnection.QueryAsync<WaterNetRawSalesDetailDataOutputDto>(query,@params);
+            IEnumerable<WaterNetRawSalesDetailDataOutputDto> waterNetSalesData = await _sqlReportConnection.QueryAsync<WaterNetRawSalesDetailDataOutputDto>(query, input);
             WaterSalesHeaderOutputDto waterNetSalesHeader = new WaterSalesHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -43,22 +36,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
             var result = new ReportOutput<WaterSalesHeaderOutputDto, WaterNetRawSalesDetailDataOutputDto>(ReportLiterals.WaterNetSalesDetail, waterNetSalesHeader, waterNetSalesData);
             return result;
-        }
-
-        private string GetWaterNetSalesDetailQuery()
-        {
-            return @"Select 
-                    	b.UsageTitle,
-                    	b.ZoneTitle,
-                    	b.BillId,
-                    	b.Payable,
-                    	b.CustomerNumber,
-                    	b.ReadingNumber
-                    From [CustomerWarehouse].dbo.Bills b
-                    Where 
-                    	b.TypeCode IN (3,4,5,9) AND
-                    	b.RegisterDay BETWEEN @fromDate AND @toDate AND
-                    	b.ZoneId IN @zoneIds ";
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
@@ -20,9 +21,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
         public async Task<ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentsDataOutputDto>> GetInfo(PendingPaymentsInputDto input)
         {
             string usageTitleQuery = GetUsageTitleById();
-
-            string pendingPaymentsQueryString = GetPendingPaymentsDataQuery(input.UsageSellIds?.Any()==true,
-																			input.UsageConsumptionIds?.Any()==true);
+            string pendingPaymentsQueryString = GetPendingPaymentsDataQuery(input.UsageSellIds.HasValue(),input.UsageConsumptionIds.HasValue());
             var @params = new
             {
                 FromReadingNumber = string.IsNullOrWhiteSpace(input.FromReadingNumber)? input.FromReadingNumber :"0000000000",

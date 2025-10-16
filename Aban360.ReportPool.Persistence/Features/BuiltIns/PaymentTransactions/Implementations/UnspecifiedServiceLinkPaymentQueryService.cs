@@ -14,21 +14,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
     {
         public UnspecifiedServiceLinkPaymentQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+		}
 
         public async Task<ReportOutput<UnspecifiedPaymentHeaderOutputDto, UnspecifiedPaymentDataOutputDto>> GetInfo(UnspecifiedPaymentInputDto input)
         {
             string unspecifiedServiceLinkPayments = GetUnspecifiedServiceLinkPaymentQuery();
-            var @params = new
-            {
-                FromDate = input.FromDateJalali,
-                ToDate = input.ToDateJalali,
-                FromAmount = input.FromAmount,
-                ToAmount = input.ToAmount,
-                FromBankId=input.FromBankId,
-				ToBankId=input.ToBankId,
-            };
-            IEnumerable<UnspecifiedPaymentDataOutputDto> unspecifiedServiceLinkData = await _sqlReportConnection.QueryAsync<UnspecifiedPaymentDataOutputDto>(unspecifiedServiceLinkPayments,@params,null,180);
+
+            IEnumerable<UnspecifiedPaymentDataOutputDto> unspecifiedServiceLinkData = await _sqlReportConnection.QueryAsync<UnspecifiedPaymentDataOutputDto>(unspecifiedServiceLinkPayments,input,null,180);
 			UnspecifiedPaymentHeaderOutputDto unspecifiedServiceLinkHeader = new UnspecifiedPaymentHeaderOutputDto()
 			{
 				FromDateJalali = input.FromDateJalali,
@@ -69,12 +62,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 						b.Id IS NULL
 						AND
 						(
-							(@FromDate IS NOT NULL AND
-								@ToDate IS NOT NULL AND
-								p.RegisterDay BETWEEN @FromDate AND @ToDate)
+							(@FromDateJalaliJalali IS NOT NULL AND
+								@ToDateJalaliJalali IS NOT NULL AND
+								p.RegisterDay BETWEEN @FromDateJalaliJalali AND @ToDateJalaliJalali)
 							OR
-							(@FromDate IS NULL AND
-								@ToDate IS NULL)
+							(@FromDateJalaliJalali IS NULL AND
+								@ToDateJalaliJalali IS NULL)
 						)
 						AND
 						(

@@ -43,9 +43,9 @@ namespace Aban360.ReportPool.Persistence.Base
                     		Where 
                     			c.ZoneId=b.ZoneId AND
                     			c.CustomerNumber=b.CustomerNumber AND
-                    			(@FromDate IS NULL or
-                    			@ToDate IS NULL or 
-                    			b.RegisterDay BETWEEN @FromDate and @ToDate)AND 
+                    			(@FromDateJalali IS NULL or
+                    			@ToDateJalali IS NULL or 
+                    			b.RegisterDay BETWEEN @FromDateJalali and @ToDateJalali)AND 
                     			 (@FromReadingNumber IS NULL or
                     			  @ToReadingNumber IS NULL or 
                     			  c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND
@@ -133,9 +133,9 @@ namespace Aban360.ReportPool.Persistence.Base
                     		Where 
                     			c.ZoneId=b.ZoneId AND
                     			c.CustomerNumber=b.CustomerNumber AND
-                    			(@FromDate IS NULL or
-                    			@ToDate IS NULL or 
-                    			b.RegisterDay BETWEEN @FromDate and @ToDate)AND 
+                    			(@FromDateJalali IS NULL or
+                    			@ToDateJalali IS NULL or 
+                    			b.RegisterDay BETWEEN @FromDateJalali and @ToDateJalali)AND 
                     			 (@FromReadingNumber IS NULL or
                     			  @ToReadingNumber IS NULL or 
                     			  c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND

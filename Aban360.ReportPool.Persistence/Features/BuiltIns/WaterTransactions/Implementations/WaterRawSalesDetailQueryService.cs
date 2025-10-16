@@ -14,20 +14,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
     {
         public WaterRawSalesDetailQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<WaterSalesHeaderOutputDto, WaterNetRawSalesDetailDataOutputDto>> GetInfo(WaterSalesInputDto input)
         {
             string query = GetDetailQuery(false);
-            //string query = GetWaterRawSalesDetailQuery();
 
-            var @params = new
-            {
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-                zoneIds = input.ZoneIds,
-            };
-            IEnumerable<WaterNetRawSalesDetailDataOutputDto> waterRawSalesData = await _sqlReportConnection.QueryAsync<WaterNetRawSalesDetailDataOutputDto>(query, @params);
+            IEnumerable<WaterNetRawSalesDetailDataOutputDto> waterRawSalesData = await _sqlReportConnection.QueryAsync<WaterNetRawSalesDetailDataOutputDto>(query, input);
             WaterSalesHeaderOutputDto waterRawSalesHeader = new WaterSalesHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -41,22 +35,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
             var result = new ReportOutput<WaterSalesHeaderOutputDto, WaterNetRawSalesDetailDataOutputDto>(ReportLiterals.WaterRawSalesDetail, waterRawSalesHeader, waterRawSalesData);
             return result;
-        }
-
-        private string GetWaterRawSalesDetailQuery()
-        {
-            return @"Select 
-                    	b.UsageTitle,
-                    	b.ZoneTitle,
-                    	b.BillId,
-                        b.CustomerNumber,
-                    	b.ReadingNumber,
-                    	b.Payable
-                    From [CustomerWarehouse].dbo.Bills b
-                    Where 
-                    	b.TypeCode=1 AND
-                    	b.RegisterDay BETWEEN @fromDate AND @toDate AND
-                    	b.ZoneId IN @zoneIds";
         }
     }
 }

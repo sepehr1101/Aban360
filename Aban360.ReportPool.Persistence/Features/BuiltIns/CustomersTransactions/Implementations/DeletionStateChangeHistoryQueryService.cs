@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
@@ -15,12 +16,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
     {
         public DeletionStateChangeHistoryQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+        }
         public async Task<ReportOutput<DeletionStateChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto>> GetInfo(DeletionStateChangeHistoryInputDto input)
         {
-            string query = GetDetailQuery(input.ZoneIds?.Any() == true, GroupingFields.DeletionStateId, GroupingFields.DeletionStateTitle);
-            //string query = GetDeletionStateChangeHistoryQuery(input.ZoneIds?.Any() == true);
-            Console.WriteLine(query);
+            string query = GetDetailQuery(input.ZoneIds.HasValue(), GroupingFields.DeletionStateId, GroupingFields.DeletionStateTitle);
             var @params = new
             {
                 fromReadingNumber = input.FromReadingNumber,
@@ -33,8 +33,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
                 fromFieldIds = input.FromDeletionStateIds,
                 toFieldIds = input.ToDeletionStateIds,
-                //fromDeletionStateIds = input.FromDeletionStateIds,
-                //toDeletionStateIds = input.ToDeletionStateIds,
             };
 
             IEnumerable<ChangeHistoryDataOutputDto> deletionStateChangeHistoryData = await _sqlReportConnection.QueryAsync<ChangeHistoryDataOutputDto>(query, @params, null, 180);
@@ -61,75 +59,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             var result = new ReportOutput<DeletionStateChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto>(ReportLiterals.DeletionStateChangeHistory, deletionStateChangeHistoryHeader, deletionStateChangeHistoryData);
 
             return result;
-        }
-        private string GetDeletionStateChangeHistoryQuery(bool hasZone)
-        {
-            string zoneQuery = hasZone ? "AND c.ZoneId IN @zoneIds" : string.Empty;
-
-            return $@"use CustomerWarehouse
-                    ;With FirstBillGroup as (
-                    Select 
-                    	c.DeletionStateId,
-                    	c.BillId,
-                    	c.DeletionStateTitle,
-                    	MAX(RegisterDayJalali)as RegisterDayJalali
-                    From [CustomerWarehouse].dbo.Clients c
-                    Group By c.BillId,c.DeletionStateId,DeletionStateTitle
-                    ),
-                    SecondBillGroup as (
-                    Select 
-                    	c.DeletionStateId,
-                    	c.BillId,
-                    	c.DeletionStateTitle,
-                    	MAX(RegisterDayJalali)as RegisterDayJalali
-                    From [CustomerWarehouse].dbo.Clients c
-                    Group By c.BillId,c.DeletionStateId,DeletionStateTitle
-                    )
-                    Select 
-                        c.CustomerNumber,
-                        c.ReadingNumber,
-                        c.BillId,
-                        ss.RegisterDayJalali AS ChangeDateJalali,
-                        ff.DeletionStateTitle AS FromDeletionStateTitle,
-                        ss.DeletionStateTitle AS ToDeletionStateTitle,
-                        c.ZoneTitle,
-                        c.ZoneId,
-						c.UsageTitle,
-                        TRIM(c.FirstName) AS FirstName,
-                        TRIM(c.SureName) AS Surname,
-                        TRIM(c.FirstName)+' '+TRIM(c.SureName) AS FullName,
-                        TRIM(c.FatherName) AS FatherName,
-                        TRIM(c.NationalId) AS NationalCode,
-                        TRIM(c.PhoneNo) AS PhoneNumber,
-                        TRIM(c.Address) AS Address,
-                        TRIM(c.PostalCode) AS PostalCode,
-                        c.ContractCapacity AS ContractualCapacity,
-                        c.CommercialCount as CommercialUnit,
-                        c.DomesticCount as DomesticUnit,
-                        c.OtherCount as OtherUnit,
-                        (c.CommercialCount+c.DomesticCount+c.OtherCount) AS TotalUnit,
-                        c.WaterDiameterTitle AS MeterDiameterTitle,
-                        c.MainSiphonTitle AS SiphonDiameterTitle,
-                        c.BranchType AS UseStateTitle,
-                        c.EmptyCount AS EmptyUnit,
-					    DATEDIFF(DAY,[CustomerWarehouse].dbo.PersianToMiladi(ff.RegisterDayJalali),[CustomerWarehouse].dbo.PersianToMiladi(ss.RegisterDayJalali)) as Distance
-                    From CustomerWarehouse.dbo.Clients c 
-                    Join FirstBillGroup ff 
-                    	On c.BillId=ff.BillId
-                    Join SecondBillGroup ss
-                    	On c.BillId=ss.BillId AND ff.DeletionStateId<> ss.DeletionStateId
-                    Where
-                    	c.ToDayJalali IS NULL AND
-                    	ff.DeletionStateId IN @fromDeletionStateIds AND
-                        ss.DeletionStateId IN @toDeletionStateIds AND
-                        ss.RegisterDayJalali>ff.RegisterDayJalali AND
-                        (@fromDate IS NULL OR
-                        @toDate IS NULL OR
-                        ss.RegisterDayJalali BETWEEN @fromDate AND @toDate) AND
-                        (@fromReadingNumber IS NULL OR
-                        @toReadingNumber IS NULL OR
-                        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) 
-                    	{zoneQuery} ";
         }
     }
 }

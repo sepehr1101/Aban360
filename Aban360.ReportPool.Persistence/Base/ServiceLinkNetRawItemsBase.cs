@@ -20,7 +20,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     	r.FinalAmount
                     From [CustomerWarehouse].dbo.RequestBillDetails r
                     Where	
-                    	r.RegisterDate BETWEEN @fromDate AND @toDate AND
+                    	r.RegisterDate BETWEEN @FromDateJalali AND @ToDateJalali AND
                     	r.ZoneId IN @zoneIds 
                         {netRawCondition}";
 
@@ -35,7 +35,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     	SUM(r.FinalAmount) AS FinalAmount
                     From [CustomerWarehouse].dbo.RequestBillDetails r
                     Where	
-                    	r.RegisterDate BETWEEN @fromDate AND @toDate AND
+                    	r.RegisterDate BETWEEN @FromDateJalali AND @ToDateJalali AND
                     	r.ZoneId IN @zoneIds 
                         {netRawCondition}
                     Group By r.ItemTitle";

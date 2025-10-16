@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
@@ -19,7 +20,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<WaterIncomeAndConsumptionDetailHeaderOutputDto, WaterIncomeAndConsumptionDetailDataOutputDto>> Get(WaterIncomeAndConsumptionDetailInputDto input)
         {
-            string waterIncomeAndConsumptionDetails = GetWaterIncomeAndConsumptionDetailQuery(input.ZoneIds?.Any() == true, input.UsageIds?.Any() == true, input.BranchTypeIds?.Any() == true);
+            string waterIncomeAndConsumptionDetails = GetWaterIncomeAndConsumptionDetailQuery(input.ZoneIds.HasValue(), input.UsageIds.HasValue(), input.BranchTypeIds.HasValue());
             var @params = new
             {
                 fromDate = input.FromDateJalali,

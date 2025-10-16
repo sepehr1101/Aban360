@@ -1,5 +1,4 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
@@ -15,21 +14,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
     {
         public ServiceLinkRawItemsSummaryQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<ServiceLinkRawItemsHeaderOutputDto, ServiceLinkRawNetItemsSummaryDataOutputDto>> Get(ServiceLinkRawItemsInputDto input)
         {
-            string rawCondition = @"AND	r.TypeCode ON (1,2)";
+            string rawCondition = @"AND	r.TypeCode in (1,2)";
             string query = GetGroupedQuery(rawCondition);
-            //string query = GetServiceLinkRawItemsSummaryQuery(); ;
 
-            var @params = new
-            {
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-                zoneIds = input.ZoneIds,
-            };
-            IEnumerable<ServiceLinkRawNetItemsSummaryDataOutputDto> data = await _sqlReportConnection.QueryAsync<ServiceLinkRawNetItemsSummaryDataOutputDto>(query, @params);
+            IEnumerable<ServiceLinkRawNetItemsSummaryDataOutputDto> data = await _sqlReportConnection.QueryAsync<ServiceLinkRawNetItemsSummaryDataOutputDto>(query, input);
             ServiceLinkRawItemsHeaderOutputDto header = new ServiceLinkRawItemsHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -47,20 +40,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 (ReportLiterals.ServiceLinkRawItemsSummary, header, data);
 
             return result;
-        }
-        private string GetServiceLinkRawItemsSummaryQuery()
-        {
-            return @"Select
-                    	r.ItemTitle ,
-                    	SUM(r.Amount) AS Amount,
-                    	SUM(r.OffAmount) AS OffAmount,
-                    	SUM(r.FinalAmount) AS FinalAmount
-                    From [CustomerWarehouse].dbo.RequestBillDetails r
-                    Where	
-                    	r.RegisterDate BETWEEN @fromDate AND @toDate AND
-                    	r.ZoneId IN @zoneIds AND
-                    	r.TypeCode=1 OR r.TypeCode=2
-                    Group By r.ItemTitle";
         }
     }
 }

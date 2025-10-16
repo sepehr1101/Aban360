@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
@@ -18,7 +19,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         }
         public async Task<ReportOutput<ContractualCapacityHeaderOutputDto, ContractualCapacityDataOutputDto>> GetInfo(ContractualCapacityInputDto input)
         {
-            string contractualCapacityQuery = GetContractualCapacityQuery(input.UsageSellIds?.Any()==true, input.ZoneIds?.Any() == true);
+            string contractualCapacityQuery = GetContractualCapacityQuery(input.UsageSellIds.HasValue(), input.ZoneIds.HasValue());
             var @params = new
             {
                 FromReadingNumber = input.FromReadingNumber,

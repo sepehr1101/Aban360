@@ -16,12 +16,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         public async Task<CustomerOldInfoOutputDto> GetInfo(CustomerOldInfoInputDto input)
         {
             string customerOldInfoQuery = GetCustomerOldInfoQuery();
-            var @params = new
-            {
-                zoneId = input.ZoneId,
-                customerNumber = input.CustomerNumber,
-            };
-            CustomerOldInfoOutputDto? output = await _sqlReportConnection.QueryFirstOrDefaultAsync<CustomerOldInfoOutputDto>(customerOldInfoQuery, @params);
+            CustomerOldInfoOutputDto? output = await _sqlReportConnection.QueryFirstOrDefaultAsync<CustomerOldInfoOutputDto>(customerOldInfoQuery, input);
             return output;
         }
 

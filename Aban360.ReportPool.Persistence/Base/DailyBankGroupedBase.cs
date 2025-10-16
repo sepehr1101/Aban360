@@ -25,8 +25,8 @@ namespace Aban360.ReportPool.Persistence.Base
                     From [CustomerWarehouse].dbo.{tableField} p
                     WHERE 
                     	(
-                            (@FromDate IS NOT NULL AND @ToDate IS NOT NULL AND p.RegisterDay BETWEEN @FromDate AND @ToDate)
-                            OR (@FromDate IS NULL AND @ToDate IS NULL)
+                            (@FromDateJalali IS NOT NULL AND @ToDateJalali IS NOT NULL AND p.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali)
+                            OR (@FromDateJalali IS NULL AND @ToDateJalali IS NULL)
                         )AND
                         (
                             (@FromAmount IS NOT NULL AND @ToAmount IS NOT NULL AND p.Amount BETWEEN @FromAmount AND @ToAmount)

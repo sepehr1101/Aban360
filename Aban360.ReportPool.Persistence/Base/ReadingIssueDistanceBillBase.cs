@@ -56,9 +56,9 @@ namespace Aban360.ReportPool.Persistence.Base
                 Where 
                     c.ToDayJalali IS NULL AND
                 	b.TypeCode=1 AND
-                	(@fromDate IS NULL OR
-                	@toDate IS NULL OR
-                	b.RegisterDay BETWEEN @fromDate AND @toDate) AND
+                	(@FromDateJalali IS NULL OR
+                	@ToDateJalali IS NULL OR
+                	b.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali) AND
                 	(@fromReadingNumber IS NULL OR
                 	@toReadingNumber IS NULL OR
                 	b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
@@ -94,9 +94,9 @@ namespace Aban360.ReportPool.Persistence.Base
                       	    On t51.C1=t46.C0
                       Where 
                       	b.TypeCode=1 AND
-                      	(@fromDate IS NULL OR
-                      	@toDate IS NULL OR
-                      	b.RegisterDay BETWEEN @fromDate AND @toDate) AND
+                      	(@FromDateJalali IS NULL OR
+                      	@ToDateJalali IS NULL OR
+                      	b.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali) AND
                       	(@fromReadingNumber IS NULL OR
                       	@toReadingNumber IS NULL OR
                       	b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND

@@ -20,19 +20,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         public async Task<ReportOutput<ReadingDailyStatementHeaderOutputDto, ReadingDailyStatementDataOutputDto>> GetInfo(ReadingDailyStatementInputDto input)
         {
             string readingDailyStatements = GetReadingDailyStatementQuery();
-            var @params = new
-            {
-                fromAmount = input.FromAmount,
-                toAmount = input.ToAmount,
-                fromReadingNumber = input.FromReadingNumber,
-                toReadingNumber = input.ToReadingNumber,
-                fromConsumption = input.FromConsumption,
-                toConsumption = input.ToConsumption,
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-                zoneIds = input.ZoneIds,
-            };
-            IEnumerable<ReadingDailyStatementDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingDailyStatementDataOutputDto>(readingDailyStatements, @params);
+          
+            IEnumerable<ReadingDailyStatementDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingDailyStatementDataOutputDto>(readingDailyStatements, input);
             ReadingDailyStatementHeaderOutputDto header = new ReadingDailyStatementHeaderOutputDto()
             {
                 FromConsumption = input.FromConsumption,
@@ -87,7 +76,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	(@fromReadingNumber IS NULL OR
                         @toReadingNumber IS NULL OR
                         b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-                    	b.NextDay BETWEEN @fromDate AND @toDate AND
+                    	b.NextDay BETWEEN @FromDateJalali AND @ToDateJalali AND
                         b.Consumption BETWEEN @fromConsumption AND @toConsumption AND
                     	b.ZoneId IN @zoneIds AND
 						(@fromAmount IS NULL OR

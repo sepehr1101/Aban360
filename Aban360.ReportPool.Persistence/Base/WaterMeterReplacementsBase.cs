@@ -34,7 +34,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     Join [CustomerWarehouse].dbo.Clients c 
                         on mc.CustomerNumber=c.CustomerNumber AND mc.ZoneId=c.ZoneId
                     Where 
-                    	mc.{dateParam} BETWEEN @fromDate AND @toDate AND
+                    	mc.{dateParam} BETWEEN @FromDateJalali AND @ToDateJalali AND
                     	c.ZoneId IN @zoneIds AND
                     	c.UsageId IN @UsageIds AND
                         (@fromReadingNumber IS NULL OR
@@ -78,7 +78,7 @@ namespace Aban360.ReportPool.Persistence.Base
 					Join [Db70].dbo.T46 t46
 						On t51.C1=t46.C0
                     Where                         
-                    	mc.{dateParam} BETWEEN @fromDate AND @toDate AND
+                    	mc.{dateParam} BETWEEN @FromDateJalali AND @ToDateJalali AND
                         c.ToDayJalali IS NULL AND
                     	c.ZoneId IN @zoneIds AND
                     	c.UsageId IN @UsageIds AND
