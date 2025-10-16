@@ -20,7 +20,7 @@ namespace Aban360.ReportPool.Persistence.Base
 		                    *
                         From [CustomerWarehouse].dbo.Clients c
 	                    Where				
-		                    c.{param.RequestDate} BETWEEN @fromDate AND @toDate AND
+		                    c.{param.RequestDate} BETWEEN @FromDateJalali AND @ToDateJalali AND
 		                    c.CustomerNumber<>0 AND
 		                    c.RegisterDayJalali <= @toDate AND
                             c.ZoneId IN @zoneIds  AND
@@ -74,7 +74,7 @@ namespace Aban360.ReportPool.Persistence.Base
 		                    *
                         From [CustomerWarehouse].dbo.Clients c
 	                    Where				
-		                    c.{param.RequestDate} BETWEEN @fromDate AND @toDate AND
+		                    c.{param.RequestDate} BETWEEN @FromDateJalali AND @ToDateJalali AND
 		                    c.CustomerNumber<>0 AND
 		                    c.RegisterDayJalali <= @toDate AND
                             c.ZoneId IN @zoneIds  AND

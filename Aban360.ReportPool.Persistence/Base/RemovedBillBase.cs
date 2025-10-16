@@ -33,9 +33,9 @@ namespace Aban360.ReportPool.Persistence.Base
                 Join [CustomerWarehouse].dbo.Clients c
                 	on c.CustomerNumber=rb.CustomerNumber AND c.ZoneId=rb.ZoneId
                 Where
-                	(@fromDate IS NULL OR
-                	@toDate IS NULL OR
-                	rb.RegisterDay BETWEEN @fromDate AND @toDate) AND
+                	(@FromDateJalali IS NULL OR
+                	@ToDateJalali IS NULL OR
+                	rb.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali) AND
                 	(@fromAmount IS NULL OR
                 	@toAmount IS NULL OR
                 	rb.SumItems BETWEEN @fromAmount AND @toAmount) AND
@@ -65,9 +65,9 @@ namespace Aban360.ReportPool.Persistence.Base
 				        Join [Db70].dbo.T46 t46
 				        	On t51.C1=t46.C0
                       Where
-                      	(@fromDate IS NULL OR
-                      	@toDate IS NULL OR
-                      	rb.RegisterDay BETWEEN @fromDate AND @toDate) AND
+                      	(@FromDateJalali IS NULL OR
+                      	@ToDateJalali IS NULL OR
+                      	rb.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali) AND
                       	(@fromAmount IS NULL OR
                       	@toAmount IS NULL OR
                       	rb.SumItems BETWEEN @fromAmount AND @toAmount) AND

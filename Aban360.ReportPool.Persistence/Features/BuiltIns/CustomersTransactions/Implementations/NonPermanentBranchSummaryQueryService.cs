@@ -1,7 +1,5 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
-using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Base;
@@ -21,21 +19,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         public async Task<ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryDataOutputDto>> GetInfo(NonPermanentBranchInputDto input)
         {
             string query = GetSummaryQuer();
-           // string query = GetNonPermanentBranchQuery();
-           
-            var @params = new
-            {
-                fromReadingNumber = input.FromReadingNumber,
-                toReadingNumber = input.ToReadingNumber,
 
-                fromDate=input.FromDateJalali,
-                toDate=input.ToDateJalali,
-
-                zoneIds = input.ZoneIds,
-                usageIds = input.UsageIds
-            };
-
-            IEnumerable<NonPermanentBranchSummaryDataOutputDto> nonPremanentBranchData = await _sqlReportConnection.QueryAsync<NonPermanentBranchSummaryDataOutputDto>(query, @params);
+            IEnumerable<NonPermanentBranchSummaryDataOutputDto> nonPremanentBranchData = await _sqlReportConnection.QueryAsync<NonPermanentBranchSummaryDataOutputDto>(query, input);
             NonPermanentBranchHeaderOutputDto nonPremanentBranchHeader = new NonPermanentBranchHeaderOutputDto()
             {
                 FromReadingNumber = input.FromReadingNumber,

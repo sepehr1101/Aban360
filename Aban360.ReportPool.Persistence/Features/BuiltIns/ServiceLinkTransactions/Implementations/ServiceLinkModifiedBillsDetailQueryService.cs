@@ -14,19 +14,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
     {
         public ServiceLinkModifiedBillsDetailQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<ServiceLinkModifiedBillsHeaderOutputDto, ServiceLinkModifiedBillsDetailDataOutputDto>> GetInfo(ServiceLinkModifiedBillsInputDto input)
         {
             string modifiedBills = GetServiceLinkModifiedBillsQuery();
-            var @params = new
-            {
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-                zoneIds = input.ZoneIds,
-                typeCodes = input.TypeIds,
-            };
-            IEnumerable<ServiceLinkModifiedBillsDetailDataOutputDto> modifiedBillsData = await _sqlReportConnection.QueryAsync<ServiceLinkModifiedBillsDetailDataOutputDto>(modifiedBills,@params);
+           
+            IEnumerable<ServiceLinkModifiedBillsDetailDataOutputDto> modifiedBillsData = await _sqlReportConnection.QueryAsync<ServiceLinkModifiedBillsDetailDataOutputDto>(modifiedBills, input);
             ServiceLinkModifiedBillsHeaderOutputDto modifiedBillsHeader = new ServiceLinkModifiedBillsHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -58,9 +53,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 						r.TrackNumber
                     From [CustomerWarehouse].dbo.RequestBillDetails r
                     Where
-                    	r.RegisterDate BETWEEN @fromDate AND @toDate AND
+                    	r.RegisterDate BETWEEN @FromDateJalali AND @ToDateJalali AND
                     	r.ZoneId IN @zoneIds AND
-                    	r.TypeCode IN @typeCodes";
+                    	r.TypeCode IN @TypeIds";
         }
     }
 }

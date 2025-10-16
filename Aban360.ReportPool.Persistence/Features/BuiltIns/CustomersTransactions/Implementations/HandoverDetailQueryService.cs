@@ -22,15 +22,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         public async Task<ReportOutput<HandoverHeaderOutputDto, HandoverDetailDataOutputDto>> Get(HandoverInputDto input)
         {
             string handoverDetailQuery = GetHandoverDetailQuery();
-            var @params = new
-            {
-                fromReadingNumber = input.FromReadingNumber,
-                toReadingNumber = input.ToReadingNumber,
 
-                zoneIds = input.ZoneIds,
-                branchTypeIds=input.BranchTypeIds,
-            };
-            IEnumerable<HandoverDetailDataOutputDto> data = await _sqlReportConnection.QueryAsync<HandoverDetailDataOutputDto>(handoverDetailQuery, @params);
+            IEnumerable<HandoverDetailDataOutputDto> data = await _sqlReportConnection.QueryAsync<HandoverDetailDataOutputDto>(handoverDetailQuery, input);
             if (!data.Any())
             {
                 throw new BaseException(ExceptionLiterals.NotFoundAnyData);

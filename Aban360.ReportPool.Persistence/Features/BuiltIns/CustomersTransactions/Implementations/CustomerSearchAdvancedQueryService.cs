@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
@@ -19,36 +20,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
         public async Task<ReportOutput<CustomerSearchHeaderOutputDto, CustomerSearchDataOutputDto>> GetInfo(CustomerSearchAdvancedInputDto input)
         {
-            string customerSearchDataInfoQuery = GetCustomerSearchDataQuery(input.UsageIds?.Any()==true, input.ZoneIds?.Any()==true);
-            var @params = new
-            {
-                input.CustomerNumber,
-                input.FromReadingNumber,
-                input.ToReadingNumber,
-                input.FirstName,
-                SureName = input.Surname,
-                WaterDiameterId = input.MeterDiameter,
-                input.BillId,
-                FromDomesticCount = input.FromUnitDomesticWater,
-                ToDomesticCount = input.ToUnitDomesticWater,
-                FromCommercialCount = input.FromUnitCommercialWater,
-                ToCommercialCount = input.ToUnitCommercialWater,
-                FromOtherCount = input.FromUnitOtherWater,
-                ToOtherCount = input.ToUnitOtherWater,
-                MobileNo = input.MobileNumber,
-                input.Address,
-                input.ZoneIds,
-                input.FromContractualCapacity,
-                input.ToContractualCapacity,
-                input.FromHousholderNumber,
-                input.ToHousholderNumber,
-                input.UsageIds,
-                nationalCode = input.NationalCode,
-                postalCode = input.PostalCode,
-                phoneNumber = input.PhoneNumber,
-            };
+            string customerSearchDataInfoQuery = GetCustomerSearchDataQuery(input.UsageIds.HasValue(), input.ZoneIds.HasValue());
 
-            IEnumerable<CustomerSearchDataOutputDto> customerData = await _sqlReportConnection.QueryAsync<CustomerSearchDataOutputDto>(customerSearchDataInfoQuery, @params, null, 120);//todo: send parameters
+            IEnumerable<CustomerSearchDataOutputDto> customerData = await _sqlReportConnection.QueryAsync<CustomerSearchDataOutputDto>(customerSearchDataInfoQuery, input, null, 120);
             CustomerSearchHeaderOutputDto customerHeader = new CustomerSearchHeaderOutputDto()
             {
                 CustomerCount = (customerData is not null && customerData.Any()) ? customerData.Count() : 0,
@@ -88,12 +62,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         c.ToDayJalali is null
                         --AND (@ReadingNumber is null OR c.ReadingNumber like '%'+@ReadingNumber+'%')
                         AND (@FirstName is null OR c.FirstName like '%'+@FirstName+'%')
-                        AND (@SureName is null OR c.SureName like '%'+@SureName+'%')
+                        AND (@Surname is null OR c.SureName like '%'+@Surname+'%')
                         AND (@BillId is null OR c.BillId like '%'+@BillId+'%')
-                        AND (@MobileNo is null OR c.MobileNo like '%'+@MobileNo+'%')
+                        AND (@MobileNumber is null OR c.MobileNo like '%'+@MobileNumber+'%')
                         AND (@Address is null OR c.Address like '%'+@Address+'%')
                         AND c.CustomerNumber=IIF(@CustomerNumber IS NULL , c.CustomerNumber,@CustomerNumber) 
-                        AND c.WaterDiameterId=IIF(@WaterDiameterId IS NULL, c.WaterDiameterId,@WaterDiameterId )
+                        AND c.WaterDiameterId=IIF(@MeterDiameter IS NULL, c.WaterDiameterId,@MeterDiameter )
 						AND c.PhoneNo=IIF(@phoneNumber IS NULL,c.PhoneNo,@phoneNumber) 
 						AND c.PostalCode=IIF(@postalCode IS NULL,c.PostalCode,@postalCode)
 						AND c.NationalId=IIF(@nationalCode IS NULL,c.NationalId,@nationalCode)
@@ -101,15 +75,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         AND (@FromReadingNumber IS NULL 
                              OR @ToReadingNumber IS NULL 
                              OR c.ReadingNumber between @FromReadingNumber AND @ToReadingNumber)
-                        AND (@FromDomesticCount IS NULL 
-                             OR @ToDomesticCount IS NULL 
-                             OR c.DomesticCount between @FromDomesticCount AND @ToDomesticCount)
-                        AND (@FromCommercialCount IS NULL 
-                             OR @ToCommercialCount IS NULL
-                             OR c.CommercialCount BETWEEN @FromCommercialCount AND @ToCommercialCount)
-                        AND (@FromOtherCount IS NULL  
-                             OR @ToOtherCount IS NULL
-                             OR c.OtherCount BETWEEN @FromOtherCount AND @ToOtherCount)
+                        AND (@FromUnitDomesticWater IS NULL 
+                             OR @ToUnitDomesticWater IS NULL 
+                             OR c.DomesticCount between @FromUnitDomesticWater AND @ToUnitDomesticWater)
+                        AND (@FromUnitCommercialWater IS NULL 
+                             OR @ToUnitCommercialWater IS NULL
+                             OR c.CommercialCount BETWEEN @FromUnitCommercialWater AND @ToUnitCommercialWater)
+                        AND (@FromUnitOtherWater IS NULL  
+                             OR @ToUnitOtherWater IS NULL
+                             OR c.OtherCount BETWEEN @FromUnitOtherWater AND @ToUnitOtherWater)
 					    AND (@FromContractualCapacity IS NULL  
                              OR @ToContractualCapacity IS NULL
                              OR c.ContractCapacity BETWEEN @FromContractualCapacity AND @ToContractualCapacity)

@@ -42,9 +42,9 @@ namespace Aban360.ReportPool.Persistence.Base
                         b.CounterStateCode NOT IN (4,7,8) AND
 						c.DeletionStateId IN (0,4) AND
 						c.ToDayJalali IS NULL AND
-						(@fromDate IS NULL OR
-						@toDate IS NULL OR
-						b.RegisterDay BETWEEN @fromDate AND @toDate) AND
+						(@FromDateJalali IS NULL OR
+						@ToDateJalali IS NULL OR
+						b.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali) AND
 						b.CounterStateCode=1
 						)
                     SELECT * FROM CTE 
@@ -77,9 +77,9 @@ namespace Aban360.ReportPool.Persistence.Base
                         b.CounterStateCode NOT IN (4,7,8) AND
 						c.DeletionStateId IN (0,4) AND
 						c.ToDayJalali IS NULL AND
-						(@fromDate IS NULL OR
-						@toDate IS NULL OR
-						b.RegisterDay BETWEEN @fromDate AND @toDate) AND
+						(@FromDateJalali IS NULL OR
+						@ToDateJalali IS NULL OR
+						b.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali) AND
 						b.CounterStateCode=1)
                     SELECT 
 						c.{groupingField} as ItemTitle,

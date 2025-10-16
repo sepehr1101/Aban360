@@ -36,7 +36,7 @@ namespace Aban360.ReportPool.Persistence.Base
                         (@FromReadingNumber IS NULL or
                     	@ToReadingNumber IS NULL or 
                     	b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND
-                    	b.NextDay BETWEEN @fromDate AND @toDate AND
+                    	b.NextDay BETWEEN @FromDateJalali AND @ToDateJalali AND
                         b.ZoneId IN @zoneIds
                     Group By B.{groupingField}";
         }

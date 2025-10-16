@@ -14,18 +14,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
     {
         public DebtorByDaySummaryQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<DebtorByDayHeaderOutputDto, DebtorByDaySummaryDataOutputDto>> GetInfo(DebtorByDayInputDto input)
         {
             string debtorByDayQueryString = GetDebtorByDayDataQuery();
-            var @params = new
-            {
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-                zoneIds = input.ZoneIds,
-            };
-            IEnumerable<DebtorByDaySummaryDataOutputDto> debtorByDayData = await _sqlReportConnection.QueryAsync<DebtorByDaySummaryDataOutputDto>(debtorByDayQueryString, @params);
+         
+            IEnumerable<DebtorByDaySummaryDataOutputDto> debtorByDayData = await _sqlReportConnection.QueryAsync<DebtorByDaySummaryDataOutputDto>(debtorByDayQueryString, input);
             DebtorByDayHeaderOutputDto debtorByDayHeader = new DebtorByDayHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -55,7 +51,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     	Sum(r.FinalAmount) AS FinalAmount
                     From [CustomerWarehouse].dbo.RequestBillDetails r
                     Where	
-                    	r.RegisterDate BETWEEN @fromDate AND @toDate AND
+                    	r.RegisterDate BETWEEN @FromDateJalali AND @ToDateJalali AND
                     	r.ZoneId IN @zoneIds AND
                     	(r.TypeCode=1 OR r.TypeCode=2)
                     Group by r.RegisterDate";

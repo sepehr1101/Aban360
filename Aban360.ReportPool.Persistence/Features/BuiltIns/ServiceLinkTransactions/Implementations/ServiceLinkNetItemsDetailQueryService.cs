@@ -1,5 +1,4 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
@@ -15,20 +14,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
     {
         public ServiceLinkNetItemsDetailQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<ServiceLinkNetItemsHeaderOutputDto, ServiceLinkRawNetItemsDetailDataOutputDto>> Get(ServiceLinkNetItemsInputDto input)
         {
             string query = GetDetailQuery(string.Empty);
-            // string query = GetServiceLinkNetItemsDetailQuery(); ;
 
-            var @params = new
-            {
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-                zoneIds = input.ZoneIds,
-            };
-            IEnumerable<ServiceLinkRawNetItemsDetailDataOutputDto> data = await _sqlReportConnection.QueryAsync<ServiceLinkRawNetItemsDetailDataOutputDto>(query, @params);
+            IEnumerable<ServiceLinkRawNetItemsDetailDataOutputDto> data = await _sqlReportConnection.QueryAsync<ServiceLinkRawNetItemsDetailDataOutputDto>(query, input);
             ServiceLinkNetItemsHeaderOutputDto header = new ServiceLinkNetItemsHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -46,21 +39,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 (ReportLiterals.ServiceLinkNetItemsDetail, header, data);
 
             return result;
-        }
-        private string GetServiceLinkNetItemsDetailQuery()
-        {
-            return @"Select
-                    	r.TrackNumber,
-                    	r.ZoneTitle,
-                    	r.CustomerNumber,
-                    	r.ItemTitle,
-                    	r.Amount,
-                    	r.OffAmount,
-                    	r.FinalAmount
-                    From [CustomerWarehouse].dbo.RequestBillDetails r
-                    Where	
-                    	r.RegisterDate BETWEEN @fromDate AND @toDate AND
-                    	r.ZoneId IN @zoneIds";
         }
     }
 }

@@ -21,13 +21,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         {
             string query = GetInstallGtRequestQuery();
 
-            var @params = new
-            {
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-                distance = input.Distance
-            };
-            IEnumerable<InstallGtRequestDataOutputDto> installGtRequestData = await _sqlReportConnection.QueryAsync<InstallGtRequestDataOutputDto>(query, @params);
+            IEnumerable<InstallGtRequestDataOutputDto> installGtRequestData = await _sqlReportConnection.QueryAsync<InstallGtRequestDataOutputDto>(query, input);
             InstallGtRequestHeaderOutputDto installGtRequestHeader = new InstallGtRequestHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -65,7 +59,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     FROM [CustomerWarehouse].dbo.Clients
                     WHERE 
                     	WaterRequestDate>WaterInstallDate AND 
-                    	WaterRequestDate BETWEEN @fromDate AND @toDate AND
+                    	WaterRequestDate BETWEEN @FromDateJalali AND @ToDateJalali AND
                     	WaterInstallDate>'1300/01/01' AND 
                     	DATEDIFF(DAY,dbo.PersianToMiladi(WaterInstallDate),dbo.PersianToMiladi(WaterRequestDate))>@distance AND
                     	ToDayJalali IS NULL

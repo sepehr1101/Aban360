@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Base
 		                    *
                         From [CustomerWarehouse].dbo.Clients c
 	                    Where				
-		                    c.{queryParams.DataField} BETWEEN @fromDate AND @toDate AND
+		                    c.{queryParams.DataField} BETWEEN @FromDateJalali AND @ToDateJalali AND
 		                    c.ZoneId IN @zoneIds AND
 		                    c.UsageId IN @usageIds AND
 		                    (
@@ -27,7 +27,7 @@ namespace Aban360.ReportPool.Persistence.Base
 			                    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
 		                    ) AND
 		                    c.CustomerNumber<>0 AND
-		                    c.RegisterDayJalali <= @toDate
+		                    c.RegisterDayJalali <= @ToDateJalali
                     )
                     Select	
 	                    c.CustomerNumber, 
@@ -68,7 +68,7 @@ namespace Aban360.ReportPool.Persistence.Base
 		                    *
                         From [CustomerWarehouse].dbo.Clients c
 	                    Where				
-		                    c.{queryParams.DataField} BETWEEN @fromDate AND @toDate AND
+		                    c.{queryParams.DataField} BETWEEN @FromDateJalali AND @ToDateJalali AND
 		                    c.ZoneId IN @zoneIds AND
 		                    c.UsageId IN @usageIds AND
 		                    (
@@ -77,7 +77,7 @@ namespace Aban360.ReportPool.Persistence.Base
 			                    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
 		                    ) AND
 		                    c.CustomerNumber<>0 AND
-		                    c.RegisterDayJalali <= @toDate
+		                    c.RegisterDayJalali <= @ToDateJalali
                     )
                     Select	
 	                    MAX(t46.C2) AS RegionTitle,

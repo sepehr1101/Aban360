@@ -42,13 +42,13 @@ namespace Aban360.ReportPool.Persistence.Base
 						TRIM(c.PostalCode) AS PostalCode	                   
                     FROM [CustomerWarehouse].dbo.Clients c
                     WHERE 
-                       c.RegisterDayJalali Between @fromDate and @toDate AND
+                       c.RegisterDayJalali Between @FromDateJalali and @ToDateJalali AND
                        (   @fromReadingNumber IS NULL OR
 						   @toReadingNumber IS NULL OR
 						   c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
                        ) and  
                         c.ZoneId in @zoneIds
-                    ) --CTE END
+                    ) 
                     SELECT * FROM CTE
                     WHERE 
                         RN=1 AND
@@ -70,7 +70,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						c.DeletionStateId	                   
                     FROM [CustomerWarehouse].dbo.Clients c 
                     WHERE 
-                       c.RegisterDayJalali Between @fromDate and @toDate AND
+                       c.RegisterDayJalali Between @FromDateJalali and @ToDateJalali AND
                        (   @fromReadingNumber IS NULL OR
 						   @toReadingNumber IS NULL OR
 						   c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber

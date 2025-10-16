@@ -7,7 +7,6 @@ namespace Aban360.ReportPool.Persistence.Base
         public NonPermanentBranchBase(IConfiguration configuration)
             : base(configuration)
         { }
-
         internal string GetDetailQuery()
         {
             return @"SELECT 
@@ -40,9 +39,9 @@ namespace Aban360.ReportPool.Persistence.Base
                         c.ZoneId in @ZoneIds AND
                         c.UsageId in @usageIds AND
 						c.IsNonPermanent=1 AND
-                        (@fromDate IS NULL OR
-                        @toDate IS NULL OR
-                        c.RegisterDayJalali BETWEEN @fromDate AND @toDate)";
+                        (@FromDateJalali IS NULL OR
+                        @ToDateJalali IS NULL OR
+                        c.RegisterDayJalali BETWEEN @FromDateJalali AND @ToDateJalali)";
         }
 
         internal string GetGroupedQuery(bool isTwoField,string firstGroupingField,string? secondGroupingField)
@@ -80,7 +79,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						(@fromReadingNumber IS NULL OR
 						 @toReadingNumber IS NULL OR
 						 c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-						 (c.RegisterDayJalali BETWEEN @fromDate AND @toDate) AND
+						 (c.RegisterDayJalali BETWEEN @FromDateJalali AND @ToDateJalali) AND
 						c.ZoneId in @zoneIds AND
                         c.UsageId in @usageIds AND
 						c.IsNonPermanent=1
@@ -101,7 +100,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						(@fromReadingNumber IS NULL OR
 						 @toReadingNumber IS NULL OR
 						 c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-						 (c.RegisterDayJalali BETWEEN @fromDate AND @toDate) AND
+						 (c.RegisterDayJalali BETWEEN @FromDateJalali AND @ToDateJalali) AND
 						c.ZoneId in @zoneIds AND
                         c.UsageId in @usageIds AND
 						c.IsNonPermanent=1

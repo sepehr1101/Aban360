@@ -13,7 +13,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
     {
         public ExcessPatternQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+        }
 
         public async Task<ReportOutput<ExcessPatternHeaderOutputDto, ExcessPatternDataOutputDto>> GetInfo(ExcessPatternInputDto input)
         {

@@ -36,9 +36,9 @@ namespace Aban360.ReportPool.Persistence.Base
                     From [CustomerWarehouse].dbo.Bills b
                     LEFT JOIN [CustomerWarehouse].dbo.Payments p ON p.BillTableId=b.Id
                     WHERE
-                        (@FromDate IS NULL
-                     	    OR @ToDate IS NULL 
-                     	    OR p.RegisterDay BETWEEN @FromDate AND @ToDate)
+                        (@FromDateJalali IS NULL
+                     	    OR @ToDateJalali IS NULL 
+                     	    OR p.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali)
                         AND (@fromBankId IS NULL OR
 						    @toBankId IS NULL OR
 						    p.BankCode BETWEEN @fromBankId AND @toBankId)
@@ -68,9 +68,9 @@ namespace Aban360.ReportPool.Persistence.Base
                         ) AS SumAmount
                 	from [CustomerWarehouse].dbo.PaymentDue p
                 	where 
-                		 (@fromDate IS NULL OR
-                        @toDate IS NULL OR
-                        p.EventDate BETWEEN @fromDate and @toDate) 
+                		 (@FromDateJalali IS NULL OR
+                        @ToDateJalali IS NULL OR
+                        p.EventDate BETWEEN @FromDateJalali and @ToDateJalali) 
                         {queryCondition}
                 )
                 SELECT 
@@ -103,9 +103,9 @@ namespace Aban360.ReportPool.Persistence.Base
                     From [CustomerWarehouse].dbo.Bills b
                     LEFT JOIN [CustomerWarehouse].dbo.Payments p ON p.BillTableId=b.Id
                     WHERE
-                        (@FromDate IS NULL
-                     	    OR @ToDate IS NULL 
-                     	    OR p.RegisterDay BETWEEN @FromDate AND @ToDate)
+                        (@FromDateJalali IS NULL
+                     	    OR @ToDateJalali IS NULL 
+                     	    OR p.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali)
                         AND (@fromBankId IS NULL OR
 						    @toBankId IS NULL OR
 						    p.BankCode BETWEEN @fromBankId AND @toBankId)
@@ -134,9 +134,9 @@ namespace Aban360.ReportPool.Persistence.Base
                         ) AS SumAmount
                 	from [CustomerWarehouse].dbo.PaymentDue p
                     Where 
-                        (@fromDate IS NULL OR
-                        @toDate IS NULL OR
-                        p.EventDate BETWEEN @fromDate and @toDate) 
+                        (@FromDateJalali IS NULL OR
+                        @ToDateJalali IS NULL OR
+                        p.EventDate BETWEEN @FromDateJalali and @ToDateJalali) 
                         {queryCondition}
                 )
                 SELECT 

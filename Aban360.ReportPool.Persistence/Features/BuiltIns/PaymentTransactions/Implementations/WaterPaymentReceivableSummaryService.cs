@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
@@ -16,24 +17,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
     {
         public WaterPaymentReceivableSummaryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableSummaryDataOutputDto>> GetInfo(WaterPaymentReceivableInputDto input)
         {
             string reportTitle=ReportLiterals.WaterPaymentReceivableSummary + ReportLiterals.ByUsage;
             string groupingField = input.IsZone ? GroupingFields.ZoneTitle : GroupingFields.UsageTitle;
-            string query = GetGroupedQuery(true, input.ZoneIds?.Any() == true, groupingField);
-            //string query = GetWaterPaymentReceivableQuery(input.ZoneIds?.Any() == true, input.IsZone);
+            string query = GetGroupedQuery(true, input.ZoneIds.HasValue(), groupingField);
 
-            var @params = new
-            {
-                FromDate = input.FromDateJalali,
-                ToDate = input.ToDateJalali,
-                fromBankId = input.FromBankId,
-                toBankId = input.ToBankId,
-                zoneIds = input.ZoneIds,
-            };
-            IEnumerable<WaterPaymentReceivableSummaryDataOutputDto> waterPaymentReceivableData = await _sqlReportConnection.QueryAsync<WaterPaymentReceivableSummaryDataOutputDto>(query, @params);
+            IEnumerable<WaterPaymentReceivableSummaryDataOutputDto> waterPaymentReceivableData = await _sqlReportConnection.QueryAsync<WaterPaymentReceivableSummaryDataOutputDto>(query, input);
             WaterPaymentReceivableHeaderOutputDto waterPaymentReceivableHeader = new WaterPaymentReceivableHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -54,32 +47,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             }
             var result = new ReportOutput<WaterPaymentReceivableHeaderOutputDto, WaterPaymentReceivableSummaryDataOutputDto>(reportTitle, waterPaymentReceivableHeader, waterPaymentReceivableData);
             return result;
-        }
-
-        private string GetWaterPaymentReceivableQuery(bool hasZone, bool isZone)
-        {
-            string zoneQuery = hasZone ? "AND p.ZoneId IN @ZoneIds" : string.Empty;
-            string param = isZone ? ReportLiterals.ZoneTitle : ReportLiterals.UsageTitle;
-            return @$"Select 
-                        b.{param} as ItemTitle,
-                    	COUNT(1) as BillCount,
-						COUNT(Distinct b.BillId) as CustomerCount,
-						SUM(p.Amount) as Amount,
-						SUM(Case When p.PayDateJalali<=b.DeadLine Then p.Amount Else 0 End) as DueAmount,
-						SUM(Case When p.PayDateJalali>b.DeadLine Then p.Amount Else 0 End ) as OverdueAmount,
-						Count(Case When p.PayDateJalali<=b.DeadLine Then 1 End) as DueCount,
-						Count(Case When p.PayDateJalali>b.DeadLine Then 1 End ) as OverdueCount
-                    From [CustomerWarehouse].dbo.Bills b
-                    LEFT JOIN [CustomerWarehouse].dbo.Payments p ON p.BillTableId=b.Id
-                    WHERE
-                        (@FromDate IS NULL
-                     	    OR @ToDate IS NULL 
-                     	    OR p.RegisterDay BETWEEN @FromDate AND @ToDate)
-                        AND (@fromBankId IS NULL OR
-						    @toBankId IS NULL OR
-						    p.BankCode BETWEEN @fromBankId AND @toBankId)
-                        {zoneQuery}
-						Group By b.{param}";
         }
     }
 }

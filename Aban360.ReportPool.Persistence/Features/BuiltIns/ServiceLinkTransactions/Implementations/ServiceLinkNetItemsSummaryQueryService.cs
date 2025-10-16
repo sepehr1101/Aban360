@@ -1,5 +1,4 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
@@ -15,20 +14,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
     {
         public ServiceLinkNetItemsSummaryQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<ServiceLinkNetItemsHeaderOutputDto, ServiceLinkRawNetItemsSummaryDataOutputDto>> Get(ServiceLinkNetItemsInputDto input)
         {
             string query = GetGroupedQuery(string.Empty);
-           // string query = GetServiceLinkNetItemsSummaryQuery();
 
-            var @params = new
-            {
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-                zoneIds = input.ZoneIds,
-            };
-            IEnumerable<ServiceLinkRawNetItemsSummaryDataOutputDto> data = await _sqlReportConnection.QueryAsync<ServiceLinkRawNetItemsSummaryDataOutputDto>(query, @params);
+            IEnumerable<ServiceLinkRawNetItemsSummaryDataOutputDto> data = await _sqlReportConnection.QueryAsync<ServiceLinkRawNetItemsSummaryDataOutputDto>(query, input);
             ServiceLinkNetItemsHeaderOutputDto header = new ServiceLinkNetItemsHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -46,19 +39,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 (ReportLiterals.ServiceLinkNetItemsSummary, header, data);
 
             return result;
-        }
-        private string GetServiceLinkNetItemsSummaryQuery()
-        {
-            return @"Select
-                    	r.ItemTitle ,
-                    	SUM(r.Amount) AS Amount,
-                    	SUM(r.OffAmount) AS OffAmount,
-                    	SUM(r.FinalAmount) AS FinalAmount
-                    From [CustomerWarehouse].dbo.RequestBillDetails r
-                    Where	
-                    	r.RegisterDate BETWEEN @fromDate AND @toDate AND
-                    	r.ZoneId IN @zoneIds 
-                    Group By r.ItemTitle";
         }
     }
 }

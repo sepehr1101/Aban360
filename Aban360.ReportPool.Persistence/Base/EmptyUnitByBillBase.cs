@@ -50,7 +50,7 @@ namespace Aban360.ReportPool.Persistence.Base
 					    FROM [CustomerWarehouse].dbo.Bills b
 						LEFT Join [CustomerWarehouse].dbo.Clients c On b.CustomerNumber=c.CustomerNumber and b.ZoneId=c.ZoneId
 					    WHERE
-							(b.EmptyCount BETWEEN @fromUnit AND @toUnit)
+							(b.EmptyCount BETWEEN @FromEmptyUnit AND @ToEmptyUnit)
 							AND
 							(@fromReadingNumber IS NULL OR
 							@toReadingNumber IS NULL OR
@@ -95,7 +95,6 @@ namespace Aban360.ReportPool.Persistence.Base
 						On t51.C1=t46.C0
 					WHERE RowNum = 1;";
         }
-
         internal string GetGroupedQuery(bool hasZone, bool hasUsage, string groupingField)
         {
             string queryCondition= GetQueryCondition(hasZone, hasUsage);
@@ -115,7 +114,7 @@ namespace Aban360.ReportPool.Persistence.Base
 							RN=ROW_NUMBER() over (partition by b.BillId order by b.RegisterDay Desc)
 					    FROM [CustomerWarehouse].dbo.Bills b
 					    WHERE
-							(b.EmptyCount BETWEEN @fromUnit AND @toUnit)
+							(b.EmptyCount BETWEEN @FromEmptyUnit AND @ToEmptyUnit)
 							AND
 							(@fromReadingNumber IS NULL OR
 							@toReadingNumber IS NULL OR
@@ -155,7 +154,7 @@ namespace Aban360.ReportPool.Persistence.Base
         private string GetQueryCondition(bool hasZone, bool hasUsage)
         {
             string zoneQuery = hasZone ? " AND b.ZoneId in @zoneIds" : string.Empty;
-            string usageQuery = hasUsage ? " AND b.UsageId in @usageIds" : string.Empty;
+            string usageQuery = hasUsage ? " AND b.UsageId in @UsageSellIds" : string.Empty;
 
             return zoneQuery + usageQuery;
         }

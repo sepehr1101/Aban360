@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
@@ -15,24 +16,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
     {
         public WaterDailyBankGroupedQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<ReportOutput<DailyBankGroupedHeaderOutputDto, DailyBankGroupedDataOutputDto>> GetInfo(DailyBankGroupedInputDto input)
         {
-            string query = GetDetailQuery(input.ZoneIds?.Any() == true,GroupingFields.Payments);
-            //string query = GetDailyBankGroupedQuery(input.ZoneIds?.Any() == true);
+            string query = GetDetailQuery(input.ZoneIds.HasValue(),GroupingFields.Payments);
             
-            var @params = new
-            {
-                FromDate = input.FromDateJalali,
-                ToDate = input.ToDateJalali,
-                FromAmount = input.FromAmount,
-                ToAmount = input.ToAmount,
-                ZoneIds = input.ZoneIds,
-                fromBankId = input.FromBankId,
-                toBankId = input.ToBankId,
-            };
-            IEnumerable<DailyBankGroupedDataOutputDto> dailyBankGroupedData = await _sqlReportConnection.QueryAsync<DailyBankGroupedDataOutputDto>(query, @params);
+            IEnumerable<DailyBankGroupedDataOutputDto> dailyBankGroupedData = await _sqlReportConnection.QueryAsync<DailyBankGroupedDataOutputDto>(query, input);
             DailyBankGroupedHeaderOutputDto dailyBankGroupedHeader = new DailyBankGroupedHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -52,41 +43,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
             var result = new ReportOutput<DailyBankGroupedHeaderOutputDto, DailyBankGroupedDataOutputDto>(ReportLiterals.WaterDailyBankGrouped, dailyBankGroupedHeader, dailyBankGroupedData);
             return result;
-        }
-
-        private string GetDailyBankGroupedQuery(bool hasZone)
-        {
-            string zoneQuery = hasZone ? "AND p.ZoneId IN @ZoneIds" : string.Empty;
-
-            return @$"Select 
-                    	p.RegisterDay AS RegisterDate, 
-                    	p.PayDateJalali AS BankDate,
-                        p.ZoneTitle AS ZoneTitle,
-                        p.BankName AS BankName,
-                        p.BankCode AS BankCode,
-                    	COUNT(p.RegisterDay) AS ItemCount,
-                    	SUM(p.Amount) AS ItemAmount,
-                    	COUNT(p.RegisterDay) AS TotalCount,
-                    	SUM(p.Amount) AS TotalAmount
-                    From [CustomerWarehouse].dbo.Payments p
-                    WHERE 
-                    	(
-                            (@FromDate IS NOT NULL AND @ToDate IS NOT NULL AND p.RegisterDay BETWEEN @FromDate AND @ToDate)
-                            OR (@FromDate IS NULL AND @ToDate IS NULL)
-                        )AND
-                        (
-                            (@FromAmount IS NOT NULL AND @ToAmount IS NOT NULL AND p.Amount BETWEEN @FromAmount AND @ToAmount)
-                            OR (@FromAmount IS NULL AND @ToAmount IS NULL)
-                        )AND
-						(@fromBankId IS NULL OR
-						@toBankId IS NULL OR
-						p.BankCode BETWEEN @fromBankId AND @toBankId)
-                    {zoneQuery}
-                    GROUP BY p.RegisterDay,
-							 p.PayDateJalali,
-                             p.BankName,
-                             p.BankCode,
-                             p.ZoneTitle";
         }
     }
 }

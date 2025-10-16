@@ -14,19 +14,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
     {
         public BankGroupedQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+        }
 
         public async Task<ReportOutput<BankGroupedHeaderOutputDto, BankGroupedDataOutputDto>> GetInfo(BankGroupedInputDto input)
         {
             string BankGroupeds = GetBankGroupedQuery();
-            var @params = new
-            {
-                FromDate = input.FromDateJalali,
-                ToDate = input.ToDateJalali,
-                fromBankId = input.FromBankId,
-                toBankId = input.ToBankId,
-            };
-            IEnumerable<BankGroupedDataOutputDto> BankGroupedData = await _sqlReportConnection.QueryAsync<BankGroupedDataOutputDto>(BankGroupeds, @params);
+
+            IEnumerable<BankGroupedDataOutputDto> BankGroupedData = await _sqlReportConnection.QueryAsync<BankGroupedDataOutputDto>(BankGroupeds, input);
             BankGroupedHeaderOutputDto BankGroupedHeader = new BankGroupedHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -36,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = BankGroupedData is not null && BankGroupedData.Any() ? BankGroupedData.Count() : 0,
                 CustomerCount = BankGroupedData is not null && BankGroupedData.Any() ? BankGroupedData.Count() : 0,
-                Title= ReportLiterals.BankGrouped,
+                Title = ReportLiterals.BankGrouped,
 
                 TotalAmount = BankGroupedData?.Sum(r => r.TotalAmount) ?? 0,
                 TotalCount = BankGroupedData?.Sum(r => r.TotalCount) ?? 0,
@@ -62,8 +57,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     From [CustomerWarehouse].dbo.Payments p
                     WHERE 
                     	(
-                            (@FromDate IS NOT NULL AND @ToDate IS NOT NULL AND p.RegisterDay BETWEEN @FromDate AND @ToDate)
-                            OR (@FromDate IS NULL AND @ToDate IS NULL)
+                            (@FromDateJalali IS NOT NULL AND @ToDateJalali IS NOT NULL AND p.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali)
+                            OR (@FromDateJalali IS NULL AND @ToDateJalali IS NULL)
                         )AND
 						(@fromBankId IS NULL OR
 						@toBankId IS NULL OR
@@ -80,8 +75,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     From [CustomerWarehouse].dbo.PaymentsEn p
                     WHERE 
                     	(
-                            (@FromDate IS NOT NULL AND @ToDate IS NOT NULL AND p.RegisterDay BETWEEN @FromDate AND @ToDate)
-                            OR (@FromDate IS NULL AND @ToDate IS NULL)
+                            (@FromDateJalali IS NOT NULL AND @ToDateJalali IS NOT NULL AND p.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali)
+                            OR (@FromDateJalali IS NULL AND @ToDateJalali IS NULL)
                         )AND
 						(@fromBankId IS NULL OR
 						@toBankId IS NULL OR
