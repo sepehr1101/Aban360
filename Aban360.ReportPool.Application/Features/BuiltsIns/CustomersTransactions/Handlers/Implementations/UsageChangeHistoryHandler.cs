@@ -32,7 +32,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomeValidationException(message);
+                throw new CustomValidationException(message);
             }
 
             ReportOutput<UsageChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto> usageChangeHistory = await _usageChangeHistoryQueryService.GetInfo(input);

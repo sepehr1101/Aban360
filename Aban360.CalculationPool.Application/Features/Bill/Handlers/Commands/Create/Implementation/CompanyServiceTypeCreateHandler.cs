@@ -37,7 +37,7 @@ namespace Aban360.CalculationPool.Application.Features.Bil.Handlers.Commands.Cre
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomeValidationException(message);
+                throw new CustomValidationException(message);
             }
 
             CompanyServiceType companyServiceType = _mapper.Map<CompanyServiceType>(createDto);

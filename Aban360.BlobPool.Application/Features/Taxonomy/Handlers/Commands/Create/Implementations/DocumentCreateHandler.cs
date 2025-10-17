@@ -43,7 +43,7 @@ namespace Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Creat
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomeValidationException(message);
+                throw new CustomValidationException(message);
             }
 
             Document document = new Document();

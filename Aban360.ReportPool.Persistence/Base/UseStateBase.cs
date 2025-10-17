@@ -9,9 +9,9 @@ namespace Aban360.ReportPool.Persistence.Base
         { 
         }
 
-        internal string GetDetailQuery()
+        internal string GetDetailQuery(bool isWater)
         {
-            return @";WITH CTE AS 
+            return @$";WITH CTE AS 
                      (SELECT 
                         RN=ROW_NUMBER() OVER (PARTITION BY ZoneId, CustomerNumber ORDER BY RegisterDayJalali DESC, LocalId DESC),
                     	c.CustomerNumber,
@@ -41,12 +41,13 @@ namespace Aban360.ReportPool.Persistence.Base
 						TRIM(c.NationalId) AS NationalCode,
 						TRIM(c.PostalCode) AS PostalCode	                   
                     FROM [CustomerWarehouse].dbo.Clients c
-                    WHERE 
+                    WHERE                        
                        c.RegisterDayJalali Between @FromDateJalali and @ToDateJalali AND
+                       {GetSewageCondition(isWater)}
                        (   @fromReadingNumber IS NULL OR
 						   @toReadingNumber IS NULL OR
 						   c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
-                       ) and  
+                       ) AND  
                         c.ZoneId in @zoneIds
                     ) 
                     SELECT * FROM CTE
@@ -54,8 +55,8 @@ namespace Aban360.ReportPool.Persistence.Base
                         RN=1 AND
                         DeletionStateId=@useStateId";
         }
-
-        internal string GetGroupedQuery(string groupingField)
+       
+        internal string GetGroupedQuery(string groupingField, bool isWater)
         {
             return $@";WITH CTE AS 
                      (SELECT 
@@ -71,10 +72,11 @@ namespace Aban360.ReportPool.Persistence.Base
                     FROM [CustomerWarehouse].dbo.Clients c 
                     WHERE 
                        c.RegisterDayJalali Between @FromDateJalali and @ToDateJalali AND
+                       {GetSewageCondition(isWater)}
                        (   @fromReadingNumber IS NULL OR
 						   @toReadingNumber IS NULL OR
 						   c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
-                       ) and  
+                       ) AND  
                        c.ZoneId in @zoneIds
 					)
                     SELECT 
@@ -114,6 +116,11 @@ namespace Aban360.ReportPool.Persistence.Base
             return @"select Title
                      from [Aban360].ClaimPool.UseState 
                      where Id=@useStateId";
+        }
+
+        private string GetSewageCondition(bool isWater)
+        {
+            return isWater ? string.Empty : " SewageRegisterDateJalali BETWEEN '1330/01/01' AND @ToDateJalali AND ";
         }
     }
 }

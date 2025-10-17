@@ -35,7 +35,7 @@ namespace Aban360.BlobPool.Application.Features.DMS.Handlers.Commands.Create.Imp
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomeValidationException(message);
+                throw new CustomValidationException(message);
             }
 
             DocumentEntity documentEntity = _mapper.Map<DocumentEntity>(createDto);

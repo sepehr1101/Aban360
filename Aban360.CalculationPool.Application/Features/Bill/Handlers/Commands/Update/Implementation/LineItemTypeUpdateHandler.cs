@@ -38,7 +38,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Up
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomeValidationException(message);
+                throw new CustomValidationException(message);
             }
 
             LineItemType lineItemType = await _lineItemTypeQueryService.Get(updateDto.Id);

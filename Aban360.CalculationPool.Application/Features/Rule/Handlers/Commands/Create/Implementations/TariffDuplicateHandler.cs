@@ -45,7 +45,7 @@ namespace Aban360.CalculationPool.Application.Features.Rule.Handlers.Commands.Cr
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomeValidationException(message);
+                throw new CustomValidationException(message);
             }
             Tariff oldtTariff = await _tariffQueryService.Get(createDto.Id);
             Tariff newTariff = new Tariff()

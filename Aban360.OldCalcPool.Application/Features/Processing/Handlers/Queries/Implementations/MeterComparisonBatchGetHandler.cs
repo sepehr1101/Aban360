@@ -37,7 +37,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomeValidationException(message);
+                throw new CustomValidationException(message);
             }
 
             ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataWithCustomerInfoOutputDto> meterComparisonBatch = await _meterComparisonBatchQueryService.Get(input);

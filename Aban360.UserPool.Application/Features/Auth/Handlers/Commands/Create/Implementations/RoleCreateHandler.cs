@@ -45,7 +45,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomeValidationException(message);
+                throw new CustomValidationException(message);
             }//
 
                 Role role = _mapper.Map<Role>(createDto);

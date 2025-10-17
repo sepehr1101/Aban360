@@ -32,7 +32,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             if (!validationReuslt .IsValid)
             {
                 var message=string.Join(", ",validationReuslt.Errors.Select(x=>x.ErrorMessage));
-                throw new CustomeValidationException(message);
+                throw new CustomValidationException(message);
             }
             ReportOutput<UseStateReportHeaderOutputDto, UseStateReportDataOutputDto> useStateReports = await _userStateReportQueryService.GetInfo(input);
             useStateReports.ReportHeader.ReportDateJalali = DateTime.Now.FormatDateToShortPersianDate();

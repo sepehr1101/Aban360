@@ -36,7 +36,7 @@ namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Up
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomeValidationException(message);
+                throw new CustomValidationException(message);
             }
 
             var waterMeterTag = await _waterMeterTagQueryService.Get(updateDto.Id);

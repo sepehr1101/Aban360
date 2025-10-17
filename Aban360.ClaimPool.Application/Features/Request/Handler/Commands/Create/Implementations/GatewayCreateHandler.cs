@@ -38,7 +38,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomeValidationException(message);
+                throw new CustomValidationException(message);
             }
 
             Gateway geteway = _mapper.Map<Gateway>(createDto);

@@ -1190,10 +1190,11 @@ namespace Aban360.CalculationPool.Application.Features.Base
             double partialOlgoo = IsDomestic(customerInfo.UsageId) ?
                (double)domesticCount * olgoo / monthDays * nerkh.Duration :
                (double)customerInfo.ContractualCapacity / monthDays * nerkh.Duration;
+
             if (IsHandoverDiscount(customerInfo.BranchType) &&
                 IsDomesticWithoutUnspecified(customerInfo.UsageId) && 
                 nerkh.PartialConsumption <= olgoo)
-            {
+            {//در صورتی که بالای الگو بود بخش زیر الگو معاف و بالای الگو اخذ شود
                 return amount;
             }
             if (IsReligious(customerInfo.UsageId) && nerkh.PartialConsumption <= olgoo)

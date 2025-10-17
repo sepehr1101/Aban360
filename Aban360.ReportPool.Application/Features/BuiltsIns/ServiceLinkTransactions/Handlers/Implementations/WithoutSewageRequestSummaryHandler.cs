@@ -31,7 +31,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             if (!validatioResult.IsValid)
             {
                 var message = string.Join(", ", validatioResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomeValidationException(message);
+                throw new CustomValidationException(message);
             }
 
             var result = await _withoutSewageRequestSummaryQuery.Get(input);

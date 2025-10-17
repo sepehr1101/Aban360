@@ -43,7 +43,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomeValidationException(message);
+                throw new CustomValidationException(message);
             }
 
             var userWorkday = _mapper.Map<UserWorkday>(createDto);

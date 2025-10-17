@@ -2,6 +2,7 @@
 {
     public record UseStateReportInputDto
     {
+        public bool IsWater { get; set; }
         public short UseStateId { get; set; }
         public string FromDateJalali { get; set; } = default!;
         public string ToDateJalali { get; set; } = default!;

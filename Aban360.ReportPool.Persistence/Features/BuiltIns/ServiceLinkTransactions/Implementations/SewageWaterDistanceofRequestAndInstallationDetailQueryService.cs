@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
@@ -30,8 +31,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 FromReadingNumber=input.FromReadingNumber,
                 ToReadingNumber=input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = (RequestData is not null && RequestData.Any()) ? RequestData.Count() : 0,
-                CustomerCount = (RequestData is not null && RequestData.Any()) ? RequestData.Count() : 0,
+                RecordCount = RequestData.CountValue(),
+                CustomerCount = RequestData.CountValue(),
                 Title= reportTitle, 
 
                 SumCommercialUnit = RequestData.Sum(i => i.CommercialUnit),
@@ -39,10 +40,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 SumOtherUnit = RequestData.Sum(i => i.OtherUnit),
                 TotalUnit = RequestData.Sum(i => i.TotalUnit)
             };
-
-
             var result = new ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationDetailDataOutputDto>(reportTitle, RequestHeader, RequestData);
-
             return result;
         }
        
