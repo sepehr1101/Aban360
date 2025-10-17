@@ -41,7 +41,7 @@ namespace Aban360.InstallationPool.Application.Features.Definition.Handlers.Comm
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomeValidationException(message);
+                throw new CustomValidationException(message);
             }
 
             var sewageEquipmentBrokerZone = await _sewageEquipmentBrokerZoneQueryService.Get(updateDto.Id);

@@ -19,7 +19,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         public async Task<ReportOutput<UseStateReportHeaderOutputDto, UseStateReportDataOutputDto>> GetInfo(UseStateReportInputDto input)
         {
             string reportTitle = await GetReportTitle(input.UseStateId);
-            string query = GetDetailQuery();
+            string query = GetDetailQuery(input.IsWater);
 
             IEnumerable<UseStateReportDataOutputDto> useStateData = await _sqlReportConnection.QueryAsync<UseStateReportDataOutputDto>(query, input);
             UseStateReportHeaderOutputDto useStateHeader = new UseStateReportHeaderOutputDto()

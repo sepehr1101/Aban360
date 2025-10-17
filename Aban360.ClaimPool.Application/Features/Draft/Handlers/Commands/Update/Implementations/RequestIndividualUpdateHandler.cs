@@ -48,7 +48,7 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Update.
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomeValidationException(message);
+                throw new CustomValidationException(message);
             }
 
             var requestIndividual = await _requestIndividualQueryService.Get(updateDto.Id);

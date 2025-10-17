@@ -31,7 +31,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             if (!validatioResult.IsValid)
             {
                 var message = string.Join(", ", validatioResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomeValidationException(message);
+                throw new CustomValidationException(message);
             }
 
             ReportOutput<ReadingListHeaderOutputDto, ReadingListSummaryDataOutputDto> result = await _readingListSummaryQuery.GetInfo(input);

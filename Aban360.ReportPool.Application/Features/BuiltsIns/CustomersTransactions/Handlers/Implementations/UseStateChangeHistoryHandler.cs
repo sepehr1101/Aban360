@@ -32,7 +32,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             if (!validationResult.IsValid)
             {
                 var messeState = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomeValidationException(messeState);
+                throw new CustomValidationException(messeState);
             }
 
             ReportOutput<BranchTypeChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto> branchTypeChangeHistory = await _branchTypeChangeHistoryQueryService.GetInfo(input);

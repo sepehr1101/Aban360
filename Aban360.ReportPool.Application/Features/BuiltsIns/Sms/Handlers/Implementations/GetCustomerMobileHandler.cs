@@ -29,7 +29,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.Sms.Handlers.Impleme
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomeValidationException(message);
+                throw new CustomValidationException(message);
             }
 
             GetCustomerMobileOutputDto getCustomerMobile = await _getCustomerMobileQueryService.Get(input);

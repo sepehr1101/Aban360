@@ -37,7 +37,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomeValidationException(message);
+                throw new CustomValidationException(message);
             }
 
             LineItemType lineItemType = _mapper.Map<LineItemType>(createDto);
