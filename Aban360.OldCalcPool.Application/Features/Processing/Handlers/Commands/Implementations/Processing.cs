@@ -300,17 +300,20 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 sumJavaniDiscount += resultCalc.JavaniDiscount;
 
                 counter++;
-            }
-            //double abonmanFazelbAmount = CalculateAbonmanFazelab(duration, customerInfo, currentDateJalali, sumAbBaha);//todo:bonmanab
+            }            
             sumAbonmanAbBaha = CalculateAbonmanAb(customerInfo, meterInfo, currentDateJalali);
             double abonmanFazelbAmount = CalculateAbonmanFazelab(duration, customerInfo, currentDateJalali, sumAbonmanAbBaha);
+            sumAbonmanAbDiscount = CalculateAbonmanAbDiscount(sumAbonmanAbBaha, sumAbBahaDiscount);
+            sumAbonmanFazelabDiscount = CalculateAbonmanAbDiscount(abonmanFazelbAmount, sumFazelab);
+            double maliatDiscount = CalculateMaliatDiscount(sumAbBahaDiscount, sumFazelabDiscount, sumAbonmanAbDiscount,
+                sumAbonmanFazelabDiscount, sumBoodjeDiscount, sumHotSeasonDiscount);
             double AbBahaResult = sumAbBaha + sumHotSeasonAbBaha + sumAbonmanAbBaha;
             double sumBoodje = sumBoodjePart1 + sumBoodjePart2;
             double sumMaliatAmount = CalcMaliat(sumAbBaha, sumAbonmanAbBaha, sumHotSeasonAbBaha, sumFazelab, abonmanFazelbAmount, sumHotSeasonFazelab, sumBoodje);
 
             stopWatch.Stop();
             return new AbBahaCalculationDetails(AbBahaResult, sumAbBaha, sumFazelab, sumBoodjePart1, sumBoodjePart2, sumBoodje, sumHotSeasonAbBaha, sumHotSeasonFazelab, sumAbBahaDiscount, sumHotSeasonDiscount, sumFazelabDiscount, sumAbonmanAbBaha, sumAvarez, sumJavaniAmount, sumMaliatAmount, abonmanFazelbAmount,
-                        sumAbonmanAbDiscount, sumAbonmanFazelabDiscount,sumAvarezDiscount,sumJavaniDiscount,allNerkh, abAzad, zarib, stopWatch.ElapsedMilliseconds);
+                        sumAbonmanAbDiscount, sumAbonmanFazelabDiscount,sumAvarezDiscount,sumJavaniDiscount, maliatDiscount, allNerkh, abAzad, zarib, stopWatch.ElapsedMilliseconds);
         }
         private CustomerInfoOutputDto GetCustomerInfo(BaseOldTariffEngineImaginaryInputDto input)
         {
