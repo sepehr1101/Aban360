@@ -21,7 +21,9 @@ namespace Aban360.ReportPool.Application.Features.Transactions.Handler.Implement
             ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> result = await _branchEventSummaryQueryService.Get(input);
             if (CanSetRamained(result))
             {
-                result.ReportHeader.Remained = result.ReportData.Sum(data => data.DebtAmount) - result.ReportData.Sum(data => data.CreditAmount);
+                result.ReportHeader.Remained = result.ReportData.Sum(data => data.DebtAmount) 
+                                               - result.ReportData.Sum(data => data.CreditAmount)
+                                               - result.ReportData.Sum(data=> data.DiscountAmount);
             }
             return result;
         }
