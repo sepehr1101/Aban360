@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Aban360.ReportPool.Domain.Constants;
+using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Base
 {
@@ -9,9 +10,10 @@ namespace Aban360.ReportPool.Persistence.Base
         {
         }
 
-        internal string GetDetailsQuery(bool isWater, bool isRequest)
+        internal string GetDetailsQuery(bool isWater, InstallOrRequestOrInstallDepartmentEnum inputEnum)
         {
-            QueryParams queryParams = GetQueryParams(isWater, isRequest);
+            //QueryParams queryParams = GetQueryParams(isWater, inputEnum);
+            QueryParams queryParams = GetQueryParams(isWater, inputEnum);
             return $@";WITH CTE AS
                     (
 	                    SELECT 
@@ -49,7 +51,8 @@ namespace Aban360.ReportPool.Persistence.Base
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,
                     	c.{queryParams.RequestField} AS RequestDate,
-                    	c.{queryParams.RegisterField} AS InstallationDate
+                    	c.{queryParams.InstallField} AS InstallationDate,
+                        c.{queryParams.RegisterField} AS RegisterDate
                     FROM CTE c
                     JOIN [Db70].dbo.T51 t51
 	                    On t51.C0=c.ZoneId
@@ -59,9 +62,10 @@ namespace Aban360.ReportPool.Persistence.Base
                         c.RN=1 AND
 	                    c.DeletionStateId NOT IN(1,2)";
         }
-        internal string GetGroupedQuery(bool isWater, bool isRequest, string groupingField)
+        internal string GetGroupedQuery(bool isWater, InstallOrRequestOrInstallDepartmentEnum inputEnum, string groupingField)// bool isRequest
         {
-            QueryParams queryParams = GetQueryParams(isWater, isRequest);
+            //QueryParams queryParams = GetQueryParams(isWater, isRequest);
+            QueryParams queryParams = GetQueryParams(isWater, inputEnum);
             return $@";WITH CTE AS
                     (
 	                    SELECT 
@@ -111,28 +115,43 @@ namespace Aban360.ReportPool.Persistence.Base
                     GROUP BY
                         c.{groupingField}";
         }
-        private QueryParams GetQueryParams(bool isWater, bool isRequest)
+        private QueryParams GetQueryParams(bool isWater, InstallOrRequestOrInstallDepartmentEnum inputEnum)// bool isRequest,
         {
             string WaterRequestDate = nameof(WaterRequestDate),
                    SewageRequestDate = nameof(SewageRequestDate),
                    WaterRegisterDateJalali = nameof(WaterRegisterDateJalali),
-                   SewageRegisterDateJalali = nameof(SewageRegisterDateJalali);
+                   SewageRegisterDateJalali = nameof(SewageRegisterDateJalali),
+                   WaterInstallDate = nameof(WaterInstallDate),
+                   SewageInstallDate = nameof(SewageInstallDate);
 
             string requestField = isWater ? WaterRequestDate : SewageRequestDate;
             string registerField = isWater ? WaterRegisterDateJalali : SewageRegisterDateJalali;
-            string dataField = isRequest ? requestField : registerField;
-            return new QueryParams(dataField, requestField, registerField);//dataField
+
+            //string dataField = isRequest ? requestField : registerField;
+
+            string dataField="";
+            string installField = isWater ? WaterInstallDate : SewageInstallDate;
+            if (inputEnum == InstallOrRequestOrInstallDepartmentEnum.Install)
+                dataField = registerField;
+            if (inputEnum == InstallOrRequestOrInstallDepartmentEnum.Request)
+                dataField = requestField;
+            if (inputEnum == InstallOrRequestOrInstallDepartmentEnum.InstallDepartment)
+                dataField = installField;
+
+                return new QueryParams(dataField, requestField, registerField,installField);//dataField
         }
         private record QueryParams
         {
             public string DataField { get; set; } = default!;
             public string RequestField { get; set; } = default!;
             public string RegisterField { get; set; } = default!;
-            public QueryParams(string dataField, string requestField, string registerField)
+            public string InstallField { get; set; } = default!;
+            public QueryParams(string dataField, string requestField, string registerField,string installField)
             {
                 DataField = dataField;
                 RequestField = requestField;
                 RegisterField = registerField;
+                InstallField = installField;
             }
             public QueryParams()
             {

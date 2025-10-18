@@ -18,7 +18,6 @@
         public string BillId { get; set; }
         public string UseStateTitle { get; set; }
         public int ContractualCapacity { get; set; }
-        public string RequestDate { get; set; }
         public string PhoneNumber { get; set; }
         public string MobileNumber { get; set; }
         public string DeletionStateTitle { get; set; }
@@ -28,5 +27,10 @@
 
         public string RegisterDateJalali { get; set; }
         public string InstallationDateJalali { get; set; }
+
+
+        public string RequestDate { get; set; }
+        public string InstallationDate { get; set; }
+        public string RegisterDate { get; set; }
     }
 }

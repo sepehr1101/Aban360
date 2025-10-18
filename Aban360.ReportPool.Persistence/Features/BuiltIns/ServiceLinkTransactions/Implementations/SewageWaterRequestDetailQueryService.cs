@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
 using Aban360.ReportPool.Persistence.Base;
@@ -19,7 +20,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         public async Task<ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestDetailDataOutputDto>> Get(SewageWaterRequestInputDto input)
         {
-            string query = GetDetailsQuery(input.IsWater, true);
+            string query = GetDetailsQuery(input.IsWater, InstallOrRequestOrInstallDepartmentEnum.Request);
             string reportTitle = input.IsWater ? ReportLiterals.WaterRequestDetail : ReportLiterals.SewageRequestDetail;
 
             IEnumerable<SewageWaterRequestDetailDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<SewageWaterRequestDetailDataOutputDto>(query, input);

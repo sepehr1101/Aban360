@@ -11,20 +11,20 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {
-    internal sealed class SewageWaterInstallationSummaryByZoneIdQueryService : RequestOrInstallBase, ISewageWaterInstallationSummaryByZoneIdQueryService
+    internal sealed class SewageWaterInstallationDepartmentSummaryQueryService : RequestOrInstallBase, ISewageWaterInstallationDepartmentSummaryQueryService
     {
-        public SewageWaterInstallationSummaryByZoneIdQueryService(IConfiguration configuration)
+        public SewageWaterInstallationDepartmentSummaryQueryService(IConfiguration configuration)
             : base(configuration)
-        { 
+        {
         }
 
-        public async Task<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryByZoneIdDataOutputDto>> Get(SewageWaterInstallationInputDto input)
+        public async Task<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto>> Get(SewageWaterInstallationInputDto input)
         {
-            string ZoneTitle = nameof(ZoneTitle);
-            string query = GetGroupedQuery(input.IsWater, InstallOrRequestOrInstallDepartmentEnum.Install, ZoneTitle);
-            string reportTitle = input.IsWater ? ReportLiterals.WaterInstallationSummaryByZoneId : ReportLiterals.SewageInstallationSummaryByZoneId;
-    
-            IEnumerable<SewageWaterInstallationSummaryByZoneIdDataOutputDto> installationData = await _sqlReportConnection.QueryAsync<SewageWaterInstallationSummaryByZoneIdDataOutputDto>(query, input);
+            string UsageTitle = nameof(UsageTitle);
+            string reportTitle = input.IsWater ? ReportLiterals.WaterInstallationSummary : ReportLiterals.SewageInstallationSummary;
+            string query = GetGroupedQuery(input.IsWater, InstallOrRequestOrInstallDepartmentEnum.InstallDepartment, UsageTitle);
+
+            IEnumerable<SewageWaterInstallationSummaryDataOutputDto> installationData = await _sqlReportConnection.QueryAsync<SewageWaterInstallationSummaryDataOutputDto>(query, input);
             SewageWaterInstallationHeaderOutputDto installationHeader = new SewageWaterInstallationHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -32,7 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = installationData is not null && installationData.Any() ? installationData.Count() : 0,
+                RecordCount = (installationData is not null && installationData.Any()) ? installationData.Count() : 0,
                 Title = reportTitle,
 
                 CustomerCount = installationData.Sum(i => i.CustomerCount),
@@ -41,10 +41,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 SumOtherUnit = installationData.Sum(i => i.OtherUnit),
                 TotalUnit = installationData.Sum(i => i.TotalUnit),
             };
-            var result = new ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryByZoneIdDataOutputDto>
-                (reportTitle,
-                installationHeader,
-                installationData);
+            var result = new ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto>
+                (reportTitle, installationHeader, installationData);
 
             return result;
         }
