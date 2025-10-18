@@ -14,10 +14,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
         internal sealed class EmptyUnitByBillHandler : IEmptyUnitByBillHandler
         {
             private readonly IEmptyUnitByBillQueryService _emptyUnitByBillQueryService;
-            private readonly IValidator<EmptyUnitInputDto> _validator;
+            private readonly IValidator<EmptyUnitByBillInputDto> _validator;
             public EmptyUnitByBillHandler(
                 IEmptyUnitByBillQueryService emptyUnitByBillQueryService,
-                IValidator<EmptyUnitInputDto> validator)
+                IValidator<EmptyUnitByBillInputDto> validator)
             {
                 _emptyUnitByBillQueryService = emptyUnitByBillQueryService;
                 _emptyUnitByBillQueryService.NotNull(nameof(emptyUnitByBillQueryService));
@@ -26,7 +26,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
                 _validator.NotNull(nameof(validator));
             }
 
-            public async Task<ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>> Handle(EmptyUnitInputDto input, [Optional] CancellationToken cancellationToken)
+            public async Task<ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>> Handle(EmptyUnitByBillInputDto input, [Optional] CancellationToken cancellationToken)
             {
                 var validationResult = await _validator.ValidateAsync(input);
                 if (!validationResult.IsValid)

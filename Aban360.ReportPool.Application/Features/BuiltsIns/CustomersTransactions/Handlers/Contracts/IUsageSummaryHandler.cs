@@ -7,6 +7,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
 {
     public interface IUsageSummaryHandler
     {
-        Task<ReportOutput<UsageSummaryHeaderOutputDto, UsageSummaryDataOutputDto>> Handle(UsageSummaryInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<UsageSummaryHeaderOutputDto, UsageSummaryDataOutputDto>> Handle(UsageDetailInputDto input, CancellationToken cancellationToken);
     }
 }

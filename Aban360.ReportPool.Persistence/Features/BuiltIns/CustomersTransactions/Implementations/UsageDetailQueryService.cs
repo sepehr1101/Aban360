@@ -18,9 +18,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         }
         public async Task<ReportOutput<UsageDetailHeaderOutputDto, UsageDetailDataOutputDto>> GetInfo(UsageDetailInputDto input)
         {
-            string usageDetailQuery = GetUsageDetailQuery();
+            string query = GetQuery();
+            //string query = GetUsageDetailQuery();
 
-            IEnumerable<UsageDetailDataOutputDto> usageDetailData = await _sqlReportConnection.QueryAsync<UsageDetailDataOutputDto>(usageDetailQuery, input);
+            IEnumerable<UsageDetailDataOutputDto> usageDetailData = await _sqlReportConnection.QueryAsync<UsageDetailDataOutputDto>(query, input);
             UsageDetailHeaderOutputDto usageDetailHeader = new UsageDetailHeaderOutputDto()
             {                
                 FromReadingNumber = input.FromReadingNumber,
@@ -36,6 +37,52 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             return result;
         }
 
+        private string GetQuery()
+        {
+            return @";WITH CTE AS
+                    (
+                    	SELECT 
+                    	        RN= ROW_NUMBER() OVER (PARTITION by ZoneId , CustomerNumber ORDER BY RegisterDayJalali DESC, LocalId DESC),
+                    	        *
+                         From [CustomerWarehouse].dbo.Clients c
+                    	 Where				
+                    	        c.RegisterDayJalali BETWEEN @FromDateJalali AND @ToDateJalali AND
+                    	        c.ZoneId IN @ZoneIds AND
+                    	        c.UsageId IN @UsageSellIds AND
+                    	        (
+                    	        @fromReadingNumber IS NULL OR 
+                    	        @toReadingNumber IS NULL OR
+                    	        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
+                    	        ) AND
+                    	        c.CustomerNumber<>0 AND
+                    	        c.RegisterDayJalali <= @ToDateJalali
+                      )
+                      Select	
+                    		c.CustomerNumber,
+                    		c.ReadingNumber,
+                    		TRIM(c.FirstName) AS FirstName,
+                    		TRIM(c.SureName) As Surname,
+                    		c.UsageTitle,
+                    		c.WaterDiameterTitle MeterDiameterTitle,
+                    		c.RegisterDayJalali AS EventDateJalali,
+                    		0 AS DebtAmount,
+                    		TRIM(c.Address) AS Address,
+                    		c.ZoneTitle,
+                    		c.DeletionStateId,
+                    		c.DeletionStateTitle AS UseStateTitle,
+                    		c.DomesticCount DomesticUnit,
+                    		c.CommercialCount CommercialUnit,
+                    		c.OtherCount OtherUnit,
+                    		TRIM(c.BillId) BillId
+                     FROM CTE c
+                     JOIN [Db70].dbo.T51 t51
+                         On t51.C0=c.ZoneId
+                     JOIN [Db70].dbo.T46 t46
+                         On t51.C1=t46.C0
+                     WHERE	  
+                         c.RN=1 AND
+                         c.DeletionStateId NOT IN(1,2)";
+        }
         private string GetUsageDetailQuery()
         {
             return @"SELECT 
