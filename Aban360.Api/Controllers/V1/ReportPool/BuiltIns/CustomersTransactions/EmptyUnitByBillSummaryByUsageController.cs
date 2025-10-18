@@ -30,7 +30,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         [HttpPost, HttpGet]
         [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdSummaryDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRaw(EmptyUnitInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetRaw(EmptyUnitByBillInputDto inputDto, CancellationToken cancellationToken)
         {
             ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdSummaryDataOutputDto> emptyUnit = await _emptyUnitByBillUsageGrouping.Handle(inputDto, cancellationToken);
             return Ok(emptyUnit);
@@ -38,7 +38,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
-        public async Task<IActionResult> GetExcel(string connectionId, EmptyUnitInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetExcel(string connectionId, EmptyUnitByBillInputDto inputDto, CancellationToken cancellationToken)
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _emptyUnitByBillUsageGrouping.Handle, CurrentUser, ReportLiterals.EmptyUnitByBillSummary + ReportLiterals.ByUsage, connectionId);
             return Ok(inputDto);
@@ -49,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         [Route("sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         [AllowAnonymous]
-        public async Task<IActionResult> GetStiReport(EmptyUnitInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetStiReport(EmptyUnitByBillInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 21;
             ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdSummaryDataOutputDto> emptyUnit = await _emptyUnitByBillUsageGrouping.Handle(inputDto, cancellationToken);

@@ -46,7 +46,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 RecordCount = (contractualCapacityData is not null && contractualCapacityData.Any()) ? contractualCapacityData.Count() : 0,
                 CustomerCount = (contractualCapacityData is not null && contractualCapacityData.Any()) ? contractualCapacityData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                Title= ReportLiterals.ContractualCapacity
+                Title= ReportLiterals.ContractualCapacity,
+
+                SumCommercialUnit=contractualCapacityData?.Sum(t=>t.CommercialUnit)??0,
+                SumDomesticUnit=contractualCapacityData?.Sum(t=>t.DomesticUnit)??0,
+                SumOtherUnit=contractualCapacityData?.Sum(t=>t.OtherUnit)??0,
+                TotalUnit=contractualCapacityData?.Sum(t=>t.TotalUnit)??0,
             };
 
             var result = new ReportOutput<ContractualCapacityHeaderOutputDto, ContractualCapacityDataOutputDto>(ReportLiterals.ContractualCapacity, contractualCapacityHeader, contractualCapacityData);
@@ -73,6 +78,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         c.DomesticCount DomesticUnit,
             	        c.CommercialCount CommercialUnit,
             	        c.OtherCount OtherUnit,
+                        (c.DomesticCount + c.CommercialCount+c.OtherCount ) AS TotalUnit,
             	        TRIM(c.BillId) BillId,
             			c.ContractCapacity As ContractualCapacity
                     FROM [CustomerWarehouse].dbo.Clients c

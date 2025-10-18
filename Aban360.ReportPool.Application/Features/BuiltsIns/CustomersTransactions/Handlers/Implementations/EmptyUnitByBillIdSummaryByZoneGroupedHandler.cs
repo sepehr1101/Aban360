@@ -13,10 +13,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
     internal sealed class EmptyUnitByBillIdSummaryByZoneGroupedHandler : IEmptyUnitByBillIdSummaryByZoneGroupedHandler
     {
         private readonly IEmptyUnitByBillIdZoneGroupingQueryService _emptyUnitByBillIdZoneGroupingQueryService;
-        private readonly IValidator<EmptyUnitInputDto> _validator;
+        private readonly IValidator<EmptyUnitByBillInputDto> _validator;
         public EmptyUnitByBillIdSummaryByZoneGroupedHandler(
             IEmptyUnitByBillIdZoneGroupingQueryService emptyUnitByBillIdZoneGroupingQueryService,
-            IValidator<EmptyUnitInputDto> validator)
+            IValidator<EmptyUnitByBillInputDto> validator)
         {
             _emptyUnitByBillIdZoneGroupingQueryService = emptyUnitByBillIdZoneGroupingQueryService;
             _emptyUnitByBillIdZoneGroupingQueryService.NotNull(nameof(emptyUnitByBillIdZoneGroupingQueryService));
@@ -25,7 +25,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, ReportOutput<EmptyUnitByBillIdByZoneGroupedDataOutputDto, EmptyUnitByBillIdByZoneGroupedDataOutputDto>>> Handle(EmptyUnitInputDto input, [Optional] CancellationToken cancellationToken)
+        public async Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, ReportOutput<EmptyUnitByBillIdByZoneGroupedDataOutputDto, EmptyUnitByBillIdByZoneGroupedDataOutputDto>>> Handle(EmptyUnitByBillInputDto input, [Optional] CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input);
             if (!validationResult.IsValid)
@@ -92,7 +92,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             return finalData;
         }
 
-        public async Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdByZoneGroupedDataOutputDto>> HandleFlat(EmptyUnitInputDto input, [Optional] CancellationToken cancellationToken)
+        public async Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdByZoneGroupedDataOutputDto>> HandleFlat(EmptyUnitByBillInputDto input, [Optional] CancellationToken cancellationToken)
         {
             ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, ReportOutput<EmptyUnitByBillIdByZoneGroupedDataOutputDto, EmptyUnitByBillIdByZoneGroupedDataOutputDto>> result = await Handle(input, cancellationToken);
 

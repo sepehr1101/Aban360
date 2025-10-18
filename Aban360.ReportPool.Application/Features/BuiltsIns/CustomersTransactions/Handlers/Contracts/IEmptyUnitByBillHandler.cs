@@ -7,6 +7,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
 {
     public interface IEmptyUnitByBillHandler
     {
-        Task<ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>> Handle(EmptyUnitInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>> Handle(EmptyUnitByBillInputDto input, CancellationToken cancellationToken);
     }
 }

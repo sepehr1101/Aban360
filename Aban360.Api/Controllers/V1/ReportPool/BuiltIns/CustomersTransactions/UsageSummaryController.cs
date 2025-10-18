@@ -29,7 +29,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         [HttpPost, HttpGet]
         [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<UsageSummaryHeaderOutputDto, UsageSummaryDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRaw(UsageSummaryInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetRaw(UsageDetailInputDto inputDto, CancellationToken cancellationToken)
         {
             ReportOutput<UsageSummaryHeaderOutputDto, UsageSummaryDataOutputDto> usageSummary = await _UsageSummary.Handle(inputDto, cancellationToken);
             return Ok(usageSummary);
@@ -37,7 +37,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
-        public async Task<IActionResult> GetExcel(string connectionId, UsageSummaryInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetExcel(string connectionId, UsageDetailInputDto inputDto, CancellationToken cancellationToken)
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _UsageSummary.Handle, CurrentUser, ReportLiterals.UsageSummary, connectionId);
             return Ok(inputDto);
@@ -46,7 +46,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         [HttpPost, HttpGet]
         [Route("sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetStiReport(UsageSummaryInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetStiReport(UsageDetailInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 351;
             ReportOutput<UsageSummaryHeaderOutputDto, UsageSummaryDataOutputDto> result = await _UsageSummary.Handle(inputDto, cancellationToken);

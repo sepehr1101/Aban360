@@ -19,7 +19,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         {
         }
 
-        public async Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdSummaryDataOutputDto>> Get(EmptyUnitInputDto input)
+        public async Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdSummaryDataOutputDto>> Get(EmptyUnitByBillInputDto input)
         {
             string reportTitle = ReportLiterals.EmptyUnitByBillSummary + ReportLiterals.ByUsage;
             string query = GetGroupedQuery(input.ZoneIds.HasValue(), input.UsageSellIds.HasValue(), GroupingFields.UsageTitle);

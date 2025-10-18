@@ -7,6 +7,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 {
     public interface IUsageSummaryQueryService
     {
-        Task<ReportOutput<UsageSummaryHeaderOutputDto, UsageSummaryDataOutputDto>> GetInfo(UsageSummaryInputDto input);
+        Task<ReportOutput<UsageSummaryHeaderOutputDto, UsageSummaryDataOutputDto>> GetInfo(UsageDetailInputDto input);
     }
 }

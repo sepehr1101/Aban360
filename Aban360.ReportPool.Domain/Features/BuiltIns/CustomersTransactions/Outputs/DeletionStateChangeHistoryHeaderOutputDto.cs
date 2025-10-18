@@ -13,9 +13,9 @@
         public int CustomerCount { get; set; }
         public string? Title { get; set; }
 
-        public int SumDomesticCount { get; set; }
-        public int SumCommercialCount { get; set; }
-        public int SumOtherCount { get; set; }
+        public int SumDomesticUnit{ get; set; }
+        public int SumCommercialUnit { get; set; }
+        public int SumOtherUnit { get; set; }
         public int TotalUnit { get; set; }
         public int SumEmptyUnit { get; set; }
     }

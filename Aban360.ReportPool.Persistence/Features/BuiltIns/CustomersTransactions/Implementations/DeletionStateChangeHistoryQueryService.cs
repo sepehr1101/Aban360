@@ -49,9 +49,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 Title = ReportLiterals.DeletionStateChangeHistory,
 
-                SumDomesticCount = deletionStateChangeHistoryData is not null && deletionStateChangeHistoryData.Any() ? deletionStateChangeHistoryData.Sum(x => x.DomesticUnit) : 0,
-                SumCommercialCount = deletionStateChangeHistoryData is not null && deletionStateChangeHistoryData.Any() ? deletionStateChangeHistoryData.Sum(x => x.CommercialUnit) : 0,
-                SumOtherCount = deletionStateChangeHistoryData is not null && deletionStateChangeHistoryData.Any() ? deletionStateChangeHistoryData.Sum(x => x.OtherUnit) : 0,
+                SumDomesticUnit= deletionStateChangeHistoryData is not null && deletionStateChangeHistoryData.Any() ? deletionStateChangeHistoryData.Sum(x => x.DomesticUnit) : 0,
+                SumCommercialUnit = deletionStateChangeHistoryData is not null && deletionStateChangeHistoryData.Any() ? deletionStateChangeHistoryData.Sum(x => x.CommercialUnit) : 0,
+                SumOtherUnit = deletionStateChangeHistoryData is not null && deletionStateChangeHistoryData.Any() ? deletionStateChangeHistoryData.Sum(x => x.OtherUnit) : 0,
                 TotalUnit = deletionStateChangeHistoryData is not null && deletionStateChangeHistoryData.Any() ? deletionStateChangeHistoryData.Sum(x => x.TotalUnit) : 0,
             };
 

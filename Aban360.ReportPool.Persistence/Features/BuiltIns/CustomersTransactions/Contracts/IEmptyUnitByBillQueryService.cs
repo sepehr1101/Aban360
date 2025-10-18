@@ -7,6 +7,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 {
     public interface IEmptyUnitByBillQueryService
     {
-        Task<ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>> GetInfo(EmptyUnitInputDto input);
+        Task<ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>> GetInfo(EmptyUnitByBillInputDto input);
     }
 }

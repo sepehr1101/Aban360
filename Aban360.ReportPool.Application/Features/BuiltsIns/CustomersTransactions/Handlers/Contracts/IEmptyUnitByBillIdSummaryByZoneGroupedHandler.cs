@@ -7,7 +7,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
 {
     public interface IEmptyUnitByBillIdSummaryByZoneGroupedHandler
     {
-        Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, ReportOutput<EmptyUnitByBillIdByZoneGroupedDataOutputDto, EmptyUnitByBillIdByZoneGroupedDataOutputDto>>> Handle(EmptyUnitInputDto input, CancellationToken cancellationToken);
-        Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdByZoneGroupedDataOutputDto>> HandleFlat(EmptyUnitInputDto input, [Optional] CancellationToken cancellationToken);
+        Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, ReportOutput<EmptyUnitByBillIdByZoneGroupedDataOutputDto, EmptyUnitByBillIdByZoneGroupedDataOutputDto>>> Handle(EmptyUnitByBillInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdByZoneGroupedDataOutputDto>> HandleFlat(EmptyUnitByBillInputDto input, [Optional] CancellationToken cancellationToken);
     }
 }

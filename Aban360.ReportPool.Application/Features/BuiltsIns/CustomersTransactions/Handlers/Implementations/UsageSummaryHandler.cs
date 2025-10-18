@@ -13,10 +13,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
     internal sealed class UsageSummaryHandler : IUsageSummaryHandler
     {
         private readonly IUsageSummaryQueryService _usageSummaryQueryService;
-        private readonly IValidator<UsageSummaryInputDto> _validator;
+        private readonly IValidator<UsageDetailInputDto> _validator;
         public UsageSummaryHandler(
             IUsageSummaryQueryService usageSummaryQueryService,
-            IValidator<UsageSummaryInputDto> validator)
+            IValidator<UsageDetailInputDto> validator)
         {
             _usageSummaryQueryService = usageSummaryQueryService;
             _usageSummaryQueryService.NotNull(nameof(usageSummaryQueryService));
@@ -25,7 +25,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<UsageSummaryHeaderOutputDto, UsageSummaryDataOutputDto>> Handle(UsageSummaryInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<UsageSummaryHeaderOutputDto, UsageSummaryDataOutputDto>> Handle(UsageDetailInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
