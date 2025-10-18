@@ -28,6 +28,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         public double AvarezDiscount { get; set; }
         public double JavaniDiscount { get; set; }
         public double BoodjeDiscount { get; set; }
+        public double MaliatDiscount { get; set; }
         public double DiscountSum { get; set; }
 
 
@@ -65,6 +66,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             double abonmaneFazelabDiscount,
             double avarezDiscount,
             double javaniDiscount,
+            double maliatDiscount,
             IEnumerable<NerkhGetDto> _nerkh,
             IEnumerable<AbAzadFormulaDto> _abAzad,
             IEnumerable<ZaribGetDto> _zarib,
@@ -93,8 +95,9 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             AbonmanFazelabDiscount = abonmaneFazelabDiscount;
             AvarezDiscount = avarezDiscount;
             JavaniDiscount = javaniDiscount;
+            MaliatDiscount = maliatDiscount;
             DiscountSum = _abBahaDiscount + _hotSeasonDiscount + _fazelabDiscount +
-                          abonmanAbDiscount + abonmaneFazelabDiscount + avarezDiscount + javaniDiscount;
+                          abonmanAbDiscount + abonmaneFazelabDiscount + avarezDiscount + javaniDiscount+ maliatDiscount;
 
             AbBahaAmount -= AbBahaDiscount;
             FazelabAmount -= FazelabDiscount;
@@ -103,8 +106,8 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             AbonmanFazelabAmount-= AbonmanFazelabDiscount;
             AvarezAmount -= AvarezDiscount;
             JavaniAmount -= JavaniDiscount;
-            SumItems -= DiscountSum;
-            
+            MaliatAmount -= MaliatDiscount;
+            SumItems -= DiscountSum;            
 
             Nerkh = _nerkh;
             AbAzad = _abAzad;
