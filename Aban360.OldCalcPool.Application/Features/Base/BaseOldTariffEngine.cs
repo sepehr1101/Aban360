@@ -45,7 +45,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             double hotSeasonFazelabDiscount = CalculateFasleGarmDiscount(nerkh, fazelabDiscount, hotSeasonFazelab);// CalculateItemDiscount(customerInfo, nerkh, olgoo, (long)hotSeasonFazelab, false, multiplierAbBaha);
             double avarezDiscount = 0;//CalculateItemDiscount(customerInfo, nerkh, olgoo, (long)avarez);
             double javaniDiscount = 0;// CalculateItemDiscount(customerInfo, nerkh, olgoo, (long)javani, false, multiplierAbBaha);
-            double boodjeDiscount = CalculateBoodjeDiscount(boodje);
+            double boodjeDiscount = CalculateBoodjeDiscount(abBahaDiscount,boodje);
             return new BaseOldTariffEngineOutputDto(abBahaResult, fazelab, hotSeasonAbBaha.Item2, hotSeasonFazelab.Item2, boodje.Item1, boodje.Item2, abBahaDiscount, hotSeasonAbDiscount, fazelabDiscount, 0, avarez, javani,
                 0, 0, avarezDiscount, javaniDiscount, boodjeDiscount);
         }
@@ -1065,10 +1065,14 @@ namespace Aban360.CalculationPool.Application.Features.Base
             bool canParse = int.TryParse(villageId.Substring(0, 4), out int villageCode);
             return (canParse, villageCode);
         }
-        private double CalculateBoodjeDiscount((double, double) boodjeAmounts)
+        private double CalculateBoodjeDiscount(double abBahaDiscount ,(double, double) boodjeAmounts)
         {
+            if (abBahaDiscount <= 0)
+            {
+                return 0;
+            }
             //اگه مدرسه با شرایط تعریف شده باشه هم بالای ظرفیت هم زیر ظرفیت تخفیف داده میشه
-            return (boodjeAmounts.Item1);
+            return boodjeAmounts.Item1;
         }
 
         private double CalculateAvarez(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double monthlyConsumption)

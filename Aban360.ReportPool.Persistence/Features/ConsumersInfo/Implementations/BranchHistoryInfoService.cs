@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             string branchHistoryQuery = GetBranchHistorySummaryDtoWithClientDbQuery();
             string lastPaymentQuery = GetLastPaymentDateQuery();
             string waterReplacementDateQuery = GetWaterReplacementDateQuery();
-            string billsData = GetDataInBillsQuery();
+            string billsQuery = GetDataInBillsQuery();
             string latestHouseholdDateQuery = GetLatestHouseholdDateQuery();
             string latestTemporarilyDeletionQuery = GetLatestTemporarilyDeletionDateQuery();
             string latestReconnectionQuery = GetLatestReconnectionDateQuery();
@@ -28,7 +28,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             if (result == null)
                 throw new InvalidIdException();
 
-            BranchHistoryBillDataOutputDto historyBillData = await _sqlReportConnection.QueryFirstOrDefaultAsync<BranchHistoryBillDataOutputDto>(billsData, new { billId });
+            BranchHistoryBillDataOutputDto historyBillData = await _sqlReportConnection.QueryFirstOrDefaultAsync<BranchHistoryBillDataOutputDto>(billsQuery, new { billId });
             if (historyBillData == null)
                 throw new InvalidIdException();
 
@@ -47,43 +47,6 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 			result.WaterSubscriptionCancellationDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(latestCancellationQuery, new { billId });
 			
 			return result;
-        }
-        private string GetBranchHistorySummaryDtoQuery()
-        {
-            return @"select top 1
-						N'---' as 'WaterRequestDate',
-						w.InstallationDate as 'WaterInstallationDate',
-						w.ProductDate as 'WaterRegistrationDate',
-					
-						N'---' as 'WaterReplacementDate',
-						w.GuaranteeDate as 'GuaranteeDate',
-						N'---' as 'LastTemporaryDisconnectionDate',
-						
-						N'---' as 'LastReconnectionDate',
-						N'---' as 'WaterSubscriptionCancellationDate',
-						N'---' as 'LastMeterReadingDate',
-					
-					    c.ValidFrom as 'LastPaymentDate',
-						N'---' as 'LattestChangeMianInfoDate',
-						N'---' as 'LastWaterBillRefundDate',
-						
-						N'---' as 'LastSubscriptionRefundDate',
-						N'---' as 'HouseholdCountStartDate',
-						N'---' as 'HouseholdCountEndDate',
-						
-						s.ValidFrom as 'SewageRequestDate', 
-						s.InstallationDate as 'SewageInstallationDate',
-						s.InstallationDate as 'SewageRegistrationDate',
-						
-						N'---' as 'SiphonReplacementDate'
-					from ClaimPool.WaterMeter w
-						join ClaimPool.WaterMeterSiphon ws on w.Id=ws.WaterMeterId
-						join ClaimPool.Siphon s on ws.SiphonId=s.Id
-						join PaymentPool.Credit c on w.BillId=c.BillId
-						join ClaimPool.Estate e on w.EstateId=e.Id
-					where w.BillId=@billId
-					order by c.ValidFrom desc";
-
         }
 
         private string GetBranchHistorySummaryDtoWithClientDbQuery()
@@ -136,7 +99,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         private string GetDataInBillsQuery()//todo:check
         {
 				return @"Select Top 1
-							b.RegisterDay AS LastMeterReadingDate,
+							b.NextDay AS LastMeterReadingDate,
 							b.TypeId AS LastWaterBillRefundDate,--اخرین برگشتی اب بها
 							b.RegisterDay AS LastSubscriptionRefundDate,--حق انشعاب
 							Case	
