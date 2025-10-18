@@ -49,7 +49,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 	                    b.SumItems
                     From [CustomerWarehouse].dbo.Bills b
                     Where	
-                    	b.RegisterDay BETWEEN @FromDateJalali AND @tToDateJalali AND
+                    	b.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali AND
                     	b.TypeCode IN @TypeIds AND
                         b.ZoneId IN @zoneIds";
         }

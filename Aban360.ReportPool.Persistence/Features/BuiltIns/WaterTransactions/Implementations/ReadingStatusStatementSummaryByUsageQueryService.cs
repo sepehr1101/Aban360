@@ -22,15 +22,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             string reportTitle = ReportLiterals.ReadingStatusStatementSummary + ReportLiterals.ByUsage;
             string query = GetGroupedQuery(input.IsRegisterDateJalali,false);
             
-            var @params = new
-            {
-                fromReadingNumber = input.FromReadingNumber,
-                toReadingNumber = input.ToReadingNumber,
-                fromDate = input.FromDateJalali,
-                todate = input.ToDateJalali,
-                zoneIds = input.ZoneIds,
-            };
-            IEnumerable<ReadingStatusStatementSummaryDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingStatusStatementSummaryDataOutputDto>(query, @params);
+            IEnumerable<ReadingStatusStatementSummaryDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingStatusStatementSummaryDataOutputDto>(query, input);
             ReadingStatusStatementHeaderOutputDto header = new ReadingStatusStatementHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

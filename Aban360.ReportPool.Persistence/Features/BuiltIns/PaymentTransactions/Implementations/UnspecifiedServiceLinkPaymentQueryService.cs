@@ -62,12 +62,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 						b.Id IS NULL
 						AND
 						(
-							(@FromDateJalaliJalali IS NOT NULL AND
-								@ToDateJalaliJalali IS NOT NULL AND
-								p.RegisterDay BETWEEN @FromDateJalaliJalali AND @ToDateJalaliJalali)
+							(@FromDateJalali IS NOT NULL AND
+								@ToDateJalali IS NOT NULL AND
+								p.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali)
 							OR
-							(@FromDateJalaliJalali IS NULL AND
-								@ToDateJalaliJalali IS NULL)
+							(@FromDateJalali IS NULL AND
+								@ToDateJalali IS NULL)
 						)
 						AND
 						(

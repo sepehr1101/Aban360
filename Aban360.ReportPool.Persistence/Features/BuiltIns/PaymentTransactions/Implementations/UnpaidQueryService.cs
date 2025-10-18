@@ -21,17 +21,17 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
         public async Task<ReportOutput<UnpaidHeaderOutputDto, UnpaidDataOutputDto>> GetInfo(UnpaidInputDto input)
         {
             string unpaids = GetUnpaidQuery(input.ZoneIds.HasValue());
-            var @params = new
-            {
-                FromAmount = input.FromAmount ?? 0,
-                ToAmount = input.ToAmount ?? long.MaxValue,
-                FromDate = input.FromDateJalali,
-                ToDate = input.ToDateJalali,
-                FromReadingNumber = input.FromReadingNumber,
-                ToReadingNumber = input.ToReadingNumber,
-                ZoneIds = input.ZoneIds,
-            };
-            IEnumerable<UnpaidDataOutputDto> unpaidData = await _sqlReportConnection.QueryAsync<UnpaidDataOutputDto>(unpaids, @params);
+            //var @params = new
+            //{
+            //    FromAmount = input.FromAmount ?? 0,
+            //    ToAmount = input.ToAmount ?? long.MaxValue,
+            //    FromDate = input.FromDateJalali,
+            //    ToDate = input.ToDateJalali,
+            //    FromReadingNumber = input.FromReadingNumber,
+            //    ToReadingNumber = input.ToReadingNumber,
+            //    ZoneIds = input.ZoneIds,
+            //};
+            IEnumerable<UnpaidDataOutputDto> unpaidData = await _sqlReportConnection.QueryAsync<UnpaidDataOutputDto>(unpaids, input);
             UnpaidHeaderOutputDto unpaidHeader = new UnpaidHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
@@ -72,7 +72,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 					join [CustomerWarehouse].dbo.Clients c on b.BillId=c.BillId
                     WHERE 
                     p.id IS NULL
-                    AND (b.RegisterDay BETWEEN @FromDateJalaliJalali and @ToDateJalaliJalali)
+                    AND (b.RegisterDay BETWEEN @FromDateJalali and @ToDateJalali)
                     AND (@FromAmount is null or
                     	 @ToAmount is null or 
                     	 b.Payable BETWEEN @FromAmount and @ToAmount)

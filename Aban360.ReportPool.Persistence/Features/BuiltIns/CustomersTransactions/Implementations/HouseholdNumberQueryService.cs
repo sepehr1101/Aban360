@@ -24,8 +24,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 fromReadingNumber = input.FromReadingNumber,
                 toReadingNumber = input.ToReadingNumber,
 
-                fromDate = input.FromHouseholdDateJalali,
-                toDate = input.ToHouseholdDateJalali,
+                FromHouseholdDateJalali = input.FromHouseholdDateJalali,
+                ToHouseholdDateJalali = input.ToHouseholdDateJalali,
 
                 lastYearDate = lastYearJalali,
                 zoneIds = input.ZoneIds
