@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [HttpPost]
         [Route("info")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<BranchHistoryInfoDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> info( SearchInput searchInput,CancellationToken cancellationToken)
+        public async Task<IActionResult> info(SearchInput searchInput,CancellationToken cancellationToken)
         {
             BranchHistoryInfoDto summary = await _branchHistoryInfoHandle.Handle(searchInput.Input, cancellationToken);
             return Ok(summary);

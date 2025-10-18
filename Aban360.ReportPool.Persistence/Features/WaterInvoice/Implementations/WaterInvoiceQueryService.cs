@@ -14,7 +14,9 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
     internal class WaterInvoiceQueryService : AbstractBaseConnection, IWaterInvoiceQueryService
     {
         public WaterInvoiceQueryService(IConfiguration configuration)
-            : base(configuration) { }
+            : base(configuration) 
+        {
+        }
 
         public WaterInvoiceDto Get()
         {
@@ -77,64 +79,13 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
         private string GetPreviousConsumptionQuery()
         {
             return @"Select top 10
-                        b.Payable AS ConsumptionAmount,
+                        b.ConsumptionAverage AS ConsumptionAmount,
 			            b.RegisterDay AS ConsumptionDateJalali
 	                  From [CustomerWarehouse].dbo.Bills b
 	                  WHERE
-	                 	b.BillId=@billId 
+	                 	b.BillId=@billId AND
+                        b.CounterStateCode NOT IN (4,7,8)
 	                 order by PreviousDay desc";
-        }
-
-        private string GetItemValueQuery()
-        {
-            return @"SELECT
-                		v.Value AS Amount,
-                		o.Title AS Item
-                	FROM [CustomerWarehouse].dbo.Bills b
-                	CROSS APPLY (
-                		VALUES
-                			('Item1', b.Item1, 78),
-                			('Item2', b.Item2, 79),
-                			('Item3', b.Item3, 80),
-                			('Item4', b.Item4, 81),
-                			('Item5', b.Item5, 82),
-                			('Item6', b.Item6, 83),
-                			('Item7', b.Item7, 84),
-                			('Item8', b.Item8, 85),
-                			('Item9', b.Item9, 86),
-                			('Item10', b.Item10, 87),
-                			('Item11', b.Item11, 88),
-                			('Item12', b.Item12, 89),
-                			('Item13', b.Item13, 90),
-                			('Item14', b.Item14, 91),
-                			('Item15', b.Item15, 92),
-                			('Item16', b.Item16, 93),
-                			('Item17', b.Item17, 94),
-                			('ItemOff1', b.ItemOff1, 95),
-                			('ItemOff2', b.ItemOff2, 96),
-                			('ItemOff3', b.ItemOff3, 97),
-                			('ItemOff4', b.ItemOff4, 98),
-                			('ItemOff5', b.ItemOff5, 99),
-                			('ItemOff6', b.ItemOff6, 100),
-                			('ItemOff7', b.ItemOff7, 101),
-                			('ItemOff8', b.ItemOff8, 102),
-                			('ItemOff9', b.ItemOff9, 103),
-                			('ItemOff10', b.ItemOff10, 104),
-                			('ItemOff11', b.ItemOff11, 105),
-                			('ItemOff12', b.ItemOff12, 106),
-                			('ItemOff13', b.ItemOff13, 107),
-                			('ItemOff14', b.ItemOff14, 108),
-                			('ItemOff15', b.ItemOff15, 109),
-                			('ItemOff16', b.ItemOff16, 110),
-                			('ItemOff17', b.ItemOff17, 111)
-                			-- و ...
-                	) v(ItemName, Value, OfferingId)
-                	INNER JOIN [Aban360].CalculationPool.Offering o ON o.Id = v.OfferingId
-                	WHERE
-                		v.Value > 0 AND
-                		b.BillId=@billId AND
-                		b.NextNumber=0
-                	order by PreviousDay desc";
         }
         private string GetWaterInvoiceQuery()
         {
@@ -166,7 +117,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                     	b.PreviousDay AS PreviousMeterDateJalali,
                     	--Duration Calc in c#
 						b.NextNumber AS CurrentMeterNumber,
-						b.NextNumber AS PreviousMeterNumber,
+						b.PreviousNumber AS PreviousMeterNumber,
                     	b.Consumption AS ConsumptionM3,--todo
                     	(b.Consumption)*1000 AS ConsumptionLiter,
                     	b.ConsumptionAverage AS ConsumptionAverage,

@@ -45,7 +45,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             for (int i = 0; i < branchDateOrder.Count(); i++)
             {
                 BranchEventSummaryDataOutputDto row = branchDateOrder.ElementAt(i);
-                lastRemained = lastRemained + (row.DebtAmount - row.CreditAmount);
+                lastRemained = lastRemained + (row.DebtAmount - row.CreditAmount - row.DiscountAmount);
                 row.Remained = lastRemained;
             }
             ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> result = new(ReportLiterals.BranchEventSummary, branchHeader, branchDateOrder);
@@ -92,9 +92,9 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	r.UsageId AS UsageId,
                     	r.TrackNumber,
                     	r.RegisterDate collate SQL_Latin1_General_CP1_CI_AS AS RegisterDateJalali,
-                        IIF(r.Amount>0, r.Amount, 0) DebtAmount,
+                        IIF(r.Amount>0 AND TypeCode NOT IN (3,4,6) , r.Amount, 0) DebtAmount,
                         IIF(r.FinalAmount>0, r.FinalAmount,0) AS AmountAfterDiscount,  
-                    	IIF(TypeCode in (4,6) AND r.FinalAmount<0, -1*r.FinalAmount, IIF(r.finalAmount<0,r.FinalAmount,0)) AS CreditAmount,                    	                     
+                    	IIF(TypeCode in (3,4,6) AND r.FinalAmount<0, -1*r.FinalAmount, IIF(r.finalAmount<0,r.FinalAmount,0)) AS CreditAmount,                    	                     
                     	'' AS BankDateJalali,
                     	'' AS BankName,
                     	r.ItemTitle+'('+r.TypeId+')' AS Description	,
