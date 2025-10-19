@@ -9,5 +9,6 @@
         public float DistanceAverage { get; set; }
         public string DistanceAverageText { get; set; }
         public float? DistanceMedian { get; set; }
+        public int CustomerCount { get; set; }
     }
 }
