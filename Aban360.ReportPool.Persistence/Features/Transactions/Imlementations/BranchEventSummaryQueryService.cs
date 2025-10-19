@@ -97,7 +97,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	IIF(TypeCode in (3,4,6) AND r.FinalAmount<0, -1*r.FinalAmount, IIF(r.finalAmount<0,r.FinalAmount,0)) AS CreditAmount,                    	                     
                     	'' AS BankDateJalali,
                     	'' AS BankName,
-                    	r.ItemTitle+'('+r.TypeId+')' AS Description	,
+                    	r.ItemTitle AS Description	,
 						0 AS BankCode, 
                         r.OffAmount as DiscountAmount,
                         IIF(r.OffAmount<>0, r.OffTitle,'') as DiscountTitle
