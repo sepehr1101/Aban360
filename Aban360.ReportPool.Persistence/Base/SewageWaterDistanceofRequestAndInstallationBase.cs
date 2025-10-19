@@ -90,6 +90,7 @@ namespace Aban360.ReportPool.Persistence.Base
                         MAX(t46.C2) AS RegionTitle,
                     	c.{groupingField} AS ItemTitle,
                     	c.{groupingField} ,
+						Count(c.{groupingField}) as CustomerCount,
 						ROUND(AVG(CONVERT(float, DATEDIFF(DAY,
                             Case When LEN(c.{queryParams.DataField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{queryParams.DataField}) END,
                             Case When LEN(c.{queryParams.RegisterField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{queryParams.RegisterField}) END))), 2) AS DistanceAverage
@@ -107,8 +108,8 @@ namespace Aban360.ReportPool.Persistence.Base
 
         private QueryParams GetQueryParams(bool isWater, bool isInstallation)
         {
-            string WaterInstallDate = nameof(WaterInstallDate),
-                   SewageInstallDate = nameof(SewageInstallDate),
+            string PhysicalWaterInstallDateJalali = nameof(PhysicalWaterInstallDateJalali),
+                   PhysicalSewageInstallDateJalali = nameof(PhysicalSewageInstallDateJalali),
                    WaterRequestDate = nameof(WaterRequestDate),
                    SewageRequestDate = nameof(SewageRequestDate),
                    WaterRegisterDateJalali = nameof(WaterRegisterDateJalali),
@@ -116,7 +117,7 @@ namespace Aban360.ReportPool.Persistence.Base
 
             string requestField = isWater ? WaterRequestDate : SewageRequestDate;
             string registerField = isWater ? WaterRegisterDateJalali : SewageRegisterDateJalali;
-            string installField = isWater ? WaterInstallDate : SewageInstallDate;
+            string installField = isWater ? PhysicalWaterInstallDateJalali : PhysicalSewageInstallDateJalali;
             string dataField = isInstallation ? installField : requestField;
 
 

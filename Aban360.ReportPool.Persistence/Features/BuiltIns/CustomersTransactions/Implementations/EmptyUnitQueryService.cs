@@ -20,7 +20,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         public async Task<ReportOutput<EmptyUnitHeaderOutputDto, EmptyUnitDataOutputDto>> GetInfo(EmptyUnitInputDto input)
         {
             string query = GetQuery(input.ZoneIds.HasValue(), input.UsageSellIds.HasValue());
-            //string query = GetEmptyUnitQuery();
 
             IEnumerable<EmptyUnitDataOutputDto> emptyUnitData = await _sqlReportConnection.QueryAsync<EmptyUnitDataOutputDto>(query, input);
             EmptyUnitHeaderOutputDto emptyUnitHeader = new EmptyUnitHeaderOutputDto()
@@ -29,8 +28,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 ToEmptyUnit = input.ToEmptyUnit,
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
-                FromDateJalali = input.FromDateJalali,
-                ToDateJalali = input.ToDateJalali,
                 CustomerCount = (emptyUnitData is not null && emptyUnitData.Any()) ? emptyUnitData.Count() : 0,
                 RecordCount = (emptyUnitData is not null && emptyUnitData.Any()) ? emptyUnitData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
@@ -59,7 +56,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	    *
                     	From [CustomerWarehouse].dbo.Clients c
                     	Where				
-                    	    c.RegisterDayJalali BETWEEN @FromDateJalali AND @ToDateJalali 
                     	     {zoneQuery}
                              {usageQuery}
                     	   AND (
@@ -68,7 +64,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
                     	    ) AND
                     	    c.CustomerNumber<>0 AND
-                    	    c.RegisterDayJalali <= @ToDateJalali AND
                     		c.EmptyCount BETWEEN @FromEmptyUnit AND @ToEmptyUnit
                     )
                     Select	
