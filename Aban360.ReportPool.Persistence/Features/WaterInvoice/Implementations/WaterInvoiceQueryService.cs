@@ -47,10 +47,10 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 
             return result;
         }
-        public async Task<int> GetOlgo(string billId)
+        public async Task<int> GetOlgo(int zoneId)
         {
             string getOlgoQuery = GetOlgoQuery();
-            int olgo = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(getOlgoQuery, new { billId = billId });
+            int olgo = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(getOlgoQuery, new { zoneId = zoneId });
             return olgo;
         }
         private WaterInvoiceDto MappingWaterInvoice(WaterInvoiceDto waterInvoice, WaterInvoicePaymentOutputDto? paymentInfo, IEnumerable<PreviousConsumptionsDto> previousConsumptions, IEnumerable<LineItemsDto> lineitems, string headquarterTitle)
@@ -272,7 +272,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
         {
             return @"Select Olgo
                     from [OldCalc].dbo.Table1
-                    Where Town=@billId";
+                    Where Town=@zoneId";
         }
     }
 }
