@@ -4,6 +4,7 @@
     {
         public int CustomerNumber { get; set; }
         public string ReadingNumber { get; set; }
+        public string BlockCode { get; set; }
         public string FirstName { get; set; }
         public string Surname { get; set; }
         public string UsageTitle { get; set; }

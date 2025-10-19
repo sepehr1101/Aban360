@@ -44,6 +44,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	TRIM(d.SurName) AS Surname,
                     	TRIM(d.Address) AS Address,
                     	TRIM(d.Firstname) + ' ' + TRIM(d.Surname) AS FullName,
+                        d.BillId,
                     	d.ZoneId, 
                     	d.ZoneTitle,
                     	d.FinalAmount,
@@ -56,6 +57,5 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     Where
                     	d.ZoneId IN @zoneIds";
         }
-
     }
 }

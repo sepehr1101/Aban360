@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, SewageWaterInstallationInputDto inputDto, CancellationToken cancellationToken)
         {
-            string reportName = inputDto.IsWater ? ReportLiterals.WaterInstallationSummary : ReportLiterals.SewageInstallationSummary;
+            string reportName = (inputDto.IsWater ? ReportLiterals.WaterInstallationDepartmentSummary : ReportLiterals.SewageInstallationDepartmentSummary) + ReportLiterals.ByUsage;
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _sewageWaterInstallationDepartmentSummaryHandler.Handle, CurrentUser, reportName, connectionId);
             return Ok(inputDto);
         }

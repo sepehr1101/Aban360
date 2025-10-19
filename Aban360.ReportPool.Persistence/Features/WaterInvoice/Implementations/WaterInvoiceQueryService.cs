@@ -39,7 +39,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             IEnumerable<LineItemsDto> lineitems = await _sqlReportConnection.QueryAsync<LineItemsDto>(getItemValueQuery, new { billId = billId });
             IEnumerable<PreviousConsumptionsDto> previousConsumptions = await _sqlReportConnection.QueryAsync<PreviousConsumptionsDto>(getPreviousConsumptionQuery, new { billId = billId });
             string headquarterTitle = await _sqlConnection.QueryFirstAsync<string>(getHeadquarterQuery, new { zoneId = waterInvoice.ZoneId });
-            WaterInvoicePaymentOutputDto? paymentInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterInvoicePaymentOutputDto>(getPaymentQuery, new { billId = billId, payId = waterInvoice.PayId == null ? "0" : waterInvoice.PayId });
+            WaterInvoicePaymentOutputDto? paymentInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterInvoicePaymentOutputDto>(getPaymentQuery, new { billId = billId, payId = waterInvoice.PayId == null ? "0" : waterInvoice.PayId, billRegisterDate=waterInvoice.RegisterDateJalali });
 
             waterInvoice = MappingWaterInvoice(waterInvoice, paymentInfo, previousConsumptions, lineitems, headquarterTitle);
 
@@ -106,7 +106,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                     	c.CommercialCount+c.OtherCount AS NoneDomestic,
                     	c.EmptyCount AS EmptyUnit,
                     	c.UsageId AS UsageId,
-                    	c.MeterSerialBody AS BodySerial,
+                    	TRIM(c.MeterSerialBody)  AS BodySerial,
                     	c.WaterDiameterId AS MeterDiameterId,
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
                     	b.CounterStateTitle AS CounterTitle,
@@ -128,6 +128,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						b.PreDebt AS DebtorOrCreditorAmount,
                     	b.Payable AS PayableAmount,
                     	b.Deadline AS PaymentDeadline,
+                        b.RegisterDay AS RegisterDateJalali,
                     	--consumptionState in c#
                     	--previousConsumption in secod query
                     	TRIM(b.BillId) AS BillId,
@@ -260,8 +261,9 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                     	p.RegisterDay AS PaymentDateJalali
                     From [CustomerWarehouse].dbo.Payments p
                     Where 
-                    	p.BillId='116416' AND
-                    	p.PayId=''
+                    	p.BillId=@billId AND
+                    	p.PayId=@payId AND
+                        p.PayDateJalali >=@billRegisterDate
                     Order By
                     	p.RegisterDay Desc";
         }

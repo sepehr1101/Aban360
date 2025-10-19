@@ -13,6 +13,7 @@
         public string Mobile { get; set; }
         public int ContractualCapacity { get; set; }
         public string TrackNumber { get; set; }
+        public string BillId { get; set; }
         public string RequestDateJalali { get; set; }
     }
 }

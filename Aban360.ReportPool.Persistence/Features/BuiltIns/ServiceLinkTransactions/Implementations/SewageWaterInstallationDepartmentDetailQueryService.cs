@@ -20,7 +20,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         public async Task<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationDetailDataOutputDto>> Get(SewageWaterInstallationInputDto input)
         {
-            string reportTitle = input.IsWater ? ReportLiterals.WaterInstallationDetail : ReportLiterals.SewageInstallationDetail;
+            string reportTitle = input.IsWater ? ReportLiterals.WaterInstallationDepartmentSummary : ReportLiterals.SewageInstallationDepartmentSummary;
             string query = GetDetailsQuery(input.IsWater, InstallOrRequestOrInstallDepartmentEnum.InstallDepartment);
 
             IEnumerable<SewageWaterInstallationDetailDataOutputDto> installationData = await _sqlReportConnection.QueryAsync<SewageWaterInstallationDetailDataOutputDto>(query, input);
