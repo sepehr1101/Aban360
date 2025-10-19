@@ -35,6 +35,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     Select	
 	                    c.CustomerNumber, 
                     	c.ReadingNumber,
+                        c.BlockCode,
                     	TRIM(c.FirstName) AS FirstName,
                     	TRIM(c.SureName) AS Surname,
                     	TRIM(c.Address) AS Address,

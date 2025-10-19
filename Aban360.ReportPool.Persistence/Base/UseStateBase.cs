@@ -29,7 +29,7 @@ namespace Aban360.ReportPool.Persistence.Base
                         c.DeletionStateTitle AS DeletionStateTitle,
                         c.DomesticCount DomesticUnit,
 	                    c.CommercialCount CommercialUnit,
-                        (c.CommercialCount+c.DomesticCount+c.DomesticCount) as TotalUnit,
+                        (c.CommercialCount+c.DomesticCount+c.OtherCount) as TotalUnit,
 	                    c.OtherCount OtherUnit,
                     	c.ContractCapacity AS ContractualCapacity,
 	                    TRIM(c.BillId) BillId,

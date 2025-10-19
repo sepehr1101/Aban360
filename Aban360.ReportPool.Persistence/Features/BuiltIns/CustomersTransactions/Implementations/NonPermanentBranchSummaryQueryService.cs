@@ -25,6 +25,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             {
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
+                FromDateJalali = input.FromDateJalali,
+                ToDateJalali = input.ToDateJalali,
                 RecordCount = (nonPremanentBranchData is not null && nonPremanentBranchData.Any()) ? nonPremanentBranchData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 Title = ReportLiterals.NonPermanentBranchSummary + ReportLiterals.ByUsageAndZoneAndDiameter,
