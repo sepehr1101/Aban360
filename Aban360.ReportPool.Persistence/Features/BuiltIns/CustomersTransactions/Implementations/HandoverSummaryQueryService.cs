@@ -21,9 +21,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
         public async Task<ReportOutput<HandoverHeaderOutputDto, HandoverSummaryDataOutputDto>> Get(HandoverInputDto input)
         {
-            string handoverSummaryQuery = GetHandoverSummaryQuery();
+            string query = GetQuery();
+            //string query = GetHandoverSummaryQuery();
 
-            IEnumerable<HandoverSummaryDataOutputDto> data = await _sqlReportConnection.QueryAsync<HandoverSummaryDataOutputDto>(handoverSummaryQuery, input);
+            IEnumerable<HandoverSummaryDataOutputDto> data = await _sqlReportConnection.QueryAsync<HandoverSummaryDataOutputDto>(query, input);
             if (!data.Any())
             {
                 throw new BaseException(ExceptionLiterals.NotFoundAnyData);
@@ -35,13 +36,43 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 RecordCount = (data is not null && data.Any()) ? data.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 CustomerCount = data?.Sum(r => r.Count) ?? 0,
-                Title= ReportLiterals.HandoverSummary,
+                Title = ReportLiterals.HandoverSummary,
             };
 
             var result = new ReportOutput<HandoverHeaderOutputDto, HandoverSummaryDataOutputDto>(ReportLiterals.HandoverSummary, header, data);
             return result;
         }
 
+        private string GetQuery()
+        {
+            return @";WITH CTE AS
+                    (
+                    	SELECT 
+                    	    RN= ROW_NUMBER() OVER (PARTITION by ZoneId , CustomerNumber ORDER BY RegisterDayJalali DESC, LocalId DESC),
+                    	    BranchType,
+                    		DeletionStateId
+                    	From [CustomerWarehouse].dbo.Clients c
+                    	Where				
+                    	    c.RegisterDayJalali BETWEEN @FromDateJalali AND @ToDateJalali AND
+                    	    c.ZoneId IN @zoneIds AND
+                    	    c.UsageStateId IN @branchTypeIds AND
+                    	    (
+                    	        @fromReadingNumber IS NULL OR 
+                    	        @toReadingNumber IS NULL OR
+                    	        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
+                    	    ) AND
+                    	    c.CustomerNumber<>0 AND
+                    	    c.RegisterDayJalali <= @ToDateJalali 
+                    )
+                    Select	
+                    	c.BranchType AS UseStateTitle,
+                    	Count(c.BranchType) AS Count
+                     FROM CTE c
+                     WHERE	  
+                         c.RN=1 AND
+                         c.DeletionStateId NOT IN(1,2)
+                    GROUP BY c.BranchType";
+        }
         private string GetHandoverSummaryQuery()
         {
             return @"Select

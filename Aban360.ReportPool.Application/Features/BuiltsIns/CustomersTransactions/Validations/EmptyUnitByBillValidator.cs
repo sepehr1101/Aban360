@@ -5,15 +5,15 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Validations
 {
-    public class UsageSummaryValidator:BaseValidator<UsageDetailInputDto>
+    public class EmptyUnitByBillValidator : BaseValidator<EmptyUnitByBillInputDto>
     {
-        public UsageSummaryValidator()
+        public EmptyUnitByBillValidator()
         {
-            RuleFor(customer => customer.UsageSellIds)
-           .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-           .NotNull().WithMessage(ExceptionLiterals.NotNull);
+            RuleFor(customer => customer.FromEmptyUnit)
+         .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+         .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(customer => customer.ZoneIds)
+            RuleFor(customer => customer.ToEmptyUnit)
            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
            .NotNull().WithMessage(ExceptionLiterals.NotNull);
         }

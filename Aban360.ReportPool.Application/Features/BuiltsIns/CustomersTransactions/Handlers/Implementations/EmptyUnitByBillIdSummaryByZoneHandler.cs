@@ -13,10 +13,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
     internal sealed class EmptyUnitByBillIdSummaryByZoneHandler : IEmptyUnitByBillIdSummaryByZoneHandler
     {
         private readonly IEmptyUnitByBillIdZoneGroupingQueryService _emptyUnitByBillIdZoneGroupingQueryService;
-        private readonly IValidator<EmptyUnitInputDto> _validator;
+        private readonly IValidator<EmptyUnitByBillInputDto> _validator;
         public EmptyUnitByBillIdSummaryByZoneHandler(
             IEmptyUnitByBillIdZoneGroupingQueryService emptyUnitByBillIdZoneGroupingQueryService,
-            IValidator<EmptyUnitInputDto> validator)
+            IValidator<EmptyUnitByBillInputDto> validator)
         {
             _emptyUnitByBillIdZoneGroupingQueryService = emptyUnitByBillIdZoneGroupingQueryService;
             _emptyUnitByBillIdZoneGroupingQueryService.NotNull(nameof(emptyUnitByBillIdZoneGroupingQueryService));
@@ -25,7 +25,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdSummaryDataOutputDto>> Handle(EmptyUnitInputDto input, [Optional] CancellationToken cancellationToken)
+        public async Task<ReportOutput<EmptyUnitByBillIdSummaryHeaderOutputDto, EmptyUnitByBillIdSummaryDataOutputDto>> Handle(EmptyUnitByBillInputDto input, [Optional] CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input);
             if (!validationResult.IsValid)
