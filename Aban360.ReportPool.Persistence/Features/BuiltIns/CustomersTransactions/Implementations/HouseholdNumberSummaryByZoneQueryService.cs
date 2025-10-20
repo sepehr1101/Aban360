@@ -63,9 +63,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 		                    RN= ROW_NUMBER() OVER (PARTITION by ZoneId , CustomerNumber ORDER BY RegisterDayJalali DESC, LocalId DESC),
 		                    *
                         From [CustomerWarehouse].dbo.Clients c
-	                    Where				
-							c.FamilyCount>0 AND
-		                    (TRIM(c.HouseholdDateJalali)='' OR c.HouseholdDateJalali BETWEEN @FromHouseholdDateJalali AND @ToHouseholdDateJalali) AND
+	                    Where
 		                    c.CustomerNumber<>0 AND
 		                    c.RegisterDayJalali <= @ToHouseholdDateJalali  AND
 							(	@fromReadingNumber IS NULL OR
@@ -96,7 +94,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 						On t51.C1=t46.C0
                     WHERE	  
                         c.RN=1 AND
-	                    c.DeletionStateId NOT IN(1,2)
+	                    c.DeletionStateId NOT IN(1,2) AND
+						c.FamilyCount>0 AND
+		                (TRIM(c.HouseholdDateJalali)='' OR c.HouseholdDateJalali BETWEEN @FromHouseholdDateJalali AND @ToHouseholdDateJalali) 
 					GROUP BY c.ZoneTitle";
         }
     }
