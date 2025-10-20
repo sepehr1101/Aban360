@@ -1,7 +1,5 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
-using Aban360.Common.Exceptions;
-using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
@@ -48,15 +46,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	From [CustomerWarehouse].dbo.Clients c
                     	Where				
                     	    c.RegisterDayJalali BETWEEN @FromDateJalali AND @ToDateJalali AND
-                    	    c.ZoneId IN @zoneIds AND
-                    	    c.UsageStateId IN @branchTypeIds AND
+                    	    c.ZoneId IN @zoneIds AND                    	    
                     	    (
                     	        @fromReadingNumber IS NULL OR 
                     	        @toReadingNumber IS NULL OR
                     	        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
                     	    ) AND
-                    	    c.CustomerNumber<>0 AND
-                    	    c.RegisterDayJalali <= @ToDateJalali 
+                    	    c.CustomerNumber<>0 
                     )
                     Select	
                     	c.CustomerNumber,
@@ -79,37 +75,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                      FROM CTE c
                      WHERE	  
                          c.RN=1 AND
-                         c.DeletionStateId NOT IN(1,2)";
-        }
-
-        private string GetHandoverDetailQuery()
-        {
-            return @"Select
-                    	c.CustomerNumber,
-                    	c.ReadingNumber,
-                    	c.FirstName,
-                    	c.SureName AS Surname,
-                    	c.FirstName +' '+ c.SureName AS FullName,
-                    	c.UsageTitle2 AS UsageTitle,
-                    	c.WaterDiameterTitle AS MeterDiameterTitle,
-                    	c.Address ,
-                    	c.ZoneTitle,
-                    	c.DomesticCount AS DomesticUnit,
-                    	c.CommercialCount AS CommercialUnit,
-                    	c.OtherCount AS OtherUnit,
-                    	c.BillId,
-                    	c.ContractCapacity AS ContractualCapacity,
-                    	c.WaterRequestDate AS MeterRequestDate,
-                    	c.WaterInstallDate AS MeterInstallationDate,
-                    	c.BranchType AS UseStateTitle
-                    From [CustomerWarehouse].dbo.Clients c
-                    Where 
-                    	c.ToDayJalali IS NULL AND
-                    	(@fromReadingNumber IS NULL OR
-                    	 @toReadingNumber IS NULL OR
-                    	 c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-                    	 c.ZoneId IN @zoneIds AND
-						 c.UsageStateId IN @branchTypeIds";
+                         c.DeletionStateId NOT IN(1,2) AND
+                         c.UsageStateId IN @branchTypeIds";
         }
     }
 }

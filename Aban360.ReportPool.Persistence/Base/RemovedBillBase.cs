@@ -33,16 +33,19 @@ namespace Aban360.ReportPool.Persistence.Base
                 Join [CustomerWarehouse].dbo.Clients c
                 	on c.CustomerNumber=rb.CustomerNumber AND c.ZoneId=rb.ZoneId
                 Where
-                	(@FromDateJalali IS NULL OR
-                	@ToDateJalali IS NULL OR
-                	rb.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali) AND
-                	(@fromAmount IS NULL OR
-                	@toAmount IS NULL OR
-                	rb.SumItems BETWEEN @fromAmount AND @toAmount) AND
-                    (@fromReadingNumber IS NULL OR
-                    @toReadingNumber IS NULL OR
-                    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-					c.ToDayJalali IS NULL
+                	( @FromDateJalali IS NULL OR
+                	  @ToDateJalali IS NULL OR
+                	  rb.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali
+                    ) AND
+                	( @fromAmount IS NULL OR
+                	  @toAmount IS NULL OR
+                	  rb.SumItems BETWEEN @fromAmount AND @toAmount
+                    ) AND
+                    ( @fromReadingNumber IS NULL OR
+                      @toReadingNumber IS NULL OR
+                      c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
+                    ) AND
+					  c.ToDayJalali IS NULL
                     {zoneQuery}";
         }
 

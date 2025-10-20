@@ -1,7 +1,5 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
-using Aban360.Common.Exceptions;
-using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
@@ -49,15 +47,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	From [CustomerWarehouse].dbo.Clients c
                     	Where				
                     	    c.RegisterDayJalali BETWEEN @FromDateJalali AND @ToDateJalali AND
-                    	    c.ZoneId IN @zoneIds AND
-                    	    c.UsageStateId IN @branchTypeIds AND
+                    	    c.ZoneId IN @zoneIds AND                    	   
                     	    (
                     	        @fromReadingNumber IS NULL OR 
                     	        @toReadingNumber IS NULL OR
                     	        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
                     	    ) AND
-                    	    c.CustomerNumber<>0 AND
-                    	    c.RegisterDayJalali <= @ToDateJalali 
+                    	    c.CustomerNumber<>0
                     )
                     Select	
                     	c.BranchType AS UseStateTitle,
@@ -65,24 +61,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                      FROM CTE c
                      WHERE	  
                          c.RN=1 AND
-                         c.DeletionStateId NOT IN(1,2)
+                         c.DeletionStateId NOT IN(1,2) AND
+                         c.UsageStateId IN @branchTypeIds
                     GROUP BY c.BranchType";
-        }
-        private string GetHandoverSummaryQuery()
-        {
-            return @"Select
-                    	c.BranchType AS UseStateTitle,
-                    	Count(c.BranchType) AS Count
-                    From [CustomerWarehouse].dbo.Clients c
-                    Where 
-                    	c.ToDayJalali IS NULL AND
-                    	(@fromReadingNumber IS NULL OR
-                    	 @toReadingNumber IS NULL OR
-                    	 c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-                    	 c.ZoneId IN @zoneIds  AND
-						 c.UsageStateId IN @branchTypeIds
-                    Group By 
-                    	c.BranchType";
         }
     }
 }
