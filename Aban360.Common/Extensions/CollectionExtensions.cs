@@ -18,5 +18,8 @@ namespace Aban360.Common.Extensions
 
         public static int MaxValue(this IEnumerable<int> items)
             => items.HasValue() ? items.Max() : 0;
+
+        public static int MinValue(this IEnumerable<int> items)
+            => items.HasValue() ? items.Min() : 0;
     }
 }

@@ -122,8 +122,8 @@ namespace Aban360.ReportPool.Persistence.Base
                    SewageRequestDate = nameof(SewageRequestDate),
                    WaterRegisterDateJalali = nameof(WaterRegisterDateJalali),
                    SewageRegisterDateJalali = nameof(SewageRegisterDateJalali),
-                   WaterInstallDate = nameof(WaterInstallDate),
-                   SewageInstallDate = nameof(SewageInstallDate);
+                   PhysicalWaterInstallDateJalali = nameof(PhysicalWaterInstallDateJalali),
+                   PhysicalSewageInstallDateJalali = nameof(PhysicalSewageInstallDateJalali);
 
             string requestField = isWater ? WaterRequestDate : SewageRequestDate;
             string registerField = isWater ? WaterRegisterDateJalali : SewageRegisterDateJalali;
@@ -131,7 +131,7 @@ namespace Aban360.ReportPool.Persistence.Base
             //string dataField = isRequest ? requestField : registerField;
 
             string dataField="";
-            string installField = isWater ? WaterInstallDate : SewageInstallDate;
+            string installField = isWater ? PhysicalWaterInstallDateJalali : PhysicalSewageInstallDateJalali;
             if (inputEnum == InstallOrRequestOrInstallDepartmentEnum.Install)
                 dataField = registerField;
             if (inputEnum == InstallOrRequestOrInstallDepartmentEnum.Request)

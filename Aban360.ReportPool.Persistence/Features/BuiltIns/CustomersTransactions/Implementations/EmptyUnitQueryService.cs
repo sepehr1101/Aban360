@@ -55,16 +55,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	    RN= ROW_NUMBER() OVER (PARTITION by ZoneId , CustomerNumber ORDER BY RegisterDayJalali DESC, LocalId DESC),
                     	    *
                     	From [CustomerWarehouse].dbo.Clients c
-                    	Where				
-                    	     {zoneQuery}
-                             {usageQuery}
-                    	   AND (
+                    	Where
+                    	    (
                     	        @fromReadingNumber IS NULL OR 
                     	        @toReadingNumber IS NULL OR
                     	        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
                     	    ) AND
                     	    c.CustomerNumber<>0 AND
-                    		c.EmptyCount BETWEEN @FromEmptyUnit AND @ToEmptyUnit
+                    		c.EmptyCount BETWEEN @FromEmptyUnit AND @ToEmptyUnit 
+                            {zoneQuery}
+                            {usageQuery}
                     )
                     Select	
                     	t46.C2 AS RegionTitle,

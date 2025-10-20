@@ -6,7 +6,7 @@ namespace Aban360.ReportPool.Persistence.Base
     {
         public SewageWaterDistanceofRequestAndInstallationBase(IConfiguration configuration)
             : base(configuration)
-        { 
+        {
         }
 
         internal string GetDetailsQuery(bool isWater, bool isInstallation)
@@ -20,8 +20,8 @@ namespace Aban360.ReportPool.Persistence.Base
                         From [CustomerWarehouse].dbo.Clients c
 	                    Where			
                             c.{queryParams.DataField} BETWEEN @FromDateJalali AND @ToDateJalali AND
-                            c.{queryParams.RegisterField} IS NOT NULL AND
-                            TRIM(c.{queryParams.RegisterField}) != '' AND		                    
+                            c.{queryParams.PhysicalInstallField} IS NOT NULL AND
+                            TRIM(c.{queryParams.PhysicalInstallField}) != '' AND		                    
 		                    c.ZoneId IN @zoneIds AND
 		                    c.UsageId IN @usageIds AND
 		                    (
@@ -51,7 +51,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,
                     	c.{queryParams.DataField} AS RequestDate,
-						c.{queryParams.RegisterField} AS InstallationDate
+						c.{queryParams.PhysicalInstallField} AS InstallationDate
                     FROM CTE c
                     JOIN [Db70].dbo.T51 t51
 	                    On t51.C0=c.ZoneId
@@ -74,8 +74,8 @@ namespace Aban360.ReportPool.Persistence.Base
                         From [CustomerWarehouse].dbo.Clients c
 	                    Where			
                             c.{queryParams.DataField} BETWEEN @FromDateJalali AND @ToDateJalali AND
-                            c.{queryParams.RegisterField} IS NOT NULL AND
-                            TRIM(c.{queryParams.RegisterField}) != '' AND		                    
+                            c.{queryParams.PhysicalInstallField} IS NOT NULL AND
+                            TRIM(c.{queryParams.PhysicalInstallField}) != '' AND		                    
 		                    c.ZoneId IN @zoneIds AND
 		                    c.UsageId IN @usageIds AND
 		                    (
@@ -93,7 +93,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						Count(c.{groupingField}) as CustomerCount,
 						ROUND(AVG(CONVERT(float, DATEDIFF(DAY,
                             Case When LEN(c.{queryParams.DataField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{queryParams.DataField}) END,
-                            Case When LEN(c.{queryParams.RegisterField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{queryParams.RegisterField}) END))), 2) AS DistanceAverage
+                            Case When LEN(c.{queryParams.PhysicalInstallField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{queryParams.PhysicalInstallField}) END))), 2) AS DistanceAverage
                     FROM CTE c
                     JOIN [Db70].dbo.T51 t51
 	                    On t51.C0=c.ZoneId
@@ -103,11 +103,23 @@ namespace Aban360.ReportPool.Persistence.Base
                         c.RN=1 AND
 	                    c.DeletionStateId NOT IN(1,2)
                     GROUP BY
-                        c.{groupingField}";                       
+                        c.{groupingField}";
         }
 
         private QueryParams GetQueryParams(bool isWater, bool isInstallation)
         {
+            //string PhysicalWaterInstallDateJalali = nameof(PhysicalWaterInstallDateJalali),
+            //       PhysicalSewageInstallDateJalali = nameof(PhysicalSewageInstallDateJalali),
+            //       WaterRequestDate = nameof(WaterRequestDate),
+            //       SewageRequestDate = nameof(SewageRequestDate),
+            //       WaterRegisterDateJalali = nameof(WaterRegisterDateJalali),
+            //       SewageRegisterDateJalali = nameof(SewageRegisterDateJalali);
+
+            //string requestField = isWater ? WaterRequestDate : SewageRequestDate;
+            //string registerField = isWater ? WaterRegisterDateJalali : SewageRegisterDateJalali;
+            //string installField = isWater ? PhysicalWaterInstallDateJalali : PhysicalSewageInstallDateJalali;
+            //string dataField = isInstallation ? installField : requestField;
+
             string PhysicalWaterInstallDateJalali = nameof(PhysicalWaterInstallDateJalali),
                    PhysicalSewageInstallDateJalali = nameof(PhysicalSewageInstallDateJalali),
                    WaterRequestDate = nameof(WaterRequestDate),
@@ -117,25 +129,38 @@ namespace Aban360.ReportPool.Persistence.Base
 
             string requestField = isWater ? WaterRequestDate : SewageRequestDate;
             string registerField = isWater ? WaterRegisterDateJalali : SewageRegisterDateJalali;
-            string installField = isWater ? PhysicalWaterInstallDateJalali : PhysicalSewageInstallDateJalali;
-            string dataField = isInstallation ? installField : requestField;
+            string physicalIntallField= isWater ? PhysicalWaterInstallDateJalali : PhysicalSewageInstallDateJalali;
+            string dataField = isInstallation ? registerField : requestField;
 
-
-            return new QueryParams(dataField, registerField);
+            return new QueryParams(dataField, physicalIntallField);
         }
         private record QueryParams
         {
             public string DataField { get; set; } = default!;
-            public string RegisterField { get; set; } = default!;
-            public QueryParams(string dataField, string registerField)
+            public string PhysicalInstallField { get; set; } = default!;
+            public QueryParams(string dataField, string physicalInstallField)
             {
                 DataField = dataField;
-                RegisterField = registerField;
+                PhysicalInstallField = physicalInstallField;
             }
             public QueryParams()
             {
 
             }
         }
+        //private record QueryParams
+        //{
+        //    public string DataField { get; set; } = default!;
+        //    public string RegisterField { get; set; } = default!;
+        //    public QueryParams(string dataField, string registerField)
+        //    {
+        //        DataField = dataField;
+        //        RegisterField = registerField;
+        //    }
+        //    public QueryParams()
+        //    {
+
+        //    }
+        //}
     }
 }
