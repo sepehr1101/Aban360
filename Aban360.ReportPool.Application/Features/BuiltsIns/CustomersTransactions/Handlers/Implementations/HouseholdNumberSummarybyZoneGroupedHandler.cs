@@ -37,7 +37,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
                 throw new CustomValidationException(message);
             }
 
-            input.ToHouseholdDateJalali = ReduceYear(input.ToHouseholdDateJalali);
             string lastDateJalai = ReduceYear(DateTime.Now.ToShortPersianDateString());
             ReportOutput<HouseholdNumberHeaderOutputDto, HouseholdNumberSummaryByZoneDataOutputDto> result = await _householdNumberSummarybyZoneQueryService.GetInfo(input, lastDateJalai);
 
