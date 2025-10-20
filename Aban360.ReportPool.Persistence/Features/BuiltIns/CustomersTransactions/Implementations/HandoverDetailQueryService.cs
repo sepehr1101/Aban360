@@ -15,7 +15,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         public HandoverDetailQueryService(IConfiguration configuration)
             : base(configuration)
         {
-        }   
+        }
 
         public async Task<ReportOutput<HandoverHeaderOutputDto, HandoverDetailDataOutputDto>> Get(HandoverInputDto input)
         {
@@ -26,10 +26,17 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             {
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
+                FromDateJalali = input.FromDateJalali,
+                ToDateJalali = input.ToDateJalali,
                 CustomerCount = (data is not null && data.Any()) ? data.Count() : 0,
                 RecordCount = (data is not null && data.Any()) ? data.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 Title = ReportLiterals.HandoverDetail,
+
+                SumCommercialUnit = data?.Sum(r => r.CommercialUnit) ?? 0,
+                SumDomesticUnit = data?.Sum(r => r.DomesticUnit) ?? 0,
+                SumOtherUnit = data?.Sum(r => r.OtherUnit) ?? 0,
+                TotalUnit = data?.Sum(r => r.TotalUnit) ?? 0,
             };
 
             var result = new ReportOutput<HandoverHeaderOutputDto, HandoverDetailDataOutputDto>(ReportLiterals.HandoverDetail, header, data);
@@ -67,6 +74,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	c.DomesticCount AS DomesticUnit,
                     	c.CommercialCount AS CommercialUnit,
                     	c.OtherCount AS OtherUnit,
+                        IIF((c.DomesticCount+c.CommercialCount +c.OtherCount=0) ,1, (c.DomesticCount+c.CommercialCount +c.OtherCount)) AS TotalUnit,
                     	c.BillId,
                     	c.ContractCapacity AS ContractualCapacity,
                     	c.WaterRequestDate AS MeterRequestDate,

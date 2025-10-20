@@ -2,8 +2,8 @@
 {
     public record EmptyUnitHeaderOutputDto
     {
-        public int FromEmptyUnit { get; set; }
-        public int ToEmptyUnit { get; set; }
+        public int? FromEmptyUnit { get; set; }
+        public int? ToEmptyUnit { get; set; }
 
         public string? FromReadingNumber { get; set; }
         public string? ToReadingNumber { get; set; }
@@ -21,5 +21,4 @@
         public int SumOtherUnit { get; set; }
         public int TotalUnit { get; set; }
         public int SumEmptyUnit { get; set; }
-    }
-}
+    }}

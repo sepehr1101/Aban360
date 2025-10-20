@@ -14,6 +14,7 @@
         public int DomesticUnit { get; set; }
         public int CommercialUnit { get; set; }
         public int OtherUnit { get; set; }
+        public int TotalUnit { get; set; }
         public string BillId { get; set; }
         public int ContractualCapacity { get; set; }
         public string MeterRequestDate { get; set; }

@@ -19,6 +19,7 @@
         public int DomesticUnit{ get; set; }
         public int CommercialUnit { get; set; }
         public int OtherUnit { get; set; }
+        public int TotalUnit { get; set; }
         public float ConsumptionAverage { get; set; }
         public int Consumption { get; set; }
         public int MalfunctionPeriodCount { get; set; }
