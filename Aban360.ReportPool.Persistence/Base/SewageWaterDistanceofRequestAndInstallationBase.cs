@@ -19,9 +19,9 @@ namespace Aban360.ReportPool.Persistence.Base
 		                    *
                         From [CustomerWarehouse].dbo.Clients c
 	                    Where			
-                            c.{queryParams.DataField} BETWEEN @FromDateJalali AND @ToDateJalali AND
-                            c.{queryParams.PhysicalInstallField} IS NOT NULL AND
-                            TRIM(c.{queryParams.PhysicalInstallField}) != '' AND		                    
+                            c.{queryParams.PhysicalInstallField} BETWEEN @FromDateJalali AND @ToDateJalali AND
+                            c.{queryParams.DataField} IS NOT NULL AND
+                            TRIM(c.{queryParams.DataField}) != '' AND		                    
 		                    c.ZoneId IN @zoneIds AND
 		                    c.UsageId IN @usageIds AND
 		                    (
@@ -73,9 +73,9 @@ namespace Aban360.ReportPool.Persistence.Base
 		                    *
                         From [CustomerWarehouse].dbo.Clients c
 	                    Where			
-                            c.{queryParams.DataField} BETWEEN @FromDateJalali AND @ToDateJalali AND
-                            c.{queryParams.PhysicalInstallField} IS NOT NULL AND
-                            TRIM(c.{queryParams.PhysicalInstallField}) != '' AND		                    
+                            c.{queryParams.PhysicalInstallField} BETWEEN @FromDateJalali AND @ToDateJalali AND
+                            c.{queryParams.DataField} IS NOT NULL AND
+                            TRIM(c.{queryParams.DataField}) != '' AND		                    
 		                    c.ZoneId IN @zoneIds AND
 		                    c.UsageId IN @usageIds AND
 		                    (
