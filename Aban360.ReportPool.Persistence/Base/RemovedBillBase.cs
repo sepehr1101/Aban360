@@ -6,7 +6,8 @@ namespace Aban360.ReportPool.Persistence.Base
     {
         public RemovedBillBase(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         internal string GetDetailQuery(bool hasZone)
         {
@@ -35,7 +36,7 @@ namespace Aban360.ReportPool.Persistence.Base
                 Where
                 	( @FromDateJalali IS NULL OR
                 	  @ToDateJalali IS NULL OR
-                	  rb.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali
+                	  rb.RemoveDay BETWEEN @FromDateJalali AND @ToDateJalali
                     ) AND
                 	( @fromAmount IS NULL OR
                 	  @toAmount IS NULL OR
@@ -70,7 +71,7 @@ namespace Aban360.ReportPool.Persistence.Base
                       Where
                       	(@FromDateJalali IS NULL OR
                       	@ToDateJalali IS NULL OR
-                      	rb.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali) AND
+                      	rb.RemoveDay BETWEEN @FromDateJalali AND @ToDateJalali) AND
                       	(@fromAmount IS NULL OR
                       	@toAmount IS NULL OR
                       	rb.SumItems BETWEEN @fromAmount AND @toAmount) AND
