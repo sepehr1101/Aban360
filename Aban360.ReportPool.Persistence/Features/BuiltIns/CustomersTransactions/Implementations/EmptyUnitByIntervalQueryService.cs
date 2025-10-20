@@ -66,10 +66,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	        @toReadingNumber IS NULL OR
                     	        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
                     	    ) AND
-                    	    c.CustomerNumber<>0 AND
-                    	    c.RegisterDayJalali <= @ToDateJalali AND
-                            c.EmptyCount BETWEEN @FromEmptyUnit AND @ToEmptyUnit
-                    
+                    	    c.CustomerNumber<>0
                     )
                     Select	
                     	t46.C2 AS RegionTitle,
@@ -109,7 +106,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                          On t51.C1=t46.C0
                      WHERE	  
                          c.RN=1 AND
-                         c.DeletionStateId NOT IN(1,2)";
+                         c.DeletionStateId NOT IN(1,2) AND
+                         c.EmptyCount BETWEEN @FromEmptyUnit AND @ToEmptyUnit";
         }
         private string GetEmptyUnitQuery()
         {
