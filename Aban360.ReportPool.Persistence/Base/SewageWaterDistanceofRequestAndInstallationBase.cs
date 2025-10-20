@@ -46,7 +46,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     	c.DomesticCount	AS DomesticUnit,
                     	c.CommercialCount AS CommercialUnit,
                     	c.OtherCount AS OtherUnit,
-                        (c.DomesticCount+c.CommercialCount +c.OtherCount) AS TotalUnit ,
+                        IIF((c.DomesticCount+c.CommercialCount +c.OtherCount=0) ,1, (c.DomesticCount+c.CommercialCount +c.OtherCount)) AS TotalUnit,
                     	c.BillId,
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,
@@ -91,9 +91,14 @@ namespace Aban360.ReportPool.Persistence.Base
                     	c.{groupingField} AS ItemTitle,
                     	c.{groupingField} ,
 						Count(c.{groupingField}) as CustomerCount,
-						ROUND(AVG(CONVERT(float, DATEDIFF(DAY,
+						Count(c.ZoneTitle) as CustomerCount,
+						SUM(c.DomesticCount) as DomesticUnit,
+						SUM(c.CommercialCount) as CommercialUnit,
+						SUM(c.OtherCount) as OtherUnit,
+						SUM(IIF((c.DomesticCount+c.CommercialCount +c.OtherCount=0) ,1, (c.DomesticCount+c.CommercialCount +c.OtherCount))) AS TotalUnit,
+						ROUND(AVG(CONVERT(float,ABS( DATEDIFF(DAY,
                             Case When LEN(c.{queryParams.DataField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{queryParams.DataField}) END,
-                            Case When LEN(c.{queryParams.PhysicalInstallField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{queryParams.PhysicalInstallField}) END))), 2) AS DistanceAverage
+                            Case When LEN(c.{queryParams.PhysicalInstallField})=10 Then [CustomerWarehouse].dbo.PersianToMiladi(c.{queryParams.PhysicalInstallField}) END)))), 2) AS DistanceAverage
                     FROM CTE c
                     JOIN [Db70].dbo.T51 t51
 	                    On t51.C0=c.ZoneId
@@ -105,7 +110,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     GROUP BY
                         c.{groupingField}";
         }
-
+        
         private QueryParams GetQueryParams(bool isWater, bool isInstallation)
         {
             //string PhysicalWaterInstallDateJalali = nameof(PhysicalWaterInstallDateJalali),

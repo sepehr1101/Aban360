@@ -26,6 +26,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             {
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
+                FromDateJalali = input.FromDateJalali,
+                ToDateJalali = input.ToDateJalali,
                 RecordCount = (data is not null && data.Any()) ? data.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 CustomerCount = data?.Sum(r => r.Count) ?? 0,
@@ -43,6 +45,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	SELECT 
                     	    RN= ROW_NUMBER() OVER (PARTITION by ZoneId , CustomerNumber ORDER BY RegisterDayJalali DESC, LocalId DESC),
                     	    BranchType,
+                    		UsageStateId,
                     		DeletionStateId
                     	From [CustomerWarehouse].dbo.Clients c
                     	Where				

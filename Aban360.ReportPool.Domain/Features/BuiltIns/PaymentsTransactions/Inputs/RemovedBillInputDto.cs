@@ -8,8 +8,8 @@
         public string? FromReadingNumber { get; set; } 
         public string? ToReadingNumber { get; set; } 
         
-        public string? FromAmount { get; set; } 
-        public string? ToAmount { get; set; } 
+        public long? FromAmount { get; set; } 
+        public long? ToAmount { get; set; } 
 
         public ICollection<int>? ZoneIds { get; set; }
 
