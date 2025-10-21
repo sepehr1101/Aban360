@@ -14,6 +14,7 @@
         public int DomesticUnit { get; set; }
         public int OtherUnit { get; set; }
         public float AverageAll { get; set; }
+        public string AverageAllText { get; set; }
 
         public int UnSpecified { get; set; }
         public string UnSpecifiedText { get; set; }

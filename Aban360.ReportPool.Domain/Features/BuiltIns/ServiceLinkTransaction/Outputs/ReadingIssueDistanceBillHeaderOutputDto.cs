@@ -17,6 +17,8 @@
         public float SumCommercialUnit { get; set; }
         public float SumOtherUnit { get; set; }
         public float TotalUnit { get; set; }
+        public float AverageAll{ get; set; }
+        public string AverageAllText { get; set; }
 
     }
 }
