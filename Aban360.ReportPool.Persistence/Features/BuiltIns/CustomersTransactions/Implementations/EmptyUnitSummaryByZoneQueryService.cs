@@ -45,7 +45,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 Field4 = emptyUnitData?.Sum(r => r.Field4) ?? 0,
                 Field5 = emptyUnitData?.Sum(r => r.Field5) ?? 0,
                 Field6 = emptyUnitData?.Sum(r => r.Field6) ?? 0,
-                MoreThanField6 = emptyUnitData?.Sum(r => r.MoreThanField6) ?? 0,
+                MoreThan6 = emptyUnitData?.Sum(r => r.MoreThan6) ?? 0,
 
             };
 
@@ -86,7 +86,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 						COUNT(Case When c.EmptyCount=4 Then 1 Else Null End) as Field4,
 						COUNT(Case When c.EmptyCount=5 Then 1 Else Null End) as Field5,
 						COUNT(Case When c.EmptyCount=6 Then 1 Else Null End) as Field6,
-						COUNT(Case When c.EmptyCount>6 Then 1 Else Null End) as MoreThanField6,
+						COUNT(Case When c.EmptyCount>6 Then 1 Else Null End) as MoreThan6,
                     	SUM(c.DomesticCount) DomesticUnit,
                     	SUM(c.CommercialCount) CommercialUnit,
                     	SUM(c.OtherCount) OtherUnit,

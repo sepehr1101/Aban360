@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
@@ -16,14 +17,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             : base(configuration)
         { }
 
-        public async Task<ReportOutput<ReadingListHeaderOutputDto, ReadingListDetailDataOutputDto>> GetInfo(ReadingListInputDto input)
+        public async Task<ReportOutput<ReadingListHeaderOutputDto, ReadingListDetailDataOutputDto>> GetInfo(ReadingListDetailInputDto input)
         {
-            string query = GetDetailQuery();
+            string query = GetDetailQuery(input.UsageIds.HasValue());
            
-            var @params = new
-            {
-            };
-            IEnumerable<ReadingListDetailDataOutputDto> modifiedBillsData = await _sqlReportConnection.QueryAsync<ReadingListDetailDataOutputDto>(query, @params);
+            IEnumerable<ReadingListDetailDataOutputDto> modifiedBillsData = await _sqlReportConnection.QueryAsync<ReadingListDetailDataOutputDto>(query, input);
             ReadingListHeaderOutputDto modifiedBillsHeader = new ReadingListHeaderOutputDto()
             {
                 ReportDateJalali = DateTime.Now.ToShortDateString(),
@@ -34,11 +32,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
             var result = new ReportOutput<ReadingListHeaderOutputDto, ReadingListDetailDataOutputDto>(ReportLiterals.ReadingListDetail, modifiedBillsHeader, modifiedBillsData);
             return result;
-        }
-
-        private string GetReadingListQuery()
-        {
-            return @"";
         }
     }
 }

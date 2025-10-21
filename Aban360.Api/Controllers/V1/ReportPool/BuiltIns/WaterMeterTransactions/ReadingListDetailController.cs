@@ -26,7 +26,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         [HttpPost]
         [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ReadingListHeaderOutputDto, ReadingListDetailDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRaw(ReadingListInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetRaw(ReadingListDetailInputDto inputDto, CancellationToken cancellationToken)
         {
             ReportOutput<ReadingListHeaderOutputDto, ReadingListDetailDataOutputDto> waterSales = await _readingListDetail.Handle(inputDto, cancellationToken);
             return Ok(waterSales);
@@ -34,7 +34,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
-        public async Task<IActionResult> GetExcel(string connectionId, ReadingListInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetExcel(string connectionId, ReadingListDetailInputDto inputDto, CancellationToken cancellationToken)
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _readingListDetail.Handle, CurrentUser, ReportLiterals.ReadingListDetail, connectionId);
             return Ok(inputDto);
@@ -43,7 +43,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         [HttpPost, HttpGet]
         [Route("sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetStiReport(ReadingListInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetStiReport(ReadingListDetailInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 320;
             ReportOutput<ReadingListHeaderOutputDto, ReadingListDetailDataOutputDto> result = await _readingListDetail.Handle(inputDto, cancellationToken);

@@ -7,5 +7,9 @@
         public string MeterDiameterTitle { get; set; }
         public int Count { get; set; }
         //public int CustomerCount { get; set; }
+        public int DomesticUnit { get; set; }
+        public int CommercialUnit { get; set; }
+        public int OtherUnit { get; set; }
+        public int TotalUnit { get; set; }
     }
 }
