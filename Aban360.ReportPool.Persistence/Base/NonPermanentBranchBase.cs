@@ -46,7 +46,7 @@ namespace Aban360.ReportPool.Persistence.Base
                         c.DomesticCount DomesticUnit,
             	        c.CommercialCount CommercialUnit,
             	        c.OtherCount OtherUnit,
-                        (c.DomesticCount+c.CommercialCount +c.OtherCount) AS TotalUnit,
+                        IIF((c.DomesticCount+c.CommercialCount +c.OtherCount=0) ,1, (c.DomesticCount+c.CommercialCount +c.OtherCount)) AS TotalUnit,
                     	c.ContractCapacity AS ContractualCapacity,
             	        TRIM(c.BillId) BillId
                     FROM CTE c
@@ -134,7 +134,11 @@ namespace Aban360.ReportPool.Persistence.Base
 	                    c.ZoneTitle,
 						c.UsageTitle,
 						c.WaterDiameterTitle AS MeterDiameterTitle,
-						Count(1) AS Count
+						Count(1) AS Count,
+					    SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
+					    SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
+                        SUM(ISNULL(c.DomesticCount, 0)) AS DomesticUnit,
+                        SUM(ISNULL(c.OtherCount, 0)) AS OtherUnit,
                     FROM CTE c
                     JOIN [Db70].dbo.T51 t51
 	                    On t51.C0=c.ZoneId

@@ -19,7 +19,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         }
         public async Task<ReportOutput<ContractualCapacityHeaderOutputDto, ContractualCapacityDataOutputDto>> GetInfo(ContractualCapacityInputDto input)
         {
-            string contractualCapacityQuery = GetContractualCapacityQuery(input.UsageSellIds.HasValue(), input.ZoneIds.HasValue());
+            string query = GetQuery(input.UsageSellIds.HasValue(), input.ZoneIds.HasValue());
             var @params = new
             {
                 FromReadingNumber = input.FromReadingNumber,
@@ -36,13 +36,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 ZoneIds = input.ZoneIds
             };
 
-            IEnumerable<ContractualCapacityDataOutputDto> contractualCapacityData = await _sqlReportConnection.QueryAsync<ContractualCapacityDataOutputDto>(contractualCapacityQuery, @params);
+            IEnumerable<ContractualCapacityDataOutputDto> contractualCapacityData = await _sqlReportConnection.QueryAsync<ContractualCapacityDataOutputDto>(query, @params);
             ContractualCapacityHeaderOutputDto contractualCapacityHeader = new ContractualCapacityHeaderOutputDto()
             {
                 FromContractualCapacity = input.FromContractualCapacity,
                 ToContractualCapacity = input.ToContractualCapacity,
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
+                FromDateJalali=input.FromDateJalali,
+                ToDateJalali=input.ToDateJalali,
                 RecordCount = (contractualCapacityData is not null && contractualCapacityData.Any()) ? contractualCapacityData.Count() : 0,
                 CustomerCount = (contractualCapacityData is not null && contractualCapacityData.Any()) ? contractualCapacityData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
@@ -58,6 +60,52 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             return result;
         }
 
+        private string GetQuery(bool hasUsage, bool hasZone)
+        {
+            string usageQuery = hasUsage ? "c.UsageId in @UsageIds AND" : string.Empty;
+            string zoneQuery = hasZone ? " c.ZoneId in @ZoneIds AND" : string.Empty;
+
+            return @$";WITH CTE AS
+                    (
+                    	SELECT 
+                    	    RN= ROW_NUMBER() OVER (PARTITION by ZoneId , CustomerNumber ORDER BY RegisterDayJalali DESC, LocalId DESC),
+                    	    *
+                    	From [CustomerWarehouse].dbo.Clients c
+                    	Where				
+                    	    c.WaterInstallDate BETWEEN @FromDate AND @ToDate AND
+                    	    {zoneQuery}                   	    
+                    	    (
+                    	        @fromReadingNumber IS NULL OR 
+                    	        @toReadingNumber IS NULL OR
+                    	        c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
+                    	    ) AND
+                    	    c.CustomerNumber<>0 
+                    )
+                    Select	
+                    	 c.CustomerNumber,
+                        c.ReadingNumber,
+                        TRIM(c.FirstName) AS FirstName,
+                        TRIM(c.SureName) As Surname,
+                        c.UsageTitle,
+                        c.WaterDiameterTitle MeterDiameterTitle,
+                        c.RegisterDayJalali AS EventDateJalali,
+                        TRIM(c.Address) AS Address,
+                        c.ZoneTitle,
+                        c.DeletionStateId,
+                        c.DeletionStateTitle AS UseStateTitle,
+                        c.DomesticCount DomesticUnit,
+            	        c.CommercialCount CommercialUnit,
+            	        c.OtherCount OtherUnit,
+                        IIF((c.DomesticCount+c.CommercialCount +c.OtherCount=0) ,1, (c.DomesticCount+c.CommercialCount +c.OtherCount)) AS TotalUnit,
+            	        TRIM(c.BillId) BillId,
+            			c.ContractCapacity As ContractualCapacity
+                     FROM CTE c
+                     WHERE	  
+                         c.RN=1 AND
+                         c.DeletionStateId NOT IN(1,2) AND
+						 {usageQuery}
+						 c.ContractCapacity BETWEEN @FromCapacity AND @ToCapacity";
+        }
         private string GetContractualCapacityQuery(bool hasUsage, bool hasZone)
         {
             string usageQuery = hasUsage ? "c.UsageId in @UsageIds AND" : string.Empty;

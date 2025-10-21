@@ -10,5 +10,10 @@
         public string DistanceAverageText { get; set; }
         public float? DistanceMedian { get; set; }
         public int CustomerCount { get; set; }
+
+        public int DomesticUnit { get; set; }
+        public int CommercialUnit { get; set; }
+        public int OtherUnit { get; set; }
+        public int TotalUnit { get; set; }
     }
 }
