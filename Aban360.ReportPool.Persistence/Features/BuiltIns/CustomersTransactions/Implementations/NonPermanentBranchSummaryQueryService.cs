@@ -30,10 +30,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 RecordCount = (nonPremanentBranchData is not null && nonPremanentBranchData.Any()) ? nonPremanentBranchData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 Title = ReportLiterals.NonPermanentBranchSummary + ReportLiterals.ByUsageAndZoneAndDiameter,
-                CustomerCount =nonPremanentBranchData?.Sum(x=>x.Count)??0
+                CustomerCount = nonPremanentBranchData?.Sum(x => x.Count) ?? 0,
+
+                SumCommercialUnit = nonPremanentBranchData?.Sum(x => x.CommercialUnit) ?? 0,
+                SumDomesticUnit = nonPremanentBranchData?.Sum(x => x.DomesticUnit) ?? 0,
+                SumOtherUnit = nonPremanentBranchData?.Sum(x => x.OtherUnit) ?? 0,
+                TotalUnit = nonPremanentBranchData?.Sum(x => x.TotalUnit) ?? 0,
             };
 
-            var result = new ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryDataOutputDto>(ReportLiterals.NonPermanentBranchSummary+ReportLiterals.ByUsageAndZoneAndDiameter, nonPremanentBranchHeader, nonPremanentBranchData);
+            var result = new ReportOutput<NonPermanentBranchHeaderOutputDto, NonPermanentBranchSummaryDataOutputDto>(ReportLiterals.NonPermanentBranchSummary + ReportLiterals.ByUsageAndZoneAndDiameter, nonPremanentBranchHeader, nonPremanentBranchData);
 
             return result;
         }

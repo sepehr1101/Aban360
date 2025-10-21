@@ -33,7 +33,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 CustomerCount = RequestData?.Sum(s=>s.CustomerCount)??0,
                 RecordCount = (RequestData is not null && RequestData.Any()) ? RequestData.Count() : 0,
-                Title = reportTitle
+                Title = reportTitle,
+
+                SumCommercialUnit = RequestData?.Sum(r => r.CommercialUnit) ?? 0,
+                SumDomesticUnit = RequestData?.Sum(r => r.DomesticUnit) ?? 0,
+                SumOtherUnit = RequestData?.Sum(r => r.OtherUnit) ?? 0,
+                TotalUnit = RequestData?.Sum(r => r.TotalUnit) ?? 0,
             };
             var result = new ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto>
                 (reportTitle,
