@@ -59,7 +59,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						MAX(t46.C2) AS RegionTitle,
                     	b.{groupingField} as ItemTitle,
                     	b.{groupingField},
-                    	COUNT(1) AS ReadingCount,
+                    	COUNT(Case When b.CounterStateCode IS NOT NULL Then 1 END) AS ReadingCount,
                     	COUNT(Case When b.CounterStateCode=4 Then 1 END) AS CloseCount,
                     	COUNT(Case When b.CounterStateCode=7 Then 1 EnD) AS ObstacleCount,
                     	COUNT(Case When b.CounterStateCode=2 Then 1 END) AS ReplacementBranchCount,
