@@ -3,6 +3,7 @@
     using global::Aban360.Common.Categories.ApiResponse;
     using global::Aban360.Common.Extensions;
     using global::Aban360.ReportPool.Application.Features.Dashboard.Handlers.Contracts;
+    using global::Aban360.ReportPool.Application.Features.Dashboard.Handlers.Implementations;
     using global::Aban360.ReportPool.Domain.Features.Dashboard.Dtos;
     using global::Aban360.ReportPool.Domain.Features.Dashboard.Entities;
     using Microsoft.AspNetCore.Mvc;
@@ -18,13 +19,15 @@
             private readonly ICreateSkeletonHandler _createHandler;
             private readonly IUpdateSkeletonHandler _updateHandler;
             private readonly IDeleteSkeletonHandler _deleteHandler;
+            private readonly IGetSekletonByRoleHandler _getByRoleHanlder;
 
             public SkeletonManagerController(
                 IGetSkeletonDefinitionHandler getDifinitionHandler,
                 IGetSkeletonByIdHandler getByIdHandler,
                 ICreateSkeletonHandler createHandler,
                 IUpdateSkeletonHandler updateHandler,
-                IDeleteSkeletonHandler deleteHandler)
+                IDeleteSkeletonHandler deleteHandler,
+                IGetSekletonByRoleHandler getByRoleHandler)
             {
                 _getDefinitionHandler = getDifinitionHandler;
                 _getDefinitionHandler.NotNull(nameof(_getDefinitionHandler));
@@ -40,6 +43,9 @@
 
                 _deleteHandler = deleteHandler;
                 _deleteHandler.NotNull(nameof(_deleteHandler));
+
+                _getByRoleHanlder = getByRoleHandler;
+                _getByRoleHanlder.NotNull(nameof(_getByRoleHanlder));
             }
 
             [HttpGet, HttpPost]
@@ -59,6 +65,16 @@
                 Skeleton? skeleton = await _getByIdHandler.Handle(id, cancellationToken);
                 return Ok(skeleton);
             }
+
+            [HttpGet, HttpPost]
+            [Route("by-role/{role}")]
+            [ProducesResponseType(typeof(ApiResponseEnvelope<Skeleton?>), StatusCodes.Status200OK)]
+            public async Task<IActionResult> GetByRole(string role, CancellationToken cancellationToken)
+            {
+                Skeleton? skeleton = await _getByRoleHanlder.Handle(role, cancellationToken);
+                return Ok(skeleton);
+            }
+
 
             [HttpPost]
             [Route("create")]
