@@ -7,6 +7,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
 {
     public interface IReadingListDetailHandler
     {
-        Task<ReportOutput<ReadingListHeaderOutputDto, ReadingListDetailDataOutputDto>> Handle(ReadingListInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<ReadingListHeaderOutputDto, ReadingListDetailDataOutputDto>> Handle(ReadingListDetailInputDto input, CancellationToken cancellationToken);
     }
 }

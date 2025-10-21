@@ -2,7 +2,6 @@
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts;
-using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
@@ -13,10 +12,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
     internal sealed class ReadingListDetailHandler : IReadingListDetailHandler
     {
         private readonly IReadingListDetailQueryService _readingListDetailQuery;
-        private readonly IValidator<ReadingListInputDto> _validator;
+        private readonly IValidator<ReadingListDetailInputDto> _validator;
         public ReadingListDetailHandler(
             IReadingListDetailQueryService readingListDetailQuery,
-            IValidator<ReadingListInputDto> validator)
+            IValidator<ReadingListDetailInputDto> validator)
         {
             _readingListDetailQuery = readingListDetailQuery;
             _readingListDetailQuery.NotNull(nameof(readingListDetailQuery));
@@ -25,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<ReadingListHeaderOutputDto, ReadingListDetailDataOutputDto>> Handle(ReadingListInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<ReadingListHeaderOutputDto, ReadingListDetailDataOutputDto>> Handle(ReadingListDetailInputDto input, CancellationToken cancellationToken)
         {
             var validatioResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validatioResult.IsValid)

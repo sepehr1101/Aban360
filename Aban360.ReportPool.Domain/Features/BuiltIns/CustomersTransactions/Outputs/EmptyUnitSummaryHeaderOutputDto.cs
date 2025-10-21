@@ -24,6 +24,6 @@
         public int Field4 { get; set; }
         public int Field5 { get; set; }
         public int Field6 { get; set; }
-        public int MoreThanField6 { get; set; }
+        public int MoreThan6 { get; set; }
     }
 }

@@ -7,6 +7,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Con
 {
     public interface IReadingListDetailQueryService
     {
-        Task<ReportOutput<ReadingListHeaderOutputDto, ReadingListDetailDataOutputDto>> GetInfo(ReadingListInputDto input);
+        Task<ReportOutput<ReadingListHeaderOutputDto, ReadingListDetailDataOutputDto>> GetInfo(ReadingListDetailInputDto input);
     }
 }
