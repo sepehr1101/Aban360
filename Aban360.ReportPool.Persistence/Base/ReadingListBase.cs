@@ -6,7 +6,8 @@ namespace Aban360.ReportPool.Persistence.Base
     {
         public ReadingListBase(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+        }
 
         internal string GetDetailQuery(bool hasUsage)
         {
@@ -59,13 +60,13 @@ namespace Aban360.ReportPool.Persistence.Base
                     	b.{groupingField} as ItemTitle,
                     	b.{groupingField},
                     	COUNT(1) AS ReadingCount,
-                    	COUNT(Case When b.CounterStateCode=4 Then 1 ENd) AS CloseCount,
-                    	COUNT(Case When b.CounterStateCode=7 Then 1 End) AS ObstacleCount,
-                    	COUNT(Case When b.CounterStateCode=2 Then 1 ENd) AS ReplacementBranchCount,
-                    	COUNT(Case When b.CounterStateCode=1 Then 1 ENd) AS MalfunctionCount,
-						COUNT(Case When b.CounterStateCode NOT IN (4,7,8) Then 1 End) AS NetCount,
+                    	COUNT(Case When b.CounterStateCode=4 Then 1 END) AS CloseCount,
+                    	COUNT(Case When b.CounterStateCode=7 Then 1 EnD) AS ObstacleCount,
+                    	COUNT(Case When b.CounterStateCode=2 Then 1 END) AS ReplacementBranchCount,
+                    	COUNT(Case When b.CounterStateCode=1 Then 1 END) AS MalfunctionCount,
+						COUNT(Case When b.CounterStateCode NOT IN (4,7,8) Then 1 End) AS PureCount,
                     	COUNT(Case When b.CounterStateCode=8 Then 1 End) AS AdvancePaymentCount,
-						COUNT(Case When b.ReadingStateTitle IN (N'خوداظهاری حضوری',N'خوداظهاری غیرحضوری')Then 1 End) as SelfClaimedCount
+						COUNT(Case When b.IsSettlement=1 Then 1 End) as SelfClaimedCount
                     From [CustomerWarehouse].dbo.Bills b
 					Join [Db70].dbo.T51 t51
 						On t51.C0=b.ZoneId
