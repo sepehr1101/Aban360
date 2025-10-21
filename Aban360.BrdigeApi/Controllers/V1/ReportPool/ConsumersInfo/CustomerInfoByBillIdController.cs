@@ -10,8 +10,8 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
     [Route("v1/customer")]
     public class CustomerInfoByBillIdController : BaseController
     {
-        private readonly ICustomerInfoByBIllIdHandler _customerInfoByBillIdHandler;
-        public CustomerInfoByBillIdController(ICustomerInfoByBIllIdHandler customerInfoByBillIdHandler)
+        private readonly ICustomerInfoHandler _customerInfoByBillIdHandler;
+        public CustomerInfoByBillIdController(ICustomerInfoHandler customerInfoByBillIdHandler)
         {
             _customerInfoByBillIdHandler = customerInfoByBillIdHandler;
             _customerInfoByBillIdHandler.NotNull(nameof(customerInfoByBillIdHandler));

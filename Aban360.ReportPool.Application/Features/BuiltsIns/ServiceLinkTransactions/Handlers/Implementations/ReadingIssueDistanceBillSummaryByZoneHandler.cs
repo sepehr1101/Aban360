@@ -34,6 +34,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 throw new CustomValidationException(message);
             }
 
+            float sumDistance = 0;
             ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryDataOutputDto> result = await _readingIssueDistanceBillSummaryByZoneQuery.GetInfo(input);
             result.ReportData.ForEach(r =>
             {
@@ -48,7 +49,15 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 r.Field4Text =  CalculationDistanceDate.ConvertDayToDate(r.Field4);
                 r.Field5Text =  CalculationDistanceDate.ConvertDayToDate(r.Field5);
                 r.MoreThan6Text =  CalculationDistanceDate.ConvertDayToDate(r.MoreThan6);
+
+                sumDistance += r.AverageAll;
+
             });
+            float sumAverage = (sumDistance / result.ReportData.Count());
+            int sumRoundAverage = (int)Math.Round(sumAverage);
+            result.ReportHeader.AverageAll = sumAverage;
+            result.ReportHeader.AverageAllText = CalculationDistanceDate.ConvertDayToDate(sumRoundAverage);
+
             return result;
         }
     }

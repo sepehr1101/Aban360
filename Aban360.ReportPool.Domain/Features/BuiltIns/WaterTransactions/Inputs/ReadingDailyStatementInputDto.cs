@@ -8,8 +8,8 @@
         public string FromDateJalali { get; set; }
         public string ToDateJalali { get; set; }
 
-        public int FromConsumption { get; set; }
-        public int ToConsumption { get; set; }
+        public int? FromConsumption { get; set; }
+        public int? ToConsumption { get; set; }
 
         public long? FromAmount { get; set; }
         public long? ToAmount { get; set; }

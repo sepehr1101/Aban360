@@ -11,6 +11,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
 using FluentValidation;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Implementations
 {
@@ -41,6 +42,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReadingIssueDistanceBillSummryDataOutputDto> result = await _readingIssueDistanceBillSummaryByZoneQuery.GetInfo(input);
             result.ReportData.ForEach(r =>
             {
+                r.AverageAllText = CalculationDistanceDate.ConvertDayToDate((int)r.AverageAll);
                 r.UnSpecifiedText = CalculationDistanceDate.ConvertDayToDate(r.UnSpecified);
                 r.Field0_5Text = CalculationDistanceDate.ConvertDayToDate(r.Field0_5);
                 r.Field0_75Text = CalculationDistanceDate.ConvertDayToDate(r.Field0_75);
@@ -94,6 +96,8 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                           Field4 = g.Max(s => s.Field4),
                           Field5 = g.Max(s => s.Field5),
                           MoreThan6 = g.Max(s => s.MoreThan6),
+                          // AverageAll = g.Sum(s => s.AverageAll*s.BillCount),
+                          // AverageAllText = CalculationDistanceDate.ConvertDayToDate(GetRound(g.Average(s => s.AverageAll))),
                           UnSpecifiedText = CalculationDistanceDate.ConvertDayToDate((int)g.Max(s => s.UnSpecified)),
                           Field0_5Text = CalculationDistanceDate.ConvertDayToDate((int)g.Max(s => s.Field0_5)),
                           Field0_75Text = CalculationDistanceDate.ConvertDayToDate((int)g.Max(s => s.Field0_75)),
@@ -114,6 +118,8 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                           CommercialUnit = v.CommercialUnit,
                           DomesticUnit = v.DomesticUnit,
                           OtherUnit = v.OtherUnit,
+                          AverageAll = v.AverageAll,
+                          AverageAllText = v.AverageAllText,
                           UnSpecified = v.UnSpecified,
                           UnSpecifiedText = v.UnSpecifiedText,
                           Field0_5 = v.Field0_5,
@@ -139,6 +145,32 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                       })
                   ))
                   .ToList();
+
+            float sumAllRegionDistance = 0;
+            foreach (var group in dataGroup)
+            {
+                float sumDistance = 0;
+                int sumBillCounts = 0;
+                foreach (var zones in group.ReportData)
+                {
+                    float weight = zones.BillCount * zones.AverageAll;
+                    sumDistance += weight;
+                    sumBillCounts += zones.BillCount;
+                }
+                float weightAverege = sumDistance / sumBillCounts;
+                int round=(int)Math.Round(weightAverege);
+                group.ReportHeader.AverageAll = weightAverege;
+                group.ReportHeader.AverageAllText = CalculationDistanceDate.ConvertDayToDate(round);
+
+                sumAllRegionDistance += sumDistance;
+                
+            }
+            float averageDistance = sumAllRegionDistance / result.ReportHeader.BillCount;
+            int allZoneRound=(int)Math.Round(averageDistance);
+            result.ReportHeader.AverageAll = averageDistance;
+            result.ReportHeader.AverageAllText = CalculationDistanceDate.ConvertDayToDate(allZoneRound);
+
+
             ReportOutput<ReadingIssueDistanceBillHeaderOutputDto, ReportOutput<ReadingIssueDistanceBillSummryDataOutputDto, ReadingIssueDistanceBillSummryDataOutputDto>> finalData = new(result.Title, result.ReportHeader, dataGroup);
 
             return finalData;
@@ -161,6 +193,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             return flatResult;
         }
 
+        private int GetRound(float number)
+        {
+            return (int)Math.Round(number);
+        }
         private static ReadingIssueDistanceBillSummryDataOutputDto MapToGroupe(ReadingIssueDistanceBillSummryDataOutputDto input)
         {
             return new ReadingIssueDistanceBillSummryDataOutputDto()
