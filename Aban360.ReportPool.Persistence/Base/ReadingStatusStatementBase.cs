@@ -23,7 +23,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     	COUNT(Case When b.CounterStateCode=8 Then 1 End)AS Temporarily,
                     	COUNT(Case When b.CounterStateCode!=1 Then 1 End)AS AllCount,
                     	COUNT(Case When b.CounterStateCode=1 Then 1 End)AS Ruined,
-						COUNT(Case When b.IsSettlementThen=1 Then 1 End) as SelfClaimedCount
+						COUNT(Case When b.IsSettlement=1 Then 1 End) as SelfClaimedCount
                     From [CustomerWarehouse].dbo.Bills b
                     Where
                     	(b.{parameters.DateField} BETWEEN @FromDateJalali AND @ToDateJalali) AND

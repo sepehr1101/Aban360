@@ -21,7 +21,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         public async Task<ReportOutput<MalfunctionMeterSummaryHeaderOutputDto, MalfunctionMeterSummaryDataOutputDto>> Get(MalfunctionMeterInputDto input)
         {
             string reportTitle = ReportLiterals.MalfunctionMeterSummary + ReportLiterals.ByZone;
-            string query = GetGroupedQuery(GroupingFields.ZoneTitle);
+            string query = GetGroupedQueryNonDuplicate(GroupingFields.UsageTitle);//GetGroupedQuery(GroupingFields.ZoneTitle);
 
             IEnumerable<MalfunctionMeterSummaryDataOutputDto> malfunctionMeterData = await _sqlReportConnection.QueryAsync<MalfunctionMeterSummaryDataOutputDto>(query, input);
             MalfunctionMeterSummaryHeaderOutputDto malfunctionMeterHeader = new MalfunctionMeterSummaryHeaderOutputDto()
