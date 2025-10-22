@@ -138,7 +138,7 @@ namespace Aban360.ReportPool.Persistence.Base
 					    SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
 					    SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
                         SUM(ISNULL(c.DomesticCount, 0)) AS DomesticUnit,
-                        SUM(ISNULL(c.OtherCount, 0)) AS OtherUnit,
+                        SUM(ISNULL(c.OtherCount, 0)) AS OtherUnit
                     FROM CTE c
                     JOIN [Db70].dbo.T51 t51
 	                    On t51.C0=c.ZoneId

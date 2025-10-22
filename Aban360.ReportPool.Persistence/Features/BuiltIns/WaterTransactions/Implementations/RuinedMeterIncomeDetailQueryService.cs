@@ -32,6 +32,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 CustomerCount = ruinedMeterIncomeData is not null && ruinedMeterIncomeData.Any() ? ruinedMeterIncomeData.Count() : 0,
                 RecordCount = ruinedMeterIncomeData is not null && ruinedMeterIncomeData.Any() ? ruinedMeterIncomeData.Count() : 0,
                 Title= ReportLiterals.RuinedMeterIncomeDetail,
+
+                SumCommercialUnit=ruinedMeterIncomeData?.Sum(r=>r.CommercialUnit)??0,
+                SumDomesticUnit=ruinedMeterIncomeData?.Sum(r=>r.DomesticUnit)??0,
+                SumOtherUnit=ruinedMeterIncomeData?.Sum(r=>r.OtherUnit)??0,
+                TotalUnit=ruinedMeterIncomeData?.Sum(r=>r.TotalUnit)??0,
             };
             if (ruinedMeterIncomeData is not null && ruinedMeterIncomeData.Any())
             {

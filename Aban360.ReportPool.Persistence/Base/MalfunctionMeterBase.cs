@@ -158,6 +158,7 @@ namespace Aban360.ReportPool.Persistence.Base
             return @$";WITH CTE AS (
                     Select
                         b.ZoneTitle,
+						b.ZoneId,
                         b.UsageTitle,
 	                    b.SumItems,
                         b.Consumption,
@@ -184,6 +185,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						b.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali) 
 					)--cte
                     SELECT 
+				    	MAX(t46.C2) AS RegionTitle,
 						c.{groupingField} as ItemTitle,
 						SUM(c.SumItems) as SumItems,
 						AVG(c.ConsumptionAverage) as Consumption,
@@ -204,6 +206,10 @@ namespace Aban360.ReportPool.Persistence.Base
 						SUM(CASE WHEN c.WaterDiameterId = 9 THEN 1 ELSE 0 END) AS Field5,
 						SUM(CASE WHEN c.WaterDiameterId In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6
 					FROM CTE c
+				    Join [Db70].dbo.T51 t51
+				    	On t51.C0=c.ZoneId
+				    Join [Db70].dbo.T46 t46
+				    	On t51.C1=t46.C0
                     WHERE 
 						c.RN=1 AND
 						c.CounterStateCode=1 
