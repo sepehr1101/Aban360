@@ -37,7 +37,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             ReportOutput<MalfunctionMeterSummaryHeaderOutputDto, MalfunctionMeterSummaryDataOutputDto> result = await _malfunctionMeterSummaryByZoneQueryService.Get(input);
 
             var dataGroup = result.ReportData
-            .GroupBy(m => m.ItemTitle)
+            .GroupBy(m => m.RegionTitle)
             .Select(g =>
             {
                 // Map all raw DTOs to grouped DTOs

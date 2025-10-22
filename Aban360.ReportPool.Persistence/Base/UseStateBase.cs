@@ -22,14 +22,14 @@ namespace Aban360.ReportPool.Persistence.Base
                     	c.WaterDiameterTitle MeterDiameterTitle,
                         c.MainSiphonTitle AS SiphonDiameterTitle,
                     	c.RegisterDayJalali AS EventDateJalali,
-                    	0 AS DebtAmount,
+                    	w.Debt AS DebtAmount,
                     	TRIM(c.Address) AS Address,
                     	c.ZoneTitle,
                     	c.DeletionStateId,
                         c.DeletionStateTitle AS DeletionStateTitle,
                         c.DomesticCount DomesticUnit,
 	                    c.CommercialCount CommercialUnit,
-	                    SUM(IIF((c.DomesticCount+c.CommercialCount +c.OtherCount=0) ,1, (c.DomesticCount+c.CommercialCount +c.OtherCount))) AS TotalUnit,
+                        IIF((c.DomesticCount+c.CommercialCount +c.OtherCount=0) ,1, (c.DomesticCount+c.CommercialCount +c.OtherCount)) AS TotalUnit,
 	                    c.OtherCount OtherUnit,
                     	c.ContractCapacity AS ContractualCapacity,
 	                    TRIM(c.BillId) BillId,
@@ -41,6 +41,8 @@ namespace Aban360.ReportPool.Persistence.Base
 						TRIM(c.NationalId) AS NationalCode,
 						TRIM(c.PostalCode) AS PostalCode	                   
                     FROM [CustomerWarehouse].dbo.Clients c
+					Join [CustomerWarehouse].dbo.WaterDebt w 
+						On c.BillId COLLATE SQL_Latin1_General_CP1_CI_AS=w.BillId
                     WHERE                        
                        c.RegisterDayJalali Between @FromDateJalali and @ToDateJalali AND
                        {GetSewageCondition(isWater)}
@@ -64,6 +66,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						c.UsageTitle,
                         c.ZoneTitle,
                         c.ZoneId,
+						c.BillId,
 						c.WaterDiameterId,
 						c.CommercialCount,
 						c.DomesticCount,
@@ -98,8 +101,11 @@ namespace Aban360.ReportPool.Persistence.Base
 						SUM(CASE WHEN c.WaterDiameterId = 7 THEN 1 ELSE 0 END) AS Field3,
 						SUM(CASE WHEN c.WaterDiameterId = 8 THEN 1 ELSE 0 END) AS Field4,
 						SUM(CASE WHEN c.WaterDiameterId = 9 THEN 1 ELSE 0 END) AS Field5,
-						SUM(CASE WHEN c.WaterDiameterId In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6
+						SUM(CASE WHEN c.WaterDiameterId In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6,
+                        SUM(w.Debt) as DebtAmount
 					FROM CTE c	
+					Join [CustomerWarehouse].dbo.WaterDebt w 
+						On c.BillId COLLATE SQL_Latin1_General_CP1_CI_AS=w.BillId
 					Join [Db70].dbo.T51 t51
 						On t51.C0=c.ZoneId
 					Join [Db70].dbo.T46 t46

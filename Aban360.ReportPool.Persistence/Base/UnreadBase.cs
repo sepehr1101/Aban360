@@ -140,6 +140,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     lb.BillId,
                 	lb.UsageTitle,
                 	lb.ZoneTitle,
+					lb.ZoneId,
                 	c.DomesticCount,
                 	c.CommercialCount,
                 	c.OtherCount,
@@ -155,6 +156,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     ISNULL(cc.UnreadCount, 0) BETWEEN @FromPeriodCount AND @ToPeriodCount
                 )
                 Select
+				    MAX(t46.C2) AS RegionTitle,
                 	u.{groupingField},
                 	u.{groupingField} as ItemTitle,
                 	COUNT(1) as CustomerCount,
@@ -178,6 +180,10 @@ namespace Aban360.ReportPool.Persistence.Base
                 	SUM(CASE WHEN u.WaterDiameterId = 9 THEN 1 ELSE 0 END) AS Field5,
                 	SUM(CASE WHEN u.WaterDiameterId In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6
                 From Unread u
+				Join [Db70].dbo.T51 t51
+					On t51.C0=u.ZoneId
+				Join [Db70].dbo.T46 t46
+					On t51.C1=t46.C0
                 Group By u.{groupingField}";
         }
     }
