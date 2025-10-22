@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
@@ -21,7 +22,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         {
             string readingDailyStatements = GetReadingDailyStatementQuery();
           
-            IEnumerable<ReadingDailyStatementDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingDailyStatementDataOutputDto>(readingDailyStatements, input);
+            IEnumerable<ReadingDailyStatementDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingDailyStatementDataOutputDto>(readingDailyStatements, input, null, 180);
             ReadingDailyStatementHeaderOutputDto header = new ReadingDailyStatementHeaderOutputDto()
             {
                 FromConsumption = input.FromConsumption,
@@ -35,8 +36,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 Title = ReportLiterals.ReadingDailyStatement,
 
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = (data is not null && data.Any()) ? data.Count() : 0,
-                CustomerCount = (data is not null && data.Any()) ? data.Count() : 0,
+                RecordCount = data.CountValue(),
+                CustomerCount = data.CountValue(),
+                SumAmount = data.HasValue() ? data.Sum(d => d.SumItems) : 0
             };
 
             var result = new ReportOutput<ReadingDailyStatementHeaderOutputDto, ReadingDailyStatementDataOutputDto>(ReportLiterals.ReadingDailyStatement, header, data);
@@ -72,18 +74,25 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     From [CustomerWarehouse].dbo.Bills b
                     Join [CustomerWarehouse].dbo.Clients c on b.BillId=c.BillId
                     Where 
+                        b.ZoneId IN @zoneIds AND
                     	c.ToDayJalali IS NULL AND
-                    	(@fromReadingNumber IS NULL OR
-                        @toReadingNumber IS NULL OR
-                        b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-                    	b.NextDay BETWEEN @FromDateJalali AND @ToDateJalali AND
-                        (@fromConsumption IS NULL OR
-                        @toConsumption IS NULL OR
-                        b.Consumption BETWEEN @fromConsumption AND @toConsumption) AND
-                    	b.ZoneId IN @zoneIds AND
-						(@fromAmount IS NULL OR
-						@toAmount IS NULL OR
-						b.SumItems BETWEEN @fromAmount AND @toAmount)";
+                        b.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali AND
+                        b.CounterStateCode NOT IN(4,7,8) AND
+                    	(   
+                            @fromReadingNumber IS NULL OR
+                            @toReadingNumber IS NULL OR
+                            b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
+                        ) AND                    	
+                        (
+                            @fromConsumption IS NULL OR
+                            @toConsumption IS NULL OR
+                            b.Consumption BETWEEN @fromConsumption AND @toConsumption
+                        ) AND                    	
+						(
+                            @fromAmount IS NULL OR
+						    @toAmount IS NULL OR
+						    b.SumItems BETWEEN @fromAmount AND @toAmount
+                        )";
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         {
             string query = GetDetailQuery(input.ZoneIds.HasValue(), input.UsageIds.HasValue());
 
-            IEnumerable<WithoutBillDataOutputDto> withoutBillData = await _sqlReportConnection.QueryAsync<WithoutBillDataOutputDto>(query, input);
+            IEnumerable<WithoutBillDataOutputDto> withoutBillData = await _sqlReportConnection.QueryAsync<WithoutBillDataOutputDto>(query, input, null, 180);
             WithoutBillHeaderOutputDto withoutBillHeader = new WithoutBillHeaderOutputDto()
             {
                 FromDateJalali=input.FromDateJalali,

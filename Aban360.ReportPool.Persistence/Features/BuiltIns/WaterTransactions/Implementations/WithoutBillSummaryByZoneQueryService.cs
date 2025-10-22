@@ -23,7 +23,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             string reportTitle = ReportLiterals.WithoutBill + ReportLiterals.ByZone;
             string query = GetGroupedQuery(input.ZoneIds.HasValue(), input.UsageIds.HasValue(), true);
 
-            IEnumerable<WithoutBillSummaryDataOutputDto> withoutBillData = await _sqlReportConnection.QueryAsync<WithoutBillSummaryDataOutputDto>(query, input);
+            IEnumerable<WithoutBillSummaryDataOutputDto> withoutBillData = await _sqlReportConnection.QueryAsync<WithoutBillSummaryDataOutputDto>(query, input, null, 180);
             WithoutBillHeaderOutputDto withoutBillHeader = new WithoutBillHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
