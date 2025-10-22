@@ -72,7 +72,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						b.NextDay AS ToReadingDateJalali,
 						b.RegisterDay AS RegisterBillDateJalali
                     From [CustomerWarehouse].dbo.Bills b
-                    Join [CustomerWarehouse].dbo.Clients c on b.BillId=c.BillId
+                    LEFT Join [CustomerWarehouse].dbo.Clients c on b.BillId=c.BillId
                     Where 
                         b.ZoneId IN @zoneIds AND
                     	c.ToDayJalali IS NULL AND

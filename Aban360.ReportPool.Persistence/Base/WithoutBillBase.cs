@@ -98,8 +98,8 @@ namespace Aban360.ReportPool.Persistence.Base
                     	w.UsageSellTitle,
                     	w.Address,
                     	w.ZoneTitle,
-                    	b.RegisterDay as LatestBillDateJalali,
-                    	b.NextDay as LatestReadingDateJalali
+                    	'' as LatestBillDateJalali,
+                    	'' as LatestReadingDateJalali
                     From WithoutBill w
                     ";
         }

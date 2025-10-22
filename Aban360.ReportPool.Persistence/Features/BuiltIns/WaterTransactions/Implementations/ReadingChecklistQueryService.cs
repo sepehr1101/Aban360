@@ -21,7 +21,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         {
             string ReadingChecklistQueryString = GetReadingChecklistQuery();
 
-            IEnumerable<ReadingChecklistDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingChecklistDataOutputDto>(ReadingChecklistQueryString, input);
+            IEnumerable<ReadingChecklistDataOutputDto> data = await _sqlReportConnection.QueryAsync<ReadingChecklistDataOutputDto>(ReadingChecklistQueryString, input, null, 180);
             ReadingChecklistHeaderOutputDto header = new()
             {
                 FromReadingNumber = input.FromReadingNumber,
