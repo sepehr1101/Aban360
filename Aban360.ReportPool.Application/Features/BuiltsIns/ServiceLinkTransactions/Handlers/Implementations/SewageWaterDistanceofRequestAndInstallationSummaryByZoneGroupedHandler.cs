@@ -34,7 +34,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 throw new CustomValidationException(message);
             }
 
-            var result = await _sewageWaterDistanceofRequestAndInstallationSummaryByZoneQuery.Get(input);
+            ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto> result = await _sewageWaterDistanceofRequestAndInstallationSummaryByZoneQuery.Get(input);
 
             ICollection<float> distances = new List<float>();
             foreach (var item in result.ReportData)
@@ -42,11 +42,8 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 item.DistanceAverageText = CalculationDistanceDate.ConvertDayToDate((int)item.DistanceAverage);
                 distances.Add(item.DistanceAverage);
             }
-            int averageDistance = (int)distances.Sum() / (result.ReportHeader.RecordCount <= 0 ? 1 : result.ReportHeader.RecordCount);
-            result.ReportHeader.AverageDistance = CalculationDistanceDate.ConvertDayToDate(averageDistance);
             result.ReportHeader.MaxDistance = CalculationDistanceDate.ConvertDayToDate(distances.Any() ? (int)distances.Max() : 0);
             result.ReportHeader.MinDistance = CalculationDistanceDate.ConvertDayToDate(distances.Any() ? (int)distances.Min() : 0);
-
 
             IEnumerable<ReportOutput<SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto>> dataGroup = result
                     .ReportData
@@ -57,8 +54,9 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                         new SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto
                         {
                             ItemTitle = g.First().RegionTitle,
-                            DistanceAverage = g.Sum(x => x.DistanceAverage),
+                            //DistanceAverage = g.Sum(x => x.DistanceAverage),
                             DistanceMedian = g.Sum(x => x.DistanceMedian),
+                            CustomerCount = g.Sum(x => x.CustomerCount),
                         },
                         g.Select(v => new SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto
                         {
@@ -66,19 +64,40 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                             DistanceAverage = v.DistanceAverage,
                             DistanceMedian = v.DistanceMedian,
                             DistanceAverageText = v.DistanceAverageText,
+                            CustomerCount = v.CustomerCount,
                         })
                     ))
                     .ToList();
 
-            dataGroup.ForEach(x =>
+            float sumAllRegionDistance = 0;
+            foreach (var group in dataGroup)
             {
-                x.ReportHeader.DistanceAverageText = CalculationDistanceDate.ConvertDayToDate((int)x.ReportHeader.DistanceAverage);
-            });
+                float sumDistance = 0;
+                int sumBillCounts = 0;
+                foreach (var zones in group.ReportData)
+                {
+                    float weight = zones.CustomerCount * zones.DistanceAverage;
+                    sumDistance += weight;
+                    sumBillCounts += zones.CustomerCount;
+                }
+                float weightAverege = (float)Math.Round(sumDistance / sumBillCounts, 2);
+                int round = (int)Math.Round(weightAverege);
+                group.ReportHeader.DistanceAverage = weightAverege;
+                group.ReportHeader.DistanceAverageText = CalculationDistanceDate.ConvertDayToDate(round);
+
+                sumAllRegionDistance += sumDistance;
+
+            }
+            float averageDistance = (float)Math.Round(sumAllRegionDistance / result.ReportHeader.CustomerCount, 2);
+            int allZoneRound = (int)Math.Round(averageDistance);
+            result.ReportHeader.AverageDistanceNumber = averageDistance;
+            result.ReportHeader.AverageDistance = CalculationDistanceDate.ConvertDayToDate(allZoneRound);
+
             ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, ReportOutput<SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto>> finalData = new(result.Title, result.ReportHeader, dataGroup);
 
             return finalData;
         }
-       
+
         public async Task<ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto>> HandleFlat(SewageWaterDistanceofRequestAndInstallationByZoneInputDto input, CancellationToken cancellationToken)
         {
             ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, ReportOutput<SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto>> result = await Handle(input, cancellationToken);

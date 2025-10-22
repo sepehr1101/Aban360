@@ -9,6 +9,7 @@
         public string ReportDateJalali { get; set; }
         public int RecordCount { get; set; }
         public string AverageDistance { get; set; }
+        public float AverageDistanceNumber { get; set; }
         public string MaxDistance { get; set; }
         public string MinDistance { get; set; }
         public string Title { get; set; }
