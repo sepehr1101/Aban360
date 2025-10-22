@@ -24,6 +24,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             IEnumerable<ReadingListDetailDataOutputDto> modifiedBillsData = await _sqlReportConnection.QueryAsync<ReadingListDetailDataOutputDto>(query, input);
             ReadingListHeaderOutputDto modifiedBillsHeader = new ReadingListHeaderOutputDto()
             {
+                FromDateJalali=input.FromDateJalali,
+                ToDateJalali=input.ToDateJalali,
+                FromReadingNumber=input.FromReadingNumber,
+                ToReadingNumber=input.ToReadingNumber, 
                 ReportDateJalali = DateTime.Now.ToShortDateString(),
                 RecordCount = modifiedBillsData.Count(),
                 CustomerCount = modifiedBillsData.Count(),
