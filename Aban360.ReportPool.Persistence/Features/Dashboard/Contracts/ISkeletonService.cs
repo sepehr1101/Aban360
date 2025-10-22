@@ -8,6 +8,7 @@ namespace Aban360.ReportPool.Persistence.Features.Dashboard.Contracts
         Task<int> Create(Skeleton entity);
         Task<bool> Delete(int id, string deletedBy);
         Task<Skeleton?> GetById(int id);
+        Task<Skeleton?> GetByRole(string role);
         Task<IEnumerable<SkeletonDefinitionDto>> GetDefinitions();
         Task<bool> Update(Skeleton entity);
     }
