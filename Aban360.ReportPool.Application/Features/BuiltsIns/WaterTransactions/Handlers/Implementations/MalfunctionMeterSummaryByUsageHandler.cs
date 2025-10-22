@@ -34,6 +34,8 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             }
 
             ReportOutput<MalfunctionMeterSummaryHeaderOutputDto, MalfunctionMeterSummaryDataOutputDto> malfunctionMeterSummaryByUsage = await _malfunctionMeterSummaryByUsageQueryService.Get(input);
+            malfunctionMeterSummaryByUsage.ReportHeader.ConsumptionAverage = (float)Math.Round(malfunctionMeterSummaryByUsage.ReportHeader.ConsumptionAverage, 3);
+
             return malfunctionMeterSummaryByUsage;
         }
     }

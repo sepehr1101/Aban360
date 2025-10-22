@@ -54,6 +54,8 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             })
             .ToList();
 
+            result.ReportHeader.ConsumptionAverage=(float)Math.Round(result.ReportHeader.ConsumptionAverage, 3);
+
             ReportOutput<MalfunctionMeterSummaryHeaderOutputDto, ReportOutput<MalfunctionReportZoneGroupedData, MalfunctionReportZoneGroupedData>> finalData = new(result.Title, result.ReportHeader, dataGroup);
 
             return finalData;

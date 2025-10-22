@@ -2,6 +2,7 @@
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Timing;
+using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
@@ -36,17 +37,24 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
 
             var result = await _sewageWaterDistanceofRequestAndInstallationSummaryByZoneQuery.Get(input);
 
+            float sumDistance = 0;
             ICollection<float> distances = new List<float>();
             foreach (var item in result.ReportData)
             {
                 item.DistanceAverageText = CalculationDistanceDate.ConvertDayToDate((int)item.DistanceAverage);
                 distances.Add(item.DistanceAverage);
+
+                float weight = item.CustomerCount * item.DistanceAverage;
+                sumDistance += weight;
             }
-            int averageDistance = (int)distances.Sum() / (result.ReportHeader.RecordCount <= 0 ? 1 : result.ReportHeader.RecordCount);
-            result.ReportHeader.AverageDistance = CalculationDistanceDate.ConvertDayToDate(averageDistance);
+            float averageDistance = (float)Math.Round(sumDistance / result.ReportHeader.CustomerCount, 2);
+            int allZoneRound = (int)Math.Round(averageDistance);
+            result.ReportHeader.AverageDistanceNumber = averageDistance;
+            result.ReportHeader.AverageDistance = CalculationDistanceDate.ConvertDayToDate(allZoneRound);
             result.ReportHeader.MaxDistance = CalculationDistanceDate.ConvertDayToDate(distances.Any() ? (int)distances.Max() : 0);
             result.ReportHeader.MinDistance = CalculationDistanceDate.ConvertDayToDate(distances.Any() ? (int)distances.Min() : 0);
 
+           
             return result;
         }
     }
