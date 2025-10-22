@@ -18,14 +18,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Va
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(installation => installation.FromConsumption)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull);
-
-            RuleFor(installation => installation.ToConsumption)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull);
-
             RuleFor(meter => meter.ZoneIds)
                 .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);

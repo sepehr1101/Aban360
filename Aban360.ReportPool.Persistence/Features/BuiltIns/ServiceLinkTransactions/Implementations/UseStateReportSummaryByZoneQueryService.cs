@@ -34,11 +34,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 RecordCount = data is not null && data.Any() ? data.Count() : 0,
                 Title = reportTitle,
 
-                SumCommercialUnit = data.Sum(i => i.CommercialUnit),
-                SumDomesticUnit = data.Sum(i => i.DomesticUnit),
-                SumOtherUnit = data.Sum(i => i.OtherUnit),
-                TotalUnit = data.Sum(i => i.TotalUnit),
-                CustomerCount = data.Sum(i => i.CustomerCount),
+                SumCommercialUnit = data?.Sum(i => i.CommercialUnit) ?? 0,
+                SumDomesticUnit = data?.Sum(i => i.DomesticUnit) ?? 0,
+                SumOtherUnit = data?.Sum(i => i.OtherUnit) ?? 0,
+                TotalUnit = data?.Sum(i => i.TotalUnit) ?? 0,
+                CustomerCount = data?.Sum(i => i.CustomerCount) ?? 0,
+                TotalDebtAmount = data?.Sum(i => i.DebtAmount) ?? 0,
             };
             string useStateQuery = GetUseStateTitle();
             string useStateTitle = await _sqlConnection.QueryFirstOrDefaultAsync<string>(useStateQuery, new { useStateId = input.UseStateId });

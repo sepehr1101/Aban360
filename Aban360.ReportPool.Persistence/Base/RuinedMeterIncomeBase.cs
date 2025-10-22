@@ -26,6 +26,10 @@ namespace Aban360.ReportPool.Persistence.Base
 	                    b.CounterStateCode,
 	                    b.CounterStateTitle,
 						b.WaterDiameterTitle,
+                        b.CommercialCount AS CommercialUnit,
+                        b.DomesticCount AS DomesticUnit,
+                        b.OtherCount AS OtherUnit,
+                        IIF((b.DomesticCount+b.CommercialCount +b.OtherCount=0) ,1, (b.DomesticCount+b.CommercialCount +b.OtherCount)) AS TotalUnit,
 						b.UsageTitle
                     From [CustomerWarehouse].dbo.Bills b
                     Where                     	

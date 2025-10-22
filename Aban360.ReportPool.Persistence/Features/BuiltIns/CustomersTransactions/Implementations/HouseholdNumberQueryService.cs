@@ -91,7 +91,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 						(c.DomesticCount + c.CommercialCount + c.OtherCount) AS TotalUnit,
 						TRIM(c.BillId) BillId,
 						c.HouseholdDateJalali As HouseholdDateJalali,
-						STUFF(TRIM(c.HouseholdDateJalali),1,4,CAST(CAST(SUBSTRING(TRIM(c.HouseholdDateJalali),1,4) AS int)+1 as nvarchar(4))) AS ToHouseholdDateJalali,
+						Case When LEN(TRIM(c.HouseholdDateJalali))=10 Then
+			            	STUFF(TRIM(c.HouseholdDateJalali),1,4,CAST(CAST(SUBSTRING(TRIM(c.HouseholdDateJalali),1,4) AS int)+1 as nvarchar(4)))
+						    Else N'غ ق محاسبه' END AS ToHouseholdDateJalali,
 						c.FamilyCount AS HouseholdCount,
 						IIF(c.HouseholdDateJalali >= @lastYearDate , 1 , 0) AS IsValid
                     FROM CTE c

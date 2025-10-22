@@ -2,6 +2,7 @@
 {
     public record MalfunctionMeterSummaryDataOutputDto
     {
+        public string RegionTitle { get; set; }
         public string ItemTitle { get; set; }
         public long SumItems { get; set; }
         public double Consumption { get; set; }
