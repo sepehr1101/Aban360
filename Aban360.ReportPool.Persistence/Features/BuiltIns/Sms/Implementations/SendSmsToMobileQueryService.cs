@@ -53,7 +53,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.Sms.Implementations
                     Join [Sms].dbo.MagfaDeliveryState m on q.FinalDeliveryState=m.Id
                     Where	
                     	q.InsertDateJalali BETWEEN @fromDate AND @toDate AND
-                    	q.Receiver=@mobile";
+                    	q.Receiver=@mobile
+					Order By 
+                        q.InsertDateJalali Desc,
+                        q.InsertTime Desc";
         }
     }
 }

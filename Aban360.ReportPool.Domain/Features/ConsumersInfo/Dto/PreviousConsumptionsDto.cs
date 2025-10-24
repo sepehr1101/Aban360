@@ -2,7 +2,7 @@
 {
     public record PreviousConsumptionsDto
     {
-        public long  ConsumptionAmount { get; set; }
+        public double  ConsumptionAmount { get; set; }
         public string ConsumptionDateJalali { get; set; }
     }
 }

@@ -62,15 +62,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 		                        RN=ROW_NUMBER() OVER (PARTITION BY b.BillId ORDER BY b.RegisterDay DESC)
                      
 	                        FROM [CustomerWarehouse].dbo.Bills b
-	                        JOIN [CustomerWarehouse].dbo.Clients c 
+	                        Right JOIN [CustomerWarehouse].dbo.Clients c 
 		                        on b.BillId=c.BillId
 	                        WHERE 
-	                            b.CounterStateCode NOT IN(4,7,8) AND
-		                        b.ZoneId=@zoneId AND
+	                            (b.CounterStateCode NOT IN(4,7,8) OR b.CounterStateCode IS NULL) AND
+		                        c.ZoneId=@zoneId AND
                                 (@FromReadingNumber IS NULL or
                             	@ToReadingNumber IS NULL or 
-                            	b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND
-            			        c.ToDayJalali IS NULL)
+                            	c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND
+            			        c.ToDayJalali IS NULL AND
+								c.DeletionStateId NOT IN (1,2))
                         SELECT * FROM CTE
                         WHERE RN=1";
             //todo:
