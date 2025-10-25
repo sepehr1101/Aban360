@@ -22,8 +22,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         {
             string UsageTitle = nameof(UsageTitle);
             string reportTitle = input.IsWater ? ReportLiterals.WaterInstallationSummary : ReportLiterals.SewageInstallationSummary;
-            string query= GetGroupedQuery(input.IsWater, InstallOrRequestOrInstallDepartmentEnum.Install, UsageTitle);            
-            
+            string query = GetGroupedQuery(input.IsWater, InstallOrRequestOrInstallDepartmentEnum.Install, false, UsageTitle, null);
+
             IEnumerable<SewageWaterInstallationSummaryDataOutputDto> installationData = await _sqlReportConnection.QueryAsync<SewageWaterInstallationSummaryDataOutputDto>(query, input);
             SewageWaterInstallationHeaderOutputDto installationHeader = new SewageWaterInstallationHeaderOutputDto()
             {
@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (installationData is not null && installationData.Any()) ? installationData.Count() : 0,
-                Title=reportTitle,
+                Title = reportTitle,
 
                 CustomerCount = installationData.Sum(i => i.CustomerCount),
                 SumCommercialUnit = installationData.Sum(i => i.CommercialUnit),
@@ -43,7 +43,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             };
             var result = new ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto>
                 (reportTitle, installationHeader, installationData);
-            
+
             return result;
         }
     }

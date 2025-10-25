@@ -193,6 +193,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             result.Duration = duration;
             return result;
         }
+
         public async Task<AbBahaCalculationDetails> HandleWithAggregatedNerkh(MeterInfoByPreviousDataInputDto input, CancellationToken cancellationToken)
         {
             CustomerInfoOutputDto customerInfo = await _customerInfoDetailQueryService.GetInfo(input.BillId);

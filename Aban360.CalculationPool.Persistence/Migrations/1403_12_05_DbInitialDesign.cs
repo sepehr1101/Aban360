@@ -10,7 +10,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
     public class DbInitialDesign : Migration
     {
         string _schema = TableSchema.Name, Id = nameof(Id), Hash = nameof(Hash);
-        int _31 = 31, _255 = 255, _1023 = 1023;
+        int _5 = 5, _10 = 10, _31 = 31, _255 = 255, _1023 = 1023;
         public override void Up()
         {
             Create.Schema(_schema);
@@ -256,6 +256,49 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                 .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
                 .WithColumn("Title").AsString(_255)
                 .WithColumn("Description").AsString(_1023).NotNullable();
+        }
+        private void CreateMade11()
+        {
+            var table = TableName.Made11;
+            Create.Table($"{nameof(TableName.Made11)}").InSchema(_schema)
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn("WaterMeterAmount").AsInt64().NotNullable()
+                .WithColumn("WaterAmount").AsInt64().NotNullable()
+                .WithColumn("SewageMeterAmount").AsInt64().NotNullable()
+                .WithColumn("SewageAmount").AsInt64().NotNullable()
+                .WithColumn("IsDomestice").AsBoolean().NotNullable()
+                .WithColumn("BlockCode").AsString(_5).Nullable()
+                .WithColumn("ZoneId").AsInt16().NotNullable()
+                .WithColumn("RegisterDateJalali").AsString(_10).NotNullable()
+                .WithColumn("FromDateJalali").AsString(_10).NotNullable()
+                .WithColumn("ToDateJalali").AsString(_10).NotNullable()
+                .WithColumn("RmovedDateJalali").AsString(_10).Nullable();
+        }
+        private void CreateInstall()
+        {
+            var table = TableName.Install;
+            Create.Table(($"{nameof(TableName.Install)}")).InSchema(_schema)
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn("IsWater").AsBoolean().NotNullable()
+                .WithColumn("MeterDiameterId").AsInt16().NotNullable()
+                .WithColumn("InstallationAmount").AsInt64().NotNullable()
+                .WithColumn("ToolAmount").AsInt64().NotNullable()
+                .WithColumn("RegisterDateJalali").AsString(_10).NotNullable()
+                .WithColumn("FromDateJalali").AsString(_10).NotNullable()
+                .WithColumn("ToDateJalali").AsString(_10).NotNullable()
+                .WithColumn("RemovedDateJalali").AsString(_10).Nullable();
+        }
+        private void CreateIsZoneWithBroker()
+        {
+            var table = TableName.IsZoneWithBroker;
+            Create.Table($"{nameof(TableName.IsZoneWithBroker)}").InSchema(_schema)
+                .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn("ZoneId").AsInt16().NotNullable()
+                .WithColumn("HasBroker").AsBoolean().NotNullable()
+                .WithColumn("RegisterDateJalali").AsString(_10).NotNullable()
+                .WithColumn("FromDateJalali").AsString(_10).NotNullable()
+                .WithColumn("ToDateJalali").AsString(_10).NotNullable()
+                .WithColumn("RemovedDateJalali").AsString(_10).Nullable();//Todo:CheckProp  
         }
     }
 }

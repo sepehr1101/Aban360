@@ -11,17 +11,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 {
-    [Route("v1/sewage-water-installation-summary-by-zoneId")]
-    public class SewageWaterInstallationSummaryByZoneIdController : BaseController
+    [Route("v1/sewage-water-installation-summary-by-zone-and-usage")]
+    public class SewageWaterInstallationSummaryByZoneAndUsageController : BaseController
     {
-        private readonly ISewageWaterInstallationSummaryByZoneIdHandler _sewageWaterInstallationSummaryByZoneIdHandler;
+        private readonly ISewageWaterInstallationSummaryByZoneAndUsageHandler _sewageWaterInstallationSummaryByZoneAndUsageHandler;
         private readonly IReportGenerator _reportGenerator;
-        public SewageWaterInstallationSummaryByZoneIdController(
-            ISewageWaterInstallationSummaryByZoneIdHandler sewageWaterInstallationSummaryByZoneIdHandler,
+        public SewageWaterInstallationSummaryByZoneAndUsageController(
+            ISewageWaterInstallationSummaryByZoneAndUsageHandler sewageWaterInstallationSummaryByZoneAndUsageHandler,
             IReportGenerator reportGenerator)
         {
-            _sewageWaterInstallationSummaryByZoneIdHandler = sewageWaterInstallationSummaryByZoneIdHandler;
-            _sewageWaterInstallationSummaryByZoneIdHandler.NotNull(nameof(sewageWaterInstallationSummaryByZoneIdHandler));
+            _sewageWaterInstallationSummaryByZoneAndUsageHandler = sewageWaterInstallationSummaryByZoneAndUsageHandler;
+            _sewageWaterInstallationSummaryByZoneAndUsageHandler.NotNull(nameof(sewageWaterInstallationSummaryByZoneAndUsageHandler));
 
             _reportGenerator = reportGenerator;
             _reportGenerator.NotNull(nameof(_reportGenerator));
@@ -32,7 +32,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(SewageWaterInstallationInputDto input, CancellationToken cancellationToken)
         {
-            ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto> result = await _sewageWaterInstallationSummaryByZoneIdHandler.Handle(input, cancellationToken);
+            ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto> result = await _sewageWaterInstallationSummaryByZoneAndUsageHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
@@ -40,8 +40,8 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, SewageWaterInstallationInputDto inputDto, CancellationToken cancellationToken)
         {
-            string reportName = (inputDto.IsWater ? ReportLiterals.WaterInstallationSummary : ReportLiterals.SewageInstallationSummary) + ReportLiterals.ZoneTitle;
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _sewageWaterInstallationSummaryByZoneIdHandler.Handle, CurrentUser, reportName, connectionId);
+            string reportName = (inputDto.IsWater ? ReportLiterals.WaterInstallationSummary: ReportLiterals.SewageInstallationSummary)+ReportLiterals.ByUsageAndZone;
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _sewageWaterInstallationSummaryByZoneAndUsageHandler.Handle, CurrentUser, reportName, connectionId);
             return Ok(inputDto);
         }
 
@@ -51,8 +51,8 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         [AllowAnonymous]
         public async Task<IActionResult> GetStiReport(SewageWaterInstallationInputDto inputDto, CancellationToken cancellationToken)
         {
-            int reportCode = 242;
-            ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto> calculationDetails = await _sewageWaterInstallationSummaryByZoneIdHandler.Handle(inputDto, cancellationToken);
+            int reportCode = 245;
+            ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto> calculationDetails = await _sewageWaterInstallationSummaryByZoneAndUsageHandler.Handle(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode);
             return Ok(reportId);
         }

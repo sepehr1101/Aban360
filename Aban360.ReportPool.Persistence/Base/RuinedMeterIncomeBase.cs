@@ -26,6 +26,7 @@ namespace Aban360.ReportPool.Persistence.Base
 	                    b.CounterStateCode,
 	                    b.CounterStateTitle,
 						b.WaterDiameterTitle,
+						b.WaterDiameterTitle AS MeterDiameterTitle,
                         b.CommercialCount AS CommercialUnit,
                         b.DomesticCount AS DomesticUnit,
                         b.OtherCount AS OtherUnit,

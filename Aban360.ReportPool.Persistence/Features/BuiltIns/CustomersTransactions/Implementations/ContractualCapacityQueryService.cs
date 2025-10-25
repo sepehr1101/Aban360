@@ -25,7 +25,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 
-                //todo:When FromContracualCapacity is null Then 0 OR 1 ?
                 FromCapacity = input.FromContractualCapacity != null ? input.FromContractualCapacity : 1,
                 ToCapacity = input.ToContractualCapacity != null ? input.ToContractualCapacity : 999999,
 
@@ -105,41 +104,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                          c.DeletionStateId NOT IN(1,2) AND
 						 {usageQuery}
 						 c.ContractCapacity BETWEEN @FromCapacity AND @ToCapacity";
-        }
-        private string GetContractualCapacityQuery(bool hasUsage, bool hasZone)
-        {
-            string usageQuery = hasUsage ? "c.UsageId in @UsageIds AND" : string.Empty;
-            string zoneQuery = hasZone ? " c.ZoneId in @ZoneIds AND" : string.Empty;
-
-            return @$"SELECT 
-                        c.CustomerNumber,
-                        c.ReadingNumber,
-                        TRIM(c.FirstName) AS FirstName,
-                        TRIM(c.SureName) As Surname,
-                        c.UsageTitle,
-                        c.WaterDiameterTitle MeterDiameterTitle,
-                        c.RegisterDayJalali AS EventDateJalali,
-                        TRIM(c.Address) AS Address,
-                        c.ZoneTitle,
-                        c.DeletionStateId,
-                        c.DeletionStateTitle AS UseStateTitle,
-                        c.DomesticCount DomesticUnit,
-            	        c.CommercialCount CommercialUnit,
-            	        c.OtherCount OtherUnit,
-                        (c.DomesticCount + c.CommercialCount+c.OtherCount ) AS TotalUnit,
-            	        TRIM(c.BillId) BillId,
-            			c.ContractCapacity As ContractualCapacity
-                    FROM [CustomerWarehouse].dbo.Clients c
-                    WHERE 
-                        {usageQuery}
-                        {zoneQuery}
-            			c.ToDayJalali IS NULL AND
-                        --c.ReadingNumber BETWEEN @FromReadingNumber AND @ToReadingNumber AND
-                        (@FromReadingNumber is null Or
-						@ToReadingNumber is null Or
-						c.ReadingNumber between @FromReadingNumber and @ToReadingNumber) AND
-            			c.ContractCapacity BETWEEN @FromCapacity AND @ToCapacity AND
-                        c.WaterInstallDate BETWEEN @FromDate AND @ToDate";
         }
     }
 }

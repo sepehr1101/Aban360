@@ -9,16 +9,16 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Implementations
 {
-    internal sealed class SewageWaterInstallationDepartmentSummaryByZoneHandler : ISewageWaterInstallationDepartmentSummaryByZoneHandler
+    internal sealed class SewageWaterInstallationSummaryByZoneAndUsageHandler : ISewageWaterInstallationSummaryByZoneAndUsageHandler
     {
-        private readonly ISewageWaterInstallationDepartmentSummaryByZoneIdQueryService _sewageWaterInstallationDepartmentSummaryByZoneIdQuery;
+        private readonly ISewageWaterInstallationSummaryByZoneAndUsageQueryService _sewageWaterInstallationSummaryByZoneAndUsageQuery;
         private readonly IValidator<SewageWaterInstallationInputDto> _validator;
-        public SewageWaterInstallationDepartmentSummaryByZoneHandler(
-            ISewageWaterInstallationDepartmentSummaryByZoneIdQueryService sewageWaterInstallationDepartmentSummaryByZoneIdQuery,
+        public SewageWaterInstallationSummaryByZoneAndUsageHandler(
+            ISewageWaterInstallationSummaryByZoneAndUsageQueryService sewageWaterInstallationSummaryByZoneAndUsageQuery,
             IValidator<SewageWaterInstallationInputDto> validator)
         {
-            _sewageWaterInstallationDepartmentSummaryByZoneIdQuery = sewageWaterInstallationDepartmentSummaryByZoneIdQuery;
-            _sewageWaterInstallationDepartmentSummaryByZoneIdQuery.NotNull(nameof(sewageWaterInstallationDepartmentSummaryByZoneIdQuery));
+            _sewageWaterInstallationSummaryByZoneAndUsageQuery = sewageWaterInstallationSummaryByZoneAndUsageQuery;
+            _sewageWaterInstallationSummaryByZoneAndUsageQuery.NotNull(nameof(sewageWaterInstallationSummaryByZoneAndUsageQuery));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 throw new CustomValidationException(message);
             }
 
-            var result = await _sewageWaterInstallationDepartmentSummaryByZoneIdQuery.Get(input);
+            var result = await _sewageWaterInstallationSummaryByZoneAndUsageQuery.Get(input);
             return result;
         }
     }

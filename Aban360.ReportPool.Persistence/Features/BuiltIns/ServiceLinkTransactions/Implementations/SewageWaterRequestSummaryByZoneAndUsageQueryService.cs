@@ -11,18 +11,19 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {
-    internal sealed class SewageWaterRequestSummaryQueryService : RequestOrInstallBase, ISewageWaterRequestSummaryQueryService
+    internal sealed class SewageWaterRequestSummaryByZoneAndUsageQueryService : RequestOrInstallBase, ISewageWaterRequestSummaryByZoneAndUsageQueryService
     {
-        public SewageWaterRequestSummaryQueryService(IConfiguration configuration)
+        public SewageWaterRequestSummaryByZoneAndUsageQueryService(IConfiguration configuration)
             : base(configuration)
         {
         }
 
         public async Task<ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestSummaryDataOutputDto>> Get(SewageWaterRequestInputDto input)
         {
+            string ZoneTitle = nameof(ZoneTitle);
             string UsageTitle = nameof(UsageTitle);
-            string query = GetGroupedQuery(input.IsWater, InstallOrRequestOrInstallDepartmentEnum.Request, false, UsageTitle, null);
-            string reportTitle = input.IsWater ? ReportLiterals.WaterRequestSummary + ReportLiterals.ByUsage : ReportLiterals.SewageRequestSummary + ReportLiterals.ByUsage;
+            string query = GetGroupedQuery(input.IsWater, InstallOrRequestOrInstallDepartmentEnum.Request, true, ZoneTitle, UsageTitle);
+            string reportTitle = (input.IsWater ? ReportLiterals.WaterRequestSummary : ReportLiterals.SewageRequestSummary) + ReportLiterals.ByUsageAndZone;
 
             IEnumerable<SewageWaterRequestSummaryDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<SewageWaterRequestSummaryDataOutputDto>(query, input);
             SewageWaterRequestHeaderOutputDto RequestHeader = new SewageWaterRequestHeaderOutputDto()
@@ -32,7 +33,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = (RequestData is not null && RequestData.Any()) ? RequestData.Count() : 0,
+                RecordCount = RequestData is not null && RequestData.Any() ? RequestData.Count() : 0,
                 Title = reportTitle,
 
                 SumCommercialUnit = RequestData.Sum(i => i.CommercialUnit),

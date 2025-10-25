@@ -25,6 +25,10 @@
         LineItemType,
 
         SupportedOperator,
-        SupportedField
+        SupportedField,
+
+        Made11,
+        Install,
+        IsZoneWithBroker
     }
 }

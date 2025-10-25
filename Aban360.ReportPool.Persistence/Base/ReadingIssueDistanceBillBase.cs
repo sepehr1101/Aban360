@@ -30,6 +30,7 @@ namespace Aban360.ReportPool.Persistence.Base
                 	b.BranchType,
                 	b.WaterDiameterId,
                 	b.WaterDiameterTitle,
+                	b.WaterDiameterTitle as MeterDiameterTitle,
                 	b.ContractCapacity as ContractualCapacity,
                 	b.CommercialCount as CommercialUnit,
                 	b.DomesticCount as DomesticUnit,

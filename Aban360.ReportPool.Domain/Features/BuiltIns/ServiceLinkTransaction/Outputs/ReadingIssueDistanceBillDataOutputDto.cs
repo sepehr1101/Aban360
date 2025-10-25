@@ -18,6 +18,7 @@
         public string BranchType { get; set; }
         public int WaterDiameterId { get; set; }
         public string WaterDiameterTitle { get; set; }
+        public string MeterDiameterTitle { get; set; }
         public string ContractualCapacity { get; set; }
         public int CommercialUnit { get; set; }
         public int DomesticUnit { get; set; }

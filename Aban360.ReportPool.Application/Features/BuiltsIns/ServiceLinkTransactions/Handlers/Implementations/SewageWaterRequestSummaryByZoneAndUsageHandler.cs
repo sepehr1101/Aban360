@@ -9,22 +9,22 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Implementations
 {
-    internal sealed class SewageWaterInstallationSummaryByZoneIdHandler : ISewageWaterInstallationSummaryByZoneIdHandler
+    internal sealed class SewageWaterRequestSummaryByZoneAndUsageHandler : ISewageWaterRequestSummaryByZoneAndUsageHandler
     {
-        private readonly ISewageWaterInstallationSummaryByZoneIdQueryService _sewageWaterInstallationSummaryByZoneIdQuery;
-        private readonly IValidator<SewageWaterInstallationInputDto> _validator;
-        public SewageWaterInstallationSummaryByZoneIdHandler(
-            ISewageWaterInstallationSummaryByZoneIdQueryService sewageWaterInstallationSummaryByZoneIdQuery,
-            IValidator<SewageWaterInstallationInputDto> validator)
+        private readonly ISewageWaterRequestSummaryByZoneAndUsageQueryService _sewageWaterRequestSummaryByZoneAndUsageQuery;
+        private readonly IValidator<SewageWaterRequestInputDto> _validator;
+        public SewageWaterRequestSummaryByZoneAndUsageHandler(
+            ISewageWaterRequestSummaryByZoneAndUsageQueryService sewageWaterRequestSummaryByZoneAndUsageQuery,
+            IValidator<SewageWaterRequestInputDto> validator)
         {
-            _sewageWaterInstallationSummaryByZoneIdQuery = sewageWaterInstallationSummaryByZoneIdQuery;
-            _sewageWaterInstallationSummaryByZoneIdQuery.NotNull(nameof(sewageWaterInstallationSummaryByZoneIdQuery));
+            _sewageWaterRequestSummaryByZoneAndUsageQuery = sewageWaterRequestSummaryByZoneAndUsageQuery;
+            _sewageWaterRequestSummaryByZoneAndUsageQuery.NotNull(nameof(sewageWaterRequestSummaryByZoneAndUsageQuery));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto>> Handle(SewageWaterInstallationInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestSummaryDataOutputDto>> Handle(SewageWaterRequestInputDto input, CancellationToken cancellationToken)
         {
             var validatioResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validatioResult.IsValid)
@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 throw new CustomValidationException(message);
             }
 
-            var result = await _sewageWaterInstallationSummaryByZoneIdQuery.Get(input);
+            var result = await _sewageWaterRequestSummaryByZoneAndUsageQuery.Get(input);
             return result;
         }
     }
