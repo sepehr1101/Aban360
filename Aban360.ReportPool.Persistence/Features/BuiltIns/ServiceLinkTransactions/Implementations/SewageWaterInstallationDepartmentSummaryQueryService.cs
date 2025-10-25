@@ -22,7 +22,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         {
             string UsageTitle = nameof(UsageTitle);
             string reportTitle = (input.IsWater ? ReportLiterals.WaterInstallationDepartmentSummary : ReportLiterals.SewageInstallationDepartmentSummary) + ReportLiterals.ByUsage;
-            string query = GetGroupedQuery(input.IsWater, InstallOrRequestOrInstallDepartmentEnum.InstallDepartment, UsageTitle);
+            string query = GetGroupedQuery(input.IsWater, InstallOrRequestOrInstallDepartmentEnum.InstallDepartment, false, UsageTitle, null);
 
             IEnumerable<SewageWaterInstallationSummaryDataOutputDto> installationData = await _sqlReportConnection.QueryAsync<SewageWaterInstallationSummaryDataOutputDto>(query, input);
             SewageWaterInstallationHeaderOutputDto installationHeader = new SewageWaterInstallationHeaderOutputDto()

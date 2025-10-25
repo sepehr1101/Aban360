@@ -17,6 +17,7 @@
         public int CounterStateCode { get; set; }
         public string CounterStateTitle { get; set; }
         public string WaterDiameterTitle { get; set; }
+        public string MeterDiameterTitle { get; set; }
         public string UsageTitle { get; set; }
         public int DomesticUnit { get; set; }
         public int CommercialUnit { get; set; }
