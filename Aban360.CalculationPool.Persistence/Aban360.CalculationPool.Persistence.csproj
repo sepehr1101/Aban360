@@ -37,6 +37,8 @@
 
   <ItemGroup>
     <Folder Include="Exceptions\" />
+    <Folder Include="Features\Branch\Queries\Contracts\" />
+    <Folder Include="Features\Branch\Queries\Implementations\" />
   </ItemGroup>
 
   <ItemGroup>

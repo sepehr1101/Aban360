@@ -11,9 +11,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {
-    internal sealed class SewageWaterInstallationSummaryByZoneIdQueryService : RequestOrInstallBase, ISewageWaterInstallationSummaryByZoneIdQueryService
+    internal sealed class SewageWaterInstallationSummaryByZoneAndUsageQueryService : RequestOrInstallBase, ISewageWaterInstallationSummaryByZoneAndUsageQueryService
     {
-        public SewageWaterInstallationSummaryByZoneIdQueryService(IConfiguration configuration)
+        public SewageWaterInstallationSummaryByZoneAndUsageQueryService(IConfiguration configuration)
             : base(configuration)
         {
         }
@@ -21,8 +21,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         public async Task<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto>> Get(SewageWaterInstallationInputDto input)
         {
             string ZoneTitle = nameof(ZoneTitle);
-            string query = GetGroupedQuery(input.IsWater, InstallOrRequestOrInstallDepartmentEnum.Install, false, ZoneTitle, null);
-            string reportTitle = (input.IsWater ? ReportLiterals.WaterInstallationSummary : ReportLiterals.SewageInstallationSummary) + ReportLiterals.ByZone;
+            string UsageTitle = nameof(UsageTitle);
+            string query = GetGroupedQuery(input.IsWater, InstallOrRequestOrInstallDepartmentEnum.Install, true, ZoneTitle, UsageTitle);
+            string reportTitle = (input.IsWater ? ReportLiterals.WaterInstallationSummary : ReportLiterals.SewageInstallationSummary) + ReportLiterals.ByUsageAndZone;
 
             IEnumerable<SewageWaterInstallationSummaryDataOutputDto> installationData = await _sqlReportConnection.QueryAsync<SewageWaterInstallationSummaryDataOutputDto>(query, input);
             SewageWaterInstallationHeaderOutputDto installationHeader = new SewageWaterInstallationHeaderOutputDto()
