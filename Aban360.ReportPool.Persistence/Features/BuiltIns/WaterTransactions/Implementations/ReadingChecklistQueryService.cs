@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
@@ -27,9 +28,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = (data is not null && data.Any()) ? data.Count() : 0,
-                CustomerCount = (data is not null && data.Any()) ? data.Count() : 0,
-                ZoneTitle = (data is not null && data.Any()) ? data.FirstOrDefault().ZoneTitle : "",
+                RecordCount = data.HasValue() ? data.Count() : 0,
+                CustomerCount = data.HasValue() ? data.Count() : 0,
+                ZoneTitle = data.HasValue() ? data.FirstOrDefault().ZoneTitle : "",
                 Title= ReportLiterals.ReadingChecklist,
             };
 

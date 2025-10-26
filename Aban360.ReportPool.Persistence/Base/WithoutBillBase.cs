@@ -67,7 +67,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     	c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber
                     ) AND
                     c.ToDayJalali IS NULL AND
-                    c.WaterRegisterDateJalali <= @FromDateJalali
+                    c.PhysicalWaterInstallDateJalali <= @FromDateJalali
                     {parameters.CZoneQuery}
                     {parameters.CUsageQuery}
                     ),
@@ -159,7 +159,7 @@ namespace Aban360.ReportPool.Persistence.Base
                             	c.DeletionStateId IN (0) AND
                                 c.HasWater=1 AND
                     			b.TypeCode IN (1,7,8) AND
-                                c.WaterRegisterDateJalali <= @FromDateJalali AND
+                                c.PhysicalWaterInstallDateJalali <= @FromDateJalali AND
                     			c.ToDayJalali IS NULL 
                                 {parameters.CZoneQuery}
                                 {parameters.CUsageQuery}

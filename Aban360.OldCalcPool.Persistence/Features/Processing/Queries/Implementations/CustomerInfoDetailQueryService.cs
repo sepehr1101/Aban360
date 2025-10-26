@@ -12,7 +12,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
     {
         public CustomerInfoDetailQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+        }
 
         public async Task<CustomerInfoOutputDto> GetInfo(string billId)
         {
