@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="EFCore.BulkExtensions" Version="8.1.2" />
     <PackageReference Include="FluentMigrator" Version="6.2.0" />
     <PackageReference Include="FluentMigrator.Runner.SqlServer" Version="6.2.0" />
@@ -37,8 +38,6 @@
 
   <ItemGroup>
     <Folder Include="Exceptions\" />
-    <Folder Include="Features\Branch\Queries\Contracts\" />
-    <Folder Include="Features\Branch\Queries\Implementations\" />
   </ItemGroup>
 
   <ItemGroup>
