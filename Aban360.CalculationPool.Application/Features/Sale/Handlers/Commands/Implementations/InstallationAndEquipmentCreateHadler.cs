@@ -8,13 +8,13 @@ using FluentValidation;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Implementations
 {
-    internal sealed class Article11CreateHadler : IArticle11CreateHadler
+    internal sealed class InstallationAndEquipmentCreateHadler : IInstallationAndEquipmentCreateHadler
     {
-        private readonly IArticle11CommandService _commandService;
-        private readonly IValidator<Article11InputDto> _validator;
-        public Article11CreateHadler(
-            IArticle11CommandService commandService,
-            IValidator<Article11InputDto> validator)
+        private readonly IInstallationAndEquipmentCommandService _commandService;
+        private readonly IValidator<InstallationAndEquipmentInputDto> _validator;
+        public InstallationAndEquipmentCreateHadler(
+            IInstallationAndEquipmentCommandService commandService,
+            IValidator<InstallationAndEquipmentInputDto> validator)
         {
             _commandService = commandService;
             _commandService.NotNull(nameof(commandService));
@@ -23,7 +23,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task Handle(Article11InputDto inputDto, CancellationToken cancellationToken)
+        public async Task Handle(InstallationAndEquipmentInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)

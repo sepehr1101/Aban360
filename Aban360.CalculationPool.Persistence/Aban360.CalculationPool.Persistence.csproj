@@ -38,6 +38,7 @@
 
   <ItemGroup>
     <Folder Include="Exceptions\" />
+    <Folder Include="Features\Sale\Queries\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -46,6 +47,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="DbSeeder\DataScript\Article11.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DbSeeder\DataScript\InstallationAndEquipment.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DbSeeder\DataScript\supportedOperation.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

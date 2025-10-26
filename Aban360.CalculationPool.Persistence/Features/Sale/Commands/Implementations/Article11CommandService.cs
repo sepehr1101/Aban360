@@ -1,10 +1,10 @@
 ﻿using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
-using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
+using Aban360.CalculationPool.Persistence.Features.Sale.Commands.Contracts;
 using Aban360.Common.Db.Dapper;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
-namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementations
+namespace Aban360.CalculationPool.Persistence.Features.Sale.Commands.Implementations
 {
     internal sealed class Article11CommandService : AbstractBaseConnection, IArticle11CommandService
     {

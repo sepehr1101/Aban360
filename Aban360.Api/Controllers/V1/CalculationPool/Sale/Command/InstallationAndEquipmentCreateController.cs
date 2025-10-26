@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Command
 {
-    [Route("v1/article11")]
-    public class Article11CreateController : BaseController
+    [Route("v1/installation-and-equipment")]
+    public class InstallationAndEquipmentCreateController : BaseController
     {
-        private readonly IArticle11CreateHadler _createHadler;
-        public Article11CreateController(IArticle11CreateHadler createHadler)
+        private readonly IInstallationAndEquipmentCreateHadler _createHadler;
+        public InstallationAndEquipmentCreateController(IInstallationAndEquipmentCreateHadler createHadler)
         {
             _createHadler = createHadler;
             _createHadler.NotNull(nameof(createHadler));
@@ -18,8 +18,8 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Command
 
         [HttpPost]
         [Route("create")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<Article11InputDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Create([FromBody] Article11InputDto createDto, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponseEnvelope<InstallationAndEquipmentInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Create([FromBody] InstallationAndEquipmentInputDto createDto, CancellationToken cancellationToken)
         {
             await _createHadler.Handle(createDto, cancellationToken);
 

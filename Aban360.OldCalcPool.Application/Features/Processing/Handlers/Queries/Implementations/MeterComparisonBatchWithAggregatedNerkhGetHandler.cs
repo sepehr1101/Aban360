@@ -101,6 +101,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                     DomesticUnit = data.DomesticUnit,
                     CommertialUnit = data.CommertialUnit,
                     OtherUnit = data.OtherUnit,
+                    EmptyUnit=data.EmptyUnit,
                     WaterInstallationDateJalali = data.WaterInstallationDateJalali,
                     SewageInstallationDateJalali = data.SewageInstallationDateJalali,
                     WaterCount = data.WaterCount,
