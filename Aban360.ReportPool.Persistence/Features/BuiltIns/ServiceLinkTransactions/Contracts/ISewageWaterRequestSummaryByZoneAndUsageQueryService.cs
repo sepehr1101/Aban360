@@ -4,8 +4,8 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts
 {
-    public interface ISewageWaterInstallationSummaryByZoneIdQueryService
+    public interface ISewageWaterRequestSummaryByZoneAndUsageQueryService
     {
-        Task<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto>> Get(SewageWaterInstallationInputDto input);
+        Task<ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestSummaryDataOutputDto>> Get(SewageWaterRequestInputDto input);
     }
 }

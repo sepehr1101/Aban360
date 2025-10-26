@@ -116,8 +116,6 @@
         public static string SewageInstallationDetail { get { return "جزئیات انشعاب فاضلاب نصب شده"; } }
         public static string WaterInstallationSummary { get { return "خلاصه انشعاب آب نصب شده"; } }
         public static string SewageInstallationSummary { get { return "خلاصه انشعاب فاضلاب نصب شده"; } }
-        public static string WaterInstallationSummaryByZoneId { get { return "خلاصه انشعاب آب نصب شده بر اساس ناحیه"; } }
-        public static string SewageInstallationSummaryByZoneId { get { return "خلاصه انشعاب فاضلاب نصب شده بر اساس ناحیه"; } }
 
         public static string WaterInstallationDepartmentSummary { get { return "خلاصه کارگاه نصب انشعاب آب "; } }
         public static string WaterInstallationDepartmentDetail { get { return "جزئیات کارگاه نصب انشعاب آب "; } }

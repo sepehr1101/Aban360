@@ -20,7 +20,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<RuinedMeterIncomeHeaderOutputDto, RuinedMeterIncomeSummaryDataOutputDto>> GetInfo(RuinedMeterIncomeInputDto input)
         {
-            string reportTitle = ReportLiterals.RuinedMeterIncomeSummary + ReportLiterals.ByUsage + ReportLiterals.ByZone;
+            string reportTitle = ReportLiterals.RuinedMeterIncomeSummary + ReportLiterals.ByUsage ;
             string query = GetGroupedQuery(GroupingFields.UsageTitle);
          
             IEnumerable<RuinedMeterIncomeSummaryDataOutputDto> ruinedMeterIncomeData = await _sqlReportConnection.QueryAsync<RuinedMeterIncomeSummaryDataOutputDto>(query, input);
