@@ -327,7 +327,9 @@ namespace Aban360.CalculationPool.Application.Features.Base
             (double, double) abBahaValues = (0, 0);
 
             if (CheckZero(duration, monthlyConsumption, nerkh.Vaj))
+            {
                 return new CalculateAbBahaOutputDto(0, (0, 0));
+            }
 
             if (IsGardenOrDweltyAfter1400_12_24OrIsDomestic(customerInfo, nerkh) &&
                 !IsReligious(customerInfo.UsageId) &&
@@ -608,52 +610,6 @@ namespace Aban360.CalculationPool.Application.Features.Base
             hotSeasonDuration = PartTime(hotSeasonStart, hotSeasonEnd, nerkh.Date1, nerkh.Date2, new { BillId = customerInfo.BillId, ZoneId = customerInfo.ZoneId, UsageId = customerInfo.UsageId });
             amount= hotSeasonDuration > 0 ? (int)((hotSeasonDuration * fazelabAmount / nerkh.Duration) * 0.2) : 0;
             return (hotSeasonDuration, amount);
-        }
-
-        private double CalcHotSeasonDiscount(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, CalculateAbBahaOutputDto abBahaValues, decimal MultiplierAbBaha, double hotSeasonAmount)
-        {
-            string currentDateJalali = DateTime.Now.ToShortPersianDateString();
-            double abBahaMultiplied = 0;
-
-            //1942
-            if ((IsReligiousWithCharity(customerInfo.UsageId)) && !IsConstruction(customerInfo.BranchType))
-            {
-                abBahaMultiplied = (abBahaValues.AbBahaValues.Item1 * (double)MultiplierAbBaha);
-                abBahaValues.AbBahaAmount = abBahaValues.AbBahaValues.Item1 - abBahaMultiplied;
-                if (hotSeasonAmount != 0)
-                {
-                }
-            }//line->1975
-            return 0;
-        }
-        private double CalculateAbBahaDiscount(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, CalculateAbBahaOutputDto abBahaValues, int olgoo, decimal multiplierAbBaha, double monthlyConsumption, string currentDateJalali)
-        {
-            double fazelabAmount = abBahaValues.AbBahaAmount;
-            bool isVillage = IsVillage(customerInfo.ZoneId);
-            double partialOlgoo = olgoo / 30 * nerkh.Duration;
-            string date1401_12_27 = "1401/12/27";
-            int divider = isVillage ? 2 : 1;
-            double abBahaDiscount = 0;
-
-            double consumptionDiscount = nerkh.PartialConsumption > partialOlgoo ? partialOlgoo : nerkh.PartialConsumption;
-            if (MeetCondition(nerkh, customerInfo, date1401_12_27))
-            {
-                return IsLessThan1403_09_13(nerkh.Date2) ?
-                    (int)(consumptionDiscount * ((((3706 * partialOlgoo) - 13845) / partialOlgoo) * 1.15) * (double)multiplierAbBaha) / divider :
-                    (int)(consumptionDiscount * ((((70000 * 0.01 * partialOlgoo)) * partialOlgoo) / partialOlgoo) * (double)multiplierAbBaha) / divider;
-
-            }//L 1883
-
-            return abBahaDiscount;
-
-
-            bool MeetCondition(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, string date1401_12_27)
-            {
-                return IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
-                                !IsConstruction(customerInfo.BranchType) &&
-                                IsHandoverDiscount(customerInfo.BranchType) &&
-                                nerkh.Date1.CompareTo(date1401_12_27) >= 0;
-            }
         }
 
         private bool IsGardenOrDweltyAfter1400_12_24(int usageId, string nerkhDate1)

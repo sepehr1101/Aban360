@@ -44,7 +44,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         private string GetUnspecifiedServiceLinkPaymentQuery()
         {
-            return @$"Select
+            return @$"Select TOP 1000
 						p.CustomerNumber AS CustomerNumber,
 						p.RegisterDay AS EventDateJalali,
 						p.RegisterDay AS BankDateJalali,
@@ -57,30 +57,24 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 						p.PaymentGateway AS PaymentGateway
 					From [CustomerWarehouse].dbo.PaymentsEn p
 					LEFT JOIN [CustomerWarehouse].dbo.RequestBillDetails b 
-						ON p.PayId=b.PayId
+						ON p.PayId=b.PayId AND p.ZoneId=b.ZoneId AND p.CustomerNumber=b.CustomerNumber
 					WHERE
-						b.Id IS NULL
-						AND
+						b.Id IS NULL AND
 						(
-							(@FromDateJalali IS NOT NULL AND
-								@ToDateJalali IS NOT NULL AND
-								p.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali)
-							OR
-							(@FromDateJalali IS NULL AND
-								@ToDateJalali IS NULL)
-						)
-						AND
+							@FromDateJalali IS NULL OR
+							@ToDateJalali IS NULL OR
+							p.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali
+						) AND
 						(
-							(@FromAmount IS NOT NULL AND
-							  @ToAmount IS NOT NULL AND
-							  p.Amount BETWEEN @FromAmount AND @ToAmount)
-							OR 
-							(@FromAmount IS NULL AND
-								@ToAmount IS NULL)
-						)AND
-						(@fromBankId IS NULL OR
-                        @toBankId IS NULL OR
-                        p.BankCode BETWEEN @fromBankId AND @toBankId)";
+							@FromAmount IS  NULL OR
+							@ToAmount IS NULL OR
+							p.Amount BETWEEN @FromAmount AND @ToAmount
+						) AND
+						(
+							@fromBankId IS NULL OR
+							@toBankId IS NULL OR
+							p.BankCode BETWEEN @fromBankId AND @toBankId
+						)";
         }
     }
 }
