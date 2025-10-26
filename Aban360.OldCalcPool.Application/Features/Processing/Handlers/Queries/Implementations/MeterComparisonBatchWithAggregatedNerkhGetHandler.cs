@@ -49,10 +49,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                 MeterComparisonBatchDataOutputDto comparisonBatch = CreateComparisonBatchObject(data);
                 comparisonBatch.CurrentAmount = result.SumItems;
                 comparisonBatch.IsChecked = GetTolarance(data.PreviousAmount, result.SumItems, input.Tolerance, input.IsPercent);
-                comparisonBatch.CurrentDiscountAmount = result.DiscountSum;
-                comparisonBatch.PreviousDiscountAmount = data.PreviousDiscount;
+                comparisonBatch.CurrentDiscountAmount = result.DiscountSum;             
                 comparisonBatch.ComparisonAmount = GetComparison(data.PreviousAmount, result.SumItems);
-
                 comparisonResult.Add(comparisonBatch);
             }
 
@@ -68,10 +66,18 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                 BillId = data.BillId,
                 PreviousDateJalali = data.PreviousDateJalali,
                 CurrentDateJalali = data.CurrentDateJalali,
-                CurrentMeterNumber = data.CurrentMeterNumber,
                 PreviousMeterNumber = data.PreviousMeterNumber,
+                CurrentMeterNumber = data.CurrentMeterNumber,              
                 PreviousAmount = data.PreviousAmount,
-                ZoneTitle = data.ZoneTitle
+                PreviousDiscountAmount = data.PreviousDiscount,
+                ZoneTitle = data.ZoneTitle,
+                UsageId = data.UsageId,
+                BranchId = data.BranchType,
+                DomesticUnit = data.DomesticUnit,
+                CommercialUnit = data.CommertialUnit,
+                OtherUnit = data.OtherUnit,
+                EmptyUnit = data.EmptyUnit,
+                ContractualCapacity = data.ContractualCapacity              
             };
         }
         private BaseOldTariffEngineImaginaryInputDto CreateImaginaryInputDtoObject(MeterComparisonBatchDataWithCustomerInfoOutputDto data)
@@ -86,7 +92,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                     PreviousDateJalali = data.PreviousDateJalali,
                     PreviousNumber = data.PreviousMeterNumber
                 },
-                customerInfo = new CustomerDetailInfoInputDto()
+                CustomerInfo = new CustomerDetailInfoInputDto()
                 {
                     ZoneId = data.ZoneId,
                     Radif = data.Radif,
