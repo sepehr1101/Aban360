@@ -25,6 +25,7 @@
         public int DomesticUnit { get; set; }
         public int CommertialUnit { get; set; }
         public int OtherUnit { get; set; }
+        public int EmptyUnit { get; set; }
         public string WaterInstallationDateJalali { get; set; }
         public string SewageInstallationDateJalali { get; set; }
         public int WaterCount { get; set; }

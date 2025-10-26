@@ -1,6 +1,4 @@
-﻿using DNTPersianUtils.Core;
-
-namespace Aban360.Common.Extensions
+﻿namespace Aban360.Common.Extensions
 {
     public static class CollectionExtensions
     {

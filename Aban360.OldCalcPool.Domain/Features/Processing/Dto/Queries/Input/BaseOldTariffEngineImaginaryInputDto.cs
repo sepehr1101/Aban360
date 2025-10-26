@@ -2,8 +2,7 @@
 {
     public record BaseOldTariffEngineImaginaryInputDto
     {
-        public CustomerDetailInfoInputDto customerInfo { get; set; }
-        public MeterInfoByPreviousDataInputDto MeterPreviousData { get; set; }
-
+        public CustomerDetailInfoInputDto? CustomerInfo { get; set; }
+        public MeterInfoByPreviousDataInputDto? MeterPreviousData { get; set; }
     }
 }

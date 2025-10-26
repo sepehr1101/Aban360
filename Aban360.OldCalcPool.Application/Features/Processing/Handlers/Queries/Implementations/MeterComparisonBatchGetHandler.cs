@@ -15,7 +15,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
         private readonly IProcessing _processing;
         private readonly IMeterComparisonBatchQueryService _meterComparisonBatchQueryService;
         private readonly IValidator<MeterComparisonBatchInputDto> _validator;
-        float _percent = (float)0.08;
+       
         public MeterComparisonBatchGetHandler(
             IProcessing processing,
             IMeterComparisonBatchQueryService meterComparisonBatchQueryService,
@@ -86,7 +86,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                     PreviousDateJalali = data.PreviousDateJalali,
                     PreviousNumber = data.PreviousMeterNumber
                 },
-                customerInfo = new CustomerDetailInfoInputDto()
+                CustomerInfo = new CustomerDetailInfoInputDto()
                 {
                     ZoneId = data.ZoneId,
                     Radif = data.Radif,
