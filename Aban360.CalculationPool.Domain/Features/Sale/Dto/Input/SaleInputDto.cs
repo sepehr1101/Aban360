@@ -2,8 +2,8 @@
 {
     public record SaleInputDto
     {
-        public int WaterDiameterId { get; set; }
-        public int SiphonDiameterId { get; set; }
+        public short WaterDiameterId { get; set; }
+        public short? SiphonDiameterId { get; set; }
 
         public int ZoneId { get; set; }
         public string? Block { get; set; }

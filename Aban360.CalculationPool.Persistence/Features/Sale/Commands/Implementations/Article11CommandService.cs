@@ -18,6 +18,16 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Commands.Implementat
             string query = CreateQuery();
             await _sqlReportConnection.ExecuteScalarAsync(query, input);
         }
+        public async Task Update(Article11UpdateDto input)
+        {
+            string query = UpdateQuery();
+            await _sqlReportConnection.ExecuteScalarAsync(query, input);
+        }
+        public async Task Delete(DeleteDto input)
+        {
+            string query = DeleteQuery();
+            await _sqlReportConnection.ExecuteScalarAsync(query, input);
+        }
 
         private string CreateQuery()
         {
@@ -32,6 +42,33 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Commands.Implementat
                         @SewageMeterAmount,@SewageAmount,@IsDomestic,
                         @BlockCode,@ZoneId,@RegisterDateJalali,
                         @FromDateJalali,@ToDateJalali,@RemovedDateJalali)";
+        }
+
+        private string UpdateQuery()
+        {
+            return @"UPDATE [Aban360].CalculationPool.Article11
+                    SET
+                        WaterMeterAmount   = @WaterMeterAmount,
+                        WaterAmount        = @WaterAmount,
+                        SewageMeterAmount  = @SewageMeterAmount,
+                        SewageAmount       = @SewageAmount,
+                        IsDomestic         = @IsDomestic,
+                        BlockCode          = @BlockCode,
+                        ZoneId             = @ZoneId,
+                        RegisterDateJalali = @RegisterDateJalali,
+                        FromDateJalali     = @FromDateJalali,
+                        ToDateJalali       = @ToDateJalali
+                    WHERE
+                        Id = @Id;";
+        }
+
+        private string DeleteQuery()
+        {
+            return @"UPDATE [Aban360].CalculationPool.Article11
+                    SET
+                        RemovedDateJalali  = @RemovedDateJalali
+                    WHERE
+                        Id = @Id;";
         }
     }
 }

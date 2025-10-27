@@ -25,20 +25,5 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Command
 
             return Ok(createDto);
         }
-
-
-        [HttpPost]
-        [Route("create-all")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<Article11InputDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Createall([FromBody] IEnumerable<Article11InputDto> createDto, CancellationToken cancellationToken)
-        {
-            foreach (var item in createDto)
-            {
-                await _createHadler.Handle(item, cancellationToken);
-
-            }
-
-            return Ok(createDto);
-        }
     }
 }

@@ -7,6 +7,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using Dapper;
+using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
@@ -28,7 +29,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToDateJalali=input.ToDateJalali,
                 FromReadingNumber=input.FromReadingNumber,
                 ToReadingNumber=input.ToReadingNumber, 
-                ReportDateJalali = DateTime.Now.ToShortDateString(),
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = modifiedBillsData.Count(),
                 CustomerCount = modifiedBillsData.Count(),
                 Title= ReportLiterals.ReadingListDetail,

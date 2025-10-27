@@ -1,6 +1,6 @@
-﻿namespace Aban360.CalculationPool.Domain.Features.Sale.Dto.Output
+﻿namespace Aban360.CalculationPool.Domain.Features.Sale.Dto.Input
 {
-    public record Article11OutputDto
+    public record Article11UpdateDto
     {
         public short Id { get; set; }
         public long WaterMeterAmount { get; set; }
@@ -10,9 +10,9 @@
         public bool IsDomestic { get; set; }
         public string? BlockCode { get; set; }
         public int ZoneId { get; set; }
-        public string RegisterDateJalali { get; set; }
-        public string FromDateJalali { get; set; }
-        public string ToDateJalali { get; set; }
+        public string? RegisterDateJalali { get; set; } 
+        public string FromDateJalali { get; set; } 
+        public string ToDateJalali { get; set; } 
         public string? RemovedDateJalali { get; set; }
     }
 }
