@@ -25,6 +25,7 @@
 
         public int Count { get; set; }
         public int CustomerCount { get; set; }
+        public string Title { get; set; }
     }
     public record TagsInputDto
     {
