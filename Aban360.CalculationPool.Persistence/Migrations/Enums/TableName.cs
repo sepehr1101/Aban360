@@ -27,8 +27,8 @@
         SupportedOperator,
         SupportedField,
 
-        Made11,
-        Install,
+        Article11,
+        InstallationAndEquipment,
         IsZoneWithBroker
     }
 }

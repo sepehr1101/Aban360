@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Aban360.InstallationPool.Domain\Aban360.InstallationPool.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DbSeeder\DataScript\" />
+  </ItemGroup>
+
 </Project>
