@@ -81,6 +81,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     Where
                     	m.town=@zoneId AND 
 						b.cod_vas IN (0) AND
+                        b.del=0 AND m.radif=10881037 and
 						{conditionDateQuery}";
         }
     }
