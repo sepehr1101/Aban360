@@ -5,9 +5,9 @@ using FluentValidation;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Validations
 {
-    public class Article11Calidator : BaseValidator<Article11InputDto>
+    public class Article11Validator : BaseValidator<Article11InputDto>
     {
-        public Article11Calidator()
+        public Article11Validator()
         {
             RuleFor(i => i.WaterAmount)
               .NotNull().WithMessage(ExceptionLiterals.NotNull)
@@ -26,10 +26,6 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Validations
               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(i => i.ZoneId)
-              .NotNull().WithMessage(ExceptionLiterals.NotNull)
-              .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
-
-            RuleFor(i => i.IsDomestic)
               .NotNull().WithMessage(ExceptionLiterals.NotNull)
               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
