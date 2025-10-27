@@ -6,7 +6,8 @@ namespace Aban360.ReportPool.Persistence.Base
     {
         public UnreadBase(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         internal string GetDetailQuery(bool hasZone)
         {
@@ -21,6 +22,7 @@ namespace Aban360.ReportPool.Persistence.Base
                         b.ZoneTitle,
                         b.ZoneId,
                         b.TypeId,
+                        b.TypeCode,
                         b.SumItems,
                         b.RegisterDay,
                         ROW_NUMBER() OVER (PARTITION BY b.ZoneId, b.CustomerNumber ORDER BY b.RegisterDay DESC) AS RN
@@ -35,7 +37,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     SELECT 
                         ob.ZoneId,
                         ob.CustomerNumber,
-                        SUM(CASE WHEN ob.TypeId = N'بسته مانع' THEN 1 ELSE 0 END) AS UnreadCount
+                        SUM(CASE WHEN ob.TypeCode = 8 THEN 1 ELSE 0 END) AS UnreadCount
                     FROM OrderedBills ob
                     WHERE NOT EXISTS (
                         SELECT 1
@@ -44,7 +46,7 @@ namespace Aban360.ReportPool.Persistence.Base
                 			x.CustomerNumber = ob.CustomerNumber AND
                             x.ZoneId = ob.ZoneId AND
                             x.RN < ob.RN AND
-                            x.TypeId <> N'بسته مانع'
+                            x.TypeCode <> 8
                     )
                     GROUP BY ob.ZoneId, ob.CustomerNumber
                 ),
@@ -87,6 +89,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     ON lb.ZoneId = c.ZoneId AND lb.CustomerNumber = c.CustomerNumber
                 WHERE 
                 	c.ToDayJalali IS NULL AND
+                    c.DeletionStateId IN (0) AND
                     ISNULL(cc.UnreadCount, 0) BETWEEN @FromPeriodCount AND @ToPeriodCount;";
         }
     
@@ -104,6 +107,7 @@ namespace Aban360.ReportPool.Persistence.Base
                         b.ZoneId,
                 		b.UsageTitle,
                         b.TypeId,
+                        b.TypeCode,
                         b.SumItems,
                         b.RegisterDay,
                         ROW_NUMBER() OVER (PARTITION BY b.ZoneId, b.CustomerNumber ORDER BY b.RegisterDay DESC) AS RN
@@ -118,7 +122,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     SELECT 
                         ob.ZoneId,
                         ob.CustomerNumber,
-                        SUM(CASE WHEN ob.TypeId = N'بسته مانع' THEN 1 ELSE 0 END) AS UnreadCount
+                        SUM(CASE WHEN ob.TypeCode = 8 THEN 1 ELSE 0 END) AS UnreadCount
                     FROM OrderedBills ob
                     WHERE NOT EXISTS (
                         SELECT 1
@@ -127,7 +131,7 @@ namespace Aban360.ReportPool.Persistence.Base
                 			x.CustomerNumber = ob.CustomerNumber AND
                             x.ZoneId = ob.ZoneId AND
                             x.RN < ob.RN AND
-                            x.TypeId <> N'بسته مانع'
+                            x.TypeCode <> 8
                     )
                     GROUP BY ob.ZoneId, ob.CustomerNumber
                 ),
@@ -153,6 +157,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     ON lb.ZoneId = c.ZoneId AND lb.CustomerNumber = c.CustomerNumber
                 WHERE 
                 	c.ToDayJalali IS NULL AND
+                    c.DeletionStateId IN (0) AND
                     ISNULL(cc.UnreadCount, 0) BETWEEN @FromPeriodCount AND @ToPeriodCount
                 )
                 Select
