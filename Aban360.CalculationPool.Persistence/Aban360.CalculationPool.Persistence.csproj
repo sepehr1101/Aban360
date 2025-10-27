@@ -38,7 +38,7 @@
 
   <ItemGroup>
     <Folder Include="Exceptions\" />
-    <Folder Include="Features\Sale\Queries\" />
+    <Folder Include="Features\Sale\Queries\Implementations\" />
   </ItemGroup>
 
   <ItemGroup>
