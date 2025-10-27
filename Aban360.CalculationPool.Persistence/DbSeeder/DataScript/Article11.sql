@@ -176,6 +176,8 @@ INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [Sewag
 GO
 INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 767517781, 32552500, NULL, NULL, 1, NULL, 131913, N'1404/08/04', N'1404/01/01', N'1404/12/31', NULL)
 GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 754458741, 32552500, NULL, NULL, 1, NULL, 131914, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
 INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 661661016, 59787150, 430985169, 61041150, 1, NULL, 132011, N'1404/08/04', N'1404/01/01', N'1404/12/31', NULL)
 GO
 INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 56691934, 32319600, NULL, NULL, 1, NULL, 132012, N'1404/08/04', N'1404/01/01', N'1404/12/31', NULL)
@@ -317,4 +319,324 @@ GO
 INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 414660132, 94127000, 316140728, 80635000, 1, NULL, 139011, N'1404/08/04', N'1404/01/01', N'1404/12/31', NULL)
 GO
 INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 404660132, 55715, NULL, NULL, 1, NULL, 134411, N'1404/08/04', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 8595450, 27843049, 8595450, 0, N'N', 131301, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 8595450, 27843049, 8595450, 0, N'N', 131302, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 8595450, 27843049, 8595450, 0, N'N', 131303, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 8595450, 27843049, 8595450, 0, N'N', 131304, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 8595450, 27843049, 8595450, 0, N'N', 131305, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 11359250, 27843049, 11359250, 0, N'M', 131301, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 11359250, 27843049, 11359250, 0, N'M', 131302, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 11359250, 27843049, 11359250, 0, N'M', 131303, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 11359250, 27843049, 11359250, 0, N'M', 131304, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 11359250, 27843049, 11359250, 0, N'M', 131305, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 12529250, 27843049, 12529250, 0, N'L', 131301, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 12529250, 27843049, 12529250, 0, N'L', 131302, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 12529250, 27843049, 12529250, 0, N'L', 131303, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 12529250, 27843049, 12529250, 0, N'L', 131304, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 12529250, 27843049, 12529250, 0, N'L', 131305, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 13699250, 27843049, 13699250, 0, N'K', 131301, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 13699250, 27843049, 13699250, 0, N'K', 131302, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 13699250, 27843049, 13699250, 0, N'K', 131303, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 13699250, 27843049, 13699250, 0, N'K', 131304, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 13699250, 27843049, 13699250, 0, N'K', 131305, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 14869250, 27843049, 14869250, 0, N'J', 131301, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 14869250, 27843049, 14869250, 0, N'J', 131302, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 14869250, 27843049, 14869250, 0, N'J', 131303, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 14869250, 27843049, 14869250, 0, N'J', 131304, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 14869250, 27843049, 14869250, 0, N'J', 131305, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 16039250, 27843049, 16039250, 0, N'I', 131301, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 16039250, 27843049, 16039250, 0, N'I', 131302, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 16039250, 27843049, 16039250, 0, N'I', 131303, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 16039250, 27843049, 16039250, 0, N'I', 131304, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 16039250, 27843049, 16039250, 0, N'I', 131305, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 17209250, 27843049, 17209250, 0, N'H', 131301, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 17209250, 27843049, 17209250, 0, N'H', 131302, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 17209250, 27843049, 17209250, 0, N'H', 131303, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 17209250, 27843049, 17209250, 0, N'H', 131304, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 17209250, 27843049, 17209250, 0, N'H', 131305, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 19809250, 27843049, 19809250, 0, N'G', 131301, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 19809250, 27843049, 19809250, 0, N'G', 131302, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 19809250, 27843049, 19809250, 0, N'G', 131303, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 19809250, 27843049, 19809250, 0, N'G', 131304, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 19809250, 27843049, 19809250, 0, N'G', 131305, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 21808600, 27843049, 21808600, 0, N'F', 131301, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 21808600, 27843049, 21808600, 0, N'F', 131302, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 21808600, 27843049, 21808600, 0, N'F', 131303, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 21808600, 27843049, 21808600, 0, N'F', 131304, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 21808600, 27843049, 21808600, 0, N'F', 131305, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 22811100, 27843049, 22811100, 0, N'E', 131301, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 22811100, 27843049, 22811100, 0, N'E', 131302, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 22811100, 27843049, 22811100, 0, N'E', 131303, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 22811100, 27843049, 22811100, 0, N'E', 131304, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 22811100, 27843049, 22811100, 0, N'E', 131305, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 25311100, 27843049, 25311100, 0, N'D', 131301, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 25311100, 27843049, 25311100, 0, N'D', 131302, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 25311100, 27843049, 25311100, 0, N'D', 131303, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 25311100, 27843049, 25311100, 0, N'D', 131304, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 25311100, 27843049, 25311100, 0, N'D', 131305, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 26311100, 27843049, 26311100, 0, N'C', 131301, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 26311100, 27843049, 26311100, 0, N'C', 131302, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 26311100, 27843049, 26311100, 0, N'C', 131303, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 26311100, 27843049, 26311100, 0, N'C', 131304, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 26311100, 27843049, 26311100, 0, N'C', 131305, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 28811100, 27843049, 28811100, 0, N'B', 131301, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 28811100, 27843049, 28811100, 0, N'B', 131302, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 28811100, 27843049, 28811100, 0, N'B', 131303, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 28811100, 27843049, 28811100, 0, N'B', 131304, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 28811100, 27843049, 28811100, 0, N'B', 131305, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 30561100, 27843049, 30561100, 0, N'A', 131301, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 30561100, 27843049, 30561100, 0, N'A', 131302, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 30561100, 27843049, 30561100, 0, N'A', 131303, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 30561100, 27843049, 30561100, 0, N'A', 131304, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 30561100, 27843049, 30561100, 0, N'A', 131305, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 73202593, 11071860, 34750530, 6249200, 0, NULL, 131211, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 51070169, 10141366, NULL, NULL, 0, NULL, 131212, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 60565449, 9077384, NULL, NULL, 0, NULL, 131213, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 29132933, 16133300, 22217924, 6825820, 0, NULL, 131411, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 32270802, 7537850, 26966433, 5697850, 0, NULL, 131412, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 31534166, 5949200, 30357577, 5980000, 0, NULL, 131420, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 74037429, 5972000, NULL, NULL, 0, NULL, 131511, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 76353609, 5972000, NULL, NULL, 0, NULL, 131512, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 49344825, 5972000, NULL, NULL, 0, NULL, 131513, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 77334924, 5972000, NULL, NULL, 0, NULL, 131514, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 64623505, 11783250, 41109596, 9510620, 0, NULL, 131611, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 32541500, 12405150, 21495096, 12405150, 0, NULL, 131701, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 32171622, 8767850, 22113716, 8167850, 0, NULL, 131702, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 29469630, 8249200, NULL, NULL, 0, NULL, 131703, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 41261549, 827200, NULL, NULL, 0, NULL, 131704, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 59485801, 7637850, 21879012, 5697850, 0, NULL, 131911, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 55500678, 6592000, NULL, NULL, 0, NULL, 131912, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 54822699, 6592000, NULL, NULL, 0, NULL, 131913, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 53889910, 6592000, NULL, NULL, 0, NULL, 131914, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 39404358, 12405150, 30784655, 10905150, 0, NULL, 132011, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 40494238, 7592000, NULL, NULL, 0, NULL, 132012, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 47145339, 75692000, 33182621, 9500000, 0, NULL, 132111, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 41675978, 6592000, NULL, NULL, 0, NULL, 132112, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 33048359, 12467850, 23861220, 10217850, 0, NULL, 132211, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 31885101, 5697850, NULL, NULL, 0, NULL, 132212, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 30639568, 5697850, 23076896, 5697850, 0, NULL, 132213, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 29992763, 7537850, NULL, NULL, 0, NULL, 132214, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 35433874, 7592000, NULL, NULL, 0, NULL, 132215, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 38237534, 7569200, 32928810, 5980000, 0, NULL, 132216, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 30103560, 7592000, NULL, NULL, 0, NULL, 132217, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 38237534, 7569200, 32928810, 5980000, 0, NULL, 132218, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 32936311, 7592000, NULL, NULL, 0, NULL, 132219, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 57865668, 5729200, 30018671, 5729200, 0, NULL, 132311, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 91297992, 5752000, NULL, NULL, 0, NULL, 132315, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 74440334, 7569200, 30191653, 5729200, 0, NULL, 132411, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 67163586, 6592000, NULL, NULL, 0, NULL, 132412, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 76114466, 6592000, 30579237, 5980000, 0, NULL, 132413, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 31784797, 9736500, NULL, NULL, 0, NULL, 132511, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 32937167, 7569200, NULL, NULL, 0, NULL, 132512, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 41389467, 7592000, NULL, NULL, 0, NULL, 132513, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 33322466, 12436500, 22135118, 10936500, 0, NULL, 132611, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 28608785, 7569200, 26489616, 5729200, 0, NULL, 132612, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 39970776, 7569200, 31227169, 5729200, 0, NULL, 132613, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 28819684, 7592000, NULL, NULL, 0, NULL, 132614, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 38176211, 7569200, 29825165, 5729200, 0, NULL, 132615, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 32166020, 7569200, 30338065, 5729200, 0, NULL, 132616, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 29795100, 7569200, NULL, NULL, 0, NULL, 132617, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 34910216, 12436500, 28975181, 10936500, 0, NULL, 132711, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 33249414, 7569200, 25592388, 5729200, 0, NULL, 132712, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 55338597, 7569200, 30101178, 5980000, 0, NULL, 132713, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 49157839, 7569200, 37084320, 5980000, 0, NULL, 132714, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 32748829, 7569200, 40196449, 5729200, 0, NULL, 132215, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 74488792, 7537850, 33858542, 6867850, 0, NULL, 132811, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 66984167, 6569200, 51926327, 5729200, 0, NULL, 132812, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 72069694, 6569200, 26749852, 5729200, 0, NULL, 132813, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 30664203, 13928150, 30360597, 12402150, 0, NULL, 132911, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 3191099, 7563500, NULL, NULL, 0, NULL, 132914, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 32005778, 7569200, NULL, NULL, 0, NULL, 132915, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 49330094, 7592000, NULL, NULL, 0, NULL, 132916, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 60385899, 7949200, 33362375, 7800000, 0, NULL, 133011, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 58356128, 7569200, 37865973, 5729200, 0, NULL, 133111, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 51655888, 7569200, 32693600, 5729200, 0, NULL, 133211, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 57788024, 7569200, 54683874, 5729200, 0, NULL, 133212, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 42735191, 7569200, 36431019, 10749200, 0, NULL, 133311, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 61251069, 7592000, 35224508, 11000000, 0, NULL, 133312, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 61691989, 75920000, 38270301, 11000000, 0, NULL, 133313, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37235144, 12436500, 25896857, 10936500, 0, NULL, 133411, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 50026281, 9122000, NULL, NULL, 0, NULL, 133611, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37517354, 7569200, 22262354, 5980000, 0, NULL, 133711, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 41664618, 7592000, NULL, NULL, 0, NULL, 133712, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 57598007, 7799200, 37490579, 8050000, 0, NULL, 133811, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 35356569, 7592000, NULL, NULL, 0, NULL, 133812, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 138515687, 6572000, NULL, NULL, 0, NULL, 133911, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 142457232, 5572000, NULL, NULL, 0, NULL, 133912, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 120815816, 5572000, NULL, NULL, 0, NULL, 133913, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 37291093, 9917850, 21711695, 751750, 0, NULL, 134013, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 33340504, 7537850, 27843049, 5697850, 0, NULL, 134014, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 30176585, 7569200, 24037332, 5729200, 0, NULL, 134015, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 40895676, 7569200, 25153622, 5980000, 0, NULL, 134016, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 39285660, 7592000, 35182096, 5980000, 0, NULL, 134019, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 33846203, 7569200, 26442346, 5729200, 0, NULL, 134111, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 33053258, 7569200, 27810211, 5729200, 0, NULL, 134012, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 83088222, 7592000, NULL, NULL, 0, NULL, 134211, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 56027003, 7592000, NULL, NULL, 0, NULL, 134212, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 65465533, 6572000, NULL, NULL, 0, NULL, 134213, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 29307174, 10799200, 35934958, 8450000, 0, NULL, 134311, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 53729156, 9099200, 26177644, 11000000, 0, NULL, 134511, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 44839794, 9122000, 26656522, 11000000, 0, NULL, 134512, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 28904295, 12436500, 22581481, 9036500, 0, NULL, 139011, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
+GO
+INSERT [CalculationPool].[Article11] ( [WaterMeterAmount], [WaterAmount], [SewageMeterAmount], [SewageAmount], [IsDomestic], [BlockCode], [ZoneId], [RegisterDateJalali], [FromDateJalali], [ToDateJalali], [RemovedDateJalali]) VALUES ( 28904295, 9036500, NULL, NULL, 0, NULL, 134411, N'1404/08/05', N'1404/01/01', N'1404/12/31', NULL)
 GO
