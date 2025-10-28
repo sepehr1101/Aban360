@@ -8,7 +8,8 @@ namespace Aban360.ReportPool.Persistence.Features.Dashboard.Contracts
         Task<int> Create(TileScript entity);
         Task<bool> Delete(int id, string deletedBy);
         Task<IEnumerable<TileScript>> GetAll();
-        Task<TileScript?> GetById(int id);
+        Task<TileScript?> GetById(int id); 
+        Task<IEnumerable<TileScriptReportDto>> GetContent(string content);
         Task<bool> Update(TileScriptDto entity);
     }
 }
