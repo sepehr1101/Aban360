@@ -43,6 +43,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	m.tedad_vahd as OtherUnit,
                     	m.inst_ab as WaterInstallationDateJalali,
                     	m.inst_fas as SewageInstallationDateJalali,
+                        m.g_inst_ab WaterRegisterDate,
+                        m.g_inst_fas SewageRegisterDate,
                     	m.n_ab as WaterCount,
                     	m.n_faz as SewageCalcState,
 						m.fix_mas as ContractualCapacity,
