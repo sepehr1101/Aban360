@@ -43,7 +43,7 @@ namespace Aban360.ReportPool.Persistence.Features.Dashboard.Implementations
         }
 
         public async Task<IEnumerable<TileScriptReportDto>> GetContent(string content)
-        {//todo: chek reportConnection/connection
+        {
             IEnumerable<TileScriptReportDto>? report=await _sqlReportConnection.QueryAsync<TileScriptReportDto>(content,null);
             
             return report;

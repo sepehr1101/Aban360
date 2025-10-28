@@ -2,6 +2,7 @@
 using Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Contracts;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -20,10 +21,10 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Queries
         
         [HttpPost]
         [Route("get")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<SaleInputDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get([FromBody] SaleInputDto inputDto, CancellationToken cancellationToken)
         {
-            SaleOutputDto result= await _getHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> result = await _getHandler.Handle(inputDto, cancellationToken);
 
             return Ok(result);
         }
