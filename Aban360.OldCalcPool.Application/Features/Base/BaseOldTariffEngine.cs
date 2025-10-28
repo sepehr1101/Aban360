@@ -861,7 +861,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             return sewageAmount;
         }
-      
+        
         public double CalculateAbonmanAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali)
         {
             string date1400_01_01 = "1400/01/01";
