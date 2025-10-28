@@ -19,6 +19,25 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
             Table1GetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<Table1GetDto>(Table1GetQueryString, new { id });
             return result;
         }
+        public async Task<Table1GetDto> GetByTown(int town)
+        {
+            string query = GetQuery();
+            Table1GetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<Table1GetDto>(query, new { town });
+            return result;
+            string GetQuery()
+            {
+                return @$"use OldCalc
+                    Select 
+                    	t.Id,
+                    	t.town,
+                    	t.z1,
+                    	t.z2,
+                    	t.olgo,
+                    	t.darsa_gh
+                    From [OldCalc].dbo.table1 t
+                	Where t.town=@town";
+            }
+        }
 
         private string GetTable1GetQuery()
         {

@@ -58,6 +58,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	b.tedad_vahd as OtherUnit,
                     	m.inst_ab as WaterInstallationDateJalali,
                     	m.inst_fas as SewageInstallationDateJalali,
+                        m.g_inst_ab WaterRegisterDate,
+                        m.g_inst_fas SewageRegisterDate,
                     	m.n_ab as WaterCount,
                     	m.n_faz as SewageCalcState,
 						b.fix_mas as ContractualCapacity,
@@ -81,7 +83,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     Where
                     	m.town=@zoneId AND 
 						b.cod_vas IN (0) AND
-                        b.del=0 AND m.radif=10881037 and
+                        b.del=0 AND
 						{conditionDateQuery}";
         }
     }

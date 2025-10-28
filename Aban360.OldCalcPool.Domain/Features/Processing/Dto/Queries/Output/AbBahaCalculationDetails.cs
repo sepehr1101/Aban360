@@ -67,6 +67,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             double avarezDiscount,
             double javaniDiscount,
             double maliatDiscount,
+            double boodjeDiscount,
             IEnumerable<NerkhGetDto> _nerkh,
             IEnumerable<AbAzadFormulaDto> _abAzad,
             IEnumerable<ZaribGetDto> _zarib,
@@ -96,23 +97,30 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             AvarezDiscount = avarezDiscount;
             JavaniDiscount = javaniDiscount;
             MaliatDiscount = maliatDiscount;
-            DiscountSum = _abBahaDiscount + _hotSeasonDiscount + _fazelabDiscount +
-                          abonmanAbDiscount + abonmaneFazelabDiscount + avarezDiscount + javaniDiscount+ maliatDiscount;
+            BoodjeDiscount = boodjeDiscount;
 
-            AbBahaAmount -= AbBahaDiscount;
-            FazelabAmount -= FazelabDiscount;
-            HotSeasonAbBahaAmount-= HotSeasonDiscount;
-            AbonmanAbAmount -= AbonmanAbDiscount;
-            AbonmanFazelabAmount-= AbonmanFazelabDiscount;
-            AvarezAmount -= AvarezDiscount;
-            JavaniAmount -= JavaniDiscount;
-            MaliatAmount -= MaliatDiscount;
-            SumItems -= DiscountSum;            
+            DiscountSum = _abBahaDiscount + _hotSeasonDiscount + _fazelabDiscount + abonmanAbDiscount + 
+                          abonmaneFazelabDiscount + avarezDiscount + javaniDiscount+ maliatDiscount+ boodjeDiscount;
+
+            AbBahaAmount = TrimAmount(AbBahaAmount, AbBahaDiscount);
+            FazelabAmount = TrimAmount(FazelabAmount, FazelabDiscount);
+            HotSeasonAbBahaAmount = TrimAmount(HotSeasonAbBahaAmount, HotSeasonDiscount);
+            AbonmanAbAmount = TrimAmount(AbonmanAbAmount, AbonmanAbDiscount);
+            AbonmanFazelabAmount = TrimAmount(AbonmanFazelabAmount, AbonmanFazelabDiscount);
+            AvarezAmount = TrimAmount(AvarezAmount, AvarezDiscount);
+            JavaniAmount = TrimAmount(JavaniAmount, JavaniDiscount);
+            MaliatAmount = TrimAmount(MaliatAmount, MaliatDiscount);
+            SumItems = TrimAmount(SumItems, DiscountSum);            
 
             Nerkh = _nerkh;
             AbAzad = _abAzad;
             Zarib = _zarib;
             StopWatch = _stopWatch;
+        }
+        private double TrimAmount(double mainAmount, double discountAmount)
+        {
+            double remained = mainAmount - discountAmount;
+            return remained < 1 ? 0 : mainAmount;
         }
     }
 }

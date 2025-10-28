@@ -1,5 +1,4 @@
-﻿using Aban360.CalculationPool.Domain.Features.Rule.Entities;
-using Aban360.Common.Db.Dapper;
+﻿using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.DbSeeder.Contracts;
 using Dapper;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +15,7 @@ namespace Aban360.CalculationPool.Persistence.DbSeeder.Implementations
         }
         public async void SeedData()
         {
-            int? query =  _sqlReportConnection.QueryFirstOrDefault<int>(GetQuery(),null);
+            int? query =  _sqlConnection.QueryFirstOrDefault<int>(GetQuery(),null);
             if (query != null && query.Value>=1)
             {
                 return;
