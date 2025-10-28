@@ -5,9 +5,9 @@ using FluentValidation;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Validations
 {
-    public class Article11Validator : BaseValidator<Article11InputDto>
+    public class Article11CreateValidator : BaseValidator<Article11CreateDto>
     {
-        public Article11Validator()
+        public Article11CreateValidator()
         {
             RuleFor(i => i.WaterAmount)
               .NotNull().WithMessage(ExceptionLiterals.NotNull)

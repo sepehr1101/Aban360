@@ -2,6 +2,7 @@
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
 using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Db.Exceptions;
 using Aban360.Common.Literals;
 using Dapper;
 using Microsoft.Extensions.Configuration;
@@ -29,7 +30,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
             Article11OutputDto article11 = await _sqlConnection.QueryFirstOrDefaultAsync<Article11OutputDto>(query, new { id = id });
             if (article11 == null)
             {
-                throw new InvalidDataException();//todo:personalized exception
+                throw new InvalidIdException();
             }
             return article11;
         }
@@ -40,7 +41,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
                     From [Aban360].CalculationPool.Article11 
                     Where
                     	[CustomerWarehouse].dbo.PersianToMiladi(ToDateJalali)>GETDATE() AND
-                    	RemovedDateJalali IS NULL AND
+                    	RemoveDateTime IS NULL AND
                     	IsDomestic=@isDomestic AND
                     	(
                     		@BlockCode IS NULL OR
@@ -55,7 +56,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
                     From [Aban360].CalculationPool.Article11 
                     Where
                     	[CustomerWarehouse].dbo.PersianToMiladi(ToDateJalali)>GETDATE() AND
-                    	RemovedDateJalali IS NULL AND
+                    	RemoveDateTime IS NULL AND
 						Id=@id";
         }
             

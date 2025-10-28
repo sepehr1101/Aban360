@@ -1,9 +1,10 @@
 ﻿using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
+using Aban360.Common.ApplicationUser;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts
 {
     public interface IArticle11CreateHadler
     {
-        Task Handle(Article11InputDto inputDto, CancellationToken cancellationToken);
+        Task Handle(Article11CreateDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
     }
 }

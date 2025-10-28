@@ -7,9 +7,7 @@
         public short MeterDiameterId { get; set; }
         public long InstallationAmount { get; set; }
         public long EquipmentAmount { get; set; }
-        public string RegisterDateJalali { get; set; }
-        public string FromDateJalali { get; set; }
-        public string ToDateJalali { get; set; }
-        public string? RemovedDateJalali { get; set; }
+        public string FromDateJalali { get; set; } = null!;
+        public string ToDateJalali { get; set; } = null!;
     }
 }

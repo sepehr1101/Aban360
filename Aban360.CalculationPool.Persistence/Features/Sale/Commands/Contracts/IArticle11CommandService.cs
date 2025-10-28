@@ -5,7 +5,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Commands.Contracts
     public interface IArticle11CommandService
     {
         Task Create(Article11InputDto input);
-        Task Update(Article11UpdateDto input);
         Task Delete(DeleteDto input);
+        Task Update(Article11InputDto create, DeleteDto delete);
     }
 }

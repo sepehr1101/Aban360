@@ -1,9 +1,9 @@
 ﻿using Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
 using Aban360.CalculationPool.Persistence.Features.Sale.Commands.Contracts;
+using Aban360.Common.ApplicationUser;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using DNTPersianUtils.Core;
 using FluentValidation;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Implementations
@@ -23,7 +23,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task Handle(Article11UpdateDto inputDto, CancellationToken cancellationToken)
+        public async Task Handle(Article11UpdateDto inputDto, IAppUser appuser, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -32,8 +32,26 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 throw new CustomValidationException(message);
             }
 
-            inputDto.RegisterDateJalali = DateTime.Now.ToShortPersianDateString();
-            await _commandService.Update(inputDto);
+            Article11InputDto article11Create = GetArticle11(inputDto, appuser.UserId);
+            DeleteDto article11Delete = new(inputDto.Id, DateTime.Now, appuser.UserId);
+            await _commandService.Update(article11Create, article11Delete);
+        }
+        private Article11InputDto GetArticle11(Article11UpdateDto input, Guid userId)
+        {
+            return new Article11InputDto()
+            {
+                WaterMeterAmount = input.WaterMeterAmount,
+                WaterAmount = input.WaterAmount,
+                SewageMeterAmount = input.SewageMeterAmount,
+                SewageAmount = input.SewageAmount,
+                IsDomestic = input.IsDomestic,
+                BlockCode = input.BlockCode,
+                ZoneId = input.ZoneId,
+                FromDateJalali = input.FromDateJalali,
+                ToDateJalali = input.ToDateJalali,
+                RegisterDateTime = DateTime.Now,
+                RegisterByUserId = userId
+            };
         }
     }
 }

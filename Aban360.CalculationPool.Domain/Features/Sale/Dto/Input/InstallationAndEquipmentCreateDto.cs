@@ -1,8 +1,7 @@
 ﻿namespace Aban360.CalculationPool.Domain.Features.Sale.Dto.Input
 {
-    public record InstallationAndEquipmentUpdateDto
+    public record InstallationAndEquipmentCreateDto
     {
-        public short Id { get; set; }
         public bool IsWater { get; set; }
         public short MeterDiameterId { get; set; }
         public long InstallationAmount { get; set; }

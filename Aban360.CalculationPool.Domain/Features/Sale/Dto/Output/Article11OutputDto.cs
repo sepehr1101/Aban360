@@ -10,9 +10,7 @@
         public bool IsDomestic { get; set; }
         public string? BlockCode { get; set; }
         public int ZoneId { get; set; }
-        public string RegisterDateJalali { get; set; }
-        public string FromDateJalali { get; set; }
-        public string ToDateJalali { get; set; }
-        public string? RemovedDateJalali { get; set; }
+        public string FromDateJalali { get; set; } = null!;
+        public string ToDateJalali { get; set; } = null!;
     }
 }

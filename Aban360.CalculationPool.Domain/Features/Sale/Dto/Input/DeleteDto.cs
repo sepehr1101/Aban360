@@ -3,11 +3,13 @@
     public record DeleteDto
     {
         public short Id { get; set; }
-        public string RemovedDateJalali { get; set; }
-        public DeleteDto(short id,string removedDateJalali)
+        public DateTime RemoveDateTime { get; set; }
+        public Guid RemoveByUserId { get; set; }
+        public DeleteDto(short id, DateTime removeDateTime, Guid removeByUserId)
         {
-            Id=id;
-            RemovedDateJalali=removedDateJalali;
+            Id = id;
+            RemoveDateTime = removeDateTime;
+            RemoveByUserId = removeByUserId;
         }
     }
 }
