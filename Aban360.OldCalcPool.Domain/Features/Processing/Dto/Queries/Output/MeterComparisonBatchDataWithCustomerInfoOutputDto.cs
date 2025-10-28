@@ -1,4 +1,6 @@
-﻿namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
+﻿using System.Reflection.Metadata.Ecma335;
+
+namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
 {
     public record MeterComparisonBatchDataWithCustomerInfoOutputDto
     {
@@ -26,8 +28,10 @@
         public int CommertialUnit { get; set; }
         public int OtherUnit { get; set; }
         public int EmptyUnit { get; set; }
-        public string WaterInstallationDateJalali { get; set; }
-        public string SewageInstallationDateJalali { get; set; }
+        public string WaterInstallationDateJalali { get; set; } = default!;
+        public string? SewageInstallationDateJalali { get; set; }
+        public string WaterRegisterDate { get; set; } = default!;
+        public string? SewageRegisterDate { get; set; }
         public int WaterCount { get; set; }
         public int SewageCalcState { get; set; }
         public int ContractualCapacity { get; set; }

@@ -315,6 +315,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                    monthlyConsumption == 0 ||
                    string.IsNullOrWhiteSpace(vaj);
         }
+
         /// <summary>
         /// محاسبه آب بها 
         /// </summary>
@@ -813,7 +814,12 @@ namespace Aban360.CalculationPool.Application.Features.Base
             {
                 return 0;
             }
-            //if(customerInfo.sew)
+            // ثبت نصب بعد از تاریخ قرائت لحاظ شده
+            if(string.Compare(customerInfo.SewageRegisterDate,"1330/0/01")>=0 &&
+               string.Compare(customerInfo.SewageRegisterDate,date2)>0)
+            {
+                return 0;
+            }
             else if (
                 customerInfo.SewageCalcState == _firstCalculation &&
                 string.Compare(date2, customerInfo.SewageInstallationDateJalali) > 0 &&
@@ -951,29 +957,6 @@ namespace Aban360.CalculationPool.Application.Features.Base
             return abonAbAmount;
         }       
 
-        public double CalculateAbonmanFazelab(int totalDuration, CustomerInfoOutputDto customerInfo, string currentDateJalali, double abonmanAbBaha)
-        {
-            if (IsTankerSaleAndHousehold(customerInfo.UsageId) || customerInfo.SewageCalcState == 0)
-            {
-                return 0;
-            }
-            else if (customerInfo.SewageCalcState == 1 &&
-                customerInfo.SewageInstallationDateJalali.Trim().Length == 10)
-            {
-                //int duration = (int.Parse)(CalculationDistanceDate.CalcDistance(customerInfo.SewageInstallationDateJalali, currentDateJalali));
-                CalcDistanceResultDto calcDistance = CalculationDistanceDate.CalcDistance(customerInfo.SewageInstallationDateJalali, currentDateJalali, true, customerInfo);
-
-                int duration = 0;
-                if (calcDistance.HasError)
-                {
-                    throw new TariffDateException(customerInfo.BillId + " - " + ExceptionLiterals.Incalculable);
-                }
-                duration = calcDistance.Distance;
-                return (abonmanAbBaha / totalDuration) * duration;
-            }
-
-            return abonmanAbBaha;
-        }
         public double CalculateAbonmanAbDiscount(double abonmanAmount, double bahaDiscountAmount)
         {
             return bahaDiscountAmount > 0 ? abonmanAmount : 0;

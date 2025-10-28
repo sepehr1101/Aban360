@@ -1,4 +1,6 @@
-﻿namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input
+﻿using System.Runtime;
+
+namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input
 {
     public record CustomerDetailInfoInputDto
     {
@@ -12,6 +14,8 @@
         public int EmptyUnit { get; set; }
         public string WaterInstallationDateJalali { get; set; } = default!;
         public string? SewageInstallationDateJalali { get; set; }
+        public string WaterRegisterDate { get; set; } = default!;
+        public string? SewageRegisterDate { get; set; }
         public int WaterCount { get; set; }
         public int SewageCalcState { get; set; }
         public int ContractualCapacity { get; set; }
