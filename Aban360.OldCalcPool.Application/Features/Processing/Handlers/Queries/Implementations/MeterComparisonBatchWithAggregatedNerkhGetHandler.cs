@@ -55,6 +55,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
             }
 
             meterComparisonBatch.ReportHeader.SumCurrentAmount = comparisonResult.Sum(m => m.CurrentAmount);
+            meterComparisonBatch.ReportHeader.InvalidCount = comparisonResult.Count(m => !m.IsChecked);
+            meterComparisonBatch.ReportHeader.ValidCount = comparisonResult.Count(m => m.IsChecked);
+            meterComparisonBatch.ReportHeader.DifferenceSum = comparisonResult.Sum(m => m.ComparisonAmount);
+
             ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataOutputDto> meterComparisonResult = new(meterComparisonBatch.Title, meterComparisonBatch.ReportHeader, comparisonResult);
             return meterComparisonResult;
         }
@@ -101,17 +105,18 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                     DomesticUnit = data.DomesticUnit,
                     CommertialUnit = data.CommertialUnit,
                     OtherUnit = data.OtherUnit,
-                    EmptyUnit=data.EmptyUnit,
+                    EmptyUnit = data.EmptyUnit,
                     WaterInstallationDateJalali = data.WaterInstallationDateJalali,
                     SewageInstallationDateJalali = data.SewageInstallationDateJalali,
+                    WaterRegisterDate = data.WaterRegisterDate,
+                    SewageRegisterDate = data.SewageRegisterDate,
                     WaterCount = data.WaterCount,
                     SewageCalcState = data.SewageCalcState,
                     ContractualCapacity = data.ContractualCapacity,
                     HouseholdNumber = data.HouseholdNumber,
                     ReadingNumber = data.ReadingNumber,
                     VillageId = data.VillageId,
-                    IsSpecial = data.IsSpecial,
-
+                    IsSpecial = data.IsSpecial
                 }
             };
             return meterInfoData;
