@@ -5,9 +5,9 @@ using FluentValidation;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Validations
 {
-    public class InstallationAndEquipmentValidator : BaseValidator<InstallationAndEquipmentInputDto>
+    public class InstallationAndEquipmentCreateValidator : BaseValidator<InstallationAndEquipmentCreateDto>
     {
-        public InstallationAndEquipmentValidator()
+        public InstallationAndEquipmentCreateValidator()
         {
             RuleFor(i => i.EquipmentAmount)
               .NotNull().WithMessage(ExceptionLiterals.NotNull)

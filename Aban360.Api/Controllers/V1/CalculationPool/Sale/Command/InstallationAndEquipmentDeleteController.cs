@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Command
         [ProducesResponseType(typeof(ApiResponseEnvelope<SearchById>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] SearchById input, CancellationToken cancellationToken)
         {
-            await _deleteHadler.Handle(input, cancellationToken);
+            await _deleteHadler.Handle(input, CurrentUser, cancellationToken);
 
             return Ok(input);
         }

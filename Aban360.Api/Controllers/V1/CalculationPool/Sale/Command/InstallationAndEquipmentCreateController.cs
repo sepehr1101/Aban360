@@ -18,10 +18,10 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Command
 
         [HttpPost]
         [Route("create")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<InstallationAndEquipmentInputDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Create([FromBody] InstallationAndEquipmentInputDto createDto, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponseEnvelope<InstallationAndEquipmentCreateDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Create([FromBody] InstallationAndEquipmentCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _createHadler.Handle(createDto, cancellationToken);
+            await _createHadler.Handle(createDto, CurrentUser, cancellationToken);
 
             return Ok(createDto);
         }

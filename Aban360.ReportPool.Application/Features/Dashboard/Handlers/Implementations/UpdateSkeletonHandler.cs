@@ -24,6 +24,7 @@ namespace Aban360.ReportPool.Application.Features.Dashboard.Handlers.Implementat
         {
             return new Skeleton()
             {
+                Id=skeletonDto.Id,
                 Content = skeletonDto.Content,
                 CreateDateTime = DateTime.Now,
                 CreatedBy = currentUser.FullName,

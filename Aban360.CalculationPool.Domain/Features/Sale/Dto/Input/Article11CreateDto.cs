@@ -1,8 +1,7 @@
 ﻿namespace Aban360.CalculationPool.Domain.Features.Sale.Dto.Input
 {
-    public record Article11InputDto
+    public record Article11CreateDto
     {
-        public short Id { get; set; }
         public long WaterMeterAmount { get; set; }
         public long WaterAmount { get; set; }
         public long? SewageMeterAmount { get; set; }
@@ -12,9 +11,5 @@
         public int ZoneId { get; set; }
         public string FromDateJalali { get; set; } = null!;
         public string ToDateJalali { get; set; } = null!;
-        public DateTime RegisterDateTime { get; set; }
-        public Guid RegisterByUserId { get; set; }
-        public DateTime? RemoveDateTime { get; set; }
-        public Guid? RemoveByUserId { get; set; }
     }
 }

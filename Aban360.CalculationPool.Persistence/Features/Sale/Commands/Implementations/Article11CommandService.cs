@@ -16,59 +16,54 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Commands.Implementat
         public async Task Create(Article11InputDto input)
         {
             string query = CreateQuery();
-            await _sqlReportConnection.ExecuteScalarAsync(query, input);
+            await _sqlConnection.ExecuteScalarAsync(query, input);
         }
-        public async Task Update(Article11UpdateDto input)
+        public async Task Update(Article11InputDto create, DeleteDto delete)
         {
-            string query = UpdateQuery();
-            await _sqlReportConnection.ExecuteScalarAsync(query, input);
+            string deleteQuery = DeleteQuery();
+            string createQuery = CreateQuery();
+
+            using (var connection = _sqlConnection)
+            {
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    await connection.ExecuteScalarAsync(createQuery, create, transaction);
+                    await connection.ExecuteScalarAsync(deleteQuery, delete, transaction);
+
+                    transaction.Commit();
+                }
+                connection.Close();
+            }
         }
         public async Task Delete(DeleteDto input)
         {
             string query = DeleteQuery();
-            await _sqlReportConnection.ExecuteScalarAsync(query, input);
+            await _sqlConnection.ExecuteScalarAsync(query, input);
         }
 
         private string CreateQuery()
         {
             return @"INSERT INTO [Aban360].CalculationPool.Article11(
-                        WaterMeterAmount,WaterAmount,
-                        SewageMeterAmount,SewageAmount,IsDomestic,
-                        BlockCode,ZoneId,RegisterDateJalali,
-                        FromDateJalali,ToDateJalali,RemovedDateJalali
+                        WaterMeterAmount,WaterAmount,SewageMeterAmount,SewageAmount,
+                        IsDomestic,BlockCode,ZoneId,FromDateJalali,ToDateJalali,
+						RegisterDateTime,RegisterByUserId,RemoveDateTime,RemoveByUserId
                     )
                     VALUES (
-                        @WaterMeterAmount,@WaterAmount,
-                        @SewageMeterAmount,@SewageAmount,@IsDomestic,
-                        @BlockCode,@ZoneId,@RegisterDateJalali,
-                        @FromDateJalali,@ToDateJalali,@RemovedDateJalali)";
-        }
-
-        private string UpdateQuery()
-        {
-            return @"UPDATE [Aban360].CalculationPool.Article11
-                    SET
-                        WaterMeterAmount   = @WaterMeterAmount,
-                        WaterAmount        = @WaterAmount,
-                        SewageMeterAmount  = @SewageMeterAmount,
-                        SewageAmount       = @SewageAmount,
-                        IsDomestic         = @IsDomestic,
-                        BlockCode          = @BlockCode,
-                        ZoneId             = @ZoneId,
-                        RegisterDateJalali = @RegisterDateJalali,
-                        FromDateJalali     = @FromDateJalali,
-                        ToDateJalali       = @ToDateJalali
-                    WHERE
-                        Id = @Id;";
+                        @WaterMeterAmount,@WaterAmount,@SewageMeterAmount,@SewageAmount,
+                        @IsDomestic,@BlockCode,@ZoneId,@FromDateJalali,@ToDateJalali,
+                        @RegisterDateTime,@RegisterByUserId,@RemoveDateTime,@RemoveByUserId)";
         }
 
         private string DeleteQuery()
         {
-            return @"UPDATE [Aban360].CalculationPool.Article11
-                    SET
-                        RemovedDateJalali  = @RemovedDateJalali
-                    WHERE
-                        Id = @Id;";
+                return @"UPDATE [Aban360].CalculationPool.Article11
+                        SET
+                            RemoveDateTime = @RemoveDateTime ,
+						    RemoveByUserId= @RemoveByUserId
+                        WHERE
+                            Id = @Id AND
+						    RemoveDateTime IS NULL;";
         }
     }
 }

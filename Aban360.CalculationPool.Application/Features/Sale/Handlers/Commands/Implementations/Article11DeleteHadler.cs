@@ -1,9 +1,9 @@
 ﻿using Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
 using Aban360.CalculationPool.Persistence.Features.Sale.Commands.Contracts;
+using Aban360.Common.ApplicationUser;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using DNTPersianUtils.Core;
 using FluentValidation;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Implementations
@@ -23,7 +23,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task Handle(SearchById inputDto, CancellationToken cancellationToken)
+        public async Task Handle(SearchById inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -32,7 +32,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 throw new CustomValidationException(message);
             }
 
-            var deleteDto = new DeleteDto(inputDto.Id, DateTime.Now.ToShortPersianDateString());
+            var deleteDto = new DeleteDto(inputDto.Id, DateTime.Now, appUser.UserId);
             await _commandService.Delete(deleteDto);
         }
     }

@@ -42,6 +42,12 @@ namespace Aban360.ReportPool.Persistence.Features.Dashboard.Implementations
             return await _sqlConnection.QueryFirstOrDefaultAsync<TileScript>(Sql(), new { Id = id });
         }
 
+        public async Task<IEnumerable<TileScriptReportDto>> GetContent(string content)
+        {
+            IEnumerable<TileScriptReportDto>? report=await _sqlReportConnection.QueryAsync<TileScriptReportDto>(content,null);
+            
+            return report;
+        }
         public async Task<IEnumerable<TileScript>> GetAll()
         {
             string Sql()

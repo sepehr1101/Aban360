@@ -1,7 +1,9 @@
 ﻿using Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Contracts;
+using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
 using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using FluentValidation;
@@ -13,11 +15,14 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private readonly IInstallationAndEquipmentQueryService _installationAndEquipmentService;
         private readonly IArticle11QueryService _article11QueryService;
         private readonly IEquipmentBrokerAndZoneQueryService _equipmentBrokerAndZoneQueryService;
+        private readonly IOfferingQueryService _offeringQueryService;
         private readonly IValidator<SaleInputDto> _validator;
+        private static string title = "فروش انشعاب";
         public SaleGetHandler(
             IInstallationAndEquipmentQueryService installationAndEquipmentService,
             IArticle11QueryService article11QueryService,
             IEquipmentBrokerAndZoneQueryService equipmentBrokerAndZoneQueryService,
+            IOfferingQueryService offeringQueryService,
             IValidator<SaleInputDto> validator)
         {
             _installationAndEquipmentService = installationAndEquipmentService;
@@ -29,11 +34,24 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             _equipmentBrokerAndZoneQueryService = equipmentBrokerAndZoneQueryService;
             _equipmentBrokerAndZoneQueryService.NotNull(nameof(equipmentBrokerAndZoneQueryService));
 
+            _offeringQueryService = offeringQueryService;
+            _offeringQueryService.NotNull(nameof(offeringQueryService));
+
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<SaleOutputDto> Handle(SaleInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto>> Handle(SaleInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await Validation(inputDto, cancellationToken);
+
+            IEnumerable<SaleDataOutputDto> salesData = await GetSalesData(inputDto);
+            EquipmentBrokerOutputDto equipmentBroker = await _equipmentBrokerAndZoneQueryService.Get(inputDto.ZoneId);
+            ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> finalSale = CalcSale(salesData, equipmentBroker!=null && equipmentBroker.Id > 0 ? true : false);
+
+            return finalSale;
+        }
+        private async Task Validation(SaleInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -41,71 +59,65 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new CustomValidationException(message);
             }
-
-            SaleOutputDto saleOutput = await GetSale(inputDto);
-
-            EquipmentBrokerOutputDto equipmentBroker = await _equipmentBrokerAndZoneQueryService.Get(inputDto.ZoneId);
-            SaleOutputDto finalSale = CalcSale(saleOutput, equipmentBroker.Id > 0 ? true : false);
-
-            return finalSale;
         }
-        private SaleOutputDto CalcSale(SaleOutputDto inputDto, bool hasBroker)
+        private ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> CalcSale(IEnumerable<SaleDataOutputDto> salesData, bool hasBroker)
         {
-            inputDto.HasBroker = hasBroker;
+            SaleHeaderOutputDto headerOutput = new SaleHeaderOutputDto()
+            {//todo: review
+                HasBroker = hasBroker,
+                BrokerAmount = hasBroker ? salesData.Where(s => s.Id == 76 || s.Id == 77).Sum(s => s.Amount) : 0,
+                BrokerOfferingCount = hasBroker ? salesData.Where(s => s.Id == 76 || s.Id == 77).Count() : 0,
+                CompanyAmount = !hasBroker ? salesData.Where(s => s.Id != 76 || s.Id != 77).Sum(s => s.Amount) : salesData.Sum(s => s.Amount),
+                CompanyOfferingCount = !hasBroker ? salesData.Where(s => s.Id != 76 || s.Id != 77).Count() : salesData.Count(),
+                OfferingCount = salesData.Count(),
+                OfferingAmount = salesData.Sum(s => s.Amount),
+            };
 
-            inputDto.CompanyAmount = inputDto.WaterInstallationAmount +
-                inputDto.Article11WaterMeterAmount +
-                inputDto.Article11WaterAmount +
-                (inputDto.SewageInstallationAmount ?? 0) +
-                (inputDto.Article11SewageMeterAmount ?? 0) +
-                (inputDto.Article11SewageAmount ?? 0);
-
-            long equipment = inputDto.WaterEquipmentAmount + (inputDto.SewageEquipmentAmount ?? 0);
-
-            if (hasBroker)
-            {
-                inputDto.BrokerAmount = equipment;
-            }
-            else
-            {
-                inputDto.CompanyAmount += equipment;
-            }
-
-            return inputDto;
+            ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> result = new(title, headerOutput, salesData);
+            return result;
         }
-        private async Task<SaleOutputDto> GetSale(SaleInputDto inputDto)
+        private async Task<IEnumerable<SaleDataOutputDto>> GetSalesData(SaleInputDto inputDto)
         {
-            var waterInstallationAndEquipment = new InstallationAndEquipmentGetDto(true, inputDto.WaterDiameterId);
-            InstallationAndEquipmentOutputDto waterInstalltionAndEquipmentData = await _installationAndEquipmentService.Get(waterInstallationAndEquipment);
+            List<SaleDataOutputDto> salesData = new List<SaleDataOutputDto>();
+
+            ICollection<SaleDataOutputDto> waterInstallationAndEquipment = await GetInstallationAndEquipment(true, inputDto.WaterDiameterId);
+            salesData.AddRange(waterInstallationAndEquipment);
 
             var article11 = new Article11GetDto(inputDto.ZoneId, inputDto.IsDomestic, inputDto.Block);
             Article11OutputDto article11Data = await _article11QueryService.Get(article11);
-
-
-            var saleOutput = new SaleOutputDto()
-            {
-                WaterInstallationAmount = waterInstalltionAndEquipmentData.InstallationAmount,
-                WaterEquipmentAmount = waterInstalltionAndEquipmentData.EquipmentAmount,
-                Article11WaterMeterAmount = article11Data.WaterMeterAmount,
-                Article11WaterAmount = article11Data.WaterAmount,
-            };
+            SaleDataOutputDto waterArticle11 = await GetSaleData(OfferingEnum.WaterArticle11, article11Data.WaterAmount, null);
+            salesData.Add(waterArticle11);
 
             if (HasSiphon(inputDto))
             {
-                var sewageInstallationAndEquipment = new InstallationAndEquipmentGetDto(false, inputDto.SiphonDiameterId);
-                InstallationAndEquipmentOutputDto sewageInstalltionAndEquipmentData = await _installationAndEquipmentService.Get(sewageInstallationAndEquipment);
+                ICollection<SaleDataOutputDto> sewageInstallationAndEquipment = await GetInstallationAndEquipment(false, inputDto.SiphonDiameterId);
+                salesData.AddRange(sewageInstallationAndEquipment);
 
-                saleOutput.SewageInstallationAmount = sewageInstalltionAndEquipmentData.InstallationAmount;
-                saleOutput.SewageEquipmentAmount = sewageInstalltionAndEquipmentData.EquipmentAmount;
-                saleOutput.Article11SewageMeterAmount = article11Data.SewageMeterAmount;
-                saleOutput.Article11SewageAmount = article11Data.SewageAmount;
+                SaleDataOutputDto sewageArticle11 = await GetSaleData(OfferingEnum.SewageArticle11, article11Data.SewageAmount, null);
+                salesData.Add(sewageArticle11);
             }
 
-            return saleOutput;
+            return salesData;
+        }
+        private async Task<ICollection<SaleDataOutputDto>> GetInstallationAndEquipment(bool isWater, short? meterDiameterId)
+        {
+            var installationAndEquipment = new InstallationAndEquipmentGetDto(isWater, meterDiameterId);
+            InstallationAndEquipmentOutputDto installtionAndEquipmentData = await _installationAndEquipmentService.Get(installationAndEquipment);
+            SaleDataOutputDto installation = await GetSaleData(isWater ? OfferingEnum.WaterInstallation : OfferingEnum.SewageInstalltion, installtionAndEquipmentData.InstallationAmount, null);
+            SaleDataOutputDto equipment = await GetSaleData(isWater ? OfferingEnum.WaterEquipment : OfferingEnum.SewageEquipment, installtionAndEquipmentData.EquipmentAmount, null);
+
+            return new List<SaleDataOutputDto> { installation, equipment };
         }
         private bool HasSiphon(SaleInputDto input)
         {
             return input.SiphonDiameterId != null && input.SiphonDiameterId > 0 ? true : false;
+        }
+        private async Task<SaleDataOutputDto> GetSaleData(OfferingEnum offeringEnum, long? amount, long? discount)
+        {
+            string title = await _offeringQueryService.Get((short)offeringEnum);
+            SaleDataOutputDto saleData = new((short)offeringEnum, title, amount, discount);
+
+            return saleData;
         }
     }
 }

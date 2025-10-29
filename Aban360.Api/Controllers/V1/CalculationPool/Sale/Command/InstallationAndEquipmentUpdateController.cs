@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Command
         [ProducesResponseType(typeof(ApiResponseEnvelope<InstallationAndEquipmentUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] InstallationAndEquipmentUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _updateHadler.Handle(updateDto, cancellationToken);
+            await _updateHadler.Handle(updateDto, CurrentUser, cancellationToken);
 
             return Ok(updateDto);
         }

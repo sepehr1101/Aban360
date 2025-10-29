@@ -15,19 +15,21 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Dashboard
         private readonly IGetAllTileScriptsHandler _getAllHandler;
         private readonly IUpdateTileScriptHandler _updateHandler;
         private readonly IDeleteTileScriptHandler _deleteHandler;
-
+        private readonly IGetReportByTileScriptContentHandler _reportHandler;
         public TileScriptController(
             ICreateTileScriptHandler createHandler,
             IGetTileScriptByIdHandler getByIdHandler,
             IGetAllTileScriptsHandler getAllHandler,
             IUpdateTileScriptHandler updateHandler,
-            IDeleteTileScriptHandler deleteHandler)
+            IDeleteTileScriptHandler deleteHandler,
+            IGetReportByTileScriptContentHandler reportHandler)
         {
             _createHandler = createHandler;
             _getByIdHandler = getByIdHandler;
             _getAllHandler = getAllHandler;
             _updateHandler = updateHandler;
             _deleteHandler = deleteHandler;
+            _reportHandler = reportHandler;
         }
 
         [HttpPost]
@@ -54,6 +56,15 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Dashboard
         public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
         {
             TileScript? result = await _getByIdHandler.Handle(id, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpGet, HttpPost]
+        [Route("{id}/report")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<TileScriptReportDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> report(int id, CancellationToken cancellationToken)
+        {
+            IEnumerable<TileScriptReportDto> result = await _reportHandler.Handle(id, cancellationToken);
             return Ok(result);
         }
 
