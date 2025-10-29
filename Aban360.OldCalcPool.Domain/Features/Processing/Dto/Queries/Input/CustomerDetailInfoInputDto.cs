@@ -20,6 +20,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input
         public int SewageCalcState { get; set; }
         public int ContractualCapacity { get; set; }
         public int HouseholdNumber { get; set; }
+        public string? HouseholdDate { get; set; }
         public string? ReadingNumber { get; set; }
         public string? VillageId { get; set; }
         public bool IsSpecial { get; set; }

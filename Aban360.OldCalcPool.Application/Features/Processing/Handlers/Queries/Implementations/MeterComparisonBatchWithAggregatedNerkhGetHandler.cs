@@ -114,6 +114,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                     SewageCalcState = data.SewageCalcState,
                     ContractualCapacity = data.ContractualCapacity,
                     HouseholdNumber = data.HouseholdNumber,
+                    HouseholdDate=data.HouseholdDate,
                     ReadingNumber = data.ReadingNumber,
                     VillageId = data.VillageId,
                     IsSpecial = data.IsSpecial
