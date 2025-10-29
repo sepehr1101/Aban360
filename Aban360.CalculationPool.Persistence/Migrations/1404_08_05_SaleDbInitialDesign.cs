@@ -1,4 +1,4 @@
-﻿using Aban360.CalculationPool.Persistence.Constants;
+﻿    using Aban360.CalculationPool.Persistence.Constants;
 using Aban360.CalculationPool.Persistence.Extensions;
 using Aban360.CalculationPool.Persistence.Migrations.Enums;
 using FluentMigrator;

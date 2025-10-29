@@ -7,18 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
     <PackageReference Include="Scrutor" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Aban360.Common.Db\Aban360.Common.Db.csproj" />
+    <Folder Include="Features\MaaherTSP\Implementations\" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="DbSeeder\DataScript\MaaherInvoiceStatus.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
   </ItemGroup>
 
 </Project>
