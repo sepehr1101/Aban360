@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contracts;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+using Aban360.ReportPool.Infrastructure.Features.CustomerInfo.Contracts;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 
 namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implementations
@@ -8,15 +9,25 @@ namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implemen
     internal class LocationInfoGetHandler : ILocationInfoGetHandler
     {
         private readonly ILocationInfoService _branchSpecificationSummaryInfoService;
-        public LocationInfoGetHandler(ILocationInfoService branchSpecificationSummaryInfoService)
+        private readonly IGisService _gisService;
+        public LocationInfoGetHandler(
+            ILocationInfoService branchSpecificationSummaryInfoService,
+            IGisService gisService)
         {
             _branchSpecificationSummaryInfoService = branchSpecificationSummaryInfoService;
             _branchSpecificationSummaryInfoService.NotNull(nameof(branchSpecificationSummaryInfoService));
+
+            _gisService = gisService;
+            _gisService.NotNull(nameof(gisService));
         }
 
         public async Task<LocationInfoDto> Handle(string billId, CancellationToken cancellationToken)
         {
-            var branchSpecificationSummaryInfo = await _branchSpecificationSummaryInfoService.GetInfo(billId);
+            LocationInfoDto branchSpecificationSummaryInfo = await _branchSpecificationSummaryInfoService.GetInfo(billId);
+            var customerLocation = await _gisService.GetCustomerLocation(new CustomerLocationInputDto(billId));
+            branchSpecificationSummaryInfo.X = customerLocation.X;
+            branchSpecificationSummaryInfo.Y = customerLocation.Y;
+
             return branchSpecificationSummaryInfo;
         }
     }
