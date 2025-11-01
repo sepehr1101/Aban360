@@ -63,8 +63,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             Validation(meterInfo.PreviousDateJalali);
 
             int consumption = GetConsumption(meterInfo.PreviousNumber, input.CurrentMeterNumber);
-            int duration = GetDuration(meterInfo.PreviousDateJalali, input.CurrentDateJalali);         
-            double dailyAverage = GetDailyConsumptionAverage(consumption, duration, customerInfo.DomesticUnit, customerInfo.EmptyUnit);
+            int duration = GetDuration(meterInfo.PreviousDateJalali, input.CurrentDateJalali);
+            int finalDomesticUnit = GetFinalDomesticUnit(customerInfo, input.CurrentDateJalali);
+            double dailyAverage = GetDailyConsumptionAverage(consumption, duration, finalDomesticUnit);
             double monthlyAverageConsumption = dailyAverage * monthDays;
 
             (IEnumerable<NerkhGetDto>, IEnumerable<AbAzadFormulaDto>, IEnumerable<ZaribGetDto>, int) allNerkhAbAbAzad = await _nerkhGetByConsumptionService.GetWithAggregatedNerkh(new NerkhByConsumptionInputDto(customerInfo.ZoneId,
@@ -72,7 +73,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                                                                                                                        meterInfo.PreviousDateJalali,
                                                                                                                        input.CurrentDateJalali,
                                                                                                                        monthlyAverageConsumption));
-            AbBahaCalculationDetails result = await GetAbBahaCalculationDetails(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, dailyAverage, input.CurrentDateJalali, customerInfo, meterInfo, duration, consumption);
+            AbBahaCalculationDetails result = await GetAbBahaCalculationDetails(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, dailyAverage, input.CurrentDateJalali, customerInfo, meterInfo, duration, consumption, finalDomesticUnit);
             result.Customer = customerInfo;
             result.MeterInfo = meterInfo;
             result.MonthlyConsumption = monthlyAverageConsumption;
@@ -86,8 +87,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             Validation(input.PreviousDateJalali);
 
             int consumption = GetConsumption(input.PreviousNumber, input.CurrentMeterNumber);
-            int duration = GetDuration(input.PreviousDateJalali, input.CurrentDateJalali);           
-            double dailyAverage = GetDailyConsumptionAverage(consumption, duration, customerInfo.DomesticUnit, customerInfo.EmptyUnit);
+            int duration = GetDuration(input.PreviousDateJalali, input.CurrentDateJalali);
+            int finalDomesticUnit = GetFinalDomesticUnit(customerInfo, input.CurrentDateJalali);
+            double dailyAverage = GetDailyConsumptionAverage(consumption, duration, finalDomesticUnit);
             double monthlyAverageConsumption = dailyAverage * monthDays;
 
             (IEnumerable<NerkhGetDto>, IEnumerable<AbAzadFormulaDto>, IEnumerable<ZaribGetDto>, int) allNerkhAbAbAzad = await _nerkhGetByConsumptionService.GetWithAggregatedNerkh(new NerkhByConsumptionInputDto(
@@ -101,7 +103,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 PreviousDateJalali = input.PreviousDateJalali,
                 PreviousNumber = input.PreviousNumber,
             };
-            AbBahaCalculationDetails result = await GetAbBahaCalculationDetails(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, dailyAverage, input.CurrentDateJalali, customerInfo, meterInfo, duration, consumption);
+            AbBahaCalculationDetails result = await GetAbBahaCalculationDetails(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, dailyAverage, input.CurrentDateJalali, customerInfo, meterInfo, duration, consumption, finalDomesticUnit);
             result.Customer = customerInfo;
             result.MeterInfo = meterInfo;
             result.MonthlyConsumption = monthlyAverageConsumption;
@@ -120,7 +122,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
                 int consumption = GetConsumption(input.MeterPreviousData.PreviousNumber, input.MeterPreviousData.CurrentMeterNumber);
                 int duration = GetDuration(input.MeterPreviousData.PreviousDateJalali, input.MeterPreviousData.CurrentDateJalali);
-                double dailyAverage = GetDailyConsumptionAverage(consumption, duration, customerInfo.DomesticUnit, customerInfo.EmptyUnit);
+                int finalDomesticUnit = GetFinalDomesticUnit(customerInfo, input.MeterPreviousData.CurrentDateJalali);
+                double dailyAverage = GetDailyConsumptionAverage(consumption, duration, finalDomesticUnit);
                 double monthlyAverageConsumption = dailyAverage * monthDays;
 
                 (IEnumerable<NerkhGetDto>, IEnumerable<AbAzadFormulaDto>, IEnumerable<ZaribGetDto>, int) allNerkhAbAbAzad = await _nerkhGetByConsumptionService.GetWithAggregatedNerkh(new NerkhByConsumptionInputDto(customerInfo.ZoneId,
@@ -134,7 +137,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     PreviousNumber = input.MeterPreviousData.PreviousNumber,
                 };
 
-                AbBahaCalculationDetails result = await GetAbBahaCalculationDetails(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, dailyAverage, input.MeterPreviousData.CurrentDateJalali, customerInfo, meterInfo, duration, consumption);
+                AbBahaCalculationDetails result = await GetAbBahaCalculationDetails(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, dailyAverage, input.MeterPreviousData.CurrentDateJalali, customerInfo, meterInfo, duration, consumption, finalDomesticUnit);
                 result.Customer = customerInfo;
                 result.MeterInfo = meterInfo;
                 result.MonthlyConsumption = monthlyAverageConsumption;
@@ -149,7 +152,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             }
         }
 
-        private async Task<AbBahaCalculationDetails> GetAbBahaCalculationDetails(IEnumerable<NerkhGetDto> allNerkh, IEnumerable<AbAzadFormulaDto> abAzad, IEnumerable<ZaribGetDto> zarib, double dailyAverage, string currentDateJalali, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, int duration, int consumption)
+        private async Task<AbBahaCalculationDetails> GetAbBahaCalculationDetails(IEnumerable<NerkhGetDto> allNerkh, IEnumerable<AbAzadFormulaDto> abAzad, IEnumerable<ZaribGetDto> zarib, double dailyAverage, string currentDateJalali, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, int duration, int consumption, int finalDomesticCount)
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -168,7 +171,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 ZaribGetDto zaribItem = zarib.ElementAt(counter);
                 ZaribCQueryDto zaribC = await _zaribCQueryService.GetZaribC(nerkhItem.Date1, nerkhItem.Date2);
                 nerkhItem.C = zaribC.C;
-                BaseOldTariffEngineOutputDto resultCalc = CalculateWaterBill(nerkhItem, abAzadItem, zaribItem, customerInfo, meterInfo, dailyAverage, currentDateJalali, consumption, duration, table1.olgo, zaribC is not null? zaribC.C: null, tags);
+                BaseOldTariffEngineOutputDto resultCalc = CalculateWaterBill(nerkhItem, abAzadItem, zaribItem, customerInfo, meterInfo, dailyAverage, currentDateJalali, consumption, duration, table1.olgo, finalDomesticCount, zaribC is not null? zaribC.C: null, tags);
                 nerkhItem.CalcVaj = resultCalc.AbBahaValues.AbBahaAmount.ToString();
                 sumAbBaha += resultCalc.AbBahaValues.AbBahaAmount;
                 sumFazelab += resultCalc.FazelabAmount;
@@ -192,8 +195,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             }            
             sumAbonmanAbBaha = CalculateAbonmanAb(customerInfo, meterInfo, currentDateJalali);
             sumAbonmanFazelab = CalculateFazelab(meterInfo.PreviousDateJalali, currentDateJalali, duration, customerInfo, sumAbonmanAbBaha, currentDateJalali, true);
-            sumAbonmanAbDiscount = CalculateAbonmanAbDiscount(sumAbonmanAbBaha, sumAbBahaDiscount);
-            sumAbonmanFazelabDiscount = CalculateAbonmanAbDiscount(sumAbonmanFazelab, sumFazelabDiscount);
+            sumAbonmanAbDiscount = CalculateAbonmanAbDiscount(customerInfo.UsageId, sumAbonmanAbBaha, sumAbBahaDiscount);
+            sumAbonmanFazelabDiscount = CalculateAbonmanAbDiscount(customerInfo.UsageId, sumAbonmanFazelab, sumFazelabDiscount);
             double maliatDiscount = CalculateMaliatDiscount(sumAbBahaDiscount, sumFazelabDiscount, sumAbonmanAbDiscount,
                 sumAbonmanFazelabDiscount, sumBoodjeDiscount, sumHotSeasonDiscount);
             double AbBahaResult = sumAbBaha + sumHotSeasonAbBaha + sumAbonmanAbBaha;
@@ -222,6 +225,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 SewageCalcState = input.CustomerInfo.SewageCalcState,
                 ContractualCapacity = input.CustomerInfo.ContractualCapacity,
                 HouseholdNumber = input.CustomerInfo.HouseholdNumber,
+                HouseholdDate = input.CustomerInfo.HouseholdDate,
                 ReadingNumber = input.CustomerInfo.ReadingNumber,
                 VillageId = input.CustomerInfo.VillageId,
                 IsSpecial = input.CustomerInfo.IsSpecial,
@@ -243,10 +247,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             }
             return duration;
         }
-        private double GetDailyConsumptionAverage(int masraf, int duration, int domesticUnit, int emptyUnit)
-        {
-            int domesticUnitTemp = (domesticUnit - emptyUnit) < 1 ? 1 : (domesticUnit - emptyUnit);
-            return masraf / (double)duration / domesticUnitTemp;
+        private double GetDailyConsumptionAverage(int masraf, int duration, int domesticUnit)
+        {           
+            return masraf / (double)duration / domesticUnit;
         }
         private void Validation(string previousDateJalali)
         {
@@ -258,6 +261,42 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             if (previousDate.Value > DateOnly.FromDateTime(DateTime.Now.AddDays(-thresholdDay)))
             {
                 throw new BaseException(ExceptionLiterals.InvalidPreviousDateInvoice(thresholdDay));
+            }
+        }
+        private int GetFinalDomesticUnit(CustomerInfoOutputDto customerInfo, string readingDateJalali)
+        {                     
+            int finalHousehold = GetHouseholdUnit(customerInfo.HouseholdNumber, customerInfo.HouseholdDate, readingDateJalali);
+            if (finalHousehold > 0)
+            {
+                return finalHousehold;
+            }
+            return (customerInfo.DomesticUnit - customerInfo.EmptyUnit) < 1 ? 1 : (customerInfo.DomesticUnit - customerInfo.EmptyUnit);
+
+            int GetHouseholdUnit(int householdUnit, string? householdDate, string readingDateJalali)
+            {
+                if (householdUnit <= 0)
+                {
+                    return 0;
+                }
+                if (string.IsNullOrWhiteSpace(householdDate))
+                {
+                    return 0;
+                }
+                DateTime? expireHouseHoldGregorian = householdDate.ToGregorianDateTime();
+                if (!expireHouseHoldGregorian.HasValue)
+                {
+                    return 0;
+                }
+                DateTime? readingDateGregorian = readingDateJalali.ToGregorianDateTime();
+                if (!readingDateGregorian.HasValue)
+                {
+                    throw new InvalidDateException(readingDateJalali);
+                }
+                if (expireHouseHoldGregorian.Value.AddYears(1) < readingDateGregorian.Value)
+                {
+                    return 0;
+                }
+                return householdUnit;
             }
         }
     }

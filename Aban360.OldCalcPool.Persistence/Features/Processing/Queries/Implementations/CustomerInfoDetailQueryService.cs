@@ -49,6 +49,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	m.n_faz as SewageCalcState,
 						m.fix_mas as ContractualCapacity,
                         m.ted_khane as HouseholdNumber,
+                        m.date_KHANE as HouseholdDate,
 						m.eshtrak as ReadingNumber,
                         m.VillageId as VillageId,
 						m.edareh_k as IsSpecial,
