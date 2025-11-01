@@ -19,7 +19,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Queries
 
         [HttpPost]
         [Route("get")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<SearchById>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<Article11OutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get([FromBody] SearchById inputDto, CancellationToken cancellationToken)
         {
             Article11OutputDto result = await _getHandler.Handle(inputDto, cancellationToken);

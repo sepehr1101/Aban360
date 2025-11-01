@@ -7,5 +7,6 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts
     {
         Task<InstallationAndEquipmentOutputDto> Get(InstallationAndEquipmentGetDto input);
         Task<InstallationAndEquipmentOutputDto> Get(int id);
+        Task<IEnumerable<InstallationAndEquipmentOutputDto>> Get();
     }
 }

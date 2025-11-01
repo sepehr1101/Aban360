@@ -32,6 +32,13 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
             }
             return data;
         }
+        public async Task<IEnumerable<InstallationAndEquipmentOutputDto>> Get()
+        {
+            string query = GetAllQuery();
+            IEnumerable<InstallationAndEquipmentOutputDto> data = await _sqlConnection.QueryAsync<InstallationAndEquipmentOutputDto>(query, null);
+
+            return data;
+        }
 
         private string GetSaleQuery()
         {
@@ -52,6 +59,15 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
                     	i.RemoveDateTime IS NULL AND
                     	[CustomerWarehouse].dbo.PersianToMiladi(i.ToDateJalali)>GETDATE() AND
                     	i.Id=@id";
+        }
+
+        private string GetAllQuery()
+        {
+            return @"Select *
+                    From [Aban360].CalculationPool.InstallationAndEquipment i
+                    Where 
+                    	i.RemoveDateTime IS NULL AND
+                    	[CustomerWarehouse].dbo.PersianToMiladi(i.ToDateJalali)>GETDATE()";
         }
 
     }

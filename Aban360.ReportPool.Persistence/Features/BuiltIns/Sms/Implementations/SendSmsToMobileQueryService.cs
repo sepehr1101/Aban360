@@ -55,8 +55,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.Sms.Implementations
                     	q.InsertDateJalali BETWEEN @fromDate AND @toDate AND
                     	q.Receiver=@mobile
 					Order By 
-                        q.InsertDateJalali Desc,
-                        q.InsertTime Desc";
+                        q.InsertDateTime DESC";
         }
     }
 }

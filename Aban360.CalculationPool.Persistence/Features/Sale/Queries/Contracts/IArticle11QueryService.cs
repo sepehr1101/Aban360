@@ -7,5 +7,6 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts
     {
         Task<Article11OutputDto> Get(Article11GetDto input);
         Task<Article11OutputDto> Get(short id);
+        Task<IEnumerable<Article11OutputDto>> Get();
     }
 }
