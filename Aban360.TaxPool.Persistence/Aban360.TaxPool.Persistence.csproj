@@ -13,9 +13,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Aban360.Common.Db\Aban360.Common.Db.csproj" />
+    <ProjectReference Include="..\Aban360.TaxPool.Domain\Aban360.TaxPool.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="DbSeeder\DataScript\MaaherErrors.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DbSeeder\DataScript\MaaherInvoiceStatus.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

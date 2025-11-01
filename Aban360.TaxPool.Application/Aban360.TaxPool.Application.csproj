@@ -12,7 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\MaaherSTP\Handlers\" />
+    <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
+    <ProjectReference Include="..\Aban360.TaxPool.Domain\Aban360.TaxPool.Domain.csproj" />
+    <ProjectReference Include="..\Aban360.TaxPool.Infrastructure\Aban360.TaxPool.Infrastructure.csproj" />
+    <ProjectReference Include="..\Aban360.TaxPool.Persistence\Aban360.TaxPool.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

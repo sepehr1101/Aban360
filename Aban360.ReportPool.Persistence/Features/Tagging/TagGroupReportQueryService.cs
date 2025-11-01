@@ -42,7 +42,8 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging
         public async Task<ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto>> Get(TagsInputDto input, bool isZoneTitle)
         {
             string groupedParam = isZoneTitle ? "ZoneTitle" : "UsageTitle";
-            string reportTitle = isZoneTitle ? ReportLiterals.ByZone : ReportLiterals.ByUsage;
+            string groupedFieldTitle = isZoneTitle ? ReportLiterals.ByZone : ReportLiterals.ByUsage;
+			string reportTitle = ReportLiterals.TagGroupSummary + "-" + groupedFieldTitle;
 
             string TagGroupQueryString = GetTagGroupSummaryQuery(input.TagIds.Any() == true, groupedParam);
             IEnumerable<TagsReportSummaryDataOutputDto> tagGroupData = await _sqlReportConnection.QueryAsync<TagsReportSummaryDataOutputDto>(TagGroupQueryString, new { TagGroupIds = input.TagIds });
@@ -52,9 +53,10 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging
                 RecordCount = (tagGroupData is not null && tagGroupData.Any()) ? tagGroupData.Count() : 0,
                 CustomerCount = tagGroupData.Sum(r => r.CustomerCount),
                 Count = tagGroupData.Sum(r => r.Count),
+				Title=reportTitle,
             };
 
-            ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto> result = new ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto>(ReportLiterals.TagGroupSummary + "-" + reportTitle, tagGroupHeader, tagGroupData);
+            ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto> result = new ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto>(reportTitle, tagGroupHeader, tagGroupData);
             return result;
         }
 

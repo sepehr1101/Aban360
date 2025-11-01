@@ -2,7 +2,8 @@
 {
     public static class MaaherTSPUri
     {
-        public static string SandboxUrl { get { return @"http://thirdparty.api.raahbardev.ir:8080/"; } }
-        public static string MaaherUrl { get { return @"https://thirdparty.api.maahertsp.com/"; } }
+        public static string SandboxUrl { get { return @"https://thirdparty-api-sandbox.maahertsp.com"; } }
+        public static string MaaherUrl { get { return @"https://v4-invogate.maahertsp.com"; } }
+        public static string SentInvoiceUrl(string tins, string fiscalId, string authentication) => @$"/api/v1/invoices?tins={tins}&fiscalId={fiscalId}&AuthenticationId={authentication}";
     }
 }

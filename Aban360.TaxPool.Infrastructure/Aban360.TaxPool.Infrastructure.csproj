@@ -13,11 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\MaaherTSP\Implementations\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
+    <ProjectReference Include="..\Aban360.TaxPool.Domain\Aban360.TaxPool.Domain.csproj" />
   </ItemGroup>
 
 </Project>

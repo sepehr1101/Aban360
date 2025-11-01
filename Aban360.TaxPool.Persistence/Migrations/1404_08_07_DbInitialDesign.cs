@@ -41,5 +41,14 @@ namespace Aban360.TaxPool.Persistence.Migrations
                 .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn("Description").AsString(_1023).Nullable();
         }
+        private void CreateMaaheerErrors()
+        {
+            var table = TableName.MaaherErrors;
+            Create.Table($"{nameof(TableName.MaaherErrors)}").InSchema( _schema)
+                .WithColumn(Id).AsInt16().NotNullable().Identity().PrimaryKey(NamingHelper.Pk(table))
+                .WithColumn("ErrorCode").AsInt32().NotNullable()
+                .WithColumn("HttpStatus").AsInt16().NotNullable()
+                .WithColumn("Description").AsString(_1023).Nullable();
+        }
     }
 }

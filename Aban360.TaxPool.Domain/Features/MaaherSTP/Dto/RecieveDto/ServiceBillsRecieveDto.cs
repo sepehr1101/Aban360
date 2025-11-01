@@ -1,32 +1,32 @@
 ﻿namespace Aban360.TaxPool.Domain.Features.MaaherSTP.Dto.RecieveDto
 {
-    public record ServiceBillsRecieveDto
+    public record SentInvoiceRecieveDto
     {
-        public string Uuid { get; set; }
-        public string Message { get; set; }
-        public int Error_code { get; set; }
+        public ICollection<_ErrorsRecieveDto> Errors { get; set; }
+       
+        public int ResultCode { get; set; }
+        public int?  StatusCode { get; set; }
+        public string? Description { get; set; }
+      
+        public string Status { get; set; }
+        public bool Success { get; set; }
+        public string TaxId { get; set; }
+        public string Uid { get; set; }
     }
-    public record InquiryRecieveDto
+    public record _ErrorsRecieveDto
     {
-        public string Uuid { get; set; }
-        public string Status { get; set; }//todo : save statusList in database
-        public string Error_message { get; set; }
-        public ErrorsRecieveDto Errors { get; set; }
-        public Guid Reference_number { get; set; }
-        public Guid Confirm_number { get; set; }
-        public ErrorsRecieveDto Tax_errors { get; set; }
-    }
-    public record ErrorsRecieveDto
-    {
-        public string Key { get; set; }
-        public string ErrorKeyPosition { get; set; }
-        public int ErrorKeyIndex { get; set; }
+        public string Field { get; set; }
+        public int Index { get; set; }
         public string Message { get; set; }
+        public string Property { get; set; }
+        public string Tag { get; set; }
+        public string Value { get; set; }
     }
-    public record TaxErrorsRecieveDto
+    public record MaaherErrorsDto
     {
-        public string Code { get; set; }
-        public string Message { get; set; }
-        public string Detail { get; set; }//todo: check datatype
+        public short Id { get; set; }
+        public int ErrorCode { get; set; }
+        public short HttpStatus { get; set; }
+        public string Description { get; set; }
     }
 }
