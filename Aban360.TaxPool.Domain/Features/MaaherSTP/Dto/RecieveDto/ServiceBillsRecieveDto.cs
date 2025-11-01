@@ -2,7 +2,7 @@
 {
     public record SentInvoiceRecieveDto
     {
-        public ICollection<_ErrorsRecieveDto> Errors { get; set; }
+        public ICollection<ErrorsRecieveDto> Errors { get; set; }
        
         public int ResultCode { get; set; }
         public int?  StatusCode { get; set; }
@@ -13,7 +13,7 @@
         public string TaxId { get; set; }
         public string Uid { get; set; }
     }
-    public record _ErrorsRecieveDto
+    public record ErrorsRecieveDto
     {
         public string Field { get; set; }
         public int Index { get; set; }

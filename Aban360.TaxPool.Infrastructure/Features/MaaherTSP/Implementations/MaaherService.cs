@@ -31,7 +31,7 @@ namespace Aban360.TaxPool.Infrastructure.Features.MaaherTSP.Implementations
             var body = JsonSerializer.Serialize(inputDto);
             var content = new StringContent(body, Encoding.UTF8, _applicationJson);
 
-            var response = await _httpClient.PutAsync(url, content);
+            var response = await _httpClient.PostAsync(url, content);
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();
 
