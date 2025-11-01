@@ -36,7 +36,7 @@ namespace Aban360.ReportPool.Infrastructure.Features.CustomerInfo.Implementation
             string billId = JsonSerializer.Serialize(inputDto);
             var content = new StringContent(billId, Encoding.UTF8, _contentType);
 
-            var response = await _httpClient.PutAsync(_url, content);
+            var response = await _httpClient.PostAsync(_url, content);
             response.EnsureSuccessStatusCode();
             CustomerLocationDto result = await response.Content.ReadFromJsonAsync<CustomerLocationDto>();
             return result;
