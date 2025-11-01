@@ -40,12 +40,12 @@ namespace Aban360.CalculationPool.Application.Features.Base
                         
             //Discounts
             double abBahaDiscount = CalculateItemDiscount(customerInfo, nerkh, olgoo, (long)abBahaResult.AbBahaAmount, false, multiplierAbBaha, finalDomesticCount);
-            double fazelabDiscount = CalculateFazelabDiscount(abBahaDiscount, fazelab);// CalculateItemDiscount(customerInfo, nerkh, olgoo, (long)fazelab, false, multiplierAbBaha);
-            double hotSeasonAbDiscount = CalculateFasleGarmDiscount(nerkh, abBahaDiscount, hotSeasonAbBaha);//CalculateItemDiscount(customerInfo, nerkh, olgoo, (long)hotSeasonAbBaha, false, multiplierAbBaha);
-            double hotSeasonFazelabDiscount = CalculateFasleGarmDiscount(nerkh, fazelabDiscount, hotSeasonFazelab);// CalculateItemDiscount(customerInfo, nerkh, olgoo, (long)hotSeasonFazelab, false, multiplierAbBaha);
+            double fazelabDiscount = CalculateFazelabDiscount(abBahaDiscount, fazelab, customerInfo, nerkh);// CalculateItemDiscount(customerInfo, nerkh, olgoo, (long)fazelab, false, multiplierAbBaha);
+            double hotSeasonAbDiscount = CalculateFasleGarmDiscount(nerkh, abBahaDiscount, hotSeasonAbBaha, customerInfo);//CalculateItemDiscount(customerInfo, nerkh, olgoo, (long)hotSeasonAbBaha, false, multiplierAbBaha);
+            double hotSeasonFazelabDiscount = CalculateFasleGarmDiscount(nerkh, fazelabDiscount, hotSeasonFazelab, customerInfo);// CalculateItemDiscount(customerInfo, nerkh, olgoo, (long)hotSeasonFazelab, false, multiplierAbBaha);
             double avarezDiscount = 0;//CalculateItemDiscount(customerInfo, nerkh, olgoo, (long)avarez);
             double javaniDiscount = 0;// CalculateItemDiscount(customerInfo, nerkh, olgoo, (long)javani, false, multiplierAbBaha);
-            double boodjeDiscount = CalculateBoodjeDiscount(customerInfo,abBahaDiscount,boodje);
+            double boodjeDiscount = CalculateBoodjeDiscount(customerInfo,abBahaDiscount,boodje, nerkh);
             return new BaseOldTariffEngineOutputDto(abBahaResult, fazelab, hotSeasonAbBaha.Item2, hotSeasonFazelab.Item2, boodje.Item1, boodje.Item2, abBahaDiscount, hotSeasonAbDiscount, fazelabDiscount, 0, avarez, javani,
                 0, 0, avarezDiscount, javaniDiscount, boodjeDiscount);
         }
@@ -134,6 +134,10 @@ namespace Aban360.CalculationPool.Application.Features.Base
         private bool IsEducationOrBath(int usageId)
         {
             return CheckConditions(usageId, [7, 8, 41, 11]);
+        }
+        public bool IsSpecialEducation(int usageId, bool isSpecial)
+        {
+            return CheckConditions(usageId, [7,8]) && isSpecial;
         }
 
         private bool IsConstruction(int branchTypeId)
@@ -956,8 +960,12 @@ namespace Aban360.CalculationPool.Application.Features.Base
             return abonAbAmount;
         }       
 
-        public double CalculateAbonmanAbDiscount(int usageId,double abonmanAmount, double bahaDiscountAmount)
+        public double CalculateAbonmanAbDiscount(int usageId,double abonmanAmount, double bahaDiscountAmount, bool isSpecial)
         {
+            if(IsSpecialEducation(usageId, isSpecial))
+            {
+                return 0;
+            }
             return bahaDiscountAmount > 0 && !IsReligiousWithCharity(usageId) ? abonmanAmount : 0;
         }
         public double CalculateMaliatDiscount(double abBahaDiscount, double fazelabDiscount, double abonAbDiscount,
@@ -1033,7 +1041,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             bool canParse = int.TryParse(villageId.Substring(0, 4), out int villageCode);
             return (canParse, villageCode);
         }
-        private double CalculateBoodjeDiscount(CustomerInfoOutputDto customerInfo, double abBahaDiscount, (double, double) boodjeAmounts)
+        private double CalculateBoodjeDiscount(CustomerInfoOutputDto customerInfo, double abBahaDiscount, (double, double) boodjeAmounts, NerkhGetDto nerkh)
         {
             if (abBahaDiscount <= 0)
             {
@@ -1048,7 +1056,13 @@ namespace Aban360.CalculationPool.Application.Features.Base
             {
                 return boodjeAmounts.Item1;
             }
-            //اگه مدرسه با شرایط تعریف شده باشه هم بالای ظرفیت هم زیر ظرفیت تخفیف داده میشه
+            //اگه مدرسه با شرایط تعریف شده باشه هم بالای ظرفیت هم زیر ظرفیت تخفیف داده میشه ??
+            int virtualCapacity = GetVirtualCapacity(customerInfo, nerkh.Duration);
+            if (virtualCapacity > 0)
+            {
+                double partialOlgoo = (double)customerInfo.ContractualCapacity / monthDays * nerkh.Duration;
+                return partialOlgoo <= virtualCapacity ? (boodjeAmounts.Item1+boodjeAmounts.Item2) : 0;
+            }
             return boodjeAmounts.Item1;
         }
 
@@ -1060,7 +1074,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             }
             return 0;
         }
-        private double CalculateFazelabDiscount(double abBahaDiscount, double fazelabAmount)
+        private double CalculateFazelabDiscount(double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh)
         {
             if (abBahaDiscount <= 0)
             {
@@ -1070,10 +1084,17 @@ namespace Aban360.CalculationPool.Application.Features.Base
             {
                 return 0;
             }
-            return abBahaDiscount * 0.7;
+            double fazelabDiscount = abBahaDiscount * 0.7;
+            int virtualCapacity = GetVirtualCapacity(customerInfo, nerkh.Duration);
+            if (virtualCapacity > 0)
+            {
+                double partialOlgoo = (double)customerInfo.ContractualCapacity / monthDays * nerkh.Duration;
+                return partialOlgoo <= virtualCapacity ? fazelabDiscount : 0;
+            }
+            return fazelabAmount;
         }
 
-        private double CalculateFasleGarmDiscount(NerkhGetDto nerkh, double amountDiscount, (int,double)hotSeasonInfo)
+        private double CalculateFasleGarmDiscount(NerkhGetDto nerkh, double amountDiscount, (int,double)hotSeasonInfo, CustomerInfoOutputDto customerInfo)
         {//hotSeasonInfo.Item1: duration  , hotSeasonInfo.Item2:amount
             if (amountDiscount == 0)
             {
@@ -1083,8 +1104,14 @@ namespace Aban360.CalculationPool.Application.Features.Base
             {
                 return 0;
             }
+            int virtualCapacity = GetVirtualCapacity(customerInfo, nerkh.Duration);
             double timePercentage = (double)hotSeasonInfo.Item1 / (double)nerkh.Duration;
-            double fasleGarmAmount= amountDiscount * timePercentage*0.2;
+            double fasleGarmAmount = amountDiscount * timePercentage * 0.2;
+            if (virtualCapacity > 0)
+            {
+                double partialOlgoo = (double)customerInfo.ContractualCapacity / monthDays * nerkh.Duration;
+                return partialOlgoo <= virtualCapacity ? fasleGarmAmount : 0;
+            }          
             return fasleGarmAmount;
         }
 
@@ -1122,6 +1149,11 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 //C*0.1
                 return (long)(90000 * 0.1 * (partialOlgoo) * (double)multiplier);
             }
+            int virtualCapacity = GetVirtualCapacity(customerInfo, nerkh.Duration);
+            if (virtualCapacity>0)
+            {
+                return partialOlgoo <= virtualCapacity ? amount : 0;
+            }
             return 0;
         }
 
@@ -1131,9 +1163,14 @@ namespace Aban360.CalculationPool.Application.Features.Base
             return sumAmount * 0.10;
         }
 
-        private int GetDomesticCount(CustomerInfoOutputDto customerInfo)
+        private int GetVirtualCapacity(CustomerInfoOutputDto customerInfo, int duration)
         {
-            return (customerInfo.DomesticUnit - customerInfo.EmptyUnit) <= 0 ? 1 : customerInfo.DomesticUnit - customerInfo.EmptyUnit;
+            if(IsSpecialEducation(customerInfo.UsageId, customerInfo.IsSpecial))
+            {
+                double partialCapacity = (double)customerInfo.ContractualCapacity / monthDays * duration;
+                return Convert.ToInt32(Math.Round(partialCapacity * 2,1));
+            }
+            return 0;
         }
     }
 }

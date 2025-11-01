@@ -195,8 +195,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             }            
             sumAbonmanAbBaha = CalculateAbonmanAb(customerInfo, meterInfo, currentDateJalali);
             sumAbonmanFazelab = CalculateFazelab(meterInfo.PreviousDateJalali, currentDateJalali, duration, customerInfo, sumAbonmanAbBaha, currentDateJalali, true);
-            sumAbonmanAbDiscount = CalculateAbonmanAbDiscount(customerInfo.UsageId, sumAbonmanAbBaha, sumAbBahaDiscount);
-            sumAbonmanFazelabDiscount = CalculateAbonmanAbDiscount(customerInfo.UsageId, sumAbonmanFazelab, sumFazelabDiscount);
+            sumAbonmanAbDiscount = CalculateAbonmanAbDiscount(customerInfo.UsageId, sumAbonmanAbBaha, sumAbBahaDiscount, customerInfo.IsSpecial);
+            sumAbonmanFazelabDiscount = CalculateAbonmanAbDiscount(customerInfo.UsageId, sumAbonmanFazelab, sumFazelabDiscount, customerInfo.IsSpecial);
             double maliatDiscount = CalculateMaliatDiscount(sumAbBahaDiscount, sumFazelabDiscount, sumAbonmanAbDiscount,
                 sumAbonmanFazelabDiscount, sumBoodjeDiscount, sumHotSeasonDiscount);
             double AbBahaResult = sumAbBaha + sumHotSeasonAbBaha + sumAbonmanAbBaha;
