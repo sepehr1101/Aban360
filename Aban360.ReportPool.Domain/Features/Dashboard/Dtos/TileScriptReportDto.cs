@@ -3,11 +3,14 @@
     public record TileScriptReportDto
     {
         public string Key { get; set; }
-        public string Value { get; set; }
-        public TileScriptReportDto(string key, string value)
+        public long Value { get; set; }
+        public TileScriptReportDto(string key, long value)
         {
             Key = key;
             Value = value;
+        }
+        public TileScriptReportDto()
+        {
         }
     }
 }

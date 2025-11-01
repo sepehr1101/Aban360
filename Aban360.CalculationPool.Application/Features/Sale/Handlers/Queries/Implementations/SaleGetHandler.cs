@@ -47,7 +47,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
             IEnumerable<SaleDataOutputDto> salesData = await GetSalesData(inputDto);
             EquipmentBrokerOutputDto equipmentBroker = await _equipmentBrokerAndZoneQueryService.Get(inputDto.ZoneId);
-            ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> finalSale = CalcSale(salesData, equipmentBroker!=null && equipmentBroker.Id > 0 ? true : false);
+            ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> finalSale = CalcSale(salesData, equipmentBroker != null && equipmentBroker.Id > 0 ? true : false);
 
             return finalSale;
         }
@@ -65,10 +65,10 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             SaleHeaderOutputDto headerOutput = new SaleHeaderOutputDto()
             {//todo: review
                 HasBroker = hasBroker,
-                BrokerAmount = hasBroker ? salesData.Where(s => s.Id == 76 || s.Id == 77).Sum(s => s.Amount) : 0,
-                BrokerOfferingCount = hasBroker ? salesData.Where(s => s.Id == 76 || s.Id == 77).Count() : 0,
-                CompanyAmount = !hasBroker ? salesData.Where(s => s.Id != 76 || s.Id != 77).Sum(s => s.Amount) : salesData.Sum(s => s.Amount),
-                CompanyOfferingCount = !hasBroker ? salesData.Where(s => s.Id != 76 || s.Id != 77).Count() : salesData.Count(),
+                BrokerAmount = hasBroker ? salesData.Where(s => s.Id == (short)OfferingEnum.WaterEquipment || s.Id == (short)OfferingEnum.SewageEquipment).Sum(s => s.Amount) : 0,
+                BrokerOfferingCount = hasBroker ? salesData.Where(s => s.Id == (short)OfferingEnum.WaterEquipment || s.Id == (short)OfferingEnum.SewageEquipment).Count() : 0,
+                CompanyAmount = !hasBroker ? salesData.Where(s => s.Id != (short)OfferingEnum.WaterEquipment || s.Id != (short)OfferingEnum.SewageEquipment).Sum(s => s.Amount) : salesData.Sum(s => s.Amount),
+                CompanyOfferingCount = !hasBroker ? salesData.Where(s => s.Id != (short)OfferingEnum.WaterEquipment || s.Id != (short)OfferingEnum.SewageEquipment).Count() : salesData.Count(),
                 OfferingCount = salesData.Count(),
                 OfferingAmount = salesData.Sum(s => s.Amount),
             };

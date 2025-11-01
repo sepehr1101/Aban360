@@ -9,17 +9,17 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Queries
 {
     [Route("v1/sale")]
-    public class SaleGetController : BaseController
+    public class SaleCalcaulationManagerController : BaseController
     {
         private readonly ISaleGetHandler _getHandler;
-        public SaleGetController(ISaleGetHandler getHandler)
+        public SaleCalcaulationManagerController(ISaleGetHandler getHandler)
         {
             _getHandler = getHandler;
             _getHandler.NotNull(nameof(getHandler));
         }
         
         [HttpPost]
-        [Route("get")]
+        [Route("calculate")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get([FromBody] SaleInputDto inputDto, CancellationToken cancellationToken)
         {
