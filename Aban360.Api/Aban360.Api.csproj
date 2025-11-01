@@ -101,6 +101,7 @@
     <ProjectReference Include="..\Aban360.PaymentPool.Application\Aban360.PaymentPool.Application.csproj" />
     <ProjectReference Include="..\Aban360.PaymentPool.Persistence\Aban360.PaymentPool.Persistence.csproj" />
     <ProjectReference Include="..\Aban360.ReportPool.Application\Aban360.ReportPool.Application.csproj" />
+    <ProjectReference Include="..\Aban360.ReportPool.Infrastructure\Aban360.ReportPool.Infrastructure.csproj" />
     <ProjectReference Include="..\Aban360.ReportPool.Persistence\Aban360.ReportPool.Persistence.csproj" />
     <ProjectReference Include="..\Aban360.SystemPool.Application\Aban360.SystemPool.Application.csproj" />
     <ProjectReference Include="..\Aban360.SystemPool.Domain\Aban360.SystemPool.Domain.csproj" />
