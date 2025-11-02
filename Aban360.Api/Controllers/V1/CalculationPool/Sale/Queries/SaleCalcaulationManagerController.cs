@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Queries
         [HttpPost]
         [Route("calculate")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get([FromBody] SaleInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Calculate([FromBody] SaleInputDto inputDto, CancellationToken cancellationToken)
         {
             ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> result = await _getHandler.Handle(inputDto, cancellationToken);
 

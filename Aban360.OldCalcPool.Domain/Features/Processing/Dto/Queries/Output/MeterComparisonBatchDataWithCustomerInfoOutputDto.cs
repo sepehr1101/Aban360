@@ -42,5 +42,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         public bool IsSpecial { get; set; }
         public bool MeterDiameterId { get; set; }
         public double SumItems { get; set; }
+        public int VirtualCategoryId { get; set; }
+
     }
 }

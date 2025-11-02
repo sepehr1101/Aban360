@@ -3,11 +3,11 @@
     public record InstallationAndEquipmentGetDto
     {
         public bool IsWater { get; set; }
-        public short? MeterDiameterId { get; set; }
-        public InstallationAndEquipmentGetDto(bool isWater, short? meterDiameterId)
+        public short? DiameterId { get; set; }
+        public InstallationAndEquipmentGetDto(bool isWater, short? diameterId)
         {
             IsWater = isWater;
-            MeterDiameterId = meterDiameterId;
+            DiameterId = diameterId;
         }
 
     }

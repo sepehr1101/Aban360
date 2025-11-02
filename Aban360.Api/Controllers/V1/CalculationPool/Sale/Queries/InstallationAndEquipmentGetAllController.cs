@@ -17,7 +17,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.InstallationAndEquipment.Qu
             _getHandler.NotNull(nameof(getHandler));
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("get-all")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<SearchById>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)

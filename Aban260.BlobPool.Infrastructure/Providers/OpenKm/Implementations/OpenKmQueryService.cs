@@ -195,8 +195,29 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
             using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
-            MetaDataProperties result = await response.Content.ReadFromJsonAsync<MetaDataProperties>();
-            return result;
+            //   MetaDataProperties result = await response.Content.ReadFromJsonAsync<MetaDataProperties>();
+
+            string jsonResult = await response.Content.ReadAsStringAsync();
+            MetaDataProperties metaDataProperties;
+
+            if (jsonResult.Contains("[") && jsonResult.Contains("]"))
+            {
+                metaDataProperties = JsonSerializer.Deserialize<MetaDataProperties>(jsonResult);
+            }
+            else
+            {
+                PropertyGroupItem singleMetaData = JsonSerializer.Deserialize<MetaDataProperty>(jsonResult).RawMetaDatas;
+
+                metaDataProperties = new MetaDataProperties()
+                {
+                    RawMetaDatas = new List<PropertyGroupItem> 
+                    {
+                        singleMetaData
+                    }
+                };
+            }
+
+            return metaDataProperties;
         }
 
         public async Task<SearchDocumentsResponse> SearchDocuments(string folderPath, string property, string path)
@@ -262,7 +283,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             await EditFile(result.Uuid);
             return result;
         }
-       
+
         public async Task<string> AddFolderByBillId(string billId)
         {
             string fldId = $"{_options.BasePath}{billId}";
@@ -307,13 +328,13 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
 
             var authHeader = await GetAuthenticationHeaderAsync();
             _httpClient.DefaultRequestHeaders.Authorization = authHeader;
-           
+
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
 
             var content = new StringContent(body, Encoding.UTF8, accept);
             string finalUrl = $"{baseUrl}?nodeId={nodeId}&grpName={GroupNameFolder}";
 
-            
+
             var response = await _httpClient.PutAsync(finalUrl, content);
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();

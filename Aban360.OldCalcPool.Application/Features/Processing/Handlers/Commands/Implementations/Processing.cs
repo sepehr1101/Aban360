@@ -212,7 +212,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             return new CustomerInfoOutputDto()
             {
                 ZoneId = input.CustomerInfo.ZoneId,
-                Radif = input.CustomerInfo.Radif??0,
+                Radif = input.CustomerInfo.Radif ?? 0,
                 BranchType = input.CustomerInfo.BranchType,
                 UsageId = input.CustomerInfo.UsageId,
                 DomesticUnit = input.CustomerInfo.DomesticUnit,
@@ -226,10 +226,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 ContractualCapacity = input.CustomerInfo.ContractualCapacity ?? 0,
                 HouseholdNumber = input.CustomerInfo.HouseholdNumber ?? 0,
                 HouseholdDate = input.CustomerInfo.HouseholdDate,
-                ReadingNumber = input.CustomerInfo.ReadingNumber ??string.Empty,
+                ReadingNumber = input.CustomerInfo.ReadingNumber ?? string.Empty,
                 VillageId = input.CustomerInfo.VillageId,
                 IsSpecial = input.CustomerInfo.IsSpecial,
-                BillId = input.MeterPreviousData.BillId ?? string.Empty
+                BillId = input.MeterPreviousData.BillId ?? string.Empty,
+                VirtualCategoryId = input.CustomerInfo.VirtualCategoryId ?? 0
             };
         }
         private int GetConsumption(int previousNumber, int currentNumber)

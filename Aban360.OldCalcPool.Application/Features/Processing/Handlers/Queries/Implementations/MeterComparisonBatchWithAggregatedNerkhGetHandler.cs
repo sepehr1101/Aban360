@@ -81,7 +81,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                 CommercialUnit = data.CommertialUnit,
                 OtherUnit = data.OtherUnit,
                 EmptyUnit = data.EmptyUnit,
-                ContractualCapacity = data.ContractualCapacity              
+                ContractualCapacity = data.ContractualCapacity,
+                VirtualCategoryId = data.VirtualCategoryId,
             };
         }
         private BaseOldTariffEngineImaginaryInputDto CreateImaginaryInputDtoObject(MeterComparisonBatchDataWithCustomerInfoOutputDto data)
@@ -117,7 +118,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                     HouseholdDate=data.HouseholdDate,
                     ReadingNumber = data.ReadingNumber,
                     VillageId = data.VillageId,
-                    IsSpecial = data.IsSpecial
+                    IsSpecial = data.IsSpecial,
+                    VirtualCategoryId= data.VirtualCategoryId,
                 }
             };
             return meterInfoData;
