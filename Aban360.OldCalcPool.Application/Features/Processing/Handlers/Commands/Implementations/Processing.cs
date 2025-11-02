@@ -212,24 +212,24 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             return new CustomerInfoOutputDto()
             {
                 ZoneId = input.CustomerInfo.ZoneId,
-                Radif = input.CustomerInfo.Radif,
+                Radif = input.CustomerInfo.Radif??0,
                 BranchType = input.CustomerInfo.BranchType,
                 UsageId = input.CustomerInfo.UsageId,
                 DomesticUnit = input.CustomerInfo.DomesticUnit,
                 CommertialUnit = input.CustomerInfo.CommertialUnit,
                 OtherUnit = input.CustomerInfo.OtherUnit,
-                EmptyUnit = input.CustomerInfo.EmptyUnit,
+                EmptyUnit = input.CustomerInfo.EmptyUnit ?? 0,
                 WaterInstallationDateJalali = input.CustomerInfo.WaterInstallationDateJalali,
                 SewageInstallationDateJalali = input.CustomerInfo.SewageInstallationDateJalali,
-                WaterCount = input.CustomerInfo.WaterCount,
-                SewageCalcState = input.CustomerInfo.SewageCalcState,
-                ContractualCapacity = input.CustomerInfo.ContractualCapacity,
-                HouseholdNumber = input.CustomerInfo.HouseholdNumber,
+                //WaterCount = input.CustomerInfo.WaterCount,
+                SewageCalcState = input.CustomerInfo.SewageCalcState ?? 0,
+                ContractualCapacity = input.CustomerInfo.ContractualCapacity ?? 0,
+                HouseholdNumber = input.CustomerInfo.HouseholdNumber ?? 0,
                 HouseholdDate = input.CustomerInfo.HouseholdDate,
-                ReadingNumber = input.CustomerInfo.ReadingNumber,
+                ReadingNumber = input.CustomerInfo.ReadingNumber ??string.Empty,
                 VillageId = input.CustomerInfo.VillageId,
                 IsSpecial = input.CustomerInfo.IsSpecial,
-                BillId = input.MeterPreviousData.BillId
+                BillId = input.MeterPreviousData.BillId ?? string.Empty
             };
         }
         private int GetConsumption(int previousNumber, int currentNumber)

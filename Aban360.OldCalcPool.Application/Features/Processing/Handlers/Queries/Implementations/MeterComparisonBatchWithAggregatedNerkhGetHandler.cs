@@ -110,7 +110,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                     SewageInstallationDateJalali = data.SewageInstallationDateJalali,
                     WaterRegisterDate = data.WaterRegisterDate,
                     SewageRegisterDate = data.SewageRegisterDate,
-                    WaterCount = data.WaterCount,
+                    //WaterCount = data.WaterCount,
                     SewageCalcState = data.SewageCalcState,
                     ContractualCapacity = data.ContractualCapacity,
                     HouseholdNumber = data.HouseholdNumber,
