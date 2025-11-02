@@ -5,7 +5,12 @@ namespace Aban360.BlobPool.Domain.Providers.Dto
     public class MetaDataProperties
     {
         [JsonPropertyName("simplePropertyGroup")]
-        public List<PropertyGroupItem> RawMetaDatas { get; set; }
+        public List<PropertyGroupItem>? RawMetaDatas { get; set; }
+    }
+    public class MetaDataProperty
+    {
+        [JsonPropertyName("simplePropertyGroup")]
+        public PropertyGroupItem? RawMetaDatas { get; set; }
     }
     public class PropertyGroupItem
     {
