@@ -22,7 +22,9 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
         private readonly IMemoryCache _cache;
 
         private const string TokenCacheKey = "OpenKm_AccessToken";
-        private const string GroupName = "okg%3Amoshtarakin_folder";
+        private const string GroupNameFolder = "okg%3Amoshtarakin_folder";
+        private const string GroupNameFile = "okg%3Amoshtarakin_file";
+
         private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
@@ -186,7 +188,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             var authHeader = await GetAuthenticationHeaderAsync();
 
             // Only append the relative path/query; BaseAddress comes from DI
-            var requestUrl = $"{_options.GeMetadataEndpoint}?nodeId={documentId}&grpName=okg%3Amoshtarakin_file";
+            var requestUrl = $"{_options.GeMetadataEndpoint}?nodeId={documentId}&grpName={GroupNameFile}";
 
             using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
             request.Headers.Authorization = authHeader;
@@ -309,7 +311,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
 
             var content = new StringContent(body, Encoding.UTF8, accept);
-            string finalUrl = $"{baseUrl}?nodeId={nodeId}&grpName={GroupName}";
+            string finalUrl = $"{baseUrl}?nodeId={nodeId}&grpName={GroupNameFolder}";
 
             
             var response = await _httpClient.PutAsync(finalUrl, content);
@@ -322,7 +324,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             string cookie = "Cookie";
             string cookieDate = "cookiesession1=678ADA5C33A30F49D180AB6CBD34D5FC";
             string baseUrl = $"https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-CreateMetadata/1.0";
-            string finalUrl = $"{baseUrl}?nodeId={nodeId}&grpName={GroupName}";
+            string finalUrl = $"{baseUrl}?nodeId={nodeId}&grpName={GroupNameFolder}";
 
             _httpClient.DefaultRequestHeaders.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
