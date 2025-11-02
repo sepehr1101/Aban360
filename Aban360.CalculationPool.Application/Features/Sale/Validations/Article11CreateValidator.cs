@@ -9,11 +9,11 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Validations
     {
         public Article11CreateValidator()
         {
-            RuleFor(i => i.WaterAmount)
+            RuleFor(i => i.DomesticWaterAmount)
               .NotNull().WithMessage(ExceptionLiterals.NotNull)
               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(i => i.WaterMeterAmount)
+            RuleFor(i => i.NonDomesticWaterAmount)
               .NotNull().WithMessage(ExceptionLiterals.NotNull)
               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 

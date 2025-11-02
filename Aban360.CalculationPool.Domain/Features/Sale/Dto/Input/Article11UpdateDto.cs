@@ -3,11 +3,10 @@
     public record Article11UpdateDto
     {
         public short Id { get; set; }
-        public long WaterMeterAmount { get; set; }
-        public long WaterAmount { get; set; }
-        public long? SewageMeterAmount { get; set; }
-        public long? SewageAmount { get; set; }
-        public bool IsDomestic { get; set; }
+        public long DomesticWaterAmount { get; set; }
+        public long NonDomesticWaterAmount { get; set; }
+        public long? DomesticSewageAmount { get; set; }
+        public long? NonDomesticSewageAmount { get; set; }
         public string? BlockCode { get; set; }
         public int ZoneId { get; set; }
         public string FromDateJalali { get; set; } = null!;

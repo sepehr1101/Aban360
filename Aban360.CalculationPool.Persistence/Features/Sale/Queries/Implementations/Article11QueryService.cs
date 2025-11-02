@@ -49,7 +49,6 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
                     Where
                     	[CustomerWarehouse].dbo.PersianToMiladi(ToDateJalali)>GETDATE() AND
                     	RemoveDateTime IS NULL AND
-                    	IsDomestic=@isDomestic AND
                     	(
                     		@BlockCode IS NULL OR
                     		BlockCode=@BlockCode

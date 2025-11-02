@@ -45,13 +45,13 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Commands.Implementat
         private string CreateQuery()
         {
             return @"INSERT INTO [Aban360].CalculationPool.Article11(
-                        WaterMeterAmount,WaterAmount,SewageMeterAmount,SewageAmount,
-                        IsDomestic,BlockCode,ZoneId,FromDateJalali,ToDateJalali,
+                        DomesticWaterAmount,DomesticSewageAmount,NonDomesticWaterAmount,NonDomesticSewageAmount,
+                        BlockCode,ZoneId,FromDateJalali,ToDateJalali,
 						RegisterDateTime,RegisterByUserId,RemoveDateTime,RemoveByUserId
                     )
                     VALUES (
-                        @WaterMeterAmount,@WaterAmount,@SewageMeterAmount,@SewageAmount,
-                        @IsDomestic,@BlockCode,@ZoneId,@FromDateJalali,@ToDateJalali,
+                        @DomesticWaterAmount,@DomesticSewageAmount,@NonDomesticWaterAmount,@NonDomesticSewageAmount,
+                        @BlockCode,@ZoneId,@FromDateJalali,@ToDateJalali,
                         @RegisterDateTime,@RegisterByUserId,@RemoveDateTime,@RemoveByUserId)";
         }
 

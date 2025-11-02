@@ -83,9 +83,9 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             ICollection<SaleDataOutputDto> waterInstallationAndEquipment = await GetInstallationAndEquipment(true, inputDto.WaterDiameterId);
             salesData.AddRange(waterInstallationAndEquipment);
 
-            var article11 = new Article11GetDto(inputDto.ZoneId, inputDto.IsDomestic, inputDto.Block);
+            var article11 = new Article11GetDto(inputDto.ZoneId, inputDto.Block);
             Article11OutputDto article11Data = await _article11QueryService.Get(article11);
-            SaleDataOutputDto waterArticle11 = await GetSaleData(OfferingEnum.WaterArticle11, article11Data.WaterAmount, null);
+            SaleDataOutputDto waterArticle11 = await GetSaleData(OfferingEnum.WaterArticle11,inputDto.IsDomestic? article11Data.DomesticWaterAmount: article11Data.NonDomesticWaterAmount, null);
             salesData.Add(waterArticle11);
 
             if (HasSiphon(inputDto))
@@ -93,7 +93,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 ICollection<SaleDataOutputDto> sewageInstallationAndEquipment = await GetInstallationAndEquipment(false, inputDto.SiphonDiameterId);
                 salesData.AddRange(sewageInstallationAndEquipment);
 
-                SaleDataOutputDto sewageArticle11 = await GetSaleData(OfferingEnum.SewageArticle11, article11Data.SewageAmount, null);
+                SaleDataOutputDto sewageArticle11 = await GetSaleData(OfferingEnum.SewageArticle11, inputDto.IsDomestic ? article11Data.DomesticSewageAmount : article11Data.NonDomesticSewageAmount, null);
                 salesData.Add(sewageArticle11);
             }
 

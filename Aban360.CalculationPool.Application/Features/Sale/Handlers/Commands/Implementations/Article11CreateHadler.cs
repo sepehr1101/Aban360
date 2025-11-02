@@ -40,11 +40,10 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         {
             return new Article11InputDto()
             {
-                WaterMeterAmount = input.WaterMeterAmount,
-                WaterAmount = input.WaterAmount,
-                SewageMeterAmount = input.SewageMeterAmount,
-                SewageAmount = input.SewageAmount,
-                IsDomestic = input.IsDomestic,
+                DomesticWaterAmount = input.DomesticWaterAmount,
+                DomesticSewageAmount = input.DomesticSewageAmount,
+                NonDomesticWaterAmount= input.NonDomesticWaterAmount,
+                NonDomesticSewageAmount = input.NonDomesticSewageAmount,
                 BlockCode = input.BlockCode,
                 ZoneId = input.ZoneId,
                 FromDateJalali = input.FromDateJalali,

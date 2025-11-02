@@ -45,12 +45,12 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Commands.Implementat
         private string CreateQuery()
         {
             return @"INSERT INTO [Aban360].CalculationPool.InstallationAndEquipment (
-                        IsWater,MeterDiameterId,InstallationAmount,EquipmentAmount,
+                        IsWater,DiameterId,InstallationAmount,EquipmentAmount,
 						FromDateJalali,ToDateJalali,
 						RegisterDateTime,RegisterByUserId,RemoveDateTime,RemoveByUserId
                     )
                     VALUES (
-                        @IsWater,@MeterDiameterId,@InstallationAmount,@EquipmentAmount,
+                        @IsWater,@DiameterId,@InstallationAmount,@EquipmentAmount,
                         @FromDateJalali,@ToDateJalali,
                         @RegisterDateTime,@RegisterByUserId,@RemoveDateTime,@RemoveByUserId);";
         }

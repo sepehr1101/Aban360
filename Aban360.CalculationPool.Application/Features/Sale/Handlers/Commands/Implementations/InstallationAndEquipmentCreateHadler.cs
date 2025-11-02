@@ -41,7 +41,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             return new InstallationAndEquipmentInputDto()
             {
                 IsWater = input.IsWater,
-                MeterDiameterId = input.MeterDiameterId,
+                DiameterId = input.DiameterId,
                 InstallationAmount = input.InstallationAmount,
                 EquipmentAmount = input.EquipmentAmount,
                 FromDateJalali = input.FromDateJalali,

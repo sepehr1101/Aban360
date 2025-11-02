@@ -28,6 +28,7 @@
         SupportedField,
 
         Article11,
+        Article11_,
         InstallationAndEquipment,
         IsZoneWithBroker
     }

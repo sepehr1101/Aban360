@@ -13,7 +13,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Validations
               .NotNull().WithMessage(ExceptionLiterals.NotNull)
               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(i => i.MeterDiameterId)
+            RuleFor(i => i.DiameterId)
               .NotNull().WithMessage(ExceptionLiterals.NotNull)
               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 

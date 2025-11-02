@@ -48,7 +48,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
                     	i.RemoveDateTime IS NULL AND
                     	[CustomerWarehouse].dbo.PersianToMiladi(i.ToDateJalali)>GETDATE() AND
                     	i.IsWater=@isWater AND
-                    	i.MeterDiameterId=@meterDiameterId ";
+                    	i.DiameterId=@diameterId ";
         }
 
         private string GetQueryById()
