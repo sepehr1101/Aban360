@@ -2,6 +2,7 @@
 {
     public record UnspecifiedPaymentDataOutputDto
     {
+        public string ZoneTitle { get; set; }
         public int CustomerNumber { get; set; }
         public string EventDateJalali { get; set; }
         public string BankDateJalali { get; set; }

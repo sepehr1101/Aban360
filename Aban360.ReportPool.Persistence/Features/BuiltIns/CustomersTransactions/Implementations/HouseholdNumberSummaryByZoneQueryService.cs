@@ -97,7 +97,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 	                    c.DeletionStateId NOT IN(1,2) AND
 						c.FamilyCount>0 AND
 		                (TRIM(c.HouseholdDateJalali)='' OR c.HouseholdDateJalali BETWEEN @FromHouseholdDateJalali AND @ToHouseholdDateJalali) 
-					GROUP BY c.ZoneTitle";
+					GROUP BY c.ZoneTitle
+                    Order By 
+                        MAX(t46.C2),
+                        c.ZoneTitle";
         }
     }
 }

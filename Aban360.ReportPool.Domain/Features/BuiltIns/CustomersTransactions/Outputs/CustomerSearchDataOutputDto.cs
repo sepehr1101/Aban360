@@ -2,6 +2,7 @@
 {
     public record CustomerSearchDataOutputDto
     {
+        public string? ZoneTitle { get; set; }
         public int? CustomerNumber { get; set; }
         public string? ReadingNumber { get; set; }
         public string? FirstName { get; set; }

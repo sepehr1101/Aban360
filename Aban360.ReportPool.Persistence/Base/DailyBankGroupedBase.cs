@@ -40,6 +40,12 @@ namespace Aban360.ReportPool.Persistence.Base
 							 p.PayDateJalali,
                              p.BankName,
                              p.BankCode,
+                             p.ZoneTitle
+					Order By 
+							p.RegisterDay,
+							 p.PayDateJalali,
+                             p.BankName,
+                             p.BankCode,
                              p.ZoneTitle";
         }
 

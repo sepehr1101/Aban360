@@ -39,6 +39,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         private string GetClientValidationQuery()
 		{
 			return @"Select  
+					c.ZoneTitle,
 					c.CustomerNumber,
 					c.ReadingNumber,
 					c.BillId,
@@ -96,7 +97,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 					@toReadingNumber IS NULL OR
 					c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
 					c.ZoneId IN @zoneIds AND
-					c.ToDayJalali IS NULL ";
+					c.ToDayJalali IS NULL 
+				Order By
+					c.ZoneTitle,
+					c.CustomerNumber ";
 		}
 	}
 }

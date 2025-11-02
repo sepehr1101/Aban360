@@ -107,65 +107,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                      WHERE	  
                          c.RN=1 AND
                          c.DeletionStateId NOT IN(1,2) AND
-                         c.EmptyCount BETWEEN @FromEmptyUnit AND @ToEmptyUnit";
-        }
-        private string GetEmptyUnitQuery()
-        {
-            return @";WITH LatestCustomer as
-                        (
-                        SELECT 
-					    	t46.C2 AS RegionTitle,
-                            c.CustomerNumber,
-                            c.ReadingNumber,
-                            TRIM(c.FirstName) AS FirstName,
-                            TRIM(c.SureName) As Surname,
-                            c.UsageTitle,
-                            c.WaterDiameterTitle MeterDiameterTitle,
-                            c.RegisterDayJalali AS EventDateJalali,
-                            TRIM(c.Address) AS Address,
-                            c.DeletionStateId,
-                            c.DeletionStateTitle AS UseStateTitle,
-                            c.DomesticCount DomesticUnit,
-            	            c.CommercialCount CommercialUnit,
-            	            c.OtherCount OtherUnit,
-                            (c.CommercialCount+c.DomesticCount+c.OtherCount) AS TotalUnit,
-                            c.MainSiphonTitle AS SiphonDiameterTitle,
-                            c.ContractCapacity AS ContractualCapacity,
-            	            TRIM(c.BillId) BillId,
-            		    	c.EmptyCount As EmptyUnit,
-                            c.ZoneId,
-					    	c.ZoneTitle,
-                            t46.C0 AS RegionId,
-					    	TRIM(c.PostalCode) AS PostalCode , 
-					    	TRIM(c.NationalId) AS NationalCode,
-					    	TRIM(c.PhoneNo) AS PhoneNumber,
-					    	TRIM(c.MobileNo) AS MobileNumber,
-					    	TRIM(c.FatherName) AS FatherName,
-                            w.Debt SumItems,
-					    	RN=ROW_NUMBER() OVER(PARTITION BY c.BillId Order By c.RegisterDayJalali )
-                        FROM [CustomerWarehouse].dbo.Clients c
-				    	LEFT JOIN [CustomerWarehouse].dbo.WaterDebt w
-				    		On c.BillId Collate SQL_Latin1_General_CP1_CI_AS= w.BillId
-	    				Join [Db70].dbo.T51 t51
-	    					On t51.C0=c.ZoneId
-	    				Join [Db70].dbo.T46 t46
-	    					On t51.C1=t46.C0
-                        WHERE 
-            		    	c.ToDayJalali IS NULL AND
-            		    	c.UsageId in @UsageSellIds AND
-                            (@fromReadingNumber IS NULL OR
-					    	 @toReadingNumber IS NULL OR
-					    	 c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND 
-					    	 (@FromDateJalali IS NULL OR
-					    	 @ToDateJalali IS NULL OR
-					    	 c.RegisterDayJalali BETWEEN @FromDateJalali AND @ToDateJalali)AND
-                            c.ZoneId in @zoneIds AND
-            		    	c.EmptyCount BETWEEN @FromEmptyUnit AND @ToEmptyUnit
-                        )
-                        Select *
-                        From LatestCustomer l
-                        Where RN=1
-                        Order by ZoneId";
+                         c.EmptyCount BETWEEN @FromEmptyUnit AND @ToEmptyUnit
+					Order By
+						t46.C2,
+						c.ZoneTitle,
+						c.CustomerNumber";
         }
     }
 }

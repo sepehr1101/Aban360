@@ -43,7 +43,8 @@ namespace Aban360.ReportPool.Persistence.Base
 						    @toBankId IS NULL OR
 						    p.BankCode BETWEEN @fromBankId AND @toBankId)
                         {queryCondition}
-						Group By b.{groupingField}";
+						Group By b.{groupingField}
+						Order By b.{groupingField}";
         }
 
         private string GetServiceLinkGroupedQuery(bool hasZone, bool hasUsage, string groupingField)
@@ -82,7 +83,8 @@ namespace Aban360.ReportPool.Persistence.Base
                 	Count(Case When SumAmount<0 Then 1 else null end) as DueCount
                 FROM OrderedData
                 WHERE  IsPayed=1
-                Group By {groupingField}";
+                Group By {groupingField}
+                Order By {groupingField}";
         }
         private string GetWaterDetailQuery(bool hasZone)
         {
@@ -109,7 +111,10 @@ namespace Aban360.ReportPool.Persistence.Base
                         AND (@fromBankId IS NULL OR
 						    @toBankId IS NULL OR
 						    p.BankCode BETWEEN @fromBankId AND @toBankId)
-                         {queryCondition}";
+                         {queryCondition}
+                    Order By 
+                        b.ZoneTitle,
+                        b.CustomerNumber";
         }
         
         private string GetServiceLinkDetailQuery(bool hasZone, bool hasUsage)

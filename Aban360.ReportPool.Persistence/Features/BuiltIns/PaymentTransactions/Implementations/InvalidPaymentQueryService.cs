@@ -52,7 +52,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                         i.Amount
                     From [vosoli].dbo.V_InvalidCredit i
                     Where 
-                    	i.RegisterDateJalali BETWEEN @FromDateJalali AND @ToDateJalali ";
+                    	i.RegisterDateJalali BETWEEN @FromDateJalali AND @ToDateJalali 
+                    Order By   
+                        i.ZoneTitle,
+                    	i.CustomerNumber,
+                        i.BankDateJalali";
         }
     }
 }

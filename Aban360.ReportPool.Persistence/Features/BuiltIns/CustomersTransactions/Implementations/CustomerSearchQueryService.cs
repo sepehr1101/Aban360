@@ -38,6 +38,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         private string GetCustomerSearchDataQuery()
         {
             return @"select TOP(100)
+                        c.ZoneTitle,
                         c.CustomerNumber,
                       	c.ReadingNumber,
                       	TRIM(c.FirstName) AS FirstName,
@@ -69,7 +70,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                                 or c.NationalId like @input
                                 or c.PhoneNo like @input
                                 or c.PostalCode like @input
-                            )";
+                            )
+                       Order By
+                            c.ZoneTitle,
+                            c.CustomerNumber";
         }
     }
 }

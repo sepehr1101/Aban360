@@ -2,6 +2,7 @@
 {
     public record ClientValidationDataOutputDto
     {
+        public string ZoneTitle { get; set; }
         public int CustomerNumber { get; set; }
         public string ReadingNumber { get; set; }
         public string BillId { get; set; }

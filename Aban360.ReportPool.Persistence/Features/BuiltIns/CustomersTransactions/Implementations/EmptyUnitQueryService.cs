@@ -106,56 +106,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                          On t51.C1=t46.C0
                      WHERE	  
                          c.RN=1 AND
-                         c.DeletionStateId NOT IN(1,2)";
-        }
-        private string GetEmptyUnitQuery()
-        {
-            return @"SELECT 
-						t46.C2 AS RegionTitle,
-                        c.CustomerNumber,
-                        c.ReadingNumber,
-                        TRIM(c.FirstName) + ' '+ TRIM(c.SureName) FullName,
-                        TRIM(c.FirstName) AS FirstName,
-                        TRIM(c.SureName) As Surname,
-                        c.UsageTitle,
-                        c.WaterDiameterTitle MeterDiameterTitle,
-                        c.MainSiphonTitle AS SiphonDiameterTitle,
-                        c.RegisterDayJalali AS EventDateJalali,
-                        TRIM(c.Address) AS Address,
-                        c.DeletionStateId,
-                        c.DeletionStateTitle AS UseStateTitle,
-                        c.DomesticCount DomesticUnit,
-            	        c.CommercialCount CommercialUnit,
-            	        c.OtherCount OtherUnit,
-                        (c.CommercialCount+c.DomesticCount+c.OtherCount) AS TotalUnit,
-                        c.MainSiphonTitle AS SiphonDiameterTitle,
-                        c.ContractCapacity AS ContractualCapacity,
-            	        TRIM(c.BillId) BillId,
-            			c.EmptyCount As EmptyUnit,
-                        c.ZoneId,
+                         c.DeletionStateId NOT IN(1,2)
+					Order By
+						t46.C2,
 						c.ZoneTitle,
-                        t46.C0 AS RegionId,
-						TRIM(c.NationalId) AS NationalCode,
-						TRIM(c.PostalCode) AS PostalCode , 
-						TRIM(c.PhoneNo) AS PhoneNumber,
-						TRIM(c.MobileNo) AS MobileNumber,
-						TRIM(c.FatherName)AS FatherName,
-						w.Debt as SumItems
-                    FROM [CustomerWarehouse].dbo.Clients c
-					LEFT JOIN [CustomerWarehouse].dbo.WaterDebt w
-						On c.BillId Collate SQL_Latin1_General_CP1_CI_AS= w.BillId
-					Join [Db70].dbo.T51 t51
-						On t51.C0=c.ZoneId
-					Join [Db70].dbo.T46 t46
-						On t51.C1=t46.C0
-                    WHERE 
-            			c.ToDayJalali IS NULL AND
-            			c.UsageId in @UsageSellIds AND
-                        (@fromReadingNumber IS NULL OR
-						 @toReadingNumber IS NULL OR
-						 c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND 
-                        c.ZoneId in @ZoneIds AND
-            			c.EmptyCount BETWEEN @FromEmptyUnit AND @ToEmptyUnit";
+						c.CustomerNumber";
         }
     }
 }

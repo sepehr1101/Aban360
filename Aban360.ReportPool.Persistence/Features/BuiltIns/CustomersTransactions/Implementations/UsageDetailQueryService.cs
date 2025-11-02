@@ -80,35 +80,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                      WHERE	  
                          c.RN=1 AND
                          c.DeletionStateId NOT IN(1,2) AND
-                    	 c.UsageId IN @UsageSellIds";
-        }
-        private string GetUsageDetailQuery()
-        {
-            return @"SELECT 
-                        c.CustomerNumber,
-                        c.ReadingNumber,
-                        TRIM(c.FirstName) AS FirstName,
-                        TRIM(c.SureName) As Surname,
-                        c.UsageTitle,
-                        c.WaterDiameterTitle MeterDiameterTitle,
-                        c.RegisterDayJalali AS EventDateJalali,
-                        0 AS DebtAmount,
-                        TRIM(c.Address) AS Address,
+                    	 c.UsageId IN @UsageSellIds
+                    Order By   
                         c.ZoneTitle,
-                        c.DeletionStateId,
-                        c.DeletionStateTitle AS UseStateTitle,
-                        c.DomesticCount DomesticUnit,
-            	        c.CommercialCount CommercialUnit,
-            	        c.OtherCount OtherUnit,
-            	        TRIM(c.BillId) BillId
-                    FROM [CustomerWarehouse].dbo.Clients c
-                    WHERE 
-            			c.ToDayJalali IS NULL AND
-            			c.UsageId in @UsageSellIds AND
-							(@fromReadingNumber IS NULL OR
-							@toReadingNumber IS NULL OR
-							c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-                        c.ZoneId in @ZoneIds";
+                    	c.CustomerNumber";
         }
     }
 }

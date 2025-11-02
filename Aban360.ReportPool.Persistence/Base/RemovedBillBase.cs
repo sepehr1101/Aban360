@@ -47,7 +47,10 @@ namespace Aban360.ReportPool.Persistence.Base
                       c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
                     ) AND
 					  c.ToDayJalali IS NULL
-                    {zoneQuery}";
+                    {zoneQuery}
+                Order By   
+                    c.ZoneTitle,
+                	c.CustomerNumber";
         }
 
         internal string GetGroupedQuery(bool hasZone,string groupingField)
@@ -80,7 +83,10 @@ namespace Aban360.ReportPool.Persistence.Base
                         c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
 				       	c.ToDayJalali IS NULL
                         {zoneQuery}
-                      Group By c.{groupingField}";
+                      Group By c.{groupingField}
+                      Order By 
+							MAX(t46.C2),
+							c.{groupingField}";
         }
     }
 }

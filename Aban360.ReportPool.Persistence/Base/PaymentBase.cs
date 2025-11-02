@@ -13,6 +13,7 @@ namespace Aban360.ReportPool.Persistence.Base
             QueryParam parameters= GetQueryParam(isWater, hasZone);
 
             return @$"Select
+						p.ZoneTitle,
                      	p.CustomerNumber As CustomerNumber,
                     	p.PayDateJalali AS BankDateJalali,
                     	p.BankCode AS BankCode,
@@ -33,7 +34,12 @@ namespace Aban360.ReportPool.Persistence.Base
                         AND(@fromBankId IS NULL OR
 						    @toBankId IS NULL OR
 						    p.BankCode BETWEEN @fromBankId AND @toBankId)
-                        {parameters.QueryCondition}";
+                        {parameters.QueryCondition}
+					Order By 
+							 p.ZoneTitle,
+                             p.BankName,
+                             p.BankCode,
+                             p.Amount Desc";
 
         }
 
@@ -78,7 +84,10 @@ namespace Aban360.ReportPool.Persistence.Base
 						    @toBankId IS NULL OR
 						    p.BankCode BETWEEN @fromBankId AND @toBankId)
                         {parameters.QueryCondition}
-                    GROUP BY c.{groupingField}";
+                    GROUP BY c.{groupingField}
+					Order By
+						MAX(t46.C2),
+						c.{groupingField}";
         }
 
         private QueryParam GetQueryParam(bool isWater, bool hasZone)

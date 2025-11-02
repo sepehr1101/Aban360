@@ -54,7 +54,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     	r.RegisterDate BETWEEN @FromDateJalali AND @ToDateJalali AND
                     	r.ZoneId IN @zoneIds AND
                     	(r.TypeCode=1 OR r.TypeCode=2)
-                    Group by r.RegisterDate";
+                    Group by r.RegisterDate
+                    Order By r.RegisterDate Desc";
         }
 
     }

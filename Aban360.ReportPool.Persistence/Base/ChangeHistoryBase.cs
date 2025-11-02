@@ -77,7 +77,10 @@ namespace Aban360.ReportPool.Persistence.Base
                         (@fromReadingNumber IS NULL OR
                         @toReadingNumber IS NULL OR
                         c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) 
-                    	{zoneQuery} ";
+                    	{zoneQuery} 
+                    Order By
+                        c.ZoneTitle,
+                        c.CustomerNumber";
         }
 
         internal string GetGroupedQuery()
