@@ -68,6 +68,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 						b.fix_mas as ContractualCapacity,
                         m.ted_khane as HouseholdNumber,
                         m.date_KHANE as HouseholdDate,
+                        m.EJUCA as VirtualCategoryId,
 						b.eshtrak as ReadingNumber,
                         m.VillageId as VillageId,
 						b.edareh_k as IsSpecial,

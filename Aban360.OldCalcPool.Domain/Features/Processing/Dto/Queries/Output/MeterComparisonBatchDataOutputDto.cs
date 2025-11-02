@@ -27,5 +27,6 @@
         public int OtherUnit { get; set; }
         public int EmptyUnit { get; set; }
         public int ContractualCapacity { get; set; }
+        public int VirtualCategoryId { get; set; }
     }
 }

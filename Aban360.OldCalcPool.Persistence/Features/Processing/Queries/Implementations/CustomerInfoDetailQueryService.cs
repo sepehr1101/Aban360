@@ -54,7 +54,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                         m.VillageId as VillageId,
 						m.edareh_k as IsSpecial,
 						m.enshab as MeterDiameterId,
-						m.Khali_s as EmptyUnit
+						m.Khali_s as EmptyUnit,
+                        m.EJUCA as VirtualCategoryId
                     From [{dataBaseName}].dbo.members m
                     Where
                     	m.town=@zoneId AND 
