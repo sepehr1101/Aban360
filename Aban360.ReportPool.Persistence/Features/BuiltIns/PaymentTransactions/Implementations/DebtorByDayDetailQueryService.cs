@@ -57,7 +57,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     	(r.TypeCode=1 OR r.TypeCode=2)
                     Group by
                     	r.ItemTitle,
-                    	r.RegisterDate";
+                    	r.RegisterDate
+                    Order By
+                        r.ItemTitle,
+                        r.RegisterDate";
         }
 
     }

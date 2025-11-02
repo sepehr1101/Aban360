@@ -2,6 +2,7 @@
 {
     public record PaymentDetailDataOutputDto
     {
+        public string ZoneTitle { get; set; }
         public string CustomerNumber { get; set; }
         public string BankDateJalali { get; set; }
         public int BankCode{ get; set; }

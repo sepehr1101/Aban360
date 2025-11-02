@@ -62,6 +62,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	    c.CustomerNumber<>0 
                     )
                     Select	
+                        c.ZoneTitle,
                     	c.CustomerNumber,
                     	c.ReadingNumber,
                     	c.FirstName,
@@ -84,7 +85,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                      WHERE	  
                          c.RN=1 AND
                          c.DeletionStateId NOT IN(1,2) AND
-                         c.UsageStateId IN @branchTypeIds";
+                         c.UsageStateId IN @branchTypeIds
+                    Order By   
+                        c.ZoneTitle,
+                    	c.CustomerNumber";
         }
     }
 }

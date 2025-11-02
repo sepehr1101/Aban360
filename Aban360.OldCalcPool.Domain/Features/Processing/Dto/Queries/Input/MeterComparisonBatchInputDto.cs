@@ -8,5 +8,6 @@
         public int ZoneId { get; set; }
         public double Tolerance { get; set; }
         public bool IsPercent { get; set; }
+        public ICollection<int>? UsageIds { get; set; }
     }
 }

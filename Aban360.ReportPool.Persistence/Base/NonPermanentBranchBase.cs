@@ -57,7 +57,10 @@ namespace Aban360.ReportPool.Persistence.Base
                     WHERE	                        
                         c.RN=1 AND
                         c.IsNonPermanent=1 AND
-	                    c.DeletionStateId NOT IN(1,2)";
+	                    c.DeletionStateId NOT IN(1,2)
+					Order By
+						C.ZoneTitle,
+						C.CustomerNumber";
         }
 
         internal string GetGroupedQuery(string groupingField)
@@ -107,8 +110,10 @@ namespace Aban360.ReportPool.Persistence.Base
                         c.RN=1 AND
                         c.IsNonPermanent=1 AND
 	                    c.DeletionStateId NOT IN(1,2)
-                    GROUP BY
-                        {groupingField}";
+                    GROUP BY {groupingField}
+					Order By 
+						MAX(t46.C2),
+						{groupingField}";
         }
 
         internal string GetSummaryQuery()
@@ -149,6 +154,10 @@ namespace Aban360.ReportPool.Persistence.Base
                         c.IsNonPermanent=1 AND
 	                    c.DeletionStateId NOT IN(1,2)
                     GROUP BY
+						c.ZoneTitle ,
+						c.UsageTitle,
+						c.WaterDiameterTitle
+					ORDER BY
 						c.ZoneTitle ,
 						c.UsageTitle,
 						c.WaterDiameterTitle";

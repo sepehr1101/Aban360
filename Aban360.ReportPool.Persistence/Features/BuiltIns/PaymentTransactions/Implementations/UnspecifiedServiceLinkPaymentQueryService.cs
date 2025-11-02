@@ -45,6 +45,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
         private string GetUnspecifiedServiceLinkPaymentQuery()
         {
             return @$"Select TOP 1000
+						p.ZoneTitle,
 						p.CustomerNumber AS CustomerNumber,
 						p.RegisterDay AS EventDateJalali,
 						p.RegisterDay AS BankDateJalali,
@@ -74,7 +75,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 							@fromBankId IS NULL OR
 							@toBankId IS NULL OR
 							p.BankCode BETWEEN @fromBankId AND @toBankId
-						)";
+						)
+					Order By
+						p.ZoneTitle,
+						p.CustomerNumber";
         }
     }
 }

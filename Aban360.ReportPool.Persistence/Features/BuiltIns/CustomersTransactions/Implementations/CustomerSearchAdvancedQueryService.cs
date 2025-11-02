@@ -41,6 +41,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             string zoneIdsPartialQuery = hasZoneIds ? "AND c.ZoneId IN @ZoneIds" : string.Empty;
 
             return @$"SELECT TOP(1000)
+                        c.ZoneTitle,
                         c.CustomerNumber,
                         c.ReadingNumber,
                         TRIM(c.FirstName) AS FirstName,
@@ -90,7 +91,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 					    AND (@FromHousholderNumber IS NULL  
                              OR @ToHousholderNumber IS NULL
                              OR c.FamilyCount BETWEEN @FromHousholderNumber AND @ToHousholderNumber)
-						{usageIdsPartialQuery}";
+						{usageIdsPartialQuery}
+                    Order By 
+                        c.ZoneTitle,
+                        c.CustomerNumber";
         }
     }
 }

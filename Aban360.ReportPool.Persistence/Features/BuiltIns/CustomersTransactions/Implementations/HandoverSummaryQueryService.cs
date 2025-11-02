@@ -66,7 +66,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                          c.RN=1 AND
                          c.DeletionStateId NOT IN(1,2) AND
                          c.UsageStateId IN @branchTypeIds
-                    GROUP BY c.BranchType";
+                    GROUP BY c.BranchType
+                    Order By 
+                        c.BranchType";
         }
     }
 }

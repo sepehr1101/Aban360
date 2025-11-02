@@ -81,7 +81,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	    c.CustomerNumber<>0 
                     )
                     Select	
-                    	 c.CustomerNumber,
+                        c.CustomerNumber,
                         c.ReadingNumber,
                         TRIM(c.FirstName) AS FirstName,
                         TRIM(c.SureName) As Surname,
@@ -103,7 +103,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                          c.RN=1 AND
                          c.DeletionStateId NOT IN(1,2) AND
 						 {usageQuery}
-						 c.ContractCapacity BETWEEN @FromCapacity AND @ToCapacity";
+						 c.ContractCapacity BETWEEN @FromCapacity AND @ToCapacity
+					Order By
+						c.ZoneTitle,
+						c.CustomerNumber";
         }
     }
 }

@@ -100,7 +100,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 						 c.RN=1 AND
                          c.DeletionStateId NOT IN(1,2) AND
                          c.EmptyCount>0
-					Group By c.ZoneTitle";
+					Group By c.ZoneTitle
+					Order By
+						MAX(t46.C2),
+						c.ZoneTitle";
         }
     }
 }

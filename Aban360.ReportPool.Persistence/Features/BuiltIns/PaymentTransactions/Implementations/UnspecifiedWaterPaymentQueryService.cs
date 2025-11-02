@@ -43,6 +43,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
         private string GetUnspecifiedWaterPaymentQuery()
         {
             return @$"Select
+						p.ZoneTitle,
 						p.CustomerNumber AS CustomerNumber,
 						p.RegisterDay AS EventDateJalali,
 						p.RegisterDay AS BankDateJalali,
@@ -78,7 +79,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 						)AND
 						(@FromBankId IS NULL OR
                         @ToBankId IS NULL OR
-                        p.BankCode BETWEEN @FromBankId AND @ToBankId)";
+                        p.BankCode BETWEEN @FromBankId AND @ToBankId)
+					Order By
+						p.ZoneTitle,
+						p.CustomerNumber";
         }
     }
 }

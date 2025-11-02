@@ -95,7 +95,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 					p.WaterCount + pe.ServiceLinkCount AS TotalCount
 				From Payment p
 				Join PaymentEn pe
-					On pe.BankCode=p.BankCode";
+					On pe.BankCode=p.BankCode
+                Order By 
+                    p.BankName,
+                    p.BankCode";
         }
     }
 }

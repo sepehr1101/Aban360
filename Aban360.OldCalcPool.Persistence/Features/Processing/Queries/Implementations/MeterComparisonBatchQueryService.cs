@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
@@ -20,27 +21,29 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         public async Task<ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataWithCustomerInfoOutputDto>> Get(MeterComparisonBatchInputDto input)
         {
             string dbName = GetDbName(input.ZoneId);
-            string perviousBillsDataQueryString = GetPreviousBillsDataQuery(dbName, input.IsRegisterDateJalali);
+            string perviousBillsDataQueryString = GetPreviousBillsDataQuery(dbName, input.IsRegisterDateJalali, input.UsageIds.HasValue());
             var @params = new
             {
                 fromDateJalali = input.FromDateJalali,
                 toDateJalali = input.ToDateJalali,
                 zoneId = input.ZoneId,
+                usageIds = input.UsageIds,
             };
             IEnumerable<MeterComparisonBatchDataWithCustomerInfoOutputDto> details = await _sqlReportConnection.QueryAsync<MeterComparisonBatchDataWithCustomerInfoOutputDto>(perviousBillsDataQueryString, @params);
             MeterComparisonBatchHeaderOutputDto summary = new()
             {
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = details?.Count() ?? 00,
-                ZoneTitle = details?.FirstOrDefault()?.ZoneTitle??"-",
+                ZoneTitle = details?.FirstOrDefault()?.ZoneTitle ?? "-",
                 SumPreviousAmount = details?.Sum(m => m.PreviousAmount) ?? 0,
             };
             ReportOutput<MeterComparisonBatchHeaderOutputDto, MeterComparisonBatchDataWithCustomerInfoOutputDto> result = new(reportTitle, summary, details);
             return result;
         }
 
-        private string GetPreviousBillsDataQuery(string dbName, bool isRegisterDateJalali)
+        private string GetPreviousBillsDataQuery(string dbName, bool isRegisterDateJalali, bool hasUsage)
         {
+            string usageQuery = hasUsage ? @" AND b.cod_enshab IN @usageIds" : string.Empty;
             string byRegisterDate = $"b.date_bed BETWEEN @fromDatejalali AND @toDateJalali ";
             string byPreviousNextDate = $"b.pri_date>=@fromDateJalali AND b.today_date<=@toDateJalali";
 

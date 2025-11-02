@@ -81,7 +81,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                     	 c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber)
             		AND c.ToDayJalali IS NULL                    
                     {zoneQuery}
-                    group by b.BillId";
+                    group by b.BillId
+                    Order By 
+                        MAX(b.ZoneTitle),
+                        MAX(b.CustomerNumber)";
 
         }
     }

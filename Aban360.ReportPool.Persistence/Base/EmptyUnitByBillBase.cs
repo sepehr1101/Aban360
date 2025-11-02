@@ -93,7 +93,10 @@ namespace Aban360.ReportPool.Persistence.Base
 						On t51.C0=e.ZoneId
 					Join [Db70].dbo.T46 t46
 						On t51.C1=t46.C0
-					WHERE RowNum = 1;";
+					WHERE RowNum = 1
+					Order By 
+						e.ZoneTitle,
+						e.CustomerNumber";
         }
         internal string GetGroupedQuery(bool hasZone, bool hasUsage, string groupingField)
         {
@@ -148,7 +151,10 @@ namespace Aban360.ReportPool.Persistence.Base
 					Join [Db70].dbo.T46 t46
 						On t51.C1=t46.C0
 				  	 Where e.RN=1
-					 Group By e.{groupingField}";
+					 Group By e.{groupingField}
+					 Order By 
+						MAX(t46.C2),
+						e.{groupingField}";
         }
 
         private string GetQueryCondition(bool hasZone, bool hasUsage)

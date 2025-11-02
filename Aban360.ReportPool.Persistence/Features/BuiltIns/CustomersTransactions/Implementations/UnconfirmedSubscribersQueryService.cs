@@ -55,7 +55,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 						d.RequestDateJalali
                     From [CustomerWarehouse].dbo.DiscontinuedRequests d
                     Where
-                    	d.ZoneId IN @zoneIds";
+                    	d.ZoneId IN @zoneIds
+                    Order By 
+                        d.ZoneTitle,
+                        d.BillId";
         }
     }
 }
