@@ -50,6 +50,13 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
                             on endpoint.AuthValue equals userClaim.ClaimValue
                         select new
                         {
+                            _App = new
+                            {
+                                app.Id,
+                                app.Title,
+                                app.LogicalOrder,
+                                app.Style
+                            },
                             _Module = new
                             {
                                 module.Id,
@@ -57,34 +64,26 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
                                 module.ClientRoute,
                                 module.LogicalOrder,
                                 module.Style
-                            },
-                            _SubModule = new
-                            {
-                                subModule.Id,
-                                subModule.Title,
-                                subModule.ClientRoute,
-                                subModule.LogicalOrder,
-                                subModule.Style
                             }
                         };
             var list = await query.ToListAsync();
             var items = list
-                .GroupBy(l => l._Module.Id)
-                .Select(moduleGroup => new TopbarLevel1()
+                .GroupBy(l => l._App.Id)
+                .Select(appGroup => new TopbarLevel1()
                 {
-                    Id = moduleGroup.Key,
-                    Style = moduleGroup.First()._Module.Style,
-                    Title = moduleGroup.First()._Module.Title,
-                    LogicalOrder = moduleGroup.First()._Module.LogicalOrder,
-                    Level2s = moduleGroup
-                        .GroupBy(l => l._SubModule.Id)
-                        .Select(subModuleGroup => new TopbarLevel2()
+                    Id = appGroup.Key,
+                    Style = appGroup.First()._App.Style,
+                    Title = appGroup.First()._App.Title,
+                    LogicalOrder = appGroup.First()._App.LogicalOrder,
+                    Level2s = appGroup
+                        .GroupBy(l => l._Module.Id)
+                        .Select(moduleGroup => new TopbarLevel2()
                         {
-                            Id = subModuleGroup.Key,
-                            Style = subModuleGroup.First()._SubModule.Style,
-                            LogicalOrder = subModuleGroup.First()._SubModule.LogicalOrder,
-                            ClientRoute = subModuleGroup.First()._SubModule.ClientRoute,
-                            Title = subModuleGroup.First()._SubModule.Title
+                            Id = moduleGroup.Key,
+                            Style = moduleGroup.First()._Module.Style,
+                            LogicalOrder = moduleGroup.First()._Module.LogicalOrder,
+                            ClientRoute = moduleGroup.First()._Module.ClientRoute,
+                            Title = moduleGroup.First()._Module.Title
                         })
                         .OrderBy(subModule => subModule.LogicalOrder)
                         .ToList()

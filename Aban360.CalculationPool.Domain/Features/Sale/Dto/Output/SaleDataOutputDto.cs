@@ -1,6 +1,4 @@
-﻿using Aban360.CalculationPool.Domain.Constants;
-
-namespace Aban360.CalculationPool.Domain.Features.Sale.Dto.Output
+﻿namespace Aban360.CalculationPool.Domain.Features.Sale.Dto.Output
 {
     public record SaleDataOutputDto
     {

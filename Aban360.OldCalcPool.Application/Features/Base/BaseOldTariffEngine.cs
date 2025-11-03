@@ -13,6 +13,12 @@ namespace Aban360.CalculationPool.Application.Features.Base
     internal abstract class BaseOldTariffEngine : BaseExpressionCalculator
     {
         int monthDays = 30;
+
+        protected BaseOldTariffEngine()
+        {
+            
+        }
+
         /// <summary>
         /// تنها تابع با دسترسی پابلیک بابت محاسبه تک رکورد جدول نرخ
         /// </summary>
@@ -1168,6 +1174,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             if(IsSpecialEducation(customerInfo.UsageId, customerInfo.IsSpecial))
             {
                 double partialCapacity = (double)customerInfo.ContractualCapacity / monthDays * duration;
+                
                 return Convert.ToInt32(Math.Round(partialCapacity * 2,1));
             }
             return 0;
