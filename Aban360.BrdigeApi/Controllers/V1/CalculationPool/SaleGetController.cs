@@ -8,7 +8,7 @@ using Aban360.Common.Extensions;
 
 namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
 {
-    [Route("v1/sale")]
+    [Route("v1/service")]
     public class SaleGetController : BaseController
     {
         private readonly ISaleGetHandler _getHandler;
@@ -19,12 +19,11 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
         }
 
         [HttpPost]
-        [Route("get")]
+        [Route("connection-fee")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get([FromBody] SaleInputDto inputDto, CancellationToken cancellationToken)
         {
             ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> result = await _getHandler.Handle(inputDto, cancellationToken);
-
             return Ok(result);
         }
     }
