@@ -53,7 +53,7 @@ namespace Aban360.Common.Db.Dapper
             string sqlScript = File.ReadAllText(sqlFilePath);
 
             var sqlCommands = sqlScript
-                .Split(new[] { "GO", "Go", "go" }, StringSplitOptions.RemoveEmptyEntries)
+                .Split(new[] { "GO" }, StringSplitOptions.RemoveEmptyEntries)//"GO", "Go", "go"
                 .Select(cmd => cmd.Trim())
                 .Where(cmd => !string.IsNullOrWhiteSpace(cmd) && !cmd.Contains("IDENTITY_INSERT"))
                 .ToList();

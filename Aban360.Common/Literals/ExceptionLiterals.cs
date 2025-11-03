@@ -19,6 +19,7 @@
         public static string NotMoreThan13 => "مقدار وارد شده نباید بیش از 13 کاراکتر باشد";
         public static string NotMoreThan15 => "مقدار وارد شده نباید بیش از 15 کاراکتر باشد";
         public static string NotMoreThan31 => "مقدار وارد شده نباید بیش از 31 کاراکتر باشد";
+        public static string NotMoreThan100 => "مقدار وارد شده نباید بیش از 100 باشد";
         public static string NotMoreThan255 => "مقدار وارد شده نباید بیش از 255 کاراکتر باشد";
         public static string NotMoreThan1023 => "مقدار وارد شده نباید بیش از 1023 کاراکتر باشد";
         public static string PreviousDateIsInvalid => "تاریخ قبلی قرائت ناصحیح است";
