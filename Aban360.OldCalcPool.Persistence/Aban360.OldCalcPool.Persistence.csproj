@@ -17,4 +17,10 @@
     <ProjectReference Include="..\Aban360.OldCalcPool.Domain\Aban360.OldCalcPool.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="DbSeeder\DataScript\VirtualCategory.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
