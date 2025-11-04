@@ -15,13 +15,13 @@ namespace Aban360.OldCalcPool.Persistence.DbSeeder.Implementations
         }
         public async void SeedData()
         {
-            int? query = _sqlConnection.QueryFirstOrDefault<int>(GetQuery(), null);
+            int? query = _sqlReportConnection.QueryFirstOrDefault<int>(GetQuery(), null);
             if (query != null && query.Value >= 1)
             {
                 return;
             }
             string sqlFilePath = GetSqlFilePath();
-            await ExecuteBatchAsync(_sqlConnection, sqlFilePath);
+            await ExecuteBatchAsync(_sqlReportConnection, sqlFilePath);
         }
         private string GetSqlFilePath()
         {

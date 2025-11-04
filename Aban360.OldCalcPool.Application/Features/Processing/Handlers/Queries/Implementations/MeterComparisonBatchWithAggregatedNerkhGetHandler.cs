@@ -12,17 +12,17 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
 {
     internal sealed class MeterComparisonBatchWithAggregatedNerkhGetHandler : IMeterComparisonBatchWithAggregatedNerkhGetHandler
     {
-        private readonly IProcessing _processing;
+        private readonly IOldTariffEngine _oldCalcEngine;
         private readonly IMeterComparisonBatchQueryService _meterComparisonBatchQueryService;
         private readonly IValidator<MeterComparisonBatchInputDto> _validator;
 
         public MeterComparisonBatchWithAggregatedNerkhGetHandler(
-            IProcessing processing,
+            IOldTariffEngine processing,
             IMeterComparisonBatchQueryService meterComparisonBatchQueryService,
             IValidator<MeterComparisonBatchInputDto> validator)
         {
-            _processing = processing;
-            _processing.NotNull(nameof(processing));
+            _oldCalcEngine = processing;
+            _oldCalcEngine.NotNull(nameof(processing));
 
             _meterComparisonBatchQueryService = meterComparisonBatchQueryService;
             _meterComparisonBatchQueryService.NotNull(nameof(meterComparisonBatchQueryService));
@@ -44,7 +44,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
             foreach (var data in meterComparisonBatch.ReportData)
             {
                 BaseOldTariffEngineImaginaryInputDto meterInfoData = CreateImaginaryInputDtoObject(data);
-                AbBahaCalculationDetails result = await _processing.HandleWithAggregatedNerkh(meterInfoData, cancellationToken);
+                AbBahaCalculationDetails result = await _oldCalcEngine.Handle(meterInfoData, cancellationToken);
 
                 MeterComparisonBatchDataOutputDto comparisonBatch = CreateComparisonBatchObject(data);
                 comparisonBatch.CurrentAmount = result.SumItems;

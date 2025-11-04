@@ -17,11 +17,11 @@ namespace Aban360.OldCalcPool.Application.Features.SaveReading
     }
     internal sealed class WaterCalculationSaveHandler : IWaterCalculationSaveHandler
     {
-        private readonly IProcessing _processing;
+        private readonly IOldTariffEngine _processing;
         private readonly IBedBesCreateService _bedBesCreateService;
         private readonly IKasrHaService _kasrHaService;
         public WaterCalculationSaveHandler(
-            IProcessing processing,
+            IOldTariffEngine processing,
             IBedBesCreateService bedBesCreateService,
             IKasrHaService kasrHaService)
         {
@@ -48,7 +48,7 @@ namespace Aban360.OldCalcPool.Application.Features.SaveReading
                     CurrentDateJalali = customer.ReadingDateJalali,
                     CurrentMeterNumber = customer.MeterNumber,
                 };
-                AbBahaCalculationDetails result = await _processing.HandleWithAggregatedNerkh(meterInfo, cancellationToken);
+                AbBahaCalculationDetails result = await _processing.Handle(meterInfo, cancellationToken);
                 calculationDetails.Add(result);
                 bedBes.Add(CreateBedBes(result, customer, mamorCode));
                 kasrHa.Add(CreateKasrha(result, customer));
