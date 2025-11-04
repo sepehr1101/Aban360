@@ -25,7 +25,7 @@ namespace Aban360.CalculationPool.Application.Features.TestTariff.Handlers.Imple
 
         private IntervalCalculationResultWrapper CreateCalculationResultWrapper(ConsumptionInfo consumptionInfo, List<IntervalCalculationResult> intervalCalculationResults, List<IntervalCalculationResult3> result3)
         {
-            IntervalCalculationResultWrapper calculationResult = new(consumptionInfo.Consumption, consumptionInfo.Duration, consumptionInfo.AverageConsumption, consumptionInfo.PreviousReadingDate, consumptionInfo.CurrentReadingDate);
+            IntervalCalculationResultWrapper calculationResult = new(consumptionInfo.Consumption, consumptionInfo.Duration, consumptionInfo.DailyAverageConsumption, consumptionInfo.PreviousReadingDate, consumptionInfo.CurrentReadingDate);
             calculationResult.IntervalCalculationResults = result3;
             calculationResult.IntervalCount = intervalCalculationResults.Count;
             calculationResult.Amount = intervalCalculationResults.Sum(i => i.Amount);
