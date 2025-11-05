@@ -1,7 +1,8 @@
 ﻿namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands
 {
     public record ConsumptionInfo
-    {
+    {       
+        public int MonthDays { get; } = 30;
         public int FinalDomesticUnit { get; set; }
         public int Consumption { get; set; }
         public int Duration { get; set; }
@@ -16,7 +17,7 @@
             Consumption = consumption;
             Duration = duration;
             DailyAverageConsumption = dailyAverageConsumption;
-            MonthlyAverageConsumption = dailyAverageConsumption * 30;
+            MonthlyAverageConsumption = dailyAverageConsumption * MonthDays;
             FinalDomesticUnit= finalDomesticUnit;
         }
     }

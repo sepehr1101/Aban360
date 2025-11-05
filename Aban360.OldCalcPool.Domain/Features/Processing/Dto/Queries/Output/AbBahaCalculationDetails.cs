@@ -1,4 +1,5 @@
-﻿using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
+﻿using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
+using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 
 namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
 {
@@ -71,6 +72,9 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             IEnumerable<NerkhGetDto> _nerkh,
             IEnumerable<AbAzadFormulaDto> _abAzad,
             IEnumerable<ZaribGetDto> _zarib,
+            ConsumptionInfo consumptionInfo,
+            MeterInfoOutputDto meterInfo,
+            CustomerInfoOutputDto customerInfo,
             long _stopWatch)
         {
             SumItems = _abBahaAmount + _fazelabAmount + _sumBoodje + _hotSeasonAbBahaAmount + _hotSeasonFazelabAmount +
@@ -116,6 +120,14 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             AbAzad = _abAzad;
             Zarib = _zarib;
             StopWatch = _stopWatch;
+
+            Consumption = consumptionInfo.Consumption;
+            MonthlyConsumption = consumptionInfo.MonthlyAverageConsumption;
+            DailyConsumption=consumptionInfo.DailyAverageConsumption;
+            Duration=consumptionInfo.Duration;
+
+            MeterInfo = meterInfo;
+            Customer = customerInfo;
         }
         private double TrimAmount(double mainAmount, double discountAmount)
         {
