@@ -14,7 +14,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
         {
         }
 
-        public async Task<VirtualCategoryGetDto> Get(VirtualCategorySearchInputDto input)
+        public async Task<VirtualCategoryGetDto> Get(SearchShortInputDto input)
         {
             string query = GetSingleQuery();
             VirtualCategoryGetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<VirtualCategoryGetDto>(query, input);

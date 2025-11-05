@@ -8,13 +8,13 @@ using FluentValidation;
 
 namespace Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Implementations
 {
-    internal sealed class VirtualCategoryGetHandler : IVirtualCategoryGetHandler
+    internal sealed class BillReturnCauseGetHandler : IBillReturnCauseGetHandler
     {
-        private readonly IVirtualCategoryQueryService _virtualCategoryQueryService;
+        private readonly IBillReturnCauseQueryService _virtualCategoryQueryService;
         private readonly IValidator<SearchShortInputDto> _validator;
 
-        public VirtualCategoryGetHandler(
-            IVirtualCategoryQueryService virtualCategoryQueryService,
+        public BillReturnCauseGetHandler(
+            IBillReturnCauseQueryService virtualCategoryQueryService,
             IValidator<SearchShortInputDto> validator)
         {
             _virtualCategoryQueryService = virtualCategoryQueryService;
@@ -23,7 +23,7 @@ namespace Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Impleme
             _validator = validator;
             _validator.NotNull(nameof(_validator));
         }
-        public async Task<VirtualCategoryGetDto> Handle(SearchShortInputDto input, CancellationToken cancellationToken)
+        public async Task<BillReturnCauseGetDto> Handle(SearchShortInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -32,7 +32,7 @@ namespace Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Impleme
                 throw new CustomValidationException(message);
             }
 
-            VirtualCategoryGetDto result = await _virtualCategoryQueryService.Get(input);
+            BillReturnCauseGetDto result = await _virtualCategoryQueryService.Get(input);
             return result;
         }
     }

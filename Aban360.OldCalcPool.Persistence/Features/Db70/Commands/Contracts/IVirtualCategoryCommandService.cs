@@ -6,6 +6,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Commands.Contracts
     {
         Task Create(VirtualCategoryCreateDto input);
         Task Update(VirtualCategoryUpdateDto input);
-        Task Delete(VirtualCategorySearchInputDto input);
+        Task Delete(SearchShortInputDto input);
     }
 }

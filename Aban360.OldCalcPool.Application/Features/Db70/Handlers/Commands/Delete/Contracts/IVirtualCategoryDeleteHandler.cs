@@ -4,6 +4,6 @@ namespace Aban360.OldCalcPool.Application.Features.Db70.Handlers.Commands.Delete
 {
     public interface IVirtualCategoryDeleteHandler
     {
-        Task Handle(VirtualCategorySearchInputDto deleteDto, CancellationToken cancellationToken);
+        Task Handle(SearchShortInputDto deleteDto, CancellationToken cancellationToken);
     }
 }
