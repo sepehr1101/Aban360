@@ -8,11 +8,11 @@ using FluentValidation;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Implementations
 {
-    internal sealed class InstallationAndEquipmentGetHadler : IInstallationAndEquipmentGetHadler
+    internal sealed class InstallationAndEquipmentGetHandler : IInstallationAndEquipmentGetHandler
     {
         private readonly IInstallationAndEquipmentQueryService _queryService;
         private readonly IValidator<SearchById> _validator;
-        public InstallationAndEquipmentGetHadler(
+        public InstallationAndEquipmentGetHandler(
             IInstallationAndEquipmentQueryService queryService,
             IValidator<SearchById> validator)
         {

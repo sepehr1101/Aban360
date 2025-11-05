@@ -2,8 +2,8 @@
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Contracts
 {
-    public interface IInstallationAndEquipmentGetAllHadler
+    public interface IArticle11GetAllHandler
     {
-        Task<IEnumerable<InstallationAndEquipmentOutputDto>> Handle(CancellationToken cancellationToken);
+        Task<IEnumerable<Article11OutputDto>> Handle( CancellationToken cancellationToken);
     }
 }
