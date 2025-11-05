@@ -43,7 +43,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
             ICollection<MeterComparisonBatchDataOutputDto> comparisonResult = new List<MeterComparisonBatchDataOutputDto>();
             foreach (var data in meterComparisonBatch.ReportData)
             {
-                BaseOldTariffEngineImaginaryInputDto meterInfoData = CreateImaginaryInputDtoObject(data);
+                MeterImaginaryInputDto meterInfoData = CreateImaginaryInputDtoObject(data);
                 AbBahaCalculationDetails result = await _oldCalcEngine.Handle(meterInfoData, cancellationToken);
 
                 MeterComparisonBatchDataOutputDto comparisonBatch = CreateComparisonBatchObject(data);
@@ -85,9 +85,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                 VirtualCategoryId = data.VirtualCategoryId,
             };
         }
-        private BaseOldTariffEngineImaginaryInputDto CreateImaginaryInputDtoObject(MeterComparisonBatchDataWithCustomerInfoOutputDto data)
+        private MeterImaginaryInputDto CreateImaginaryInputDtoObject(MeterComparisonBatchDataWithCustomerInfoOutputDto data)
         {
-            BaseOldTariffEngineImaginaryInputDto meterInfoData = new()
+            MeterImaginaryInputDto meterInfoData = new()
             {
                 MeterPreviousData = new MeterInfoByPreviousDataInputDto()
                 {

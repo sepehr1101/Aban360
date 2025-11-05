@@ -1,6 +1,4 @@
-﻿using System.Runtime;
-
-namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input
+﻿namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input
 {
     public record CustomerDetailInfoInputDto
     {
@@ -24,6 +22,5 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input
         public string? VillageId { get; set; }
         public bool IsSpecial { get; set; }
         public int? VirtualCategoryId { get; set; }
-
     }
 }

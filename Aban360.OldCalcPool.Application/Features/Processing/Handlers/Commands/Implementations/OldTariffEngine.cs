@@ -63,51 +63,52 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         public async Task<AbBahaCalculationDetails> Handle(MeterInfoInputDto input, CancellationToken cancellationToken)
         {
             CustomerInfoOutputDto customerInfo = await _customerInfoDetailQueryService.GetInfo(input.BillId);
-            MeterInfoOutputDto meterInfo = await _meterInfoDetailQueryService.GetInfo(new CustomerInfoInputDto(customerInfo.ZoneId, customerInfo.Radif));
-            Validate(meterInfo.PreviousDateJalali);
+            MeterInfoOutputDto meterInfo = await _meterInfoDetailQueryService.GetInfo(new CustomerInfoInputDto(customerInfo.ZoneId, customerInfo.Radif));           
             ConsumptionInfo consumptionInfo = _consumptionCalculator.GetConsumptionInfo(input, customerInfo, meterInfo);
-            NerkhByConsumptionInputDto nerkgInput = NerkhInputFactory.CreateNerkhInput(input, customerInfo, meterInfo, consumptionInfo);
-            (IEnumerable<NerkhGetDto>, IEnumerable<AbAzadFormulaDto>, IEnumerable<ZaribGetDto>, int) allNerkhAbAbAzad = await _nerkhGetByConsumptionService.GetWithAggregatedNerkh(nerkgInput);
-            AbBahaCalculationDetails result = await GetAbBahaCalculationDetails(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, input.CurrentDateJalali, customerInfo, meterInfo, consumptionInfo);
-            return result;
+            NerkhByConsumptionInputDto nerkhInput = NerkhInputFactory.CreateNerkhInput(input, customerInfo, meterInfo, consumptionInfo);
+            AbBahaCalculationDetails calculationDetails= await GetCalculationDetails(customerInfo, meterInfo,consumptionInfo, nerkhInput, input.CurrentDateJalali);
+            return calculationDetails;
         }       
         public async Task<AbBahaCalculationDetails> Handle(MeterInfoByPreviousDataInputDto input, CancellationToken cancellationToken)
         {
             CustomerInfoOutputDto customerInfo = await _customerInfoDetailQueryService.GetInfo(input.BillId);
-            Validate(input.PreviousDateJalali);
-            ConsumptionInfo consumptionInfo = _consumptionCalculator.GetConsumptionInfo(input, customerInfo);
-            NerkhByConsumptionInputDto nerkhInfo = NerkhInputFactory.CreateNerkhInput(input, customerInfo, consumptionInfo);
-            (IEnumerable<NerkhGetDto>, IEnumerable<AbAzadFormulaDto>, IEnumerable<ZaribGetDto>, int) allNerkhAbAbAzad = await _nerkhGetByConsumptionService.GetWithAggregatedNerkh(nerkhInfo);
             MeterInfoOutputDto meterInfo = new MeterInfoOutputDto()
             {
                 PreviousDateJalali = input.PreviousDateJalali,
                 PreviousNumber = input.PreviousNumber,
             };
-            AbBahaCalculationDetails result = await GetAbBahaCalculationDetails(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, input.CurrentDateJalali, customerInfo, meterInfo, consumptionInfo);
-            return result;
+            ConsumptionInfo consumptionInfo = _consumptionCalculator.GetConsumptionInfo(input, customerInfo);
+            NerkhByConsumptionInputDto nerkhInput = NerkhInputFactory.CreateNerkhInput(input, customerInfo, consumptionInfo);
+            AbBahaCalculationDetails calculationDetails = await GetCalculationDetails(customerInfo, meterInfo, consumptionInfo, nerkhInput, input.CurrentDateJalali);
+            return calculationDetails;
         }
-        public async Task<AbBahaCalculationDetails> Handle(BaseOldTariffEngineImaginaryInputDto input, CancellationToken cancellationToken)
+        public async Task<AbBahaCalculationDetails> Handle(MeterImaginaryInputDto input, CancellationToken cancellationToken)
         {
             //TODO: direct create object from MeterComparisonBatchWithAggregatedNerkhGetHandler.cs
             CustomerInfoOutputDto customerInfo = CreateCustomerInfoDto(input);
             try
             {
-                Validate(input.MeterPreviousData.PreviousDateJalali);
-                ConsumptionInfo consumptionInfo = _consumptionCalculator.GetConsumptionInfo(input, customerInfo);
-                NerkhByConsumptionInputDto nerkhInput = NerkhInputFactory.CreateNerkhInput(input, customerInfo, consumptionInfo);
-                (IEnumerable<NerkhGetDto>, IEnumerable<AbAzadFormulaDto>, IEnumerable<ZaribGetDto>, int) allNerkhAbAbAzad = await _nerkhGetByConsumptionService.GetWithAggregatedNerkh(nerkhInput);
                 MeterInfoOutputDto meterInfo = new MeterInfoOutputDto()
                 {
                     PreviousDateJalali = input.MeterPreviousData.PreviousDateJalali,
                     PreviousNumber = input.MeterPreviousData.PreviousNumber,
                 };
-                AbBahaCalculationDetails result = await GetAbBahaCalculationDetails(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, input.MeterPreviousData.CurrentDateJalali, customerInfo, meterInfo, consumptionInfo);              
-                return result;
+                ConsumptionInfo consumptionInfo = _consumptionCalculator.GetConsumptionInfo(input, customerInfo);
+                NerkhByConsumptionInputDto nerkhInput = NerkhInputFactory.CreateNerkhInput(input, customerInfo, consumptionInfo);
+                AbBahaCalculationDetails calculationDetails = await GetCalculationDetails(customerInfo, meterInfo, consumptionInfo, nerkhInput, input.MeterPreviousData.CurrentDateJalali);
+                return calculationDetails;
             }
             catch (Exception e)
             {
                 throw new BaseException($"{customerInfo.BillId} {input.MeterPreviousData.PreviousDateJalali} {input.MeterPreviousData.PreviousNumber}");
             }
+        }
+        private async Task<AbBahaCalculationDetails> GetCalculationDetails(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ConsumptionInfo consumptionInfo, NerkhByConsumptionInputDto nerkhInput, string currentDateJalali)
+        {
+            Validate(meterInfo.PreviousDateJalali);           
+            (IEnumerable<NerkhGetDto>, IEnumerable<AbAzadFormulaDto>, IEnumerable<ZaribGetDto>, int) allNerkhAbAbAzad = await _nerkhGetByConsumptionService.GetWithAggregatedNerkh(nerkhInput);
+            AbBahaCalculationDetails result = await GetAbBahaCalculationDetails(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, currentDateJalali, customerInfo, meterInfo, consumptionInfo);
+            return result;
         }
 
         private async Task<AbBahaCalculationDetails> GetAbBahaCalculationDetails(IEnumerable<NerkhGetDto> allNerkh, IEnumerable<AbAzadFormulaDto> abAzad, IEnumerable<ZaribGetDto> zarib, string currentDateJalali, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ConsumptionInfo consumptionInfo)
@@ -166,7 +167,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             return new AbBahaCalculationDetails(Math.Round(AbBahaResult), Math.Round(sumAbBaha), Math.Round(sumFazelab), Math.Round(sumBoodjePart1), Math.Round(sumBoodjePart2), Math.Round(sumBoodje), Math.Round(sumHotSeasonAbBaha), Math.Round(sumHotSeasonFazelab), Math.Round(sumAbBahaDiscount), Math.Round(sumHotSeasonDiscount), Math.Round(sumFazelabDiscount), Math.Round(sumAbonmanAbBaha), Math.Round(sumAvarez), Math.Round(sumJavaniAmount), Math.Round(sumMaliatAmount), Math.Round(sumAbonmanFazelab),
                        Math.Round(sumAbonmanAbDiscount), Math.Round(sumAbonmanFazelabDiscount), Math.Round(sumAvarezDiscount), Math.Round(sumJavaniDiscount), Math.Round(maliatDiscount), Math.Round(sumBoodjeDiscount), allNerkh, abAzad, zarib, consumptionInfo, meterInfo, customerInfo, stopWatch.ElapsedMilliseconds);
         }
-        private CustomerInfoOutputDto CreateCustomerInfoDto(BaseOldTariffEngineImaginaryInputDto input)
+        private CustomerInfoOutputDto CreateCustomerInfoDto(MeterImaginaryInputDto input)
         {
             return new CustomerInfoOutputDto()
             {
