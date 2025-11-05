@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs
 {
-    public record SewageWaterDistanceofRequestAndInstallationDetailDataOutputDto
+    public record SewageWaterDistanceDetailDataOutputDto
     {
         public int CustomerNumber { get; set; }
         public string ReadingNumber { get; set; }
