@@ -9,8 +9,8 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Queries
     [Route("v1/article11")]
     public class Article11GetAllController : BaseController
     {
-        private readonly IArticle11GetAllHadler _getHandler;
-        public Article11GetAllController(IArticle11GetAllHadler getHandler)
+        private readonly IArticle11GetAllHandler _getHandler;
+        public Article11GetAllController(IArticle11GetAllHandler getHandler)
         {
             _getHandler = getHandler;
             _getHandler.NotNull(nameof(getHandler));

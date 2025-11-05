@@ -6,18 +6,18 @@ using FluentValidation;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Implementations
 {
-    internal sealed class Article11GetAllHadler : IArticle11GetAllHadler
+    internal sealed class InstallationAndEquipmentGetAllHandler : IInstallationAndEquipmentGetAllHandler
     {
-        private readonly IArticle11QueryService _queryService;
-        public Article11GetAllHadler(IArticle11QueryService queryService)
+        private readonly IInstallationAndEquipmentQueryService _queryService;
+        public InstallationAndEquipmentGetAllHandler(IInstallationAndEquipmentQueryService queryService)
         {
             _queryService = queryService;
             _queryService.NotNull(nameof(queryService));
         }
 
-        public async Task<IEnumerable<Article11OutputDto>> Handle(CancellationToken cancellationToken)
+        public async Task<IEnumerable<InstallationAndEquipmentOutputDto>> Handle(CancellationToken cancellationToken)
         {
-            IEnumerable<Article11OutputDto> result = await _queryService.Get();
+            IEnumerable<InstallationAndEquipmentOutputDto> result = await _queryService.Get();
             return result;
         }
     }

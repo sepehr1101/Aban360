@@ -5,9 +5,9 @@ using FluentValidation;
 
 namespace Aban360.OldCalcPool.Application.Features.Db70.Validations
 {
-    public class VirtualCategorySearchInputValidator : BaseValidator<VirtualCategorySearchInputDto>
+    public class SearchShortInputValidator : BaseValidator<SearchShortInputDto>
     {
-        public VirtualCategorySearchInputValidator()
+        public SearchShortInputValidator()
         {
             RuleFor(v => v.Id)
                .NotNull().WithMessage(ExceptionLiterals.NotNull)

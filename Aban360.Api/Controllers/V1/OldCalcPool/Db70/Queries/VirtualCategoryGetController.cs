@@ -20,7 +20,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Db70.Queries
         [HttpPost]
         [Route("get")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<VirtualCategoryGetDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get(VirtualCategorySearchInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Get(SearchShortInputDto inputDto, CancellationToken cancellationToken)
         {
             VirtualCategoryGetDto result=await _virtualCategoryHandler.Handle(inputDto, cancellationToken);
             return Ok(result);

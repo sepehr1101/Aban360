@@ -10,8 +10,8 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.InstallationAndEquipment.Qu
     [Route("v1/installation-and-equipment")]
     public class InstallationAndEquipmentGetAllController : BaseController
     {
-        private readonly IInstallationAndEquipmentGetAllHadler _getHandler;
-        public InstallationAndEquipmentGetAllController(IInstallationAndEquipmentGetAllHadler getHandler)
+        private readonly IInstallationAndEquipmentGetAllHandler _getHandler;
+        public InstallationAndEquipmentGetAllController(IInstallationAndEquipmentGetAllHandler getHandler)
         {
             _getHandler = getHandler;
             _getHandler.NotNull(nameof(getHandler));

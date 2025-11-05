@@ -10,6 +10,9 @@ using Aban360.BlobPool.Persistence.Extensions;
 using Aban360.BlobPool.Application.Extenstions;
 using Aban260.BlobPool.Infrastructure.Extenstions;
 using Aban360.BlobPool.GatewayAddHoc.Extentions;
+using Aban360.ReportPool.Infrastructure.Extensions;
+using Aban360.CalculationPool.Application.Extensions;
+using Aban360.CalculationPool.Persistence.Extensions;
 namespace Aban360.BrdigeApi.Extensions
 {
     internal static class ConfigureDependencies
@@ -20,6 +23,7 @@ namespace Aban360.BrdigeApi.Extensions
             services.AddReportPoolDI();
             services.AddLocationPoolDI();
             services.AddBlobPoolDI();
+            services.AddCalculationPoolDI();
         }
 
         private static void AddUserPoolDI(this IServiceCollection services)
@@ -32,6 +36,7 @@ namespace Aban360.BrdigeApi.Extensions
             services.AddReportPoolApplicationInjections();
             services.AddReportPoolPersistenceInjections();
             services.AddReportPoolGatewayInjections();
+            services.AddReportPoolInfrastructureInjections();
         }
         private static void AddLocationPoolDI(this IServiceCollection services)
         {
@@ -45,6 +50,11 @@ namespace Aban360.BrdigeApi.Extensions
             services.AddBlobPoolApplicationInjections();
             services.AddBlobPoolInfrastructureInjections();
             services.AddBlobPoolGatewayInjections();
+        }
+        private static void AddCalculationPoolDI(this IServiceCollection services)
+        {
+            services.AddCalculationPoolApplicationInjections();
+            services.AddCalculationPoolPersistenceInjections();
         }
     }
 }
