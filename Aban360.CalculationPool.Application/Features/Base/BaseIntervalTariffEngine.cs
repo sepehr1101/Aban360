@@ -49,12 +49,12 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             IntervalBillSubscriptionInfo info = await _intervalBillPrerequisiteInfoAddHocHandler.Handle(tariffTestInput.BillId, cancellationToken);
             info.Consumption = consumptionInfo.Consumption;
-            info.AverageConsumption = consumptionInfo.AverageConsumption;
+            info.AverageConsumption = consumptionInfo.DailyAverageConsumption;
             info.Duration = consumptionInfo.Duration;
 
             ICollection<Tariff> rawTariffs = await GetRawTariffs(tariffTestInput.PreviousReadingDate, tariffTestInput.CurrentReadingDate);
-            ICollection<Tariff> tariffs = GetTariffs(rawTariffs, consumptionInfo.AverageConsumption, tariffTestInput.PreviousReadingDate, tariffTestInput.CurrentReadingDate);
-            List<IntervalCalculationResult> intervalCalculationResults = await CreateCalculationResult(info, tariffs, tariffTestInput.PreviousReadingDate, tariffTestInput.CurrentReadingDate, consumptionInfo.AverageConsumption);
+            ICollection<Tariff> tariffs = GetTariffs(rawTariffs, consumptionInfo.DailyAverageConsumption, tariffTestInput.PreviousReadingDate, tariffTestInput.CurrentReadingDate);
+            List<IntervalCalculationResult> intervalCalculationResults = await CreateCalculationResult(info, tariffs, tariffTestInput.PreviousReadingDate, tariffTestInput.CurrentReadingDate, consumptionInfo.DailyAverageConsumption);
             return Tuple.Create(consumptionInfo, intervalCalculationResults);
         }
 
@@ -64,8 +64,8 @@ namespace Aban360.CalculationPool.Application.Features.Base
             ConsumptionInfo consumptionInfo = GetConsumptionInfo(tariffTestInput);
 
             ICollection<Tariff> rawTariffs = await GetRawTariffs(tariffTestInput.PreviousWaterMeterDate, tariffTestInput.CurrentWaterMeterDate);
-            ICollection<Tariff> tariffs = GetTariffs(rawTariffs, consumptionInfo.AverageConsumption, tariffTestInput.PreviousWaterMeterDate, tariffTestInput.CurrentWaterMeterDate);
-            List<IntervalCalculationResult> intervalCalculationResults = await CreateCalculationResult(tariffTestInput, tariffs, consumptionInfo.PreviousReadingDate, consumptionInfo.CurrentReadingDate, consumptionInfo.AverageConsumption);
+            ICollection<Tariff> tariffs = GetTariffs(rawTariffs, consumptionInfo.DailyAverageConsumption, tariffTestInput.PreviousWaterMeterDate, tariffTestInput.CurrentWaterMeterDate);
+            List<IntervalCalculationResult> intervalCalculationResults = await CreateCalculationResult(tariffTestInput, tariffs, consumptionInfo.PreviousReadingDate, consumptionInfo.CurrentReadingDate, consumptionInfo.DailyAverageConsumption);
             return Tuple.Create(consumptionInfo, intervalCalculationResults);
         }
 
@@ -91,16 +91,16 @@ namespace Aban360.CalculationPool.Application.Features.Base
         {
             int consumption = GetConsumption(tariffTestInput.PreviousReadingNumber, tariffTestInput.CurrentReadingNumber);
             int duration = GetDuration(tariffTestInput.PreviousReadingDate, tariffTestInput.CurrentReadingDate);
-            double average = GetDailyConsumptionAverage(consumption, duration);
-            ConsumptionInfo consumptionInfo = new(tariffTestInput.PreviousReadingDate, tariffTestInput.CurrentReadingDate, consumption, duration, average);
+            double dailyAverage = GetDailyConsumptionAverage(consumption, duration);
+            ConsumptionInfo consumptionInfo = new(tariffTestInput.PreviousReadingDate, tariffTestInput.CurrentReadingDate, consumption, duration, dailyAverage);
             return consumptionInfo;
         }
         private ConsumptionInfo GetConsumptionInfo(TariffTestImaginaryInput tariffTestInput)
         {
             int consumption = GetConsumption(tariffTestInput.PreviousWaterMeterNumber, tariffTestInput.CurrentWaterMeterNumber);
             int duration = GetDuration(tariffTestInput.PreviousWaterMeterDate, tariffTestInput.CurrentWaterMeterDate);
-            double average = GetDailyConsumptionAverage(consumption, duration);
-            ConsumptionInfo consumptionInfo = new(tariffTestInput.PreviousWaterMeterDate, tariffTestInput.CurrentWaterMeterDate, consumption, duration, average);
+            double dailyAverage = GetDailyConsumptionAverage(consumption, duration);
+            ConsumptionInfo consumptionInfo = new(tariffTestInput.PreviousWaterMeterDate, tariffTestInput.CurrentWaterMeterDate, consumption, duration, dailyAverage);
             return consumptionInfo;
         }
         private async Task<List<IntervalCalculationResult>> CreateCalculationResult(object objectOfFields, ICollection<Tariff> tariffs, string @from, string @to, double average)

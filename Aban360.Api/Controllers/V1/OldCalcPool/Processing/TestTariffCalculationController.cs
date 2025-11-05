@@ -9,16 +9,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
 {
     [Route("v1/old-calc-new")]
-    public class TestProcessWithAggregatedNerkh : BaseController
+    public class TestTariffCalculationController : BaseController
     {
-        private readonly IProcessing _processing;
+        private readonly IOldTariffEngine _oldTariffEngine;
         private readonly IBedBesCreateHadler _bedBesCreateHadler;
-        public TestProcessWithAggregatedNerkh(
-            IProcessing processing,
+        public TestTariffCalculationController(
+            IOldTariffEngine processing,
             IBedBesCreateHadler bedBesCreateHadler)
         {
-            _processing = processing;
-            _processing.NotNull(nameof(processing));
+            _oldTariffEngine = processing;
+            _oldTariffEngine.NotNull(nameof(processing));
 
             _bedBesCreateHadler = bedBesCreateHadler;
             _bedBesCreateHadler.NotNull(nameof(bedBesCreateHadler));
@@ -30,7 +30,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         [AllowAnonymous]
         public async Task<IActionResult> Test(MeterInfoInputDto input, CancellationToken cancellationToken)
         {
-            AbBahaCalculationDetails result = await _processing.HandleWithAggregatedNerkh(input, cancellationToken);
+            AbBahaCalculationDetails result = await _oldTariffEngine.Handle(input, cancellationToken);
             return Ok(result);
         }
 
@@ -40,8 +40,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         [AllowAnonymous]
         public async Task<IActionResult> TestByPreviousData(MeterInfoByPreviousDataInputDto input, CancellationToken cancellationToken)
         {
-            AbBahaCalculationDetails result = await _processing.HandleWithAggregatedNerkh(input, cancellationToken);
-            //await _bedBesCreateHadler.Handle(result,12, cancellationToken);
+            AbBahaCalculationDetails result = await _oldTariffEngine.Handle(input, cancellationToken);           
             return Ok(result);
         }
 
@@ -51,7 +50,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         [AllowAnonymous]
         public async Task<IActionResult> TestImaginary(BaseOldTariffEngineImaginaryInputDto input, CancellationToken cancellationToken)
         {
-            AbBahaCalculationDetails result = await _processing.HandleWithAggregatedNerkh(input, cancellationToken);
+            AbBahaCalculationDetails result = await _oldTariffEngine.Handle(input, cancellationToken);
             return Ok(result);
         }
     }

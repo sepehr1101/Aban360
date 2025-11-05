@@ -2,18 +2,20 @@
 {
     public record ConsumptionInfo
     {
-        public int Consumption { get; set; }
+        public int Consumption { get;}
         public int Duration { get; set; }
-        public double AverageConsumption { get; set; }
-        public string PreviousReadingDate { get; set; }
-        public string CurrentReadingDate { get; set; }
-        public ConsumptionInfo(string @from, string @to, int consumption, int duration, double averageConsumption)
+        public double DailyAverageConsumption { get;}
+        public double MonthlyAverageConsumption { get; }
+        public string PreviousReadingDate { get; }
+        public string CurrentReadingDate { get;}
+        public ConsumptionInfo(string @from, string @to, int consumption, int duration, double dailyAverageConsumption)
         {
             PreviousReadingDate = @from;
             CurrentReadingDate = @to;
             Consumption = consumption;
             Duration = duration;
-            AverageConsumption = averageConsumption;
+            DailyAverageConsumption = dailyAverageConsumption;
+            MonthlyAverageConsumption= dailyAverageConsumption*30;
         }
     }
 }
