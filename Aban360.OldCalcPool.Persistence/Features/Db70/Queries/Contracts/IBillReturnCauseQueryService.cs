@@ -3,9 +3,9 @@ using Aban360.OldCalcPool.Domain.Features.Db70.Dto.Queries;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Contracts
 {
-    public interface IVirtualCategoryQueryService
+    public interface IBillReturnCauseQueryService
     {
-        Task<VirtualCategoryGetDto> Get(SearchShortInputDto input);
-        Task<IEnumerable<VirtualCategoryGetDto>> Get();
+        Task<BillReturnCauseGetDto> Get(SearchShortInputDto input);
+        Task<IEnumerable<BillReturnCauseGetDto>> Get();
     }
 }

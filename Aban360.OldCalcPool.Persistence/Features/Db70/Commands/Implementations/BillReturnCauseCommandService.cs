@@ -6,24 +6,23 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Db70.Commands.Implementations
 {
-    internal sealed class VirtualCategoryCommandService : AbstractBaseConnection, IVirtualCategoryCommandService
+    internal sealed class BillReturnCauseCommandService : AbstractBaseConnection, IBillReturnCauseCommandService
     {
-        public VirtualCategoryCommandService(IConfiguration configuration)
+        public BillReturnCauseCommandService(IConfiguration configuration)
             : base(configuration)
         {
         }
-
-        public async Task Create(VirtualCategoryCreateDto input)
+        public async Task Create(BillReturnCauseCreateDto input)
         {
             string query = GetCreateQuery();
             await _sqlReportConnection.ExecuteAsync(query, input);
         }
-        public async Task Update(VirtualCategoryUpdateDto input)
+        public async Task Update(BillReturnCauseUpdateDto input)
         {
             string query = GetUpdateQuery();
             await _sqlReportConnection.ExecuteAsync(query, input);
         }
-        public async Task Delete(SearchShortInputDto input)
+        public async Task Delete(BillReturnCauseDeleteDto input)
         {
             string query = GetDeleteQuery();
             await _sqlReportConnection.ExecuteAsync(query, input);
@@ -33,20 +32,23 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Commands.Implementations
         private string GetCreateQuery()
         {
             return @"use [Db70]
-                    Insert Into [Db70].dbo.VirtualCategory(Code,Title,Multiplier)
-                    Values(@Code,@Title,@Multiplier)";
+                    Insert Into [Db70].dbo.BillReturnCause(Code,Title,RegisterDateTime,RegisterByUserId)
+                    Values(@Code,@Title,@RegisterDateTime,@RegisterByUserId)";
         }
         private string GetUpdateQuery()
         {
             return @"use [Db70]
-                    Update [Db70].dbo.VirtualCategory
-                    Set Code=@Code, Title=@Title, Multiplier=@Multiplier
-                    Where Id=@Id";
+                    Update [Db70].dbo.BillReturnCause
+                    Set Code=@Code, Title=@Title
+                    Where 
+                        RemoveDateTime IS NULL AND 
+                        Id=@Id";
         }
         private string GetDeleteQuery()
         {
             return @"use [Db70]
-                    Delete From [Db70].dbo.VirtualCategory
+                    Update [Db70].dbo.BillReturnCause
+                    Set RemoveDateTime=@RemoveDateTime , RemoveByUserId=@RemoveByUserId
                     Where Id=@Id";
         }
 

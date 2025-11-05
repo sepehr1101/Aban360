@@ -18,8 +18,8 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Db70.Commands
 
         [HttpPost]
         [Route("delete")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<VirtualCategorySearchInputDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Delete(VirtualCategorySearchInputDto deleteDto, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponseEnvelope<SearchShortInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Delete(SearchShortInputDto deleteDto, CancellationToken cancellationToken)
         {
             await _virtualCategoryHandler.Handle(deleteDto, cancellationToken);
             return Ok(deleteDto);

@@ -10,11 +10,11 @@ namespace Aban360.OldCalcPool.Application.Features.Db70.Handlers.Commands.Delete
     internal sealed class VirtualCategoryDeleteHandler : IVirtualCategoryDeleteHandler
     {
         private readonly IVirtualCategoryCommandService _virtualCategoryCommandService;
-        private readonly IValidator<VirtualCategorySearchInputDto> _validator;
+        private readonly IValidator<SearchShortInputDto> _validator;
 
         public VirtualCategoryDeleteHandler(
             IVirtualCategoryCommandService virtualCategoryCommandService,
-            IValidator<VirtualCategorySearchInputDto> validator)
+            IValidator<SearchShortInputDto> validator)
         {
             _virtualCategoryCommandService = virtualCategoryCommandService;
             _virtualCategoryCommandService.NotNull(nameof(virtualCategoryCommandService));
@@ -22,7 +22,7 @@ namespace Aban360.OldCalcPool.Application.Features.Db70.Handlers.Commands.Delete
             _validator = validator;
             _validator.NotNull(nameof(_validator));
         }
-        public async Task Handle(VirtualCategorySearchInputDto deleteDto, CancellationToken cancellationToken)
+        public async Task Handle(SearchShortInputDto deleteDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(deleteDto, cancellationToken);
             if (!validationResult.IsValid)

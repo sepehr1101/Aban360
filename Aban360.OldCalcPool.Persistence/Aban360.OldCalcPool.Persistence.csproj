@@ -18,6 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="DbSeeder\DataScript\BillReturnCause.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DbSeeder\DataScript\VirtualCategory.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
