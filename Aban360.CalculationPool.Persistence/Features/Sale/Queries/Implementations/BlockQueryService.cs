@@ -1,4 +1,5 @@
-﻿using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
+﻿using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
+using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Dapper;
@@ -12,10 +13,10 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
             : base(configuration)
         {
         }
-        public async Task<IEnumerable<string>> Get()
+        public async Task<IEnumerable<BlockGetDto>> Get()
         {
             string query = GetAllQuery();
-            IEnumerable<string> article11 = await _sqlConnection.QueryAsync<string>(query, null);
+            IEnumerable<BlockGetDto> article11 = await _sqlConnection.QueryAsync<BlockGetDto>(query, null);
 
             return article11;
         }

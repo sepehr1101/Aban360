@@ -1,4 +1,5 @@
 ﻿using Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Contracts;
+using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +18,10 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
 
         [HttpGet]
         [Route("all")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<string>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<BlockGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
-            IEnumerable<string> result = await _getHandler.Handle(cancellationToken);
+            IEnumerable<BlockGetDto> result = await _getHandler.Handle(cancellationToken);
 
             return Ok(result);
         }

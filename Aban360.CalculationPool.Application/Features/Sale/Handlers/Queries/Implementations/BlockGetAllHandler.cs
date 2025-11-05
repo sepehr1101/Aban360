@@ -1,4 +1,5 @@
 ﻿using Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Contracts;
+using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
 using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
 using Aban360.Common.Extensions;
 
@@ -13,9 +14,9 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             _queryService.NotNull(nameof(queryService));
         }
 
-        public async Task<IEnumerable<string>> Handle(CancellationToken cancellationToken)
+        public async Task<IEnumerable<BlockGetDto>> Handle(CancellationToken cancellationToken)
         {
-            IEnumerable<string> result = await _queryService.Get();
+            IEnumerable<BlockGetDto> result = await _queryService.Get();
             return result;
         }
     }
