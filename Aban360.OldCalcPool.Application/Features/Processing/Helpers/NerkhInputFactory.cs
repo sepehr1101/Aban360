@@ -27,7 +27,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
                 input.CurrentDateJalali,
                 consumptionInfo.MonthlyAverageConsumption);
         }
-        internal static NerkhByConsumptionInputDto CreateNerkhInput(BaseOldTariffEngineImaginaryInputDto input, CustomerInfoOutputDto customerInfo, ConsumptionInfo consumptionInfo)
+        internal static NerkhByConsumptionInputDto CreateNerkhInput(MeterImaginaryInputDto input, CustomerInfoOutputDto customerInfo, ConsumptionInfo consumptionInfo)
         {
             return new NerkhByConsumptionInputDto(
                 customerInfo.ZoneId,

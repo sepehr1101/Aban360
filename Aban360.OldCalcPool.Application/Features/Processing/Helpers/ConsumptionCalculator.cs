@@ -11,7 +11,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
     {
         ConsumptionInfo GetConsumptionInfo(MeterInfoInputDto input, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo);
         ConsumptionInfo GetConsumptionInfo(MeterInfoByPreviousDataInputDto input, CustomerInfoOutputDto customerInfo);
-        ConsumptionInfo GetConsumptionInfo(BaseOldTariffEngineImaginaryInputDto input, CustomerInfoOutputDto customerInfo);
+        ConsumptionInfo GetConsumptionInfo(MeterImaginaryInputDto input, CustomerInfoOutputDto customerInfo);
     }
     internal sealed class ConsumptionCalculator: IConsumptionCalculator
     {
@@ -35,7 +35,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
             ConsumptionInfo consumptionInfo = new(input.PreviousDateJalali, input.CurrentDateJalali, consumption, duration, dailyAverage, finalDomesticUnit);
             return consumptionInfo;
         }
-        public ConsumptionInfo GetConsumptionInfo(BaseOldTariffEngineImaginaryInputDto input, CustomerInfoOutputDto customerInfo)
+        public ConsumptionInfo GetConsumptionInfo(MeterImaginaryInputDto input, CustomerInfoOutputDto customerInfo)
         {
             int consumption = GetConsumption(input.MeterPreviousData.PreviousNumber, input.MeterPreviousData.CurrentMeterNumber);
             int duration = GetDuration(input.MeterPreviousData.PreviousDateJalali, input.MeterPreviousData.CurrentDateJalali);

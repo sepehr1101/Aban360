@@ -7,6 +7,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
     {     
         Task<AbBahaCalculationDetails> Handle(MeterInfoInputDto input, CancellationToken cancellationToken);
         Task<AbBahaCalculationDetails> Handle(MeterInfoByPreviousDataInputDto input, CancellationToken cancellationToken);
-        Task<AbBahaCalculationDetails> Handle(BaseOldTariffEngineImaginaryInputDto input, CancellationToken cancellationToken);
+        Task<AbBahaCalculationDetails> Handle(MeterImaginaryInputDto input, CancellationToken cancellationToken);
     }
 }
