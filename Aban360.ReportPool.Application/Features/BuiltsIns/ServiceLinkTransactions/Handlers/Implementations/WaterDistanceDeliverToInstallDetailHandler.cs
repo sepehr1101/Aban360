@@ -11,22 +11,22 @@ using static Aban360.Common.Timing.CalculationDistanceDate;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Implementations
 {
-    internal sealed class SewageWaterDistanceofRequestAndInstallationDetailHandler : ISewageWaterDistanceofRequestAndInstallationDetailHandler
+    internal sealed class WaterDistanceDeliverToInstallDetailHandler : IWaterDistanceDeliverToInstallDetailHandler
     {
-        private readonly ISewageWaterDistanceofRequestAndInstallationDetailQueryService _sewageWaterDistanceofRequestAndInstallationDetailQuery;
-        private readonly IValidator<SewageWaterDistanceofRequestAndInstallationInputDto> _validator;
-        public SewageWaterDistanceofRequestAndInstallationDetailHandler(
-            ISewageWaterDistanceofRequestAndInstallationDetailQueryService sewageWaterDistanceofRequestAndInstallationDetailQuery,
-            IValidator<SewageWaterDistanceofRequestAndInstallationInputDto> validator)
+        private readonly IWaterDistanceDeliverToInstallDetailQueryService _waterDistanceDeliverToInstallQueryService;
+        private readonly IValidator<WaterDistanceDeliverToInstallInputDto> _validator;
+        public WaterDistanceDeliverToInstallDetailHandler(
+            IWaterDistanceDeliverToInstallDetailQueryService waterDistanceDeliverToInstallQueryService,
+            IValidator<WaterDistanceDeliverToInstallInputDto> validator)
         {
-            _sewageWaterDistanceofRequestAndInstallationDetailQuery = sewageWaterDistanceofRequestAndInstallationDetailQuery;
-            _sewageWaterDistanceofRequestAndInstallationDetailQuery.NotNull(nameof(sewageWaterDistanceofRequestAndInstallationDetailQuery));
+            _waterDistanceDeliverToInstallQueryService = waterDistanceDeliverToInstallQueryService;
+            _waterDistanceDeliverToInstallQueryService.NotNull(nameof(waterDistanceDeliverToInstallQueryService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<SewageWaterDistanceHeaderOutputDto, SewageWaterDistanceDetailDataOutputDto>> Handle(SewageWaterDistanceofRequestAndInstallationInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<SewageWaterDistanceHeaderOutputDto, SewageWaterDistanceDetailDataOutputDto>> Handle(WaterDistanceDeliverToInstallInputDto input, CancellationToken cancellationToken)
         {
             var validatioResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validatioResult.IsValid)
@@ -35,7 +35,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 throw new CustomValidationException(message);
             }
 
-            var result = await _sewageWaterDistanceofRequestAndInstallationDetailQuery.Get(input);
+            ReportOutput<SewageWaterDistanceHeaderOutputDto, SewageWaterDistanceDetailDataOutputDto> result = await _waterDistanceDeliverToInstallQueryService.Get(input);
 
             ICollection<int> distances = new List<int>();
             result.ReportData.ForEach(data =>
@@ -46,7 +46,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 distances.Add(calcDistance.HasError ? 0 : calcDistance.Distance);
             });
 
-            int averageDistance = (int)distances.Sum() / (result.ReportHeader.RecordCount <= 0 ? 1 : result.ReportHeader.RecordCount);
+            int averageDistance = distances.Sum() / (result.ReportHeader.RecordCount <= 0 ? 1 : result.ReportHeader.RecordCount);
             result.ReportHeader.AverageDistance = ConvertDayToDate(averageDistance);
             result.ReportHeader.MaxDistance = ConvertDayToDate(distances.MaxValue());
             result.ReportHeader.MinDistance = ConvertDayToDate(distances.MinValue());

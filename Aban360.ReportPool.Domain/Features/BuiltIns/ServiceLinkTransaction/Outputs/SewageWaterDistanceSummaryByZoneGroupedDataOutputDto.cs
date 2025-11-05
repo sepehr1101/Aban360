@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs
 {
-    public record SewageWaterDistanceofRequestAndInstallationSummaryByZoneGroupedDataOutputDto
+    public record SewageWaterDistanceSummaryByZoneGroupedDataOutputDto
     {
         public bool IsFirstRow { get; set; }
 

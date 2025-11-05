@@ -2,8 +2,8 @@
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Timing;
-using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
+using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
@@ -11,22 +11,22 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Implementations
 {
-    internal sealed class SewageWaterDistanceofRequestAndInstallationSummaryByZoneHandler : ISewageWaterDistanceofRequestAndInstallationSummaryByZoneHandler
+    internal sealed class WaterDistanceDeliverToInstallSummaryByZoneHandler : IWaterDistanceDeliverToInstallSummaryByZoneHandler
     {
-        private readonly ISewageWaterDistanceofRequestAndInstallationSummaryByZoneQueryService _sewageWaterDistanceofRequestAndInstallationSummaryByZoneQuery;
-        private readonly IValidator<SewageWaterDistanceofRequestAndInstallationByZoneInputDto> _validator;
-        public SewageWaterDistanceofRequestAndInstallationSummaryByZoneHandler(
-            ISewageWaterDistanceofRequestAndInstallationSummaryByZoneQueryService sewageWaterDistanceofRequestAndInstallationSummaryByZoneQuery,
-            IValidator<SewageWaterDistanceofRequestAndInstallationByZoneInputDto> validator)
+        private readonly IWaterDistanceDeliverToInstallSummaryQueryService _waterDistanceDeliverToInstallSummaryByZoneQuery;
+        private readonly IValidator<WaterDistanceDeliverToInstallInputDto> _validator;
+        public WaterDistanceDeliverToInstallSummaryByZoneHandler(
+            IWaterDistanceDeliverToInstallSummaryQueryService waterDistanceDeliverToInstallSummaryByZoneQuery,
+            IValidator<WaterDistanceDeliverToInstallInputDto> validator)
         {
-            _sewageWaterDistanceofRequestAndInstallationSummaryByZoneQuery = sewageWaterDistanceofRequestAndInstallationSummaryByZoneQuery;
-            _sewageWaterDistanceofRequestAndInstallationSummaryByZoneQuery.NotNull(nameof(sewageWaterDistanceofRequestAndInstallationSummaryByZoneQuery));
+            _waterDistanceDeliverToInstallSummaryByZoneQuery = waterDistanceDeliverToInstallSummaryByZoneQuery;
+            _waterDistanceDeliverToInstallSummaryByZoneQuery.NotNull(nameof(waterDistanceDeliverToInstallSummaryByZoneQuery));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<SewageWaterDistanceHeaderOutputDto, SewageWaterDistanceSummaryDataOutputDto>> Handle(SewageWaterDistanceofRequestAndInstallationByZoneInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<SewageWaterDistanceHeaderOutputDto, SewageWaterDistanceSummaryDataOutputDto>> Handle(WaterDistanceDeliverToInstallInputDto input, CancellationToken cancellationToken)
         {
             var validatioResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validatioResult.IsValid)
@@ -35,7 +35,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 throw new CustomValidationException(message);
             }
 
-            var result = await _sewageWaterDistanceofRequestAndInstallationSummaryByZoneQuery.Get(input);
+            ReportOutput<SewageWaterDistanceHeaderOutputDto, SewageWaterDistanceSummaryDataOutputDto> result = await _waterDistanceDeliverToInstallSummaryByZoneQuery.Get(input, ReportLiterals.ZoneTitle);
 
             float sumDistance = 0;
             ICollection<float> distances = new List<float>();
@@ -54,7 +54,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             result.ReportHeader.MaxDistance = CalculationDistanceDate.ConvertDayToDate(distances.Any() ? (int)distances.Max() : 0);
             result.ReportHeader.MinDistance = CalculationDistanceDate.ConvertDayToDate(distances.Any() ? (int)distances.Min() : 0);
 
-           
+
             return result;
         }
     }
