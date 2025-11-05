@@ -30,10 +30,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterDistanceHeaderOutputDto, SewageWaterDistanceSummaryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(SewageWaterDistanceofRequestAndInstallationInputDto input, CancellationToken cancellationToken)
         {
-            ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto> result = await _sewageWaterDistanceofRequestAndInstallationSummaryHandler.Handle(input, cancellationToken);
+            ReportOutput<SewageWaterDistanceHeaderOutputDto, SewageWaterDistanceSummaryDataOutputDto> result = await _sewageWaterDistanceofRequestAndInstallationSummaryHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
@@ -54,7 +54,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         public async Task<IActionResult> GetStiReport(SewageWaterDistanceofRequestAndInstallationInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 281;
-            ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto> result = await _sewageWaterDistanceofRequestAndInstallationSummaryHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<SewageWaterDistanceHeaderOutputDto, SewageWaterDistanceSummaryDataOutputDto> result = await _sewageWaterDistanceofRequestAndInstallationSummaryHandler.Handle(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
             return Ok(reportId);
         }

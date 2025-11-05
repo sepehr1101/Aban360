@@ -18,13 +18,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         { 
         }
 
-        public async Task<ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto>> Get(SewageWaterDistanceofRequestAndInstallationInputDto input)
+        public async Task<ReportOutput<SewageWaterDistanceHeaderOutputDto, SewageWaterDistanceSummaryDataOutputDto>> Get(SewageWaterDistanceofRequestAndInstallationInputDto input)
         {
             string query = GetGroupedQuery(input.IsWater, input.IsInstallation, GroupingFields.UsageTitle);
             string reportTitle = GetTitle(input.IsWater, input.IsInstallation);
 
-            IEnumerable<SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto>(query, input);
-            SewageWaterDistanceofRequestAndInstallationHeaderOutputDto RequestHeader = new SewageWaterDistanceofRequestAndInstallationHeaderOutputDto()
+            IEnumerable<SewageWaterDistanceSummaryDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<SewageWaterDistanceSummaryDataOutputDto>(query, input);
+            SewageWaterDistanceHeaderOutputDto RequestHeader = new SewageWaterDistanceHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
@@ -40,7 +40,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 SumOtherUnit = RequestData?.Sum(r => r.OtherUnit) ?? 0,
                 TotalUnit = RequestData?.Sum(r => r.TotalUnit) ?? 0,
             };
-            var result = new ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationSummaryDataOutputDto>
+            var result = new ReportOutput<SewageWaterDistanceHeaderOutputDto, SewageWaterDistanceSummaryDataOutputDto>
                 (reportTitle,
                 RequestHeader,
                 RequestData);

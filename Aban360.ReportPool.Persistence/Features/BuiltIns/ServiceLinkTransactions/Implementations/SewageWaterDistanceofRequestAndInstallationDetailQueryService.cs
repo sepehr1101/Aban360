@@ -18,13 +18,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         { 
         }
 
-        public async Task<ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationDetailDataOutputDto>> Get(SewageWaterDistanceofRequestAndInstallationInputDto input)
+        public async Task<ReportOutput<SewageWaterDistanceHeaderOutputDto, SewageWaterDistanceDetailDataOutputDto>> Get(SewageWaterDistanceofRequestAndInstallationInputDto input)
         {
             string query = GetDetailsQuery(input.IsWater, input.IsInstallation);
             string reportTitle = GetTitle(input.IsWater, input.IsInstallation);
 
-            IEnumerable<SewageWaterDistanceofRequestAndInstallationDetailDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<SewageWaterDistanceofRequestAndInstallationDetailDataOutputDto>(query, input);
-            SewageWaterDistanceofRequestAndInstallationHeaderOutputDto RequestHeader = new SewageWaterDistanceofRequestAndInstallationHeaderOutputDto()
+            IEnumerable<SewageWaterDistanceDetailDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<SewageWaterDistanceDetailDataOutputDto>(query, input);
+            SewageWaterDistanceHeaderOutputDto RequestHeader = new SewageWaterDistanceHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
@@ -40,7 +40,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 SumOtherUnit = RequestData.Sum(i => i.OtherUnit),
                 TotalUnit = RequestData.Sum(i => i.TotalUnit)
             };
-            var result = new ReportOutput<SewageWaterDistanceofRequestAndInstallationHeaderOutputDto, SewageWaterDistanceofRequestAndInstallationDetailDataOutputDto>(reportTitle, RequestHeader, RequestData);
+            var result = new ReportOutput<SewageWaterDistanceHeaderOutputDto, SewageWaterDistanceDetailDataOutputDto>(reportTitle, RequestHeader, RequestData);
             return result;
         }
        
