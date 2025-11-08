@@ -11,13 +11,16 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
     {
         public MeterInfoDetailQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<MeterInfoOutputDto> GetInfo(CustomerInfoInputDto input)
         {
-            string meterInfoQueryString = GetMeterInfoDataQuery(input.ZoneId);
+            string dbName = GetDbName(input.ZoneId);
+            string meterInfoQueryString = GetMeterInfoDataQuery(dbName, input.ZoneId);
             var @params = new
             {
+                dbName,
                 zoneId = input.ZoneId,
                 radif = input.Radif
             };
@@ -26,18 +29,20 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             return result;
         }
 
-        private string GetMeterInfoDataQuery(int zoneId)
+        private string GetMeterInfoDataQuery(string dbName, int zoneId)
         {
-            return @$"Select
-                    	IIF(c.pri_date > c.taviz_date, c.pri_no,c.taviz_no) as PreviousNumber,
-                    	IIF(c.pri_date > c.taviz_date, c.pri_date,c.taviz_date) as PreviousDateJalali,
-                    	c.cod_vas as BranchType
-                    From [{zoneId}].dbo.contor c
+            return @$"
+                    Select top 1
+                        c.pri_no as PreviousNumber,
+                        c.pri_date as PreviousDateJalali,
+                        c.today_no CurrentNumber,
+                        c.today_date CurrentDateJalali
+                    From [{dbName}].dbo.bed_bes c
                     Where 
-                    	c.town=@zoneId AND
-                    	c.radif=@radif AND
-                    	c.cod_vas NOT IN (4,7,8) AND
-                    	c.mohasbat=2 ";
+                        c.town=@zoneId AND
+                        c.radif=@radif AND
+                        c.cod_vas NOT IN (4,7,8)
+                    ORDER BY c.date_bed desc";
         }
     }
 }
