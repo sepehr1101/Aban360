@@ -4,6 +4,7 @@ using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
 using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using DNTPersianUtils.Core;
 using FluentValidation;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Implementations
@@ -32,7 +33,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 throw new CustomValidationException(message);
             }
 
-            InstallationAndEquipmentOutputDto result = await _queryService.Get(input.Id);
+            InstallationAndEquipmentOutputDto result = await _queryService.Get(input.Id, DateTime.Now.ToShortPersianDateString());
             return result;
         }
     }

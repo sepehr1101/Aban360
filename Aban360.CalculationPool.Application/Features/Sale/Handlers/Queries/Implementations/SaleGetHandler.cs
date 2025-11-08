@@ -6,6 +6,7 @@ using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using DNTPersianUtils.Core;
 using FluentValidation;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Implementations
@@ -83,7 +84,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             ICollection<SaleDataOutputDto> waterInstallationAndEquipment = await GetInstallationAndEquipment(true, inputDto.WaterDiameterId);
             salesData.AddRange(waterInstallationAndEquipment);
 
-            var article11 = new Article11GetDto(inputDto.ZoneId, inputDto.Block);
+            var article11 = new Article11GetDto(inputDto.ZoneId, inputDto.Block, DateTime.Now.ToShortPersianDateString());
             Article11OutputDto article11Data = await _article11QueryService.Get(article11);
             SaleDataOutputDto waterArticle11 = await GetSaleData(OfferingEnum.WaterArticle11,inputDto.IsDomestic? article11Data.DomesticWaterAmount: article11Data.NonDomesticWaterAmount, null);
             salesData.Add(waterArticle11);
@@ -101,7 +102,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         private async Task<ICollection<SaleDataOutputDto>> GetInstallationAndEquipment(bool isWater, short? meterDiameterId)
         {
-            var installationAndEquipment = new InstallationAndEquipmentGetDto(isWater, meterDiameterId);
+            var installationAndEquipment = new InstallationAndEquipmentGetDto(isWater, meterDiameterId, DateTime.Now.ToShortPersianDateString());
             InstallationAndEquipmentOutputDto installtionAndEquipmentData = await _installationAndEquipmentService.Get(installationAndEquipment);
             SaleDataOutputDto installation = await GetSaleData(isWater ? OfferingEnum.WaterInstallation : OfferingEnum.SewageInstalltion, installtionAndEquipmentData.InstallationAmount, null);
             SaleDataOutputDto equipment = await GetSaleData(isWater ? OfferingEnum.WaterEquipment : OfferingEnum.SewageEquipment, installtionAndEquipmentData.EquipmentAmount, null);

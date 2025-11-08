@@ -24,20 +24,20 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
             return article11;
         }
 
-        public async Task<Article11OutputDto> Get(short id)
+        public async Task<Article11OutputDto> Get(short id,string currentDateJalali)
         {
             string query = GetQueryById();
-            Article11OutputDto article11 = await _sqlConnection.QueryFirstOrDefaultAsync<Article11OutputDto>(query, new { id = id });
+            Article11OutputDto article11 = await _sqlConnection.QueryFirstOrDefaultAsync<Article11OutputDto>(query, new { id = id, CurrentDateJalali=currentDateJalali });
             if (article11 == null)
             {
                 throw new InvalidIdException();
             }
             return article11;
         }
-        public async Task<IEnumerable<Article11OutputDto>> Get()
+        public async Task<IEnumerable<Article11OutputDto>> Get(string currentDateJalali)
         {
             string query = GetAllQuery();
-            IEnumerable<Article11OutputDto> article11 = await _sqlConnection.QueryAsync<Article11OutputDto>(query, null);
+            IEnumerable<Article11OutputDto> article11 = await _sqlConnection.QueryAsync<Article11OutputDto>(query, new { CurrentDateJalali=currentDateJalali});
 
             return article11;
         }
@@ -47,7 +47,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
             return @"Select *
                     From [Aban360].CalculationPool.Article11 
                     Where
-                    	[CustomerWarehouse].dbo.PersianToMiladi(ToDateJalali)>GETDATE() AND
+                    	ToDateJalali>@CurrentDateJalali AND
                     	RemoveDateTime IS NULL AND
                     	(
                     		@BlockCode IS NULL OR
@@ -61,7 +61,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
             return @"Select *
                     From [Aban360].CalculationPool.Article11 
                     Where
-                    	[CustomerWarehouse].dbo.PersianToMiladi(ToDateJalali)>GETDATE() AND
+                    	ToDateJalali>@CurrentDateJalali AND
                     	RemoveDateTime IS NULL AND
 						Id=@id";
         }
@@ -71,7 +71,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
             return @"Select *
                     From [Aban360].CalculationPool.Article11 
                     Where
-                    	[CustomerWarehouse].dbo.PersianToMiladi(ToDateJalali)>GETDATE() AND
+                    	ToDateJalali>@CurrentDateJalali AND
                     	RemoveDateTime IS NULL";
         }
     }
