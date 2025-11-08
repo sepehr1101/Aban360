@@ -17,11 +17,12 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Db70.Queries
             _billReturnCauseHandler.NotNull(nameof(billReturnCauseHandler));
         }
 
-        [HttpPost]
-        [Route("get")]
+        [HttpGet]
+        [Route("get/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<BillReturnCauseGetDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get(SearchShortInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Get(short id, CancellationToken cancellationToken)
         {
+            SearchShortInputDto inputDto = id;
             BillReturnCauseGetDto result = await _billReturnCauseHandler.Handle(inputDto, cancellationToken);
             return Ok(result);
         }
