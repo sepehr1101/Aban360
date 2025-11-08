@@ -63,10 +63,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         public async Task<AbBahaCalculationDetails> Handle(MeterInfoInputDto input, CancellationToken cancellationToken)
         {
             CustomerInfoOutputDto customerInfo = await _customerInfoDetailQueryService.GetInfo(input.BillId);
-            MeterInfoOutputDto meterInfo = await _meterInfoDetailQueryService.GetInfo(new CustomerInfoInputDto(customerInfo.ZoneId, customerInfo.Radif));           
-            ConsumptionInfo consumptionInfo = _consumptionCalculator.GetConsumptionInfo(input, customerInfo, meterInfo);
-            NerkhByConsumptionInputDto nerkhInput = NerkhInputFactory.CreateNerkhInput(input, customerInfo, meterInfo, consumptionInfo);
-            AbBahaCalculationDetails calculationDetails= await GetCalculationDetails(customerInfo, meterInfo,consumptionInfo, nerkhInput, input.CurrentDateJalali);
+            MeterInfoOutputDto meterInfo = await _meterInfoDetailQueryService.GetInfo(new CustomerInfoInputDto(customerInfo.ZoneId, customerInfo.Radif));
+            AbBahaCalculationDetails calculationDetails = await GetCalculationDetails(meterInfo, customerInfo);
             return calculationDetails;
         }       
         public async Task<AbBahaCalculationDetails> Handle(MeterInfoByPreviousDataInputDto input, CancellationToken cancellationToken)
@@ -76,10 +74,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             {
                 PreviousDateJalali = input.PreviousDateJalali,
                 PreviousNumber = input.PreviousNumber,
-            };
-            ConsumptionInfo consumptionInfo = _consumptionCalculator.GetConsumptionInfo(input, customerInfo);
-            NerkhByConsumptionInputDto nerkhInput = NerkhInputFactory.CreateNerkhInput(input, customerInfo, consumptionInfo);
-            AbBahaCalculationDetails calculationDetails = await GetCalculationDetails(customerInfo, meterInfo, consumptionInfo, nerkhInput, input.CurrentDateJalali);
+                CurrentNumber=input.CurrentMeterNumber,
+                CurrentDateJalali=input.CurrentDateJalali
+            };           
+            AbBahaCalculationDetails calculationDetails = await GetCalculationDetails(meterInfo, customerInfo);
             return calculationDetails;
         }
         public async Task<AbBahaCalculationDetails> Handle(MeterImaginaryInputDto input, CancellationToken cancellationToken)
@@ -88,14 +86,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             CustomerInfoOutputDto customerInfo = CreateCustomerInfoDto(input);
             try
             {
-                MeterInfoOutputDto meterInfo = new MeterInfoOutputDto()
+                MeterInfoOutputDto meterInfo = new ()
                 {
                     PreviousDateJalali = input.MeterPreviousData.PreviousDateJalali,
                     PreviousNumber = input.MeterPreviousData.PreviousNumber,
-                };
-                ConsumptionInfo consumptionInfo = _consumptionCalculator.GetConsumptionInfo(input, customerInfo);
-                NerkhByConsumptionInputDto nerkhInput = NerkhInputFactory.CreateNerkhInput(input, customerInfo, consumptionInfo);
-                AbBahaCalculationDetails calculationDetails = await GetCalculationDetails(customerInfo, meterInfo, consumptionInfo, nerkhInput, input.MeterPreviousData.CurrentDateJalali);
+                    CurrentDateJalali=input.MeterPreviousData.CurrentDateJalali,
+                    CurrentNumber=input.MeterPreviousData.CurrentMeterNumber
+                };               
+                AbBahaCalculationDetails calculationDetails = await GetCalculationDetails(meterInfo, customerInfo);
                 return calculationDetails;
             }
             catch (Exception e)
@@ -103,14 +101,27 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 throw new BaseException($"{customerInfo.BillId} {input.MeterPreviousData.PreviousDateJalali} {input.MeterPreviousData.PreviousNumber}");
             }
         }
-        private async Task<AbBahaCalculationDetails> GetCalculationDetails(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ConsumptionInfo consumptionInfo, NerkhByConsumptionInputDto nerkhInput, string currentDateJalali)
+        private async Task<AbBahaCalculationDetails> GetCalculationDetails(MeterInfoOutputDto meterInfo, CustomerInfoOutputDto customerInfo)
         {
+            ConsumptionInfo consumptionInfo = _consumptionCalculator.GetConsumptionInfo(meterInfo, customerInfo);
+            NerkhByConsumptionInputDto nerkhInput = CreateNerkhInput(meterInfo, customerInfo, consumptionInfo);            
             Validate(meterInfo.PreviousDateJalali);           
             (IEnumerable<NerkhGetDto>, IEnumerable<AbAzadFormulaDto>, IEnumerable<ZaribGetDto>, int) allNerkhAbAbAzad = await _nerkhGetByConsumptionService.GetWithAggregatedNerkh(nerkhInput);
-            AbBahaCalculationDetails result = await GetAbBahaCalculationDetails(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, currentDateJalali, customerInfo, meterInfo, consumptionInfo);
+            AbBahaCalculationDetails result = await GetAbBahaCalculationDetails(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, meterInfo.CurrentDateJalali, customerInfo, meterInfo, consumptionInfo);
             return result;
         }
 
+        private NerkhByConsumptionInputDto CreateNerkhInput(MeterInfoOutputDto meterInfo, CustomerInfoOutputDto customerInfo, ConsumptionInfo consumptionInfo)
+        {
+            int constructionBranchType = 4;
+            int azadUsageId = 39;
+            return new NerkhByConsumptionInputDto(
+                customerInfo.ZoneId,
+                customerInfo.BranchType == constructionBranchType ? azadUsageId : customerInfo.UsageId,
+                meterInfo.PreviousDateJalali,
+                meterInfo.CurrentDateJalali,
+                consumptionInfo.MonthlyAverageConsumption);
+        }
         private async Task<AbBahaCalculationDetails> GetAbBahaCalculationDetails(IEnumerable<NerkhGetDto> allNerkh, IEnumerable<AbAzadFormulaDto> abAzad, IEnumerable<ZaribGetDto> zarib, string currentDateJalali, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ConsumptionInfo consumptionInfo)
         {
             Stopwatch stopWatch = new Stopwatch();
