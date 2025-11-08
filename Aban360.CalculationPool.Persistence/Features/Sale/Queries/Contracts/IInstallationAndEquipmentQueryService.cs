@@ -6,7 +6,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts
     public interface IInstallationAndEquipmentQueryService
     {
         Task<InstallationAndEquipmentOutputDto> Get(InstallationAndEquipmentGetDto input);
-        Task<InstallationAndEquipmentOutputDto> Get(int id);
-        Task<IEnumerable<InstallationAndEquipmentOutputDto>> Get();
+        Task<InstallationAndEquipmentOutputDto> Get(int id, string currentDateJalali);
+        Task<IEnumerable<InstallationAndEquipmentOutputDto>> Get(string currentDateJalali);
     }
 }

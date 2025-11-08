@@ -22,20 +22,20 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
 
             return data;
         }
-        public async Task<InstallationAndEquipmentOutputDto> Get(int id)
+        public async Task<InstallationAndEquipmentOutputDto> Get(int id, string currentDateJalali)
         {
             string query = GetQueryById();
-            InstallationAndEquipmentOutputDto data = await _sqlConnection.QueryFirstAsync<InstallationAndEquipmentOutputDto>(query, new { id = id });
+            InstallationAndEquipmentOutputDto data = await _sqlConnection.QueryFirstAsync<InstallationAndEquipmentOutputDto>(query, new { id = id, CurrentDateJalali= currentDateJalali });
             if (data == null)
             {
                 throw new InvalidIdException();
             }
             return data;
         }
-        public async Task<IEnumerable<InstallationAndEquipmentOutputDto>> Get()
+        public async Task<IEnumerable<InstallationAndEquipmentOutputDto>> Get(string currentDateJalali)
         {
             string query = GetAllQuery();
-            IEnumerable<InstallationAndEquipmentOutputDto> data = await _sqlConnection.QueryAsync<InstallationAndEquipmentOutputDto>(query, null);
+            IEnumerable<InstallationAndEquipmentOutputDto> data = await _sqlConnection.QueryAsync<InstallationAndEquipmentOutputDto>(query, new { CurrentDateJalali=currentDateJalali });
 
             return data;
         }
@@ -46,7 +46,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
                     From [Aban360].CalculationPool.InstallationAndEquipment i
                     Where 
                     	i.RemoveDateTime IS NULL AND
-                    	[CustomerWarehouse].dbo.PersianToMiladi(i.ToDateJalali)>GETDATE() AND
+                    	i.ToDateJalali>@currentDateJalali AND
                     	i.IsWater=@isWater AND
                     	i.DiameterId=@diameterId ";
         }
@@ -57,7 +57,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
                     From [Aban360].CalculationPool.InstallationAndEquipment i
                     Where 
                     	i.RemoveDateTime IS NULL AND
-                    	[CustomerWarehouse].dbo.PersianToMiladi(i.ToDateJalali)>GETDATE() AND
+                    	i.ToDateJalali>@CurrentDateJalali AND
                     	i.Id=@id";
         }
 
@@ -67,7 +67,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
                     From [Aban360].CalculationPool.InstallationAndEquipment i
                     Where 
                     	i.RemoveDateTime IS NULL AND
-                    	[CustomerWarehouse].dbo.PersianToMiladi(i.ToDateJalali)>GETDATE()";
+                    	i.ToDateJalali>@CurrentDateJalali";
         }
 
     }

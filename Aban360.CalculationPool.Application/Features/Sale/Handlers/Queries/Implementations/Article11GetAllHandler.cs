@@ -2,6 +2,7 @@
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
 using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
 using Aban360.Common.Extensions;
+using DNTPersianUtils.Core;
 using FluentValidation;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Implementations
@@ -17,7 +18,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
         public async Task<IEnumerable<Article11OutputDto>> Handle(CancellationToken cancellationToken)
         {
-            IEnumerable<Article11OutputDto> result = await _queryService.Get();
+            IEnumerable<Article11OutputDto> result = await _queryService.Get(DateTime.Now.ToShortPersianDateString());
             return result;
         }
     }

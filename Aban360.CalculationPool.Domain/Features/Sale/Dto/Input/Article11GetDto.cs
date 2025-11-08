@@ -4,10 +4,12 @@
     {
         public string? BlockCode { get; set; }
         public int ZoneId { get; set; }
-        public Article11GetDto(int zoneId,string? blockCode)
+        public string? CurrentDateJalali { get; set; }
+        public Article11GetDto(int zoneId,string? blockCode,string? currentDateJalali)
         {
             ZoneId = zoneId;
             BlockCode = blockCode;
+            CurrentDateJalali = currentDateJalali;
         }
     }
 }
