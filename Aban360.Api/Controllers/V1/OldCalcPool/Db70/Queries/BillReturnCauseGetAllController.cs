@@ -16,7 +16,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Db70.Queries
             _billReturnCauseHandler.NotNull(nameof(billReturnCauseHandler));
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("all")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<BillReturnCauseGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)

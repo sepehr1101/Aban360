@@ -14,7 +14,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
     {
         public ConsumptionInfo GetConsumptionInfo(MeterInfoOutputDto meterInfo, CustomerInfoOutputDto customerInfo)
         {
-
             int consumption = GetConsumption(meterInfo.PreviousNumber, meterInfo.CurrentNumber);
             int duration = GetDuration(meterInfo.PreviousDateJalali, meterInfo.CurrentDateJalali);
             int finalDomesticUnit = GetFinalDomesticUnit(customerInfo, meterInfo.CurrentDateJalali);
