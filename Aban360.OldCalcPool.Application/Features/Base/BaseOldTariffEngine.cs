@@ -1,13 +1,15 @@
 ﻿using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
-using Aban360.Common.Timing;
 using Aban360.OldCalcPool.Application.Features.Base;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
-using DNTPersianUtils.Core;
 using System.Runtime.InteropServices;
+using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
+using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffStringChecker;
+using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffDateOperations;
 using static Aban360.Common.Timing.CalculationDistanceDate;
+using Aban360.OldCalcPool.Application.Features.Processing.Helpers;
 
 namespace Aban360.CalculationPool.Application.Features.Base
 {
@@ -34,7 +36,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             int olgoo = GetOlgoo(nerkh.Date2, _olgoo);
             bool isVillageCalculation = IsVillage(customerInfo.ZoneId);
             double monthlyConsumption = nerkh.DailyAverageConsumption * monthDays;
-            decimal multiplierAbBaha = Multiplier(zarib, olgoo, IsDomesticCategory(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
+            decimal multiplierAbBaha = GetMultiplier(zarib, olgoo, IsDomesticCategory(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
 
             CalculateAbBahaOutputDto abBahaResult = CalculateAbBaha(nerkh, customerInfo, meterInfo, zarib, abAzad, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, multiplierAbBaha, c, tagIds);
             (double, double) boodje = CalculateBoodje(nerkh, customerInfo, currentDateJalali, monthlyConsumption, olgoo,consumptionInfo);
@@ -214,7 +216,6 @@ namespace Aban360.CalculationPool.Application.Features.Base
             return bahaDiscountAmount > 0 && !IsReligiousWithCharity(usageId) ? abonmanAmount : 0;
         }
 
-
         /// <summary>
         /// محاسبه فرمول
         /// </summary>
@@ -227,168 +228,13 @@ namespace Aban360.CalculationPool.Application.Features.Base
             double value = Eval<double>(formula, parameters);
             return value;
         }
-
-        private bool CheckConditions(int id, int[] values)
-        {
-            return values.Contains(id);
-        }
-        private bool IsVillage(int zoneId)
-        {
-            return zoneId > 140000;
-        }
-        private bool IsDomestic(int usageId)
-        {
-            return CheckConditions(usageId, [0, 1, 3]);
-        }
-        private bool IsDomesticCategory(int usageId)
-        {
-            return CheckConditions(usageId, [0, 1, 3, 25, 34]);
-        }
-        private bool IsDomesticWithoutUnspecified(int usageId)
-        {
-            return CheckConditions(usageId, [1, 3]);
-        }
-        private bool IsReligious(int usageId)
-        {
-            return CheckConditions(usageId, [10, 12, 13, 29, 32]);
-        }
-        private bool IsIndustrial(int usageId)
-        {
-            return CheckConditions(usageId, [4]);
-        }
-        private bool IsCharityOrSchool(int usageId)
-        {
-            return CheckConditions(usageId, [8, 7, 12, 13, 29, 30, 32]);
-        }
-        private bool IsHandoverDiscount(int branchTypeId)
-        {
-            return CheckConditions(branchTypeId, [3, 6, 7]);
-        }
-        private bool IsReligiousWithCharity(int usageId)
-        {
-            return CheckConditions(usageId, [12, 13, 29, 30, 32]);
-        }
-        bool IsVillageCollectorMeter(int usageId)
-        {
-            return CheckConditions(usageId, [12, 13, 29, 30, 32]);
-        }
-        private bool IsGardenAndResidence(int usageId)
-        {
-            return CheckConditions(usageId, [25, 34]);
-        }
-        private bool IsUsageConstructor(int usageId)
-        {
-            return CheckConditions(usageId, [5, 39]);
-        }
-        private bool IsTankerSale(int usageId)
-        {
-            return CheckConditions(usageId, [14]);
-        }
-        private bool IsEducationOrBath(int usageId)
-        {
-            return CheckConditions(usageId, [7, 8, 41, 11]);
-        }
-        public bool IsSpecialEducation(int usageId, bool isSpecial)
-        {
-            return CheckConditions(usageId, [7,8]) && isSpecial;
-        }
-
-        private bool IsConstruction(int branchTypeId)
-        {
-            return CheckConditions(branchTypeId, [4]);
-        }
-        private bool IsSpecialIndustrial(int branchTypeId)
-        {
-            return CheckConditions(branchTypeId, [8]);
-        }
-
-        /// <summary>
-        /// روستاهایی که اگرچه در ناحیه روستایی هستند اما محاسبه بصورت شهری
-        /// </summary>
-        /// <param name="zoneId"></param>
-        /// <param name="villageCode"></param>
-        /// <returns></returns>
-        private bool RuralButIsMetro(int zoneId, int villageCode)
-        {
-            int[] village142618 = [1037, 1038, 1039];
-            int[] village144311 = [1090, 1093];
-            int[] village144411 = [1016];
-            int[] village143012 = [1010, 1013, 1016, 1017, 1029];
-            int[] village142714 = [1019];
-            int[] village141911 = [1034];
-            int[] village141914 = [1061];
-            int[] village141611 = [1006];
-
-            return
-                (zoneId == 142618 && village142618.Contains(villageCode)) ||
-                (zoneId == 144311 && village144311.Contains(villageCode)) ||
-                (zoneId == 144411 && village144411.Contains(villageCode)) ||
-                (zoneId == 143012 && village143012.Contains(villageCode)) ||
-                (zoneId == 142714 && village142714.Contains(villageCode)) ||
-                (zoneId == 141911 && village141911.Contains(villageCode)) ||
-                (zoneId == 141914 && village141914.Contains(villageCode)) ||
-                (zoneId == 141611 && village141611.Contains(villageCode));
-        }
-
-        private bool LessThanEq(string baseString, string @from)
-        {
-            return baseString.CompareTo(from) <= 0;
-        }
-        private bool IsGtFromLqTo(string baseString, string @from, string @to)
-        {
-            return baseString.CompareTo(from) > 0 && baseString.CompareTo(to) <= 0;
-        }
-
-        private bool IsBetween(string baseString, string @from, string @to)
-        {
-            return baseString.CompareTo(from) >= 0 && baseString.CompareTo(to) <= 0;
-        }
-        private bool IsBetween(double number, double min, double max)
-        {
-            return number >= min && number <= max;
-        }
-
+              
         private (double, double, bool) MultiplyCalculation(double abBaha, double oldAbBaha, double multiplier)
         {
             return (abBaha * multiplier, oldAbBaha * multiplier, true);
         }
 
-        private bool IsDolatabadOrHabibabadWithConditionEshtrak(int zoneId, string readingNumber)
-        {
-            return
-                (zoneId == 134013 && IsBetween(readingNumber, "57000000", "57999999")) ||
-                (zoneId == 134016 && IsBetween(readingNumber, "57000000", "57999999")) ||
-                 MetroButIsRural(zoneId, readingNumber, 4);
-        }
-        private bool MetroButIsRural(int zoneId, string readingNumber, int thresholdSkip)
-        {
-            if (string.IsNullOrWhiteSpace(readingNumber)) return false;
-            if (readingNumber.Trim().Length < thresholdSkip) return false;
-
-            string shortReadingNumber = readingNumber.Trim().Substring(0, thresholdSkip);
-            if (zoneId == 132220 &&
-                (IsBetween(shortReadingNumber, "1610", "1628") ||
-                IsBetween(shortReadingNumber, "1633", "1648") ||
-                IsBetween(shortReadingNumber, "1651", "1661") ||
-                IsBetween(shortReadingNumber, "6042", "6052") ||
-                IsBetween(shortReadingNumber, "6060", "6072"))
-                )
-                return true;
-
-            if (zoneId == 132211 &&
-                 (IsBetween(shortReadingNumber, "1103", "1108") ||
-                 IsBetween(shortReadingNumber, "1109", "1113") ||
-                 IsBetween(shortReadingNumber, "1143", "1165") ||
-                 IsBetween(shortReadingNumber, "1161", "1184") ||
-                 IsBetween(shortReadingNumber, "1403", "1499") ||
-                 IsBetween(shortReadingNumber, "1450", "1472") ||
-                 IsBetween(shortReadingNumber, "1574", "1599"))
-               )
-                return true;
-
-            return false;
-        }
-        private decimal Multiplier(ZaribGetDto zarib, int olgo, bool isDomestic, bool isVillage, double monthlyConsumption, int branchType)
+        private decimal GetMultiplier(ZaribGetDto zarib, int olgo, bool isDomestic, bool isVillage, double monthlyConsumption, int branchType)
         {
             double zbSelection = 1;
 
@@ -427,36 +273,8 @@ namespace Aban360.CalculationPool.Application.Features.Base
             }
 
             return 1;
-        }
-        private bool IsLessThan1401_12_28(string nerkhDate2)
-        {
-            string baseDate = "1401/12/28";
-            return nerkhDate2.CompareTo(baseDate) < 0;
-        }
-        private bool IsLessThan1403_12_30(string nerkhDate2)
-        {
-            string baseDate = "1403/12/30";
-            return nerkhDate2.CompareTo(baseDate) < 0;
-        }
-        private bool IsMoreThan1404_01_01(string nerkhDate2)
-        {
-            string baseDate = "1404/01/01";
-            return nerkhDate2.CompareTo(baseDate) >= 0;
-        }
-        private bool IsMoreThan1398_12_29(string nerkhDate2)
-        {
-            string baseDate = "1398/12/29";
-            return nerkhDate2.CompareTo(baseDate) > 0;
-
-        }
-
-        private bool CheckZero(double duration, double monthlyConsumption, string? vaj)
-        {
-            return duration <= 0 ||
-                   monthlyConsumption == 0 ||
-                   string.IsNullOrWhiteSpace(vaj);
-        }
-
+        }      
+       
         /// <summary>
         /// محاسبه آب بها 
         /// </summary>
@@ -602,7 +420,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                     return false;
                 }
                 return RuralButIsMetro(customerInfo.ZoneId, customerInfo.ReadingNumber) ||
-                       RuralButIsMetro(customerInfo.ZoneId, villageCode);
+                       TariffRuleChecker.RuralButIsMetro(customerInfo.ZoneId, villageCode);
             }
 
             bool IsVillageDomesticNotConstruction(CustomerInfoOutputDto customerInfo)
@@ -649,63 +467,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             string baseDate = "1403/12/30";
             return nerkhDate2.CompareTo(baseDate) <= 0 ? 14 : olgo;
         }
-        private (NerkhGetDto, int, double) CalcPartial(NerkhGetDto nerkh, DateOnly previousDate, DateOnly currentDate, ConsumptionInfo consumptionInfo)
-        {
-            DateOnly fromDate = ConvertJalaliToGregorian(nerkh.Date1);
-            DateOnly toDate = ConvertJalaliToGregorian(nerkh.Date2);
-
-            DateOnly startSegment = fromDate > previousDate ? fromDate : previousDate;
-            DateOnly endSegment = toDate < currentDate ? toDate : currentDate;
-
-            nerkh.Date1 = startSegment.ToDateTime(TimeOnly.MinValue).ToShortPersianDateString();
-            nerkh.Date2 = endSegment.ToDateTime(TimeOnly.MinValue).ToShortPersianDateString();
-
-            int durationPartial = endSegment.DayNumber - startSegment.DayNumber;
-            double partialConsumption = (double)consumptionInfo.Consumption / (double)consumptionInfo.Duration * durationPartial;
-            return (nerkh, durationPartial, partialConsumption);
-        }
-        private DateOnly ConvertJalaliToGregorian(string dateJalali)
-        {
-            DateOnly? grogorianDate = dateJalali.ToGregorianDateOnly();
-            if (!grogorianDate.HasValue)
-            {
-                throw new BaseException(ExceptionLiterals.InvalidDate);
-            }
-
-            return grogorianDate.Value;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        /// 
-        private int PartTime(string date1, string date2, string previousDate, string currentDate, object metaData)
-        {
-            int partMethod = 0;
-            partMethod = IsBetween(previousDate, date1, date2) && IsBetween(currentDate, date1, date2) ?
-               GetDistance(previousDate, currentDate, metaData) : partMethod;
-
-            partMethod = previousDate.CompareTo(date1) <= 0 && IsBetween(currentDate, date1, date2) ?
-                GetDistance(date1, currentDate, metaData) : partMethod;
-
-            partMethod = currentDate.CompareTo(date2) >= 0 && IsBetween(previousDate, date1, date2) ?
-                GetDistance(previousDate, date2, metaData) : partMethod;
-
-            partMethod = previousDate.CompareTo(date1) <= 0 && currentDate.CompareTo(date2) >= 0 ?
-                GetDistance(date1, date2, metaData) : partMethod;
-
-            return partMethod;
-        }
-        private int GetDistance(string fromDate, string toDate, object metaData)
-        {
-            CalcDistanceResultDto calcDistance = CalculationDistanceDate.CalcDistance(fromDate, toDate, true, metaData);
-            if (calcDistance.HasError)
-            {
-                throw new TariffDateException(ExceptionLiterals.Incalculable);
-            }
-            return calcDistance.Distance;
-        }
+        
         private (int,double) CalcHotSeasonAbBaha(NerkhGetDto nerkh, double abBahaAmount, CustomerInfoOutputDto customerInfo, double monthlyConsumption)
         {
             if (IsDomesticCategory(customerInfo.UsageId) && 
@@ -752,32 +514,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             amount= hotSeasonDuration > 0 ? (int)((hotSeasonDuration * fazelabAmount / nerkh.Duration) * 0.2) : 0;
             return (hotSeasonDuration, amount);
         }
-
-        private bool IsGardenOrDweltyAfter1400_12_24(int usageId, string nerkhDate1)
-        {
-            string baseDate = "1400/24/12";
-            int[] usageIds = [25, 34];
-            return usageIds.Contains(usageId) && nerkhDate1.CompareTo(baseDate) >= 0;
-        }
-        private bool IsLessThan1403_09_13(string nerkhDate2)
-        {
-            string baseDate = "1403/09/13";
-            return nerkhDate2.CompareTo(baseDate) <= 0;
-        }
-        private bool StringConditionMoreThan(string fromDate, string toDate)
-        {
-            DateOnly? from = fromDate.ToGregorianDateOnly();
-            DateOnly? to = toDate.ToGregorianDateOnly();
-            if (!from.HasValue && !to.HasValue)
-            {
-                throw new BaseException(ExceptionLiterals.InvalidDate);
-            }
-
-            if (from.Value >= to.Value)
-                return true;
-
-            return false;
-        }
+               
         private (long, long) Get2PartAmount(string nerkhDate2)
         {
             string date1400_12_25 = "1400/12/25";
@@ -851,43 +588,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 return ((long)abBahaFromExpression, abAzad);
             }
         }
-
-        private static bool IsBetween(int baseZoneId, int zoneIdParam, string readingNumber, string fromNumber, string toNumber)
-        {
-            return
-                baseZoneId == zoneIdParam &&
-                readingNumber.Trim().CompareTo(fromNumber) >= 0 &&
-                readingNumber.Trim().CompareTo(toNumber) <= 0;
-        }
-        private static bool RuralButIsMetro(int zoneId, string readingNumber)
-        {
-            return
-                IsBetween(141911, zoneId, readingNumber, "10340005001", "10340908000") ||
-                IsBetween(141914, zoneId, readingNumber, "10610001000", "10610800000") ||
-                IsBetween(144015, zoneId, readingNumber, "60000000000", "60999999999") ||
-                IsBetween(144015, zoneId, readingNumber, "62000000000", "62999999999") ||
-                IsBetween(144016, zoneId, readingNumber, "22000000000", "22999999999") ||
-                IsBetween(144016, zoneId, readingNumber, "24000000000", "24999999999") ||
-                IsBetween(141611, zoneId, readingNumber, "10060001000", "10060797000") ||
-                IsBetween(144411, zoneId, readingNumber, "10160001000", "10161024000") ||
-                IsBetween(143411, zoneId, readingNumber, "10930000000", "10939999999") ||
-                IsBetween(143411, zoneId, readingNumber, "71093000000", "71093999999") ||
-                IsBetween(143411, zoneId, readingNumber, "81093000000", "81093999999") ||
-                IsBetween(143411, zoneId, readingNumber, "10900000000", "10909999999") ||
-                IsBetween(143411, zoneId, readingNumber, "71090000000", "71090999999") ||
-                IsBetween(143411, zoneId, readingNumber, "81090000000", "81090999999") ||
-                IsBetween(143012, zoneId, readingNumber, "10100000000", "10109999999") ||
-                IsBetween(143012, zoneId, readingNumber, "10170000000", "10179999999") ||
-                IsBetween(143012, zoneId, readingNumber, "10160000000", "10169999999") ||
-                IsBetween(143012, zoneId, readingNumber, "10290000000", "10299999999") ||
-                IsBetween(143012, zoneId, readingNumber, "10130000000", "10139999999") ||
-                IsBetween(142211, zoneId, readingNumber, "10340000000", "10349999999") ||
-                IsBetween(142211, zoneId, readingNumber, "10370000000", "10379999999") ||
-                IsBetween(142211, zoneId, readingNumber, "10380000000", "10389999999") ||
-                IsBetween(142215, zoneId, readingNumber, "10220000000", "10229999999");
-
-        }
-
+               
         private (double, double) CalculateBoodje(NerkhGetDto nerkhDto, CustomerInfoOutputDto customerInfo, string currentDateJalali, double monthlyConsumption, double olgoo, ConsumptionInfo consumptionInfo)
         {
             double consumptionAfter1404 = 0;
@@ -962,7 +663,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 if (villageCode > 0 && 
                     monthlyConsumption > olgoo &&
                     domesticUnit > 1 && 
-                    RuralButIsMetro(customerInfo.ZoneId, villageCode))
+                    TariffRuleChecker.RuralButIsMetro(customerInfo.ZoneId, villageCode))
                 {
                     return baseAmount * nerkh.PartialConsumption;
                 }
@@ -987,15 +688,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             }
             return 0;
         }
-        private (bool, int) HasVillageCode(string villageId)
-        {
-            if (string.IsNullOrWhiteSpace(villageId) || villageId.Length < 5)
-            {
-                return (false, 0);
-            }
-            bool canParse = int.TryParse(villageId.Substring(0, 4), out int villageCode);
-            return (canParse, villageCode);
-        }
+       
         private double CalculateBoodjeDiscount(CustomerInfoOutputDto customerInfo, double abBahaDiscount, (double, double) boodjeAmounts, NerkhGetDto nerkh)
         {
             if (abBahaDiscount <= 0)

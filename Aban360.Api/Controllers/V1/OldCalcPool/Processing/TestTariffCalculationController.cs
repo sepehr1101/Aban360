@@ -48,7 +48,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         [Route("test-imaginary")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AbBahaCalculationDetails>), StatusCodes.Status200OK)]
         [AllowAnonymous]
-        public async Task<IActionResult> TestImaginary(BaseOldTariffEngineImaginaryInputDto input, CancellationToken cancellationToken)
+        public async Task<IActionResult> TestImaginary(MeterImaginaryInputDto input, CancellationToken cancellationToken)
         {
             AbBahaCalculationDetails result = await _oldTariffEngine.Handle(input, cancellationToken);
             return Ok(result);

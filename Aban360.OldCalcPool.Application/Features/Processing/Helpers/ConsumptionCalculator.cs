@@ -1,47 +1,25 @@
 ﻿using Aban360.Common.Exceptions;
+using Aban360.OldCalcPool.Application.Constant;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
-using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using DNTPersianUtils.Core;
-using Aban360.OldCalcPool.Application.Constant;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
 {
     internal interface IConsumptionCalculator
-    {
-        ConsumptionInfo GetConsumptionInfo(MeterInfoInputDto input, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo);
-        ConsumptionInfo GetConsumptionInfo(MeterInfoByPreviousDataInputDto input, CustomerInfoOutputDto customerInfo);
-        ConsumptionInfo GetConsumptionInfo(BaseOldTariffEngineImaginaryInputDto input, CustomerInfoOutputDto customerInfo);
+    {     
+        ConsumptionInfo GetConsumptionInfo(MeterInfoOutputDto meterInfo, CustomerInfoOutputDto customerInfo);
     }
     internal sealed class ConsumptionCalculator: IConsumptionCalculator
     {
-        const int thresholdDay = 4;
+        public ConsumptionInfo GetConsumptionInfo(MeterInfoOutputDto meterInfo, CustomerInfoOutputDto customerInfo)
+        {
 
-        public ConsumptionInfo GetConsumptionInfo(MeterInfoInputDto input, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo)
-        {
-            int consumption = GetConsumption(meterInfo.PreviousNumber, input.CurrentMeterNumber);
-            int duration = GetDuration(meterInfo.PreviousDateJalali, input.CurrentDateJalali);
-            int finalDomesticUnit = GetFinalDomesticUnit(customerInfo, input.CurrentDateJalali);
+            int consumption = GetConsumption(meterInfo.PreviousNumber, meterInfo.CurrentNumber);
+            int duration = GetDuration(meterInfo.PreviousDateJalali, meterInfo.CurrentDateJalali);
+            int finalDomesticUnit = GetFinalDomesticUnit(customerInfo, meterInfo.CurrentDateJalali);
             double dailyAverage = GetDailyConsumptionAverage(consumption, duration, finalDomesticUnit);
-            ConsumptionInfo consumptionInfo = new(meterInfo.PreviousDateJalali, input.CurrentDateJalali, consumption, duration, dailyAverage, finalDomesticUnit);
-            return consumptionInfo;
-        }
-        public ConsumptionInfo GetConsumptionInfo(MeterInfoByPreviousDataInputDto input, CustomerInfoOutputDto customerInfo)
-        {
-            int consumption = GetConsumption(input.PreviousNumber, input.CurrentMeterNumber);
-            int duration = GetDuration(input.PreviousDateJalali, input.CurrentDateJalali);
-            int finalDomesticUnit = GetFinalDomesticUnit(customerInfo, input.CurrentDateJalali);
-            double dailyAverage = GetDailyConsumptionAverage(consumption, duration, finalDomesticUnit);
-            ConsumptionInfo consumptionInfo = new(input.PreviousDateJalali, input.CurrentDateJalali, consumption, duration, dailyAverage, finalDomesticUnit);
-            return consumptionInfo;
-        }
-        public ConsumptionInfo GetConsumptionInfo(BaseOldTariffEngineImaginaryInputDto input, CustomerInfoOutputDto customerInfo)
-        {
-            int consumption = GetConsumption(input.MeterPreviousData.PreviousNumber, input.MeterPreviousData.CurrentMeterNumber);
-            int duration = GetDuration(input.MeterPreviousData.PreviousDateJalali, input.MeterPreviousData.CurrentDateJalali);
-            int finalDomesticUnit = GetFinalDomesticUnit(customerInfo, input.MeterPreviousData.CurrentDateJalali);
-            double dailyAverage = GetDailyConsumptionAverage(consumption, duration, finalDomesticUnit);
-            ConsumptionInfo consumptionInfo = new(input.MeterPreviousData.PreviousDateJalali, input.MeterPreviousData.CurrentDateJalali, consumption, duration, dailyAverage, finalDomesticUnit);
+            ConsumptionInfo consumptionInfo = new(meterInfo.PreviousDateJalali, meterInfo.CurrentDateJalali, consumption, duration, dailyAverage, finalDomesticUnit);
             return consumptionInfo;
         }
 
@@ -51,6 +29,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         }
         private int GetDuration(string previousDate, string currentDate)
         {
+            int thresholdDay = 4;
             var previousGregorian = previousDate.ToGregorianDateTime();
             var currentGregorian = currentDate.ToGregorianDateTime();
             int duration = (currentGregorian.Value - previousGregorian.Value).Days;
