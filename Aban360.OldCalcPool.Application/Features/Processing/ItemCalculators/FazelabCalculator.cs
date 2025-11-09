@@ -84,7 +84,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 return 0;
             }
 
-            double fazelabDiscount = abBahaDiscount * 0.7;
+            double fazelabDiscount = abBahaDiscount * GetMultiplier(false,customerInfo.UsageId);
             double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, nerkh.PartialConsumption, nerkh.Duration, fazelabDiscount);
             return virtualDiscount > 0 ? virtualDiscount : fazelabAmount;
         }

@@ -77,7 +77,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             double hotSeasonAbDiscount = _hotSeasonCalculator.CalculateDiscount(nerkh, abBahaDiscount, hotSeasonAbBaha, customerInfo);
             double hotSeasonFazelabDiscount = _hotSeasonCalculator.CalculateDiscount(nerkh, fazelabDiscount, hotSeasonFazelab, customerInfo);         
             double boodjeDiscount = _budgetCalculator.CalculateDiscount(customerInfo,abBahaDiscount,boodje, nerkh);
-            return new BaseOldTariffEngineOutputDto(abBahaResult, fazelab, hotSeasonAbBaha.Item2, hotSeasonFazelab.Item2, boodje.Item1, boodje.Item2, abBahaDiscount, hotSeasonAbDiscount, fazelabDiscount, 0, avarez, javani,
+            return new BaseOldTariffEngineOutputDto(abBahaResult, fazelab, hotSeasonAbBaha.Item2, hotSeasonFazelab.Item2, boodje.Item1, boodje.Item2, abBahaDiscount, hotSeasonAbDiscount, fazelabDiscount+hotSeasonFazelabDiscount, 0, avarez, javani,
                 0, 0, 0, 0, boodjeDiscount);
         }
         private int GetOlgoo(string nerkhDate2, int olgo)

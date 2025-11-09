@@ -72,7 +72,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
             {
                 return 0;
             }
-            if (string.IsNullOrWhiteSpace(householdDate))
+            /*if (string.IsNullOrWhiteSpace(householdDate))
             {
                 return 0;
             }
@@ -89,7 +89,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
             if (expireHouseHoldGregorian.Value.AddYears(1) < readingDateGregorian.Value)
             {
                 return 0;
-            }
+            }*/
             return householdUnit;
         }
     }

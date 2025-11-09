@@ -6,7 +6,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IAbonmanCalculator
     {
-        double CalculateAbAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali);
+        double CalculateAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali);
         double CalculateDiscount(int usageId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial);
     }
 
@@ -19,7 +19,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const string date1404_02_14 = "1404/02/14";
         const string date1404_02_31 = "1404/02/31";
         const string date1404_12_29 = "1404/12/29";
-        public double CalculateAbAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali)
+        public double CalculateAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali)
         {
             if (!IsConstruction(customerInfo.BranchType) && IsTankerSale(customerInfo.UsageId))
             {
