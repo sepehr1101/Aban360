@@ -38,7 +38,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             ITable1GetService table1GetService,
             IBillIdTagService tagService,
             IConsumptionCalculator consumptionCalculator,
+            IAbBahaCalculator abBahaCalculator,
             IBillQueryService billQueryService)
+            :base(abBahaCalculator)
+          )
         {
             _customerInfoDetailQueryService = customerInfoDetailQueryService;
             _customerInfoDetailQueryService.NotNull(nameof(customerInfoDetailQueryService));
