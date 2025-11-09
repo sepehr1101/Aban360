@@ -4,6 +4,7 @@ using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Application.Features.Processing.Helpers;
+using Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
@@ -26,6 +27,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IBillIdTagService _tagService;
         private readonly IConsumptionCalculator _consumptionCalculator;
         private readonly IBillQueryService _billQueryService;
+        private readonly IFazelabCalculator _fazelabCalculator;
+        private readonly IHotSeasonCalculator _hotSeasonCalculator;
+        private readonly IAbonmanCalculator _abonmanCalculator;
 
         int thresholdDay = 4;
         float vatRate = 0.1f;
@@ -39,8 +43,15 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             IBillIdTagService tagService,
             IConsumptionCalculator consumptionCalculator,
             IAbBahaCalculator abBahaCalculator,
-            IBillQueryService billQueryService)
-            : base(abBahaCalculator)
+            IBillQueryService billQueryService,
+            IFazelabCalculator fazelabCalculator,
+            IHotSeasonCalculator hotSeasonCalculator,
+            IAbonmanCalculator abonmanCalculator,
+            IBudgetCalculator budgetCalculator,
+            IJavaniJamiatCalculator javaniJamiatCalculator,
+            IAvarezCalculator avarezCalculator)
+            : base(abBahaCalculator, fazelabCalculator, hotSeasonCalculator, abonmanCalculator,budgetCalculator, javaniJamiatCalculator, avarezCalculator)
+
         {
             _customerInfoDetailQueryService = customerInfoDetailQueryService;
             _customerInfoDetailQueryService.NotNull(nameof(customerInfoDetailQueryService));
@@ -65,6 +76,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             _billQueryService = billQueryService;
             _billQueryService.NotNull(nameof(_billQueryService));
+
+            _fazelabCalculator = fazelabCalculator;
+            _fazelabCalculator.NotNull(nameof(_fazelabCalculator));
+
+            _abonmanCalculator = abonmanCalculator;
+            _abonmanCalculator.NotNull(nameof(_abonmanCalculator));
         }
 
         public async Task<AbBahaCalculationDetails> Handle(MeterInfoInputDto input, CancellationToken cancellationToken)
@@ -197,10 +214,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
                 counter++;
             }
-            sumAbonmanAbBaha = CalculateAbonmanAb(customerInfo, meterInfo, currentDateJalali);
-            sumAbonmanFazelab = CalculateFazelab(meterInfo.PreviousDateJalali, currentDateJalali, consumptionInfo.Duration, customerInfo, sumAbonmanAbBaha, currentDateJalali, true);
-            sumAbonmanAbDiscount = CalculateAbonmanDiscount(customerInfo.UsageId, sumAbonmanAbBaha, sumAbBahaDiscount, customerInfo.IsSpecial);
-            sumAbonmanFazelabDiscount = CalculateAbonmanDiscount(customerInfo.UsageId, sumAbonmanFazelab, sumFazelabDiscount, customerInfo.IsSpecial);
+            sumAbonmanAbBaha = _abonmanCalculator.CalculateAbAb(customerInfo, meterInfo, currentDateJalali);
+            sumAbonmanFazelab = _fazelabCalculator.Calculate(meterInfo.PreviousDateJalali, currentDateJalali, consumptionInfo.Duration, customerInfo, sumAbonmanAbBaha, currentDateJalali, true);
+            sumAbonmanAbDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, sumAbonmanAbBaha, sumAbBahaDiscount, customerInfo.IsSpecial);
+            sumAbonmanFazelabDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, sumAbonmanFazelab, sumFazelabDiscount, customerInfo.IsSpecial);
             double maliatDiscount = CalculateTaxDiscount(sumAbBahaDiscount, sumFazelabDiscount, sumAbonmanAbDiscount,
                 sumAbonmanFazelabDiscount, sumBoodjeDiscount, sumHotSeasonDiscount);
             double AbBahaResult = sumAbBaha + sumHotSeasonAbBaha + sumAbonmanAbBaha;

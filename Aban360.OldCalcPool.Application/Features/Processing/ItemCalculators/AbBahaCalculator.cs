@@ -4,22 +4,25 @@ using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using System.Runtime.InteropServices;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffStringChecker;
+using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.VirtualCapacityCalculator;
 
-namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
+namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IAbBahaCalculator
     {
-        CalculateAbBahaOutputDto CalculateAbBaha(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, decimal multiplierAbBaha, [Optional] int? c, [Optional] IEnumerable<int> tagIds);
+        CalculateAbBahaOutputDto Calculate(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds);
+        long CalculateDiscount(ZaribGetDto zarib, bool isVillageCalculation, double monthlyConsumption, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, long amount, bool isFull, int finalDomesticUnit);
     }
 
     internal sealed class AbBahaCalculator : BaseExpressionCalculator, IAbBahaCalculator
     {
         const int monthDays = 30;
-        public CalculateAbBahaOutputDto CalculateAbBaha(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, decimal multiplierAbBaha, [Optional] int? c, [Optional] IEnumerable<int> tagIds)
+        public CalculateAbBahaOutputDto Calculate(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds)
         {
             double abBahaAmount = 0, oldAbBahaAmount = 0, abBahaFromExpression = 0, oldAbBahaZarib = 1.15;
             double duration = nerkh.Duration;
             abBahaFromExpression = CalcFormulaByRate(nerkh.Vaj, monthlyConsumption, _olgoo, c, tagIds);
+            decimal multiplierAbBaha = GetMultiplier(zarib, _olgoo, IsDomesticCategory(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
             (double, double) abBahaValues = (0, 0);
 
             if (CheckZero(duration, monthlyConsumption, nerkh.Vaj))
@@ -56,7 +59,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
                 if (HasCapacityAndNotConstruction(customerInfo) ||
                     IsReligious(customerInfo.UsageId))
                 {
-                    double contractualCapacityInDuration = ((double)customerInfo.ContractualCapacity / monthDays) * duration;
+                    double contractualCapacityInDuration = (double)customerInfo.ContractualCapacity / monthDays * duration;
 
                     if (IsCharitySchoolOrConsumptionGtCapacity(nerkh, customerInfo, contractualCapacityInDuration))
                     {
@@ -117,6 +120,46 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
 
             return new CalculateAbBahaOutputDto(abBahaAmount, abBahaValues);
         }
+
+        public long CalculateDiscount(ZaribGetDto zarib, bool isVillageCalculation, double monthlyConsumption, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, long amount, bool isFull, int finalDomesticUnit)
+        {
+            if (amount == 0)
+            {
+                return 0;
+            }
+            decimal multiplier = GetMultiplier(zarib, olgoo, IsDomesticCategory(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
+            double partialOlgoo = IsDomestic(customerInfo.UsageId) ?
+               (double)finalDomesticUnit * olgoo / monthDays * nerkh.Duration :
+               (double)customerInfo.ContractualCapacity / monthDays * nerkh.Duration;
+
+            if (IsHandoverDiscount(customerInfo.BranchType) &&
+                IsDomesticWithoutUnspecified(customerInfo.UsageId))
+            {
+                if (isFull)
+                {
+                    return amount;
+                }
+                if (nerkh.PartialConsumption <= olgoo)// در صورتی که مصرف زیر الگو بود کامل معاف میشود
+                {
+                    return amount;
+                }
+                else//در صورتی که بالای الگو بود بخش زیر الگو معاف و بالای الگو اخذ شود
+                {
+                    //long partialAmount = (long)(partialOlgoo / nerkh.PartialConsumption * amount);
+                    //return partialAmount;
+                    return (long)(90000 * 0.01 * partialOlgoo * olgoo * (double)multiplier);
+                }
+            }
+            if (IsReligiousWithCharity(customerInfo.UsageId))
+            {
+                //در صورتی که بالای الگو بود بخش زیر الگو معاف و بالای الگو اخذ شود
+                //C*0.1
+                return (long)(90000 * 0.1 * (partialOlgoo) * (double)multiplier);
+            }
+            double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, nerkh.PartialConsumption, nerkh.Duration, amount);
+            return virtualDiscount > 0 ? (long)virtualDiscount : 0;
+        }
+
         private bool IsLessThan1403_09_13AndOvajNotZero(NerkhGetDto nerkh)
         {
             return !string.IsNullOrWhiteSpace(nerkh.OVaj) &&
@@ -144,7 +187,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
 
         private bool HasCapacityAndNotConstruction(CustomerInfoOutputDto customerInfo)
         {
-            return (customerInfo.ContractualCapacity > 0 && !IsConstruction(customerInfo.BranchType));
+            return customerInfo.ContractualCapacity > 0 && !IsConstruction(customerInfo.BranchType);
         }
 
         private bool IsRuralButIsMetro(CustomerInfoOutputDto customerInfo)
@@ -276,6 +319,46 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
                 return (9000, 450000);
             }
             return (0, 0);
+        }
+        private decimal GetMultiplier(ZaribGetDto zarib, int olgoo, bool isDomestic, bool isVillage, double monthlyConsumption, int branchType)
+        {
+            double zbSelection = 1;
+
+            if (IsConstruction(branchType) && !isVillage)
+            {
+                return zarib.Zb;
+            }
+            if (isVillage && isDomestic)
+            {
+                return zarib.Zarib_baha;
+            }
+            else if (!isDomestic && !isVillage)
+            {
+                return zarib.Zb;
+            }
+            else if (!isDomestic && isVillage)
+            {
+                return zarib.Zb_r;
+            }
+            else if (isDomestic && !isVillage)
+            {
+                if (IsBetween(monthlyConsumption, 0, 5))
+                    return zarib.Zb1;
+                else if (IsBetween(monthlyConsumption, 5, 10))
+                    return zarib.Zb2;
+                else if (IsBetween(monthlyConsumption, 10, olgoo))
+                    return zarib.Zb3;
+                else if (IsBetween(monthlyConsumption, olgoo, olgoo * 1.5))
+                    return zarib.Zb4;
+                else if (IsBetween(monthlyConsumption, olgoo * 1.5, olgoo * 2))
+                    return zarib.Zb5;
+                else if (IsBetween(monthlyConsumption, olgoo * 2, olgoo * 3))
+                    return zarib.Zb6;
+                else if (monthlyConsumption > olgoo * 3)
+                    return zarib.Zb7;
+            }
+
+            return 1;
         }
     }
 }
