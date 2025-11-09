@@ -36,6 +36,7 @@ namespace Aban360.ReportPool.Persistence.Base
                         c.UsageTitle,
                         c.WaterDiameterTitle MeterDiameterTitle,
                         c.MainSiphonTitle AS SiphonDiameterTitle,
+						c.WaterRequestDate AS WaterRequestDateJalali,
                         c.RegisterDayJalali AS EventDateJalali,
                         c.WaterInstallDate AS WaterInstallationDate,
                         0 AS DebtAmount,

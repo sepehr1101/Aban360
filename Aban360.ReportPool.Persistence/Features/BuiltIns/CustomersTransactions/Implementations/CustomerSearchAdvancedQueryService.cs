@@ -46,6 +46,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         c.ReadingNumber,
                         TRIM(c.FirstName) AS FirstName,
                       	TRIM(c.SureName) AS Surname,
+                      	TRIM(c.FatherName) AS FatherName,
                         c.WaterDiameterTitle AS MeterDiameterTitle,
                         c.BillId,
                         c.DomesticCount AS DomesticUnit,
@@ -64,6 +65,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         --AND (@ReadingNumber is null OR c.ReadingNumber like '%'+@ReadingNumber+'%')
                         AND (@FirstName is null OR c.FirstName like '%'+@FirstName+'%')
                         AND (@Surname is null OR c.SureName like '%'+@Surname+'%')
+                        AND (@FatherName is null OR c.FatherName like '%'+@FatherName+'%')
                         AND (@BillId is null OR c.BillId like '%'+@BillId+'%')
                         AND (@MobileNumber is null OR c.MobileNo like '%'+@MobileNumber+'%')
                         AND (@Address is null OR c.Address like '%'+@Address+'%')

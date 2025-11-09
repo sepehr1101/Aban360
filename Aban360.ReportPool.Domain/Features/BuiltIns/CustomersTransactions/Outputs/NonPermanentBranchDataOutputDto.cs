@@ -9,6 +9,7 @@
         public string UsageTitle { get; set; }
         public string MeterDiameterTitle { get; set; }
         public string SiphonDiameterTitle { get; set; }
+        public string WaterRequestDateJalali { get; set; }
         public string EventDateJalali { get; set; }
         public string WaterInstallationDate { get; set; }
         public string DebtAmount { get; set; }
