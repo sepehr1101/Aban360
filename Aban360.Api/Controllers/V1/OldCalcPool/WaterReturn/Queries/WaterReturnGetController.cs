@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Queries
 {
-    [Route("v1/water-return-manual")]
-    public class WaterReturnManualGetController : BaseController
+    [Route("v1/water-return")]
+    public class WaterReturnGetController : BaseController
     {
         private readonly IRepairGetHandler _repairHandler;
-        public WaterReturnManualGetController(IRepairGetHandler repairHandler)
+        public WaterReturnGetController(IRepairGetHandler repairHandler)
         {
             _repairHandler = repairHandler;
             _repairHandler.NotNull(nameof(repairHandler));
