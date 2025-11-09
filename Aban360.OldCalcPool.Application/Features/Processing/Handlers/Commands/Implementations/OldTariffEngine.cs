@@ -24,7 +24,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IZaribCQueryService _zaribCQueryService;
         private readonly ITable1GetService _table1QueryService;
         private readonly IBillIdTagService _tagService;
-        private readonly IConsumptionCalculator _consumptionCalculator; 
+        private readonly IConsumptionCalculator _consumptionCalculator;
+        private readonly IBillQueryService _billQueryService;
 
         int thresholdDay = 4;
         float vatRate = 0.1f;
@@ -36,7 +37,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             IZaribCQueryService zaribCQueryService,
             ITable1GetService table1GetService,
             IBillIdTagService tagService,
-            IConsumptionCalculator consumptionCalculator)
+            IConsumptionCalculator consumptionCalculator,
+            IBillQueryService billQueryService)
         {
             _customerInfoDetailQueryService = customerInfoDetailQueryService;
             _customerInfoDetailQueryService.NotNull(nameof(customerInfoDetailQueryService));
@@ -58,6 +60,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             _consumptionCalculator = consumptionCalculator;
             _consumptionCalculator.NotNull(nameof(_consumptionCalculator));
+
+            _billQueryService = billQueryService;
+            _billQueryService.NotNull(nameof(_billQueryService));
         }
 
         public async Task<AbBahaCalculationDetails> Handle(MeterInfoInputDto input, CancellationToken cancellationToken)
@@ -66,7 +71,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             MeterInfoOutputDto meterInfo = await _meterInfoDetailQueryService.GetInfo(new CustomerInfoInputDto(customerInfo.ZoneId, customerInfo.Radif));
             AbBahaCalculationDetails calculationDetails = await GetCalculationDetails(meterInfo, customerInfo);
             return calculationDetails;
-        }       
+        }
         public async Task<AbBahaCalculationDetails> Handle(MeterInfoByPreviousDataInputDto input, CancellationToken cancellationToken)
         {
             CustomerInfoOutputDto customerInfo = await _customerInfoDetailQueryService.GetInfo(input.BillId);
@@ -74,9 +79,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             {
                 PreviousDateJalali = input.PreviousDateJalali,
                 PreviousNumber = input.PreviousNumber,
-                CurrentNumber=input.CurrentMeterNumber,
-                CurrentDateJalali=input.CurrentDateJalali
-            };           
+                CurrentNumber = input.CurrentMeterNumber,
+                CurrentDateJalali = input.CurrentDateJalali
+            };
             AbBahaCalculationDetails calculationDetails = await GetCalculationDetails(meterInfo, customerInfo);
             return calculationDetails;
         }
@@ -86,13 +91,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             CustomerInfoOutputDto customerInfo = CreateCustomerInfoDto(input);
             try
             {
-                MeterInfoOutputDto meterInfo = new ()
+                MeterInfoOutputDto meterInfo = new()
                 {
                     PreviousDateJalali = input.MeterPreviousData.PreviousDateJalali,
                     PreviousNumber = input.MeterPreviousData.PreviousNumber,
-                    CurrentDateJalali=input.MeterPreviousData.CurrentDateJalali,
-                    CurrentNumber=input.MeterPreviousData.CurrentMeterNumber
-                };               
+                    CurrentDateJalali = input.MeterPreviousData.CurrentDateJalali,
+                    CurrentNumber = input.MeterPreviousData.CurrentMeterNumber
+                };
                 AbBahaCalculationDetails calculationDetails = await GetCalculationDetails(meterInfo, customerInfo);
                 return calculationDetails;
             }
@@ -101,11 +106,37 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 throw new BaseException($"{customerInfo.BillId} {input.MeterPreviousData.PreviousDateJalali} {input.MeterPreviousData.PreviousNumber}");
             }
         }
+        public async Task<AbBahaCalculationDetails> Handle(MeterDateInfoWithMonthlyConsumptionOutputDto input, CancellationToken cancellationToken)
+        {
+            CustomerInfoOutputDto customerInfo = await _customerInfoDetailQueryService.GetInfo(input.BillId);
+            AbBahaCalculationDetails calculationDetails = await GetCalculationDetailsWithConsumption(input, customerInfo);
+            return calculationDetails;
+        }
+        public async Task<AbBahaCalculationDetails> Handle(MeterDateInfoByLastMonthlyConsumptionOutputDto input, CancellationToken cancellationToken)
+        {
+            CustomerInfoOutputDto customerInfo = await _customerInfoDetailQueryService.GetInfo(input.BillId);
+            BedBesConsumptionOutputDto latestConsumptionAverage = await _billQueryService.Get(input.BillId);
+            MeterDateInfoWithMonthlyConsumptionOutputDto meterInfoWithConsumption = new MeterDateInfoWithMonthlyConsumptionOutputDto(input.BillId, input.PreviousDateJalali, input.CurrentDateJalali, latestConsumptionAverage.ConsumptionAverage);
+            AbBahaCalculationDetails calculationDetails = await GetCalculationDetailsWithConsumption(meterInfoWithConsumption, customerInfo);
+            return calculationDetails;
+        }
         private async Task<AbBahaCalculationDetails> GetCalculationDetails(MeterInfoOutputDto meterInfo, CustomerInfoOutputDto customerInfo)
         {
             ConsumptionInfo consumptionInfo = _consumptionCalculator.GetConsumptionInfo(meterInfo, customerInfo);
-            NerkhByConsumptionInputDto nerkhInput = CreateNerkhInput(meterInfo, customerInfo, consumptionInfo);            
-            Validate(meterInfo.PreviousDateJalali);           
+            NerkhByConsumptionInputDto nerkhInput = CreateNerkhInput(meterInfo, customerInfo, consumptionInfo);
+            Validate(meterInfo.PreviousDateJalali);
+            (IEnumerable<NerkhGetDto>, IEnumerable<AbAzadFormulaDto>, IEnumerable<ZaribGetDto>, int) allNerkhAbAbAzad = await _nerkhGetByConsumptionService.GetWithAggregatedNerkh(nerkhInput);
+            AbBahaCalculationDetails result = await GetAbBahaCalculationDetails(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, meterInfo.CurrentDateJalali, customerInfo, meterInfo, consumptionInfo);
+            return result;
+        }
+
+        private async Task<AbBahaCalculationDetails> GetCalculationDetailsWithConsumption(MeterDateInfoWithMonthlyConsumptionOutputDto meterInfoWithConsumption, CustomerInfoOutputDto customerInfo)
+        {
+            ConsumptionInfo consumptionInfo = _consumptionCalculator.GetConsumptionInfoWithMonthlyConsumption(meterInfoWithConsumption, customerInfo);
+
+            MeterInfoOutputDto meterInfo = new MeterInfoOutputDto(meterInfoWithConsumption.PreviousDateJalali, meterInfoWithConsumption.CurrentDateJalali, 0, 0);
+            NerkhByConsumptionInputDto nerkhInput = CreateNerkhInput(meterInfo, customerInfo, consumptionInfo);
+            Validate(meterInfo.PreviousDateJalali);
             (IEnumerable<NerkhGetDto>, IEnumerable<AbAzadFormulaDto>, IEnumerable<ZaribGetDto>, int) allNerkhAbAbAzad = await _nerkhGetByConsumptionService.GetWithAggregatedNerkh(nerkhInput);
             AbBahaCalculationDetails result = await GetAbBahaCalculationDetails(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, meterInfo.CurrentDateJalali, customerInfo, meterInfo, consumptionInfo);
             return result;
@@ -216,9 +247,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             {
                 throw new BaseException(ExceptionLiterals.InvalidPreviousDateInvoice(thresholdDay));
             }
-        }       
+        }
         private double CalculateTax(params double[] amounts)
-        {            
+        {
             return amounts.Sum() * vatRate;
         }
         private double CalculateTaxDiscount(params double[] amounts)
