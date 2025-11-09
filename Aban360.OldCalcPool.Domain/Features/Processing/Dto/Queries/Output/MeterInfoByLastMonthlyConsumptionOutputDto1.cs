@@ -19,9 +19,9 @@
             Cause=cause;
             ShouldSave = shouldSave;
         }
-        public MeterDateInfoByLastMonthlyConsumptionOutputDto()
+        public MeterInfoByLastMonthlyConsumptionOutputDto()
         {
-
+            
         }
     }
 }
