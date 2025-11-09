@@ -5,5 +5,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
     public interface IBillQueryService
     {
         Task<BedBesConsumptionOutputDto> Get(string billId);
+        Task<BedBesDataInfoOutptuDto> Get(int id);
     }
 }

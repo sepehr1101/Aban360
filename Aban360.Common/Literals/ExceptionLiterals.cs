@@ -27,6 +27,7 @@
         public static string CurrentDateNotMoreThanPreviousDate => "تاریخ دوره قبلی نمیتوان از تاریخ دوره جاری بزرگ تر باشد";
         public static string CurrentNumberNotMoreThanPreviousNumber => "رقم دوره قبلی نمیتوان از رقم دوره جاری بزرگ تر باشد";
         public static string BillIdNotFound => "شناسه قبض یافت نشد!";
+        public static string InvalidBillId => "شناسه معتبر نیست!";
         public static string InvalidDate => "تاریخ ناصحیح";
         public static string InvalidFromDate => "تاریخ شروع ناصحیح";
         public static string InvalidToDate => "تاریخ پایان ناصحیح";

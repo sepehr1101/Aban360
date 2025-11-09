@@ -40,8 +40,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             IConsumptionCalculator consumptionCalculator,
             IAbBahaCalculator abBahaCalculator,
             IBillQueryService billQueryService)
-            :base(abBahaCalculator)
-          )
+            : base(abBahaCalculator)
         {
             _customerInfoDetailQueryService = customerInfoDetailQueryService;
             _customerInfoDetailQueryService.NotNull(nameof(customerInfoDetailQueryService));
@@ -119,7 +118,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         {
             CustomerInfoOutputDto customerInfo = await _customerInfoDetailQueryService.GetInfo(input.BillId);
             BedBesConsumptionOutputDto latestConsumptionAverage = await _billQueryService.Get(input.BillId);
-            MeterDateInfoWithMonthlyConsumptionOutputDto meterInfoWithConsumption = new MeterDateInfoWithMonthlyConsumptionOutputDto(input.BillId, input.PreviousDateJalali, input.CurrentDateJalali, latestConsumptionAverage.ConsumptionAverage);
+            MeterDateInfoWithMonthlyConsumptionOutputDto meterInfoWithConsumption = new MeterDateInfoWithMonthlyConsumptionOutputDto(input.BillId, input.PreviousDateJalali, input.CurrentDateJalali, latestConsumptionAverage.ConsumptionAverage,input.MeetingNumber,input.InvoiceId,input.Cause, input.ShouldSave);
             AbBahaCalculationDetails calculationDetails = await GetCalculationDetailsWithConsumption(meterInfoWithConsumption, customerInfo);
             return calculationDetails;
         }
