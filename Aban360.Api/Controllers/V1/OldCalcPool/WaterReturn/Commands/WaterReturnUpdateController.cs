@@ -6,20 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
 {
-    [Route("v1/water-return-manual")]
-    public class WaterReturnManualCreateController : BaseController
+    [Route("v1/water-return")]
+    public class WaterReturnUpdateController : BaseController
     {
-        private readonly IRepairCreateHandler _repairHandler;
-        public WaterReturnManualCreateController(IRepairCreateHandler repairHandler)
+        private readonly IRepairUpdateHandler _repairHandler;
+        public WaterReturnUpdateController(IRepairUpdateHandler repairHandler)
         {
             _repairHandler = repairHandler;
             _repairHandler.NotNull(nameof(repairHandler));
         }
 
         [HttpPost, HttpGet]
-        [Route("create")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<OfferingToCreateRepairDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Create([FromBody] OfferingToCreateRepairDto input, CancellationToken cancellationToken)
+        [Route("update")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<RepairUpdateDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Update([FromBody] RepairUpdateDto input, CancellationToken cancellationToken)
         {
             await _repairHandler.Handle(input, cancellationToken);
             return Ok(input);
