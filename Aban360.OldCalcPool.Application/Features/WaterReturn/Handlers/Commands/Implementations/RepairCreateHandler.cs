@@ -46,12 +46,13 @@ namespace Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Command
             RepairCreateDto repairDto = GetRepairCreateDto(input, memberInfo);
             await _commandService.Create(repairDto);
         }
-        public async Task<AbBahaCalculationDetails> Handle(MeterDateInfoWithMonthlyConsumptionOutputDto input, CancellationToken cancellationToken)
+        public async Task<AbBahaCalculationDetails> Handle(MeterInfoWithMonthlyConsumptionOutputDto input, CancellationToken cancellationToken)
         {
             BedBesDataInfoOutptuDto bedBesData = await _billQueryService.Get(input.InvoiceId);
             ValidationBedBes(bedBesData, input.CurrentDateJalali, input.PreviousDateJalali);
 
-            AbBahaCalculationDetails tariff = await _tariffEngine.Handle(input, cancellationToken);
+            MeterDateInfoWithMonthlyConsumptionOutputDto meterDateInfo = new MeterDateInfoWithMonthlyConsumptionOutputDto(input.BillId, input.PreviousDateJalali, input.CurrentDateJalali, input.MonthlyAverageConsumption);
+            AbBahaCalculationDetails tariff = await _tariffEngine.Handle(meterDateInfo, cancellationToken);
             if (!input.ShouldSave)
             {
                 return tariff;
@@ -60,12 +61,13 @@ namespace Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Command
             await _commandService.Create(repairDto);
             return tariff;
         }
-        public async Task<AbBahaCalculationDetails> Handle(MeterDateInfoByLastMonthlyConsumptionOutputDto input, CancellationToken cancellationToken)
+        public async Task<AbBahaCalculationDetails> Handle(MeterInfoByLastMonthlyConsumptionOutputDto input, CancellationToken cancellationToken)
         {
             BedBesDataInfoOutptuDto bedBesData = await _billQueryService.Get(input.InvoiceId);
             ValidationBedBes(bedBesData, input.CurrentDateJalali, input.PreviousDateJalali);
 
-            AbBahaCalculationDetails tariff = await _tariffEngine.Handle(input, cancellationToken);
+            MeterDateInfoByLastMonthlyConsumptionOutputDto meterDateInfo = new MeterDateInfoByLastMonthlyConsumptionOutputDto(input.BillId, input.PreviousDateJalali, input.CurrentDateJalali);
+            AbBahaCalculationDetails tariff = await _tariffEngine.Handle(meterDateInfo, cancellationToken);
             if (!input.ShouldSave)
             {
                 return tariff;
@@ -79,7 +81,7 @@ namespace Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Command
             BedBesDataInfoOutptuDto bedBesData = await _billQueryService.Get(input.InvoiceId);
             ValidationBedBes(bedBesData, input.CurrentDateJalali, input.PreviousDateJalali);
 
-            MeterInfoByPreviousDataInputDto meterInfoByPreviousData= GetMeterInfoByPreviousData(input);
+            MeterInfoByPreviousDataInputDto meterInfoByPreviousData = GetMeterInfoByPreviousData(input);
             AbBahaCalculationDetails tariff = await _tariffEngine.Handle(meterInfoByPreviousData, cancellationToken);
             if (!input.ShouldSave)
             {
@@ -267,10 +269,10 @@ namespace Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Command
             return new MeterInfoByPreviousDataInputDto()
             {
                 BillId = input.BillId,
-                CurrentDateJalali= input.CurrentDateJalali,
-                PreviousDateJalali= input.PreviousDateJalali,
-                CurrentMeterNumber=input.CurrentMeterNumber,
-                PreviousNumber= input.PreviousNumber
+                CurrentDateJalali = input.CurrentDateJalali,
+                PreviousDateJalali = input.PreviousDateJalali,
+                CurrentMeterNumber = input.CurrentMeterNumber,
+                PreviousNumber = input.PreviousNumber
             };
         }
     }

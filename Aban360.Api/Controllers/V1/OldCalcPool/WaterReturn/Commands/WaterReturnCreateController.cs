@@ -30,7 +30,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
         [HttpPost, HttpGet]
         [Route("create-by-consumption")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AbBahaCalculationDetails>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> CreateByConsumption([FromBody] MeterDateInfoWithMonthlyConsumptionOutputDto input, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateByConsumption([FromBody] MeterInfoWithMonthlyConsumptionOutputDto input, CancellationToken cancellationToken)
         {
             AbBahaCalculationDetails result = await _repairHandler.Handle(input, cancellationToken);
             return Ok(result);
@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
         [HttpPost, HttpGet]
         [Route("create-by-previous-consumption")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AbBahaCalculationDetails>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> CreateByPreviousConsumption([FromBody] MeterDateInfoByLastMonthlyConsumptionOutputDto input, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateByPreviousConsumption([FromBody] MeterInfoByLastMonthlyConsumptionOutputDto input, CancellationToken cancellationToken)
         {
             AbBahaCalculationDetails result = await _repairHandler.Handle(input, cancellationToken);
             return Ok(result);

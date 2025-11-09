@@ -7,8 +7,8 @@ namespace Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Command
     public interface IRepairCreateHandler
     {
         Task Handle(OfferingToCreateRepairDto createDto, CancellationToken cancellationToken);
-        Task<AbBahaCalculationDetails> Handle(MeterDateInfoWithMonthlyConsumptionOutputDto input, CancellationToken cancellationToken);
-        Task<AbBahaCalculationDetails> Handle(MeterDateInfoByLastMonthlyConsumptionOutputDto input, CancellationToken cancellationToken);
+        Task<AbBahaCalculationDetails> Handle(MeterInfoWithMonthlyConsumptionOutputDto input, CancellationToken cancellationToken);
+        Task<AbBahaCalculationDetails> Handle(MeterInfoByLastMonthlyConsumptionOutputDto input, CancellationToken cancellationToken);
         Task<AbBahaCalculationDetails> Handle(MeterInfoByPreviousDataWithInvoiceIdInputDto input, CancellationToken cancellationToken);
     }
 }
