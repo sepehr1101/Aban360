@@ -53,5 +53,16 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
             AbBahaCalculationDetails result = await _oldTariffEngine.Handle(input, cancellationToken);
             return Ok(result);
         }
+        
+        
+        [HttpPost, HttpGet]
+        [Route("by-average")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<AbBahaCalculationDetails>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> ByAverage(MeterDateInfoWithMonthlyConsumptionOutputDto input, CancellationToken cancellationToken)
+        {
+            AbBahaCalculationDetails result = await _oldTariffEngine.Handle(input, cancellationToken);
+            return Ok(result);
+        }
     }
 }
