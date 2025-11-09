@@ -41,7 +41,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             IAbBahaCalculator abBahaCalculator,
             IBillQueryService billQueryService)
             :base(abBahaCalculator)
-          )
+          
         {
             _customerInfoDetailQueryService = customerInfoDetailQueryService;
             _customerInfoDetailQueryService.NotNull(nameof(customerInfoDetailQueryService));
