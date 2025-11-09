@@ -1,6 +1,6 @@
-﻿using Aban360.CalculationPool.Application.Features.Bill.Validations;
-using Aban360.CalculationPool.Domain.Features.WaterReturn.Dto.Commands;
-using Aban360.Common.Literals;
+﻿using Aban360.Common.Literals;
+using Aban360.OldCalcPool.Application.Features.Base;
+using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Commands;
 using FluentValidation;
 
 namespace Aban360.CalculationPool.Application.Features.WaterReturn.Validations
