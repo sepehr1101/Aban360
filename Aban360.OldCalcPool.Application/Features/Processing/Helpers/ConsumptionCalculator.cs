@@ -7,10 +7,11 @@ using DNTPersianUtils.Core;
 namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
 {
     internal interface IConsumptionCalculator
-    {     
+    {
         ConsumptionInfo GetConsumptionInfo(MeterInfoOutputDto meterInfo, CustomerInfoOutputDto customerInfo);
+        ConsumptionInfo GetConsumptionInfoWithMonthlyConsumption(MeterDateInfoWithMonthlyConsumptionOutputDto meterInfo, CustomerInfoOutputDto customerInfo);
     }
-    internal sealed class ConsumptionCalculator: IConsumptionCalculator
+    internal sealed class ConsumptionCalculator : IConsumptionCalculator
     {
         public ConsumptionInfo GetConsumptionInfo(MeterInfoOutputDto meterInfo, CustomerInfoOutputDto customerInfo)
         {
@@ -18,6 +19,15 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
             int duration = GetDuration(meterInfo.PreviousDateJalali, meterInfo.CurrentDateJalali);
             int finalDomesticUnit = GetFinalDomesticUnit(customerInfo, meterInfo.CurrentDateJalali);
             double dailyAverage = GetDailyConsumptionAverage(consumption, duration, finalDomesticUnit);
+            ConsumptionInfo consumptionInfo = new(meterInfo.PreviousDateJalali, meterInfo.CurrentDateJalali, consumption, duration, dailyAverage, finalDomesticUnit);
+            return consumptionInfo;
+        }
+        public ConsumptionInfo GetConsumptionInfoWithMonthlyConsumption(MeterDateInfoWithMonthlyConsumptionOutputDto meterInfo, CustomerInfoOutputDto customerInfo)
+        {
+            int duration = GetDuration(meterInfo.PreviousDateJalali, meterInfo.CurrentDateJalali);
+            int finalDomesticUnit = GetFinalDomesticUnit(customerInfo, meterInfo.CurrentDateJalali);
+            double dailyAverage = meterInfo.MonthlyAverageConsumption / 30;
+            int consumption = GetConsumption(dailyAverage, duration, finalDomesticUnit);
             ConsumptionInfo consumptionInfo = new(meterInfo.PreviousDateJalali, meterInfo.CurrentDateJalali, consumption, duration, dailyAverage, finalDomesticUnit);
             return consumptionInfo;
         }
@@ -41,6 +51,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         private double GetDailyConsumptionAverage(int masraf, int duration, int domesticUnit)
         {
             return masraf / (double)duration / domesticUnit;
+        }
+        private int GetConsumption(double dailyCosumption, int duration, int domesticUnit)
+        {
+            double consumption=(dailyCosumption * duration * domesticUnit);
+            return (int)Math.Round(consumption);
         }
         private int GetFinalDomesticUnit(CustomerInfoOutputDto customerInfo, string readingDateJalali)
         {
