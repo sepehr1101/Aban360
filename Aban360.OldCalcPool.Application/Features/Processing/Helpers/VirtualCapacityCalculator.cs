@@ -30,23 +30,23 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
             switch (virtualCategoryId)
             {
                 case 0:
-                    return 0.45f / 0.9f;
+                    return 0.9f / 0.45f;
                 case 1:
-                    return 0.45f / 0.9f;
+                    return 0.9f / 0.45f;
                 case 2:
-                    return 1.2f / 1.05f;
+                    return 1.05f / 1.2f;
                 case 3:
-                    return 4.5f / 3.9f;
+                    return 3.9f / 4.5f;
                 case 4:
-                    return 1.2f / 1.05f;
+                    return 1.05f / 1.2f;
                 case 5:
-                    return 4.5f / 3.9f;
+                    return 3.9f / 4.5f;
                 case 6:
-                    return 0.45f / 0.9f;
+                    return 0.9f / 0.45f;
                 case 7:
-                    return 3.6f / 3.9f;
+                    return 3.9f / 3.6f;
                 case 8:
-                    return 2.4f / 2.1f;
+                    return 2.1f / 2.4f;
                 default:
                     return 0;
             }
