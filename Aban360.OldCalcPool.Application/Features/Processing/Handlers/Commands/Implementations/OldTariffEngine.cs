@@ -92,7 +92,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             return calculationDetails;
         }
         public async Task<AbBahaCalculationDetails> Handle(MeterInfoByPreviousDataInputDto input, CancellationToken cancellationToken)
-        {
+        { 
             CustomerInfoOutputDto customerInfo = await _customerInfoDetailQueryService.GetInfo(input.BillId);
             MeterInfoOutputDto meterInfo = new MeterInfoOutputDto()
             {
@@ -252,7 +252,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 VillageId = input.CustomerInfo.VillageId,
                 IsSpecial = input.CustomerInfo.IsSpecial,
                 BillId = input.MeterPreviousData.BillId ?? string.Empty,
-                VirtualCategoryId = input.CustomerInfo.VirtualCategoryId ?? 0
+                VirtualCategoryId = input.CustomerInfo.VirtualCategoryId ?? 0,
+                WaterRegisterDate=input.CustomerInfo.WaterRegisterDate,
+                SewageRegisterDate=input.CustomerInfo.SewageRegisterDate,
+                
             };
         }
 
