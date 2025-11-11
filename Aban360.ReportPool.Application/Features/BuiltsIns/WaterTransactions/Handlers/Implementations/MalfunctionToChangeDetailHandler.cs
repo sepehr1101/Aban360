@@ -42,7 +42,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             ReportOutput<MalfunctionToChangeHeaderOutputDto, MalfunctionToChangeDetailDataOutputDto> malfunctionToChange = await _malfunctionToChangeQueryService.Get(input);
             malfunctionToChange.ReportData.ForEach(meter =>
             {
-                CalcDistanceResultDto calcDistance = CalculationDistanceDate.CalcDistance(meter.LatestMalfunctinDateJalali, meter.ChangeDateJalali);
+                CalcDistanceResultDto calcDistance = CalculationDistanceDate.CalcDistance(meter.LatestMalfunctionDateJalali, meter.ChangeDateJalali);
                 meter.Duration = calcDistance.HasError ? ExceptionLiterals.Incalculable : calcDistance.DistanceText;
 
                 //int duration = int.Parse(CalculationDistanceDate.CalcDistance(meter.LatestMalfunctinDateJalali, meter.ChangeDateJalali));
