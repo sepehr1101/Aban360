@@ -43,6 +43,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         public IEnumerable<ZaribGetDto> Zarib { get; set; }
         public CustomerInfoOutputDto Customer { get; set; }
         public MeterInfoOutputDto MeterInfo { get; set; }
+        public double Multiplier { get;}
 
         public long StopWatch { get; set; }
 
@@ -75,7 +76,8 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             ConsumptionInfo consumptionInfo,
             MeterInfoOutputDto meterInfo,
             CustomerInfoOutputDto customerInfo,
-            long _stopWatch)
+            long _stopWatch,
+            double multiplier)
         {
             SumItems = _abBahaAmount + _fazelabAmount + _sumBoodje + _hotSeasonAbBahaAmount + _hotSeasonFazelabAmount +
                        _avarezAmount + _javaniAmount + _maliatAmount + _abonmanAbAmount + _abonmanFazelabAmount;
@@ -128,6 +130,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
 
             MeterInfo = meterInfo;
             Customer = customerInfo;
+            Multiplier = multiplier;
         }
         private double TrimAmount(double mainAmount, double discountAmount)
         {

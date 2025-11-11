@@ -4,19 +4,19 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
 {
     internal static class TariffRuleChecker
     {
-        private static  bool CheckConditions(int id, int[] values)
+        private static bool CheckConditions(int id, int[] values)
         {
             return values.Contains(id);
         }
-        internal static  bool IsVillage(int zoneId)
+        internal static bool IsVillage(int zoneId)
         {
             return zoneId > 140000;
         }
-        internal static  bool IsDomestic(int usageId)
+        internal static bool IsDomestic(int usageId)
         {
             return CheckConditions(usageId, [0, 1, 3]);
         }
-        internal static  bool IsDomesticCategory(int usageId)
+        internal static bool IsDomesticCategory(int usageId)
         {
             return CheckConditions(usageId, [0, 1, 3, 25, 34]);
         }
