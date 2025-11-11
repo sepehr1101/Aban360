@@ -26,6 +26,5 @@
         public int MeterDiameterId { get; set; }
         public int HouseholdUnit { get; set; }
         public int VirtualCategoryId { get; set; }
-
     }
 }
