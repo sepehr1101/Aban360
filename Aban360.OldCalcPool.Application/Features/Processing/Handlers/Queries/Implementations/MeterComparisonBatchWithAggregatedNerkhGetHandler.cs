@@ -49,7 +49,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                 MeterComparisonBatchDataOutputDto comparisonBatch = CreateComparisonBatchObject(data);
                 comparisonBatch.CurrentAmount = result.SumItems;
                 comparisonBatch.IsChecked = GetTolarance(data.PreviousAmount, result.SumItems, input.Tolerance, input.IsPercent);
-                comparisonBatch.CurrentDiscountAmount = result.DiscountSum;             
+                comparisonBatch.CurrentDiscountAmount = result.DiscountSum;
                 comparisonBatch.ComparisonAmount = GetComparison(data.PreviousAmount, result.SumItems);
                 comparisonResult.Add(comparisonBatch);
             }
@@ -71,7 +71,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                 PreviousDateJalali = data.PreviousDateJalali,
                 CurrentDateJalali = data.CurrentDateJalali,
                 PreviousMeterNumber = data.PreviousMeterNumber,
-                CurrentMeterNumber = data.CurrentMeterNumber,              
+                CurrentMeterNumber = data.CurrentMeterNumber,
                 PreviousAmount = data.PreviousAmount,
                 PreviousDiscountAmount = data.PreviousDiscount,
                 ZoneTitle = data.ZoneTitle,
@@ -115,11 +115,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                     SewageCalcState = data.SewageCalcState,
                     ContractualCapacity = data.ContractualCapacity,
                     HouseholdNumber = data.HouseholdNumber,
-                    HouseholdDate=data.HouseholdDate,
+                    HouseholdDate = data.HouseholdDate,
                     ReadingNumber = data.ReadingNumber,
                     VillageId = data.VillageId,
                     IsSpecial = data.IsSpecial,
-                    VirtualCategoryId= data.VirtualCategoryId,
+                    VirtualCategoryId = data.VirtualCategoryId,
                 }
             };
             return meterInfoData;

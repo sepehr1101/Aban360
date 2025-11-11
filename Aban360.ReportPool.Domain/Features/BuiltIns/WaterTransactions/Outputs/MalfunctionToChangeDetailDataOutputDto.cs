@@ -13,7 +13,7 @@
         public string ZoneTitle { get; set; }
         public string BillId { get; set; }
         public string ChangeDateJalali { get; set; }
-        public string LatestMalfunctinDateJalali { get; set; }
+        public string LatestMalfunctionDateJalali { get; set; }
         public string Duration { get; set; }
 
     }

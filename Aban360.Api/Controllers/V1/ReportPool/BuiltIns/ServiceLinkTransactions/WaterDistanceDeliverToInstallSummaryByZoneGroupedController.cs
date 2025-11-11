@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, WaterDistanceDeliverToInstallInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _waterDistanceDeliverToInstallSummaryHandler.Handle, CurrentUser, ReportLiterals.WaterDistanceDeliverToInstallSummary, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _waterDistanceDeliverToInstallSummaryHandler.HandleFlat, CurrentUser, ReportLiterals.WaterDistanceDeliverToInstallSummary, connectionId,ReportLiterals.HandleFlat);
             return Ok(inputDto);
         }
 
@@ -50,7 +50,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         public async Task<IActionResult> GetStiReport(WaterDistanceDeliverToInstallInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 663;
-            ReportOutput<SewageWaterDistanceHeaderOutputDto, ReportOutput<SewageWaterDistanceSummaryByZoneGroupedDataOutputDto, SewageWaterDistanceSummaryByZoneGroupedDataOutputDto>> result = await _waterDistanceDeliverToInstallSummaryHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<SewageWaterDistanceHeaderOutputDto, SewageWaterDistanceSummaryByZoneGroupedDataOutputDto> result = await _waterDistanceDeliverToInstallSummaryHandler.HandleFlat(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
             return Ok(reportId);
         }
