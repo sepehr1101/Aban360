@@ -126,7 +126,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						(b.RegisterDay BETWEEN @fromDate AND @toDate) AND
 						(@fromConsumption IS NULL OR
 						@toConsumption IS NULL OR
-						b.Consumption BETWEEn @fromConsumption AND @toConsumption) AND
+						b.Consumption BETWEEN @fromConsumption AND @toConsumption) AND
 						(@fromAmount IS NULL OR
 						@toAmount IS NULL OR
 						b.SumItems BETWEEN @fromAmount AND @toAmount) AND
