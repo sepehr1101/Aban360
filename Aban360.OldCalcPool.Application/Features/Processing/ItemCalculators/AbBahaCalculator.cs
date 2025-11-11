@@ -64,8 +64,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                     if (IsCharitySchoolOrConsumptionGtCapacity(nerkh, customerInfo, contractualCapacityInDuration))
                     {
                         double allowedPartialConsumption = Math.Min(contractualCapacityInDuration, nerkh.PartialConsumption);
-                        double disallowedPartialConsumption = (nerkh.PartialConsumption - allowedPartialConsumption)>0? nerkh.PartialConsumption - allowedPartialConsumption:0;
-                        
+                        double disallowedPartialConsumption = (nerkh.PartialConsumption - allowedPartialConsumption)>0? nerkh.PartialConsumption - allowedPartialConsumption:0;                        
 
                         if (nerkh.PartialConsumption < contractualCapacityInDuration ||
                             IsReligiousAndZeroCapacity(customerInfo))
