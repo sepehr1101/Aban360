@@ -22,4 +22,10 @@
     <ProjectReference Include="..\Aban360.SystemPool.Domain\Aban360.SystemPool.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="DbSeeder\DataScript\Faq.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

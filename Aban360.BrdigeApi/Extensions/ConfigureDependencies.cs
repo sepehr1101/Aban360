@@ -13,6 +13,8 @@ using Aban360.BlobPool.GatewayAddHoc.Extentions;
 using Aban360.ReportPool.Infrastructure.Extensions;
 using Aban360.CalculationPool.Application.Extensions;
 using Aban360.CalculationPool.Persistence.Extensions;
+using Aban360.ClaimPool.Application.Extentions;
+using Aban360.ClaimPool.Persistence.Extensions;
 namespace Aban360.BrdigeApi.Extensions
 {
     internal static class ConfigureDependencies
@@ -22,6 +24,7 @@ namespace Aban360.BrdigeApi.Extensions
             services.AddUserPoolDI();
             services.AddReportPoolDI();
             services.AddLocationPoolDI();
+            services.AddClaimPoolDI();
             services.AddBlobPoolDI();
             services.AddCalculationPoolDI();
         }
@@ -55,6 +58,11 @@ namespace Aban360.BrdigeApi.Extensions
         {
             services.AddCalculationPoolApplicationInjections();
             services.AddCalculationPoolPersistenceInjections();
+        }
+        private static void AddClaimPoolDI(this IServiceCollection services)
+        {
+            services.AddClaimPoolApplicationInjections();
+            services.AddClaimPoolPersistenceInjections();
         }
     }
 }

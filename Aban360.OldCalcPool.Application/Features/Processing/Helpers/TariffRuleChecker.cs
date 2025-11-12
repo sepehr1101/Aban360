@@ -68,7 +68,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         {
             return CheckConditions(usageId, [7, 8]) && isSpecial;
         }
-
+        internal static bool IsMullah(int branchTypeId)
+        {
+            return CheckConditions(branchTypeId, [3]);
+        }
         internal static  bool IsConstruction(int branchTypeId)
         {
             return CheckConditions(branchTypeId, [4]);

@@ -4,11 +4,15 @@
     {
         public bool HasBroker { get; set; }
         public long CompanyAmount { get; set; }
-        public long? BrokerAmount { get; set; }
-        public int CompanyOfferingCount { get; set; }
-        public int? BrokerOfferingCount { get; set; }
+        public long? CompanyDiscountAmount { get; set; }
+        public long CompanyFinalAmount { get; set; }
+        public int CompanyItemCount { get; set; }
 
-        public long OfferingAmount { get; set; }
-        public int OfferingCount { get; set; }
+        public long? BrokerAmount { get; set; }
+        public int? BrokerItemCount { get; set; }
+
+        public long SumAmount { get; set; }
+        public long PayableAmount { get; set; }
+        public int ItemCount { get; set; }
     }
 }

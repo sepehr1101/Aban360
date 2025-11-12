@@ -47,7 +47,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     Join [CustomerWarehouse].dbo.Bills b
                     	On mc.CustomerNumber=b.CustomerNumber AND mc.ZoneId=b.ZoneId
                     Where 
-                    	mc.ChangeDateJalali BETWEEN @fromDateJalali AND @toDateJalali
+                    	mc.ChangeDateJalali BETWEEN @fromDateJalali AND @toDateJalali AND
+						mc.ZoneId IN @zoneIds
                     ),
                     
                     LatestMalfunction AS (

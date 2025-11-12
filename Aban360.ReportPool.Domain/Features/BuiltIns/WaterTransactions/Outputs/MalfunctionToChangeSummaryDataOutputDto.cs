@@ -7,5 +7,6 @@
         public string Duration { get; set; }
         public string MaxDuration { get; set; }
         public string MinDuration { get; set; }
+        public int Count { get; set; }
     }
 }

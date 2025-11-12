@@ -14,6 +14,7 @@
 
         public double AbBahaDiscount { get; set; }
         public double HotSeasonDiscount { get; set; }
+        public double HotSeasonFazelabDiscount { get; set; }  
         public double FazelabDiscount { get; set; }
         public double AbonmanAbDiscount { get; set; }
         public double AbonmanFazelabDiscount { get; set; }
@@ -43,7 +44,7 @@
             double avarezDiscount,
             double javaniDiscount,
             double boodjeDiscount,
-            double multiplier)
+            double hotSeasonFazelabDiscount)
            //double maliatAmount)
         {
             AbBahaValues = abBahaValues;
@@ -64,7 +65,7 @@
             AvarezDiscount = avarezDiscount;
             JavaniDiscount = javaniDiscount;
             BoodjeDiscount = boodjeDiscount;
-            Multiplier = multiplier;
+            HotSeasonFazelabDiscount = hotSeasonFazelabDiscount;
         }
     }
 }
