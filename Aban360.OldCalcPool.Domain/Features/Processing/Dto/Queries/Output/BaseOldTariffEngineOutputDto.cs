@@ -21,8 +21,9 @@
         public double AvarezDiscount { get; set; }
         public double JavaniDiscount { get; set; }
         public double BoodjeDiscount { get; set; }
+        public double Multiplier { get;}
 
-     
+
         //public double MaliatAmount { get; set; }
 
         public BaseOldTariffEngineOutputDto(

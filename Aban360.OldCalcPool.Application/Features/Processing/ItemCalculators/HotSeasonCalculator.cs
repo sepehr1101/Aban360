@@ -82,7 +82,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
         private (int, double) GetDurationAndAmount(string date1, string date2, int duration, CustomerInfoOutputDto customerInfo, double baseAmount)
         {
-            string hotSeasonStart = GetHotSeasonStart(date1);
+            string hotSeasonStart = GetHotSeasonStart(date2);
             string hotSeasonEnd = GetHotSeasonEnd(date2);
             int hotSeasonDuration = PartTime(hotSeasonStart, hotSeasonEnd, date1, date2, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
             double amount = hotSeasonDuration > 0 ? (int)((hotSeasonDuration * baseAmount / duration) * _hotSeasonRate) : 0;

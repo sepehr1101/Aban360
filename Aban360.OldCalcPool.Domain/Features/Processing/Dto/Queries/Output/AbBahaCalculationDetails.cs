@@ -45,6 +45,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         public IEnumerable<ZaribGetDto> Zarib { get; set; }
         public CustomerInfoOutputDto Customer { get; set; }
         public MeterInfoOutputDto MeterInfo { get; set; }
+        public double Multiplier { get;}
 
         public long StopWatch { get; set; }
 
@@ -134,6 +135,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
 
             MeterInfo = meterInfo;
             Customer = customerInfo;
+            Multiplier = multiplier;
         }
         private double TrimAmount(double mainAmount, double discountAmount)
         {

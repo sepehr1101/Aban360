@@ -183,7 +183,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             double sumBoodjePart1 = 0, sumBoodjePart2 = 0, sumAvarez = 0;
             double sumAbBahaDiscount = 0, sumFazelabDiscount = 0, sumHotSeasonAbDiscount = 0,sumHotSeasonFazelabDiscount=0,
                    sumAbonmanAbDiscount = 0, sumAbonmanFazelabDiscount = 0, sumAvarezDiscount = 0, sumJavaniDiscount = 0, sumBoodjeDiscount = 0;
-            double sumJavaniAmount = 0;
+            double sumJavaniAmount = 0; double multiplier=0;
             IEnumerable<int> tags = await _tagService.GetIdsByBillId(customerInfo.BillId.Trim());
             Table1GetDto table1 = await _table1QueryService.GetByTown(customerInfo.ZoneId);
             foreach (var nerkhItem in allNerkh)
@@ -214,6 +214,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 sumAvarezDiscount += resultCalc.AvarezDiscount;
                 sumBoodjeDiscount += resultCalc.BoodjeDiscount;
                 sumJavaniDiscount += resultCalc.JavaniDiscount;
+                if (resultCalc.Multiplier != 0)
+                {
+                    multiplier = resultCalc.Multiplier;
+                }
 
                 counter++;
             }
