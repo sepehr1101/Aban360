@@ -45,7 +45,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
                   .GroupBy(meter => meter.ZoneId)
                   .Select(meter =>
                   {
-                      var (average, max, min, sum) = GetDuration(meter);
+                      var (average, max, min, sum,count) = GetDuration(meter);
                       sumDurations += sum;
                       return new MalfunctionToChangeSummaryDataOutputDto()
                       {
@@ -53,7 +53,8 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
                           ZoneTitle = meter.Max(m => m.ZoneTitle),
                           Duration = average,
                           MaxDuration = max,
-                          MinDuration = min
+                          MinDuration = min,
+                          Count=count
                       };
                   }).ToList();
             int averageDuration = sumDurations / malfunctionToChange.ReportData.Count();
@@ -61,7 +62,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             ReportOutput<MalfunctionToChangeHeaderOutputDto, MalfunctionToChangeSummaryDataOutputDto> result = new(malfunctionToChange.Title, malfunctionToChange.ReportHeader, malfunctionMeter);
             return result;
         }
-        private (string, string, string, int) GetDuration(IEnumerable<MalfunctionToChangeSummaryDataOutputFromDataBaseDto> meters)
+        private (string, string, string, int,int) GetDuration(IEnumerable<MalfunctionToChangeSummaryDataOutputFromDataBaseDto> meters)
         {
             ICollection<int> durations = new List<int>();
             meters.ForEach(m =>
@@ -77,7 +78,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             string max = CalculationDistanceDate.ConvertDayToDate(durations.Max());
             string min = CalculationDistanceDate.ConvertDayToDate(durations.Min());
 
-            return (average, max, min, durations.Sum());
+            return (average, max, min, durations.Sum(),durations.Count());
         }
     }
 }

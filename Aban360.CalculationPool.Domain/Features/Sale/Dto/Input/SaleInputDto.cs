@@ -8,5 +8,7 @@
         public int ZoneId { get; set; }
         public string? Block { get; set; }
         public bool IsDomestic { get; set; }
+        public int? DiscountTypeId { get; set; }
+        public bool? HasWaterBroker { get; set; }
     }
 }
