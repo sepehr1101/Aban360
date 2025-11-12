@@ -77,8 +77,25 @@ namespace Aban360.CalculationPool.Application.Features.Base
             double hotSeasonAbDiscount = _hotSeasonCalculator.CalculateDiscount(nerkh, abBahaDiscount, hotSeasonAbBaha, customerInfo);
             double hotSeasonFazelabDiscount = _hotSeasonCalculator.CalculateDiscount(nerkh, fazelabDiscount, hotSeasonFazelab, customerInfo);         
             double boodjeDiscount = _budgetCalculator.CalculateDiscount(customerInfo,abBahaDiscount,boodje, nerkh);
-            return new BaseOldTariffEngineOutputDto(abBahaResult, fazelab, hotSeasonAbBaha.Item2, hotSeasonFazelab.Item2, boodje.Item1, boodje.Item2, abBahaDiscount, hotSeasonAbDiscount, fazelabDiscount+hotSeasonFazelabDiscount, 0, avarez, javani,
-                0, 0, 0, 0, boodjeDiscount);
+            return new BaseOldTariffEngineOutputDto(
+                abBahaValues:abBahaResult,
+                fazelabAmount:fazelab,
+                hotSeasonAbBahaAmount:hotSeasonAbBaha.Item2,
+                hotSeasonFazelabAmount:hotSeasonFazelab.Item2,
+                boodjePart1:boodje.Item1,
+                boodjePart2:boodje.Item2,
+                abBahaDiscount:abBahaDiscount,
+                hotSeasonDiscount:hotSeasonAbDiscount,
+                fazelabDiscount: fazelabDiscount,
+                abonmanAbAmount:0,
+                avarezAmount:avarez,
+                javaniAmount:javani,
+                abonmanAbDiscount:0,
+                abonamenFazelabDiscount:0,
+                avarezDiscount:0,
+                javaniDiscount:0,
+                boodjeDiscount,
+                hotSeasonFazelabDiscount:hotSeasonFazelabDiscount);
         }
         private int GetOlgoo(string nerkhDate2, int olgo)
         {
