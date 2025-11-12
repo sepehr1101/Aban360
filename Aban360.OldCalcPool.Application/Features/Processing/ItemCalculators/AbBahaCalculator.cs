@@ -157,6 +157,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 //C*0.1
                 return (long)(90000 * 0.1 * (partialOlgoo) * (double)multiplier);
             }
+            if(IsMullah(customerInfo.BranchType))
+            {
+                double allowedPartialConsumption = Math.Min(partialOlgoo, nerkh.PartialConsumption);
+                double disallowedPartialConsumption = (nerkh.PartialConsumption - allowedPartialConsumption) > 0 ? nerkh.PartialConsumption - allowedPartialConsumption : 0;
+                return (long)(allowedPartialConsumption * 0.5 + disallowedPartialConsumption * 0.35);
+            }
             double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, nerkh.PartialConsumption, nerkh.Duration, amount);
             return virtualDiscount > 0 ? (long)virtualDiscount : 0;
         }

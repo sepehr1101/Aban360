@@ -74,8 +74,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 return 0;
             }
 
-            double timePercentage = (double)hotSeasonInfo.Item1 / (double)nerkh.Duration;
-            double fasleGarmAmount = amountDiscount * timePercentage * 0.2;
+            //double timePercentage = (double)hotSeasonInfo.Item1 / (double)nerkh.Duration;
+            double fasleGarmAmount = hotSeasonInfo.Item2; //* timePercentage * 0.2;
             double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, nerkh.PartialConsumption, nerkh.Duration, fasleGarmAmount);
             return virtualDiscount > 0 ? virtualDiscount : fasleGarmAmount;
         }

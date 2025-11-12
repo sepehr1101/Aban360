@@ -80,6 +80,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             _fazelabCalculator = fazelabCalculator;
             _fazelabCalculator.NotNull(nameof(_fazelabCalculator));
 
+
             _abonmanCalculator = abonmanCalculator;
             _abonmanCalculator.NotNull(nameof(_abonmanCalculator));
         }
@@ -180,7 +181,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             int counter = 0;
             double sumAbBaha = 0, sumFazelab = 0, sumHotSeasonAbBaha = 0, sumHotSeasonFazelab = 0, sumAbonmanAbBaha = 0, sumAbonmanFazelab = 0;
             double sumBoodjePart1 = 0, sumBoodjePart2 = 0, sumAvarez = 0;
-            double sumAbBahaDiscount = 0, sumFazelabDiscount = 0, sumHotSeasonDiscount = 0,
+            double sumAbBahaDiscount = 0, sumFazelabDiscount = 0, sumHotSeasonAbDiscount = 0,sumHotSeasonFazelabDiscount=0,
                    sumAbonmanAbDiscount = 0, sumAbonmanFazelabDiscount = 0, sumAvarezDiscount = 0, sumJavaniDiscount = 0, sumBoodjeDiscount = 0;
             double sumJavaniAmount = 0;
             IEnumerable<int> tags = await _tagService.GetIdsByBillId(customerInfo.BillId.Trim());
@@ -203,7 +204,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 sumHotSeasonFazelab += resultCalc.HotSeasonFazelabAmount;
                 sumAbBahaDiscount += resultCalc.AbBahaDiscount;
                 sumFazelabDiscount += resultCalc.FazelabDiscount;
-                sumHotSeasonDiscount += resultCalc.HotSeasonDiscount;
+                sumHotSeasonAbDiscount += resultCalc.HotSeasonDiscount;
+                sumHotSeasonFazelabDiscount += resultCalc.HotSeasonFazelabDiscount;
                 sumAbonmanAbBaha += resultCalc.AbonmanAbAmount;
                 sumAvarez += resultCalc.AvarezAmount;
                 sumJavaniAmount += resultCalc.JavaniAmount;
@@ -220,14 +222,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             sumAbonmanAbDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, sumAbonmanAbBaha, sumAbBahaDiscount, customerInfo.IsSpecial);
             sumAbonmanFazelabDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, sumAbonmanFazelab, sumFazelabDiscount, customerInfo.IsSpecial);
             double maliatDiscount = CalculateTaxDiscount(sumAbBahaDiscount, sumFazelabDiscount, sumAbonmanAbDiscount,
-                sumAbonmanFazelabDiscount, sumBoodjeDiscount, sumHotSeasonDiscount);
+                sumAbonmanFazelabDiscount, sumBoodjeDiscount, sumHotSeasonAbDiscount);
             double AbBahaResult = sumAbBaha + sumHotSeasonAbBaha + sumAbonmanAbBaha;
             double sumBoodje = sumBoodjePart1 + sumBoodjePart2;
             double sumMaliatAmount = CalculateTax(sumAbBaha, sumAbonmanAbBaha, sumHotSeasonAbBaha, sumFazelab, sumAbonmanFazelab, sumHotSeasonFazelab, sumBoodje);
 
             stopWatch.Stop();
-            return new AbBahaCalculationDetails(Math.Round(AbBahaResult), Math.Round(sumAbBaha), Math.Round(sumFazelab), Math.Round(sumBoodjePart1), Math.Round(sumBoodjePart2), Math.Round(sumBoodje), Math.Round(sumHotSeasonAbBaha), Math.Round(sumHotSeasonFazelab), Math.Round(sumAbBahaDiscount), Math.Round(sumHotSeasonDiscount), Math.Round(sumFazelabDiscount), Math.Round(sumAbonmanAbBaha), Math.Round(sumAvarez), Math.Round(sumJavaniAmount), Math.Round(sumMaliatAmount), Math.Round(sumAbonmanFazelab),
-                       Math.Round(sumAbonmanAbDiscount), Math.Round(sumAbonmanFazelabDiscount), Math.Round(sumAvarezDiscount), Math.Round(sumJavaniDiscount), Math.Round(maliatDiscount), Math.Round(sumBoodjeDiscount), allNerkh, abAzad, zarib, consumptionInfo, meterInfo, customerInfo, stopWatch.ElapsedMilliseconds);
+            return new AbBahaCalculationDetails(Math.Round(AbBahaResult), Math.Round(sumAbBaha), Math.Round(sumFazelab), Math.Round(sumBoodjePart1), Math.Round(sumBoodjePart2), Math.Round(sumBoodje), Math.Round(sumHotSeasonAbBaha), Math.Round(sumHotSeasonFazelab), Math.Round(sumAbBahaDiscount), Math.Round(sumHotSeasonAbDiscount), Math.Round(sumFazelabDiscount), Math.Round(sumAbonmanAbBaha), Math.Round(sumAvarez), Math.Round(sumJavaniAmount), Math.Round(sumMaliatAmount), Math.Round(sumAbonmanFazelab),
+                       Math.Round(sumAbonmanAbDiscount), Math.Round(sumAbonmanFazelabDiscount), Math.Round(sumAvarezDiscount), Math.Round(sumJavaniDiscount), Math.Round(maliatDiscount), Math.Round(sumBoodjeDiscount), allNerkh, abAzad, zarib, consumptionInfo, meterInfo, customerInfo, stopWatch.ElapsedMilliseconds, sumHotSeasonFazelabDiscount);
         }
         private CustomerInfoOutputDto CreateCustomerInfoDto(MeterImaginaryInputDto input)
         {

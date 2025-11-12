@@ -27,6 +27,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             //محاسبه کارمزد دفع در کاربری های گروه خانگی ضریب 0.7
             double multiplier = GetMultiplier(isAbonman, customerInfo.UsageId);
 
+            if(isAbonman && IsConstruction(customerInfo.BranchType))
+            {
+                return abBahaItemAmount;
+            }
             if (IsConstruction(customerInfo.BranchType))
             {
                 return 0;

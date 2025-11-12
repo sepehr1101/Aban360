@@ -26,7 +26,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return (0, 0);
             }
-
             if (nerkhDto.Date1.CompareTo(_1404_01_01) < 0 && nerkhDto.Date2.CompareTo(_1404_01_01) >= 0)
             {
                 CalcDistanceResultDto calcDistance = CalcDistance(_1403_12_30, nerkhDto.Date2, true, customerInfo);
@@ -36,8 +35,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                     throw new TariffDateException(customerInfo.BillId + " - " + ExceptionLiterals.Incalculable);
                 }
                 durationAfter1404 = calcDistance.Distance;
-
-
                 consumptionAfter1404 = ((double)consumptionInfo.Consumption / consumptionInfo.Duration) * (double)durationAfter1404;
             }
             else
@@ -48,6 +45,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return (consumptionAfter1404 * 2000, 0);
             }
+            if (IsUsageConstructor(customerInfo.UsageId))
+            {
+                return (consumptionAfter1404 * 2000, 0);
+            }
+
             double partialOlgoo = IsDomesticCategory(customerInfo.UsageId) ?
                 (double)consumptionInfo.FinalDomesticUnit * olgoo / 30 * nerkhDto.Duration :
                 (double)customerInfo.ContractualCapacity / 30 * nerkhDto.Duration;

@@ -5,6 +5,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
 {
     public record AbBahaCalculationDetails
     {
+        public double SumItemsBeforeDiscount { get; set; }
         public double SumItems { get; set; }
         public double SumAbBahaAmount { get; set; }
         public double AbBahaAmount { get; set; }
@@ -23,6 +24,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
 
         public double AbBahaDiscount { get; set; }
         public double HotSeasonDiscount { get; set; }
+        public double HotSeasonFazelabDiscount { get; set; }
         public double FazelabDiscount { get; set; }
         public double AbonmanAbDiscount { get; set; }
         public double AbonmanFazelabDiscount { get; set; }
@@ -75,10 +77,12 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             ConsumptionInfo consumptionInfo,
             MeterInfoOutputDto meterInfo,
             CustomerInfoOutputDto customerInfo,
-            long _stopWatch)
+            long _stopWatch,
+            double hotSeasonFazelabDiscount)
         {
             SumItems = _abBahaAmount + _fazelabAmount + _sumBoodje + _hotSeasonAbBahaAmount + _hotSeasonFazelabAmount +
                        _avarezAmount + _javaniAmount + _maliatAmount + _abonmanAbAmount + _abonmanFazelabAmount;
+            SumItemsBeforeDiscount = SumItems;
             SumAbBahaAmount = _sumAbBahaAmount;
             AbBahaAmount = _abBahaAmount;
             FazelabAmount = _fazelabAmount;
@@ -96,6 +100,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             AbBahaDiscount = _abBahaDiscount;
             FazelabDiscount = _fazelabDiscount;
             HotSeasonDiscount = _hotSeasonDiscount;
+            HotSeasonFazelabDiscount = hotSeasonFazelabDiscount;
             AbonmanAbDiscount = abonmanAbDiscount;
             AbonmanFazelabDiscount = abonmaneFazelabDiscount;
             AvarezDiscount = avarezDiscount;
@@ -103,12 +108,13 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             MaliatDiscount = maliatDiscount;
             BoodjeDiscount = boodjeDiscount;
 
-            DiscountSum = _abBahaDiscount + _hotSeasonDiscount + _fazelabDiscount + abonmanAbDiscount + 
-                          abonmaneFazelabDiscount + avarezDiscount + javaniDiscount+ maliatDiscount+ boodjeDiscount;
+            DiscountSum = _abBahaDiscount + _hotSeasonDiscount + hotSeasonFazelabDiscount + _fazelabDiscount + abonmanAbDiscount +
+                          abonmaneFazelabDiscount + avarezDiscount + javaniDiscount + maliatDiscount + boodjeDiscount;
 
             AbBahaAmount = TrimAmount(AbBahaAmount, AbBahaDiscount);
             FazelabAmount = TrimAmount(FazelabAmount, FazelabDiscount);
             HotSeasonAbBahaAmount = TrimAmount(HotSeasonAbBahaAmount, HotSeasonDiscount);
+            HotSeasonFazelabAmount = TrimAmount(HotSeasonFazelabAmount, HotSeasonFazelabDiscount);
             AbonmanAbAmount = TrimAmount(AbonmanAbAmount, AbonmanAbDiscount);
             AbonmanFazelabAmount = TrimAmount(AbonmanFazelabAmount, AbonmanFazelabDiscount);
             AvarezAmount = TrimAmount(AvarezAmount, AvarezDiscount);
