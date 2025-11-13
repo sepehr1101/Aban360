@@ -20,6 +20,7 @@
             private readonly IUpdateSkeletonHandler _updateHandler;
             private readonly IDeleteSkeletonHandler _deleteHandler;
             private readonly IGetSekletonByRoleHandler _getByRoleHanlder;
+            private readonly IGetAllSekletonByRoleHandler _getAllByRoleHanlder;
 
             public SkeletonManagerController(
                 IGetSkeletonDefinitionHandler getDifinitionHandler,
@@ -27,7 +28,8 @@
                 ICreateSkeletonHandler createHandler,
                 IUpdateSkeletonHandler updateHandler,
                 IDeleteSkeletonHandler deleteHandler,
-                IGetSekletonByRoleHandler getByRoleHandler)
+                IGetSekletonByRoleHandler getByRoleHandler,
+                IGetAllSekletonByRoleHandler getAllByRoleHanlder)
             {
                 _getDefinitionHandler = getDifinitionHandler;
                 _getDefinitionHandler.NotNull(nameof(_getDefinitionHandler));
@@ -46,6 +48,9 @@
 
                 _getByRoleHanlder = getByRoleHandler;
                 _getByRoleHanlder.NotNull(nameof(_getByRoleHanlder));
+
+                _getAllByRoleHanlder = getAllByRoleHanlder;
+                _getAllByRoleHanlder.NotNull(nameof(_getAllByRoleHanlder));
             }
 
             [HttpGet, HttpPost]
@@ -72,6 +77,15 @@
             public async Task<IActionResult> GetByRole(string role, CancellationToken cancellationToken)
             {
                 Skeleton? skeleton = await _getByRoleHanlder.Handle(role, cancellationToken);
+                return Ok(skeleton);
+            }
+            
+            [HttpGet, HttpPost]
+            [Route("all-by-role/{role}")]
+            [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<Skeleton>?>), StatusCodes.Status200OK)]
+            public async Task<IActionResult> GetAllByRole(string role, CancellationToken cancellationToken)
+            {
+                IEnumerable<Skeleton>? skeleton = await _getAllByRoleHanlder.Handle(role, cancellationToken);
                 return Ok(skeleton);
             }
 

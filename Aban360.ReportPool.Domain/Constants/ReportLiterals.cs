@@ -204,5 +204,8 @@
         public static string TagSummary { get { return $" {Report} خلاصه تگ"; } }
         public static string TagDetail { get { return $" {Report} جزئیات تگ"; } }
 
+        public static string ConsumptionManagerDetail { get { return $" {Report} جزئیات مدیریت مصرف"; } }
+        public static string ConsumptionManagerSummary{ get { return $" {Report} خلاصه مدیریت مصرف"; } }
+
     }
 }
