@@ -46,6 +46,16 @@ namespace Aban360.ReportPool.Persistence.Features.Dashboard.Implementations
 
             return await _sqlConnection.QueryFirstOrDefaultAsync<Skeleton>(GetSql(), new { RoleName = role });
         }
+        
+        public async Task<IEnumerable<Skeleton>?> GetAllByRole(string role)
+        {
+            string GetSql() => @"
+                SELECT *
+                FROM [ReportPool].Skeleton
+                WHERE RoleTitle = @RoleName AND DeleteDateTime IS NULL;";
+
+            return await _sqlConnection.QueryAsync<Skeleton>(GetSql(), new { RoleName = role });
+        }
 
         public async Task<int> Create(Skeleton entity)
         {
