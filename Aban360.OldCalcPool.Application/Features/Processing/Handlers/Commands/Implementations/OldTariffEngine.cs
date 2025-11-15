@@ -200,7 +200,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 sumFazelab += resultCalc.FazelabAmount;
                 sumBoodjePart1 += resultCalc.BoodjePart1;
                 sumBoodjePart2 += resultCalc.BoodjePart2;
-                sumHotSeasonAbBaha = resultCalc.HotSeasonAbBahaAmount;
+                sumHotSeasonAbBaha += resultCalc.HotSeasonAbBahaAmount;
                 sumHotSeasonFazelab += resultCalc.HotSeasonFazelabAmount;
                 sumAbBahaDiscount += resultCalc.AbBahaDiscount;
                 sumFazelabDiscount += resultCalc.FazelabDiscount;
@@ -214,10 +214,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 sumAvarezDiscount += resultCalc.AvarezDiscount;
                 sumBoodjeDiscount += resultCalc.BoodjeDiscount;
                 sumJavaniDiscount += resultCalc.JavaniDiscount;
-                if (resultCalc.Multiplier != 0)
-                {
-                    multiplier = resultCalc.Multiplier;
-                }
 
                 counter++;
             }

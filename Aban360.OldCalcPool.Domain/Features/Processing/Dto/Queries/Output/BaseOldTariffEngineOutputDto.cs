@@ -44,7 +44,8 @@
             double avarezDiscount,
             double javaniDiscount,
             double boodjeDiscount,
-            double hotSeasonFazelabDiscount)
+            double hotSeasonFazelabDiscount,
+            double multiplier)
            //double maliatAmount)
         {
             AbBahaValues = abBahaValues;
@@ -66,6 +67,7 @@
             JavaniDiscount = javaniDiscount;
             BoodjeDiscount = boodjeDiscount;
             HotSeasonFazelabDiscount = hotSeasonFazelabDiscount;
+            Multiplier = multiplier;
         }
     }
 }

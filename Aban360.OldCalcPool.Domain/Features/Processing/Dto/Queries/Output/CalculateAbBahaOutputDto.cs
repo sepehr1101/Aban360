@@ -2,13 +2,13 @@
 {
     public record CalculateAbBahaOutputDto
     {
-        public float Multilpier { get; set; }
+     
         public double AbBahaAmount { get; set; }
         public (double, double) AbBahaValues { get; set; }
         public double AbBaha1 { get; set; }
         public double AbBaha2 { get; set; }
-        public decimal Multiplier { get;}
-        public CalculateAbBahaOutputDto(double abBahaAmount, (double, double) abBahaValues, double abBaha1, double abBaha2, decimal multiplier)
+        public double Multiplier { get;}
+        public CalculateAbBahaOutputDto(double abBahaAmount, (double, double) abBahaValues, double abBaha1, double abBaha2, double multiplier)
         {
             AbBahaAmount = abBahaAmount;
             AbBahaValues = abBahaValues;

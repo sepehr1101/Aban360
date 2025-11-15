@@ -95,7 +95,8 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 avarezDiscount: 0,
                 javaniDiscount: 0,
                 boodjeDiscount,
-                hotSeasonFazelabDiscount: hotSeasonFazelabDiscount);
+                hotSeasonFazelabDiscount: hotSeasonFazelabDiscount,
+                multiplier: abBahaResult.Multiplier);
         }
         private int GetOlgoo(string nerkhDate2, int olgo)
         {

@@ -27,5 +27,7 @@
 
         public int C { get; set; }
 
+        //not mapped from db
+        public double Multiplier { get; set; }
     }
 }

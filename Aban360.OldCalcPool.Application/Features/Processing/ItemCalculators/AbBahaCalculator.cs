@@ -123,7 +123,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             double abBaha1 = _2Amount.Item1 > 0 ? abBahaValues.Item1 * (double)multiplierAbBaha : 0;
             double abBaha2 = _2Amount.Item2 > 0 ? abBahaValues.Item2 * (double)multiplierAbBaha : 0;
 
-            return new CalculateAbBahaOutputDto(abBahaAmount, abBahaValues, abBaha1, abBaha2, multiplierAbBaha);
+            return new CalculateAbBahaOutputDto(abBahaAmount, abBahaValues, abBaha1, abBaha2, (double)multiplierAbBaha);
         }
 
         public double CalculateDiscount(ZaribGetDto zarib, bool isVillageCalculation, double monthlyConsumption, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, CalculateAbBahaOutputDto calculateAbBahaOutputDto, bool isFull, int finalDomesticUnit)
