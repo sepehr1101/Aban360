@@ -167,7 +167,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 double disallowedPartialConsumption = (nerkh.PartialConsumption - allowedPartialConsumption) > 0 ? nerkh.PartialConsumption - allowedPartialConsumption : 0;
                 return (long)(allowedPartialConsumption * 0.5 + disallowedPartialConsumption * 0.35);
             }
-            double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, nerkh.PartialConsumption, nerkh.Duration, amount);
+            double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, nerkh.PartialConsumption, nerkh.Duration, 10);//ToDo : Error amount, replace 10
             return virtualDiscount > 0 ? (long)virtualDiscount : 0;
         }
 

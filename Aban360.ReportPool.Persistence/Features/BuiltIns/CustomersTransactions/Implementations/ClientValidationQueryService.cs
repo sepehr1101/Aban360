@@ -14,11 +14,18 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
     {
         public ClientValidationQueryService(IConfiguration configuration)
             : base(configuration)
-        { 
-		}
+        {
+        }
         public async Task<ReportOutput<ClientValidationHeaderOutputDto, ClientValidationDataOutputDto>> GetInfo(ClientValidationInputDto input)
         {
             string clientValidationQuery = GetClientValidationQuery();
+            var @params = new
+            {
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
+                ZoneIds = input.ZoneIds,
+                ValidationEstate = input.ValidationEstate.ToString(),
+            };
 
             IEnumerable<ClientValidationDataOutputDto> ClientValidationData = await _sqlReportConnection.QueryAsync<ClientValidationDataOutputDto>(clientValidationQuery, input);
             ClientValidationHeaderOutputDto ClientValidationHeader = new ClientValidationHeaderOutputDto()
@@ -28,7 +35,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 RecordCount = ClientValidationData is not null && ClientValidationData.Any() ? ClientValidationData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 CustomerCount = ClientValidationData is not null && ClientValidationData.Any() ? ClientValidationData.Count() : 0,
-				Title= ReportLiterals.ClientValidation
+                Title = ReportLiterals.ClientValidation
             };
 
 
@@ -37,8 +44,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             return result;
         }
         private string GetClientValidationQuery()
-		{
-			return @"Select  
+        {
+            return @"Select  
 					c.ZoneTitle,
 					c.CustomerNumber,
 					c.ReadingNumber,
@@ -62,36 +69,45 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 					c.FieldArea,
 					c.ConstructedArea,
 					Case
-					  When LEN(TRIM(c.NationalId))!=10 Then N'کد ملی نامعتبر'
-					  When LEN(TRIM(c.PostalCode))!=10 Then N'کد پستی نامعتبر'
-					  When (LEN(TRIM(c.FirstName))=0 OR  c.FirstName IS NULL) 
-					       AND (LEN(TRIM(c.SureName))=0 OR  c.SureName IS NULL) Then N'نام و نام خانوادگی خالی '
-					  When (c.CommercialCount=0 AND c.DomesticCount=0 AND c.OtherCount=0) Then N'تعداد واحدها صفر '
-					  When (c.CommercialArea=0 AND c.DomesticArea=0 AND c.FieldArea=0 ) Then N'عرصه ها خالی'
-					  When (c.ConstructedArea=0) Then N'اعیان خالی'
-					  When LEN(TRIM(c.MobileNo))!=11 Then N'شماره موبایل نامعتبر'
-					  When LEN(TRIM(c.PhoneNo))!=8 Then N' تلفن ثابت نامعتبر'
-					  When LEN(TRIM(c.Address))<10 Then N'آدرس کوتاه تر از 10 کاراکتر '
-					  When (c.UsageId NOT IN (1,3) AND c.ContractCapacity=0) Then N'غیرمسکونی فاقد ظرفیت'
-					  When (LEN(c.SewageInstallDate)!=0 AND c.MainSiphonTitle='0') Then N'دارای تاریخ نصب فاضلاب بدون سیفون'
-					  When (c.UsageId=0) Then N'کد کاربری صفر '
+					  When @ValidationEstate = 0 AND LEN(TRIM(c.NationalId))!=10 Then N'کد ملی نامعتبر'
+					  When @ValidationEstate = 1 AND  LEN(TRIM(c.PostalCode))!=10 Then N'کد پستی نامعتبر'
+					  When @ValidationEstate = 2 AND (LEN(TRIM(c.FirstName))=0 OR  c.FirstName IS NULL)  Then N'نام خالی '
+					  When @ValidationEstate = 3 AND (LEN(TRIM(c.SureName))=0 OR  c.SureName IS NULL) Then N'نام خانوادگی خالی '
+					  When @ValidationEstate = 4 AND c.CommercialCount=0 Then N'تعداد واحد تجاری صفر '
+					  When @ValidationEstate = 5 AND c.DomesticCount=0  Then N'تعداد واحد مسکونی صفر '
+					  When @ValidationEstate = 6 AND c.OtherCount=0 Then N'تعداد واحد سایر صفر '
+					  When @ValidationEstate = 7 AND c.CommercialArea=0 Then N'عرصه تجاری خالی'
+					  When @ValidationEstate = 8 AND c.DomesticArea=0 Then N'عرصه مسکونی خالی'
+					  When @ValidationEstate = 9 AND c.FieldArea=0 Then N'اعیان کل خالی'
+					  When @ValidationEstate = 10 AND (c.ConstructedArea=0) Then N'اعیان سایر خالی'
+					  When @ValidationEstate = 11 AND LEN(TRIM(c.MobileNo))!=11 Then N'شماره موبایل نامعتبر'
+					  When @ValidationEstate = 12 AND LEN(TRIM(c.PhoneNo))!=8 Then N' تلفن ثابت نامعتبر'
+					  When @ValidationEstate = 13 AND LEN(TRIM(c.Address))<10 Then N'آدرس کوتاه تر از 10 کاراکتر '
+					  When @ValidationEstate = 14 AND (c.UsageId NOT IN (1,3) AND c.ContractCapacity=0) Then N'غیرمسکونی فاقد ظرفیت'
+					  When @ValidationEstate = 15 AND (LEN(c.SewageInstallDate)!=0 AND c.MainSiphonTitle='0') Then N'دارای تاریخ نصب فاضلاب بدون سیفون'
+					  When @ValidationEstate = 16 AND (c.UsageId=0) Then N'کد کاربری صفر '
 					  Else N'هیچ مشکلی ندارد'
 					End as Description
 				From [CustomerWarehouse].dbo.Clients c
 				Where
-					(LEN(TRIM(c.NationalId))!=10 OR
-					 LEN(TRIM(c.PostalCode))!=10 OR
-					 ((LEN(TRIM(c.FirstName))=0 OR  c.FirstName IS NULL) AND
-					  (LEN(TRIM(c.SureName))=0 OR  c.SureName IS NULL)) OR
-					 (c.CommercialCount=0 AND c.DomesticCount=0 AND c.OtherCount=0) OR
-					 (c.CommercialArea=0 AND c.DomesticArea=0 AND c.FieldArea=0 )OR
-					 ( c.ConstructedArea=0) OR 
-					 (LEN(TRIM(c.MobileNo))!=11) OR
-					 (LEN(TRIM(c.PhoneNo))!=8 ) OR
-					 (LEN(TRIM(c.Address))<10 ) OR
-					 (c.UsageId NOT IN (1,3) AND c.ContractCapacity=0) OR
-					 (LEN(c.SewageInstallDate)!=0 AND c.MainSiphonTitle='0') OR
-					 (c.UsageId=0) 
+					(
+						(@ValidationEstate = 0 AND LEN(TRIM(c.NationalId))!=10) OR
+						(@ValidationEstate = 1 AND LEN(TRIM(c.PostalCode))!=10 ) OR
+						(@ValidationEstate = 2 AND (LEN(TRIM(c.FirstName)) = 0 OR c.FirstName IS NULL)) OR
+						(@ValidationEstate = 3 AND (LEN(TRIM(c.SureName)) = 0 OR c.SureName IS NULL))OR
+						(@ValidationEstate = 4 AND c.CommercialCount = 0)OR
+						(@ValidationEstate = 5 AND c.DomesticCount = 0)OR
+						(@ValidationEstate = 6 AND c.OtherCount = 0)OR
+						(@ValidationEstate = 7 AND c.CommercialArea = 0)OR
+						(@ValidationEstate = 8 AND c.DomesticArea = 0)OR
+						(@ValidationEstate = 9 AND c.FieldArea = 0)OR
+						(@ValidationEstate = 10 AND (c.ConstructedArea = 0)) OR
+						(@ValidationEstate = 11 AND (LEN(TRIM(c.MobileNo)) != 11)) OR
+						(@ValidationEstate = 12 AND (LEN(TRIM(c.PhoneNo)) != 8)) OR
+						(@ValidationEstate = 13 AND (LEN(TRIM(c.Address)) < 10))OR
+						(@ValidationEstate = 14 AND (c.UsageId NOT IN (1, 3) AND c.ContractCapacity = 0))OR
+						(@ValidationEstate = 15 AND (LEN(c.SewageInstallDate) != 0 AND c.MainSiphonTitle = '0')) OR
+						(@ValidationEstate = 16 AND (c.UsageId = 0))
 					)AND
 					(@fromReadingNumber IS NULL OR
 					@toReadingNumber IS NULL OR
@@ -100,7 +116,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 					c.ToDayJalali IS NULL 
 				Order By
 					c.ZoneTitle,
-					c.CustomerNumber ";
-		}
-	}
+					c.CustomerNumber";
+        }
+    }
 }
