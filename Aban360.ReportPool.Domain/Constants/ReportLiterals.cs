@@ -21,6 +21,8 @@
 
         public static string EmptyUnit { get { return $"{Report} خالی از سکنه"; } }
 
+        public static string EmptyUnitPossibility { get { return $"{Report}احتمال خالی از سکنه"; } }
+
         public static string EmptyUnitByBillDetail { get { return $"{Report} جزئیات خالی از سکنه - قبض"; } }
         public static string EmptyUnitByBillSummary { get { return $"{Report} خلاصه خالی از سکنه قبض"; } }
 
