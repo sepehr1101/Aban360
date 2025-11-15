@@ -21,6 +21,8 @@
 
         public static string EmptyUnit { get { return $"{Report} خالی از سکنه"; } }
 
+        public static string EmptyUnitPossibility { get { return $"{Report}احتمال خالی از سکنه"; } }
+
         public static string EmptyUnitByBillDetail { get { return $"{Report} جزئیات خالی از سکنه - قبض"; } }
         public static string EmptyUnitByBillSummary { get { return $"{Report} خلاصه خالی از سکنه قبض"; } }
 
@@ -203,6 +205,9 @@
 
         public static string TagSummary { get { return $" {Report} خلاصه تگ"; } }
         public static string TagDetail { get { return $" {Report} جزئیات تگ"; } }
+
+        public static string ConsumptionManagerDetail { get { return $" {Report} جزئیات مدیریت مصرف"; } }
+        public static string ConsumptionManagerSummary{ get { return $" {Report} خلاصه مدیریت مصرف"; } }
 
     }
 }

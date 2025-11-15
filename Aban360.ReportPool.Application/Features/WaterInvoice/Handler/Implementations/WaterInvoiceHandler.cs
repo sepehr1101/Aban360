@@ -2,6 +2,7 @@
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Contracts;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+using Aban360.ReportPool.Persistence.Features.Transactions.Contracts;
 using Aban360.ReportPool.Persistence.Features.WaterInvoice.Contracts;
 using DNTPersianUtils.Core;
 using static Aban360.Common.Timing.CalculationDistanceDate;
@@ -21,7 +22,7 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
         {
             ReportOutput<WaterInvoiceDto, LineItemsDto> result = await _waterInvoiceQueryService.Get(input);
             result.ReportHeader.ChartIndex = await GetGuageValue(result.ReportHeader.ConsumptionAverage, result.ReportHeader.ContractualCapacity, input, result.ReportHeader.UsageId, result.ReportHeader.ZoneId);
-         
+
             return new ReportOutput<WaterInvoiceDto, LineItemsDto>(result.Title, GetWaterInvoiceData(result.ReportHeader), result.ReportData);
         }
         public WaterInvoiceDto Handle()
@@ -34,7 +35,7 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
             input.BarCode = (input.BillId is null ? new string('0', 13) : input.BillId.PadLeft(13, '0')) +
                             (input.PayId is null ? new string('0', 13) : input.PayId.PadLeft(13, '0'));
 
-            input.PaymenetAmountText = input.PayableAmount.NumberToText(Language.Persian);           
+            input.PaymenetAmountText = input.PayableAmount.NumberToText(Language.Persian);
 
             CalcDistanceResultDto calcDistance = CalcDistance(input.CurrentMeterDateJalali, input.PreviousMeterDateJalali);
             input.Duration = calcDistance.HasError ? 0 : calcDistance.Distance;
@@ -77,5 +78,6 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
                 return domesticUsageIds.Contains(usageId);
             }
         }
+
     }
 }

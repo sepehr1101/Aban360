@@ -4,17 +4,19 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+using Aban360.ReportPool.Domain.Features.Transactions;
 using Aban360.ReportPool.Persistence.Features.WaterInvoice.Contracts;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 {
     internal class WaterInvoiceQueryService : AbstractBaseConnection, IWaterInvoiceQueryService
     {
         public WaterInvoiceQueryService(IConfiguration configuration)
-            : base(configuration) 
+            : base(configuration)
         {
         }
 
@@ -39,8 +41,8 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             IEnumerable<LineItemsDto> lineitems = await _sqlReportConnection.QueryAsync<LineItemsDto>(getItemValueQuery, new { billId = billId });
             IEnumerable<PreviousConsumptionsDto> previousConsumptions = await _sqlReportConnection.QueryAsync<PreviousConsumptionsDto>(getPreviousConsumptionQuery, new { billId = billId });
             string headquarterTitle = await _sqlConnection.QueryFirstAsync<string>(getHeadquarterQuery, new { zoneId = waterInvoice.ZoneId });
-            WaterInvoicePaymentOutputDto? paymentInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterInvoicePaymentOutputDto>(getPaymentQuery, new { billId = billId, payId = waterInvoice.PayId == null ? "0" : waterInvoice.PayId, billRegisterDate=waterInvoice.RegisterDateJalali });
-
+            WaterInvoicePaymentOutputDto? paymentInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterInvoicePaymentOutputDto>(getPaymentQuery, new { billId = billId, payId = waterInvoice.PayId == null ? "0" : waterInvoice.PayId, billRegisterDate = waterInvoice.RegisterDateJalali });
+            waterInvoice.DebtorOrCreditorAmount = await GetRemained(billId);
             waterInvoice = MappingWaterInvoice(waterInvoice, paymentInfo, previousConsumptions, lineitems, headquarterTitle);
 
             ReportOutput<WaterInvoiceDto, LineItemsDto> result = new(ReportLiterals.WaterInvoice, waterInvoice, lineitems);
@@ -267,12 +269,54 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                     Order By
                     	p.RegisterDay Desc";
         }
-
         private string GetOlgoQuery()
         {
             return @"Select Olgo
                     from [OldCalc].dbo.Table1
                     Where Town=@zoneId";
+        }
+        private string GetDebtorAndCreditorQuery()
+        {
+            return @"select   
+                    	SumItems DebtAmount,
+                         0 CreditAmount,
+                        TypeCode,
+                        RegisterDay RegisterDate
+                    from [CustomerWarehouse].dbo.Bills
+                     where 
+                        (BillId)=@billId
+                    union
+                     select
+                    	0 DebtAmount, 
+                         Amount CreditAmount,
+                        0 TypeCode,
+                        RegisterDay RegisterDate
+                    from [CustomerWarehouse].dbo.Payments
+                     where 
+                        (BillId)=@billId ";
+        }
+        private async Task<long> GetRemained(string billId)
+        {
+            string getDebtorAndCreditorQuery = GetDebtorAndCreditorQuery();
+            IEnumerable<DebtorAndCreaditorOutputDto> debtorAndCreditor = await _sqlReportConnection.QueryAsync<DebtorAndCreaditorOutputDto>(getDebtorAndCreditorQuery, new { billId = billId });
+
+            long lastRemained = 0;
+            if (debtorAndCreditor is not null && debtorAndCreditor.Any())
+            {
+                debtorAndCreditor = debtorAndCreditor.OrderBy(i => i.RegisterDate);
+
+                for (int i = 0; i < debtorAndCreditor.Count(); i++)
+                {
+                    DebtorAndCreaditorOutputDto row = debtorAndCreditor.ElementAt(i);
+                    if (row.TypeCode == 7)
+                    {
+                        continue;
+                    }
+                    lastRemained = lastRemained + (row.DebtAmount.Value - row.CreditAmount);
+                }
+            }
+
+            return lastRemained;
         }
     }
 }

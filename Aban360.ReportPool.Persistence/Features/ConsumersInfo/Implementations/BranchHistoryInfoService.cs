@@ -33,9 +33,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                 throw new InvalidIdException();
 
             result.LastMeterReadingDate = historyBillData.LastMeterReadingDate;
-           // result.LastWaterBillRefundDate = historyBillData.LastWaterBillRefundDate;
             result.LastWaterBillRefundDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(GetLatestWaterRefundDateQuery(), new { billId });
-			// result.LastSubscriptionRefundDate = historyBillData.LastSubscriptionRefundDate;
 			result.LastSubscriptionRefundDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(GetLatestServiceLinkRefundDateQuery(), new { billId });
             result.LastTemporaryDisconnectionDate = historyBillData.LastTemporaryDisconnectionDate;
 
@@ -100,14 +98,15 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
         {
 				return @"Select Top 1
 							b.NextDay AS LastMeterReadingDate,
-							b.TypeId AS LastWaterBillRefundDate,--اخرین برگشتی اب بها
 							b.RegisterDay AS LastSubscriptionRefundDate,--حق انشعاب
 							Case	
 								When b.BranchType=N'کمیته امداد' Then N'کمیته امداد'	
 								When b.BranchType=N'بهزیستی' Then N'بهزیستی'
 							End LastTemporaryDisconnectionDate
 						From [CustomerWarehouse].dbo.Bills b
-						Where b.BillId=@billId
+						Where 
+							b.BillId=@billId AND
+							b.CounterStateCode NOT IN (4,7,8)
 						Order By b.RegisterDay Desc";
         }
 

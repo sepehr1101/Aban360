@@ -32,6 +32,8 @@
         public static string InvalidFromDate => "تاریخ شروع ناصحیح";
         public static string InvalidToDate => "تاریخ پایان ناصحیح";
         public static string InvalidFromAndToDate => "تاریخ شروع و پایان ناصحیح";
+        public static string BaseBeforComparisonDate => "تاریخ مبنا بعد از تاریخ مقایسه وارد شود ";
+
         public static string HasNotSiphon => "سیفون ندارد";
         public static string DuplicateBillIdTags => "شناسه قبض با شناسه تگ جاری تکراری است.";
 
