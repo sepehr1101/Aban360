@@ -61,41 +61,41 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             int olgoo = GetOlgoo(nerkh.Date2, _olgoo);
             bool isVillageCalculation = IsVillage(customerInfo.ZoneId);
-            double monthlyConsumption = nerkh.DailyAverageConsumption * monthDays;            
+            double monthlyConsumption = nerkh.DailyAverageConsumption * monthDays;
 
             CalculateAbBahaOutputDto abBahaResult = _abBahaCalculator.Calculate(nerkh, customerInfo, meterInfo, zarib, abAzad, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, c, tagIds); //CalculateAbBaha(nerkh, customerInfo, meterInfo, zarib, abAzad, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, multiplierAbBaha, c, tagIds);
-            (double, double) boodje = _budgetCalculator.Calculate(nerkh, customerInfo, currentDateJalali, monthlyConsumption, olgoo,consumptionInfo);
+            (double, double) boodje = _budgetCalculator.Calculate(nerkh, customerInfo, currentDateJalali, monthlyConsumption, olgoo, consumptionInfo);
             double fazelab = _fazelabCalculator.Calculate(nerkh.Date1, nerkh.Date2, nerkh.Duration, customerInfo, abBahaResult.AbBahaAmount, currentDateJalali, false);
-            (int, double) hotSeasonAbBaha = _hotSeasonCalculator.CalculateAb(nerkh, abBahaResult.AbBahaAmount, customerInfo, monthlyConsumption);//CalcHotSeasonAbBaha(nerkh, abBahaResult.AbBahaAmount, customerInfo, monthlyConsumption);
-            (int, double) hotSeasonFazelab = _hotSeasonCalculator.CalcFazelab(nerkh, customerInfo, fazelab, monthlyConsumption);//CalcHotSeasonFaselab(nerkh, customerInfo, fazelab, monthlyConsumption);
+            (int, double, double) hotSeasonAbBaha = _hotSeasonCalculator.CalculateAb(nerkh, abBahaResult.AbBahaAmount, customerInfo, monthlyConsumption, abBahaResult);
+            (int, double, double) hotSeasonFazelab = _hotSeasonCalculator.CalcFazelab(nerkh, customerInfo, fazelab, monthlyConsumption, abBahaResult);
             double avarez = _avarezCalculator.Calculate(nerkh, customerInfo, monthlyConsumption);
             double javani = _javaniJamiatCalculator.Calculate(nerkh, customerInfo, abBahaResult.AbBahaAmount, monthlyConsumption, olgoo);
-                        
+
             //Discounts
             double abBahaDiscount = _abBahaCalculator.CalculateDiscount(zarib, isVillageCalculation, monthlyConsumption, customerInfo, nerkh, olgoo, abBahaResult, false, consumptionInfo.FinalDomesticUnit);
             double fazelabDiscount = _fazelabCalculator.CalculateDiscount(abBahaDiscount, fazelab, customerInfo, nerkh);
-            double hotSeasonAbDiscount = _hotSeasonCalculator.CalculateDiscount(nerkh, abBahaDiscount, hotSeasonAbBaha, customerInfo);
-            double hotSeasonFazelabDiscount = _hotSeasonCalculator.CalculateDiscount(nerkh, fazelabDiscount, hotSeasonFazelab, customerInfo);         
-            double boodjeDiscount = _budgetCalculator.CalculateDiscount(customerInfo,abBahaDiscount,boodje, nerkh);
+            double hotSeasonAbDiscount = _hotSeasonCalculator.CalculateDiscount(nerkh, abBahaDiscount, hotSeasonAbBaha, customerInfo, abBahaResult);
+            double hotSeasonFazelabDiscount = _hotSeasonCalculator.CalculateDiscount(nerkh, fazelabDiscount, hotSeasonFazelab, customerInfo, abBahaResult);
+            double boodjeDiscount = _budgetCalculator.CalculateDiscount(customerInfo, abBahaDiscount, boodje, nerkh);
             return new BaseOldTariffEngineOutputDto(
-                abBahaValues:abBahaResult,
-                fazelabAmount:fazelab,
-                hotSeasonAbBahaAmount:hotSeasonAbBaha.Item2,
-                hotSeasonFazelabAmount:hotSeasonFazelab.Item2,
-                boodjePart1:boodje.Item1,
-                boodjePart2:boodje.Item2,
-                abBahaDiscount:abBahaDiscount,
-                hotSeasonDiscount:hotSeasonAbDiscount,
+                abBahaValues: abBahaResult,
+                fazelabAmount: fazelab,
+                hotSeasonAbBahaAmount: hotSeasonAbBaha.Item2 + hotSeasonAbBaha.Item3,
+                hotSeasonFazelabAmount: hotSeasonFazelab.Item2 + hotSeasonFazelab.Item3,
+                boodjePart1: boodje.Item1,
+                boodjePart2: boodje.Item2,
+                abBahaDiscount: abBahaDiscount,
+                hotSeasonDiscount: hotSeasonAbDiscount,
                 fazelabDiscount: fazelabDiscount,
-                abonmanAbAmount:0,
-                avarezAmount:avarez,
-                javaniAmount:javani,
-                abonmanAbDiscount:0,
-                abonamenFazelabDiscount:0,
-                avarezDiscount:0,
-                javaniDiscount:0,
+                abonmanAbAmount: 0,
+                avarezAmount: avarez,
+                javaniAmount: javani,
+                abonmanAbDiscount: 0,
+                abonamenFazelabDiscount: 0,
+                avarezDiscount: 0,
+                javaniDiscount: 0,
                 boodjeDiscount,
-                hotSeasonFazelabDiscount:hotSeasonFazelabDiscount);
+                hotSeasonFazelabDiscount: hotSeasonFazelabDiscount);
         }
         private int GetOlgoo(string nerkhDate2, int olgo)
         {
