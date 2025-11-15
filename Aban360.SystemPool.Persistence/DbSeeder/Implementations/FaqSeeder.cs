@@ -21,7 +21,7 @@ namespace Aban360.SystemPool.Persistence.DbSeeder.Implementations
                 return;
             }
             string sqlFilePath = GetSqlFilePath();
-            await ExecuteBatchAsync(_sqlReportConnection, sqlFilePath);
+            await ExecuteBatchAsync(_sqlConnection, sqlFilePath);
         }
         private string GetSqlFilePath()
         {
