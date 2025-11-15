@@ -2,22 +2,20 @@
 {
     public enum ValidationEstateEnum
     {
-        InvalidNationalCode=0,
-        InvalidPostalCode=1,
-        InvalidFirstName=2,
-        InvalidSurName=3,
-        EmptyCommercialUnit=4,
-        EmptyDomesticUnit=5,
-        EmptyOtherUnit=6,
-        EmptyCommercialArea=7,
-        EmptyDomesticArea=8,
-        EmptyFieldArea=9,
-        EmptyConstructedArea=10,
-        InvalidMobileNumber=11,
-        InvalidPhoneNumber=12,
-        AddressLessThan10Char=13,
-        NonDomesticWithoutContractCapacity=14,
-        SewageInstallationDateWithoutSiphon=15,
-        UsageIdEqual0=16
+        InvalidNationalCode = 0,
+        InvalidPostalCode = 1,
+        InvalidFirstName = 2,
+        InvalidSurName = 3,
+        EmptyUnits = 4,
+        EmptyAreas = 5,
+        EmptyConstructedArea = 6,
+        InvalidMobileNumber = 7,
+        InvalidPhoneNumber = 8,
+        AddressLessThan10Char = 9,
+        NonDomesticWithoutContractCapacity = 10,
+        SewageInstallationDateWithoutSiphon = 11,
+        UsageIdEqual0 = 12,
+        InvalidHousholdDate= 13,
+        InvalidEmptyUnit=14
     }
 }

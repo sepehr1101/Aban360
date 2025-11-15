@@ -12,16 +12,10 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
     internal sealed class WaterInvoiceHandler : IWaterInvoiceHandler
     {
         private readonly IWaterInvoiceQueryService _waterInvoiceQueryService;
-        private readonly ISubscriptionEventQueryService _subscriptionEventQueryService;
-        public WaterInvoiceHandler(
-            IWaterInvoiceQueryService waterInvoiceQueryService,
-            ISubscriptionEventQueryService subscriptionEventQueryService)
+        public WaterInvoiceHandler(IWaterInvoiceQueryService waterInvoiceQueryService)
         {
             _waterInvoiceQueryService = waterInvoiceQueryService;
             _waterInvoiceQueryService.NotNull(nameof(waterInvoiceQueryService));
-
-            _subscriptionEventQueryService = subscriptionEventQueryService;
-            _subscriptionEventQueryService.NotNull(nameof(subscriptionEventQueryService));
         }
 
         public async Task<ReportOutput<WaterInvoiceDto, LineItemsDto>> Handle(string input)
@@ -29,7 +23,6 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
             ReportOutput<WaterInvoiceDto, LineItemsDto> result = await _waterInvoiceQueryService.Get(input);
             result.ReportHeader.ChartIndex = await GetGuageValue(result.ReportHeader.ConsumptionAverage, result.ReportHeader.ContractualCapacity, input, result.ReportHeader.UsageId, result.ReportHeader.ZoneId);
 
-            result.ReportHeader.DebtorOrCreditorAmount = await GetRemained(input);
             return new ReportOutput<WaterInvoiceDto, LineItemsDto>(result.Title, GetWaterInvoiceData(result.ReportHeader), result.ReportData);
         }
         public WaterInvoiceDto Handle()
@@ -85,13 +78,6 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
                 return domesticUsageIds.Contains(usageId);
             }
         }
-        private async Task<long> GetRemained(string billId)
-        {
-            var eventSummary = await _subscriptionEventQueryService.GetEventsSummaryDtos(billId, null);
-            return eventSummary.ReportData
-                            .OrderBy(s => s.RegisterDate)
-                            .Select(s => s.Remained)
-                            .FirstOrDefault();
-        }
+
     }
 }

@@ -98,7 +98,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 	             RegisterDay RegisterDate,
 	             SumItems DebtAmount,
 	             0 CreditAmount,
-	             TypeId as [Description],
+	             Case When TypeCode=8 Then v.Title Else TypeId End as [Description],
 	             ConsumptionAverage, 
 	             Consumption,
 	             NULL BankTitle,
@@ -116,6 +116,8 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                  NULL AS PayDateJalali,
                  TypeCode
              from [CustomerWarehouse].dbo.Bills
+             Join [Db70].dbo.CounterVaziat v On
+            	CounterStateCode=v.MoshtarakinId
              where 
                 (BillId)=@billId  AND
 		        (@fromDate IS NULL OR
