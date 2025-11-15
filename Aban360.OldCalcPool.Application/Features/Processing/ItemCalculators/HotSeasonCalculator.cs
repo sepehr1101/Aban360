@@ -8,9 +8,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IHotSeasonCalculator
     {
-        (int, double) CalcFazelab(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double fazelabAmount, double monthlyConsumption);
-        (int, double) CalculateAb(NerkhGetDto nerkh, double abBahaAmount, CustomerInfoOutputDto customerInfo, double monthlyConsumption);
-        double CalculateDiscount(NerkhGetDto nerkh, double amountDiscount, (int, double) hotSeasonInfo, CustomerInfoOutputDto customerInfo);
+        (int, double, double) CalcFazelab(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double fazelabAmount, double monthlyConsumption, CalculateAbBahaOutputDto calcResult);
+        (int, double, double) CalculateAb(NerkhGetDto nerkh, double abBahaAmount, CustomerInfoOutputDto customerInfo, double monthlyConsumption, CalculateAbBahaOutputDto calcResult);
+        double CalculateDiscount(NerkhGetDto nerkh, double amountDiscount, (int, double, double) hotSeasonInfo, CustomerInfoOutputDto customerInfo, CalculateAbBahaOutputDto calcResult);
     }
 
     internal sealed class HotSeasonCalculator : IHotSeasonCalculator
@@ -19,29 +19,25 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const string date_06_31 = "/06/31";
         const double _hotSeasonRate = 0.2;
         const int _firstSewageCalculation = 1;
-        public (int, double) CalculateAb(NerkhGetDto nerkh, double abBahaAmount, CustomerInfoOutputDto customerInfo, double monthlyConsumption)
+        public (int, double, double) CalculateAb(NerkhGetDto nerkh, double abBahaAmount, CustomerInfoOutputDto customerInfo, double monthlyConsumption, CalculateAbBahaOutputDto calcResult)
         {
             if (IsDomesticBelow25MeterConsumption(customerInfo, monthlyConsumption) &&
                 !IsConstruction(customerInfo.BranchType))
             {
-                return (0, 0);
+                return (0, 0, 0);
             }
-            return GetDurationAndAmount(nerkh.Date1, nerkh.Date2, nerkh.Duration, customerInfo, abBahaAmount);
-
-            //int hotSeasonDuration = PartTime(hotSeasonStart, hotSeasonEnd, nerkh.Date1, nerkh.Date2, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-            //double hotSeasonAmount = hotSeasonDuration > 0 ? (int)((hotSeasonDuration * abBahaAmount / nerkh.Duration) * _hotSeasonRate) : 0;
-            //return (hotSeasonDuration, hotSeasonAmount);
+            return GetDurationAndAmount(nerkh.Date1, nerkh.Date2, nerkh.Duration, customerInfo, abBahaAmount, calcResult);
         }
 
-        public (int, double) CalcFazelab(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double fazelabAmount, double monthlyConsumption)
+        public (int, double, double) CalcFazelab(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double fazelabAmount, double monthlyConsumption, CalculateAbBahaOutputDto calcResult)
         {
             if (IsDomesticBelow25MeterConsumption(customerInfo, monthlyConsumption))
             {
-                return (0, 0);
+                return (0, 0, 0);
             }
             if (customerInfo.SewageCalcState == 0)
             {
-                return (0, 0);
+                return (0, 0, 0);
             }
 
             string hotSeasonStart = GetHotSeasonStart(nerkh.Date1);
@@ -52,18 +48,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
             if (customerInfo.SewageCalcState == _firstSewageCalculation)
             {
-                return GetDurationAndAmount(nerkh.Date1, customerInfo.SewageInstallationDateJalali, nerkh.Duration, customerInfo, fazelabAmount);
-                //hotSeasonDuration = PartTime(hotSeasonStart, hotSeasonEnd, customerInfo.SewageInstallationDateJalali, nerkh.Date2, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-                //amount = hotSeasonDuration > 0 ? (int)((hotSeasonDuration * fazelabAmount / nerkh.Duration) * 0.2) : 0;
-                //return (hotSeasonDuration, amount);
+                calcResult.AbBaha1 = 0;
+                calcResult.AbBaha2 = 0;
+                return GetDurationAndAmount(nerkh.Date1, customerInfo.SewageInstallationDateJalali, nerkh.Duration, customerInfo, fazelabAmount, calcResult);               
             }
-            return GetDurationAndAmount(nerkh.Date1, nerkh.Date2, nerkh.Duration, customerInfo, fazelabAmount);
-            //hotSeasonDuration = PartTime(hotSeasonStart, hotSeasonEnd, nerkh.Date1, nerkh.Date2, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-            //amount = hotSeasonDuration > 0 ? (int)((hotSeasonDuration * fazelabAmount / nerkh.Duration) * 0.2) : 0;
-            //return (hotSeasonDuration, amount);
+            return GetDurationAndAmount(nerkh.Date1, nerkh.Date2, nerkh.Duration, customerInfo, fazelabAmount, calcResult);           
         }
 
-        public double CalculateDiscount(NerkhGetDto nerkh, double amountDiscount, (int, double) hotSeasonInfo, CustomerInfoOutputDto customerInfo)
+        public double CalculateDiscount(NerkhGetDto nerkh, double amountDiscount, (int, double, double) hotSeasonInfo, CustomerInfoOutputDto customerInfo, CalculateAbBahaOutputDto calcResult)
         {
             if (amountDiscount == 0)
             {
@@ -75,18 +67,19 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             }
 
             //double timePercentage = (double)hotSeasonInfo.Item1 / (double)nerkh.Duration;
-            double fasleGarmAmount = hotSeasonInfo.Item2; //* timePercentage * 0.2;
+            double fasleGarmAmount =  hotSeasonInfo.Item2; //* timePercentage * 0.2;
             double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, nerkh.PartialConsumption, nerkh.Duration, fasleGarmAmount);
             return virtualDiscount > 0 ? virtualDiscount : fasleGarmAmount;
         }
 
-        private (int, double) GetDurationAndAmount(string date1, string date2, int duration, CustomerInfoOutputDto customerInfo, double baseAmount)
+        private (int, double, double) GetDurationAndAmount(string date1, string date2, int duration, CustomerInfoOutputDto customerInfo, double baseAmount, CalculateAbBahaOutputDto calcResult)
         {
             string hotSeasonStart = GetHotSeasonStart(date2);
             string hotSeasonEnd = GetHotSeasonEnd(date2);
             int hotSeasonDuration = PartTime(hotSeasonStart, hotSeasonEnd, date1, date2, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-            double amount = hotSeasonDuration > 0 ? (int)((hotSeasonDuration * baseAmount / duration) * _hotSeasonRate) : 0;
-            return (hotSeasonDuration, amount);
+            double amount1 = hotSeasonDuration > 0 ? (int)((hotSeasonDuration * (calcResult.AbBaha1>0  ? calcResult.AbBaha1: baseAmount) / duration) * _hotSeasonRate) : 0;
+            double amount2= hotSeasonDuration > 0 ? (int) ((hotSeasonDuration * (calcResult.AbBaha2> 0 ? calcResult.AbBaha2 : 0) / duration) * _hotSeasonRate) : 0;
+            return (hotSeasonDuration, amount1, amount2);
         }
         private bool IsDomesticBelow25MeterConsumption(CustomerInfoOutputDto customerInfo, double monthlyConsumption)
         {
