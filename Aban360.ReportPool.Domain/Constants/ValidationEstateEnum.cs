@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ReportPool.Domain.Constants
 {
-    public enum ValidationEstateEnum
+    public enum ValidationEstateEnum:short
     {
         InvalidNationalCode = 0,
         InvalidPostalCode = 1,

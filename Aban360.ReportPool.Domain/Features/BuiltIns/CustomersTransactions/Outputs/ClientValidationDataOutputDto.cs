@@ -24,7 +24,6 @@
         public int DomesticArea { get; set; }
         public int FieldArea { get; set; }
         public int ConstructedArea { get; set; }
-        public string Description { get; set; }
      
     }
 }

@@ -7,6 +7,7 @@ using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Con
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Implementations
 {
@@ -18,14 +19,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         }
         public async Task<ReportOutput<ClientValidationHeaderOutputDto, ClientValidationDataOutputDto>> GetInfo(ClientValidationInputDto input)
         {
-            string clientValidationQuery = GetClientValidationQuery();
-            var @params = new
-            {
-                FromReadingNumber = input.FromReadingNumber,
-                ToReadingNumber = input.ToReadingNumber,
-                ZoneIds = input.ZoneIds,
-                ValidationEstate = input.ValidationEstate.ToString(),
-            };
+            Dictionary<short, (string, string)> validationState = GetValidationState();
+            var (condition, persianText) = validationState.First(v => v.Key == (short)input.ValidationEstate).Value;
+            string clientValidationQuery = GetClientValidationQuery(condition);
 
             IEnumerable<ClientValidationDataOutputDto> ClientValidationData = await _sqlReportConnection.QueryAsync<ClientValidationDataOutputDto>(clientValidationQuery, input);
             ClientValidationHeaderOutputDto ClientValidationHeader = new ClientValidationHeaderOutputDto()
@@ -35,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 RecordCount = ClientValidationData is not null && ClientValidationData.Any() ? ClientValidationData.Count() : 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 CustomerCount = ClientValidationData is not null && ClientValidationData.Any() ? ClientValidationData.Count() : 0,
-                Title = ReportLiterals.ClientValidation
+                Title = ReportLiterals.ClientValidation + "-" + persianText
             };
 
 
@@ -43,9 +39,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
             return result;
         }
-        private string GetClientValidationQuery()
+        private string GetClientValidationQuery(string condition)
         {
-            return @"Select  
+            return @$"Select  
 						c.ZoneTitle,
 						c.CustomerNumber,
 						c.ReadingNumber,
@@ -67,43 +63,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 						c.CommercialArea,
 						c.DomesticArea,
 						c.FieldArea,
-						c.ConstructedArea,
-						Case
-						  When @ValidationEstate = 0 AND LEN(TRIM(c.NationalId))!=10 Then N'کد ملی نامعتبر'
-						  When @ValidationEstate = 1 AND  LEN(TRIM(c.PostalCode))!=10 Then N'کد پستی نامعتبر'
-						  When @ValidationEstate = 2 AND (LEN(TRIM(c.FirstName))=0 OR  c.FirstName IS NULL)  Then N'نام خالی '
-						  When @ValidationEstate = 3 AND (LEN(TRIM(c.SureName))=0 OR  c.SureName IS NULL) Then N'نام خانوادگی خالی '
-						  When @ValidationEstate = 4 AND  (c.CommercialCount=0 AND c.DomesticCount=0 AND c.OtherCount=0) Then N'تعداد واحد ها صفر '
-						  When @ValidationEstate = 5 AND (c.CommercialArea=0 AND c.DomesticArea=0 AND c.FieldArea=0 ) Then N'عرصه ها خالی'
-						  When @ValidationEstate = 6 AND (c.ConstructedArea=0) Then N'اعیان خالی'
-						  When @ValidationEstate = 7 AND LEN(TRIM(c.MobileNo))!=11 Then N'شماره موبایل نامعتبر'
-						  When @ValidationEstate = 8 AND LEN(TRIM(c.PhoneNo))!=8 Then N' تلفن ثابت نامعتبر'
-						  When @ValidationEstate = 9 AND LEN(TRIM(c.Address))<10 Then N'آدرس کوتاه تر از 10 کاراکتر '
-						  When @ValidationEstate = 10 AND (c.UsageId NOT IN (1,3) AND c.ContractCapacity=0) Then N'غیرمسکونی فاقد ظرفیت'
-						  When @ValidationEstate = 11 AND (LEN(c.SewageInstallDate)!=0 AND c.MainSiphonTitle='0') Then N'دارای تاریخ نصب فاضلاب بدون سیفون'
-						  When @ValidationEstate = 12 AND (c.UsageId=0) Then N'کد کاربری صفر '
-						  When @ValidationEstate = 13 AND c.FamilyCount!=null AND c.FamilyCount>0 AND LEN(TRIM(c.HouseholdDateJalali))<8 Then N'تاریخ خالی از سکنه نامعتبر'
-						  When @ValidationEstate = 14 AND c.EmptyCount!=null AND c.EmptyCount>0 AND c.UsageId NOT IN (1,3) Then N'خالی از سکنه با کاربری مغایرت دارد'
-						 Else N'هیچ مشکلی ندارد'
-						End as Description
+						c.ConstructedArea
 					From [CustomerWarehouse].dbo.Clients c
 					Where
 						(
-							(@ValidationEstate = 0  AND LEN(TRIM(c.NationalId))!=10) OR
-							(@ValidationEstate = 1  AND LEN(TRIM(c.PostalCode))!=10 ) OR
-							(@ValidationEstate = 2  AND (LEN(TRIM(c.FirstName)) = 0 OR c.FirstName IS NULL)) OR
-							(@ValidationEstate = 3  AND (LEN(TRIM(c.SureName)) = 0 OR c.SureName IS NULL))OR
-							(@ValidationEstate = 4  AND  (c.CommercialCount=0 AND c.DomesticCount=0 AND c.OtherCount=0))OR
-							(@ValidationEstate = 5  AND (c.CommercialArea=0 AND c.DomesticArea=0 AND c.FieldArea=0 ))OR
-							(@ValidationEstate = 6  AND (c.ConstructedArea = 0)) OR
-							(@ValidationEstate = 7  AND (LEN(TRIM(c.MobileNo)) != 11)) OR
-							(@ValidationEstate = 8  AND (LEN(TRIM(c.PhoneNo)) != 8)) OR
-							(@ValidationEstate = 9  AND (LEN(TRIM(c.Address)) < 10))OR
-							(@ValidationEstate = 10 AND (c.UsageId NOT IN (1, 3) AND c.ContractCapacity = 0))OR
-							(@ValidationEstate = 11 AND (LEN(c.SewageInstallDate) != 0 AND c.MainSiphonTitle = '0')) OR
-							(@ValidationEstate = 12 AND (c.UsageId = 0)) OR
-							(@ValidationEstate = 13 AND c.FamilyCount!=null AND c.FamilyCount>0 AND LEN(TRIM(c.HouseholdDateJalali))<8) OR
-							(@ValidationEstate = 14 AND c.EmptyCount!=null AND c.EmptyCount>0 AND c.UsageId NOT IN (1,3))
+							{condition}
 						)AND
 						(@fromReadingNumber IS NULL OR
 						@toReadingNumber IS NULL OR
@@ -113,6 +77,28 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 					Order By
 						c.ZoneTitle,
 						c.CustomerNumber";
+        }
+
+        private Dictionary<short, (string, string)> GetValidationState()
+        {
+            return new Dictionary<short, (string, string)>()
+            {
+               { 0  , (@" LEN(TRIM(c.NationalId)) != 10 ", "کد ملی نامعتبر") },
+               { 1  , (@" LEN(TRIM(c.PostalCode)) != 10 ", "کد پستی نامعتبر") },
+               { 2  , (@" (LEN(TRIM(c.FirstName)) = 0 OR c.FirstName IS NULL) ", "نام خالی") },
+               { 3  , (@" (LEN(TRIM(c.SureName)) = 0 OR c.SureName IS NULL) ", "نام خانوادگی خالی") },
+               { 4  , (@" (c.CommercialCount = 0 AND c.DomesticCount = 0 AND c.OtherCount = 0) ", "تعداد واحدها صفر") },
+               { 5  , (@" (c.CommercialArea = 0 AND c.DomesticArea = 0 AND c.FieldArea = 0) ", "عرصه‌ها خالی") },
+               { 6  , (@" (c.ConstructedArea = 0) ", "اعیان خالی") },
+               { 7  , (@" LEN(TRIM(c.MobileNo)) != 11 ", "شماره موبایل نامعتبر") },
+               { 8  , (@" LEN(TRIM(c.PhoneNo)) != 8 ", "تلفن ثابت نامعتبر") },
+               { 9  , (@" LEN(TRIM(c.Address)) < 10 ", "آدرس کوتاه‌تر از 10 کاراکتر") },
+               { 10 , (@" (c.UsageId NOT IN (1, 3) AND c.ContractCapacity = 0) ", "غیرمسکونی فاقد ظرفیت") },
+               { 11 , (@" (LEN(c.SewageInstallDate) != 0 AND c.MainSiphonTitle = '0') ", "دارای تاریخ نصب فاضلاب بدون سیفون") },
+               { 12 , (@" (c.UsageId = 0) ", "کد کاربری صفر") },
+               { 13 , (@" (c.FamilyCount IS NOT NULL AND c.FamilyCount > 0 AND LEN(TRIM(c.HouseholdDateJalali)) < 8) ", "تاریخ خالی از سکنه نامعتبر") },
+               { 14 , (@" (c.EmptyCount IS NOT NULL AND c.EmptyCount > 0 AND c.UsageId NOT IN (1, 3)) ", "مغایرت خالی از سکنه با کاربری ") },
+            };
         }
     }
 }
