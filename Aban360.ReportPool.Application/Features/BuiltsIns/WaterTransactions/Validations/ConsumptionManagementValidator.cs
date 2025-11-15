@@ -6,9 +6,9 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Validations
 {
-    public class ConsumptionManagerValidator : BaseValidator<ConsumptionManagerInputDto>
+    public class ConsumptionManagementValidator : BaseValidator<ConsumptionManagementInputDto>
     {
-        public ConsumptionManagerValidator()
+        public ConsumptionManagementValidator()
         {
             RuleFor(c => c.FromBaseDateJalali)
               .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
@@ -56,7 +56,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Va
 
            
         }
-        public static (bool IsValid, string ErrorMessage) ValidationBaseAndComperisonDate(ConsumptionManagerInputDto input)
+        public static (bool IsValid, string ErrorMessage) ValidationBaseAndComperisonDate(ConsumptionManagementInputDto input)
         {
             if (input.FromComparisonDateJalali.CompareTo(input.FromBaseDateJalali) > 0 ||
                 input.ToComparisonDateJalali.CompareTo(input.ToBaseDateJalali) > 0)

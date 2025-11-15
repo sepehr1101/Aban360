@@ -3,8 +3,8 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts
 {
-    public interface IConsumptionManagerQueryService
+    public interface IConsumptionManagementQueryService
     {
-        Task<ReportOutput<ConsumptionManagerHeaderOutputDto, ConsumptionManagerDataOutputDto>> Get(ConsumptionManagerInputDto input);
+        Task<ReportOutput<ConsumptionManagementHeaderOutputDto, ConsumptionManagementDataOutputDto>> Get(ConsumptionManagementInputDto input);
     }
 }

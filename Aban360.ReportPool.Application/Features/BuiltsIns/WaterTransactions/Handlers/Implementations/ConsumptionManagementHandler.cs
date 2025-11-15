@@ -8,13 +8,13 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Implementations
 {
-    internal sealed class ConsumptionManagerHandler : IConsumptionManagerHandler
+    internal sealed class ConsumptionManagementHandler : IConsumptionManagementHandler
     {
-        private readonly IConsumptionManagerQueryService _consumptionManagerQueryService;
-        private readonly IValidator<ConsumptionManagerInputDto> _validator;
-        public ConsumptionManagerHandler(
-            IConsumptionManagerQueryService consumptionManagerQueryService,
-            IValidator<ConsumptionManagerInputDto> validator)
+        private readonly IConsumptionManagementQueryService _consumptionManagerQueryService;
+        private readonly IValidator<ConsumptionManagementInputDto> _validator;
+        public ConsumptionManagementHandler(
+            IConsumptionManagementQueryService consumptionManagerQueryService,
+            IValidator<ConsumptionManagementInputDto> validator)
         {
             _consumptionManagerQueryService = consumptionManagerQueryService;
             _consumptionManagerQueryService.NotNull(nameof(consumptionManagerQueryService));
@@ -23,7 +23,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<ConsumptionManagerHeaderOutputDto, ConsumptionManagerDataOutputDto>> Handle(ConsumptionManagerInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<ConsumptionManagementHeaderOutputDto, ConsumptionManagementDataOutputDto>> Handle(ConsumptionManagementInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -32,7 +32,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
                 throw new CustomValidationException(message);
             }
 
-            ReportOutput<ConsumptionManagerHeaderOutputDto, ConsumptionManagerDataOutputDto> result = await _consumptionManagerQueryService.Get(input);
+            ReportOutput<ConsumptionManagementHeaderOutputDto, ConsumptionManagementDataOutputDto> result = await _consumptionManagerQueryService.Get(input);
 
             return result;
         }

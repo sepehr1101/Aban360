@@ -9,18 +9,18 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
-    internal sealed class ConsumptionManagerQueryService : AbstractBaseConnection, IConsumptionManagerQueryService
+    internal sealed class ConsumptionManagementQueryService : AbstractBaseConnection, IConsumptionManagementQueryService
     {
-        public ConsumptionManagerQueryService(IConfiguration configuration)
+        public ConsumptionManagementQueryService(IConfiguration configuration)
             : base(configuration)
         {
         }
 
-        public async Task<ReportOutput<ConsumptionManagerHeaderOutputDto, ConsumptionManagerDataOutputDto>> Get(ConsumptionManagerInputDto input)
+        public async Task<ReportOutput<ConsumptionManagementHeaderOutputDto, ConsumptionManagementDataOutputDto>> Get(ConsumptionManagementInputDto input)
         {
             string query = GetQuery();
-            IEnumerable<ConsumptionManagerDataOutputDto> data = await _sqlReportConnection.QueryAsync<ConsumptionManagerDataOutputDto>(query, input);
-            ConsumptionManagerHeaderOutputDto header = new ConsumptionManagerHeaderOutputDto()
+            IEnumerable<ConsumptionManagementDataOutputDto> data = await _sqlReportConnection.QueryAsync<ConsumptionManagementDataOutputDto>(query, input);
+            ConsumptionManagementHeaderOutputDto header = new ConsumptionManagementHeaderOutputDto()
             {
                 FromConsumptionAverage = input.FromConsumptionAverage,
                 ToConsumptionAverage = input.ToConsumptionAverage,
@@ -44,7 +44,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 				AverageConsumptionPercent=data.Average(c=>c.PercentConsumptinAverageChange),
 				AverageSumtItemsPercent=data.Average(c=>c.PercentSumItemsChange),
             };
-            ReportOutput<ConsumptionManagerHeaderOutputDto, ConsumptionManagerDataOutputDto> result = new(ReportLiterals.ConsumptionManagerDetail, header, data);
+            ReportOutput<ConsumptionManagementHeaderOutputDto, ConsumptionManagementDataOutputDto> result = new(ReportLiterals.ConsumptionManagerDetail, header, data);
             
             return result;
         }

@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs
 {
-    public record ConsumptionManagerDataOutputDto
+    public record ConsumptionManagementDataOutputDto
     {
         public int ZoneId { get; set; }
         public string ZoneTitle { get; set; }

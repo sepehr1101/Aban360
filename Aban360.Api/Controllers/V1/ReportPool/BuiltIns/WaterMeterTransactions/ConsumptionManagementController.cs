@@ -9,13 +9,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 {
-    [Route("v1/consumption-manager")]
-    public class ConsumptionManagerController : BaseController
+    [Route("v1/consumption-management")]
+    public class ConsumptionManagementController : BaseController
     {
-        private readonly IConsumptionManagerHandler _consumptionManagerHandler;
+        private readonly IConsumptionManagementHandler _consumptionManagerHandler;
         private readonly IReportGenerator _reportGenerator;
-        public ConsumptionManagerController(
-            IConsumptionManagerHandler consumptionManagerHandler,
+        public ConsumptionManagementController(
+            IConsumptionManagementHandler consumptionManagerHandler,
             IReportGenerator reportGenerator)
         {
             _consumptionManagerHandler = consumptionManagerHandler;
@@ -27,16 +27,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ConsumptionManagerHeaderOutputDto, ConsumptionManagerDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRaw(ConsumptionManagerInputDto input, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ConsumptionManagementHeaderOutputDto, ConsumptionManagementDataOutputDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetRaw(ConsumptionManagementInputDto input, CancellationToken cancellationToken)
         {
-            ReportOutput<ConsumptionManagerHeaderOutputDto, ConsumptionManagerDataOutputDto> result = await _consumptionManagerHandler.Handle(input, cancellationToken);
+            ReportOutput<ConsumptionManagementHeaderOutputDto, ConsumptionManagementDataOutputDto> result = await _consumptionManagerHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
-        public async Task<IActionResult> GetExcel(string connectionId, ConsumptionManagerInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetExcel(string connectionId, ConsumptionManagementInputDto inputDto, CancellationToken cancellationToken)
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _consumptionManagerHandler.Handle, CurrentUser, ReportLiterals.ConsumptionManagerDetail, connectionId);
             return Ok(inputDto);
@@ -45,10 +45,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         [HttpPost]
         [Route("sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetStiReport(ConsumptionManagerInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetStiReport(ConsumptionManagementInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 670;
-            ReportOutput<ConsumptionManagerHeaderOutputDto, ConsumptionManagerDataOutputDto> calculationDetails = await _consumptionManagerHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<ConsumptionManagementHeaderOutputDto, ConsumptionManagementDataOutputDto> calculationDetails = await _consumptionManagerHandler.Handle(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode);
             return Ok(reportId);
         }
