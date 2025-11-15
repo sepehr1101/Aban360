@@ -26,16 +26,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             double sewageAmount = 0;
             //محاسبه کارمزد دفع در کاربری های گروه خانگی ضریب 0.7
             double multiplier = GetMultiplier(isAbonman, customerInfo.UsageId);
-
-            if(isAbonman && IsConstruction(customerInfo.BranchType))
-            {
-                return abBahaItemAmount;
-            }
-            if (IsConstruction(customerInfo.BranchType))
+           
+            if (IsConstruction(customerInfo.BranchType) && !isAbonman)
             {
                 return 0;
             }
-
             if (customerInfo.SewageCalcState == _withoutSewage)
             {
                 return 0;

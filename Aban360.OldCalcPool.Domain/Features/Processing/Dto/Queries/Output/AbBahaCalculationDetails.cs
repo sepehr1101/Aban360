@@ -121,7 +121,8 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             AvarezAmount = TrimAmount(AvarezAmount, AvarezDiscount);
             JavaniAmount = TrimAmount(JavaniAmount, JavaniDiscount);
             MaliatAmount = TrimAmount(MaliatAmount, MaliatDiscount);
-            SumItems = TrimAmount(SumItems, DiscountSum);            
+            SumBoodje = TrimAmount(SumBoodje, boodjeDiscount);
+            SumItems = TrimAmount(SumItems, DiscountSum);     
 
             Nerkh = _nerkh;
             AbAzad = _abAzad;

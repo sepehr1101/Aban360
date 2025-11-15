@@ -144,30 +144,32 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 {
                     return calculateAbBahaOutputDto.AbBahaAmount;
                 }
+                double mullahMultiplier = IsMullah(customerInfo.BranchType) ? 0.5 : 1;
                 if (nerkh.PartialConsumption <= olgoo)// در صورتی که مصرف زیر الگو بود کامل معاف میشود
                 {
-                    return calculateAbBahaOutputDto.AbBahaAmount;
+                    return calculateAbBahaOutputDto.AbBahaAmount * mullahMultiplier;
                 }
                 else//در صورتی که بالای الگو بود بخش زیر الگو معاف و بالای الگو اخذ شود
                 {
                     //long partialAmount = (long)(partialOlgoo / nerkh.PartialConsumption * amount);
                     //return partialAmount;
-                    return (long)(calculateAbBahaOutputDto.AbBaha1 > 0 ? calculateAbBahaOutputDto.AbBaha1 : c_1404 * 0.01 * partialOlgoo * olgoo * (double)multiplier);
+                    return (long)(calculateAbBahaOutputDto.AbBaha1 > 0 ? calculateAbBahaOutputDto.AbBaha1 : c_1404 * 0.01 * partialOlgoo * olgoo * (double)multiplier) * mullahMultiplier;
                 }
             }
+            //if (IsMullah(customerInfo.BranchType))
+            //{
+            //    double allowedPartialConsumption = Math.Min(partialOlgoo, nerkh.PartialConsumption);
+            //    double disallowedPartialConsumption = (nerkh.PartialConsumption - allowedPartialConsumption) > 0 ? nerkh.PartialConsumption - allowedPartialConsumption : 0;
+            //    return (long)(allowedPartialConsumption * 0.5 + disallowedPartialConsumption * 0.35) * 0.5;
+            //}
             if (IsReligiousWithCharity(customerInfo.UsageId))//TODO: error golzar
             {
                 //در صورتی که بالای الگو بود بخش زیر الگو معاف و بالای الگو اخذ شود
                 //C*0.1                
                 return (long)(calculateAbBahaOutputDto.AbBaha1 > 0 ? calculateAbBahaOutputDto.AbBaha1 : c_1404 * 0.1 * partialOlgoo * olgoo * (double)multiplier);
             }
-            if(IsMullah(customerInfo.BranchType))
-            {
-                double allowedPartialConsumption = Math.Min(partialOlgoo, nerkh.PartialConsumption);
-                double disallowedPartialConsumption = (nerkh.PartialConsumption - allowedPartialConsumption) > 0 ? nerkh.PartialConsumption - allowedPartialConsumption : 0;
-                return (long)(allowedPartialConsumption * 0.5 + disallowedPartialConsumption * 0.35);
-            }
-            double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, nerkh.PartialConsumption, nerkh.Duration, amount);
+            
+            double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, nerkh.PartialConsumption, nerkh.Duration, calculateAbBahaOutputDto.AbBahaAmount);
             return virtualDiscount > 0 ? (long)virtualDiscount : 0;
         }
 
