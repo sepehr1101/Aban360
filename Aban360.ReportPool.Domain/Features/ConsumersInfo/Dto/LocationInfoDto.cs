@@ -10,6 +10,9 @@
         public string EvaluatorSpecifications { get; set; } = null!;
         public string Address { get; set; } = null!;
 
-
+        public double Easting { get; set; }
+        public double Northing { get; set; }
+        public int UtmZone { get; set; }
+        public string? Letter { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     internal interface IAbonmanCalculator
     {
         double CalculateAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali);
-        double CalculateDiscount(int usageId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial);
+        double CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial);
     }
 
     internal sealed class AbonmanCalculator : IAbonmanCalculator
@@ -82,9 +82,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             return abonAbAmount;
         }
 
-        public double CalculateDiscount(int usageId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial)
+        public double CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial)
         {
             if (IsSpecialEducation(usageId, isSpecial))
+            {
+                return 0;
+            }
+            if(IsConstruction(branchTypeId))
             {
                 return 0;
             }

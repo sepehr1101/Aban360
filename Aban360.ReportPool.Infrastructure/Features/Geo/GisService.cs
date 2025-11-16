@@ -1,14 +1,17 @@
 ﻿using Aban360.BlobPool.GatewayAddHoc.Features.OpenKm.Contracts;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
-using Aban360.ReportPool.Infrastructure.Features.CustomerInfo.Contracts;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
-namespace Aban360.ReportPool.Infrastructure.Features.CustomerInfo.Implementations
+namespace Aban360.ReportPool.Infrastructure.Features.Geo
 {
+    public interface IGisService
+    {
+        Task<CustomerLocationDto> GetCustomerLocation(CustomerLocationInputDto inputDto);
+    }
     internal sealed class GisService : IGisService
     {
         private readonly ITokenService _tokenService;
@@ -39,6 +42,7 @@ namespace Aban360.ReportPool.Infrastructure.Features.CustomerInfo.Implementation
             var response = await _httpClient.PostAsync(_url, content);
             response.EnsureSuccessStatusCode();
             CustomerLocationDto result = await response.Content.ReadFromJsonAsync<CustomerLocationDto>();
+            
             return result;
         }
     }

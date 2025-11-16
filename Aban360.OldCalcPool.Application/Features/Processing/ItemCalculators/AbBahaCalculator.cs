@@ -158,7 +158,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 {
                     //long partialAmount = (long)(partialOlgoo / nerkh.PartialConsumption * amount);
                     //return partialAmount;
-                    return (long)(calculateAbBahaOutputDto.AbBaha1 > 0 ? calculateAbBahaOutputDto.AbBaha1 : c_1404 * 0.01 * partialOlgoo * olgoo * (double)multiplier) * mullahMultiplier * villageMultiplier.Item2;
+                    return (long)(calculateAbBahaOutputDto.AbBaha1 > 0 ? calculateAbBahaOutputDto.AbBaha1 : c_1404 * 0.01 * partialOlgoo * olgoo * (double)multiplier) * mullahMultiplier * villageMultiplier.Item1;
                 }
             }
             if (IsReligiousWithCharity(customerInfo.UsageId))//TODO: error golzar
