@@ -1,5 +1,6 @@
 ﻿using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
+using System.ComponentModel;
 
 namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
 {
@@ -45,7 +46,6 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         public IEnumerable<ZaribGetDto> Zarib { get; set; }
         public CustomerInfoOutputDto Customer { get; set; }
         public MeterInfoOutputDto MeterInfo { get; set; }
-        public double Multiplier { get;}
 
         public long StopWatch { get; set; }
 
