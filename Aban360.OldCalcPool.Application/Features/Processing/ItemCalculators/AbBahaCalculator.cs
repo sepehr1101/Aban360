@@ -132,6 +132,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return 0;
             }
+            if(IsConstruction(customerInfo.BranchType))
+            {
+                return 0;
+            }
             decimal multiplier = GetMultiplier(zarib, olgoo, IsDomesticCategory(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
             double partialOlgoo = IsDomestic(customerInfo.UsageId) ?
                (double)finalDomesticUnit * olgoo / monthDays * nerkh.Duration :
@@ -145,30 +149,24 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                     return calculateAbBahaOutputDto.AbBahaAmount;
                 }
                 double mullahMultiplier = IsMullah(customerInfo.BranchType) ? 0.5 : 1;
+                (double, double) villageMultiplier = (!IsMullah(customerInfo.BranchType) && isVillageCalculation && IsDomestic(customerInfo.UsageId)) ? (0.5, 0.35) : (1, 1);
                 if (nerkh.PartialConsumption <= olgoo)// در صورتی که مصرف زیر الگو بود کامل معاف میشود
                 {
-                    return calculateAbBahaOutputDto.AbBahaAmount * mullahMultiplier;
+                    return calculateAbBahaOutputDto.AbBahaAmount * mullahMultiplier * villageMultiplier.Item1;
                 }
                 else//در صورتی که بالای الگو بود بخش زیر الگو معاف و بالای الگو اخذ شود
                 {
                     //long partialAmount = (long)(partialOlgoo / nerkh.PartialConsumption * amount);
                     //return partialAmount;
-                    return (long)(calculateAbBahaOutputDto.AbBaha1 > 0 ? calculateAbBahaOutputDto.AbBaha1 : c_1404 * 0.01 * partialOlgoo * olgoo * (double)multiplier) * mullahMultiplier;
+                    return (long)(calculateAbBahaOutputDto.AbBaha1 > 0 ? calculateAbBahaOutputDto.AbBaha1 : c_1404 * 0.01 * partialOlgoo * olgoo * (double)multiplier) * mullahMultiplier * villageMultiplier.Item2;
                 }
             }
-            //if (IsMullah(customerInfo.BranchType))
-            //{
-            //    double allowedPartialConsumption = Math.Min(partialOlgoo, nerkh.PartialConsumption);
-            //    double disallowedPartialConsumption = (nerkh.PartialConsumption - allowedPartialConsumption) > 0 ? nerkh.PartialConsumption - allowedPartialConsumption : 0;
-            //    return (long)(allowedPartialConsumption * 0.5 + disallowedPartialConsumption * 0.35) * 0.5;
-            //}
             if (IsReligiousWithCharity(customerInfo.UsageId))//TODO: error golzar
             {
                 //در صورتی که بالای الگو بود بخش زیر الگو معاف و بالای الگو اخذ شود
                 //C*0.1                
                 return (long)(calculateAbBahaOutputDto.AbBaha1 > 0 ? calculateAbBahaOutputDto.AbBaha1 : c_1404 * 0.1 * partialOlgoo * olgoo * (double)multiplier);
-            }
-            
+            }            
             double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, nerkh.PartialConsumption, nerkh.Duration, calculateAbBahaOutputDto.AbBahaAmount);
             return virtualDiscount > 0 ? (long)virtualDiscount : 0;
         }

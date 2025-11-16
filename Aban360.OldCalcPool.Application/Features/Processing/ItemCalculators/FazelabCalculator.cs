@@ -39,7 +39,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             if (IsInstallAfterReading(date2, customerInfo))
             {
                 return 0;
-            }
+            }            
             else if (IsFirstCalculation(date2, customerInfo))
             {
                 CalcDistanceResultDto calcDistance = CalcDistance(customerInfo.SewageInstallationDateJalali, date2, true, customerInfo);
@@ -82,7 +82,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return 0;
             }
-
+            if (IsConstruction(customerInfo.BranchType))
+            {
+                return 0;
+            }
             double fazelabDiscount = abBahaDiscount * GetMultiplier(false,customerInfo.UsageId);
             double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, nerkh.PartialConsumption, nerkh.Duration, fazelabDiscount);
             return virtualDiscount > 0 ? virtualDiscount : fazelabDiscount;//fazelabAmount

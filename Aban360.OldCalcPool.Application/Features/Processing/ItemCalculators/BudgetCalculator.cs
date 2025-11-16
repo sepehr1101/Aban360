@@ -69,6 +69,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return 0;
             }
+            if (IsConstruction(customerInfo.BranchType))
+            {
+                return 0;
+            }
             if (IsHandoverDiscount(customerInfo.BranchType) &&
                 IsDomesticCategory(customerInfo.UsageId))
             {
