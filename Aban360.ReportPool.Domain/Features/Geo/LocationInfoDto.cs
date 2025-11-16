@@ -1,4 +1,4 @@
-﻿namespace Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto
+﻿namespace Aban360.ReportPool.Domain.Features.Geo
 {
     public record LocationInfoDto
     {

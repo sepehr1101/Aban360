@@ -1,6 +1,6 @@
-﻿using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+﻿using Aban360.ReportPool.Domain.Features.Geo;
 
-namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contracts
+namespace Aban360.ReportPool.Application.Features.Geo.Contracts
 {
     public interface ILocationInfoGetHandler
     {

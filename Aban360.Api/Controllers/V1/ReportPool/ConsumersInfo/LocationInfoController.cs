@@ -1,8 +1,8 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contracts;
-using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+using Aban360.ReportPool.Application.Features.Geo.Contracts;
+using Aban360.ReportPool.Domain.Features.Geo;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
