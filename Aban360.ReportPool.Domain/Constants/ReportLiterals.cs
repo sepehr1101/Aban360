@@ -3,6 +3,7 @@
     public static class ReportLiterals
     {
         public static string HandleFlat { get { return "HandleFlat"; } }
+        public static string Handle { get { return "Handle"; } }
 
         public static string Report { get { return "گزارش"; } }
         public static string RegisterDate { get { return "تاریخ ثبت"; } }

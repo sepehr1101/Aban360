@@ -10,7 +10,7 @@ namespace Aban360.Common.Extensions
     {
         public static string pathBase { get; set; } = "AppData\\Excels\\";
         public static int maxDataCount { get; set; } = 1000000;
-        public static async Task<string> ExportToExcelAsync<THeader, TData>(THeader tHeader, IEnumerable<TData> tData, string reportName)
+        public static async Task<string> ExportToExcelAsync<THeader, TData>(THeader tHeader, IEnumerable<TData> tData, string reportName, string[]? excludedProperties = null)
         {
             Validate(tHeader, tData);
 
@@ -22,7 +22,7 @@ namespace Aban360.Common.Extensions
             for (int i = 0; i < sheetCount + 1; i++)
             {
                 var sheetData = tData.Skip(i * maxDataCount).Take(maxDataCount).ToList();
-                excelfile[ExceptionLiterals.Page(i + 1)] = TranslateData(sheetData);
+                excelfile[ExceptionLiterals.Page(i + 1)] = TranslateData(sheetData,excludedProperties);
             }
 
             string path = GetPath(reportName);
@@ -75,7 +75,7 @@ namespace Aban360.Common.Extensions
             return row;
         }
 
-        private static List<Dictionary<string, object>> TranslateData<T>(IEnumerable<T> data)
+        private static List<Dictionary<string, object>> TranslateData<T>(IEnumerable<T> data, string[]? excludedProperties = null)
         {
             var result = new List<Dictionary<string, object>>();
 
@@ -83,7 +83,8 @@ namespace Aban360.Common.Extensions
             if (!enumerator.MoveNext()) return result;
 
             var first = enumerator.Current;
-            var props = GetOrderedProperties(first);
+            string[]? excludedProps=excludedProperties ?? Array.Empty<string>();
+            var props = GetOrderedProperties(first).Where(p=>!excludedProps.Contains(p.Name)).ToList();
             var persianProp = GetPersianProperty();
             do
             {
