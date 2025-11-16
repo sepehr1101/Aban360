@@ -20,9 +20,9 @@ namespace Aban360.Api.Cronjobs
 {
     public interface IReportGenerator
     {
-        Task DirectExecute<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId);
-        Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId,[Optional] string methodName);
-        Task DoFireAndInform(ServerReportsCreateDto serverReportsCreateDto,string myMethodName);
+        Task DirectExecute<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId, string[]? excludedProperties = null);
+        Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId, [Optional] string methodName, string[]? excludedProperties = null);
+        Task DoFireAndInform(ServerReportsCreateDto serverReportsCreateDto, string myMethodName, string[]? excludedProperties = null);
     }
 
     internal sealed class ReportGenerator : IReportGenerator
@@ -54,9 +54,9 @@ namespace Aban360.Api.Cronjobs
             _serviceProvider.NotNull(nameof(serviceProvider));
 
             _notifyHub = notifyHub;
-            _notifyHub.NotNull(nameof(notifyHub)); 
+            _notifyHub.NotNull(nameof(notifyHub));
         }
-        public async Task DirectExecute<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId)
+        public async Task DirectExecute<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId, string[]? excludedProperties = null)
         {
             Guid id = Guid.NewGuid();
             ServerReportsCreateDto serverReportsCreateDto = CreateServerReportDto(id, reportInput, GetData, appUser, reportTitle, connectionId);
@@ -67,20 +67,20 @@ namespace Aban360.Api.Cronjobs
 
             //Insert ServerReport
             ReportOutput<THead, TData> reportOutput = await GetData(reportInput, cancellationToken);
-            string reportPath = await ExcelManagement.ExportToExcelAsync(reportOutput.ReportHeader, reportOutput.ReportData, reportOutput.Title);
+            string reportPath = await ExcelManagement.ExportToExcelAsync(reportOutput.ReportHeader, reportOutput.ReportData, reportOutput.Title, excludedProperties);
 
             //Complete ServerReport
-            _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(id, reportPath,DateTime.Now,true), cancellationToken);
+            _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(id, reportPath, DateTime.Now, true), cancellationToken);
         }
-        public async Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId,string? methodName=MethodName)
+        public async Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId, string? methodName = MethodName, string[]? excludedProperties = null)
         {
             methodName ??= MethodName;
             ServerReportsCreateDto serverReportsCreateDto = CreateServerReportDto(Guid.NewGuid(), reportInput, GetData, appUser, reportTitle, connectionId);
             await _serverReportsCreateHandler.Handle(serverReportsCreateDto, cancellationToken);
-            BackgroundJob.Enqueue(() => DoFireAndInform(serverReportsCreateDto, methodName));
+            BackgroundJob.Enqueue(() => DoFireAndInform(serverReportsCreateDto, methodName, excludedProperties));
         }
 
-        public async Task DoFireAndInform(ServerReportsCreateDto serverReportsCreateDto,string myMethodName)
+        public async Task DoFireAndInform(ServerReportsCreateDto serverReportsCreateDto, string myMethodName, string[]? excludedProperties = null)
         {
             ServerReportsGetByIdDto serverReportsGetByIdDto = await _serverReportsGetByIdServices.GetById(serverReportsCreateDto.Id);
 
@@ -115,7 +115,7 @@ namespace Aban360.Api.Cronjobs
 
             var reportOutputType = typeof(ReportOutput<,>).MakeGenericType(outputHeaderDtoType, outputDataDtoType);
 
-            var result = methodName.Invoke(handlerInstance, [ data,CancellationToken.None ]) as Task;
+            var result = methodName.Invoke(handlerInstance, [data, CancellationToken.None]) as Task;
             await result;
 
             var resultProperty = result.GetType().GetProperty("Result");
@@ -127,8 +127,8 @@ namespace Aban360.Api.Cronjobs
                 var reportHeader = dynamicResult.ReportHeader;
                 var reportData = dynamicResult.ReportData;
 
-                string reportPath = await ExcelManagement.ExportToExcelAsync(reportHeader, reportData, serverReportsGetByIdDto.ReportName);
-                _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(serverReportsGetByIdDto.Id, reportPath, DateTime.Now,true), CancellationToken.None);
+                string reportPath = await ExcelManagement.ExportToExcelAsync(reportHeader, reportData, serverReportsGetByIdDto.ReportName, excludedProperties);
+                _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(serverReportsGetByIdDto.Id, reportPath, DateTime.Now, true), CancellationToken.None);
             }
             NotifyUser(serverReportsGetByIdDto);
         }
@@ -151,8 +151,8 @@ namespace Aban360.Api.Cronjobs
         }
         private void NotifyUser(ServerReportsGetByIdDto serverReportsGetByIdDto)
         {
-            ReportCompletionNotification reportCompletionNotification = new(serverReportsGetByIdDto.ReportName, serverReportsGetByIdDto.Id); 
-            if(!string.IsNullOrWhiteSpace(serverReportsGetByIdDto.ConnectionId))
+            ReportCompletionNotification reportCompletionNotification = new(serverReportsGetByIdDto.ReportName, serverReportsGetByIdDto.Id);
+            if (!string.IsNullOrWhiteSpace(serverReportsGetByIdDto.ConnectionId))
             {
                 _notifyHub.Clients.Client(serverReportsGetByIdDto.ConnectionId).InformReportCompletion(reportCompletionNotification);
             }

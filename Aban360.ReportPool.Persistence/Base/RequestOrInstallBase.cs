@@ -21,7 +21,6 @@ namespace Aban360.ReportPool.Persistence.Base
 		                    *
                         From [CustomerWarehouse].dbo.Clients c
 	                    Where				
-		                    c.{queryParams.DataField} BETWEEN @FromDateJalali AND @ToDateJalali AND
 		                    c.ZoneId IN @zoneIds AND
 		                    c.UsageId IN @usageIds AND
 		                    (
@@ -61,6 +60,7 @@ namespace Aban360.ReportPool.Persistence.Base
 	                    On t51.C1=t46.C0
                     WHERE	  
                         c.RN=1 AND
+		                c.{queryParams.DataField} BETWEEN @FromDateJalali AND @ToDateJalali AND
 	                    c.DeletionStateId NOT IN(1,2)";
         }
         internal string GetGroupedQuery(bool isWater, InstallOrRequestOrInstallDepartmentEnum inputEnum, string groupingField)// bool isRequest
@@ -74,7 +74,6 @@ namespace Aban360.ReportPool.Persistence.Base
 		                    *
                         From [CustomerWarehouse].dbo.Clients c
 	                    Where				
-		                    c.{queryParams.DataField} BETWEEN @FromDateJalali AND @ToDateJalali AND
 		                    c.ZoneId IN @zoneIds AND
 		                    c.UsageId IN @usageIds AND
 		                    (
@@ -112,14 +111,15 @@ namespace Aban360.ReportPool.Persistence.Base
 	                    On t51.C1=t46.C0
                     WHERE	  
                         c.RN=1 AND
-	                    c.DeletionStateId NOT IN(1,2)
+		                c.{queryParams.DataField} BETWEEN @FromDateJalali AND @ToDateJalali AND
+	                    c.DeletionStateId NOT IN(1,2) 
                     GROUP BY
                         c.{groupingField}";
         }
         internal string GetGroupedQuery(bool isWater, InstallOrRequestOrInstallDepartmentEnum inputEnum, bool hasTwoParams, string firstParam, string? secondParam)// bool isRequest
         {
             QueryParams queryParams = GetQueryParams(isWater, inputEnum);
-            var (selectParam,groupingParam) = GetGroupingField(hasTwoParams, firstParam, secondParam);
+            var (selectParam, groupingParam) = GetGroupingField(hasTwoParams, firstParam, secondParam);
 
             return $@";WITH CTE AS
                     (
@@ -128,7 +128,6 @@ namespace Aban360.ReportPool.Persistence.Base
 		                    *
                         From [CustomerWarehouse].dbo.Clients c
 	                    Where				
-		                    c.{queryParams.DataField} BETWEEN @FromDateJalali AND @ToDateJalali AND
 		                    c.ZoneId IN @zoneIds AND
 		                    c.UsageId IN @usageIds AND
 		                    (
@@ -165,7 +164,8 @@ namespace Aban360.ReportPool.Persistence.Base
 	                    On t51.C1=t46.C0
                     WHERE	  
                         c.RN=1 AND
-	                    c.DeletionStateId NOT IN(1,2)
+	                    c.DeletionStateId NOT IN(1,2) AND
+		                c.{queryParams.DataField} BETWEEN @FromDateJalali AND @ToDateJalali 
                     GROUP BY
                         {groupingParam}";
         }
