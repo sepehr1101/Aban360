@@ -47,8 +47,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
                 //m.MeterLife = meterLife.HasValue ? CalculationDistanceDate.ConvertDaysToDate(meterLife.Value) : ExceptionLiterals.Incalculable;
             
                 CalcDistanceResultDto calcDistance = CalculationDistanceDate.CalcDistance(maxDateJalali);
-                m.MeterLife = calcDistance.HasError == false ? calcDistance.DistanceText : ExceptionLiterals.Incalculable;
-            });
+             });
             return malfunctionMeter;
         }
 
