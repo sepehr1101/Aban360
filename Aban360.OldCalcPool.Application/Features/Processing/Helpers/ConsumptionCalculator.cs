@@ -3,6 +3,7 @@ using Aban360.OldCalcPool.Application.Constant;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using DNTPersianUtils.Core;
+using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
 {
@@ -59,6 +60,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         }
         private int GetFinalDomesticUnit(CustomerInfoOutputDto customerInfo, string readingDateJalali)
         {
+            if(IsGardenAndResidence(customerInfo.UsageId))
+            {
+                return customerInfo.OtherUnit + customerInfo.DomesticUnit;
+            }
             int finalHousehold = GetHouseholdUnit(customerInfo.HouseholdNumber, customerInfo.HouseholdDate, readingDateJalali);
             if (finalHousehold > 0)
             {

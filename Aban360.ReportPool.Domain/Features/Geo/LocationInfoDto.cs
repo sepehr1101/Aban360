@@ -1,4 +1,4 @@
-﻿namespace Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto
+﻿namespace Aban360.ReportPool.Domain.Features.Geo
 {
     public record LocationInfoDto
     {
@@ -10,6 +10,9 @@
         public string EvaluatorSpecifications { get; set; } = null!;
         public string Address { get; set; } = null!;
 
-
+        public double Easting { get; set; }
+        public double Northing { get; set; }
+        public int UtmZone { get; set; }
+        public string? Letter { get; set; }
     }
 }

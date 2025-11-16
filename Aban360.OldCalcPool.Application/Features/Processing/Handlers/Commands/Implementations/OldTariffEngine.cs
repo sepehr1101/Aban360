@@ -1,7 +1,7 @@
-﻿using Aban360.CalculationPool.Application.Features.Base;
-using Aban360.Common.Exceptions;
+﻿using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using Aban360.OldCalcPool.Application.Features.Base;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Application.Features.Processing.Helpers;
 using Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators;
@@ -14,25 +14,34 @@ using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
 using Aban360.ReportPool.Persistence.Features.Tagging;
 using DNTPersianUtils.Core;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffDateOperations;
+using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
-    internal sealed class OldTariffEngine : BaseOldTariffEngine, IOldTariffEngine
+    internal sealed class OldTariffEngine : BaseExpressionCalculator, IOldTariffEngine
     {
+        const int monthDays = 30;
+        const int thresholdDay = 4;
+        const float vatRate = 0.1f;
+
         private readonly ICustomerInfoDetailQueryService _customerInfoDetailQueryService;
         private readonly IMeterInfoDetailQueryService _meterInfoDetailQueryService;
         private readonly INerkhGetByConsumptionService _nerkhGetByConsumptionService;
         private readonly IZaribCQueryService _zaribCQueryService;
         private readonly ITable1GetService _table1QueryService;
         private readonly IBillIdTagService _tagService;
-        private readonly IConsumptionCalculator _consumptionCalculator;
         private readonly IBillQueryService _billQueryService;
+        private readonly IConsumptionCalculator _consumptionCalculator;
+
+        private readonly IAbBahaCalculator _abBahaCalculator;
         private readonly IFazelabCalculator _fazelabCalculator;
         private readonly IHotSeasonCalculator _hotSeasonCalculator;
+        private readonly IBudgetCalculator _budgetCalculator;
+        private readonly IJavaniJamiatCalculator _javaniJamiatCalculator;
+        private readonly IAvarezCalculator _avarezCalculator;
         private readonly IAbonmanCalculator _abonmanCalculator;
-
-        int thresholdDay = 4;
-        float vatRate = 0.1f;
 
         public OldTariffEngine(
             ICustomerInfoDetailQueryService customerInfoDetailQueryService,
@@ -50,8 +59,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             IBudgetCalculator budgetCalculator,
             IJavaniJamiatCalculator javaniJamiatCalculator,
             IAvarezCalculator avarezCalculator)
-            : base(abBahaCalculator, fazelabCalculator, hotSeasonCalculator, abonmanCalculator,budgetCalculator, javaniJamiatCalculator, avarezCalculator)
-
         {
             _customerInfoDetailQueryService = customerInfoDetailQueryService;
             _customerInfoDetailQueryService.NotNull(nameof(customerInfoDetailQueryService));
@@ -71,15 +78,29 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             _tagService = tagService;
             _tagService.NotNull(nameof(_tagService));
 
+            _billQueryService = billQueryService;
+            _billQueryService.NotNull(nameof(_billQueryService));
+
             _consumptionCalculator = consumptionCalculator;
             _consumptionCalculator.NotNull(nameof(_consumptionCalculator));
 
-            _billQueryService = billQueryService;
-            _billQueryService.NotNull(nameof(_billQueryService));
+            _abBahaCalculator = abBahaCalculator;
+            _abBahaCalculator.NotNull(nameof(_fazelabCalculator));
 
             _fazelabCalculator = fazelabCalculator;
             _fazelabCalculator.NotNull(nameof(_fazelabCalculator));
 
+            _hotSeasonCalculator = hotSeasonCalculator;
+            _hotSeasonCalculator.NotNull(nameof(_hotSeasonCalculator));
+
+            _budgetCalculator = budgetCalculator;
+            _budgetCalculator.NotNull(nameof(_budgetCalculator));
+
+            _javaniJamiatCalculator = javaniJamiatCalculator;
+            _javaniJamiatCalculator.NotNull(nameof(_javaniJamiatCalculator));
+
+            _avarezCalculator = avarezCalculator;
+            _avarezCalculator.NotNull(nameof(_avarezCalculator));
 
             _abonmanCalculator = abonmanCalculator;
             _abonmanCalculator.NotNull(nameof(_abonmanCalculator));
@@ -219,8 +240,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             }
             sumAbonmanAbBaha = _abonmanCalculator.CalculateAb(customerInfo, meterInfo, currentDateJalali);
             sumAbonmanFazelab = _fazelabCalculator.Calculate(meterInfo.PreviousDateJalali, currentDateJalali, consumptionInfo.Duration, customerInfo, sumAbonmanAbBaha, currentDateJalali, true);
-            sumAbonmanAbDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, sumAbonmanAbBaha, sumAbBahaDiscount, customerInfo.IsSpecial);
-            sumAbonmanFazelabDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, sumAbonmanFazelab, sumFazelabDiscount, customerInfo.IsSpecial);            
+            sumAbonmanAbDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, customerInfo.BranchType, sumAbonmanAbBaha, sumAbBahaDiscount, customerInfo.IsSpecial);
+            sumAbonmanFazelabDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, customerInfo.BranchType, sumAbonmanFazelab, sumFazelabDiscount, customerInfo.IsSpecial);            
             double AbBahaResult = sumAbBaha + sumHotSeasonAbBaha + sumAbonmanAbBaha;
             double sumBoodje = sumBoodjePart1 + sumBoodjePart2;
             double sumMaliatAmount = CalculateTax(sumAbBaha, sumFazelab, sumAbonmanAbBaha, sumAbonmanFazelab, sumHotSeasonAbBaha, sumHotSeasonFazelab, sumBoodje);
@@ -258,6 +279,57 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 SewageRegisterDate=input.CustomerInfo.SewageRegisterDate,
                 
             };
+        }
+        private BaseOldTariffEngineOutputDto CalculateWaterBill(NerkhGetDto nerkh, AbAzadFormulaDto abAzad, ZaribGetDto zarib, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali, ConsumptionInfo consumptionInfo, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int>? tagIds)
+        {
+            DateOnly previousDate = ConvertJalaliToGregorian(meterInfo.PreviousDateJalali);
+            DateOnly currentDate = ConvertJalaliToGregorian(currentDateJalali);
+            nerkh.DailyAverageConsumption = consumptionInfo.DailyAverageConsumption;
+            (nerkh, nerkh.Duration, nerkh.PartialConsumption) = CalcPartial(nerkh, previousDate, currentDate, consumptionInfo);
+
+            int olgoo = GetOlgoo(nerkh.Date2, _olgoo);
+            bool isVillageCalculation = IsVillage(customerInfo.ZoneId);
+            double monthlyConsumption = nerkh.DailyAverageConsumption * monthDays;
+
+            CalculateAbBahaOutputDto abBahaResult = _abBahaCalculator.Calculate(nerkh, customerInfo, meterInfo, zarib, abAzad, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, c, tagIds); //CalculateAbBaha(nerkh, customerInfo, meterInfo, zarib, abAzad, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, multiplierAbBaha, c, tagIds);
+            (double, double) boodje = _budgetCalculator.Calculate(nerkh, customerInfo, currentDateJalali, monthlyConsumption, olgoo, consumptionInfo);
+            double fazelab = _fazelabCalculator.Calculate(nerkh.Date1, nerkh.Date2, nerkh.Duration, customerInfo, abBahaResult.AbBahaAmount, currentDateJalali, false);
+            (int, double, double) hotSeasonAbBaha = _hotSeasonCalculator.CalculateAb(nerkh, abBahaResult.AbBahaAmount, customerInfo, monthlyConsumption, abBahaResult);
+            (int, double, double) hotSeasonFazelab = _hotSeasonCalculator.CalcFazelab(nerkh, customerInfo, fazelab, monthlyConsumption, abBahaResult);
+            double avarez = _avarezCalculator.Calculate(nerkh, customerInfo, monthlyConsumption);
+            double javani = _javaniJamiatCalculator.Calculate(nerkh, customerInfo, abBahaResult.AbBahaAmount, monthlyConsumption, olgoo);
+
+            //Discounts
+            double abBahaDiscount = _abBahaCalculator.CalculateDiscount(zarib, isVillageCalculation, monthlyConsumption, customerInfo, nerkh, olgoo, abBahaResult, false, consumptionInfo.FinalDomesticUnit);
+            double fazelabDiscount = _fazelabCalculator.CalculateDiscount(abBahaDiscount, fazelab, customerInfo, nerkh);
+            double hotSeasonAbDiscount = _hotSeasonCalculator.CalculateDiscount(nerkh, abBahaDiscount, hotSeasonAbBaha, customerInfo, abBahaResult);
+            double hotSeasonFazelabDiscount = _hotSeasonCalculator.CalculateDiscount(nerkh, fazelabDiscount, hotSeasonFazelab, customerInfo, abBahaResult);
+            double boodjeDiscount = _budgetCalculator.CalculateDiscount(customerInfo, abBahaDiscount, boodje, nerkh);
+            return new BaseOldTariffEngineOutputDto(
+                abBahaValues: abBahaResult,
+                fazelabAmount: fazelab,
+                hotSeasonAbBahaAmount: hotSeasonAbBaha.Item2 + hotSeasonAbBaha.Item3,
+                hotSeasonFazelabAmount: hotSeasonFazelab.Item2 + hotSeasonFazelab.Item3,
+                boodjePart1: boodje.Item1,
+                boodjePart2: boodje.Item2,
+                abBahaDiscount: abBahaDiscount,
+                hotSeasonDiscount: hotSeasonAbDiscount,
+                fazelabDiscount: fazelabDiscount,
+                abonmanAbAmount: 0,
+                avarezAmount: avarez,
+                javaniAmount: javani,
+                abonmanAbDiscount: 0,
+                abonamenFazelabDiscount: 0,
+                avarezDiscount: 0,
+                javaniDiscount: 0,
+                boodjeDiscount,
+                hotSeasonFazelabDiscount: hotSeasonFazelabDiscount,
+                multiplier: abBahaResult.Multiplier);
+        }
+        private int GetOlgoo(string nerkhDate2, int olgo)
+        {
+            string baseDate = "1403/12/30";
+            return nerkhDate2.CompareTo(baseDate) <= 0 ? 14 : olgo;
         }
 
         private void Validate(string previousDateJalali)

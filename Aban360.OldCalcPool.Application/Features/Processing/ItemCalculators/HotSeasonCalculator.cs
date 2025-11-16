@@ -20,7 +20,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const double _hotSeasonRate = 0.2;
         const int _firstSewageCalculation = 1;
         public (int, double, double) CalculateAb(NerkhGetDto nerkh, double abBahaAmount, CustomerInfoOutputDto customerInfo, double monthlyConsumption, CalculateAbBahaOutputDto calcResult)
-        {
+        {           
             if (IsDomesticBelow25MeterConsumption(customerInfo, monthlyConsumption) &&
                 !IsConstruction(customerInfo.BranchType))
             {
@@ -62,6 +62,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 return 0;
             }
             if (hotSeasonInfo.Item1 == 0 || hotSeasonInfo.Item2 == 0)
+            {
+                return 0;
+            }
+            if (IsConstruction(customerInfo.BranchType))
             {
                 return 0;
             }

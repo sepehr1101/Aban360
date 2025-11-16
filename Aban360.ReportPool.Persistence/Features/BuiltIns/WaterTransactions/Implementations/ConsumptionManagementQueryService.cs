@@ -65,7 +65,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 							ON b.ZoneId=t.town
 						Where 
 							b.RegisterDay BETWEEN @FromBaseDateJalali AND @ToBaseDateJalali AND
-							b.ZoneId=@ZoneIds AND
+							b.ZoneId in @ZoneIds AND
 							(
 								(@IsOlgoo=1 AND b.UsageId IN(0,1,3))
 								OR
@@ -99,7 +99,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 							ON b.ZoneId=t.town
 						Where 
 							b.RegisterDay BETWEEN @FromComparisonDateJalali AND @ToComparisonDateJalali AND
-							b.ZoneId=@ZoneIds AND
+							b.ZoneId in @ZoneIds AND
 							(
 								(@IsOlgoo=1 AND b.UsageId IN(0,1,3))
 								OR

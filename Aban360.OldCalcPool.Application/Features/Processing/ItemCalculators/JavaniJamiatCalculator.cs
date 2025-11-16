@@ -15,13 +15,17 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         {
             //L 2608
             if (IsUsageConstructor(customerInfo.UsageId))
+            {
                 return 0;
+            }
             if (IsConstruction(customerInfo.BranchType))
+            {
                 return 0;
+            }
             if (abBahaAmount == 0)
+            {
                 return 0;
-            if (customerInfo.ZoneId == 151511)
-                return 0;
+            }
 
             int domesticUnit = customerInfo.DomesticUnit;
             double baseAmount = 1000;

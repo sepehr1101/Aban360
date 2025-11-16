@@ -1,10 +1,11 @@
 ﻿using Aban360.Common.Extensions;
-using Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contracts;
+using Aban360.ReportPool.Application.Features.Geo.Contracts;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
-using Aban360.ReportPool.Infrastructure.Features.CustomerInfo.Contracts;
+using Aban360.ReportPool.Domain.Features.Geo;
+using Aban360.ReportPool.Infrastructure.Features.Geo;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 
-namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implementations
+namespace Aban360.ReportPool.Application.Features.Geo.Implementations
 {
     internal class LocationInfoGetHandler : ILocationInfoGetHandler
     {
@@ -27,6 +28,11 @@ namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implemen
             var customerLocation = await _gisService.GetCustomerLocation(new CustomerLocationInputDto(billId));
             branchSpecificationSummaryInfo.X = customerLocation.X;
             branchSpecificationSummaryInfo.Y = customerLocation.Y;
+            var utm= UtmConverter.LatLonToUtm(double.Parse(customerLocation.X), double.Parse(customerLocation.Y));
+            branchSpecificationSummaryInfo.Easting = utm.Easting;
+            branchSpecificationSummaryInfo.Northing = utm.Northing;
+            branchSpecificationSummaryInfo.UtmZone = utm.Zone;
+            branchSpecificationSummaryInfo.Letter = utm.Letter;
 
             return branchSpecificationSummaryInfo;
         }
