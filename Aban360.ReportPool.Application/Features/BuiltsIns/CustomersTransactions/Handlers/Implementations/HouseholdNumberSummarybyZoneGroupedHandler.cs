@@ -97,6 +97,8 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             {
                 ItemTitle = input.ZoneTitle,
                 CustomerCount = input.CustomerCount,
+                ValidCount=input.ValidCount,
+                InvalidCount=input.InvalidCount,
                 TotalUnit = input.TotalUnit,
                 CommercialUnit = input.CommercialUnit,
                 DomesticUnit = input.DomesticUnit,

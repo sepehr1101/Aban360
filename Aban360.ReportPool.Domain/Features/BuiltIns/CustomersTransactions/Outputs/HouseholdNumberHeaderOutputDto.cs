@@ -15,5 +15,8 @@
         public int SumOtherUnit { get; set; }
         public int TotalUnit { get; set; }
         public int CustomerCount { get; set; }
+        public int ValidCount { get; set; }
+        public int InvalidCount { get; set; }
+        
     }
 }

@@ -6,7 +6,9 @@
         public string ZoneTitle { get; set; }
         public float SumHousehold { get; set; }
         public int CustomerCount { get; set; }
-        public int TotalUnit { get; set; }
+        public int ValidCount { get; set; }
+        public int InvalidCount { get; set; }
+        public int TotalUnit { get; set; }    
         public int CommercialUnit { get; set; }
         public int DomesticUnit { get; set; }
         public int OtherUnit { get; set; }

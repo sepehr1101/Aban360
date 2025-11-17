@@ -48,6 +48,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 SumOtherUnit = householdNumberData.Sum(i => i.OtherUnit),
                 TotalUnit = householdNumberData.Sum(i => i.TotalUnit),
                 CustomerCount = householdNumberData.Sum(i => i.CustomerCount),
+                ValidCount = householdNumberData.Sum(i => i.ValidCount),
+                InvalidCount= householdNumberData.Sum(i => i.InvalidCount),
             };
 
             var result = new ReportOutput<HouseholdNumberHeaderOutputDto, HouseholdNumberSummaryByZoneDataOutputDto>(reportTitle, householdNumberHeader, householdNumberData);
@@ -73,10 +75,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 							c.ZoneId in @zoneIds
                     )
                     Select	
-						--COUNT c.HouseholdDateJalali >@lastYearDate
 						MAX(t46.C2) AS RegionTitle,
 	                    c.ZoneTitle,
                         COUNT(1) CustomerCount,
+					    COUNT(CASE WHEN c.HouseholdDateJalali >= @lastYearDate THEN 1 ELSE NULL END) AS ValidCount,
+					    COUNT(CASE WHEN c.HouseholdDateJalali <  @lastYearDate THEN 1 ELSE NULL END) AS InvalidCount,
 						SUM(c.FamilyCount) as SumHousehold,
 						SUM(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) AS TotalUnit,
 						SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
