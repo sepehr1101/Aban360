@@ -16,7 +16,26 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
     {
         public ConsumptionInfo GetConsumptionInfo(MeterInfoOutputDto meterInfo, CustomerInfoOutputDto customerInfo)
         {
-            int consumption = GetConsumption(meterInfo.PreviousNumber, meterInfo.CurrentNumber);
+            int consumption = 0;
+            if (meterInfo.CounterStateCode.HasValue)
+            {
+                if (meterInfo.CounterStateCode.Value == 3)//معکوس
+                {
+                    consumption = GetConsumption(meterInfo.CurrentNumber, meterInfo.PreviousNumber);
+                }
+                else if (meterInfo.CounterStateCode.Value == 5)//دور مجدد
+                {
+                    consumption = GetRoundAgainConsumption(meterInfo.PreviousNumber, meterInfo.CurrentNumber);
+                }
+                else
+                {
+                    consumption = GetConsumption(meterInfo.PreviousNumber, meterInfo.CurrentNumber);
+                }
+            }
+            else
+            {
+                consumption = GetConsumption(meterInfo.PreviousNumber, meterInfo.CurrentNumber);
+            }
             int duration = GetDuration(meterInfo.PreviousDateJalali, meterInfo.CurrentDateJalali);
             int finalDomesticUnit = GetFinalDomesticUnit(customerInfo, meterInfo.CurrentDateJalali);
             double dailyAverage = GetDailyConsumptionAverage(consumption, duration, finalDomesticUnit);
@@ -37,6 +56,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         {
             return currentNumber - previousNumber;
         }
+        private int GetRoundAgainConsumption(int previousNumber, int currentNumber)
+        {
+            int characterCount = previousNumber.ToString().Length;
+            int maximalCounter = int.Parse(new string('9', characterCount));
+            int maxNumber = maximalCounter - previousNumber;
+
+            return maxNumber + currentNumber;
+        }
         private int GetDuration(string previousDate, string currentDate)
         {
             int thresholdDay = 4;
@@ -55,12 +82,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         }
         private int GetConsumption(double dailyCosumption, int duration, int domesticUnit)
         {
-            double consumption=(dailyCosumption * duration * domesticUnit);
+            double consumption = (dailyCosumption * duration * domesticUnit);
             return (int)Math.Round(consumption);
         }
         private int GetFinalDomesticUnit(CustomerInfoOutputDto customerInfo, string readingDateJalali)
         {
-            if(IsGardenAndResidence(customerInfo.UsageId))
+            if (IsGardenAndResidence(customerInfo.UsageId))
             {
                 return customerInfo.OtherUnit + customerInfo.DomesticUnit;
             }

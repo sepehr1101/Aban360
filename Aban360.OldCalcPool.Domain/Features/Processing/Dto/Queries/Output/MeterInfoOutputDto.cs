@@ -6,12 +6,15 @@
         public int PreviousNumber { get; set; }
         public string CurrentDateJalali { get; set; } = default!;
         public int CurrentNumber { get; set; }
-        public MeterInfoOutputDto(string previousDate, string currentDate, int previousNumber, int currentNumber)
+
+        public int? CounterStateCode { get; set; }
+        public MeterInfoOutputDto(string previousDate, string currentDate, int previousNumber, int currentNumber, int? counterStateCode)
         {
             PreviousDateJalali = previousDate;
             CurrentDateJalali = currentDate;
             PreviousNumber = previousNumber;
             CurrentNumber = currentNumber;
+            CounterStateCode = counterStateCode;
         }
         public MeterInfoOutputDto()
         {

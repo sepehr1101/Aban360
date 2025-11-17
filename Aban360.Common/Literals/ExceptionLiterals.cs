@@ -52,6 +52,9 @@
 
         public static string InvalidPercent => $"درصد اشتباه وارد شده";
         public static string Incalculable => $"غیر قابل محاسبه";
+        
+        public static string IncalculableWithCounterStateCode => $"محاسبه قبض با این وضعیت کنتور امکان پذیر نیست";
+        public static string ConfilictBetweenCounterNumberAndCounteState => $"رقم کنتور با وضعیت کنتور مغایرت دارد";
 
         public static string MessageException(string message) => $"خطا : {message}";
 

@@ -114,20 +114,25 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             return calculationDetails;
         }
         public async Task<AbBahaCalculationDetails> Handle(MeterInfoByPreviousDataInputDto input, CancellationToken cancellationToken)
-        { 
+        {
+            ValidationCounterStateCode(input.CounterStateCode, input.CurrentMeterNumber, input.PreviousNumber);
+
             CustomerInfoOutputDto customerInfo = await _customerInfoDetailQueryService.GetInfo(input.BillId);
             MeterInfoOutputDto meterInfo = new MeterInfoOutputDto()
             {
                 PreviousDateJalali = input.PreviousDateJalali,
                 PreviousNumber = input.PreviousNumber,
                 CurrentNumber = input.CurrentMeterNumber,
-                CurrentDateJalali = input.CurrentDateJalali
+                CurrentDateJalali = input.CurrentDateJalali,
+                CounterStateCode = input.CounterStateCode,
             };
             AbBahaCalculationDetails calculationDetails = await GetCalculationDetails(meterInfo, customerInfo);
             return calculationDetails;
         }
         public async Task<AbBahaCalculationDetails> Handle(MeterImaginaryInputDto input, CancellationToken cancellationToken)
         {
+            ValidationCounterStateCode(input.CustomerInfo.CounterStateCode, input.MeterPreviousData.CurrentMeterNumber, input.MeterPreviousData.PreviousNumber);
+
             //TODO: direct create object from MeterComparisonBatchWithAggregatedNerkhGetHandler.cs
             CustomerInfoOutputDto customerInfo = CreateCustomerInfoDto(input);
             try
@@ -175,7 +180,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         {
             ConsumptionInfo consumptionInfo = _consumptionCalculator.GetConsumptionInfoWithMonthlyConsumption(meterInfoWithConsumption, customerInfo);
 
-            MeterInfoOutputDto meterInfo = new MeterInfoOutputDto(meterInfoWithConsumption.PreviousDateJalali, meterInfoWithConsumption.CurrentDateJalali, 0, 0);
+            MeterInfoOutputDto meterInfo = new MeterInfoOutputDto(meterInfoWithConsumption.PreviousDateJalali, meterInfoWithConsumption.CurrentDateJalali, 0, 0, null);
             NerkhByConsumptionInputDto nerkhInput = CreateNerkhInput(meterInfo, customerInfo, consumptionInfo);
             Validate(meterInfo.PreviousDateJalali);
             (IEnumerable<NerkhGetDto>, IEnumerable<AbAzadFormulaDto>, IEnumerable<ZaribGetDto>, int) allNerkhAbAbAzad = await _nerkhGetByConsumptionService.GetWithAggregatedNerkh(nerkhInput);
@@ -202,9 +207,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             int counter = 0;
             double sumAbBaha = 0, sumFazelab = 0, sumHotSeasonAbBaha = 0, sumHotSeasonFazelab = 0, sumAbonmanAbBaha = 0, sumAbonmanFazelab = 0;
             double sumBoodjePart1 = 0, sumBoodjePart2 = 0, sumAvarez = 0;
-            double sumAbBahaDiscount = 0, sumFazelabDiscount = 0, sumHotSeasonAbDiscount = 0,sumHotSeasonFazelabDiscount=0,
+            double sumAbBahaDiscount = 0, sumFazelabDiscount = 0, sumHotSeasonAbDiscount = 0, sumHotSeasonFazelabDiscount = 0,
                    sumAbonmanAbDiscount = 0, sumAbonmanFazelabDiscount = 0, sumAvarezDiscount = 0, sumJavaniDiscount = 0, sumBoodjeDiscount = 0;
-            double sumJavaniAmount = 0; double multiplier=0;
+            double sumJavaniAmount = 0; double multiplier = 0;
             IEnumerable<int> tags = await _tagService.GetIdsByBillId(customerInfo.BillId.Trim());
             Table1GetDto table1 = await _table1QueryService.GetByTown(customerInfo.ZoneId);
             foreach (var nerkhItem in allNerkh)
@@ -241,7 +246,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             sumAbonmanAbBaha = _abonmanCalculator.CalculateAb(customerInfo, meterInfo, currentDateJalali);
             sumAbonmanFazelab = _fazelabCalculator.Calculate(meterInfo.PreviousDateJalali, currentDateJalali, consumptionInfo.Duration, customerInfo, sumAbonmanAbBaha, currentDateJalali, true);
             sumAbonmanAbDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, customerInfo.BranchType, sumAbonmanAbBaha, sumAbBahaDiscount, customerInfo.IsSpecial);
-            sumAbonmanFazelabDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, customerInfo.BranchType, sumAbonmanFazelab, sumFazelabDiscount, customerInfo.IsSpecial);            
+            sumAbonmanFazelabDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, customerInfo.BranchType, sumAbonmanFazelab, sumFazelabDiscount, customerInfo.IsSpecial);
             double AbBahaResult = sumAbBaha + sumHotSeasonAbBaha + sumAbonmanAbBaha;
             double sumBoodje = sumBoodjePart1 + sumBoodjePart2;
             double sumMaliatAmount = CalculateTax(sumAbBaha, sumFazelab, sumAbonmanAbBaha, sumAbonmanFazelab, sumHotSeasonAbBaha, sumHotSeasonFazelab, sumBoodje);
@@ -275,9 +280,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 IsSpecial = input.CustomerInfo.IsSpecial,
                 BillId = input.MeterPreviousData.BillId ?? string.Empty,
                 VirtualCategoryId = input.CustomerInfo.VirtualCategoryId ?? 0,
-                WaterRegisterDate=input.CustomerInfo.WaterRegisterDate,
-                SewageRegisterDate=input.CustomerInfo.SewageRegisterDate,
-                
+                WaterRegisterDate = input.CustomerInfo.WaterRegisterDate,
+                SewageRegisterDate = input.CustomerInfo.SewageRegisterDate,
+
             };
         }
         private BaseOldTariffEngineOutputDto CalculateWaterBill(NerkhGetDto nerkh, AbAzadFormulaDto abAzad, ZaribGetDto zarib, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali, ConsumptionInfo consumptionInfo, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int>? tagIds)
@@ -351,6 +356,18 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private double CalculateTaxDiscount(params double[] amounts)
         {
             return amounts.Sum() * vatRate;
+        }
+        private void ValidationCounterStateCode(int? counterStateCode, int currentNumber, int previousNumber)
+        {
+            int[] invalidCounterStateCode = new int[] { 4, 6, 7, 8, 9, 10 };
+            if (counterStateCode.HasValue && invalidCounterStateCode.Contains(counterStateCode.Value))
+            {
+                throw new TariffCalcException(ExceptionLiterals.IncalculableWithCounterStateCode);
+            }
+            else if ((counterStateCode.Value == 3 || counterStateCode.Value == 5) && currentNumber > previousNumber)
+            {
+                throw new TariffCalcException(ExceptionLiterals.ConfilictBetweenCounterNumberAndCounteState);
+            }
         }
     }
 }
