@@ -33,12 +33,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 RecordCount = data.Count(),
                 CustomerCount = data.Count(),
                 Title = ReportLiterals.MeterLifeDetail,
-
-                AverageLifeInDay = (int)data.Where(m => m.LifeInDay != -1).Average(m => m.LifeInDay),
-                MaxLifeInDay = (int)data.Max(m => m.LifeInDay),
-                MinLifeInDay = (int)data.Where(m => m.LifeInDay != -1).Min(m => m.LifeInDay),
-                IncalculableCount = (int)data.Where(m => m.LifeInDay != -1).Count()
             };
+            if (data is not null && data.Count() > 0)
+            {
+                header.AverageLifeInDay = (int)data.Where(m => m.LifeInDay != -1).Average(m => m.LifeInDay);
+                header.MaxLifeInDay = (int)data.Max(m => m.LifeInDay);
+                header.MinLifeInDay = (int)data.Where(m => m.LifeInDay != -1).Min(m => m.LifeInDay);
+                header.IncalculableCount = (int)data.Where(m => m.LifeInDay != -1).Count();
+            }
 
             ReportOutput<MeterLifeHeaderOutputDto, MeterLifeDataOutputDto> result = new(ReportLiterals.MeterLifeDetail, header, data);
             return result;
