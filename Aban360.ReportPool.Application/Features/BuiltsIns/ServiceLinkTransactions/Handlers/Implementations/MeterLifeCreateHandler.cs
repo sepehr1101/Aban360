@@ -18,11 +18,11 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
 
         public async Task Handle(CancellationToken cancellationToken)
         {
-            IEnumerable<MeterLifeOutputDto> result = await _meterLifeService.Get();
-            IEnumerable<MeterLifeOutputDto> meterLif = await CalcDistance(result);
+            IEnumerable<MeterLifeCalculationOutputDto> result = await _meterLifeService.GetFromClient();
+            IEnumerable<MeterLifeCalculationOutputDto> meterLif = await CalcDistance(result);
             await _meterLifeService.Create(meterLif);
         }
-        private async Task<IEnumerable<MeterLifeOutputDto>> CalcDistance(IEnumerable<MeterLifeOutputDto> input)
+        private async Task<IEnumerable<MeterLifeCalculationOutputDto>> CalcDistance(IEnumerable<MeterLifeCalculationOutputDto> input)
         {
             input.ForEach(x =>
             {
