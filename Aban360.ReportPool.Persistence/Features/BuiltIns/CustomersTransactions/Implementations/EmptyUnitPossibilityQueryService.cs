@@ -23,10 +23,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             EmptyUnitPossibilityHeaderOutputDto header = new EmptyUnitPossibilityHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
-                ToateJalali = input.ToDateJalali,
+                ToDateJalali = input.ToDateJalali,
                 CustomerCount = data.Count(),
                 RecordCount = data.Count(),
-                ReportDateJalali = DateTime.Now.ToShortPersianDateString()
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                Title= ReportLiterals.EmptyUnitPossibility,
+
+                SumCommercialUnit = data.Sum(i => i.CommercialUnit),
+                SumDomesticUnit = data.Sum(i => i.DomesticUnit),
+                SumOtherUnit = data.Sum(i => i.OtherUnit),
+                TotalUnit = data.Sum(i => i.TotalUnit),
             };
             ReportOutput<EmptyUnitPossibilityHeaderOutputDto, EmptyUnitPossibilityDataOutputDto> result = new(ReportLiterals.EmptyUnitPossibility, header, data);
 
@@ -40,10 +46,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	b.CustomerNumber,
                     	b.BillId,
                     	b.ConsumptionAverage,
-                    	b.CommercialCount as CommertialUnit,
+                    	b.CommercialCount as CommercialUnit,
                     	b.DomesticCount as DomesticUnit,
                     	b.OtherCount as OtherUnit,
                     	b.EmptyCount as EmptyUnit,
+                        IIF((b.DomesticCount+b.CommercialCount +b.OtherCount=0) ,1, (b.DomesticCount+b.CommercialCount +b.OtherCount)) AS TotalUnit,
                     	b.UsageTitle,
                     	b.ZoneTitle
                     From CustomerWarehouse.dbo.Bills b
