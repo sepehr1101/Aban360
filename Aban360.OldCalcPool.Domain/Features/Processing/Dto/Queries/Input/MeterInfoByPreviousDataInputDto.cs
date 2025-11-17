@@ -8,5 +8,7 @@
 
         public string CurrentDateJalali { get; set; } = default!;
         public int CurrentMeterNumber { get; set; }     
+
+        public int? CounterStateCode { get; set; }
     }
 }
