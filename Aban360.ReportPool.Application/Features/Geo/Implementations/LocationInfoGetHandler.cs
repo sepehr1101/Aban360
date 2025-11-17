@@ -25,16 +25,24 @@ namespace Aban360.ReportPool.Application.Features.Geo.Implementations
         public async Task<LocationInfoDto> Handle(string billId, CancellationToken cancellationToken)
         {
             LocationInfoDto branchSpecificationSummaryInfo = await _branchSpecificationSummaryInfoService.GetInfo(billId);
-            var customerLocation = await _gisService.GetCustomerLocation(new CustomerLocationInputDto(billId));
-            branchSpecificationSummaryInfo.X = customerLocation.X;
-            branchSpecificationSummaryInfo.Y = customerLocation.Y;
-            var utm= UtmConverter.LatLonToUtm(double.Parse(customerLocation.X), double.Parse(customerLocation.Y));
-            branchSpecificationSummaryInfo.Easting = utm.Easting;
-            branchSpecificationSummaryInfo.Northing = utm.Northing;
-            branchSpecificationSummaryInfo.UtmZone = utm.Zone;
-            branchSpecificationSummaryInfo.Letter = utm.Letter;
+            CustomerLocationDto customerLocation = await _gisService.GetCustomerLocation(new CustomerLocationInputDto(billId));
+            LocationInfoDto result = GetLocationInfo(branchSpecificationSummaryInfo, customerLocation);
 
-            return branchSpecificationSummaryInfo;
+            return result;
+        }
+
+        private LocationInfoDto GetLocationInfo(LocationInfoDto locationInfo, CustomerLocationDto customerLocation)
+        {
+            locationInfo.X = customerLocation.X;
+            locationInfo.Y = customerLocation.Y;
+
+            var utm = UtmConverter.LatLonToUtm(double.Parse(customerLocation.X), double.Parse(customerLocation.Y));
+            locationInfo.Easting = utm.Easting;
+            locationInfo.Northing = utm.Northing;
+            locationInfo.UtmZone = utm.Zone;
+            locationInfo.Letter = utm.Letter;
+
+            return locationInfo;
         }
     }
 }

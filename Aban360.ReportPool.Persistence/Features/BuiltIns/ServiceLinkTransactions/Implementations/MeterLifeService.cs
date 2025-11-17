@@ -1,8 +1,12 @@
-﻿using Aban360.Common.Db.Dapper;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Dapper;
+using Aban360.Common.Literals;
+using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
 using Dapper;
-using LiteDB;
+using DNTPersianUtils.Core;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Data;
@@ -16,14 +20,37 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         {
         }
 
-        public async Task<IEnumerable<MeterLifeOutputDto>> Get()
+        public async Task<ReportOutput<MeterLifeHeaderOutputDto, MeterLifeDataOutputDto>> Get(MeterLifeInputDto input)
         {
-            string query = GetQuery();
-            IEnumerable<MeterLifeOutputDto> result = await _sqlReportConnection.QueryAsync<MeterLifeOutputDto>(query);
+            string query = GetQueryFromMeterLife();
+            IEnumerable<MeterLifeDataOutputDto> data = await _sqlReportConnection.QueryAsync<MeterLifeDataOutputDto>(query, input);
+            MeterLifeHeaderOutputDto header = new MeterLifeHeaderOutputDto()
+            {
+                FromLifeInDay = input.FromLifeInDay ?? 0,
+                ToLifeInDay = input.ToLifeInDay ?? 0,
+
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                RecordCount = data.Count(),
+                CustomerCount = data.Count(),
+                Title = ReportLiterals.MeterLifeDetail,
+
+                AverageLifeInDay = (int)data.Where(m => m.LifeInDay != -1).Average(m => m.LifeInDay),
+                MaxLifeInDay = (int)data.Max(m => m.LifeInDay),
+                MinLifeInDay = (int)data.Where(m => m.LifeInDay != -1).Min(m => m.LifeInDay),
+                IncalculableCount = (int)data.Where(m => m.LifeInDay != -1).Count()
+            };
+
+            ReportOutput<MeterLifeHeaderOutputDto, MeterLifeDataOutputDto> result = new(ReportLiterals.MeterLifeDetail, header, data);
+            return result;
+        }
+        public async Task<IEnumerable<MeterLifeCalculationOutputDto>> GetFromClient()
+        {
+            string query = GetQueryFromClient();
+            IEnumerable<MeterLifeCalculationOutputDto> result = await _sqlReportConnection.QueryAsync<MeterLifeCalculationOutputDto>(query);
 
             return result;
         }
-        public async Task Create(IEnumerable<MeterLifeOutputDto> input)
+        public async Task Create(IEnumerable<MeterLifeCalculationOutputDto> input)
         {
             var dataTable = ToDataTable(input);
 
@@ -45,14 +72,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     bulkCopy.ColumnMappings.Add("LifeInDay", "LifeInDay");
                     bulkCopy.ColumnMappings.Add("LifeText", "LifeText");
 
-                    bulkCopy.BatchSize = 10000;     
-                    bulkCopy.BulkCopyTimeout = 0;    
+                    bulkCopy.BatchSize = 10000;
+                    bulkCopy.BulkCopyTimeout = 0;
 
                     await bulkCopy.WriteToServerAsync(dataTable);
                 }
             }
         }
-        private DataTable ToDataTable(IEnumerable<MeterLifeOutputDto> input)
+        private DataTable ToDataTable(IEnumerable<MeterLifeCalculationOutputDto> input)
         {
             var table = new DataTable();
 
@@ -79,7 +106,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             return table;
         }
 
-        private string GetQuery()
+        private string GetQueryFromClient()
         {
             return @"Select 
                     	c.ZoneId,
@@ -99,18 +126,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                         AND c.ZoneId = 131301
                     Order By m.ChangeDateJalali Desc";
         }
-        private string GetInsertCommand()
+        private string GetQueryFromMeterLife()
         {
-            return @"Insert Into [CustomerWarehouse].dbo.MeterLife(
-                        ZoneId,ZoneTitle,
-                        CustomerNumber,BillId,
-                        BranchTypeId,UsageId,UsageTitle,
-                        LifeInDay,LifeText)
-                    Values(
-                        @ZoneId,@ZoneTitle,
-                        @CustomerNumber,@BillId,
-                        @BranchTypeId,@UsageId,@UsageTitle,
-                        @LifeInDay,@LifeText)";
+            return @"Select *
+                    From CustomerWarehouse.dbo.MeterLife
+                    Where 
+                    	ZoneId IN @zoneIds AND
+                    	UsageId IN @usageIds AND
+	                    (@FromLifeInDay IS NULL OR
+	                    @ToLifeInDay IS NULL OR
+	                    LifeInDay BETWEEN @FromLifeInDay AND @ToLifeInDay)";
         }
     }
 }

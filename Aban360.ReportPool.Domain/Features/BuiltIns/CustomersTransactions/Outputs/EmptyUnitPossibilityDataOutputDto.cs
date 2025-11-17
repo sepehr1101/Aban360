@@ -4,9 +4,10 @@
     {
         public int ZoneId { get; set; }
         public int CustomerNumber { get; set; }
-        public int CommertialUnit { get; set; }
+        public int CommercialUnit { get; set; }
         public int DomesticUnit { get; set; }
         public int OtherUnit { get; set; }
+        public int TotalUnit { get; set; }
         public int EmptyUnit { get; set; }
         public string BillId { get; set; }
         public string UsageTitle { get; set; }

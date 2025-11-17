@@ -10,10 +10,12 @@
         public long BaseSumItems { get; set; }
         public float BaseContractOlgoo { get; set; }
         public float BaseConsumptionAverage { get; set; }
+        public float BaseSumConsumption { get; set; }
 
         public long ComparisonSumItems { get; set; }
         public float ComparisonContractOlgoo { get; set; }
         public float ComparisonConsmptionAverage { get; set; }
+        public float ComparisonSumConsumption { get; set; }
 
         public float PercentConsumptinAverageChange { get; set; }
         public float PercentSumItemsChange { get; set; }

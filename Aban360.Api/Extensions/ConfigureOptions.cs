@@ -1,4 +1,5 @@
 ﻿using Aban360.BlobPool.Domain.Providers.Dto;
+using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.UserPool.Domain.Constants;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 
@@ -11,6 +12,7 @@ namespace Aban360.Api.Extensions
             services.AddBearerTokens(configuration);
             services.AddApiSettings(configuration);
             services.AddOpenKm(configuration);
+            services.AddGeo(configuration);
             return services;
         }
 
@@ -31,6 +33,10 @@ namespace Aban360.Api.Extensions
         private static void AddOpenKm(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<OpenKmOptions>(configuration.GetSection(OpenKmOptions.SectionName));
+        }
+        private static void AddGeo(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<GeoOptions>(configuration.GetSection(GeoOptions.SectionName));
         }
     }
 }

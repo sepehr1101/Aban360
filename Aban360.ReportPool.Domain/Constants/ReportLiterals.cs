@@ -18,11 +18,14 @@
         public static string ByChangeCause { get { return "  بر اساس علت تعویض "; } }
         public static string Due { get { return "جاری"; } }
         public static string Overdue { get { return "معوقه"; } }
+        public static string Olgoo { get { return "الگو"; } }
+        public static string CotractualCapacity { get { return "ظرفیت قراردادی"; } }
+        
 
 
         public static string EmptyUnit { get { return $"{Report} خالی از سکنه"; } }
 
-        public static string EmptyUnitPossibility { get { return $"{Report}احتمال خالی از سکنه"; } }
+        public static string EmptyUnitPossibility { get { return $"{Report} احتمال خالی از سکنه "; } }
 
         public static string EmptyUnitByBillDetail { get { return $"{Report} جزئیات خالی از سکنه - قبض"; } }
         public static string EmptyUnitByBillSummary { get { return $"{Report} خلاصه خالی از سکنه قبض"; } }
@@ -199,6 +202,8 @@
 
         public static string RuinedMeterIncomeDetail { get { return $" {Report} جزئیات درآمد کنتور خراب"; } }
         public static string RuinedMeterIncomeSummary { get { return $" {Report} خلاصه درآمد کنتور خراب"; } }
+
+        public static string MeterLifeDetail { get { return $" {Report} جزئیات عمر کنتور"; } }
 
 
         public static string TagGroupSummary { get { return $" {Report} خلاصه گروه تگ"; } }

@@ -18,8 +18,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<ConsumptionManagementHeaderOutputDto, ConsumptionManagementDataOutputDto>> Get(ConsumptionManagementInputDto input)
         {
+            string reportTitle = string.Concat(ReportLiterals.ConsumptionManagerDetail, "-", (input.IsOlgoo ? ReportLiterals.Olgoo : ReportLiterals.ContractualCapacity));
             string query = GetQuery();
-            IEnumerable<ConsumptionManagementDataOutputDto> data = await _sqlReportConnection.QueryAsync<ConsumptionManagementDataOutputDto>(query, input);
+            IEnumerable<ConsumptionManagementDataOutputDto> data = await _sqlReportConnection.QueryAsync<ConsumptionManagementDataOutputDto>(query, input, null, 600);
             ConsumptionManagementHeaderOutputDto header = new ConsumptionManagementHeaderOutputDto()
             {
                 FromConsumptionAverage = input.FromConsumptionAverage,
@@ -39,13 +40,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 CustomerCount = data.Count(),
                 RecordCount = data.Count(),
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                Title = ReportLiterals.ConsumptionManagerDetail,
+                Title = reportTitle,
 
-				AverageConsumptionPercent=data.Average(c=>c.PercentConsumptinAverageChange),
-				AverageSumtItemsPercent=data.Average(c=>c.PercentSumItemsChange),
+                AverageConsumptionPercent = data.Count() > 0 ? data.Average(c => c.PercentConsumptinAverageChange) : 0,
+                AverageSumtItemsPercent = data.Count() > 0 ? data.Average(c => c.PercentSumItemsChange) : 0,
             };
-            ReportOutput<ConsumptionManagementHeaderOutputDto, ConsumptionManagementDataOutputDto> result = new(ReportLiterals.ConsumptionManagerDetail, header, data);
-            
+            ReportOutput<ConsumptionManagementHeaderOutputDto, ConsumptionManagementDataOutputDto> result = new(reportTitle, header, data);
+
             return result;
         }
         private string GetQuery()
@@ -57,15 +58,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 							b.CustomerNumber,
 							MAX(b.ZoneTitle) ZoneTitle,
 							SUM(b.SumItems) SumItems,
-						    AvG(b.ContractCapacity) ContractCapacity,
-							AVG(b.ConsumptionAverage) ConsumptionAverage,
+						    AVG(b.ContractCapacity) ContractCapacity,
+							ROUND(AVG(b.ConsumptionAverage),1) ConsumptionAverage,
+							SUM(b.Consumption) Consumption, 
 							MAX(t.olgo) olgoo
 						From CustomerWarehouse.dbo.Bills b
 						Join [OldCalc].dbo.table1 t
 							ON b.ZoneId=t.town
 						Where 
 							b.RegisterDay BETWEEN @FromBaseDateJalali AND @ToBaseDateJalali AND
-							b.ZoneId in @ZoneIds AND
+							b.ZoneId IN @zoneIds AND
 							(
 								(@IsOlgoo=1 AND b.UsageId IN(0,1,3))
 								OR
@@ -79,7 +81,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 								@FromConsumptionAverage IS NULL OR
 								@ToConsumptionAverage IS NULL OR
 								b.ConsumptionAverage BETWEEN @FromConsumptionAverage And @ToConsumptionAverage
-							)
+							) AND
+								b.CounterStateCode NOT IN (4,7,8)
 						Group By
 							b.ZoneId,
 							b.CustomerNumber
@@ -92,19 +95,21 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 							MAX(b.ZoneTitle) ZoneTitle,
 							SUM(b.SumItems) SumItems,
 						    AVG(b.ContractCapacity) ContractCapacity,
-							AVG(b.ConsumptionAverage) ConsumptionAverage,
+							ROUND(AVG(b.ConsumptionAverage),1) ConsumptionAverage,
+							SUM(b.Consumption) Consumption, 
 							MAX(t.olgo) olgoo
 						From CustomerWarehouse.dbo.Bills b
 						Join [OldCalc].dbo.table1 t
 							ON b.ZoneId=t.town
 						Where 
 							b.RegisterDay BETWEEN @FromComparisonDateJalali AND @ToComparisonDateJalali AND
-							b.ZoneId in @ZoneIds AND
+							b.ZoneId IN @zoneIds  AND
 							(
 								(@IsOlgoo=1 AND b.UsageId IN(0,1,3))
 								OR
 								(@IsOlgoo=0 AND b.UsageId NOT IN(0,1,3))
-							)-- AND
+							)
+							-- AND
 							--( 
 							--	b.ConsumptionAverage > @FromMultiplier * IIF(@IsOlgoo=1,t.olgo ,b.ContractCapacity) AND
 					  --          b.ConsumptionAverage <= @ToMultiplier * IIF(@IsOlgoo=1,t.olgo ,b.ContractCapacity)
@@ -114,6 +119,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 							--	@ToConsumptionAverage IS NULL OR
 							--	b.ConsumptionAverage BETWEEN @FromConsumptionAverage And @ToConsumptionAverage
 							--)	
+							AND b.CounterStateCode NOT IN (4,7,8)
 						Group By 
 							b.ZoneId,
 							b.CustomerNumber
@@ -126,26 +132,28 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						b1.CustomerNumber,
 						b1.SumItems BaseSumItems,
 						IIF(@IsOlgoo=1,b1.olgoo,b1.ContractCapacity) BaseContractOlgoo,
+						b1.Consumption BaseSumConsumption,
 						b1.ConsumptionAverage BaseConsumptionAverage,
 						b2.SumItems ComparisonSumItems,
 						IIF(@IsOlgoo=1,b2.olgoo,b2.ContractCapacity) ComparisonContractOlgoo,
 						b2.ConsumptionAverage ComparisonConsmptionAverage,
+						b2.Consumption ComparisonSumConsumption,
 						(
 							Case When b1.ConsumptionAverage =0 Then
 							-100 Else
-							(b1.ConsumptionAverage-b2.ConsumptionAverage) * 100 / b1.ConsumptionAverage
+							ROUND((b1.ConsumptionAverage-b2.ConsumptionAverage) * 100 / b1.ConsumptionAverage,1)
 							End
 						) AS PercentConsumptinAverageChange,
 					    (
 							Case When b1.SumItems=0 Then
 							-100 Else 
-							(CAST(b1.SumItems AS float) - CAST( b2.SumItems as float)) * 100.0 /CAST( b1.SumItems as float) 
+							ROUND((CAST(b1.SumItems AS float) - CAST( b2.SumItems as float)) * 100.0 /CAST( b1.SumItems as float) ,1)
 							End
 						) AS PercentSumItemsChange,
 						c.ReadingNumber,
 						c.FirstName,
 						c.SureName SurName,
-						(c.FirstName + c.SureName) FullName,
+						(c.FirstName +' '+ c.SureName) FullName,
 						c.UsageTitle,
 						c.BranchType BranchTypeTitle,
 						c.Address,
@@ -159,8 +167,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 					Left Join CustomerWarehouse.dbo.Clients c
 						ON b1.ZoneId=c.ZoneId AND b1.CustomerNumber=c.CustomerNumber
 					Where 
-						c.ToDayJalali IS NULL AND
-						c.DeletionStateId NOT IN (4,7,8)";
+						c.ToDayJalali IS NULL ";
         }
     }
 }

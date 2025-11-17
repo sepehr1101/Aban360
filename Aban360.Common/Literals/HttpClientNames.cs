@@ -3,5 +3,6 @@
     public static class HttpClientNames
     {
         public const string Kaj=nameof(Kaj);
+        public const string Geo=nameof(Geo);
     }
 }
