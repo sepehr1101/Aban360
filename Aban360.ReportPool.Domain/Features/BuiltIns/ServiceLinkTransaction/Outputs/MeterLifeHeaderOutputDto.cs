@@ -19,6 +19,6 @@
         public int MinLifeInDay { get; set; }
         public string MinLifeText { get; set; }
 
-
+        public int IncalculableCount { get; set; }
     }
 }

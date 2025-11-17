@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
@@ -33,9 +34,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 CustomerCount = data.Count(),
                 Title = ReportLiterals.MeterLifeDetail,
 
-                AverageLifeInDay = (int)data.Average(m => m.LifeInDay),
+                AverageLifeInDay = (int)data.Where(m => m.LifeInDay != -1).Average(m => m.LifeInDay),
                 MaxLifeInDay = (int)data.Max(m => m.LifeInDay),
-                MinLifeInDay = (int)data.Min(m => m.LifeInDay),
+                MinLifeInDay = (int)data.Where(m => m.LifeInDay != -1).Min(m => m.LifeInDay),
+                IncalculableCount = (int)data.Where(m => m.LifeInDay != -1).Count()
             };
 
             ReportOutput<MeterLifeHeaderOutputDto, MeterLifeDataOutputDto> result = new(ReportLiterals.MeterLifeDetail, header, data);

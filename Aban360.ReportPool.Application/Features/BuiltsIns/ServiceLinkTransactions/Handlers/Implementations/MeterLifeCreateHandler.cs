@@ -29,7 +29,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 string maxDate = GetMaxDate(x.WaterInstallationDateJalali, x.LatestChangeDataJalali);
                 CalcDistanceResultDto calcDistance = CalculationDistanceDate.CalcDistance(maxDate);
 
-                x.LifeInDay = calcDistance.Distance;
+                x.LifeInDay = calcDistance.HasError ? -1 : calcDistance.Distance;
                 x.LifeText = calcDistance.DistanceText;
             });
             return input;
