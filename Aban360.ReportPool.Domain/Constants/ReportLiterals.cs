@@ -18,6 +18,9 @@
         public static string ByChangeCause { get { return "  بر اساس علت تعویض "; } }
         public static string Due { get { return "جاری"; } }
         public static string Overdue { get { return "معوقه"; } }
+        public static string Olgoo { get { return "الگو"; } }
+        public static string CotractualCapacity { get { return "ظرفیت قراردادی"; } }
+        
 
 
         public static string EmptyUnit { get { return $"{Report} خالی از سکنه"; } }
