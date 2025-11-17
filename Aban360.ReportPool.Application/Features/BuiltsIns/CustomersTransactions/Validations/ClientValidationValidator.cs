@@ -10,7 +10,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
         public ClientValidationValidator()
         {
             RuleFor(customer => customer.ValidationEstate)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
         }
     }
