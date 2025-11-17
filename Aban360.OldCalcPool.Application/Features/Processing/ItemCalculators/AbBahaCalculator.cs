@@ -41,8 +41,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
                 if (IsLessThan1403_09_13AndOvajNotZero(nerkh))
                 {
-                    double oldAbBahaFromExpression = CalcFormulaByRate(nerkh.OVaj, monthlyConsumption, _olgoo, c, tagIds);
-                    oldAbBahaAmount = nerkh.PartialConsumption * oldAbBahaFromExpression * oldAbBahaZarib;
+                    string oldFormula = GetOldFormula(nerkh.OVaj, IsDomestic(customerInfo.UsageId), monthlyConsumption);
+                    double oldAbBahaFromExpression = CalcFormulaByRate(oldFormula, monthlyConsumption, _olgoo, c, tagIds);
+                    oldAbBahaAmount =  ((double)nerkh.Duration/(double)monthDays)* oldAbBahaFromExpression * oldAbBahaZarib;
+                    //oldAbBahaAmount = nerkh.PartialConsumption * oldAbBahaFromExpression * oldAbBahaZarib;
                 }
 
                 if (IsLessThan1403_09_13(nerkh.Date2) &&
@@ -332,6 +334,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         }
         private decimal GetMultiplier(ZaribGetDto zarib, int olgoo, bool isDomestic, bool isVillage, double monthlyConsumption, int branchType)
         {
+            decimal rawMultiplier= GetRawMultiplier(zarib, olgoo, isDomestic, isVillage, monthlyConsumption, branchType);
+            return !isDomestic && rawMultiplier < 1 ? 1 : rawMultiplier;
+        }
+        private decimal GetRawMultiplier(ZaribGetDto zarib, int olgoo, bool isDomestic, bool isVillage, double monthlyConsumption, int branchType)
+        {
             double zbSelection = 1;
 
             if (IsConstruction(branchType) && !isVillage)
@@ -370,5 +377,20 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
             return 1;
         }       
+        private string GetOldFormula(string oldVaj, bool isDomestic, double monthlyConsumption)
+        {
+            if (!isDomestic)
+            {
+                return oldVaj;
+            }
+            if (IsBetween(monthlyConsumption, 0, 5))
+                return "(X*1860)";
+            if (IsBetween(monthlyConsumption, 5.0000001, 10))
+                return "(X*2783)-4615";
+            if (IsBetween(monthlyConsumption, 10.0000001, 14))
+                return "(X*3706)-13845";
+
+            return oldVaj;
+        }
     }
 }
