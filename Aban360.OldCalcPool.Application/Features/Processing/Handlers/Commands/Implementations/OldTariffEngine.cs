@@ -142,7 +142,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     PreviousDateJalali = input.MeterPreviousData.PreviousDateJalali,
                     PreviousNumber = input.MeterPreviousData.PreviousNumber,
                     CurrentDateJalali = input.MeterPreviousData.CurrentDateJalali,
-                    CurrentNumber = input.MeterPreviousData.CurrentMeterNumber
+                    CurrentNumber = input.MeterPreviousData.CurrentMeterNumber,
+                    CounterStateCode = input.CustomerInfo.CounterStateCode
                 };
                 AbBahaCalculationDetails calculationDetails = await GetCalculationDetails(meterInfo, customerInfo);
                 return calculationDetails;
@@ -360,13 +361,16 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private void ValidationCounterStateCode(int? counterStateCode, int currentNumber, int previousNumber)
         {
             int[] invalidCounterStateCode = new int[] { 4, 6, 7, 8, 9, 10 };
-            if (counterStateCode.HasValue && invalidCounterStateCode.Contains(counterStateCode.Value))
+            if (counterStateCode.HasValue)
             {
-                throw new TariffCalcException(ExceptionLiterals.IncalculableWithCounterStateCode);
-            }
-            else if ((counterStateCode.Value == 3 || counterStateCode.Value == 5) && currentNumber > previousNumber)
-            {
-                throw new TariffCalcException(ExceptionLiterals.ConfilictBetweenCounterNumberAndCounteState);
+                if (invalidCounterStateCode.Contains(counterStateCode.Value))
+                {
+                    throw new TariffCalcException(ExceptionLiterals.IncalculableWithCounterStateCode);
+                }
+                else if ((counterStateCode.Value == 3 || counterStateCode.Value == 5) && currentNumber > previousNumber)
+                {
+                    throw new TariffCalcException(ExceptionLiterals.ConfilictBetweenCounterNumberAndCounteState);
+                }
             }
         }
     }
