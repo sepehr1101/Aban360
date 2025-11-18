@@ -85,7 +85,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.BranchType AS UseStateTitle,
                     	c.ContractCapacity AS ContractualCapacity,
                     	r.InsertDateJalali as RequestDate,
-                    	c.PhysicalWaterInstallDateJalali as  InstallationDate
+                    	c.PhysicalWaterInstallDateJalali as  InstallationDate,
+						c.WaterRegisterDateJalali as RegisterDate
                     From [CustomerWarehouse].dbo.RequestFlows r
                     Join CTE c
                     	On r.BillId collate SQL_Latin1_General_CP1_CI_AS=c.BillId 

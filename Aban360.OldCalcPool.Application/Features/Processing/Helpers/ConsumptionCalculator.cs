@@ -89,7 +89,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         {
             if (IsGardenAndResidence(customerInfo.UsageId))
             {
-                return customerInfo.OtherUnit + customerInfo.DomesticUnit;
+                return ((customerInfo.OtherUnit + customerInfo.DomesticUnit) == 0 ? 1 : customerInfo.OtherUnit + customerInfo.DomesticUnit);
             }
             int finalHousehold = GetHouseholdUnit(customerInfo.HouseholdNumber, customerInfo.HouseholdDate, readingDateJalali);
             if (finalHousehold > 0)
