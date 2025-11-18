@@ -22,6 +22,5 @@
         public string? VillageId { get; set; }
         public bool IsSpecial { get; set; }
         public int? VirtualCategoryId { get; set; }
-        public int? CounterStateCode { get; set; }
     }
 }
