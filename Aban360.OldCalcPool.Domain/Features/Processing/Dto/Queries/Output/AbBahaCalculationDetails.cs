@@ -140,7 +140,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         private double TrimAmount(double mainAmount, double discountAmount)
         {
             double remained = mainAmount - discountAmount;
-            return remained < 1 ? 0 : remained;
+            return remained <= 1 ? 0 : remained;
         }
     }
 }

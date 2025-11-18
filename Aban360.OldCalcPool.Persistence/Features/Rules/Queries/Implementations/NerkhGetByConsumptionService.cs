@@ -37,12 +37,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
             IEnumerable<ZaribGetDto> zarib = await GetZarib(nerkh, input.ZoneId);
             return (nerkh,abAzad,zarib, olgoo);
         }
-        public async Task<(IEnumerable<NerkhGetDto>, IEnumerable<AbAzadFormulaDto>,IEnumerable<ZaribGetDto>, int)> GetWithAggregatedNerkh(NerkhByConsumptionInputDto input)
+        public async Task<(IEnumerable<NerkhGetDto>, IEnumerable<AbAzadFormulaDto>,IEnumerable<ZaribGetDto>, int, IEnumerable<NerkhGetDto>)> GetWithAggregatedNerkh(NerkhByConsumptionInputDto input)
         {
             string olgooQuery = GetOlgooQuery();
             int olgoo = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(olgooQuery, new { zoneId = GetMergedZoneId(input.ZoneId) });
 
             string nerkhGetQueryString = GetNerkhQuery(olgoo);
+            string nerkh1403Query = GetNerkhQuery(14);
             var @params = new
             {
                 usageId = input.UsageId,
@@ -51,10 +52,19 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                 averageConsumption = input.AverageConsumption,
                 olgoo,
             };
+            var @params1403 = new
+            {
+                usageId = input.UsageId,
+                previousDateJalali = input.PreviousDateJalali,
+                input.CurrentDateJalali,
+                averageConsumption = input.AverageConsumption,
+                olgoo=14,
+            };
             IEnumerable<NerkhGetDto> nerkh = await _sqlReportConnection.QueryAsync<NerkhGetDto>(nerkhGetQueryString, @params);
+            IEnumerable<NerkhGetDto> nerkh1403 = await _sqlReportConnection.QueryAsync<NerkhGetDto>(nerkh1403Query, @params1403);
             IEnumerable<AbAzadFormulaDto> abAzad = await GetAbAzad(nerkh);
             IEnumerable<ZaribGetDto> zarib = await GetZarib(nerkh, input.ZoneId);
-            return (nerkh,abAzad,zarib, olgoo);
+            return (nerkh,abAzad,zarib, olgoo, nerkh1403);
         }
 
         private async Task<IEnumerable<ZaribGetDto>> GetZarib(IEnumerable<NerkhGetDto> nerkh,int zoneId)

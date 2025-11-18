@@ -1,11 +1,6 @@
 ﻿using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using DNTPersianUtils.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
 {
@@ -45,10 +40,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
             string baseDate = "1403/09/13";
             return nerkhDate2.CompareTo(baseDate) <= 0;
         }
-        internal static bool StringConditionMoreThan(string fromDate, string toDate)
+        internal static bool StringConditionMoreThan(string date1, string date2)
         {
-            DateOnly? from = fromDate.ToGregorianDateOnly();
-            DateOnly? to = toDate.ToGregorianDateOnly();
+            DateOnly? from = date1.ToGregorianDateOnly();
+            DateOnly? to = date2.ToGregorianDateOnly();
             if (!from.HasValue && !to.HasValue)
             {
                 throw new BaseException(ExceptionLiterals.InvalidDate);

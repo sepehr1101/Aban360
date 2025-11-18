@@ -69,6 +69,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return 0;
             }
+            if(calcResult.AbBahaAmount-amountDiscount<2)
+            {
+                return hotSeasonInfo.Item2 + hotSeasonInfo.Item3;
+            }
 
             //double timePercentage = (double)hotSeasonInfo.Item1 / (double)nerkh.Duration;
             double fasleGarmAmount =  hotSeasonInfo.Item2; //* timePercentage * 0.2;
