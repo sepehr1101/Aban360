@@ -10,7 +10,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IAbBahaCalculator
     {
-        CalculateAbBahaOutputDto Calculate(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds);
+        CalculateAbBahaOutputDto Calculate(NerkhGetDto nerkh, NerkhGetDto nerkh1403, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds);
         double CalculateDiscount(ZaribGetDto zarib, bool isVillageCalculation, double monthlyConsumption, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, CalculateAbBahaOutputDto calculateAbBahaOutputDto, bool isFull, int finalDomesticUnit);
     }
 
@@ -18,16 +18,17 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     {
         const int monthDays = 30;
         const int c_1404 = 90000;
-        public CalculateAbBahaOutputDto Calculate(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds)
+        public CalculateAbBahaOutputDto Calculate(NerkhGetDto nerkh, NerkhGetDto nerkh1403, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds)
         {
             double abBahaAmount = 0, oldAbBahaAmount = 0, abBahaFromExpression = 0, oldAbBahaZarib = 1.15;
             double duration = nerkh.Duration;
-            abBahaFromExpression = CalcFormulaByRate(nerkh.Vaj, monthlyConsumption, _olgoo, c, tagIds);
+            string formula = GetFormula(nerkh, nerkh1403);
+            abBahaFromExpression = CalcFormulaByRate(formula, monthlyConsumption, _olgoo, c, tagIds);
             decimal multiplierAbBaha = GetMultiplier(zarib, _olgoo, IsDomesticCategory(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
             (double, double) abBahaValues = (0, 0);
             (long, long) _2Amount = (0, 0);
 
-            if (CheckZero(duration, monthlyConsumption, nerkh.Vaj))
+            if (CheckZero(duration, monthlyConsumption, formula))
             {
                 return new CalculateAbBahaOutputDto(0, (0, 0),0,0,0);
             }
@@ -36,7 +37,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 !IsReligious(customerInfo.UsageId) &&
                 !IsConstruction(customerInfo.BranchType))
             {
-                abBahaFromExpression = CalcFormulaByRate(nerkh.Vaj, monthlyConsumption, _olgoo, c, tagIds);
+                abBahaFromExpression = CalcFormulaByRate(formula, monthlyConsumption, _olgoo, c, tagIds);
                 abBahaAmount = abBahaFromExpression * nerkh.PartialConsumption;
 
                 if (IsLessThan1403_09_13AndOvajNotZero(nerkh))
@@ -306,31 +307,44 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             string date1403_09_13 = "1403/09/13";
             string date1404_02_31 = "1404/02/31";
 
+            (long, long) _zero = (0, 0);
+            (long, long) _3766_168110 = (3776, 168110);
+            (long, long) _8644_8644 = (8644, 8644);
+            (long, long) _4040_168110 = (4040, 168110);
+            (long, long) _4323_225000 = (4323, 225000);
+            (long, long) _4323_350000 = (4323, 350000);
+            (long, long) _7000_350000 = (7000, 350000);
+            (long, long) _9000_450000 = (9000, 450000);
+
             if (StringConditionMoreThan(date1400_12_25, nerkhDate2))
             {
-                return (3776, 168110);
+                return _3766_168110;
             }
-            else if (StringConditionMoreThan(nerkhDate2, date1400_12_25) && StringConditionMoreThan(date1402_04_23, nerkhDate2))
+            else if(IsGtFromLqTo(nerkhDate2, date1400_12_25, date1402_04_23))
             {
-                return (4040, 168110);
+                return _4040_168110;
             }
-            else if (StringConditionMoreThan(nerkhDate2, date1402_04_23) && StringConditionMoreThan(date1403_06_25, nerkhDate2))
+            else if(IsGtFromLqTo(nerkhDate2, date1402_04_23, date1403_06_25))
             {
-                return (4040, 168110);
+                return _4323_225000;
             }
-            else if (StringConditionMoreThan(nerkhDate2, date1403_06_25) && StringConditionMoreThan(date1403_09_13, nerkhDate2))
+            else if (IsGtFromLqTo(nerkhDate2, date1403_06_25, date1403_09_13))
             {
-                return (4323, 350000);
+                return _4323_350000;
             }
-            else if (StringConditionMoreThan(nerkhDate2, date1403_09_13) && StringConditionMoreThan(date1404_02_31, nerkhDate2))
+            else if (IsGtFromLqTo(nerkhDate2, date1402_04_23, date1403_06_25))
             {
-                return (7000, 350000);
-            }
-            else if (StringConditionMoreThan(nerkhDate2, date1404_02_31)) //nerkhDate2 > '1404/02/31'
+                return _4040_168110;
+            }            
+            else if (IsGtFromLqTo(nerkhDate2, date1403_09_13, date1404_02_31))
             {
-                return (9000, 450000);
+                return _7000_350000;
             }
-            return (0, 0);
+            else if (StringConditionMoreThan(nerkhDate2, date1404_02_31))
+            {
+                return _9000_450000;
+            }
+            return _zero;
         }
         private decimal GetMultiplier(ZaribGetDto zarib, int olgoo, bool isDomestic, bool isVillage, double monthlyConsumption, int branchType)
         {
@@ -391,6 +405,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 return "(X*3706)-13845";
 
             return oldVaj;
+        }        
+        private string GetFormula(NerkhGetDto nerkh, NerkhGetDto nerkh1403)
+        {
+           return LessThanEq(nerkh.Date2, "1403/12/30") ? nerkh1403.Vaj : nerkh.Vaj;
         }
     }
 }

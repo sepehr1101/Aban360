@@ -1,13 +1,14 @@
 ﻿using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffDateOperations;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IAbonmanCalculator
     {
         double CalculateAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali);
-        double CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial);
+        double CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo);
     }
 
     internal sealed class AbonmanCalculator : IAbonmanCalculator
@@ -82,7 +83,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             return abonAbAmount;
         }
 
-        public double CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial)
+        public double CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo)
         {
             if (IsSpecialEducation(usageId, isSpecial))
             {
@@ -91,10 +92,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             if(IsConstruction(branchTypeId))
             {
                 return 0;
-            }
+            }            
             if(IsReligious(usageId))
             {
-                return abonmanAmount;
+                return consumptionInfo.MonthlyAverageConsumption <= customerInfo.ContractualCapacity ? abonmanAmount : 0;
             }
             return bahaDiscountAmount > 0 && !IsReligiousWithCharity(usageId) ? abonmanAmount : 0;
         }
