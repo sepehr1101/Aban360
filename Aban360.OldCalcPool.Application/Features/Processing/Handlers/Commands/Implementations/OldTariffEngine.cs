@@ -131,7 +131,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         }
         public async Task<AbBahaCalculationDetails> Handle(MeterImaginaryInputDto input, CancellationToken cancellationToken)
         {
-            ValidationCounterStateCode(input.MeterPreviousData.CounterStateCode, input.MeterPreviousData.CurrentMeterNumber, input.MeterPreviousData.PreviousNumber);
+            ValidationCounterStateCode(input.CustomerInfo.CounterStateCode, input.MeterPreviousData.CurrentMeterNumber, input.MeterPreviousData.PreviousNumber);
 
             //TODO: direct create object from MeterComparisonBatchWithAggregatedNerkhGetHandler.cs
             CustomerInfoOutputDto customerInfo = CreateCustomerInfoDto(input);
@@ -143,7 +143,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     PreviousNumber = input.MeterPreviousData.PreviousNumber,
                     CurrentDateJalali = input.MeterPreviousData.CurrentDateJalali,
                     CurrentNumber = input.MeterPreviousData.CurrentMeterNumber,
-                    CounterStateCode = input.MeterPreviousData.CounterStateCode
+                    CounterStateCode = input.CustomerInfo.CounterStateCode
                 };
                 AbBahaCalculationDetails calculationDetails = await GetCalculationDetails(meterInfo, customerInfo);
                 return calculationDetails;
