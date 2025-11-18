@@ -37,19 +37,22 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
 
             ReportOutput<SewageWaterDistanceHeaderOutputDto, SewageWaterDistanceDetailDataOutputDto> result = await _waterDistanceDeliverToInstallQueryService.Get(input);
 
-            ICollection<int> distances = new List<int>();
+            ICollection<int> requestToInstallDistances = new List<int>();
             result.ReportData.ForEach(data =>
             {
-                CalcDistanceResultDto calcDistance = CalcDistance(data.RequestDate, data.InstallationDate);
-                data.DistanceOfRequestAndInstallation = calcDistance.HasError ? ExceptionLiterals.Incalculable : calcDistance.DistanceText;
+                CalcDistanceResultDto calcInstallationDistance = CalcDistance(data.RequestDate, data.InstallationDate);
+                data.DistanceOfRequestAndInstallation = calcInstallationDistance.HasError ? ExceptionLiterals.Incalculable : calcInstallationDistance.DistanceText;
 
-                distances.Add(calcDistance.HasError ? 0 : calcDistance.Distance);
+                CalcDistanceResultDto calcRegisterDistance = CalcDistance(data.RequestDate, data.RegisterDate);
+                data.DistanceOfRequestAndRegister= calcRegisterDistance.HasError ? ExceptionLiterals.Incalculable : calcRegisterDistance.DistanceText;
+              
+                requestToInstallDistances.Add(calcInstallationDistance.HasError ? 0 : calcInstallationDistance.Distance);
             });
 
-            int averageDistance = distances.Sum() / (result.ReportHeader.RecordCount <= 0 ? 1 : result.ReportHeader.RecordCount);
+            int averageDistance = requestToInstallDistances.Sum() / (result.ReportHeader.RecordCount <= 0 ? 1 : result.ReportHeader.RecordCount);
             result.ReportHeader.AverageDistance = ConvertDayToDate(averageDistance);
-            result.ReportHeader.MaxDistance = ConvertDayToDate(distances.MaxValue());
-            result.ReportHeader.MinDistance = ConvertDayToDate(distances.MinValue());
+            result.ReportHeader.MaxDistance = ConvertDayToDate(requestToInstallDistances.MaxValue());
+            result.ReportHeader.MinDistance = ConvertDayToDate(requestToInstallDistances.MinValue());
 
             return result;
         }
