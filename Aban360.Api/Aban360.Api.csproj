@@ -45,12 +45,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="AppData\DynamicReport\fa.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="AppData\DynamicReport\StiLicense.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="AppData\Stylesheets\sti-custom.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -118,6 +112,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="AppData\Dbfs\" />
     <Folder Include="AppData\Excels\" />
     <Folder Include="AppData\Fonts\" />
     <Folder Include="Controllers\V1\ClaimPool\Registration\Commands\" />

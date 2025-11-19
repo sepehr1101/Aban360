@@ -30,6 +30,11 @@
         Article11,
         Article11_,
         InstallationAndEquipment,
-        IsZoneWithBroker
+        IsZoneWithBroker,
+
+        MeterReadingFile,
+        MeterReadingDetail,
+        Flow,
+        FlowStep
     }
 }

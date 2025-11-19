@@ -1,21 +1,20 @@
 ﻿using Aban360.CalculationPool.Application.Features.Base;
-using Aban360.CalculationPool.Domain.Features.Rule.Dto.Commands;
+using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.Common.Literals;
 using FluentValidation;
 
-namespace Aban360.CalculationPool.Application.Features.Rule.Validations
+namespace Aban360.CalculationPool.Application.Features.MeterReading.Validations
 {
-    public class TariffDuplicateValidator : BaseValidator<TariffDuplicateDto>
+    public class MeterReadingFileCreateValidator:BaseValidator<MeterReadingFileByFormFileCreateDto>
     {
-        public TariffDuplicateValidator()
+        public MeterReadingFileCreateValidator()
         {
             RuleFor(t => t.Title)
                .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
-
-
-            RuleFor(t => t.Id)
+          
+            RuleFor(t => t.ReadingFile)
                .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 

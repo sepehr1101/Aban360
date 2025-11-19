@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Automapper" Version="13.0.1" />
     <PackageReference Include="DNTPersianUtils.Core" Version="6.4.0" />
+    <PackageReference Include="DotNetDBF" Version="7.0.1" />
     <PackageReference Include="FluentValidation" Version="11.10.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
   </ItemGroup>
