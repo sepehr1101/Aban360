@@ -8,6 +8,7 @@
         public string? FirstName { get; set; }
         public string? Surname { get; set; }
         public string? FullName { get; set; }
+        public string? FatherName { get; set; }
         public int? MeterDiameter { get; set; }
         public string? BillId { get; set; }
         public short? FromUnitDomesticWater { get; set; }
