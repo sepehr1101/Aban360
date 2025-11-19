@@ -3,6 +3,7 @@ using Aban360.ReportPool.Domain.Features.Dashboard.Dtos;
 using Aban360.ReportPool.Domain.Features.Dashboard.Entities;
 using Aban360.ReportPool.Persistence.Features.Dashboard.Contracts;
 using Dapper;
+using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.Dashboard.Implementations
@@ -48,6 +49,20 @@ namespace Aban360.ReportPool.Persistence.Features.Dashboard.Implementations
             
             return report;
         }
+        public async Task<IEnumerable<TileScriptReportDto>> GetContent(string content,string? fromDate)
+        {
+            var @params = new
+            { 
+                fromDate= fromDate,
+                toDate=DateTime.Now.ToShortPersianDateString()
+            };
+            IEnumerable<TileScriptReportDto>? report=await _sqlReportConnection.QueryAsync<TileScriptReportDto>(content,@params);
+            
+            return report;
+        }
+
+        
+        
         public async Task<IEnumerable<TileScript>> GetAll()
         {
             string Sql()

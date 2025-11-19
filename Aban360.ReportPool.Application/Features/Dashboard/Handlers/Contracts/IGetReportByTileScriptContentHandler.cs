@@ -4,6 +4,7 @@ namespace Aban360.ReportPool.Application.Features.Dashboard.Handlers.Contracts
 {
     public interface IGetReportByTileScriptContentHandler
     {
-        Task<IEnumerable<TileScriptReportDto>> Handle(int id, CancellationToken cancellationToken);
+        Task<IEnumerable<TileScriptReportDto>> Handle(int id, string? input, CancellationToken cancellationToken);
+        Task<IEnumerable<TileScriptReportDto>> Handle(TileScriptInputDto input, CancellationToken cancellationToken);
     }
 }
