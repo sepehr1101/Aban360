@@ -23,7 +23,6 @@
 
 	<ItemGroup>
 	  <Folder Include="Features\Dashboard\Mappings\" />
-	  <Folder Include="Features\Dashboard\Validations\" />
 	  <Folder Include="Features\Transactions\Validations\" />
 	</ItemGroup>
 
