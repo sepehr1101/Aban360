@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentValidation;
 
 namespace Aban360.CalculationPool.Application.Features.Base
 {
-    internal class BaseValidator
+    public class BaseValidator<T> : AbstractValidator<T>
     {
+        public BaseValidator()
+        {
+            ClassLevelCascadeMode = CascadeMode.Stop;
+            RuleLevelCascadeMode = CascadeMode.Stop;
+        }
     }
 }

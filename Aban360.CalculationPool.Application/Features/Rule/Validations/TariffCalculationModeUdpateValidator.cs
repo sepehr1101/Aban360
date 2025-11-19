@@ -1,4 +1,5 @@
-﻿using Aban360.CalculationPool.Domain.Features.Rule.Dto.Commands;
+﻿using Aban360.CalculationPool.Application.Features.Base;
+using Aban360.CalculationPool.Domain.Features.Rule.Dto.Commands;
 using Aban360.Common.Literals;
 using FluentValidation;
 
