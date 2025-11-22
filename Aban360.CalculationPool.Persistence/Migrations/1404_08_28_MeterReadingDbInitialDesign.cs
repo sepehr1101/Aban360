@@ -31,31 +31,18 @@ namespace Aban360.CalculationPool.Persistence.Migrations
             tableName.ForEach(t => Delete.Table(t));
         }
 
-        private void CreateMeterReadingFile()
-        {
-            var table = TableName.MeterReadingFile;
-            Create.Table(nameof(TableName.MeterReadingFile)).InSchema(_schema)
-                .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
-                .WithColumn("Title").AsString(_255).NotNullable()
-                .WithColumn("FileName").AsString(_255).NotNullable()
-                .WithColumn("RecordCount").AsInt32().NotNullable()
-                .WithColumn("AgentCode").AsInt16().NotNullable()
-                .WithColumn("ZoneId").AsInt32().NotNullable()
-                .WithColumn("InsertByUserId").AsGuid().NotNullable()
-                .WithColumn("InsertDateTime").AsDateTime().NotNullable();
-        }
-        private void CreateMeterReadingDetial()
+      
+        private void _CreateMeterReadingDetial()
         {
             var table = TableName.MeterReadingDetail;
             Create.Table(nameof(TableName.MeterReadingDetail)).InSchema(_schema)
                 .WithColumn(Id).AsInt32().PrimaryKey(NamingHelper.Pk(table)).Identity()
-                .WithColumn("MeterReadingFileId").AsInt32().NotNullable()
+                .WithColumn("FlowImportedId").AsInt32().NotNullable()
                 .WithColumn("ZoneId").AsInt32().NotNullable()
-                .WithColumn("ZoneTitle").AsString(_255).NotNullable()
                 .WithColumn("CustomerNumber").AsInt32().NotNullable()
                 .WithColumn("ReadingNumber").AsString(_50).NotNullable()
                 .WithColumn("BillId").AsString(_50).NotNullable()
-                .WithColumn("AgentCode").AsInt16().NotNullable()
+                .WithColumn("AgentCode").AsInt32().NotNullable()
                 .WithColumn("CurrentCounterStateCode").AsInt16().NotNullable()
                 .WithColumn("PreviousDateJalali").AsString(_10).NotNullable()
                 .WithColumn("CurrentDateJalali").AsString(_10).NotNullable()
@@ -84,7 +71,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                 .WithColumn("ContractualCapacity").AsInt32().NotNullable()
                 .WithColumn("HouseholdNumber").AsInt32().NotNullable()
                 .WithColumn("HouseholdDate").AsString(_50).Nullable()
-                .WithColumn("VillageId").AsInt16().Nullable()
+                .WithColumn("VillageId").AsString().Nullable()
                 .WithColumn("IsSpecial").AsBoolean().NotNullable()
                 .WithColumn("MeterDiameterId").AsInt16().NotNullable()
                 .WithColumn("VirtualCategoryId").AsInt32().NotNullable()
@@ -96,28 +83,28 @@ namespace Aban360.CalculationPool.Persistence.Migrations
 
                 .WithColumn("LastMeterDateJalali").AsString(_10).Nullable()
                 .WithColumn("LastMeterNumber").AsInt32().Nullable()
-                .WithColumn("ConsumpionAverage").AsFloat().Nullable()
-                .WithColumn("DebtAmount").AsInt64().Nullable()
+                .WithColumn("ConsumptionAverage").AsFloat().Nullable()
                 .WithColumn("LastCounterStateCode").AsInt32().Nullable();
         }
-        private void CreateFlow()
+        private void _CreateMeterFlow()
         {
-            var table = TableName.Flow;
-            Create.Table(nameof(TableName.Flow)).InSchema(_schema)
+            var table = TableName.MeterFlow;
+            Create.Table(nameof(TableName.MeterFlow)).InSchema(_schema)
                 .WithColumn(Id).AsInt16().PrimaryKey(NamingHelper.Pk(table)).Identity()
-                .WithColumn($"{TableName.MeterReadingDetail}Id").AsInt32().NotNullable()
-                .WithColumn($"{TableName.FlowStep}Id").AsInt16().NotNullable()
+                .WithColumn($"{TableName.MeterFlowStep}Id").AsInt16().NotNullable()
+                .WithColumn("FileName").AsString(_255).NotNullable()
+                .WithColumn("ZoneId").AsInt32().NotNullable()
                 .WithColumn("InsertDateTime").AsDateTime().NotNullable()
                 .WithColumn("InsertByUserId").AsGuid().NotNullable()
                 .WithColumn("RemovedDateTime").AsDateTime().Nullable()
                 .WithColumn("RemovedByUserId").AsGuid().Nullable()
                 .WithColumn("Description").AsString(_255).Nullable();
         }
-        private void CreateFlowStep()
+        private void _CreateMeterFlowStep()
         {
-            var table =TableName.FlowStep;
-            Create.Table(nameof(TableName.FlowStep)).InSchema(_schema)
-                .WithColumn(Id).AsInt16().NotNullable()
+            var table =TableName.MeterFlowStep;
+            Create.Table(nameof(TableName.MeterFlowStep)).InSchema(_schema)
+                .WithColumn(Id).AsInt16().NotNullable().PrimaryKey(NamingHelper.Pk(table))
                 .WithColumn("Title").AsString(_255).NotNullable()
                 .WithColumn("Description").AsString(_255).Nullable();
         }

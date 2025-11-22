@@ -19,12 +19,11 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
 
         [HttpPost]
         [Route("create")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<MeterReadingFileByFormFileCreateDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Create(MeterReadingFileByFormFileCreateDto input, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponseEnvelope<MeterReadingFileCreateDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Create(MeterReadingFileCreateDto input, CancellationToken cancellationToken)
         {
             input.FilePath = await CopyDbfFileInDbfs(input.ReadingFile);
             await _meterReadingFileHandle.Handle(input, CurrentUser, cancellationToken);
-            //create ICollection<MeterReading>    
 
             return Ok(input);
         }

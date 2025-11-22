@@ -5,6 +5,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 {
     public interface IMeterReadingFileCreateHandler
     {
-        Task Handle(MeterReadingFileByFormFileCreateDto input, IAppUser appUser, CancellationToken cancellationToken);
+        Task Handle(MeterReadingFileCreateDto input, IAppUser appUser, CancellationToken cancellationToken);
     }
 }

@@ -52,6 +52,9 @@
     <None Update="DbSeeder\DataScript\InstallationAndEquipment.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DbSeeder\DataScript\MeterFlowStep.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="DbSeeder\DataScript\supportedOperation.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
