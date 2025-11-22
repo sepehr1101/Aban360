@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffDateOperations;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
+using static Aban360.OldCalcPool.Application.Features.Processing.Validations.TariffValidator;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
@@ -115,7 +116,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         }
         public async Task<AbBahaCalculationDetails> Handle(MeterInfoByPreviousDataInputDto input, CancellationToken cancellationToken)
         {
-            ValidationCounterStateCode(input.CounterStateCode, input.CurrentMeterNumber, input.PreviousNumber);
+            ValidateCounterStateCode(input.CounterStateCode, input.CurrentMeterNumber, input.PreviousNumber);
 
             CustomerInfoOutputDto customerInfo = await _customerInfoDetailQueryService.GetInfo(input.BillId);
             MeterInfoOutputDto meterInfo = new MeterInfoOutputDto()
@@ -131,7 +132,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         }
         public async Task<AbBahaCalculationDetails> Handle(MeterImaginaryInputDto input, CancellationToken cancellationToken)
         {
-            ValidationCounterStateCode(input.CustomerInfo.CounterStateCode, input.MeterPreviousData.CurrentMeterNumber, input.MeterPreviousData.PreviousNumber);
+            ValidateCounterStateCode(input.CustomerInfo.CounterStateCode, input.MeterPreviousData.CurrentMeterNumber, input.MeterPreviousData.PreviousNumber);
 
             //TODO: direct create object from MeterComparisonBatchWithAggregatedNerkhGetHandler.cs
             CustomerInfoOutputDto customerInfo = CreateCustomerInfoDto(input);
@@ -171,7 +172,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         {
             ConsumptionInfo consumptionInfo = _consumptionCalculator.GetConsumptionInfo(meterInfo, customerInfo);
             NerkhByConsumptionInputDto nerkhInput = CreateNerkhInput(meterInfo, customerInfo, consumptionInfo);
-            Validate(meterInfo.PreviousDateJalali);
+            ValidatePreviousDate(meterInfo.PreviousDateJalali);
             (IEnumerable<NerkhGetDto>, IEnumerable<AbAzadFormulaDto>, IEnumerable<ZaribGetDto>, int, IEnumerable<NerkhGetDto>) allNerkhAbAbAzad 
                 = await _nerkhGetByConsumptionService.GetWithAggregatedNerkh(nerkhInput);
             AbBahaCalculationDetails result = await GetAbBahaCalculationDetails(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, meterInfo.CurrentDateJalali, customerInfo, meterInfo, consumptionInfo, allNerkhAbAbAzad.Item5);
@@ -184,7 +185,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             MeterInfoOutputDto meterInfo = new MeterInfoOutputDto(meterInfoWithConsumption.PreviousDateJalali, meterInfoWithConsumption.CurrentDateJalali, 0, 0, null);
             NerkhByConsumptionInputDto nerkhInput = CreateNerkhInput(meterInfo, customerInfo, consumptionInfo);
-            Validate(meterInfo.PreviousDateJalali);
+            ValidatePreviousDate(meterInfo.PreviousDateJalali);
             (IEnumerable<NerkhGetDto>, IEnumerable<AbAzadFormulaDto>, IEnumerable<ZaribGetDto>, int, IEnumerable<NerkhGetDto>) allNerkhAbAbAzad = await _nerkhGetByConsumptionService.GetWithAggregatedNerkh(nerkhInput);
             AbBahaCalculationDetails result = await GetAbBahaCalculationDetails(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, meterInfo.CurrentDateJalali, customerInfo, meterInfo, consumptionInfo, allNerkhAbAbAzad.Item5);
             return result;
@@ -338,19 +339,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             string baseDate = "1403/12/30";
             return nerkhDate2.CompareTo(baseDate) <= 0 ? 14 : olgo;
         }
-
-        private void Validate(string previousDateJalali)
-        {
-            DateOnly? previousDate = previousDateJalali.ToGregorianDateOnly();
-            if (!previousDate.HasValue)
-            {
-                throw new BaseException(ExceptionLiterals.InvalidDate);
-            }
-            if (previousDate.Value > DateOnly.FromDateTime(DateTime.Now.AddDays(-thresholdDay)))
-            {
-                throw new BaseException(ExceptionLiterals.InvalidPreviousDateInvoice(thresholdDay));
-            }
-        }
         private double CalculateTax(params double[] amounts)
         {
             return amounts.Sum() * vatRate;
@@ -358,21 +346,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private double CalculateTaxDiscount(params double[] amounts)
         {
             return amounts.Sum() * vatRate;
-        }
-        private void ValidationCounterStateCode(int? counterStateCode, int currentNumber, int previousNumber)
-        {
-            int[] invalidCounterStateCode = new int[] { 4, 6, 7, 8, 9, 10 };
-            if (counterStateCode.HasValue)
-            {
-                if (invalidCounterStateCode.Contains(counterStateCode.Value))
-                {
-                    throw new TariffCalcException(ExceptionLiterals.IncalculableWithCounterStateCode);
-                }
-                else if ((counterStateCode.Value == 3 || counterStateCode.Value == 5) && currentNumber > previousNumber)
-                {
-                    throw new TariffCalcException(ExceptionLiterals.ConfilictBetweenCounterNumberAndCounteState);
-                }
-            }
         }
     }
 }
