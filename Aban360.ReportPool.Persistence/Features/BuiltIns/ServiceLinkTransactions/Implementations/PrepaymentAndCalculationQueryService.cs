@@ -114,8 +114,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 						m.sharh AS Description,
 						m.BLOCK_COD AS ReadingBlock,
 						IIF(m.s0>0 , N'انشعاب جدید' ,
-					  		IIF(m.s1>0,N'فاضلاب جدید',
-					     			IIF(ISNULL(m.s0, 0) = 0 AND ISNULL(m.s1, 0) = 0,N'پس از فروش',N'هیچی'))) AS ServiceDescription
+					  	IIF(m.s1>0,N'فاضلاب جدید',
+					    IIF(ISNULL(m.s0, 0) = 0 AND ISNULL(m.s1, 0) = 0,N'پس از فروش',N'بدون درخواست'))) AS ServiceDescription
 					
 						From [{dataBaseName}].dbo.moshtrak m
 						Join [Db70].dbo.T41 t On m.cod_enshab=t.C0

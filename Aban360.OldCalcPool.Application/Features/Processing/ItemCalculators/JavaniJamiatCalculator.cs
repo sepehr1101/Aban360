@@ -6,25 +6,25 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IJavaniJamiatCalculator
     {
-        double Calculate(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double abBahaAmount, double monthlyConsumption, int olgoo);
+        TariffItemResult Calculate(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double abBahaAmount, double monthlyConsumption, int olgoo);
     }
 
     internal sealed class JavaniJamiatCalculator : IJavaniJamiatCalculator
     {
-        public double Calculate(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double abBahaAmount, double monthlyConsumption, int olgoo)
+        public TariffItemResult Calculate(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double abBahaAmount, double monthlyConsumption, int olgoo)
         {
             //L 2608
             if (IsUsageConstructor(customerInfo.UsageId))
             {
-                return 0;
+                return new TariffItemResult();
             }
             if (IsConstruction(customerInfo.BranchType))
             {
-                return 0;
+                return new TariffItemResult();
             }
             if (abBahaAmount == 0)
             {
-                return 0;
+                return new TariffItemResult();
             }
 
             int domesticUnit = customerInfo.DomesticUnit;
@@ -42,7 +42,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 var (hasVillageCode, villageCode) = HasVillageCode(customerInfo.VillageId);
                 if (!hasVillageCode)
                 {
-                    return 0;
+                    return new TariffItemResult();
                 }
 
                 if (villageCode > 0 &&
@@ -50,11 +50,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                     domesticUnit > 1 &&
                     RuralButIsMetro(customerInfo.ZoneId, villageCode))
                 {
-                    return baseAmount * nerkh.PartialConsumption;
+                    return new TariffItemResult(baseAmount * nerkh.PartialConsumption);
                 }
                 else
                 {
-                    return 0;
+                    return new TariffItemResult();
                 }
             }
             //L 2642
@@ -62,17 +62,20 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 domesticUnit >= 1 &&
                 (IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId)))
             {
-                return baseAmount * nerkh.PartialConsumption;
+                return new TariffItemResult(baseAmount * nerkh.PartialConsumption);
             }
             if (!IsDomesticWithoutUnspecified(customerInfo.UsageId) && !IsGardenAndResidence(customerInfo.UsageId))
             {
                 if (monthlyConsumption > customerInfo.ContractualCapacity)
                 {
-                    return baseAmount * nerkh.PartialConsumption;
+                    return new TariffItemResult(baseAmount * nerkh.PartialConsumption);
                 }
             }
-            return 0;
+            return new TariffItemResult();
         }
-
+        public TariffItemResult CalculateDiscount()
+        {
+            return new TariffItemResult();
+        }
     }
 }

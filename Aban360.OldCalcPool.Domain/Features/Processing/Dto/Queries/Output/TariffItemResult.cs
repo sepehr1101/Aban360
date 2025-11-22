@@ -2,14 +2,29 @@
 {
     public record TariffItemResult
     {
-        public double Summation { get; set; }
-        public double Allowed { get; set; }
-        public double Disallowed { get; set; }
-        public TariffItemResult(double allowed, double disallowed, double summation)
+        public int TmpDuration { get; }
+        public double Summation { get;}
+        public double Allowed { get; }
+        public double Disallowed { get; }
+
+        public TariffItemResult(double allowed)
+        {
+            Allowed= allowed;
+            Disallowed = 0;
+            Summation = allowed;
+        }
+        public TariffItemResult(double allowed, double disallowed, int tmpDuration=0)
         {
             Allowed=allowed;
             Disallowed=disallowed;
-            Summation=summation;
+            Summation = allowed + disallowed;
+            TmpDuration=tmpDuration;
+        }
+        public TariffItemResult()
+        {
+            Summation = 0;
+            Allowed = 0;
+            Disallowed = 0;
         }
     }
 }
