@@ -7,7 +7,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IAbonmanCalculator
     {
-        double CalculateAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali);
+        TariffItemResult CalculateAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali);
         double CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo);
     }
 
@@ -20,11 +20,17 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const string date1404_02_14 = "1404/02/14";
         const string date1404_02_31 = "1404/02/31";
         const string date1404_12_29 = "1404/12/29";
-        public double CalculateAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali)
+
+        const double amountTo1403_12_01 = 10000.0;
+        const double amountTo1403_12_30 = 35000.0;
+        const double amountTo404_02_31 = 45500.0;
+        const double amountTo1404_12_29 = 58500.0;
+
+        public TariffItemResult CalculateAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali)
         {
             if (!IsConstruction(customerInfo.BranchType) && IsTankerSale(customerInfo.UsageId))
             {
-                return 0;
+                return new TariffItemResult();
             }
 
             double abonAbAmount = 0;//, abonAbDiscount = 0;
@@ -51,10 +57,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 zabon_4 = PartTime(date1404_02_31, date1404_12_29, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
             }
 
-            zabon_1 = Math.Max(zabon_1, 0);
-            zabon_2 = Math.Max(zabon_2, 0);
-            zabon_3 = Math.Max(zabon_3, 0);
-            zabon_4 = Math.Max(zabon_4, 0);
+            //zabon_1 = Math.Max(zabon_1, 0);
+            //zabon_2 = Math.Max(zabon_2, 0);
+            //zabon_3 = Math.Max(zabon_3, 0);
+            //zabon_4 = Math.Max(zabon_4, 0);
 
             int sumUnit = customerInfo.OtherUnit + customerInfo.DomesticUnit + customerInfo.CommertialUnit;
 
@@ -68,7 +74,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 sumUnit = 1;
             }
 
-            abonAbAmount = (((10000.0 / monthDays) * zabon_1) + ((35000.0 / monthDays) * zabon_2) + ((45500.0 / monthDays) * zabon_3) + ((58500.0 / monthDays) * zabon_4)) * sumUnit;
+            abonAbAmount = (((amountTo1403_12_01 / monthDays) * zabon_1) + ((amountTo1403_12_30 / monthDays) * zabon_2) + ((amountTo404_02_31 / monthDays) * zabon_3) + ((amountTo1404_12_29 / monthDays) * zabon_4)) * sumUnit;
 
             if (abonAbAmount < 0)
             {
@@ -80,7 +86,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 abonAbAmount *= 2;
             }
 
-            return abonAbAmount;
+            return new TariffItemResult(abonAbAmount);
         }
 
         public double CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo)
