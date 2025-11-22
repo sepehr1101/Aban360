@@ -17,7 +17,8 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
         private bool CustomerSearchAdvancedValidations(CustomerSearchAdvancedInputDto customerInputDto)
         {
             if (!string.IsNullOrWhiteSpace(customerInputDto.FirstName) ||
-                !string.IsNullOrWhiteSpace(customerInputDto.Surname) ||
+                !string.IsNullOrWhiteSpace(customerInputDto.Surname) || 
+                !string.IsNullOrWhiteSpace(customerInputDto.FatherName) ||
                 !string.IsNullOrWhiteSpace(customerInputDto.BillId) ||
                 !string.IsNullOrWhiteSpace(customerInputDto.MobileNumber) ||
                 !string.IsNullOrWhiteSpace(customerInputDto.Address) ||

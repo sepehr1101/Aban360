@@ -25,13 +25,13 @@ namespace Aban360.Common.Extensions
                 excelfile[ExceptionLiterals.Page(i + 1)] = TranslateData(sheetData,excludedProperties);
             }
 
-            string path = GetPath(reportName);
-            try
-            {
-                await MiniExcel.SaveAsAsync(path, excelfile);
+                string path = GetPath(reportName);
+                try
+                {
+                    await MiniExcel.SaveAsAsync(path, excelfile);
 
-                return path;
-            }
+                    return path;
+                }
             catch (Exception e)
             {
                 throw e;
