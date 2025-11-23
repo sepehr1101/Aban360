@@ -303,7 +303,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 javaniDiscount: 0,
                 boodjeDiscount,
                 hotSeasonFazelabDiscount: hotSeasonFazelabDiscount,
-                multiplier: abBahaResult.Multiplier);
+                multiplier: 0/*TODO*/);
         }
         private int GetOlgoo(string nerkhDate2, int olgo)
         {
