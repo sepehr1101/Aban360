@@ -28,13 +28,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
                 ToReadingNumber = string.IsNullOrWhiteSpace(input.ToReadingNumber)? input.ToReadingNumber :"9999999999",
                 FromDate = input.FromDateJalali,
                 ToDate = input.ToDateJalali,
-                FromAmount = input.FromAmount!=null? input.FromAmount :0,
-                ToAmount = input.ToAmount!=null? input.ToAmount :long.MaxValue ,
-				FromDebtPeriodCount = input.FromDebtPeriodCount!=null? input.FromDebtPeriodCount :0,
-                ToDebtPeriodCount = input.ToDebtPeriodCount!=null? input.ToDebtPeriodCount:int.MaxValue,
-                UsageConsumptionIds =  input.UsageConsumptionIds,
-                UsageSellIds = input.UsageSellIds,
-                ZoneIds = input.ZoneIds
+                input.FromAmount,
+                input.ToAmount,
+				input.FromDebtPeriodCount,
+                input.ToDebtPeriodCount,
+                input.UsageConsumptionIds,
+                input.UsageSellIds,
+                input.ZoneIds
             };
 			IEnumerable<PendingPaymentsDataOutputDto> pendingPaymentsData = await _sqlReportConnection.QueryAsync<PendingPaymentsDataOutputDto>(pendingPaymentsQueryString, @params, null, 120);
             PendingPaymentsHeaderOutputDto pendingPaymentsHeader = new PendingPaymentsHeaderOutputDto()
@@ -83,8 +83,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 								ReadingNumber,
 								UsageTitle AS UsageSellTitle ,
 								IIF(UsageId2=0,UsageTitle,UsageTitle2) AS UsageConsumptionTitle,
-								TRIM(FirstName) As FirstName,
-								TRIM(SureName) Surname,
+								FirstName As FirstName,
+								SureName Surname,
 								MobileNo AS MobileNumber,
 								PhoneNo AS PhoneNumber,
 								DeletionStateTitle AS UseStateTitle,
@@ -96,47 +96,49 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 						    Join [Db70].dbo.T46 t46
 						    	On t51.C1=t46.C0
 							WHERE 
-								ToDayJalali IS NULL
-								AND ZoneId IN @ZoneIds
-								AND (@FromReadingNumber IS NULL OR 
+								ToDayJalali IS NULL AND
+								ZoneId IN @ZoneIds AND
+								(  
+									@FromReadingNumber IS NULL OR 
 									@ToReadingNumber IS NULL OR 
-									TRIM(ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber) AND
-									DeletionStateId NOT IN (1,2)
+									TRIM(ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber
+								) AND
+								DeletionStateId NOT IN (1,2)
 								{usageSellQuery}
 								{usageConsumptionQuery}
-								--AND (@UsageConsumptionIds IS NULL OR UsageId2 IN @UsageConsumptionIds)
-						),
-						
+						),						
 						-- تجمیعی قبض‌ها
 						BillAgg AS (
 							SELECT 
-								ZoneId,
-								CustomerNumber,
+								fc.ZoneId,
+								fc.CustomerNumber,
 								SUM(CASE WHEN RegisterDay < @FromDate THEN SumItems ELSE 0 END) AS BillBefore,
 								SUM(CASE WHEN RegisterDay BETWEEN @FromDate AND @ToDate THEN SumItems ELSE 0 END) AS BillBetween,
 								SUM(CASE WHEN RegisterDay > @ToDate THEN SumItems ELSE 0 END) AS BillAfter
-							FROM [CustomerWarehouse].dbo.Bills
+							FROM [CustomerWarehouse].dbo.Bills b
+							INNER JOIN FilteredClients fc
+								 ON b.ZoneId = fc.ZoneId AND b.CustomerNumber =  fc.CustomerNumber
 							WHERE 
 								TypeCode NOT IN(7,8) AND 
-								ZoneId IN @ZoneIds AND
 								SumItems<>0
-							GROUP BY ZoneId, CustomerNumber
+							GROUP BY fc.ZoneId, fc.CustomerNumber
 						),
 						
 						-- تجمیعی پرداخت‌ها + آخرین پرداخت
 						PaymentAgg AS (
 							SELECT 
-								ZoneId,
-								CustomerNumber,
+								fc.ZoneId,
+								fc.CustomerNumber,
 								SUM(CASE WHEN RegisterDay < @FromDate THEN Amount ELSE 0 END) AS PaymentBefore,
 								SUM(CASE WHEN RegisterDay BETWEEN @FromDate AND @ToDate	THEN Amount ELSE 0 END) AS PaymentBetween,
 								SUM(CASE WHEN RegisterDay > @ToDate THEN Amount ELSE 0 END) AS PaymentAfter,
 								MAX(RegisterDay) AS LastPaymentDate
-							FROM [CustomerWarehouse].dbo.Payments
+							FROM [CustomerWarehouse].dbo.Payments p
+							INNER JOIN FilteredClients fc
+								ON p.zoneId = fc.ZoneId AND p.CustomerNumber = fc.CustomerNumber
 							WHERE 
-								ZoneId IN @ZoneIds AND
 								Amount<>0 
-							GROUP BY ZoneId, CustomerNumber
+							GROUP BY fc.ZoneId, fc.CustomerNumber
 						),
 						
 						-- شمارش قبض‌های ثبت‌شده بعد از آخرین پرداخت (با LEFT JOIN)
@@ -177,11 +179,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 							(
 							 @FromDebtPeriodCount IS NULL OR
 							 @toDebtPeriodCount IS NULL OR
-							 D.DebtPeriodsAfter BETWEEN @FromDebtPeriodCount AND @toDebtPeriodCount) AND
-							(				
-							 @FromDebtPeriodCount IS NULL OR
-							 @ToDebtPeriodCount IS NULL OR 
-							 D.DebtPeriodsAfter BETWEEN @FromDebtPeriodCount AND @ToDebtPeriodCount
+							 D.DebtPeriodsAfter BETWEEN @FromDebtPeriodCount AND @toDebtPeriodCount
 							)";
         }
     }
