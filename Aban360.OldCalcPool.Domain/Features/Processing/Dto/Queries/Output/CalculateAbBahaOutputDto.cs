@@ -1,8 +1,7 @@
 ﻿namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
 {
     public record CalculateAbBahaOutputDto
-    {
-     
+    {     
         public double AbBahaAmount { get; set; }
         public double AbBaha1 { get; set; }
         public double AbBaha2 { get; set; }

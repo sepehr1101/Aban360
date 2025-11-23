@@ -3,6 +3,7 @@ using Aban360.OldCalcPool.Application.Constant;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using DNTPersianUtils.Core;
+using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffDateOperations;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
@@ -11,6 +12,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
     {
         ConsumptionInfo GetConsumptionInfo(MeterInfoOutputDto meterInfo, CustomerInfoOutputDto customerInfo);
         ConsumptionInfo GetConsumptionInfoWithMonthlyConsumption(MeterDateInfoWithMonthlyConsumptionOutputDto meterInfo, CustomerInfoOutputDto customerInfo);
+        ConsumptionPartialInfo GetPartial(MeterInfoOutputDto meterInfo, ConsumptionInfo consumptionInfo, string nerkhDate1, string nerkhDate2, int olgooOrCapacity);
     }
     internal sealed class ConsumptionCalculator : IConsumptionCalculator
     {
@@ -50,6 +52,30 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
             int consumption = GetConsumption(dailyAverage, duration, finalDomesticUnit);
             ConsumptionInfo consumptionInfo = new(meterInfo.PreviousDateJalali, meterInfo.CurrentDateJalali, consumption, duration, dailyAverage, finalDomesticUnit);
             return consumptionInfo;
+        }
+        public ConsumptionPartialInfo GetPartial(MeterInfoOutputDto meterInfo, ConsumptionInfo consumptionInfo, string nerkhDate1, string nerkhDate2, int olgooOrCapacity)
+        {
+            DateOnly previousDate = ConvertJalaliToGregorian(meterInfo.PreviousDateJalali);
+            DateOnly currentDate = ConvertJalaliToGregorian(meterInfo.CurrentDateJalali);
+
+            DateOnly nerkhStartDate = ConvertJalaliToGregorian(nerkhDate1);
+            DateOnly nerkhEndDate = ConvertJalaliToGregorian(nerkhDate2);
+
+            DateOnly startSegment = nerkhStartDate > previousDate ? nerkhStartDate : previousDate;
+            DateOnly endSegment = nerkhEndDate < currentDate ? nerkhEndDate : currentDate;
+
+            string startSegmentJalali = startSegment.ToDateTime(TimeOnly.MinValue).ToShortPersianDateString();
+            string endSegmentJalali = endSegment.ToDateTime(TimeOnly.MinValue).ToShortPersianDateString();
+
+            int durationPartial = endSegment.DayNumber - startSegment.DayNumber;
+            double partialConsumption = (double)consumptionInfo.Consumption / (double)consumptionInfo.Duration * durationPartial;
+
+            double allowedConsumption = Math.Min(olgooOrCapacity, partialConsumption);
+            double disallowedConsumption = partialConsumption > allowedConsumption ? partialConsumption - allowedConsumption : 0;
+
+            ConsumptionPartialInfo consumptionPartialInfo =
+                new(partialConsumption, allowedConsumption, disallowedConsumption, durationPartial, startSegment, endSegment, startSegmentJalali, endSegmentJalali);
+            return consumptionPartialInfo;
         }
 
         private int GetConsumption(int previousNumber, int currentNumber)

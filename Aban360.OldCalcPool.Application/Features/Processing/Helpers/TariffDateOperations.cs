@@ -1,8 +1,6 @@
 ﻿using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Aban360.Common.Timing;
-using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
-using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using DNTPersianUtils.Core;
 using static Aban360.Common.Timing.CalculationDistanceDate;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffStringChecker;
@@ -53,22 +51,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
                 throw new TariffDateException(ExceptionLiterals.Incalculable);
             }
             return calcDistance.Distance;
-        }
-        internal static (NerkhGetDto, int, double) CalcPartial(NerkhGetDto nerkh, DateOnly previousDate, DateOnly currentDate, ConsumptionInfo consumptionInfo)
-        {
-            DateOnly fromDate = ConvertJalaliToGregorian(nerkh.Date1);
-            DateOnly toDate = ConvertJalaliToGregorian(nerkh.Date2);
-
-            DateOnly startSegment = fromDate > previousDate ? fromDate : previousDate;
-            DateOnly endSegment = toDate < currentDate ? toDate : currentDate;
-
-            nerkh.Date1 = startSegment.ToDateTime(TimeOnly.MinValue).ToShortPersianDateString();
-            nerkh.Date2 = endSegment.ToDateTime(TimeOnly.MinValue).ToShortPersianDateString();
-
-            int durationPartial = endSegment.DayNumber - startSegment.DayNumber;
-            double partialConsumption = (double)consumptionInfo.Consumption / (double)consumptionInfo.Duration * durationPartial;
-            return (nerkh, durationPartial, partialConsumption);
-        }
-
+        }       
     }
 }
