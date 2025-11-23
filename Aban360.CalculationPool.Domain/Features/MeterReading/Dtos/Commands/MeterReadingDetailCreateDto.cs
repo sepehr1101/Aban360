@@ -51,5 +51,12 @@
         public float? ConsumptionAverage { get; set; }
         public int? LastCounterStateCode { get; set; }
 
+        public double? SumItems { get; set; }
+        public double? SumItemsBeforeDiscount { get; set; }
+        public double? DiscountSum { get; set; }
+
+        public double? Consumption { get; set; }
+        public double? MonthlyConsumption { get; set; }
+
     }
 }

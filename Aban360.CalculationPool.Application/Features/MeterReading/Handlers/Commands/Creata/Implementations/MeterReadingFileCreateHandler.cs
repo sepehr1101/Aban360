@@ -45,105 +45,77 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             await Validation(input, cancellationToken);
             ICollection<MeterReadingFileDetail> meterReadings = ReadDb(input.FilePath, appUser.UserId);
             MeterReadingFileDetail firstMeterDetail = meterReadings.FirstOrDefault();
-            MeterFlowCreateDto meterFlow = CreateImportedMeterFlowStep(input.ReadingFile.FileName, firstMeterDetail.ZoneId, appUser.UserId, input.Description);
 
+            MeterFlowCreateDto meterFlow = CreateImportedMeterFlowStep(input.ReadingFile.FileName, firstMeterDetail.ZoneId, appUser.UserId, input.Description);
             int meterFlowId = await _meterFlowService.Create(meterFlow);
 
-            ICollection<MeterReadingDetailCreateDto> meterReadingsDetailCreate = new List<MeterReadingDetailCreateDto>();
-            foreach (var meterReadingInfo in meterReadings)
-            {
-                CustomerInfoGetDto customerInfo = await _customerInfoService.Get(meterReadingInfo.ZoneId, meterReadingInfo.CustomerNumber);
-                MeterReadingDetailCreateDto meterReadingDetail = GetMeterReadingDetail(customerInfo, meterReadingInfo, meterFlowId);
-                meterReadingsDetailCreate.Add(meterReadingDetail);
-            }
 
-            //save meterReadingsDetailCreate in metereadingDetail
+            CustomersInfoGetDto customersInfo = await _customerInfoService.Get(firstMeterDetail.ZoneId, meterReadings.Select(m => m.CustomerNumber).ToList());
+
+            IEnumerable<MeterReadingDetailCreateDto> meterReadingsDetailCreate =
+                from meterReading in meterReadings
+                
+                join members in customersInfo.MembersInfo
+                    on meterReading.CustomerNumber equals members.CustomerNumber
+                    into membersJoin
+                from members in membersJoin.DefaultIfEmpty()
+
+                join bedbes in customersInfo.BedBesInfo
+                    on members.CustomerNumber equals bedbes.CustomerNumber
+                    into bedbesJoin
+                from bedbes in bedbesJoin.DefaultIfEmpty()
+
+                join taviz in customersInfo.TavizInfo
+                    on bedbes.CustomerNumber equals taviz.CustomerNumber
+                    into tavizJoin
+                from taviz in tavizJoin.DefaultIfEmpty()
+                 select new MeterReadingDetailCreateDto()
+                 {
+                     FlowImportedId = meterFlowId,
+                     ZoneId = meterReading.ZoneId,
+                     CustomerNumber = meterReading.CustomerNumber,
+                     ReadingNumber = meterReading.ReadingNumber,
+                     BillId = members.BillId,
+                     AgentCode = meterReading.AgentCode,
+                     CurrentCounterStateCode = meterReading.CurrentCounterStateCode,
+                     PreviousDateJalali = meterReading.PreviousDateJalali,
+                     CurrentDateJalali = meterReading.CurrentDateJalali,
+                     PreviousNumber = meterReading.PreviousNumber,
+                     CurrentNumber = meterReading.CurrentNumber,
+                     InsertByUserId = meterReading.InsertByUserId,
+                     InsertDateTime = meterReading.InsertDateTime,
+
+                     UsageId = members.UsageId,
+                     DomesticUnit = members.DomesticUnit,
+                     CommercialUnit = members.CommercialUnit,
+                     OtherUnit = members.OtherUnit,
+                     EmptyUnit = members.EmptyUnit,
+                     WaterInstallationDateJalali = members.WaterInstallationDateJalali,
+                     SewageInstallationDateJalali = members.SewageInstallationDateJalali,
+                     WaterRegisterDate = members.WaterRegisterDate,
+                     SewageRegisterDate = members.WaterRegisterDate,
+                     WaterCount = members.WaterCount,
+                     SewageCalcState = members.SewageCalcState,
+                     ContractualCapacity = members.ContractualCapacity,
+                     HouseholdDate = members.HouseholdDate,
+                     HouseholdNumber = members.HouseholdNumber,
+                     VillageId = members.VillageId,
+                     IsSpecial = members.IsSpecial,
+                     MeterDiameterId = members.MeterDiameterId,
+                     VirtualCategoryId = members.VirtualCategoryId,
+
+                     TavizCause = taviz?.TavizCause,
+                     TavizDateJalali = taviz?.TavizDateJalali,
+                     TavizNumber = taviz?.TavizNumber,
+                     TavizRegisterDateJalali = taviz?.TavizRegisterDateJalali,
+
+                     LastMeterDateJalali = bedbes is null ? members.WaterInstallationDateJalali : bedbes.LastMeterDateJalali,
+                     LastMeterNumber = bedbes is null ? 0 : bedbes.LastMeterNumber,
+                     ConsumptionAverage = bedbes is null ? 0 : bedbes.ConsumptionAverage,
+                     LastCounterStateCode = bedbes is null ? 0 : bedbes.LastCounterStateCode,
+                 };
+          
             await _meterReadingDetailService.Create(meterReadingsDetailCreate);
-        }
-
-        private MeterReadingDetailCreateDto GetMeterReadingDetail(CustomerInfoGetDto customerInfo, MeterReadingFileDetail meterReading, int flowId)
-        {
-            try
-            {
-
-
-                return new MeterReadingDetailCreateDto()
-                {
-                    FlowImportedId = flowId,
-                    ZoneId = meterReading.ZoneId,
-                    CustomerNumber = meterReading.CustomerNumber,
-                    ReadingNumber = meterReading.ReadingNumber,
-                    BillId = customerInfo.MembersInfo.BillId,
-                    AgentCode = meterReading.AgentCode,
-                    CurrentCounterStateCode = meterReading.CurrentCounterStateCode,
-                    PreviousDateJalali = meterReading.PreviousDateJalali,
-                    CurrentDateJalali = meterReading.CurrentDateJalali,
-                    PreviousNumber = meterReading.PreviousNumber,
-                    CurrentNumber = meterReading.CurrentNumber,
-                    InsertByUserId = meterReading.InsertByUserId,
-                    InsertDateTime = meterReading.InsertDateTime,
-
-                    UsageId = customerInfo.MembersInfo.UsageId,
-                    DomesticUnit = customerInfo.MembersInfo.DomesticUnit,
-                    CommercialUnit = customerInfo.MembersInfo.CommercialUnit,
-                    OtherUnit = customerInfo.MembersInfo.OtherUnit,
-                    EmptyUnit = customerInfo.MembersInfo.EmptyUnit,
-                    WaterInstallationDateJalali = customerInfo.MembersInfo.WaterInstallationDateJalali,
-                    SewageInstallationDateJalali = customerInfo.MembersInfo.SewageInstallationDateJalali,
-                    WaterRegisterDate = customerInfo.MembersInfo.WaterRegisterDate,
-                    SewageRegisterDate = customerInfo.MembersInfo.WaterRegisterDate,
-                    WaterCount = customerInfo.MembersInfo.WaterCount,
-                    SewageCalcState = customerInfo.MembersInfo.SewageCalcState,
-                    ContractualCapacity = customerInfo.MembersInfo.ContractualCapacity,
-                    HouseholdDate = customerInfo.MembersInfo.HouseholdDate,
-                    HouseholdNumber = customerInfo.MembersInfo.HouseholdNumber,
-                    VillageId = customerInfo.MembersInfo.VillageId,
-                    IsSpecial = customerInfo.MembersInfo.IsSpecial,
-                    MeterDiameterId = customerInfo.MembersInfo.MeterDiameterId,
-                    VirtualCategoryId = customerInfo.MembersInfo.VirtualCategoryId,
-
-                    TavizCause = customerInfo.TavizInfo?.TavizCause,
-                    TavizDateJalali = customerInfo.TavizInfo?.TavizDateJalali,
-                    TavizNumber = customerInfo.TavizInfo?.TavizNumber,
-                    TavizRegisterDateJalali = customerInfo.TavizInfo?.TavizRegisterDateJalali,
-
-                    LastMeterDateJalali = customerInfo.BedBesInfo is null ? customerInfo.MembersInfo.WaterInstallationDateJalali : customerInfo.BedBesInfo.LastMeterDateJalali,
-                    LastMeterNumber = customerInfo.BedBesInfo is null ? 0 : customerInfo.BedBesInfo.LastMeterNumber,
-                    ConsumptionAverage = customerInfo.BedBesInfo is null ? 0 : customerInfo.BedBesInfo.ConsumptionAverage,
-                    LastCounterStateCode = customerInfo.BedBesInfo is null ? 0 : customerInfo.BedBesInfo.LastCounterStateCode,
-                };
-            }
-            catch (Exception en)
-            {
-                throw new InvalidDataException(en + "   " + meterReading.CustomerNumber + " -- " + meterReading.ZoneId);
-            }
-        }
-        private void CreateMeterReadingDetail(MeterReadingFileDetail meterReading, int meterFlowId)
-        {
-            MeterReadingDetailCreateDto met = new MeterReadingDetailCreateDto()
-            {
-                FlowImportedId = meterFlowId,
-                ZoneId = meterReading.ZoneId,
-                CustomerNumber = meterReading.CustomerNumber,
-                ReadingNumber = meterReading.ReadingNumber,
-                BillId = "----",//todo
-                AgentCode = meterReading.AgentCode,
-                CurrentCounterStateCode = meterReading.CurrentCounterStateCode,
-                PreviousDateJalali = meterReading.PreviousDateJalali,
-                CurrentDateJalali = meterReading.CurrentDateJalali,
-                PreviousNumber = meterReading.PreviousNumber,
-                CurrentNumber = meterReading.CurrentNumber,
-
-                ExcludedByUserId = null,
-                ExcludedDateTime = null,
-
-                InsertByUserId = meterReading.InsertByUserId,
-                InsertDateTime = meterReading.InsertDateTime,
-                RemovedByUserId = null,
-                RemovedDateTime = null,
-
-
-            };
         }
 
         private async Task Validation(MeterReadingFileCreateDto input, CancellationToken cancellationToken)

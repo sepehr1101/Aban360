@@ -3,8 +3,8 @@
     public record CustomerInfoGetDto
     {
         public MembersInfo MembersInfo { get; set; }
-        public LatestBedBesConsumptionInfo  BedBesInfo { get; set; }
-        public LatesTavizInfo TavizInfo{ get; set; }
+        public LatestBedBesConsumptionInfo BedBesInfo { get; set; }
+        public LatesTavizInfo TavizInfo { get; set; }
         public CustomerInfoGetDto(MembersInfo membersInfo, LatestBedBesConsumptionInfo bedBesInfo, LatesTavizInfo tavizInfo)
         {
             MembersInfo = membersInfo;

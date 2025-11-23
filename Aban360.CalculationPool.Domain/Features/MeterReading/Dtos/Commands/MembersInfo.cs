@@ -2,6 +2,7 @@
 {
     public record MembersInfo
     {
+        public int CustomerNumber { get; set; }
         public string BillId { get; set; }
         public int UsageId { get; set; }
         public int DomesticUnit { get; set; }

@@ -84,7 +84,12 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                 .WithColumn("LastMeterDateJalali").AsString(_10).Nullable()
                 .WithColumn("LastMeterNumber").AsInt32().Nullable()
                 .WithColumn("ConsumptionAverage").AsFloat().Nullable()
-                .WithColumn("LastCounterStateCode").AsInt32().Nullable();
+                .WithColumn("LastCounterStateCode").AsInt32().Nullable()
+                .WithColumn("SumItems").AsDouble().Nullable()
+                .WithColumn("SumItemsBeforeDiscount").AsDouble().Nullable()
+                .WithColumn("DiscountSum").AsDouble().Nullable()
+                .WithColumn("Consumption").AsDouble().Nullable()
+                .WithColumn("MonthlyConsumption").AsDouble().Nullable();
         }
         private void _CreateMeterFlow()
         {

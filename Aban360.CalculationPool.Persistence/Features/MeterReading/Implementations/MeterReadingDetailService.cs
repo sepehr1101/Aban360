@@ -1,6 +1,9 @@
 ﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
+using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
 using Aban360.Common.Db.Dapper;
+using Dapper;
+using LiteDB;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Data;
@@ -38,9 +41,59 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                 }
             }
         }
+        public async Task Update(IEnumerable<MeterReadingWithAbBahaResultUpdateDto> items)
+        {
+            var dt = ToDataTable(items);
+
+            using var connection = _sqlReportConnection;
+            await connection.OpenAsync();
+
+            string createTemp = @"
+                    CREATE TABLE #TempMeterReadingDetail
+                    (
+                        Id INT PRIMARY KEY,
+                        SumItems FLOAT(53) NULL,
+                        SumItemsBeforeDiscount FLOAT(53) NULL,
+                        DiscountSum FLOAT(53) NULL,
+                        Consumption FLOAT(53) NULL,
+                        MonthlyConsumption FLOAT(53) NULL
+                    );";
+
+            await new SqlCommand(createTemp, connection).ExecuteNonQueryAsync();
+
+            using (var bulk = new SqlBulkCopy(connection))
+            {
+                bulk.DestinationTableName = "#TempMeterReadingDetail";
+                await bulk.WriteToServerAsync(dt);
+            }
+
+            string mergeSql = @"
+                    MERGE Atlas.dbo.MeterReadingDetail AS target
+                    USING #TempMeterReadingDetail AS source
+                    ON target.Id = source.Id
+                    WHEN MATCHED THEN 
+                        UPDATE SET
+                            target.SumItems = source.SumItems,
+                            target.SumItemsBeforeDiscount = source.SumItemsBeforeDiscount,
+                            target.DiscountSum = source.DiscountSum,
+                            target.Consumption = source.Consumption,
+                            target.MonthlyConsumption = source.MonthlyConsumption;";
+
+            await new SqlCommand(mergeSql, connection).ExecuteNonQueryAsync();
+        }
+
+
+        public async Task<IEnumerable<MeterReadingDetailGetDto>> Get(int flowImportedId)
+        {
+            string query = GetQuery();
+            IEnumerable<MeterReadingDetailGetDto> details = await _sqlReportConnection.QueryAsync<MeterReadingDetailGetDto>(query, new { flowImportedId = flowImportedId });
+
+            return details;
+        }
+
         private DataTable ToDataTable(IEnumerable<MeterReadingDetailCreateDto> input)
         {
-            var table=new DataTable();
+            var table = new DataTable();
 
             table.Columns.Add("FlowImportedId", typeof(int));
             table.Columns.Add("ZoneId", typeof(int));
@@ -89,6 +142,12 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             table.Columns.Add("ConsumptionAverage", typeof(float));
             table.Columns.Add("LastCounterStateCode", typeof(int));
 
+            table.Columns.Add("SumItems", typeof(double));
+            table.Columns.Add("SumItemsBeforeDiscount", typeof(double));
+            table.Columns.Add("DiscountSum", typeof(double));
+            table.Columns.Add("Consumption", typeof(double));
+            table.Columns.Add("MonthlyConsumption", typeof(double));
+
             foreach (var item in input)
             {
                 var row = table.NewRow();
@@ -132,8 +191,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                 row["VirtualCategoryId"] = item.VirtualCategoryId;
 
                 row["TavizDateJalali"] = item.TavizDateJalali ?? (object)DBNull.Value;
-                row["TavizCause"] = item.TavizCause?? (object)DBNull.Value;
-                row["TavizRegisterDateJalali"] = item.TavizRegisterDateJalali??(object)DBNull.Value;
+                row["TavizCause"] = item.TavizCause ?? (object)DBNull.Value;
+                row["TavizRegisterDateJalali"] = item.TavizRegisterDateJalali ?? (object)DBNull.Value;
                 row["TavizNumber"] = item.TavizNumber ?? (object)DBNull.Value;
 
                 row["LastMeterDateJalali"] = item.LastMeterDateJalali;
@@ -141,9 +200,47 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                 row["ConsumptionAverage"] = item.ConsumptionAverage ?? (object)DBNull.Value;
                 row["LastCounterStateCode"] = item.LastCounterStateCode ?? (object)DBNull.Value;
 
+                row["SumItems"] = item.SumItems ?? (object)DBNull.Value;
+                row["SumItemsBeforeDiscount"] = item.SumItemsBeforeDiscount ?? (object)DBNull.Value;
+                row["DiscountSum"] = item.DiscountSum ?? (object)DBNull.Value;
+                row["Consumption"] = item.Consumption ?? (object)DBNull.Value;
+                row["MonthlyConsumption"] = item.MonthlyConsumption ?? (object)DBNull.Value;
+
                 table.Rows.Add(row);
             }
             return table;
         }
+        public DataTable ToDataTable(IEnumerable<MeterReadingWithAbBahaResultUpdateDto> items)
+        {
+            var dt = new DataTable();
+            dt.Columns.Add("Id", typeof(int));
+            dt.Columns.Add("SumItems", typeof(double));
+            dt.Columns.Add("SumItemsBeforeDiscount", typeof(double));
+            dt.Columns.Add("DiscountSum", typeof(double));
+            dt.Columns.Add("Consumption", typeof(double));
+            dt.Columns.Add("MonthlyConsumption", typeof(double));
+
+            foreach (var item in items)
+            {
+                dt.Rows.Add(
+                    item.Id,
+                    item.SumItems,
+                    item.SumItemsBeforeDiscount,
+                    item.DiscountSum,
+                    item.Consumption,
+                    item.MonthlyConsumption
+                );
+            }
+
+            return dt;
+        }
+
+        private string GetQuery()//Todo : remove top 100
+        {
+            return @"Select top 100 *
+                        From Atlas.dbo.MeterReadingDetail
+                        Where FlowImportedId=@flowImportedId";
+        }
+
     }
 }
