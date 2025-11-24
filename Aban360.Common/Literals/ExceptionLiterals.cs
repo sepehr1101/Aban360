@@ -74,6 +74,8 @@
 
 
         public static string UnSuccessfulToSave(string tableName) => $"ذخیره در جدول {tableName} با خطا روبرو شد";
-    
+
+        //Reading
+        public static string invalidDuplicateFileName(string date) => $"نام فایل تکراری است. این فایل در تاریخ {date} ارسال شده";
     }
 }

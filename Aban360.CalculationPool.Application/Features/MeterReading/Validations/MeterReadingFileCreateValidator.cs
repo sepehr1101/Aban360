@@ -5,7 +5,7 @@ using FluentValidation;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Validations
 {
-    public class MeterReadingFileCreateValidator:BaseValidator<MeterReadingFileByFormFileCreateDto>
+    public class MeterReadingFileCreateValidator:BaseValidator<MeterReadingFileCreateDto>
     {
         public MeterReadingFileCreateValidator()
         {
