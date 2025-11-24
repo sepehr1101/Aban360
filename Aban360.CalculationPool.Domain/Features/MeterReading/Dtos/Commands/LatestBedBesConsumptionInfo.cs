@@ -5,7 +5,8 @@
         public int CustomerNumber { get; set; }
         public string LastMeterDateJalali { get; set; }
         public int? LastMeterNumber { get; set; }
-        public float? ConsumptionAverage { get; set; }
+        public float? LastMonthlyConsumption { get; set; }
+        public float? LastConsumption { get; set; }
         public int? LastCounterStateCode { get; set; }
     }
 }

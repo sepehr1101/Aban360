@@ -77,7 +77,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             return $@"Select TOP 1
 						b.today_date as LastMeterDateJalali ,
 						b.today_no as LastMeterNumber,
-						b.rate as ConsumptionAverage,
+						b.rate as LastConsumptionAverage,
 						b.cod_vas as LastCounterStateCode
 					From [{dbName}].dbo.bed_bes b
 					Where
@@ -141,6 +141,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 							b.today_date,
 							b.today_no,
 							b.rate,
+							b.masraf,
 							b.cod_vas,
 							RN= ROW_NUMBER() OVER(Partition By b.radif Order By b.today_date DESC)
 						From [{dbName}].dbo.bed_bes b
@@ -150,7 +151,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 						c.radif as CustomerNumber,
 						c.today_date as LastMeterDateJalali ,
 						c.today_no as LastMeterNumber,
-						c.rate as ConsumptionAverage,
+						c.masraf as LastConsumption,
+						c.rate as LastMonthlyConsumption,
 						c.cod_vas as LastCounterStateCode
 					From CTE c
 					Where

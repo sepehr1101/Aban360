@@ -139,7 +139,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 
             table.Columns.Add("LastMeterDateJalali", typeof(string));
             table.Columns.Add("LastMeterNumber", typeof(int));
-            table.Columns.Add("ConsumptionAverage", typeof(float));
+            table.Columns.Add("LastConsumption", typeof(float));
+            table.Columns.Add("LastMonthlyConsumption", typeof(float));
             table.Columns.Add("LastCounterStateCode", typeof(int));
 
             table.Columns.Add("SumItems", typeof(double));
@@ -197,7 +198,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 
                 row["LastMeterDateJalali"] = item.LastMeterDateJalali;
                 row["LastMeterNumber"] = item.LastMeterNumber ?? (object)DBNull.Value;
-                row["ConsumptionAverage"] = item.ConsumptionAverage ?? (object)DBNull.Value;
+                row["LastConsumption"] = item.LastConsumption ?? (object)DBNull.Value;
+                row["LastMonthlyConsumption"] = item.LastMonthlyConsumption ?? (object)DBNull.Value;
                 row["LastCounterStateCode"] = item.LastCounterStateCode ?? (object)DBNull.Value;
 
                 row["SumItems"] = item.SumItems ?? (object)DBNull.Value;

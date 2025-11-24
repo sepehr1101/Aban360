@@ -4,9 +4,7 @@ using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
 using Aban360.Common.ApplicationUser;
-using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
@@ -64,7 +62,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                     readingDetail.SumItemsBeforeDiscount = 0;
                     readingDetail.DiscountSum = 0;
                     readingDetail.Consumption = 0;
-                    readingDetail.MonthlyConsumption = 00;
+                    readingDetail.MonthlyConsumption = 0;
                 }
             }
             await _meterReadingDetailService.Update(consumptionsInfo);

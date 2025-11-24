@@ -36,7 +36,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         public async Task<string?> Get(string fileName)
         {
             string query = GetValidationQuery();
-            string? insertDateTime = await _sqlReportConnection.QueryFirstAsync<string>(query, new { fileName });
+            string? insertDateTime = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(query, new { fileName });
 
             return insertDateTime;
         }

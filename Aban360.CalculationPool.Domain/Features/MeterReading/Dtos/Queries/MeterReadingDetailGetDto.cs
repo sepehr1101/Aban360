@@ -47,11 +47,15 @@
         public string? TavizRegisterDateJalali { get; set; }
         public int? TavizNumber { get; set; }
 
+        //previous
         public string LastMeterDateJalali { get; set; }
         public int? LastMeterNumber { get; set; }
-        public float? ConsumptionAverage { get; set; }
+        public float? LastConsumption{ get; set; }
+        public float? LastMonthlyConsumption { get; set; }
         public int? LastCounterStateCode { get; set; }
 
+
+        //current
         public double? SumItems { get; set; }
         public double? SumItemsBeforeDiscount { get; set; }
         public double? DiscountSum { get; set; }

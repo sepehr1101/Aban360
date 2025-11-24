@@ -111,7 +111,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
                      LastMeterDateJalali = bedbes is null ? members.WaterInstallationDateJalali : bedbes.LastMeterDateJalali,
                      LastMeterNumber = bedbes is null ? 0 : bedbes.LastMeterNumber,
-                     ConsumptionAverage = bedbes is null ? 0 : bedbes.ConsumptionAverage,
+                     LastConsumption = bedbes is null ? 0 : bedbes.LastConsumption,
+                     LastMonthlyConsumption= bedbes is null ? 0 :bedbes.LastMonthlyConsumption,
                      LastCounterStateCode = bedbes is null ? 0 : bedbes.LastCounterStateCode,
                  };
           

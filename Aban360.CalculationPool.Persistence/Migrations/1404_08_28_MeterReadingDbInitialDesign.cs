@@ -83,8 +83,10 @@ namespace Aban360.CalculationPool.Persistence.Migrations
 
                 .WithColumn("LastMeterDateJalali").AsString(_10).Nullable()
                 .WithColumn("LastMeterNumber").AsInt32().Nullable()
-                .WithColumn("ConsumptionAverage").AsFloat().Nullable()
+                .WithColumn("lastMonthlyConsumption").AsFloat().Nullable()
+                .WithColumn("lastConsumption").AsFloat().Nullable()
                 .WithColumn("LastCounterStateCode").AsInt32().Nullable()
+
                 .WithColumn("SumItems").AsDouble().Nullable()
                 .WithColumn("SumItemsBeforeDiscount").AsDouble().Nullable()
                 .WithColumn("DiscountSum").AsDouble().Nullable()

@@ -1,7 +1,8 @@
-﻿namespace Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands
+﻿namespace Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries
 {
-    public record MeterReadingDetailCreateDto
+    public record MeterReadingDetailCheckedDto
     {
+        public int Id { get; set; }
         public int FlowImportedId { get; set; }
         public int ZoneId { get; set; }
         public int CustomerNumber { get; set; }
@@ -14,13 +15,13 @@
         public int PreviousNumber { get; set; }
         public int CurrentNumber { get; set; }
 
-        public Guid? ExcludedByUserId { get; set; }
-        public DateTime? ExcludedDateTime { get; set; }
+        //public Guid? ExcludedByUserId { get; set; }
+        //public DateTime? ExcludedDateTime { get; set; }
 
         public Guid InsertByUserId { get; set; }
         public DateTime InsertDateTime { get; set; }
-        public Guid? RemovedByUserId { get; set; }
-        public DateTime? RemovedDateTime { get; set; }
+        //public Guid? RemovedByUserId { get; set; }
+        //public DateTime? RemovedDateTime { get; set; }
 
         public int UsageId { get; set; }
         public int DomesticUnit { get; set; }
@@ -46,12 +47,14 @@
         public string? TavizRegisterDateJalali { get; set; }
         public int? TavizNumber { get; set; }
 
+        //previous
         public string LastMeterDateJalali { get; set; }
         public int? LastMeterNumber { get; set; }
         public float? LastConsumption { get; set; }
         public float? LastMonthlyConsumption { get; set; }
         public int? LastCounterStateCode { get; set; }
 
+        //current
         public double? SumItems { get; set; }
         public double? SumItemsBeforeDiscount { get; set; }
         public double? DiscountSum { get; set; }
@@ -59,5 +62,6 @@
         public double? Consumption { get; set; }
         public double? MonthlyConsumption { get; set; }
 
+        public bool HasAttention { get; set; }
     }
 }
