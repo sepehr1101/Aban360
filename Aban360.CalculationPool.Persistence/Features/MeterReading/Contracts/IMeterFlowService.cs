@@ -10,5 +10,6 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts
         Task<MeterFlowGetDto> Get(int id);
         Task<string?> Get(string fileName);
         Task<int> GetFirstFlowId(int latestFlowId);
+        Task<IEnumerable<MeterFlowCartableGetDto>> GetCartable();
     }
 }

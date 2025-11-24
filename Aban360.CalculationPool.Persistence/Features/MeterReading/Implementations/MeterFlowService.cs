@@ -40,6 +40,13 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 
             return insertDateTime;
         }
+        public async Task<IEnumerable<MeterFlowCartableGetDto>> GetCartable()
+        {
+            string query = GetCartablQuery();
+            IEnumerable<MeterFlowCartableGetDto> cartable=await _sqlReportConnection.QueryAsync<MeterFlowCartableGetDto>(query,null); 
+       
+            return cartable;
+        }
         public async Task<int> GetFirstFlowId(int latestFlowId)
         {
             string query = GetFirstFlowId();
@@ -92,6 +99,25 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                     Where
                     	f2.Id=@id AND
                     	f1.MeterFlowStepId=1";
+        }
+        private string GetCartablQuery()
+        {
+            return @"Select 
+                    	f.Id,
+                    	f.MeterFlowStepId,
+                    	fs.Title as StepTitle,
+                    	f.FileName,
+                    	f.ZoneId,
+                    	f.InsertByUserId,
+                    	f.InsertDateTime,
+                        f.Description
+                    From Atlas.dbo.MeterFlow f
+                    Join Atlas.dbo.MeterFlowStep fs
+                    	On f.MeterFlowStepId=fs.Id
+                    Where
+                    	--f.ZoneId IN @zoneIds AND
+                    	f.RemovedByUserId IS NULL AND 
+                    	f.RemovedDateTime IS NULL";
         }
     }
 }
