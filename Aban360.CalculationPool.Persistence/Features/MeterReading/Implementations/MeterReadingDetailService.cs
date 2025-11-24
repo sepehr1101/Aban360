@@ -142,6 +142,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             table.Columns.Add("LastConsumption", typeof(float));
             table.Columns.Add("LastMonthlyConsumption", typeof(float));
             table.Columns.Add("LastCounterStateCode", typeof(int));
+            table.Columns.Add("LastSumItems", typeof(double));
 
             table.Columns.Add("SumItems", typeof(double));
             table.Columns.Add("SumItemsBeforeDiscount", typeof(double));
@@ -201,6 +202,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                 row["LastConsumption"] = item.LastConsumption ?? (object)DBNull.Value;
                 row["LastMonthlyConsumption"] = item.LastMonthlyConsumption ?? (object)DBNull.Value;
                 row["LastCounterStateCode"] = item.LastCounterStateCode ?? (object)DBNull.Value;
+                row["LastSumItems"] = item.LastSumItems ?? (object)DBNull.Value;
 
                 row["SumItems"] = item.SumItems ?? (object)DBNull.Value;
                 row["SumItemsBeforeDiscount"] = item.SumItemsBeforeDiscount ?? (object)DBNull.Value;
@@ -237,11 +239,11 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             return dt;
         }
 
-        private string GetQuery()//Todo : remove top 100
+        private string GetQuery()
         {
-            return @"Select top 100 *
-                        From Atlas.dbo.MeterReadingDetail
-                        Where FlowImportedId=@flowImportedId";
+            return @"Select *
+                     From Atlas.dbo.MeterReadingDetail
+                     Where FlowImportedId=@flowImportedId";
         }
 
     }

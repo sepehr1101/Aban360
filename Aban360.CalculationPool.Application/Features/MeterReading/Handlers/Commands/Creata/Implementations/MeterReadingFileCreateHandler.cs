@@ -114,6 +114,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                      LastConsumption = bedbes is null ? 0 : bedbes.LastConsumption,
                      LastMonthlyConsumption= bedbes is null ? 0 :bedbes.LastMonthlyConsumption,
                      LastCounterStateCode = bedbes is null ? 0 : bedbes.LastCounterStateCode,
+                     LastSumItems= bedbes is null ? 0 :bedbes?.LastSumItems
                  };
           
             await _meterReadingDetailService.Create(meterReadingsDetailCreate);

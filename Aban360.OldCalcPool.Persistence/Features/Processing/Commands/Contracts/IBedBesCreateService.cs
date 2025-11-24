@@ -7,5 +7,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts
     {
         Task Create(BedBesCreateDto input);
         Task Create(ICollection<BedBesCreateDto> input);
+        Task Create(ICollection<BedBesCreateDto> input, int zoneId);
     }
 }

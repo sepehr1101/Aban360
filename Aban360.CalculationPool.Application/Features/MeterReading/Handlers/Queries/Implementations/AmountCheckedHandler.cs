@@ -8,13 +8,12 @@ using Aban360.Common.Extensions;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Implementations
 {
-    internal sealed class ConsumptionCheckedHandler : IConsumptionCheckedHandler
+    internal sealed class AmountCheckedHandler : IAmountCheckedHandler
     {
         private readonly IMeterReadingDetailService _meterReadingDetailService;
         private readonly IMeterFlowService _meterFlowService;
-        private const int _domesticConsumptionExpirePercent = 30;
-        private const int _nonDomesticConsumptionExpirePercent = 30;
-        public ConsumptionCheckedHandler(
+        private const int _expirePercent = 50;
+        public AmountCheckedHandler(
             IMeterReadingDetailService meterReadingDetailService,
             IMeterFlowService meterFlowService)
         {
@@ -42,7 +41,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             MeterFlowGetDto meterFlow = await _meterFlowService.Get(latestFlowId);
             MeterFlowCreateDto newMeterFlow = new()
             {
-                MeterFlowStepId = MeterFlowStepEnum.ConsumptionChecked,
+                MeterFlowStepId = MeterFlowStepEnum.AmountChecked,
                 ZoneId = meterFlow.ZoneId,
                 FileName = meterFlow.FileName,
                 InsertByUserId = appUser.UserId,
@@ -64,17 +63,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         private MeterReadingDetailCheckedDto GetMeterReadingDetailControl(MeterReadingDetailGetDto input)
         {
             bool hasAttention = false;
-            if (IsDomestic(input.UsageId))
-            {
-                //domestic
-                hasAttention = GetHasAttention(_domesticConsumptionExpirePercent, input.LastMonthlyConsumption.Value, input.MonthlyConsumption.Value);
-            }
-            else
-            {
-                //nonDimestic
-                hasAttention = GetHasAttention(_nonDomesticConsumptionExpirePercent, input.ContractualCapacity, input.MonthlyConsumption.Value);
-            }
-
+            hasAttention = GetHasAttention(_expirePercent, input.LastSumItems.Value, input.SumItems.Value);
 
             return new MeterReadingDetailCheckedDto()
             {
@@ -123,7 +112,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 LastMeterNumber = input.LastMeterNumber,
                 LastConsumption = input.LastConsumption,
                 LastMonthlyConsumption = input.LastMonthlyConsumption,
-                LastSumItems=input.LastSumItems,
+                LastSumItems = input.LastSumItems,
 
                 SumItems = input.SumItems,
                 SumItemsBeforeDiscount = input.SumItemsBeforeDiscount,
@@ -134,20 +123,13 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 HasAttention = hasAttention
             };
         }
-        private bool IsDomestic(int usageId)
+        private bool GetHasAttention(int expirePercent, double lastSumItems, double sumItems)
         {
-            int[] domesticUsage = [0, 1, 3];
-            return domesticUsage.Contains(usageId);
-        }
-        private bool GetHasAttention(int expirePercent, double lastMonthlyConsumption, double monthlyConsumption)
-        {
-            double expireValue = (double)(lastMonthlyConsumption * expirePercent / 100d);
-            double minValue = (double)(lastMonthlyConsumption - expireValue);
-            double maxValue = (double)(lastMonthlyConsumption + expireValue);
+            double expireValue = (double)(lastSumItems * expirePercent / 100d);
+            double minValue = (double)(lastSumItems - expireValue);
+            double maxValue = (double)(lastSumItems + expireValue);
 
-            return monthlyConsumption >= minValue && monthlyConsumption <= maxValue ?
-                   false :
-                   true;
+            return sumItems >= minValue && sumItems <= maxValue ? false : true;
         }
     }
 }

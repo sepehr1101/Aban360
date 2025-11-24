@@ -8,5 +8,6 @@
         public float? LastMonthlyConsumption { get; set; }
         public float? LastConsumption { get; set; }
         public int? LastCounterStateCode { get; set; }
+        public double? LastSumItems { get; set; }
     }
 }
