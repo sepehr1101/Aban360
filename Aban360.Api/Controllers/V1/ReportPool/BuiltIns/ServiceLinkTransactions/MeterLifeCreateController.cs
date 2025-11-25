@@ -8,8 +8,8 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
     [Route("v1/meter-life")]
     public class MeterLifeCreateController : BaseController
     {
-        private readonly IMeterLifeCreateHandler _meterLifeGetHandler;
-        public MeterLifeCreateController(IMeterLifeCreateHandler meterLifeGetHandler)
+        private readonly IMeterLifeInsertHandler _meterLifeGetHandler;
+        public MeterLifeCreateController(IMeterLifeInsertHandler meterLifeGetHandler)
         {
             _meterLifeGetHandler = meterLifeGetHandler;
             _meterLifeGetHandler.NotNull(nameof(meterLifeGetHandler));
