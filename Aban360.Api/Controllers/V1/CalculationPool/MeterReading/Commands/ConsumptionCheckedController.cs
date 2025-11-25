@@ -9,11 +9,17 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
     [Route("v1/consumption-checked")]
     public class ConsumptionCheckedController : BaseController
     {
-        private readonly IConsumptionCheckedHandler _consumptionControlHandler;
-        public ConsumptionCheckedController(IConsumptionCheckedHandler consumptionControlHandler)
+        private readonly IConsumptionCheckedHandler _consumptionCheckedHandler;
+        private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
+        public ConsumptionCheckedController(
+            IConsumptionCheckedHandler consumptionCheckedHandler, 
+            IMeterFlowValidationGetHandler meterFlowValidationGetHandler)
         {
-            _consumptionControlHandler = consumptionControlHandler;
-            _consumptionControlHandler.NotNull(nameof(consumptionControlHandler));
+            _consumptionCheckedHandler = consumptionCheckedHandler;
+            _consumptionCheckedHandler.NotNull(nameof(consumptionCheckedHandler));
+           
+            _meterFlowValidationGetHandler = meterFlowValidationGetHandler;
+            _meterFlowValidationGetHandler.NotNull(nameof(meterFlowValidationGetHandler));
         }
 
         [HttpPost]
@@ -21,7 +27,8 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<MeterReadingDetailCheckedDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ConsumptionChecked(int id, CancellationToken cancellationToken)
         {
-            IEnumerable<MeterReadingDetailCheckedDto> result = await _consumptionControlHandler.Handle(id, CurrentUser, cancellationToken);
+            await _meterFlowValidationGetHandler.Handle(id, cancellationToken);
+            IEnumerable<MeterReadingDetailCheckedDto> result = await _consumptionCheckedHandler.Handle(id, CurrentUser, cancellationToken);
             return Ok(result);
         }
     }

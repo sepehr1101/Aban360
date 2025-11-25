@@ -33,10 +33,17 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 
             return meterFlow;
         }
-        public async Task<string?> Get(string fileName)
+        public async Task<string?> GetInsertDateTime(string fileName)
         {
-            string query = GetValidationQuery();
+            string query = GetValidationByFileNameQuery();
             string? insertDateTime = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(query, new { fileName });
+
+            return insertDateTime;
+        }
+        public async Task<string?> GetInsertDateTime(int id)
+        {
+            string query = GetValidationByIdQuery();
+            string? insertDateTime = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(query, new { id});
 
             return insertDateTime;
         }
@@ -80,16 +87,27 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             return @"Select 
                     	MeterFlowStepId,
                     	FileName,
-                    	ZoneId
+                    	ZoneId,
+                        InsertDateTime
                     From Atlas.dbo.MeterFlow
                     Where Id=@id";
         }
-        private string GetValidationQuery()
+        private string GetValidationByFileNameQuery()
         {
             return @"Select InsertDateTime
                     From Atlas.dbo.MeterFlow
                     Where FileName=@fileName";
         }
+        private string GetValidationByIdQuery()
+        {
+            return @"Select InsertDateTime
+                    From Atlas.dbo.MeterFlow
+                    Where	
+                    	Id=@id AND
+                    	RemovedByUserId IS NOT NULL AND
+                    	RemovedDateTime IS NOT NULL";
+        }
+
         private string GetFirstFlowId()
         {
             return @"select f1.Id

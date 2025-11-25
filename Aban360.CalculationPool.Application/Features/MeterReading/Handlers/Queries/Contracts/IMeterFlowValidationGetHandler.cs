@@ -2,6 +2,7 @@
 {
     public interface IMeterFlowValidationGetHandler
     {
-        Task Handle(string fileName, CancellationToken cancellation);
+        Task Handle(string fileName, CancellationToken cancellationToken);
+        Task Handle(int id, CancellationToken cancellationToken);
     }
 }

@@ -3,6 +3,7 @@ using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using Aban360.Common.Timing;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Implementations
 {
@@ -15,12 +16,22 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             _meterFlowService.NotNull(nameof(meterFlowService));
         }
 
-        public async Task Handle(string fileName, CancellationToken cancellation)
+        public async Task Handle(string fileName, CancellationToken cancellationToken)
         {
-            string? insertDateTime = await _meterFlowService.Get(fileName);
+            string? insertDateTime = await _meterFlowService.GetInsertDateTime(fileName);
             if (insertDateTime is not null)
             {
-                throw new ReadingException(ExceptionLiterals.invalidDuplicateFileName(insertDateTime));
+                string insertDateJalali= ConvertDate.GregorianToJalali(insertDateTime);
+                throw new ReadingException(ExceptionLiterals.InvalidDuplicateFileName(insertDateJalali));
+            }
+        }
+        public async Task Handle(int id, CancellationToken cancellationToken)
+        {
+            string? insertDateTime=await _meterFlowService.GetInsertDateTime(id);
+            if (insertDateTime is not null)
+            {
+                string insertDateJalali = ConvertDate.GregorianToJalali(insertDateTime);
+                throw new ReadingException(ExceptionLiterals.InvalidDuplicateStepFlow(insertDateJalali));
             }
         }
     }

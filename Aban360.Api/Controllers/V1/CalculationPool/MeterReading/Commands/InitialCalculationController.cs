@@ -10,10 +10,16 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
     public class InitialCalculationController : BaseController
     {
         private readonly IInitialCalculationHandler _initialCalculationHandler;
-        public InitialCalculationController(IInitialCalculationHandler initialCalculationHandler)
+        private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
+        public InitialCalculationController(
+            IInitialCalculationHandler initialCalculationHandler, 
+            IMeterFlowValidationGetHandler meterFlowValidationGetHandler)
         {
             _initialCalculationHandler = initialCalculationHandler;
             _initialCalculationHandler.NotNull(nameof(initialCalculationHandler));
+            
+            _meterFlowValidationGetHandler = meterFlowValidationGetHandler;
+            _meterFlowValidationGetHandler.NotNull(nameof(meterFlowValidationGetHandler));
         }
 
         [HttpPost]
@@ -21,6 +27,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<MeterReadingDetailGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Calculation(int id, CancellationToken cancellationToken)
         {
+            await _meterFlowValidationGetHandler.Handle(id, cancellationToken);
             IEnumerable<MeterReadingDetailGetDto> result= await _initialCalculationHandler.Handle(id, CurrentUser, cancellationToken);
             return Ok(result);
         }
