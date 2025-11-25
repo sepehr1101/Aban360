@@ -1,4 +1,4 @@
-﻿namespace Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands
+﻿namespace Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries
 {
     public record MembersInfo
     {

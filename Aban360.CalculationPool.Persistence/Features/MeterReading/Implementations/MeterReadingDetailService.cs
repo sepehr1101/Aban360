@@ -81,8 +81,21 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 
             await new SqlCommand(mergeSql, connection).ExecuteNonQueryAsync();
         }
-
-
+        public async Task Delete(MeterReadingDetailDeleteDto input)
+        {
+            string query = GetDeleteCommands();
+            await _sqlReportConnection.ExecuteAsync(query, input);
+        }
+        public async Task CreateDuplicateForLog(MeterReadingDetailCreateDuplicateDto input)
+        {
+            string query = GetCreateDuplicateForLogCommand();
+            await _sqlReportConnection.ExecuteAsync(query, input);
+        }
+        public async Task UpdateToExcluded(MeterReadingDetailExcludedDto input)
+        {
+            string query = GetExcludedCommand();
+            await _sqlReportConnection.ExecuteAsync(query,input);
+        }
         public async Task<IEnumerable<MeterReadingDetailGetDto>> Get(int flowImportedId)
         {
             string query = GetQuery();
@@ -238,13 +251,146 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 
             return dt;
         }
-
         private string GetQuery()
         {
             return @"Select *
                      From Atlas.dbo.MeterReadingDetail
                      Where FlowImportedId=@flowImportedId";
         }
-
+        private string GetDeleteCommands()
+        {
+            return @"Update Atlas.dbo.MeterReadingDetail	
+                    Set 
+                    	RemovedByUserId=@RemovedByUserId ,
+                    	RemovedDateTime=@RemovedDateTime
+                    Where Id=@Id";
+        }
+        private string GetCreateDuplicateForLogCommand()
+        {
+            return @"INSERT INTO atlas.dbo.MeterReadingDetail
+                    (
+                        FlowImportedId,
+                        ZoneId,
+                        CustomerNumber,
+                        ReadingNumber,
+                        BillId,
+                        AgentCode,
+                        CurrentCounterStateCode,
+                        PreviousDateJalali,
+                        CurrentDateJalali,
+                        PreviousNumber,
+                        CurrentNumber,
+                    
+                        ExcludedByUserId,
+                        ExcludedDateTime,
+                    
+                        InsertByUserId,
+                        InsertDateTime,
+                        RemovedByUserId,
+                        RemovedDateTime,
+                    
+                        UsageId,
+                        DomesticUnit,
+                        CommercialUnit,
+                        OtherUnit,
+                        EmptyUnit,
+                        WaterInstallationDateJalali,
+                        SewageInstallationDateJalali,
+                        WaterRegisterDate,
+                        SewageRegisterDate,
+                        WaterCount,
+                        SewageCalcState,
+                        ContractualCapacity,
+                        HouseholdNumber,
+                        HouseholdDate,
+                        VillageId,
+                        IsSpecial,
+                        MeterDiameterId,
+                        VirtualCategoryId,
+                    
+                        TavizDateJalali,
+                        TavizCause,
+                        TavizRegisterDateJalali,
+                        TavizNumber,
+                    
+                        LastMeterDateJalali,
+                        LastMeterNumber,
+                        lastMonthlyConsumption,
+                        lastConsumption,
+                        LastCounterStateCode,
+                    
+                        SumItems,
+                        SumItemsBeforeDiscount,
+                        DiscountSum,
+                        Consumption,
+                        MonthlyConsumption
+                    )
+                    SELECT
+                        FlowImportedId,
+                        ZoneId,
+                        CustomerNumber,
+                        ReadingNumber,
+                        BillId,
+                        AgentCode,
+                        @CurrentCounterStateCode,
+                        PreviousDateJalali,
+                        @CurrentDateJalali,
+                        PreviousNumber,
+                        @CurrentNumber,
+                    
+                        ExcludedByUserId,
+                        ExcludedDateTime,
+                    
+                        @InsertByUserId,      
+                        @InsertDateTime,      
+                        Null,
+                        NUll,
+                    
+                        UsageId,
+                        DomesticUnit,
+                        CommercialUnit,
+                        OtherUnit,
+                        EmptyUnit,
+                        WaterInstallationDateJalali,
+                        SewageInstallationDateJalali,
+                        WaterRegisterDate,
+                        SewageRegisterDate,
+                        WaterCount,
+                        SewageCalcState,
+                        ContractualCapacity,
+                        HouseholdNumber,
+                        HouseholdDate,
+                        VillageId,
+                        IsSpecial,
+                        MeterDiameterId,
+                        VirtualCategoryId,
+                    
+                        TavizDateJalali,
+                        TavizCause,
+                        TavizRegisterDateJalali,
+                        TavizNumber,
+                    
+                        LastMeterDateJalali,
+                        LastMeterNumber,
+                        lastMonthlyConsumption,
+                        lastConsumption,
+                        LastCounterStateCode,
+                    
+                        SumItems,
+                        SumItemsBeforeDiscount,
+                        DiscountSum,
+                        Consumption,
+                        MonthlyConsumption
+                    FROM atlas.dbo.MeterReadingDetail
+                    WHERE Id = @Id;";
+        }
+        private string GetExcludedCommand()
+        {
+            return @"Update Atlas.dbo.MeterReadingDetail	
+                    Set 
+                    	ExcludedByUserId=@ExcludedByUserId ,
+                    	ExcludedDateTime=@ExcludedDateTime
+                    Where Id=@Id";
+        }
     }
 }
