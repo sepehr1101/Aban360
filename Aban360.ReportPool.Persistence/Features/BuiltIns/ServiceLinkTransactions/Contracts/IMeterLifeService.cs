@@ -6,8 +6,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 {
     public interface IMeterLifeService
     {
+        Task TruncateTable();
         Task<ReportOutput<MeterLifeHeaderOutputDto, MeterLifeDataOutputDto>> Get(MeterLifeInputDto input);
         Task<IEnumerable<MeterLifeCalculationOutputDto>> GetFromClient();
-        Task Create(IEnumerable<MeterLifeCalculationOutputDto> input);
+        Task Insert(IEnumerable<MeterLifeCalculationOutputDto> input);
     }
 }

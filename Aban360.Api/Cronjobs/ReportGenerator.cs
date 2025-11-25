@@ -10,10 +10,8 @@ using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Queries;
 using Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Contracts;
 using DNTPersianUtils.Core;
 using Hangfire;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
-using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace Aban360.Api.Cronjobs
