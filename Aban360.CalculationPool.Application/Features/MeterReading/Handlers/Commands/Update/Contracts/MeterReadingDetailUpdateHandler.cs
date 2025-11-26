@@ -24,20 +24,25 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
         public async Task Handle(MeterReadingDetailUpdateDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
+            await Validate(input, cancellationToken);
+
+            //insert
+            MeterReadingDetailCreateDuplicateDto readingCreateDuplicate = new(input.Id, input.CurrentCounterStateCode, input.CurrentDateJalali, input.CurrentNumber, appUser.UserId, DateTime.Now);
+            await _meterReadingDetailService.CreateDuplicateForLog(readingCreateDuplicate);
+
+            //remove previous
+            MeterReadingDetailDeleteDto readingDelete = new(input.Id, appUser.UserId, DateTime.Now);
+            await _meterReadingDetailService.Delete(readingDelete);
+        }
+
+        private async Task Validate(MeterReadingDetailUpdateDto input, CancellationToken cancellationToken)
+        {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new CustomValidationException(message);
             }
-            //insert
-            MeterReadingDetailCreateDuplicateDto readingCreateDuplicate = new(input.Id, input.CurrentCounterStateCode, input.CurrentDateJalali, input.CurrentNumber, appUser.UserId, DateTime.Now);
-            await _meterReadingDetailService.CreateDuplicateForLog(readingCreateDuplicate);
-
-            //removed previous
-            MeterReadingDetailDeleteDto readingDelete = new(input.Id, appUser.UserId, DateTime.Now);
-            await _meterReadingDetailService.Delete(readingDelete);
-
         }
     }
 }

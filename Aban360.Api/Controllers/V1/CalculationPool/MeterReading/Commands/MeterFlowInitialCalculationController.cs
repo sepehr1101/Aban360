@@ -6,28 +6,22 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
 {
-    [Route("v1/initial-calculation")]
-    public class InitialCalculationController : BaseController
+    [Route("v1/meter-flow")]
+    public class MeterFlowInitialCalculationController : BaseController
     {
         private readonly IInitialCalculationHandler _initialCalculationHandler;
-        private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
-        public InitialCalculationController(
-            IInitialCalculationHandler initialCalculationHandler, 
-            IMeterFlowValidationGetHandler meterFlowValidationGetHandler)
+        public MeterFlowInitialCalculationController(
+             IInitialCalculationHandler initialCalculationHandler)
         {
             _initialCalculationHandler = initialCalculationHandler;
             _initialCalculationHandler.NotNull(nameof(initialCalculationHandler));
-            
-            _meterFlowValidationGetHandler = meterFlowValidationGetHandler;
-            _meterFlowValidationGetHandler.NotNull(nameof(meterFlowValidationGetHandler));
         }
 
         [HttpPost]
-        [Route("calculation")]
+        [Route("initial-calculate")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<MeterReadingDetailGetDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Calculation(int id, CancellationToken cancellationToken)
-        {
-            await _meterFlowValidationGetHandler.Handle(id, cancellationToken);
+        public async Task<IActionResult> Calculate(int id, CancellationToken cancellationToken)
+        {            
             IEnumerable<MeterReadingDetailGetDto> result= await _initialCalculationHandler.Handle(id, CurrentUser, cancellationToken);
             return Ok(result);
         }

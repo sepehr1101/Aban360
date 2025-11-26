@@ -5,6 +5,8 @@ namespace Aban360.Api.Extensions
 {
     internal static class ConfigureCronjobs
     {
+        const int _fillMeterLifeHour = 4;
+        const int _removeOldReportHour = 2; const int _removeOldReportMin=45;
         internal static void AddCronjobs(this IConfiguration configuration)
         {
             RemoveOldReports(configuration);
@@ -14,9 +16,12 @@ namespace Aban360.Api.Extensions
         {
             int tresholdDay = int.Parse(configuration["FileManagement:ExcelExpireDay"]);
             string excelFilePath = configuration["FileManagement:ExcelPath"].ToString();
-            string searchPattern = "*.xlsx";//todo: get from config
-            int utcHour = 2, utcMinute = 45;//todo: get from config
-            RecurringJob.AddOrUpdate("RemoveOldReports", () => FileRemover.DeleteOldFiles(tresholdDay, excelFilePath, searchPattern), Cron.Daily(utcHour, utcMinute));
+            string searchPattern = "*.xlsx";//todo: get from config         
+
+            RecurringJob.AddOrUpdate(
+                "RemoveOldReports",
+                () => FileRemover.DeleteOldFiles(tresholdDay, excelFilePath, searchPattern),
+                Cron.Daily(_removeOldReportHour, _removeOldReportMin));
         }
 
         private static void FillMeterLife()
@@ -24,7 +29,7 @@ namespace Aban360.Api.Extensions
             RecurringJob.AddOrUpdate<MeterLifeJob>(
                 $"_{nameof(MeterLifeJob)}",
                 job => job.RunAsync(),
-                Cron.Daily(4),
+                Cron.Daily(_fillMeterLifeHour),
                 GetOptions());
         }
         private static RecurringJobOptions GetOptions()

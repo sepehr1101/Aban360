@@ -17,7 +17,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         {
         }
 
-        public async Task Create(IEnumerable<MeterReadingDetailCreateDto> input)
+        public async Task Insert(IEnumerable<MeterReadingDetailCreateDto> input)
         {
             var dataTable = ToDataTable(input);
 
@@ -91,9 +91,9 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             string query = GetCreateDuplicateForLogCommand();
             await _sqlReportConnection.ExecuteAsync(query, input);
         }
-        public async Task UpdateToExcluded(MeterReadingDetailExcludedDto input)
+        public async Task Exclude(MeterReadingDetailExcludedDto input)
         {
-            string query = GetExcludedCommand();
+            string query = GetExcludeCommand();
             await _sqlReportConnection.ExecuteAsync(query,input);
         }
         public async Task<IEnumerable<MeterReadingDetailGetDto>> Get(int flowImportedId)
@@ -384,7 +384,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                     FROM atlas.dbo.MeterReadingDetail
                     WHERE Id = @Id;";
         }
-        private string GetExcludedCommand()
+        private string GetExcludeCommand()
         {
             return @"Update Atlas.dbo.MeterReadingDetail	
                     Set 

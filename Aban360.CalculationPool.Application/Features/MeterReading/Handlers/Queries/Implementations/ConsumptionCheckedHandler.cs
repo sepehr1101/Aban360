@@ -10,14 +10,19 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 {
     internal sealed class ConsumptionCheckedHandler : IConsumptionCheckedHandler
     {
+        private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
         private readonly IMeterReadingDetailService _meterReadingDetailService;
         private readonly IMeterFlowService _meterFlowService;
         private const int _domesticConsumptionExpirePercent = 30;
         private const int _nonDomesticConsumptionExpirePercent = 30;
         public ConsumptionCheckedHandler(
+            IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
             IMeterReadingDetailService meterReadingDetailService,
             IMeterFlowService meterFlowService)
         {
+            _meterFlowValidationGetHandler = meterFlowValidationGetHandler;
+            _meterFlowValidationGetHandler.NotNull(nameof(meterFlowValidationGetHandler));
+
             _meterReadingDetailService = meterReadingDetailService;
             _meterReadingDetailService.NotNull(nameof(meterReadingDetailService));
 
@@ -27,6 +32,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 
         public async Task<IEnumerable<MeterReadingDetailCheckedDto>> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
         {
+            await _meterFlowValidationGetHandler.Handle(latestFlowId, cancellationToken);
             int firstFlowId = await _meterFlowService.GetFirstFlowId(latestFlowId);
             IEnumerable<MeterReadingDetailGetDto> meterReadings = await _meterReadingDetailService.Get(firstFlowId);
             IEnumerable<MeterReadingDetailCheckedDto> readingsCheck = GetReadingControl(meterReadings);
@@ -37,7 +43,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         private async Task CreateConsumpitonCheckedFlow(int latestFlowId, IAppUser appUser)
         {
             MeterFlowUpdateDto meterFlowUpdate = new(latestFlowId, appUser.UserId, DateTime.Now);
-            _meterFlowService.Update(meterFlowUpdate);
+            await _meterFlowService.Update(meterFlowUpdate);
 
             MeterFlowGetDto meterFlow = await _meterFlowService.Get(latestFlowId);
             MeterFlowCreateDto newMeterFlow = new()
@@ -58,7 +64,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 MeterReadingDetailCheckedDto readingControl = GetMeterReadingDetailControl(mr);
                 readingsControl.Add(readingControl);
             });
-
             return readingsControl;
         }
         private MeterReadingDetailCheckedDto GetMeterReadingDetailControl(MeterReadingDetailGetDto input)
