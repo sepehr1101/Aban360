@@ -30,7 +30,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                         .ToList();
             tableNames.ForEach(t => Delete.Table(t));
         }
-        
+
         private void CreateArticle11()
         {
             var table = TableName.Article11;
@@ -58,6 +58,21 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                 .WithColumn("DiameterId").AsInt16().NotNullable()
                 .WithColumn("InstallationAmount").AsInt64().NotNullable()
                 .WithColumn("EquipmentAmount").AsInt64().NotNullable()
+                .WithColumn("FromDateJalali").AsString(_10).NotNullable()
+                .WithColumn("ToDateJalali").AsString(_10).NotNullable()
+                .WithColumn("RegisterDateTime").AsDateTime().NotNullable()
+                .WithColumn("RegisterByUserId").AsGuid().NotNullable()
+                .WithColumn("RemoveDateTime").AsDateTime().Nullable()
+                .WithColumn("RemoveByUserId").AsGuid().Nullable();
+        }
+        private void CreateTankerWaterDistanceTariff()
+        {
+            var table = TableName.TankerWaterDistanceTariff;
+            Create.Table($"{nameof(table.TankerWaterDistanceTariff)}").InSchema(_schema)
+                .WithColumn(Id).AsInt16().NotNullable().PrimaryKey(NamingHelper.Pk(table)).Identity()
+                .WithColumn("FromDistance").AsInt16().NotNullable()
+                .WithColumn("ToDistance").AsInt16().NotNullable()
+                .WithColumn("Amount").AsInt64().NotNullable()
                 .WithColumn("FromDateJalali").AsString(_10).NotNullable()
                 .WithColumn("ToDateJalali").AsString(_10).NotNullable()
                 .WithColumn("RegisterDateTime").AsDateTime().NotNullable()
