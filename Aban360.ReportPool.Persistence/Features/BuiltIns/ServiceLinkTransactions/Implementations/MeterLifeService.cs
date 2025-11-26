@@ -1,6 +1,5 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
-using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
@@ -20,9 +19,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         {
         }
 
+        public async Task TruncateTable()
+        {
+            string query = GetTruncateQuery();
+            await _sqlReportConnection.ExecuteAsync(query);
+        }
         public async Task<ReportOutput<MeterLifeHeaderOutputDto, MeterLifeDataOutputDto>> Get(MeterLifeInputDto input)
         {
-            string query = GetQueryFromMeterLife();
+            string query = GetFromMeterLifeQuery();
             IEnumerable<MeterLifeDataOutputDto> data = await _sqlReportConnection.QueryAsync<MeterLifeDataOutputDto>(query, input);
             MeterLifeHeaderOutputDto header = new MeterLifeHeaderOutputDto()
             {
@@ -47,14 +51,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         }
         public async Task<IEnumerable<MeterLifeCalculationOutputDto>> GetFromClient()
         {
-            string query = GetQueryFromClient();
+            string query = GetFromClientTableQuery();
             IEnumerable<MeterLifeCalculationOutputDto> result = await _sqlReportConnection.QueryAsync<MeterLifeCalculationOutputDto>(query);
 
             return result;
         }
-        public async Task Create(IEnumerable<MeterLifeCalculationOutputDto> input)
+        public async Task Insert(IEnumerable<MeterLifeCalculationOutputDto> input)
         {
-            var dataTable = ToDataTable(input);
+            var dataTable = GetDataTable(input);
 
             using (var sqlConnection = _sqlReportConnection)
             {
@@ -81,7 +85,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 }
             }
         }
-        private DataTable ToDataTable(IEnumerable<MeterLifeCalculationOutputDto> input)
+        private DataTable GetDataTable(IEnumerable<MeterLifeCalculationOutputDto> input)
         {
             var table = new DataTable();
 
@@ -108,27 +112,33 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             return table;
         }
 
-        private string GetQueryFromClient()
+        private string GetFromClientTableQuery()
         {
-            return @"Select 
-                    	c.ZoneId,
-                    	c.ZoneTitle,
-                    	c.CustomerNumber,
-                    	c.BillId,
-                    	c.UsageStateId as BranchTypeId,
-                    	c.UsageId,
-                    	c.UsageTitle,
-                    	c.WaterInstallDate as WaterInstallationDateJalali,
-                    	m.ChangeDateJalali as LatestChangeDataJalali
-                    From CustomerWarehouse.dbo.Clients c
-                    Left Join CustomerWarehouse.dbo.MeterChange m
-                    	ON c.ZoneId=m.ZoneId AND c.CustomerNumber=m.CustomerNumber
-                    Where
-                    	c.ToDayJalali IS NULL 
-                        AND c.ZoneId = 131301
-                    Order By m.ChangeDateJalali Desc";
+            return @"SELECT 
+                        c.ZoneId,
+                        c.ZoneTitle,
+                        c.CustomerNumber,
+                        c.BillId,
+                        c.UsageStateId AS BranchTypeId,
+                        c.UsageId,
+                        c.UsageTitle,
+                        c.WaterInstallDate AS WaterInstallationDateJalali,
+                        m.LatestChangeDateJalali
+                    FROM CustomerWarehouse.dbo.Clients c
+                    OUTER APPLY
+                    (
+                        SELECT TOP (1) ChangeDateJalali AS LatestChangeDateJalali
+                        FROM CustomerWarehouse.dbo.MeterChange mc
+                        WHERE mc.ZoneId = c.ZoneId
+                          AND mc.CustomerNumber = c.CustomerNumber
+                        ORDER BY mc.ChangeDateJalali DESC
+                    ) m
+                    WHERE
+                        c.ToDayJalali IS NULL AND
+                        c.DeletionStateId NOT IN (1,2)
+                    ORDER BY m.LatestChangeDateJalali DESC;";
         }
-        private string GetQueryFromMeterLife()
+        private string GetFromMeterLifeQuery()
         {
             return @"Select *
                     From CustomerWarehouse.dbo.MeterLife
@@ -138,6 +148,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 	                    (@FromLifeInDay IS NULL OR
 	                    @ToLifeInDay IS NULL OR
 	                    LifeInDay BETWEEN @FromLifeInDay AND @ToLifeInDay)";
+        }
+        private string GetTruncateQuery()
+        {
+            string query = "TRUNCATE TABLE CustomerWarehouse.dbo.MeterLife;";
+            return query;
         }
     }
 }

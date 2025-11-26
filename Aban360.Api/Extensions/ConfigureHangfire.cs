@@ -1,5 +1,4 @@
-﻿using Aban360.Api.Cronjobs;
-using Aban360.Api.Extensions;
+﻿using Aban360.Api.Extensions;
 using Aban360.Api.Filters;
 using Aban360.UserPool.Domain.Constants;
 using Hangfire;
