@@ -13,14 +13,20 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 {
     internal sealed class InitialCalculationHandler : IInitialCalculationHandler
     {
+        private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
         private readonly IMeterReadingDetailService _meterReadingDetailService;
         private readonly IMeterFlowService _meterFlowService;
         private readonly IOldTariffEngine _tariffEngine;
         public InitialCalculationHandler(
+            IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
             IMeterReadingDetailService meterReadingDetailService,
             IMeterFlowService meterFlowService,
             IOldTariffEngine tariffEngine)
         {
+
+            _meterFlowValidationGetHandler = meterFlowValidationGetHandler;
+            _meterFlowValidationGetHandler.NotNull(nameof(meterFlowValidationGetHandler));
+
             _meterReadingDetailService = meterReadingDetailService;
             _meterReadingDetailService.NotNull(nameof(meterReadingDetailService));
 
@@ -33,6 +39,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 
         public async Task<IEnumerable<MeterReadingDetailGetDto>> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
         {
+            await _meterFlowValidationGetHandler.Handle(latestFlowId, cancellationToken);
             //todo: use cancellationToken
             int firstFlowId=await _meterFlowService.GetFirstFlowId(latestFlowId);
             IEnumerable<MeterReadingDetailGetDto> readingDetails = await _meterReadingDetailService.Get(firstFlowId);

@@ -6,10 +6,10 @@ using FluentValidation;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Excluded.Implementations
 {
-    internal sealed class MeterReadingDetailExcludedHandler : IMeterReadingDetailExcludedHandler
+    internal sealed class MeterReadingDetailExcludeHandler : IMeterReadingDetailExcludeHandler
     {
         private readonly IMeterReadingDetailService _meterReadingDetailService;
-        public MeterReadingDetailExcludedHandler(IMeterReadingDetailService meterReadingDetailService)
+        public MeterReadingDetailExcludeHandler(IMeterReadingDetailService meterReadingDetailService)
         {
             _meterReadingDetailService = meterReadingDetailService;
             _meterReadingDetailService.NotNull(nameof(meterReadingDetailService));
@@ -18,7 +18,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         public async Task Handle(int id, IAppUser appUser, CancellationToken cancellationToken)
         {
             MeterReadingDetailExcludedDto readingCreateExcluded = new(id, appUser.UserId, DateTime.Now);
-            await _meterReadingDetailService.UpdateToExcluded(readingCreateExcluded);
+            await _meterReadingDetailService.Exclude(readingCreateExcluded);
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Aban360.Common.Extensions;
 using Dapper;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.Common.Db.Dapper
