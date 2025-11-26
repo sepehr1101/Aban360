@@ -27,9 +27,16 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
         {
             string query = GetAllQuery();
             IEnumerable<ZaribCQueryDto> zaribCQueryDto = await _sqlReportConnection.QueryAsync<ZaribCQueryDto>(query);
-           
+
             return zaribCQueryDto;
         }
+        public async Task<ZaribCQueryDto> GetZaribC(string currentDateJalali)
+        {
+            string query = GetQueryByDate();
+            ZaribCQueryDto zaribCQueryDto = await _sqlReportConnection.QueryFirstAsync<ZaribCQueryDto>(query, new { currentDateJalali });
+            return zaribCQueryDto;
+        }
+
         private string GetQueryByFromTo()
         {
             return
@@ -51,6 +58,18 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
 	                   ToDateJalali,
 	                   C
                     FROM [OldCalc].dbo.Zarib_C";
+        }
+        private string GetQueryByDate()
+        {
+            return @"SELECT 
+	                Id,
+	                FromDateJalali,
+	                ToDateJalali,
+	                C
+                FROM [OldCalc].dbo.Zarib_C
+                WHERE 
+	               @currentDateJalali BETWEEN FromDateJalali AND ToDateJalali AND
+	                IsDeleted=0";
         }
     }
 }

@@ -6,5 +6,6 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts
     {
         Task<TankerWaterDistanceTariffOutputDto> Get(short id);
         Task<IEnumerable<TankerWaterDistanceTariffOutputDto>> Get();
+        Task<TankerWaterDistanceTariffOutputDto> Get(int distance, string currentDateJalali);
     }
 }

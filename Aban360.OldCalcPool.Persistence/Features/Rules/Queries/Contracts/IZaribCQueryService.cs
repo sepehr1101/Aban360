@@ -6,5 +6,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts
     {
         Task<ZaribCQueryDto> GetZaribC(string from, string to);
         Task<IEnumerable<ZaribCQueryDto>> GetZaribC();
+        Task<ZaribCQueryDto> GetZaribC(string currentDateJalali);
     }
 }
