@@ -19,6 +19,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     {
         const int monthDays = 30;
         const int c_1404 = 90000;
+        const string date_1400_12_25 = "1400/12/25";
+        const string date_1402_04_23 = "1402/04/23";
+        const string date_1403_06_25 = "1403/06/25";
+        const string date_1403_09_13 = "1403/09/13";
+        const string date_1403_12_30 = "1403/12/30";
+        const string date_1404_02_31 = "1404/02/31";
+
         public CalculateAbBahaOutputDto Calculate(NerkhGetDto nerkh, NerkhGetDto nerkh1403, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, ConsumptionPartialInfo consumptionPartialInfo, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds)
         {
             double abBahaAmount = 0, oldAbBahaAmount = 0, abBahaFromExpression = 0, oldAbBahaZarib = 1.15;
@@ -251,11 +258,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             return GetEducationOrBathMultiplier(customerInfo.UsageId, nerkh.Date1, nerkh.Date2, customerInfo.IsSpecial, (long)CalcFormulaByRate(abAzad8And39.Formula, monthlyConsumption, olgoo, c, tagIds), abBahaFromExpression);//Azad:39
         }
         private (long, long) GetEducationOrBathMultiplier(int usageId, string nerkhDate1, string nerkhDate2, bool isSpecial, long abAzad, double abBahaFromExpression)
-        {
-            string date1402_04_23 = "1402/04/23";
-            string date1403_06_25 = "1403/06/25";
-            string date1403_09_13 = "1403/09/13";
-            string date1404_02_31 = "1404/02/31";
+        {           
             (long, long) _8644_8644 = (8644, 8644);
             (long, long) _4323_225000 = (4323, 225000);
             (long, long) _4323_350000 = (4323, 350000);
@@ -265,19 +268,19 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
             if (IsEducationOrBath(usageId))
             {
-                if (LessThanEq(nerkhDate2, date1402_04_23))
+                if (LessThanEq(nerkhDate2, date_1402_04_23))
                 {
                     return usageId == 11 ? _8644_8644 : _4323_225000;
                 }
-                if (IsGtFromLqTo(nerkhDate2, date1402_04_23, date1403_06_25))
+                if (IsGtFromLqTo(nerkhDate2, date_1402_04_23, date_1403_06_25))
                 {
                     return usageId == 11 ? _8644_8644 : _4323_225000;
                 }
-                else if (IsGtFromLqTo(nerkhDate2, date1403_06_25, date1403_09_13))
+                else if (IsGtFromLqTo(nerkhDate2, date_1403_06_25, date_1403_09_13))
                 {
                     return usageId == 11 ? _8644_8644 : _4323_350000;
                 }
-                else if (IsGtFromLqTo(nerkhDate2, date1403_09_13, date1404_02_31))
+                else if (IsGtFromLqTo(nerkhDate2, date_1403_09_13, date_1404_02_31))
                 {
                     return _7000_350000;
                 }
@@ -300,12 +303,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         }
         private (long, long) Get2PartAmount(string nerkhDate2)
         {
-            string date1400_12_25 = "1400/12/25";
-            string date1402_04_23 = "1402/04/23";
-            string date1403_06_25 = "1403/06/25";
-            string date1403_09_13 = "1403/09/13";
-            string date1404_02_31 = "1404/02/31";
-
             (long, long) _zero = (0, 0);
             (long, long) _3766_168110 = (3776, 168110);
             (long, long) _8644_8644 = (8644, 8644);
@@ -315,31 +312,31 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             (long, long) _7000_350000 = (7000, 350000);
             (long, long) _9000_450000 = (9000, 450000);
 
-            if (StringConditionMoreThan(date1400_12_25, nerkhDate2))
+            if (StringConditionMoreThan(date_1400_12_25, nerkhDate2))
             {
                 return _3766_168110;
             }
-            else if(IsGtFromLqTo(nerkhDate2, date1400_12_25, date1402_04_23))
+            else if(IsGtFromLqTo(nerkhDate2, date_1400_12_25, date_1402_04_23))
             {
                 return _4040_168110;
             }
-            else if(IsGtFromLqTo(nerkhDate2, date1402_04_23, date1403_06_25))
+            else if(IsGtFromLqTo(nerkhDate2, date_1402_04_23, date_1403_06_25))
             {
                 return _4323_225000;
             }
-            else if (IsGtFromLqTo(nerkhDate2, date1403_06_25, date1403_09_13))
+            else if (IsGtFromLqTo(nerkhDate2, date_1403_06_25, date_1403_09_13))
             {
                 return _4323_350000;
             }
-            else if (IsGtFromLqTo(nerkhDate2, date1402_04_23, date1403_06_25))
+            else if (IsGtFromLqTo(nerkhDate2, date_1402_04_23, date_1403_06_25))
             {
                 return _4040_168110;
             }            
-            else if (IsGtFromLqTo(nerkhDate2, date1403_09_13, date1404_02_31))
+            else if (IsGtFromLqTo(nerkhDate2, date_1403_09_13, date_1404_02_31))
             {
                 return _7000_350000;
             }
-            else if (StringConditionMoreThan(nerkhDate2, date1404_02_31))
+            else if (StringConditionMoreThan(nerkhDate2, date_1404_02_31))
             {
                 return _9000_450000;
             }
@@ -407,7 +404,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         }        
         private string GetFormula(NerkhGetDto nerkh, NerkhGetDto nerkh1403)
         {
-           return LessThanEq(nerkh.Date2, "1403/12/30") ? nerkh1403.Vaj : nerkh.Vaj;
+           return LessThanEq(nerkh.Date2, date_1403_12_30) ? nerkh1403.Vaj : nerkh.Vaj;
         }
     }
 }
