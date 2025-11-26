@@ -40,6 +40,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         {
             return CheckConditions(branchTypeId, [3, 6, 7]);
         }
+        internal static bool IsUnderSocialService(int branchTypeId)
+        {
+            return CheckConditions(branchTypeId, [ 6, 7]);
+        }
         internal static  bool IsReligiousWithCharity(int usageId)
         {
             return CheckConditions(usageId, [12, 13, 29, 30, 32]);

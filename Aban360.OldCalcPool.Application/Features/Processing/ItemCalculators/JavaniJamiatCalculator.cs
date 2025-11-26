@@ -7,6 +7,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     internal interface IJavaniJamiatCalculator
     {
         TariffItemResult Calculate(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double abBahaAmount, double monthlyConsumption, int olgoo);
+        TariffItemResult CalculateDiscount();
     }
 
     internal sealed class JavaniJamiatCalculator : IJavaniJamiatCalculator

@@ -8,6 +8,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     internal interface IAvarezCalculator
     {
         TariffItemResult Calculate(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double monthlyConsumption);
+        TariffItemResult CalculateDiscount();
     }
 
     internal sealed class AvarezCalculator : IAvarezCalculator

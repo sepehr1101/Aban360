@@ -1,4 +1,5 @@
 ﻿using Aban360.OldCalcPool.Application.Features.Base;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using System.Runtime.InteropServices;
@@ -10,7 +11,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IAbBahaCalculator
     {
-        CalculateAbBahaOutputDto Calculate(NerkhGetDto nerkh, NerkhGetDto nerkh1403, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds);
+        CalculateAbBahaOutputDto Calculate(NerkhGetDto nerkh, NerkhGetDto nerkh1403, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, ConsumptionPartialInfo consumptionPartialInfo, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds);
         double CalculateDiscount(ZaribGetDto zarib, bool isVillageCalculation, double monthlyConsumption, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, CalculateAbBahaOutputDto calculateAbBahaOutputDto, bool isFull, int finalDomesticUnit);
     }
 
@@ -18,7 +19,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     {
         const int monthDays = 30;
         const int c_1404 = 90000;
-        public CalculateAbBahaOutputDto Calculate(NerkhGetDto nerkh, NerkhGetDto nerkh1403, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds)
+        public CalculateAbBahaOutputDto Calculate(NerkhGetDto nerkh, NerkhGetDto nerkh1403, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, ConsumptionPartialInfo consumptionPartialInfo, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds)
         {
             double abBahaAmount = 0, oldAbBahaAmount = 0, abBahaFromExpression = 0, oldAbBahaZarib = 1.15;
             double duration = nerkh.Duration;
@@ -69,7 +70,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                     if (IsCharitySchoolOrConsumptionGtCapacity(nerkh, customerInfo, contractualCapacityInDuration))
                     {
                         double allowedPartialConsumption = Math.Min(contractualCapacityInDuration, nerkh.PartialConsumption);
-                        double disallowedPartialConsumption = (nerkh.PartialConsumption - allowedPartialConsumption)>0? nerkh.PartialConsumption - allowedPartialConsumption:0;                        
+                        double disallowedPartialConsumption = (nerkh.PartialConsumption - allowedPartialConsumption) > 0 ? nerkh.PartialConsumption - allowedPartialConsumption : 0;
 
                         if (nerkh.PartialConsumption < contractualCapacityInDuration ||
                             IsReligiousAndZeroCapacity(customerInfo))
@@ -78,7 +79,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                             allowedPartialConsumption = nerkh.PartialConsumption;
                         }//L 1153
                         // از این پارامتر بابت محاسبه تخفیف  استفاده خواهد شد
-                        _2Amount = Get2Amount(nerkh, customerInfo, abAzad8And39, abBahaFromExpression, _olgoo, monthlyConsumption,c,tagIds);
+                        _2Amount = Get2Amount(nerkh, customerInfo, abAzad8And39, abBahaFromExpression, _olgoo, monthlyConsumption, c, tagIds);
 
                         abBahaValues.Item1 = _2Amount.Item1 * allowedPartialConsumption;
                         abBahaValues.Item2 = _2Amount.Item2 * disallowedPartialConsumption;
@@ -101,8 +102,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 abBahaAmount = CalcFormulaByRate(abAzad8And39.Formula, monthlyConsumption, _olgoo, c, tagIds) * nerkh.PartialConsumption;
             }
-            //L 1553
-            //L 1558
 
             if (IsVillageDomesticNotConstruction(customerInfo) &&
                 !IsRuralButIsMetro(customerInfo) &&
