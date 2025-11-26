@@ -11,24 +11,29 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
 using DNTPersianUtils.Core;
-using System.Threading;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Implementations
 {
-    internal sealed class CalculationConfirmedHandler : ICalculationConfirmedHandler
+    internal sealed class CalculationConfirmationHandler : ICalculationConfirmationHandler
     {
+        private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
         private readonly IMeterReadingDetailService _meterReadingDetailService;
         private readonly IMeterFlowService _meterFlowService;
         private readonly IOldTariffEngine _oldTariffEngine;
         private readonly IBedBesCreateService _bedBesCreateService;
         private readonly IKasrHaService _kasrHaService;
-        public CalculationConfirmedHandler(
+
+        public CalculationConfirmationHandler(
+            IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
             IMeterReadingDetailService meterReadingDetailService,
             IMeterFlowService meterFlowService,
             IOldTariffEngine oldTariffEngine,
             IBedBesCreateService bedBesCreateService,
             IKasrHaService kasrHaService)
         {
+            _meterFlowValidationGetHandler = meterFlowValidationGetHandler;
+            _meterFlowValidationGetHandler.NotNull(nameof(meterFlowValidationGetHandler));
+
             _meterReadingDetailService = meterReadingDetailService;
             _meterReadingDetailService.NotNull(nameof(meterReadingDetailService));
 
@@ -47,6 +52,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 
         public async Task Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
         {
+            await _meterFlowValidationGetHandler.Handle(latestFlowId, cancellationToken);
             int firstFlowId = await _meterFlowService.GetFirstFlowId(latestFlowId);
             IEnumerable<MeterReadingDetailGetDto> meterReadings = await _meterReadingDetailService.Get(firstFlowId);
             await CreateBedBesAndKasrHaBatch(meterReadings, cancellationToken);//Insert in Atlas.dbo.BedBes

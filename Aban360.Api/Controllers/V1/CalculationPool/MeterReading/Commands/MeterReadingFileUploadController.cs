@@ -8,42 +8,25 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
 {
     [Route("v1/meter-reading-file")]
-    public class MeterReadingFileCreateController : BaseController
-    {
-        static string _pathBase = "AppData\\Dbfs";
+    public class MeterReadingFileUploadController : BaseController
+    {       
         private readonly IMeterReadingFileCreateHandler _meterReadingFileHandle;
-        private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
-        public MeterReadingFileCreateController(
+
+        public MeterReadingFileUploadController(
             IMeterReadingFileCreateHandler meterReadingFileHandle,
             IMeterFlowValidationGetHandler meterFlowValidationGetHandler)
         {
             _meterReadingFileHandle = meterReadingFileHandle;
             _meterReadingFileHandle.NotNull(nameof(meterReadingFileHandle));
-
-            _meterFlowValidationGetHandler = meterFlowValidationGetHandler;
-            _meterFlowValidationGetHandler.NotNull(nameof(meterFlowValidationGetHandler));
         }
 
         [HttpPost]
-        [Route("create")]
+        [Route("upload")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MeterReadingFileCreateDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Create(MeterReadingFileCreateDto input, CancellationToken cancellationToken)
-        {
-            await _meterFlowValidationGetHandler.Handle(input.ReadingFile.FileName, cancellationToken);
-            input.FilePath = await CopyDbfFileInDbfs(input.ReadingFile);
+        public async Task<IActionResult> Upload(MeterReadingFileCreateDto input, CancellationToken cancellationToken)
+        {   
             await _meterReadingFileHandle.Handle(input, CurrentUser, cancellationToken);
-
             return Ok(input);
-        }
-        private async Task<string> CopyDbfFileInDbfs(IFormFile file)
-        {
-            string filePath = Path.Combine(_pathBase, file.FileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-            return filePath;
         }
     }
 }

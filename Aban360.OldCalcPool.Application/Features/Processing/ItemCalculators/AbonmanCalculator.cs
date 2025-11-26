@@ -19,12 +19,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const string date1403_12_30 = "1403/12/30";
         const string date1404_02_14 = "1404/02/14";
         const string date1404_02_31 = "1404/02/31";
+        const string date1404_09_09 = "1404/09/09";
         const string date1404_12_29 = "1404/12/29";
 
         const double amountTo1403_12_01 = 10000.0;
         const double amountTo1403_12_30 = 35000.0;
         const double amountTo404_02_31 = 45500.0;
-        const double amountTo1404_12_29 = 58500.0;
+        const double amountTo1404_09_09 = 58500.0;
+        const double amountTo1404_12_29 = 71500.0;
 
         public TariffItemResult CalculateAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali)
         {
@@ -33,34 +35,30 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 return new TariffItemResult();
             }
 
-            double abonAbAmount = 0;//, abonAbDiscount = 0;
-            double zabon_1 = 0, zabon_2 = 0, zabon_3 = 0, zabon_4 = 0;
+            double abonAbAmount = 0;
+            double durationPart_1 = 0, durationPart_2 = 0, durationPart_3 = 0, durationPart_4 = 0, durationPart_5=0;
 
-            zabon_1 = PartTime(date1400_01_01, date1403_12_01, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-            zabon_2 = PartTime(date1403_12_01, date1403_12_30, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-
-            if (IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId))
-            {
-                zabon_3 = PartTime(date1403_12_30, date1404_02_14, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-            }
-            else
-            {
-                zabon_3 = PartTime(date1403_12_30, date1404_02_31, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId,  customerInfo.ZoneId, customerInfo.UsageId });
-            }
+            durationPart_1 = PartTime(date1400_01_01, date1403_12_01, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
+            durationPart_2 = PartTime(date1403_12_01, date1403_12_30, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
 
             if (IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId))
             {
-                zabon_4 = PartTime(date1404_02_14, date1404_12_29, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId,  customerInfo.ZoneId, customerInfo.UsageId });
+                durationPart_3 = PartTime(date1403_12_30, date1404_02_14, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
             }
             else
             {
-                zabon_4 = PartTime(date1404_02_31, date1404_12_29, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
+                durationPart_3 = PartTime(date1403_12_30, date1404_02_31, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId,  customerInfo.ZoneId, customerInfo.UsageId });
             }
 
-            //zabon_1 = Math.Max(zabon_1, 0);
-            //zabon_2 = Math.Max(zabon_2, 0);
-            //zabon_3 = Math.Max(zabon_3, 0);
-            //zabon_4 = Math.Max(zabon_4, 0);
+            if (IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId))
+            {
+                durationPart_4 = PartTime(date1404_02_14, date1404_09_09, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId,  customerInfo.ZoneId, customerInfo.UsageId });
+            }
+            else
+            {
+                durationPart_4 = PartTime(date1404_02_31, date1404_09_09, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
+            }
+            durationPart_5 = PartTime(date1404_09_09, date1404_12_29, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
 
             int sumUnit = customerInfo.OtherUnit + customerInfo.DomesticUnit + customerInfo.CommertialUnit;
 
@@ -74,7 +72,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 sumUnit = 1;
             }
 
-            abonAbAmount = (((amountTo1403_12_01 / monthDays) * zabon_1) + ((amountTo1403_12_30 / monthDays) * zabon_2) + ((amountTo404_02_31 / monthDays) * zabon_3) + ((amountTo1404_12_29 / monthDays) * zabon_4)) * sumUnit;
+            abonAbAmount = sumUnit*
+                (((amountTo1403_12_01 / monthDays) * durationPart_1) +
+                ((amountTo1403_12_30 / monthDays) * durationPart_2) +
+                ((amountTo404_02_31 / monthDays) * durationPart_3) +
+                ((amountTo1404_09_09 / monthDays) * durationPart_4) +
+                ((amountTo1404_12_29 / monthDays) * durationPart_5));
 
             if (abonAbAmount < 0)
             {
@@ -95,11 +98,15 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return 0;
             }
-            if(IsConstruction(branchTypeId))
+            if (IsConstruction(branchTypeId))
             {
                 return 0;
-            }            
-            if(IsReligious(usageId))
+            }
+            if (IsUnderSocialService(branchTypeId))
+            {
+                return abonmanAmount;
+            }
+            if (IsReligious(usageId))
             {
                 return consumptionInfo.MonthlyAverageConsumption <= customerInfo.ContractualCapacity ? abonmanAmount : 0;
             }

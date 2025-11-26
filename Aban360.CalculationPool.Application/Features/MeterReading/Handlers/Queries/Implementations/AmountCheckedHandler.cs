@@ -10,10 +10,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 {
     internal sealed class AmountCheckedHandler : IAmountCheckedHandler
     {
+        private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
         private readonly IMeterReadingDetailService _meterReadingDetailService;
         private readonly IMeterFlowService _meterFlowService;
         private const int _expirePercent = 50;
         public AmountCheckedHandler(
+            IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
             IMeterReadingDetailService meterReadingDetailService,
             IMeterFlowService meterFlowService)
         {
@@ -22,10 +24,14 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 
             _meterFlowService = meterFlowService;
             _meterFlowService.NotNull(nameof(meterFlowService));
+
+            _meterFlowValidationGetHandler = meterFlowValidationGetHandler;
+            _meterFlowValidationGetHandler.NotNull(nameof(meterFlowValidationGetHandler));
         }
 
         public async Task<IEnumerable<MeterReadingDetailCheckedDto>> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
         {
+            await _meterFlowValidationGetHandler.Handle(latestFlowId, cancellationToken);
             int firstFlowId = await _meterFlowService.GetFirstFlowId(latestFlowId);
             IEnumerable<MeterReadingDetailGetDto> meterReadings = await _meterReadingDetailService.Get(firstFlowId);
             IEnumerable<MeterReadingDetailCheckedDto> readingsCheck = GetReadingControl(meterReadings);

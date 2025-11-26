@@ -15,16 +15,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             _meterFlowService = meterFlowService;
             _meterFlowService.NotNull(nameof(meterFlowService));
         }
-
-        public async Task Handle(string fileName, CancellationToken cancellationToken)
-        {
-            string? insertDateTime = await _meterFlowService.GetInsertDateTime(fileName);
-            if (insertDateTime is not null)
-            {
-                string insertDateJalali= ConvertDate.GregorianToJalali(insertDateTime);
-                throw new ReadingException(ExceptionLiterals.InvalidDuplicateFileName(insertDateJalali));
-            }
-        }
         public async Task Handle(int id, CancellationToken cancellationToken)
         {
             string? insertDateTime=await _meterFlowService.GetInsertDateTime(id);
