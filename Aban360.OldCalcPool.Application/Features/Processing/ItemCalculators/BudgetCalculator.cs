@@ -12,7 +12,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     internal interface IBudgetCalculator
     {
         TariffItemResult Calculate(NerkhGetDto nerkhDto, CustomerInfoOutputDto customerInfo, string currentDateJalali, double monthlyConsumption, double olgoo, ConsumptionInfo consumptionInfo);
-        double CalculateDiscount(CustomerInfoOutputDto customerInfo, double abBahaDiscount, TariffItemResult boodjeAmounts, NerkhGetDto nerkh);
+        TariffItemResult CalculateDiscount(CustomerInfoOutputDto customerInfo, double abBahaDiscount, TariffItemResult boodjeAmounts, NerkhGetDto nerkh);
     }
 
     internal sealed class BudgetCalculator : IBudgetCalculator
@@ -62,29 +62,30 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
             return new TariffItemResult(allowedConsumption * _allowedMultiplier, disAllowedConsumption * _disAllowedMultiplier);
         }
-        public double CalculateDiscount(CustomerInfoOutputDto customerInfo, double abBahaDiscount, TariffItemResult boodjeAmounts, NerkhGetDto nerkh)
+        public TariffItemResult CalculateDiscount(CustomerInfoOutputDto customerInfo, double abBahaDiscount, TariffItemResult boodjeAmounts, NerkhGetDto nerkh)
         {
             if (abBahaDiscount <= 0)
             {
-                return 0;
+                return new TariffItemResult();
             }
             if (boodjeAmounts.Allowed == 0)
             {
-                return 0;
+                return new TariffItemResult();
             }
             if (IsConstruction(customerInfo.BranchType))
             {
-                return 0;
+                return new TariffItemResult();
             }
             if (IsHandoverDiscount(customerInfo.BranchType) &&
                 IsDomesticCategory(customerInfo.UsageId))
             {
-                return boodjeAmounts.Allowed;
+                return new TariffItemResult(boodjeAmounts.Allowed);
             }
             //اگه مدرسه با شرایط تعریف شده باشه هم بالای ظرفیت هم زیر ظرفیت تخفیف داده میشه ??
             double virstualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, nerkh.PartialConsumption, nerkh.Duration, boodjeAmounts.Summation);
 
-            return virstualDiscount > 0 ? virstualDiscount : boodjeAmounts.Allowed;
+            double discount= virstualDiscount > 0 ? virstualDiscount : boodjeAmounts.Allowed;
+            return new TariffItemResult(discount);
         }
     }
 }
