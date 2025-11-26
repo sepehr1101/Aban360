@@ -47,6 +47,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return new CalculateAbBahaOutputDto();
             }
+            if (IsConstruction(customerInfo.BranchType))
+            {
+                abBahaAmount = CalcFormulaByRate(abAzad8And39.Formula, monthlyConsumption, _olgoo, c, tagIds) * nerkh.PartialConsumption;
+                return new CalculateAbBahaOutputDto(abBahaAmount*(double)multiplierAbBaha, 0, 0, (double)multiplierAbBaha);
+            }
 
             if (IsGardenOrDweltyAfter1400_12_24OrIsDomestic(customerInfo, nerkh) &&
                 !IsReligious(customerInfo.UsageId) &&
@@ -59,8 +64,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 {
                     string oldFormula = GetOldFormula(nerkh.OVaj, IsDomestic(customerInfo.UsageId), monthlyConsumption);
                     double oldAbBahaFromExpression = CalcFormulaByRate(oldFormula, monthlyConsumption, _olgoo, c, tagIds);
-                    oldAbBahaAmount =  ((double)nerkh.Duration/(double)monthDays)* oldAbBahaFromExpression * oldAbBahaZarib;
-                    //oldAbBahaAmount = nerkh.PartialConsumption * oldAbBahaFromExpression * oldAbBahaZarib;
+                    oldAbBahaAmount =  ((double)nerkh.Duration/(double)monthDays)* oldAbBahaFromExpression * oldAbBahaZarib;                    
                 }
 
                 if (IsLessThan1403_09_13(nerkh.Date2) &&
@@ -68,14 +72,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                     abBahaAmount > oldAbBahaAmount &&
                     IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
                     !IsConstruction(customerInfo.BranchType))
-                {
-                    //?????
+                {                   
                     abBahaAmount = oldAbBahaAmount;
                 }
             }
             else
-            {
-                // foxpro:1139
+            {                
                 if (HasCapacityAndNotConstruction(customerInfo) ||
                     IsReligious(customerInfo.UsageId))
                 {
@@ -112,30 +114,19 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                     }
                 }
             }
-            if (IsConstruction(customerInfo.BranchType))
-            {
-                abBahaAmount = CalcFormulaByRate(abAzad8And39.Formula, monthlyConsumption, _olgoo, c, tagIds) * nerkh.PartialConsumption;
-            }
 
-            if (IsVillageDomesticNotConstruction(customerInfo) &&
+            if ((IsVillageDomesticNotConstruction(customerInfo) &&
                 !IsRuralButIsMetro(customerInfo) &&
-                abBahaAmount != 0)
-            {//L 1578
+                abBahaAmount != 0) ||
+                IsDolatabadOrHabibabadAndDomesticAndNotConstruction(customerInfo, abBahaAmount))
+            {
                 float multiplier = IsLessThan1403_09_13OrMonthlyBelowEqOlgoo(nerkh, monthlyConsumption, _olgoo) ? 0.5f : 0.65f;
                 (abBahaAmount, oldAbBahaAmount, isVillageCalculation) = MultiplyCalculation(abBahaAmount, oldAbBahaAmount, multiplier);
             }
-
-            //L 1600 approximately
-            if (IsDolatabadOrHabibabadAndDomesticAndNotConstruction(customerInfo, abBahaAmount))
-            {//L 1604
-                float multiplier = IsLessThan1403_09_13OrMonthlyBelowEqOlgoo(nerkh, monthlyConsumption, _olgoo) ? 0.5f : 0.65f;
-                (abBahaAmount, oldAbBahaAmount, isVillageCalculation) = MultiplyCalculation(abBahaAmount, oldAbBahaAmount, multiplier);
-            }//foxpro:1620
 
             abBahaAmount = abBahaAmount * (double)multiplierAbBaha;            
             oldAbBahaAmount = oldAbBahaAmount * (double)multiplierAbBaha;// foxpro:1755
             abBahaValues = CheckAbBahaValues(abBahaAmount, abBahaValues);
-            bool isDomestic = IsDomestic(customerInfo.UsageId);
             double abBaha1 = _2Amount.Item1 > 0 ? abBahaValues.Item1 * (double)multiplierAbBaha : 0;
             double abBaha2 = _2Amount.Item2 > 0 ? abBahaValues.Item2 * (double)multiplierAbBaha : 0;
 
