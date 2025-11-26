@@ -32,9 +32,8 @@
         InstallationAndEquipment,
         IsZoneWithBroker,
 
-        MeterReadingFile,
         MeterReadingDetail,
-        Flow,
-        FlowStep
+        MeterFlow,
+        MeterFlowStep
     }
 }

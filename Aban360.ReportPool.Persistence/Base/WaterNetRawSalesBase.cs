@@ -47,7 +47,7 @@ namespace Aban360.ReportPool.Persistence.Base
 
         private string GetQueryParam(bool isNet)
         {
-            string netQuery = "(3,4,5,9)";
+            string netQuery = "(3,4,5,1)";
             string rawQuery = "(1)";
 
             return isNet ? netQuery : rawQuery;

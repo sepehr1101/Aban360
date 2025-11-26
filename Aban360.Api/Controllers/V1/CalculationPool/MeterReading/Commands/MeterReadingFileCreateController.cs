@@ -1,4 +1,5 @@
 ﻿using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Contracts;
+using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
@@ -11,20 +12,26 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
     {
         static string _pathBase = "AppData\\Dbfs";
         private readonly IMeterReadingFileCreateHandler _meterReadingFileHandle;
-        public MeterReadingFileCreateController(IMeterReadingFileCreateHandler meterReadingFileHandle)
+        private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
+        public MeterReadingFileCreateController(
+            IMeterReadingFileCreateHandler meterReadingFileHandle,
+            IMeterFlowValidationGetHandler meterFlowValidationGetHandler)
         {
             _meterReadingFileHandle = meterReadingFileHandle;
             _meterReadingFileHandle.NotNull(nameof(meterReadingFileHandle));
+
+            _meterFlowValidationGetHandler = meterFlowValidationGetHandler;
+            _meterFlowValidationGetHandler.NotNull(nameof(meterFlowValidationGetHandler));
         }
 
         [HttpPost]
         [Route("create")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<MeterReadingFileByFormFileCreateDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Create(MeterReadingFileByFormFileCreateDto input, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponseEnvelope<MeterReadingFileCreateDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Create(MeterReadingFileCreateDto input, CancellationToken cancellationToken)
         {
+            await _meterFlowValidationGetHandler.Handle(input.ReadingFile.FileName, cancellationToken);
             input.FilePath = await CopyDbfFileInDbfs(input.ReadingFile);
             await _meterReadingFileHandle.Handle(input, CurrentUser, cancellationToken);
-            //create ICollection<MeterReading>    
 
             return Ok(input);
         }
