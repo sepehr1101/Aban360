@@ -68,6 +68,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         {
             return CheckConditions(usageId, [7, 8, 41, 11]);
         }
+        internal static bool IsBath(int usageId)
+        {
+            return CheckConditions(usageId, [11]);
+        }
         internal static bool IsSpecialEducation(int usageId, bool isSpecial)
         {
             return CheckConditions(usageId, [7, 8]) && isSpecial;

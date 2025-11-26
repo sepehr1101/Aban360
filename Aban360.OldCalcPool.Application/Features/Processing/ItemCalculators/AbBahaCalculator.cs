@@ -26,6 +26,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const string date_1403_12_30 = "1403/12/30";
         const string date_1404_02_31 = "1404/02/31";
 
+        (long, long) _8644_8644 = (8644, 8644);
+        (long, long) _4323_225000 = (4323, 225000);
+        (long, long) _4323_350000 = (4323, 350000);
+        (long, long) _7000_350000 = (7000, 350000);
+        (long, long) _9000_450000 = (9000, 450000);
+        (long, long) _450000_450000 = (450000, 450000);
+
         public CalculateAbBahaOutputDto Calculate(NerkhGetDto nerkh, NerkhGetDto nerkh1403, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, ConsumptionPartialInfo consumptionPartialInfo, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds)
         {
             double abBahaAmount = 0, oldAbBahaAmount = 0, abBahaFromExpression = 0, oldAbBahaZarib = 1.15;
@@ -253,32 +260,27 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         {
             if (IsReligiousWithCharity(customerInfo.UsageId))
             {
-                return IsConstruction(customerInfo.BranchType) ? (450000, 450000) : Get2PartAmount(nerkh.Date2);//  foxpro:1178
+                return IsConstruction(customerInfo.BranchType) ? _450000_450000 : Get2PartAmount(nerkh.Date2);//  foxpro:1178
             }
             return GetEducationOrBathMultiplier(customerInfo.UsageId, nerkh.Date1, nerkh.Date2, customerInfo.IsSpecial, (long)CalcFormulaByRate(abAzad8And39.Formula, monthlyConsumption, olgoo, c, tagIds), abBahaFromExpression);//Azad:39
         }
         private (long, long) GetEducationOrBathMultiplier(int usageId, string nerkhDate1, string nerkhDate2, bool isSpecial, long abAzad, double abBahaFromExpression)
         {           
-            (long, long) _8644_8644 = (8644, 8644);
-            (long, long) _4323_225000 = (4323, 225000);
-            (long, long) _4323_350000 = (4323, 350000);
-            (long, long) _7000_350000 = (7000, 350000);
-            (long, long) _9000_450000 = (9000, 450000);
             //start line 1228
 
             if (IsEducationOrBath(usageId))
             {
                 if (LessThanEq(nerkhDate2, date_1402_04_23))
                 {
-                    return usageId == 11 ? _8644_8644 : _4323_225000;
+                    return IsBath(usageId) ? _8644_8644 : _4323_225000;
                 }
                 if (IsGtFromLqTo(nerkhDate2, date_1402_04_23, date_1403_06_25))
                 {
-                    return usageId == 11 ? _8644_8644 : _4323_225000;
+                    return IsBath(usageId) ? _8644_8644 : _4323_225000;
                 }
                 else if (IsGtFromLqTo(nerkhDate2, date_1403_06_25, date_1403_09_13))
                 {
-                    return usageId == 11 ? _8644_8644 : _4323_350000;
+                    return IsBath(usageId) ? _8644_8644 : _4323_350000;
                 }
                 else if (IsGtFromLqTo(nerkhDate2, date_1403_09_13, date_1404_02_31))
                 {
