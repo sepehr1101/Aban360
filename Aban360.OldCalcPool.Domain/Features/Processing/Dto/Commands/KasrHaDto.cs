@@ -35,7 +35,7 @@
         public decimal ZaribFasl { get; set; }
         public decimal NoeVa { get; set; }
         public decimal Bodjeh { get; set; }
-        public long TrackNumber { get; set; }
+       // public long TrackNumber { get; set; }
     }
 
 }

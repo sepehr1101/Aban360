@@ -183,7 +183,6 @@ namespace Aban360.OldCalcPool.Application.Features.SaveReading
                 ZaribFasl = 0,//
                 NoeVa = s.Customer.BranchType,
                 Bodjeh = (decimal)s.SumBoodje,
-                TrackNumber = 0,//
             };
 
         }
