@@ -16,6 +16,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
     }
     internal sealed class ConsumptionCalculator : IConsumptionCalculator
     {
+        const int _monthDays = 30;
         public ConsumptionInfo GetConsumptionInfo(MeterInfoOutputDto meterInfo, CustomerInfoOutputDto customerInfo)
         {
             int consumption = 0;
@@ -69,12 +70,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
 
             int durationPartial = endSegment.DayNumber - startSegment.DayNumber;
             double partialConsumption = (double)consumptionInfo.Consumption / (double)consumptionInfo.Duration * durationPartial;
+            double olgooOrCapacityInDuration = (double)olgooOrCapacity / (double)_monthDays * durationPartial;
 
-            double allowedConsumption = Math.Min(olgooOrCapacity, partialConsumption);
+            double allowedConsumption = Math.Min(olgooOrCapacityInDuration, partialConsumption);
             double disallowedConsumption = partialConsumption > allowedConsumption ? partialConsumption - allowedConsumption : 0;
 
             ConsumptionPartialInfo consumptionPartialInfo =
-                new(partialConsumption, allowedConsumption, disallowedConsumption, durationPartial, startSegment, endSegment, startSegmentJalali, endSegmentJalali);
+                new(partialConsumption, allowedConsumption, disallowedConsumption, durationPartial,
+                startSegment, endSegment, startSegmentJalali, endSegmentJalali, olgooOrCapacityInDuration);
             return consumptionPartialInfo;
         }
 

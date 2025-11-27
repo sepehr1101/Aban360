@@ -6,12 +6,13 @@
         public double DisallowedConsumtion { get;}
         public double Consumption { get;}
         public int Duration { get;}
-        public DateOnly StartDate { get; set; }
-        public DateOnly EndDate { get; set; }
+        public double OlgooOrCapacityInDuration { get; }
+        public DateOnly StartDate { get; }
+        public DateOnly EndDate { get; }
         public string StartDateJalali { get; set; } = default!;
         public string EndDateJalali { get; set; } = default!;
         public ConsumptionPartialInfo(double consumption, double allowedConsumption, double disallowedConsumption, int duration, 
-            DateOnly startDate, DateOnly endDate, string startDateJalali, string endDateJalali)
+            DateOnly startDate, DateOnly endDate, string startDateJalali, string endDateJalali, double olgooOrCapacityInDuration)
         {
             Consumption=consumption;
             AllowedConsumption = allowedConsumption;
@@ -20,7 +21,8 @@
             StartDate = startDate;
             EndDate = endDate;
             StartDateJalali = startDateJalali;
-            EndDateJalali = endDateJalali;           
+            EndDateJalali = endDateJalali;       
+            OlgooOrCapacityInDuration = olgooOrCapacityInDuration;
         }
     }
 }
