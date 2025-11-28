@@ -5,5 +5,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts
     public interface IZaribGetService
     {
         Task<ZaribGetDto> Get(int id);
+        Task<ZaribGetDto> Get(int zoneId, string currentDateJalali);
     }
 }
