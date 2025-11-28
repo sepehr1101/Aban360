@@ -58,6 +58,9 @@
     <None Update="DbSeeder\DataScript\supportedOperation.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DbSeeder\DataScript\TankerWaterDistnaceTariff.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

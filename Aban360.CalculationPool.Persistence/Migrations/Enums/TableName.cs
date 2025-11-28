@@ -34,6 +34,8 @@
 
         MeterReadingDetail,
         MeterFlow,
-        MeterFlowStep
+        MeterFlowStep,
+
+        TankerWaterDistanceTariff
     }
 }
