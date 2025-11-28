@@ -276,7 +276,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             TariffItemResult javani = _javaniJamiatCalculator.Calculate(nerkh, customerInfo, abBahaResult.AbBahaAmount, monthlyConsumption, olgoo);
 
             //Discounts
-            double abBahaDiscount = _abBahaCalculator.CalculateDiscount(zarib, isVillageCalculation, monthlyConsumption, customerInfo, nerkh, olgoo, abBahaResult, false, consumptionInfo.FinalDomesticUnit);
+            double abBahaDiscount = _abBahaCalculator.CalculateDiscount(consumptionPartialInfo ,zarib, isVillageCalculation, monthlyConsumption, customerInfo, nerkh, olgoo, abBahaResult, false, consumptionInfo.FinalDomesticUnit);
             double fazelabDiscount = _fazelabCalculator.CalculateDiscount(abBahaDiscount, fazelab.Summation, customerInfo, nerkh);
             double hotSeasonAbDiscount = _hotSeasonCalculator.CalculateDiscount(nerkh, abBahaDiscount, hotSeasonAbBaha, customerInfo, abBahaResult);
             double hotSeasonFazelabDiscount = _hotSeasonCalculator.CalculateDiscount(nerkh, fazelabDiscount, hotSeasonFazelab, customerInfo, abBahaResult);

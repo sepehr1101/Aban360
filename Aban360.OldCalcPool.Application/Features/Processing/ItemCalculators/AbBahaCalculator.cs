@@ -12,7 +12,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     internal interface IAbBahaCalculator
     {
         CalculateAbBahaOutputDto Calculate(NerkhGetDto nerkh, NerkhGetDto nerkh1403, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, ConsumptionPartialInfo consumptionPartialInfo, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds);
-        double CalculateDiscount(ZaribGetDto zarib, bool isVillageCalculation, double monthlyConsumption, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, CalculateAbBahaOutputDto calculateAbBahaOutputDto, bool isFull, int finalDomesticUnit);
+        double CalculateDiscount(ConsumptionPartialInfo consumptionPartialInfo, ZaribGetDto zarib, bool isVillageCalculation, double monthlyConsumption, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, CalculateAbBahaOutputDto calculateAbBahaOutputDto, bool isFull, int finalDomesticUnit);
     }
 
     internal sealed class AbBahaCalculator : BaseExpressionCalculator, IAbBahaCalculator
@@ -88,47 +88,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             }
             
             //case 5: other
-            abBahaAmount = nerkh.PartialConsumption * abBahaFromExpression;
+            abBahaAmount = consumptionPartialInfo.Consumption * abBahaFromExpression;
             return new CalculateAbBahaOutputDto(abBahaAmount * (double)multiplierAbBaha * villageMultiplier, 0, 0, (double)multiplierAbBaha);
         }
 
-        private double CalculateOldAbBahaIfPossible(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double monthlyConsumption, int _olgoo, int? c, IEnumerable<int> tagIds, double oldAbBahaAmount, double _oldAbBahaZarib)
-        {
-            if (IsLessThan1403_09_13AndOvajNotZero(nerkh))
-            {
-                string oldFormula = GetOldFormula(nerkh.OVaj, IsDomestic(customerInfo.UsageId), monthlyConsumption);
-                double oldAbBahaFromExpression = CalcFormulaByRate(oldFormula, monthlyConsumption, _olgoo, c, tagIds);
-                oldAbBahaAmount = ((double)nerkh.Duration / (double)monthDays) * oldAbBahaFromExpression * _oldAbBahaZarib;
-            }
-            return oldAbBahaAmount;
-        }
-
-        private double ShouldUseOldAbBaha(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double monthlyConsumption, int _olgoo, double abBahaAmount, double oldAbBahaAmount)
-        {
-            if (IsLessThan1403_09_13(nerkh.Date2) &&
-            monthlyConsumption <= _olgoo &&
-            abBahaAmount > oldAbBahaAmount &&
-            IsDomesticWithoutUnspecified(customerInfo.UsageId))
-            {
-                abBahaAmount = oldAbBahaAmount;
-            }
-
-            return abBahaAmount;
-        }
-
-        private double GetVillageMultiplier(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double monthlyConsumption, int _olgoo)
-        {
-            if ((IsVillageDomesticNotConstruction(customerInfo) &&!IsRuralButIsMetro(customerInfo)) ||
-                IsDolatabadOrHabibabadAndDomesticAndNotConstruction(customerInfo))
-            {
-                float multiplier = IsLessThan1403_09_13OrMonthlyBelowEqOlgoo(nerkh, monthlyConsumption, _olgoo) ?
-                    _villageAllowedMultiplier : _villageDisallowedMultiplier;
-                return multiplier;
-            }
-            return 1;
-        }
-
-        public double CalculateDiscount(ZaribGetDto zarib, bool isVillageCalculation, double monthlyConsumption, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, CalculateAbBahaOutputDto calculateAbBahaOutputDto, bool isFull, int finalDomesticUnit)
+        public double CalculateDiscount(ConsumptionPartialInfo consumptionPartialInfo,ZaribGetDto zarib, bool isVillageCalculation, double monthlyConsumption, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, CalculateAbBahaOutputDto calculateAbBahaOutputDto, bool isFull, int finalDomesticUnit)
         {
             if (calculateAbBahaOutputDto.AbBahaAmount == 0)
             {
@@ -152,7 +116,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 }
                 double mullahMultiplier = IsMullah(customerInfo.BranchType) ? 0.5 : 1;
                 (double, double) villageMultiplier = (!IsMullah(customerInfo.BranchType) && isVillageCalculation && IsDomestic(customerInfo.UsageId)) ? (0.5, 0.35) : (1, 1);
-                if (nerkh.PartialConsumption <= olgoo)// در صورتی که مصرف زیر الگو بود کامل معاف میشود
+                if (consumptionPartialInfo.Consumption <= olgoo)// در صورتی که مصرف زیر الگو بود کامل معاف میشود
                 {
                     return calculateAbBahaOutputDto.AbBahaAmount * mullahMultiplier * villageMultiplier.Item1;
                 }
@@ -277,11 +241,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return ((long)abBahaFromExpression, abAzad);
             }
-        }
-        private (double, double, bool) MultiplyCalculation(double abBaha, double oldAbBaha, double multiplier)
-        {
-            return (abBaha * multiplier, oldAbBaha * multiplier, multiplier<1);
-        }
+        }      
         private double CalcFormulaByRate(string formula, double monthlyAverageConsumption, int olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds)
         {
             object parameters = new { X = monthlyAverageConsumption, C = c, S = olgoo, tags = tagIds.ToArray() };
@@ -342,18 +302,26 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return zarib.Zb;
             }
+
+            //غیر مسکونی روستایی
             if (isVillage && isDomestic)
             {
                 return zarib.Zarib_baha;
             }
+
+            //غیرمسکونی شهری
             else if (!isDomestic && !isVillage)
             {
                 return zarib.Zb;
             }
+
+            //غیرمسکونی روستایی
             else if (!isDomestic && isVillage)
             {
                 return zarib.Zb_r;
             }
+
+            //در طبقات الگو، مسکونی شهری
             else if (isDomestic && !isVillage)
             {
                 if (IsBetween(monthlyConsumption, 0, 5))
@@ -372,6 +340,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                     return zarib.Zb7;
             }
 
+            //سایر
             return 1;
         }       
         private string GetOldFormula(string oldVaj, bool isDomestic, double monthlyConsumption)
@@ -393,5 +362,42 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         {
            return LessThanEq(nerkh.Date2, date_1403_12_30) ? nerkh1403.Vaj : nerkh.Vaj;
         }
+
+        private double CalculateOldAbBahaIfPossible(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double monthlyConsumption, int _olgoo, int? c, IEnumerable<int> tagIds, double oldAbBahaAmount, double _oldAbBahaZarib)
+        {
+            if (IsLessThan1403_09_13AndOvajNotZero(nerkh))
+            {
+                string oldFormula = GetOldFormula(nerkh.OVaj, IsDomestic(customerInfo.UsageId), monthlyConsumption);
+                double oldAbBahaFromExpression = CalcFormulaByRate(oldFormula, monthlyConsumption, _olgoo, c, tagIds);
+                oldAbBahaAmount = ((double)nerkh.Duration / (double)monthDays) * oldAbBahaFromExpression * _oldAbBahaZarib;
+            }
+            return oldAbBahaAmount;
+        }
+
+        private double ShouldUseOldAbBaha(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double monthlyConsumption, int _olgoo, double abBahaAmount, double oldAbBahaAmount)
+        {
+            if (IsLessThan1403_09_13(nerkh.Date2) &&
+                monthlyConsumption <= _olgoo &&
+                abBahaAmount > oldAbBahaAmount &&
+                IsDomesticWithoutUnspecified(customerInfo.UsageId))
+            {
+                abBahaAmount = oldAbBahaAmount;
+            }
+
+            return abBahaAmount;
+        }
+
+        private double GetVillageMultiplier(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double monthlyConsumption, int _olgoo)
+        {
+            if ((IsVillageDomesticNotConstruction(customerInfo) && !IsRuralButIsMetro(customerInfo)) ||
+                IsDolatabadOrHabibabadAndDomesticAndNotConstruction(customerInfo))
+            {
+                float multiplier = IsLessThan1403_09_13OrMonthlyBelowEqOlgoo(nerkh, monthlyConsumption, _olgoo) ?
+                    _villageAllowedMultiplier : _villageDisallowedMultiplier;
+                return multiplier;
+            }
+            return 1;
+        }
+
     }
 }
