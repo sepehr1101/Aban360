@@ -265,7 +265,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             //TODO: use consumptionPartialInfo insead of nerkh in most cases...
             int olgoo = GetOlgoo(nerkh.Date2, _olgoo);
             bool isVillageCalculation = IsVillage(customerInfo.ZoneId);
-            double monthlyConsumption = nerkh.DailyAverageConsumption * monthDays;
+            double monthlyConsumption = consumptionInfo.DailyAverageConsumption * monthDays; 
 
             CalculateAbBahaOutputDto abBahaResult = _abBahaCalculator.Calculate(nerkh, nerkh1403, customerInfo, meterInfo, zarib, abAzad, consumptionPartialInfo, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, c, tagIds);
             TariffItemResult boodje = _budgetCalculator.Calculate(nerkh, customerInfo, currentDateJalali, monthlyConsumption, olgoo, consumptionInfo);
@@ -313,12 +313,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             //nerkh.SetDailyAverageConsumption(consumptionInfo.DailyAverageConsumption);
             //nerkh.SetDate1(consumptionPartialInfo.StartDateJalali);
             //nerkh.SetDate2(consumptionPartialInfo.EndDateJalali);
-            nerkh.DailyAverageConsumption=(consumptionInfo.DailyAverageConsumption);
-            nerkh.Date1=(consumptionPartialInfo.StartDateJalali);
-            nerkh.Date2=(consumptionPartialInfo.EndDateJalali);
+            nerkh.Date1 = (consumptionPartialInfo.StartDateJalali);
+            nerkh.Date2 = (consumptionPartialInfo.EndDateJalali);
             nerkh.Duration = consumptionPartialInfo.Duration;
             nerkh.PartialConsumption = consumptionPartialInfo.Consumption;
-            return (nerkh,consumptionPartialInfo);
+            return (nerkh, consumptionPartialInfo);
         }
 
         private int GetOlgoo(string nerkhDate2, int olgo)

@@ -54,13 +54,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 return new CalculateAbBahaOutputDto();
             }
 
-            //case2 : is construction
+            //case 2: is construction
             if (IsConstruction(customerInfo.BranchType))
             {
-                abBahaAmount = CalcFormulaByRate(abAzad8And39.Formula, monthlyConsumption, _olgoo, c, tagIds) * nerkh.PartialConsumption;
+                abBahaAmount = CalcFormulaByRate(abAzad8And39.Formula, monthlyConsumption, _olgoo, c, tagIds) * consumptionPartialInfo.Consumption;
                 return new CalculateAbBahaOutputDto(abBahaAmount*(double)multiplierAbBaha, 0, 0, (double)multiplierAbBaha);
             }
 
+            //case 3: require old ab baha but not religious
             if (IsGardenOrDweltyAfter1400_12_24OrIsDomestic(customerInfo, nerkh) &&
                 !IsReligious(customerInfo.UsageId))
             {
@@ -71,6 +72,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 return new CalculateAbBahaOutputDto(abBahaAmount * (double)multiplierAbBaha * villageMultiplier, 0, 0, (double)multiplierAbBaha);
             }
 
+            //case 4: (is religious or has capacity) and is charity !
             if ((HasCapacityAndNotConstruction(customerInfo) || IsReligious(customerInfo.UsageId)) &&
                  IsCharitySchoolOrConsumptionGtCapacity(nerkh, customerInfo, consumptionPartialInfo.OlgooOrCapacityInDuration))
             {
@@ -80,11 +82,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 abBahaAmount = abBahaValues.Item1 + abBahaValues.Item2;
                 abBahaAmount = abBahaAmount * (double)multiplierAbBaha * villageMultiplier;
                 abBahaValues = CheckAbBahaValues(abBahaAmount, abBahaValues);
-                double abBaha1 = _2Amount.Item1 > 0 ? abBahaValues.Item1 * (double)multiplierAbBaha : 0;
-                double abBaha2 = _2Amount.Item2 > 0 ? abBahaValues.Item2 * (double)multiplierAbBaha : 0;
+                double abBaha1 = abBahaValues.Item1 * (double)multiplierAbBaha;
+                double abBaha2 = abBahaValues.Item2 * (double)multiplierAbBaha;
                 return new CalculateAbBahaOutputDto(abBahaAmount, abBaha1, abBaha2, (double)multiplierAbBaha);
             }
-                
+            
+            //case 5: other
             abBahaAmount = nerkh.PartialConsumption * abBahaFromExpression;
             return new CalculateAbBahaOutputDto(abBahaAmount * (double)multiplierAbBaha * villageMultiplier, 0, 0, (double)multiplierAbBaha);
         }
