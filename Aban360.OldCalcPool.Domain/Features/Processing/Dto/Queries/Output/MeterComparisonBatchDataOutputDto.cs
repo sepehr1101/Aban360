@@ -28,5 +28,6 @@
         public int EmptyUnit { get; set; }
         public int ContractualCapacity { get; set; }
         public int VirtualCategoryId { get; set; }
+        public bool IsSpecial { get; set; }
     }
 }

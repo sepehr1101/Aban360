@@ -83,6 +83,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                 EmptyUnit = data.EmptyUnit,
                 ContractualCapacity = data.ContractualCapacity,
                 VirtualCategoryId = data.VirtualCategoryId,
+                IsSpecial = data.IsSpecial
             };
         }
         private MeterImaginaryInputDto CreateImaginaryInputDtoObject(MeterComparisonBatchDataWithCustomerInfoOutputDto data)
