@@ -11,8 +11,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IAbBahaCalculator
     {
-        CalculateAbBahaOutputDto Calculate(NerkhGetDto nerkh, NerkhGetDto nerkh1403, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, ConsumptionPartialInfo consumptionPartialInfo, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds);
-        double CalculateDiscount(ConsumptionPartialInfo consumptionPartialInfo, ZaribGetDto zarib, bool isVillageCalculation, double monthlyConsumption, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, CalculateAbBahaOutputDto calculateAbBahaOutputDto, bool isFull, int finalDomesticUnit);
+        TariffItemResult Calculate(NerkhGetDto nerkh, NerkhGetDto nerkh1403, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, ConsumptionPartialInfo consumptionPartialInfo, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds);
+        double CalculateDiscount(ConsumptionPartialInfo consumptionPartialInfo, ZaribGetDto zarib, bool isVillageCalculation, double monthlyConsumption, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, TariffItemResult calculateAbBahaOutputDto, bool isFull, int finalDomesticUnit);
     }
 
     internal sealed class AbBahaCalculator : BaseExpressionCalculator, IAbBahaCalculator
@@ -37,7 +37,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         (long, long) _9000_450000 = (9000, 450000);
         (long, long) _450000_450000 = (450000, 450000);
 
-        public CalculateAbBahaOutputDto Calculate(NerkhGetDto nerkh, NerkhGetDto nerkh1403, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, ConsumptionPartialInfo consumptionPartialInfo, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds)
+        public TariffItemResult Calculate(NerkhGetDto nerkh, NerkhGetDto nerkh1403, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, ConsumptionPartialInfo consumptionPartialInfo, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds)
         {
             double abBahaAmount = 0, oldAbBahaAmount = 0, abBahaFromExpression = 0;
             double duration = nerkh.Duration;
@@ -51,14 +51,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             //case 1: is zero
             if (CheckZero(duration, monthlyConsumption, formula))
             {
-                return new CalculateAbBahaOutputDto();
+                return new TariffItemResult();
             }
 
             //case 2: is construction
             if (IsConstruction(customerInfo.BranchType))
             {
                 abBahaAmount = CalcFormulaByRate(abAzad8And39.Formula, monthlyConsumption, _olgoo, c, tagIds) * consumptionPartialInfo.Consumption;
-                return new CalculateAbBahaOutputDto(abBahaAmount*(double)multiplierAbBaha, 0, 0, (double)multiplierAbBaha);
+                return new TariffItemResult(abBahaAmount*(double)multiplierAbBaha);
             }
 
             //case 3: require old ab baha but not religious
@@ -69,7 +69,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 abBahaAmount = abBahaFromExpression * consumptionPartialInfo.Consumption;
                 oldAbBahaAmount = CalculateOldAbBahaIfPossible(nerkh, customerInfo, monthlyConsumption, _olgoo, c, tagIds, oldAbBahaAmount, _oldAbBahaZarib);
                 abBahaAmount = ShouldUseOldAbBaha(nerkh, customerInfo, monthlyConsumption, _olgoo, abBahaAmount, oldAbBahaAmount);
-                return new CalculateAbBahaOutputDto(abBahaAmount * (double)multiplierAbBaha * villageMultiplier, 0, 0, (double)multiplierAbBaha);
+                return new TariffItemResult(abBahaAmount * (double)multiplierAbBaha * villageMultiplier);
             }
 
             //case 4: (is religious or has capacity) and is charity !
@@ -84,17 +84,17 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 abBahaValues = CheckAbBahaValues(abBahaAmount, abBahaValues);
                 double abBaha1 = abBahaValues.Item1 * (double)multiplierAbBaha;
                 double abBaha2 = abBahaValues.Item2 * (double)multiplierAbBaha;
-                return new CalculateAbBahaOutputDto(abBahaAmount, abBaha1, abBaha2, (double)multiplierAbBaha);
+                return new TariffItemResult(abBaha1, abBaha2);
             }
             
             //case 5: other
             abBahaAmount = consumptionPartialInfo.Consumption * abBahaFromExpression;
-            return new CalculateAbBahaOutputDto(abBahaAmount * (double)multiplierAbBaha * villageMultiplier, 0, 0, (double)multiplierAbBaha);
+            return new TariffItemResult(abBahaAmount * (double)multiplierAbBaha * villageMultiplier);
         }
 
-        public double CalculateDiscount(ConsumptionPartialInfo consumptionPartialInfo,ZaribGetDto zarib, bool isVillageCalculation, double monthlyConsumption, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, CalculateAbBahaOutputDto calculateAbBahaOutputDto, bool isFull, int finalDomesticUnit)
+        public double CalculateDiscount(ConsumptionPartialInfo consumptionPartialInfo,ZaribGetDto zarib, bool isVillageCalculation, double monthlyConsumption, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, TariffItemResult calculateAbBahaOutputDto, bool isFull, int finalDomesticUnit)
         {
-            if (calculateAbBahaOutputDto.AbBahaAmount == 0)
+            if (calculateAbBahaOutputDto.Summation == 0)
             {
                 return 0;
             }
@@ -112,28 +112,30 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 if (isFull)
                 {
-                    return calculateAbBahaOutputDto.AbBahaAmount;
+                    return calculateAbBahaOutputDto.Summation;
                 }
                 double mullahMultiplier = IsMullah(customerInfo.BranchType) ? 0.5 : 1;
                 (double, double) villageMultiplier = (!IsMullah(customerInfo.BranchType) && isVillageCalculation && IsDomestic(customerInfo.UsageId)) ? (0.5, 0.35) : (1, 1);
                 if (consumptionPartialInfo.Consumption <= olgoo)// در صورتی که مصرف زیر الگو بود کامل معاف میشود
                 {
-                    return calculateAbBahaOutputDto.AbBahaAmount * mullahMultiplier * villageMultiplier.Item1;
+                    return calculateAbBahaOutputDto.Summation * mullahMultiplier * villageMultiplier.Item1;
                 }
                 else//در صورتی که بالای الگو بود بخش زیر الگو معاف و بالای الگو اخذ شود
                 {
-                    //long partialAmount = (long)(partialOlgoo / nerkh.PartialConsumption * amount);
-                    //return partialAmount;
-                    return (long)(calculateAbBahaOutputDto.AbBaha1 > 0 ? calculateAbBahaOutputDto.AbBaha1 : c_1404 * 0.01 * partialOlgoo * olgoo * (double)multiplier) * mullahMultiplier * villageMultiplier.Item1;
+                    return (long)(calculateAbBahaOutputDto.Allowed > 0 ?
+                        calculateAbBahaOutputDto.Allowed :
+                        c_1404 * 0.01 * partialOlgoo * olgoo * (double)multiplier) * mullahMultiplier * villageMultiplier.Item1;
                 }
             }
-            if (IsReligiousWithCharity(customerInfo.UsageId))//TODO: error golzar
+            if (IsReligiousWithCharity(customerInfo.UsageId))
             {
-                //در صورتی که بالای الگو بود بخش زیر الگو معاف و بالای الگو اخذ شود
+                //در صورتی که بالای الگو بود بخش زیر ظرفیت معاف و بالای ظرفیت اخذ شود
                 //C*0.1                
-                return (long)(calculateAbBahaOutputDto.AbBaha1 > 0 ? calculateAbBahaOutputDto.AbBaha1 : c_1404 * 0.1 * partialOlgoo * olgoo * (double)multiplier);
+                return (long)(calculateAbBahaOutputDto.Allowed > 0 ?
+                    calculateAbBahaOutputDto.Allowed :
+                    c_1404 * 0.1 * partialOlgoo * olgoo * (double)multiplier);
             }            
-            double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, nerkh.PartialConsumption, nerkh.Duration, calculateAbBahaOutputDto.AbBahaAmount);
+            double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, nerkh.PartialConsumption, nerkh.Duration, calculateAbBahaOutputDto.Summation);
             return virtualDiscount > 0 ? (long)virtualDiscount : 0;
         }
 
@@ -398,6 +400,5 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             }
             return 1;
         }
-
     }
 }

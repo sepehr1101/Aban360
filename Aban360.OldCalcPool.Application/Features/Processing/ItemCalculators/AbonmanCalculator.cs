@@ -106,7 +106,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return abonmanAmount;
             }
-            if (IsReligious(usageId))
+            if (IsReligiousWithCharity(usageId))
             {
                 return consumptionInfo.MonthlyAverageConsumption <= customerInfo.ContractualCapacity ? abonmanAmount : 0;
             }
