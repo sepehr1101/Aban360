@@ -85,12 +85,15 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         private string GetQuery()
         {
             return @"Select 
-                    	MeterFlowStepId,
-                    	FileName,
-                    	ZoneId,
-                        InsertDateTime
-                    From Atlas.dbo.MeterFlow
-                    Where Id=@id";
+                    	m.MeterFlowStepId,
+                    	m.FileName,
+                    	m.ZoneId,
+						t51.C2 as ZoneTitle,
+                        m.InsertDateTime
+                    From Atlas.dbo.MeterFlow m
+					Left Join Db70.dbo.T51 t51 
+						On m.ZoneId=t51.C0
+                    Where m.Id=@id";
         }
         private string GetValidationByFileNameQuery()
         {
@@ -120,18 +123,21 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         }
         private string GetCartablQuery()
         {
-            return @"Select 
+            return @"Select  
                     	f.Id,
                     	f.MeterFlowStepId,
                     	fs.Title as StepTitle,
                     	f.FileName,
                     	f.ZoneId,
+						t51.C2 as ZoneTitle,
                     	f.InsertByUserId,
                     	f.InsertDateTime,
                         f.Description
                     From Atlas.dbo.MeterFlow f
                     Join Atlas.dbo.MeterFlowStep fs
                     	On f.MeterFlowStepId=fs.Id
+					Left Join Db70.dbo.T51 t51 
+						On f.ZoneId=t51.C0
                     Where
                     	--f.ZoneId IN @zoneIds AND
                     	f.RemovedByUserId IS NULL AND 

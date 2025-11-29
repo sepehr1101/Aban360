@@ -15,23 +15,24 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
     {
         public PrepaymentAndCalculationQueryService(IConfiguration configuration)
             : base(configuration)
-        { 
-		}
+        {
+        }
 
         public async Task<ReportOutput<PrepaymentAndCalculationHeaderOutputDto, PrepaymentAndCalculationDataOutputDto>> GetInfo(PrepaymentAndCalculationInputDto input)
         {
             string zoneIdQueryString = GetZoneIdWithParNoQuery();
             int? zoneId = await _sqlReportConnection.QueryFirstOrDefaultAsync<int?>(zoneIdQueryString, new { parNoId = input.Input });
-			if(!zoneId.HasValue)
-			{
-				throw new BaseException(ExceptionLiterals.InvalidRequestData);
-			}
+            if (!zoneId.HasValue)
+            {
+                throw new BaseException(ExceptionLiterals.InvalidRequestData);
+            }
             string DataBaseName = GetDbName(zoneId.Value);
 
             string prepaymentCustomerHeaderQueryString = GetPrepaymentCustomerHeaderQuery(DataBaseName);
             PrepaymentAndCalculationCustomerHeaderOutputDto? requestHeader = await _sqlReportConnection.QueryFirstOrDefaultAsync<PrepaymentAndCalculationCustomerHeaderOutputDto>(prepaymentCustomerHeaderQueryString, new { zoneId = zoneId.Value, parNoId = input.Input });
-			if(requestHeader is null)
-			{
+            
+            if (requestHeader is null)
+            {
                 throw new BaseException(ExceptionLiterals.InvalidRequestData);
             }
 
@@ -44,21 +45,21 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
             string prepaymentDataQuery = GetPrepaymentDataQuery(DataBaseName);
             IEnumerable<PrepaymentAndCalculationDataOutputDto> data = await _sqlReportConnection.QueryAsync<PrepaymentAndCalculationDataOutputDto>(prepaymentDataQuery, new { zoneId = zoneId.Value, parNoId = input.Input });
-            if (prepaymentDataQuery is null)
+            if (prepaymentDataQuery is null || data.Count() == 0)
             {
                 throw new BaseException(ExceptionLiterals.NotCalculation);
             }
 
-            PrepaymentAndCalculationHeaderOutputDto header = GetHeader(data,installmentHeader,requestHeader);
+            PrepaymentAndCalculationHeaderOutputDto header = GetHeader(data, installmentHeader, requestHeader);
 
 
             var result = new ReportOutput<PrepaymentAndCalculationHeaderOutputDto, PrepaymentAndCalculationDataOutputDto>(ReportLiterals.PrepaymentAndCalculation, header, data);
-			return result;
+            return result;
         }
-		private PrepaymentAndCalculationHeaderOutputDto GetHeader(IEnumerable<PrepaymentAndCalculationDataOutputDto> data,
+        private PrepaymentAndCalculationHeaderOutputDto GetHeader(IEnumerable<PrepaymentAndCalculationDataOutputDto> data,
                                                                   PrepaymentAndCalculationInstallmentHeaderOutputDto installmentHeader,
                                                                   PrepaymentAndCalculationCustomerHeaderOutputDto requestHeader)
-		{
+        {
             PrepaymentAndCalculationHeaderOutputDto header = new()
             {
                 CustomerHeader = requestHeader,
@@ -70,9 +71,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 PaymentGetway = string.Empty, //todo: rename field and get data
                 InstallmentCount = data.First().InstallmentCount,
                 InstallmentNumber = data.First().InstallmentNumber,
-				Title= ReportLiterals.PrepaymentAndCalculation
+                Title = ReportLiterals.PrepaymentAndCalculation
             };
-			return header;
+            return header;
         }
 
         private string GetZoneIdWithParNoQuery()
