@@ -5,6 +5,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 {
     public interface IAmountCheckedHandler
     {
-        Task<IEnumerable<MeterReadingDetailCheckedDto>> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken);
+        Task Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken);
     }
 }

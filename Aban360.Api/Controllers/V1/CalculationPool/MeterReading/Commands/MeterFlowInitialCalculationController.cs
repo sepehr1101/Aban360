@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
 {
+    [Obsolete]
     [Route("v1/meter-flow")]
     public class MeterFlowInitialCalculationController : BaseController
     {
@@ -19,10 +20,10 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
 
         [HttpPost]
         [Route("initial-calculate")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<MeterReadingDetailGetDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<MeterReadingDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Calculate(int id, CancellationToken cancellationToken)
         {            
-            IEnumerable<MeterReadingDetailGetDto> result= await _initialCalculationHandler.Handle(id, CurrentUser, cancellationToken);
+            IEnumerable<MeterReadingDetailDataOutputDto> result= await _initialCalculationHandler.Handle(id, CurrentUser, cancellationToken);
             return Ok(result);
         }
     }

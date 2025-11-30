@@ -1,6 +1,6 @@
 ﻿namespace Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries
 {
-    public record MeterReadingDetailGetDto
+    public record MeterReadingDetailDataOutputDto
     {
         public int Id { get; set; }
         public int FlowImportedId { get; set; }

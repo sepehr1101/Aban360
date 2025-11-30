@@ -37,12 +37,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             _tariffEngine.NotNull(nameof(tariffEngine));
         }
 
-        public async Task<IEnumerable<MeterReadingDetailGetDto>> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task<IEnumerable<MeterReadingDetailDataOutputDto>> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
         {
             await _meterFlowValidationGetHandler.Handle(latestFlowId, cancellationToken);
             //todo: use cancellationToken
             int firstFlowId=await _meterFlowService.GetFirstFlowId(latestFlowId);
-            IEnumerable<MeterReadingDetailGetDto> readingDetails = await _meterReadingDetailService.Get(firstFlowId);
+            IEnumerable<MeterReadingDetailDataOutputDto> readingDetails = await _meterReadingDetailService.Get(firstFlowId);
             ICollection<MeterReadingWithAbBahaResultUpdateDto> consumptionsInfo = new List<MeterReadingWithAbBahaResultUpdateDto>();
             foreach (var readingDetail in readingDetails)
             {
@@ -93,7 +93,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             };
             await _meterFlowService.Create(newMeterFlow);
         }
-        private MeterImaginaryInputDto GetMeterImaginary(MeterReadingDetailGetDto readingDetail)
+        private MeterImaginaryInputDto GetMeterImaginary(MeterReadingDetailDataOutputDto readingDetail)
         {
             CustomerDetailInfoInputDto customerInfo = new()
             {
@@ -134,7 +134,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 MeterPreviousData = meterInfo,
             };
         }
-        private MeterReadingWithAbBahaResultUpdateDto GetMeterReadingDetail(MeterReadingDetailGetDto readingDetail, AbBahaCalculationDetails abBahaCalc)
+        private MeterReadingWithAbBahaResultUpdateDto GetMeterReadingDetail(MeterReadingDetailDataOutputDto readingDetail, AbBahaCalculationDetails abBahaCalc)
         {
             return new MeterReadingWithAbBahaResultUpdateDto(
                 readingDetail.Id,

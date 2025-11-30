@@ -11,17 +11,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
     internal sealed class AmountCheckedHandler : IAmountCheckedHandler
     {
         private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
-        private readonly IMeterReadingDetailService _meterReadingDetailService;
         private readonly IMeterFlowService _meterFlowService;
         private const int _expirePercent = 50;
         public AmountCheckedHandler(
             IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
-            IMeterReadingDetailService meterReadingDetailService,
             IMeterFlowService meterFlowService)
         {
-            _meterReadingDetailService = meterReadingDetailService;
-            _meterReadingDetailService.NotNull(nameof(meterReadingDetailService));
-
             _meterFlowService = meterFlowService;
             _meterFlowService.NotNull(nameof(meterFlowService));
 
@@ -29,113 +24,35 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             _meterFlowValidationGetHandler.NotNull(nameof(meterFlowValidationGetHandler));
         }
 
-        public async Task<IEnumerable<MeterReadingDetailCheckedDto>> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
         {
             await _meterFlowValidationGetHandler.Handle(latestFlowId, cancellationToken);
-            int firstFlowId = await _meterFlowService.GetFirstFlowId(latestFlowId);
-            IEnumerable<MeterReadingDetailGetDto> meterReadings = await _meterReadingDetailService.Get(firstFlowId);
-            IEnumerable<MeterReadingDetailCheckedDto> readingsCheck = GetReadingControl(meterReadings);
-            await CreateConsumpitonCheckedFlow(latestFlowId, appUser);
-
-            return readingsCheck;
+            await MeterFlowComplete(latestFlowId, appUser);
         }
-        private async Task CreateConsumpitonCheckedFlow(int latestFlowId, IAppUser appUser)
+        private async Task UpdateMeterFlow(int latestFlowId, IAppUser appUser)
         {
             MeterFlowUpdateDto meterFlowUpdate = new(latestFlowId, appUser.UserId, DateTime.Now);
-            _meterFlowService.Update(meterFlowUpdate);
-
-            MeterFlowGetDto meterFlow = await _meterFlowService.Get(latestFlowId);
+            await _meterFlowService.Update(meterFlowUpdate);
+        }
+        private async Task<int> InsertMeterFlow(MeterFlowStepEnum stepFlowId, int zoneId, string fileName, Guid userId)
+        {
             MeterFlowCreateDto newMeterFlow = new()
             {
-                MeterFlowStepId = MeterFlowStepEnum.AmountChecked,
-                ZoneId = meterFlow.ZoneId,
-                FileName = meterFlow.FileName,
-                InsertByUserId = appUser.UserId,
+                MeterFlowStepId = stepFlowId,
+                ZoneId = zoneId,
+                FileName = fileName,
+                InsertByUserId = userId,
                 InsertDateTime = DateTime.Now,
             };
-            await _meterFlowService.Create(newMeterFlow);
+            int newMeterFlowId = await _meterFlowService.Create(newMeterFlow);
+            return newMeterFlowId;
         }
-        private IEnumerable<MeterReadingDetailCheckedDto> GetReadingControl(IEnumerable<MeterReadingDetailGetDto> meterReadings)
+        private async Task MeterFlowComplete(int latestFlowId, IAppUser appUser)
         {
-            ICollection<MeterReadingDetailCheckedDto> readingsControl = new List<MeterReadingDetailCheckedDto>();
-            meterReadings.ForEach(mr =>
-            {
-                MeterReadingDetailCheckedDto readingControl = GetMeterReadingDetailControl(mr);
-                readingsControl.Add(readingControl);
-            });
+            await UpdateMeterFlow(latestFlowId, appUser);
+            MeterFlowGetDto meterFlow = await _meterFlowService.Get(latestFlowId);
 
-            return readingsControl;
-        }
-        private MeterReadingDetailCheckedDto GetMeterReadingDetailControl(MeterReadingDetailGetDto input)
-        {
-            bool hasAttention = false;
-            hasAttention = GetHasAttention(_expirePercent, input.LastSumItems.Value, input.SumItems.Value);
-
-            return new MeterReadingDetailCheckedDto()
-            {
-                Id = input.Id,
-                FlowImportedId = input.FlowImportedId,
-                ZoneId = input.ZoneId,
-                CustomerNumber = input.CustomerNumber,
-                ReadingNumber = input.ReadingNumber,
-                BillId = input.BillId,
-                AgentCode = input.AgentCode,
-                CurrentCounterStateCode = input.CurrentCounterStateCode,
-                PreviousDateJalali = input.PreviousDateJalali,
-                CurrentDateJalali = input.CurrentDateJalali,
-                PreviousNumber = input.PreviousNumber,
-                CurrentNumber = input.CurrentNumber,
-                InsertByUserId = input.InsertByUserId,
-                InsertDateTime = input.InsertDateTime,
-
-                UsageId = input.UsageId,
-                DomesticUnit = input.DomesticUnit,
-                CommercialUnit = input.CommercialUnit,
-                OtherUnit = input.OtherUnit,
-                EmptyUnit = input.EmptyUnit,
-                WaterInstallationDateJalali = input.WaterInstallationDateJalali,
-                SewageInstallationDateJalali = input.SewageInstallationDateJalali,
-                WaterRegisterDate = input.WaterRegisterDate,
-                SewageRegisterDate = input.SewageRegisterDate,
-                WaterCount = input.WaterCount,
-                SewageCalcState = input.SewageCalcState,
-                HouseholdDate = input.HouseholdDate,
-                HouseholdNumber = input.HouseholdNumber,
-                VillageId = input.VillageId,
-                IsSpecial = input.IsSpecial,
-                MeterDiameterId = input.MeterDiameterId,
-                VirtualCategoryId = input.VirtualCategoryId,
-                ContractualCapacity = input.ContractualCapacity,
-
-
-                TavizCause = input.TavizCause,
-                TavizDateJalali = input.TavizDateJalali,
-                TavizNumber = input.TavizNumber,
-                TavizRegisterDateJalali = input.TavizRegisterDateJalali,
-
-                LastCounterStateCode = input.LastCounterStateCode,
-                LastMeterDateJalali = input.LastMeterDateJalali,
-                LastMeterNumber = input.LastMeterNumber,
-                LastConsumption = input.LastConsumption,
-                LastMonthlyConsumption = input.LastMonthlyConsumption,
-                LastSumItems = input.LastSumItems,
-
-                SumItems = input.SumItems,
-                SumItemsBeforeDiscount = input.SumItemsBeforeDiscount,
-                DiscountSum = input.DiscountSum,
-                Consumption = input.Consumption,
-                MonthlyConsumption = input.MonthlyConsumption,
-
-                HasAttention = hasAttention
-            };
-        }
-        private bool GetHasAttention(int expirePercent, double lastSumItems, double sumItems)
-        {
-            double expireValue = (double)(lastSumItems * expirePercent / 100d);
-            double minValue = (double)(lastSumItems - expireValue);
-            double maxValue = (double)(lastSumItems + expireValue);
-
-            return sumItems >= minValue && sumItems <= maxValue ? false : true;
+            int calcaltionConfirmedMeterFlow = await InsertMeterFlow(MeterFlowStepEnum.CalculationConfirmed, meterFlow.ZoneId, meterFlow.FileName, appUser.UserId);
         }
     }
 }

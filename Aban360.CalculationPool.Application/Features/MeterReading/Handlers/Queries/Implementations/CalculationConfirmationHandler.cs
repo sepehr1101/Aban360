@@ -54,11 +54,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         {
             await _meterFlowValidationGetHandler.Handle(latestFlowId, cancellationToken);
             int firstFlowId = await _meterFlowService.GetFirstFlowId(latestFlowId);
-            IEnumerable<MeterReadingDetailGetDto> meterReadings = await _meterReadingDetailService.Get(firstFlowId);
+            IEnumerable<MeterReadingDetailDataOutputDto> meterReadings = await _meterReadingDetailService.Get(firstFlowId);
             await CreateBedBesAndKasrHaBatch(meterReadings, cancellationToken);//Insert in Atlas.dbo.BedBes
             await CreateCalculationConfirmedFlow(latestFlowId, appUser);
         }
-        private async Task CreateBedBesAndKasrHaBatch(IEnumerable<MeterReadingDetailGetDto> meterReadings, CancellationToken cancellationToken)
+        private async Task CreateBedBesAndKasrHaBatch(IEnumerable<MeterReadingDetailDataOutputDto> meterReadings, CancellationToken cancellationToken)
         {
             int zoneId = meterReadings.FirstOrDefault().ZoneId;
             ICollection<BedBesCreateDto> BedBesBatch = new List<BedBesCreateDto>();
@@ -84,7 +84,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             await _bedBesCreateService.Create(BedBesBatch,zoneId);
             await _kasrHaService.Create(kasrHaBatch, zoneId);
         }
-        private BedBesCreateDto GetBedBes(MeterReadingDetailGetDto meterReading, AbBahaCalculationDetails abBahaCalc)
+        private BedBesCreateDto GetBedBes(MeterReadingDetailDataOutputDto meterReading, AbBahaCalculationDetails abBahaCalc)
         {
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
             string mohlatDateJalali = DateTime.Now.AddDays(10).ToShortPersianDateString();
@@ -175,7 +175,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 TrackNumber = 0
             };
         }
-        private KasrHaDto GerKasrHa(MeterReadingDetailGetDto meterReading, AbBahaCalculationDetails abBahaCalc)
+        private KasrHaDto GerKasrHa(MeterReadingDetailDataOutputDto meterReading, AbBahaCalculationDetails abBahaCalc)
         {
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
 
@@ -231,7 +231,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             };
             await _meterFlowService.Create(newMeterFlow);
         }
-        private MeterImaginaryInputDto GetMeterImaginary(MeterReadingDetailGetDto readingDetail)
+        private MeterImaginaryInputDto GetMeterImaginary(MeterReadingDetailDataOutputDto readingDetail)
         {
             CustomerDetailInfoInputDto customerInfo = new()
             {

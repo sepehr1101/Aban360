@@ -96,10 +96,10 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             string query = GetExcludeCommand();
             await _sqlReportConnection.ExecuteAsync(query,input);
         }
-        public async Task<IEnumerable<MeterReadingDetailGetDto>> Get(int flowImportedId)
+        public async Task<IEnumerable<MeterReadingDetailDataOutputDto>> Get(int flowImportedId)
         {
             string query = GetQuery();
-            IEnumerable<MeterReadingDetailGetDto> details = await _sqlReportConnection.QueryAsync<MeterReadingDetailGetDto>(query, new { flowImportedId = flowImportedId });
+            IEnumerable<MeterReadingDetailDataOutputDto> details = await _sqlReportConnection.QueryAsync<MeterReadingDetailDataOutputDto>(query, new { flowImportedId = flowImportedId });
 
             return details;
         }

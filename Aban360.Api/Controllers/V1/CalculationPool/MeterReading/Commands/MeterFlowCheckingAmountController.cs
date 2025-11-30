@@ -18,12 +18,12 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
         }
 
         [HttpPost]
-        [Route("check-amount")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<MeterReadingDetailCheckedDto>>), StatusCodes.Status200OK)]
+        [Route("amount-confirmed")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
         public async Task<IActionResult> CheckAmount(int id, CancellationToken cancellationToken)
         {          
-            IEnumerable<MeterReadingDetailCheckedDto> result = await _amountCheckedHandler.Handle(id, CurrentUser, cancellationToken);
-            return Ok(result);
+            await _amountCheckedHandler.Handle(id, CurrentUser, cancellationToken);
+            return Ok(id);
         }
     }
 }

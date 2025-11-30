@@ -1,15 +1,23 @@
 ﻿using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Contracts;
+using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts;
+using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Implementations;
 using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
 using Aban360.Common.ApplicationUser;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.Common.Timing;
+using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using DotNetDBF;
 using FluentValidation;
+using System.Collections.Generic;
+using System.Threading;
 using static Aban360.Common.Extensions.IoExtensions;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Implementations
@@ -17,11 +25,14 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
     internal sealed class MeterReadingFileCreateHandler : IMeterReadingFileCreateHandler
     {
         const string _dbfPath = @"AppData\Dbfs";
+        const string _reportTitle = "آپلود و محاسبه اولیه";
 
         private readonly IMeterReadingDetailService _meterReadingFileService;
         private readonly IMeterFlowService _meterFlowService;
         private readonly ICustomerInfoService _customerInfoService;
         private readonly IMeterReadingDetailService _meterReadingDetailService;
+        private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
+        private readonly IOldTariffEngine _tariffEngine;
         private readonly IValidator<MeterReadingFileCreateDto> _validator;
 
         public MeterReadingFileCreateHandler(
@@ -29,6 +40,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             IMeterFlowService meterFlowService,
             ICustomerInfoService customerInfoService,
             IMeterReadingDetailService meterReadingDetailService,
+            IOldTariffEngine tariffEngine,
+            IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
             IValidator<MeterReadingFileCreateDto> validator)
         {
             _meterReadingFileService = meterReadingFileService;
@@ -43,29 +56,88 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             _meterReadingDetailService = meterReadingDetailService;
             _meterReadingDetailService.NotNull(nameof(_meterReadingDetailService));
 
+            _tariffEngine = tariffEngine;
+            _tariffEngine.NotNull(nameof(tariffEngine));
+
+            _meterFlowValidationGetHandler = meterFlowValidationGetHandler;
+            _meterFlowValidationGetHandler.NotNull(nameof(meterFlowValidationGetHandler));
+
             _validator = validator;
             _validator.NotNull(nameof(_validator));
         }
 
-        public async Task Handle(MeterReadingFileCreateDto input, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task<ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto>> Handle(MeterReadingFileCreateDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
             await Validate(input, cancellationToken);
             await CheckDuplicateFile(input.ReadingFile.FileName, cancellationToken);
 
             string filePath = await SaveToDisk(input.ReadingFile, _dbfPath);
+            IEnumerable<MeterReadingDetailCreateDto> readingDetails = await GetMeterReadingDetails(input, filePath, appUser.UserId);
 
-            ICollection<MeterReadingFileDetail> meterReadings = ReadDb(filePath, appUser.UserId);
+
+            ICollection<MeterReadingDetailCreateDto> readingDetailsCreate = new List<MeterReadingDetailCreateDto>();
+            foreach (var readingDetail in readingDetails)
+            {
+                if (CounterStateValidation(readingDetail.CurrentCounterStateCode, readingDetail.CurrentNumber, readingDetail.PreviousNumber))
+                {
+                    MeterImaginaryInputDto meterImaginary = GetMeterImaginary(readingDetail);
+                    AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterImaginary, cancellationToken);
+                    readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false));
+                }
+                else
+                {
+                    readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true));
+                }
+            }
+            await _meterReadingDetailService.Insert(readingDetailsCreate);
+
+            int firstFlowId = readingDetailsCreate.FirstOrDefault().FlowImportedId;
+            int zoneId = readingDetailsCreate.FirstOrDefault().ZoneId;
+            await CompleteMeterFlow(firstFlowId, zoneId, input.ReadingFile.FileName, appUser);
+
+            return GetReturnData(readingDetailsCreate);
+        }
+
+        private ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto> GetReturnData(IEnumerable<MeterReadingDetailCreateDto> data)
+        {
+            MeterReadingDetailHeaderOutputDto header = new MeterReadingDetailHeaderOutputDto()
+            {
+                Amount = data.Sum(m => m.SumItems) ?? 0,
+                Consumption = data.Sum(m => m.Consumption) ?? 0,
+                RecordCount = data.Count(),
+            };
+            ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto> result = new(_reportTitle, header, data);
+
+            return result;
+        }
+        private async Task CompleteMeterFlow(int latestFlowId, int ZoneId, string fileName, IAppUser appUser)
+        {
+            MeterFlowUpdateDto meterFlowUpdate = new(latestFlowId, appUser.UserId, DateTime.Now);
+            _meterFlowService.Update(meterFlowUpdate);
+
+            MeterFlowCreateDto newMeterFlow = new()
+            {
+                MeterFlowStepId = MeterFlowStepEnum.Calculated,
+                ZoneId = ZoneId,
+                FileName = fileName,
+                InsertByUserId = appUser.UserId,
+                InsertDateTime = DateTime.Now,
+            };
+            await _meterFlowService.Create(newMeterFlow);
+        }
+        private async Task<IEnumerable<MeterReadingDetailCreateDto>> GetMeterReadingDetails(MeterReadingFileCreateDto meterFile, string filePath, Guid userId)
+        {
+            ICollection<MeterReadingFileDetail> meterReadings = ReadDb(filePath, userId);
             MeterReadingFileDetail firstMeterDetail = meterReadings.FirstOrDefault();
 
-            MeterFlowCreateDto meterFlow = CreateImportedMeterFlowStep(input.ReadingFile.FileName, firstMeterDetail.ZoneId, appUser.UserId, input.Description);
-            int meterFlowId = await _meterFlowService.Create(meterFlow);
+            MeterFlowCreateDto importedMeterFlow = CreateImportedMeterFlowStep(meterFile.ReadingFile.FileName, firstMeterDetail.ZoneId, userId, meterFile.Description);
+            int meterFlowId = await _meterFlowService.Create(importedMeterFlow);
 
             CustomersInfoGetDto customersInfo = await _customerInfoService.Get(firstMeterDetail.ZoneId, meterReadings.Select(m => m.CustomerNumber).ToList());
             IEnumerable<MeterReadingDetailCreateDto> meterReadingsDetailCreate = GetReadingMeterDetails(meterReadings, customersInfo, meterFlowId);
 
-            await _meterReadingDetailService.Insert(meterReadingsDetailCreate);
+            return meterReadingsDetailCreate;
         }
-
         private IEnumerable<MeterReadingDetailCreateDto> GetReadingMeterDetails(ICollection<MeterReadingFileDetail> meterReadings, CustomersInfoGetDto customersInfo, int meterFlowId)
         {
             return from meterReading in meterReadings
@@ -78,7 +150,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                        into bedbesJoin
                    from bedbes in bedbesJoin.DefaultIfEmpty()
                    join taviz in customersInfo.TavizInfo
-                       on bedbes.CustomerNumber equals taviz.CustomerNumber
+                       on members.CustomerNumber equals taviz.CustomerNumber
                        into tavizJoin
                    from taviz in tavizJoin.DefaultIfEmpty()
                    select new MeterReadingDetailCreateDto()
@@ -205,6 +277,81 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 string insertDateJalali = ConvertDate.GregorianToJalali(insertDateTime);
                 throw new ReadingException(ExceptionLiterals.InvalidDuplicateFileName(insertDateJalali));
             }
+        }
+        private bool CounterStateValidation(int counterStateCode, int currentNumber, int previousNumber)
+        {
+            int[] invalidCounterStateCode = new int[] { 4, 6, 7, 8, 9, 10 };
+
+            if (invalidCounterStateCode.Contains(counterStateCode))
+            {
+                return false;
+            }
+            else if ((counterStateCode == 3 || counterStateCode == 5) && currentNumber > previousNumber)
+            {
+                return false;
+            }
+            return true;
+        }
+        private MeterImaginaryInputDto GetMeterImaginary(MeterReadingDetailCreateDto readingDetail)
+        {
+            CustomerDetailInfoInputDto customerInfo = new()
+            {
+                ZoneId = readingDetail.ZoneId,
+                Radif = readingDetail.CustomerNumber,
+                BranchType = 0,//todo
+                UsageId = readingDetail.UsageId,
+                DomesticUnit = readingDetail.DomesticUnit,
+                CommertialUnit = readingDetail.CommercialUnit,
+                OtherUnit = readingDetail.OtherUnit,
+                EmptyUnit = readingDetail.EmptyUnit,
+                WaterInstallationDateJalali = readingDetail.WaterInstallationDateJalali,
+                SewageInstallationDateJalali = readingDetail.SewageInstallationDateJalali,
+                WaterRegisterDate = readingDetail.WaterRegisterDate,
+                SewageRegisterDate = readingDetail.SewageRegisterDate,
+                SewageCalcState = readingDetail.SewageCalcState,
+                ContractualCapacity = readingDetail.ContractualCapacity,
+                HouseholdDate = readingDetail.HouseholdDate,
+                HouseholdNumber = readingDetail.HouseholdNumber,
+                ReadingNumber = readingDetail.ReadingNumber,
+                VillageId = readingDetail.VillageId,
+                IsSpecial = readingDetail.IsSpecial,
+                VirtualCategoryId = readingDetail.VirtualCategoryId,
+                CounterStateCode = readingDetail.CurrentCounterStateCode,
+            };
+            MeterInfoByPreviousDataInputDto meterInfo = new()
+            {
+                BillId = readingDetail.BillId,
+                PreviousDateJalali = readingDetail.PreviousDateJalali,
+                PreviousNumber = readingDetail.PreviousNumber,
+                CurrentDateJalali = readingDetail.CurrentDateJalali,
+                CurrentMeterNumber = readingDetail.CurrentNumber,
+                CounterStateCode = readingDetail.CurrentCounterStateCode
+            };
+            return new MeterImaginaryInputDto()
+            {
+                CustomerInfo = customerInfo,
+                MeterPreviousData = meterInfo,
+            };
+        }
+        private MeterReadingDetailCreateDto GetMeterReadingDetailByAbBahaValue(MeterReadingDetailCreateDto readingDetail, AbBahaCalculationDetails? abBahaCalc, bool hasZeroValue)
+        {
+            if (hasZeroValue)
+            {
+                readingDetail.SumItemsBeforeDiscount = 0;
+                readingDetail.SumItems = 0;
+                readingDetail.DiscountSum = 0;
+                readingDetail.Consumption = 0;
+                readingDetail.MonthlyConsumption = 0;
+            }
+            else
+            {
+                readingDetail.SumItemsBeforeDiscount = abBahaCalc.SumItemsBeforeDiscount;
+                readingDetail.SumItems = abBahaCalc.SumItems;
+                readingDetail.DiscountSum = abBahaCalc.DiscountSum;
+                readingDetail.Consumption = abBahaCalc.Consumption;
+                readingDetail.MonthlyConsumption = abBahaCalc.MonthlyConsumption;
+            }
+            return readingDetail;
         }
     }
 }

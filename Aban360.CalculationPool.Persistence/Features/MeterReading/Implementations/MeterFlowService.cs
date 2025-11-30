@@ -2,6 +2,8 @@
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Literals;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
@@ -20,6 +22,12 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             int id = await _sqlReportConnection.ExecuteScalarAsync<int>(command, input);
 
             return id;
+        }
+        public async Task Create(ICollection<MeterFlowCreateDto> input)
+        {
+            string command = GetInsertCommand();
+            await _sqlReportConnection.ExecuteAsync(command, input);
+
         }
         public async Task Update(MeterFlowUpdateDto input)
         {
@@ -40,26 +48,33 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 
             return insertDateTime;
         }
-        public async Task<string?> GetInsertDateTime(int id)
+        public async Task<MeterFlowValidationDto?> GetMeterFlowValidation(int id)
         {
             string query = GetValidationByIdQuery();
-            string? insertDateTime = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(query, new { id});
-
-            return insertDateTime;
+            MeterFlowValidationDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<MeterFlowValidationDto>(query, new { id });
+            if (result is null || result.Id <= 0)
+            {
+                throw new ReadingException(ExceptionLiterals.FlowStepNotFound);
+            }
+            return result;
         }
         public async Task<IEnumerable<MeterFlowCartableGetDto>> GetCartable()
         {
             string query = GetCartablQuery();
-            IEnumerable<MeterFlowCartableGetDto> cartable=await _sqlReportConnection.QueryAsync<MeterFlowCartableGetDto>(query,null); 
-       
+            IEnumerable<MeterFlowCartableGetDto> cartable = await _sqlReportConnection.QueryAsync<MeterFlowCartableGetDto>(query, null);
+
             return cartable;
         }
         public async Task<int> GetFirstFlowId(int latestFlowId)
         {
             string query = GetFirstFlowId();
-            int firstFlowId = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(query, new { id = latestFlowId });
+            int? firstFlowId = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(query, new { id = latestFlowId });
+            if (firstFlowId is null || firstFlowId <= 0)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidFlowStep);
+            }
 
-            return firstFlowId;
+            return firstFlowId.Value;
         }
 
         private string GetInsertCommand()
@@ -103,12 +118,14 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         }
         private string GetValidationByIdQuery()
         {
-            return @"Select InsertDateTime
+            return @"Select 
+                        Id,
+                        MeterFlowStepId,
+                        InsertDateTime,
+                        RemovedDateTime
                     From Atlas.dbo.MeterFlow
                     Where	
-                    	Id=@id AND
-                    	RemovedByUserId IS NOT NULL AND
-                    	RemovedDateTime IS NOT NULL";
+                    	Id=@id";
         }
 
         private string GetFirstFlowId()

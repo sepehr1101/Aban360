@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
 {
+    [Obsolete]
     [Route("v1/meter-flow")]
     public class MeterFlowCalculationConfirmationController : BaseController
     {
