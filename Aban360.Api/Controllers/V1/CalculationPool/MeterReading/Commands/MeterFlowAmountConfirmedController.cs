@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
 {
     [Route("v1/meter-flow")]
-    public class MeterFlowCheckingAmountController : BaseController
+    public class MeterFlowAmountConfirmedController : BaseController
     {
         private readonly IAmountCheckedHandler _amountCheckedHandler;
-        public MeterFlowCheckingAmountController(
+        public MeterFlowAmountConfirmedController(
             IAmountCheckedHandler amountCheckedHandler)
         {
             _amountCheckedHandler = amountCheckedHandler;
