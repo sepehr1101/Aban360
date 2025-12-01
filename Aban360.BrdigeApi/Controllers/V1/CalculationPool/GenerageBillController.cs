@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
 {
-    [Route("v1/reading-bill")]
+    [Route("v1/bill")]
     public class GenerageBillController : BaseController
     {
         private readonly IGenerageBillHandler _generageBillHandler;
@@ -18,7 +18,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
         }
 
         [HttpPost, HttpGet]
-        [Route("generate")]
+        [Route("issue")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AbBahaCalculationDetails>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Generate(GenerateBillInputDto inputDto, CancellationToken cancellationToken)
         {
