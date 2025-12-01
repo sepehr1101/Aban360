@@ -12,7 +12,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     internal interface IAbBahaCalculator
     {
         TariffItemResult Calculate(NerkhGetDto nerkh, NerkhGetDto nerkh1403, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, ConsumptionPartialInfo consumptionPartialInfo, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds);
-        double CalculateDiscount(ConsumptionPartialInfo consumptionPartialInfo, ZaribGetDto zarib, bool isVillageCalculation, double monthlyConsumption, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, TariffItemResult calculateAbBahaOutputDto, bool isFull, int finalDomesticUnit);
+        TariffItemResult CalculateDiscount(ConsumptionPartialInfo consumptionPartialInfo, ZaribGetDto zarib, bool isVillageCalculation, double monthlyConsumption, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, TariffItemResult calculateAbBahaOutputDto, int finalDomesticUnit);
     }
 
     internal sealed class AbBahaCalculator : BaseExpressionCalculator, IAbBahaCalculator
@@ -29,13 +29,19 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const string date_1403_09_13 = "1403/09/13";
         const string date_1403_12_30 = "1403/12/30";
         const string date_1404_02_31 = "1404/02/31";
+        const string date_1404_09_09 = "1404/09/09";
 
+        (long, long) _zero = (0, 0);
+        (long, long) _3766_168110 = (3776, 168110);
         (long, long) _8644_8644 = (8644, 8644);
+        (long, long) _4040_168110 = (4040, 168110);
         (long, long) _4323_225000 = (4323, 225000);
         (long, long) _4323_350000 = (4323, 350000);
         (long, long) _7000_350000 = (7000, 350000);
         (long, long) _9000_450000 = (9000, 450000);
+        (long, long) _11000_550000 = (11000, 550000);
         (long, long) _450000_450000 = (450000, 450000);
+        (long, long) _550000_550000 = (550000, 550000);
 
         public TariffItemResult Calculate(NerkhGetDto nerkh, NerkhGetDto nerkh1403, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, ConsumptionPartialInfo consumptionPartialInfo, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds)
         {
@@ -92,15 +98,15 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             return new TariffItemResult(abBahaAmount * (double)multiplierAbBaha * villageMultiplier);
         }
 
-        public double CalculateDiscount(ConsumptionPartialInfo consumptionPartialInfo,ZaribGetDto zarib, bool isVillageCalculation, double monthlyConsumption, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, TariffItemResult calculateAbBahaOutputDto, bool isFull, int finalDomesticUnit)
+        public TariffItemResult CalculateDiscount(ConsumptionPartialInfo consumptionPartialInfo,ZaribGetDto zarib, bool isVillageCalculation, double monthlyConsumption, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, TariffItemResult calculateAbBahaOutputDto, int finalDomesticUnit)
         {
             if (calculateAbBahaOutputDto.Summation == 0)
             {
-                return 0;
+                return new TariffItemResult();
             }
             if(IsConstruction(customerInfo.BranchType))
             {
-                return 0;
+                return new TariffItemResult();
             }
             decimal multiplier = GetMultiplier(zarib, olgoo, IsDomesticCategory(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
             double partialOlgoo = IsDomestic(customerInfo.UsageId) ?
@@ -109,36 +115,40 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
             if (IsHandoverDiscount(customerInfo.BranchType) &&
                 IsDomesticWithoutUnspecified(customerInfo.UsageId))
-            {
-                if (isFull)
-                {
-                    return calculateAbBahaOutputDto.Summation;
-                }
+            {               
                 double mullahMultiplier = IsMullah(customerInfo.BranchType) ? 0.5 : 1;
                 (double, double) villageMultiplier = (!IsMullah(customerInfo.BranchType) && isVillageCalculation && IsDomestic(customerInfo.UsageId)) ? (0.5, 0.35) : (1, 1);
-                if (consumptionPartialInfo.Consumption <= olgoo)// در صورتی که مصرف زیر الگو بود کامل معاف میشود
-                {
-                    return calculateAbBahaOutputDto.Summation * mullahMultiplier * villageMultiplier.Item1;
-                }
-                else//در صورتی که بالای الگو بود بخش زیر الگو معاف و بالای الگو اخذ شود
-                {
-                    return (long)(calculateAbBahaOutputDto.Allowed > 0 ?
-                        calculateAbBahaOutputDto.Allowed :
-                        c_1404 * 0.01 * partialOlgoo * olgoo * (double)multiplier) * mullahMultiplier * villageMultiplier.Item1;
-                }
+                //if (consumptionPartialInfo.Consumption <= olgoo)// در صورتی که مصرف زیر الگو بود کامل معاف میشود
+                //{
+                //    return new TariffItemResult(calculateAbBahaOutputDto.Summation * mullahMultiplier * villageMultiplier.Item1);
+                //}
+                //else//در صورتی که بالای الگو بود بخش زیر الگو معاف و بالای الگو اخذ شود
+                //{
+                //    return calculateAbBahaOutputDto.Allowed > 0 ?
+                //        new TariffItemResult(calculateAbBahaOutputDto.Allowed) :
+                //        new TariffItemResult( c_1404 * 0.01 * partialOlgoo * olgoo * (double)multiplier * mullahMultiplier * villageMultiplier.Item1);
+                //}
+                double x = c_1404 * 0.01 * partialOlgoo * olgoo * (double)multiplier * mullahMultiplier * villageMultiplier.Item1;
+                double allowedDiscount = calculateAbBahaOutputDto.Allowed * mullahMultiplier * villageMultiplier.Item1;
+                double disallowedDiscount = calculateAbBahaOutputDto.Disallowed * mullahMultiplier * villageMultiplier.Item2;
+                return new TariffItemResult(allowedDiscount,disallowedDiscount);
             }
             if (IsReligiousWithCharity(customerInfo.UsageId))
             {
                 //در صورتی که بالای الگو بود بخش زیر ظرفیت معاف و بالای ظرفیت اخذ شود
                 //C*0.1                
-                return (long)(calculateAbBahaOutputDto.Allowed > 0 ?
-                    calculateAbBahaOutputDto.Allowed :
-                    c_1404 * 0.1 * partialOlgoo * olgoo * (double)multiplier);
+                //return calculateAbBahaOutputDto.Allowed > 0 ?
+                //    new TariffItemResult(calculateAbBahaOutputDto.Allowed) :
+                //    new TariffItemResult(c_1404 * 0.1 * partialOlgoo * olgoo * (double)multiplier);
+                double x = c_1404 * 0.1 * partialOlgoo * olgoo * (double)multiplier;
+                return new TariffItemResult(calculateAbBahaOutputDto.Allowed);
             }            
             double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, nerkh.PartialConsumption, nerkh.Duration, calculateAbBahaOutputDto.Summation);
-            return virtualDiscount > 0 ? (long)virtualDiscount : 0;
+            double finalVirtualDiscount= virtualDiscount > 0 ? (long)virtualDiscount : 0;
+            return new TariffItemResult(finalVirtualDiscount);
         }
 
+        #region private methods
         private bool IsLessThan1403_09_13AndOvajNotZero(NerkhGetDto nerkh)
         {
             return !string.IsNullOrWhiteSpace(nerkh.OVaj) &&
@@ -211,14 +221,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         {
             if (IsReligiousWithCharity(customerInfo.UsageId))
             {
-                return IsConstruction(customerInfo.BranchType) ? _450000_450000 : Get2PartAmount(nerkh.Date2);//  foxpro:1178
+                return Get2PartAmount(nerkh.Date2);
             }
             return GetEducationOrBathMultiplier(customerInfo.UsageId, nerkh.Date1, nerkh.Date2, customerInfo.IsSpecial, (long)CalcFormulaByRate(abAzad8And39.Formula, monthlyConsumption, olgoo, c, tagIds), abBahaFromExpression);//Azad:39
         }
         private (long, long) GetEducationOrBathMultiplier(int usageId, string nerkhDate1, string nerkhDate2, bool isSpecial, long abAzad, double abBahaFromExpression)
-        {           
-            //start line 1228
-
+        {  
             if (IsEducationOrBath(usageId))
             {
                 if (LessThanEq(nerkhDate2, date_1402_04_23))
@@ -237,39 +245,28 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 {
                     return _7000_350000;
                 }
-                return _9000_450000;
+                else if(IsGtFromLqTo(nerkhDate2, date_1404_02_31, date_1404_09_09))
+                {
+                    return _9000_450000;
+                }
+                return _11000_550000;
             }
             else
             {
                 return ((long)abBahaFromExpression, abAzad);
             }
-        }      
-        private double CalcFormulaByRate(string formula, double monthlyAverageConsumption, int olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds)
-        {
-            object parameters = new { X = monthlyAverageConsumption, C = c, S = olgoo, tags = tagIds.ToArray() };
-            double value = Eval<double>(formula, parameters);
-            return value;
         }
         private (long, long) Get2PartAmount(string nerkhDate2)
-        {
-            (long, long) _zero = (0, 0);
-            (long, long) _3766_168110 = (3776, 168110);
-            (long, long) _8644_8644 = (8644, 8644);
-            (long, long) _4040_168110 = (4040, 168110);
-            (long, long) _4323_225000 = (4323, 225000);
-            (long, long) _4323_350000 = (4323, 350000);
-            (long, long) _7000_350000 = (7000, 350000);
-            (long, long) _9000_450000 = (9000, 450000);
-
+        {   
             if (StringConditionMoreThan(date_1400_12_25, nerkhDate2))
             {
                 return _3766_168110;
             }
-            else if(IsGtFromLqTo(nerkhDate2, date_1400_12_25, date_1402_04_23))
+            else if (IsGtFromLqTo(nerkhDate2, date_1400_12_25, date_1402_04_23))
             {
                 return _4040_168110;
             }
-            else if(IsGtFromLqTo(nerkhDate2, date_1402_04_23, date_1403_06_25))
+            else if (IsGtFromLqTo(nerkhDate2, date_1402_04_23, date_1403_06_25))
             {
                 return _4323_225000;
             }
@@ -280,17 +277,28 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             else if (IsGtFromLqTo(nerkhDate2, date_1402_04_23, date_1403_06_25))
             {
                 return _4040_168110;
-            }            
+            }
             else if (IsGtFromLqTo(nerkhDate2, date_1403_09_13, date_1404_02_31))
             {
                 return _7000_350000;
             }
-            else if (StringConditionMoreThan(nerkhDate2, date_1404_02_31))
+            else if (IsGtFromLqTo(nerkhDate2, date_1404_02_31, date_1404_09_09))
             {
                 return _9000_450000;
             }
+            else if (StringConditionMoreThan(nerkhDate2, date_1404_09_09))
+            {
+                return _11000_550000;
+            }
             return _zero;
         }
+
+        private double CalcFormulaByRate(string formula, double monthlyAverageConsumption, int olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds)
+        {
+            object parameters = new { X = monthlyAverageConsumption, C = c, S = olgoo, tags = tagIds.ToArray() };
+            double value = Eval<double>(formula, parameters);
+            return value;
+        }     
         private decimal GetMultiplier(ZaribGetDto zarib, int olgoo, bool isDomestic, bool isVillage, double monthlyConsumption, int branchType)
         {
             decimal rawMultiplier= GetRawMultiplier(zarib, olgoo, isDomestic, isVillage, monthlyConsumption, branchType);
@@ -400,5 +408,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             }
             return 1;
         }
+        #endregion
     }
 }

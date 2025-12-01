@@ -11,7 +11,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     internal interface IFazelabCalculator
     {
         TariffItemResult Calculate(string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman);
-        double CalculateDiscount(double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh);
+        TariffItemResult CalculateDiscount(double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh);
     }
 
     internal sealed class FazelabCalculator : IFazelabCalculator
@@ -28,6 +28,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             double multiplier = GetMultiplier(isAbonman, customerInfo.UsageId);
            
             if (IsConstruction(customerInfo.BranchType) && !isAbonman)
+            {
+                return new TariffItemResult();
+            }
+            if (IsUsageConstructor(customerInfo.UsageId) && !isAbonman)
             {
                 return new TariffItemResult();
             }
@@ -72,26 +76,27 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             }
             return new TariffItemResult(sewageAmount);
         }
-        public double CalculateDiscount(double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh)
+        public TariffItemResult CalculateDiscount(double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh)
         {
             if (abBahaDiscount <= 0)
             {
-                return 0;
+                return new TariffItemResult();
             }
             if (fazelabAmount <= 0)
             {
-                return 0;
+                return new TariffItemResult();
             }
             if (IsConstruction(customerInfo.BranchType))
             {
-                return 0;
+                return new TariffItemResult();
             }
             double fazelabDiscount = abBahaDiscount * GetMultiplier(false,customerInfo.UsageId);
             double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, nerkh.PartialConsumption, nerkh.Duration, fazelabDiscount);
-            return virtualDiscount > 0 ? virtualDiscount : fazelabDiscount;//fazelabAmount
+            double finalDiscount= virtualDiscount > 0 ? virtualDiscount : fazelabDiscount;//fazelabAmount
+            return new TariffItemResult(finalDiscount);
         }
 
-
+        #region private methods
         private bool IsTotallyNormal(CustomerInfoOutputDto customerInfo, string currentDateJalali)
         {
             return
@@ -135,5 +140,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         {
             return !isAbonman && IsDomesticCategory(usageId) ? 0.7 : 1;
         }
+        #endregion
     }
 }
