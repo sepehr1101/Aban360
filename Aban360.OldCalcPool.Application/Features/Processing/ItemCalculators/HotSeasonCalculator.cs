@@ -10,7 +10,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     {
         TariffItemResult CalcFazelab(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double fazelabAmount, double monthlyConsumption, TariffItemResult calcResult);
         TariffItemResult CalculateAb(NerkhGetDto nerkh, double abBahaAmount, CustomerInfoOutputDto customerInfo, double monthlyConsumption, TariffItemResult calcResult);
-        double CalculateDiscount(NerkhGetDto nerkh, double amountDiscount, TariffItemResult hotSeasonInfo, CustomerInfoOutputDto customerInfo, TariffItemResult calcResult);
+        TariffItemResult CalculateDiscount(NerkhGetDto nerkh, double amountDiscount, TariffItemResult hotSeasonInfo, CustomerInfoOutputDto customerInfo, TariffItemResult calcResult);
     }
 
     internal sealed class HotSeasonCalculator : IHotSeasonCalculator
@@ -53,33 +53,35 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             return GetDurationAndAmount(nerkh.Date1, nerkh.Date2, nerkh.Duration, customerInfo, fazelabAmount, calcResult, true, fazelabMultiplier);         
         }
 
-        public double CalculateDiscount(NerkhGetDto nerkh, double amountDiscount, TariffItemResult hotSeasonInfo, CustomerInfoOutputDto customerInfo, TariffItemResult calcResult)
+        public TariffItemResult CalculateDiscount(NerkhGetDto nerkh, double amountDiscount, TariffItemResult hotSeasonInfo, CustomerInfoOutputDto customerInfo, TariffItemResult calcResult)
         {
             if (amountDiscount == 0)
             {
-                return 0;
+                return new TariffItemResult();
             }
             if (hotSeasonInfo.TmpDuration == 0 || hotSeasonInfo.Allowed == 0)
             {
-                return 0;
+                return new TariffItemResult();
             }
             if (IsConstruction(customerInfo.BranchType))
             {
-                return 0;
+                return new TariffItemResult();
             }
             if (calcResult.Summation - amountDiscount < 2)
             {
-                return hotSeasonInfo.Summation;
+                return new TariffItemResult(hotSeasonInfo.Summation);
             }
             if (IsReligiousWithCharity(customerInfo.UsageId))
             {
-                return hotSeasonInfo.Allowed;
+                return new TariffItemResult(hotSeasonInfo.Allowed);
             }
             double fasleGarmAmount = hotSeasonInfo.Disallowed;
             double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, nerkh.PartialConsumption, nerkh.Duration, fasleGarmAmount);
-            return virtualDiscount > 0 ? virtualDiscount : fasleGarmAmount;
+            double finalDiscount = virtualDiscount > 0 ? virtualDiscount : fasleGarmAmount;
+            return new TariffItemResult(finalDiscount);
         }
 
+        #region private methods
         private TariffItemResult GetDurationAndAmount(string date1, string date2, int duration, CustomerInfoOutputDto customerInfo, double baseAmount, TariffItemResult calcResult, bool aboveZero=true, double fazelabMultiplier=1)
         {
             string hotSeasonStart = GetHotSeasonStart(date2);
@@ -106,5 +108,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         {
             return IsDomesticCategory(usageId) ? 0.7 : 1;
         }
+        #endregion
     }
 }

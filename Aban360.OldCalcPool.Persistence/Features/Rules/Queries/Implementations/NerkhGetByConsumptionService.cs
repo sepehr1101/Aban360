@@ -148,7 +148,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                         n.vaj_faz AS VajFaz
                     From [OldCalc].dbo.Nerkh n
                     Where 
-                    	(n.date1<=@currentDateJalali AND n.date2>@previousDateJalali)AND
+                    	(n.date1<@currentDateJalali AND n.date2>=@previousDateJalali)AND
                     	(@averageConsumption > n.ebt*@olgoo AND @averageConsumption <= n.ent*@olgoo) AND
                     	n.cod=@usageId";
         }
