@@ -2,7 +2,7 @@
 {
     public record BaseOldTariffEngineOutputDto
     {
-        public CalculateAbBahaOutputDto AbBahaValues { get; set; }
+        public TariffItemResult AbBahaValues { get; set; }
         public double FazelabAmount { get; set; }
         public double HotSeasonAbBahaAmount { get; set; }
         public double HotSeasonFazelabAmount { get; set; }
@@ -27,7 +27,7 @@
         //public double MaliatAmount { get; set; }
 
         public BaseOldTariffEngineOutputDto(
-            CalculateAbBahaOutputDto abBahaValues,
+            TariffItemResult abBahaValues,
             double fazelabAmount,
             double hotSeasonAbBahaAmount,
             double hotSeasonFazelabAmount,

@@ -23,24 +23,7 @@
 
         public int Duration { get; set; }
         public double PartialConsumption { get; set; }
-        public double DailyAverageConsumption { get; set; }
 
         public int C { get; set; }
-
-        //not mapped from db
-        public double Multiplier { get; set; }
-
-        //public void SetDate1(string date1)
-        //{
-        //    Date1=date1;
-        //}
-        //public void SetDate2(string date2)
-        //{
-        //    Date2 = date2;
-        //}
-        //public void SetDailyAverageConsumption(double dailyAverageConsumption)
-        //{
-        //    DailyAverageConsumption = dailyAverageConsumption;
-        //}
     }
 }
