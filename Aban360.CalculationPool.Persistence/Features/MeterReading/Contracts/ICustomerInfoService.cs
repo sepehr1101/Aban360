@@ -4,6 +4,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts
 {
     public interface ICustomerInfoService
     {
+        Task<ZoneIdAndCustomerNumberGetDto> GetZoneIdAndCustomerNumber(string billId);
         Task<CustomerInfoGetDto> Get(int zoneId, int customerNumber);
         Task<CustomersInfoGetDto> Get(int zoneId, ICollection<int> customerNumbers);
     }
