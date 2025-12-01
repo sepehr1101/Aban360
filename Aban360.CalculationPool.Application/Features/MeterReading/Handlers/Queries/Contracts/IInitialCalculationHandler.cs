@@ -5,6 +5,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 {
     public interface IInitialCalculationHandler
     {
-        Task<IEnumerable<MeterReadingDetailGetDto>> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken);
+        Task<IEnumerable<MeterReadingDetailDataOutputDto>> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken);
     }
 }

@@ -52,7 +52,7 @@
 
         public static string InvalidPercent => $"درصد اشتباه وارد شده";
         public static string Incalculable => $"غیر قابل محاسبه";
-        
+
         public static string IncalculableWithCounterStateCode => $"محاسبه قبض با این وضعیت کنتور امکان پذیر نیست";
         public static string ConfilictBetweenCounterNumberAndCounteState => $"رقم کنتور با وضعیت کنتور مغایرت دارد";
 
@@ -78,6 +78,7 @@
         //Reading
         public static string InvalidDuplicateFileName(string date) => $"نام فایل تکراری است. این فایل در تاریخ {date} ارسال شده";
         public static string InvalidDuplicateStepFlow(string date) => $"این مرحله در تاریخ {date} سپری شده است وامکان انجام مجدد آن وجود ندارد. ";
-        
+        public static string InvalidFlowStep => "خطا در شناسه روند. ";
+        public static string FlowStepNotFound => "شناسه روند یافت نشد";
     }
 }

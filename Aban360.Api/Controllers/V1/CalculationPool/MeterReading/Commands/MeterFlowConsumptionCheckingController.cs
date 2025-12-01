@@ -20,11 +20,11 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
 
         [HttpPost]
         [Route("consumption-check")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<MeterReadingDetailCheckedDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
         public async Task<IActionResult> CheckConsumption(int id, CancellationToken cancellationToken)
         {           
-            IEnumerable<MeterReadingDetailCheckedDto> result = await _consumptionCheckedHandler.Handle(id, CurrentUser, cancellationToken);
-            return Ok(result);
+            await _consumptionCheckedHandler.Handle(id, CurrentUser, cancellationToken);
+            return Ok(id);
         }
     }
 }

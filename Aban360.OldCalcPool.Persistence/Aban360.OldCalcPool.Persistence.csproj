@@ -24,6 +24,9 @@
     <None Update="DbSeeder\DataScript\VirtualCategory.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Scripts\S.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\Zarib_1404_09_09.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

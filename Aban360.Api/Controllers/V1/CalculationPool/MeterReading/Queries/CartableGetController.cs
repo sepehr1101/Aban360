@@ -16,7 +16,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Queries
             _cartableGetHandler.NotNull(nameof(cartableGetHandler));
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("get")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<MeterFlowCartableGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(CancellationToken cancellationToken)
