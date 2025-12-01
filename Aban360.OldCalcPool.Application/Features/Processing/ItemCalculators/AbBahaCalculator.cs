@@ -51,9 +51,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             abBahaFromExpression = CalcFormulaByRate(formula, monthlyConsumption, _olgoo, c, tagIds);
             decimal multiplierAbBaha = GetMultiplier(zarib, _olgoo, IsDomesticCategory(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
             double villageMultiplier = GetVillageMultiplier(nerkh, customerInfo, monthlyConsumption, _olgoo);
-            (double, double) abBahaValues = (0, 0);
-            (long, long) _2Amount = (0, 0);
-
+            
             //case 1: is zero
             if (CheckZero(duration, monthlyConsumption, formula))
             {
@@ -68,10 +66,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             }
 
             //case 3: require old ab baha but not religious
-            if (IsGardenOrDweltyAfter1400_12_24OrIsDomestic(customerInfo, nerkh) &&
+            if (IsGardenOrDweltyAfter1400_12_24OrIsDomestic(customerInfo, consumptionPartialInfo) &&
+                IsBefore1403_06_26(consumptionPartialInfo.EndDateJalali) &&
                 !IsReligious(customerInfo.UsageId))
             {
-                abBahaFromExpression = CalcFormulaByRate(formula, monthlyConsumption, _olgoo, c, tagIds);
+                //abBahaFromExpression = CalcFormulaByRate(formula, monthlyConsumption, _olgoo, c, tagIds);
                 abBahaAmount = abBahaFromExpression * consumptionPartialInfo.Consumption;
                 oldAbBahaAmount = CalculateOldAbBahaIfPossible(nerkh, customerInfo, monthlyConsumption, _olgoo, c, tagIds, oldAbBahaAmount, _oldAbBahaZarib);
                 abBahaAmount = ShouldUseOldAbBaha(nerkh, customerInfo, monthlyConsumption, _olgoo, abBahaAmount, oldAbBahaAmount);
@@ -82,7 +81,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             if ((HasCapacityAndNotConstruction(customerInfo) || IsReligious(customerInfo.UsageId)) &&
                  IsCharitySchoolOrConsumptionGtCapacity(nerkh, customerInfo, consumptionPartialInfo.OlgooOrCapacityInDuration))
             {
-                _2Amount = Get2Amount(nerkh, customerInfo, abAzad8And39, abBahaFromExpression, _olgoo, monthlyConsumption, c, tagIds);
+                (double, double) abBahaValues = (0, 0);
+                (long, long) _2Amount = Get2Amount(nerkh, customerInfo, abAzad8And39, abBahaFromExpression, _olgoo, monthlyConsumption, c, tagIds);
                 abBahaValues.Item1 = _2Amount.Item1 * (IsReligiousAndZeroCapacity(customerInfo) ? consumptionPartialInfo.Consumption : consumptionPartialInfo.AllowedConsumption);
                 abBahaValues.Item2 = _2Amount.Item2 * (IsReligiousAndZeroCapacity(customerInfo) ? 0 : consumptionPartialInfo.DisallowedConsumtion);
                 abBahaAmount = abBahaValues.Item1 + abBahaValues.Item2;
@@ -93,9 +93,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 return new TariffItemResult(abBaha1, abBaha2);
             }
             
+            //case 5: allowed and disallowed are not null
+
+
             //case 5: other
-            abBahaAmount = consumptionPartialInfo.Consumption * abBahaFromExpression;
-            return new TariffItemResult(abBahaAmount * (double)multiplierAbBaha * villageMultiplier);
+            abBahaAmount = consumptionPartialInfo.Consumption * abBahaFromExpression * (double)multiplierAbBaha * villageMultiplier;
+            return new TariffItemResult(abBahaAmount);
         }
 
         public TariffItemResult CalculateDiscount(ConsumptionPartialInfo consumptionPartialInfo,ZaribGetDto zarib, bool isVillageCalculation, double monthlyConsumption, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, TariffItemResult calculateAbBahaOutputDto, int finalDomesticUnit)
@@ -168,9 +171,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                    !IsConstruction(customerInfo.BranchType) ;
         }
 
-        private bool IsGardenOrDweltyAfter1400_12_24OrIsDomestic(CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh)
+        private bool IsGardenOrDweltyAfter1400_12_24OrIsDomestic(CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo nerkh)
         {
-            return IsGardenOrDweltyAfter1400_12_24(customerInfo.UsageId, nerkh.Date1) || IsDomestic(customerInfo.UsageId);
+            return IsGardenOrDweltyAfter1400_12_24(customerInfo.UsageId, nerkh.StartDateJalali) || IsDomestic(customerInfo.UsageId);
+        }
+        private bool IsBefore1403_06_26(string date2)
+        {
+            return date2.CompareTo(date_1403_06_25) <= 0;
         }
 
         private bool HasCapacityAndNotConstruction(CustomerInfoOutputDto customerInfo)
