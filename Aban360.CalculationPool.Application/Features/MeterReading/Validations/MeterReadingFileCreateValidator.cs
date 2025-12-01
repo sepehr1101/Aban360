@@ -9,11 +9,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Validations
     {
         public MeterReadingFileCreateValidator()
         {
-            RuleFor(t => t.Title)
-               .NotNull().WithMessage(ExceptionLiterals.NotNull)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-               .MaximumLength(255).WithMessage(ExceptionLiterals.NotMoreThan255);
-          
             RuleFor(t => t.ReadingFile)
                .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
