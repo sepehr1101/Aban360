@@ -22,7 +22,9 @@
         public Guid? RemovedByUserId { get; set; }
         public DateTime? RemovedDateTime { get; set; }
 
+        public int BranchTypeId { get; set; }
         public int UsageId { get; set; }
+        public int ConsumptionUsageId { get; set; }
         public int DomesticUnit { get; set; }
         public int CommercialUnit { get; set; }
         public int OtherUnit { get; set; }
@@ -40,6 +42,7 @@
         public bool IsSpecial { get; set; }
         public short MeterDiameterId { get; set; }
         public int VirtualCategoryId { get; set; }
+        public string? BodySerial { get; set; }
 
         public string? TavizDateJalali { get; set; }
         public string? TavizCause { get; set; }

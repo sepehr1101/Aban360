@@ -19,7 +19,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Queries
 
         [HttpGet,HttpPost]
         [Route("calc")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<TankerWaterDistanceTariffOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<TankerWaterCalculationOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Calculation([FromBody] TankerWaterCalculationInputDto input, CancellationToken cancellationToken)
         {
             TankerWaterCalculationOutputDto result = await _calcHandler.Handle(input, cancellationToken);

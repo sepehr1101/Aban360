@@ -1,12 +1,23 @@
 ﻿namespace Aban360.CalculationPool.Domain.Features.Sale.Dto.Output
 {
-   public record TankerWaterCalculationOutputDto
+    public record TankerWaterCalculationOutputDto
     {
-        public decimal TaxAmount { get; set; }
-        public decimal WaterAmountWithoutTax { get; set; }
-        public decimal WaterAmountWithTax { get; set; }
-        public decimal DeliveryAmount { get; set; }
+        private const decimal _vatRate = 0.1m;
+        public decimal Tax { get; }
+        public decimal Water { get; }
+        public decimal Delivery { get; }
+        public decimal Budget { get; }
+        public decimal Final { get; }
 
-        public decimal FinalAmount { get; set; }
+        public TankerWaterCalculationOutputDto(decimal water, decimal budget, decimal delivery)
+        {
+            decimal tax = (water + budget) * _vatRate;
+
+            Tax = tax;
+            Water = water;
+            Delivery = delivery;
+            Budget = budget;
+            Final = tax + water + delivery + budget;
+        }
     }
 }

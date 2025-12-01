@@ -10,11 +10,16 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
     public class MeterFlowAmountConfirmedController : BaseController
     {
         private readonly IAmountCheckedHandler _amountCheckedHandler;
+        private readonly ICalculationConfirmationHandler _confirmationHandler;
         public MeterFlowAmountConfirmedController(
-            IAmountCheckedHandler amountCheckedHandler)
+            IAmountCheckedHandler amountCheckedHandler,
+            ICalculationConfirmationHandler confirmationHandler)
         {
             _amountCheckedHandler = amountCheckedHandler;
             _amountCheckedHandler.NotNull(nameof(amountCheckedHandler));
+
+            _confirmationHandler = confirmationHandler;
+            _confirmationHandler.NotNull(nameof(confirmationHandler));
         }
 
         [HttpPost]
@@ -22,7 +27,8 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
         public async Task<IActionResult> CheckAmount(int id, CancellationToken cancellationToken)
         {          
-            await _amountCheckedHandler.Handle(id, CurrentUser, cancellationToken);
+            //await _amountCheckedHandler.Handle(id, CurrentUser, cancellationToken);
+            await _confirmationHandler.Handle(id, CurrentUser, cancellationToken);
             return Ok(id);
         }
     }

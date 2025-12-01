@@ -126,7 +126,9 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             table.Columns.Add("ExcludedByUserId", typeof(Guid));
             table.Columns.Add("ExcludedDateTime", typeof(DateTime));
 
+            table.Columns.Add("BranchTypeId", typeof(int));
             table.Columns.Add("UsageId", typeof(int));
+            table.Columns.Add("ConsumptionUsageId", typeof(int));
             table.Columns.Add("DomesticUnit", typeof(int));
             table.Columns.Add("CommercialUnit", typeof(int));
             table.Columns.Add("OtherUnit", typeof(int));
@@ -144,6 +146,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             table.Columns.Add("IsSpecial", typeof(bool));
             table.Columns.Add("MeterDiameterId", typeof(short));
             table.Columns.Add("VirtualCategoryId", typeof(int));
+            table.Columns.Add("BodySerial", typeof(string));
 
             table.Columns.Add("TavizDateJalali", typeof(string));
             table.Columns.Add("TavizCause", typeof(string));
@@ -186,7 +189,9 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                 row["ExcludedByUserId"] = item.ExcludedByUserId ?? (object)DBNull.Value;
                 row["ExcludedDateTime"] = item.ExcludedDateTime ?? (object)DBNull.Value;
 
+                row["BranchTypeId"] = item.BranchTypeId;
                 row["UsageId"] = item.UsageId;
+                row["ConsumptionUsageId"] = item.ConsumptionUsageId;
                 row["DomesticUnit"] = item.DomesticUnit;
                 row["CommercialUnit"] = item.CommercialUnit;
                 row["OtherUnit"] = item.OtherUnit;

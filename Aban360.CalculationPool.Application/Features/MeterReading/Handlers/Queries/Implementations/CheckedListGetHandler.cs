@@ -114,7 +114,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 InsertByUserId = input.InsertByUserId,
                 InsertDateTime = input.InsertDateTime,
 
+                BranchTypeId = input.BranchTypeId,
                 UsageId = input.UsageId,
+                ConsumptionUsageId= input.ConsumptionUsageId,
                 DomesticUnit = input.DomesticUnit,
                 CommercialUnit = input.CommercialUnit,
                 OtherUnit = input.OtherUnit,
@@ -132,7 +134,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 MeterDiameterId = input.MeterDiameterId,
                 VirtualCategoryId = input.VirtualCategoryId,
                 ContractualCapacity = input.ContractualCapacity,
-
+                BodySerial= input.BodySerial,
 
                 TavizCause = input.TavizCause,
                 TavizDateJalali = input.TavizDateJalali,

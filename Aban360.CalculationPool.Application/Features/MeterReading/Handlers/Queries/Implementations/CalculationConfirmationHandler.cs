@@ -22,6 +22,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         private readonly IOldTariffEngine _oldTariffEngine;
         private readonly IBedBesCreateService _bedBesCreateService;
         private readonly IKasrHaService _kasrHaService;
+        const int _paymentDeadline = 7;
 
         public CalculationConfirmationHandler(
             IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
@@ -53,6 +54,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         public async Task Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
         {
             await _meterFlowValidationGetHandler.Handle(latestFlowId, cancellationToken);
+
             int firstFlowId = await _meterFlowService.GetFirstFlowId(latestFlowId);
             IEnumerable<MeterReadingDetailDataOutputDto> meterReadings = await _meterReadingDetailService.Get(firstFlowId);
             await CreateBedBesAndKasrHaBatch(meterReadings, cancellationToken);//Insert in Atlas.dbo.BedBes
@@ -87,24 +89,25 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         private BedBesCreateDto GetBedBes(MeterReadingDetailDataOutputDto meterReading, AbBahaCalculationDetails abBahaCalc)
         {
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
-            string mohlatDateJalali = DateTime.Now.AddDays(7).ToShortPersianDateString();//7 constant
+            string mohlatDateJalali = DateTime.Now.AddDays(_paymentDeadline).ToShortPersianDateString();
+            string paymentId = TransactionIdGenerator.GeneratePaymentId((long)abBahaCalc.SumItems, abBahaCalc.Customer.BillId);
 
             return new BedBesCreateDto()
             {
                 Town = meterReading.ZoneId,
                 Radif = meterReading.CustomerNumber,
                 Eshtrak = meterReading.ReadingNumber,
-                Barge = 0,//هر چی اینجا کسر ها هم همین
+                Barge = 0,
                 PriNo = meterReading.PreviousNumber,
                 TodayNo = meterReading.CurrentNumber,
                 PriDate = meterReading.PreviousDateJalali,
                 TodayDate = meterReading.CurrentDateJalali,
                 AbonFas = (decimal)abBahaCalc.AbonmanFazelabAmount,
-                FasBaha = (decimal)abBahaCalc.FazelabAmount,//
-                AbBaha = (decimal)abBahaCalc.AbBahaAmount,//
+                FasBaha = (decimal)abBahaCalc.FazelabAmount,
+                AbBaha = (decimal)abBahaCalc.AbBahaAmount,
                 Ztadil = 0,
                 Masraf = (decimal)meterReading.Consumption,
-                Shahrdari = (decimal)abBahaCalc.MaliatAmount,//**
+                Shahrdari = (decimal)abBahaCalc.MaliatAmount,
                 Modat = abBahaCalc.Duration,
                 DateBed = currentDateJalali,
                 JalaseNo = 0,
@@ -120,11 +123,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 CodEnshab = meterReading.UsageId,
                 Enshab = meterReading.MeterDiameterId,
                 Elat = 0,
-                Serial = 0,//bodySerial
+                Serial =0,
                 Ser = 0,
-                ZaribFasl = 0,//hotSeason
-                Ab10 = 0,//item 6=0
-                Ab20 = 0,//item7=0
+                ZaribFasl = (decimal)abBahaCalc.HotSeasonAbBahaAmount,
+                Ab10 = 0,
+                Ab20 = 0,
                 TedadVahd = meterReading.OtherUnit,
                 TedKhane = meterReading.HouseholdNumber,
                 TedadMas = meterReading.DomesticUnit,
@@ -138,21 +141,21 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 Mamor = meterReading.AgentCode,
                 TavizDate = meterReading.TavizDateJalali ?? string.Empty,
                 ZaribCntr = 0,
-                Zabresani = 0,//item9=0
-                ZaribD = (decimal)abBahaCalc.JavaniAmount,//item10:
+                Zabresani = 0,
+                ZaribD = (decimal)abBahaCalc.JavaniAmount,
                 Tafavot = 0,
-                KasrHa = (decimal)abBahaCalc.DiscountSum,//
-                FixMas = meterReading.ContractualCapacity,//
+                KasrHa = (decimal)abBahaCalc.DiscountSum,
+                FixMas = meterReading.ContractualCapacity,
                 ShGhabs1 = meterReading.BillId,
-                ShPard1 = "0",////common: transactionIdGenerator
+                ShPard1 = paymentId,
                 TabAbnA = 0,
                 TabAbnF = 0,
-                TabsFa = 0,//item15=0
+                TabsFa = 0,
                 NewAb = 0,
                 NewFa = 0,
                 Bodjeh = (decimal)abBahaCalc.SumBoodje,
-                Group1 = 0,//usage2:usageConsumption
-                MasFas = 0,//consumption
+                Group1 = meterReading.ConsumptionUsageId,
+                MasFas = (decimal)meterReading.Consumption,
                 Faz = false,
                 ChkKarbari = 0,
                 C200 = 0,
@@ -178,6 +181,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         private KasrHaDto GerKasrHa(MeterReadingDetailDataOutputDto meterReading, AbBahaCalculationDetails abBahaCalc)
         {
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
+            string paymentId = TransactionIdGenerator.GeneratePaymentId((long)abBahaCalc.SumItems, abBahaCalc.Customer.BillId);
 
             return new KasrHaDto()
             {
@@ -185,24 +189,24 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 IdBedbes = 0,
                 Radif = meterReading.CustomerNumber,
                 CodEnshab = meterReading.UsageId,
-                Barge = 0,//
+                Barge = 0,
                 PriDate = meterReading.PreviousDateJalali,
                 TodayDate = meterReading.CurrentDateJalali,
                 PriNo = meterReading.PreviousNumber,
                 TodayNo = meterReading.CurrentNumber,
                 Masraf = (decimal)meterReading.Consumption,
-                AbBaha = (decimal)abBahaCalc.AbBahaDiscount,//
-                FasBaha = (decimal)abBahaCalc.FazelabDiscount,//
-                AbonAb = (decimal)abBahaCalc.AbonmanAbDiscount,//
+                AbBaha = (decimal)abBahaCalc.AbBahaDiscount,
+                FasBaha = (decimal)abBahaCalc.FazelabDiscount,
+                AbonAb = (decimal)abBahaCalc.AbonmanAbDiscount,
                 AbonFas = (decimal)abBahaCalc.AbonmanFazelabDiscount,
                 TabAbnA = 0,
                 TabAbnF = 0,
                 Ab10 = 0,
-                Shahrdari = (decimal)abBahaCalc.AvarezDiscount,//
+                Shahrdari = (decimal)abBahaCalc.MaliatDiscount,
                 Rate = (decimal)meterReading.MonthlyConsumption,
                 Baha = (decimal)meterReading.SumItems,
                 ShGhabs = meterReading.BillId,
-                ShPard = "",//todo
+                ShPard = paymentId,
                 DateBed = currentDateJalali,
                 TmpDateBed = "",
                 TmpTodayDate = "",
@@ -228,6 +232,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 FileName = meterFlow.FileName,
                 InsertByUserId = appUser.UserId,
                 InsertDateTime = DateTime.Now,
+                Description=meterFlow.Description
             };
             await _meterFlowService.Create(newMeterFlow);
         }
@@ -237,7 +242,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             {
                 ZoneId = readingDetail.ZoneId,
                 Radif = readingDetail.CustomerNumber,
-                BranchType = 0,//todo
+                BranchType = readingDetail.BranchTypeId,
                 UsageId = readingDetail.UsageId,
                 DomesticUnit = readingDetail.DomesticUnit,
                 CommertialUnit = readingDetail.CommercialUnit,

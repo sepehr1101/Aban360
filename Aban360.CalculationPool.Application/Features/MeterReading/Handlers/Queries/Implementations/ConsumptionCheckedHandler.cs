@@ -41,9 +41,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             await _meterFlowService.Update(meterFlowUpdate);
 
             MeterFlowGetDto meterflow = await _meterFlowService.Get(latestFlowId);
-            await InsertMeterFlow(MeterFlowStepEnum.ConsumptionChecked, meterflow.ZoneId, meterflow.FileName, appUser.UserId);
+            await InsertMeterFlow(MeterFlowStepEnum.ConsumptionChecked, meterflow.ZoneId, meterflow.FileName, appUser.UserId, meterflow.Description);
         }
-        private async Task InsertMeterFlow(MeterFlowStepEnum stepFlowId, int zoneId, string fileName, Guid userId)
+        private async Task InsertMeterFlow(MeterFlowStepEnum stepFlowId, int zoneId, string fileName, Guid userId, string? description)
         {
             MeterFlowCreateDto newMeterFlow = new()
             {
@@ -52,6 +52,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 FileName = fileName,
                 InsertByUserId = userId,
                 InsertDateTime = DateTime.Now,
+                Description = description
             };
             await _meterFlowService.Create(newMeterFlow);
         }

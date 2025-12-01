@@ -104,7 +104,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                     	m.FileName,
                     	m.ZoneId,
 						t51.C2 as ZoneTitle,
-                        m.InsertDateTime
+                        m.InsertDateTime,
+                        m.Description
                     From Atlas.dbo.MeterFlow m
 					Left Join Db70.dbo.T51 t51 
 						On m.ZoneId=t51.C0

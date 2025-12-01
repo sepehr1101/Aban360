@@ -108,8 +108,9 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 						m.radif as CustomerNumber,
 						m.bill_id as BillId,
 						Trim(m.bill_id) as BillId,
-						m.noe_va as BranchType,
+						m.noe_va as BranchTypeId,
 						m.cod_enshab as UsageId,
+						m.group1 as ConsumptionUsageId,
 						m.tedad_mas as DomesticUnit,
 						m.tedad_tej as CommertialUnit,
 						m.tedad_vahd as OtherUnit,
@@ -127,7 +128,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 					    TRIM(m.VillageId) as VillageId,
 						m.edareh_k as IsSpecial,
 						m.enshab as MeterDiameterId,
-						m.Khali_s as EmptyUnit
+						m.Khali_s as EmptyUnit,
+						m.serial_co as BodySerial
 					From [{dbName}].dbo.members m
 					Where 
 						m.town=@zoneId AND

@@ -169,7 +169,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                        InsertByUserId = meterReading.InsertByUserId,
                        InsertDateTime = meterReading.InsertDateTime,
 
+                       BranchTypeId=members.BranchTypeId,
                        UsageId = members.UsageId,
+                       ConsumptionUsageId= members.ConsumptionUsageId,
                        DomesticUnit = members.DomesticUnit,
                        CommercialUnit = members.CommercialUnit,
                        OtherUnit = members.OtherUnit,
@@ -187,6 +189,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                        IsSpecial = members.IsSpecial,
                        MeterDiameterId = members.MeterDiameterId,
                        VirtualCategoryId = members.VirtualCategoryId,
+                       BodySerial= members.BodySerial,
 
                        TavizCause = taviz?.TavizCause,
                        TavizDateJalali = taviz?.TavizDateJalali,

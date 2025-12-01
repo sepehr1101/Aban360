@@ -57,7 +57,9 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                 .WithColumn("RemovedByUserId").AsGuid().Nullable()
                 .WithColumn("RemovedDateTime").AsDateTime().Nullable()
 
+                .WithColumn("BranchTypeId").AsInt32().NotNullable()
                 .WithColumn("UsageId").AsInt32().NotNullable()
+                .WithColumn("ConsumptionUsageId").AsInt32().NotNullable()
                 .WithColumn("DomesticUnit").AsInt32().NotNullable()
                 .WithColumn("CommercialUnit").AsInt32().NotNullable()
                 .WithColumn("OtherUnit").AsInt32().NotNullable()
@@ -75,6 +77,7 @@ namespace Aban360.CalculationPool.Persistence.Migrations
                 .WithColumn("IsSpecial").AsBoolean().NotNullable()
                 .WithColumn("MeterDiameterId").AsInt16().NotNullable()
                 .WithColumn("VirtualCategoryId").AsInt32().NotNullable()
+                .WithColumn("BodySerial").AsString().Nullable()
 
                 .WithColumn("TavizDateJalali").AsString(_10).Nullable()
                 .WithColumn("TavizCause").AsString(_255).Nullable()

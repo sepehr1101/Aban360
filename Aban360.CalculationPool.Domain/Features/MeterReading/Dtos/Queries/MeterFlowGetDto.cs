@@ -8,5 +8,6 @@ namespace Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries
         public string FileName { get; set; }
         public int ZoneId { get; set; }
         public string InsertDateTime { get; set; }
+        public string? Description { get; set; }
     }
 }
