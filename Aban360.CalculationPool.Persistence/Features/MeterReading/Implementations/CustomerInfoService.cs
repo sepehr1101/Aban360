@@ -2,6 +2,8 @@
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Literals;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
@@ -14,6 +16,17 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         {
         }
 
+		public async Task<ZoneIdAndCustomerNumberGetDto> GetZoneIdAndCustomerNumber(string billId)
+		{
+			string query = GetZoneIdAndCustomerNumberQuery();
+			ZoneIdAndCustomerNumberGetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZoneIdAndCustomerNumberGetDto>(query, new { billId = billId });
+			if (result is null)
+			{
+				throw new InvalidBillIdException(ExceptionLiterals.BillIdNotFound);
+			}
+
+			return result;
+        }
         public async Task<CustomerInfoGetDto> Get(int zoneId, int customerNumber)
         {
             string dbName = GetDbName(zoneId);
@@ -40,6 +53,18 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 
             return new CustomersInfoGetDto(membersInfo, latestBedBesInfo, latestTavizInfo);
         }
+
+
+		private string GetZoneIdAndCustomerNumberQuery()
+		{
+			return @"Select 
+						ZoneId,
+						CustomerNumber
+					From CustomerWarehouse.dbo.Clients 
+					Where
+						ToDayJalali IS NULL AND
+						BillId=@billId";
+		}
 
         private string GetMembers(string dbName)
         {

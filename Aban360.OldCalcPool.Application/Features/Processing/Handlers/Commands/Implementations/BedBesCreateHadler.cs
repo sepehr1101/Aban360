@@ -101,7 +101,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             bedBesDto.Avarez = (decimal)inputDto.AvarezAmount;
             bedBesDto.TrackNumber = 0;//from input
             #endregion
-            await _bedBesCreateService.Create(bedBesDto);
+            await _bedBesCreateService.Create(bedBesDto,(int)bedBesDto.Town);
         }
         private double GetSumDiscount(AbBahaCalculationDetails ss)
         {

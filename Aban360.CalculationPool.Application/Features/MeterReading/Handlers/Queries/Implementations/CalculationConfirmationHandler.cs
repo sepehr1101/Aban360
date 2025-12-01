@@ -76,10 +76,13 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                     MeterImaginaryInputDto meterImaginary = GetMeterImaginary(mr);
                     AbBahaCalculationDetails abBahaCalc = await _oldTariffEngine.Handle(meterImaginary, cancellationToken);
                     BedBesCreateDto bedBes = GetBedBes(mr, abBahaCalc);
-                    KasrHaDto kasrHa = GerKasrHa(mr, abBahaCalc);
-
                     BedBesBatch.Add(bedBes);
-                    kasrHaBatch.Add(kasrHa);
+
+                    if (abBahaCalc.DiscountSum > 0)
+                    {
+                        KasrHaDto kasrHa = GerKasrHa(mr, abBahaCalc);
+                        kasrHaBatch.Add(kasrHa);
+                    }
                 }
             }
 
@@ -123,7 +126,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 CodEnshab = meterReading.UsageId,
                 Enshab = meterReading.MeterDiameterId,
                 Elat = 0,
-                Serial =0,
+                Serial = 0,
                 Ser = 0,
                 ZaribFasl = (decimal)abBahaCalc.HotSeasonAbBahaAmount,
                 Ab10 = 0,
@@ -232,7 +235,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 FileName = meterFlow.FileName,
                 InsertByUserId = appUser.UserId,
                 InsertDateTime = DateTime.Now,
-                Description=meterFlow.Description
+                Description = meterFlow.Description
             };
             await _meterFlowService.Create(newMeterFlow);
         }

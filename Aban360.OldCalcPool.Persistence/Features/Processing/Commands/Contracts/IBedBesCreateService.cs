@@ -5,7 +5,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts
 {
     public interface IBedBesCreateService
     {
-        Task Create(BedBesCreateDto input);
+        Task Create(BedBesCreateDto input, int zoneId);
         Task Create(ICollection<BedBesCreateDto> input);
         Task Create(ICollection<BedBesCreateDto> input, int zoneId);
     }

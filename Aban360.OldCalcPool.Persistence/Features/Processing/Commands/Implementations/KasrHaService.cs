@@ -18,8 +18,19 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         {
         }
 
-        public async Task Create(ICollection<KasrHaDto> input)
+        public async Task Create(KasrHaDto input, int zoneId)
         {
+            //string dbName = GetDbName(zoneId);
+            string dbName = "Atlas";
+            string query = GetCreateQuery(dbName);
+
+            await _sqlReportConnection.ExecuteAsync(query, input);
+        }
+        public async Task Create(ICollection<KasrHaDto> input)
+        {   
+            //string dbName = GetDbName((int)input.FirstOrDefault().Town);
+            string dbName = "Atlas";
+
             using (var connection = _sqlReportConnection)
             {
                 await connection.OpenAsync();
@@ -28,7 +39,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                 {
                     try
                     {
-                        await connection.ExecuteAsync(GetCreateQuery(), input, transaction: transaction);
+                        await connection.ExecuteAsync(GetCreateQuery(dbName), input, transaction: transaction);
                         transaction.Commit();
                     }
                     catch (Exception ex)
@@ -42,7 +53,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         public async Task Create(ICollection<KasrHaDto> input, int zoneId)
         {
             //var dbName=GetDbName(zoneId);   
-            var dbName="Atlas";   
+            var dbName = "Atlas";
             DataTable table = GetDataTable(input);
 
             using var connection = _sqlReportConnection;
@@ -145,9 +156,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             }
             return table;
         }
-        private string GetCreateQuery()
+        private string GetCreateQuery(string dbName)
         {
-            return @"USE [OldCalc]
+            return @$"USE [{dbName}]
                     INSERT INTO kasr_ha (
                         TOWN, Id_bedbes, radif,
                         cod_enshab, barge, pri_date, today_date,
@@ -157,7 +168,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                         baha, SH_GHABS, SH_PARD, date_bed,
                         tmp_date_bed, tmp_today_date, ted_vahd, tedad_tej,
                         ted_khane, tedad_mas, ZARIBFASL, NOE_VA,
-                        bodjeh, TrackNumber
+                        bodjeh
                     )
                     VALUES (
                         @Town, @IdBedbes, @Radif,
@@ -168,7 +179,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                         @Baha, @ShGhabs, @ShPard, @DateBed,
                         @TmpDateBed, @TmpTodayDate, @TedVahd, @TedadTej,
                         @TedKhane, @TedadMas, @ZaribFasl, @NoeVa,
-                        @Bodjeh, @TrackNumber
+                        @Bodjeh
                     );";
         }
     }
