@@ -8,6 +8,8 @@
         public float Ebt { get; set; }
         public float Ent { get; set; }
         public string? Vaj { get; set; }
+        public string? AllowedFormula { get; set; }
+        public string? DisallowedFormula { get; set; }
         public string? CalcVaj { get; set; }
         public int Cod { get; set; }
         public int Olgo { get; set; }

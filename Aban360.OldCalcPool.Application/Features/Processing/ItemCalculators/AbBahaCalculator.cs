@@ -77,8 +77,28 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 return new TariffItemResult(abBahaAmount * (double)multiplierAbBaha * villageMultiplier);
             }
 
-            //case 4: (is religious or has capacity) and is charity !
-            if ((HasCapacityAndNotConstruction(customerInfo) || IsReligious(customerInfo.UsageId)) &&
+            //case 4: domestic group and subFormula not null
+            if (IsGardenOrDwelty(customerInfo.UsageId) && SubFormaulaNotNull(nerkh))
+            {
+                double upToOlgooAmount = CalcFormulaByRate(nerkh.AllowedFormula, _olgoo, _olgoo, c, tagIds);
+                upToOlgooAmount = upToOlgooAmount * (double)multiplierAbBaha * villageMultiplier * ((double)_olgoo / monthDays * duration);                
+                abBahaAmount = abBahaFromExpression * consumptionPartialInfo.Consumption * (double)multiplierAbBaha * villageMultiplier;
+               
+                double aboveOlgoo = abBahaAmount > upToOlgooAmount ? abBahaAmount - upToOlgooAmount : 0;
+                upToOlgooAmount = abBahaAmount > upToOlgooAmount ? upToOlgooAmount : abBahaAmount;
+
+                return new TariffItemResult(upToOlgooAmount, aboveOlgoo);
+            }
+
+            //case 5: domestic group and subFormula null
+            if (IsGardenOrDwelty(customerInfo.UsageId))
+            {
+                abBahaAmount = abBahaFromExpression * consumptionPartialInfo.Consumption;
+                return new TariffItemResult(abBahaAmount * (double)multiplierAbBaha * villageMultiplier);
+            }
+
+            //case 6: (is religious or has capacity) and is charity !
+            if ((HasCapacity(customerInfo) || IsReligious(customerInfo.UsageId)) &&
                  IsCharitySchoolOrConsumptionGtCapacity(nerkh, customerInfo, consumptionPartialInfo.OlgooOrCapacityInDuration))
             {
                 (double, double) abBahaValues = (0, 0);
@@ -92,11 +112,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 double abBaha2 = abBahaValues.Item2 * (double)multiplierAbBaha;
                 return new TariffItemResult(abBaha1, abBaha2);
             }
-            
-            //case 5: allowed and disallowed are not null
 
-
-            //case 5: other
+            //case 7: other
             abBahaAmount = consumptionPartialInfo.Consumption * abBahaFromExpression * (double)multiplierAbBaha * villageMultiplier;
             return new TariffItemResult(abBahaAmount);
         }
@@ -132,9 +149,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 //        new TariffItemResult( c_1404 * 0.01 * partialOlgoo * olgoo * (double)multiplier * mullahMultiplier * villageMultiplier.Item1);
                 //}
                 double x = c_1404 * 0.01 * partialOlgoo * olgoo * (double)multiplier * mullahMultiplier * villageMultiplier.Item1;
-                double allowedDiscount = calculateAbBahaOutputDto.Allowed * mullahMultiplier * villageMultiplier.Item1;
-                double disallowedDiscount = calculateAbBahaOutputDto.Disallowed * mullahMultiplier * villageMultiplier.Item2;
-                return new TariffItemResult(allowedDiscount,disallowedDiscount);
+                double allowedDiscount = calculateAbBahaOutputDto.Allowed * mullahMultiplier * villageMultiplier.Item1;                                 
+                return new TariffItemResult(allowedDiscount);
             }
             if (IsReligiousWithCharity(customerInfo.UsageId))
             {
@@ -152,6 +168,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         }
 
         #region private methods
+        private bool SubFormaulaNotNull(NerkhGetDto nerkh)
+        {
+            return !string.IsNullOrWhiteSpace(nerkh.AllowedFormula) &&
+                   !string.IsNullOrWhiteSpace(nerkh.DisallowedFormula);
+        }
         private bool IsLessThan1403_09_13AndOvajNotZero(NerkhGetDto nerkh)
         {
             return !string.IsNullOrWhiteSpace(nerkh.OVaj) &&
@@ -180,9 +201,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             return date2.CompareTo(date_1403_06_25) <= 0;
         }
 
-        private bool HasCapacityAndNotConstruction(CustomerInfoOutputDto customerInfo)
+        private bool HasCapacity(CustomerInfoOutputDto customerInfo)
         {
-            return customerInfo.ContractualCapacity > 0 && !IsConstruction(customerInfo.BranchType);
+            return customerInfo.ContractualCapacity > 0;
         }
 
         private bool IsRuralButIsMetro(CustomerInfoOutputDto customerInfo)

@@ -19,7 +19,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
         }
 
         [HttpPost]
-        [Route("initial-calculate")]
+        [Route("initial-calculate/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<MeterReadingDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Calculate(int id, CancellationToken cancellationToken)
         {            
