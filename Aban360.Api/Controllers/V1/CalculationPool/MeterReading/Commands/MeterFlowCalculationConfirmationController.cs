@@ -19,7 +19,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
         }
 
         [HttpPost]
-        [Route("confirm")]
+        [Route("confirm/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ConfirmCalculation(int id, CancellationToken cancellationToken)
         {           

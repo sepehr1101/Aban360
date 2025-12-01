@@ -18,11 +18,11 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Queries
         }
 
         [HttpGet,HttpPost]
-        [Route("checked-list-get")]
+        [Route("checked-list-get/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCheckedDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> CheckedListGet(int latestFlowId, CancellationToken cancellationToken)
+        public async Task<IActionResult> CheckedListGet(int id, CancellationToken cancellationToken)
         {
-            ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCheckedDto> result = await _checkedListGetHandler.Handle(latestFlowId, CurrentUser, cancellationToken);
+            ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCheckedDto> result = await _checkedListGetHandler.Handle(id, CurrentUser, cancellationToken);
             return Ok(result);
         }
     }

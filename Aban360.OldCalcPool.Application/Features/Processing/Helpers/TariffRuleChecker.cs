@@ -12,6 +12,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         {
             return zoneId > 140000;
         }
+        internal static bool IsGardenOrDwelty(int usageId)
+        {
+            return CheckConditions(usageId, [ 1, 3, 25, 34]);
+        }
         internal static bool IsDomestic(int usageId)
         {
             return CheckConditions(usageId, [0, 1, 3]);
@@ -20,23 +24,23 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         {
             return CheckConditions(usageId, [0, 1, 3, 25, 34]);
         }
-        internal static  bool IsDomesticWithoutUnspecified(int usageId)
+        internal static bool IsDomesticWithoutUnspecified(int usageId)
         {
             return CheckConditions(usageId, [1, 3]);
         }
-        internal static  bool IsReligious(int usageId)
+        internal static bool IsReligious(int usageId)
         {
             return CheckConditions(usageId, [10, 12, 13, 29, 32]);
         }
-        internal static  bool IsIndustrial(int usageId)
+        internal static bool IsIndustrial(int usageId)
         {
             return CheckConditions(usageId, [4]);
         }
-        internal static  bool IsCharityOrSchool(int usageId)
+        internal static bool IsCharityOrSchool(int usageId)
         {
             return CheckConditions(usageId, [8, 7, 12, 13, 29, 30, 32]);
         }
-        internal static  bool IsHandoverDiscount(int branchTypeId)
+        internal static bool IsHandoverDiscount(int branchTypeId)
         {
             return CheckConditions(branchTypeId, [3, 6, 7]);
         }
@@ -44,7 +48,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         {
             return CheckConditions(branchTypeId, [ 6, 7]);
         }
-        internal static  bool IsReligiousWithCharity(int usageId)
+        internal static bool IsReligiousWithCharity(int usageId)
         {
             return CheckConditions(usageId, [12, 13, 29, 30, 32]);
         }
@@ -52,19 +56,19 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         {
             return CheckConditions(usageId, [12, 13, 29, 30, 32]);
         }
-        internal static  bool IsGardenAndResidence(int usageId)
+        internal static bool IsGardenAndResidence(int usageId)
         {
             return CheckConditions(usageId, [25, 34]);
         }
-        internal static  bool IsUsageConstructor(int usageId)
+        internal static bool IsUsageConstructor(int usageId)
         {
             return CheckConditions(usageId, [5, 39]);
         }
-        internal static  bool IsTankerSale(int usageId)
+        internal static bool IsTankerSale(int usageId)
         {
             return CheckConditions(usageId, [14]);
         }
-        internal static  bool IsEducationOrBath(int usageId)
+        internal static bool IsEducationOrBath(int usageId)
         {
             return CheckConditions(usageId, [7, 8, 41, 11]);
         }
@@ -80,11 +84,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         {
             return CheckConditions(branchTypeId, [3]);
         }
-        internal static  bool IsConstruction(int branchTypeId)
+        internal static bool IsConstruction(int branchTypeId)
         {
             return CheckConditions(branchTypeId, [4]);
         }
-        internal static  bool IsSpecialIndustrial(int branchTypeId)
+        internal static bool IsSpecialIndustrial(int branchTypeId)
         {
             return CheckConditions(branchTypeId, [8]);
         }
@@ -95,7 +99,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         /// <param name="zoneId"></param>
         /// <param name="villageCode"></param>
         /// <returns></returns>
-        internal static  bool RuralButIsMetro(int zoneId, int villageCode)
+        internal static bool RuralButIsMetro(int zoneId, int villageCode)
         {
             int[] village142618 = [1037, 1038, 1039];
             int[] village144311 = [1090, 1093];
