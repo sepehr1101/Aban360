@@ -13,7 +13,7 @@
 
     public sealed class ZaribCCacheService : IZaribCCacheService
     {
-        const int _expireHours = 24;
+        const int _expireDays = 30;
         private readonly IMemoryCache _cache;
         private readonly IZaribCQueryService _queryService;
         private readonly MemoryCacheEntryOptions _cacheOptions;
@@ -25,7 +25,7 @@
 
             // You can tune this as needed.
             _cacheOptions = new MemoryCacheEntryOptions()
-                .SetAbsoluteExpiration(TimeSpan.FromMinutes(_expireHours));
+                .SetAbsoluteExpiration(TimeSpan.FromDays(_expireDays));
         }
 
         public async Task<ZaribCQueryDto> GetZaribC(string from, string to)

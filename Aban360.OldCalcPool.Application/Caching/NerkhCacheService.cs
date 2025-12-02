@@ -12,7 +12,7 @@ namespace Aban360.OldCalcPool.Application.Caching
     }
     public sealed class NerkhCacheService : INerkhCacheService
     {
-        const int _expireHours= 24;
+        const int _expireDays= 30;
         private readonly IMemoryCache _cache;
         private readonly INerkhGetByConsumptionService _inner;
 
@@ -29,7 +29,7 @@ namespace Aban360.OldCalcPool.Application.Caching
 
             return await _cache.GetOrCreateAsync(key, async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(_expireHours);
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(_expireDays);
                 return await _inner.Get(input);
             });
         }
@@ -41,14 +41,14 @@ namespace Aban360.OldCalcPool.Application.Caching
 
             return await _cache.GetOrCreateAsync(key, async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(_expireHours);
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(_expireDays);
                 return await _inner.GetWithAggregatedNerkh(input);
             });
         }
 
         private string GetCacheKey(string prefix, NerkhByConsumptionInputDto input)
         {
-            return $"{prefix}_{input.ZoneId}_{input.UsageId}_{input.AverageConsumption}_{input.PreviousDateJalali}_{input.CurrentDateJalali}";
+            return $"{prefix}_{input.ZoneId}_{input.UsageId}_{(int)input.AverageConsumption}_{input.PreviousDateJalali}_{input.CurrentDateJalali}";
         }
     }
 }

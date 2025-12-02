@@ -93,8 +93,6 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
                 throw new CustomValidationException(message);
             }//
 
-
-
             LogInfo logInfo = DeviceDetection.GetLogInfo(_contextAccessor.HttpContext.Request);
             string logInfoString = JsonOperation.Marshal(logInfo);
             Guid operationGroupId = Guid.NewGuid();
@@ -108,10 +106,10 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
             _userRoleCommandService.Remove(previousRoles, logInfoString);
 
             int zoneCount = await _zoneCountQueryAddhoc.GetCount(userUpdateDto.SelectedZoneIds, cancellationToken);
-            List<string> endpointValue = await _endpointQueryService.GetAuthValue(userUpdateDto.SelectedEndpointIds);
+            List<string> endpointValue = await _endpointQueryService.GetAuthValue(userUpdateDto.SelectedEndpointIds.Distinct().ToArray());
             Validate(zoneCount, userUpdateDto.SelectedZoneIds.Count(), endpointValue.Count(), userUpdateDto.SelectedEndpointIds.Count());
 
-            ICollection<UserClaim> zones = CreateUserClaim(userUpdateDto.SelectedZoneIds.Select(x => x.ToString()).ToList(), ClaimType.ZoneId, logInfoString, operationGroupId, userUpdateDto.Id);
+            ICollection<UserClaim> zones = CreateUserClaim(userUpdateDto.SelectedZoneIds.Select(x => x.ToString()).Distinct().ToList(), ClaimType.ZoneId, logInfoString, operationGroupId, userUpdateDto.Id);
             ICollection<UserClaim> endpionts = CreateUserClaim(endpointValue, ClaimType.Endpoint, logInfoString, operationGroupId, userUpdateDto.Id);
             List<UserClaim> userCliams = zones.Union(endpionts).ToList();
 

@@ -54,11 +54,9 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
         {
             return await 
                 _query
-                .Include(user=>user.UserRoles)
+                .Include(user=>user.UserRoles.Where(userRole=> userRole.ValidTo == null))
                 .ThenInclude(userRole=>userRole.Role)
-                .Include(user=>user.UserClaims)
-                .Where(user=> user.UserClaims.Any(userClaim=>userClaim.ValidTo == null))
-                .Where(user => user.UserRoles.Any(userRole => userRole.ValidTo == null))
+                .Include(user=>user.UserClaims.Where(userClaim=>userClaim.ValidTo==null))
                 .SingleAsync(user=>user.Id==userId);
         }
 
