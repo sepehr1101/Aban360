@@ -64,7 +64,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Dashboard
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<TileScriptReportDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> report(int id, CancellationToken cancellationToken)
         {
-            IEnumerable<TileScriptReportDto> result = await _reportHandler.Handle(id, null, cancellationToken);
+            IEnumerable<TileScriptReportDto> result = await _reportHandler.Handle(id, CurrentUser, cancellationToken);
             return Ok(result);
         }
 

@@ -22,16 +22,16 @@ namespace Aban360.Common.Extensions
             for (int i = 0; i < sheetCount + 1; i++)
             {
                 var sheetData = tData.Skip(i * maxDataCount).Take(maxDataCount).ToList();
-                excelfile[ExceptionLiterals.Page(i + 1)] = TranslateData(sheetData,excludedProperties);
+                excelfile[ExceptionLiterals.Page(i + 1)] = TranslateData(sheetData, excludedProperties);
             }
 
-                string path = GetPath(reportName);
-                try
-                {
-                    await MiniExcel.SaveAsAsync(path, excelfile);
+            string path = GetPath(reportName);
+            try
+            {
+                await MiniExcel.SaveAsAsync(path, excelfile);
 
-                    return path;
-                }
+                return path;
+            }
             catch (Exception e)
             {
                 throw e;
@@ -83,8 +83,8 @@ namespace Aban360.Common.Extensions
             if (!enumerator.MoveNext()) return result;
 
             var first = enumerator.Current;
-            string[]? excludedProps=excludedProperties ?? Array.Empty<string>();
-            var props = GetOrderedProperties(first).Where(p=>!excludedProps.Contains(p.Name)).ToList();
+            string[]? excludedProps = excludedProperties ?? Array.Empty<string>();
+            var props = GetOrderedProperties(first).Where(p => !excludedProps.Contains(p.Name)).ToList();
             var persianProp = GetPersianProperty();
             do
             {
