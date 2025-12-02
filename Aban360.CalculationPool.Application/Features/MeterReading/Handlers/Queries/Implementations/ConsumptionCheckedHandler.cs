@@ -13,8 +13,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
         private readonly IMeterReadingDetailService _meterReadingDetailService;
         private readonly IMeterFlowService _meterFlowService;
-        private const int _domesticConsumptionExpirePercent = 30;
-        private const int _nonDomesticConsumptionExpirePercent = 30;
         public ConsumptionCheckedHandler(
             IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
             IMeterReadingDetailService meterReadingDetailService,
@@ -32,7 +30,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 
         public async Task Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await _meterFlowValidationGetHandler.Handle(latestFlowId, cancellationToken);
+            await _meterFlowValidationGetHandler.Handle(latestFlowId,MeterFlowStepEnum.Calculated, cancellationToken);
             await CreateConsumpitonCheckedFlow(latestFlowId, appUser);
         }
         private async Task CreateConsumpitonCheckedFlow(int latestFlowId, IAppUser appUser)
