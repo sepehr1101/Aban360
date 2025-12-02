@@ -27,7 +27,7 @@
         public static string CurrentDateNotMoreThanPreviousDate => "تاریخ دوره قبلی نمیتوان از تاریخ دوره جاری بزرگ تر باشد";
         public static string CurrentNumberNotMoreThanPreviousNumber => "رقم دوره قبلی نمیتوان از رقم دوره جاری بزرگ تر باشد";
         public static string BillIdNotFound => "شناسه قبض یافت نشد!";
-        public static string InvalidBillId => "شناسه معتبر نیست!";
+        public static string InvalidBillId => "شناسه قبض معتبر نیست!";
         public static string InvalidDate => "تاریخ ناصحیح";
         public static string InvalidFromDate => "تاریخ شروع ناصحیح";
         public static string InvalidToDate => "تاریخ پایان ناصحیح";
@@ -55,7 +55,7 @@
 
         public static string IncalculableWithCounterStateCode => $"محاسبه قبض با این وضعیت کنتور امکان پذیر نیست";
         public static string ConfilictBetweenCounterNumberAndCounteState => $"رقم کنتور با وضعیت کنتور مغایرت دارد";
-
+        public static string InvalidId => "شناسه نامعتبر است.";
         public static string MessageException(string message) => $"خطا : {message}";
 
 
@@ -78,6 +78,7 @@
         //Reading
         public static string InvalidDuplicateFileName(string date) => $"نام فایل تکراری است. این فایل در تاریخ {date} ارسال شده";
         public static string InvalidDuplicateStepFlow(string date) => $"این مرحله در تاریخ {date} سپری شده است وامکان انجام مجدد آن وجود ندارد. ";
+        public static string NonAccessStepFlow => "به این مرحله دسترسی ندارید.";
         public static string InvalidFlowStep => "خطا در شناسه روند. ";
         public static string FlowStepNotFound => "شناسه روند یافت نشد";
     }

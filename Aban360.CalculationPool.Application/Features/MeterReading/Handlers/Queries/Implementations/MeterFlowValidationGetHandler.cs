@@ -28,5 +28,20 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 throw new ReadingException(ExceptionLiterals.InvalidDuplicateStepFlow(insertDateJalali));
             }
         }
+        public async Task Handle(int id, MeterFlowStepEnum latestFlowId , CancellationToken cancellationToken)
+        {
+            MeterFlowValidationDto? meterFlowData=await _meterFlowService.GetMeterFlowValidation(id);
+            if (meterFlowData is not null && 
+                ((meterFlowData.RemovedDateTime is not null) ||
+                 (meterFlowData.RemovedDateTime is null && meterFlowData.MeterFlowStepId==MeterFlowStepEnum.CalculationConfirmed)))
+            {
+                string insertDateJalali = ConvertDate.GregorianToJalali(meterFlowData.InsertDateTime);
+                throw new ReadingException(ExceptionLiterals.InvalidDuplicateStepFlow(insertDateJalali));
+            }
+            if (meterFlowData.MeterFlowStepId != latestFlowId)
+            {
+                throw new ReadingException(ExceptionLiterals.NonAccessStepFlow);
+            }
+        }
     }
 }
