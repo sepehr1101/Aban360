@@ -1,5 +1,4 @@
 ﻿using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
-using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffDateOperations;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.VirtualCapacityCalculator;
@@ -9,9 +8,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IHotSeasonCalculator
     {
-        TariffItemResult CalcFazelab(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double fazelabAmount, double monthlyConsumption, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo);
-        TariffItemResult CalculateAb(NerkhGetDto nerkh, double abBahaAmount, CustomerInfoOutputDto customerInfo, double monthlyConsumption, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo);
-        TariffItemResult CalculateDiscount(NerkhGetDto nerkh, double amountDiscount, TariffItemResult hotSeasonInfo, CustomerInfoOutputDto customerInfo, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo);
+        TariffItemResult CalcFazelab(CustomerInfoOutputDto customerInfo, double fazelabAmount, double monthlyConsumption, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo);
+        TariffItemResult CalculateAb(double abBahaAmount, CustomerInfoOutputDto customerInfo, double monthlyConsumption, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo);
+        TariffItemResult CalculateDiscount(double amountDiscount, TariffItemResult hotSeasonInfo, CustomerInfoOutputDto customerInfo, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo);
     }
 
     internal sealed class HotSeasonCalculator : IHotSeasonCalculator
@@ -20,17 +19,17 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const string date_06_31 = "/06/31";
         const double _hotSeasonRate = 0.2;
         const int _firstSewageCalculation = 1;
-        public TariffItemResult CalculateAb(NerkhGetDto nerkh, double abBahaAmount, CustomerInfoOutputDto customerInfo, double monthlyConsumption, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo)
+        public TariffItemResult CalculateAb(double abBahaAmount, CustomerInfoOutputDto customerInfo, double monthlyConsumption, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo)
         {           
             if (IsDomesticBelow25MeterConsumption(customerInfo, monthlyConsumption) &&
                 !IsConstruction(customerInfo.BranchType))
             {
                 return new TariffItemResult();
             }
-            return GetDurationAndAmount(nerkh.Date1, nerkh.Date2, nerkh.Duration, customerInfo, abBahaAmount, calcResult);
+            return GetDurationAndAmount(consumptionPartialInfo.StartDateJalali, consumptionPartialInfo.EndDateJalali, consumptionPartialInfo.Duration, customerInfo, abBahaAmount, calcResult);
         }
 
-        public TariffItemResult CalcFazelab(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double fazelabAmount, double monthlyConsumption, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo)
+        public TariffItemResult CalcFazelab(CustomerInfoOutputDto customerInfo, double fazelabAmount, double monthlyConsumption, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo)
         {
             if (IsDomesticBelow25MeterConsumption(customerInfo, monthlyConsumption))
             {
@@ -54,7 +53,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             return GetDurationAndAmount(consumptionPartialInfo.StartDateJalali, consumptionPartialInfo.EndDateJalali, consumptionPartialInfo.Duration, customerInfo, fazelabAmount, calcResult, true, fazelabMultiplier);         
         }
 
-        public TariffItemResult CalculateDiscount(NerkhGetDto nerkh, double amountDiscount, TariffItemResult hotSeasonInfo, CustomerInfoOutputDto customerInfo, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo)
+        public TariffItemResult CalculateDiscount(double amountDiscount, TariffItemResult hotSeasonInfo, CustomerInfoOutputDto customerInfo, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo)
         {
             if (amountDiscount == 0)
             {

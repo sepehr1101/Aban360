@@ -3,7 +3,7 @@
     public record NerkhGetDto
     {
         public int Id { get; set; }
-        public string? Date1 { get; set; }
+        public string? Date1 { get; set;}
         public string? Date2 { get; set; }
         public float Ebt { get; set; }
         public float Ent { get; set; }

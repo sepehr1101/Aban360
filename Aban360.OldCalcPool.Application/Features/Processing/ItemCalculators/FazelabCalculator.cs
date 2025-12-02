@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using static Aban360.Common.Timing.CalculationDistanceDate;
@@ -11,7 +12,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     internal interface IFazelabCalculator
     {
         TariffItemResult Calculate(string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman);
-        TariffItemResult CalculateDiscount(double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh);
+        TariffItemResult CalculateDiscount(double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo);
     }
 
     internal sealed class FazelabCalculator : IFazelabCalculator
@@ -76,7 +77,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             }
             return new TariffItemResult(sewageAmount);
         }
-        public TariffItemResult CalculateDiscount(double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh)
+        public TariffItemResult CalculateDiscount(double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo)
         {
             if (abBahaDiscount <= 0)
             {
@@ -91,7 +92,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 return new TariffItemResult();
             }
             double fazelabDiscount = abBahaDiscount * GetMultiplier(false,customerInfo.UsageId);
-            double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, nerkh.PartialConsumption, nerkh.Duration, fazelabDiscount);
+            double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, consumptionPartialInfo.Consumption, consumptionPartialInfo.Duration, fazelabDiscount);
             double finalDiscount= virtualDiscount > 0 ? virtualDiscount : fazelabDiscount;//fazelabAmount
             return new TariffItemResult(finalDiscount);
         }
