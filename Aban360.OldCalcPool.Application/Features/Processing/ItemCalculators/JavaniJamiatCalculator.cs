@@ -1,4 +1,5 @@
-﻿using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+﻿using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
 
@@ -6,13 +7,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IJavaniJamiatCalculator
     {
-        TariffItemResult Calculate(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double abBahaAmount, double monthlyConsumption, int olgoo);
+        TariffItemResult Calculate(ConsumptionPartialInfo consumptionPartialInfo, CustomerInfoOutputDto customerInfo, double abBahaAmount, double monthlyConsumption, int olgoo);
         TariffItemResult CalculateDiscount();
     }
 
     internal sealed class JavaniJamiatCalculator : IJavaniJamiatCalculator
     {
-        public TariffItemResult Calculate(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, double abBahaAmount, double monthlyConsumption, int olgoo)
+        public TariffItemResult Calculate(ConsumptionPartialInfo consumptionPartialInfo, CustomerInfoOutputDto customerInfo, double abBahaAmount, double monthlyConsumption, int olgoo)
         {
             //L 2608
             if (IsUsageConstructor(customerInfo.UsageId))
@@ -51,7 +52,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                     domesticUnit > 1 &&
                     RuralButIsMetro(customerInfo.ZoneId, villageCode))
                 {
-                    return new TariffItemResult(baseAmount * nerkh.PartialConsumption);
+                    return new TariffItemResult(baseAmount * consumptionPartialInfo.Consumption);
                 }
                 else
                 {
@@ -63,13 +64,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 domesticUnit >= 1 &&
                 (IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId)))
             {
-                return new TariffItemResult(baseAmount * nerkh.PartialConsumption);
+                return new TariffItemResult(baseAmount * consumptionPartialInfo.Consumption);
             }
             if (!IsDomesticWithoutUnspecified(customerInfo.UsageId) && !IsGardenAndResidence(customerInfo.UsageId))
             {
                 if (monthlyConsumption > customerInfo.ContractualCapacity)
                 {
-                    return new TariffItemResult(baseAmount * nerkh.PartialConsumption);
+                    return new TariffItemResult(baseAmount * consumptionPartialInfo.Consumption);
                 }
             }
             return new TariffItemResult();
