@@ -68,7 +68,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Dashboard
             return Ok(result);
         }
 
-        [HttpPut]
+        [HttpPut,HttpPost]
         [Route("update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<TileScriptDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] TileScriptDto dto, CancellationToken cancellationToken)
