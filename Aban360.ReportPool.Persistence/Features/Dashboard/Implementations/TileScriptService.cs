@@ -45,24 +45,29 @@ namespace Aban360.ReportPool.Persistence.Features.Dashboard.Implementations
 
         public async Task<IEnumerable<TileScriptReportDto>> GetContent(string content)
         {
-            IEnumerable<TileScriptReportDto>? report=await _sqlReportConnection.QueryAsync<TileScriptReportDto>(content,null);
-            
+            IEnumerable<TileScriptReportDto>? report = await _sqlReportConnection.QueryAsync<TileScriptReportDto>(content, null);
+
             return report;
         }
-        public async Task<IEnumerable<TileScriptReportDto>> GetContent(string content,string? fromDate)
+        public async Task<IEnumerable<TileScriptReportDto>> GetContent(string content, string? fromDate)
         {
             var @params = new
-            { 
-                fromDate= fromDate,
-                toDate=DateTime.Now.ToShortPersianDateString()
+            {
+                fromDate = fromDate,
+                toDate = DateTime.Now.ToShortPersianDateString()
             };
-            IEnumerable<TileScriptReportDto>? report=await _sqlReportConnection.QueryAsync<TileScriptReportDto>(content,@params);
-            
+            IEnumerable<TileScriptReportDto>? report = await _sqlReportConnection.QueryAsync<TileScriptReportDto>(content, @params);
+
+            return report;
+        }
+        public async Task<IEnumerable<TileScriptReportDto>> GetContent(string content, TileScriptContentReportInputDto input)
+        {
+            IEnumerable<TileScriptReportDto>? report = await _sqlReportConnection.QueryAsync<TileScriptReportDto>(content, input);
+
             return report;
         }
 
-        
-        
+
         public async Task<IEnumerable<TileScript>> GetAll()
         {
             string Sql()

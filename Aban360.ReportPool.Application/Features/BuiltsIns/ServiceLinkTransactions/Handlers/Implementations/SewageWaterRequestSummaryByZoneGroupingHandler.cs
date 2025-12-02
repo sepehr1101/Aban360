@@ -59,7 +59,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                     },
                     g.Select(v => new SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto
                     {
-                        ItemTitle = v.ZoneTitle,
+                        ItemTitle = v.ItemTitle,
                         CustomerCount = v.CustomerCount,
                         TotalUnit = v.TotalUnit,
                         UnSpecified = v.UnSpecified,
