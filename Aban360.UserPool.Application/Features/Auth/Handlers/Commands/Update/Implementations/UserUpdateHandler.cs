@@ -93,8 +93,6 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
                 throw new CustomValidationException(message);
             }//
 
-
-
             LogInfo logInfo = DeviceDetection.GetLogInfo(_contextAccessor.HttpContext.Request);
             string logInfoString = JsonOperation.Marshal(logInfo);
             Guid operationGroupId = Guid.NewGuid();
