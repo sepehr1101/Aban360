@@ -12,7 +12,7 @@
 
     public sealed class Table1CacheService : ITable1CacheService
     {
-        const int _expireHours = 24;
+        const int _expireDays = 30;
         private readonly IMemoryCache _cache;
         private readonly ITable1GetService _table1GetService;
         private readonly MemoryCacheEntryOptions _cacheOptions;
@@ -24,7 +24,7 @@
 
             // Configure default cache lifetime
             _cacheOptions = new MemoryCacheEntryOptions()
-                .SetAbsoluteExpiration(TimeSpan.FromHours(_expireHours));
+                .SetAbsoluteExpiration(TimeSpan.FromDays(_expireDays));
         }
 
         public async Task<Table1GetDto> Get(int id)
