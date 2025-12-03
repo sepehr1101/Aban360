@@ -9,7 +9,7 @@ namespace Aban360.Common.Db.QueryServices
     public interface ICommonZoneService
     {
         Task<IEnumerable<NumericDictionary>> GetIdTitle(IAppUser appUser);
-        Task<IEnumerable<int>> Get(IAppUser appUser);
+        Task<IEnumerable<int>> GetMyZoneIds(IAppUser appUser);
     }
     public sealed class CommonZoneService : AbstractBaseConnection, ICommonZoneService
     {
@@ -18,7 +18,7 @@ namespace Aban360.Common.Db.QueryServices
         {
         }
 
-        public async Task<IEnumerable<int>> Get(IAppUser appUser)
+        public async Task<IEnumerable<int>> GetMyZoneIds(IAppUser appUser)
         {
             string query = GetIdQuery();
             IEnumerable<int> result = await _sqlConnection.QueryAsync<int>(query, new { userId = appUser.UserId });

@@ -137,14 +137,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 IsDomesticWithoutUnspecified(customerInfo.UsageId))
             {               
                 double mullahMultiplier = IsMullah(customerInfo.BranchType) ? 0.5 : 1;
-                (double, double) villageMultiplier = (!IsMullah(customerInfo.BranchType) && isVillageCalculation && IsDomestic(customerInfo.UsageId)) ? (0.5, 0.35) : (1, 1);               
-                double x = c_1404 * 0.01 * partialOlgoo * olgoo * (double)multiplier * mullahMultiplier * villageMultiplier.Item1;
+                (double, double) villageMultiplier = (!IsMullah(customerInfo.BranchType) && isVillageCalculation && IsDomestic(customerInfo.UsageId)) ? (0.5, 0.35) : (1, 1);                               
                 double allowedDiscount = calculateAbBahaOutputDto.Allowed * mullahMultiplier * villageMultiplier.Item1;                                 
                 return new TariffItemResult(allowedDiscount);
             }
             if (IsReligiousWithCharity(customerInfo.UsageId))
-            {               
-                double x = c_1404 * 0.1 * partialOlgoo * olgoo * (double)multiplier;
+            {   
                 return new TariffItemResult(calculateAbBahaOutputDto.Allowed);
             }            
             double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, consumptionPartialInfo.Consumption, consumptionPartialInfo.Duration, calculateAbBahaOutputDto.Summation);

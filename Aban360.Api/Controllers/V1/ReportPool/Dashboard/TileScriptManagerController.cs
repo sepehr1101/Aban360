@@ -32,7 +32,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Dashboard
             _reportHandler = reportHandler;
         }
 
-        [HttpPost]
+        [HttpPut,HttpPost]
         [Route("create")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<TileScriptDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] TileScriptDto dto, CancellationToken cancellationToken)
@@ -68,7 +68,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Dashboard
             return Ok(result);
         }
 
-        [HttpPut]
+        [HttpPatch, HttpPost]
         [Route("update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<TileScriptDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] TileScriptDto dto, CancellationToken cancellationToken)

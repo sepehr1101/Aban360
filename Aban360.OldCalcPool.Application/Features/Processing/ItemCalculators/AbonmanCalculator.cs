@@ -8,7 +8,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     internal interface IAbonmanCalculator
     {
         TariffItemResult CalculateAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali);
-        double CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo);
+        TariffItemResult CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo);
     }
 
     internal sealed class AbonmanCalculator : IAbonmanCalculator
@@ -92,25 +92,27 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             return new TariffItemResult(abonAbAmount);
         }
 
-        public double CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo)
+        public TariffItemResult CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo)
         {
             if (IsSpecialEducation(usageId, isSpecial))
             {
-                return 0;
+                return new TariffItemResult();
             }
             if (IsConstruction(branchTypeId))
             {
-                return 0;
+                return new TariffItemResult();
             }
             if (IsUnderSocialService(branchTypeId))
             {
-                return abonmanAmount;
+                return new TariffItemResult(abonmanAmount);
             }
             if (IsReligiousWithCharity(usageId))
             {
-                return consumptionInfo.MonthlyAverageConsumption <= customerInfo.ContractualCapacity ? abonmanAmount : 0;
+                return consumptionInfo.MonthlyAverageConsumption <= customerInfo.ContractualCapacity ? 
+                    new TariffItemResult(abonmanAmount) : new TariffItemResult();
             }
-            return bahaDiscountAmount > 0 && !IsReligiousWithCharity(usageId) ? abonmanAmount : 0;
+            return bahaDiscountAmount > 0 && !IsReligiousWithCharity(usageId) ? 
+                new TariffItemResult(abonmanAmount) : new TariffItemResult();
         }
     }
 }
