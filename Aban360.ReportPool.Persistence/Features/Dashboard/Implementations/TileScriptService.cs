@@ -53,7 +53,7 @@ namespace Aban360.ReportPool.Persistence.Features.Dashboard.Implementations
         {
             var @params = new
             {
-                fromDate = fromDate,
+                fromDate,
                 toDate = DateTime.Now.ToShortPersianDateString()
             };
             IEnumerable<TileScriptReportDto>? report = await _sqlReportConnection.QueryAsync<TileScriptReportDto>(content, @params);
@@ -63,7 +63,6 @@ namespace Aban360.ReportPool.Persistence.Features.Dashboard.Implementations
         public async Task<IEnumerable<TileScriptReportDto>> GetContent(string content, TileScriptContentReportInputDto input)
         {
             IEnumerable<TileScriptReportDto>? report = await _sqlReportConnection.QueryAsync<TileScriptReportDto>(content, input);
-
             return report;
         }
 
