@@ -12,7 +12,6 @@ using Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts;
 using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
-using System.Threading;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Implementations
 {
@@ -81,6 +80,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
 
             ICollection<UserClaim> zones = CreateUserClaim(userCreateDto.SelectedZoneIds.Select(x=>x.ToString()).ToList(), ClaimType.ZoneId, logInfoString, operationGroupId, operationGroupId);
             ICollection<UserClaim> endpionts = CreateUserClaim(endpointValue,ClaimType.Endpoint, logInfoString, operationGroupId, operationGroupId);
+            ICollection<UserClaim> defaultZoneId = CreateUserClaim(new List<string> { userCreateDto.SelectedZoneIds.Select(x => x.ToString()).First() }, ClaimType.DefaultZoneId, logInfoString, operationGroupId, operationGroupId);
             List<UserClaim> userCliams = zones.Union(endpionts).ToList();
 
             ICollection<UserRole> userRoles = CreateUserRoles(userCreateDto.SelectedRoleIds, logInfoString, operationGroupId, operationGroupId);
@@ -88,7 +88,6 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
             user.Id = operationGroupId;
             user.InsertLogInfo = logInfoString;
             user.Password = await SecurityOperations.GetSha512Hash(userCreateDto.Password);
-            //user.ValidFrom = DateTime.Now;
             await _userCommandService.Add(user);
             await _userClaimCommandService.Add(userCliams);
             await _userRoleCommandService.Add(userRoles);

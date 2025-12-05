@@ -14,6 +14,8 @@ namespace Aban360.Api.Controllers.V1
     }
     public class ZoneTest
     {
-        public ICollection<int>? ZoneIds { get; set; }
+        //public ICollection<int>? ZoneIds { get; set; }
+        public ICollection<int>? SelectedZoneIds { get; set; }
+        public ICollection<int>? CategoryIds { get; set; }
     }
 }

@@ -8,7 +8,6 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Filters;
     using System.Net;
-    using System.Reflection;
 
     public class ZoneAuthorizationFilter : IAsyncActionFilter
     {
@@ -98,54 +97,40 @@
 
             var type = obj.GetType();
 
-            // Handle arrays/lists directly
-            if (obj is IEnumerable<int> directList)
+            // Iterate over properties
+            foreach (var prop in type.GetProperties())
             {
-                result.AddRange(directList);
-                return;
-            }
+                var name = prop.Name;
 
-            // Iterate properties
-            foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
-            {
-                var name = prop.Name.ToLower();
+                // Only properties that actually contain "ZoneId"
+                var isZoneProperty = name.Contains("zoneId", StringComparison.OrdinalIgnoreCase);
+
+                if (!isZoneProperty)
+                    continue;
+
                 var value = prop.GetValue(obj);
-
                 if (value == null)
                     continue;
 
-                // ZoneId -> int
-                if (name == "zoneid")
+                // single scalar zoneId
+                if (value is int single)
                 {
-                    if (int.TryParse(value.ToString(), out var parsed))
-                        result.Add(parsed);
+                    result.Add(single);
+                    continue;
                 }
 
-                // ZoneIds -> list of int
-                if (name == "zoneids")
+                // list of zoneIds
+                if (value is IEnumerable<int> enumerable)
                 {
-                    if (value is IEnumerable<int> list)
-                    {
-                        result.AddRange(list);
-                    }
-                    else if (value is string s)
-                    {
-                        foreach (var part in s.Split(',', StringSplitOptions.RemoveEmptyEntries))
-                            if (int.TryParse(part, out var parsed))
-                                result.Add(parsed);
-                    }
+                    result.AddRange(enumerable);
+                    continue;
                 }
 
-                // Recursively inspect complex nested objects
-                if (!prop.PropertyType.IsPrimitive &&
-                    prop.PropertyType != typeof(string) &&
-                    !prop.PropertyType.IsEnum &&
-                    !prop.PropertyType.IsValueType)
-                {
-                    ExtractZoneIdsFromObject(value, result);
-                }
+                // nested object (recursive)
+                ExtractZoneIdsFromObject(value, result);
             }
         }
+
         private ApiResponseEnvelope<object> CreateEnvelope()
         {
             ApiResponseEnvelope<object> envelope = new(
