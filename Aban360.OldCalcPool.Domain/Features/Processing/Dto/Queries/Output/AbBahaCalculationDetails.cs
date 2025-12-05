@@ -1,6 +1,5 @@
 ﻿using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
-using System.ComponentModel;
 
 namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
 {

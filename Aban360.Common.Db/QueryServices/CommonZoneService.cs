@@ -9,7 +9,8 @@ namespace Aban360.Common.Db.QueryServices
     public interface ICommonZoneService
     {
         Task<IEnumerable<NumericDictionary>> GetIdTitle(IAppUser appUser);
-        Task<IEnumerable<int>> Get(IAppUser appUser);
+        Task<IEnumerable<int>> GetMyZoneIds(IAppUser appUser);
+        Task<NumericDictionary> GetDefault(IAppUser appUser);
     }
     public sealed class CommonZoneService : AbstractBaseConnection, ICommonZoneService
     {
@@ -18,7 +19,7 @@ namespace Aban360.Common.Db.QueryServices
         {
         }
 
-        public async Task<IEnumerable<int>> Get(IAppUser appUser)
+        public async Task<IEnumerable<int>> GetMyZoneIds(IAppUser appUser)
         {
             string query = GetIdQuery();
             IEnumerable<int> result = await _sqlConnection.QueryAsync<int>(query, new { userId = appUser.UserId });
@@ -32,6 +33,16 @@ namespace Aban360.Common.Db.QueryServices
 
             return result;
         }
+        public async Task<NumericDictionary> GetDefault(IAppUser appUser)
+        {
+            string query = GetUserDefaultZoneQuery();
+            NumericDictionary? result = await _sqlConnection.QueryFirstOrDefaultAsync<NumericDictionary>(query, new { userId = appUser.UserId });
+            if(result is null)
+            {
+                return new NumericDictionary();
+            }
+            return result;
+        }
 
         private string GetIdQuery()
         {
@@ -39,7 +50,8 @@ namespace Aban360.Common.Db.QueryServices
                     From Aban360.UserPool.userClaim
                     where 
                     	UserId=@userId AND
-                    	ClaimTypeId=4";
+                    	ClaimTypeId=4 AND
+                        ValidTo IS NULL";
         }
         private string GetIdTitleQuery()
         {
@@ -51,7 +63,21 @@ namespace Aban360.Common.Db.QueryServices
                     	On uc.ClaimValue=z.Id
                     where 
                     	uc.UserId=@userId AND
-                    	uc.ClaimTypeId=4";
+                    	uc.ClaimTypeId=4 AND
+                        uc.ValidTo IS NULL";
+        }
+        private string GetUserDefaultZoneQuery()
+        {
+            return @"Select TOP 1
+                    	uc.ClaimValue as Id,
+                    	z.Title
+                    From Aban360.UserPool.userClaim uc
+                    Left Join Aban360.LocationPool.Zone z
+                    	On uc.ClaimValue=z.Id
+                    where 
+                    	uc.UserId=@userId AND
+                    	uc.ClaimTypeId=5 AND
+                        uc.ValidTo Is NULL";
         }
     }
 }

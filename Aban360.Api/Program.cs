@@ -1,5 +1,6 @@
 using Aban360.Api.ExceptionHandlers;
 using Aban360.Api.Extensions;
+using Aban360.Api.Filters;
 using Aban360.Api.Hubs.Implementations;
 using Microsoft.Extensions.FileProviders;
 
@@ -10,7 +11,9 @@ var configuration = builder.Configuration;
 //DI
 builder.Services.AddDI();
 builder.Services.AddAuth(configuration);
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+    options.Filters.Add<ZoneAuthorizationFilter>()
+);
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -22,7 +25,6 @@ builder.AddHangfire();
 
 builder.Services.AddMvc();
 builder.Services.AddRazorPages();
-
 
 builder.Services.AddCustomCors();
 builder.Services.AddCustomOptions(configuration);

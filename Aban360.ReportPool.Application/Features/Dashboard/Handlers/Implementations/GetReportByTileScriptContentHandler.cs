@@ -38,7 +38,7 @@ namespace Aban360.ReportPool.Application.Features.Dashboard.Handlers.Implementat
             TileScript tileScript = await _tileScriptService.GetById(id);
             if (tileScript != null && tileScript.Content != null)
             {
-                IEnumerable<int> zoneIds = await _commonZoneService.Get(appUser);
+                IEnumerable<int> zoneIds = await _commonZoneService.GetMyZoneIds(appUser);
                 TileScriptContentReportInputDto tileScriptContentInput = new(zoneIds, DateTime.Now.ToShortPersianDateString(), null, null);
                 IEnumerable<TileScriptReportDto> report = await _tileScriptService.GetContent(tileScript.Content, tileScriptContentInput);
                 return report;

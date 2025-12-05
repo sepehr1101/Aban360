@@ -33,13 +33,13 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Queries
             ICollection<ZoneGetDto> zone = await _zoneGetAllHandler.Handle(cancellationToken);
             return Ok(zone);
         }
-        
+
         [HttpGet, HttpPost]
         [Route("all")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<UserZoneIdsOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllPrinciple(CancellationToken cancellationToken)
         {
-            ICollection<UserZoneIdsOutputDto> zone =(await _zoneAllHandler.Handle(cancellationToken)).ToList();
+            ICollection<UserZoneIdsOutputDto> zone = await _zoneAllHandler.Handle(CurrentUser, cancellationToken);
             return Ok(zone);
         }
     }

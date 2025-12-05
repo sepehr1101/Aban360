@@ -53,7 +53,7 @@ namespace Aban360.Api.Controllers.V1
         {
             message = message ?? MessageResources.UnathorizedResource;
             var envelope = new ApiResponseEnvelope<object>((int)HttpStatusCode.Unauthorized, null, null, new List<ApiError> { new ApiError(message) });
-            return BadRequest(envelope);
+            return Unauthorized(envelope);
         }
 
         public IAppUser CurrentUser

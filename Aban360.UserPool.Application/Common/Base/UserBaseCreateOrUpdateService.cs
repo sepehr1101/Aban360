@@ -40,7 +40,6 @@ namespace Aban360.UserPool.Application.Common.Base
                     RoleId = roleId,
                     InsertGroupId = operationGroupId,
                     InsertLogInfo = logInfoString,
-                    //ValidFrom = DateTime.Now,
                     ValidTo = null,
                     UserId = userId
                 };
