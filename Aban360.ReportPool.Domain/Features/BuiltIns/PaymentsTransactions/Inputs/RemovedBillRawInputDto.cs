@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs
 {
-    public record RemovedBillInputDto
+    public record RemovedBillRawInputDto
     {
         public string? FromDateJalali { get; set; } 
         public string? ToDateJalali { get; set; } 

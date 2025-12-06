@@ -17,10 +17,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
     internal sealed class RemovedBillSummaryByZoneGroupedHandler : IRemovedBillSummaryByZoneGroupedHandler
     {
         private readonly IRemovedBillSummaryByZoneQueryService _removedBillQueryService;
-        private readonly IValidator<RemovedBillInputDto> _validator;
+        private readonly IValidator<RemovedBillRawInputDto> _validator;
         public RemovedBillSummaryByZoneGroupedHandler(
             IRemovedBillSummaryByZoneQueryService removedBillQueryService,
-            IValidator<RemovedBillInputDto> validator)
+            IValidator<RemovedBillRawInputDto> validator)
         {
             _removedBillQueryService = removedBillQueryService;
             _removedBillQueryService.NotNull(nameof(removedBillQueryService));
@@ -29,7 +29,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<RemovedBillHeaderOutputDto, ReportOutput<RemovedBillSummaryDataOutputDto, RemovedBillSummaryDataOutputDto>>> Handle(RemovedBillInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<RemovedBillHeaderOutputDto, ReportOutput<RemovedBillSummaryDataOutputDto, RemovedBillSummaryDataOutputDto>>> Handle(RemovedBillRawInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -59,7 +59,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
 
             return finalData;
         }
-        public async Task<ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto>> HandleFlat(RemovedBillInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto>> HandleFlat(RemovedBillRawInputDto input, CancellationToken cancellationToken)
         {
             ReportOutput<RemovedBillHeaderOutputDto, ReportOutput<RemovedBillSummaryDataOutputDto, RemovedBillSummaryDataOutputDto>> result = await Handle(input, cancellationToken);
 

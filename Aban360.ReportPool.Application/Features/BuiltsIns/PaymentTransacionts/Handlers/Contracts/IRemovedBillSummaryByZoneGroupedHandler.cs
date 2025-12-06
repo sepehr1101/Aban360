@@ -7,8 +7,8 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
 {
     public interface IRemovedBillSummaryByZoneGroupedHandler
     {
-        Task<ReportOutput<RemovedBillHeaderOutputDto, ReportOutput<RemovedBillSummaryDataOutputDto, RemovedBillSummaryDataOutputDto>>> Handle(RemovedBillInputDto input, CancellationToken cancellationToken);
-        Task<ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto>> HandleFlat(RemovedBillInputDto input,  CancellationToken cancellationToken);
+        Task<ReportOutput<RemovedBillHeaderOutputDto, ReportOutput<RemovedBillSummaryDataOutputDto, RemovedBillSummaryDataOutputDto>>> Handle(RemovedBillRawInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto>> HandleFlat(RemovedBillRawInputDto input,  CancellationToken cancellationToken);
 
 
     }

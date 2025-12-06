@@ -18,11 +18,11 @@ namespace Aban360.OldCalcPool.Application.Features.SaveReading
     internal sealed class WaterCalculationSaveHandler : IWaterCalculationSaveHandler
     {
         private readonly IOldTariffEngine _processing;
-        private readonly IBedBesCreateService _bedBesCreateService;
+        private readonly IBedBesCommandService _bedBesCreateService;
         private readonly IKasrHaService _kasrHaService;
         public WaterCalculationSaveHandler(
             IOldTariffEngine processing,
-            IBedBesCreateService bedBesCreateService,
+            IBedBesCommandService bedBesCreateService,
             IKasrHaService kasrHaService)
         {
             _processing = processing;

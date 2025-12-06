@@ -12,10 +12,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
     internal sealed class RemovedBillSummaryByUsageHandler : IRemovedBillSummaryByUsageHandler
     {
         private readonly IRemovedBillSummaryByUsageQueryService _removedBillQueryService;
-        private readonly IValidator<RemovedBillInputDto> _validator;
+        private readonly IValidator<RemovedBillRawInputDto> _validator;
         public RemovedBillSummaryByUsageHandler(
             IRemovedBillSummaryByUsageQueryService removedBillQueryService,
-            IValidator<RemovedBillInputDto> validator)
+            IValidator<RemovedBillRawInputDto> validator)
         {
             _removedBillQueryService = removedBillQueryService;
             _removedBillQueryService.NotNull(nameof(removedBillQueryService));
@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto>> Handle(RemovedBillInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<RemovedBillHeaderOutputDto, RemovedBillSummaryDataOutputDto>> Handle(RemovedBillRawInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
