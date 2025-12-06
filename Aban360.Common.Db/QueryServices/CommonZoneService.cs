@@ -11,6 +11,7 @@ namespace Aban360.Common.Db.QueryServices
         Task<IEnumerable<NumericDictionary>> GetIdTitle(IAppUser appUser);
         Task<IEnumerable<int>> GetMyZoneIds(IAppUser appUser);
         Task<NumericDictionary> GetDefault(IAppUser appUser);
+        Task<NumericDictionary> GetDefaultRegion(IAppUser appUser);
     }
     public sealed class CommonZoneService : AbstractBaseConnection, ICommonZoneService
     {
@@ -38,6 +39,16 @@ namespace Aban360.Common.Db.QueryServices
             string query = GetUserDefaultZoneQuery();
             NumericDictionary? result = await _sqlConnection.QueryFirstOrDefaultAsync<NumericDictionary>(query, new { userId = appUser.UserId });
             if(result is null)
+            {
+                return new NumericDictionary();
+            }
+            return result;
+        }
+        public async Task<NumericDictionary> GetDefaultRegion(IAppUser appUser)
+        {
+            string query = GetUserDefaultRegionQuery();
+            NumericDictionary? result = await _sqlConnection.QueryFirstOrDefaultAsync<NumericDictionary>(query, new { userId = appUser.UserId });
+            if (result is null)
             {
                 return new NumericDictionary();
             }
@@ -74,6 +85,21 @@ namespace Aban360.Common.Db.QueryServices
                     From Aban360.UserPool.userClaim uc
                     Left Join Aban360.LocationPool.Zone z
                     	On uc.ClaimValue=z.Id
+                    where 
+                    	uc.UserId=@userId AND
+                    	uc.ClaimTypeId=5 AND
+                        uc.ValidTo Is NULL";
+        }
+        private string GetUserDefaultRegionQuery()
+        {
+            return @"Select TOP 1
+                    	r.Id as Id,
+                    	r.Title
+                    From Aban360.UserPool.userClaim uc
+                    Left Join Aban360.LocationPool.Zone z
+                    	On uc.ClaimValue=z.Id
+                    LEFT JOIN Aban360.LocationPool.Region r
+                        ON z.RegionId=r.Id
                     where 
                     	uc.UserId=@userId AND
                     	uc.ClaimTypeId=5 AND

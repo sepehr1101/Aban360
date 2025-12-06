@@ -2,6 +2,7 @@
 using System.Buffers.Binary;
 using System.Security.Cryptography;
 using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Aban360.Common.Extensions
 {
@@ -26,6 +27,12 @@ namespace Aban360.Common.Extensions
                 var byteHash = await hashAlgorithm.ComputeHashAsync(stream);
                 return Convert.ToBase64String(byteHash);
             }
+        }
+        public static string GetSha256HexHash(string input)
+        {
+            using var sha = SHA256.Create();
+            byte[] bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(input));
+            return Convert.ToHexString(bytes); // A-F, 64 chars
         }
         public static async Task<string> GenerateObjectHash(this object @object)
         {
