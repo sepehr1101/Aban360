@@ -1,4 +1,5 @@
-﻿using Aban360.ReportPool.Domain.Features.Dashboard.Dtos;
+﻿using Aban360.Common.Extensions;
+using Aban360.ReportPool.Domain.Features.Dashboard.Dtos;
 using Aban360.ReportPool.Persistence.Features.Dashboard.Contracts;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text.Json;
@@ -44,8 +45,10 @@ namespace Aban360.ReportPool.Application.Features.Caching
         }
 
         private string BuildCacheKey(string content, TileScriptContentReportInputDto input)
-        {            
-            return $"TileScript:{content}:{JsonSerializer.Serialize(input)}";
+        {
+            string plainTextKey = $"{content}:{JsonSerializer.Serialize(input)}";
+            string hash= SecurityOperations.GetSha256HexHash(plainTextKey);
+            return $"TileScript:{hash}";
         }
     }
 }
