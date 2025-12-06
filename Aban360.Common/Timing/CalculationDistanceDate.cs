@@ -15,7 +15,6 @@ namespace Aban360.Common.Timing
             DateOnly? from = fromDate.ToGregorianDateOnly();
             DateOnly? to = toDate == null ? DateOnly.FromDateTime(DateTime.Now) : toDate.ToGregorianDateOnly();
 
-
             if ((!from.HasValue || !to.HasValue) && canThrow)
             {
                 string metaDataJson = "";
@@ -42,58 +41,11 @@ namespace Aban360.Common.Timing
                 return new CalcDistanceResultDto(true, ExceptionLiterals.InvalidToDate, DefaultDistance, DefaultDistanceText);
             }
 
-
             int totalDay = Math.Abs(to.Value.DayNumber - from.Value.DayNumber);
             string distance = ConvertDayToDate(totalDay);
 
             return new CalcDistanceResultDto(false, null, totalDay, distance);
-
-            #region lastCode
-            //DateOnly? persianDate = fromDate.ToGregorianDateOnly();
-            //DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
-
-            //if (!persianDate.HasValue && canThrow)
-            //    throw new InvalidDateException(ExceptionLiterals.InvalidDate);
-
-            //if (!persianDate.HasValue)
-            //{
-            //    return new CalcDistanceResultDto(true, ExceptionLiterals.InvalidFromDate, DefaultDistance, DefaultDistanceText);
-            //}
-
-            //int totalDay = currentDate.DayNumber - persianDate.Value.DayNumber;
-            //string distance = ConvertDayToDate(totalDay);
-
-            //return new CalcDistanceResultDto(false, null, totalDay, distance);
-            /////
-            #endregion
         }
-
-        #region lastMethod
-        //public static CalcDistanceResultDto CalcDistance(string? fromDate, string? toDate)
-        //{
-        //    DateOnly? from = fromDate.ToGregorianDateOnly();
-        //    DateOnly? to = toDate.ToGregorianDateOnly();
-
-        //    if (!from.HasValue)
-        //    {
-        //        if (!to.HasValue)
-        //        {
-        //            return new CalcDistanceResultDto(true, ExceptionLiterals.InvalidFromAndToDate, DefaultDistance, DefaultDistanceText);
-        //        }
-        //        return new CalcDistanceResultDto(true, ExceptionLiterals.InvalidFromDate, DefaultDistance, DefaultDistanceText);
-        //    }
-        //    if (!to.HasValue)
-        //    {
-        //        return new CalcDistanceResultDto(true, ExceptionLiterals.InvalidToDate, DefaultDistance, DefaultDistanceText);
-        //    }
-
-
-        //    int totalDay = Math.Abs(to.Value.DayNumber - from.Value.DayNumber);
-        //    string distance = ConvertDayToDate(totalDay);
-
-        //    return new CalcDistanceResultDto(false, null, totalDay, distance);
-        //}
-        #endregion
         public record CalcDistanceResultDto
         {
             public bool HasError { get; set; }

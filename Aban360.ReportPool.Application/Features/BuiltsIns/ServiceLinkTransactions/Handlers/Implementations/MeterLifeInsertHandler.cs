@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
 using Aban360.Common.Timing;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
@@ -27,7 +28,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
         {
             input.ForEach(x =>
             {
-                string maxDate = GetMaxDate(x.WaterInstallationDateJalali, x.LatestChangeDataJalali);
+                string maxDate = GetMaxDate(x.WaterInstallationDateJalali, x.LatestChangeDateJalali);
                 CalcDistanceResultDto calcDistance = CalculationDistanceDate.CalcDistance(maxDate);
 
                 x.LifeInDay = calcDistance.HasError ? -1 : calcDistance.Distance;
@@ -35,8 +36,20 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             });
             return input;
         }
-        private string GetMaxDate(string firstDate, string? secondDate)
+        private string GetMaxDate(string? firstDate, string? secondDate)
         {
+            //if (string.IsNullOrWhiteSpace(firstDate) && string.IsNullOrWhiteSpace(secondDate))
+            //{
+            //    throw new InvalidDateException(string.Empty);
+            //}
+            //if (string.IsNullOrWhiteSpace(firstDate))
+            //{
+            //    return secondDate;
+            //}
+            //if (string.IsNullOrEmpty(secondDate))
+            //{
+            //    return firstDate;
+            //}
             return firstDate.CompareTo(secondDate) >= 0 ? firstDate : secondDate;
         }
     }
