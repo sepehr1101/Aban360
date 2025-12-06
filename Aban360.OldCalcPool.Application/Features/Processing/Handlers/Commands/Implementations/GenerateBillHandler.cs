@@ -15,7 +15,7 @@ using System.Reflection;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
-    internal sealed class GenerageBillHandler : IGenerageBillHandler
+    internal sealed class GenerateBillHandler : IGenerateBillHandler
     {
         private readonly IBedBesCreateService _bedBesCreateService;
         private readonly ICustomerInfoService _customerInfoService;
@@ -24,7 +24,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IValidator<GenerateBillInputDto> _validator;
         const int _paymentDeadline = 7;
 
-        public GenerageBillHandler(IBedBesCreateService bedBesCreateService,
+        public GenerateBillHandler(IBedBesCreateService bedBesCreateService,
             ICustomerInfoService customerInfoService,
             IOldTariffEngine tariffEngine,
             IKasrHaService kasrHaService,
