@@ -30,8 +30,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             IEnumerable<MeterLifeDataOutputDto> data = await _sqlReportConnection.QueryAsync<MeterLifeDataOutputDto>(query, input);
             MeterLifeHeaderOutputDto header = new MeterLifeHeaderOutputDto()
             {
-                FromLifeInDay = input.FromLifeInDay ?? 0,
-                ToLifeInDay = input.ToLifeInDay ?? 0,
+                FromLifeInDay = input.FromLifeInDay/365 ?? 0,
+                ToLifeInDay = input.ToLifeInDay/365 ?? 0,
 
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = data.Count(),
