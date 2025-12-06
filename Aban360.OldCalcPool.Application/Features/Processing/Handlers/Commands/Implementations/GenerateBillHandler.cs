@@ -17,14 +17,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 {
     internal sealed class GenerateBillHandler : IGenerateBillHandler
     {
-        private readonly IBedBesCreateService _bedBesCreateService;
+        private readonly IBedBesCommandService _bedBesCreateService;
         private readonly ICustomerInfoService _customerInfoService;
         private readonly IOldTariffEngine _tariffEngine;
         private readonly IKasrHaService _kasrHaService;
         private readonly IValidator<GenerateBillInputDto> _validator;
         const int _paymentDeadline = 7;
 
-        public GenerateBillHandler(IBedBesCreateService bedBesCreateService,
+        public GenerateBillHandler(IBedBesCommandService bedBesCreateService,
             ICustomerInfoService customerInfoService,
             IOldTariffEngine tariffEngine,
             IKasrHaService kasrHaService,

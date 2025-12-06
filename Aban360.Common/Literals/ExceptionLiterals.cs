@@ -81,5 +81,9 @@
         public static string NonAccessStepFlow => "به این مرحله دسترسی ندارید.";
         public static string InvalidFlowStep => "خطا در شناسه روند. ";
         public static string FlowStepNotFound => "شناسه روند یافت نشد";
+
+
+        //RemovedBill
+        public static string NotFoundBillsToRemoved => "قبضی برای ابطال یافت نشد.";
     }
 }

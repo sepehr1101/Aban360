@@ -2,6 +2,7 @@
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
 using Dapper;
 using Microsoft.Data.SqlClient;
@@ -27,7 +28,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             await _sqlReportConnection.ExecuteAsync(query, input);
         }
         public async Task Create(ICollection<KasrHaDto> input)
-        {   
+        {
             //string dbName = GetDbName((int)input.FirstOrDefault().Town);
             string dbName = "Atlas";
 
@@ -70,6 +71,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                 bulk.ColumnMappings.Add(col.ColumnName, col.ColumnName);
 
             await bulk.WriteToServerAsync(table);
+        }
+        public async Task Delete(RemovedBillInputDto input)
+        {
+            string command = GetDeleteCommand();
+            await _sqlReportConnection.ExecuteAsync(command, input);
         }
 
         private DataTable GetDataTable(ICollection<KasrHaDto> input)
@@ -181,6 +187,22 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                         @TedKhane, @TedadMas, @ZaribFasl, @NoeVa,
                         @Bodjeh
                     );";
+        }
+        private string GetDeleteCommand()
+        {
+            return @"Delete From Atlas.dbo.kasr_ha
+                    Where 
+                    	TOWN=@ZoneId AND
+                    	radif=@CustomerNumber AND
+                    	barge=@Barge AND
+                    	Pri_date=@PrviousDateJalali AND
+                    	today_date=@CurrentDateJalali AND
+                    	pri_no=@PreviousNumber AND
+                    	today_no=@CurrentNumber AND
+                    	rate=@Consumption AND
+                    	SH_GHABS=@BillId AND
+                    	SH_PARD=@PaymentId AND
+                    	date_bed=@RegisterDateJalali ";
         }
     }
 }

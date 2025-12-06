@@ -10,10 +10,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 {
     internal sealed class BedBesCreateHadler : IBedBesCreateHadler
     {
-        private readonly IBedBesCreateService _bedBesCreateService;
+        private readonly IBedBesCommandService _bedBesCreateService;
         private readonly IConfiguration _configuration;
         public BedBesCreateHadler(
-            IBedBesCreateService bedBesCreateService,
+            IBedBesCommandService bedBesCreateService,
             IConfiguration configuration)
         {
             _bedBesCreateService = bedBesCreateService;

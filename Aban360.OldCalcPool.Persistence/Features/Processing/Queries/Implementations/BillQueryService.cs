@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Dapper;
@@ -36,6 +37,20 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 
             return result;
         }
+        public async Task<IEnumerable<BillsCanRemovedOutputDto>> GetToRemoved(RemovedBillSearchDto input)
+        {
+            //string dbName = GetDbName(input.ZoneId);
+            string dbName = "Atlas";
+            string query = GetBedBesToRemoved(dbName);
+
+            IEnumerable<BillsCanRemovedOutputDto> result = await _sqlReportConnection.QueryAsync<BillsCanRemovedOutputDto>(query, input);
+            if (result is null || !result.Any())
+            {
+                throw new RemovedBillException(ExceptionLiterals.NotFoundBillsToRemoved);
+            }
+            return result;
+        }
+
 
         private string GetBedBesConsumptionDataQuery(string dataBaseName)
         {
@@ -70,6 +85,47 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     Where 
                     	c.BillId=@billId AND
                     	c.ToDayJalali IS NULL";
+        }
+        private string GetBedBesToRemoved(string dbName)
+        {
+            return @$"SELECT	
+                    	b.id,
+                    	b.town as ZoneId,
+                    	b.radif as CustomerNumber,
+                    	b.pri_no as PreviousNumber, 
+                    	b.today_no as CurrentNumber,
+                    	b.pri_date as PrviousDateJalali,
+                    	b.today_date as CurrentDateJalali,
+                    	b.date_bed as RegisterDateJalali,
+                    	b.masraf as Consumption,
+                    	b.rate as MonthlyConsumption,
+                    	b.pard as Pardakht,
+                    	b.jam as Jam, 
+                    	b.baha as Baha,
+                    	b.kasr_ha as Discount,
+                    	b.mamor as AgentCode,
+                        b.barge as Barge,
+                        b.sh_pard1 as PaymentId,
+                    	b.sh_ghabs1 as BillId,
+                    	t41.C1 as UsageTitle,
+                    	t7.C1 as BranchTypeTitle,
+                    	b.fix_mas as ContractualCapacity,
+                    	b.Khali_s as EmptyUnit,
+                    	b.tedad_mas as DomesticUnit,
+                    	b.tedad_tej as CommercialUnit,
+                    	b.tedad_vahd as OtherUnit,
+                    	b.ted_khane as HouseholdNumber
+                    FROM [{dbName}].dbo.bed_bes b
+                    JOIN [{dbName}].dbo.variab v
+                    	ON b.date_bed collate Persian_100_CI_AI>=v.date_check
+                    JOIN [Db70].dbo.T41 t41 
+                    	ON b.cod_enshab=t41.C0
+                    JOIN [Db70].dbo.T7 t7 
+                    	ON b.noe_va=t7.C0
+                    WHERE 
+                    	b.date_bed>=@ComparisonDateJalali AND
+                    	b.town=@ZoneId AND
+                    	b.radif=@CustomerNumber";
         }
     }
 }
