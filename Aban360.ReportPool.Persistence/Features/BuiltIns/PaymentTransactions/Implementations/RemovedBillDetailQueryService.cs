@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
         { 
         }
 
-        public async Task<ReportOutput<RemovedBillHeaderOutputDto, RemovedBillDetailDataOutputDto>> GetInfo(RemovedBillInputDto input)
+        public async Task<ReportOutput<RemovedBillHeaderOutputDto, RemovedBillDetailDataOutputDto>> GetInfo(RemovedBillRawInputDto input)
         {
             string query = GetDetailQuery(input.ZoneIds.HasValue());
 

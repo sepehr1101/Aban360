@@ -10,19 +10,19 @@ using System.Data;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations
 {
-    internal sealed class BedBesCreateService : AbstractBaseConnection, IBedBesCreateService
+    internal sealed class BedBesCommandService : AbstractBaseConnection, IBedBesCommandService
     {
         private static string tableName = "BedBes";
-        public BedBesCreateService(IConfiguration configuration)
+        public BedBesCommandService(IConfiguration configuration)
             : base(configuration)
         { }
 
-        public async Task Create(BedBesCreateDto input,int zoneId)
+        public async Task Create(BedBesCreateDto input, int zoneId)
         {
             //string dbName=GetDbName(zoneId);
-            string dbName="Atlas";
+            string dbName = "Atlas";
             string BedBesCreateQueryString = GetBedBesCreateQuery(dbName);
-            
+
             await _sqlReportConnection.ExecuteAsync(BedBesCreateQueryString, input);
         }
         public async Task Create(ICollection<BedBesCreateDto> input)
@@ -71,7 +71,16 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 
             await bulk.WriteToServerAsync(dt);
         }
+        public async Task Delete(int id)
+        {
+            string query = GetDeleteQuery();
+            int rowsAffected= await _sqlReportConnection.ExecuteAsync(query, new { id });
 
+            if (rowsAffected == 0)
+            {
+                throw new ReadingException(ExceptionLiterals.NotFoundBillsToRemoved);
+            }
+        }
 
 
         public DataTable ToDataTable(IEnumerable<BedBesCreateDto> items)
@@ -248,7 +257,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             }
             return table;
         }
-
         private string GetBedBesCreateQuery(string dbName)
         {
             return @$"USE [{dbName}]
@@ -275,6 +283,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                         @Absevom, @Absevom1, @Khalis, @edarehk,@Avarez
                     )";
         }
-
+        private string GetDeleteQuery()
+        {
+            return @"Delete FROM [Atlas].dbo.bed_bes
+                    Where Id=@id";
+        }
     }
 }

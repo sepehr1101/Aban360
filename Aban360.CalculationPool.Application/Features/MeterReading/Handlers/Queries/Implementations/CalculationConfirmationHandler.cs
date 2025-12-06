@@ -21,7 +21,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         private readonly IMeterReadingDetailService _meterReadingDetailService;
         private readonly IMeterFlowService _meterFlowService;
         private readonly IOldTariffEngine _oldTariffEngine;
-        private readonly IBedBesCreateService _bedBesCreateService;
+        private readonly IBedBesCommandService _bedBesCreateService;
         private readonly IKasrHaService _kasrHaService;
         const int _paymentDeadline = 7;
 
@@ -30,7 +30,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             IMeterReadingDetailService meterReadingDetailService,
             IMeterFlowService meterFlowService,
             IOldTariffEngine oldTariffEngine,
-            IBedBesCreateService bedBesCreateService,
+            IBedBesCommandService bedBesCreateService,
             IKasrHaService kasrHaService)
         {
             _meterFlowValidationGetHandler = meterFlowValidationGetHandler;

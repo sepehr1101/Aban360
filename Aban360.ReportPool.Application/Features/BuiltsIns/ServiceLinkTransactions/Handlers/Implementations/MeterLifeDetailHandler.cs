@@ -34,6 +34,8 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 throw new CustomValidationException(message);
             }
 
+            input.FromLifeInDay = input.FromLifeInDay * 365;
+            input.ToLifeInDay = input.ToLifeInDay * 365;
             ReportOutput<MeterLifeHeaderOutputDto, MeterLifeDataOutputDto> result = await _meterLifeService.Get(input);
             result.ReportHeader.AverageLifeText = CalculationDistanceDate.ConvertDayToDate(result.ReportHeader.AverageLifeInDay);
             result.ReportHeader.MaxLifeText = CalculationDistanceDate.ConvertDayToDate(result.ReportHeader.MaxLifeInDay);

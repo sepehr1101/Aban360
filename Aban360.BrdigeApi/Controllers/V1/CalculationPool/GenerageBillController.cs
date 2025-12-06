@@ -10,8 +10,8 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
     [Route("v1/bill")]
     public class GenerageBillController : BaseController
     {
-        private readonly IGenerageBillHandler _generageBillHandler;
-        public GenerageBillController(IGenerageBillHandler generageBillHandler)
+        private readonly IGenerateBillHandler _generageBillHandler;
+        public GenerageBillController(IGenerateBillHandler generageBillHandler)
         {
             _generageBillHandler = generageBillHandler;
             _generageBillHandler.NotNull(nameof(generageBillHandler));
