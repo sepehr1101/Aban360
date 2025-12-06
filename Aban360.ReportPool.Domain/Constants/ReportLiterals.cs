@@ -204,6 +204,7 @@
         public static string RuinedMeterIncomeSummary { get { return $" {Report} خلاصه درآمد کنتور خراب"; } }
 
         public static string MeterLifeDetail { get { return $" {Report} جزئیات عمر کنتور"; } }
+        public static string MeterLifeSummary { get { return $" {Report} خلاصه عمر کنتور"; } }
 
 
         public static string TagGroupSummary { get { return $" {Report} خلاصه گروه تگ"; } }

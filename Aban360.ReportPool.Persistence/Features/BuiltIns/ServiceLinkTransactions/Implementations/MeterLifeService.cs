@@ -43,10 +43,28 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 header.AverageLifeInDay = (int)data.Where(m => m.LifeInDay != -1).Average(m => m.LifeInDay);
                 header.MaxLifeInDay = (int)data.Max(m => m.LifeInDay);
                 header.MinLifeInDay = (int)data.Where(m => m.LifeInDay != -1).Min(m => m.LifeInDay);
-                header.IncalculableCount = (int)data.Where(m => m.LifeInDay != -1).Count();
+                header.IncalculableCount = (int)data.Where(m => m.LifeInDay == -1).Count();
             }
 
             ReportOutput<MeterLifeHeaderOutputDto, MeterLifeDataOutputDto> result = new(ReportLiterals.MeterLifeDetail, header, data);
+            return result;
+        }
+        public async Task<ReportOutput<MeterLifeSummaryHeaderOutputDto, MeterLifeSummaryDataOutputDto>> GetSummary(MeterLifeInputDto input)
+        {
+            string query = GetSummaryQuery();
+            IEnumerable<MeterLifeSummaryDataOutputDto> data = await _sqlReportConnection.QueryAsync<MeterLifeSummaryDataOutputDto>(query, input);
+            MeterLifeSummaryHeaderOutputDto header = new MeterLifeSummaryHeaderOutputDto()
+            {
+                FromLifeInDay = input.FromLifeInDay ?? 0,
+                ToLifeInDay = input.ToLifeInDay ?? 0,
+
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                RecordCount = data.Count(),
+                CustomerCount = data is not null && data.Count() > 0 ? data.Sum(m => m.CustomerCount) : 0,
+                Title = ReportLiterals.MeterLifeDetail,
+            };
+
+            ReportOutput<MeterLifeSummaryHeaderOutputDto, MeterLifeSummaryDataOutputDto> result = new(ReportLiterals.MeterLifeSummary, header, data);
             return result;
         }
         public async Task<IEnumerable<MeterLifeCalculationOutputDto>> GetFromClient()
@@ -153,6 +171,35 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         {
             string query = "TRUNCATE TABLE CustomerWarehouse.dbo.MeterLife;";
             return query;
+        }
+        private string GetSummaryQuery()
+        {
+            return @"Select
+                    	MAX(t46.C2) AS RegionTitle,
+                    	m.ZoneTitle,
+	                    Count(m.ZoneTitle) as CustomerCount,
+                    	Count(Case When m.LifeInDay<=1825 Then 1 Else null End) as LessThan5Year,
+                    	Count(Case When m.LifeInDay>1825 AND m.LifeInDay<=3650 Then 1 Else null End) as Between5_10Year,
+                    	Count(Case When m.LifeInDay>3650 AND m.LifeInDay<=5475 Then 1 Else null End) as Between10_15Year,
+                    	Count(Case When m.LifeInDay>5475 AND m.LifeInDay<=7300 Then 1 Else null End) as Between15_20Year,
+                    	Count(Case When m.LifeInDay>7300 AND m.LifeInDay<=9125 Then 1 Else null End) as Between20_25Year,
+                    	Count(Case When m.LifeInDay>9125 AND m.LifeInDay<=10950 Then 1 Else null End) as Between25_30Year,
+                    	Count(Case When m.LifeInDay>10950 AND m.LifeInDay<=12775 Then 1 Else null End) as Between30_35Year,
+                    	Count(Case When m.LifeInDay>12775 AND m.LifeInDay<=14600 Then 1 Else null End) as Between35_40Year,
+                    	Count(Case When m.LifeInDay>14600 AND m.LifeInDay<=16425 Then 1 Else null End) as Between40_45Year,
+                    	Count(Case When m.LifeInDay>16425 Then 1 Else null End) as MoreThan45Year
+                    From CustomerWarehouse.dbo.MeterLife m
+                    Join [Db70].dbo.T51 t51
+                    	On t51.C0=m.ZoneId
+                    Join [Db70].dbo.T46 t46
+                    	On t51.C1=t46.C0
+                    Where 
+                       	ZoneId IN @zoneIds AND
+                       	UsageId IN @usageIds AND
+                        (@FromLifeInDay IS NULL OR
+                        @ToLifeInDay IS NULL OR
+                        LifeInDay BETWEEN @FromLifeInDay AND @ToLifeInDay)
+                    GROUP By m.ZoneTitle";
         }
     }
 }
