@@ -37,11 +37,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 
             return result;
         }
-        public async Task<IEnumerable<BillsCanRemovedOutputDto>> GetToRemoved(RemovedBillSearchDto input)
+        public async Task<IEnumerable<BillsCanRemovedOutputDto>> GetToRemove(RemovedBillSearchDto input)
         {
             //string dbName = GetDbName(input.ZoneId);
             string dbName = "Atlas";
-            string query = GetBedBesToRemoved(dbName);
+            string query = GetBedBesListToRemove(dbName);
 
             IEnumerable<BillsCanRemovedOutputDto> result = await _sqlReportConnection.QueryAsync<BillsCanRemovedOutputDto>(query, input);
             if (result is null || !result.Any())
@@ -50,7 +50,20 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             }
             return result;
         }
+        public async Task<RemoveBillInputDto> GetToRemove(int id)
+        {
+            //string dbName = GetDbName(input.ZoneId);
+            string dbName = "Atlas";
+            string query = GetBedBesToRemove(dbName);
 
+            RemoveBillInputDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<RemoveBillInputDto>(query, new { Id = id });
+            if (result is null || result.Id <= 0)
+            {
+                throw new RemovedBillException(ExceptionLiterals.InvalidId);
+            }
+
+            return result;
+        }
 
         private string GetBedBesConsumptionDataQuery(string dataBaseName)
         {
@@ -86,7 +99,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	c.BillId=@billId AND
                     	c.ToDayJalali IS NULL";
         }
-        private string GetBedBesToRemoved(string dbName)
+        private string GetBedBesListToRemove(string dbName)
         {
             return @$"SELECT	
                     	b.id,
@@ -126,6 +139,28 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	b.date_bed>=@ComparisonDateJalali AND
                     	b.town=@ZoneId AND
                     	b.radif=@CustomerNumber";
+        }
+        private string GetBedBesToRemove(string dbName)
+        {
+            return @$"SELECT	
+                    	b.id,
+                    	b.town as ZoneId,
+                    	b.radif as CustomerNumber,
+                        b.barge as Barge,
+                    	b.pri_no as PreviousNumber, 
+                    	b.today_no as CurrentNumber,
+                    	b.pri_date as PrviousDateJalali,
+                    	b.today_date as CurrentDateJalali,
+                    	b.date_bed as RegisterDateJalali,
+                    	b.masraf as Consumption,
+                        b.sh_pard1 as PaymentId,
+						b.ab_baha as AbBahaAmount,
+						b.fas_baha as FazelabAmount,
+                    	b.baha as Baha,
+                    	b.sh_ghabs1 as BillId
+                    FROM [{dbName}].dbo.bed_bes b
+                    WHERE 
+                    	b.id=@id";
         }
     }
 }

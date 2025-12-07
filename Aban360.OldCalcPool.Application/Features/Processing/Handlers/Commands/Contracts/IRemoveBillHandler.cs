@@ -2,8 +2,8 @@
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts
 {
-    public interface IRemovedBillHandler
+    public interface IRemoveBillHandler
     {
-        Task Handle(RemovedBillInputDto inputDto, CancellationToken cancellationToken);
+        Task Handle(int id, CancellationToken cancellationToken);
     }
 }

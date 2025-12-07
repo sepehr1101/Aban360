@@ -1,8 +1,6 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input
+﻿namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input
 {
-    public record RemovedBillInputDto
+    public record RemoveBillInputDto
     {
         public int Id { get; set; }
         public int ZoneId { get; set; }

@@ -7,6 +7,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
     {
         Task<BedBesConsumptionOutputDto> Get(string billId);
         Task<BedBesDataInfoOutptuDto> Get(int id);
-        Task<IEnumerable<BillsCanRemovedOutputDto>> GetToRemoved(RemovedBillSearchDto input);
+        Task<IEnumerable<BillsCanRemovedOutputDto>> GetToRemove(RemovedBillSearchDto input);
+        Task<RemoveBillInputDto> GetToRemove(int id);
     }
 }

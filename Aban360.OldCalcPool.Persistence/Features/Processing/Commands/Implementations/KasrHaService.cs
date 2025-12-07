@@ -72,7 +72,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 
             await bulk.WriteToServerAsync(table);
         }
-        public async Task Delete(RemovedBillInputDto input)
+        public async Task Delete(RemoveBillInputDto input)
         {
             string command = GetDeleteCommand();
             await _sqlReportConnection.ExecuteAsync(command, input);
