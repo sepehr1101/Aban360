@@ -13,7 +13,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         {
         }
 
-        public async Task Insert(RemovedBillInputDto input)
+        public async Task Insert(RemoveBillInputDto input)
         {
             string command = GetInsertCommand();
             await _sqlReportConnection.ExecuteAsync(command, input);

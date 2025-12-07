@@ -31,7 +31,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
             ZoneIdAndCustomerNumberGetDto zoneIdAndCustomerNumber = await _customerInfoService.GetZoneIdAndCustomerNumber(inputDto.Input);
             RemovedBillSearchDto removedBillSearchDto = new(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
 
-            IEnumerable<BillsCanRemovedOutputDto> billsCanRemoved = await _billQueryService.GetToRemoved(removedBillSearchDto);
+            IEnumerable<BillsCanRemovedOutputDto> billsCanRemoved = await _billQueryService.GetToRemove(removedBillSearchDto);
             return billsCanRemoved;
 
         }
