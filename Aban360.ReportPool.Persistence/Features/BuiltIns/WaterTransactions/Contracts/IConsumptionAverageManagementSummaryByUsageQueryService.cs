@@ -6,5 +6,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Con
     public interface IConsumptionAverageManagementSummaryByUsageQueryService
     {
         Task<ReportOutput<ConsumptionAverageManagementHeaderOutputDto, ConsumptionAverageManagementSummaryDataOutputDto>> Get(ConsumptionAverageManagementInputDto input, string groupField);
+        Task<IEnumerable<ConsumptionAverageManagementSummaryOutputDto>> Get(ConsumptionAverageManagementSummrayInputDto input);
     }
 }
