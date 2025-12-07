@@ -3,6 +3,7 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Dapper;
 using Microsoft.Extensions.Configuration;
@@ -50,7 +51,32 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             }
             return result;
         }
+        public async Task<IEnumerable<BillsCanRemovedOutputDto>> GetToReturned(ReturnedBillSearchDto input)
+        {
+            //string dbName = GetDbName(input.ZoneId);
+            string dbName = "Atlas";
+            string query = GetAllBedBesToReturned(dbName);
 
+            IEnumerable<BillsCanRemovedOutputDto> result=await _sqlReportConnection.QueryAsync<BillsCanRemovedOutputDto>(query,input);
+            if (result is null || !result.Any())
+            {
+                throw new ReturnedBillException(ExceptionLiterals.NotFoundBillsToReturned);
+            }
+            return result;
+        }
+        public async Task<IEnumerable<BillsCanRemovedOutputDto>> Get(SearchBillToReturnedDto input)
+        {
+            //string dbName = GetDbName(input.ZoneId);
+            string dbName = "Atlas";
+            string query = GetAllBedBesToReturned(dbName);
+
+            IEnumerable<BillsCanRemovedOutputDto> result=await _sqlReportConnection.QueryAsync<BillsCanRemovedOutputDto>(query,input);
+            if (result is null || !result.Any())
+            {
+                throw new ReturnedBillException(ExceptionLiterals.NotFoundBillsToReturned);
+            }
+            return result;
+        }
 
         private string GetBedBesConsumptionDataQuery(string dataBaseName)
         {
@@ -127,5 +153,45 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	b.town=@ZoneId AND
                     	b.radif=@CustomerNumber";
         }
+        private string GetAllBedBesToReturned(string dbName)
+        {
+            return @$"SELECT	
+                    	b.id,
+                    	b.town as ZoneId,
+                    	b.radif as CustomerNumber,
+                    	b.pri_no as PreviousNumber, 
+                    	b.today_no as CurrentNumber,
+                    	b.pri_date as PrviousDateJalali,
+                    	b.today_date as CurrentDateJalali,
+                    	b.date_bed as RegisterDateJalali,
+                    	b.masraf as Consumption,
+                    	b.rate as MonthlyConsumption,
+                    	b.pard as Pardakht,
+                    	b.jam as Jam, 
+                    	b.baha as Baha,
+                    	b.kasr_ha as Discount,
+                    	b.mamor as AgentCode,
+                        b.barge as Barge,
+                        b.sh_pard1 as PaymentId,
+                    	b.sh_ghabs1 as BillId,
+                    	t41.C1 as UsageTitle,
+                    	t7.C1 as BranchTypeTitle,
+                    	b.fix_mas as ContractualCapacity,
+                    	b.Khali_s as EmptyUnit,
+                    	b.tedad_mas as DomesticUnit,
+                    	b.tedad_tej as CommercialUnit,
+                    	b.tedad_vahd as OtherUnit,
+                    	b.ted_khane as HouseholdNumber
+                    FROM [{dbName}].dbo.bed_bes b
+                    JOIN [Db70].dbo.T41 t41 
+                    	ON b.cod_enshab=t41.C0
+                    JOIN [Db70].dbo.T7 t7 
+                    	ON b.noe_va=t7.C0
+                    WHERE 
+                    	b.date_bed>=@ComparisonDateJalali AND
+                    	b.town=@ZoneId AND
+                    	b.radif=@CustomerNumber";
+        }
+        private string GetBedBes
     }
 }
