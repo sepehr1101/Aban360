@@ -100,6 +100,7 @@
     <ProjectReference Include="..\Aban360.SystemPool.Application\Aban360.SystemPool.Application.csproj" />
     <ProjectReference Include="..\Aban360.SystemPool.Domain\Aban360.SystemPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.SystemPool.Persistence\Aban360.SystemPool.Persistence.csproj" />
+    <ProjectReference Include="..\Aban360.TaxPool.Application\Aban360.TaxPool.Application.csproj" />
     <ProjectReference Include="..\Aban360.UserPool.Application\Aban360.UserPool.Application.csproj" />
     <ProjectReference Include="..\Aban360.UserPool.Domain\Aban360.UserPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.UserPool.GatewayAdhoc\Aban360.UserPool.GatewayAdhoc.csproj" />

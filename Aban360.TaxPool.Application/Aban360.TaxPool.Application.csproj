@@ -6,4 +6,20 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
+    <PackageReference Include="Scrutor" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
+    <ProjectReference Include="..\Aban360.TaxPool.Domain\Aban360.TaxPool.Domain.csproj" />
+    <ProjectReference Include="..\Aban360.TaxPool.Infrastructure\Aban360.TaxPool.Infrastructure.csproj" />
+    <ProjectReference Include="..\Aban360.TaxPool.Persistence\Aban360.TaxPool.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\MaaherSTP\Handlers\Commands\Implementations\" />
+  </ItemGroup>
+
 </Project>

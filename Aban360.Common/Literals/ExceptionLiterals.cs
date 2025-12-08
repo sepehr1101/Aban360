@@ -90,5 +90,9 @@
         //ReturnedBill
         public static string NotFoundBillsToReturned => "قبضی برای برگشتی یافت نشد.";
 
+        //Tax
+        public static string InvalidMaaherWrapperInsert => "خطا در درج دسته مالیات";
+
+
     }
 }
