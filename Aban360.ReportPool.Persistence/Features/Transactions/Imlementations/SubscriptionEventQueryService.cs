@@ -117,7 +117,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                  NULL AS PayDateJalali,
                  TypeCode
              from [CustomerWarehouse].dbo.Bills
-             Join [Db70].dbo.CounterVaziat v On
+             LEFT Join [Db70].dbo.CounterVaziat v On
             	CounterStateCode=v.MoshtarakinId
              where 
                 (BillId)=@billId  AND
