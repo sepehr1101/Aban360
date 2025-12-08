@@ -1,5 +1,4 @@
-﻿using Aban360.Common.Exceptions;
-using Aban360.Common.Extensions;
+﻿using Aban360.Common.Extensions;
 using Aban360.Common.Timing;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
@@ -21,10 +20,12 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
         {
             await _meterLifeService.TruncateTable();
             IEnumerable<MeterLifeCalculationOutputDto> result = await _meterLifeService.GetFromClient();
-            IEnumerable<MeterLifeCalculationOutputDto> meterLif = await CalcDistance(result);
+            result.NotNull(nameof(result));
+            IEnumerable<MeterLifeCalculationOutputDto> meterLif = CalcDistance(result);
+            meterLif.NotNull(nameof(meterLif));
             await _meterLifeService.Insert(meterLif);
         }
-        private async Task<IEnumerable<MeterLifeCalculationOutputDto>> CalcDistance(IEnumerable<MeterLifeCalculationOutputDto> input)
+        private IEnumerable<MeterLifeCalculationOutputDto> CalcDistance(IEnumerable<MeterLifeCalculationOutputDto> input)
         {
             input.ForEach(x =>
             {
