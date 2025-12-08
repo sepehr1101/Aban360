@@ -3,6 +3,7 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Dapper;
 using Microsoft.Extensions.Configuration;
@@ -55,12 +56,37 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             //string dbName = GetDbName(input.ZoneId);
             string dbName = "Atlas";
             string query = GetBedBesToRemove(dbName);
+        public async Task<IEnumerable<BillsCanRemovedOutputDto>> GetToReturned(ReturnedBillSearchDto input)
+        {
+            //string dbName = GetDbName(input.ZoneId);
+            string dbName = "Atlas";
+            string query = GetAllBedBesToReturned(dbName);
 
             RemoveBillInputDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<RemoveBillInputDto>(query, new { Id = id });
             if (result is null || result.Id <= 0)
             {
                 throw new RemovedBillException(ExceptionLiterals.InvalidId);
             }
+            IEnumerable<BillsCanRemovedOutputDto> result=await _sqlReportConnection.QueryAsync<BillsCanRemovedOutputDto>(query,input);
+            if (result is null || !result.Any())
+            {
+                throw new ReturnedBillException(ExceptionLiterals.NotFoundBillsToReturned);
+            }
+            return result;
+        }
+        public async Task<IEnumerable<BillsCanRemovedOutputDto>> Get(SearchBillToReturnedDto input)
+        {
+            //string dbName = GetDbName(input.ZoneId);
+            string dbName = "Atlas";
+            string query = GetAllBedBesToReturned(dbName);
+
+            IEnumerable<BillsCanRemovedOutputDto> result=await _sqlReportConnection.QueryAsync<BillsCanRemovedOutputDto>(query,input);
+            if (result is null || !result.Any())
+            {
+                throw new ReturnedBillException(ExceptionLiterals.NotFoundBillsToReturned);
+            }
+            return result;
+        }
 
             return result;
         }

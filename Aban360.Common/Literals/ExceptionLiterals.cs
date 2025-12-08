@@ -85,5 +85,10 @@
 
         //RemovedBill
         public static string NotFoundBillsToRemoved => "قبضی برای ابطال یافت نشد.";
+
+
+        //ReturnedBill
+        public static string NotFoundBillsToReturned => "قبضی برای برگشتی یافت نشد.";
+
     }
 }
