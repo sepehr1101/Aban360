@@ -23,13 +23,22 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implemen
             await _sqlReportConnection.ExecuteScalarAsync(atlasQuery, input);
             await _sqlReportConnection.ExecuteScalarAsync(localQuery, input);
         }
+        public async Task Create(IEnumerable<RepairCreateDto> input)
+        {
+            string dbName = GetDbName((int)input.FirstOrDefault().Town);
+            string atlasQuery = CreateAtlasQuery();
+            string regionDbName= CreateQuery(dbName);
+
+            await _sqlReportConnection.ExecuteAsync(atlasQuery, input);
+        }
+
         public async Task Update(RepairUpdateDto input)
         {
             ZoneIdAndBargeGetDto zoneIdAndBarge = await GetZoneIdAndBarege(input.Id);
             string dbName = GetDbName(zoneIdAndBarge.ZoneId);
             string atlasQuery = UpdateAtlasQuery();
             string localQuery = UpdateQuery(dbName);
-            
+
             var localQueryParameters = new DynamicParameters(input);
             localQueryParameters.Add("barge", zoneIdAndBarge.Barge);
             localQueryParameters.Add("zoneId", zoneIdAndBarge.ZoneId);

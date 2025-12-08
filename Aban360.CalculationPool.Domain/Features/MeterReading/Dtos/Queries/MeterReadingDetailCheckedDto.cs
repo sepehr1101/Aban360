@@ -1,4 +1,6 @@
-﻿namespace Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries
+﻿using Aban360.CalculationPool.Domain.Constants;
+
+namespace Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries
 {
     public record MeterReadingDetailCheckedDto
     {
@@ -24,7 +26,9 @@
         //public DateTime? RemovedDateTime { get; set; }
 
         public int BranchTypeId { get; set; }
+        public string BranchTypeTitle { get; set; }
         public int UsageId { get; set; }
+        public string UsageTitle {  get; set; }
         public int ConsumptionUsageId { get; set; }
         public int DomesticUnit { get; set; }
         public int CommercialUnit { get; set; }
@@ -66,6 +70,6 @@
         public double? Consumption { get; set; }
         public double? MonthlyConsumption { get; set; }
 
-        public bool HasAttention { get; set; }
+        public HighLowEnum AttentionState { get; set; }
     }
 }

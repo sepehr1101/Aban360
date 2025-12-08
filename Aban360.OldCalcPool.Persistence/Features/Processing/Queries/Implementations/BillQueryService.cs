@@ -3,6 +3,7 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Dapper;
 using Microsoft.Extensions.Configuration;
@@ -61,10 +62,34 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             {
                 throw new RemovedBillException(ExceptionLiterals.InvalidId);
             }
-
             return result;
         }
+        public async Task<IEnumerable<BillsCanRemovedOutputDto>> GetToReturned(ReturnedBillSearchDto input)
+        {
+            //string dbName = GetDbName(input.ZoneId);
+            string dbName = "Atlas";
+            string query = GetBedBesListToRemove(dbName);
 
+            IEnumerable<BillsCanRemovedOutputDto> result = await _sqlReportConnection.QueryAsync<BillsCanRemovedOutputDto>(query, input);
+            if (result is null || !result.Any())
+            {
+                throw new ReturnedBillException(ExceptionLiterals.NotFoundBillsToReturned);
+            }
+            return result;
+        }
+        public async Task<IEnumerable<BillsCanRemovedOutputDto>> Get(BillToReturnInputDto input)
+        {
+            //string dbName = GetDbName(input.ZoneId);
+            string dbName = "Atlas";
+            string query = GetBillToReturnQuery(dbName);
+
+            IEnumerable<BillsCanRemovedOutputDto> result = await _sqlReportConnection.QueryAsync<BillsCanRemovedOutputDto>(query, input);
+            if (result is null || !result.Any())
+            {
+                throw new ReturnedBillException(ExceptionLiterals.NotFoundBillsToReturned);
+            }
+            return result;
+        }
         private string GetBedBesConsumptionDataQuery(string dataBaseName)
         {
             return @$"Select Top 1 
@@ -161,6 +186,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     FROM [{dbName}].dbo.bed_bes b
                     WHERE 
                     	b.id=@id";
+        }
+        private string GetBillToReturnQuery(string dbName)
+        {
+            return @"";
         }
     }
 }

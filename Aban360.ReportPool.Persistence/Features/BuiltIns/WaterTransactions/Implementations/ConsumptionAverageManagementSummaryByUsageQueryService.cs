@@ -37,6 +37,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
             return result;
         }
+        public async Task<IEnumerable<ConsumptionAverageManagementSummaryOutputDto>> Get(ConsumptionAverageManagementSummrayInputDto input)
+        {
+            string query = GetManagementQuery();
+            IEnumerable<ConsumptionAverageManagementSummaryOutputDto> result = await _sqlReportConnection.QueryAsync<ConsumptionAverageManagementSummaryOutputDto>(query, input);
+            return result;
+        }
+
         private string GetQuery(string groupItem)
         {
             return @$"Select
@@ -60,6 +67,26 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	b.ZoneId IN @zoneIds AND
                     	b.UsageId IN @usageIds
                     Group By b.{groupItem}";
+        }
+        private string GetManagementQuery()
+        {
+            return @"Select 
+                    	b.ZoneId, 
+                    	b.ZoneTitle,
+                    	b.UsageId,
+                    	b.UsageTitle,
+                    	b.Consumption,
+                    	b.ConsumptionAverage,
+                    	CASE WHEN @IsDomestic=1 THEN s.olgo ELSE b.ContractCapacity END as ContracutalOrOlgo,
+                    	b.RegisterDay as RegisterDateJalali
+                    From CustomerWarehouse.dbo.Bills b
+                    Left Join OldCalc.dbo.S s
+                    	on b.ZoneId=s.town AND b.RegisterDay BETWEEN s.FromDate AND s.ToDate
+                    Where 
+                    	( (@IsDomestic=1 AND b.UsageId IN (0,1,3)) OR (@IsDomestic<>1 AND b.UsageId NOT IN (0,1,3)) ) AND
+                    	( (@IsNet=1 AND b.TypeCode IN (1,3,4,5)) OR (@IsNet<>1 AND b.TypeCode IN (1)) ) AND
+                    	b.ZoneId IN @ZoneIds AND
+                    	b.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali";
         }
     }
 }

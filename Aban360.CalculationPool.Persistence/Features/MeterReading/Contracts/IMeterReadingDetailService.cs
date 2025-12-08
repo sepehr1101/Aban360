@@ -11,5 +11,6 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts
         Task CreateDuplicateForLog(MeterReadingDetailCreateDuplicateDto input);
         Task Exclude(MeterReadingDetailExcludedDto input);
         Task<IEnumerable<MeterReadingDetailDataOutputDto>> Get(int flowImportedId);
+        Task<MeterReadingDetailDataOutputDto> GetById(int id);
     }
 }

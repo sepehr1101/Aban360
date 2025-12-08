@@ -24,7 +24,9 @@
         public DateTime? RemovedDateTime { get; set; }
 
         public int BranchTypeId { get; set; }
+        public string BranchTypeTitle { get; set; }
         public int UsageId { get; set; }
+        public string UsageTitle { get; set; }
         public int ConsumptionUsageId { get; set; }
         public int DomesticUnit { get; set; }
         public int CommercialUnit { get; set; }

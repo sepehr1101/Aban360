@@ -56,7 +56,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 Consumption = data.Sum(m => m.Consumption) ?? 0,
                 RecordCount = data.Count(),
             };
-            ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCheckedDto> result = new(_reportTitle, header, data.OrderByDescending(meter=>meter.HasAttention));
+            ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCheckedDto> result = new(_reportTitle, header, data.OrderByDescending(meter => meter.AttentionState));
 
             return result;
         }
@@ -65,13 +65,13 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             ICollection<MeterReadingDetailCheckedDto> readingsControl = new List<MeterReadingDetailCheckedDto>();
             meterReadings.ForEach(mr =>
             {
-                bool hasAttention = GetConsumptionOrAmountAttention(mr, latestFlowStep);
-                MeterReadingDetailCheckedDto readingControl = GetMeterReadingDetailControl(mr, hasAttention);
+                HighLowEnum attentionState = GetConsumptionOrAmountAttention(mr, latestFlowStep);
+                MeterReadingDetailCheckedDto readingControl = GetMeterReadingDetailControl(mr, attentionState);
                 readingsControl.Add(readingControl);
             });
             return readingsControl;
         }
-        private bool GetConsumptionOrAmountAttention(MeterReadingDetailDataOutputDto meterReading, MeterFlowStepEnum latestFlowStep)
+        private HighLowEnum GetConsumptionOrAmountAttention(MeterReadingDetailDataOutputDto meterReading, MeterFlowStepEnum latestFlowStep)
         {
             return latestFlowStep switch
             {
@@ -80,7 +80,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 _ => throw new ReadingException(ExceptionLiterals.InvalidFlowStep)
             };
         }
-        private bool ConsumptionAttention(MeterReadingDetailDataOutputDto input)
+        private HighLowEnum ConsumptionAttention(MeterReadingDetailDataOutputDto input)
         {
             if (IsDomestic(input.UsageId))
             {
@@ -91,11 +91,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 return GetHasAttention(_nonDomesticConsumptionExpirePercent, input.ContractualCapacity, input.MonthlyConsumption.Value);
             }
         }
-        private bool AmountAttention(MeterReadingDetailDataOutputDto input)
+        private HighLowEnum AmountAttention(MeterReadingDetailDataOutputDto input)
         {
             return GetHasAttention(_amountExpirePercent, input.LastSumItems.Value, input.SumItems.Value);
         }
-        private MeterReadingDetailCheckedDto GetMeterReadingDetailControl(MeterReadingDetailDataOutputDto input, bool hasAttention)
+        private MeterReadingDetailCheckedDto GetMeterReadingDetailControl(MeterReadingDetailDataOutputDto input, HighLowEnum attentionState)
         {
             return new MeterReadingDetailCheckedDto()
             {
@@ -115,8 +115,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 InsertDateTime = input.InsertDateTime,
 
                 BranchTypeId = input.BranchTypeId,
+                BranchTypeTitle=input.BranchTypeTitle,
                 UsageId = input.UsageId,
-                ConsumptionUsageId= input.ConsumptionUsageId,
+                UsageTitle=input.UsageTitle,
+                ConsumptionUsageId = input.ConsumptionUsageId,
                 DomesticUnit = input.DomesticUnit,
                 CommercialUnit = input.CommercialUnit,
                 OtherUnit = input.OtherUnit,
@@ -134,7 +136,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 MeterDiameterId = input.MeterDiameterId,
                 VirtualCategoryId = input.VirtualCategoryId,
                 ContractualCapacity = input.ContractualCapacity,
-                BodySerial= input.BodySerial,
+                BodySerial = input.BodySerial,
 
                 TavizCause = input.TavizCause,
                 TavizDateJalali = input.TavizDateJalali,
@@ -154,16 +156,23 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 Consumption = input.Consumption,
                 MonthlyConsumption = input.MonthlyConsumption,
 
-                HasAttention = hasAttention
+                AttentionState = attentionState
             };
         }
-        private bool GetHasAttention(int expirePercent, double lastItem, double currentItem)
+        private HighLowEnum GetHasAttention(int expirePercent, double lastItem, double currentItem)
         {
-            double expireValue = (double)(lastItem * expirePercent / 100d);
-            double minValue = (double)(lastItem - expireValue);
-            double maxValue = (double)(lastItem + expireValue);
+            if (currentItem == 0)
+            {
+                return HighLowEnum.Zero;
+            }
+            else
+            {
+                double expireValue = (double)(lastItem * expirePercent / 100d);
+                double minValue = (double)(lastItem - expireValue);
+                double maxValue = (double)(lastItem + expireValue);
 
-            return currentItem >= minValue && currentItem <= maxValue ? false : true;
+                return currentItem >= minValue && currentItem <= maxValue ? HighLowEnum.Low : HighLowEnum.High;
+            }
         }
         private bool IsDomestic(int usageId)
         {
