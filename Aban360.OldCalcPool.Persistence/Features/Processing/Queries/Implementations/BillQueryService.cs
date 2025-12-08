@@ -56,41 +56,40 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             //string dbName = GetDbName(input.ZoneId);
             string dbName = "Atlas";
             string query = GetBedBesToRemove(dbName);
-        public async Task<IEnumerable<BillsCanRemovedOutputDto>> GetToReturned(ReturnedBillSearchDto input)
-        {
-            //string dbName = GetDbName(input.ZoneId);
-            string dbName = "Atlas";
-            string query = GetAllBedBesToReturned(dbName);
 
             RemoveBillInputDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<RemoveBillInputDto>(query, new { Id = id });
             if (result is null || result.Id <= 0)
             {
                 throw new RemovedBillException(ExceptionLiterals.InvalidId);
             }
-            IEnumerable<BillsCanRemovedOutputDto> result=await _sqlReportConnection.QueryAsync<BillsCanRemovedOutputDto>(query,input);
-            if (result is null || !result.Any())
-            {
-                throw new ReturnedBillException(ExceptionLiterals.NotFoundBillsToReturned);
-            }
             return result;
         }
-        public async Task<IEnumerable<BillsCanRemovedOutputDto>> Get(SearchBillToReturnedDto input)
+        public async Task<IEnumerable<BillsCanRemovedOutputDto>> GetToReturned(ReturnedBillSearchDto input)
         {
             //string dbName = GetDbName(input.ZoneId);
             string dbName = "Atlas";
-            string query = GetAllBedBesToReturned(dbName);
+            string query = GetBedBesListToRemove(dbName);
 
-            IEnumerable<BillsCanRemovedOutputDto> result=await _sqlReportConnection.QueryAsync<BillsCanRemovedOutputDto>(query,input);
+            IEnumerable<BillsCanRemovedOutputDto> result = await _sqlReportConnection.QueryAsync<BillsCanRemovedOutputDto>(query, input);
             if (result is null || !result.Any())
             {
                 throw new ReturnedBillException(ExceptionLiterals.NotFoundBillsToReturned);
             }
             return result;
         }
+        public async Task<IEnumerable<BillsCanRemovedOutputDto>> Get(BillToReturnInputDto input)
+        {
+            //string dbName = GetDbName(input.ZoneId);
+            string dbName = "Atlas";
+            string query = GetBillToReturnQuery(dbName);
 
+            IEnumerable<BillsCanRemovedOutputDto> result = await _sqlReportConnection.QueryAsync<BillsCanRemovedOutputDto>(query, input);
+            if (result is null || !result.Any())
+            {
+                throw new ReturnedBillException(ExceptionLiterals.NotFoundBillsToReturned);
+            }
             return result;
         }
-
         private string GetBedBesConsumptionDataQuery(string dataBaseName)
         {
             return @$"Select Top 1 
@@ -187,6 +186,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     FROM [{dbName}].dbo.bed_bes b
                     WHERE 
                     	b.id=@id";
+        }
+        private string GetBillToReturnQuery(string dbName)
+        {
+            return @"";
         }
     }
 }
