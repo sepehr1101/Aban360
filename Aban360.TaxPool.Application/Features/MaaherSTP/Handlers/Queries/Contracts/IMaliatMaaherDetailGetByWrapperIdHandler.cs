@@ -5,6 +5,6 @@ namespace Aban360.TaxPool.Application.Features.MaaherSTP.Handlers.Queries.Contra
 {
     public interface IMaliatMaaherDetailGetByWrapperIdHandler
     {
-        Task<ReportOutput<MaliatMaaherWrapperGetDto, MaliatMaaherDetailGetDto>> Handle(SearchInput inputDto,CancellationToken cancellationToken);  
+        Task<ReportOutput<MaliatMaaherWrapperGetDto, MaliatMaaherDetailGetDto>> Handle(SearchByIdInput inputDto,CancellationToken cancellationToken);  
     }
 }

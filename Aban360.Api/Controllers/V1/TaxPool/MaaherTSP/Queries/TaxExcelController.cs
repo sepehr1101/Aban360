@@ -25,7 +25,7 @@ namespace Aban360.Api.Controllers.V1.TaxPool.MaaherTSP.Queries
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
-        public async Task<IActionResult> GetExcel(string connectionId,SearchInput inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetExcel(string connectionId, SearchByIdInput inputDto, CancellationToken cancellationToken)
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _maliatMaaherDetailGetHandler.Handle, CurrentUser, ReportLiterals.ClientValidation, connectionId);
             return Ok(inputDto);

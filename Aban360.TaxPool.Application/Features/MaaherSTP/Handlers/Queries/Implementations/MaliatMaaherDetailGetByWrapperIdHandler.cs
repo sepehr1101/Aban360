@@ -22,11 +22,10 @@ namespace Aban360.TaxPool.Application.Features.MaaherSTP.Handlers.Queries.Implem
             _maaherWrapperService.NotNull(nameof(maaherWrapperService));
         }
 
-        public async Task<ReportOutput<MaliatMaaherWrapperGetDto, MaliatMaaherDetailGetDto>> Handle(SearchInput inputDto, CancellationToken cancellationToken)
+        public async Task<ReportOutput<MaliatMaaherWrapperGetDto, MaliatMaaherDetailGetDto>> Handle(SearchByIdInput inputDto, CancellationToken cancellationToken)
         {
-            int wrapperId = int.Parse(inputDto.Input);
-            IEnumerable<MaliatMaaherDetailGetDto> maaherDetails = await _maaherDetailService.Get(wrapperId);
-            MaliatMaaherWrapperGetDto maaherWrapper = await _maaherWrapperService.Get(wrapperId);
+            IEnumerable<MaliatMaaherDetailGetDto> maaherDetails = await _maaherDetailService.Get(inputDto.Id);
+            MaliatMaaherWrapperGetDto maaherWrapper = await _maaherWrapperService.Get(inputDto.Id);
 
             ReportOutput<MaliatMaaherWrapperGetDto, MaliatMaaherDetailGetDto> result = new(_title, maaherWrapper, maaherDetails);
             return result;

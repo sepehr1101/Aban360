@@ -2,6 +2,8 @@
 {
     public enum TableName
     {
+        MaliatMaaherWrapper,
+        MaliatMaaherDetail,
         MaaherInvoiceStatus,
         MaaherErrors
     }
