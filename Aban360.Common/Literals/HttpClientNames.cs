@@ -4,5 +4,6 @@
     {
         public const string Kaj=nameof(Kaj);
         public const string Geo=nameof(Geo);
+        public const string Maaher=nameof(Maaher);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Aban360.TaxPool.Domain.Features.MaaherSTP.Dto.RecieveDto
 {
-    public record SentInvoiceRecieveDto
+    public record MaaherResponseNew
     {
         public ICollection<ErrorsRecieveDto> Errors { get; set; }
        

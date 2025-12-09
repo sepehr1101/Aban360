@@ -5,6 +5,6 @@ namespace Aban360.TaxPool.Infrastructure.Features.MaaherTSP.Contracts
 {
     public interface IMaaherService
     {
-        Task<ICollection<SentInvoiceRecieveDto>> SendInvoice(ICollection<MaaherTSPInvoiceDto> inputDto);
+        Task<ICollection<MaaherResponseNew>> SendInvoice(ICollection<MaaherRequestWrapper_New> inputDto);
     }
 }

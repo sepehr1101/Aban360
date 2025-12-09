@@ -7,6 +7,7 @@ namespace Aban360.TaxPool.Persistence.Features.MaaherTSP.Contracts
     {
         Task Inserts(IEnumerable<MaliatMaaherDetailGetDto> items);
         Task<IEnumerable<MaliatMaaherDetailGetDto>> Get(MaliatMaaherDetailInsertBatchDto input);
-        Task<MaliatMaaherDetailAmountAndCountDto> Get(int wrapperId);
+        Task<IEnumerable<MaliatMaaherDetailGetDto>> Get(int wrapperId);
+        Task<MaliatMaaherDetailAmountAndCountDto> GetAmountAndCount(int wrapperId);
     }
 }

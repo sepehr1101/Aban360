@@ -1,15 +1,12 @@
 ﻿using Aban360.Common.ApplicationUser;
 using Aban360.Common.Extensions;
+using Aban360.TaxPool.Application.Features.MaaherSTP.Handlers.Commands.Contracts;
 using Aban360.TaxPool.Domain.Features.MaaherSTP.Dto.RecieveDto;
 using Aban360.TaxPool.Domain.Features.MaaherSTP.Dto.SendDto;
 using Aban360.TaxPool.Persistence.Features.MaaherTSP.Contracts;
 
-namespace Aban360.TaxPool.Application.Features.MaaherSTP.Handlers.Commands.Contracts
+namespace Aban360.TaxPool.Application.Features.MaaherSTP.Handlers.Commands.Implementations
 {
-    public interface INewListCreateHandler
-    {
-        Task Handle(NewListCreateDto input, IAppUser appUser, CancellationToken cancellationToken);
-    }
     internal sealed class NewListCreateHandler : INewListCreateHandler
     {
         private readonly IMaliatMaaherWrapperService _maliatMaaherWrapperService;
@@ -24,13 +21,15 @@ namespace Aban360.TaxPool.Application.Features.MaaherSTP.Handlers.Commands.Contr
             _maliatMaaherDetailService = maliatMaaherDetailService;
             _maliatMaaherDetailService.NotNull(nameof(maliatMaaherDetailService));
         }
-        public async Task Handle(NewListCreateDto input, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task<int> Handle(NewListCreateDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
             int newWrapperId = await InsertWrapper(appUser);
             MaliatMaaherDetailInsertBatchDto dateInterval = GetMaaherDetailDTo(input, newWrapperId);
             IEnumerable<MaliatMaaherDetailGetDto> maaherDetail = await _maliatMaaherDetailService.Get(dateInterval);
             await _maliatMaaherDetailService.Inserts(maaherDetail);
             await UpdateWrapperCountAndAmount(newWrapperId);
+
+            return newWrapperId;
         }
         private async Task<int> InsertWrapper(IAppUser appUser)
         {
@@ -55,8 +54,8 @@ namespace Aban360.TaxPool.Application.Features.MaaherSTP.Handlers.Commands.Contr
         }
         private async Task UpdateWrapperCountAndAmount(int newWrapperId)
         {
-            MaliatMaaherDetailAmountAndCountDto result = await _maliatMaaherDetailService.Get(newWrapperId);
-            UpdateMaliatMaaherWrapperAmountAndCountDto updateWrapper = new UpdateMaliatMaaherWrapperAmountAndCountDto(newWrapperId, result.InvoiceCount, result.SumAmount);
+            MaliatMaaherDetailAmountAndCountDto result = await _maliatMaaherDetailService.GetAmountAndCount(newWrapperId);
+            MaliatMaaherWrapperAmountAndCountUpdateDto updateWrapper = new MaliatMaaherWrapperAmountAndCountUpdateDto(newWrapperId, result.InvoiceCount, result.SumAmount);
             await _maliatMaaherWrapperService.UpdateAmountAndCount(updateWrapper);
         }
     }
