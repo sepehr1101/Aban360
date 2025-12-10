@@ -22,7 +22,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddCustomCors();
 builder.Services.AddCustomOptions(configuration);
 
-//Exceptions
+//ExceptionsInvalidOperationException: Unable to resolve service for type 'Aban360.Common.Db.QueryServices.ICommonZoneService' while attempting to activate 'Aban360.ReportPool.Application.Features.Dashboard.Handlers.Implementations.GetReportByTileScriptContentHandler'.
+
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 //serilog

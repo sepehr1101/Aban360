@@ -1,35 +1,37 @@
-﻿using Aban360.UserPool.Application.Extensions;
-using Aban360.UserPool.Persistence.Extensions;
-using Aban360.ReportPool.Persistence.Extentions;
-using Aban360.ReportPool.Application.Extensions;
-using Aban360.ReportPool.GatewayAdhoc.Extensions;
-using Aban360.LocationPool.Persistence.Extensions;
-using Aban360.LocationPool.Application.Extensions;
-using Aban360.LocationPool.GatewayAdhoc.Extentions;
-using Aban360.BlobPool.Persistence.Extensions;
+﻿using Aban260.BlobPool.Infrastructure.Extenstions;
 using Aban360.BlobPool.Application.Extenstions;
-using Aban260.BlobPool.Infrastructure.Extenstions;
 using Aban360.BlobPool.GatewayAddHoc.Extentions;
-using Aban360.ReportPool.Infrastructure.Extensions;
+using Aban360.BlobPool.Persistence.Extensions;
 using Aban360.CalculationPool.Application.Extensions;
 using Aban360.CalculationPool.Persistence.Extensions;
 using Aban360.ClaimPool.Application.Extentions;
 using Aban360.ClaimPool.Persistence.Extensions;
+using Aban360.Common.Db.Extensions;
+using Aban360.LocationPool.Application.Extensions;
+using Aban360.LocationPool.GatewayAdhoc.Extentions;
+using Aban360.LocationPool.Persistence.Extensions;
 using Aban360.OldCalcPool.Application.Extentions;
 using Aban360.OldCalcPool.Persistence.Extensions;
+using Aban360.ReportPool.Application.Extensions;
+using Aban360.ReportPool.GatewayAdhoc.Extensions;
+using Aban360.ReportPool.Infrastructure.Extensions;
+using Aban360.ReportPool.Persistence.Extentions;
+using Aban360.UserPool.Application.Extensions;
+using Aban360.UserPool.Persistence.Extensions;
 namespace Aban360.BrdigeApi.Extensions
 {
     internal static class ConfigureDependencies
     {
         public static void AddDI(this IServiceCollection services)
         {
+            services.AddCommonDbDI();
             services.AddUserPoolDI();
             services.AddReportPoolDI();
             services.AddLocationPoolDI();
             services.AddClaimPoolDI();
             services.AddBlobPoolDI();
             services.AddCalculationPoolDI();
-            services.AddOldCalcPoolDI();
+            services.AddOldCalcPoolDI();           
         }
 
         private static void AddUserPoolDI(this IServiceCollection services)
@@ -71,6 +73,10 @@ namespace Aban360.BrdigeApi.Extensions
         {
             services.AddOldCalcPoolApplicationInjections();
             services.AddOldCalcPoolPersistenceInjections();
+        }
+        private static void AddCommonDbDI(this IServiceCollection services)
+        {
+            services.AddCommonDbInjections();
         }
     }
 }

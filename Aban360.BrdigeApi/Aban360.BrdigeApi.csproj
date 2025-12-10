@@ -27,6 +27,8 @@
     <ProjectReference Include="..\Aban360.CalculationPool.Domain\Aban360.CalculationPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.CalculationPool.Persistence\Aban360.CalculationPool.Persistence.csproj" />
     <ProjectReference Include="..\Aban360.CalculationPoolTest.Application\Aban360.CalculationPoolTest.Application.csproj" />
+    <ProjectReference Include="..\Aban360.Common.Db\Aban360.Common.Db.csproj" />
+    <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
     <ProjectReference Include="..\Aban360.LocationPool.GatewayAdhoc\Aban360.LocationPool.GatewayAdhoc.csproj" />
     <ProjectReference Include="..\Aban360.ReportPool.Application\Aban360.ReportPool.Application.csproj" />
     <ProjectReference Include="..\Aban360.ReportPool.Domain\Aban360.ReportPool.Domain.csproj" />

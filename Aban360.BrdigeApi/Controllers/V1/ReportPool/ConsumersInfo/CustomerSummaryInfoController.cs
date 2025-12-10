@@ -40,6 +40,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
             return Ok(summary);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("latest-debt")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<LatestDebtDto>), StatusCodes.Status200OK)]
