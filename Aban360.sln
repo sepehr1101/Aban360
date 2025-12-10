@@ -252,6 +252,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aban360.HealthApi", "Aban36
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aban360.ReportPool.Infrastructure", "Aban360.ReportPool.Infrastructure\Aban360.ReportPool.Infrastructure.csproj", "{98AD19C1-9480-46BF-8778-08589BD37C79}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aban360.TaxPool.Infrastructure", "Aban360.TaxPool.Infrastructure\Aban360.TaxPool.Infrastructure.csproj", "{BFD81C81-8275-4D9B-AF34-3D25FF8FCD34}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -542,6 +544,10 @@ Global
 		{98AD19C1-9480-46BF-8778-08589BD37C79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98AD19C1-9480-46BF-8778-08589BD37C79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98AD19C1-9480-46BF-8778-08589BD37C79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFD81C81-8275-4D9B-AF34-3D25FF8FCD34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFD81C81-8275-4D9B-AF34-3D25FF8FCD34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFD81C81-8275-4D9B-AF34-3D25FF8FCD34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFD81C81-8275-4D9B-AF34-3D25FF8FCD34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -667,6 +673,7 @@ Global
 		{33C031AA-A09F-4CB6-A560-793CB96C06D6} = {D1D0B7F7-1B56-4C4F-B7D5-9889B839CB08}
 		{A249297E-D0FD-414B-A1E3-6352DC8C6CF4} = {D0B7CD7A-FDB1-4FC3-8B88-FACB4AEA4E0B}
 		{98AD19C1-9480-46BF-8778-08589BD37C79} = {7A69098B-0C9D-4D04-87BC-4A0231BB71EF}
+		{BFD81C81-8275-4D9B-AF34-3D25FF8FCD34} = {96A6DEF9-283A-476F-BD87-B951F6104223}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C0F258BB-DDA6-4E35-A9D0-53DD876EE11C}
