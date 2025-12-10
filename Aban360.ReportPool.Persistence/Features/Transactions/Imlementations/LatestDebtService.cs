@@ -16,7 +16,8 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         {
             DebtDto? ServiceLinkDebt = await GetServiceLinkDebt(billId);
             DebtDto? WaterBillDebt = await GetWaterBillDebt(billId);
-            return new LatestDebtDto(billId, WaterBillDebt?.Debt, ServiceLinkDebt?.Debt);
+            string serviceLinkState = await GetServiceLinkState(billId);
+            return new LatestDebtDto(billId, WaterBillDebt?.Debt, ServiceLinkDebt?.Debt, serviceLinkState);
         }
         private async Task<DebtDto?> GetWaterBillDebt(string billId)
         {
@@ -42,6 +43,19 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                 string query = @"SELECT BedehiAll AS Debt
                                  FROM [CustomerWarehouse].[dbo].[VosoolEnsheabAlert] 
                                  WHERE BillId=@BillId";
+                return query;
+            }
+        }
+        private async Task<string> GetServiceLinkState(string billId)
+        {
+            string? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(GetServiceLinkState(), new { BillId = billId });
+            return result;
+
+            string GetServiceLinkState()
+            {
+                string query = @"SELECT TOP 1 DeletionStateTitle AS ServiceLinkState
+                                 FROM [CustomerWarehouse].[dbo].[Clients] 
+                                 WHERE BillId=@BillId AND ToDayJalali IS NULL";
                 return query;
             }
         }
