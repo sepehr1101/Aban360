@@ -3,6 +3,7 @@
     public record ZoneIdAndCustomerNumberGetDto
     {
         public int ZoneId { get; set; }
+        public string ZoneTitle { get; set; }
         public int CustomerNumber { get; set; }
     }
 }
