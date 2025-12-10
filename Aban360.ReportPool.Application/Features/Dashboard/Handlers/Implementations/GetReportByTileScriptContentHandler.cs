@@ -49,7 +49,7 @@ namespace Aban360.ReportPool.Application.Features.Dashboard.Handlers.Implementat
             IEnumerable<int> zoneIds = await _commonZoneService.GetMyZoneIds(appUser);
             TileScriptContentReportInputDto tileScriptContentInput = new(zoneIds, DateTime.Now.ToShortPersianDateString(), null, null);
             IEnumerable<TileScriptReportDto> report = await _tileScriptCacheService.GetContent(tileScript.Content, tileScriptContentInput);
-            return report;
+            return report.OrderByDescending(o=>o.Key);
         }
         private async Task Validation(TileScriptInputDto input, CancellationToken cancellationToken)
         {

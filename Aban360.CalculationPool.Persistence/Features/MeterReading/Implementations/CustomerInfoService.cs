@@ -59,6 +59,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 		{
 			return @"Select 
 						ZoneId,
+						ZoneTitle,
 						CustomerNumber
 					From CustomerWarehouse.dbo.Clients 
 					Where

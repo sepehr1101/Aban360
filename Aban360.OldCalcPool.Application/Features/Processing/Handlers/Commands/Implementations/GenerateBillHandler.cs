@@ -55,6 +55,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             MeterImaginaryInputDto tariffImaginaryData = GetMeterImaginary(customerInfo, inputDto);
             AbBahaCalculationDetails abBahaCalcResult = await _tariffEngine.Handle(tariffImaginaryData, cancellationToken);
 
+            if (!inputDto.IsConfirm)
+            {
+                return abBahaCalcResult;
+            }
             BedBesCreateDto bedBes = GetBedBes(customerInfo, abBahaCalcResult, inputDto);
             await _bedBesCreateService.Create(bedBes, zoneIdAndCustomerNumber.ZoneId);
             if (abBahaCalcResult.DiscountSum > 0)

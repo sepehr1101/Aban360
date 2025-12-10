@@ -216,5 +216,7 @@
         public static string ConsumptionManagerDetail { get { return $" {Report} جزئیات مدیریت مصرف"; } }
         public static string ConsumptionManagerSummary{ get { return $" {Report} خلاصه مدیریت مصرف"; } }
 
+        public static string LowWorkingMeter{ get { return $" {Report} تحلیل متوسط مصرف"; } }
+
     }
 }

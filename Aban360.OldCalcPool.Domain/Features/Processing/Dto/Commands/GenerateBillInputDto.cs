@@ -10,5 +10,7 @@
         public double? Y { get; set; }
         public double? Precision { get; set; }
 
+        public bool IsConfirm { get; set; }
+
     }
 }

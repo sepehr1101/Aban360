@@ -6,4 +6,4 @@
         public string? FromDateJalali { get; set; }
 
     }
-    }
+}
