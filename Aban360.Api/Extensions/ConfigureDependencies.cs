@@ -32,6 +32,9 @@ using Aban360.SystemPool.Persistence.Extensions;
 using Aban260.BlobPool.Infrastructure.Extenstions;
 using Aban360.ReportPool.Infrastructure.Extensions;
 using Aban360.Common.Db.QueryServices;
+using Aban360.TaxPool.Application.Extensions;
+using Aban360.TaxPool.Infrastructure.Extensions;
+using Aban360.TaxPool.Persistence.Extensions;
 
 namespace Aban360.Api.Extensions
 {
@@ -54,6 +57,7 @@ namespace Aban360.Api.Extensions
             services.AddCommunicationPoolDI();
             services.AddOldCalcPoolDI();
             services.AddCommonDbDI();
+            services.AddTaxPoolDI();
         }
 
         private static void AddApiDI(this IServiceCollection services)
@@ -141,6 +145,13 @@ namespace Aban360.Api.Extensions
         private static void AddCommonDbDI(this IServiceCollection services)
         {
             services.AddTransient<ICommonZoneService, CommonZoneService>();
+        }
+
+        private static void AddTaxPoolDI(this IServiceCollection services)
+        {
+            services.AddTaxPoolApplicationInjections();
+            services.AddTaxPoolInfrastructureInjections();
+            services.AddTaxPoolPersistenceInjections();
         }
     }
 }
