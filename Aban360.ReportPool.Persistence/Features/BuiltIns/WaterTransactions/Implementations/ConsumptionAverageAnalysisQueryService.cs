@@ -3,11 +3,12 @@ using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
-namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts
+namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
     internal sealed class ConsumptionAverageAnalysisQueryService : AbstractBaseConnection, IConsumptionAverageAnalysisQueryService
     {
@@ -29,10 +30,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Con
                 RecordCount = data.Count(),
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 Title = reportTitle,
-                Values =GetBarChartValue(data)
+                Values = GetBarChartValue(data)
             };
 
-            ReportOutput<ConsumptionAverageAnalysisHeaderOutputDto, ConsumptionAverageAnalysisDataOutputDto> result = new(reportTitle, header, data.OrderBy(c => c.ItemTitle).ThenBy(c=> c.FromToConsumption));
+            ReportOutput<ConsumptionAverageAnalysisHeaderOutputDto, ConsumptionAverageAnalysisDataOutputDto> result = new(reportTitle, header, data.OrderBy(c => c.ItemTitle).ThenBy(c => c.FromToConsumption));
             return result;
         }
         private IEnumerable<ConsumptionAverageAnalysisHeaderValueDto> GetBarChartValue(IEnumerable<ConsumptionAverageAnalysisDataOutputDto> values)
@@ -42,8 +43,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Con
                   .Select(s => new ConsumptionAverageAnalysisHeaderValueDto()
                   {
                       FromToConsumption = s.Key,
-                      Count = s.Sum(c=>c.Count),
-                      Unit = s.Sum(c=>c.Unit)
+                      Count = s.Sum(c => c.Count),
+                      Unit = s.Sum(c => c.Unit)
                   })
                   .OrderBy(c => c.FromToConsumption)
                   .ToList();
