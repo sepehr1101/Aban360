@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Db.Dapper;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
@@ -6,13 +7,15 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Dapper;
+using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementations
 {
-    internal sealed class BillQueryService : AbstractBaseConnection, IBillQueryService
+    internal sealed class BedBesQueryService : AbstractBaseConnection, IBedBesQueryService
     {
-        public BillQueryService(IConfiguration configuration)
+        string _manualBillTitle = "قبوض دستی";
+        public BedBesQueryService(IConfiguration configuration)
             : base(configuration)
         {
         }
@@ -90,6 +93,24 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             }
             return result;
         }
+        public async Task<ReportOutput<ManualBillHeaderOutputDto, ManualBillDataOutputDto>> Get(ManualBillInputDto input)
+        {
+            string query = GetManualBedBesQuery();
+            IEnumerable<ManualBillDataOutputDto> data = await _sqlReportConnection.QueryAsync<ManualBillDataOutputDto>(query, input);
+            ManualBillHeaderOutputDto header = new()
+            {
+                FromDateJalali = input.FromDateJalali,
+                ToDateJalali = input.ToDateJalali,
+                RecordCount = data.Count(),
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                ConumptionAverage = data.Count() > 0 ? data.Average(x => x.ConsumptionAverage) : 0,
+            };
+
+            ReportOutput<ManualBillHeaderOutputDto, ManualBillDataOutputDto> result = new(_manualBillTitle, header, data);
+            return result;
+        }
+
+
         private string GetBedBesConsumptionDataQuery(string dataBaseName)
         {
             return @$"Select Top 1 
@@ -190,6 +211,30 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         private string GetBillToReturnQuery(string dbName)
         {
             return @"";
+        }
+        private string GetManualBedBesQuery()
+        {
+            return @"Select 
+                    	b.sh_ghabs1 BillId,
+                    	b.rate ConsumptionAverage,
+                    	b.masraf Consumption,
+                    	b.baha Amount,
+                    	b.pri_date PreviousDateJalali,
+                    	b.today_date CurrentDateJalali,
+                    	b.pri_no PreviousNumber,
+                    	b.today_no CurrentNumber,
+                    	b.cod_vas CounterStateCode,
+                    	cv.Title CounterStateTitle,
+                    	b.town ZoneId,
+                    	t51.C2 ZoneTitle
+                    From [Atlas].dbo.bed_bes b
+                    Left Join [Db70].dbo.T51 t51
+                    	On b.town=t51.C0	
+                    Left Join [Db70].dbo.CounterVaziat cv
+                    	On b.cod_vas=cv.MoshtarakinId	
+                    Where 
+                    	b.operator=5 AND
+                    	b.date_bed BETWEEN @FromDateJalali AND @ToDateJalali";
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IZaribCCacheService _zaribCQueryService;
         private readonly ITable1CacheService _table1QueryService;
         private readonly IBillIdTagService _tagService;
-        private readonly IBillQueryService _billQueryService;
+        private readonly IBedBesQueryService _billQueryService;
         private readonly IConsumptionCalculator _consumptionCalculator;
 
         private readonly IAbBahaCalculator _abBahaCalculator;
@@ -50,7 +50,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             IBillIdTagService tagService,
             IConsumptionCalculator consumptionCalculator,
             IAbBahaCalculator abBahaCalculator,
-            IBillQueryService billQueryService,
+            IBedBesQueryService billQueryService,
             IFazelabCalculator fazelabCalculator,
             IHotSeasonCalculator hotSeasonCalculator,
             IAbonmanCalculator abonmanCalculator,

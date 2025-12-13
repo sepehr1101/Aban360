@@ -217,6 +217,7 @@
         public static string ConsumptionManagerSummary{ get { return $" {Report} خلاصه مدیریت مصرف"; } }
 
         public static string LowWorkingMeter{ get { return $" {Report} تحلیل متوسط مصرف"; } }
-
+        public static string CustomerInfoWithSamePhoneNumber { get { return $" {Report} شناسه قبض های یک موبایل"; } }
+        public static string LatestReadingBill { get { return $" {Report} آخرین اطلاعات قرائت"; } }
     }
 }

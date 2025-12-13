@@ -1,4 +1,5 @@
 ﻿using Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Contracts;
+using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
 using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
@@ -32,22 +33,38 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         public async Task<TankerWaterCalculationOutputDto> Handle(TankerWaterCalculationInputDto input, CancellationToken cancellationToken)
         {
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
-            long deliveryAmount = 0;
-            if (input.Distance > 0)
-            {
-                TankerWaterDistanceTariffOutputDto tankerTariff = await _tankerQueryService.Get(input.Distance, currentDateJalali);
-                deliveryAmount = tankerTariff.Amount * input.Consumption;
-            }
 
-            ZaribCQueryDto zaribC = await _zaribCQueryService.GetZaribC(currentDateJalali);
-            ZaribGetDto zarib = await _zaribGetService.Get(input.ZoneId, currentDateJalali);
+            var (c, zb) = await GetZarib(input.ZoneId);
+            decimal saleStateZarib = input.SaleState == TankerWaterSaleStateEnum.Nomads ? 1.5m : 4;
 
-            decimal abBaha = (input.Consumption * zaribC.C) * zarib.Zb;
+            long deliveryAmount = await CalcDeliveryAmount(input);
+            decimal abBaha = (input.Consumption * saleStateZarib * c) * zb;
             decimal boodjeh = input.Consumption * 2000m;
 
-            decimal multiplier = input.ZoneId == 133111 ? 0.5m : 1m;
-            return new TankerWaterCalculationOutputDto(abBaha*multiplier, boodjeh*multiplier, deliveryAmount);
+            decimal multiplier = input.SaleState != TankerWaterSaleStateEnum.Nomads && input.ZoneId == 133111 ? 0.5m : 1m;
 
+            return new TankerWaterCalculationOutputDto(abBaha * multiplier, boodjeh * multiplier, deliveryAmount);
+
+        }
+        private async Task<long> CalcDeliveryAmount(TankerWaterCalculationInputDto input)
+        {
+            if (input.SaleState != TankerWaterSaleStateEnum.WithTanker)
+            {
+                return 0;
+            }
+
+            string currentDateJalali = DateTime.Now.ToShortPersianDateString();
+            TankerWaterDistanceTariffOutputDto tankerTariff = await _tankerQueryService.Get(input.Distance, currentDateJalali);
+            return tankerTariff.Amount * input.Consumption;
+        }
+        private async Task<(int, decimal)> GetZarib(int zoneId)
+        {
+            string currentDateJalali = DateTime.Now.ToShortPersianDateString();
+
+            ZaribCQueryDto zaribC = await _zaribCQueryService.GetZaribC(currentDateJalali);
+            ZaribGetDto zarib = await _zaribGetService.Get(zoneId, currentDateJalali);
+
+            return (zaribC.C, zarib.Zb);
         }
     }
 }

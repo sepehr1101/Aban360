@@ -4,14 +4,12 @@ using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
-using Aban360.OldCalcPool.Application.Features.Rules.Validations;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
 using DNTPersianUtils.Core;
 using FluentValidation;
-using System.Reflection;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
@@ -161,7 +159,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 Masjar = 0,
                 Sabt = 1,
                 Rate = (decimal)abBahaCalc.MonthlyConsumption,
-                Operator = 0,
+                Operator = 5,//generate manula bill
                 Mamor = 0,
                 TavizDate = customerInfo.TavizInfo.TavizDateJalali ?? string.Empty,
                 ZaribCntr = 0,

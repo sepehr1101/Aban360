@@ -37,10 +37,10 @@ namespace Aban360.ReportPool.Application.Features.Dashboard.Handlers.Implementat
             _validator = validator;
             _validator.NotNull(nameof(_validator));
         }
-        public async Task<IEnumerable<TileScriptReportDto>> Handle(int id, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task<IEnumerable<TileScriptReportDto>> Handle(int reportCode, IAppUser appUser, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            TileScript tileScript = await _tileScriptService.GetById(id);
+            TileScript tileScript = await _tileScriptService.GetByReportCode(reportCode);
             if (tileScript is null || tileScript.Content is null)
             {
                 return null;
