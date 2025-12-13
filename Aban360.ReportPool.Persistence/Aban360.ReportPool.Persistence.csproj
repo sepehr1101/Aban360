@@ -8,6 +8,13 @@
 
   <ItemGroup>
     <None Remove="Features\BuiltIns\WaterTransactions\Implementations\ReadingStatusStatementQueryService.cs~RF4127f6dc.TMP" />
+    <None Remove="DbSeeder\DataScript\TileScript.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="DbSeeder\DataScript\TileScript.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

@@ -276,203 +276,393 @@ INSERT [LocationPool].[Region] ([Id], [Title], [HeadquartersId]) VALUES (131304,
 GO
 INSERT [LocationPool].[Region] ([Id], [Title], [HeadquartersId]) VALUES (131305, N'5- منطقه پنج', 1)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131211, N'اردستان', 1312)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131211, N'اردستان', 1312, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131212, N'زواره', 1312)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131212, N'زواره', 1312, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131213, N'مهاباد', 1312)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131213, N'مهاباد', 1312, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131301, N'1  - منطقه يک', 131301)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131301, N'1  - منطقه یک', 131301, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131302, N'2 - منطقه  دو', 131302)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131302, N'2 - منطقه  دو', 131302, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131303, N'3 - منطقه  سه', 131303)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131303, N'3 - منطقه  سه', 131303, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131304, N'4 -  منطقه  چهار', 131304)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131304, N'4 -  منطقه  چهار', 131304, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131305, N'5 -  منطقه  پنج', 131305)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131305, N'5 -  منطقه  پنج', 131305, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131411, N'شاهين شهر', 1314)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131411, N'شاهین شهر', 1314, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131412, N'گز', 1314)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131412, N'گز', 1314, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131420, N'گرگاب', 1314)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131420, N'گرگاب', 1314, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131511, N'نيک آباد', 1315)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131511, N'نیک آباد', 1315, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131512, N'محمد آباد', 1315)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131512, N'محمد آباد', 1315, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131513, N'حسن آباد', 1315)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131513, N'حسن آباد', 1315, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131514, N'نصر آباد', 1315)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131514, N'نصر آباد', 1315, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131611, N'خوانسار', 1316)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131611, N'خوانسار', 1316, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131701, N'خميني شهر', 1317)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131701, N'خمینی شهر', 1317, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131702, N'درچه', 1317)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131702, N'درچه', 1317, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131703, N'کوشک', 1317)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131703, N'کوشک', 1317, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131704, N'اصغر آباد', 1317)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131704, N'اصغر آباد', 1317, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131811, N'خوراسگان', 1318)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131811, N'خوراسگان', 1318, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131911, N'سميرم', 1319)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131911, N'سمیرم', 1319, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131912, N'حنا', 1319)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131912, N'حنا', 1319, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131913, N'ونک', 1319)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131913, N'ونک', 1319, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (131914, N'کمه', 1319)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (131914, N'کمه', 1319, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132011, N'شهرضا', 1320)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132011, N'شهرضا', 1320, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132012, N'منظريه', 1320)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132012, N'منظریه', 1320, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132111, N'فريدون شهر', 1321)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132111, N'فریدون شهر', 1321, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132112, N'برف انبار', 1321)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132112, N'برف انبار', 1321, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132211, N'فلاورجان', 1322)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132211, N'فلاورجان', 1322, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132212, N'کليشاد وسودرجان', 1322)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132212, N'کلیشاد وسودرجان', 1322, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132213, N'قهدريجان', 1322)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132213, N'قهدریجان', 1322, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132214, N'ابريشم', 1322)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132214, N'ابریشم', 1322, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132215, N'پيربکران', 1322)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132215, N'پیربکران', 1322, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132216, N'مينادشت', 1322)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132216, N'مینادشت', 1322, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132217, N'بهاران', 1322)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132217, N'بهاران', 1322, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132218, N'اشترجان', 1322)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132218, N'اشترجان', 1322, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132219, N'زازران', 1322)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132219, N'زازران', 1322, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132220, N'روستاهای فلاورجان', 1322)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132220, N'روستاهای فلاورجان', 1322, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132311, N'داران', 1323)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132311, N'داران', 1323, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132315, N'دامنه', 1323)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132315, N'دامنه', 1323, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132411, N'کوهپايه', 1324)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132411, N'کوهپایه', 1324, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132412, N'سجزي', 1324)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132412, N'سجزی', 1324, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132413, N'تودشک', 1324)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132413, N'تودشک', 1324, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132511, N'گلپايگان', 1325)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132511, N'گلپایگان', 1325, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132512, N'گوگد', 1325)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132512, N'گوگد', 1325, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132513, N'گلشهر', 1325)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132513, N'گلشهر', 1325, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132611, N'زرين شهر', 1326)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132611, N'زرین شهر', 1326, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132612, N'ورنامخواست', 1326)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132612, N'ورنامخواست', 1326, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132613, N'سده لنجان', 1326)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132613, N'سده لنجان', 1326, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132614, N'چرمهين', 1326)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132614, N'چرمهین', 1326, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132615, N'باغبهادران', 1326)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132615, N'باغبهادران', 1326, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132616, N'چمگردان', 1326)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132616, N'چمگردان', 1326, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132617, N'زاينده رود', 1326)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132617, N'زاینده رود', 1326, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132618, N'باغشاد', 1326)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132618, N'باغشاد', 1326, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132711, N'مبارکه', 1327)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132711, N'مبارکه', 1327, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132712, N'ديزيچه', 1327)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132712, N'دیزیچه', 1327, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132713, N'طالخونچه', 1327)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132713, N'طالخونچه', 1327, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132714, N'زيبا شهر', 1327)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132714, N'زیبا شهر', 1327, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132715, N'کرکوند', 1327)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132715, N'کرکوند', 1327, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132811, N'نائين', 1328)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132811, N'نائین', 1328, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132812, N'انارک', 1328)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132812, N'انارک', 1328, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132813, N'بافران', 1328)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132813, N'بافران', 1328, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132911, N'نجف آباد', 1329)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132911, N'نجف آباد', 1329, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132914, N'گلدشت', 1329)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132914, N'گلدشت', 1329, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132915, N'کهريزسنگ', 1329)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132915, N'کهریزسنگ', 1329, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (132916, N'جوزدان', 1329)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (132916, N'جوزدان', 1329, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (133011, N'نطنز', 1330)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (133011, N'نطنز', 1330, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (133012, N'طرق', 1330)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (133012, N'طرق', 1330, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (133111, N'ورزنه', 1331)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (133111, N'ورزنه', 1331, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (133211, N'هرند', 1332)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (133211, N'هرند', 1332, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (133212, N'اژيه', 1332)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (133212, N'اژیه', 1332, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (133311, N'تيران', 1333)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (133311, N'تیران', 1333, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (133312, N'رضوان شهر', 1333)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (133312, N'رضوان شهر', 1333, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (133313, N'عسگران', 1333)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (133313, N'عسگران', 1333, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (133411, N'فولادشهر', 1334)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (133411, N'فولادشهر', 1334, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (133611, N'بادرود', 1336)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (133611, N'بادرود', 1336, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (133711, N'چادگان', 1337)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (133711, N'چادگان', 1337, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (133712, N'رزوه', 1337)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (133712, N'رزوه', 1337, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (133811, N'دهاقان', 1338)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (133811, N'دهاقان', 1338, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (133812, N'گلشن', 1338)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (133812, N'گلشن', 1338, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (133911, N'خور', 1339)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (133911, N'خور', 1339, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (133912, N'جندق', 1339)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (133912, N'جندق', 1339, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (133913, N'فرخي', 1339)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (133913, N'فرخی', 1339, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (134013, N'دولت آباد', 1340)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (134013, N'دولت آباد', 1340, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (134014, N'خورزوق', 1340)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (134014, N'خورزوق', 1340, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (134015, N'دستگرد', 1340)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (134015, N'دستگرد', 1340, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (134016, N'حبيب آباد', 1340)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (134016, N'حبیب آباد', 1340, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (134019, N'کمشچه', 1340)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (134019, N'کمشچه', 1340, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (134111, N'بوئين مياندشت', 1341)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (134111, N'بوئین میاندشت', 1341, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (134112, N'افوس', 1341)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (134112, N'افوس', 1341, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (134211, N'ميمه', 1342)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (134211, N'میمه', 1342, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (134212, N'وزوان', 1342)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (134212, N'وزوان', 1342, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (134213, N'لاي بيد', 1342)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (134213, N'لای بید', 1342, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (134311, N'قهجاورستان', 1343)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (134311, N'قهجاورستان', 1343, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (134411, N'زیار', 1344)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (134411, N'زیار', 1344, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (134511, N'دهق', 1345)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (134511, N'دهق', 1345, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (134512, N'علویجه', 1345)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (134512, N'علویجه', 1345, NULL)
 GO
-INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId]) VALUES (139011, N'بهارستان', 1390)
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (139011, N'بهارستان', 1390, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (141211, N'اردستان-ر', 1312, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (141212, N'زواره-ر', 1312, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (141213, N'مهاباد-ر', 1312, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (141304, N'4 -  منطقه  چهار-ر', 131304, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (141411, N'شاهین شهر-ر', 1314, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (141412, N'گز-ر', 1314, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (141420, N'گرگاب-ر', 1314, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (141511, N'نیک آباد-ر', 1315, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (141512, N'محمد آباد-ر', 1315, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (141513, N'حسن آباد-ر', 1315, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (141514, N'نصر آباد-ر', 1315, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (141611, N'خوانسار-ر', 1316, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (141701, N'خمینی شهر-ر', 1317, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (141702, N'درچه-ر', 1317, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (141703, N'کوشک-ر', 1317, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (141704, N'اصغر آباد-ر', 1317, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (141811, N'خوراسگان-ر', 1318, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (141911, N'سمیرم-ر', 1319, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (141912, N'حنا-ر', 1319, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (141913, N'ونک-ر', 1319, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (141914, N'کمه-ر', 1319, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142011, N'شهرضا-ر', 1320, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142012, N'منظریه-ر', 1320, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142111, N'فریدون شهر-ر', 1321, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142112, N'برف انبار-ر', 1321, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142211, N'فلاورجان-ر', 1322, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142212, N'کلیشاد وسودرجان-ر', 1322, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142213, N'قهدریجان-ر', 1322, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142214, N'ابریشم-ر', 1322, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142215, N'پیربکران-ر', 1322, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142216, N'مینادشت-ر', 1322, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142217, N'بهاران-ر', 1322, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142218, N'اشترجان-ر', 1322, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142219, N'زازران-ر', 1322, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142220, N'روستاهای فلاورجان-ر', 1322, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142311, N'داران-ر', 1323, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142315, N'دامنه-ر', 1323, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142411, N'کوهپایه-ر', 1324, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142412, N'سجزی-ر', 1324, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142413, N'تودشک-ر', 1324, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142511, N'گلپایگان-ر', 1325, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142512, N'گوگد-ر', 1325, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142513, N'گلشهر-ر', 1325, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142611, N'زرین شهر-ر', 1326, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142612, N'ورنامخواست-ر', 1326, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142613, N'سده لنجان-ر', 1326, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142614, N'چرمهین-ر', 1326, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142615, N'باغبهادران-ر', 1326, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142616, N'چمگردان-ر', 1326, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142617, N'زاینده رود-ر', 1326, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142618, N'باغشاد-ر', 1326, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142711, N'مبارکه-ر', 1327, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142712, N'دیزیچه-ر', 1327, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142713, N'طالخونچه-ر', 1327, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142714, N'زیبا شهر-ر', 1327, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142715, N'کرکوند-ر', 1327, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142811, N'نائین-ر', 1328, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142812, N'انارک-ر', 1328, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142813, N'بافران-ر', 1328, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142911, N'نجف آباد-ر', 1329, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142914, N'گلدشت-ر', 1329, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142915, N'کهریزسنگ-ر', 1329, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (142916, N'جوزدان-ر', 1329, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (143011, N'نطنز-ر', 1330, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (143012, N'طرق-ر', 1330, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (143111, N'ورزنه-ر', 1331, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (143211, N'هرند-ر', 1332, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (143212, N'اژیه-ر', 1332, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (143311, N'تیران-ر', 1333, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (143312, N'رضوان شهر-ر', 1333, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (143313, N'عسگران-ر', 1333, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (143411, N'فولادشهر-ر', 1334, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (143611, N'بادرود-ر', 1336, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (143711, N'چادگان-ر', 1337, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (143712, N'رزوه-ر', 1337, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (143811, N'دهاقان-ر', 1338, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (143812, N'گلشن-ر', 1338, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (143911, N'خور-ر', 1339, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (143912, N'جندق-ر', 1339, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (143913, N'فرخی-ر', 1339, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (144013, N'دولت آباد-ر', 1340, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (144014, N'خورزوق-ر', 1340, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (144015, N'دستگرد-ر', 1340, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (144016, N'حبیب آباد-ر', 1340, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (144019, N'کمشچه-ر', 1340, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (144111, N'بوئین میاندشت-ر', 1341, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (144112, N'افوس-ر', 1341, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (144211, N'میمه-ر', 1342, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (144212, N'وزوان-ر', 1342, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (144213, N'لای بید-ر', 1342, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (144311, N'قهجاورستان-ر', 1343, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (144411, N'زیار-ر', 1344, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (144511, N'دهق-ر', 1345, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (144512, N'علویجه-ر', 1345, NULL)
+GO
+INSERT [LocationPool].[Zone] ([Id], [Title], [RegionId], [UnstandardCode]) VALUES (149011, N'بهارستان-ر', 1390, NULL)
 GO
 INSERT [LocationPool].[Municipality] ([Id], [Title], [ZoneId], [IsVillage]) VALUES (10010001, N'اشینه', 131211, 1)
 GO
