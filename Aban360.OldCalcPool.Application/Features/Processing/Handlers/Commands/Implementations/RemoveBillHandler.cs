@@ -12,12 +12,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IBedBesCommandService _bedBesCommandService;
         private readonly IHBedBesCommanddService _hbedBesCommanddService;
         private readonly IKasrHaService _kasrHaService;
-        private readonly IBillQueryService _billQueryService;
+        private readonly IBedBesQueryService _billQueryService;
         public RemoveBillHandler(
             IBedBesCommandService bedBesCommandService,
             IHBedBesCommanddService hbedBesCommanddService,
             IKasrHaService kasrHaService,
-            IBillQueryService billQueryService)
+            IBedBesQueryService billQueryService)
         {
             _bedBesCommandService = bedBesCommandService;
             _bedBesCommandService.NotNull(nameof(bedBesCommandService));

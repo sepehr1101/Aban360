@@ -21,12 +21,12 @@ namespace Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Command
         private readonly IRepairCommandService _commandService;
         private readonly IMembersQueryService _membersQueryService;
         private readonly IOldTariffEngine _tariffEngine;
-        private readonly IBillQueryService _billQueryService;
+        private readonly IBedBesQueryService _billQueryService;
         public RepairCreateHandler(
             IRepairCommandService commandService,
             IMembersQueryService membersQueryService,
             IOldTariffEngine tariffEngine,
-            IBillQueryService billQueryService)
+            IBedBesQueryService billQueryService)
         {
             _commandService = commandService;
             _commandService.NotNull(nameof(commandService));

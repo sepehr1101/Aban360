@@ -13,10 +13,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.
     internal sealed class BillToReturnListGetHandler : IBillToReturnListGetHandler
     {
         private readonly ICustomerInfoService _customerInfoService;
-        private readonly IBillQueryService _billQueryService;
+        private readonly IBedBesQueryService _billQueryService;
         public BillToReturnListGetHandler(
             ICustomerInfoService customerInfoService,
-            IBillQueryService billQueryService)
+            IBedBesQueryService billQueryService)
         {
             _customerInfoService = customerInfoService;
             _customerInfoService.NotNull(nameof(customerInfoService));

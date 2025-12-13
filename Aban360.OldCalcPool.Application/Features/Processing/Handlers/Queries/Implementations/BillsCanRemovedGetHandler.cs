@@ -13,10 +13,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
     internal sealed class BillsCanRemovedGetHandler : IBillsCanRemovedGetHandler
     {
         private readonly ICustomerInfoService _customerInfoService;
-        private readonly IBillQueryService _billQueryService;
+        private readonly IBedBesQueryService _billQueryService;
         public BillsCanRemovedGetHandler(
             ICustomerInfoService customerInfoService,
-            IBillQueryService billQueryService)
+            IBedBesQueryService billQueryService)
         {
             _customerInfoService = customerInfoService;
             _customerInfoService.NotNull(nameof(customerInfoService));
