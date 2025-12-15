@@ -20,37 +20,27 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
         {
             await _meterLifeService.TruncateTable();
             IEnumerable<MeterLifeCalculationOutputDto> result = await _meterLifeService.GetFromClient();
-            result.NotNull(nameof(result));
+            result.NotNullNorEmpty(nameof(result));
             IEnumerable<MeterLifeCalculationOutputDto> meterLif = CalcDistance(result);
-            meterLif.NotNull(nameof(meterLif));
+            meterLif.NotNullNorEmpty(nameof(meterLif));
             await _meterLifeService.Insert(meterLif);
         }
         private IEnumerable<MeterLifeCalculationOutputDto> CalcDistance(IEnumerable<MeterLifeCalculationOutputDto> input)
         {
-            input.ForEach(x =>
+            return input.Select(meterlifeOutputDto =>
             {
-                string maxDate = GetMaxDate(x.WaterInstallationDateJalali, x.LatestChangeDateJalali);
-                CalcDistanceResultDto calcDistance = CalculationDistanceDate.CalcDistance(maxDate);
+                string maxDate = GetMaxDate(meterlifeOutputDto.WaterInstallationDateJalali, meterlifeOutputDto.LatestChangeDateJalali);
+                CalcDistanceResultDto calc = CalculationDistanceDate.CalcDistance(maxDate);
 
-                x.LifeInDay = calcDistance.HasError ? -1 : calcDistance.Distance;
-                x.LifeText = calcDistance.DistanceText;
+                return meterlifeOutputDto with
+                {
+                    LifeInDay = calc.HasError ? -1 : calc.Distance,
+                    LifeText = calc.DistanceText
+                };
             });
-            return input;
         }
         private string GetMaxDate(string? firstDate, string? secondDate)
-        {
-            //if (string.IsNullOrWhiteSpace(firstDate) && string.IsNullOrWhiteSpace(secondDate))
-            //{
-            //    throw new InvalidDateException(string.Empty);
-            //}
-            //if (string.IsNullOrWhiteSpace(firstDate))
-            //{
-            //    return secondDate;
-            //}
-            //if (string.IsNullOrEmpty(secondDate))
-            //{
-            //    return firstDate;
-            //}
+        {           
             return firstDate.CompareTo(secondDate) >= 0 ? firstDate : secondDate;
         }
     }

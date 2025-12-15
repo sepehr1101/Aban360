@@ -77,31 +77,25 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         public async Task Insert(IEnumerable<MeterLifeCalculationOutputDto> input)
         {
             var dataTable = GetDataTable(input);
+            using SqlConnection sqlConnection = new (_sqlReportConnection.ConnectionString);
+            await sqlConnection.OpenAsync();
+            using SqlBulkCopy bulkCopy = new (sqlConnection);
+            bulkCopy.DestinationTableName = "[CustomerWarehouse].dbo.MeterLife";
 
-            using (var sqlConnection = _sqlReportConnection)
-            {
-                await sqlConnection.OpenAsync();
+            bulkCopy.ColumnMappings.Add("ZoneId", "ZoneId");
+            bulkCopy.ColumnMappings.Add("ZoneTitle", "ZoneTitle");
+            bulkCopy.ColumnMappings.Add("CustomerNumber", "CustomerNumber");
+            bulkCopy.ColumnMappings.Add("BillId", "BillId");
+            bulkCopy.ColumnMappings.Add("BranchTypeId", "BranchTypeId");
+            bulkCopy.ColumnMappings.Add("UsageId", "UsageId");
+            bulkCopy.ColumnMappings.Add("UsageTitle", "UsageTitle");
+            bulkCopy.ColumnMappings.Add("LifeInDay", "LifeInDay");
+            bulkCopy.ColumnMappings.Add("LifeText", "LifeText");
 
-                using (var bulkCopy = new SqlBulkCopy(sqlConnection))
-                {
-                    bulkCopy.DestinationTableName = "[CustomerWarehouse].dbo.MeterLife";
+            bulkCopy.BatchSize = 10000;
+            bulkCopy.BulkCopyTimeout = 0;
 
-                    bulkCopy.ColumnMappings.Add("ZoneId", "ZoneId");
-                    bulkCopy.ColumnMappings.Add("ZoneTitle", "ZoneTitle");
-                    bulkCopy.ColumnMappings.Add("CustomerNumber", "CustomerNumber");
-                    bulkCopy.ColumnMappings.Add("BillId", "BillId");
-                    bulkCopy.ColumnMappings.Add("BranchTypeId", "BranchTypeId");
-                    bulkCopy.ColumnMappings.Add("UsageId", "UsageId");
-                    bulkCopy.ColumnMappings.Add("UsageTitle", "UsageTitle");
-                    bulkCopy.ColumnMappings.Add("LifeInDay", "LifeInDay");
-                    bulkCopy.ColumnMappings.Add("LifeText", "LifeText");
-
-                    bulkCopy.BatchSize = 10000;
-                    bulkCopy.BulkCopyTimeout = 0;
-
-                    await bulkCopy.WriteToServerAsync(dataTable);
-                }
-            }
+            await bulkCopy.WriteToServerAsync(dataTable);
         }
         private DataTable GetDataTable(IEnumerable<MeterLifeCalculationOutputDto> input)
         {
