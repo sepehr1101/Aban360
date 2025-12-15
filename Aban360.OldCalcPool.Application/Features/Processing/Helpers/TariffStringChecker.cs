@@ -40,7 +40,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
             string baseDate = "1403/09/13";
             return nerkhDate2.CompareTo(baseDate) <= 0;
         }
-        internal static bool StringConditionMoreThan(string date1, string date2)
+        internal static bool MoreOrEq(this string date1, string date2)
         {
             DateOnly? from = date1.ToGregorianDateOnly();
             DateOnly? to = date2.ToGregorianDateOnly();

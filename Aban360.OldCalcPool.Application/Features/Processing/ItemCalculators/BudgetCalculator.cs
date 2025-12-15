@@ -5,6 +5,7 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using static Aban360.Common.Timing.CalculationDistanceDate;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.VirtualCapacityCalculator;
+using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffStringChecker;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
@@ -15,7 +16,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     }
 
     internal sealed class BudgetCalculator : IBudgetCalculator
-    {        
+    {
+        const string date_1404_02_31 = "1404/02/31";
         const string date1404_01_01 = "1404/01/01";
         const string date1403_12_30 = "1403/12/30";
         const int _allowedMultiplier = 2000;
@@ -79,6 +81,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 IsDomesticCategory(customerInfo.UsageId))
             {
                 return new TariffItemResult(boodjeAmounts.Allowed);
+            }
+            if (date_1404_02_31.MoreOrEq(consumptionPartialInfo.EndDateJalali))
+            {
+                return new TariffItemResult();
             }
             //اگه مدرسه با شرایط تعریف شده باشه هم بالای ظرفیت هم زیر ظرفیت تخفیف داده میشه ??
             double virstualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, consumptionPartialInfo.Consumption, consumptionPartialInfo.Duration, boodjeAmounts.Summation);

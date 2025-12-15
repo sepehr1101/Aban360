@@ -2,10 +2,10 @@
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
-using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using static Aban360.Common.Timing.CalculationDistanceDate;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.VirtualCapacityCalculator;
+using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffStringChecker;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
@@ -17,6 +17,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
     internal sealed class FazelabCalculator : IFazelabCalculator
     {
+        private const string date_1404_02_31 = "1404/02/31";
         private const string _minimumValidDate = "1330/01/01";
         private const int _withoutSewage = 0;
         private const int _firstCalculation = 1;
@@ -88,6 +89,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 return new TariffItemResult();
             }
             if (IsConstruction(customerInfo.BranchType))
+            {
+                return new TariffItemResult();
+            }
+            if (date_1404_02_31.MoreOrEq(consumptionPartialInfo.EndDateJalali))
             {
                 return new TariffItemResult();
             }

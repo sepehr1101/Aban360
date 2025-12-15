@@ -49,6 +49,5 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
             LatestDebtDto latestDebtDto= await _latestDebtService.GetLatestDebt(searchInput.Input);
             return Ok(latestDebtDto);
         }
-
     }
 }
