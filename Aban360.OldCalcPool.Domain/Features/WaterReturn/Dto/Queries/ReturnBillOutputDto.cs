@@ -5,8 +5,8 @@ namespace Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries
 {
     public record ReturnBillOutputDto
     {
-        public IEnumerable<BedBesCreateDto> Bills{ get; set; }
-        public RepairCreateDto  Repair{ get; set; }
+        public IEnumerable<BedBesCreateDto> Bills { get; set; }
+        public RepairCreateDto Repair { get; set; }
         public AutoBackCreateDto AutoBack { get; set; }
         public ReturnBillOutputDto(IEnumerable<BedBesCreateDto> bills, RepairCreateDto repair, AutoBackCreateDto autoBack)
         {

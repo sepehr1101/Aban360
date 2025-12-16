@@ -11,7 +11,7 @@ namespace Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries
         {
             ZoneId = zoneid;
             CustomerNumber = customerNumber;
-            ComparisonDateJalali = DateTime.Now.AddYears(-1).ToShortPersianDateString();
+            ComparisonDateJalali = "1403/01/01";
         }
     }
 }

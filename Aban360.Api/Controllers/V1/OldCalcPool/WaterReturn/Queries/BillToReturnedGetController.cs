@@ -18,7 +18,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Queries
         }
 
         [HttpPost, HttpGet]
-        [Route("get-bills")]
+        [Route("bills")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<BillsCanRemovedOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> BillsToReturnedGet([FromBody] SearchInput input, CancellationToken cancellationToken)
         {

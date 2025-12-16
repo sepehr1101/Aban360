@@ -57,9 +57,15 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             await FromToDateValidation(input, customerInfo);
 
             IEnumerable<BedBesCreateDto> bedBesInfo = await GetBedBesList(customerInfo, input);
+            
             await UpdateBedBesDel(bedBesInfo);
             RepairCreateDto repairCreate = GetRepairCreateDto(bedBesInfo, customerInfo, input);
             AutoBackCreateDto autoBackCreate = GetAutoBackCreateDto(bedBesInfo, repairCreate);
+            if (!input.IsConfirm)
+            {
+                return new ReturnBillOutputDto(bedBesInfo, repairCreate, autoBackCreate);
+
+            }
 
             await _repairCommandService.Create(repairCreate);//todo : remove comment
             await _autoBackCommandService.Create(autoBackCreate);

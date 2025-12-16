@@ -97,6 +97,11 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             RepairCreateDto repairCreate = GetRepairCreateDto(abBahaResult, input, bedBesInfo);
             ValidationAmount(repairCreate.Baha, bedBesInfo.Sum(s => s.Baha));
             AutoBackCreateDto autoBackCreate = GetAutoBackCreateDto(bedBesInfo, repairCreate);
+            if (!input.IsConfirm)
+            {
+                return new ReturnBillOutputDto(bedBesInfo, repairCreate, autoBackCreate);
+
+            }
 
             await _repairCommandService.Create(repairCreate);//todo : remove comment
             await _autoBackCommandService.Create(autoBackCreate);
@@ -114,6 +119,11 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             RepairCreateDto repairCreate = GetRepairCreateDto(abBahaResult, input, customerInfo, hadarConsumption, (long)finalAmount, bedBesInfo);
             ValidationAmount(repairCreate.Baha, bedBesInfo.Sum(s => s.Baha));
             AutoBackCreateDto autoBackCreate = GetAutoBackCreateDto(bedBesInfo, repairCreate);
+            if (!input.IsConfirm)
+            {
+                return new ReturnBillOutputDto(bedBesInfo, repairCreate, autoBackCreate);
+
+            }
 
             await _repairCommandService.Create(repairCreate);
             await _autoBackCommandService.Create(autoBackCreate);
