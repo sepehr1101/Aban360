@@ -25,7 +25,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [HttpPost]
         [Route("events-summary")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetEventsSummaryInfo([FromBody] SearchInput searchInput)
+        public async Task<IActionResult> GetEventsSummaryInfo([FromBody] CardexInput searchInput)
         {
             ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> items = await _subscriptionEventHandler.Handle(searchInput.Input,searchInput.FromDateJalali);
             return Ok(items);
@@ -35,7 +35,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [Route("sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         [AllowAnonymous]
-        public async Task<IActionResult> GetStiReport([FromBody] SearchInput searchInput, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetStiReport([FromBody] CardexInput searchInput, CancellationToken cancellationToken)
         {
             int reportCode = 230;
             ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> calculationDetails = await _subscriptionEventHandler.Handle(searchInput.Input, searchInput.FromDateJalali);

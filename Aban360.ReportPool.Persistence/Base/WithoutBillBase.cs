@@ -25,10 +25,10 @@ namespace Aban360.ReportPool.Persistence.Base
                     	c.MobileNo as MobileNumber,
                     	c.PhoneNo as PhoneNumber,
                     	c.ContractCapacity as ContractualCapacity,
-                    	c.CommercialCount as CommercialUnit,
-                    	c.DomesticCount as DomesticUnit,
-                    	c.OtherCount as OtherUnit,
-                    	(c.ContractCapacity + c.DomesticCount + c.OtherCount) as TotalUnit,
+                    	ISNULL(c.CommercialCount, 0) as CommercialUnit,
+                    	ISNULL(c.DomesticCount, 0) as DomesticUnit,
+                    	ISNULL(c.OtherCount, 0) as OtherUnit,
+                    	(ISNULL(c.CommercialCount, 0) + ISNULL(c.DomesticCount, 0) + ISNULL(c.OtherCount, 0)) as TotalUnit,
                     	c.MainSiphonTitle as  SiphonDiameterTitle,
                     	c.UsageTitle as UsageTitle,
                     	TRIM(c.NationalId) as NationalCode,
@@ -55,7 +55,10 @@ namespace Aban360.ReportPool.Persistence.Base
                                 @FromReadingNumber IS NULL or
                     			@ToReadingNumber IS NULL or 
                     			c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber
-                            ) AND                           
+                            ) AND                
+                            c.DeletionStateId IN (0) AND
+                            c.HasWater=1 AND
+                            c.PhysicalWaterInstallDateJalali <= @FromDateJalali AND
                     		b.TypeCode IN (1,7,8) AND
                     		c.ToDayJalali IS NULL 
                             {parameters.CZoneQuery}
@@ -67,7 +70,8 @@ namespace Aban360.ReportPool.Persistence.Base
                     	c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber
                     ) AND
                     c.ToDayJalali IS NULL AND
-                    c.PhysicalWaterInstallDateJalali <= @FromDateJalali
+                    c.DeletionStateId IN (0) 
+                    -- AND c.PhysicalWaterInstallDateJalali <= @FromDateJalali
                     {parameters.CZoneQuery}
                     {parameters.CUsageQuery}
                     ),

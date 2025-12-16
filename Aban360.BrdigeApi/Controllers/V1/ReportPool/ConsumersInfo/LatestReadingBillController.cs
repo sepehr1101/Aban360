@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
@@ -18,11 +19,11 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
         }
 
         [HttpPost]
-        [Route("latest/{billId}")]
+        [Route("latest")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<LatestReadingBillDataOutputDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRaw(string billId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetRaw([FromBody] SearchInput input, CancellationToken cancellationToken)
         {
-            LatestReadingBillDataOutputDto result = await _latestReadingBillHandler.Handle(billId, cancellationToken);
+            LatestReadingBillDataOutputDto result = await _latestReadingBillHandler.Handle(input.Input, cancellationToken);
             return Ok(result);
         }
     }

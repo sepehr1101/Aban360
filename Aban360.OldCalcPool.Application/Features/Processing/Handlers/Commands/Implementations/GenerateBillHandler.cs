@@ -3,6 +3,7 @@ using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
@@ -49,10 +50,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             await Validation(inputDto, cancellationToken);
             ZoneIdAndCustomerNumberGetDto zoneIdAndCustomerNumber = await _customerInfoService.GetZoneIdAndCustomerNumber(inputDto.BillId);
             CustomerInfoGetDto customerInfo = await _customerInfoService.Get(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
+            CounterStateValidation(inputDto.CounterStateCode, inputDto.MeterNumber, customerInfo.BedBesInfo.LastMeterNumber);
 
             MeterImaginaryInputDto tariffImaginaryData = GetMeterImaginary(customerInfo, inputDto);
             AbBahaCalculationDetails abBahaCalcResult = await _tariffEngine.Handle(tariffImaginaryData, cancellationToken);
-
             if (!inputDto.IsConfirm)
             {
                 return abBahaCalcResult;
@@ -249,6 +250,22 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new CustomValidationException(message);
             }
+        }
+        private void CounterStateValidation(int? counterStateCode, int currentNumber, int? previousNumber)
+        {
+            if ((counterStateCode is null || !IsChangedOrReverse(counterStateCode)) &&
+                (previousNumber.HasValue) &&
+                (currentNumber < previousNumber))
+            {
+                throw new TariffCalcException(ExceptionLiterals.CurrentNumberLessThanPreviousNumber);
+            }
+
+        }
+        private bool IsChangedOrReverse(int? counterStateCode)
+        {
+            int changeCode = 3;
+            int reverseCode = 5;
+            return counterStateCode == changeCode || counterStateCode == reverseCode;
         }
     }
 }

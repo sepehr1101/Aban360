@@ -6,6 +6,8 @@ using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
+using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using DNTPersianUtils.Core;
 using FluentValidation;
 
@@ -63,6 +65,12 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new CustomValidationException(message);
+            }
+
+            bool hasRecord = await _article11QueryService.ZoneWithBlockValidation(inputDto.ZoneId, inputDto.Block);
+            if (!hasRecord)
+            {
+                throw new SaleException(ExceptionLiterals.InvalicZoneIdWithBlock);
             }
         }
         private ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> CalcSaleHeader(IEnumerable<SaleDataOutputDto> salesData, bool hasBroker)

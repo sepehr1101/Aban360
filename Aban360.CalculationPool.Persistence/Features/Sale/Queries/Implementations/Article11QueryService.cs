@@ -24,10 +24,10 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
             return article11;
         }
 
-        public async Task<Article11OutputDto> Get(short id,string currentDateJalali)
+        public async Task<Article11OutputDto> Get(short id, string currentDateJalali)
         {
             string query = GetQueryById();
-            Article11OutputDto article11 = await _sqlConnection.QueryFirstOrDefaultAsync<Article11OutputDto>(query, new { id = id, CurrentDateJalali=currentDateJalali });
+            Article11OutputDto article11 = await _sqlConnection.QueryFirstOrDefaultAsync<Article11OutputDto>(query, new { id = id, CurrentDateJalali = currentDateJalali });
             if (article11 == null)
             {
                 throw new InvalidIdException();
@@ -37,11 +37,18 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
         public async Task<IEnumerable<Article11OutputDto>> Get(string currentDateJalali)
         {
             string query = GetAllQuery();
-            IEnumerable<Article11OutputDto> article11 = await _sqlConnection.QueryAsync<Article11OutputDto>(query, new { CurrentDateJalali=currentDateJalali});
+            IEnumerable<Article11OutputDto> article11 = await _sqlConnection.QueryAsync<Article11OutputDto>(query, new { CurrentDateJalali = currentDateJalali });
 
             return article11;
         }
+        public async Task<bool> ZoneWithBlockValidation(int zoneId, string? block)
+        {
+            string blockCondition = block is null ? "BlockCode IS NULL" : "BlockCode=@BlockCode";
+            string query = GetZoneWithBlockValidationQuery(blockCondition);
 
+            int count = await _sqlConnection.QueryFirstOrDefaultAsync<int>(query, new { zoneId = zoneId, BlockCode = block });
+            return count <= 0 ? false : true;
+        }
         private string GetQuery()
         {
             return @"Select *
@@ -55,7 +62,6 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
                     	)AND
                     	ZoneId=@zoneId";
         }
-
         private string GetQueryById()
         {
             return @"Select *
@@ -65,7 +71,6 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
                     	RemoveDateTime IS NULL AND
 						Id=@id";
         }
-
         private string GetAllQuery()
         {
             return @"Select *
@@ -73,6 +78,14 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
                     Where
                     	ToDateJalali>@CurrentDateJalali AND
                     	RemoveDateTime IS NULL";
+        }
+        private string GetZoneWithBlockValidationQuery(string blockCondition)
+        {
+            return @$"Select COUNT(1)
+                    From Aban360.CalculationPool.Article11
+                    Where 
+                    	ZoneId=@ZoneId AND
+                    	{blockCondition}";
         }
     }
 }
