@@ -2,12 +2,12 @@
 
 namespace Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries
 {
-    public record ReturnedBillSearchDto
+    public record ReturnBillSearchDto
     {
         public int ZoneId { get; set; }
         public int CustomerNumber { get; set; }
         public string ComparisonDateJalali { get; set; }
-        public ReturnedBillSearchDto(int zoneid, int customerNumber)
+        public ReturnBillSearchDto(int zoneid, int customerNumber)
         {
             ZoneId = zoneid;
             CustomerNumber = customerNumber;

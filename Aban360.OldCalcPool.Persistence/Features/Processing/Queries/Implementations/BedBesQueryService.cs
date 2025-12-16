@@ -2,6 +2,7 @@
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
@@ -67,7 +68,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             }
             return result;
         }
-        public async Task<IEnumerable<BillsCanRemovedOutputDto>> GetToReturned(ReturnedBillSearchDto input)
+        public async Task<IEnumerable<BillsCanRemovedOutputDto>> GetToReturned(ReturnBillSearchDto input)
         {
             //string dbName = GetDbName(input.ZoneId);
             string dbName = "Atlas";
@@ -108,6 +109,41 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 
             ReportOutput<ManualBillHeaderOutputDto, ManualBillDataOutputDto> result = new(_manualBillTitle, header, data);
             return result;
+        }
+        public async Task<float> GetPreviousBill(int zoneId, int customerNumber, string dateJalali)
+        {
+            string dbName = GetDbName(zoneId);
+            string query = GetPrviousBill(dbName);
+            var @params = new
+            {
+                zoneId = zoneId,
+                customerNumber = customerNumber,
+                dateJalali = dateJalali
+            };
+            float rate = await _sqlReportConnection.QueryFirstOrDefaultAsync<float>(query, @params);
+            return rate;
+        }
+        public async Task<IEnumerable<BedBesCreateDto>> Get(ZoneCustomerFromToDateDto input)
+        {
+            string dbName = GetDbName(input.ZoneId);
+            //string dbName = "Atlas";
+            string query = GetListByFromToDate(dbName);
+            IEnumerable<BedBesCreateDto> result = await _sqlReportConnection.QueryAsync<BedBesCreateDto>(query, input);
+            return result;
+        }
+        public async Task<int> GetCountInDateBed(int zoneId, int customernumber, string date)
+        {
+            string dbName = GetDbName(zoneId);
+            //string dbName = "Atlas";
+            string query = GetCountInDateBedQuery(dbName);
+            var @params = new
+            {
+                zoneId = zoneId,
+                customerNumber = customernumber,
+                date = date
+            };
+            int count = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(query, @params);
+            return count;
         }
 
 
@@ -235,6 +271,106 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     Where 
                     	b.operator=5 AND
                     	b.date_bed BETWEEN @FromDateJalali AND @ToDateJalali";
+        }
+        private string GetPrviousBill(string dbName)
+        {
+            return @$"Select top 1 *
+                    From [{dbName}].dbo.bed_bes
+                    Where
+                    	town=@zoneId AND
+                    	radif=@customerNumber AND
+                    	date_bed<@dateJalali
+                    Order By date_bed Desc";
+        }
+        private string GetListByFromToDate(string dbName)
+        {
+            return @$"SELECT
+                        town AS Town,
+                        radif AS Radif,
+                        eshtrak AS Eshtrak,
+                        barge AS Barge,
+                        pri_no AS PriNo,
+                        today_no AS TodayNo,
+                        pri_date AS PriDate,
+                        today_date AS TodayDate,
+                        abon_fas AS AbonFas,
+                        fas_baha AS FasBaha,
+                        ab_baha AS AbBaha,
+                        ztadil AS Ztadil,
+                        masraf AS Masraf,
+                        shahrdari AS Shahrdari,
+                        modat AS Modat,
+                        date_bed AS DateBed,
+                        jalase_no AS JalaseNo,
+                        mohlat AS Mohlat,
+                        baha AS Baha,
+                        abon_ab AS AbonAb,
+                        pard AS Pard,
+                        jam  AS Jam,
+                        cod_vas AS CodVas,
+                        ghabs AS Ghabs,
+                        del AS Del,
+                        [type] AS Type,
+                        cod_enshab  AS CodEnshab,
+                        enshab AS Enshab,
+                        elat AS Elat,
+                        serial AS Serial,
+                        ser AS Ser,
+                        zaribfasl AS ZaribFasl,
+                        ab_10 AS Ab10,
+                        ab_20 AS Ab20,
+                        tedad_vahd AS TedadVahd,
+                        ted_khane AS TedKhane,
+                        tedad_mas AS TedadMas,
+                        tedad_tej AS TedadTej,
+                        noe_va AS NoeVa,
+                        jarime AS Jarime,
+                        masjar AS Masjar,
+                        sabt AS Sabt,
+                        rate AS Rate,
+                        operator AS Operator,
+                        mamor AS Mamor,
+                        taviz_date AS TavizDate,
+                        zarib_cntr AS ZaribCntr,
+                        zabresani AS Zabresani,
+                        zarib_d AS ZaribD,
+                        tafavot AS Tafavot,
+                        kasr_ha AS KasrHa,
+                        fix_mas AS FixMas,
+                        sh_ghabs1 AS ShGhabs1,
+                        sh_pard1 AS ShPard1,
+                        TAB_ABN_A AS TabAbnA,
+                        TAB_ABN_F AS TabAbnF,
+                        TABS_FA AS TabsFa,    
+                        NEWAB AS NewAb,
+                        NEWFA AS NewFa,
+                        bodjeh AS Bodjeh,
+                        group1 AS Group1,
+                        MAS_FAS AS MasFas,
+                        FAZ AS Faz,
+                        CHK_KARBARI AS ChkKarbari,
+                        C200 AS C200, 
+                        Ab_sevom AS AbSevom,
+                        Ab_sevom1 AS AbSevom1,
+                        Khali_s AS KhaliS,
+                        edareh_k AS EdarehK,
+                        Avarez AS Avarez
+                    FROM [{dbName}].dbo.Bed_Bes
+                    WHERE
+                    	town=@zoneId AND
+                    	radif=@customerNumber AND
+                    	date_bed BETWEEN @fromDate AND @toDate AND
+						cod_vas NOT IN (4,7,8)
+                    Order by date_bed";
+        }
+        private string GetCountInDateBedQuery(string dbName)
+        {
+            return @$"Select COUNT(1)
+                        From [{dbName}].dbo.bed_bes
+                        Where 
+                        	town=@zoneId AND
+                        	radif=@customerNumber AND
+                        	date_bed=@dateBed";
         }
     }
 }

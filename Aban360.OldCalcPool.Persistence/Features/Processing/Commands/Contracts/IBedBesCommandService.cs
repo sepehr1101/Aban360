@@ -8,5 +8,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts
         Task Create(ICollection<BedBesCreateDto> input);
         Task Create(ICollection<BedBesCreateDto> input, int zoneId);
         Task Delete(int id);
+        Task UpdateDel(IEnumerable<BedBesUpdateDelDto> input);
     }
 }

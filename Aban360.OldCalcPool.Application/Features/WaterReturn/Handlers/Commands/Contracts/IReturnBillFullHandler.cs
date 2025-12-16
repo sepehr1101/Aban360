@@ -2,8 +2,8 @@
 
 namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts
 {
-    public interface IReturnedBillHandler
+    public interface IReturnBillFullHandler
     {
-        Task Handle(ReturnedBillInputDto inputDto, CancellationToken cancellationToken);
+        Task<ReturnBillOutputDto> Handle(ReturnBillFullInputDto inputDto, CancellationToken cancellationToken);
     }
 }

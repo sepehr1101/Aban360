@@ -169,9 +169,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                        InsertByUserId = meterReading.InsertByUserId,
                        InsertDateTime = meterReading.InsertDateTime,
 
-                       BranchTypeId=members.BranchTypeId,
+                       BranchTypeId = members.BranchTypeId,
                        UsageId = members.UsageId,
-                       ConsumptionUsageId= members.ConsumptionUsageId,
+                       ConsumptionUsageId = members.ConsumptionUsageId,
                        DomesticUnit = members.DomesticUnit,
                        CommercialUnit = members.CommercialUnit,
                        OtherUnit = members.OtherUnit,
@@ -189,7 +189,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                        IsSpecial = members.IsSpecial,
                        MeterDiameterId = members.MeterDiameterId,
                        VirtualCategoryId = members.VirtualCategoryId,
-                       BodySerial= members.BodySerial,
+                       BodySerial = members.BodySerial,
 
                        TavizCause = taviz?.TavizCause,
                        TavizDateJalali = taviz?.TavizDateJalali,
@@ -201,7 +201,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                        LastConsumption = bedbes is null ? 0 : bedbes.LastConsumption,
                        LastMonthlyConsumption = bedbes is null ? 0 : bedbes.LastMonthlyConsumption,
                        LastCounterStateCode = bedbes is null ? 0 : bedbes.LastCounterStateCode,
-                       LastSumItems = bedbes is null ? 0 : bedbes?.LastSumItems
+                       LastSumItems = bedbes is null ? 0 : (bedbes?.LastSumItems is null ? 0 : bedbes?.LastSumItems)
                    };
         }
         private MeterReadingFileDetail CreateMeterReading(int zoneId, int customerNumber, string readingNumber, int agentCode, short currentCounterStateCode, string previousDateJalali, string currentDateJalali, int previousNumber, int currentNumber, Guid userId)
