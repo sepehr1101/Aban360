@@ -108,8 +108,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             }
             if (IsReligiousWithCharity(usageId))
             {
-                return consumptionInfo.MonthlyAverageConsumption <= customerInfo.ContractualCapacity ? 
-                    new TariffItemResult(abonmanAmount) : new TariffItemResult();
+                double abonmanPerUnit = abonmanAmount / customerInfo.UnitAll;
+                double abonmanCommercial = abonmanPerUnit * customerInfo.CommertialUnit;
+                double nonCommercial = abonmanAmount - abonmanCommercial;
+                return consumptionInfo.MonthlyAverageConsumption <= customerInfo.ContractualCapacity ?
+                    new TariffItemResult(nonCommercial) : new TariffItemResult();
             }
             return bahaDiscountAmount > 0 && !IsReligiousWithCharity(usageId) ? 
                 new TariffItemResult(abonmanAmount) : new TariffItemResult();
