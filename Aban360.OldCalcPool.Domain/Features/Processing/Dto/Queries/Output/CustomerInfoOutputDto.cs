@@ -10,8 +10,9 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         public int BranchType { get; set; }
         public int UsageId { get; set; }      
         public int DomesticUnit { get; set; }
-        public int CommertialUnit { get; set; }
+        public int CommertialUnit { get; set; }        
         public int OtherUnit { get; set; }
+        public int UnitAll { get { return DomesticUnit + CommertialUnit + OtherUnit; } }
         public int EmptyUnit { get; set; }
         public string WaterInstallationDateJalali { get; set; } = default!;
         public string? SewageInstallationDateJalali { get; set; }
