@@ -114,7 +114,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 ZaribD = bedBes.Sum(x => x.ZaribD),
                 Avarez = bedBes.Sum(x => x.Avarez)
             };
-       
+
             return new RepairCreateDto()
             {
                 Town = customerInfo.ZoneId,
@@ -137,7 +137,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Mohlat = string.Empty,
                 Baha = finalBedBes.Baha,
                 AbonAb = finalBedBes.AbonAb,
-                Pard = finalBedBes.Pard,
+                Pard = (finalBedBes.Pard / 1000) * 1000,
                 Jam = finalBedBes.Jam,
                 CodVas = 02,
                 Ghabs = string.Empty,
@@ -184,9 +184,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 TmpMohlat = string.Empty,
                 TmpTavizDate = string.Empty,
                 TmpDateBed = string.Empty,
-                EdarehK = false,//
+                EdarehK = customerInfo.IsSpecial,
                 Lavazem = 0,//
-                DateSbt = string.Empty,
+                DateSbt = currentDateJalali,
                 Avarez = finalBedBes.Avarez,
                 TedKhane = customerInfo.HouseholdNumber
             };
