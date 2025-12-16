@@ -30,6 +30,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             return result;
         }
 
+
         private string GetCustomerInfoDataQuery(string dataBaseName)
         {
             return @$"Select
@@ -61,7 +62,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	m.town=@zoneId AND 
 						m.radif=@customerNumber";
         }
-
         private string GetZoneIdQuery()
         {
             return @"Select c.ZoneId,c.CustomerNumber

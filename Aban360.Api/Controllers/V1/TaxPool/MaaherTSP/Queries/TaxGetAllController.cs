@@ -16,7 +16,7 @@ namespace Aban360.Api.Controllers.V1.TaxPool.MaaherTSP.Queries
             _maaherWrapperGetAllHandler.NotNull(nameof(maaherWrapperGetAllHandler));
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("all")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<MaliatMaaherWrapperGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> All(CancellationToken cancellationToken)

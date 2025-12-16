@@ -330,7 +330,9 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 						On m.BranchTypeId=t7.C0
 					Left Join [Db70].dbo.T41 t41
 						On m.UsageId=t41.C0
-                     Where m.FlowImportedId=@flowImportedId";
+                     Where 
+                        m.FlowImportedId=@flowImportedId AND
+					    m.RemovedByUserId IS NULL";
         }
         private string GetDeleteCommands()
         {

@@ -24,6 +24,18 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
             IEnumerable<SGetDto> result = await _sqlReportConnection.QueryAsync<SGetDto>(query, @params);
             return result;
         }
+        public async Task<SGetDto> Get(string @from, string @to,int zoneId)
+        {
+            string query = GetQueryByFromToZoneId();
+            var @params = new
+            {
+                fromDate = @from,
+                toDate = @to,
+                zoneId = zoneId 
+            };
+            SGetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<SGetDto>(query, @params);
+            return result;
+        }
         public async Task<IEnumerable<SGetDto>> Get()
         {
             string query = GetAllQuery();
@@ -61,6 +73,21 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                     Where 
                     	FromDate>=@fromDate And
                     	ToDate<=@toDate ";
+        }
+        private string GetQueryByFromToZoneId()
+        {
+            return @"Select 
+                    	Id,
+                    	town as ZoneId,
+                    	olgo,
+                    	FromDate as FromDateJalali,
+                    	ToDate as ToDateJalali
+                    From OldCalc.dbo.S
+                    Where 
+                    	FromDate>=@fromDate And
+                    	ToDate<=@toDate And
+                        Town=@zoneId
+					Order By FromDate Desc";
         }
         private string GetAllQuery()
         {

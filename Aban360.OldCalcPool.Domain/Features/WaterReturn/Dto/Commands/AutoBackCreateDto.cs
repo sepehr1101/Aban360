@@ -1,6 +1,6 @@
 ﻿namespace Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Commands
 {
-    public record RepairCreateDto
+    public record AutoBackCreateDto
     {
         public decimal Town { get; set; }
         public decimal Radif { get; set; }
@@ -61,19 +61,12 @@
         public decimal TabAbnF { get; set; }
         public decimal TabsFa { get; set; }
         public decimal Bodjeh { get; set; }
-        public decimal Group1 { get; set; }
         public bool Faz { get; set; }
-        public decimal ChkKarbari { get; set; }
-        public decimal C200 { get; set; }
         public string TmpPriDate { get; set; }
         public string TmpTodayDate { get; set; }
+        public string TmpDateBed { get; set; }
         public string TmpMohlat { get; set; }
         public string TmpTavizDate { get; set; }
-        public string TmpDateBed { get; set; }
-        public bool EdarehK { get; set; }
-        public decimal Lavazem { get; set; }
-        public string DateSbt { get; set; }
-        public decimal Avarez { get; set; }
     }
 
 }

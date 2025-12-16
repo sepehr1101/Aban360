@@ -28,7 +28,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.
         public async Task<IEnumerable<BillsCanRemovedOutputDto>> Handle(SearchInput input, CancellationToken cancellationToken)
         {
             ZoneIdAndCustomerNumberGetDto zoneIdAndCustomerNumber = await _customerInfoService.GetZoneIdAndCustomerNumber(input.Input);
-            ReturnedBillSearchDto returnedBillSearchDto = new(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
+            ReturnBillSearchDto returnedBillSearchDto = new(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
 
             IEnumerable<BillsCanRemovedOutputDto> billsCanReturned = await _billQueryService.GetToReturned(returnedBillSearchDto);
             return billsCanReturned;
