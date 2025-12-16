@@ -205,96 +205,6 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 TedKhane = tariffInfo.Customer.HouseholdNumber
             };
         }
-
-        #region GetAutoBackCreateDto
-        //private AutoBackCreateDto GetAutoBackCreateDto(RepairCreateDto repairCreate, CustomerInfoOutputDto customerInfo)
-        //{
-        //    string currentDateJalali = DateTime.Now.ToShortPersianDateString();
-        //    string currentDateJalali10Char = currentDateJalali.Substring(2);
-
-        //    return new AutoBackCreateDto()
-        //    {
-        //        Town = customerInfo.ZoneId,
-        //        Radif = customerInfo.Radif,
-        //        Eshtrak = customerInfo.ReadingNumber,
-        //        Barge = 0,
-        //        PriNo = 0,
-        //        TodayNo = 0,
-        //        PriDate = repairCreate.PriDate,
-        //        TodayDate = repairCreate.TodayDate,
-        //        AbonFas = 0,
-        //        FasBaha = 0,
-        //        AbBaha = 0,////
-        //        Ztadil = 0,
-        //        Masraf = 0,
-        //        Shahrdari = 0,
-        //        Modat = 0,
-        //        DateBed = currentDateJalali,
-        //        JalaseNo = 0,
-        //        Mohlat = string.Empty,
-        //        Baha = 0,//
-        //        AbonAb = 0,//
-        //        Pard = 0,//
-        //        Jam = 0,//
-        //        CodVas = 0,
-        //        Ghabs = string.Empty,
-        //        Del = false,
-        //        Type = "4",
-        //        CodEnshab = customerInfo.UsageId,
-        //        Enshab = customerInfo.MeterDiameterId,
-        //        Elat = 0,
-        //        Serial = 0,//customerInfo.BodySerial,
-        //        Ser = 0,
-        //        ZaribFasl = 0,
-        //        Ab10 = 0,
-        //        Ab20 = 0,
-        //        TedadVahd = customerInfo.OtherUnit,
-        //        TedadMas = customerInfo.DomesticUnit,
-        //        TedadTej = customerInfo.CommertialUnit,
-        //        TedKhane = customerInfo.HouseholdNumber,
-        //        NoeVa = customerInfo.BranchType,
-        //        Jarime = 0,
-        //        Masjar = 0,
-        //        Sabt = 0,
-        //        Rate = 0,////
-        //        Operator = 0,
-        //        Mamor = 0,
-        //        TavizDate = string.Empty,
-        //        ZaribCntr = 0,
-        //        Zabresani = 0,
-        //        ZaribD = 0,
-        //        Tafavot = 0,
-        //        MasHadar = 0,
-        //        AbHadar = 0,
-        //        RangeMas = 0,
-        //        TafBack = 0,
-        //        TedGhabs = 0,
-        //        TabAbnA = 0,
-        //        TabAbnF = 0,
-        //        TabsFa = 0,
-        //        Bodjeh = 0,
-        //        Faz = false,
-        //        TmpPriDate = string.Empty,
-        //        TmpTodayDate = currentDateJalali10Char,
-        //        TmpMohlat = string.Empty,
-        //        TmpTavizDate = string.Empty,
-        //        TmpDateBed = currentDateJalali10Char,
-        //    };
-        //}
-
-        #endregion
-        private async Task<AbBahaCalculationDetails> GetAbBahaTariff(ReturnBillPartialInputDto input, double consumptionAverage, CancellationToken cancellationToken)
-        {
-            MeterDateInfoWithMonthlyConsumptionOutputDto meterData = new()
-            {
-                BillId = input.BillId,
-                PreviousDateJalali = input.FromDateJalali,
-                CurrentDateJalali = input.ToDateJalali,
-                MonthlyAverageConsumption = consumptionAverage
-            };
-            AbBahaCalculationDetails abBahaResult = await _oldTariffEngine.Handle(meterData, cancellationToken);
-            return abBahaResult;
-        }
         private RepairCreateDto GetRepairCreateDto(AbBahaCalculationDetails tariffInfo, ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBes)
         {
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
@@ -473,6 +383,18 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 TmpTavizDate = string.Empty,
                 TmpDateBed = currentDateJalali10Char,
             };
+        }
+        private async Task<AbBahaCalculationDetails> GetAbBahaTariff(ReturnBillPartialInputDto input, double consumptionAverage, CancellationToken cancellationToken)
+        {
+            MeterDateInfoWithMonthlyConsumptionOutputDto meterData = new()
+            {
+                BillId = input.BillId,
+                PreviousDateJalali = input.FromDateJalali,
+                CurrentDateJalali = input.ToDateJalali,
+                MonthlyAverageConsumption = consumptionAverage
+            };
+            AbBahaCalculationDetails abBahaResult = await _oldTariffEngine.Handle(meterData, cancellationToken);
+            return abBahaResult;
         }
         private async Task<IEnumerable<BedBesCreateDto>> GetBedBesList(CustomerInfoOutputDto customerInfo, ReturnBillPartialInputDto input)
         {
