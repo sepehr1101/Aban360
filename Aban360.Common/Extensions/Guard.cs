@@ -19,6 +19,14 @@ namespace Aban360.Common.Extensions
                 throw new ArgumentIsNullException(name);
             }
         }
+        public static void NotNullNorEmpty<T>(this IEnumerable<T> list, string name)
+        {
+            list.NotNull(name);
+            if (!list.Any())
+            {
+                throw new ArgumentIsNullException(name);
+            }
+        }
         public static string NotEmptyString(this object? value, string name)
         {
             var s = value as string ?? value?.ToString();
