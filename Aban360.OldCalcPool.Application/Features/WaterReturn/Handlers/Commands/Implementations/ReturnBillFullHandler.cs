@@ -56,13 +56,13 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             CustomerInfoOutputDto customerInfo = await _customerInfoDetailQueryService.GetInfo(input.BillId);
             await FromToDateValidation(input, customerInfo);
 
-            float previousConsumptionAverage = await _bedBesQueryService.GetPreviousBill(customerInfo.ZoneId, customerInfo.Radif, input.FromDateJalali);
-            double consumptionAverage = input.UserInput is null ? previousConsumptionAverage : input.UserInput.Value;
-
             IEnumerable<BedBesCreateDto> bedBesInfo = await GetBedBesList(customerInfo, input);
             await UpdateBedBesDel(bedBesInfo);
             RepairCreateDto repairCreate = GetRepairCreateDto(bedBesInfo, customerInfo, input);
             AutoBackCreateDto autoBackCreate = GetAutoBackCreateDto(bedBesInfo, repairCreate);
+
+            await _repairCommandService.Create(repairCreate);//todo : remove comment
+            await _autoBackCommandService.Create(autoBackCreate);
 
             return new ReturnBillOutputDto(bedBesInfo, repairCreate, autoBackCreate);
         }
@@ -88,6 +88,8 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private RepairCreateDto GetRepairCreateDto(IEnumerable<BedBesCreateDto> bedBes, CustomerInfoOutputDto customerInfo, ReturnBillFullInputDto input)
         {
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
+            decimal previousNumber = bedBes.Min(x => x.PriNo);
+            decimal currentNumber = bedBes.Max(x => x.TodayNo);
 
             BedBesCreateDto latestBedbes = bedBes.OrderByDescending(x => x.DateBed).FirstOrDefault();
             BedBesCreateDto finalBedBes = new BedBesCreateDto
@@ -112,9 +114,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 ZaribD = bedBes.Sum(x => x.ZaribD),
                 Avarez = bedBes.Sum(x => x.Avarez)
             };
-            decimal previousNumber = bedBes.Min(x => x.PriNo);
-            decimal currentNumber = bedBes.Max(x => x.PriNo);
-
+       
             return new RepairCreateDto()
             {
                 Town = customerInfo.ZoneId,
@@ -131,7 +131,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Ztadil = finalBedBes.Ztadil,
                 Masraf = finalBedBes.Masraf,
                 Shahrdari = finalBedBes.Shahrdari,
-                Modat = Duration(input.FromDateJalali, input.ToDateJalali),
+                Modat = Duration(input.ToDateJalali, input.FromDateJalali),
                 DateBed = currentDateJalali,
                 JalaseNo = input.Minutes,
                 Mohlat = string.Empty,

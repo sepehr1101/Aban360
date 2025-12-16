@@ -31,7 +31,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                 fromDate = @from,
                 toDate = @to
             };
-            ZaribCQueryDto zaribCQueryDto = await _sqlReportConnection.QueryFirstAsync<ZaribCQueryDto>(query, @params);
+            ZaribCQueryDto zaribCQueryDto = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZaribCQueryDto>(query, @params);
             return zaribCQueryDto;
         }
         public async Task<IEnumerable<ZaribCQueryDto>> GetZaribC()
@@ -72,7 +72,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
 	                C
                 FROM [OldCalc].dbo.Zarib_C
                 WHERE 
-	                FromDateJalali>@fromDate AND ToDateJalali<=@toDate AND
+	                FromDateJalali<@fromDate AND ToDateJalali>=@toDate AND
 	                IsDeleted=0";
         }
         private string GetAllQuery()

@@ -11,10 +11,16 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
     public class ReturnBillController : BaseController
     {
         private readonly IReturnBillPartialHandler _billToReturnedHandler;
-        public ReturnBillController(IReturnBillPartialHandler billToReturnedHandler)
+        private readonly IReturnBillFullHandler _billFullHandler;
+        public ReturnBillController(
+            IReturnBillPartialHandler billToReturnedHandler,
+            IReturnBillFullHandler billFullHandler)
         {
             _billToReturnedHandler = billToReturnedHandler;
             _billToReturnedHandler.NotNull(nameof(billToReturnedHandler));
+            
+            _billFullHandler = billFullHandler;
+            _billFullHandler.NotNull(nameof(billFullHandler));
         }
 
         [HttpPost, HttpGet]
@@ -29,9 +35,9 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
         [HttpPost, HttpGet]
         [Route("full")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<BillsCanRemovedOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> FullReturn([FromBody] ReturnBillPartialInputDto input, CancellationToken cancellationToken)
+        public async Task<IActionResult> FullReturn([FromBody] ReturnBillFullInputDto input, CancellationToken cancellationToken)
         {
-            await _billToReturnedHandler.Handle(input, cancellationToken);
+            await _billFullHandler.Handle(input, cancellationToken);
             return Ok(input);
         }
     }

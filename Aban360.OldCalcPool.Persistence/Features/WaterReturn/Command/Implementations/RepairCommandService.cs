@@ -16,9 +16,9 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implemen
 
         public async Task Create(RepairCreateDto input)
         {
-            string dbName = GetDbName((int)input.Town);
+            //string dbName = GetDbName((int)input.Town);
             string atlasQuery = CreateAtlasQuery();
-            string localQuery = CreateQuery(dbName);
+            //string localQuery = CreateQuery(dbName);
 
             await _sqlReportConnection.ExecuteScalarAsync(atlasQuery, input);
             //await _sqlReportConnection.ExecuteScalarAsync(localQuery, input);

@@ -274,7 +274,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         }
         private string GetPrviousBill(string dbName)
         {
-            return @$"Select top 1 *
+            return @$"Select top 1 rate
                     From [{dbName}].dbo.bed_bes
                     Where
                     	town=@zoneId AND
@@ -370,7 +370,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                         Where 
                         	town=@zoneId AND
                         	radif=@customerNumber AND
-                        	date_bed=@dateBed";
+                        	date_bed=@date";
         }
     }
 }
