@@ -13,12 +13,10 @@
         public string RegisterDateJalali { get; set; }
         public int Consumption { get; set; }
         public float MonthlyConsumption { get; set; }
-        public long Pardakht { get; set; }
-        public long Jam { get; set; }
-        public long Baha { get; set; }
+        public long Payable { get; set; }
+        public long SumItems { get; set; }
         public long Discount { get; set; }
         public int AgentCode { get; set; }
-        public int Barge { get; set; }
 
         public long PaymentId { get; set; }
         public string BillId { get; set; }

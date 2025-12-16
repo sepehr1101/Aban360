@@ -16,12 +16,12 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implemen
 
         public async Task Create(RepairCreateDto input)
         {
-            string dbName = GetDbName((int)input.Town);
+            //string dbName = GetDbName((int)input.Town);
             string atlasQuery = CreateAtlasQuery();
-            string localQuery = CreateQuery(dbName);
+            //string localQuery = CreateQuery(dbName);
 
             await _sqlReportConnection.ExecuteScalarAsync(atlasQuery, input);
-            await _sqlReportConnection.ExecuteScalarAsync(localQuery, input);
+            //await _sqlReportConnection.ExecuteScalarAsync(localQuery, input);
         }
         public async Task Create(IEnumerable<RepairCreateDto> input)
         {
@@ -81,7 +81,7 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implemen
                         mas_hadar, ab_hadar, range_mas, taf_back, ted_ghabs, TAB_ABN_A, TAB_ABN_F,
                         TABS_FA, bodjeh, group1, FAZ, CHK_KARBARI, C200, tmp_pri_date,
                         tmp_today_date, tmp_mohlat, tmp_taviz_date, tmp_date_bed, edareh_k,
-                        LAVAZEM, date_sbt, Avarez
+                         date_sbt, Avarez
                     )
                     VALUES (
                        @Town, @Radif, @Eshtrak, @Barge, @PriNo, @TodayNo, @PriDate, @TodayDate,
@@ -93,7 +93,7 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implemen
                        @MasHadar, @AbHadar, @RangeMas, @TafBack, @TedGhabs, @TabAbnA, @TabAbnF,
                        @TabsFa, @Bodjeh, @Group1, @Faz, @ChkKarbari, @C200, @TmpPriDate,
                        @TmpTodayDate, @TmpMohlat, @TmpTavizDate, @TmpDateBed, @EdarehK,
-                       @Lavazem, @DateSbt, @Avarez
+                       @DateSbt, @Avarez
                     );";
         }
         private string CreateQuery(string dbName)
@@ -109,7 +109,7 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implemen
                         mas_hadar, ab_hadar, range_mas, taf_back, ted_ghabs, TAB_ABN_A, TAB_ABN_F,
                         TABS_FA, bodjeh, group1, FAZ, CHK_KARBARI, C200, tmp_pri_date,
                         tmp_today_date, tmp_mohlat, tmp_taviz_date, tmp_date_bed, edareh_k,
-                        LAVAZEM, date_sbt, Avarez
+                        date_sbt, Avarez
                     )
                     VALUES (
                        @Town, @Radif, @Eshtrak, @Barge, @PriNo, @TodayNo, @PriDate, @TodayDate,
@@ -121,7 +121,7 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implemen
                        @MasHadar, @AbHadar, @RangeMas, @TafBack, @TedGhabs, @TabAbnA, @TabAbnF,
                        @TabsFa, @Bodjeh, @Group1, @Faz, @ChkKarbari, @C200, @TmpPriDate,
                        @TmpTodayDate, @TmpMohlat, @TmpTavizDate, @TmpDateBed, @EdarehK,
-                       @Lavazem, @DateSbt, @Avarez
+                       @DateSbt, @Avarez
                     );";
         }
         private string UpdateAtlasQuery()

@@ -109,7 +109,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                     From Atlas.dbo.MeterFlow m
 					Left Join Db70.dbo.T51 t51 
 						On m.ZoneId=t51.C0
-                    Where m.Id=@id";
+                    Where 
+                        m.Id=@id";
         }
         private string GetValidationByFileNameQuery()
         {

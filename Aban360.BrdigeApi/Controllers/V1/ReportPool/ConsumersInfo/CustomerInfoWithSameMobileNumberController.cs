@@ -18,7 +18,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
             _customerInfoWithSameMobileNumber.NotNull(nameof(_customerInfoWithSameMobileNumber));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("by-mobile")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<CustomerInfoWithSameMobileNumberHeaderOutputDto, CustomerInfoWithSameMobileNumberDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw([FromBody] SearchInput input, CancellationToken cancellationToken)

@@ -7,6 +7,7 @@ using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using System.Xml.Linq;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations
 {
@@ -74,14 +75,20 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         public async Task Delete(int id)
         {
             string query = GetDeleteQuery();
-            int rowsAffected= await _sqlReportConnection.ExecuteAsync(query, new { id });
+            int rowsAffected = await _sqlReportConnection.ExecuteAsync(query, new { id });
 
             if (rowsAffected == 0)
             {
                 throw new ReadingException(ExceptionLiterals.NotFoundBillsToRemoved);
             }
         }
-
+        public async Task UpdateDel(IEnumerable<BedBesUpdateDelDto> input)
+        {
+            //string dbName = GetDbName(input.FirstOrDefault().ZoneId);
+            string dbName = "Atlas";
+            string command = GetUpdateDelCommand(dbName);
+            await _sqlReportConnection.ExecuteAsync(command, input);
+        }
 
         public DataTable ToDataTable(IEnumerable<BedBesCreateDto> items)
         {
@@ -287,6 +294,12 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         {
             return @"Delete FROM [Atlas].dbo.bed_bes
                     Where Id=@id";
+        }
+        private string GetUpdateDelCommand(string dbName)
+        {
+            return $@"Update [{dbName}].dbo.bed_bes
+                    Set del=@del
+                    Where id=@id";
         }
     }
 }
