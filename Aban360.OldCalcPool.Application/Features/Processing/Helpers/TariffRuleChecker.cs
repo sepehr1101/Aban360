@@ -54,7 +54,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         }
         internal static bool IsVillageCollectorMeter(int usageId)
         {
-            return CheckConditions(usageId, [12, 13, 29, 30, 32]);
+            return CheckConditions(usageId, [15]);
         }
         internal static bool IsGardenAndResidence(int usageId)
         {

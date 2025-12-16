@@ -144,7 +144,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             if (IsReligiousWithCharity(customerInfo.UsageId))
             {   
                 return new TariffItemResult(calculateAbBahaOutputDto.Allowed);
-            }            
+            }    
+            if(date_1404_02_31.MoreOrEq(consumptionPartialInfo.EndDateJalali))
+            {
+                return new TariffItemResult();
+            }
             double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, consumptionPartialInfo.Consumption, consumptionPartialInfo.Duration, calculateAbBahaOutputDto.Summation);
             double finalVirtualDiscount= virtualDiscount > 0 ? (long)virtualDiscount : 0;
             return new TariffItemResult(finalVirtualDiscount);
@@ -269,7 +273,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         }
         private (long, long) Get2PartAmount(string nerkhDate2)
         {   
-            if (StringConditionMoreThan(date_1400_12_25, nerkhDate2))
+            if (date_1400_12_25.MoreOrEq(nerkhDate2))
             {
                 return _3766_168110;
             }
@@ -297,7 +301,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return _9000_450000;
             }
-            else if (StringConditionMoreThan(nerkhDate2, date_1404_09_09))
+            else if (nerkhDate2.MoreOrEq(date_1404_09_09))
             {
                 return _11000_550000;
             }

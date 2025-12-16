@@ -10,7 +10,6 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
-using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
 using Aban360.ReportPool.Persistence.Features.Tagging;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
