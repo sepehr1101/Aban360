@@ -9,22 +9,22 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Implementations
 {
-    internal sealed class LinkServiceStatementHandler : ILinkServiceStatementHandler
+    internal sealed class PaymentInquiryHandler : IPaymentInquiryHandler
     {
-        private readonly ILinkServiceStatementQueryService _linkServiceStatementQueryService;
-        private readonly IValidator<LinkServiceStatementInputDto> _validator;
-        public LinkServiceStatementHandler(
-            ILinkServiceStatementQueryService linkServiceStatementQueryService,
-            IValidator<LinkServiceStatementInputDto> validator)
+        private readonly IPaymentInquiryQueryService _paymentInquiryQueryService;
+        private readonly IValidator<PaymentInquiryInputDto> _validator;
+        public PaymentInquiryHandler(
+            IPaymentInquiryQueryService paymentInquiryQueryService,
+            IValidator<PaymentInquiryInputDto> validator)
         {
-            _linkServiceStatementQueryService = linkServiceStatementQueryService;
-            _linkServiceStatementQueryService.NotNull(nameof(linkServiceStatementQueryService));
+            _paymentInquiryQueryService = paymentInquiryQueryService;
+            _paymentInquiryQueryService.NotNull(nameof(paymentInquiryQueryService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<LinkServiceStatementHeaderOutputDto, LinkServiceStatementDataOutputDto>> Handle(LinkServiceStatementInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<PaymentInquiryHeaderOutputDto, PaymentInquiryDataOutputDto>> Handle(PaymentInquiryInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -33,8 +33,8 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 throw new CustomValidationException(message);
             }
 
-            ReportOutput<LinkServiceStatementHeaderOutputDto, LinkServiceStatementDataOutputDto> linkServiceStatement = await _linkServiceStatementQueryService.GetInfo(input);
-            return linkServiceStatement;
+            ReportOutput<PaymentInquiryHeaderOutputDto, PaymentInquiryDataOutputDto> PaymentInquiry = await _paymentInquiryQueryService.GetInfo(input);
+            return PaymentInquiry;
         }
     }
 }
