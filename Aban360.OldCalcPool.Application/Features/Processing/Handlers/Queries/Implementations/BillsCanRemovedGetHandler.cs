@@ -25,13 +25,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
             _billQueryService.NotNull(nameof(billQueryService));
         }
 
-        public async Task<IEnumerable<BillsCanRemovedOutputDto>> Handle(SearchInput inputDto, CancellationToken cancellationToken)
+        public async Task<IEnumerable<BillsCanRemoveOutputDto>> Handle(SearchInput inputDto, CancellationToken cancellationToken)
         {
             //validation
             ZoneIdAndCustomerNumberGetDto zoneIdAndCustomerNumber = await _customerInfoService.GetZoneIdAndCustomerNumber(inputDto.Input);
             RemovedBillSearchDto removedBillSearchDto = new(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
 
-            IEnumerable<BillsCanRemovedOutputDto> billsCanRemoved = await _billQueryService.GetToRemove(removedBillSearchDto);
+            IEnumerable<BillsCanRemoveOutputDto> billsCanRemoved = await _billQueryService.GetToRemove(removedBillSearchDto);
             billsCanRemoved.Select(b => b.ZoneTitle = zoneIdAndCustomerNumber.ZoneTitle);
 
             return billsCanRemoved;

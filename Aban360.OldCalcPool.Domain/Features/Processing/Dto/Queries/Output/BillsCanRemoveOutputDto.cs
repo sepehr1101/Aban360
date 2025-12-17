@@ -1,6 +1,6 @@
 ﻿namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
 {
-    public record BillsCanRemovedOutputDto
+    public record BillsCanRemoveOutputDto
     {
         public int Id { get; set; }
         public int ZoneId { get; set; }

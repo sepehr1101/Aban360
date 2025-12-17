@@ -3,8 +3,6 @@ using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.Contracts;
-using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
-using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 
@@ -25,12 +23,12 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.
             _billQueryService.NotNull(nameof(billQueryService));
         }
 
-        public async Task<IEnumerable<BillsCanRemovedOutputDto>> Handle(SearchInput input, CancellationToken cancellationToken)
+        public async Task<IEnumerable<BillsCanReturnOutputDto>> Handle(SearchInput input, CancellationToken cancellationToken)
         {
             ZoneIdAndCustomerNumberGetDto zoneIdAndCustomerNumber = await _customerInfoService.GetZoneIdAndCustomerNumber(input.Input);
             ReturnBillSearchDto returnedBillSearchDto = new(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
 
-            IEnumerable<BillsCanRemovedOutputDto> billsCanReturned = await _billQueryService.GetToReturned(returnedBillSearchDto);
+            IEnumerable<BillsCanReturnOutputDto> billsCanReturned = await _billQueryService.GetToReturned(returnedBillSearchDto);
             return billsCanReturned;
         }
     }

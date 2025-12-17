@@ -10,10 +10,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
     {
         Task<BedBesConsumptionOutputDto> Get(string billId);
         Task<BedBesDataInfoOutptuDto> Get(int id);
-        Task<IEnumerable<BillsCanRemovedOutputDto>> GetToRemove(RemovedBillSearchDto input);
+        Task<IEnumerable<BillsCanRemoveOutputDto>> GetToRemove(RemovedBillSearchDto input);
         Task<RemoveBillInputDto> GetToRemove(int id);
-        Task<IEnumerable<BillsCanRemovedOutputDto>> GetToReturned(ReturnBillSearchDto input);
-        Task<IEnumerable<BillsCanRemovedOutputDto>> Get(BillToReturnInputDto input);
+        Task<IEnumerable<BillsCanReturnOutputDto>> GetToReturned(ReturnBillSearchDto input);
+        Task<IEnumerable<BillsCanRemoveOutputDto>> Get(BillToReturnInputDto input);
         Task<ReportOutput<ManualBillHeaderOutputDto, ManualBillDataOutputDto>> Get(ManualBillInputDto input);
         Task<float> GetPreviousBill(int zoneId, int customerNumber, string dateJalali);
         Task<IEnumerable<BedBesCreateDto>> Get(ZoneCustomerFromToDateDto input);
