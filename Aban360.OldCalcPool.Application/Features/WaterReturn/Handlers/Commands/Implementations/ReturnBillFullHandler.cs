@@ -57,7 +57,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             await FromToDateValidation(input, customerInfo);
 
             IEnumerable<BedBesCreateDto> bedBesInfo = await GetBedBesList(customerInfo, input);
-            
+
             await UpdateBedBesDel(bedBesInfo);
             RepairCreateDto repairCreate = GetRepairCreateDto(bedBesInfo, customerInfo, input);
             AutoBackCreateDto autoBackCreate = GetAutoBackCreateDto(bedBesInfo, repairCreate);
@@ -76,12 +76,8 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         {
             ZoneCustomerFromToDateDto bedBesGetDto = new(customerInfo.ZoneId, customerInfo.Radif, input.FromDateJalali, input.ToDateJalali);
             IEnumerable<BedBesCreateDto> bedBesInfo = await _bedBesQueryService.Get(bedBesGetDto);
-            if (!bedBesInfo.Any())
-            {
-                throw new ReturnedBillException(ExceptionLiterals.NotFoundBillsToRemoved);
-            }
 
-            return bedBesInfo;
+            return bedBesInfo.Any() ? bedBesInfo : throw new ReturnedBillException(ExceptionLiterals.NotFoundBillsToRemoved);
         }
         private async Task UpdateBedBesDel(IEnumerable<BedBesCreateDto> bedBes)
         {
@@ -93,33 +89,36 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         }
         private RepairCreateDto GetRepairCreateDto(IEnumerable<BedBesCreateDto> bedBes, CustomerInfoOutputDto customerInfo, ReturnBillFullInputDto input)
         {
+            BedBesCreateDto latestBedbes = bedBes.OrderByDescending(x => x.DateBed).FirstOrDefault();
+            BedBesCreateDto finalBedBes = bedBes.Aggregate(new BedBesCreateDto(), (a, b) =>
+            {
+                a.AbonFas += b.AbonFas;
+                a.FasBaha += b.FasBaha;
+                a.Ztadil += b.Ztadil;
+                a.Masraf += b.Masraf;
+                a.Shahrdari += b.Shahrdari;
+                a.Baha += b.Baha;
+                a.AbonAb += b.AbonAb;
+                a.Pard += b.Pard;
+                a.Jam += b.Jam;
+                a.ZaribFasl += b.ZaribFasl;
+                a.Jarime += b.Jarime;
+                a.AbBaha += b.AbBaha;
+                a.Ab10 += b.Ab10;
+                a.Ab20 += b.Ab20;
+                a.Tafavot += b.Tafavot;
+                a.Bodjeh += b.Bodjeh;
+                a.Rate += b.Rate;
+                a.ZaribD += b.ZaribD;
+                a.Avarez += b.Avarez;
+
+                return a;
+            });
+
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
             decimal previousNumber = bedBes.Min(x => x.PriNo);
             decimal currentNumber = bedBes.Max(x => x.TodayNo);
-
-            BedBesCreateDto latestBedbes = bedBes.OrderByDescending(x => x.DateBed).FirstOrDefault();
-            BedBesCreateDto finalBedBes = new BedBesCreateDto
-            {
-                AbonFas = bedBes.Sum(x => x.AbonFas),
-                FasBaha = bedBes.Sum(x => x.FasBaha),
-                Ztadil = bedBes.Sum(x => x.Ztadil),
-                Masraf = bedBes.Sum(x => x.Masraf),
-                Shahrdari = bedBes.Sum(x => x.Shahrdari),
-                Baha = bedBes.Sum(x => x.Baha),
-                AbonAb = bedBes.Sum(x => x.AbonAb),
-                Pard = bedBes.Sum(x => x.Pard),
-                Jam = bedBes.Sum(x => x.Jam),
-                ZaribFasl = bedBes.Sum(x => x.ZaribFasl),
-                Jarime = bedBes.Sum(x => x.Jarime),
-                AbBaha = bedBes.Sum(x => x.AbBaha),
-                Ab10 = bedBes.Sum(x => x.Ab10),
-                Ab20 = bedBes.Sum(x => x.Ab20),
-                Tafavot = bedBes.Sum(x => x.Tafavot),
-                Bodjeh = bedBes.Sum(x => x.Bodjeh),
-                Rate = bedBes.Sum(x => x.Rate),
-                ZaribD = bedBes.Sum(x => x.ZaribD),
-                Avarez = bedBes.Sum(x => x.Avarez)
-            };
+            int duration = Duration(input.ToDateJalali, input.FromDateJalali);
 
             return new RepairCreateDto()
             {
@@ -137,7 +136,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Ztadil = finalBedBes.Ztadil,
                 Masraf = finalBedBes.Masraf,
                 Shahrdari = finalBedBes.Shahrdari,
-                Modat = Duration(input.ToDateJalali, input.FromDateJalali),
+                Modat = duration,
                 DateBed = currentDateJalali,
                 JalaseNo = input.Minutes,
                 Mohlat = string.Empty,
@@ -276,25 +275,19 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             var previousGregorian = previousDateJalali.ToGregorianDateTime();
             var currentGregorian = currentDateJalali.ToGregorianDateTime();
             int duration = (currentGregorian.Value - previousGregorian.Value).Days;
-            if (duration <= 0)
-            {
-                throw new ReturnedBillException(ExceptionLiterals.CurrentDateNotMoreThanPreviousDate);
-            }
-            return duration;
+
+            return duration > 0 ? duration : throw new ReturnedBillException(ExceptionLiterals.CurrentDateNotMoreThanPreviousDate);
         }
         private async Task FromToDateValidation(ReturnBillFullInputDto input, CustomerInfoOutputDto customerInfo)
         {
-            int fromCount = await _bedBesQueryService.GetCountInDateBed(customerInfo.ZoneId, customerInfo.Radif, input.FromDateJalali);
-            if (fromCount <= 0)
+            async Task Validation(string date, string exceptionMessage)
             {
-                throw new ReturnedBillException(ExceptionLiterals.InvalidFromDate);
+                int count = await _bedBesQueryService.GetCountInDateBed(customerInfo.ZoneId, customerInfo.Radif, date);
+                _ = count <= 0 ? throw new ReturnedBillException(exceptionMessage) : 0;
             }
 
-            int toCount = await _bedBesQueryService.GetCountInDateBed(customerInfo.ZoneId, customerInfo.Radif, input.ToDateJalali);
-            if (toCount <= 0)
-            {
-                throw new ReturnedBillException(ExceptionLiterals.InvalidToDate);
-            }
+            await Validation(input.FromDateJalali, ExceptionLiterals.InvalidFromDate);
+            await Validation(input.ToDateJalali, ExceptionLiterals.InvalidToDate);
         }
         private async Task ValidationFullInputDto(ReturnBillFullInputDto input, CancellationToken cancellationToken)
         {
@@ -305,6 +298,5 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 throw new CustomValidationException(message);
             }
         }
-
     }
 }
