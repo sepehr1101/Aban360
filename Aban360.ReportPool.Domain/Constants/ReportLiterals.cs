@@ -221,5 +221,7 @@
         public static string LatestReadingBill { get { return $" {Report} آخرین اطلاعات قرائت"; } }
 
         public static string ClosedSummary { get { return $" {Report} کنتور بسته"; } }
+   
+        public static string PaymentInquiry { get { return $" {Report} استعلام پرداختی"; } }
     }
 }
