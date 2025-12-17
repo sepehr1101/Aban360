@@ -5,7 +5,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.C
 {
     public interface IBillsCanRemovedGetHandler
     {
-        Task<IEnumerable<BillsCanRemovedOutputDto>> Handle(SearchInput inputDto, CancellationToken cancellationToken);
+        Task<IEnumerable<BillsCanRemoveOutputDto>> Handle(SearchInput inputDto, CancellationToken cancellationToken);
     }
 
 }

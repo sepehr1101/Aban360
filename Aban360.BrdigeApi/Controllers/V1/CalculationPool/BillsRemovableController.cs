@@ -19,10 +19,10 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
 
         [HttpPost]
         [Route("removable")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<BillsCanRemovedOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<BillsCanRemoveOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCanRemoved([FromBody] SearchInput inputDto, CancellationToken cancellationToken)
         {
-            IEnumerable<BillsCanRemovedOutputDto> result = await _billsCanRemovedHandler.Handle(inputDto, cancellationToken);
+            IEnumerable<BillsCanRemoveOutputDto> result = await _billsCanRemovedHandler.Handle(inputDto, cancellationToken);
             return Ok(result);
         }
     }

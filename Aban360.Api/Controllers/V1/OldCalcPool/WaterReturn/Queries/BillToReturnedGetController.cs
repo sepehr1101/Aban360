@@ -2,7 +2,7 @@
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.Contracts;
-using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Queries
@@ -19,10 +19,10 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Queries
 
         [HttpPost, HttpGet]
         [Route("bills")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<BillsCanRemovedOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<BillsCanReturnOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> BillsToReturnedGet([FromBody] SearchInput input, CancellationToken cancellationToken)
         {
-            IEnumerable<BillsCanRemovedOutputDto> result = await _billToReturnedHandler.Handle(input, cancellationToken);
+            IEnumerable<BillsCanReturnOutputDto> result = await _billToReturnedHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
     }

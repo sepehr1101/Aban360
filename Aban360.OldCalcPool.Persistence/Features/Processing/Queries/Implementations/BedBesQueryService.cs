@@ -42,13 +42,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 
             return result;
         }
-        public async Task<IEnumerable<BillsCanRemovedOutputDto>> GetToRemove(RemovedBillSearchDto input)
+        public async Task<IEnumerable<BillsCanRemoveOutputDto>> GetToRemove(RemovedBillSearchDto input)
         {
             //string dbName = GetDbName(input.ZoneId);
             string dbName = "Atlas";
             string query = GetBedBesListToRemove(dbName);
 
-            IEnumerable<BillsCanRemovedOutputDto> result = await _sqlReportConnection.QueryAsync<BillsCanRemovedOutputDto>(query, input);
+            IEnumerable<BillsCanRemoveOutputDto> result = await _sqlReportConnection.QueryAsync<BillsCanRemoveOutputDto>(query, input);
             if (result is null || !result.Any())
             {
                 throw new RemovedBillException(ExceptionLiterals.NotFoundBillsToRemoved);
@@ -68,26 +68,26 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             }
             return result;
         }
-        public async Task<IEnumerable<BillsCanRemovedOutputDto>> GetToReturned(ReturnBillSearchDto input)
+        public async Task<IEnumerable<BillsCanReturnOutputDto>> GetToReturned(ReturnBillSearchDto input)
         {
             //string dbName = GetDbName(input.ZoneId);
             string dbName = "Atlas";
             string query = GetBedBesListToRemove(dbName);
 
-            IEnumerable<BillsCanRemovedOutputDto> result = await _sqlReportConnection.QueryAsync<BillsCanRemovedOutputDto>(query, input);
+            IEnumerable<BillsCanReturnOutputDto> result = await _sqlReportConnection.QueryAsync<BillsCanReturnOutputDto>(query, input);
             if (result is null || !result.Any())
             {
                 throw new ReturnedBillException(ExceptionLiterals.NotFoundBillsToReturned);
             }
             return result;
         }
-        public async Task<IEnumerable<BillsCanRemovedOutputDto>> Get(BillToReturnInputDto input)
+        public async Task<IEnumerable<BillsCanRemoveOutputDto>> Get(BillToReturnInputDto input)
         {
             //string dbName = GetDbName(input.ZoneId);
             string dbName = "Atlas";
             string query = GetBillToReturnQuery(dbName);
 
-            IEnumerable<BillsCanRemovedOutputDto> result = await _sqlReportConnection.QueryAsync<BillsCanRemovedOutputDto>(query, input);
+            IEnumerable<BillsCanRemoveOutputDto> result = await _sqlReportConnection.QueryAsync<BillsCanRemoveOutputDto>(query, input);
             if (result is null || !result.Any())
             {
                 throw new ReturnedBillException(ExceptionLiterals.NotFoundBillsToReturned);
@@ -207,7 +207,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	b.tedad_mas as DomesticUnit,
                     	b.tedad_tej as CommercialUnit,
                     	b.tedad_vahd as OtherUnit,
-                    	b.ted_khane as HouseholdNumber
+                    	b.ted_khane as HouseholdNumber,
+						b.del as IsReturned
                     FROM [{dbName}].dbo.bed_bes b
                     JOIN [{dbName}].dbo.variab v
                     	ON b.date_bed collate Persian_100_CI_AI>=v.date_check
@@ -358,7 +359,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	town=@zoneId AND
                     	radif=@customerNumber AND
                     	date_bed BETWEEN @fromDate AND @toDate AND
-						cod_vas NOT IN (4,7,8)
+						cod_vas NOT IN (4,7,8) AND
+                        del=0
                     Order by date_bed";
         }
         private string GetCountInDateBedQuery(string dbName)
@@ -368,7 +370,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                         Where 
                         	town=@zoneId AND
                         	radif=@customerNumber AND
-                        	date_bed=@date";
+                        	date_bed=@date AND
+                            del=0";
         }
     }
 }
