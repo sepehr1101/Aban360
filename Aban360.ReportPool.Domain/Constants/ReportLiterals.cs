@@ -219,5 +219,7 @@
         public static string LowWorkingMeter{ get { return $" {Report} تحلیل متوسط مصرف"; } }
         public static string CustomerInfoWithSamePhoneNumber { get { return $" {Report} شناسه قبض های یک موبایل"; } }
         public static string LatestReadingBill { get { return $" {Report} آخرین اطلاعات قرائت"; } }
+
+        public static string ClosedSummary { get { return $" {Report} کنتور بسته"; } }
     }
 }
