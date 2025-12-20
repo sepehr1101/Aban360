@@ -81,7 +81,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	b.RegisterDay as RegisterDateJalali
                     From CustomerWarehouse.dbo.Bills b
                     Left Join OldCalc.dbo.S s
-                    	on b.ZoneId=s.town AND b.RegisterDay BETWEEN s.FromDate AND s.ToDate
+                    	on b.ZoneId=s.town AND b.RegisterDay COLLATE Persian_100_CI_AI  BETWEEN s.FromDate AND s.ToDate
                     Where 
                     	( (@IsDomestic=1 AND b.UsageId IN (0,1,3)) OR (@IsDomestic<>1 AND b.UsageId NOT IN (0,1,3)) ) AND
                     	( (@IsNet=1 AND b.TypeCode IN (1,3,4,5)) OR (@IsNet<>1 AND b.TypeCode IN (1)) ) AND

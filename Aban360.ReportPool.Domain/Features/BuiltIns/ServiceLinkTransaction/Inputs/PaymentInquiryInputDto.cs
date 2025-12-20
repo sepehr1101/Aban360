@@ -3,7 +3,7 @@
     public record PaymentInquiryInputDto
     {
         public string BillId { get; set; }
-        public string PaymentId { get; set; }
-        public string FromDateJalali { get; set; }
+        public string? PaymentId { get; set; }
+        public string DateJalali { get; set; }
     }
 }

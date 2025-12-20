@@ -13,7 +13,6 @@
         public int OtherUnit { get; set; }
 
         public int BillCount { get; set; }
-        public int CustomerCount { get; set; }
         public float  ConsumptionAverage { get; set; }
         public float  Consumption { get; set; }
     }

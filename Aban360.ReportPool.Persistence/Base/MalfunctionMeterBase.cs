@@ -73,7 +73,7 @@ namespace Aban360.ReportPool.Persistence.Base
 	                    b.CounterStateTitle,
 						c.WaterInstallDate	AS MeterInstallationDateJalali,
 						m.ChangeDateJalali AS LatestChangeDateJalali,
-	                    RN=ROW_NUMBER() OVER (PARTITION BY b.BillId ORDER BY b.RegisterDay,m.ChangeDateJalali DESC)
+	                    RN=ROW_NUMBER() OVER (PARTITION BY b.BillId ORDER BY b.RegisterDay DESC,m.ChangeDateJalali DESC)
                     From [CustomerWarehouse].dbo.Bills b
 					Left Join [CustomerWarehouse].dbo.Clients c 
 						ON b.CustomerNumber=c.CustomerNumber AND b.ZoneId=c.ZoneId
