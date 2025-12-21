@@ -23,8 +23,8 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging
         public async Task<int> Create(CreateTagDto dto)
         {
             var sql = @"
-                INSERT INTO Tags (Title, TagGroupId, TagGroupTitle)
-                SELECT @Title, @TagGroupId, tg.Title
+                INSERT INTO Tags (Title, TagGroupId, TagGroupTitle, StringCode)
+                SELECT @Title, @TagGroupId, tg.Title, @StringCode
                 FROM TagGroups tg
                 WHERE tg.Id = @TagGroupId;
                 SELECT CAST(SCOPE_IDENTITY() as int);";
@@ -34,13 +34,13 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging
 
         public async Task<IEnumerable<TagDto>> GetAll()
         {
-            var sql = "SELECT Id, Title, TagGroupId, TagGroupTitle FROM Tags";
+            var sql = "SELECT Id, Title, TagGroupId, TagGroupTitle, StringCode FROM Tags";
             return await _sqlReportConnection.QueryAsync<TagDto>(sql);
         }
 
         public async Task<TagDto?> GetById(int id)
         {
-            var sql = "SELECT Id, Title, TagGroupId, TagGroupTitle FROM Tags WHERE Id = @Id";
+            var sql = "SELECT Id, Title, TagGroupId, TagGroupTitle, StringCode FROM Tags WHERE Id = @Id";
             return await _sqlReportConnection.QueryFirstOrDefaultAsync<TagDto>(sql, new { Id = id });
         }
 
@@ -50,7 +50,8 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging
                 UPDATE Tags
                 SET Title = @Title,
                     TagGroupId = @TagGroupId,
-                    TagGroupTitle = (SELECT Title FROM TagGroups WHERE Id = @TagGroupId)
+                    TagGroupTitle = (SELECT Title FROM TagGroups WHERE Id = @TagGroupId),
+                    StringCode= @StringCode
                 WHERE Id = @Id";
 
             var rows = await _sqlReportConnection.ExecuteAsync(sql, dto);
