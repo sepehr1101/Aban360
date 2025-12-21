@@ -70,8 +70,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         }
         public async Task<IEnumerable<BillsCanReturnOutputDto>> GetToReturned(ReturnBillSearchDto input)
         {
-            //string dbName = GetDbName(input.ZoneId);
-            string dbName = "Atlas";
+            string dbName = GetDbName(input.ZoneId);
+            //string dbName = "Atlas";
             string query = GetBedBesListToRemove(dbName);
 
             IEnumerable<BillsCanReturnOutputDto> result = await _sqlReportConnection.QueryAsync<BillsCanReturnOutputDto>(query, input);
