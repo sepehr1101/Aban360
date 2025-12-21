@@ -275,7 +275,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             //Discounts
             TariffItemResult abBahaDiscount = _abBahaCalculator.CalculateDiscount(consumptionPartialInfo ,zarib, isVillageCalculation, monthlyConsumption, customerInfo, nerkh, olgoo, abBahaResult, consumptionInfo.FinalDomesticUnit);
-            TariffItemResult fazelabDiscount = _fazelabCalculator.CalculateDiscount(abBahaDiscount.Summation, fazelab.Summation, customerInfo, consumptionPartialInfo);
+            TariffItemResult fazelabDiscount = _fazelabCalculator.CalculateDiscount(fazelab, abBahaDiscount.Summation, fazelab.Summation, customerInfo, consumptionPartialInfo);
             TariffItemResult hotSeasonAbDiscount = _hotSeasonCalculator.CalculateDiscount(abBahaDiscount.Summation, hotSeasonAbBaha, customerInfo, abBahaResult, consumptionPartialInfo);
             TariffItemResult hotSeasonFazelabDiscount = _hotSeasonCalculator.CalculateDiscount(fazelabDiscount.Summation, hotSeasonFazelab, customerInfo, abBahaResult, consumptionPartialInfo);
             TariffItemResult boodjeDiscount = _budgetCalculator.CalculateDiscount(consumptionPartialInfo,customerInfo, abBahaDiscount.Summation, boodje);

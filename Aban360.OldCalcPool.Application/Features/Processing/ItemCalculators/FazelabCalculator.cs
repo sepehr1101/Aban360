@@ -12,7 +12,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     internal interface IFazelabCalculator
     {
         TariffItemResult Calculate(string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman);
-        TariffItemResult CalculateDiscount(double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo);
+        TariffItemResult CalculateDiscount(TariffItemResult fazelabCalculationResult , double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo);
     }
 
     internal sealed class FazelabCalculator : IFazelabCalculator
@@ -78,7 +78,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             }
             return new TariffItemResult(sewageAmount);
         }
-        public TariffItemResult CalculateDiscount(double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo)
+        public TariffItemResult CalculateDiscount(TariffItemResult fazelabCalculationResult, double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo)
         {
             if (abBahaDiscount <= 0)
             {
@@ -91,8 +91,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             if (IsConstruction(customerInfo.BranchType))
             {
                 return new TariffItemResult();
-            }
-            if (date_1404_02_31.MoreOrEq(consumptionPartialInfo.EndDateJalali))
+            }           
+            if (date_1404_02_31.MoreOrEq(consumptionPartialInfo.EndDateJalali) && IsSchool(customerInfo.UsageId))
             {
                 return new TariffItemResult();
             }
