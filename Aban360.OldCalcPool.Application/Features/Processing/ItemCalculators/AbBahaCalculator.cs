@@ -65,6 +65,15 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 return new TariffItemResult(abBahaAmount*(double)multiplierAbBaha);
             }
 
+            //case tmp:
+            if (IsLessThan1403_09_13(consumptionPartialInfo.EndDateJalali) &&                
+                IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
+                monthlyConsumption <= _olgoo)
+            {   
+                oldAbBahaAmount = CalculateOldAbBahaIfPossible(nerkh, customerInfo, consumptionPartialInfo, monthlyConsumption, _olgoo, c, tagIds, oldAbBahaAmount, _oldAbBahaZarib);                
+                return new TariffItemResult(oldAbBahaAmount * (double)multiplierAbBaha * villageMultiplier * customerInfo.UnitAll);
+            }
+
             //case 3: require old ab baha but not religious
             if (IsGardenOrDweltyAfter1400_12_24OrIsDomestic(customerInfo, consumptionPartialInfo) &&
                 IsBefore1403_06_26(consumptionPartialInfo.EndDateJalali) &&
@@ -145,7 +154,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {   
                 return new TariffItemResult(calculateAbBahaOutputDto.Allowed);
             }    
-            if(date_1404_02_31.MoreOrEq(consumptionPartialInfo.EndDateJalali))
+            if(date_1404_02_31.MoreOrEq(consumptionPartialInfo.EndDateJalali) && IsSchool(customerInfo.UsageId))
             {
                 return new TariffItemResult();
             }

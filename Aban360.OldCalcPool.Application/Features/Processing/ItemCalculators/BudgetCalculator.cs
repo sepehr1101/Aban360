@@ -82,7 +82,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return new TariffItemResult(boodjeAmounts.Allowed);
             }
-            if (date_1404_02_31.MoreOrEq(consumptionPartialInfo.EndDateJalali))
+            if (IsReligiousWithCharity(customerInfo.UsageId))
+            {
+                return new TariffItemResult(boodjeAmounts.Allowed);
+            }
+            if (date_1404_02_31.MoreOrEq(consumptionPartialInfo.EndDateJalali) && IsSchool(customerInfo.UsageId))
             {
                 return new TariffItemResult();
             }
