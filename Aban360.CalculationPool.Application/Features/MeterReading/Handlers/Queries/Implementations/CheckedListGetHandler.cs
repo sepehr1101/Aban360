@@ -69,6 +69,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 MeterReadingDetailCheckedDto readingControl = GetMeterReadingDetailControl(mr, attentionState);
                 readingsControl.Add(readingControl);
             });
+
             return readingsControl;
         }
         private HighLowEnum GetConsumptionOrAmountAttention(MeterReadingDetailDataOutputDto meterReading, MeterFlowStepEnum latestFlowStep)
@@ -115,9 +116,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 InsertDateTime = input.InsertDateTime,
 
                 BranchTypeId = input.BranchTypeId,
-                BranchTypeTitle=input.BranchTypeTitle,
+                BranchTypeTitle = input.BranchTypeTitle,
                 UsageId = input.UsageId,
-                UsageTitle=input.UsageTitle,
+                UsageTitle = input.UsageTitle,
                 ConsumptionUsageId = input.ConsumptionUsageId,
                 DomesticUnit = input.DomesticUnit,
                 CommercialUnit = input.CommercialUnit,
