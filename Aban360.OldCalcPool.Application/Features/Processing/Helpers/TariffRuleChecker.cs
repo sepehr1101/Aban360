@@ -40,6 +40,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         {
             return CheckConditions(usageId, [8, 7, 12, 13, 29, 30, 32]);
         }
+        internal static bool IsSchool(int usageId)
+        {
+            return CheckConditions(usageId, [7, 8]);
+        }
         internal static bool IsHandoverDiscount(int branchTypeId)
         {
             return CheckConditions(branchTypeId, [3, 6, 7]);
