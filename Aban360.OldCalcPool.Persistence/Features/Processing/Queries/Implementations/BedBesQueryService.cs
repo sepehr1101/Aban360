@@ -186,6 +186,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             return @$"SELECT	
                     	b.id,
                     	b.town as ZoneId,
+						t51.C2 as ZoneTitle,
                     	b.radif as CustomerNumber,
                     	b.pri_no as PreviousNumber, 
                     	b.today_no as CurrentNumber,
@@ -216,6 +217,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	ON b.cod_enshab=t41.C0
                     JOIN [Db70].dbo.T7 t7 
                     	ON b.noe_va=t7.C0
+					JOIN [Db70].dbo.T51 t51
+						ON b.town=t51.c0
                     WHERE 
                     	b.date_bed>=@ComparisonDateJalali AND
                     	b.town=@ZoneId AND
