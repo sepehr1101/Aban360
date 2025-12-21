@@ -69,15 +69,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	t150.C2 as PaymentMethodTitle,
                     	cod_bank as BankCode,
                     	sh_ghabs as BillId,
-                    	sh_pard as PayId
+                    	sh_pard as PaymentId
                     From [{dbName}].dbo.vosolEN  v
                     Left Join [Db70].dbo.T150 t150
                     	On v.type_pay COLLATE SQL_Latin1_General_CP1_CI_AS = t150.C1 COLLATE SQL_Latin1_General_CP1_CI_AS
                     Where 
                     	v.Town=@zoneId AND
-                    	(@dateJalali IS NULL OR v.date_bank>=@dateJalali )AND
-                    	(@billId IS NULL OR v.sh_ghabs=RIGHT(REPLICATE('0',13)+@billId,13)) AND
-                    	(@paymentId IS NULL OR v.sh_pard=@paymentId)";
+                    	v.date_bank>=@dateJalali AND
+                    	LTRIM(SUBSTRING(v.sh_ghabs, PATINDEX('%[^0]%', v.sh_ghabs), LEN(v.sh_ghabs)))=@billId AND
+                    	LTRIM(SUBSTRING(v.sh_pard, PATINDEX('%[^0]%', v.sh_pard), LEN(v.sh_pard)))=@paymentId";
         }
         private string GetZoneId()
         {

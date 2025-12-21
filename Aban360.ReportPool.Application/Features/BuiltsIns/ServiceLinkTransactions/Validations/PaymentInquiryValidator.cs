@@ -13,6 +13,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
+            RuleFor(p => p.PaymentId)
+                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                .NotNull().WithMessage(ExceptionLiterals.NotNull);
+
             RuleFor(p => p.DateJalali)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
