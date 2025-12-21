@@ -20,7 +20,7 @@
         public static string Overdue { get { return "معوقه"; } }
         public static string Olgoo { get { return "الگو"; } }
         public static string CotractualCapacity { get { return "ظرفیت قراردادی"; } }
-        
+
 
 
         public static string EmptyUnit { get { return $"{Report} خالی از سکنه"; } }
@@ -214,14 +214,15 @@
         public static string TagDetail { get { return $" {Report} جزئیات تگ"; } }
 
         public static string ConsumptionManagerDetail { get { return $" {Report} جزئیات مدیریت مصرف"; } }
-        public static string ConsumptionManagerSummary{ get { return $" {Report} خلاصه مدیریت مصرف"; } }
+        public static string ConsumptionManagerSummary { get { return $" {Report} خلاصه مدیریت مصرف"; } }
 
-        public static string LowWorkingMeter{ get { return $" {Report} تحلیل متوسط مصرف"; } }
+        public static string LowWorkingMeter { get { return $" {Report} تحلیل متوسط مصرف"; } }
         public static string CustomerInfoWithSamePhoneNumber { get { return $" {Report} شناسه قبض های یک موبایل"; } }
         public static string LatestReadingBill { get { return $" {Report} آخرین اطلاعات قرائت"; } }
 
-        public static string ClosedSummary { get { return $" {Report} کنتور بسته"; } }
-   
+        public static string ClosedSummary { get { return $" {Report} فهرست وضعیت بسته"; } }
+
         public static string PaymentInquiry { get { return $" {Report} استعلام پرداختی"; } }
+        public static string CustomerGeneralInfo { get { return $" اطلاعات پایه"; } }
     }
 }

@@ -189,7 +189,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	b.radif as CustomerNumber,
                     	b.pri_no as PreviousNumber, 
                     	b.today_no as CurrentNumber,
-                    	b.pri_date as PrviousDateJalali,
+                    	b.pri_date as PreviousDateJalali,
                     	b.today_date as CurrentDateJalali,
                     	b.date_bed as RegisterDateJalali,
                     	b.masraf as Consumption,
