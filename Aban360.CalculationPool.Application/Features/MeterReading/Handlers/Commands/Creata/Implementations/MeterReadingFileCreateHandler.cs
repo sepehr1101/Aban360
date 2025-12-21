@@ -93,7 +93,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
             int firstFlowId = readingDetailsCreate.FirstOrDefault().FlowImportedId;
             int zoneId = readingDetailsCreate.FirstOrDefault().ZoneId;
-            await CompleteMeterFlow(firstFlowId, zoneId, input.ReadingFile.FileName, appUser);
+            await CompleteMeterFlow(firstFlowId, zoneId, input.ReadingFile.FileName, appUser, input.Description);
 
             return GetReturnData(readingDetailsCreate);
         }
@@ -110,7 +110,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
             return result;
         }
-        private async Task CompleteMeterFlow(int latestFlowId, int ZoneId, string fileName, IAppUser appUser)
+        private async Task CompleteMeterFlow(int latestFlowId, int ZoneId, string fileName, IAppUser appUser, string? description)
         {
             MeterFlowUpdateDto meterFlowUpdate = new(latestFlowId, appUser.UserId, DateTime.Now);
             _meterFlowService.Update(meterFlowUpdate);
@@ -122,6 +122,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 FileName = fileName,
                 InsertByUserId = appUser.UserId,
                 InsertDateTime = DateTime.Now,
+                Description = description
             };
             await _meterFlowService.Create(newMeterFlow);
         }
@@ -197,11 +198,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                        TavizRegisterDateJalali = taviz?.TavizRegisterDateJalali,
 
                        LastMeterDateJalali = bedbes is null ? members.WaterInstallationDateJalali : bedbes.LastMeterDateJalali,
-                       LastMeterNumber = bedbes is null ? 0 : bedbes.LastMeterNumber,
-                       LastConsumption = bedbes is null ? 0 : bedbes.LastConsumption,
-                       LastMonthlyConsumption = bedbes is null ? 0 : bedbes.LastMonthlyConsumption,
-                       LastCounterStateCode = bedbes is null ? 0 : bedbes.LastCounterStateCode,
-                       LastSumItems = bedbes is null ? 0 : (bedbes?.LastSumItems is null ? 0 : bedbes?.LastSumItems)
+                       LastMeterNumber = bedbes?.LastMeterNumber ?? 0,
+                       LastConsumption = bedbes?.LastConsumption ?? 0,
+                       LastMonthlyConsumption = bedbes?.LastMonthlyConsumption ?? 0,
+                       LastCounterStateCode = bedbes?.LastCounterStateCode ?? 0,
+                       LastSumItems = bedbes?.LastSumItems ?? 0
                    };
         }
         private MeterReadingFileDetail CreateMeterReading(int zoneId, int customerNumber, string readingNumber, int agentCode, short currentCounterStateCode, string previousDateJalali, string currentDateJalali, int previousNumber, int currentNumber, Guid userId)

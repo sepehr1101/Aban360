@@ -96,7 +96,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         public async Task Exclude(MeterReadingDetailExcludedDto input)
         {
             string query = GetExcludeCommand();
-            await _sqlReportConnection.ExecuteAsync(query,input);
+            await _sqlReportConnection.ExecuteAsync(query, input);
         }
         public async Task<IEnumerable<MeterReadingDetailDataOutputDto>> Get(int flowImportedId)
         {
@@ -228,11 +228,11 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                 row["TavizNumber"] = item.TavizNumber ?? (object)DBNull.Value;
 
                 row["LastMeterDateJalali"] = item.LastMeterDateJalali;
-                row["LastMeterNumber"] = item.LastMeterNumber ?? (object)DBNull.Value;
-                row["LastConsumption"] = item.LastConsumption ?? (object)DBNull.Value;
-                row["LastMonthlyConsumption"] = item.LastMonthlyConsumption ?? (object)DBNull.Value;
-                row["LastCounterStateCode"] = item.LastCounterStateCode ?? (object)DBNull.Value;
-                row["LastSumItems"] = item.LastSumItems ?? (object)DBNull.Value;
+                row["LastMeterNumber"] = item.LastMeterNumber;
+                row["LastConsumption"] = item.LastConsumption;
+                row["LastMonthlyConsumption"] = item.LastMonthlyConsumption;
+                row["LastCounterStateCode"] = item.LastCounterStateCode;
+                row["LastSumItems"] = item.LastSumItems;
 
                 row["SumItems"] = item.SumItems ?? (object)DBNull.Value;
                 row["SumItemsBeforeDiscount"] = item.SumItemsBeforeDiscount ?? (object)DBNull.Value;
@@ -397,7 +397,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                         lastMonthlyConsumption,
                         lastConsumption,
                         LastCounterStateCode,
-                    
+                        LastSumItems,                     
+
                         SumItems,
                         SumItemsBeforeDiscount,
                         DiscountSum,
@@ -456,7 +457,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                         lastMonthlyConsumption,
                         lastConsumption,
                         LastCounterStateCode,
-                    
+                        LastSumItems,
+
                         @SumItems,
                         @SumItemsBeforeDiscount,
                         @DiscountSum,

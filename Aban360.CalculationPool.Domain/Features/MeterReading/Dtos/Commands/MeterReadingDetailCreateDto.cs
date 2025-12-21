@@ -50,11 +50,11 @@
         public int? TavizNumber { get; set; }
 
         public string LastMeterDateJalali { get; set; }
-        public int? LastMeterNumber { get; set; }
-        public float? LastConsumption { get; set; }
-        public float? LastMonthlyConsumption { get; set; }
-        public int? LastCounterStateCode { get; set; }
-        public double? LastSumItems { get; set; }
+        public int LastMeterNumber { get; set; }
+        public float LastConsumption { get; set; }
+        public float LastMonthlyConsumption { get; set; }
+        public int LastCounterStateCode { get; set; }
+        public double LastSumItems { get; set; }
 
         public double? SumItems { get; set; }
         public double? SumItemsBeforeDiscount { get; set; }
