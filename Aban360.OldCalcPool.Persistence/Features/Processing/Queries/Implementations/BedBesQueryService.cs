@@ -46,7 +46,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         {
             //string dbName = GetDbName(input.ZoneId);
             string dbName = "Atlas";
-            string query = GetBedBesListToRemove(dbName);
+            string query = GetBedBesListToRemoveOrReturn(dbName, true);
 
             IEnumerable<BillsCanRemoveOutputDto> result = await _sqlReportConnection.QueryAsync<BillsCanRemoveOutputDto>(query, input);
             if (result is null || !result.Any())
@@ -72,7 +72,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         {
             string dbName = GetDbName(input.ZoneId);
             //string dbName = "Atlas";
-            string query = GetBedBesListToRemove(dbName);
+            string query = GetBedBesListToRemoveOrReturn(dbName, false);
 
             IEnumerable<BillsCanReturnOutputDto> result = await _sqlReportConnection.QueryAsync<BillsCanReturnOutputDto>(query, input);
             if (result is null || !result.Any())
@@ -181,8 +181,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	c.BillId=@billId AND
                     	c.ToDayJalali IS NULL";
         }
-        private string GetBedBesListToRemove(string dbName)
+        private string GetBedBesListToRemoveOrReturn(string dbName, bool isRemove)
         {
+            string condition = isRemove ?
+                $"JOIN [{dbName}].dbo.variab v ON b.town=v.town AND b.date_bed collate Persian_100_CI_AI>=v.date_check" :
+                string.Empty;
             return @$"SELECT	
                     	b.id,
                     	b.town as ZoneId,
@@ -199,8 +202,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	b.baha as SumItems,
                     	b.kasr_ha as Discount,
                     	b.mamor as AgentCode,
-                        b.sh_pard1 as PaymentId,
-                    	b.sh_ghabs1 as BillId,
+                        TRIM(b.sh_pard1) as PaymentId,
+                    	TRIM(b.sh_ghabs1) as BillId,
                     	t41.C1 as UsageTitle,
                     	t7.C1 as BranchTypeTitle,
                     	b.fix_mas as ContractualCapacity,
@@ -211,8 +214,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	b.ted_khane as HouseholdNumber,
 						b.del as IsReturned
                     FROM [{dbName}].dbo.bed_bes b
-                    JOIN [{dbName}].dbo.variab v
-                    	ON b.date_bed collate Persian_100_CI_AI>=v.date_check
+                    {condition}
                     JOIN [Db70].dbo.T41 t41 
                     	ON b.cod_enshab=t41.C0
                     JOIN [Db70].dbo.T7 t7 
@@ -287,6 +289,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         private string GetListByFromToDate(string dbName)
         {
             return @$"SELECT
+                        id AS id,
                         town AS Town,
                         radif AS Radif,
                         eshtrak AS Eshtrak,
@@ -362,8 +365,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	town=@zoneId AND
                     	radif=@customerNumber AND
                     	date_bed BETWEEN @fromDate AND @toDate AND
-						cod_vas NOT IN (4,7,8) AND
-                        del=0
+						cod_vas NOT IN (4,7,8) --AND
+                        --del=0
                     Order by date_bed";
         }
         private string GetCountInDateBedQuery(string dbName)

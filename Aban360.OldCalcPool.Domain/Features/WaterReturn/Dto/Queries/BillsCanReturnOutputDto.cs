@@ -18,7 +18,7 @@
         public long Discount { get; set; }
         public int AgentCode { get; set; }
 
-        public long PaymentId { get; set; }
+        public string PaymentId { get; set; }
         public string BillId { get; set; }
         public string UsageTitle { get; set; }
         public string BranchTypeTitle { get; set; }

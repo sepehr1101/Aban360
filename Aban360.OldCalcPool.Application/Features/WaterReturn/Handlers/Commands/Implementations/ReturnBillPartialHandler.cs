@@ -84,8 +84,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         }
         public async Task<ReturnBillOutputDto> OtherCause(ReturnBillPartialInputDto input, CustomerInfoOutputDto customerInfo, float consumptionAverage, CancellationToken cancellationToken)
         {
-            AbBahaCalculationDetails abBahaResult = await GetAbBahaTariff(input, consumptionAverage, cancellationToken);
             IEnumerable<BedBesCreateDto> bedBesInfo = await GetBedBesList(customerInfo, input);
+            BedBesCreateDto bedBesResult = GetBedbes(bedBesInfo);
+
+            AbBahaCalculationDetails abBahaResult = await GetAbBahaTariff(input, bedBesInfo, consumptionAverage, cancellationToken);
 
             await UpdateBedBesDel(bedBesInfo);
 
@@ -95,20 +97,21 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             ValidationAmount(repairCreate.Baha, bedBesInfo.Sum(s => s.Baha));
             if (!input.IsConfirm)
             {
-                return new ReturnBillOutputDto(bedBesInfo, repairCreate, autoBackCreate);
+                return new ReturnBillOutputDto(bedBesResult, repairCreate, autoBackCreate);
             }
 
             await _repairCommandService.Create(repairCreate);//todo : remove comment
             await _autoBackCommandService.Create(autoBackCreate);
 
-            return new ReturnBillOutputDto(bedBesInfo, repairCreate, autoBackCreate);
+            return new ReturnBillOutputDto(bedBesResult, repairCreate, autoBackCreate);
         }
         private async Task<ReturnBillOutputDto> BurstPipe(ReturnBillPartialInputDto input, CustomerInfoOutputDto customerInfo, float consumptionAverage, CancellationToken cancellationToken)
         {
             var (finalAmount, hadarConsumption, _consumptionAverage) = await GetAbHadarMasHadar(input, customerInfo, consumptionAverage);
 
-            AbBahaCalculationDetails abBahaResult = await GetAbBahaTariff(input, _consumptionAverage, cancellationToken);
             IEnumerable<BedBesCreateDto> bedBesInfo = await GetBedBesList(customerInfo, input);
+            BedBesCreateDto bedBesResult = GetBedbes(bedBesInfo);
+            AbBahaCalculationDetails abBahaResult = await GetAbBahaTariff(input, bedBesInfo, _consumptionAverage, cancellationToken);
 
             await UpdateBedBesDel(bedBesInfo);
 
@@ -118,13 +121,13 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             ValidationAmount(repairCreate.Baha, bedBesInfo.Sum(s => s.Baha));
             if (!input.IsConfirm)
             {
-                return new ReturnBillOutputDto(bedBesInfo, repairCreate, autoBackCreate);
+                return new ReturnBillOutputDto(bedBesResult, repairCreate, autoBackCreate);
             }
 
             await _repairCommandService.Create(repairCreate);
             await _autoBackCommandService.Create(autoBackCreate);
 
-            return new ReturnBillOutputDto(bedBesInfo, repairCreate, autoBackCreate);
+            return new ReturnBillOutputDto(bedBesResult, repairCreate, autoBackCreate);
         }
 
 
@@ -309,9 +312,12 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 TmpDateBed = currentDateJalali10Char,
             };
         }
-        private async Task<AbBahaCalculationDetails> GetAbBahaTariff(ReturnBillPartialInputDto input, double consumptionAverage, CancellationToken cancellationToken)
+        private async Task<AbBahaCalculationDetails> GetAbBahaTariff(ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBes, double consumptionAverage, CancellationToken cancellationToken)
         {
-            MeterDateInfoWithMonthlyConsumptionOutputDto meterData = new(input.BillId, input.FromDateJalali, input.ToDateJalali, consumptionAverage);
+            string firstDateJalali = bedBes.Min(x => x.PriDate);
+            string latestDateJalali = bedBes.Max(x => x.TodayDate);
+
+            MeterDateInfoWithMonthlyConsumptionOutputDto meterData = new(input.BillId, firstDateJalali, latestDateJalali, consumptionAverage);
             AbBahaCalculationDetails abBahaResult = await _oldTariffEngine.Handle(meterData, cancellationToken);
             return abBahaResult;
         }
@@ -413,5 +419,74 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             _ = repairSumItems > previousSumItems ? throw new ReturnedBillException(ExceptionLiterals.RepairAmountMoreThanBedBesAmount) : 0;
         }
         private static decimal Diff(decimal firstValue, decimal secondValue) => firstValue - secondValue;
+        private static BedBesCreateDto GetBedbes(IEnumerable<BedBesCreateDto> c)
+        {
+            var r = c.MaxBy(x => x.DateBed);
+
+            r.Id = 0;
+
+            r.Barge = 0;
+            r.PriNo = c.Min(x => x.PriNo);
+            r.TodayNo = c.Max(x => x.TodayNo);
+            r.PriDate = c.Min(x => x.PriDate);
+            r.TodayDate = c.Max(x => x.TodayDate);
+
+            r.AbonFas = c.Sum(x => x.AbonFas);
+            r.FasBaha = c.Sum(x => x.FasBaha);
+            r.AbBaha = c.Sum(x => x.AbBaha);
+            r.Ztadil = c.Sum(x => x.Ztadil);
+            r.Masraf = c.Sum(x => x.Masraf);
+            r.Shahrdari = c.Sum(x => x.Shahrdari);
+            r.Modat = c.Sum(x => x.Modat);
+            r.JalaseNo = 0;
+
+            r.Baha = c.Sum(x => x.Baha);
+            r.AbonAb = c.Sum(x => x.AbonAb);
+            r.Pard = c.Sum(x => x.Pard);
+            r.Jam = c.Sum(x => x.Jam);
+
+            r.ZaribFasl = c.Sum(x => x.ZaribFasl);
+            r.Ab10 = c.Sum(x => x.Ab10);
+            r.Ab20 = c.Sum(x => x.Ab20);
+
+            r.Jarime = c.Sum(x => x.Jarime);
+            r.Masjar = c.Sum(x => x.Masjar);
+
+            r.Rate = c.Average(x => x.Rate);
+            r.ZaribCntr = c.Sum(x => x.ZaribCntr);
+            r.Zabresani = c.Sum(x => x.Zabresani);
+            r.ZaribD = c.Sum(x => x.ZaribD);
+            r.Tafavot = c.Sum(x => x.Tafavot);
+            r.KasrHa = c.Sum(x => x.KasrHa);
+
+            r.TabAbnA = c.Sum(x => x.TabAbnA);
+            r.TabAbnF = c.Sum(x => x.TabAbnF);
+            r.TabsFa = c.Sum(x => x.TabsFa);
+            r.NewAb = c.Sum(x => x.NewAb);
+            r.NewFa = c.Sum(x => x.NewFa);
+            r.Bodjeh = c.Sum(x => x.Bodjeh);
+
+            r.C200 = c.Sum(x => x.C200);
+            r.AbSevom = c.Sum(x => x.AbSevom);
+            r.AbSevom1 = c.Sum(x => x.AbSevom1);
+            r.C70 = c.Sum(x => x.C70);
+            r.C80 = c.Sum(x => x.C80);
+            r.C90 = c.Sum(x => x.C90);
+            r.C101 = c.Sum(x => x.C101);
+            r.Tafa402 = c.Sum(x => x.Tafa402);
+            r.Avarez = c.Sum(x => x.Avarez);
+
+            r.DateBed = string.Empty;
+            r.Mohlat = string.Empty;
+            r.TavizDate = string.Empty;
+            r.Ghabs = string.Empty;
+            r.TmpDateBed = string.Empty;
+            r.TmpPriDate = string.Empty;
+            r.TmpTodayDate = string.Empty;
+            r.TmpMohlat = string.Empty;
+            r.TmpTavizDate = string.Empty;
+
+            return r;
+        }
     }
 }
