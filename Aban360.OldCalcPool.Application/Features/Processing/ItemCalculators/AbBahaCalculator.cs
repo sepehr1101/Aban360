@@ -300,11 +300,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         {   
             if (date_1400_12_25.MoreOrEq(nerkhDate2))
             {
-                return _3766_168110;
+                return _4323_225000;//_3766_168110;
             }
             else if (IsGtFromLqTo(nerkhDate2, date_1400_12_25, date_1402_04_23))
             {
-                return _4040_168110;
+                return _4323_225000;//_4040_168110;
             }
             else if (IsGtFromLqTo(nerkhDate2, date_1402_04_23, date_1403_06_25))
             {
@@ -314,10 +314,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return _4323_350000;
             }
-            else if (IsGtFromLqTo(nerkhDate2, date_1402_04_23, date_1403_06_25))
-            {
-                return _4040_168110;
-            }
+            //else if (IsGtFromLqTo(nerkhDate2, date_1402_04_23, date_1403_06_25))
+            //{
+            //    return _4040_168110;
+            //}
             else if (IsGtFromLqTo(nerkhDate2, date_1403_09_13, date_1404_02_31))
             {
                 return _7000_350000;

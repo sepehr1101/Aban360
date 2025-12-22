@@ -219,7 +219,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             {
                 AbAzadFormulaDto abAzadItem = abAzad.ElementAt(counter);
                 ZaribGetDto zaribItem = zarib.ElementAt(counter);
-                ZaribCQueryDto zaribC = await _zaribCQueryService.GetZaribC(nerkhItem.Date1, nerkhItem.Date2);
+                ZaribCQueryDto zaribC = await GetZaribC(nerkhItem);
                 ConsumptionInfo partialConsumptionInfo = new(nerkhItem.Date1, nerkhItem.Date2, consumptionInfo.Consumption, consumptionInfo.Duration, consumptionInfo.DailyAverageConsumption, consumptionInfo.FinalDomesticUnit);
                 BaseOldTariffEngineOutputDto resultCalc = CalculateWaterBill(nerkhItem, nerkh1403.ElementAt(counter), abAzadItem, zaribItem, customerInfo, meterInfo, currentDateJalali, partialConsumptionInfo, table1.olgo, zaribC is not null ? zaribC.C : null, tags);
                 nerkhItem.CalcVaj = resultCalc.AbBahaValues.Summation.ToString();
@@ -309,9 +309,15 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             string baseDate = "1403/12/30";
             return nerkhDate2.CompareTo(baseDate) <= 0 ? 14 : olgo;
         }
-        private NerkhGetDto TrimBefore1403(NerkhGetDto nerkh)
+        private async Task<ZaribCQueryDto> GetZaribC(NerkhGetDto nerkh)
         {
-            if(nerkh.Date1<)
+            string date1402_12_28 = "1402/12/28";
+            string date1402_12_29 = "1402/12/29";
+            string date1403_06_25 = "1403/12/25";
+            string @from = "1402/12/28".MoreOrEq(nerkh.Date1) ? date1402_12_29 : nerkh.Date1;
+            string @to = "1402/12/28".MoreOrEq(nerkh.Date2) ? date1403_06_25 : nerkh.Date2;
+            ZaribCQueryDto zaribCQueryDto = await _zaribCQueryService.GetZaribC(nerkh.Date1, nerkh.Date2);
+            return zaribCQueryDto;
         }
     }
 }
