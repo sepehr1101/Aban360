@@ -93,7 +93,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
         {
             return @"Select top 1
                     	N'شرکت آب و فاضلاب استان اصفهان' AS Headquarters,
-                    	411-7676-4864 AS EconomicalNumber,--todo
+                    	'411-7676-4864' AS EconomicalNumber,--todo
                     	b.ZoneTitle AS ZoneTitle,
                         b.ZoneId AS ZoneId,
                     	TRIM(c.FirstName) AS FirstName,

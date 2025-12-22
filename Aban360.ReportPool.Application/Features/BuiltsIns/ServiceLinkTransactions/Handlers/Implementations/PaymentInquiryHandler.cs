@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<PaymentInquiryHeaderOutputDto, PaymentInquiryDataOutputDto>> Handle(PaymentInquiryInputDto input, CancellationToken cancellationToken)
+        public async Task<PaymentInquiryOutputDto> Handle(PaymentInquiryInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 throw new CustomValidationException(message);
             }
 
-            ReportOutput<PaymentInquiryHeaderOutputDto, PaymentInquiryDataOutputDto> PaymentInquiry = await _paymentInquiryQueryService.GetInfo(input);
+            PaymentInquiryOutputDto PaymentInquiry = await _paymentInquiryQueryService.GetInfo(input);
             return PaymentInquiry;
         }
     }

@@ -94,6 +94,7 @@
         public static string NotFoundBillsToReturned => "قبضی برای برگشتی یافت نشد.";
         public static string CantReturn => "برگشتی در بازه تاریخی وارد شده امکان پذیر نیست.";
         public static string RepairAmountMoreThanBedBesAmount => "مبلغ برگشتی از مبلغ قبوض بیشتر است.";
+        public static string InvalidBillWithDel => "در بازه وارد شده، قبض برگشتی وجود دارد.";
 
 
         //Tax
