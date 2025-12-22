@@ -11,7 +11,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IFazelabCalculator
     {
-        TariffItemResult Calculate(string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman);
+        TariffItemResult Calculate(string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, ConsumptionPartialInfo consumptionPartialInfo);
         TariffItemResult CalculateDiscount(TariffItemResult fazelabCalculationResult , double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo);
     }
 
@@ -23,9 +23,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         private const int _firstCalculation = 1;
         private const int _normal = 2;
 
-        public TariffItemResult Calculate(string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman)
+        public TariffItemResult Calculate(string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, ConsumptionPartialInfo consumptionPartialInfo)
         {
             double sewageAmount = 0;
+
             //محاسبه کارمزد دفع در کاربری های گروه خانگی ضریب 0.7
             double multiplier = GetMultiplier(isAbonman, customerInfo.UsageId);
            
@@ -34,6 +35,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 return new TariffItemResult();
             }
             if (IsUsageConstructor(customerInfo.UsageId) && !isAbonman)
+            {
+                return new TariffItemResult();
+            }
+            if (IsTankerSale(customerInfo.UsageId))
             {
                 return new TariffItemResult();
             }
@@ -57,7 +62,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 duration = calcDistance.Distance;
                 sewageAmount = (abBahaItemAmount / durationAll) * duration * multiplier;
                 //TODO: Update SewageStateToNormal in DB
-                return new TariffItemResult(sewageAmount);
+                return new TariffItemResult(consumptionPartialInfo.AllowedRatio* sewageAmount, consumptionPartialInfo.DisallwedRatio*sewageAmount);
             }
             //نرمال اما تاریخ نصب قبل از تاریخ قرائت و بعد از ابتدای دوره مصرف، پس بخشی از آن باید حساب شود
             else if (InstallBetweenReadingPeriod(date1, date2, customerInfo))
@@ -70,13 +75,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 }
                 duration = calcDistance.Distance;
                 sewageAmount = (abBahaItemAmount / durationAll) * duration * multiplier;
-                return new TariffItemResult(sewageAmount);
+                return new TariffItemResult(consumptionPartialInfo.AllowedRatio* sewageAmount, consumptionPartialInfo.DisallwedRatio*sewageAmount);
             }
             else if (IsTotallyNormal(customerInfo, currentDateJalali))
             {
                 sewageAmount = abBahaItemAmount * multiplier;
             }
-            return new TariffItemResult(sewageAmount);
+            return new TariffItemResult(consumptionPartialInfo.AllowedRatio * sewageAmount, consumptionPartialInfo.DisallwedRatio * sewageAmount);
         }
         public TariffItemResult CalculateDiscount(TariffItemResult fazelabCalculationResult, double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo)
         {

@@ -45,6 +45,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return new TariffItemResult();
             }
+            if (IsUsageConstructor(customerInfo.UsageId))
+            {
+                return new TariffItemResult();
+            }
+            if (IsTankerSale(customerInfo.UsageId))
+            {
+                return new TariffItemResult();
+            }
 
             string hotSeasonStart = GetHotSeasonStart(consumptionPartialInfo.StartDateJalali);
             string hotSeasonEnd = GetHotSeasonEnd(consumptionPartialInfo.StartDateJalali);
