@@ -152,7 +152,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                     Where 
                     	(n.date1<@currentDateJalali AND n.date2>=@previousDateJalali)AND
                     	(@averageConsumption > n.ebt*@olgoo AND @averageConsumption <= n.ent*@olgoo) AND
-                    	n.cod=@usageId";
+                    	n.cod=@usageId
+                    ORDER BY n.date1";
         }
         private string GetOlgooQuery()
         {

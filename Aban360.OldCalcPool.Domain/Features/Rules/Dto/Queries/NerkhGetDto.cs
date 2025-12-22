@@ -22,10 +22,11 @@
         public bool Tabsare2 { get; set; }
         public bool ZaribFasl { get; set; }
         public int ZaribBodje { get; set; }
-
-        public int Duration { get; set; }
-        public double PartialConsumption { get; set; }
-
-        public int C { get; set; }
+    }
+    internal record LightNerkh
+    {   
+        public string? AllowedFormula { get; set; }
+        public string? DisallowedFormula { get; set; }
+        public string? OVaj { get; set; }
     }
 }

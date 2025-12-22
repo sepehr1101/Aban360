@@ -2,6 +2,21 @@
 {
     public record ConsumptionPartialInfo
     {
+        public double AllowedRatio
+        {
+            get
+            {
+                double allowedRatio = Consumption == 0 ? 1 : AllowedConsumption / Consumption;
+                return allowedRatio;
+            }
+        }
+        public double DisallwedRatio
+        {
+            get
+            {
+                return 1 - AllowedRatio;
+            }
+        }
         public double AllowedConsumption { get;}
         public double DisallowedConsumtion { get;}
         public double Consumption { get;}

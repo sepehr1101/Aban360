@@ -65,13 +65,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 return new TariffItemResult(abBahaAmount*(double)multiplierAbBaha);
             }
 
-            //case tmp:
+            //case before 1403/09/13 and domestic group and below olgoo:
             if (IsLessThan1403_09_13(consumptionPartialInfo.EndDateJalali) &&                
                 IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
                 monthlyConsumption <= _olgoo)
             {   
                 oldAbBahaAmount = CalculateOldAbBahaIfPossible(nerkh, customerInfo, consumptionPartialInfo, monthlyConsumption, _olgoo, c, tagIds, oldAbBahaAmount, _oldAbBahaZarib);                
-                return new TariffItemResult(oldAbBahaAmount * (double)multiplierAbBaha * villageMultiplier * customerInfo.UnitAll);
+                return new TariffItemResult(oldAbBahaAmount * (double)multiplierAbBaha * villageMultiplier * customerInfo.DomesticUnit);
             }
 
             //case 3: require old ab baha but not religious
@@ -79,11 +79,27 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 IsBefore1403_06_26(consumptionPartialInfo.EndDateJalali) &&
                 !IsReligious(customerInfo.UsageId))
             {
+                bool isOld = false;
                 //abBahaFromExpression = CalcFormulaByRate(formula, monthlyConsumption, _olgoo, c, tagIds);
                 abBahaAmount = abBahaFromExpression * consumptionPartialInfo.Consumption;
                 oldAbBahaAmount = CalculateOldAbBahaIfPossible(nerkh, customerInfo, consumptionPartialInfo, monthlyConsumption, _olgoo, c, tagIds, oldAbBahaAmount, _oldAbBahaZarib);
-                abBahaAmount = ShouldUseOldAbBaha(consumptionPartialInfo, customerInfo, monthlyConsumption, _olgoo, abBahaAmount, oldAbBahaAmount);
-                return new TariffItemResult(abBahaAmount * (double)multiplierAbBaha * villageMultiplier);
+                (double, bool) abBahaItems = ShouldUseOldAbBaha(consumptionPartialInfo, customerInfo, monthlyConsumption, _olgoo, abBahaAmount, oldAbBahaAmount);
+                abBahaAmount = abBahaItems.Item1;
+
+                // راه حل صحیح اما ناسازگار با روش قدیمی در سیستم و اکسل
+                //double upToOlgooAmount = isOld ? CalculateOldAbBahaIfPossible(nerkh, customerInfo, consumptionPartialInfo, _olgoo, _olgoo, c, tagIds, oldAbBahaAmount, _oldAbBahaZarib)
+                //    * (double)multiplierAbBaha * villageMultiplier :
+                //     CalcFormulaByRate(formula, _olgoo, _olgoo, c, tagIds) * (double)multiplierAbBaha * villageMultiplier * consumptionPartialInfo.AllowedConsumption;
+                double upToOlgooAmount = IsDomesticWithoutUnspecified(customerInfo.UsageId) ?
+                    43744.85 * (double)multiplierAbBaha * villageMultiplier * consumptionPartialInfo.Duration / monthDays
+                    : 0;
+
+                double overalAmount = abBahaAmount * (double)multiplierAbBaha * villageMultiplier;
+
+                double aboveOlgoo = overalAmount > upToOlgooAmount ? overalAmount - upToOlgooAmount : 0;
+                upToOlgooAmount = overalAmount > upToOlgooAmount ? upToOlgooAmount : overalAmount;
+
+                return new TariffItemResult(upToOlgooAmount, aboveOlgoo);
             }
 
             //case 4: domestic group and subFormula not null
@@ -138,9 +154,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 return new TariffItemResult();
             }
             decimal multiplier = GetMultiplier(zarib, olgoo, IsDomesticCategory(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
-            double partialOlgoo = IsDomestic(customerInfo.UsageId) ?
+            /*double partialOlgoo = IsDomestic(customerInfo.UsageId) ?
                (double)finalDomesticUnit * olgoo / monthDays * consumptionPartialInfo.Duration :
-               (double)customerInfo.ContractualCapacity / monthDays * consumptionPartialInfo.Duration;
+               (double)customerInfo.ContractualCapacity / monthDays * consumptionPartialInfo.Duration;*/
 
             if (IsHandoverDiscount(customerInfo.BranchType) &&
                 IsDomesticWithoutUnspecified(customerInfo.UsageId))
@@ -284,11 +300,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         {   
             if (date_1400_12_25.MoreOrEq(nerkhDate2))
             {
-                return _3766_168110;
+                return _4323_225000;//_3766_168110;
             }
             else if (IsGtFromLqTo(nerkhDate2, date_1400_12_25, date_1402_04_23))
             {
-                return _4040_168110;
+                return _4323_225000;//_4040_168110;
             }
             else if (IsGtFromLqTo(nerkhDate2, date_1402_04_23, date_1403_06_25))
             {
@@ -298,10 +314,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return _4323_350000;
             }
-            else if (IsGtFromLqTo(nerkhDate2, date_1402_04_23, date_1403_06_25))
-            {
-                return _4040_168110;
-            }
+            //else if (IsGtFromLqTo(nerkhDate2, date_1402_04_23, date_1403_06_25))
+            //{
+            //    return _4040_168110;
+            //}
             else if (IsGtFromLqTo(nerkhDate2, date_1403_09_13, date_1404_02_31))
             {
                 return _7000_350000;
@@ -408,17 +424,19 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             return oldAbBahaAmount;
         }
 
-        private double ShouldUseOldAbBaha(ConsumptionPartialInfo consumptionPartialInfo, CustomerInfoOutputDto customerInfo, double monthlyConsumption, int _olgoo, double abBahaAmount, double oldAbBahaAmount)
+        private (double,bool) ShouldUseOldAbBaha(ConsumptionPartialInfo consumptionPartialInfo, CustomerInfoOutputDto customerInfo, double monthlyConsumption, int _olgoo, double abBahaAmount, double oldAbBahaAmount)
         {
+            bool isOld = false;
             if (IsLessThan1403_09_13(consumptionPartialInfo.EndDateJalali) &&
                 monthlyConsumption <= _olgoo &&
                 abBahaAmount > oldAbBahaAmount &&
                 IsDomesticWithoutUnspecified(customerInfo.UsageId))
             {
                 abBahaAmount = oldAbBahaAmount;
+                isOld = true;
             }
 
-            return abBahaAmount;
+            return (abBahaAmount, isOld);
         }
 
         private double GetVillageMultiplier(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, double monthlyConsumption, int _olgoo)

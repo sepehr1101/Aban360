@@ -1,6 +1,5 @@
 ﻿using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
-using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
@@ -21,6 +20,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 return new TariffItemResult();
             }
             if (IsConstruction(customerInfo.BranchType))
+            {
+                return new TariffItemResult();
+            }
+            if(IsTankerSale(customerInfo.UsageId))
             {
                 return new TariffItemResult();
             }
