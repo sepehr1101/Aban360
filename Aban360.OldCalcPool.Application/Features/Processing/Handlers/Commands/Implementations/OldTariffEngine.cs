@@ -193,14 +193,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
         private NerkhByConsumptionInputDto CreateNerkhInput(MeterInfoOutputDto meterInfo, CustomerInfoOutputDto customerInfo, ConsumptionInfo consumptionInfo)
         {
-            int constructionBranchType = 4;
-            int azadUsageId = 39;
+            //int constructionBranchType = 4;
+            //int azadUsageId = 39;
             return new NerkhByConsumptionInputDto(
-                customerInfo.ZoneId,
-                customerInfo.BranchType == constructionBranchType ? azadUsageId : customerInfo.UsageId,
-                meterInfo.PreviousDateJalali,
-                meterInfo.CurrentDateJalali,
-                consumptionInfo.MonthlyAverageConsumption);
+                _zoneId: customerInfo.ZoneId,
+                _usageId: customerInfo.UsageId,//customerInfo.BranchType == constructionBranchType ? azadUsageId : customerInfo.UsageId,
+                _previousDate: meterInfo.PreviousDateJalali,
+                _currentDate: meterInfo.CurrentDateJalali,
+                _average: consumptionInfo.MonthlyAverageConsumption);
         }
         private async Task<AbBahaCalculationDetails> GetAbBahaCalculationDetails(IEnumerable<NerkhGetDto> allNerkh, IEnumerable<AbAzadFormulaDto> abAzad, IEnumerable<ZaribGetDto> zarib, string currentDateJalali, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ConsumptionInfo consumptionInfo, IEnumerable<NerkhGetDto> nerkh1403)
         {

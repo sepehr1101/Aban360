@@ -81,6 +81,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return new TariffItemResult();
             }
+            if (IsUsageConstructor(customerInfo.UsageId))
+            {
+                return new TariffItemResult();
+            }
             if (calcResult.Summation - amountDiscount < 2)
             {
                 return new TariffItemResult(hotSeasonInfo.Summation);
@@ -105,8 +109,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             string hotSeasonStart = GetHotSeasonStart(date2);
             string hotSeasonEnd = GetHotSeasonEnd(date2);
             int hotSeasonDuration = PartTime(hotSeasonStart, hotSeasonEnd, date1, date2, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-            double amount1 = hotSeasonDuration > 0 ? (int)((hotSeasonDuration * (calcResult.Allowed>0 && aboveZero ? calcResult.Allowed: baseAmount) / duration) * _hotSeasonRate) : 0;
-            double amount2= hotSeasonDuration > 0 ? (int) ((hotSeasonDuration * (calcResult.Disallowed> 0 && aboveZero ? calcResult.Disallowed : 0) / duration) * _hotSeasonRate) : 0;
+            double amount1 = hotSeasonDuration > 0 ? (long)((hotSeasonDuration * (calcResult.Allowed>0 && aboveZero ? calcResult.Allowed: baseAmount) / duration) * _hotSeasonRate) : 0;
+            double amount2= hotSeasonDuration > 0 ? (long) ((hotSeasonDuration * (calcResult.Disallowed> 0 && aboveZero ? calcResult.Disallowed : 0) / duration) * _hotSeasonRate) : 0;            
             return new TariffItemResult(amount1*fazelabMultiplier, amount2*fazelabMultiplier, hotSeasonDuration);
         }
         private bool IsDomesticBelow25MeterConsumption(CustomerInfoOutputDto customerInfo, double monthlyConsumption)
