@@ -96,7 +96,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             if (IsConstruction(customerInfo.BranchType))
             {
                 return new TariffItemResult();
-            }           
+            }
+            if (IsUsageConstructor(customerInfo.UsageId))
+            {
+                return new TariffItemResult();
+            }
             if (date_1404_02_31.MoreOrEq(consumptionPartialInfo.EndDateJalali) && IsSchool(customerInfo.UsageId))
             {
                 return new TariffItemResult();

@@ -107,16 +107,26 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return new TariffItemResult();
             }
-            if (IsUnderSocialService(branchTypeId))
+            if (IsUsageConstructor(usageId))
             {
-                return new TariffItemResult(abonmanAmount);
+                return new TariffItemResult();
             }
+            if (IsUnderSocialService(branchTypeId) &&
+                date1403_12_01.MoreOrEq(consumptionPartialInfo.EndDateJalali))
+            {
+                return new TariffItemResult(abonAllowed);
+            }            
 
             if (IsHandoverDiscount(customerInfo.BranchType) &&
               IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
               date1403_12_01.MoreOrEq(consumptionPartialInfo.EndDateJalali))
             {
                 return new TariffItemResult(abonAllowed);
+            }
+
+            if (IsUnderSocialService(branchTypeId))
+            {
+                return new TariffItemResult(abonmanAmount);
             }
 
             if (IsReligiousWithCharity(usageId))

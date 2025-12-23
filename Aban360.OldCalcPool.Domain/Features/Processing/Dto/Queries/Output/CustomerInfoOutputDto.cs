@@ -20,6 +20,10 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
                        (DomesticUnit + CommertialUnit + OtherUnit) : 1;
             }
         }
+        public int PureDomesticUnit
+        {
+            get { return DomesticUnit - EmptyUnit; }
+        }
         public int EmptyUnit { get; set; }
         public string WaterInstallationDateJalali { get; set; } = default!;
         public string? SewageInstallationDateJalali { get; set; }
