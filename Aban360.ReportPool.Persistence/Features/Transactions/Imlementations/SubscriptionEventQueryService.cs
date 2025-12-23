@@ -109,7 +109,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 	             OtherCount OtherUnit,
 	             EmptyCount EmptyUnit,
 	             0 HouseholderNumber,
-	             ContractCapacity,
+	             ContractCapacity ContractualCapacity,
 	             UsageId UsageSellId,
 	             UsageId2 UsageConsumptionId,
 	             UsageTitle UsageSellTitle,

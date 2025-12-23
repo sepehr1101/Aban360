@@ -38,12 +38,19 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging
         public async Task<IEnumerable<BillIdTagDto>> GetByBillId(string billId)
         {
             var sql = @"
-                SELECT Id, BillId, ExpireDateJalali, TagId, TagTitle, CreateDateTime, DeleteDateTime
+                SELECT 
+                    Id, 
+                    BillId,
+                    ExpireDateJalali, 	
+                    IIF([CustomerWarehouse].dbo.PersianToMiladi(ExpireDateJalali)>GETDATE() OR ExpireDateJalali IS NULL,1,0) IsValid,
+                    TagId,
+                    TagTitle, 
+                    CreateDateTime,
+                    DeleteDateTime
                 FROM [CustomerWarehouse].dbo.BillIdTags
                 WHERE 
                     BillId = @BillId AND 
-                    DeleteDateTime IS NULL   AND
-	                [CustomerWarehouse].dbo.PersianToMiladi(ExpireDateJalali)>GETDATE() ";
+                    DeleteDateTime IS NULL";
 
             return await _sqlReportConnection.QueryAsync<BillIdTagDto>(sql, new { BillId = billId });
         }

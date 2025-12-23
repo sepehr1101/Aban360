@@ -5,5 +5,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
     public interface ILatestReadingBillHandler
     {
         Task<LatestReadingBillDataOutputDto> Handle(string billId, CancellationToken cancellationToken);
+        Task<LatestReadingBillDataOutputDto> Handle_WithPreviousDb(string billId, CancellationToken cancellationToken);
     }
 }
