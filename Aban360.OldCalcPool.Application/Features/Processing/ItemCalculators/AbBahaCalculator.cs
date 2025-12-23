@@ -18,7 +18,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     internal sealed class AbBahaCalculator : BaseExpressionCalculator, IAbBahaCalculator
     {
         const int monthDays = 30;
-        const int c_1404 = 90000;
         const double _oldAbBahaZarib= 1.15;
         const float _villageAllowedMultiplier = 0.5f;
         const float _villageDisallowedMultiplier = 0.65f;
@@ -32,16 +31,16 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const string date_1404_09_09 = "1404/09/09";
 
         (long, long) _zero = (0, 0);
-        (long, long) _3766_168110 = (3776, 168110);
+        //(long, long) _3766_168110 = (3776, 168110);
         (long, long) _8644_8644 = (8644, 8644);
-        (long, long) _4040_168110 = (4040, 168110);
+        //(long, long) _4040_168110 = (4040, 168110);
         (long, long) _4323_225000 = (4323, 225000);
         (long, long) _4323_350000 = (4323, 350000);
         (long, long) _7000_350000 = (7000, 350000);
         (long, long) _9000_450000 = (9000, 450000);
         (long, long) _11000_550000 = (11000, 550000);
-        (long, long) _450000_450000 = (450000, 450000);
-        (long, long) _550000_550000 = (550000, 550000);
+        //(long, long) _450000_450000 = (450000, 450000);
+        //(long, long) _550000_550000 = (550000, 550000);
 
         public TariffItemResult Calculate(NerkhGetDto nerkh, NerkhGetDto nerkh1403, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, ConsumptionPartialInfo consumptionPartialInfo, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds)
         {
