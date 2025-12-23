@@ -26,5 +26,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
             LatestReadingBillDataOutputDto result = await _latestReadingBillHandler.Handle(input.Input, cancellationToken);
             return Ok(result);
         }
+        
+        [HttpPost]
+        [Route("raw-previousDb")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<LatestReadingBillDataOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetRawWithPreviousDb([FromBody] SearchInput input, CancellationToken cancellationToken)
+        {
+            LatestReadingBillDataOutputDto result = await _latestReadingBillHandler.Handle_WithPreviousDb(input.Input, cancellationToken);
+            return Ok(result);
+        }
     }
 }

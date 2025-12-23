@@ -39,7 +39,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             string headquarterTitle = await _sqlConnection.QueryFirstAsync<string>(getHeadquarterQuery, new { zoneId = waterInvoice.ZoneId });
             WaterInvoicePaymentOutputDto? paymentInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterInvoicePaymentOutputDto>(getPaymentQuery, new { billId = waterInvoice.BillId, payId = waterInvoice.PayId == null ? "0" : waterInvoice.PayId, billRegisterDate = waterInvoice.RegisterDateJalali, zoneId = waterInvoice.ZoneId, customerNumber = waterInvoice.ConsumerNumber });
 
-            waterInvoice.DebtorOrCreditorAmount = await GetRemained(input, dbName);
+           // waterInvoice.DebtorOrCreditorAmount = await GetRemained(input, dbName);
             waterInvoice = MappingWaterInvoice(waterInvoice, paymentInfo, previousConsumptions, lineitems, headquarterTitle);
 
             ReportOutput<WaterInvoiceDto, LineItemsDto> result = new(ReportLiterals.WaterInvoice, waterInvoice, lineitems);
@@ -63,56 +63,61 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 
             return waterInvoice;
         }
-        private async Task<long> GetRemained(ZoneIdAndCustomerNumberOutputDto input, string dbName)
-        {
-            string getDebtorAndCreditorQuery = GetDebtorAndCreditorQuery(dbName);
-            IEnumerable<DebtorAndCreaditorOutputDto> debtorAndCreditor = await _sqlReportConnection.QueryAsync<DebtorAndCreaditorOutputDto>(getDebtorAndCreditorQuery, input);
+		#region CaclRemained
+		//private async Task<long> GetRemained(ZoneIdAndCustomerNumberOutputDto input, string dbName)////invalid
+		//{//--131701-100 invalid  --1000001816318-131301 invalid 
+		//    string getDebtorAndCreditorQuery = GetDebtorAndCreditorQuery(dbName);
+		//    IEnumerable<DebtorAndCreaditorOutputDto> debtorAndCreditor = await _sqlReportConnection.QueryAsync<DebtorAndCreaditorOutputDto>(getDebtorAndCreditorQuery, input);
 
-            long lastRemained = 0;
-            if (debtorAndCreditor is not null && debtorAndCreditor.Any())
-            {
-                debtorAndCreditor = debtorAndCreditor.OrderBy(i => i.RegisterDate);
+		//    long lastRemained = 0;
+		//    if (debtorAndCreditor is not null && debtorAndCreditor.Any())
+		//    {
+		//        debtorAndCreditor = debtorAndCreditor.OrderBy(i => i.RegisterDate);
 
-                for (int i = 0; i < debtorAndCreditor.Count(); i++)
-                {
-                    DebtorAndCreaditorOutputDto row = debtorAndCreditor.ElementAt(i);
-                    if (row.TypeCode == 7)
-                    {
-                        continue;
-                    }
-                    lastRemained = lastRemained + (row.DebtAmount.Value - row.CreditAmount);
-                }
-            }
+		//        for (int i = 0; i < debtorAndCreditor.Count(); i++)
+		//        {
+		//            DebtorAndCreaditorOutputDto row = debtorAndCreditor.ElementAt(i);
+		//            if (row.TypeCode == 7)
+		//            {
+		//                continue;
+		//            }
+		//            lastRemained = lastRemained + (row.DebtAmount.Value - row.CreditAmount);
+		//        }
+		//    }
 
-            return lastRemained;
-        }
-        private string GetDebtorAndCreditorQuery(string dbName)//todo: check prop
-        {
-            return $@"Select 
-						b.baha DebtAmount,
-						0 CreditAmount,
-						b.type TypeCode,--todo:?
-						b.date_bed RegisterDate
-					From [{dbName}].dbo.bed_bes b
-					Where
-						b.town=@zoneId AND
-						b.radif=@customerNumber
-					Union 
-					Select 
-						0 DebtAmount,
-						v.pard CreditAmount,
-						0 TypeCode,--todo:?
-						v.date_sabt RegisterDate
-					From [{dbName}].dbo.vosolab v
-					Where
-						v.town=@zoneId  AND
-						v.radif=@customerNumber";
-        }
-        private string GetWaterInvoiceQuery(string dbName)//todo: check Condition
+		//    return lastRemained;
+		//}
+		//   private string GetDebtorAndCreditorQuery(string dbName)//todo: check prop
+		//   {
+		//       return $@"Select 
+		//	b.baha DebtAmount,
+		//	0 CreditAmount,
+		//	b.type TypeCode,--todo:?
+		//	b.date_bed RegisterDate
+		//From [{dbName}].dbo.bed_bes b
+		//Where
+		//	b.town=@zoneId AND
+		//	b.radif=@customerNumber AND
+		//	b.date_bed >='1401/01/01'
+		//Union 
+		//Select 
+		//	0 DebtAmount,
+		//	v.pard CreditAmount,
+		//	0 TypeCode,--todo:?
+		//	v.date_sabt RegisterDate
+		//From [{dbName}].dbo.vosolab v
+		//Where
+		//	v.town=@zoneId  AND
+		//	v.radif=@customerNumber AND
+		//	v.date_bank >='1401/01/01'";
+		//   }
+		#endregion
+		private string GetWaterInvoiceQuery(string dbName)//todo: check Condition
         {
             return $@"Select Top 1
+						b.Id,
 						N'شرکت آب و فاضلاب استان اصفهان' Headquarters,
-						'411-7676-4864' EconomicalNumber,--todo
+						'411-7676-4864' EconomicalNumber,
 						t51.C2 ZoneTitle,
 						m.town ZoneId,
 						TRIM(m.name) FirstName,
@@ -127,7 +132,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						(b.tedad_tej+b.tedad_vahd) NoneDomestic,
 						b.Khali_s EmptyUnit,
 						b.cod_enshab UsageId,
-						m.serial_co BodySerial,
+						TRIM(m.serial_co) BodySerial,
 						b.enshab MeterDiameterId,
 						t5.C2 MeterDiameterTitle,
 						b.cod_vas CounterId,
@@ -143,20 +148,20 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 									 Else N'ندارد'
 						End as SiphonDiameterTitle,
 						b.radif ConsumerNumber,
-						b.eshtrak ReadingNumber,
+						TRIM(b.eshtrak) ReadingNumber,
 						b.today_date CurrentMeterDateJalali,
 						b.pri_date PreviousMeterDateJalali,
 						--Duration Calc in c#
 						b.today_no CurrentMeterNumber,
 						b.pri_no PreviousMeterNumber,
 						b.masraf ConsumptionM3,
-						(b.masraf*100) ConsumptionLiter,
+						(b.masraf*1000) ConsumptionLiter,
 						b.rate ConsumptionAverage,
 						b.fix_mas ContractualCapacity,
 						--LineItems in secord query
 						b.baha Sum,
 						b.kasr_ha DisCount,
-						0 DebtorOrCreditorAmount,--
+						b.jam-b.baha DebtorOrCreditorAmount,
 						b.pard PayableAmount,
 						b.mohlat PaymentDeadline,
 						b.date_bed RegisterDateJalali,
@@ -165,10 +170,13 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						TRIM(b.sh_ghabs1) BillId,
 						TRIM(b.sh_pard1) PayId,
 						'-' PaymentAmountText,
-						1 IsPayed,--
-						'-' Description,--
-						'-' PaymentDateJalali,--
-						'-' PaymentMethod
+						1 IsPayed,
+						'-' Description,
+						'-' PaymentDateJalali,
+						'-' PaymentMethod,
+						IIF(b.mamor=888,N'خوداظهاری غیرحضوری',IIF(b.mamor=999,N'خوداظهاری حضوری',IIF(b.mamor=0,N'بدون کد مامور',N'دارای کد مامور'))) IssueType,
+						b.operator ReaderName,
+						IIF(b.date_bed>=v.date_check AND b.date_bed>FORMAT(DateAdd(DAY , -35 , GETDATE()),'yyyy/MM/dd','fa-ir'),1,0) IsRemovable
 					From [{dbName}].dbo.members m
 					Join [{dbName}].dbo.bed_bes b
 						ON m.town=b.town AND m.radif=b.radif
@@ -184,6 +192,8 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						ON b.enshab=t5.C0
 					Join [Db70].dbo.CounterVaziat cv
 						ON b.cod_vas=cv.MoshtarakinId
+					Left Join [{dbName}].dbo.variab v
+						ON m.town=v.town
 					Where 
 						m.town=@zoneId AND
 						m.radif=@customerNumber AND 
@@ -191,7 +201,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						b.cod_vas NOT IN (4,7) 
 					Order By b.pri_date DESC";
         }
-        private string GetItemsQuery(string dbName)//todo: check Condition & check Values
+        private string GetItemsQuery(string dbName)
         {
             return $@"Select v.Item , v.Amount
 					From (
@@ -206,10 +216,10 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						 )b
 					Cross Apply(
 						Values
-							(N'بهای آب مصرفی',b.ab_baha+b.abon_ab+0+0+b.jarime+b.zabresani+b.zaribfasl+b.ztadil+0),--تبصره2 و 2و3  و3
-							(N'بهای کارمزد دفع فاضلاب',b.FAZ+b.abon_fas+0+b.TAB_ABN_F),--تبصره 3 فاضلاب   و     چک پارامتر اخر تبصره ابونمان فاضلاب
+							(N'بهای آب مصرفی',b.ab_baha+b.abon_ab+0+0+b.jarime+b.zabresani+b.zaribfasl+b.ztadil+0),
+							(N'بهای کارمزد دفع فاضلاب',b.fas_baha+b.abon_fas+b.TABS_FA+b.TAB_ABN_F),
 							(N'مالیات',b.shahrdari),
-							(N'تکالیف قانونی',b.zarib_d +0+b.bodjeh),--0=مبلغ قانون بودجه
+							(N'تکالیف قانونی',b.zarib_d +0+b.bodjeh),
 							(N'تخفیف',b.kasr_ha)
 					) v(Item, Amount)";
         }
@@ -225,7 +235,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						b.cod_vas NOT IN (4,7) 
 					Order By b.pri_date Desc";
         }
-        private string GetHeadquarterQuery()//from aban360
+        private string GetHeadquarterQuery()
         {
             return @"select h.Title
 	                 from [Aban360].LocationPool.Zone z
@@ -233,7 +243,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 	                 join [Aban360].LocationPool.Headquarters h on r.HeadquartersId=h.Id
 	                 where z.Id=@zoneId";
         }
-        private string GetPaymentInfoQuery(string dbName)//check condition
+        private string GetPaymentInfoQuery(string dbName) 
         {
             return $@"Select  
 						t150.C2 as PaymentMethod,
@@ -244,8 +254,8 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 					Where 
 						v.town=@zoneId AND
 						v.radif=@customerNumber AND
-						v.sh_ghabs=@billId AND
-						v.sh_pard=@payId AND
+						LTRIM(SUBSTRING(v.sh_ghabs, PATINDEX('%[^0]%', v.sh_ghabs), LEN(v.sh_ghabs)))=@billId AND
+                 	    LTRIM(SUBSTRING(v.sh_pard, PATINDEX('%[^0]%', v.sh_pard), LEN(v.sh_pard)))=@payId AND
 						v.date_sabt>=@billRegisterDate
 					Order By v.date_sabt Desc";
         }
