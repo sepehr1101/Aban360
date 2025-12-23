@@ -2,6 +2,7 @@
 {
     public record WaterInvoiceDto
     {
+        public int? Id { get; set; }
         public string Title { get; set; }
 
         public string Headquarters { get; set; }
@@ -70,5 +71,8 @@
         public string PaymentMethod { get; set; }
 
         public string  RegisterDateJalali { get; set; }
+        public string? IssueType { get; set; }
+        public int? ReaderName { get; set; }
+        public bool IsRemovable { get; set; }
     }
 }

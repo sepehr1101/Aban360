@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
 {
-    [Route("v1/bill")]
+    [Route("v1/reading")]
     public class LatestReadingBillController : BaseController
     {
         private readonly ILatestReadingBillHandler _latestReadingBillHandler;
@@ -23,7 +23,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
         [ProducesResponseType(typeof(ApiResponseEnvelope<LatestReadingBillDataOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw([FromBody] SearchInput input, CancellationToken cancellationToken)
         {
-            LatestReadingBillDataOutputDto result = await _latestReadingBillHandler.Handle(input.Input, cancellationToken);
+            LatestReadingBillDataOutputDto result = await _latestReadingBillHandler.Handle_WithPreviousDb(input.Input, cancellationToken);
             return Ok(result);
         }
     }

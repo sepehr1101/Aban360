@@ -6,6 +6,7 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Contracts
     public interface IWaterInvoiceHandler
     {
         Task<ReportOutput<WaterInvoiceDto, LineItemsDto>> Handle(string input);
+        Task<ReportOutput<WaterInvoiceDto, LineItemsDto>> Handle_WithLastDb(string input,CancellationToken cancellationToken);
         WaterInvoiceDto Handle();
     }
 }

@@ -36,6 +36,16 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
             return Ok(waterInvoice);
         }
 
+
+        [HttpPost]
+        [Route("summery-2-withLastDb")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterInvoiceDto, LineItemsDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetSummary2WithLastDb([FromBody] SearchInput searchInput, CancellationToken cancellationToken)
+        {
+            ReportOutput<WaterInvoiceDto, LineItemsDto> waterInvoice = await _waterInvoiceHandler.Handle_WithLastDb(searchInput.Input, cancellationToken);
+            return Ok(waterInvoice);
+        }
+
         [HttpPost]
         [Route("sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]

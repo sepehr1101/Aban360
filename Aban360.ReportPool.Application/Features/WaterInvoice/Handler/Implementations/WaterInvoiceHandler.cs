@@ -2,6 +2,8 @@
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Contracts;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
+using Aban360.ReportPool.Domain.Features.Transactions;
+using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
 using Aban360.ReportPool.Persistence.Features.Transactions.Contracts;
 using Aban360.ReportPool.Persistence.Features.WaterInvoice.Contracts;
 using DNTPersianUtils.Core;
@@ -12,15 +14,34 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
     internal sealed class WaterInvoiceHandler : IWaterInvoiceHandler
     {
         private readonly IWaterInvoiceQueryService _waterInvoiceQueryService;
-        public WaterInvoiceHandler(IWaterInvoiceQueryService waterInvoiceQueryService)
+        private readonly IWaterInvoiceWithLastDbQueryService _waterInvoiceWithLastDbQueryService;
+        private readonly ICustomerInfoQueryService _customerInfoQueryService;
+        public WaterInvoiceHandler(IWaterInvoiceQueryService waterInvoiceQueryService,
+            IWaterInvoiceWithLastDbQueryService waterInvoiceWithLastDbQueryService,
+            ICustomerInfoQueryService customerInfoQueryService)
         {
             _waterInvoiceQueryService = waterInvoiceQueryService;
             _waterInvoiceQueryService.NotNull(nameof(waterInvoiceQueryService));
+        
+            _waterInvoiceWithLastDbQueryService = waterInvoiceWithLastDbQueryService;
+            _waterInvoiceWithLastDbQueryService.NotNull(nameof(waterInvoiceWithLastDbQueryService));
+
+            _customerInfoQueryService= customerInfoQueryService;
+            _customerInfoQueryService.NotNull(nameof(customerInfoQueryService));
         }
 
         public async Task<ReportOutput<WaterInvoiceDto, LineItemsDto>> Handle(string input)
         {
             ReportOutput<WaterInvoiceDto, LineItemsDto> result = await _waterInvoiceQueryService.Get(input);
+            result.ReportHeader.ChartIndex = await GetGuageValue(result.ReportHeader.ConsumptionAverage, result.ReportHeader.ContractualCapacity, input, result.ReportHeader.UsageId, result.ReportHeader.ZoneId);
+
+            return new ReportOutput<WaterInvoiceDto, LineItemsDto>(result.Title, GetWaterInvoiceData(result.ReportHeader), result.ReportData);
+        }
+        public async Task<ReportOutput<WaterInvoiceDto, LineItemsDto>> Handle_WithLastDb(string input, CancellationToken cancellationToken)
+        {
+            ZoneIdAndCustomerNumberOutputDto zoneIdAndCustomerNumber =await _customerInfoQueryService.GetZoneIdAndCustomerNumber(input);    
+            
+            ReportOutput<WaterInvoiceDto, LineItemsDto> result = await _waterInvoiceWithLastDbQueryService.Get(zoneIdAndCustomerNumber);
             result.ReportHeader.ChartIndex = await GetGuageValue(result.ReportHeader.ConsumptionAverage, result.ReportHeader.ContractualCapacity, input, result.ReportHeader.UsageId, result.ReportHeader.ZoneId);
 
             return new ReportOutput<WaterInvoiceDto, LineItemsDto>(result.Title, GetWaterInvoiceData(result.ReportHeader), result.ReportData);
