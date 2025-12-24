@@ -8,6 +8,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts
         Task Create(KasrHaDto input, int zoneId);
         Task Create(ICollection<KasrHaDto> input);
         Task Create(ICollection<KasrHaDto> input, int zoneId);
-        Task Delete(RemoveBillInputDto input);
+        Task Delete(RemoveBillDataInputDto input);
     }
 }

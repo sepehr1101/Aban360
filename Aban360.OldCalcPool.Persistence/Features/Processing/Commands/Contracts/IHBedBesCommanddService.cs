@@ -4,6 +4,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts
 {
     public interface IHBedBesCommanddService
     {
-        Task Insert(RemoveBillInputDto input);
+        Task Insert(RemoveBillDataInputDto input);
     }
 }

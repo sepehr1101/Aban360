@@ -55,13 +55,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             }
             return result;
         }
-        public async Task<RemoveBillInputDto> GetToRemove(int id)
+        public async Task<RemoveBillDataInputDto> GetToRemove(RemoveBillGetDto input)
         {
             //string dbName = GetDbName(input.ZoneId);
             string dbName = "Atlas";
             string query = GetBedBesToRemove(dbName);
 
-            RemoveBillInputDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<RemoveBillInputDto>(query, new { Id = id });
+            RemoveBillDataInputDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<RemoveBillDataInputDto>(query, input);
             if (result is null || result.Id <= 0)
             {
                 throw new RemovedBillException(ExceptionLiterals.InvalidId);
