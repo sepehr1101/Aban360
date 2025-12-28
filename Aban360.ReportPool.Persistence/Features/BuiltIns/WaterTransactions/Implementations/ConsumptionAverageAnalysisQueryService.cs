@@ -22,6 +22,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             string reportTitle = ReportLiterals.LowWorkingMeter;
             string groupField = input.IsZoneGroup ? ReportLiterals.ZoneTitle : ReportLiterals.UsageTitle;
             string query = GetDataQuery(groupField, input.Values);
+            Console.WriteLine(query);
             IEnumerable<ConsumptionAverageAnalysisDataOutputDto> data = await _sqlReportConnection.QueryAsync<ConsumptionAverageAnalysisDataOutputDto>(query, input);
             ConsumptionAverageAnalysisHeaderOutputDto header = new()
             {
@@ -55,6 +56,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 								Select
 									MAX(t46.C2) AS RegionTitle,
 									MAX(b.ZoneTitle) ZoneTitle,
+			                    	Max(c.UsageTitle) UsageTitle,
 									MAX(b.CustomerNumber) CustomerNumber,
 									AVG(b.consumptionAverage) consumptionAverage,
 									AVG(b.DomesticCount+b.CommercialCount+b.OtherCount) UnitAverage

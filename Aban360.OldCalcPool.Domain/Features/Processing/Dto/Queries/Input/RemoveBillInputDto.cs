@@ -3,20 +3,6 @@
     public record RemoveBillInputDto
     {
         public int Id { get; set; }
-        public int ZoneId { get; set; }
-        public int CustomerNumber { get; set; }
-        public int Barge { get; set; }
-        public int PreviousNumber { get; set; }
-        public int CurrentNumber { get; set; }
-        public string PrviousDateJalali { get; set; }
-        public string CurrentDateJalali { get; set; }
-        public string RegisterDateJalali { get; set; }
-        public int Consumption { get; set; }
-        public long PaymentId { get; set; }
-        public long AbBahaAmount { get; set; }
-        public long FazelabAmount { get; set; }
-        public long Baha { get; set; }
         public string BillId { get; set; }
-        public string? ToDayDateJalali { get; set; } 
     }
 }

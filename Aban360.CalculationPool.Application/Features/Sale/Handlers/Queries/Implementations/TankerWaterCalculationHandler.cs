@@ -43,8 +43,12 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
             decimal multiplier = input.SaleState != TankerWaterSaleStateEnum.Nomads && input.ZoneId == 133111 ? 0.5m : 1m;
 
-            return new TankerWaterCalculationOutputDto(abBaha * multiplier, boodjeh * multiplier, deliveryAmount);
+            if (input.IsConfirm)
+            {
+                //Save
+            }
 
+            return new TankerWaterCalculationOutputDto(abBaha * multiplier, boodjeh * multiplier, deliveryAmount);
         }
         private async Task<long> CalcDeliveryAmount(TankerWaterCalculationInputDto input)
         {

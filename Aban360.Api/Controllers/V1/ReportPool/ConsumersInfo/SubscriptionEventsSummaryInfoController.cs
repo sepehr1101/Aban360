@@ -2,8 +2,6 @@
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.Transactions.Handler.Contracts;
-using Aban360.ReportPool.Domain.Base;
-using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Domain.Features.Transactions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -39,6 +37,30 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         {
             int reportCode = 230;
             ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> calculationDetails = await _subscriptionEventHandler.Handle(searchInput.Input, searchInput.FromDateJalali);
+            JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode);
+            return Ok(reportId);
+        }
+        
+        
+        //with-last-db
+        
+        [HttpPost]
+        [Route("events-summary-lastdb")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetEventsSummaryInfo_LastDb([FromBody] CardexInput searchInput)
+        {
+            ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> items = await _subscriptionEventHandler.HandleWithLastDb(searchInput.Input,searchInput.FromDateJalali);
+            return Ok(items);
+        }
+
+        [HttpPost]
+        [Route("sti-lastdb")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetStiReport_LastDb([FromBody] CardexInput searchInput, CancellationToken cancellationToken)
+        {
+            int reportCode = 230;
+            ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> calculationDetails = await _subscriptionEventHandler.HandleWithLastDb(searchInput.Input, searchInput.FromDateJalali);
             JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode);
             return Ok(reportId);
         }

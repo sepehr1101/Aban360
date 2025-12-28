@@ -97,20 +97,20 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             ValidationAmount(repairCreate.Baha, bedBesInfo.Sum(s => s.Baha));
             if (!input.IsConfirm)
             {
-                return new ReturnBillOutputDto(bedBesResult, repairCreate, autoBackCreate);
+                return GetReturn(bedBesResult, repairCreate, autoBackCreate);
             }
 
             await _repairCommandService.Create(repairCreate);//todo : remove comment
             await _autoBackCommandService.Create(autoBackCreate);
 
-            return new ReturnBillOutputDto(bedBesResult, repairCreate, autoBackCreate);
+            return GetReturn(bedBesResult, repairCreate, autoBackCreate);
         }
         private async Task<ReturnBillOutputDto> BurstPipe(ReturnBillPartialInputDto input, CustomerInfoOutputDto customerInfo, float consumptionAverage, CancellationToken cancellationToken)
         {
-            var (finalAmount, hadarConsumption, _consumptionAverage) = await GetAbHadarMasHadar(input, customerInfo, consumptionAverage);
-
             IEnumerable<BedBesCreateDto> bedBesInfo = await GetBedBesList(customerInfo, input);
             BedBesCreateDto bedBesResult = GetBedbes(bedBesInfo);
+
+            var (finalAmount, hadarConsumption, _consumptionAverage) = await GetAbHadarMasHadar(bedBesResult, customerInfo, consumptionAverage);
             AbBahaCalculationDetails abBahaResult = await GetAbBahaTariff(input, bedBesInfo, _consumptionAverage, cancellationToken);
 
             await UpdateBedBesDel(bedBesInfo);
@@ -121,15 +121,167 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             ValidationAmount(repairCreate.Baha, bedBesInfo.Sum(s => s.Baha));
             if (!input.IsConfirm)
             {
-                return new ReturnBillOutputDto(bedBesResult, repairCreate, autoBackCreate);
+                return GetReturn(bedBesResult, repairCreate, autoBackCreate);
             }
 
             await _repairCommandService.Create(repairCreate);
             await _autoBackCommandService.Create(autoBackCreate);
 
-            return new ReturnBillOutputDto(bedBesResult, repairCreate, autoBackCreate);
+            return GetReturn(bedBesResult, repairCreate, autoBackCreate);
         }
+        private ReturnBillOutputDto GetReturn(BedBesCreateDto bedBes, RepairCreateDto repair, AutoBackCreateDto autoBack)
+        {
+            BedBesOutputDto bedBesResult = new BedBesOutputDto()
+            {
+                Id = bedBes.Id,
+                ZoneId = bedBes.Town,
+                CustomerNumber = bedBes.Radif,
+                ReadingNumber = bedBes.Eshtrak,
+                PreviousNumber = bedBes.PriNo,
+                CurrentNumber = bedBes.TodayNo,
+                PreviousDateJalali = bedBes.PriDate,
+                CurrentDateJalali = bedBes.TodayDate,
+                Item4 = bedBes.AbonFas,
+                Item2 = bedBes.FasBaha,
+                Item1 = bedBes.AbBaha,
+                Item12 = bedBes.Ztadil,
+                Consumption = bedBes.Masraf,
+                Item5 = bedBes.Shahrdari,
+                Duration = bedBes.Modat,
+                RegisterDateJalali = bedBes.DateBed,
+                Minutes = bedBes.JalaseNo,
+                SumItems = bedBes.Baha,
+                Item3 = bedBes.AbonAb,
+                PayableAmount = bedBes.Pard,
+                CounterStateCode = bedBes.CodVas,
+                Removable = bedBes.Del,
+                UsageId = bedBes.CodEnshab,
+                MeterDiameterId = bedBes.Enshab,
+                Cause = bedBes.Elat,
+                BodySerial = bedBes.Serial,
+                Item11 = bedBes.ZaribFasl,
+                OtherUnit = bedBes.TedadVahd,
+                CommertialUnit = bedBes.TedadTej,
+                DomesticUnit = bedBes.TedadMas,
+                HouseholdNumber = bedBes.TedKhane,
+                BranchType = bedBes.NoeVa,
+                Item8 = bedBes.Jarime,
+                ConsumptionAverage = bedBes.Rate,
+                Operator = bedBes.Operator,
+                LastMeterChangeDateJalali = bedBes.TavizDate,
+                Item9 = bedBes.Zabresani,
+                Item10 = bedBes.ZaribD,
+                Discount = bedBes.KasrHa,
+                ContractualCapacity = bedBes.FixMas,
+                BillId = bedBes.ShGhabs1,
+                PayId = bedBes.ShPard1,
+                Item18 = bedBes.Bodjeh,
+                UsageConsumption = bedBes.Group1,
+                HasSewage = bedBes.Faz,
+                EmptyUnit = bedBes.KhaliS,
+                IsSpecial = bedBes.EdarehK,
+                TrackNumber = bedBes.TrackNumber,
+            };
+            RepairOutputDto repairResult = new RepairOutputDto()
+            {
+                ZoneId = repair.Town,
+                CustomerNumber = repair.Radif,
+                ReadingNumber = repair.Eshtrak,
+                PreviousNumber = repair.PriNo,
+                CurrentNumber = repair.TodayNo,
+                PreviousDateJalali = repair.PriDate,
+                CurrentDateJalali = repair.TodayDate,
+                Item4 = repair.AbonFas,
+                Item2 = repair.FasBaha,
+                Item1 = repair.AbBaha,
+                Item12 = repair.Ztadil,
+                Consumption = repair.Masraf,
+                Item5 = repair.Shahrdari,
+                Duration = repair.Modat,
+                RegisterDateJalali = repair.DateBed,
+                Minutes = repair.JalaseNo,
+                SumItems = repair.Baha,
+                Item3 = repair.AbonAb,
+                PayableAmount = repair.Pard,
+                CounterStateCode = repair.CodVas,
+                BillsCount = repair.Ghabs,
+                Removable = repair.Del,
+                UsageId = repair.CodEnshab,
+                MeterDiameterId = repair.Enshab,
+                Cause = repair.Elat,
+                BodySerial = repair.Serial,
+                Item11 = repair.ZaribFasl,
+                OtherUnit = repair.TedadVahd,
+                DomesticUnit = repair.TedadMas,
+                CommertialUnit = repair.TedadTej,
+                BranchType = repair.NoeVa,
+                Item8 = repair.Jarime,
+                ConsumptionAverage = repair.Rate,
+                Operator = repair.Operator,
+                LastMeterChangeDateJalali = repair.TavizDate,
+                Item9 = repair.Zabresani,
+                Item10 = repair.ZaribD,
+                Difference = repair.Tafavot,
+                WastedWater = repair.AbHadar,
+                WastedConsumption = repair.MasHadar,
+                BillCount = repair.TedGhabs,
+                Item18 = repair.Bodjeh,
+                UsageConsumption = repair.Group1,
+                HasSewage = repair.Faz,
+                IsSpecial = repair.EdarehK,
+                Lavazem = repair.Lavazem
+            };
+            AutoBackOutputDto autoBackResult = new AutoBackOutputDto()
+            {
+                ZoneId = autoBack.Town,
+                CustomerNumber = autoBack.Radif,
+                ReadingNumber = autoBack.Eshtrak,
+                PreviousNumber = autoBack.PriNo,
+                CurrentNumber = autoBack.TodayNo,
+                PreviousDateJalali = autoBack.PriDate,
+                CurrentDateJalali = autoBack.TodayDate,
+                Item4 = autoBack.AbonFas,
+                Item2 = autoBack.FasBaha,
+                Item1 = autoBack.AbBaha,
+                Item12 = autoBack.Ztadil,
+                Consumption = autoBack.Masraf,
+                Item5 = autoBack.Shahrdari,
+                Duration = autoBack.Modat,
+                RegisterDateJalali = autoBack.DateBed,
+                Minutes = autoBack.JalaseNo,
+                SumItems = autoBack.Baha,
+                Item3 = autoBack.AbonAb,
+                PayableAmount = autoBack.Pard,
+                CounterStateCode = autoBack.CodVas,
+                BillsCount = autoBack.Ghabs,
+                Removable = autoBack.Del,
+                UsageId = autoBack.CodEnshab,
+                MeterDiameterId = autoBack.Enshab,
+                Cause = autoBack.Elat,
+                BodySerial = autoBack.Serial,
+                Item11 = autoBack.ZaribFasl,
+                OtherUnit = autoBack.TedadVahd,
+                DomesticUnit = autoBack.TedadMas,
+                CommertialUnit = autoBack.TedadTej,
+                BranchType = autoBack.NoeVa,
+                Item8 = autoBack.Jarime,
+                ConsumptionAverage = autoBack.Rate,
+                Operator = autoBack.Operator,
+                LastMeterChangeDateJalali = autoBack.TavizDate,
+                Item9 = autoBack.Zabresani,
+                Item10 = autoBack.ZaribD,
+                Difference = autoBack.Tafavot,
+                WastedWater = autoBack.AbHadar,
+                WastedConsumption = autoBack.MasHadar,
+                BillCount = autoBack.TedGhabs,
+                Item18 = autoBack.Bodjeh,
+                HasSewage = autoBack.Faz,
+                HouseholdNumber = autoBack.TedKhane,
 
+            };
+
+            return new ReturnBillOutputDto(bedBesResult, repairResult, autoBackResult);
+        }
 
         private RepairCreateDto GetRepairCreateDto(AbBahaCalculationDetails tariffInfo, ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBes, float? consumptionHadar, long? abHadarAmount)
         {
@@ -336,9 +488,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             await _bedBesCommandService.UpdateDel(bedBesUpdate);
         }
-        private async Task<(float, float, float)> GetAbHadarMasHadar(ReturnBillPartialInputDto input, CustomerInfoOutputDto customerInfo, float consumptionAverage)
+        private async Task<(float, float, float)> GetAbHadarMasHadar(BedBesCreateDto bedBes, CustomerInfoOutputDto customerInfo, float consumptionAverage)
         {
-            var (olgo, c) = await GetOlgoAndC(input, customerInfo.ZoneId);
+            var (olgo, c) = await GetOlgoAndC(bedBes.PriDate, bedBes.TodayDate, customerInfo.ZoneId);
 
             float _consumptionAverage = IsDomestic(customerInfo.UsageId) ?
                    olgo switch
@@ -350,7 +502,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                   consumptionAverage;
 
             int amount = IsDomestic(customerInfo.UsageId) ? 68022 : c;
-            int duration = Duration(input.ToDateJalali, input.FromDateJalali);
+            int duration = Duration(bedBes.TodayDate, bedBes.PriDate, (int)bedBes.CodVas);
             float v = _consumptionAverage / 30 * duration;
             float finalAmount = amount * v;
             //int consumption = (int)Math.Round(v * customerInfo.DomesticUnit);
@@ -360,13 +512,16 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
 
 
-        private async Task<(int, int)> GetOlgoAndC(ReturnBillPartialInputDto input, int zoneId)
+        private async Task<(int, int)> GetOlgoAndC(string fromDate, string toDate, int zoneId)
         {
-            SGetDto s = await _sQueryService.Get(input.FromDateJalali, input.ToDateJalali, zoneId);
+            SGetDto s = await _sQueryService.Get(fromDate, toDate, zoneId);
             int olgo = s is null || s.Olgo <= 0 ? 14 : s.Olgo;
 
-            ZaribCQueryDto zaribC = await _zaribCQueryService.GetZaribCBetweenDate(input.FromDateJalali, input.ToDateJalali);
-            int c = zaribC is null || zaribC.C <= 0 ? throw new ReturnedBillException(ExceptionLiterals.CantReturn) : zaribC.C;
+            ZaribCQueryDto zaribC = await _zaribCQueryService.GetZaribCBetweenDate(fromDate, toDate);
+            int c = zaribC is null || zaribC.C <= 0 ? 1: zaribC.C;
+            //int c = zaribC is null || zaribC.C <= 0 ? throw new ReturnedBillException(ExceptionLiterals.CantReturn) : zaribC.C;
+
+            //todooo: when c is null how can i do??
 
             return (olgo, c);
         }
@@ -384,11 +539,15 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             int[] domesticId = [0, 1, 3];
             return domesticId.Contains(customerNumber);
         }
-        private int Duration(string currentDateJalali, string previousDateJalali)
+        private int Duration(string currentDateJalali, string previousDateJalali, int counterStateCode)
         {
             var previousGregorian = previousDateJalali.ToGregorianDateTime();
             var currentGregorian = currentDateJalali.ToGregorianDateTime();
-            int duration = (currentGregorian.Value - previousGregorian.Value).Days;
+            int duration = 0;
+
+            duration = IsReverse(counterStateCode) ?
+                       duration = (previousGregorian.Value - currentGregorian.Value).Days :
+                       duration = (currentGregorian.Value - previousGregorian.Value).Days;
 
             return duration > 0 ? duration : throw new ReturnedBillException(ExceptionLiterals.CurrentDateNotMoreThanPreviousDate);
         }
@@ -487,6 +646,11 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             r.TmpTavizDate = string.Empty;
 
             return r;
+        }
+        private bool IsReverse(int counterStateCode)
+        {
+            int[] reverse = [3];
+            return reverse.Contains(counterStateCode);
         }
     }
 }

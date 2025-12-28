@@ -1,120 +1,96 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Literals;
+using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Domain.Features.Transactions;
+using Dapper;
+using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.Transactions.Contracts
 {
-    public interface ISubscriptionEventWithLastDbQueryService
+    public interface IBranchEventSummaryWithLastDbQueryService
     {
-        public Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> GetEventsSummaryDtos(CardexInputDto input);
+        Task<ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto>> Get(CardexInputDto input);
     }
-    internal sealed class SubscriptionEventWithLastDbQueryService : AbstractBaseConnection, ISubscriptionEventWithLastDbQueryService
+    internal sealed class BranchEventSummaryWithLastDbQueryService : AbstractBaseConnection, IBranchEventSummaryWithLastDbQueryService
     {
-        public SubscriptionEventWithLastDbQueryService(IConfiguration configuration)
-            :base(configuration)
+        public BranchEventSummaryWithLastDbQueryService(IConfiguration configuration)
+            : base(configuration)
         {
         }
 
-        public async Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> GetEventsSummaryDtos(CardexInputDto input)
+        public async Task<ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto>> Get(CardexInputDto input)
         {
-			string dbName = GetDbName(input.ZoneId);
-            string subscriptionDataQuery = GetSubscriptionEventsDataQuery(dbName);
-            //string subscriptionHeaderQuery = GetSubscriptionEventHeaderQuery(dbName);
-            //string waterReplacementInHeaderQuery = GetWaterReplacementDateInHeaderQuery(dbName);
+            string dbName = GetDbName(input.ZoneId);
+            string brachSummeryHeaderQueryString = GetBrachEventSummaryHeaderQuery(dbName);
+            string brachSummeryDataQueryString = GetBrachEventSummaryDataQuery(dbName);
 
-			throw new NotImplementedException();	
+            BranchEventSummaryHeaderOutputDto branchHeader = await _sqlReportConnection.QueryFirstAsync<BranchEventSummaryHeaderOutputDto>(brachSummeryHeaderQueryString, input);
+            if (branchHeader is null)
+            {
+                throw new BaseException(ExceptionLiterals.BillIdNotFound);
+            }
+            branchHeader.ReportDateJalali = DateTime.Now.ToShortPersianDateString();
+            branchHeader.Title = ReportLiterals.BranchEventSummary;
+
+            IEnumerable<BranchEventSummaryDataOutputDto> branchData = await _sqlReportConnection.QueryAsync<BranchEventSummaryDataOutputDto>(brachSummeryDataQueryString, input);
+            IEnumerable<BranchEventSummaryDataOutputDto> branchDateOrder = branchData.OrderBy(t => t.RegisterDateJalali);
+
+            long lastRemained = 0;
+            for (int i = 0; i < branchDateOrder.Count(); i++)
+            {
+                BranchEventSummaryDataOutputDto row = branchDateOrder.ElementAt(i);
+                lastRemained = lastRemained + (row.DebtAmount - row.CreditAmount - row.DiscountAmount);
+                row.Remained = lastRemained;
+            }
+            ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> result = new(ReportLiterals.BranchEventSummary, branchHeader, branchDateOrder);
+            return result;
         }
-
-
-        private string GetSubscriptionEventsDataQuery(string dbName)
+        private string GetBrachEventSummaryHeaderQuery(string dbName)
         {
             return $@"Select 
-						b.sh_ghabs1 BillId,
-						b.id,
-						b.pri_no PreviousMeterNumber,
-						b.today_no NextMeterNumber,
-						b.pri_date PreviousMeterDate,
-						b.today_date CurrentMeterDate,
-						b.modat Duration,
-						b.date_bed RegisterDate,
-						b.baha DebtAmount,
-						0 CreditAmount,
-						cv.Title [Description],--todo
-						b.rate ConsumptionAverage, 
-						b.masraf Consumption,
-						null BankTitle, 
-						null BankCode, 
-						b.tedad_mas CommercialUnit,
-						b.tedad_tej DomesticUnit, 
-						b.tedad_vahd OtherUnit,
-						b.Khali_s EmptyUnit,
-						b.ted_khane HouseholderNumber,
-						b.fix_mas ContractualCapacity,
-						b.cod_enshab UsageSellId,
-						b.group1 UsageConsumptionId,
-						t41_sell.C1 UsageSellTitle,
-						t41_consumption.C1 UsageConsumptionTitle,
-						'' PayDateJalali,
-						b.type TypeCode
-					From [{dbName}].dbo.bed_bes b
-					Left Join [Db70].dbo.CounterVaziat cv 
-						On b.type=cv.MoshtarakinId
-					Left Join [Db70].dbo.T41 t41_sell
-						On b.cod_enshab=t41_sell.c0 
-					Left Join [Db70].dbo.T41 t41_consumption
-						On b.cod_enshab=t41_consumption.c0 
-					Where 
-						b.town=@zoneId AND
-						b.radif=@customerNumber AND
-						(b.date_bed>='1401/01/01' AND 
-							(@fromDate IS NULL OR
-							b.date_bed<=@fromDate)
-						)
-					Union
-					Select 
-						m.bill_id BillId,
-						v.id,
-						0 PreviousMeterNumber,
-						0 NextMeterNumber,
-						NULL PreviousMeterDate,
-						NULL CurrentMeterDate,
-						0 Duration,
-						v.date_sabt RegisterDate,
-						0 DebtAmount,
-						v.pard CreditAmount,
-						N'پرداخت' [Description],--todo
-						0 ConsumptionAverage, 
-						0 Consumption,
-						v.cod_bank BankTitle, --todo
-						v.cod_bank BankCode, 
-						0 CommercialUnit,
-						0 DomesticUnit, 
-						0 OtherUnit,
-						0 EmptyUnit,
-						0 HouseholderNumber,
-						0 ContractualCapacity,
-						0 UsageSellId,
-						0 UsageConsumptionId,
-						'' UsageSellTitle,
-						'' UsageConsumptionTitle,
-						v.date_bank PayDateJalali,--todo
-						0 TypeCode
-					From [{dbName}].dbo.vosolab v
-					Left Join [{dbName}].dbo.members m
-						On v.town=m.town AND v.radif=m.radif
-					Left Join [Db70].dbo.T41 t41_sell
-						On v.cod_enshab=t41_sell.c0 
-					Left Join [Db70].dbo.T41 t41_consumption
-						On v.cod_enshab=t41_consumption.c0 
-					Where 
-						v.town=@zoneId AND
-						v.radif=@customerNumber AND
-						( v.date_sabt>='1401/01/01' AND 
-							(@fromDate IS NULL OR
-							 v.date_sabt<=@fromDate)
-						)--todo";
+                    	m.name FirstName ,
+                    	m.family AS Surname,
+                    	TRIM(m.name) + ' ' + TRIM(m.family) AS FullName,
+                    	t51.C2 ZoneTitle ,
+                    	m.bill_id BillId,
+                    	m.eshtrak ReadingNumber,
+                    
+                    	t41.C2 UsageTitle,
+                    	'' AS JobTitle,
+                    	'' GuildTitle,--todo
+                    
+                    	m.tedad_mas AS DomesticUnit,
+                    	m.tedad_tej AS CommercialUnit,
+                    	m.tedad_vahd AS OtherUnit,
+                    	t5.C2 AS MeterDiameterTitle,
+                    	Case When m.sif_1>0 Then N'قطر 100'
+                    		When m.sif_2>0 Then N'قطر 125'
+                    		When m.sif_3>0 Then N'قطر 150'
+                    		When m.sif_4>0 Then N'قطر 200'
+                    		When m.sif_5>0 Then N'قطر 5'
+                    		When m.sif_6>0 Then N'قطر 6'
+                    		When m.sif_7>0 Then N'قطر 7'
+                    		When m.sif_8>0 Then N'قطر 8'
+                    		Else N'ندارد'
+                    	End as SiphonDiameterTitle
+                    From [{dbName}].dbo.members m
+                    Join [Db70].dbo.T51 t51
+                    	On m.town=t51.C0
+                    Join [Db70].dbo.T41 t41
+                    	On m.cod_enshab=t41.C0
+                    Join [Db70].dbo.T5 t5
+                    	ON m.enshab=t5.C0
+                    Where 
+                    	m.town=@zoneId AND
+                    	m.radif=@customerNumber";
+        }
+        private string GetBrachEventSummaryDataQuery(string dbName)
+        {
+            return $@"";
         }
     }
 }

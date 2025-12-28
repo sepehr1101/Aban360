@@ -75,5 +75,4 @@
         public string DateSbt { get; set; }
         public decimal Avarez { get; set; }
     }
-
 }
