@@ -68,5 +68,4 @@
         public string TmpMohlat { get; set; }
         public string TmpTavizDate { get; set; }
     }
-
 }
