@@ -73,11 +73,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             if (IsLessThan1403_09_13(consumptionPartialInfo.EndDateJalali) &&                
                 IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
                 monthlyConsumption <= _olgoo)
-            {
+            {                
                 oldAbBahaAmount = CalculateOldAbBahaIfPossible(nerkh, customerInfo, consumptionPartialInfo, monthlyConsumption, _olgoo, c, tagIds, oldAbBahaAmount, _oldAbBahaZarib);
-                abBahaAmount = abBahaFromExpression * consumptionPartialInfo.Consumption;
+                abBahaAmount = abBahaFromExpression * monthlyConsumption * duration / monthDays;
                 (double, bool) abBahaItems = ShouldUseOldAbBaha(consumptionPartialInfo, customerInfo, monthlyConsumption, _olgoo, abBahaAmount, oldAbBahaAmount);
-                return new TariffItemResult(oldAbBahaAmount * (double)multiplierAbBaha * villageMultiplier * customerInfo.PureDomesticUnit);
+                return new TariffItemResult(abBahaItems.Item1 * (double)multiplierAbBaha * villageMultiplier * customerInfo.PureDomesticUnit);
             }
 
             //case 3: require old ab baha but not religious
