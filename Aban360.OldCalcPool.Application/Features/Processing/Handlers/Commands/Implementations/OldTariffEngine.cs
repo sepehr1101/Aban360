@@ -244,7 +244,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             ConsumptionPartialInfo consumptionPartialInfo = _consumptionCalculator.GetPartial(meterInfo, consumptionInfo, meterInfo.PreviousDateJalali, meterInfo.CurrentDateJalali, IsDomestic(customerInfo.UsageId) ?  GetOlgoo(meterInfo.CurrentDateJalali, table1.olgo): customerInfo.ContractualCapacity);
 
             TariffItemResult sumAbonmanAbBaha = _abonmanCalculator.CalculateAb(customerInfo, meterInfo, currentDateJalali, consumptionPartialInfo);
-            TariffItemResult sumAbonmanFazelab = _fazelabCalculator.Calculate(meterInfo.PreviousDateJalali, currentDateJalali, consumptionInfo.Duration, customerInfo, sumAbonmanAbBaha.Summation, currentDateJalali, true, consumptionPartialInfo);
+            TariffItemResult sumAbonmanFazelab = _fazelabCalculator.Calculate(meterInfo.PreviousDateJalali, currentDateJalali, consumptionInfo.Duration, customerInfo, sumAbonmanAbBaha.Summation, currentDateJalali, true, consumptionPartialInfo, abCalcResult: sumAbonmanAbBaha);
             TariffItemResult sumAbonmanAbDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, customerInfo.BranchType, sumAbonmanAbBaha.Summation, sumAbBahaDiscount, customerInfo.IsSpecial, consumptionInfo, customerInfo, consumptionPartialInfo, sumAbonmanAbBaha.Allowed);
             TariffItemResult sumAbonmanFazelabDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, customerInfo.BranchType, sumAbonmanFazelab.Summation, sumFazelabDiscount, customerInfo.IsSpecial, consumptionInfo, customerInfo, consumptionPartialInfo, sumAbonmanFazelab.Allowed);
 
@@ -267,9 +267,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             TariffItemResult abBahaResult = _abBahaCalculator.Calculate(nerkh, nerkh1403, customerInfo, meterInfo, zarib, abAzad, consumptionPartialInfo, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, c, tagIds);
             TariffItemResult boodje = _budgetCalculator.Calculate(consumptionPartialInfo, customerInfo, currentDateJalali, monthlyConsumption, olgoo, consumptionInfo);
-            TariffItemResult fazelab = _fazelabCalculator.Calculate(consumptionPartialInfo.StartDateJalali, consumptionPartialInfo.EndDateJalali, consumptionPartialInfo.Duration, customerInfo, abBahaResult.Summation, currentDateJalali, false, consumptionPartialInfo);
+            TariffItemResult fazelab = _fazelabCalculator.Calculate(consumptionPartialInfo.StartDateJalali, consumptionPartialInfo.EndDateJalali, consumptionPartialInfo.Duration, customerInfo, abBahaResult.Summation, currentDateJalali, false, consumptionPartialInfo, abBahaResult);
             TariffItemResult hotSeasonAbBaha = _hotSeasonCalculator.CalculateAb(abBahaResult.Summation, customerInfo, monthlyConsumption, abBahaResult, consumptionPartialInfo);
-            TariffItemResult hotSeasonFazelab = _hotSeasonCalculator.CalcFazelab(customerInfo, fazelab.Summation, monthlyConsumption, abBahaResult, consumptionPartialInfo);
+            TariffItemResult hotSeasonFazelab = _hotSeasonCalculator.CalcFazelab(customerInfo, fazelab.Summation, monthlyConsumption, fazelab, consumptionPartialInfo);
             TariffItemResult avarez = _avarezCalculator.Calculate(consumptionPartialInfo, customerInfo, monthlyConsumption);
             TariffItemResult javani = _javaniJamiatCalculator.Calculate(consumptionPartialInfo, customerInfo, abBahaResult.Summation, monthlyConsumption, olgoo);
 

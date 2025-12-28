@@ -9,7 +9,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IHotSeasonCalculator
     {
-        TariffItemResult CalcFazelab(CustomerInfoOutputDto customerInfo, double fazelabAmount, double monthlyConsumption, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo);
+        TariffItemResult CalcFazelab(CustomerInfoOutputDto customerInfo, double fazelabAmount, double monthlyConsumption, TariffItemResult fazelabCalcResult, ConsumptionPartialInfo consumptionPartialInfo);
         TariffItemResult CalculateAb(double abBahaAmount, CustomerInfoOutputDto customerInfo, double monthlyConsumption, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo);
         TariffItemResult CalculateDiscount(double amountDiscount, TariffItemResult hotSeasonInfo, CustomerInfoOutputDto customerInfo, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo);
     }
@@ -23,8 +23,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const int _firstSewageCalculation = 1;
         public TariffItemResult CalculateAb(double abBahaAmount, CustomerInfoOutputDto customerInfo, double monthlyConsumption, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo)
         {           
-            if (IsDomesticBelow25MeterConsumption(customerInfo, monthlyConsumption) &&
-                !IsConstruction(customerInfo.BranchType))
+            if (IsDomesticBelow25MeterConsumption(customerInfo, monthlyConsumption))
             {
                 return new TariffItemResult();
             }
@@ -59,12 +58,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             int hotSeasonDuration = 0;
             double amount = 0;
 
-            double fazelabMultiplier= GetMultiplier(customerInfo.UsageId);
+            //double fazelabMultiplier = GetMultiplier(customerInfo.UsageId);
             if (customerInfo.SewageCalcState == _firstSewageCalculation)
             {               
-                return GetDurationAndAmount(consumptionPartialInfo.StartDateJalali, customerInfo.SewageInstallationDateJalali, consumptionPartialInfo.Duration, customerInfo, fazelabAmount, calcResult, aboveZero:false, fazelabMultiplier);               
+                return GetDurationAndAmount(consumptionPartialInfo.StartDateJalali, customerInfo.SewageInstallationDateJalali, consumptionPartialInfo.Duration, customerInfo, fazelabAmount, calcResult, aboveZero:false);               
             }
-            return GetDurationAndAmount(consumptionPartialInfo.StartDateJalali, consumptionPartialInfo.EndDateJalali, consumptionPartialInfo.Duration, customerInfo, fazelabAmount, calcResult, true, fazelabMultiplier);         
+            return GetDurationAndAmount(consumptionPartialInfo.StartDateJalali, consumptionPartialInfo.EndDateJalali, consumptionPartialInfo.Duration, customerInfo, fazelabAmount, calcResult, true );         
         }
 
         public TariffItemResult CalculateDiscount(double amountDiscount, TariffItemResult hotSeasonInfo, CustomerInfoOutputDto customerInfo, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo)
@@ -104,18 +103,21 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         }
 
         #region private methods
-        private TariffItemResult GetDurationAndAmount(string date1, string date2, int duration, CustomerInfoOutputDto customerInfo, double baseAmount, TariffItemResult calcResult, bool aboveZero=true, double fazelabMultiplier=1)
+        private TariffItemResult GetDurationAndAmount(string date1, string date2, int duration, CustomerInfoOutputDto customerInfo, double baseAmount, TariffItemResult fazelabCalcResult, bool aboveZero=true, double fazelabMultiplier=1)
         {
             string hotSeasonStart = GetHotSeasonStart(date2);
             string hotSeasonEnd = GetHotSeasonEnd(date2);
             int hotSeasonDuration = PartTime(hotSeasonStart, hotSeasonEnd, date1, date2, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-            double amount1 = hotSeasonDuration > 0 ? (long)((hotSeasonDuration * (calcResult.Allowed>0 && aboveZero ? calcResult.Allowed: baseAmount) / duration) * _hotSeasonRate) : 0;
-            double amount2= hotSeasonDuration > 0 ? (long) ((hotSeasonDuration * (calcResult.Disallowed> 0 && aboveZero ? calcResult.Disallowed : 0) / duration) * _hotSeasonRate) : 0;            
+            double amount1 = hotSeasonDuration > 0 ? (long)((hotSeasonDuration * (fazelabCalcResult.Allowed > 0 && aboveZero ? fazelabCalcResult.Allowed: baseAmount) / duration) * _hotSeasonRate) : 0;
+            //calcResult.Disallowed> 0 بابت یک باگ اضافه شده که بعدا باید اصولی تر رفع شود: در صورتی که مبلغ زیر الگو یا ظرفیت صفر باشد اما مبلغ بالای ظرفیت عدد داشته باشد در مبلغ1 یکبار محاسبه فصل گرم اتفاق می افتد
+            double amount2 = hotSeasonDuration > 0 ? (long) ((hotSeasonDuration * (fazelabCalcResult.Allowed > 0 && fazelabCalcResult.Disallowed> 0 && aboveZero ? fazelabCalcResult.Disallowed : 0) / duration) * _hotSeasonRate) : 0;            
             return new TariffItemResult(amount1*fazelabMultiplier, amount2*fazelabMultiplier, hotSeasonDuration);
         }
         private bool IsDomesticBelow25MeterConsumption(CustomerInfoOutputDto customerInfo, double monthlyConsumption)
         {
-            return IsDomesticCategory(customerInfo.UsageId) && monthlyConsumption <= 25;
+            return IsDomesticCategory(customerInfo.UsageId) && 
+                   monthlyConsumption <= 25 &&
+                   !IsConstruction(customerInfo.BranchType);
         }
 
         private string GetHotSeasonStart(string date1)
@@ -126,10 +128,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         {
             return date2.Substring(0, 4) + date_06_31;
         }
-        private double GetMultiplier(int usageId)
-        {
-            return IsDomesticCategory(usageId) ? 0.7 : 1;
-        }
+        //private double GetMultiplier(int usageId)
+        //{
+        //    return IsDomesticCategory(usageId) ? 0.7 : 1;
+        //}
         #endregion
     }
 }
+

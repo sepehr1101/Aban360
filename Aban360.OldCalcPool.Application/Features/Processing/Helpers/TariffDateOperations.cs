@@ -45,7 +45,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         }
         internal static int GetDistance(string fromDate, string toDate, object metaData)
         {
-            CalcDistanceResultDto calcDistance = CalculationDistanceDate.CalcDistance(fromDate, toDate, true, metaData);
+            CalcDistanceResultDto calcDistance = CalcDistance(fromDate, toDate, true, metaData);
             if (calcDistance.HasError)
             {
                 throw new TariffDateException(ExceptionLiterals.Incalculable);
