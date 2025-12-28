@@ -35,15 +35,15 @@ namespace Aban360.ReportPool.Persistence.Base
                         ) b
                         WHERE 
                     		b.rn = 1 AND 
-                    		b.CounterStateCode = 1 AND 
-                    		NOT EXISTS (--بعد از اخرین قرائت تعویض شده اند
-                              SELECT 1
-                              FROM [CustomerWarehouse].dbo.MeterChange mc
-                              WHERE 
-                    			mc.CustomerNumber = b.CustomerNumber
-                                AND mc.ZoneId = b.ZoneId
-                                AND mc.ChangeDateJalali >= b.NextDay
-                          )
+                    		b.CounterStateCode = 1 -- AND 
+                    	--	NOT EXISTS (--بعد از اخرین قرائت تعویض شده اند
+                        --      SELECT 1
+                        --      FROM [CustomerWarehouse].dbo.MeterChange mc
+                        --      WHERE 
+                    	--		mc.CustomerNumber = b.CustomerNumber
+                        --        AND mc.ZoneId = b.ZoneId
+                        --        AND mc.ChangeDateJalali >= b.NextDay
+                        --  )
                     ),
                     -- محاسبه تعداد دوره‌های خرابی
                     FinalCount AS (
@@ -54,7 +54,15 @@ namespace Aban360.ReportPool.Persistence.Base
                         INNER JOIN ValidLatestBills v 
                     		ON v.CustomerNumber = b.CustomerNumber AND v.ZoneId=b.ZoneId
                         WHERE 
-                    	  b.CounterStateCode = 1 
+                    	  b.CounterStateCode = 1 AND 
+                    		NOT EXISTS (--بعد از اخرین قرائت تعویض شده اند
+                              SELECT 1
+                              FROM [CustomerWarehouse].dbo.MeterChange mc
+                              WHERE 
+                    			mc.CustomerNumber = b.CustomerNumber
+                                AND mc.ZoneId = b.ZoneId
+                                AND mc.ChangeDateJalali >= b.NextDay
+                          )
                         GROUP BY b.BillId
 						Having COUNT(1) BETWEEN @fromMalfunctionPeriodCount AND @toMalfunctionPeriodCount
                     )
@@ -125,15 +133,15 @@ namespace Aban360.ReportPool.Persistence.Base
                             MAX(b.RegisterDay) AS LatestRegisterDay
                         FROM [CustomerWarehouse].dbo.Bills b
                         WHERE                     		
-                    		b.CounterStateCode = 1 AND 
-                    		NOT EXISTS (--بعد از اخرین قبض تعویض شده اند
-                              SELECT 1
-                              FROM [CustomerWarehouse].dbo.MeterChange mc
-                              WHERE 
-                    			mc.CustomerNumber = b.CustomerNumber
-                                AND mc.ZoneId = b.ZoneId
-                                AND mc.ChangeDateJalali >= b.NextDay
-                          )
+                    		b.CounterStateCode = 1 --AND 
+                    	--	NOT EXISTS (--بعد از اخرین قبض تعویض شده اند
+                        --      SELECT 1
+                        --      FROM [CustomerWarehouse].dbo.MeterChange mc
+                        --      WHERE 
+                    	--		mc.CustomerNumber = b.CustomerNumber
+                        --        AND mc.ZoneId = b.ZoneId
+                        --        AND mc.ChangeDateJalali >= b.NextDay
+                        --  )
 						  Group By b.BillId
 						  Having COUNT(b.BillId) BETWEEN @fromMalfunctionPeriodCount AND @toMalfunctionPeriodCount
 
@@ -202,15 +210,15 @@ namespace Aban360.ReportPool.Persistence.Base
                             MAX(b.RegisterDay) AS LatestRegisterDay
                         FROM [CustomerWarehouse].dbo.Bills b
                         WHERE                     		
-                    		b.CounterStateCode = 1 AND 
-                    		NOT EXISTS (--بعد از اخرین قبض تعویض شده اند
-                              SELECT 1
-                              FROM [CustomerWarehouse].dbo.MeterChange mc
-                              WHERE 
-                    			mc.CustomerNumber = b.CustomerNumber
-                                AND mc.ZoneId = b.ZoneId
-                                AND mc.ChangeDateJalali >= b.NextDay
-                          )
+                    		b.CounterStateCode = 1 -- AND 
+                    	--	NOT EXISTS (--بعد از اخرین قبض تعویض شده اند
+                        --     SELECT 1
+                        --     FROM [CustomerWarehouse].dbo.MeterChange mc
+                        --     WHERE 
+                    	--		mc.CustomerNumber = b.CustomerNumber
+                        --       AND mc.ZoneId = b.ZoneId
+                        --       AND mc.ChangeDateJalali >= b.NextDay
+                        -- )
 						  Group By b.BillId
 						  Having COUNT(b.BillId) BETWEEN @fromMalfunctionPeriodCount AND @toMalfunctionPeriodCount
                     )
@@ -258,7 +266,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						c.DeletionStateId NOT IN (1,2,5)
 					GROUP BY c.{parameter}";
         }
-        internal string GetGroupedQueryLatest(bool isZone)
+        internal string GetGroupedQueryLatest(bool isZone,string registerBillCondition,string changeDateCondition)
         {
             string parameter = GetQueryParam(isZone);
             return $@"-- آخرین قبض معتبر
@@ -281,15 +289,15 @@ namespace Aban360.ReportPool.Persistence.Base
                         ) b
                         WHERE 
                        		b.rn = 1 AND 
-                       		b.CounterStateCode = 1 AND 
-                       		NOT EXISTS (--بعد از اخرین قبض تعویض شده اند
-                              SELECT 1
-                              FROM [CustomerWarehouse].dbo.MeterChange mc
-                              WHERE 
-                       			mc.CustomerNumber = b.CustomerNumber
-                                AND mc.ZoneId = b.ZoneId
-                                AND mc.ChangeDateJalali >= b.NextDay
-                          )
+                       		b.CounterStateCode = 1 -- AND 
+                       	--	NOT EXISTS (--بعد از اخرین قبض تعویض شده اند
+                        --      SELECT 1
+                        --      FROM [CustomerWarehouse].dbo.MeterChange mc
+                        --      WHERE 
+                       	--		mc.CustomerNumber = b.CustomerNumber
+                        --        AND mc.ZoneId = b.ZoneId
+                        --        AND mc.ChangeDateJalali >= b.NextDay
+                        --  )
                     ),
                     -- محاسبه تعداد دوره‌های خرابی
                     FinalCount AS (
@@ -300,7 +308,17 @@ namespace Aban360.ReportPool.Persistence.Base
                         INNER JOIN ValidLatestBills v 
                        		ON v.CustomerNumber = b.CustomerNumber AND v.ZoneId=b.ZoneId
                         WHERE 
-                       	  b.CounterStateCode = 1 
+                       	  b.CounterStateCode = 1    
+                            {registerBillCondition} AND
+                    		NOT EXISTS (--بعد از اخرین قرائت تعویض شده اند
+                              SELECT 1
+                              FROM [CustomerWarehouse].dbo.MeterChange mc
+                              WHERE 
+                    			mc.CustomerNumber = b.CustomerNumber
+                                AND mc.ZoneId = b.ZoneId
+                                AND mc.ChangeDateJalali >= b.NextDay
+                                {changeDateCondition}
+                          )
                         GROUP BY b.BillId
 						Having COUNT(1) BETWEEN @fromMalfunctionPeriodCount AND @toMalfunctionPeriodCount
                     )
