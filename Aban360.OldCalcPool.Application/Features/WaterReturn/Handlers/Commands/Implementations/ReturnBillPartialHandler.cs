@@ -108,9 +108,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private async Task<ReturnBillOutputDto> BurstPipe(ReturnBillPartialInputDto input, CustomerInfoOutputDto customerInfo, float consumptionAverage, CancellationToken cancellationToken)
         {
             IEnumerable<BedBesCreateDto> bedBesInfo = await GetBedBesList(customerInfo, input);
+            BedBesCreateDto latestBill = bedBesInfo.OrderByDescending(r => r.TodayDate).FirstOrDefault(); 
             BedBesCreateDto bedBesResult = GetBedbes(bedBesInfo);
 
-            var (finalAmount, hadarConsumption, _consumptionAverage) = await GetAbHadarMasHadar(bedBesResult, customerInfo, consumptionAverage);
+            var (finalAmount, hadarConsumption, _consumptionAverage) = await GetAbHadarMasHadar(bedBesResult, customerInfo, consumptionAverage,latestBill.PriDate,latestBill.TodayDate);
             AbBahaCalculationDetails abBahaResult = await GetAbBahaTariff(input, bedBesInfo, _consumptionAverage, cancellationToken);
 
             await UpdateBedBesDel(bedBesInfo);
@@ -488,9 +489,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             await _bedBesCommandService.UpdateDel(bedBesUpdate);
         }
-        private async Task<(float, float, float)> GetAbHadarMasHadar(BedBesCreateDto bedBes, CustomerInfoOutputDto customerInfo, float consumptionAverage)
+        private async Task<(float, float, float)> GetAbHadarMasHadar(BedBesCreateDto bedBes, CustomerInfoOutputDto customerInfo, float consumptionAverage, string priDateLatestBill, string todayDateLatestBill)
         {
-            var (olgo, c) = await GetOlgoAndC(bedBes.PriDate, bedBes.TodayDate, customerInfo.ZoneId);
+            var (olgo, c) = await GetOlgoAndC(priDateLatestBill, todayDateLatestBill, customerInfo.ZoneId);
 
             float _consumptionAverage = IsDomestic(customerInfo.UsageId) ?
                    olgo switch
@@ -518,8 +519,8 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             int olgo = s is null || s.Olgo <= 0 ? 14 : s.Olgo;
 
             ZaribCQueryDto zaribC = await _zaribCQueryService.GetZaribCBetweenDate(fromDate, toDate);
-            int c = zaribC is null || zaribC.C <= 0 ? 1: zaribC.C;
-            //int c = zaribC is null || zaribC.C <= 0 ? throw new ReturnedBillException(ExceptionLiterals.CantReturn) : zaribC.C;
+            //int c = zaribC is null || zaribC.C <= 0 ? 1 : zaribC.C;
+            int c = zaribC is null || zaribC.C <= 0 ? throw new ReturnedBillException(ExceptionLiterals.CantReturn) : zaribC.C;
 
             //todooo: when c is null how can i do??
 
