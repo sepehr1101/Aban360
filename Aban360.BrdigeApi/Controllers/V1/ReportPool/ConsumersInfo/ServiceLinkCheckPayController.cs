@@ -1,5 +1,4 @@
-﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
