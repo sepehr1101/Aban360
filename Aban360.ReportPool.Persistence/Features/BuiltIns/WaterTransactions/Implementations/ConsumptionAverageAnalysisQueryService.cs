@@ -22,7 +22,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             string reportTitle = ReportLiterals.LowWorkingMeter;
             string groupField = input.IsZoneGroup ? ReportLiterals.ZoneTitle : ReportLiterals.UsageTitle;
             string query = GetDataQuery(groupField, input.Values);
-            Console.WriteLine(query);
+            
             IEnumerable<ConsumptionAverageAnalysisDataOutputDto> data = await _sqlReportConnection.QueryAsync<ConsumptionAverageAnalysisDataOutputDto>(query, input);
             ConsumptionAverageAnalysisHeaderOutputDto header = new()
             {

@@ -19,8 +19,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<MalfunctionMeterByDurationHeaderOutputDto, MalfunctionMeterByDurationSummaryByZoneDataOutputDto>> Get(MalfunctionMeterByDurationGrowthInputDto input)
         {
-            string registerDateBillCondition = $@" AND b.RegisterDay <=@registerDateBill ";
-            string changeDateJalaliCondition = $@" AND mc.ChangeDateJalali >=@changeDateJalali ";
+            string registerDateBillCondition = $@" AND b.RegisterDay <=@BaseDateJalali ";
+            string changeDateJalaliCondition = $@" AND mc.ChangeDateJalali <= @BaseDateJalali ";
             string malfunctionMeterByDurationQueryString = GetGroupedQueryLatest(true, registerDateBillCondition,changeDateJalaliCondition);
             string reportTitle = ReportLiterals.MalfunctionMeterByDurationGrowthSummary + ReportLiterals.ByZone;
             var @params = new 
@@ -34,7 +34,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 zoneIds=input.ZoneIds
             };
 
-            IEnumerable<MalfunctionMeterByDurationSummaryByZoneDataOutputDto> malfunctionMeterByDurationData = await _sqlReportConnection.QueryAsync<MalfunctionMeterByDurationSummaryByZoneDataOutputDto>(malfunctionMeterByDurationQueryString, @params, null, 180);
+            IEnumerable<MalfunctionMeterByDurationSummaryByZoneDataOutputDto> malfunctionMeterByDurationData = await _sqlReportConnection.QueryAsync<MalfunctionMeterByDurationSummaryByZoneDataOutputDto>(malfunctionMeterByDurationQueryString, input, null, 180);
             MalfunctionMeterByDurationHeaderOutputDto malfunctionMeterByDurationHeader = new MalfunctionMeterByDurationHeaderOutputDto()
             {
                 Title=reportTitle,

@@ -504,7 +504,11 @@ namespace Aban360.Common.Extensions
                     {"Barrier", "مانع"},
                     {"SumPayable", "مبلغ قابل پرداخت"},
                     {"LatestBillDateJalali", "تاریخ آخرین قبض"},
-                    {"LatestReadingDateJalali", "تاریخ آخرین قرائت"}
+                    {"LatestReadingDateJalali", "تاریخ آخرین قرائت"},
+                    { "LessThanContractualOrOlgo","کمتر از الگو/ظرفیت"},
+                    { "Between1_2ContractualOrOlgo","بین 1 تا 2 برابر الگو/ظرفیت"},
+                    { "Between2_3ContractualOrOlgo","بین 2 تا 3 برابر الگو/ظرفیت"},
+                    { "MoreThanContractualOrOlgo","بیش از 3 برابر الگو/ظرفیت"}
             };
         }
     }

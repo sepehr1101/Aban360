@@ -8,6 +8,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
     public interface IConsumptionAverageManagementSummaryByUsageHandler
     {
         Task<ReportOutput<ConsumptionAverageManagementHeaderOutputDto, ConsumptionAverageManagementSummaryDataOutputDto>> Handle(ConsumptionAverageManagementInputDto input, CancellationToken cancellationToken);
-        Task<ReportOutput<QuarterDto, KeyValueDto>> Handle(ConsumptionAverageManagementSummrayInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<QuarterDto, KeyValueDto>> HandleSummary(ConsumptionAverageManagementSummrayInputDto input, CancellationToken cancellationToken);
     }
 }

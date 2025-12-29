@@ -45,7 +45,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             return result;
         }
 
-        public async Task<ReportOutput<QuarterDto, KeyValueDto>> Handle(ConsumptionAverageManagementSummrayInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<QuarterDto, KeyValueDto>> HandleSummary(ConsumptionAverageManagementSummrayInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _summaryValidator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
