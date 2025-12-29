@@ -31,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<QuarterDto, KeyValueDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(ConsumptionAverageManagementSummrayInputDto input, CancellationToken cancellationToken)
         {
-            ReportOutput<QuarterDto, KeyValueDto> result = await _consumptionAverageManagerHandler.Handle(input, cancellationToken);
+            ReportOutput<QuarterDto, KeyValueDto> result = await _consumptionAverageManagerHandler.HandleSummary(input, cancellationToken);
             return Ok(result);
         }
 
@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, ConsumptionAverageManagementSummrayInputDto   inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _consumptionAverageManagerHandler.Handle, CurrentUser, ReportLiterals.ConsumptionManagerDetail, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _consumptionAverageManagerHandler.HandleSummary, CurrentUser, ReportLiterals.ConsumptionManagerDetail, connectionId, "HandleSummary");
             return Ok(inputDto);
         }
 
@@ -49,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         public async Task<IActionResult> GetStiReport(ConsumptionAverageManagementSummrayInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 673;
-            ReportOutput<QuarterDto, KeyValueDto> calculationDetails = await _consumptionAverageManagerHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<QuarterDto, KeyValueDto> calculationDetails = await _consumptionAverageManagerHandler.HandleSummary(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode);
             return Ok(reportId);
         }

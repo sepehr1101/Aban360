@@ -71,22 +71,48 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         private string GetManagementQuery()
         {
             return @"Select 
-                    	b.ZoneId, 
-                    	b.ZoneTitle,
-                    	b.UsageId,
-                    	b.UsageTitle,
-                    	b.Consumption,
-                    	b.ConsumptionAverage,
-                    	CASE WHEN @IsDomestic=1 THEN s.olgo ELSE b.ContractCapacity END as ContracutalOrOlgo,
-                    	b.RegisterDay as RegisterDateJalali
-                    From CustomerWarehouse.dbo.Bills b
-                    Left Join OldCalc.dbo.S s
-                    	on b.ZoneId=s.town AND b.RegisterDay COLLATE Persian_100_CI_AI  BETWEEN s.FromDate AND s.ToDate
-                    Where 
-                    	( (@IsDomestic=1 AND b.UsageId IN (0,1,3)) OR (@IsDomestic<>1 AND b.UsageId NOT IN (0,1,3)) ) AND
-                    	( (@IsNet=1 AND b.TypeCode IN (1,3,4,5)) OR (@IsNet<>1 AND b.TypeCode IN (1)) ) AND
-                    	b.ZoneId IN @ZoneIds AND
-                    	b.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali";
+                		b.BillId,
+                		MAX(b.ZoneId) ZoneId, 
+                		MAX(b.ZoneTitle) ZoneTitle, 
+                		MAX(c.UsageId) UsageId,
+                		MAX(c.UsageTitle) UsageTitle,
+                		AVG(b.Consumption) Consumption,
+                		AVG(b.ConsumptionAverage)ConsumptionAverage,
+                		CASE WHEN @IsDomestic=1 THEN MAX(s.olgo) ELSE MAX(b.ContractCapacity) END as ContracutalOrOlgo,
+                		'' RegisterDateJalali
+                	From CustomerWarehouse.dbo.Bills b
+                	Join CustomerWarehouse.dbo.Clients c
+                		ON b.ZoneId=c.ZoneId AND b.CustomerNumber=c.CustomerNumber
+                	Outer apply(
+                		Select top 1 *
+                		from OldCalc.dbo.S s
+                		where  b.ZoneId=s.town AND b.RegisterDay COLLATE Persian_100_CI_AI  BETWEEN s.FromDate AND s.ToDate
+                		order by s.ToDate Desc
+                		)s
+                	Where 
+                		c.ToDayJalali IS NULL AND
+                		( (@IsDomestic=1 AND c.UsageId IN (0,1,3)) OR (@IsDomestic<>1 AND c.UsageId NOT IN (0,1,3)) ) AND
+                		( (@IsNet=1 AND b.TypeCode IN (1,3,4,5)) OR (@IsNet<>1 AND b.TypeCode IN (1)) ) AND
+                		b.ZoneId IN @zoneIds AND
+                		b.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali
+                	Group By b.BillId";
+            //return @"Select 
+            //        	b.ZoneId, 
+            //        	b.ZoneTitle,
+            //        	b.UsageId,
+            //        	b.UsageTitle,
+            //        	b.Consumption,
+            //        	b.ConsumptionAverage,
+            //        	CASE WHEN @IsDomestic=1 THEN s.olgo ELSE b.ContractCapacity END as ContracutalOrOlgo,
+            //        	b.RegisterDay as RegisterDateJalali
+            //        From CustomerWarehouse.dbo.Bills b
+            //        Left Join OldCalc.dbo.S s
+            //        	on b.ZoneId=s.town AND b.RegisterDay COLLATE Persian_100_CI_AI  BETWEEN s.FromDate AND s.ToDate
+            //        Where 
+            //        	( (@IsDomestic=1 AND b.UsageId IN (0,1,3)) OR (@IsDomestic<>1 AND b.UsageId NOT IN (0,1,3)) ) AND
+            //        	( (@IsNet=1 AND b.TypeCode IN (1,3,4,5)) OR (@IsNet<>1 AND b.TypeCode IN (1)) ) AND
+            //        	b.ZoneId IN @ZoneIds AND
+            //        	b.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali";
         }
     }
 }
