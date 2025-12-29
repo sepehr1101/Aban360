@@ -97,7 +97,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 //    * (double)multiplierAbBaha * villageMultiplier :
                 //     CalcFormulaByRate(formula, _olgoo, _olgoo, c, tagIds) * (double)multiplierAbBaha * villageMultiplier * consumptionPartialInfo.AllowedConsumption;
                 double upToOlgooAmount = IsDomesticWithoutUnspecified(customerInfo.UsageId) ?
-                    43744.85 * (double)multiplierAbBaha * villageMultiplier * consumptionPartialInfo.Duration / monthDays
+                    43744.85 * (double)multiplierAbBaha /* * villageMultiplier */ * consumptionPartialInfo.Duration / monthDays
                     : 0;
 
                 double overalAmount = abBahaAmount * (double)multiplierAbBaha * villageMultiplier;
@@ -112,7 +112,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             if (IsGardenOrDwelty(customerInfo.UsageId) && SubFormaulaNotNull(nerkh))
             {
                 double upToOlgooAmount = CalcFormulaByRate(nerkh.AllowedFormula, _olgoo, _olgoo, c, tagIds);
-                upToOlgooAmount = upToOlgooAmount * (double)multiplierAbBaha * villageMultiplier * ((double)_olgoo / monthDays * duration);                
+                upToOlgooAmount = upToOlgooAmount * (double)multiplierAbBaha /* * villageMultiplier */ * ((double)_olgoo / monthDays * duration);                
                 abBahaAmount = abBahaFromExpression * consumptionPartialInfo.Consumption * (double)multiplierAbBaha * villageMultiplier;
                
                 double aboveOlgoo = abBahaAmount > upToOlgooAmount ? abBahaAmount - upToOlgooAmount : 0;
@@ -167,7 +167,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             if (IsHandoverDiscount(customerInfo.BranchType) &&
                 IsDomesticWithoutUnspecified(customerInfo.UsageId))
             {               
-                double mullahMultiplier = IsMullah(customerInfo.BranchType) ? 0.5 : 1;
+                double mullahMultiplier = IsMullah(customerInfo.BranchType) && customerInfo.UnitAll==1 ? 0.5 : 1;
                 (double, double) villageMultiplier = (!IsMullah(customerInfo.BranchType) && isVillageCalculation && IsDomestic(customerInfo.UsageId)) ? (0.5, 0.35) : (1, 1);                               
                 double allowedDiscount = calculateAbBahaOutputDto.Allowed * mullahMultiplier * villageMultiplier.Item1;                                 
                 return new TariffItemResult(allowedDiscount);
