@@ -91,7 +91,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 		)s
                 	Where 
                 		c.ToDayJalali IS NULL AND
-                		( (@IsDomestic=1 AND c.UsageId IN (0,1,3)) OR (@IsDomestic<>1 AND c.UsageId NOT IN (0,1,3)) ) AND
+                		( (@IsDomestic=1 AND c.UsageId IN (0,1,3) AND c.UsageStateId<>4) OR (@IsDomestic<>1 AND c.UsageId NOT IN (0,1,3)) ) AND
                 		( (@IsNet=1 AND b.TypeCode IN (1,3,4,5)) OR (@IsNet<>1 AND b.TypeCode IN (1)) ) AND
                 		b.ZoneId IN @zoneIds AND
                 		b.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali
