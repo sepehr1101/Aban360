@@ -82,12 +82,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
             //case 3: require old ab baha but not religious
             if (IsGardenOrDweltyAfter1400_12_24OrIsDomestic(customerInfo, consumptionPartialInfo) &&
-                IsBefore1403_06_26(consumptionPartialInfo.EndDateJalali) &&
+                //IsBefore1403_06_26(consumptionPartialInfo.EndDateJalali) && طبق فرمایش خانم مهندس حبیبی نژاد تا 12 آذر
+                IsBefore1403_09_13(consumptionPartialInfo.EndDateJalali) &&
                 !IsReligious(customerInfo.UsageId))
             {
                 bool isOld = false;
                 //abBahaFromExpression = CalcFormulaByRate(formula, monthlyConsumption, _olgoo, c, tagIds);
-                abBahaAmount = abBahaFromExpression * consumptionPartialInfo.Consumption;
+                abBahaAmount = abBahaFromExpression * monthlyConsumption * duration / monthDays; //* consumptionPartialInfo.Consumption;
                 oldAbBahaAmount = CalculateOldAbBahaIfPossible(nerkh, customerInfo, consumptionPartialInfo, monthlyConsumption, _olgoo, c, tagIds, oldAbBahaAmount, _oldAbBahaZarib);
                 (double, bool) abBahaItems = ShouldUseOldAbBaha(consumptionPartialInfo, customerInfo, monthlyConsumption, _olgoo, abBahaAmount, oldAbBahaAmount);
                 abBahaAmount = abBahaItems.Item1;
@@ -169,7 +170,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {               
                 double mullahMultiplier = IsMullah(customerInfo.BranchType) && customerInfo.UnitAll==1 ? 0.5 : 1;
                 (double, double) villageMultiplier = (!IsMullah(customerInfo.BranchType) && isVillageCalculation && IsDomestic(customerInfo.UsageId)) ? (0.5, 0.35) : (1, 1);                               
-                double allowedDiscount = calculateAbBahaOutputDto.Allowed * mullahMultiplier * villageMultiplier.Item1;                                 
+                double allowedDiscount = calculateAbBahaOutputDto.Allowed * mullahMultiplier /* * villageMultiplier.Item1*/ ;                                 
                 return new TariffItemResult(allowedDiscount);
             }
             if (IsReligiousWithCharity(customerInfo.UsageId))
@@ -217,6 +218,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         private bool IsBefore1403_06_26(string date2)
         {
             return date2.CompareTo(date_1403_06_25) <= 0;
+        }
+        private bool IsBefore1403_09_13(string date2)
+        {
+            return date2.CompareTo(date_1403_09_13) <= 0;
         }
 
         private bool HasCapacity(CustomerInfoOutputDto customerInfo)
