@@ -76,7 +76,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
         }
         private string GetQueryByFromToZoneId()
         {
-            return @"Select 
+            return @"Select TOP 1
                     	Id,
                     	town as ZoneId,
                     	olgo,
@@ -84,10 +84,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                     	ToDate as ToDateJalali
                     From OldCalc.dbo.S
                     Where 
-                    	FromDate>=@fromDate And
-                    	ToDate<=@toDate And
+                    	ToDate>=@toDate And
                         Town=@zoneId
-					Order By FromDate Desc";
+                    Order By ToDatec";
         }
         private string GetAllQuery()
         {

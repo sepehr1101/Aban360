@@ -50,7 +50,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [AllowAnonymous]
         public async Task<IActionResult> GetStiReport(SearchInput searchInput, CancellationToken cancellationToken)
         {
-            int reportCode = 730;
+            int reportCode = 800;
             ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo = await _customerInfoHandle.Handle(searchInput, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(customerInfo, cancellationToken, reportCode);
             return Ok(reportId);

@@ -58,8 +58,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
         private async Task<CustomerGeneralInfoDataDto> GetMeterChangeInfo(CustomerGeneralInfoDataDto customerInfo, ZoneIdAndCustomerNumberOutputDto input, string dbName)
         {
             string query = GetMeterChangeInfo(dbName);
-            CustomerGeneralMeterChangeInfoDto latestMeterChange = await _sqlReportConnection.QueryFirstOrDefaultAsync<CustomerGeneralMeterChangeInfoDto>(query, input);
-            customerInfo.MeterChangeDateJalali = latestMeterChange.MeterChangeDateJalali;
+            CustomerGeneralMeterChangeInfoDto? latestMeterChange = await _sqlReportConnection.QueryFirstOrDefaultAsync<CustomerGeneralMeterChangeInfoDto>(query, input);
+            customerInfo.MeterChangeDateJalali = latestMeterChange?.MeterChangeDateJalali;
 
             return customerInfo;
         }

@@ -10,19 +10,31 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
-    internal sealed class MalfunctionMeterByDurationSummaryByZoneQueryService : MalfunctionByDurationBase, IMalfunctionMeterByDurationSummaryByZoneQueryService
+    internal sealed class MalfunctionMeterByDurationGrowthSummaryByZoneQueryService : MalfunctionByDurationBase, IMalfunctionMeterByDurationGrowthSummaryByZoneQueryService
     {
-        public MalfunctionMeterByDurationSummaryByZoneQueryService(IConfiguration configuration)
+        public MalfunctionMeterByDurationGrowthSummaryByZoneQueryService(IConfiguration configuration)
             : base(configuration)
         { 
         }
 
-        public async Task<ReportOutput<MalfunctionMeterByDurationHeaderOutputDto, MalfunctionMeterByDurationSummaryByZoneDataOutputDto>> Get(MalfunctionMeterByDurationInputDto input)
+        public async Task<ReportOutput<MalfunctionMeterByDurationHeaderOutputDto, MalfunctionMeterByDurationSummaryByZoneDataOutputDto>> Get(MalfunctionMeterByDurationGrowthInputDto input)
         {
-            string malfunctionMeterByDurationQueryString = input.IsMalfunctionLatest ? GetGroupedQueryLatest(true, string.Empty, string.Empty) : GetGroupedQuery(true);
-            string reportTitle = ReportLiterals.MalfunctionMeterByDurationSummary + ReportLiterals.ByZone;
+            string registerDateBillCondition = $@" AND b.RegisterDay <=@registerDateBill ";
+            string changeDateJalaliCondition = $@" AND mc.ChangeDateJalali >=@changeDateJalali ";
+            string malfunctionMeterByDurationQueryString = GetGroupedQueryLatest(true, registerDateBillCondition,changeDateJalaliCondition);
+            string reportTitle = ReportLiterals.MalfunctionMeterByDurationGrowthSummary + ReportLiterals.ByZone;
+            var @params = new 
+            {
+                FromReadingNumber=input.FromReadingNumber,
+                ToReadingNumber=input.ToReadingNumber,
+                FromMalfunctionPeriodCount=input.FromMalfunctionPeriodCount,
+                ToMalfunctionPeriodCount=input.ToMalfunctionPeriodCount,
+                registerDateBill=input.BaseDateJalali,
+                changeDateJalali=input.BaseDateJalali,
+                zoneIds=input.ZoneIds
+            };
 
-            IEnumerable<MalfunctionMeterByDurationSummaryByZoneDataOutputDto> malfunctionMeterByDurationData = await _sqlReportConnection.QueryAsync<MalfunctionMeterByDurationSummaryByZoneDataOutputDto>(malfunctionMeterByDurationQueryString, input, null, 180);
+            IEnumerable<MalfunctionMeterByDurationSummaryByZoneDataOutputDto> malfunctionMeterByDurationData = await _sqlReportConnection.QueryAsync<MalfunctionMeterByDurationSummaryByZoneDataOutputDto>(malfunctionMeterByDurationQueryString, @params, null, 180);
             MalfunctionMeterByDurationHeaderOutputDto malfunctionMeterByDurationHeader = new MalfunctionMeterByDurationHeaderOutputDto()
             {
                 Title=reportTitle,

@@ -23,18 +23,10 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             string subscriptionDataQuery = GetSubscriptionEventsDataQuery(dbName);
             string subscriptionHeaderQuery = GetSubscriptionEventHeaderQuery(dbName);
             string waterReplacementInHeaderQuery = GetWaterReplacementDateInHeaderQuery(dbName);
-            string lastDebtAmount = GetLastDebtAmount(dbName);
             long lastRemained = 0;
 
             IEnumerable<WaterEventsSummaryOutputDataDto> data = await _sqlReportConnection.QueryAsync<WaterEventsSummaryOutputDataDto>(subscriptionDataQuery, input);
 
-            var lastBillParams = new
-            {
-                zoneId = input.ZoneId,
-                customerNumber = input.CustomerNumber,
-                lastBillDate = data.OrderByDescending(r => r.RegisterDate).FirstOrDefault().RegisterDate//todo: validation
-            };
-            WaterEventsSummaryOutputDataDto latestBill = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterEventsSummaryOutputDataDto>(lastDebtAmount, lastBillParams);
             if (data is not null && data.Any())
             {
                 data = data.OrderBy(i => i.RegisterDate);
@@ -79,7 +71,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						b.date_bed RegisterDate,
 						b.baha DebtAmount,
 						0 CreditAmount,
-						Case When b.cod_vas IN (0,1,2,6) Then N'قبض' Else	cv.Title End [Description],--todo
+						cv.Title [Description],--todo
 						b.rate ConsumptionAverage, 
 						b.masraf Consumption,
 						null BankTitle, 
@@ -106,11 +98,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						On b.cod_enshab=t41_consumption.c0 
 					Where 
 						b.town=@zoneId AND
-						b.radif=@customerNumber AND
-						(b.date_bed>='1401/01/01' AND 
-							(@fromDate IS NULL OR
-							b.date_bed<=@fromDate)
-						)
+						b.radif=@customerNumber 
 					Union
 					Select 
 						m.bill_id BillId,
@@ -121,8 +109,8 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						NULL CurrentMeterDate,
 						0 Duration,
 						b.date RegisterDate,
-						b.mandeh DebtAmount,
-						0 CreditAmount,
+						0 DebtAmount,
+						b.mandeh CreditAmount,
 						N'مانده-ابتدا' [Description],--todo
 						0 ConsumptionAverage, 
 						0 Consumption,
@@ -149,11 +137,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						On b.group1=t41_consumption.c0 --group1?
 					Where 
 						b.town=@zoneId AND
-						b.radif=@customerNumber AND
-						( b.date>='1401/01/01' AND 
-							(@fromDate IS NULL OR
-							 b.date<=@fromDate)
-						)
+						b.radif=@customerNumber 
 						Union
 					Select 
 						m.bill_id BillId,
@@ -164,8 +148,13 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						r.today_date CurrentMeterDate,
 						r.modat Duration,
 						r.date_bed RegisterDate,
-						r.baha DebtAmount,
-						0 CreditAmount,--todo
+						--r.baha DebtAmount,
+						IIF((IIF(r.type in(1,9) or (r.type=4 and r.elat=1) or (r.type=6 and r.elat =1),1,-1)*r.baha)<0,
+						  IIF(r.type in(1,9) or (r.type=4 and r.elat=1) or (r.type=6 and r.elat =1),1,-1)*r.baha,
+						  0) CreditAmount, 
+						IIF((IIF(r.type in(1,9) or (r.type=4 and r.elat=1) or (r.type=6 and r.elat =1),1,-1)*r.baha)<0,
+						  0,
+						  IIF(r.type in(1,9) or (r.type=4 and r.elat=1) or (r.type=6 and r.elat =1),1,-1)*r.baha) DebtAmount, 
 						N'برگشتی' [Description],--todo
 						0 ConsumptionAverage, 
 						0 Consumption,
@@ -192,11 +181,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						On r.group1=t41_consumption.c0 
 					Where 
 						r.town=@zoneId AND
-						r.radif=@customerNumber AND
-						( r.date_bed>='1401/01/01' AND 
-							(@fromDate IS NULL OR
-							 r.date_bed<=@fromDate)
-						)
+						r.radif=@customerNumber 
 					Union
 					Select 
 						m.bill_id BillId,
@@ -208,7 +193,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						0 Duration,
 						v.date_sabt RegisterDate,
 						0 DebtAmount,
-						v.pard CreditAmount,
+						v.pard*-1 CreditAmount,
 						N'پرداخت' [Description],--todo
 						0 ConsumptionAverage, 
 						0 Consumption,
@@ -235,11 +220,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						On v.cod_enshab=t41_consumption.c0 
 					Where 
 						v.town=@zoneId AND
-						v.radif=@customerNumber AND
-						( v.date_sabt>='1401/01/01' AND 
-							(@fromDate IS NULL OR
-							 v.date_sabt<=@fromDate)
-						)--todo";
+						v.radif=@customerNumber";
         }
         private string GetSubscriptionEventHeaderQuery(string dbName)
         {
@@ -303,49 +284,6 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	t.town=@zoneId
                     Order By t.taviz_date Desc";
         }
-        private string GetLastDebtAmount(string dbName)
-        {
-            return @$"Select top 1
-						b.sh_ghabs1 BillId,
-						b.id,
-						0 PreviousMeterNumber,
-						0 NextMeterNumber,
-						'' PreviousMeterDate,
-						'' CurrentMeterDate,
-						0 Duration,
-						'1400/12/29' RegisterDate,
-						b.jam DebtAmount,
-						0 CreditAmount,
-						Case When b.cod_vas IN (0,1,2,6) Then N'قبض' Else	cv.Title End [Description],--todo
-						0 ConsumptionAverage, 
-						0 Consumption,
-						null BankTitle, 
-						null BankCode, 
-						b.tedad_mas CommercialUnit,
-						b.tedad_tej DomesticUnit, 
-						b.tedad_vahd OtherUnit,
-						b.Khali_s EmptyUnit,
-						b.ted_khane HouseholderNumber,
-						b.fix_mas ContractualCapacity,
-						b.cod_enshab UsageSellId,
-						b.group1 UsageConsumptionId,
-						t41_sell.C1 UsageSellTitle,
-						t41_consumption.C1 UsageConsumptionTitle,
-						'' PayDateJalali,
-						b.cod_vas TypeCode
-						--b.type TypeCode
-					From [{dbName}].dbo.bed_bes b
-					Left Join [Db70].dbo.CounterVaziat cv 
-						On b.cod_vas=cv.MoshtarakinId
-					Left Join [Db70].dbo.T41 t41_sell
-						On b.cod_enshab=t41_sell.c0 
-					Left Join [Db70].dbo.T41 t41_consumption
-						On b.cod_enshab=t41_consumption.c0 
-					where 
-						b.date_bed<@lastBillDate AND
-						b.town=@zoneId AND
-						b.radif=@customerNumber
-					Order by b.date_bed DEsc";
-        }
+    
     }
 }
