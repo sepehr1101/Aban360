@@ -4,7 +4,6 @@ using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
 using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
 using Aban360.Common.Extensions;
-using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
 using DNTPersianUtils.Core;
@@ -40,15 +39,19 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             long deliveryAmount = await CalcDeliveryAmount(input);
             decimal abBaha = (input.Consumption * saleStateZarib * c) * zb;
             decimal boodjeh = input.Consumption * 2000m;
-
-            decimal multiplier = input.SaleState != TankerWaterSaleStateEnum.Nomads && input.ZoneId == 133111 ? 0.5m : 1m;
+            decimal multiplier = GetVarzaneMultiplier(input);
 
             if (input.IsConfirm)
             {
-                //Save
+                //TODO: Save
             }
 
-            return new TankerWaterCalculationOutputDto(abBaha * multiplier, boodjeh * multiplier, deliveryAmount);
+            return new TankerWaterCalculationOutputDto(abBaha * multiplier, boodjeh, deliveryAmount);
+        }
+
+        private decimal GetVarzaneMultiplier(TankerWaterCalculationInputDto input)
+        {
+            return input.SaleState != TankerWaterSaleStateEnum.Nomads && input.ZoneId == 133111 ? 0.5m : 1m;
         }
         private async Task<long> CalcDeliveryAmount(TankerWaterCalculationInputDto input)
         {
