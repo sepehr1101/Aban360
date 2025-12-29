@@ -15,7 +15,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
     {
         public WaterIncomeAndConsumptionDetailQueryService(IConfiguration configuration)
             : base(configuration)
-        { 
+        {
         }
 
         public async Task<ReportOutput<WaterIncomeAndConsumptionDetailHeaderOutputDto, WaterIncomeAndConsumptionDetailDataOutputDto>> Get(WaterIncomeAndConsumptionDetailInputDto input)
@@ -44,7 +44,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 Title = ReportLiterals.WaterIncomeAndConsumptionDetail,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = waterIncomeAndConsumptionData.Count(),
-                CustomerCount = waterIncomeAndConsumptionData.Count(),
+                CustomerCount = waterIncomeAndConsumptionData.GroupBy(r => r.BillId).Distinct().Count(),
 
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
