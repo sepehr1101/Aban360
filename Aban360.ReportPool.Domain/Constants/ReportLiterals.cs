@@ -178,6 +178,7 @@
         public static string MalfunctionMeterDetail { get { return $"{Report} جزئیات کنتورهای خراب"; } }
         public static string MalfunctionMeterByDurationDetail { get { return $"{Report} جزئیات کنتورهای خراب-دوره"; } }
         public static string MalfunctionMeterByDurationSummary { get { return $"{Report} خلاصه کنتورهای خراب-دوره"; } }
+        public static string MalfunctionMeterByDurationGrowthSummary { get { return $"{Report} خلاصه رشد کنتورهای خراب-دوره"; } }
 
         public static string WaterNetSalesDetail { get { return $"خلاصه {Report} جزئیات فروش خالص آب بها"; } }//
         public static string WaterRawSalesDetail { get { return $"خلاصه {Report} جزئیات فروش ناخالص آب بها"; } }

@@ -65,15 +65,16 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
         private string GetQueryFromTo()
         {
             return
-                @"SELECT 
-	                Id,
-	                FromDateJalali,
-	                ToDateJalali,
-	                C
+                @"SELECT Top 1
+                    Id,
+                    FromDateJalali,
+                    ToDateJalali,
+                    C
                 FROM [OldCalc].dbo.Zarib_C
                 WHERE 
-	                FromDateJalali<@fromDate AND ToDateJalali>=@toDate AND
-	                IsDeleted=0";
+                    ToDateJalali>=@toDate AND
+                    IsDeleted=0
+                Order by ToDateJalali";
         }
         private string GetAllQuery()
         {
