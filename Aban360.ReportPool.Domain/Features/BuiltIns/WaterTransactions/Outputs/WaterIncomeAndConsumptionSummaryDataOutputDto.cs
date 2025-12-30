@@ -4,6 +4,7 @@
     {
         public string GroupKey { get; set; }
         public int BillCount { get; set; }
+        public float SewageConsumption { get; set; }
         public int Consumption { get; set; }
         public float ConsumptionAverage { get; set; }
         public int BillUnitCounts { get; set; }

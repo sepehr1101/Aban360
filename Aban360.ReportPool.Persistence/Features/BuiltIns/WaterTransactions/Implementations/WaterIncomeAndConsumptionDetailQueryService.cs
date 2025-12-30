@@ -55,6 +55,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 FromConsumption = input.FromConsumption,
                 ToConsumption = input.ToConsumption,
 
+                SumSewageConsumption = waterIncomeAndConsumptionData.Sum(w => w.SewageConsumption),
                 SumConsumption = waterIncomeAndConsumptionData.Sum(w => w.Consumption),
                 SumConsumptionAverage = waterIncomeAndConsumptionData.Sum(w => w.ConsumptionAverage),
                 SumDuration = waterIncomeAndConsumptionData.Sum(w => w.Duration),
@@ -110,6 +111,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						TRIM(b.BillId) as BillId,
 						b.UsageTitle,
 						b.ReadingNumber,
+						Case When b.UsageId IN (1,3) AND b.BranchTypeId NOT IN (4) Then b.Consumption*0.7 Else b.Consumption End SewageConsumption,
 						b.Consumption,
 						b.ConsumptionAverage,
 						b.WaterDiameterTitle as MeterDiameterTitle,
@@ -122,7 +124,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						b.Item4,
 						b.Item5,
 						b.Item6,
-						b.Item7,
 						b.Item7,
 						b.Item8,
 						b.Item9,
