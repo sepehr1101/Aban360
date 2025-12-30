@@ -16,11 +16,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
     {
         public WaterIncomeAndConsumptionSummaryQueryService(IConfiguration configuration)
             : base(configuration)
-        { 
+        {
         }
 
         public async Task<ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionSummaryDataOutputDto>> Get(WaterIncomeAndConsumptionSummaryInputDto input)
         {
+            string reportTitle = ReportLiterals.WaterIncomeAndConsumptionSummary + GetIsZoneOrVillageTitle(input.ZoneIds);
             string waterIncomeAndConsumptionSummarys = GetWaterIncomeAndConsumptionSummaryQuery(input.ZoneIds.HasValue(), input.UsageIds.HasValue(), input.BranchTypeIds.HasValue(), input.EnumInput);
             var @params = new
             {
@@ -42,7 +43,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             IEnumerable<WaterIncomeAndConsumptionSummaryDataOutputDto> waterIncomeAndConsumptionData = await _sqlReportConnection.QueryAsync<WaterIncomeAndConsumptionSummaryDataOutputDto>(waterIncomeAndConsumptionSummarys, @params);
             WaterIncomeAndConsumptionSummaryHeaderOutputDto waterIncomeAndConsumptionHeader = new WaterIncomeAndConsumptionSummaryHeaderOutputDto()
             {
-                Title = ReportLiterals.WaterIncomeAndConsumptionSummary,
+                Title = reportTitle,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = waterIncomeAndConsumptionData.Count(),
                 CustomerCount = waterIncomeAndConsumptionData.Count(),
@@ -81,10 +82,25 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
             };
 
-            var result = new ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionSummaryDataOutputDto>(ReportLiterals.WaterIncomeAndConsumptionSummary, waterIncomeAndConsumptionHeader, waterIncomeAndConsumptionData);
+            var result = new ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionSummaryDataOutputDto>(reportTitle, waterIncomeAndConsumptionHeader, waterIncomeAndConsumptionData);
             return result;
         }
 
+        private string GetIsZoneOrVillageTitle(IEnumerable<int> zoneIds)
+        {
+            int villageId = 140000;
+
+            bool allVillages = zoneIds.All(z => z > villageId);
+            bool anyVillage = zoneIds.Any(z => z > villageId);
+
+            if (allVillages)
+                return ReportLiterals.WithVillage;
+
+            if (!anyVillage)
+                return ReportLiterals.WithZone;
+
+            return string.Empty;
+        }
         private string GetWaterIncomeAndConsumptionSummaryQuery(bool hasZone, bool hasUsage, bool hasBranchType, WaterIncomeAndConsumptionSummaryEnum enumState)
         {
             string zoneQuery = hasZone ? "AND b.ZoneId IN @zoneIds" : string.Empty;

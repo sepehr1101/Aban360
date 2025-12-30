@@ -23,7 +23,8 @@
         public static string Olgoo { get { return "الگو"; } }
         public static string CotractualCapacity { get { return "ظرفیت قراردادی"; } }
 
-
+        public static string WithZone { get { return " شهری "; } }
+        public static string WithVillage { get { return " روستایی "; } }
 
         public static string EmptyUnit { get { return $"{Report} خالی از سکنه"; } }
 
