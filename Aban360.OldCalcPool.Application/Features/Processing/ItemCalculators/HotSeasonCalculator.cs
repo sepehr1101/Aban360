@@ -89,6 +89,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return new TariffItemResult();
             }
+
+            if (IsMullah(customerInfo.BranchType))
+            {
+                return new TariffItemResult();
+            }
             if (calcResult.Summation - amountDiscount < 2)
             {
                 return new TariffItemResult(hotSeasonInfo.Summation);
@@ -121,6 +126,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 IsDomesticWithoutUnspecified(customerInfo.UsageId))
             {
                 return new TariffItemResult(0, amount2 * fazelabMultiplier, hotSeasonDuration);
+            }
+            if (IsMullah(customerInfo.BranchType))
+            {
+                return new TariffItemResult(0, fazelabCalcResult.Disallowed * fazelabMultiplier, hotSeasonDuration);
             }
             return new TariffItemResult(amount1*fazelabMultiplier, amount2*fazelabMultiplier, hotSeasonDuration);
         }

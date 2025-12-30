@@ -99,7 +99,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 //    * (double)multiplierAbBaha * villageMultiplier :
                 //     CalcFormulaByRate(formula, _olgoo, _olgoo, c, tagIds) * (double)multiplierAbBaha * villageMultiplier * consumptionPartialInfo.AllowedConsumption;
                 double upToOlgooAmount = IsDomesticWithoutUnspecified(customerInfo.UsageId) ?
-                    43744.85 * (double)multiplierAbBaha /* * villageMultiplier */ * consumptionPartialInfo.Duration / monthDays
+                    43744.85 * (double)multiplierAbBaha  * villageMultiplier  * consumptionPartialInfo.Duration / monthDays
                     : 0;
 
                 double overalAmount = abBahaAmount * (double)multiplierAbBaha * villageMultiplier;
@@ -180,10 +180,16 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
        
             if (IsUnderSocialService(customerInfo.BranchType) &&
                 IsDomesticWithoutUnspecified(customerInfo.UsageId))
-            {               
-                double mullahMultiplier = IsMullah(customerInfo.BranchType) && customerInfo.UnitAll==1 ? 0.5 : 1;
+            {       
                 //(double, double) villageMultiplier = (!IsMullah(customerInfo.BranchType) && isVillageCalculation && IsDomestic(customerInfo.UsageId)) ? (0.5, 0.35) : (1, 1);                               
-                double allowedDiscount = calculateAbBahaOutputDto.Allowed * mullahMultiplier /* * villageMultiplier.Item1*/ ;                                 
+                double allowedDiscount = calculateAbBahaOutputDto.Allowed /* * villageMultiplier.Item1*/ ;                                 
+                return new TariffItemResult(allowedDiscount);
+            }
+            if (IsMullah(customerInfo.BranchType) && customerInfo.UnitAll == 1)
+            {
+                double mullahMultiplier = 0.5;
+                double villageMultiplier = GetVillageMultiplier(nerkh, customerInfo, consumptionPartialInfo, monthlyConsumption, olgoo);
+                double allowedDiscount = (calculateAbBahaOutputDto.Allowed / villageMultiplier) * mullahMultiplier; //* mullahMultiplier;
                 return new TariffItemResult(allowedDiscount);
             }
             if (IsReligiousWithCharity(customerInfo.UsageId))
@@ -367,7 +373,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         private decimal GetMultiplier(ZaribGetDto zarib, int olgoo, bool isDomestic, bool isVillage, double monthlyConsumption, int branchType)
         {
             decimal rawMultiplier= GetRawMultiplier(zarib, olgoo, isDomestic, isVillage, monthlyConsumption, branchType);
-            return !isDomestic && rawMultiplier < 1 ? 1 : rawMultiplier;
+            return (!isDomestic && rawMultiplier < 1) || (IsConstruction(branchType) && rawMultiplier < 1) ?
+                1 : rawMultiplier;
         }
         private decimal GetRawMultiplier(ZaribGetDto zarib, int olgoo, bool isDomestic, bool isVillage, double monthlyConsumption, int branchType)
         {
