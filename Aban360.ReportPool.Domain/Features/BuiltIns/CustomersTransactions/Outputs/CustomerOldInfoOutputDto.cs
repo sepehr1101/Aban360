@@ -14,5 +14,5 @@
         public string? VillageName { get; set; }
         public int? RegionId { get; set; }
         public string? RegionTitle { get; set; }
-    }
+    }   
 }
