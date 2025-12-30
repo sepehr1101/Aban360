@@ -7,7 +7,6 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using FluentValidation;
-using System.Linq;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Implementations
 {

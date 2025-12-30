@@ -71,6 +71,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         private string GetManagementQuery()
         {
             return @"Select 
+                        MAX(c.FirstName) FirstName,
+	                    MAX(c.SureName) Surname,
+	                    (MAX(c.FirstName)+' '+MAX(c.SureName)) FullName,
+	                    MAX(c.PostalCode) PostalCode,
+	                    MAX(c.NationalId) NationalCode,
+	                    MAX(c.Address) Address,
+	                    MAX(c.PhoneNo) PhoneNumber,
+	                    MAX(c.MobileNo) MobileNumber,
+	                    MAX(c.WaterDiameterTitle) MeterDiamterTitle,
                 		b.BillId,
                 		MAX(b.ZoneId) ZoneId, 
                 		MAX(b.ZoneTitle) ZoneTitle, 

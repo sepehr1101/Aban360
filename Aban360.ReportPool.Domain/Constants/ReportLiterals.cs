@@ -14,6 +14,8 @@
         public static string ByUsage { get { return " بر اساس کاربری "; } }
         public static string UsageTitle { get { return "UsageTitle"; } }
         public static string ByUsageAndZone { get { return " بر اساس کاربری و ناحیه "; } }
+        public static string ByCustomer { get { return " بر اساس مشترک "; } }
+        public static string ByBill { get { return " بر اساس قبض "; } }
         public static string ByUsageAndZoneAndDiameter { get { return " بر اساس کاربری و ناحیه و قطر انشعاب "; } }
         public static string ByChangeCause { get { return "  بر اساس علت تعویض "; } }
         public static string Due { get { return "جاری"; } }

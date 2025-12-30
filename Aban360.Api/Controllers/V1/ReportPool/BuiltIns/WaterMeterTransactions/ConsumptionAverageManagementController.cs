@@ -38,7 +38,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, ConsumptionAverageManagementInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _consumptionAverageManagerHandler.Handle, CurrentUser, ReportLiterals.ConsumptionManagerDetail, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _consumptionAverageManagerHandler.Handle, CurrentUser, ReportLiterals.ConsumptionManagerDetail+ReportLiterals.ByBill, connectionId);
             return Ok(inputDto);
         }
 
@@ -47,7 +47,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetStiReport(ConsumptionAverageManagementInputDto inputDto, CancellationToken cancellationToken)
         {
-            int reportCode = 672;
+            int reportCode = 673;
             ReportOutput<ConsumptionAverageManagementHeaderOutputDto, ConsumptionAverageManagementDataOutputDto> calculationDetails = await _consumptionAverageManagerHandler.Handle(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode);
             return Ok(reportId);
