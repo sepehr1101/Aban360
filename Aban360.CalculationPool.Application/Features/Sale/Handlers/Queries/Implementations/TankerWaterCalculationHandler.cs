@@ -46,7 +46,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 //TODO: Save
             }
 
-            return new TankerWaterCalculationOutputDto(abBaha * multiplier, boodjeh, deliveryAmount);
+            return new TankerWaterCalculationOutputDto(0,abBaha * multiplier, boodjeh, deliveryAmount);
         }
 
         private decimal GetVarzaneMultiplier(TankerWaterCalculationInputDto input)
