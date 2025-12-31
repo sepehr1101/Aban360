@@ -227,6 +227,6 @@
         public static string ClosedSummary { get { return $" {Report} فهرست وضعیت بسته"; } }
 
         public static string PaymentInquiry { get { return $" {Report} استعلام پرداختی"; } }
-        public static string CustomerGeneralInfo { get { return $" اطلاعات پایه"; } }
+        public static string CustomerGeneralInfo { get { return $" اطلاعات پایه "; } }
     }
 }

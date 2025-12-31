@@ -8,6 +8,6 @@
         public int FromMalfunctionPeriodCount { get; set; }
         public int ToMalfunctionPeriodCount { get; set; }
         public string BaseDateJalali { get; set; }
-        public ICollection<int>? ZoneIds { get; set; }
+        public ICollection<int> ZoneIds { get; set; }
     }
 }
