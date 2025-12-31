@@ -16,12 +16,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
     {
         public WaterIncomeAndConsumptionSummaryQueryService(IConfiguration configuration)
             : base(configuration)
-        { 
+        {
         }
 
         public async Task<ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionSummaryDataOutputDto>> Get(WaterIncomeAndConsumptionSummaryInputDto input)
         {
+            string reportTitle = ReportLiterals.WaterIncomeAndConsumptionSummary + GetIsZoneOrVillageTitle(input.ZoneIds);
             string waterIncomeAndConsumptionSummarys = GetWaterIncomeAndConsumptionSummaryQuery(input.ZoneIds.HasValue(), input.UsageIds.HasValue(), input.BranchTypeIds.HasValue(), input.EnumInput);
+            Console.Write(waterIncomeAndConsumptionSummarys);
             var @params = new
             {
                 fromDate = input.FromDateJalali,
@@ -42,7 +44,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             IEnumerable<WaterIncomeAndConsumptionSummaryDataOutputDto> waterIncomeAndConsumptionData = await _sqlReportConnection.QueryAsync<WaterIncomeAndConsumptionSummaryDataOutputDto>(waterIncomeAndConsumptionSummarys, @params);
             WaterIncomeAndConsumptionSummaryHeaderOutputDto waterIncomeAndConsumptionHeader = new WaterIncomeAndConsumptionSummaryHeaderOutputDto()
             {
-                Title = ReportLiterals.WaterIncomeAndConsumptionSummary,
+                Title = reportTitle,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = waterIncomeAndConsumptionData.Count(),
                 CustomerCount = waterIncomeAndConsumptionData.Count(),
@@ -55,6 +57,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToConsumption = input.ToConsumption,
 
                 SumBillCount = waterIncomeAndConsumptionData.Sum(w => w.BillCount),
+                SumSewageConsumption = waterIncomeAndConsumptionData.Sum(w => w.SewageConsumption),
                 SumConsumption = waterIncomeAndConsumptionData.Sum(w => w.Consumption),
                 SumConsumptionAverage = waterIncomeAndConsumptionData.Sum(w => w.ConsumptionAverage),
                 SumDuration = waterIncomeAndConsumptionData.Sum(w => w.Duration),
@@ -81,10 +84,25 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
             };
 
-            var result = new ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionSummaryDataOutputDto>(ReportLiterals.WaterIncomeAndConsumptionSummary, waterIncomeAndConsumptionHeader, waterIncomeAndConsumptionData);
+            var result = new ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionSummaryDataOutputDto>(reportTitle, waterIncomeAndConsumptionHeader, waterIncomeAndConsumptionData);
             return result;
         }
 
+        private string GetIsZoneOrVillageTitle(IEnumerable<int> zoneIds)
+        {
+            int villageId = 140000;
+
+            bool allVillages = zoneIds.All(z => z > villageId);
+            bool anyVillage = zoneIds.Any(z => z > villageId);
+
+            if (allVillages)
+                return ReportLiterals.WithVillage;
+
+            if (!anyVillage)
+                return ReportLiterals.WithZone;
+
+            return string.Empty;
+        }
         private string GetWaterIncomeAndConsumptionSummaryQuery(bool hasZone, bool hasUsage, bool hasBranchType, WaterIncomeAndConsumptionSummaryEnum enumState)
         {
             string zoneQuery = hasZone ? "AND b.ZoneId IN @zoneIds" : string.Empty;
@@ -93,60 +111,97 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
             string groupKey = GetEnumQuery(enumState);
 
-            return @$"use CustomerWarehouse
-					Select
-						{groupKey} as GroupKey,
-						Count(1) as BillCount,
-						SUM(b.Consumption) as Consumption,
-						AVG(b.ConsumptionAverage) as ConsumptionAverage,
-						SUM(b.Duration) as Duration,
-						SUM(b.SumItems) as SumItems,
-						SUM(b.CommercialCount+DomesticCount+OtherCount) as BillUnitCounts,
-						SUM(b.Item1) as Item1,
-						SUM(b.Item2) as Item2,
-						SUM(b.Item3) as Item3,
-						SUM(b.Item4) as Item4,
-						SUM(b.Item5) as Item5,
-						SUM(b.Item6) as Item6,
-						SUM(b.Item7) as Item7,
-						SUM(b.Item7) as Item7,
-						SUM(b.Item8) as Item8,
-						SUM(b.Item9) as Item9,
-						SUM(b.Item10) as Item10,
-						SUM(b.Item11) as Item11,
-						SUM(b.Item12) as Item12,
-						SUM(b.Item13) as Item13,
-						SUM(b.Item14) as Item14,
-						SUM(b.Item15) as Item15,
-						SUM(b.Item16) as Item16,
-						SUM(b.Item17) as Item17,
-						SUM(b.Item18) as Item18 
-					From [CustomerWarehouse].dbo.Bills b
-					Where 
-						(b.RegisterDay BETWEEN @fromDate AND @toDate) AND
-						(@fromConsumption IS NULL OR
-						@toConsumption IS NULL OR
-						b.Consumption BETWEEN @fromConsumption AND @toConsumption) AND
-						(@fromAmount IS NULL OR
-						@toAmount IS NULL OR
-						b.SumItems BETWEEN @fromAmount AND @toAmount) AND
-						b.TypeCode IN @typeCodes  
-						{usageQuery}
-						{zoneQuery}
-                        {branchTypeQuery}
-					Group BY {groupKey}";
+            return @$";With cte as(
+                    	Select
+                    		b.ZoneTitle,
+                    		TRIM(b.BillId) as BillId,
+                    		t41.C1 as UsageTitle, 
+                    		b.ReadingNumber,
+                    		(b.CommercialCount+b.DomesticCount+b.OtherCount) as BillUnitCounts,
+                    		Case When b.UsageId IN (1,3) AND b.BranchTypeId NOT IN (4) Then b.Consumption*0.7 Else b.Consumption End SewageConsumption,
+                    		b.Consumption,
+                    		b.ConsumptionAverage,
+                    		b.WaterDiameterTitle as MeterDiameterTitle,
+                    		b.BranchType AS BranchType,	
+                            b.RegisterDay,
+                    		b.Duration,
+                    		b.SumItems,
+                    		b.Item1 ,
+                    		b.Item2,
+                    		b.Item3,
+                    		b.Item4,
+                    		b.Item5,
+                    		b.Item6,
+                    		b.Item7,
+                    		b.Item8,
+                    		b.Item9,
+                    		b.Item10,
+                    		b.Item11,
+                    		b.Item12,
+                    		b.Item13,
+                    		b.Item14,
+                    		b.Item15,
+                    		b.Item16,
+                    		b.Item17,
+                    		b.Item18
+                    From [CustomerWarehouse].dbo.Bills b
+                    Join [Db70].dbo.T41 t41
+                    	ON b.UsageId=t41.C0
+                    Where 
+                    		(b.RegisterDay BETWEEN @fromDate AND @toDate) AND
+                    		(@fromConsumption IS NULL OR
+                    		@toConsumption IS NULL OR
+                    		b.Consumption BETWEEn @fromConsumption AND @toConsumption) AND
+                    		(@fromAmount IS NULL OR
+                    		@toAmount IS NULL OR
+                    		b.SumItems BETWEEN @fromAmount AND @toAmount) AND
+                    		b.TypeCode IN @typeCodes
+                    		{usageQuery}
+                    		{zoneQuery}
+                    		{branchTypeQuery}
+                    )
+                    Select
+                    	{groupKey} as GroupKey,
+                    	Count(1) as BillCount,
+                    	SUM(SewageConsumption) as SewageConsumption,
+                    	SUM(Consumption) as Consumption,
+                    	AVG(ConsumptionAverage) as ConsumptionAverage,
+                    	SUM(Duration) as Duration,
+                    	SUM(SumItems) as SumItems,
+                    	SUM(BillUnitCounts) as BillUnitCounts,
+                    	SUM(Item1) as Item1,
+                    	SUM(Item2) as Item2,
+                    	SUM(Item3) as Item3,
+                    	SUM(Item4) as Item4,
+                    	SUM(Item5) as Item5,
+                    	SUM(Item6) as Item6,
+                    	SUM(Item7) as Item7,
+                    	SUM(Item7) as Item7,
+                    	SUM(Item8) as Item8,
+                    	SUM(Item9) as Item9,
+                    	SUM(Item10) as Item10,
+                    	SUM(Item11) as Item11,
+                    	SUM(Item12) as Item12,
+                    	SUM(Item13) as Item13,
+                    	SUM(Item14) as Item14,
+                    	SUM(Item15) as Item15,
+                    	SUM(Item16) as Item16,
+                    	SUM(Item17) as Item17,
+                    	SUM(Item18) as Item18 
+                    From cte
+                    Group By {groupKey}";
         }
 
         private string GetEnumQuery(WaterIncomeAndConsumptionSummaryEnum enumState)
         {
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.AverageConsumption)
-                return "Ceiling(b.ConsumptionAverage)";
+                return "Ceiling(ConsumptionAverage)";
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.RegisterDay)
-                return "b.RegisterDay";
+                return "RegisterDay";
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.Zone)
-                return "b.ZoneTitle";
+                return "ZoneTitle";
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.Usage)
-                return "b.UsageTitle";
+                return "UsageTitle";
 
             return "ZoneTitle";
         }

@@ -6,6 +6,7 @@
         public string BillId { get; set; }
         public string UsageTitle { get; set; }
         public string ReadingNumber { get; set; }
+        public float SewageConsumption { get; set; }
         public int Consumption { get; set; }
         public float ConsumptionAverage { get; set; }
         public string MeterDiameterTitle { get; set; }
