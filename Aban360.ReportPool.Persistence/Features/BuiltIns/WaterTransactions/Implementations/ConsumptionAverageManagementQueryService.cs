@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<ConsumptionAverageManagementHeaderOutputDto, ConsumptionAverageManagementDataOutputDto>> Get(ConsumptionAverageManagementInputDto input)
         {
-            string reportTitle = string.Concat(ReportLiterals.ConsumptionManagerDetail);
+            string reportTitle = ReportLiterals.ConsumptionManagerDetail + ReportLiterals.ByBill;
             string query = GetQuery();
             IEnumerable<ConsumptionAverageManagementDataOutputDto> data = await _sqlReportConnection.QueryAsync<ConsumptionAverageManagementDataOutputDto>(query, input, null, 600);
             ConsumptionAverageManagementHeaderOutputDto header = new ConsumptionAverageManagementHeaderOutputDto()

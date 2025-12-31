@@ -20,6 +20,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<WaterIncomeAndConsumptionDetailHeaderOutputDto, WaterIncomeAndConsumptionDetailDataOutputDto>> Get(WaterIncomeAndConsumptionDetailInputDto input)
         {
+            string reportTitle = ReportLiterals.WaterIncomeAndConsumptionDetail + GetIsZoneOrVillageTitle(input.ZoneIds);
             string waterIncomeAndConsumptionDetails = GetWaterIncomeAndConsumptionDetailQuery(input.ZoneIds.HasValue(), input.UsageIds.HasValue(), input.BranchTypeIds.HasValue());
             var @params = new
             {
@@ -41,8 +42,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             IEnumerable<WaterIncomeAndConsumptionDetailDataOutputDto> waterIncomeAndConsumptionData = await _sqlReportConnection.QueryAsync<WaterIncomeAndConsumptionDetailDataOutputDto>(waterIncomeAndConsumptionDetails, @params);
             WaterIncomeAndConsumptionDetailHeaderOutputDto waterIncomeAndConsumptionHeader = new WaterIncomeAndConsumptionDetailHeaderOutputDto()
             {
-                Title = ReportLiterals.WaterIncomeAndConsumptionDetail,
+                Title = reportTitle,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                SumBillCount = waterIncomeAndConsumptionData.Count(),
                 RecordCount = waterIncomeAndConsumptionData.Count(),
                 CustomerCount = waterIncomeAndConsumptionData.GroupBy(r => r.BillId).Distinct().Count(),
 
@@ -53,6 +55,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 FromConsumption = input.FromConsumption,
                 ToConsumption = input.ToConsumption,
 
+                SumSewageConsumption = waterIncomeAndConsumptionData.Sum(w => w.SewageConsumption),
                 SumConsumption = waterIncomeAndConsumptionData.Sum(w => w.Consumption),
                 SumConsumptionAverage = waterIncomeAndConsumptionData.Sum(w => w.ConsumptionAverage),
                 SumDuration = waterIncomeAndConsumptionData.Sum(w => w.Duration),
@@ -78,10 +81,24 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 SumItem18 = waterIncomeAndConsumptionData.Sum(w => w.Item18),
             };
 
-            var result = new ReportOutput<WaterIncomeAndConsumptionDetailHeaderOutputDto, WaterIncomeAndConsumptionDetailDataOutputDto>(ReportLiterals.WaterIncomeAndConsumptionDetail, waterIncomeAndConsumptionHeader, waterIncomeAndConsumptionData);
+            var result = new ReportOutput<WaterIncomeAndConsumptionDetailHeaderOutputDto, WaterIncomeAndConsumptionDetailDataOutputDto>(reportTitle, waterIncomeAndConsumptionHeader, waterIncomeAndConsumptionData);
             return result;
         }
+        private string GetIsZoneOrVillageTitle(IEnumerable<int> zoneIds)
+        {
+            int villageId = 140000;
 
+            bool allVillages = zoneIds.All(z => z > villageId);
+            bool anyVillage = zoneIds.Any(z => z > villageId);
+
+            if (allVillages)
+                return ReportLiterals.WithVillage;
+
+            if (!anyVillage)
+                return ReportLiterals.WithZone;
+
+            return string.Empty;
+        }
         private string GetWaterIncomeAndConsumptionDetailQuery(bool hasZone, bool hasUsage, bool hasBranchType)
         {
             string zoneQuery = hasZone ? "AND b.ZoneId IN @zoneIds" : string.Empty;
@@ -94,6 +111,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						TRIM(b.BillId) as BillId,
 						b.UsageTitle,
 						b.ReadingNumber,
+						Case When b.UsageId IN (1,3) AND b.BranchTypeId NOT IN (4) Then b.Consumption*0.7 Else b.Consumption End SewageConsumption,
 						b.Consumption,
 						b.ConsumptionAverage,
 						b.WaterDiameterTitle as MeterDiameterTitle,
@@ -106,7 +124,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						b.Item4,
 						b.Item5,
 						b.Item6,
-						b.Item7,
 						b.Item7,
 						b.Item8,
 						b.Item9,

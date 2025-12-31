@@ -15,6 +15,7 @@
         public int? ToConsumption{ get; set; }
 
         public int SumBillCount { get; set; }
+        public float SumSewageConsumption { get; set; }
         public int SumConsumption { get; set; }
         public float SumConsumptionAverage { get; set; }
         public int SumBillUnitCounts { get; set; }

@@ -7,6 +7,7 @@ using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Domain.Features.Transactions;
 using Dapper;
+using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 
@@ -31,6 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 
             CustomerGeneralInfoDataDto data_v1 = GetData(customerInfo);
             CustomerGeneralInfoHeaderDto header = GetHeader(customerInfo);
+            header.ReportDateJalali = DateTime.Now.ToShortPersianDateString();
 
             CustomerGeneralInfoDataDto data_v2 = await GetBillInfo(data_v1, input, dbName);
             CustomerGeneralInfoDataDto data_v3 = await GetPaymentInfo(data_v2, input, dbName);
