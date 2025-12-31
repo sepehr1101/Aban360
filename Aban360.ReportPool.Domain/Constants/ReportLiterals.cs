@@ -18,6 +18,8 @@
         public static string ByBill { get { return " بر اساس قبض "; } }
         public static string ByUsageAndZoneAndDiameter { get { return " بر اساس کاربری و ناحیه و قطر انشعاب "; } }
         public static string ByChangeCause { get { return "  بر اساس علت تعویض "; } }
+        public static string ByChangeDate { get { return "  بر اساس "; } }
+        public static string ByRegisterDate { get { return " تاریخ ثبت "; } }
         public static string Due { get { return "جاری"; } }
         public static string Overdue { get { return "معوقه"; } }
         public static string Olgoo { get { return "الگو"; } }
@@ -227,6 +229,9 @@
         public static string ClosedSummary { get { return $" {Report} فهرست وضعیت بسته"; } }
 
         public static string PaymentInquiry { get { return $" {Report} استعلام پرداختی"; } }
-        public static string CustomerGeneralInfo { get { return $" اطلاعات پایه "; } }
+        public static string CustomerGeneralInfo { get { return " اطلاعات پایه "; } }
+
+        public static string MeterDuplicateChangeDetail { get { return " جزئیات تعویض تکراری "; } }
+        public static string MeterDuplicateChangeSummary { get { return " خلاصه تعویض تکراری "; } }
     }
 }
