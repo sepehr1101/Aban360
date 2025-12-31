@@ -46,13 +46,12 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging
 
             string TagGroupQueryString = GetTagGroupSummaryQuery(input.TagIds.Any() == true, groupedParam);
             IEnumerable<TagsReportSummaryDataOutputDto> tagGroupData = await _sqlReportConnection.QueryAsync<TagsReportSummaryDataOutputDto>(TagGroupQueryString, new { TagGroupIds = input.TagIds });
-            TagsHeaderOutputDto tagGroupHeader = new TagsHeaderOutputDto()
-            {
-                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = (tagGroupData is not null && tagGroupData.Any()) ? tagGroupData.Count() : 0,
-                CustomerCount = tagGroupData.Sum(r => r.CustomerCount),
-                Count = tagGroupData.Sum(r => r.Count),
-            };
+			TagsHeaderOutputDto tagGroupHeader = new TagsHeaderOutputDto()
+			{
+				ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+				RecordCount = (tagGroupData is not null && tagGroupData.Any()) ? tagGroupData.Count() : 0,
+				CustomerCount = tagGroupData.Sum(r => r.CustomerCount),
+			};
 
             ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto> result = new ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto>(ReportLiterals.TagGroupSummary + "-" + reportTitle, tagGroupHeader, tagGroupData);
             return result;
@@ -77,7 +76,7 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging
 						c.CustomerNumber,
 						TRIM(c.FirstName) as FirstName,
 						TRIM(c.SureName) as Surname,
-						TRIM(c.FirstName)+TRIM(c.SureName) as FullName,
+						TRIM(c.FirstName)+' '+TRIM(c.SureName) as FullName,
 						TRIM(c.FatherName) as FatherName,
 						TRIM(c.NationalId) as NationalCode,
 						TRIM(c.PostalCode) as PostalCode,
@@ -118,7 +117,6 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging
 					Select
 						tg.Title TagsTitle,
 						c.{groupedParam} as ItemTitle,
-						COUNT(c.ZoneTitle) as Count,
 						COUNT(Distinct c.BillId) as CustomerCount
 					From [CustomerWarehouse].dbo.TagGroups tg
 					Join [CustomerWarehouse].dbo.Tags t
