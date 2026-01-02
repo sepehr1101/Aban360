@@ -16,6 +16,7 @@
         SewageInstallationDateWithoutSiphon = 11,
         UsageIdEqual0 = 12,
         InvalidHousholdDate= 13,
-        InvalidEmptyUnit=14
+        InvalidEmptyUnit=14,
+        NoReadingNumber=15
     }
 }

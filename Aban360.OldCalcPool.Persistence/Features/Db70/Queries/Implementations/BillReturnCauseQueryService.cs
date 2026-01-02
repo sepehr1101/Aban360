@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Db.Dapper;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Dapper;
 using Aban360.OldCalcPool.Domain.Features.Db70.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Db70.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Contracts;
@@ -29,6 +30,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
 
             return result;
         }
+        public async Task<IEnumerable<NumericDictionary>> GetByDictionary()
+        {
+            string query = GetAllQueryByDictionary();
+            IEnumerable<NumericDictionary> result = await _sqlReportConnection.QueryAsync<NumericDictionary>(query, null);
+
+            return result;
+        }
 
         private string GetSingleQuery()
         {
@@ -41,6 +49,14 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
         private string GetAllQuery()
         {
             return @"Select *
+                    From [Db70].dbo.BillReturnCause
+                    Where RemoveDateTime IS NULL";
+        }
+        private string GetAllQueryByDictionary()
+        {
+            return @"Select 
+                        Code Id,
+                         Title
                     From [Db70].dbo.BillReturnCause
                     Where RemoveDateTime IS NULL";
         }

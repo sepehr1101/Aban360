@@ -60,13 +60,13 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
                 .Select(s => new KeyValueDto(s.Key, s.Average(a => a.ConsumptionAverage)))
                 .ToList();
 
-            int lessThanContOrOlgo = management.Count(m => m.ConsumptionAverage <= m.ContracutalOrOlgo);
-            int between1_2ContOrOlgo = management.Count(m => m.ConsumptionAverage > m.ContracutalOrOlgo && m.ConsumptionAverage <= m.ContracutalOrOlgo * 2);
-            int between2_3ContOrOlgo = management.Count(m => m.ConsumptionAverage > m.ContracutalOrOlgo * 2 && m.ConsumptionAverage <= m.ContracutalOrOlgo * 3);
-            int moreThanContOrOlgo = management.Count(m => m.ConsumptionAverage > m.ContracutalOrOlgo * 3);
-            QuarterDto consumptionQuarter = new(lessThanContOrOlgo, between1_2ContOrOlgo, between2_3ContOrOlgo, moreThanContOrOlgo);
-
-            ReportOutput<QuarterDto, KeyValueDto> result = new(ReportLiterals.ConsumptionManagerSummary, consumptionQuarter, usageGroupConsumptionAverage);
+            string reportTitle = ReportLiterals.ConsumptionManagerSummary;
+            int lessThanContOrOlgo = management.Count(m => m.ConsumptionAverage <= m.ContractualOrOlgo);
+            int between1_2ContOrOlgo = management.Count(m => m.ConsumptionAverage > m.ContractualOrOlgo && m.ConsumptionAverage <= m.ContractualOrOlgo * 2);
+            int between2_3ContOrOlgo = management.Count(m => m.ConsumptionAverage > m.ContractualOrOlgo * 2 && m.ConsumptionAverage <= m.ContractualOrOlgo * 3);
+            int moreThanContOrOlgo = management.Count(m => m.ConsumptionAverage > m.ContractualOrOlgo * 3);
+            QuarterDto consumptionQuarter = new(lessThanContOrOlgo, between1_2ContOrOlgo, between2_3ContOrOlgo, moreThanContOrOlgo, reportTitle);
+            ReportOutput<QuarterDto, KeyValueDto> result = new(reportTitle, consumptionQuarter, usageGroupConsumptionAverage);
             return result;
         }
     }
