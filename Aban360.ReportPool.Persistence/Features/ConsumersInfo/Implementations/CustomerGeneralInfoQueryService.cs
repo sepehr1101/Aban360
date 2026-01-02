@@ -10,6 +10,7 @@ using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 using System.Net;
+using System.Reflection.PortableExecutable;
 
 namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 {
@@ -32,7 +33,6 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 
             CustomerGeneralInfoDataDto data_v1 = GetData(customerInfo);
             CustomerGeneralInfoHeaderDto header = GetHeader(customerInfo);
-            header.ReportDateJalali = DateTime.Now.ToShortPersianDateString();
 
             CustomerGeneralInfoDataDto data_v2 = await GetBillInfo(data_v1, input, dbName);
             CustomerGeneralInfoDataDto data_v3 = await GetPaymentInfo(data_v2, input, dbName);
@@ -100,7 +100,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
                 MeterChangeDateJalali = input.MeterChangeDateJalali,
                 LatestMeterReading = input.LatestMeterReading,
                 UsageStatusTitle = input.UsageStatusTitle,
-                CommonSiphon = input.CommonSiphon
+                CommonSiphon = input.CommonSiphon,
+
             };
         }
         private CustomerGeneralInfoHeaderDto GetHeader(CustomerGeneralInfoDto input)
@@ -124,18 +125,19 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
                 WaterInstallationDateJalali = input.WaterInstallationDateJalali,
                 SewageRequestDateJalali = input.SewageRequestDateJalali,
                 SewageInstallationDateJalali = input.SewageInstallationDateJalali,
-
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                Title= ReportLiterals.CustomerGeneralInfo
             };
         }
 
         private string GetPersonalQuery(string dbName)
         {
             return @$"Select 
-						m.name FirstName,
-						m.family Surname,
-						(m.name+' '+m.family) as FullName,
-						m.MELI_COD as NationalCode,
-						m.MOBILE as MobileNumber,
+						TRIM(m.name) FirstName,
+						TRIM(m.family) Surname,
+						(TRIM(m.name)+' '+TRIM(m.family)) as FullName,
+						TRIM(m.MELI_COD) as NationalCode,
+						TRIM(m.MOBILE) as MobileNumber,
 						m.eshtrak as ReadingNumber,
 						m.bill_id as BillId,
 						m.cod_enshab as UsageTitle,
@@ -163,13 +165,13 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 						t46.C2 as RegionTitle,
 						t51.C2 as ZoneTitle,
 						m.POST_COD as PostalCode,
-						m.address as Address,
+						TRIM(m.address) as Address,
 
 						m.tedad_mas+tedad_tej+tedad_vahd as TotalUnit,
 						m.Khali_s as EmptyUnit,
 						m.ted_khane as HouseholdNumber,
 
-						m.serial_co as BodySerial,
+						TRIM(m.serial_co) as BodySerial,
 					    m.sif_mosh_1 as CommonSiphon,
 						m.bed_bes as WaterDebtAmount
 					

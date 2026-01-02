@@ -21,15 +21,11 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Validations
               .NotNull().WithMessage(ExceptionLiterals.NotNull)
               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(i => i.RegisterDateJalali)
-              .NotNull().WithMessage(ExceptionLiterals.NotNull)
-              .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
-
             RuleFor(i => i.Amount)
               .NotNull().WithMessage(ExceptionLiterals.NotNull)
               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(i => i.CheckOrMinutesNumber)
+            RuleFor(i => i.ChequeOrMinutesNumber)
               .NotNull().WithMessage(ExceptionLiterals.NotNull)
               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 

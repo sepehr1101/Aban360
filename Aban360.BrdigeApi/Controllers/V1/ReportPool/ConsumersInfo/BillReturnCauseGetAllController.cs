@@ -1,7 +1,7 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Contracts;
-using Aban360.OldCalcPool.Domain.Features.Db70.Dto.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
@@ -18,10 +18,10 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
 
         [HttpGet]
         [Route("return-cause")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<BillReturnCauseGetDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<NumericDictionary>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            IEnumerable<BillReturnCauseGetDto> result = await _billReturnCauseHandler.Handle(cancellationToken);
+            IEnumerable<NumericDictionary> result = await _billReturnCauseHandler.HandleByDictionary(cancellationToken);
             return Ok(result);
         }
     }

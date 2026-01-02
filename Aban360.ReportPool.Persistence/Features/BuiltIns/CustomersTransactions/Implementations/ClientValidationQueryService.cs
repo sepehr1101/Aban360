@@ -41,7 +41,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         }
         private string GetClientValidationQuery(string condition)
         {
-            return @$"Select  
+            return @$"Select 
 						c.ZoneTitle,
 						c.CustomerNumber,
 						c.ReadingNumber,
@@ -73,7 +73,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 						@toReadingNumber IS NULL OR
 						c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
 						c.ZoneId IN @zoneIds AND
-						c.ToDayJalali IS NULL 
+						c.ToDayJalali IS NULL AND
+                        c.DeletionStateId NOT IN (1,2)
 					Order By
 						c.ZoneTitle,
 						c.CustomerNumber";
@@ -98,6 +99,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                { 12 , (@" (c.UsageId = 0) ", "کد کاربری صفر") },
                { 13 , (@" (c.FamilyCount IS NOT NULL AND c.FamilyCount > 0 AND LEN(TRIM(c.HouseholdDateJalali)) < 8) ", "تاریخ خالی از سکنه نامعتبر") },
                { 14 , (@" (c.EmptyCount IS NOT NULL AND c.EmptyCount > 0 AND c.UsageId NOT IN (1, 3)) ", "مغایرت خالی از سکنه با کاربری ") },
+               { 15 , (@" (LEN(TRIM(c.ReadingNumber))<5) ", " بدون اشتراک ")}
             };
         }
     }

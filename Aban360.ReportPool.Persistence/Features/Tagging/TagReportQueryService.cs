@@ -32,7 +32,6 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (tagData is not null && tagData.Any()) ? tagData.Count() : 0,
                 CustomerCount = tagData.Sum(r => r.CustomerCount),
-                Count = tagData.Sum(r => r.Count),
                 Title = reportTitle
             };
 
