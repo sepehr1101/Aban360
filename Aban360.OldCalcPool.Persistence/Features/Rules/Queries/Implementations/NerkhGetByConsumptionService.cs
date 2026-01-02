@@ -49,7 +49,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                 usageId = input.UsageId,
                 previousDateJalali = input.PreviousDateJalali,
                 input.CurrentDateJalali,
-                averageConsumption = input.AverageConsumption,
+                averageConsumption = (double)input.AverageConsumption,
                 olgoo,
             };
             var @params1403 = new
@@ -57,7 +57,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                 usageId = input.UsageId,
                 previousDateJalali = input.PreviousDateJalali,
                 input.CurrentDateJalali,
-                averageConsumption = input.AverageConsumption,
+                averageConsumption = (double)input.AverageConsumption,
                 olgoo=14,
             };
             IEnumerable<NerkhGetDto> nerkh = await _sqlReportConnection.QueryAsync<NerkhGetDto>(nerkhGetQueryString, @params);

@@ -192,12 +192,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         }
 
         private NerkhByConsumptionInputDto CreateNerkhInput(MeterInfoOutputDto meterInfo, CustomerInfoOutputDto customerInfo, ConsumptionInfo consumptionInfo)
-        {
-            //int constructionBranchType = 4;
-            //int azadUsageId = 39;
+        {           
             return new NerkhByConsumptionInputDto(
                 _zoneId: customerInfo.ZoneId,
-                _usageId: customerInfo.UsageId,//customerInfo.BranchType == constructionBranchType ? azadUsageId : customerInfo.UsageId,
+                _usageId: customerInfo.UsageId,
                 _previousDate: meterInfo.PreviousDateJalali,
                 _currentDate: meterInfo.CurrentDateJalali,
                 _average: consumptionInfo.MonthlyAverageConsumption);
@@ -301,7 +299,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 javaniDiscount: javaniDiscount.Summation,
                 boodjeDiscount: boodjeDiscount.Summation,
                 hotSeasonFazelabDiscount: hotSeasonFazelabDiscount.Summation,
-                multiplier: 0/*TODO*/);
+                multiplier: 0,/*TODO*/
+                fazelab:fazelab,
+                hotSeasonAb: hotSeasonAbBaha,
+                hotSeasonFazelab: hotSeasonFazelab,
+                boodje: boodje);
         }
 
         private int GetOlgoo(string nerkhDate2, int olgo)

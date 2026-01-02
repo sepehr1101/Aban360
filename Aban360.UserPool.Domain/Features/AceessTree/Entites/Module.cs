@@ -20,6 +20,7 @@ public class Module
     public string? ClientRoute { get; set; }
 
     public bool IsActive { get; set; }
+    public string? Description { get; set; }
 
     public virtual App App { get; set; } = null!;
 
