@@ -180,7 +180,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 double allowedDiscount = calculateAbBahaOutputDto.Allowed /* * villageMultiplier.Item1*/ ;                                 
                 return new TariffItemResult(allowedDiscount);
             }
-            if (IsMullah(customerInfo.BranchType) && customerInfo.UnitAll == 1)
+            if (IsMullah(customerInfo.BranchType) && isVillageCalculation && customerInfo.UnitAll == 1)
             {                
                 double villageMultiplier = GetVillageMultiplier(nerkh, customerInfo, consumptionPartialInfo, monthlyConsumption, olgoo);
                 double allowedDiscount = (calculateAbBahaOutputDto.Allowed / villageMultiplier) * _mullahMultiplier;
