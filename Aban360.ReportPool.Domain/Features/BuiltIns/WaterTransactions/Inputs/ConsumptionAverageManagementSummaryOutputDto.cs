@@ -19,5 +19,7 @@
         public float ConsumptionAverage { get; set; }
         public int ContractualOrOlgo { get; set; }
         public string RegisterDateJalali { get; set; }
+        public int CustomerNumber { get; set; }
+        public string BillId { get; set; }
     }
 }

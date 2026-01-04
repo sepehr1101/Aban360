@@ -24,7 +24,7 @@
         public int DomesticUnit { get; set; }
         public int OtherUnit { get; set; }
 
-        public float  ConsumptionAverage { get; set; }
-        public float  Consumption { get; set; }
+        public float ConsumptionAverage { get; set; }
+        public float Consumption { get; set; }
     }
 }
