@@ -16,7 +16,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     {
         const int monthDays = 30;
         const string date_begin = "1330/01/01";
-        const string date1400_01_01 = "1400/01/01";
+        //const string date1400_01_01 = "1400/01/01";
         const string date1403_12_01 = "1403/12/01";
         const string date1403_12_30 = "1403/12/30";
         const string date1404_02_14 = "1404/02/14";
@@ -117,6 +117,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
               date1403_12_01.MoreOrEq(consumptionPartialInfo.EndDateJalali) &&
               consumptionPartialInfo.DisallowedConsumtion<=0)
             {
+                //طبق صحبت تلفنی با سرکار خانم قرمز مورخ 14 دی 1404 و با تایید جناب اعلایی تغییر کرد
                 return new TariffItemResult(abonAllowed);
             }
 
@@ -129,7 +130,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             }
 
             if (IsUnderSocialService(branchTypeId) &&
-                IsDomesticWithoutUnspecified(customerInfo.UsageId))
+                IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
+                consumptionPartialInfo.EndDateJalali.More(date1403_12_01))
             {
                 return new TariffItemResult(abonmanAmount);
             }
