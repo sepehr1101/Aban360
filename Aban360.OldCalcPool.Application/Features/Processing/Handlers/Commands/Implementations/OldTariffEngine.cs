@@ -192,12 +192,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         }
 
         private NerkhByConsumptionInputDto CreateNerkhInput(MeterInfoOutputDto meterInfo, CustomerInfoOutputDto customerInfo, ConsumptionInfo consumptionInfo)
-        {
-            //int constructionBranchType = 4;
-            //int azadUsageId = 39;
+        {           
             return new NerkhByConsumptionInputDto(
                 _zoneId: customerInfo.ZoneId,
-                _usageId: customerInfo.UsageId,//customerInfo.BranchType == constructionBranchType ? azadUsageId : customerInfo.UsageId,
+                _usageId: customerInfo.UsageId,
                 _previousDate: meterInfo.PreviousDateJalali,
                 _currentDate: meterInfo.CurrentDateJalali,
                 _average: consumptionInfo.MonthlyAverageConsumption);
@@ -245,8 +243,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             TariffItemResult sumAbonmanAbBaha = _abonmanCalculator.CalculateAb(customerInfo, meterInfo, currentDateJalali, consumptionPartialInfo);
             TariffItemResult sumAbonmanFazelab = _fazelabCalculator.Calculate(meterInfo.PreviousDateJalali, currentDateJalali, consumptionInfo.Duration, customerInfo, sumAbonmanAbBaha.Summation, currentDateJalali, true, consumptionPartialInfo, abCalcResult: sumAbonmanAbBaha);
-            TariffItemResult sumAbonmanAbDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, customerInfo.BranchType, sumAbonmanAbBaha.Summation, sumAbBahaDiscount, customerInfo.IsSpecial, consumptionInfo, customerInfo, consumptionPartialInfo, sumAbonmanAbBaha.Allowed);
-            TariffItemResult sumAbonmanFazelabDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, customerInfo.BranchType, sumAbonmanFazelab.Summation, sumFazelabDiscount, customerInfo.IsSpecial, consumptionInfo, customerInfo, consumptionPartialInfo, sumAbonmanFazelab.Allowed);
+            TariffItemResult sumAbonmanAbDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, customerInfo.BranchType, sumAbonmanAbBaha.Summation, sumAbBahaDiscount, customerInfo.IsSpecial, consumptionInfo, customerInfo, consumptionPartialInfo, sumAbonmanAbBaha.Allowed, sumAbonmanAbBaha);
+            TariffItemResult sumAbonmanFazelabDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, customerInfo.BranchType, sumAbonmanFazelab.Summation, sumFazelabDiscount, customerInfo.IsSpecial, consumptionInfo, customerInfo, consumptionPartialInfo, sumAbonmanFazelab.Allowed, sumAbonmanFazelab);
 
             double AbBahaResult = sumAbBaha + sumHotSeasonAbBaha + sumAbonmanAbBaha.Summation;
             double sumBoodje = sumBoodjePart1 + sumBoodjePart2;
@@ -301,7 +299,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 javaniDiscount: javaniDiscount.Summation,
                 boodjeDiscount: boodjeDiscount.Summation,
                 hotSeasonFazelabDiscount: hotSeasonFazelabDiscount.Summation,
-                multiplier: 0/*TODO*/);
+                multiplier: 0,/*TODO*/
+                fazelab:fazelab,
+                hotSeasonAb: hotSeasonAbBaha,
+                hotSeasonFazelab: hotSeasonFazelab,
+                boodje: boodje);
         }
 
         private int GetOlgoo(string nerkhDate2, int olgo)

@@ -25,9 +25,8 @@ namespace Aban360.UserPool.Application.Features.AccessTree.Handlers.Commands.Cre
         public async Task Handle(SubModuleCreateDto createDto, CancellationToken cancellationToken)
         {
             SubModule subModule = _mapper.Map<SubModule>(createDto);
+            subModule.IsActive = true;
             await _subModuleCommandService.Add(subModule);
         }
     }
-
-
 }

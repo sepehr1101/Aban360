@@ -8,6 +8,5 @@
         public bool InMenu { get; set; }
         public int LogicalOrder { get; set; }
         public string? AuthValue { get; set; }
-        public bool IsActive { get; set; }
     }
 }

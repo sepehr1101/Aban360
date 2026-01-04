@@ -9,7 +9,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     internal interface IAbonmanCalculator
     {
         TariffItemResult CalculateAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali, ConsumptionPartialInfo consumptionPartialInfo);
-        TariffItemResult CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, double abonAllowed);
+        TariffItemResult CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, double abonAllowed, TariffItemResult abonmanResult);
     }
 
     internal sealed class AbonmanCalculator : IAbonmanCalculator
@@ -97,7 +97,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             return new TariffItemResult(consumptionPartialInfo.AllowedRatio * abonAbAmount, consumptionPartialInfo.DisallwedRatio * abonAbAmount);
         }
 
-        public TariffItemResult CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, double abonAllowed)
+        public TariffItemResult CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, double abonAllowed, TariffItemResult abonmanResult)
         {
             if (IsSpecialEducation(usageId, isSpecial))
             {
@@ -132,6 +132,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 IsDomesticWithoutUnspecified(customerInfo.UsageId))
             {
                 return new TariffItemResult(abonmanAmount);
+            }
+            if (IsMullah(customerInfo.BranchType) && abonmanResult.Disallowed > 0)
+            {
+                return new TariffItemResult();
             }
 
             if (IsReligiousWithCharity(usageId))

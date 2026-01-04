@@ -142,4 +142,21 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             return remained <= 1 ? 0 : remained;
         }
     }
+
+    public record AbBahaTariffItems
+    {
+        public TariffItemResult Duration { get; set; } = default!;
+        public TariffItemResult Consumption { get; set; }= default!;
+        public TariffItemResult MonthlyConsumption { get; set; }= default!;
+        public TariffItemResult AbBaha { get; set; }= default!;
+        public TariffItemResult Fazelab { get; set; }= default!;
+        public TariffItemResult AbonmanAb { get; set; }= default!;
+        public TariffItemResult AbonmanFazelab { get; set; }= default!;
+        public TariffItemResult Boodje { get; set; }= default!;
+        public TariffItemResult HotSeasonAb { get; set; }= default!;
+        public TariffItemResult HotSeasonFazelab { get; set; }= default!;
+        public TariffItemResult Javani { get; set; }= default!;
+        public TariffItemResult Avarez { get; set; } = default!;
+        public TariffItemResult Maliat { get; set; } = default!;
+    }
 }

@@ -89,6 +89,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return new TariffItemResult();
             }
+
+            if (IsMullah(customerInfo.BranchType))
+            {
+                return new TariffItemResult();
+            }
             if (calcResult.Summation - amountDiscount < 2)
             {
                 return new TariffItemResult(hotSeasonInfo.Summation);
@@ -108,21 +113,25 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         }
 
         #region private methods
-        private TariffItemResult GetDurationAndAmount(string date1, string date2, int duration, CustomerInfoOutputDto customerInfo, double baseAmount, TariffItemResult fazelabCalcResult, bool aboveZero=true, double fazelabMultiplier=1)
+        private TariffItemResult GetDurationAndAmount(string date1, string date2, int duration, CustomerInfoOutputDto customerInfo, double baseAmount, TariffItemResult fazelabCalcResult, bool aboveZero = true, double fazelabMultiplier = 1)
         {
             string hotSeasonStart = GetHotSeasonStart(date2);
             string hotSeasonEnd = GetHotSeasonEnd(date2);
             int hotSeasonDuration = PartTime(hotSeasonStart, hotSeasonEnd, date1, date2, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-            double amount1 = hotSeasonDuration > 0 ? (long)((hotSeasonDuration * (fazelabCalcResult.Allowed > 0 && aboveZero ? fazelabCalcResult.Allowed: baseAmount) / duration) * _hotSeasonRate) : 0;
+            double amount1 = hotSeasonDuration > 0 ? (long)((hotSeasonDuration * (fazelabCalcResult.Allowed > 0 && aboveZero ? fazelabCalcResult.Allowed : baseAmount) / duration) * _hotSeasonRate) : 0;
             //calcResult.Disallowed> 0 بابت یک باگ اضافه شده که بعدا باید اصولی تر رفع شود: در صورتی که مبلغ زیر الگو یا ظرفیت صفر باشد اما مبلغ بالای ظرفیت عدد داشته باشد در مبلغ1 یکبار محاسبه فصل گرم اتفاق می افتد
-            double amount2 = hotSeasonDuration > 0 ? (long) ((hotSeasonDuration * (fazelabCalcResult.Allowed > 0 && fazelabCalcResult.Disallowed> 0 && aboveZero ? fazelabCalcResult.Disallowed : 0) / duration) * _hotSeasonRate) : 0;            
+            double amount2 = hotSeasonDuration > 0 ? (long)((hotSeasonDuration * (fazelabCalcResult.Allowed > 0 && fazelabCalcResult.Disallowed > 0 && aboveZero ? fazelabCalcResult.Disallowed : 0) / duration) * _hotSeasonRate) : 0;
 
-            if(IsUnderSocialService(customerInfo.BranchType) && 
-                IsDomesticWithoutUnspecified(customerInfo.UsageId))
+            if (IsUnderSocialService(customerInfo.BranchType) &&
+               IsDomesticWithoutUnspecified(customerInfo.UsageId))
             {
                 return new TariffItemResult(0, amount2 * fazelabMultiplier, hotSeasonDuration);
             }
-            return new TariffItemResult(amount1*fazelabMultiplier, amount2*fazelabMultiplier, hotSeasonDuration);
+            if (IsMullah(customerInfo.BranchType) && IsVillage(customerInfo.ZoneId))
+            {
+                return new TariffItemResult(0, fazelabCalcResult.Disallowed * fazelabMultiplier, hotSeasonDuration);
+            }
+            return new TariffItemResult(amount1 * fazelabMultiplier, amount2 * fazelabMultiplier, hotSeasonDuration);
         }
         private bool IsDomesticBelow25MeterConsumption(CustomerInfoOutputDto customerInfo, double monthlyConsumption)
         {

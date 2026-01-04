@@ -63,7 +63,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
                                 module.Title,
                                 module.ClientRoute,
                                 module.LogicalOrder,
-                                module.Style
+                                module.Style,
+                                module.Description
                             }
                         };
             var list = await query.ToListAsync();
@@ -83,7 +84,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
                             Style = moduleGroup.First()._Module.Style,
                             LogicalOrder = moduleGroup.First()._Module.LogicalOrder,
                             ClientRoute = moduleGroup.First()._Module.ClientRoute,
-                            Title = moduleGroup.First()._Module.Title
+                            Title = moduleGroup.First()._Module.Title,
+                            Description=moduleGroup.First()._Module.Description
                         })
                         .OrderBy(subModule => subModule.LogicalOrder)
                         .ToList()
