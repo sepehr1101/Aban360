@@ -266,7 +266,8 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn("InMenu").AsBoolean().NotNullable()
                 .WithColumn("LogicalOrder").AsInt32().NotNullable()
                 .WithColumn("ClientRoute").AsString(_255).Nullable()
-                .WithColumn("IsActive").AsBoolean().NotNullable();
+                .WithColumn("IsActive").AsBoolean().NotNullable()
+                .WithColumn("Description").AsString(_255).Nullable(); ;
         }
         private void CreateSubModule()
         {

@@ -9,6 +9,6 @@
         public bool InMenu { get; set; }
         public int LogicalOrder { get; set; }
         public string? ClientRoute { get; set; }
-        public bool IsActive { get; set; }
+        public string? Description { get; set; }
     }
 }

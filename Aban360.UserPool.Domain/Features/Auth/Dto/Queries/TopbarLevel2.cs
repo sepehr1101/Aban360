@@ -7,5 +7,6 @@
         public string Style { get; set; }=default!;
         public int LogicalOrder { get; set; }
         public string ClientRoute { get; set; } = default!;
+        public string? Description { get; set; }
     }
 }
