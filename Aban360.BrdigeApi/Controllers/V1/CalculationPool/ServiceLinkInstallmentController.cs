@@ -7,14 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
 {
-    [Route("v1/bill")]
-    public class BillInstallmentController : BaseController
+    [Route("v1/service-link")]
+    public class ServiceLinkInstallmentController : BaseController
     {
-        private readonly IBillInstallmentHandler _billInstallmentHandler;
-        public BillInstallmentController(IBillInstallmentHandler billInstallmentHandler)
+        private readonly IServiceLinkInstallmentHandler _serviceLinkInstallmentHandler;
+        public ServiceLinkInstallmentController(IServiceLinkInstallmentHandler serviceLinkInstallmentHandler)
         {
-            _billInstallmentHandler = billInstallmentHandler;
-            _billInstallmentHandler.NotNull(nameof(billInstallmentHandler));
+            _serviceLinkInstallmentHandler = serviceLinkInstallmentHandler;
+            _serviceLinkInstallmentHandler.NotNull(nameof(serviceLinkInstallmentHandler));
         }
 
         [HttpPost]
@@ -22,7 +22,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<InstallmentHeaderOutputDto, InstallmentDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Installment([FromBody] InstallmentInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<InstallmentHeaderOutputDto, InstallmentDataOutputDto> result = await _billInstallmentHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<InstallmentHeaderOutputDto, InstallmentDataOutputDto> result = await _serviceLinkInstallmentHandler.Handle(inputDto, cancellationToken);
             return Ok(result);
         }
     }
