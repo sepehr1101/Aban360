@@ -19,7 +19,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         public async Task<ReportOutput<MeterDuplicateChangeHeaderOutputDto, MeterDuplicateChangeDetailDataOutputDto>> GetInfo(MeterDuplicateChangeInputDto input)
         {
-            string reportTitle = ReportLiterals.MeterDuplicateChangeDetail + (input.IsRegisterDate ? ReportLiterals.ByRegisterDate : ReportLiterals.ByChangeDate);
+            string reportTitle = ReportLiterals.MeterDuplicateChangeDetail + '-' + (input.IsRegisterDate ? ReportLiterals.ByRegisterDate : ReportLiterals.ByChangeDate);
             string query = GetQuery();
 
             IEnumerable<MeterDuplicateChangeDetailDataOutputDto> data = await _sqlReportConnection.QueryAsync<MeterDuplicateChangeDetailDataOutputDto>(query, input);
@@ -30,6 +30,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 Title = reportTitle,
                 CustomerCount = data.Count(),
+                RecordCount = data.Count(),
                 MeterChangeCount = data.Sum(r => r.MeterChangeCount),
             };
 

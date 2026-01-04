@@ -8,5 +8,10 @@
         public string FirstName  { get; set; }
         public string SurName  { get; set; }
         public string Address { get; set; }
+
+        public double Easting { get; set; }
+        public double Northing { get; set; }
+        public int UtmZone { get; set; }
+        public string? Letter { get; set; }
     }
 }

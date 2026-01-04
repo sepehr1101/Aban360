@@ -85,9 +85,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 		MAX(b.ZoneTitle) ZoneTitle, 
                 		MAX(c.UsageId) UsageId,
                 		MAX(c.UsageTitle) UsageTitle,
+						MAX(c.BillId) BillId,
+						MAX(c.CustomerNumber) CustomerNumber,
                 		AVG(b.Consumption) Consumption,
                 		AVG(b.ConsumptionAverage)ConsumptionAverage,
-                		CASE WHEN @IsDomestic=1 THEN MAX(s.olgo) ELSE MAX(b.ContractCapacity) END as ContracutalOrOlgo,
+                		CASE WHEN @IsDomestic=1 THEN IIF(MAX(s.olgo) is null,14,MAX(s.olgo)) ELSE MAX(b.ContractCapacity) END as ContractualOrOlgo,
                 		'' RegisterDateJalali
                 	From CustomerWarehouse.dbo.Bills b
                 	Join CustomerWarehouse.dbo.Clients c

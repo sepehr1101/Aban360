@@ -9,7 +9,7 @@
         public string BillId { get; set; }
         public int MeterChangeCount { get; set; }
         public string UsageTitle { get; set; }
-        public string MeterDiamterTitle { get; set; }
+        public string MeterDiameterTitle { get; set; }
         public string BranchTypeTitle { get; set; }
     }
 }

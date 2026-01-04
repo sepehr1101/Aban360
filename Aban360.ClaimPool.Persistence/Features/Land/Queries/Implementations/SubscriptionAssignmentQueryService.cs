@@ -44,10 +44,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         m.Id,
                         m.X,
                     	m.Y,
-                    	m.name AS FirstName,
-                    	m.family AS SurName,
-                    	m.address AS Address,
-                    	m.eshtrak AS ReadingNumber
+                    	TRIM(m.name) AS FirstName,
+                    	TRIM(m.family) AS SurName,
+                    	TRIM(m.address) AS Address,
+                    	TRIM(m.eshtrak) AS ReadingNumber
                     from [{zoneId}].dbo.members m
                     where m.radif=@customerNumber and m.town=@zoneId";
         }
