@@ -54,6 +54,20 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
 
             return false;
         }
+        internal static bool More(this string date1, string date2)
+        {
+            DateOnly? from = date1.ToGregorianDateOnly();
+            DateOnly? to = date2.ToGregorianDateOnly();
+            if (!from.HasValue && !to.HasValue)
+            {
+                throw new BaseException(ExceptionLiterals.InvalidDate);
+            }
+
+            if (from.Value > to.Value)
+                return true;
+
+            return false;
+        }
         internal static bool IsMoreThan1404_01_01(string nerkhDate2)
         {
             string baseDate = "1404/01/01";
