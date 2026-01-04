@@ -9,17 +9,10 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
     internal sealed class SubscriptionAssignmentGetHandler : ISubscriptionAssignmentGetHandler
     {
         private readonly ISubscriptionAssignmentQueryService _subscriptionAssignmentQueryService;
-        private readonly IGisService _gisService;
-        public SubscriptionAssignmentGetHandler(
-            ISubscriptionAssignmentQueryService subscriptionAssignmentQueryService,
-            IGisService gisService
-            )
+        public SubscriptionAssignmentGetHandler(ISubscriptionAssignmentQueryService subscriptionAssignmentQueryService)
         {
             _subscriptionAssignmentQueryService = subscriptionAssignmentQueryService;
             _subscriptionAssignmentQueryService.NotNull(nameof(subscriptionAssignmentQueryService));
-
-            _gisService = gisService;
-            _gisService.NotNull(nameof(gisService));
         }
 
         public async Task<SubscriptionAssignmentGetDto> Handle(string input, CancellationToken cancellationToken)

@@ -33,6 +33,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 CustomerCount = data.Count(),
                 RecordCount = data.Count(),
                 MeterChangeCount = data.Sum(r => r.MeterChangeCount),
+                FirstChange=data.Sum(r => r.FirstChange),
+                SecondChange=data.Sum(r => r.SecondChange),
+                MoreThanThirdChange=data.Sum(r=>r.MoreThanThirdChange),
             };
 
             var result = new ReportOutput<MeterDuplicateChangeHeaderOutputDto, MeterDuplicateChangeSummaryDataOutputDto>(reportTitle, header, data);
