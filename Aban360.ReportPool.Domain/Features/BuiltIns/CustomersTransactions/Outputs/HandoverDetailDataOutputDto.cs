@@ -20,6 +20,9 @@
         public string MeterRequestDate { get; set; }
         public string MeterInstallationDate { get; set; }
         public string UseStateTitle { get; set; }
+        public string PhoneNumber { get; set; }
+        public string MobileNumber { get; set; }
+        public string NationalCode { get; set; }
 
     }
 }
