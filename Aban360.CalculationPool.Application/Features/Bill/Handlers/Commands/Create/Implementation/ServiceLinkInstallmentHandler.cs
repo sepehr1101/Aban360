@@ -27,7 +27,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
             }
 
             string title = "اقساط حق انشعاب";
-            double amount = 16000000;
+            double amount = 160000000;
             double firstInstallmentAmount = 0;
             ICollection<InstallmentDataOutputDto> data = new List<InstallmentDataOutputDto>();
             for (int i = 0; i < inputDto.InstallmentCount; i++)
@@ -43,7 +43,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
                     Amount = localAmount,
                     BillId = inputDto.BillId,
                     DueDateJalali = DateTime.Now.AddMonths(i).ToShortPersianDateString(),
-                    InstallmentCode = 1294,
+                    InstallmentOrder = i + 1,
                     PaymentId = inputDto.BillId + "361" + i.ToString()
                 };
                 data.Add(item);

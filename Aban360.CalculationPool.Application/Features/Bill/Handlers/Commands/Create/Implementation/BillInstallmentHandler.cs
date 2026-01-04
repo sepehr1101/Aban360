@@ -43,7 +43,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
                     Amount = localAmount,
                     BillId = inputDto.BillId,
                     DueDateJalali = DateTime.Now.AddMonths(i).ToShortPersianDateString(),
-                    InstallmentCode = 1294,
+                    InstallmentOrder = i + 1,
                     PaymentId = inputDto.BillId + "361" + i.ToString()
                 };
                 data.Add(item);

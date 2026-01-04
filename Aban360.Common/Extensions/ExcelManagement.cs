@@ -136,7 +136,7 @@ namespace Aban360.Common.Extensions
                     {"NationalCode", "کد ملی"},
                     {"PostalCode", "کد پستی"},
                     {"PhoneNumber", "شماره تلفن"},
-                    {"MobileNumber", "شماره تلفن"},
+                    {"MobileNumber", "شماره موبایل"},
                     {"FatherName", "نام پدر"},
                     {"FromReadingNumber", "از شماره اشتراک"},
                     {"ToReadingNumber", "تا شماره اشتراک"},
