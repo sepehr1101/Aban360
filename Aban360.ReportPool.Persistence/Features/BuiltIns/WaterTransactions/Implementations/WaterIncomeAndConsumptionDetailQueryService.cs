@@ -27,6 +27,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali,
 
+                fromReadingNumber = input.FromReadingNumber,
+                toReadingNumber = input.ToReadingNumber,
+
                 fromConsumption = input.FromConsumption,
                 toConsumption = input.ToConsumption,
 
@@ -145,6 +148,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						(@fromAmount IS NULL OR
 						@toAmount IS NULL OR
 						b.SumItems BETWEEN @fromAmount AND @toAmount) AND
+                        (@fromReadingNumber IS NULL OR
+                        @toReadingNumber IS NULL OR
+                        b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
 						b.TypeCode IN @typeCodes
 						{usageQuery}
 						{zoneQuery}

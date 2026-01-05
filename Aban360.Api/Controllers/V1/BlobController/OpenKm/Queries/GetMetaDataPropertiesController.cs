@@ -17,14 +17,24 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
             _getMetaDataPropertiesHandler.NotNull(nameof(getMetaDataPropertiesHandler));
         }
 
-        [HttpGet]
+        [HttpGet, HttpPost]
         [Route("metadata")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<MetaDataOutput>>), StatusCodes.Status200OK)]
         [AllowAnonymous]
         public async Task<IActionResult> GetDirectoryTree(string input, CancellationToken cancellation)
         {
-            ICollection<MetaDataOutput> result = await _getMetaDataPropertiesHandler.Handle(input, cancellation);
+            ICollection<MetaDataOutput> result = await _getMetaDataPropertiesHandler.Handle(input, false, cancellation);
             return Ok(result);
+        }
+
+        [HttpGet, HttpPost]
+        [Route("file-title")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<string>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetFileTitle(string input, CancellationToken cancellation)
+        {
+            ICollection<MetaDataOutput> result = await _getMetaDataPropertiesHandler.Handle(input, true, cancellation);
+            return Ok(result.First().ValueTitle);
         }
     }
 }
