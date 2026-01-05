@@ -4,8 +4,8 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Contracts
 {
-        public interface IBranchTypeChangeHistoryHandler
-        {
-            Task<ReportOutput<BranchTypeChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto>> Handle(BranchTypeChangeHistoryInputDto input, CancellationToken cancellationToken);
-        }
+    public interface ICustomerMiniSearchHandler
+    {
+        Task<ReportOutput<CustomerMiniSearchHeaderOutputDto, CustomerMiniSearchDataOutputDto>> Handle(CustomerMiniSearchInputDto input, CancellationToken cancellationToken);
+    }
 }
