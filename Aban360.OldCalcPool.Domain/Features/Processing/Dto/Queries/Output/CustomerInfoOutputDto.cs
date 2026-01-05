@@ -1,4 +1,6 @@
 ﻿using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
+using DNTPersianUtils.Core;
+using Microsoft.VisualBasic;
 
 namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
 {
@@ -22,7 +24,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         }
         public int PureDomesticUnit
         {
-            get { return (DomesticUnit - EmptyUnit) < 1 ? 1 : (DomesticUnit - EmptyUnit); }
+            get { return (DomesticUnit - EmptyUnit + HouseholdNumber) < 1 ? 1 : (DomesticUnit - EmptyUnit + HouseholdNumber); }
         }
         public int EmptyUnit { get; set; }
         public string WaterInstallationDateJalali { get; set; } = default!;
@@ -38,7 +40,6 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         public string? VillageId { get; set; }
         public bool IsSpecial { get; set; }
         public int MeterDiameterId { get; set; }
-        public int HouseholdUnit { get; set; }
         public int VirtualCategoryId { get; set; }
 
         public CustomerInfoOutputDto()
@@ -47,6 +48,9 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         }
         public CustomerInfoOutputDto(MeterImaginaryInputDto input)
         {
+            int tmpHouseholdNumber = input.CustomerInfo.HouseholdNumber ?? 0;
+            bool isHouseholdDateCorrect = input.CustomerInfo.HouseholdDate.TryConvertToDateOnly(out DateOnly householdDateTmp);
+
             ZoneId = input.CustomerInfo.ZoneId;
             Radif = input.CustomerInfo.Radif ?? 0;
             BranchType = input.CustomerInfo.BranchType;
@@ -59,9 +63,15 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             SewageInstallationDateJalali = input.CustomerInfo.SewageInstallationDateJalali;
             //WaterCount = input.CustomerInfo.WaterCount;
             SewageCalcState = input.CustomerInfo.SewageCalcState ?? 0;
-            ContractualCapacity = input.CustomerInfo.ContractualCapacity ?? 0;
-            HouseholdNumber = input.CustomerInfo.HouseholdNumber ?? 0;
+            ContractualCapacity = input.CustomerInfo.ContractualCapacity ?? 0;           
             HouseholdDate = input.CustomerInfo.HouseholdDate;
+            if (tmpHouseholdNumber > 0 &&
+               isHouseholdDateCorrect &&
+               householdDateTmp.AddYears(1) >= DateOnly.FromDateTime(DateAndTime.Now))
+            {
+                HouseholdNumber = tmpHouseholdNumber;
+            }
+            HouseholdNumber = input.CustomerInfo.HouseholdNumber ?? 0;
             ReadingNumber = input.CustomerInfo.ReadingNumber ?? string.Empty;
             VillageId = input.CustomerInfo.VillageId;
             IsSpecial = input.CustomerInfo.IsSpecial;
