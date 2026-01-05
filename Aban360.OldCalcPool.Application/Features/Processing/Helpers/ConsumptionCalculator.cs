@@ -123,7 +123,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
             int finalHousehold = GetHouseholdUnit(customerInfo.HouseholdNumber, customerInfo.HouseholdDate, readingDateJalali);
             if (finalHousehold > 0)
             {
-                return finalHousehold;
+                return customerInfo.DomesticUnit + finalHousehold;
             }
             return customerInfo.DomesticUnit - customerInfo.EmptyUnit < 1 ? 1 : customerInfo.DomesticUnit - customerInfo.EmptyUnit;
         }
