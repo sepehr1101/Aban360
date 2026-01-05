@@ -23,7 +23,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         {
             string reportTitle = ReportLiterals.WaterIncomeAndConsumptionSummary + GetIsZoneOrVillageTitle(input.ZoneIds);
             string waterIncomeAndConsumptionSummarys = GetWaterIncomeAndConsumptionSummaryQuery(input.ZoneIds.HasValue(), input.UsageIds.HasValue(), input.BranchTypeIds.HasValue(), input.EnumInput);
-            Console.Write(waterIncomeAndConsumptionSummarys);
+
             var @params = new
             {
                 fromDate = input.FromDateJalali,

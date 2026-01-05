@@ -30,7 +30,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ToDateJalali = input.ToDateJalali,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 Title = reportTitle,
-                CustomerCount = data.Count(),
+                CustomerCount = data.Sum(r => r.CustomerCount),
                 RecordCount = data.Count(),
                 MeterChangeCount = data.Sum(r => r.MeterChangeCount),
                 FirstChange=data.Sum(r => r.FirstChange),

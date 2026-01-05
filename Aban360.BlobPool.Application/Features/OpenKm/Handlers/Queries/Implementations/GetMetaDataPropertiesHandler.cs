@@ -10,6 +10,7 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Implemen
 {
     internal sealed class GetMetaDataPropertiesHandler : IGetMetaDataPropertiesHandler
     {
+        const string _fileTitle = "نوع فایل";
         private readonly IOpenKmQueryService _openKmQueryService;
         private readonly IOpenKmMetaDataQueryServices _openKmMetaDataQueryServices;
         public GetMetaDataPropertiesHandler(
@@ -23,13 +24,24 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Implemen
             _openKmMetaDataQueryServices.NotNull(nameof(openKmMetaDataQueryServices));
         }
 
-        public async Task<ICollection<MetaDataOutput>> Handle(string documentId, CancellationToken cancellationToken)
+        public async Task<ICollection<MetaDataOutput>> Handle(string documentId, bool isTitle, CancellationToken cancellationToken)
         {
             MetaDataProperties result = await _openKmQueryService.GetMetaDataProperties(documentId);
             IEnumerable<OpenKmMetaData> openKmMetadata = await _openKmMetaDataQueryServices.Get();
 
-            ICollection<MetaDataOutput> metaDataOutput= GetMetaDataOutput(result, openKmMetadata);
-            return metaDataOutput;
+            ICollection<MetaDataOutput> metaDataOutput = GetMetaDataOutput(result, openKmMetadata);
+            if (!isTitle)
+            {
+                return metaDataOutput;
+            }
+
+            MetaDataOutput fileTitle = metaDataOutput.Where(r => r.SectionTitle == _fileTitle).FirstOrDefault();
+            if (fileTitle is not null && fileTitle.ValueTitle is not null && !string.IsNullOrWhiteSpace(fileTitle.ValueTitle))
+            {
+                return new List<MetaDataOutput> { fileTitle };
+            }
+
+            return new List<MetaDataOutput> { new MetaDataOutput(_fileTitle, string.Empty) };
         }
 
         private ICollection<MetaDataOutput> GetMetaDataOutput(MetaDataProperties properties, IEnumerable<OpenKmMetaData> openKmMetadatas)

@@ -5,6 +5,9 @@
         public string FromDateJalali { get; set; }
         public string ToDateJalali { get; set; }
 
+        public string? FromReadingNumber { get; set; }
+        public string? ToReadingNumber { get; set; }
+
         public int? FromConsumption { get; set; }
         public int? ToConsumption { get; set; }
 

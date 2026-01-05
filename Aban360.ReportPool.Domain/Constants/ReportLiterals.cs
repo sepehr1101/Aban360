@@ -18,7 +18,7 @@
         public static string ByBill { get { return " بر اساس قبض "; } }
         public static string ByUsageAndZoneAndDiameter { get { return " بر اساس کاربری و ناحیه و قطر انشعاب "; } }
         public static string ByChangeCause { get { return "  بر اساس علت تعویض "; } }
-        public static string ByChangeDate { get { return "  بر اساس "; } }
+        public static string ByChangeDate { get { return "  تاریخ تعویض "; } }
         public static string ByRegisterDate { get { return " تاریخ ثبت "; } }
         public static string Due { get { return "جاری"; } }
         public static string Overdue { get { return "معوقه"; } }

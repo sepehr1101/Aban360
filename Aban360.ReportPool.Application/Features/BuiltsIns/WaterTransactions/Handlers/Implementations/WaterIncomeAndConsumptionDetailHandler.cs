@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
@@ -26,6 +27,13 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
 
         public async Task<ReportOutput<WaterIncomeAndConsumptionDetailHeaderOutputDto, WaterIncomeAndConsumptionDetailDataOutputDto>> Handle(WaterIncomeAndConsumptionDetailInputDto input, CancellationToken cancellationToken)
         {
+            await Validation(input, cancellationToken);
+
+            ReportOutput<WaterIncomeAndConsumptionDetailHeaderOutputDto, WaterIncomeAndConsumptionDetailDataOutputDto> waterIncomeAndConsumptionDetail = await _waterIncomeAndConsumptionDetailQueryService.Get(input);
+            return waterIncomeAndConsumptionDetail;
+        }
+        private async Task Validation(WaterIncomeAndConsumptionDetailInputDto input, CancellationToken cancellationToken)
+        {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
             {
@@ -33,8 +41,13 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
                 throw new CustomValidationException(message);
             }
 
-            ReportOutput<WaterIncomeAndConsumptionDetailHeaderOutputDto, WaterIncomeAndConsumptionDetailDataOutputDto> waterIncomeAndConsumptionDetail = await _waterIncomeAndConsumptionDetailQueryService.Get(input);
-            return waterIncomeAndConsumptionDetail;
+            bool hasReadingNumberRange = !string.IsNullOrWhiteSpace(input.FromReadingNumber) && !string.IsNullOrWhiteSpace(input.ToReadingNumber);
+            bool hasMultiplierZoneId = input.ZoneIds.Skip(1).Any();
+
+            if (hasReadingNumberRange && hasMultiplierZoneId)
+            {
+                throw new InvalidDataException(ExceptionLiterals.InvalidZoneIdMoreThan1);
+            }
         }
     }
 }
