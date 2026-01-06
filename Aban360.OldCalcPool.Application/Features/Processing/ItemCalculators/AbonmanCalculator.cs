@@ -8,8 +8,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IAbonmanCalculator
     {
-        TariffItemResult CalculateAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali, ConsumptionPartialInfo consumptionPartialInfo);
-        TariffItemResult CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, double abonAllowed, TariffItemResult abonmanResult);
+        TariffItemResult CalculateAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali, ConsumptionPartialInfo consumptionPartialInfo, out double before1404_12_02);
+        TariffItemResult CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, double abonAllowed, TariffItemResult abonmanResult, double before1404_12_02);
     }
 
     internal sealed class AbonmanCalculator : IAbonmanCalculator
@@ -30,8 +30,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const double amountTo1404_09_09 = 58500.0;
         const double amountTo1404_12_29 = 71500.0;
 
-        public TariffItemResult CalculateAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali, ConsumptionPartialInfo consumptionPartialInfo)
+        public TariffItemResult CalculateAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali, ConsumptionPartialInfo consumptionPartialInfo, out double before1404_12_02)
         {
+            before1404_12_02 = 0;
             if (!IsConstruction(customerInfo.BranchType) && IsTankerSale(customerInfo.UsageId))
             {
                 return new TariffItemResult();
@@ -42,29 +43,29 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             }
 
             double abonAbAmount = 0;
-            double durationPart_1 = 0, durationPart_2 = 0, durationPart_3 = 0, durationPart_4 = 0, durationPart_5=0;
+            double durationTo1403_12_01 = 0, durationTo1403_12_30 = 0, durationTo1404_02_14Or31 = 0, duration1404_09_09 = 0, duration1404_12_29=0;
 
-            durationPart_1 = PartTime(date_begin, date1403_12_01, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-            durationPart_2 = PartTime(date1403_12_01, date1403_12_30, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-
-            if (IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId))
-            {
-                durationPart_3 = PartTime(date1403_12_30, date1404_02_14, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-            }
-            else
-            {
-                durationPart_3 = PartTime(date1403_12_30, date1404_02_31, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId,  customerInfo.ZoneId, customerInfo.UsageId });
-            }
+            durationTo1403_12_01 = PartTime(date_begin, date1403_12_01, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
+            durationTo1403_12_30 = PartTime(date1403_12_01, date1403_12_30, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
 
             if (IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId))
             {
-                durationPart_4 = PartTime(date1404_02_14, date1404_09_09, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId,  customerInfo.ZoneId, customerInfo.UsageId });
+                durationTo1404_02_14Or31 = PartTime(date1403_12_30, date1404_02_14, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
             }
             else
             {
-                durationPart_4 = PartTime(date1404_02_31, date1404_09_09, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
+                durationTo1404_02_14Or31 = PartTime(date1403_12_30, date1404_02_31, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId,  customerInfo.ZoneId, customerInfo.UsageId });
             }
-            durationPart_5 = PartTime(date1404_09_09, date1404_12_29, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
+
+            if (IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId))
+            {
+                duration1404_09_09 = PartTime(date1404_02_14, date1404_09_09, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId,  customerInfo.ZoneId, customerInfo.UsageId });
+            }
+            else
+            {
+                duration1404_09_09 = PartTime(date1404_02_31, date1404_09_09, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
+            }
+            duration1404_12_29 = PartTime(date1404_09_09, date1404_12_29, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
 
             int sumUnit = customerInfo.OtherUnit + customerInfo.DomesticUnit + customerInfo.CommertialUnit;
 
@@ -79,11 +80,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             }
 
             abonAbAmount = sumUnit*
-                (((amountTo1403_12_01 / monthDays) * durationPart_1) +
-                ((amountTo1403_12_30 / monthDays) * durationPart_2) +
-                ((amountTo404_02_31 / monthDays) * durationPart_3) +
-                ((amountTo1404_09_09 / monthDays) * durationPart_4) +
-                ((amountTo1404_12_29 / monthDays) * durationPart_5));
+                (((amountTo1403_12_01 / monthDays) * durationTo1403_12_01) +
+                ((amountTo1403_12_30 / monthDays) * durationTo1403_12_30) +
+                ((amountTo404_02_31 / monthDays) * durationTo1404_02_14Or31) +
+                ((amountTo1404_09_09 / monthDays) * duration1404_09_09) +
+                ((amountTo1404_12_29 / monthDays) * duration1404_12_29));
 
             if (abonAbAmount < 0)
             {
@@ -94,10 +95,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 abonAbAmount *= 2;
             }
+            before1404_12_02 = sumUnit * (amountTo1403_12_01 / monthDays * durationTo1403_12_01);
             return new TariffItemResult(consumptionPartialInfo.AllowedRatio * abonAbAmount, consumptionPartialInfo.DisallwedRatio * abonAbAmount);
         }
 
-        public TariffItemResult CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, double abonAllowed, TariffItemResult abonmanResult)
+        public TariffItemResult CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, double abonAllowed, TariffItemResult abonmanResult, double before1404_12_02)
         {
             if (IsSpecialEducation(usageId, isSpecial))
             {
@@ -118,7 +120,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
               consumptionPartialInfo.DisallowedConsumtion<=0)
             {
                 //طبق صحبت تلفنی با سرکار خانم قرمز مورخ 14 دی 1404 و با تایید جناب اعلایی تغییر کرد
-                return new TariffItemResult(abonAllowed);
+                return new TariffItemResult(abonmanAmount);
             }
 
             if (IsUnderSocialService(customerInfo.BranchType) &&
@@ -131,9 +133,19 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
             if (IsUnderSocialService(branchTypeId) &&
                 IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
-                consumptionPartialInfo.EndDateJalali.More(date1403_12_01))
+                consumptionPartialInfo.EndDateJalali.More(date1403_12_01) &&
+                consumptionPartialInfo.DisallowedConsumtion <= 0)
             {
                 return new TariffItemResult(abonmanAmount);
+            }
+
+            if (IsUnderSocialService(branchTypeId) &&
+               IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
+               consumptionPartialInfo.EndDateJalali.More(date1403_12_01) &&
+               consumptionPartialInfo.DisallowedConsumtion > 0)
+            {
+                double abonTmp = abonmanAmount - before1404_12_02;
+                return abonTmp > 0 ? new TariffItemResult(abonTmp) : new TariffItemResult();
             }
             if (IsMullah(customerInfo.BranchType) && abonmanResult.Disallowed > 0)
             {

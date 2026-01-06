@@ -1,13 +1,23 @@
-﻿using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+﻿using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
 {
     internal static class VirtualCapacityCalculator
     {
+        const string date1403_12_30 = "1403/12/30";
         const int monthDays = 30;
-        internal static double CalculateDiscountByVirtualCapacity(CustomerInfoOutputDto customerInfo, double partialConsumption, int duration, double amount)
+        internal static double CalculateDiscountByVirtualCapacity(CustomerInfoOutputDto customerInfo, double partialConsumption, int duration, double amount, ConsumptionPartialInfo consumptionPartialInfo)
         {
+            if(date1403_12_30.MoreOrEq(consumptionPartialInfo.EndDateJalali))
+            {
+                return 0;
+            }
+            if(!IsSpecialEducation(customerInfo.UsageId, customerInfo.IsSpecial))
+            {
+                return 0;
+            }
             int virtualCapacity = GetVirtualCapacity(customerInfo, duration);
             if (virtualCapacity > 0)
             {

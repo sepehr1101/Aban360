@@ -102,12 +102,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return new TariffItemResult(hotSeasonInfo.Allowed);
             }
-            if (date_1404_02_31.MoreOrEq(consumptionPartialInfo.EndDateJalali) && IsSchool(customerInfo.UsageId))
+           /* if (date_1404_02_31.MoreOrEq(consumptionPartialInfo.EndDateJalali) && IsSchool(customerInfo.UsageId))
             {
                 return new TariffItemResult();
-            }
+            }*/
             double fasleGarmAmount = hotSeasonInfo.Disallowed;
-            double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, consumptionPartialInfo.Consumption, consumptionPartialInfo.Duration, fasleGarmAmount);
+            double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, consumptionPartialInfo.Consumption, consumptionPartialInfo.Duration, fasleGarmAmount, consumptionPartialInfo);
             double finalDiscount = virtualDiscount > 0 ? virtualDiscount : fasleGarmAmount;
             return new TariffItemResult(finalDiscount);
         }
@@ -129,7 +129,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             }
             if (IsMullah(customerInfo.BranchType) && IsVillage(customerInfo.ZoneId))
             {
-                return new TariffItemResult(0, fazelabCalcResult.Disallowed * fazelabMultiplier, hotSeasonDuration);
+                return new TariffItemResult(0, amount2 * fazelabMultiplier, hotSeasonDuration);
             }
             return new TariffItemResult(amount1 * fazelabMultiplier, amount2 * fazelabMultiplier, hotSeasonDuration);
         }

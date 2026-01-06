@@ -24,7 +24,14 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         }
         public int PureDomesticUnit
         {
-            get { return (DomesticUnit - EmptyUnit + HouseholdNumber) < 1 ? 1 : (DomesticUnit - EmptyUnit + HouseholdNumber); }
+            get
+            {
+                if (HouseholdNumber > 1)
+                {
+                    return HouseholdNumber;
+                }
+                return (DomesticUnit - EmptyUnit) < 1 ? 1 : (DomesticUnit - EmptyUnit);
+            }
         }
         public int EmptyUnit { get; set; }
         public string WaterInstallationDateJalali { get; set; } = default!;

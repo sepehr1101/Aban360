@@ -176,8 +176,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
        
             if (IsUnderSocialService(customerInfo.BranchType) &&
                 IsDomesticWithoutUnspecified(customerInfo.UsageId))
-            {   
-                double allowedDiscount = calculateAbBahaOutputDto.Allowed /* * villageMultiplier.Item1*/ ;                                 
+            {
+                double discountVillageMultiplier = isVillageCalculation ? _villageAllowedMultiplier : 1;
+                double villageMultiplier = GetVillageMultiplier(nerkh, customerInfo, consumptionPartialInfo, monthlyConsumption, olgoo);
+                double allowedDiscount = calculateAbBahaOutputDto.Allowed / villageMultiplier * discountVillageMultiplier; /* * villageMultiplier.Item1*/ ;                                 
                 return new TariffItemResult(allowedDiscount);
             }
             if (IsMullah(customerInfo.BranchType) && isVillageCalculation && customerInfo.UnitAll == 1)
@@ -190,12 +192,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {   
                 return new TariffItemResult(calculateAbBahaOutputDto.Allowed);
             }    
-            if(date_1404_02_31.MoreOrEq(consumptionPartialInfo.EndDateJalali) && 
+           /* if(date_1404_02_31.MoreOrEq(consumptionPartialInfo.EndDateJalali) && 
                IsSchool(customerInfo.UsageId))
             {
                 return new TariffItemResult();
-            }
-            double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, consumptionPartialInfo.Consumption, consumptionPartialInfo.Duration, calculateAbBahaOutputDto.Summation);
+            }*/
+            double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, consumptionPartialInfo.Consumption, consumptionPartialInfo.Duration, calculateAbBahaOutputDto.Summation, consumptionPartialInfo);
             double finalVirtualDiscount= virtualDiscount > 0 ? (long)virtualDiscount : 0;
             return new TariffItemResult(finalVirtualDiscount);
         }
