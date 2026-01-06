@@ -47,7 +47,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                     	TRIM(m.name) AS FirstName,
                     	TRIM(m.family) AS SurName,
                     	TRIM(m.address) AS Address,
-                    	TRIM(m.eshtrak) AS ReadingNumber
+                    	TRIM(m.eshtrak) AS ReadingNumber,
+						TRIM(m.POST_COD) AS PostalCode
                     from [{zoneId}].dbo.members m
                     where m.radif=@customerNumber and m.town=@zoneId";
         }
