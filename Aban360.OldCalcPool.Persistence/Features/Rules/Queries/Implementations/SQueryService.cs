@@ -86,7 +86,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                     Where 
                     	ToDate>=@toDate And
                         Town=@zoneId
-                    Order By ToDatec";
+                    Order By ToDate desc";
         }
         private string GetAllQuery()
         {

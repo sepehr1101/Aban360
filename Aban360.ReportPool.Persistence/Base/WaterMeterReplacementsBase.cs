@@ -15,6 +15,7 @@ namespace Aban360.ReportPool.Persistence.Base
 
             return @$"Select 
                     	mc.CustomerNumber,
+                        c.BillId,
                     	c.ReadingNumber,
                     	TRIM(c.FirstName) +' '+TRIM(c.SureName) AS FullName,
                     	c.UsageTitle2 AS UsageTitle,

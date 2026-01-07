@@ -1,4 +1,6 @@
-﻿namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
+﻿using DNTPersianUtils.Core;
+
+namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
 {
     public record SubscriptionAssignmentUpdateDto
     {
@@ -11,5 +13,6 @@
         public string SurName { get; set; }
         public string Address { get; set; }
         public string PostalCode { get; set; }
+
     }
 }
