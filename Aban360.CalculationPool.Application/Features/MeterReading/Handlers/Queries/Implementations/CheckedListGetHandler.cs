@@ -50,11 +50,17 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         }
         private ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCheckedDto> GetResult(IEnumerable<MeterReadingDetailCheckedDto> data, MeterFlowStepEnum latestFlowStep)
         {
+            int[] closedAndObstacleCounterState = { 4, 7, 8 };
             MeterReadingDetailHeaderOutputDto header = new MeterReadingDetailHeaderOutputDto()
             {
                 Amount = data.Sum(m => m.SumItems) ?? 0,
                 Consumption = data.Sum(m => m.Consumption) ?? 0,
                 RecordCount = data.Count(),
+                Closed = data.Count(r => r.CurrentCounterStateCode == 4),
+                Obstacle = data.Count(r => r.CurrentCounterStateCode == 7),
+                Temporarily = data.Count(r => r.CurrentCounterStateCode == 8),
+                PureReading = data.Count(r => !closedAndObstacleCounterState.Contains(r.CurrentCounterStateCode)),
+                Ruined = data.Count(r => r.CurrentCounterStateCode == 1)
             };
             ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCheckedDto> result = new(_reportTitle, header, data.OrderByDescending(meter => meter.AttentionState));
 
