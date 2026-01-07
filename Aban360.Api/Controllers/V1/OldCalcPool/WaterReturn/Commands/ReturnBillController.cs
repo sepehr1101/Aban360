@@ -25,7 +25,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
 
         [HttpPost, HttpGet]
         [Route("partial")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<BillsCanRemoveOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReturnBillOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> PartialReturn([FromBody] ReturnBillPartialInputDto input, CancellationToken cancellationToken)
         {
             ReturnBillOutputDto result = await _billToReturnedHandler.Handle(input, cancellationToken);
@@ -34,7 +34,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
 
         [HttpPost, HttpGet]
         [Route("full")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<BillsCanRemoveOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReturnBillOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> FullReturn([FromBody] ReturnBillFullInputDto input, CancellationToken cancellationToken)
         {
             ReturnBillOutputDto result = await _billFullHandler.Handle(input, cancellationToken);

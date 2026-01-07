@@ -1,14 +1,13 @@
-﻿using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
-using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Commands;
+﻿using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Commands;
 
 namespace Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries
 {
     public record ReturnBillOutputDto
     {
-        public BedBesOutputDto Bill { get; set; }
-        public RepairOutputDto Repair { get; set; }
-        public AutoBackOutputDto AutoBack { get; set; }
-        public ReturnBillOutputDto(BedBesOutputDto bill, RepairOutputDto repair, AutoBackOutputDto autoBack)
+        public ReturBillDataOutputDto Bill { get; set; }
+        public ReturBillDataOutputDto Repair { get; set; }
+        public ReturBillDataOutputDto AutoBack { get; set; }
+        public ReturnBillOutputDto(ReturBillDataOutputDto bill, ReturBillDataOutputDto repair, ReturBillDataOutputDto autoBack)
         {
             Bill = bill;
             Repair = repair;

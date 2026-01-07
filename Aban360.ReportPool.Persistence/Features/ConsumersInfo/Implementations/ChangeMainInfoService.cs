@@ -132,7 +132,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                 {
                     all.Add(new ChangeMainOutputDto()
                     {
-                        ChangeDate = clients.ElementAt(i).ToDayJalali ?? DateTime.Now.ToShortPersianDateString(),
+                        ChangeDate = clients.ElementAt(i-1).ToDayJalali ?? DateTime.Now.ToShortPersianDateString(),
                         ChangeDetail = differences
                     });
                 }
@@ -228,7 +228,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             public bool IsVillage { get; init; }
             public int? TempRowNumber { get; init; }
             //   public string RegisterDayJalali { get; init; }
-            //   public string FromDayJalali { get; init; }
+           // public string FromDayJalali { get; init; }
             public string ToDayJalali { get; init; }
             public string HouseholdDateJalali { get; init; }
             public int? GuildId { get; init; }
