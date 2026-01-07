@@ -37,7 +37,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     	b.{parameters.DateField},
                         b.ZoneTitle";
         }
-
+            
         internal string GetGroupedQuery(bool isRegisterDate, bool isZone)
         {
             QueryParam parameters = GetQueryParam(isRegisterDate, isZone);
