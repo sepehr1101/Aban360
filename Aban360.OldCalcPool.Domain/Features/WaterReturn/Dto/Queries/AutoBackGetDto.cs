@@ -1,15 +1,15 @@
-﻿namespace Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Commands
+﻿namespace Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries
 {
-    public record AutoBackCreateDto
+    public record AutoBackGetDto
     {
         public decimal Town { get; set; }
         public decimal Radif { get; set; }
         public string Eshtrak { get; set; }
         public decimal Barge { get; set; }
-        public decimal PriNo { get; set; }
-        public decimal TodayNo { get; set; }
-        public string PriDate { get; set; }
-        public string TodayDate { get; set; }
+        public decimal PreviousNumber { get; set; }
+        public decimal CurrentNumber { get; set; }
+        public string PreviousDate { get; set; }
+        public string CurrentDate { get; set; }
         public decimal AbonFas { get; set; }
         public decimal FasBaha { get; set; }
         public decimal AbBaha { get; set; }
@@ -64,12 +64,8 @@
         public bool Faz { get; set; }
         public string TmpPriDate { get; set; }
         public string TmpTodayDate { get; set; }
-        public string TmpDateBed { get; set; }
         public string TmpMohlat { get; set; }
         public string TmpTavizDate { get; set; }
-        public decimal Group1 { get; set; }//0
-        public bool? EdarehK { get; set; }//isSpecial
-        public string DateSbt { get; set; }
-        public decimal Avarez { get; set; }
+        public string TmpDateBed { get; set; }
     }
 }

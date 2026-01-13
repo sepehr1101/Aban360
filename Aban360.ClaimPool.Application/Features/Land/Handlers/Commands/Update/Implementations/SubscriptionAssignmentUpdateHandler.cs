@@ -37,7 +37,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 Id = updateDto.Id,
                 CustomerNumber=previousSubscription.CustomerNumber,
                 ZoneId=previousSubscription.ZoneId,
-                BillId = updateDto.BillId,
+                BillId = previousSubscription.BillId,
                 X = updateDto.X,
                 Y = updateDto.Y,
                 ReadingNumber = updateDto.ReadingNumber,

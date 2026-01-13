@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {
-    internal sealed class MeterDuplicateChangeSummaryQueryService : UseStateBase, IMeterDuplicateChangeSummaryQueryService
+    internal sealed class MeterDuplicateChangeSummaryQueryService : AbstractBaseConnection, IMeterDuplicateChangeSummaryQueryService
     {
         public MeterDuplicateChangeSummaryQueryService(IConfiguration configuration)
             : base(configuration)
@@ -33,9 +33,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 CustomerCount = data.Sum(r => r.CustomerCount),
                 RecordCount = data.Count(),
                 MeterChangeCount = data.Sum(r => r.MeterChangeCount),
-                FirstChange=data.Sum(r => r.FirstChange),
-                SecondChange=data.Sum(r => r.SecondChange),
-                MoreThanThirdChange=data.Sum(r=>r.MoreThanThirdChange),
+                FirstChange = data.Sum(r => r.FirstChange),
+                SecondChange = data.Sum(r => r.SecondChange),
+                MoreThanThirdChange = data.Sum(r => r.MoreThanThirdChange),
             };
 
             var result = new ReportOutput<MeterDuplicateChangeHeaderOutputDto, MeterDuplicateChangeSummaryDataOutputDto>(reportTitle, header, data);
@@ -50,7 +50,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     		m.ZoneId,
                     		m.CustomerNumber,
                     		MAX(c.billId) BillId,
-                    		Count(1) MeterChangeCount,
+	                        Case When @includeBodySerial=1 Then COUNT(Distinct m.BodySerial) Else COUNT(1) END MeterChangeCount,
                     		MAX(c.ZoneTitle) ZoneTitle,
                     		MAX(c.UsageTitle) UsageTitle
                     	From CustomerWarehouse.dbo.MeterChange m
@@ -63,6 +63,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                             ((@isRegisterDate=1 AND m.ChangeDateJalali BETWEEN @fromDateJalali AND @toDateJalali) OR
                             (@isRegisterDate<>1 AND m.ChangeDateJalali BETWEEN @fromDateJalali AND @toDateJalali))
                     	Group by m.ZoneId, m.CustomerNumber
+                        Having (Case When @includeBodySerial=1 Then COUNT(Distinct m.BodySerial) Else COUNT(1) END )>1
                     )
                     Select 
                     	{groupField},

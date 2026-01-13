@@ -21,9 +21,13 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Implemen
             string dbName = GetDbName(zoneId);
             string query = GetQuery(dbName);
 
-            MemberGetDto article11 = await _sqlReportConnection.QueryFirstOrDefaultAsync<MemberGetDto>(query, new { billId });
+            MemberGetDto data = await _sqlReportConnection.QueryFirstOrDefaultAsync<MemberGetDto>(query, new { billId });
+            if (data is null || data.ZoneId <= 0)
+            {
+                throw new InvalidBillIdException(ExceptionLiterals.InvalidBillId);
+            }
 
-            return article11;
+            return data;
         }
 
         private async Task<int> GetZoneId(string billId)

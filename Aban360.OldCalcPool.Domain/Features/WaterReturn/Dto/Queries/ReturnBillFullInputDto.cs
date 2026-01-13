@@ -1,6 +1,4 @@
-﻿using Aban360.OldCalcPool.Domain.Constants;
-
-namespace Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries
+﻿namespace Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries
 {
     public record ReturnBillFullInputDto
     {

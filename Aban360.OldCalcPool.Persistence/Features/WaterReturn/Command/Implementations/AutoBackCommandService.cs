@@ -21,6 +21,14 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Implement
 
             await _sqlReportConnection.ExecuteScalarAsync(query, input);
         }
+        public async Task Create(IEnumerable<AutoBackCreateDto> input)
+        {
+            //string dbName = GetDbName((int)input.First().Town);
+            string dbName = "Atlas";
+            string query = GetCreateQuery(dbName);
+
+            await _sqlReportConnection.ExecuteAsync(query, input);
+        }
         private string GetCreateQuery(string dbName)
         {
             return @"INSERT INTO Atlas.dbo.[autoback]

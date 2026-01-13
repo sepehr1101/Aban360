@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Implementations
 {
-    internal sealed class MeterDuplicateChangeDetailQueryService : UseStateBase, IMeterDuplicateChangeDetailQueryService
+    internal sealed class MeterDuplicateChangeDetailQueryService : AbstractBaseConnection, IMeterDuplicateChangeDetailQueryService
     {
         public MeterDuplicateChangeDetailQueryService(IConfiguration configuration)
             : base(configuration)
@@ -46,10 +46,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	m.CustomerNumber,
                     	MAX(c.billId) BillId,
                     	(MAX(c.firstName)+' '+ MAX(c.SureName)) FullName,
-                    	Count(1) MeterChangeCount,
+	                    Case When @includeBodySerial=1 Then COUNT(Distinct m.BodySerial) Else COUNT(1) END MeterChangeCount,
                     	MAX(c.ZoneTitle) ZoneTitle,
                     	MAX(c.UsageTitle) UsageTitle,
-                    	MAX(c.WaterDiameterTitle) MeterDiamterTitle	,
+                    	MAX(c.WaterDiameterTitle) MeterDiameterTitle ,
                     	MAX(c.BranchType) BranchTypeTitle
                     From CustomerWarehouse.dbo.MeterChange m
                     Join CustomerWarehouse.dbo.Clients c
@@ -58,9 +58,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	c.ToDayJalali IS NULL AND
                     	c.ZoneId IN @zoneIds AND
                     	c.UsageId IN @usageIds AND
-                    	((@isRegisterDate=1 AND m.ChangeDateJalali BETWEEN @fromDateJalali AND @toDateJalali) OR
+                    	((@isRegisterDate=1 AND m.RegisterDateJalali BETWEEN @fromDateJalali AND @toDateJalali) OR
                     	(@isRegisterDate<>1 AND m.ChangeDateJalali BETWEEN @fromDateJalali AND @toDateJalali))
-                    Group by m.ZoneId, m.CustomerNumber";
+                    Group by m.ZoneId, m.CustomerNumber
+                    Having (Case When @includeBodySerial=1 Then COUNT(Distinct m.BodySerial) Else COUNT(1) END )>1";
         }
     }
 }

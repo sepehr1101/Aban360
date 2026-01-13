@@ -89,6 +89,14 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             string command = GetUpdateDelCommand(dbName);
             await _sqlReportConnection.ExecuteAsync(command, input);
         }
+        public async Task UpdateDel(BedBesUpdateDelWithDateDto input)
+        {
+            //string dbName = GetDbName(input.ZoneId);
+            string dbName = "Atlas";
+            string command = GetUpdateDelWithDateCommand(dbName);
+            await _sqlReportConnection.ExecuteAsync(command, input);
+
+        }
 
         public DataTable ToDataTable(IEnumerable<BedBesCreateDto> items)
         {
@@ -300,6 +308,20 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             return $@"Update [{dbName}].dbo.bed_bes
                     Set del=@del
                     Where id=@id";
+        }
+        private string GetUpdateDelWithDateCommand(string dbName)
+        {
+            return $@";With bills as(
+                    	Select *
+                    	From [{dbName}].dbo.bed_bes
+                    	where
+                    		town=@ZoneId AND
+                    		radif=@CustomerNumber AND
+                    		pri_date>=@FromDateJalali AND
+                    		today_date<=@ToDateJalali
+                    )
+                    Update bills
+                    Set del=Del";
         }
     }
 }

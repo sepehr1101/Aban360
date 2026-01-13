@@ -4,11 +4,11 @@
     {
         public int ZoneId { get; set; }
         public int Id { get; set; }
-        public bool  Del { get; set; }
-        public BedBesUpdateDelDto(int zoneId,int id,bool del)
+        public bool Del { get; set; }
+        public BedBesUpdateDelDto(int zoneId, int id, bool del)
         {
             ZoneId = zoneId;
-            Id=id;
+            Id = id;
             Del = del;
         }
     }

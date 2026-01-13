@@ -8,7 +8,7 @@
         public int UsageId { get; set; }
         public int BranchTypeId { get; set; }
         public int MeterDiamterId { get; set; }
-        public int BodySerial { get; set; }
+        public string BodySerial { get; set; }
         public int CommertialUnit { get; set; }
         public int DomesticUnit { get; set; }
         public int OtherUnit { get; set; }
