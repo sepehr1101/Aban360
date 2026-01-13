@@ -1,4 +1,5 @@
-﻿using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Queries;
+﻿using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Queries;
 
 namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Contracts
 {
@@ -6,5 +7,6 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Contract
     {
         Task<RepairGetDto> Get(int id);
         Task<IEnumerable<RepairGetDto>> Get(string billId);
+        Task<int> GetRepairCount(ZoneIdAndCustomerNumberOutputDto input, int jalaseNumber);
     }
 }

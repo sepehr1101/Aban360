@@ -17,7 +17,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Implement
         {
             //string dbName = GetDbName((int)input.Town);
             string dbName = "Atlas";
-            string query = GetCreateQuery(dbName);
+            string query = GetCreateQuery(dbName);  
 
             await _sqlReportConnection.ExecuteScalarAsync(query, input);
         }

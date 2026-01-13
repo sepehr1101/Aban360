@@ -96,6 +96,7 @@
         public static string CantReturn => "برگشتی در بازه تاریخی وارد شده امکان پذیر نیست.";
         public static string RepairAmountMoreThanBedBesAmount => "مبلغ برگشتی از مبلغ قبوض بیشتر است.";
         public static string InvalidBillWithDel => "در بازه وارد شده، قبض برگشتی وجود دارد.";
+        public static string InvalidReturnDuplicate => "قبلا قبضی با اطلاعات وارد شده برگشت داده شده است.";
 
 
         //Tax

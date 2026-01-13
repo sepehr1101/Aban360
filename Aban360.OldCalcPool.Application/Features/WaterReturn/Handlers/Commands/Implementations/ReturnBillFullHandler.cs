@@ -23,10 +23,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             int jalaseNumber = await _returnBillBaseHandler.GetJalaliNumber(customerInfo.ZoneId, customerInfo.Radif);
             IEnumerable<BedBesCreateDto> bedBesInfo = await _returnBillBaseHandler.GetBedBesList(customerInfo, input.FromDateJalali, input.ToDateJalali);
-            BedBesCreateDto bedBesResult = _returnBillBaseHandler.GetBedbes(bedBesInfo);
+            BedBesCreateDto bedBesResult = _returnBillBaseHandler.GetBedbes(bedBesInfo, customerInfo);
 
-            AutoBackCreateDto bedBes = _returnBillBaseHandler.GetBedBes(bedBesResult, bedBesInfo.Count(), jalaseNumber);
-            AutoBackCreateDto newCalculation = _returnBillBaseHandler.GetNewCalculation(bedBesResult, input.ReturnCauseId, bedBesInfo.Count(), jalaseNumber);
+            AutoBackCreateDto bedBes = _returnBillBaseHandler.GetBedBes(bedBesResult, bedBesInfo.Count(), jalaseNumber, input.ReturnCauseId);
+            AutoBackCreateDto newCalculation = _returnBillBaseHandler.GetFullNewCalculation(bedBesResult, input.ReturnCauseId, bedBesInfo.Count(), jalaseNumber);
 
             return await _returnBillBaseHandler.GetReturn(bedBes, newCalculation, bedBes, bedBesInfo.Count(), input.IsConfirm);
 

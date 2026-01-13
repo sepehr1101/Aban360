@@ -9,12 +9,12 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
     public interface IReturnBillBaseHandler
     {
         Task<ReturnBillOutputDto> GetReturn(AutoBackCreateDto bedBes, AutoBackCreateDto newCalculation, AutoBackCreateDto different, int billCount, bool isConfirm);
-        AutoBackCreateDto GetNewCalculation(BedBesCreateDto bedBes, int returnCauseId, int bedbesCount, int jalaseNumber);
+        AutoBackCreateDto GetFullNewCalculation(BedBesCreateDto bedBes, int returnCauseId, int bedbesCount, int jalaseNumber);
         AutoBackCreateDto GetNewCalculation(AbBahaCalculationDetails tariffInfo, BedBesCreateDto bedBes, int returnCauseId, int bedbesCount, float? consumptionHadar, long? abHadarAmount, int jalaseNumber);
         AutoBackCreateDto GetDifferent(BedBesCreateDto bedBes, AutoBackCreateDto repair, int jalaseNumber);
         Task<IEnumerable<BedBesCreateDto>> GetBedBesList(CustomerInfoOutputDto customerInfo, string fromDateJalali, string toDateJalali);
-        BedBesCreateDto GetBedbes(IEnumerable<BedBesCreateDto> input);
-        AutoBackCreateDto GetBedBes(BedBesCreateDto bedBes, int bedBesCount, int jalaseNumber);
+        BedBesCreateDto GetBedbes(IEnumerable<BedBesCreateDto> input, CustomerInfoOutputDto customerInfo);
+        AutoBackCreateDto GetBedBes(BedBesCreateDto bedBes, int bedBesCount, int jalaseNumber, int returnCauseId);
         Task<int> GetJalaliNumber(int zoneId, int customerNumber);
         Task FullValidation(ReturnBillFullInputDto input, CancellationToken cancellationToken);
         Task PartialValidation(ReturnBillPartialInputDto input, CancellationToken cancellationToken);

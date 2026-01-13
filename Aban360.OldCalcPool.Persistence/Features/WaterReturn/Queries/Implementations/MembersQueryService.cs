@@ -57,7 +57,7 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Implemen
                     	ted_khane as HouseholdNumber,
                     	Khali_s as EmptyUnit
                     From [{dbName}].dbo.members
-                    Where bill_id=@billId";
+                    Where TRIM(bill_id)=@billId";
         }
         private string GetZoneId()
         {

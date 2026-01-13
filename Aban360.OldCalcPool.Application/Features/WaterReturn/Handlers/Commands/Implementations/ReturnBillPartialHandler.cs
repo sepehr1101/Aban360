@@ -50,7 +50,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         {
             CustomerInfoOutputDto customerInfo = await Validation(inputDto, cancellationToken);
             int jalaseNumber = await _returnBillBaseHandler.GetJalaliNumber(customerInfo.ZoneId, customerInfo.Radif);
-            float consumptionAverage = await  _returnBillBaseHandler.GetConsumptionAverage(inputDto.FromDateJalali,inputDto.CalculationType,inputDto.UserInput, customerInfo);
+            float consumptionAverage = await _returnBillBaseHandler.GetConsumptionAverage(inputDto.FromDateJalali, inputDto.CalculationType, inputDto.UserInput, customerInfo);
             var (bedBesInfo, bedBesResult) = await GetBedBesCreateDto(inputDto, customerInfo);
 
             int[] burstPipe = { 1, 4 };
@@ -68,7 +68,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         {
             AbBahaCalculationDetails abBahaResult = await GetAbBahaTariff(input, bedBesInfo, consumptionAverage, cancellationToken);
 
-            AutoBackCreateDto bedBes = _returnBillBaseHandler.GetBedBes(bedBesResult, bedBesInfo.Count(), jalaseNumber);
+            AutoBackCreateDto bedBes = _returnBillBaseHandler.GetBedBes(bedBesResult, bedBesInfo.Count(), jalaseNumber, input.ReturnCauseId);
             AutoBackCreateDto newCalculation = _returnBillBaseHandler.GetNewCalculation(abBahaResult, bedBesResult, input.ReturnCauseId, bedBesInfo.Count(), hadarConsumption ?? 0, (long)(finalAmount ?? 0), jalaseNumber);
             AutoBackCreateDto different = _returnBillBaseHandler.GetDifferent(bedBesResult, newCalculation, jalaseNumber);
 
@@ -87,7 +87,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private async Task<(IEnumerable<BedBesCreateDto>, BedBesCreateDto)> GetBedBesCreateDto(ReturnBillPartialInputDto input, CustomerInfoOutputDto customerInfo)
         {
             IEnumerable<BedBesCreateDto> bedBesInfo = await _returnBillBaseHandler.GetBedBesList(customerInfo, input.FromDateJalali, input.ToDateJalali);
-            BedBesCreateDto bedBesResult = _returnBillBaseHandler.GetBedbes(bedBesInfo);
+            BedBesCreateDto bedBesResult = _returnBillBaseHandler.GetBedbes(bedBesInfo,customerInfo);
 
             return (bedBesInfo, bedBesResult);
         }

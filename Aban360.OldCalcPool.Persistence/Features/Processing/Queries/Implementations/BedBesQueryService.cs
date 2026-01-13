@@ -297,7 +297,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     Where
                     	town=@zoneId AND
                     	radif=@customerNumber AND
-                    	nexDay=@dateJalali
+                    	today_date=@nexDay
                     Order By date_bed Desc";
         }
         private string GetListByFromToDate(string dbName)
@@ -402,7 +402,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	town=@ZoneId AND
                     	radif=@CustomerNumber AND
                     	date_bed=@Date
-                    Order By date_bed desc";
+                    Order By date_bed desc,id desc";
         }
     }
 }

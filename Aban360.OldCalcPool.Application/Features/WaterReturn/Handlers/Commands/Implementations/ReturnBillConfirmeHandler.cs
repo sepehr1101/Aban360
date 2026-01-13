@@ -9,6 +9,10 @@ using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Contracts;
 using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Commands;
 using Aban360.OldCalcPools.WaterReturn.Dto.Queries;
 using DNTPersianUtils.Core;
+using FluentValidation;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Literals;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 
 namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Implementations
 {
@@ -18,11 +22,15 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private readonly IBedBesCommandService _billCommandService;
         private readonly IAutoBackQueryService _autoBackQueryService;
         private readonly IMembersQueryService _membersQueryService;
+        private readonly IRepairQueryService _repairQueryService;
+        private readonly IValidator<ReturnBillConfirmeByBillIdInputDto> _validator;
         public ReturnBillConfirmeHandler(
             IRepairCommandService repairCommandService,
             IBedBesCommandService billCommandService,
             IAutoBackQueryService autoBackQueryService,
-            IMembersQueryService membersQueryService)
+            IMembersQueryService membersQueryService,
+            IRepairQueryService repairQueryService,
+            IValidator<ReturnBillConfirmeByBillIdInputDto> validator)
         {
             _repairCommandService = repairCommandService;
             _repairCommandService.NotNull(nameof(repairCommandService));
@@ -35,19 +43,28 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             _membersQueryService = membersQueryService;
             _membersQueryService.NotNull(nameof(membersQueryService));
+
+            _repairQueryService = repairQueryService;
+            _repairQueryService.NotNull(nameof(repairQueryService));
+
+            _validator = validator;
+            _validator.NotNull(nameof(validator));
         }
         public async Task<RepairCreateDto> Handle(ReturnBillConfirmeByBillIdInputDto input, CancellationToken cancellationToken)
         {
-            AutoBackGetDto autoBack_difference = await GetDifferenceAutoBack(input);
+            await Validation(input, cancellationToken);
+            MemberGetDto memberInfo = await _membersQueryService.Get(input.BillId);
+            await ReturnValidation(memberInfo, input.JalaseNumber);
+
+            AutoBackGetDto autoBack_difference = await GetDifferenceAutoBack(input, memberInfo);
             RepairCreateDto repairCreate = GetRepairDto(autoBack_difference);
             await _repairCommandService.Create(repairCreate);
             await UpdateBedBesDel(repairCreate);
 
             return repairCreate;
         }
-        private async Task<AutoBackGetDto> GetDifferenceAutoBack(ReturnBillConfirmeByBillIdInputDto input)
+        private async Task<AutoBackGetDto> GetDifferenceAutoBack(ReturnBillConfirmeByBillIdInputDto input, MemberGetDto memberInfo)
         {
-            MemberGetDto memberInfo = await _membersQueryService.Get(input.BillId);
             ReturnBillConfirmeByZoneAndCustomerNumberInputDto returnBillConfirm = new(memberInfo.ZoneId, memberInfo.CustomerNumber, input.JalaseNumber);
             AutoBackGetDto autoBack_difference = await _autoBackQueryService.Get(returnBillConfirm);
             return autoBack_difference;
@@ -128,6 +145,24 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         {
             BedBesUpdateDelWithDateDto bedBesUpdate = new((int)input.Town, (int)input.Radif, true, input.PriDate, input.TodayDate);
             await _billCommandService.UpdateDel(bedBesUpdate);
+        }
+        private async Task Validation(ReturnBillConfirmeByBillIdInputDto input, CancellationToken cancellationToken)
+        {
+            var validationResult = await _validator.ValidateAsync(input, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new CustomValidationException(message);
+            }
+        }
+        private async Task ReturnValidation(MemberGetDto memberInfo, int jalaseNumber)
+        {
+            ZoneIdAndCustomerNumberOutputDto zoneIdAndCustomerNumber = new(memberInfo.ZoneId, memberInfo.CustomerNumber);
+            int repairCount = await _repairQueryService.GetRepairCount(zoneIdAndCustomerNumber, jalaseNumber);
+            if (repairCount > 0)
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvalidReturnDuplicate);
+            }
         }
     }
 }
