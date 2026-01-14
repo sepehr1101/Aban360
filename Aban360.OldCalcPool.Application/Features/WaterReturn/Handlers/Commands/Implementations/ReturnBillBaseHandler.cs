@@ -59,6 +59,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 CurrentNumber = bedBes.TodayNo,
                 PreviousDateJalali = bedBes.PriDate,
                 CurrentDateJalali = bedBes.TodayDate,
+                MinutesNumber = (int)bedBes.JalaseNo,
                 Item4 = bedBes.AbonFas,
                 Item2 = bedBes.FasBaha,
                 Item1 = bedBes.AbBaha,
@@ -108,6 +109,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 CurrentNumber = newCalculation.TodayNo,
                 PreviousDateJalali = newCalculation.PriDate,
                 CurrentDateJalali = newCalculation.TodayDate,
+                MinutesNumber = (int)newCalculation.JalaseNo,
                 Item4 = newCalculation.AbonFas,
                 Item2 = newCalculation.FasBaha,
                 Item1 = newCalculation.AbBaha,
@@ -157,6 +159,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 CurrentNumber = different.TodayNo,
                 PreviousDateJalali = different.PriDate,
                 CurrentDateJalali = different.TodayDate,
+                MinutesNumber = (int)different.JalaseNo,
                 Item4 = different.AbonFas,
                 Item2 = different.FasBaha,
                 Item1 = different.AbBaha,
@@ -449,7 +452,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             return bedBesInfo;
         }
-        public AutoBackCreateDto GetBedBes(BedBesCreateDto bedBes, int bedBesCount, int jalaseNumber,int returnCauseId)
+        public AutoBackCreateDto GetBedBes(BedBesCreateDto bedBes, int bedBesCount, int jalaseNumber, int returnCauseId)
         {
             string toDayDateJalali = DateTime.Now.ToShortPersianDateString();
 
@@ -529,7 +532,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             var r = input.MaxBy(x => x.DateBed);
 
             r.Id = 0;
-           
+
             r.Barge = 0;
             r.PriNo = input.Min(x => x.PriNo);
             r.TodayNo = input.Max(x => x.TodayNo);

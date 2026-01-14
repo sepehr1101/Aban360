@@ -3,6 +3,6 @@
     public record ReturnBillConfirmeByBillIdInputDto
     {
         public string BillId { get; set; }
-        public int JalaseNumber { get; set; }
+        public int MinutesNumber { get; set; }
     }
 }

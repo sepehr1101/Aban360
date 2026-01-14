@@ -13,7 +13,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Validations
                 .NotNull().WithMessage(ExceptionLiterals.NotNull)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(r => r.JalaseNumber)
+            RuleFor(r => r.MinutesNumber)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
         }

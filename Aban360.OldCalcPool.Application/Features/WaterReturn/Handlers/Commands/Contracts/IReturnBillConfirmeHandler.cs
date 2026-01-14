@@ -5,6 +5,6 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 {
     public interface IReturnBillConfirmeHandler
     {
-        Task<RepairCreateDto> Handle(ReturnBillConfirmeByBillIdInputDto input, CancellationToken cancellationToken);
+        Task<ReturnBillDataOutputDto> Handle(ReturnBillConfirmeByBillIdInputDto input, CancellationToken cancellationToken);
     }
 }

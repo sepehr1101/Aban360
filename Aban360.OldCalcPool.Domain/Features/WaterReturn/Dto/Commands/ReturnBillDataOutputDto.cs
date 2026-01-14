@@ -10,6 +10,7 @@
         public decimal CurrentNumber { get; set; }
         public string PreviousDateJalali { get; set; }
         public string CurrentDateJalali { get; set; }
+        public int MinutesNumber { get; set; }
         public decimal Item1 { get; set; }//AbBaha
         public decimal Item2 { get; set; }//FasBaha
         public decimal Item3 { get; set; }//AbonAb

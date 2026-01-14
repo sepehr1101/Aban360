@@ -5,24 +5,24 @@ using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Commands;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
+namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
 {
-    [Route("v1/water-return")]
-    public class ReturnBillConfirmeController : BaseController
+    [Route("v1/bill-return")]
+    public class ReturnBillConfirmController : BaseController
     {
         private readonly IReturnBillConfirmeHandler _returnConfirmHandler;
-        public ReturnBillConfirmeController(IReturnBillConfirmeHandler returnConfirmHandler)
+        public ReturnBillConfirmController(IReturnBillConfirmeHandler returnConfirmHandler)
         {
             _returnConfirmHandler = returnConfirmHandler;
             _returnConfirmHandler.NotNull(nameof(returnConfirmHandler));
         }
 
         [HttpPost, HttpGet]
-        [Route("confirme")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReturnBillOutputDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Confirme([FromBody] ReturnBillConfirmeByBillIdInputDto input, CancellationToken cancellationToken)
+        [Route("confirm")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReturnBillDataOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Confirm([FromBody] ReturnBillConfirmeByBillIdInputDto input, CancellationToken cancellationToken)
         {
-            RepairCreateDto result = await _returnConfirmHandler.Handle(input, cancellationToken);
+            ReturnBillDataOutputDto result = await _returnConfirmHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
     }

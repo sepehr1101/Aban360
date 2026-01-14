@@ -13,6 +13,7 @@ using FluentValidation;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+using NetTopologySuite.Index.HPRtree;
 
 namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Implementations
 {
@@ -50,22 +51,75 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
-        public async Task<RepairCreateDto> Handle(ReturnBillConfirmeByBillIdInputDto input, CancellationToken cancellationToken)
+        public async Task<ReturnBillDataOutputDto> Handle(ReturnBillConfirmeByBillIdInputDto input, CancellationToken cancellationToken)
         {
             await Validation(input, cancellationToken);
             MemberGetDto memberInfo = await _membersQueryService.Get(input.BillId);
-            await ReturnValidation(memberInfo, input.JalaseNumber);
+            await ReturnValidation(memberInfo, input.MinutesNumber);
 
             AutoBackGetDto autoBack_difference = await GetDifferenceAutoBack(input, memberInfo);
             RepairCreateDto repairCreate = GetRepairDto(autoBack_difference);
             await _repairCommandService.Create(repairCreate);
             await UpdateBedBesDel(repairCreate);
 
-            return repairCreate;
+            return GetReturn(repairCreate);
+        }
+        private ReturnBillDataOutputDto GetReturn(RepairCreateDto input)
+        {
+            return new ReturnBillDataOutputDto
+            {
+                ZoneId = input.Town,
+                CustomerNumber = input.Radif,
+                ReadingNumber = input.Eshtrak,
+                PreviousNumber = input.PriNo,
+                CurrentNumber = input.TodayNo,
+                PreviousDateJalali = input.PriDate,
+                CurrentDateJalali = input.TodayDate,
+                MinutesNumber = (int)input.JalaseNo,
+                Item4 = input.AbonFas,
+                Item2 = input.FasBaha,
+                Item1 = input.AbBaha,
+                Item12 = input.Ztadil,
+                Consumption = input.Masraf,
+                Item5 = input.Shahrdari,
+                Duration = input.Modat,
+                RegisterDateJalali = input.DateBed,
+                Minutes = input.JalaseNo,
+                SumItems = input.Baha,
+                Item3 = input.AbonAb,
+                PayableAmount = input.Pard,
+                CounterStateCode = input.CodVas,
+                BillsCount = input.Ghabs,
+                Removable = input.Del,
+                UsageId = input.CodEnshab,
+                MeterDiameterId = input.Enshab,
+                Cause = input.Elat,
+                BodySerial = input.Serial,
+                Item11 = input.ZaribFasl,
+                OtherUnit = input.TedadVahd,
+                DomesticUnit = input.TedadMas,
+                CommertialUnit = input.TedadTej,
+                BranchType = input.NoeVa,
+                Item8 = input.Jarime,
+                ConsumptionAverage = input.Rate,
+                Operator = input.Operator,
+                LastMeterChangeDateJalali = input.TavizDate,
+                Item9 = input.Zabresani,
+                Item10 = input.ZaribD,
+                Difference = input.Tafavot,
+                WastedWater = input.AbHadar,
+                WastedConsumption = input.MasHadar,
+                BillCount = input.TedGhabs,
+                Item18 = input.Bodjeh,
+                UsageConsumption = input.Group1,
+                HasSewage = input.Faz,
+                IsSpecial = input.EdarehK,
+                Lavazem = 0
+            };
         }
         private async Task<AutoBackGetDto> GetDifferenceAutoBack(ReturnBillConfirmeByBillIdInputDto input, MemberGetDto memberInfo)
         {
-            ReturnBillConfirmeByZoneAndCustomerNumberInputDto returnBillConfirm = new(memberInfo.ZoneId, memberInfo.CustomerNumber, input.JalaseNumber);
+            ReturnBillConfirmeByZoneAndCustomerNumberInputDto returnBillConfirm = new(memberInfo.ZoneId, memberInfo.CustomerNumber, input.MinutesNumber);
             AutoBackGetDto autoBack_difference = await _autoBackQueryService.Get(returnBillConfirm);
             return autoBack_difference;
         }
