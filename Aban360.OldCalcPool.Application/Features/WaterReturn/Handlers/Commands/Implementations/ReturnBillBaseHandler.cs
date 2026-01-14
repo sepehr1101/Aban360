@@ -50,7 +50,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
         public async Task<ReturnBillOutputDto> GetReturn(AutoBackCreateDto bedBes, AutoBackCreateDto newCalculation, AutoBackCreateDto different, int billCount, bool isConfirm)
         {
-            ReturBillDataOutputDto bedBesResult = new ReturBillDataOutputDto()
+            ReturnBillDataOutputDto bedBesResult = new ReturnBillDataOutputDto()
             {
                 ZoneId = bedBes.Town,
                 CustomerNumber = bedBes.Radif,
@@ -99,7 +99,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 IsSpecial = bedBes.EdarehK,
                 Lavazem = 0
             };
-            ReturBillDataOutputDto newCalcResult = new ReturBillDataOutputDto()
+            ReturnBillDataOutputDto newCalcResult = new ReturnBillDataOutputDto()
             {
                 ZoneId = newCalculation.Town,
                 CustomerNumber = newCalculation.Radif,
@@ -148,7 +148,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 IsSpecial = newCalculation.EdarehK,
                 Lavazem = 0
             };
-            ReturBillDataOutputDto differentResult = new ReturBillDataOutputDto()
+            ReturnBillDataOutputDto differentResult = new ReturnBillDataOutputDto()
             {
                 ZoneId = different.Town,
                 CustomerNumber = different.Radif,

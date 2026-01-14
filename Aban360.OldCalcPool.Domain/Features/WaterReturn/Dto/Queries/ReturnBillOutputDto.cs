@@ -4,10 +4,10 @@ namespace Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries
 {
     public record ReturnBillOutputDto
     {   
-        public ReturBillDataOutputDto Bill { get; set; }
-        public ReturBillDataOutputDto Repair { get; set; }
-        public ReturBillDataOutputDto AutoBack { get; set; }
-        public ReturnBillOutputDto(ReturBillDataOutputDto bill, ReturBillDataOutputDto repair, ReturBillDataOutputDto autoBack)
+        public ReturnBillDataOutputDto Bill { get; set; }
+        public ReturnBillDataOutputDto Repair { get; set; }
+        public ReturnBillDataOutputDto AutoBack { get; set; }
+        public ReturnBillOutputDto(ReturnBillDataOutputDto bill, ReturnBillDataOutputDto repair, ReturnBillDataOutputDto autoBack)
         {
             Bill = bill;
             Repair = repair;

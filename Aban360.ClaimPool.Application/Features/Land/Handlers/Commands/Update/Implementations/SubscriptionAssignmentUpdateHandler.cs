@@ -5,7 +5,6 @@ using Aban360.ClaimPool.Persistence.Features.Land.Commands.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using DNTPersianUtils.Core;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations
 {
@@ -41,8 +40,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 X = updateDto.X,
                 Y = updateDto.Y,
                 ReadingNumber = updateDto.ReadingNumber,
-                FirstName = updateDto.FirstName,
-                SurName = updateDto.SurName,
+                FirstName = previousSubscription.FirstName,
+                SurName = previousSubscription.SurName,
                 Address = updateDto.Address,
                 PostalCode = updateDto.PostalCode,
                 Plaque = previousSubscription.Plaque,

@@ -1,6 +1,6 @@
 ﻿namespace Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Commands
 {
-    public record ReturBillDataOutputDto
+    public record ReturnBillDataOutputDto
     {
         //Barge Mohlat Jam Type Ab10 Ab20 ser Sabt Masjar Mamor ZaribCntr RangeMas TafBack    TabAbnA TabAbnF TabsFa ChkKarbari c200 TmpDateBed ,TmpPriDate , TmpTodayDate, TmpMohlat, TmpTavizDate DateSbt Avarez
         public decimal ZoneId { get; set; }
