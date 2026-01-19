@@ -236,5 +236,8 @@
 
         public static string MeterReplacementLifeDetail { get { return " جزئیات عمر کنتورهای تعویض شده "; } }
         public static string MeterReplacementLifeSummary { get { return " خلاصه عمر کنتورهای تعویض شده "; } }
+
+        public static string WaterSaleSummary { get { return " خلاصه فروش آب‌بها "; } }
+        public static string WaterSaleDetail { get { return " جزئیات فروش آب‌بها "; } }
     }
 }

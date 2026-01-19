@@ -2,12 +2,12 @@
 {
     public record TankerWaterSetPayWithZoneIdAndCustomerNumberInputDto
     {
-        public int Id { get; set; }
+        public string PaymentId { get; set; }
         public int ZoneId { get; set; }
         public int CustomerNumber { get; set; }
-        public TankerWaterSetPayWithZoneIdAndCustomerNumberInputDto(int id, int zoneId, int customerNumber)
+        public TankerWaterSetPayWithZoneIdAndCustomerNumberInputDto(string paymentId, int zoneId, int customerNumber)
         {
-            Id = id;
+            PaymentId = paymentId;
             ZoneId = zoneId;
             CustomerNumber = customerNumber;
         }

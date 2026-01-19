@@ -39,7 +39,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             }
 
             ZoneIdAndCustomerNumberGetDto zoneIdAndCustomerNumber = await _customerInfoSerivce.GetZoneIdAndCustomerNumber(input.BillId);
-            TankerWaterSetPayWithZoneIdAndCustomerNumberInputDto tankerSetPayDto = new(input.Id, zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
+            TankerWaterSetPayWithZoneIdAndCustomerNumberInputDto tankerSetPayDto = new(input.PaymentId, zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
             await _tankerCommandSerivce.Insert(tankerSetPayDto);
 
         }

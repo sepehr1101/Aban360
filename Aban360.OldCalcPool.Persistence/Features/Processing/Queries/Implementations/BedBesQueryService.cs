@@ -44,8 +44,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         }
         public async Task<IEnumerable<BillsCanRemoveOutputDto>> GetToRemove(RemovedBillSearchDto input)
         {
-            //string dbName = GetDbName(input.ZoneId);
-            string dbName = "Atlas";
+            string dbName = GetDbName(input.ZoneId);
+            //string dbName = "Atlas";
             string query = GetBedBesListToRemoveOrReturn(dbName, true);
 
             IEnumerable<BillsCanRemoveOutputDto> result = await _sqlReportConnection.QueryAsync<BillsCanRemoveOutputDto>(query, input);
@@ -57,8 +57,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         }
         public async Task<RemoveBillDataInputDto> GetToRemove(RemoveBillGetDto input)
         {
-            //string dbName = GetDbName(input.ZoneId);
-            string dbName = "Atlas";
+            string dbName = GetDbName(input.ZoneId);
+            //string dbName = "Atlas";
             string query = GetBedBesToRemove(dbName);
 
             RemoveBillDataInputDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<RemoveBillDataInputDto>(query, input);
@@ -385,14 +385,15 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         }
         private string GetCountInDateBedQuery(string dbName)
         {
+            //Comment for test
             return @$"Select COUNT(1)
                         From [{dbName}].dbo.bed_bes
                         Where 
                         	town=@zoneId AND
                         	radif=@customerNumber AND
 	                        ((@isPreviousDate=1 AND pri_date=@date) OR
-	                        (@isPreviousDate<>1 AND today_date=@date)) AND
-                            del=0";
+	                        (@isPreviousDate<>1 AND today_date=@date)) --AND
+                            --del=0";
         }
         private string GetLatestJalaseNumberQuery(string dbName)
         {

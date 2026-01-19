@@ -445,10 +445,11 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             if (!bedBesInfo.Any())
                 throw new ReturnedBillException(ExceptionLiterals.NotFoundBillsToRemoved);
 
-            if (bedBesInfo.Any(x => x.Del))
-            {
-                throw new ReturnedBillException(ExceptionLiterals.InvalidBillWithDel);
-            }
+            // comment for test
+            //if (bedBesInfo.Any(x => x.Del))
+            //{
+            //    throw new ReturnedBillException(ExceptionLiterals.InvalidBillWithDel);
+            //}
 
             return bedBesInfo;
         }
