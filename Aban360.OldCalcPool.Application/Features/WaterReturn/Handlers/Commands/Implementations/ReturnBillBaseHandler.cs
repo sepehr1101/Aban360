@@ -617,7 +617,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         }
         public async Task<int> GetJalaliNumber(int? minutesNumber, int zoneId, int customerNumber)//Todo
         {
-            if (minutesNumber.HasValue || minutesNumber.Value != 0)
+            if (minutesNumber.HasValue && minutesNumber.Value != 0)
             {
                 return minutesNumber.Value;
             }
