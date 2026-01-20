@@ -34,11 +34,14 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         private string GetCustomerInfoDataQuery(string dataBaseName)
         {
             return @$"Select
+                        (TRIM(m.name) + ' ' + TRIM(m.family)) as FullName,
+	                    t51.C2 as ZoneTitle,
                     	m.town as ZoneId,
                     	m.radif as Radif,
 						Trim(m.bill_id) as BillId,
                     	m.noe_va as BranchType,
                     	m.cod_enshab as UsageId,
+	                    t41.C1 as UsageTitle,
                     	m.tedad_mas as DomesticUnit,
                     	m.tedad_tej as CommertialUnit,
                     	m.tedad_vahd as OtherUnit,
@@ -58,6 +61,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 						m.Khali_s as EmptyUnit,
                         m.EJUCA as VirtualCategoryId
                     From [{dataBaseName}].dbo.members m
+                    Left Join [Db70].dbo.T41 t41 
+                    	ON m.cod_enshab	= t41.C0
+                    Left Join [Db70].dbo.T51 t51
+                    	ON m.town = t51.C0
                     Where
                     	m.town=@zoneId AND 
 						m.radif=@customerNumber";
