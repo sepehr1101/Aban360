@@ -25,7 +25,7 @@
         public decimal Consumption { get; set; }
         public decimal Duration { get; set; }
         public string RegisterDateJalali { get; set; }
-        public decimal Minutes { get; set; }
+        //public decimal Minutes { get; set; }
         public decimal SumItems { get; set; }
         public decimal PayableAmount { get; set; }
         public decimal CounterStateCode { get; set; }

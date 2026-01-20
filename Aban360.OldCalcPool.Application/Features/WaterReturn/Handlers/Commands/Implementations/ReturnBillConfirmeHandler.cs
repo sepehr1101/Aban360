@@ -84,7 +84,6 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Item5 = input.Shahrdari,
                 Duration = input.Modat,
                 RegisterDateJalali = input.DateBed,
-                Minutes = input.JalaseNo,
                 SumItems = input.Baha,
                 Item3 = input.AbonAb,
                 PayableAmount = input.Pard,

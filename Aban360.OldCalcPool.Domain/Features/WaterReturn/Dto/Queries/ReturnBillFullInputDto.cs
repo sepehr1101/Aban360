@@ -4,7 +4,7 @@
     {
         public string BillId { get; set; }
         public int ReturnCauseId { get; set; }
-        public int? Minutes { get; set; }
+        public int? MinutesNumber { get; set; }
         public string FromDateJalali { get; set; }
         public string ToDateJalali { get; set; }
         public bool IsConfirm { get; set; }
