@@ -1,8 +1,10 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Cronjobs;
+using Aban360.Common.BaseEntities;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
-using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
@@ -10,17 +12,22 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
     [Route("v1/water-return")]
     public class ReturnBillController : BaseController
     {
-        private readonly IReturnBillPartialHandler _billToReturnedHandler;
+        private readonly IReturnBillPartialHandler _billPartialHandler;
         private readonly IReturnBillFullHandler _billFullHandler;
+        private readonly IReportGenerator _reportGenerator;
         public ReturnBillController(
-            IReturnBillPartialHandler billToReturnedHandler,
-            IReturnBillFullHandler billFullHandler)
+            IReturnBillPartialHandler billPartialHandler,
+            IReturnBillFullHandler billFullHandler,
+            IReportGenerator reportGenerator)
         {
-            _billToReturnedHandler = billToReturnedHandler;
-            _billToReturnedHandler.NotNull(nameof(billToReturnedHandler));
+            _billPartialHandler = billPartialHandler;
+            _billPartialHandler.NotNull(nameof(billPartialHandler));
 
             _billFullHandler = billFullHandler;
             _billFullHandler.NotNull(nameof(billFullHandler));
+
+            _reportGenerator = reportGenerator;
+            _reportGenerator.NotNull(nameof(reportGenerator));
         }
 
         [HttpPost, HttpGet]
@@ -28,7 +35,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReturnBillOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> PartialReturn([FromBody] ReturnBillPartialInputDto input, CancellationToken cancellationToken)
         {
-            ReturnBillOutputDto result = await _billToReturnedHandler.Handle(input, cancellationToken);
+            ReturnBillOutputDto result = await _billPartialHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
@@ -39,6 +46,31 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
         {
             ReturnBillOutputDto result = await _billFullHandler.Handle(input, cancellationToken);
             return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("full-sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetFullStiReport(ReturnBillFullInputDto input, CancellationToken cancellationToken)
+        {
+            int reportCode = 2000;
+            ReturnBillOutputDto result = await _billFullHandler.Handle(input, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
+        }
+
+
+        [HttpPost]
+        [Route("partial-sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetPartialStiReport(ReturnBillPartialInputDto input, CancellationToken cancellationToken)
+        {
+            int reportCode = 2000;
+            ReturnBillOutputDto result = await _billPartialHandler.Handle(input, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
         }
     }
 }

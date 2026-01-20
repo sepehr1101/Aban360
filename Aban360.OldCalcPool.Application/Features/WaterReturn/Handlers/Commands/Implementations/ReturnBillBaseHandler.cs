@@ -59,7 +59,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         public async Task<ReturnBillOutputDto> GetReturn(AutoBackCreateDto bedBes, AutoBackCreateDto newCalculation, AutoBackCreateDto different, CustomerInfoOutputDto customerInfo, int billCount, bool isConfirm)
         {
             string description = await GetDescription(customerInfo, bedBes);
-            ReturnBillDataOutputDto bedBesResult = new ReturnBillDataOutputDto()
+            ReturnBillDataOutputDto previousValues = new ReturnBillDataOutputDto()
             {
                 ZoneId = bedBes.Town,
                 CustomerNumber = bedBes.Radif,
@@ -109,7 +109,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 IsSpecial = bedBes.EdarehK,
                 Lavazem = 0
             };
-            ReturnBillDataOutputDto newCalcResult = new ReturnBillDataOutputDto()
+            ReturnBillDataOutputDto currentValues = new ReturnBillDataOutputDto()
             {
                 ZoneId = newCalculation.Town,
                 CustomerNumber = newCalculation.Radif,
@@ -159,7 +159,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 IsSpecial = newCalculation.EdarehK,
                 Lavazem = 0
             };
-            ReturnBillDataOutputDto differentResult = new ReturnBillDataOutputDto()
+            ReturnBillDataOutputDto returnValues = new ReturnBillDataOutputDto()
             {
                 ZoneId = different.Town,
                 CustomerNumber = different.Radif,
@@ -211,7 +211,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             };
 
 
-            ReturnBillOutputDto returnDto = new(description, customerInfo.ZoneTitle, bedBesResult, newCalcResult, differentResult);
+            ReturnBillOutputDto returnDto = new(description, customerInfo.ZoneTitle, previousValues, currentValues, returnValues);
 
             if (!isConfirm)
             {

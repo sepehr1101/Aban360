@@ -397,13 +397,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         }
         private string GetLatestJalaseNumberQuery(string dbName)
         {
-                return $@"Select top 1 jalase_no
-                        From atlas.dbo.autoback
-                        Where 
-                    	    town=@ZoneId AND
-                    	    radif=@CustomerNumber AND
-                    	    date_bed=@Date
-                        Order By date_bed desc,id desc";
+            return $@"Select top 1 jalase_no
+                    From atlas.dbo.autoback
+                    Where 
+                    	town=@ZoneId AND
+                    	radif=@CustomerNumber AND
+                    	date_bed=@Date
+                    Order By date_bed desc,id desc";
         }
     }
 }
