@@ -1,6 +1,7 @@
 ﻿using Aban360.CalculationPool.Domain.Features.Bill.Entities;
 using Aban360.CalculationPool.Persistence.Contexts.Contracts;
 using Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,11 +34,12 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
                 .Include(c => c.CompanyServiceType)
                 .ToListAsync();
         }
-        public async Task<ICollection<CompanyService>> GetByTypeId(int typeId)
+        public async Task<ICollection<NumericDictionary>> GetByTypeId(int typeId)
         {
             return await _companyService
                 .Include(c => c.CompanyServiceType)
                 .Where(c => c.CompanyServiceTypeId == typeId)
+                .Select(c => new NumericDictionary(c.Id, c.Title))
                 .ToListAsync();
         }
     }

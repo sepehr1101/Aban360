@@ -53,16 +53,16 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         private void ValidationOffering(AfterSaleInputDto input)
         {
-            if (input.PreviousData.WaterDiameterId != input.CurrentData.WaterDiameterId && !input.Offerings.Contains(1))
+            if (input.PreviousData.WaterDiameterId != input.CurrentData.WaterDiameterId && !input.CompanyServiceIds.Contains(1))
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeWaterDiameter));
             }
-            if (input.PreviousData.SiphonDiameterId != input.CurrentData.SiphonDiameterId && !input.Offerings.Contains(24))
+            if (input.PreviousData.SiphonDiameterId != input.CurrentData.SiphonDiameterId && !input.CompanyServiceIds.Contains(24))
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeSiphonDiameter));
             }
 
-            if (input.PreviousData.UsageId != input.CurrentData.UsageId && !input.Offerings.Contains(7))
+            if (input.PreviousData.UsageId != input.CurrentData.UsageId && !input.CompanyServiceIds.Contains(7))
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeUsage));
             }

@@ -4,7 +4,7 @@
     {
         public int ZoneId { get; set; }
         public string? Block { get; set; }
-        public ICollection<int> Offerings { get; set; } 
+        public ICollection<int> CompanyServiceIds { get; set; } 
         public AfterSaleItemsInputDto PreviousData{ get; set; }
         public AfterSaleItemsInputDto CurrentData{ get; set; }
     }

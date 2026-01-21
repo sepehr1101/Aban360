@@ -1,9 +1,9 @@
-﻿using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
+﻿using Aban360.Common.BaseEntities;
 
 namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts
 {
     public interface ICompanyServiceGetByTypeIdHandler
     {
-        Task<ICollection<CompanyServiceGetDto>> Handle(int typeId, CancellationToken cancellationToken);
+        Task<ICollection<NumericDictionary>> Handle(int typeId, CancellationToken cancellationToken);
     }
 }
