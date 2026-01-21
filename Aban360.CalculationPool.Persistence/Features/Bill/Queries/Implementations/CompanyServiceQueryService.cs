@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementations
 {
-   internal sealed class CompanyServiceQueryService : ICompanyServiceQueryService
+    internal sealed class CompanyServiceQueryService : ICompanyServiceQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<CompanyService> _companyService;
@@ -31,6 +31,13 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
         {
             return await _companyService
                 .Include(c => c.CompanyServiceType)
+                .ToListAsync();
+        }
+        public async Task<ICollection<CompanyService>> GetByTypeId(int typeId)
+        {
+            return await _companyService
+                .Include(c => c.CompanyServiceType)
+                .Where(c => c.CompanyServiceTypeId == typeId)
                 .ToListAsync();
         }
     }

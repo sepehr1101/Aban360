@@ -6,5 +6,6 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts
     {
         Task<CompanyService> Get(short id);
         Task<ICollection<CompanyService>> Get();
+        Task<ICollection<CompanyService>> GetByTypeId(int typeId);
     }
 }

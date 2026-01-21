@@ -1,13 +1,10 @@
 ﻿namespace Aban360.CalculationPool.Domain.Features.Sale.Dto.Input
 {
-    public record SaleInputDto
+    public record AfterSaleItemsInputDto
     {
         public short WaterDiameterId { get; set; }
         public short? SiphonDiameterId { get; set; }
-
-        public int ZoneId { get; set; }
         public int UsageId { get; set; }
-        public string? Block { get; set; }
         public bool IsDomestic { get; set; }
         public int? DiscountTypeId { get; set; }
         public bool? HasWaterBroker { get; set; }

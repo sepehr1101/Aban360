@@ -104,5 +104,13 @@
 
         //Sale
         public static string InvalicZoneIdWithBlock => "ناحیه با بلوک انتخابی مطابقت ندارد.";
+
+        //AfterSale
+        public static string CheckCompanyService(string item) => $"برای {item} ابتدا خدمت را انتخاب کنید.";
+        public static string ChangeWaterDiameter => "تغیر قطر انشعاب آب";
+        public static string ChangeSiphonDiameter => "تغیر قطر سیفون";
+        public static string ChangeUsage => "تغیر کاربری";
+
+
     }
 }
