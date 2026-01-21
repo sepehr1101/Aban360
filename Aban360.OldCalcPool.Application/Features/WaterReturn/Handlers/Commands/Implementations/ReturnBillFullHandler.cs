@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
@@ -17,7 +18,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             _returnBillBaseHandler.NotNull(nameof(returnBillBaseHandler));
         }
 
-        public async Task<ReturnBillOutputDto> Handle(ReturnBillFullInputDto input, CancellationToken cancellationToken)
+        public async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> Handle(ReturnBillFullInputDto input, CancellationToken cancellationToken)
         {
             CustomerInfoOutputDto customerInfo = await Validation(input, cancellationToken);
 

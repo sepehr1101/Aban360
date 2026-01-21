@@ -35,7 +35,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReturnBillOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> PartialReturn([FromBody] ReturnBillPartialInputDto input, CancellationToken cancellationToken)
         {
-            ReturnBillOutputDto result = await _billPartialHandler.Handle(input, cancellationToken);
+            FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = await _billPartialHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
@@ -44,7 +44,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReturnBillOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> FullReturn([FromBody] ReturnBillFullInputDto input, CancellationToken cancellationToken)
         {
-            ReturnBillOutputDto result = await _billFullHandler.Handle(input, cancellationToken);
+            FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = await _billFullHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
@@ -55,7 +55,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
         public async Task<IActionResult> GetFullStiReport(ReturnBillFullInputDto input, CancellationToken cancellationToken)
         {
             int reportCode = 2000;
-            ReturnBillOutputDto result = await _billFullHandler.Handle(input, cancellationToken);
+            FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = await _billFullHandler.Handle(input, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
             return Ok(reportId);
         }
@@ -68,7 +68,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
         public async Task<IActionResult> GetPartialStiReport(ReturnBillPartialInputDto input, CancellationToken cancellationToken)
         {
             int reportCode = 2000;
-            ReturnBillOutputDto result = await _billPartialHandler.Handle(input, cancellationToken);
+            FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = await _billPartialHandler.Handle(input, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
             return Ok(reportId);
         }

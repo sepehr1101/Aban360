@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Exceptions;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
@@ -27,6 +28,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private readonly IBillReturnCauseQueryService _billReturnCauseQueryService;
         private readonly IValidator<ReturnBillFullInputDto> _returnFullValidator;
         private readonly IValidator<ReturnBillPartialInputDto> _returnPartialValidator;
+        private static string _title = "برگشتی";
         public ReturnBillBaseHandler(
             IBedBesQueryService bedBesQueryService,
             IBedBesCommandService bedBesCommandService,
@@ -56,7 +58,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             _returnPartialValidator.NotNull(nameof(returnPartialValidator));
         }
 
-        public async Task<ReturnBillOutputDto> GetReturn(AutoBackCreateDto bedBes, AutoBackCreateDto newCalculation, AutoBackCreateDto different, CustomerInfoOutputDto customerInfo, int billCount, bool isConfirm)
+        public async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> GetReturn(AutoBackCreateDto bedBes, AutoBackCreateDto newCalculation, AutoBackCreateDto different, CustomerInfoOutputDto customerInfo, int billCount, bool isConfirm)
         {
             string description = await GetDescription(customerInfo, bedBes);
             ReturnBillDataOutputDto previousValues = new ReturnBillDataOutputDto()
@@ -207,15 +209,16 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Lavazem = 0
             };
 
-
-            ReturnBillOutputDto returnDto = new(description, customerInfo.ZoneTitle, previousValues, currentValues, returnValues);
+            ReturnBillHeaderOutputDto header = new(description, customerInfo.ZoneTitle, previousValues.MinutesNumber.ToString());
+            ReturnBillOutputDto data = new(previousValues, currentValues, returnValues);
+            FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = new(_title, header, data);
 
             if (!isConfirm)
             {
-                return returnDto;
+                return result;
             }
             await CreateAutoBack(bedBes, newCalculation, different);
-            return returnDto;
+            return result;
         }
         public AutoBackCreateDto GetFullNewCalculation(BedBesCreateDto bedBes, int returnCauseId, int bedbesCount, int jalaseNumber)
         {

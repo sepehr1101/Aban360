@@ -1,4 +1,5 @@
-﻿using Aban360.OldCalcPool.Domain.Constants;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.OldCalcPool.Domain.Constants;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
@@ -8,7 +9,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 {
     public interface IReturnBillBaseHandler
     {
-        Task<ReturnBillOutputDto> GetReturn(AutoBackCreateDto bedBes, AutoBackCreateDto newCalculation, AutoBackCreateDto different, CustomerInfoOutputDto customerInfo, int billCount, bool isConfirm);
+        Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> GetReturn(AutoBackCreateDto bedBes, AutoBackCreateDto newCalculation, AutoBackCreateDto different, CustomerInfoOutputDto customerInfo, int billCount, bool isConfirm);
         AutoBackCreateDto GetFullNewCalculation(BedBesCreateDto bedBes, int returnCauseId, int bedbesCount, int jalaseNumber);
         AutoBackCreateDto GetNewCalculation(AbBahaCalculationDetails tariffInfo, BedBesCreateDto bedBes, int returnCauseId, int bedbesCount, float? consumptionHadar, long? abHadarAmount, int jalaseNumber);
         AutoBackCreateDto GetDifferent(BedBesCreateDto bedBes, AutoBackCreateDto repair, int jalaseNumber);

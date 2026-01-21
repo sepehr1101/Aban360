@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Exceptions;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
@@ -46,7 +47,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             _returnBillBaseHandler.NotNull(nameof(returnBillBaseHandler));
         }
 
-        public async Task<ReturnBillOutputDto> Handle(ReturnBillPartialInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> Handle(ReturnBillPartialInputDto inputDto, CancellationToken cancellationToken)
         {
             CustomerInfoOutputDto customerInfo = await Validation(inputDto, cancellationToken);
             int jalaseNumber = await _returnBillBaseHandler.GetJalaliNumber(inputDto.MinutesNumber, customerInfo.ZoneId, customerInfo.Radif);
@@ -64,7 +65,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 return await CreateAutoBacksAndReturn(inputDto, bedBesInfo, bedBesResult, customerInfo, null, null, consumptionAverage, jalaseNumber, cancellationToken);
             }
         }
-        private async Task<ReturnBillOutputDto> CreateAutoBacksAndReturn(ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBesInfo, BedBesCreateDto bedBesResult, CustomerInfoOutputDto customerInfo, float? hadarConsumption, long? finalAmount, float consumptionAverage, int jalaseNumber, CancellationToken cancellationToken)
+        private async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> CreateAutoBacksAndReturn(ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBesInfo, BedBesCreateDto bedBesResult, CustomerInfoOutputDto customerInfo, float? hadarConsumption, long? finalAmount, float consumptionAverage, int jalaseNumber, CancellationToken cancellationToken)
         {
             AbBahaCalculationDetails abBahaResult = await GetAbBahaTariff(input, bedBesInfo, consumptionAverage, cancellationToken);
 
