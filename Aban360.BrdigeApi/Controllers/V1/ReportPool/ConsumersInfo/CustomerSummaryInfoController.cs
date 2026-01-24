@@ -2,9 +2,9 @@
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
+using Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contracts;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Domain.Features.Transactions;
-using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 using Aban360.ReportPool.Persistence.Features.Transactions.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +14,11 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
     [Route("v1/customer")]
     public class CustomerSummaryInfoController : BaseController
     {
-        private readonly IConsumerSummaryQueryService _consumerSummeryQueryService;
+        private readonly IConsumerSummaryGetHandler _consumerSummeryQueryService;
         private readonly ILatestDebtService _latestDebtService;
 
         public CustomerSummaryInfoController(
-            IConsumerSummaryQueryService summaryQueryService,
+            IConsumerSummaryGetHandler summaryQueryService,
             ILatestDebtService latestDebtService)
         {
             _consumerSummeryQueryService = summaryQueryService;
@@ -33,10 +33,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [ProducesResponseType(typeof(ApiResponseEnvelope<ConsumerSummaryDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSummaryInfo([FromBody] SearchInput searchInput, CancellationToken cancellationToken)
         {
-            ConsumerSummaryDto summary = await _consumerSummeryQueryService.GetInfo(searchInput.Input);
-            summary.TotalUnitWater = summary.UnitDomesticWater + summary.UnitCommercialWater + summary.UnitOtherWater;
-            summary.TotalUnitSewage = summary.UnitDomesticSewage + summary.UnitCommercialSewage + summary.UnitOtherSewage;
-          
+            ConsumerSummaryDto summary = await _consumerSummeryQueryService.Handle(searchInput.Input, cancellationToken);          
             return Ok(summary);
         }
 

@@ -17,6 +17,8 @@
         UsageIdEqual0 = 12,
         InvalidHousholdDate= 13,
         InvalidEmptyUnit=14,
-        NoReadingNumber=15
+        NoReadingNumber=15,
+        NonDomesticUndeSocial=16,
+        UnitExtraUnderSocial=17
     }
 }

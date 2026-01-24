@@ -8,12 +8,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IAbonmanCalculator
     {
-        TariffItemResult CalculateAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali, ConsumptionPartialInfo consumptionPartialInfo, out double before1404_12_02);
-        TariffItemResult CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, double abonAllowed, TariffItemResult abonmanResult, double before1404_12_02);
+        TariffItemResult CalculateAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali, ConsumptionPartialInfo consumptionPartialInfo, out double before1404_12_02, out double before1404);
+        TariffItemResult CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, double abonAllowed, TariffItemResult abonmanResult, double before1403_12_02, double before1404);
     }
 
     internal sealed class AbonmanCalculator : IAbonmanCalculator
     {
+        const int olgooBefore1404=14;
         const int monthDays = 30;
         const string date_begin = "1330/01/01";
         //const string date1400_01_01 = "1400/01/01";
@@ -30,9 +31,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const double amountTo1404_09_09 = 58500.0;
         const double amountTo1404_12_29 = 71500.0;
 
-        public TariffItemResult CalculateAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali, ConsumptionPartialInfo consumptionPartialInfo, out double before1404_12_02)
+        public TariffItemResult CalculateAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali, ConsumptionPartialInfo consumptionPartialInfo, out double before1403_12_02, out double before1404)
         {
-            before1404_12_02 = 0;
+            before1403_12_02 = 0;
+            before1404 = 0;
             if (!IsConstruction(customerInfo.BranchType) && IsTankerSale(customerInfo.UsageId))
             {
                 return new TariffItemResult();
@@ -95,11 +97,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 abonAbAmount *= 2;
             }
-            before1404_12_02 = sumUnit * (amountTo1403_12_01 / monthDays * durationTo1403_12_01);
+            before1403_12_02 = sumUnit * (amountTo1403_12_01 / monthDays * durationTo1403_12_01);
+            before1404 = (before1403_12_02) + sumUnit * (amountTo1403_12_30 / monthDays * durationTo1403_12_30);
             return new TariffItemResult(consumptionPartialInfo.AllowedRatio * abonAbAmount, consumptionPartialInfo.DisallwedRatio * abonAbAmount);
         }
 
-        public TariffItemResult CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, double abonAllowed, TariffItemResult abonmanResult, double before1404_12_02)
+        public TariffItemResult CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, double abonAllowed, TariffItemResult abonmanResult, double before1403_12_02, double before1404)
         {
             if (IsSpecialEducation(usageId, isSpecial))
             {
@@ -115,18 +118,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             }
 
             if (IsUnderSocialService(customerInfo.BranchType) &&
-              IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
-              date1403_12_01.MoreOrEq(consumptionPartialInfo.EndDateJalali) &&
-              consumptionPartialInfo.DisallowedConsumtion<=0)
-            {
-                //طبق صحبت تلفنی با سرکار خانم قرمز مورخ 14 دی 1404 و با تایید جناب اعلایی تغییر کرد
-                return new TariffItemResult(abonmanAmount);
-            }
-
-            if (IsUnderSocialService(customerInfo.BranchType) &&
              IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
              date1403_12_01.MoreOrEq(consumptionPartialInfo.EndDateJalali) &&
-             consumptionPartialInfo.DisallowedConsumtion >0)
+             (consumptionPartialInfo.DisallowedConsumtion >0))
             {
                 return new TariffItemResult();
             }
@@ -138,13 +132,23 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return new TariffItemResult(abonmanAmount);
             }
+            //todo abon 
+            if (IsUnderSocialService(branchTypeId) &&
+               IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
+               date1403_12_01.MoreOrEq(consumptionPartialInfo.StartDateJalali) &&
+               consumptionPartialInfo.EndDateJalali.More(date1403_12_01) &&
+               consumptionPartialInfo.DisallowedConsumtion > 0 &&
+               consumptionInfo.MonthlyAverageConsumption<olgooBefore1404)
+            {
+                return new TariffItemResult(abonmanAmount);
+            }
 
             if (IsUnderSocialService(branchTypeId) &&
                IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
                consumptionPartialInfo.EndDateJalali.More(date1403_12_01) &&
                consumptionPartialInfo.DisallowedConsumtion > 0)
-            {
-                double abonTmp = abonmanAmount - before1404_12_02;
+            {                
+                double abonTmp = abonmanAmount - before1403_12_02;
                 return abonTmp > 0 ? new TariffItemResult(abonTmp) : new TariffItemResult();
             }
             if (IsMullah(customerInfo.BranchType) && abonmanResult.Disallowed > 0)
@@ -153,6 +157,26 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             }
 
             if (IsReligiousWithCharity(usageId))
+            {
+                double abonmanPerUnit = abonmanAmount / customerInfo.UnitAll;
+                double abonmanCommercial = abonmanPerUnit * customerInfo.CommertialUnit;
+                double nonCommercial = abonmanAmount - abonmanCommercial;
+                return consumptionInfo.MonthlyAverageConsumption <= customerInfo.ContractualCapacity ?
+                    new TariffItemResult(nonCommercial) : new TariffItemResult();
+            }
+            if(IsQuranIn1403ContinuesNext(usageId,consumptionPartialInfo.StartDateJalali, consumptionPartialInfo.EndDateJalali))
+            {
+                double abonmanPerUnit = abonmanAmount / customerInfo.UnitAll;
+                double abonmanCommercial = abonmanPerUnit * customerInfo.CommertialUnit;
+                double nonCommercial = abonmanAmount - abonmanCommercial;
+                return consumptionInfo.MonthlyAverageConsumption <= customerInfo.ContractualCapacity ?
+                    new TariffItemResult(nonCommercial - before1404) : new TariffItemResult();
+            }
+            if(IsQuranBefore1404_01_01(usageId, consumptionPartialInfo.EndDateJalali))
+            {
+                return new TariffItemResult();
+            }
+            if(IsQuranAfter1404_01_01(usageId, consumptionPartialInfo.StartDateJalali))
             {
                 double abonmanPerUnit = abonmanAmount / customerInfo.UnitAll;
                 double abonmanCommercial = abonmanPerUnit * customerInfo.CommertialUnit;

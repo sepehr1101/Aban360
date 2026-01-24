@@ -1,4 +1,5 @@
-﻿using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
+﻿using Aban360.OldCalcPool.Application.Features.Processing.Helpers;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffDateOperations;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
@@ -8,28 +9,28 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IHotSeasonCalculator
     {
-        TariffItemResult CalcFazelab(CustomerInfoOutputDto customerInfo, double fazelabAmount, double monthlyConsumption, TariffItemResult fazelabCalcResult, ConsumptionPartialInfo consumptionPartialInfo);
-        TariffItemResult CalculateAb(double abBahaAmount, CustomerInfoOutputDto customerInfo, double monthlyConsumption, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo);
+        TariffItemResult CalcFazelab(CustomerInfoOutputDto customerInfo, double fazelabAmount, double monthlyConsumption, TariffItemResult fazelabCalcResult, ConsumptionPartialInfo consumptionPartialInfo, bool isVillageCalculation, double villageMultiplier);
+        TariffItemResult CalculateAb(double abBahaAmount, CustomerInfoOutputDto customerInfo, double monthlyConsumption, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo, bool isVillageCalculation, double villageMultiplier);
         TariffItemResult CalculateDiscount(double amountDiscount, TariffItemResult hotSeasonInfo, CustomerInfoOutputDto customerInfo, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo);
     }
 
     internal sealed class HotSeasonCalculator : IHotSeasonCalculator
     {
-        const string date_1404_02_31 = "1404/02/31";
+        //const string date_1404_02_31 = "1404/02/31";
         const string date_02_31 = "/02/31";
         const string date_06_31 = "/06/31";
         const double _hotSeasonRate = 0.2;
         const int _firstSewageCalculation = 1;
-        public TariffItemResult CalculateAb(double abBahaAmount, CustomerInfoOutputDto customerInfo, double monthlyConsumption, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo)
+        public TariffItemResult CalculateAb(double abBahaAmount, CustomerInfoOutputDto customerInfo, double monthlyConsumption, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo, bool isVillageCalculation, double villageMultiplier)
         {           
             if (IsDomesticBelow25MeterConsumption(customerInfo, monthlyConsumption))
             {
                 return new TariffItemResult();
             }
-            return GetDurationAndAmount(consumptionPartialInfo.StartDateJalali, consumptionPartialInfo.EndDateJalali, consumptionPartialInfo.Duration, customerInfo, abBahaAmount, calcResult);
+            return GetDurationAndAmount(consumptionPartialInfo.StartDateJalali, consumptionPartialInfo.EndDateJalali, consumptionPartialInfo.Duration, customerInfo, abBahaAmount, calcResult, consumptionPartialInfo, isVillageCalculation, villageMultiplier);
         }
 
-        public TariffItemResult CalcFazelab(CustomerInfoOutputDto customerInfo, double fazelabAmount, double monthlyConsumption, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo)
+        public TariffItemResult CalcFazelab(CustomerInfoOutputDto customerInfo, double fazelabAmount, double monthlyConsumption, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo, bool isVillageCalculation, double villageMultiplier)
         {
             if (IsDomesticBelow25MeterConsumption(customerInfo, monthlyConsumption))
             {
@@ -60,9 +61,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             //double fazelabMultiplier = GetMultiplier(customerInfo.UsageId);
             if (customerInfo.SewageCalcState == _firstSewageCalculation)
             {               
-                return GetDurationAndAmount(consumptionPartialInfo.StartDateJalali, customerInfo.SewageInstallationDateJalali, consumptionPartialInfo.Duration, customerInfo, fazelabAmount, calcResult, aboveZero:false);               
+                return GetDurationAndAmount(consumptionPartialInfo.StartDateJalali, customerInfo.SewageInstallationDateJalali, consumptionPartialInfo.Duration, customerInfo, fazelabAmount, calcResult, consumptionPartialInfo, isVillageCalculation, villageMultiplier, aboveZero:false);               
             }
-            return GetDurationAndAmount(consumptionPartialInfo.StartDateJalali, consumptionPartialInfo.EndDateJalali, consumptionPartialInfo.Duration, customerInfo, fazelabAmount, calcResult, true );         
+            return GetDurationAndAmount(consumptionPartialInfo.StartDateJalali, consumptionPartialInfo.EndDateJalali, consumptionPartialInfo.Duration, customerInfo, fazelabAmount, calcResult, consumptionPartialInfo, isVillageCalculation, villageMultiplier, aboveZero: true );         
         }
 
         public TariffItemResult CalculateDiscount(double amountDiscount, TariffItemResult hotSeasonInfo, CustomerInfoOutputDto customerInfo, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo)
@@ -101,10 +102,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return new TariffItemResult(hotSeasonInfo.Allowed);
             }
-           /* if (date_1404_02_31.MoreOrEq(consumptionPartialInfo.EndDateJalali) && IsSchool(customerInfo.UsageId))
+            if (IsQuranAfter1404_01_01(customerInfo.UsageId, consumptionPartialInfo.StartDateJalali))
             {
-                return new TariffItemResult();
-            }*/
+                return new TariffItemResult(hotSeasonInfo.Allowed);
+            }
+            /* if (date_1404_02_31.MoreOrEq(consumptionPartialInfo.EndDateJalali) && IsSchool(customerInfo.UsageId))
+             {
+                 return new TariffItemResult();
+             }*/
             double fasleGarmAmount = hotSeasonInfo.Disallowed;
             double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, consumptionPartialInfo.Consumption, consumptionPartialInfo.Duration, fasleGarmAmount, consumptionPartialInfo);
             double finalDiscount = virtualDiscount > 0 ? virtualDiscount : fasleGarmAmount;
@@ -112,7 +117,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         }
 
         #region private methods
-        private TariffItemResult GetDurationAndAmount(string date1, string date2, int duration, CustomerInfoOutputDto customerInfo, double baseAmount, TariffItemResult fazelabCalcResult, bool aboveZero = true, double fazelabMultiplier = 1)
+        private TariffItemResult GetDurationAndAmount(string date1, string date2, int duration, CustomerInfoOutputDto customerInfo, double baseAmount, TariffItemResult fazelabCalcResult, ConsumptionPartialInfo consumptionPartialInfo, bool isVillageCalculation, double villageMultiplier, bool aboveZero = true, double fazelabMultiplier = 1)
         {
             string hotSeasonStart = GetHotSeasonStart(date2);
             string hotSeasonEnd = GetHotSeasonEnd(date2);
@@ -124,11 +129,29 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             if (IsUnderSocialService(customerInfo.BranchType) &&
                IsDomesticWithoutUnspecified(customerInfo.UsageId))
             {
-                return new TariffItemResult(0, amount2 * fazelabMultiplier, hotSeasonDuration);
+                if ("1403/12/30".MoreOrEq(consumptionPartialInfo.EndDateJalali))
+                {
+                    return new TariffItemResult(0, amount2 * fazelabMultiplier, hotSeasonDuration);
+                }
+
+                double allowedDiscount = isVillageCalculation?(fazelabCalcResult.Allowed / 0.65) * 0.5: fazelabCalcResult.Allowed;
+                double remained = fazelabCalcResult.Summation - allowedDiscount;
+                double hotseasonDiscount = hotSeasonDuration > 0 ? (hotSeasonDuration * remained / duration) * _hotSeasonRate : 0;
+
+                return new TariffItemResult(0, hotseasonDiscount * fazelabMultiplier, hotSeasonDuration);
             }
             if (IsMullah(customerInfo.BranchType) && IsVillage(customerInfo.ZoneId))
             {
-                return new TariffItemResult(0, amount2 * fazelabMultiplier, hotSeasonDuration);
+                // بخش زیر الگو صفر محاسبه شده بود که طبق نظر سرکار خانم حبیبی نژاد در 28 دی 1404 تغییر کرد
+                if ("1403/12/30".MoreOrEq(consumptionPartialInfo.EndDateJalali))
+                {
+                    return new TariffItemResult(0, amount2 * fazelabMultiplier, hotSeasonDuration);
+                }
+                //else 1404 or more
+                double allowedDiscount = (fazelabCalcResult.Allowed / 0.65) * 0.5;
+                double remained = fazelabCalcResult.Summation - allowedDiscount;
+                double hotseasonMullah= hotSeasonDuration > 0 ? (hotSeasonDuration * remained / duration) * _hotSeasonRate : 0;
+                return new TariffItemResult(0, hotseasonMullah * fazelabMultiplier, hotSeasonDuration);
             }
             return new TariffItemResult(amount1 * fazelabMultiplier, amount2 * fazelabMultiplier, hotSeasonDuration);
         }
@@ -147,11 +170,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         {
             return date2.Substring(0, 4) + date_06_31;
         }
-        //private double GetMultiplier(int usageId)
-        //{
-        //    return IsDomesticCategory(usageId) ? 0.7 : 1;
-        //}
         #endregion
     }
 }
-

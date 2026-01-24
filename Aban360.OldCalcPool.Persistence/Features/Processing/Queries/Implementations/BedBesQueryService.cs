@@ -44,8 +44,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         }
         public async Task<IEnumerable<BillsCanRemoveOutputDto>> GetToRemove(RemovedBillSearchDto input)
         {
-            //string dbName = GetDbName(input.ZoneId);
-            string dbName = "Atlas";
+            string dbName = GetDbName(input.ZoneId);
+            //string dbName = "Atlas";
             string query = GetBedBesListToRemoveOrReturn(dbName, true);
 
             IEnumerable<BillsCanRemoveOutputDto> result = await _sqlReportConnection.QueryAsync<BillsCanRemoveOutputDto>(query, input);
@@ -57,8 +57,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         }
         public async Task<RemoveBillDataInputDto> GetToRemove(RemoveBillGetDto input)
         {
-            //string dbName = GetDbName(input.ZoneId);
-            string dbName = "Atlas";
+            string dbName = GetDbName(input.ZoneId);
+            //string dbName = "Atlas";
             string query = GetBedBesToRemove(dbName);
 
             RemoveBillDataInputDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<RemoveBillDataInputDto>(query, input);
@@ -118,7 +118,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             {
                 zoneId = zoneId,
                 customerNumber = customerNumber,
-                dateJalali = dateJalali
+                nexDay = dateJalali
             };
             float rate = await _sqlReportConnection.QueryFirstOrDefaultAsync<float>(query, @params);
             return rate;
@@ -131,7 +131,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             IEnumerable<BedBesCreateDto> result = await _sqlReportConnection.QueryAsync<BedBesCreateDto>(query, input);
             return result;
         }
-        public async Task<int> GetCountInDateBed(int zoneId, int customernumber, string date)
+        public async Task<int> GetCountInDateBed(int zoneId, int customernumber, string date,bool isPreviousDate)
         {
             string dbName = GetDbName(zoneId);
             //string dbName = "Atlas";
@@ -140,12 +140,26 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             {
                 zoneId = zoneId,
                 customerNumber = customernumber,
+                isPreviousDate= isPreviousDate,
                 date = date
             };
             int count = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(query, @params);
             return count;
         }
-
+        public async Task<int?> GetLatestJalaseNumber(ZoneIdAndCustomerNumberOutputDto input)
+        {
+            //string dbName = GetDbName(input.ZoneId);
+            string dbName = "Atlas";
+            string query = GetLatestJalaseNumberQuery(dbName);
+            var @params = new
+            {
+                zoneId = input.ZoneId,
+                customerNumber = input.CustomerNumber,
+                date = DateTime.Now.ToShortPersianDateString()
+            };
+            int? jalaseNumber = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(query, @params);
+            return jalaseNumber;
+        }
 
         private string GetBedBesConsumptionDataQuery(string dataBaseName)
         {
@@ -283,7 +297,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     Where
                     	town=@zoneId AND
                     	radif=@customerNumber AND
-                    	date_bed<@dateJalali
+                    	today_date=@nexDay
                     Order By date_bed Desc";
         }
         private string GetListByFromToDate(string dbName)
@@ -364,20 +378,32 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     WHERE
                     	town=@zoneId AND
                     	radif=@customerNumber AND
-                    	date_bed BETWEEN @fromDate AND @toDate AND
-						cod_vas NOT IN (4,7,8) --AND
+						pri_date>= @FromDate AND today_date <=@ToDate AND
+                        cod_vas NOT IN (4,7,8) --AND
                         --del=0
                     Order by date_bed";
         }
         private string GetCountInDateBedQuery(string dbName)
         {
+            //Comment for test
             return @$"Select COUNT(1)
                         From [{dbName}].dbo.bed_bes
                         Where 
                         	town=@zoneId AND
                         	radif=@customerNumber AND
-                        	date_bed=@date AND
-                            del=0";
+	                        ((@isPreviousDate=1 AND pri_date=@date) OR
+	                        (@isPreviousDate<>1 AND today_date=@date)) --AND
+                            --del=0";
+        }
+        private string GetLatestJalaseNumberQuery(string dbName)
+        {
+            return $@"Select top 1 jalase_no
+                    From atlas.dbo.autoback
+                    Where 
+                    	town=@ZoneId AND
+                    	radif=@CustomerNumber AND
+                    	date_bed=@Date
+                    Order By date_bed desc,id desc";
         }
     }
 }

@@ -1,18 +1,19 @@
-﻿using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
-using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Commands;
+﻿using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Commands;
+using DNTPersianUtils.Core;
 
 namespace Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries
 {
     public record ReturnBillOutputDto
     {
-        public BedBesOutputDto Bill { get; set; }
-        public RepairOutputDto Repair { get; set; }
-        public AutoBackOutputDto AutoBack { get; set; }
-        public ReturnBillOutputDto(BedBesOutputDto bill, RepairOutputDto repair, AutoBackOutputDto autoBack)
+        public ReturnBillDataOutputDto PreviousValues { get; set; }
+        public ReturnBillDataOutputDto CurrentValues { get; set; }
+        public ReturnBillDataOutputDto ReturnValues { get; set; }
+        public ReturnBillOutputDto(ReturnBillDataOutputDto previousValues, ReturnBillDataOutputDto currentValues, ReturnBillDataOutputDto returnValues)
         {
-            Bill = bill;
-            Repair = repair;
-            AutoBack = autoBack;
+
+            PreviousValues = previousValues;
+            CurrentValues = currentValues;
+            ReturnValues = returnValues;
         }
     }
 }

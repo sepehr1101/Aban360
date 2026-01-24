@@ -46,5 +46,20 @@ namespace Aban360.Common.Extensions
             await File.WriteAllTextAsync(fileName, jsonString, Encoding.UTF8, cancellationToken);
             return new JsonReportId(id, fileCode);
         }
+        public static async Task<JsonReportId> ExportToJson<TFlatData>(TFlatData reportOutput, CancellationToken cancellationToken, [Optional]int fileCode)
+        {
+            const string path = @"AppData\Jsons\";
+            reportOutput.NotNull(nameof(reportOutput));
+            Guid id = Guid.NewGuid();
+            JsonSerializerSettings settings = new JsonSerializerSettings
+            {
+                ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver(),
+                Formatting = Formatting.Indented
+            };
+            string jsonString = reportOutput.Marshal(settings);
+            var fileName = Path.Combine(path, $"{id}.json");
+            await File.WriteAllTextAsync(fileName, jsonString, Encoding.UTF8, cancellationToken);
+            return new JsonReportId(id, fileCode);
+        }
     }
 }

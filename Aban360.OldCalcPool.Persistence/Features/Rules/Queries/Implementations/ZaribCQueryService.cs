@@ -23,15 +23,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
             ZaribCQueryDto zaribCQueryDto = await _sqlReportConnection.QueryFirstAsync<ZaribCQueryDto>(query, @params);
             return zaribCQueryDto;
         }
-        public async Task<ZaribCQueryDto> GetZaribCBetweenDate(string @from, string @to)
+        public async Task<ZaribCQueryDto> GetLatestZaribC(string @from, string @to)
         {
-            string query = GetQueryFromTo();
-            var @params = new
-            {
-                fromDate = @from,
-                toDate = @to
-            };
-            ZaribCQueryDto zaribCQueryDto = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZaribCQueryDto>(query, @params);
+            string query = GetLatestQuery();
+            ZaribCQueryDto zaribCQueryDto = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZaribCQueryDto>(query, null);
             return zaribCQueryDto;
         }
         public async Task<IEnumerable<ZaribCQueryDto>> GetZaribC()
@@ -62,7 +57,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
 	                FromDateJalali=@fromDate AND ToDateJalali=@toDate AND
 	                IsDeleted=0";
         }
-        private string GetQueryFromTo()
+        private string GetLatestQuery()
         {
             return
                 @"SELECT Top 1
@@ -72,9 +67,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                     C
                 FROM [OldCalc].dbo.Zarib_C
                 WHERE 
-                    ToDateJalali>=@toDate AND
                     IsDeleted=0
-                Order by ToDateJalali";
+                Order by ToDateJalali DESC";
         }
         private string GetAllQuery()
         {

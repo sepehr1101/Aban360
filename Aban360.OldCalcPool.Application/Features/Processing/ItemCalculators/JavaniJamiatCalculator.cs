@@ -1,6 +1,7 @@
 ﻿using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
+using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.VirtualCapacityCalculator;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
@@ -84,10 +85,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         }
         public TariffItemResult CalculateDiscount(CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult javaniResult)
         {
-            /*double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, consumptionPartialInfo.Consumption, consumptionPartialInfo.Duration, javaniResult.Summation, consumptionPartialInfo);
-            double finalVirtualDiscount = virtualDiscount > 0 ? (long)virtualDiscount : 0;
-            return new TariffItemResult(finalVirtualDiscount);*/
-            return new TariffItemResult();
+            // در تاریخ 30 دی 1404 طبق نظر جناب اقای اعلایی و خانم حبیبی نژاد در صورتی که مدرسه مشمول تخفیف شود مبلغ جوانی تخفیف داده شود
+            double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, consumptionPartialInfo.Consumption, consumptionPartialInfo.Duration, javaniResult.Summation, consumptionPartialInfo);
+            TariffItemResult discount = virtualDiscount > 0 ? new TariffItemResult(javaniResult.Summation) : new TariffItemResult();
+            return discount;
         }
     }
 }

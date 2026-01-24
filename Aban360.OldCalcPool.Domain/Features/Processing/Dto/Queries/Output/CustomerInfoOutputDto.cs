@@ -6,11 +6,14 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
 {
     public record CustomerInfoOutputDto
     {
+        public string? ZoneTitle { get; set; }
         public int ZoneId { get; set; }
         public int Radif { get; set; }
         public string BillId { get; set; } = default!;
         public int BranchType { get; set; }
-        public int UsageId { get; set; }      
+        public int UsageId { get; set; }
+        public string? UsageTitle { get; set; }
+        public string? FullName { get; set; }
         public int DomesticUnit { get; set; }
         public int CommertialUnit { get; set; }        
         public int OtherUnit { get; set; }
@@ -24,14 +27,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         }
         public int PureDomesticUnit
         {
-            get
-            {
-                if (HouseholdNumber > 1)
-                {
-                    return HouseholdNumber;
-                }
-                return (DomesticUnit - EmptyUnit) < 1 ? 1 : (DomesticUnit - EmptyUnit);
-            }
+            get { return (DomesticUnit - EmptyUnit + HouseholdNumber) < 1 ? 1 : (DomesticUnit - EmptyUnit + HouseholdNumber); }
         }
         public int EmptyUnit { get; set; }
         public string WaterInstallationDateJalali { get; set; } = default!;

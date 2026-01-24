@@ -3,18 +3,20 @@
     public record TankerWaterCalculationOutputDto
     {
         private const decimal _vatRate = 0.1m;
-        public int? Id { get; set; }
+        public string? BillId { get; set; }
+        public string? PaymentId { get; set; }
         public decimal Tax { get; }
         public decimal Water { get; }
         public decimal Delivery { get; }
         public decimal Budget { get; }
         public decimal Final { get; }
 
-        public TankerWaterCalculationOutputDto(int id,decimal water, decimal budget, decimal delivery)
+        public TankerWaterCalculationOutputDto(string? billId,string? paymentId,decimal water, decimal budget, decimal delivery)
         {
             decimal tax = (water + budget) * _vatRate;
 
-            Id = id;
+            BillId = billId;
+            PaymentId = paymentId;
             Tax = tax;
             Water = water;
             Delivery = delivery;
