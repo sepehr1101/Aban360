@@ -8,6 +8,7 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using FluentValidation;
+using System.Linq;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Implementations
 {
@@ -47,23 +48,23 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             SaleHeaderOutputDto differentHeader = await GetHeaderDifferent(previousSaleCalculation.ReportHeader, currentSaleCalculation.ReportHeader, input);
 
             var (previousItems, currentItems, differentItems) = await GetData(previousSaleCalculation.ReportData, currentSaleCalculation.ReportData);
-            AfterSaleDataOutputDto data=new(previousItems, currentItems, differentItems);
+            AfterSaleDataOutputDto data = new(previousItems, currentItems, differentItems);
             FlatReportOutput<SaleHeaderOutputDto, AfterSaleDataOutputDto> result = new(_title, differentHeader, data);
             return result;
         }
         private void ValidationOffering(AfterSaleInputDto input)
         {
-            x(input.CompanyServiceIds);
-            if (input.PreviousData.WaterDiameterId != input.CurrentData.WaterDiameterId && !input.CompanyServiceIds.Contains(1))
+            IEnumerable<AfterSaleCompanyServiceEnum> afterSaleCompanySelected = GetAfterSaleCompanyServiceSelected(input.CompanyServiceIds);
+            if (input.PreviousData.WaterDiameterId != input.CurrentData.WaterDiameterId && !afterSaleCompanySelected.Contains(AfterSaleCompanyServiceEnum.ChangeMeterDiameter))
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeWaterDiameter));
             }
-            if (input.PreviousData.SiphonDiameterId != input.CurrentData.SiphonDiameterId && !input.CompanyServiceIds.Contains(24))
+            if (input.PreviousData.SiphonDiameterId != input.CurrentData.SiphonDiameterId && !afterSaleCompanySelected.Contains(AfterSaleCompanyServiceEnum.ChangeSiphonDiameter))
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeSiphonDiameter));
             }
 
-            if (input.PreviousData.UsageId != input.CurrentData.UsageId && !input.CompanyServiceIds.Contains(7))
+            if (input.PreviousData.UsageId != input.CurrentData.UsageId && !afterSaleCompanySelected.Contains(AfterSaleCompanyServiceEnum.ChangeUsage))
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeUsage));
             }
@@ -204,21 +205,21 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         long CalcDiff(long? current, long? previous) => (current ?? 0) - (previous ?? 0);
 
-        private void x(ICollection<int> offeringIds)
+        private IEnumerable<AfterSaleCompanyServiceEnum> GetAfterSaleCompanyServiceSelected(ICollection<int> offeringIds)
         {
-            var s = offeringIds.Select(s => (XEnum)s).ToList();
-
-            var ss = s;
+            return offeringIds
+                .Select(s => (AfterSaleCompanyServiceEnum)s)
+                .ToList();
         }
     }
-    public enum XEnum
+    public enum AfterSaleCompanyServiceEnum
     {
         WastewaterBranch = 3,
         MeterSeparation = 4,
         ChangeSpecifications = 5,
         ChangeUnit = 6,
         ChangeUsage = 7,
-        ChangeBranchDiameter = 8,
+        ChangeMeterDiameter = 8,
         InstallAdditionalSiphon = 9,
         MeterRelocation = 10,
         BranchDismantling = 11,
