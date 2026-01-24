@@ -10,7 +10,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Validations
     {
         public TankerWaterSetPayValidator()
         {
-            RuleFor(r => r.Id)
+            RuleFor(r => r.PaymentId)
               .NotNull().WithMessage(ExceptionLiterals.NotNull)
               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 

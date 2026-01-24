@@ -143,6 +143,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 						m.cod_enshab as UsageTitle,
 						m.fix_mas as ContractualCapacity,
 						m.enshab as MeterDiameterId,
+						t5.C2 as MeterDiameterTitle,
 						Case When m.sif_1>0 Then N'قطر 100'
 							 When m.sif_2>0 Then N'قطر 125'
 							 When m.sif_3>0 Then N'قطر 150'
@@ -182,6 +183,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 						ON t51.C1=t46.C0
 					Left join [Db70] .dbo.T7 t7
 						ON m.noe_va=t7.C0
+					Left join Db70.dbo.T5 t5
+						ON m.enshab=t5.C0
 					Where 
 						town=@zoneId AND
 						radif=@customerNumber";

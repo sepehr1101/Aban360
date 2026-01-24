@@ -2,6 +2,7 @@
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.Extensions;
+using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Infrastructure.Features.Geo;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations
@@ -9,20 +10,30 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
     internal sealed class SubscriptionAssignmentGetHandler : ISubscriptionAssignmentGetHandler
     {
         private readonly ISubscriptionAssignmentQueryService _subscriptionAssignmentQueryService;
-        public SubscriptionAssignmentGetHandler(ISubscriptionAssignmentQueryService subscriptionAssignmentQueryService)
+        private readonly IGisService _gisService;
+        public SubscriptionAssignmentGetHandler(
+            ISubscriptionAssignmentQueryService subscriptionAssignmentQueryService
+            , IGisService gisService)
         {
             _subscriptionAssignmentQueryService = subscriptionAssignmentQueryService;
             _subscriptionAssignmentQueryService.NotNull(nameof(subscriptionAssignmentQueryService));
+
+            _gisService = gisService;
+            _gisService.NotNull(nameof(gisService));
         }
 
         public async Task<SubscriptionAssignmentGetDto> Handle(string input, CancellationToken cancellationToken)
         {
             SubscriptionAssignmentGetDto subscriptionAssignment = await _subscriptionAssignmentQueryService.Get(input);
-            SubscriptionAssignmentGetDto result = GetEN(subscriptionAssignment);
+            CustomerLocationDto customerLocation = await _gisService.GetCustomerLocation(new CustomerLocationInputDto(input));
+            SubscriptionAssignmentGetDto result = GetLocationInfo(subscriptionAssignment, customerLocation);
             return result;
         }
-        private SubscriptionAssignmentGetDto GetEN(SubscriptionAssignmentGetDto input)
+        private SubscriptionAssignmentGetDto GetLocationInfo(SubscriptionAssignmentGetDto input, CustomerLocationDto customerLocation)
         {
+            input.X = customerLocation.X;
+            input.Y = customerLocation.Y;
+
             input.Easting = 0;
             input.Northing = 0;
             input.UtmZone = 0;

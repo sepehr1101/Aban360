@@ -17,6 +17,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
         Task<ReportOutput<ManualBillHeaderOutputDto, ManualBillDataOutputDto>> Get(ManualBillInputDto input);
         Task<float> GetPreviousBill(int zoneId, int customerNumber, string dateJalali);
         Task<IEnumerable<BedBesCreateDto>> Get(ZoneCustomerFromToDateDto input);
-        Task<int> GetCountInDateBed(int zoneId, int customernumber, string date);
+        Task<int> GetCountInDateBed(int zoneId, int customernumber, string date,bool isPreviousDate);
+        Task<int?> GetLatestJalaseNumber(ZoneIdAndCustomerNumberOutputDto input);
     }
 }

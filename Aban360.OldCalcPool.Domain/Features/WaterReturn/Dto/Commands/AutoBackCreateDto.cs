@@ -67,5 +67,9 @@
         public string TmpDateBed { get; set; }
         public string TmpMohlat { get; set; }
         public string TmpTavizDate { get; set; }
+        public decimal Group1 { get; set; }//0
+        public bool? EdarehK { get; set; }//isSpecial
+        public string DateSbt { get; set; }
+        public decimal Avarez { get; set; }
     }
 }

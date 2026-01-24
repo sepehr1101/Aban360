@@ -1,6 +1,5 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contracts;
-using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 

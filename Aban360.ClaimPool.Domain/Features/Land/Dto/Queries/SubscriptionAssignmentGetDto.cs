@@ -1,8 +1,11 @@
-﻿namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Queries
+﻿using DNTPersianUtils.Core;
+
+namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Queries
 {
     public record SubscriptionAssignmentGetDto
     {
         public int Id { get; set; }
+        public string BillId { get; set; }
         public string X { get; set; }
         public string Y { get; set; }
         public string ReadingNumber { get; set; }

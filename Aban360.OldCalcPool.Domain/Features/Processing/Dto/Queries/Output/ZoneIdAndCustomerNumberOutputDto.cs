@@ -4,5 +4,14 @@
     {
         public int ZoneId { get; set; }
         public int CustomerNumber { get; set; }
+        public ZoneIdAndCustomerNumberOutputDto(int zoneId,int customerNumber)
+        {
+            ZoneId = zoneId;    
+            CustomerNumber = customerNumber;
+        }
+        public ZoneIdAndCustomerNumberOutputDto()
+        {
+
+        }
     }
 }

@@ -2,7 +2,7 @@
 {
     public record TankerWaterSetPayInputDto
     {
-        public int Id { get; set; }
+        public string PaymentId{ get; set; }
         public string BillId { get; set; }
     }
 }

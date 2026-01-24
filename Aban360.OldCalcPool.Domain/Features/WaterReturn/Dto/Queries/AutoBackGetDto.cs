@@ -1,0 +1,71 @@
+﻿namespace Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries
+{
+    public record AutoBackGetDto
+    {
+        public decimal Town { get; set; }
+        public decimal Radif { get; set; }
+        public string Eshtrak { get; set; }
+        public decimal Barge { get; set; }
+        public decimal PreviousNumber { get; set; }
+        public decimal CurrentNumber { get; set; }
+        public string PreviousDate { get; set; }
+        public string CurrentDate { get; set; }
+        public decimal AbonFas { get; set; }
+        public decimal FasBaha { get; set; }
+        public decimal AbBaha { get; set; }
+        public decimal Ztadil { get; set; }
+        public decimal Masraf { get; set; }
+        public decimal Shahrdari { get; set; }
+        public decimal Modat { get; set; }
+        public string DateBed { get; set; }
+        public decimal JalaseNo { get; set; }
+        public string Mohlat { get; set; }
+        public decimal Baha { get; set; }
+        public decimal AbonAb { get; set; }
+        public decimal Pard { get; set; }
+        public decimal Jam { get; set; }
+        public decimal CodVas { get; set; }
+        public string Ghabs { get; set; }
+        public bool Del { get; set; }
+        public string Type { get; set; }
+        public decimal CodEnshab { get; set; }
+        public decimal Enshab { get; set; }
+        public decimal Elat { get; set; }
+        public decimal Serial { get; set; }
+        public decimal Ser { get; set; }
+        public decimal ZaribFasl { get; set; }
+        public decimal Ab10 { get; set; }
+        public decimal Ab20 { get; set; }
+        public decimal TedadVahd { get; set; }
+        public decimal TedKhane { get; set; }
+        public decimal TedadMas { get; set; }
+        public decimal TedadTej { get; set; }
+        public decimal NoeVa { get; set; }
+        public decimal Jarime { get; set; }
+        public decimal Masjar { get; set; }
+        public decimal Sabt { get; set; }
+        public decimal Rate { get; set; }
+        public decimal Operator { get; set; }
+        public decimal Mamor { get; set; }
+        public string TavizDate { get; set; }
+        public decimal ZaribCntr { get; set; }
+        public decimal Zabresani { get; set; }
+        public decimal ZaribD { get; set; }
+        public decimal Tafavot { get; set; }
+        public decimal MasHadar { get; set; }
+        public decimal AbHadar { get; set; }
+        public decimal RangeMas { get; set; }
+        public decimal TafBack { get; set; }
+        public decimal TedGhabs { get; set; }
+        public decimal TabAbnA { get; set; }
+        public decimal TabAbnF { get; set; }
+        public decimal TabsFa { get; set; }
+        public decimal Bodjeh { get; set; }
+        public bool Faz { get; set; }
+        public string TmpPriDate { get; set; }
+        public string TmpTodayDate { get; set; }
+        public string TmpMohlat { get; set; }
+        public string TmpTavizDate { get; set; }
+        public string TmpDateBed { get; set; }
+    }
+}

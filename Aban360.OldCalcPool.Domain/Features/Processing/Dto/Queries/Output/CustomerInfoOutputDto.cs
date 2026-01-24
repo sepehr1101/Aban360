@@ -6,11 +6,14 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
 {
     public record CustomerInfoOutputDto
     {
+        public string? ZoneTitle { get; set; }
         public int ZoneId { get; set; }
         public int Radif { get; set; }
         public string BillId { get; set; } = default!;
         public int BranchType { get; set; }
-        public int UsageId { get; set; }      
+        public int UsageId { get; set; }
+        public string? UsageTitle { get; set; }
+        public string? FullName { get; set; }
         public int DomesticUnit { get; set; }
         public int CommertialUnit { get; set; }        
         public int OtherUnit { get; set; }

@@ -8,6 +8,7 @@
         public string FromDateJalali { get; set; } = default!;
         public string ToDateJalali { get; set; } = default!;
 
+        public bool IncludeBodySerial { get; set; }
         public bool IsRegisterDate { get; set; }
         public bool IsZoneGroup { get; set; }
     }

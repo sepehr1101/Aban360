@@ -5,7 +5,6 @@ using Aban360.ClaimPool.Persistence.Features.Land.Commands.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using DNTPersianUtils.Core;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations
 {
@@ -26,14 +25,46 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
 
         public async Task Handle(SubscriptionAssignmentUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            SubscriptionAssignmentGetDto previousSubscription = await _subscriptionAssignmentQueryService.Get(updateDto.BillId);
+            SubscriptionGetDto previousSubscription = await _subscriptionAssignmentQueryService.GetInfo(updateDto.BillId);
             if (previousSubscription == null)
             {
                 throw new BaseException("شناسه قبض یافت نشد");
             }
 
+            SubscriptionUpdateDto subscriptionUpdate = new()
+            {
+                Id = updateDto.Id,
+                CustomerNumber=previousSubscription.CustomerNumber,
+                ZoneId=previousSubscription.ZoneId,
+                BillId = previousSubscription.BillId,
+                X = updateDto.X,
+                Y = updateDto.Y,
+                ReadingNumber = updateDto.ReadingNumber,
+                FirstName = previousSubscription.FirstName,
+                SurName = previousSubscription.SurName,
+                Address = updateDto.Address,
+                PostalCode = updateDto.PostalCode,
+                Plaque = previousSubscription.Plaque,
+                NationalCode = previousSubscription.NationalCode,
+                PhoneNumber = previousSubscription.PhoneNumber,
+                MobileNumber = previousSubscription.MobileNumber,
+                FatherName = previousSubscription.FatherName,
+                BranchTypeId = previousSubscription.BranchTypeId,
+                UsageSellId = previousSubscription.UsageSellId,
+                UsageConsumptionId = previousSubscription.UsageConsumptionId,
+                EmptyUnit = previousSubscription.EmptyUnit,
+                CommertialUnit = previousSubscription.CommertialUnit,
+                DomesticUnit = previousSubscription.DomesticUnit,
+                OtherUnit = previousSubscription.OtherUnit,
+                HouseholdDateJalali = previousSubscription.HouseholdDateJalali,
+                HouseholdNumber = previousSubscription.HouseholdNumber,
+                MeterDiamterId = previousSubscription.MeterDiamterId,
+                IsSpecial = previousSubscription.IsSpecial,
+                ContractualCapacity = previousSubscription.ContractualCapacity,
+            };
+
             //update
-            await _subscriptionAssignmentCommandService.Update(updateDto, DateTime.Now.ToShortPersianDateString());
+            await _subscriptionAssignmentCommandService.Update(subscriptionUpdate);
         }
     }
 }

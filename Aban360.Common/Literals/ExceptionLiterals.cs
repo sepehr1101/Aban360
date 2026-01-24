@@ -96,6 +96,7 @@
         public static string CantReturn => "برگشتی در بازه تاریخی وارد شده امکان پذیر نیست.";
         public static string RepairAmountMoreThanBedBesAmount => "مبلغ برگشتی از مبلغ قبوض بیشتر است.";
         public static string InvalidBillWithDel => "در بازه وارد شده، قبض برگشتی وجود دارد.";
+        public static string InvalidReturnDuplicate => "قبلا قبضی با اطلاعات وارد شده برگشت داده شده است.";
 
 
         //Tax
@@ -103,5 +104,13 @@
 
         //Sale
         public static string InvalicZoneIdWithBlock => "ناحیه با بلوک انتخابی مطابقت ندارد.";
+
+        //AfterSale
+        public static string CheckCompanyService(string item) => $"برای {item} ابتدا خدمت را انتخاب کنید.";
+        public static string ChangeWaterDiameter => "تغیر قطر انشعاب آب";
+        public static string ChangeSiphonDiameter => "تغیر قطر سیفون";
+        public static string ChangeUsage => "تغیر کاربری";
+
+
     }
 }

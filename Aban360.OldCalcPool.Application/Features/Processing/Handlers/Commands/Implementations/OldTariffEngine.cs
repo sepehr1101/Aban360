@@ -241,10 +241,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             }
             ConsumptionPartialInfo consumptionPartialInfo = _consumptionCalculator.GetPartial(meterInfo, consumptionInfo, meterInfo.PreviousDateJalali, meterInfo.CurrentDateJalali, IsDomestic(customerInfo.UsageId) ?  GetOlgoo(meterInfo.CurrentDateJalali, table1.olgo): customerInfo.ContractualCapacity);
 
-            TariffItemResult sumAbonmanAbBaha = _abonmanCalculator.CalculateAb(customerInfo, meterInfo, currentDateJalali, consumptionPartialInfo);
-            TariffItemResult sumAbonmanFazelab = _fazelabCalculator.Calculate(meterInfo.PreviousDateJalali, currentDateJalali, consumptionInfo.Duration, customerInfo, sumAbonmanAbBaha.Summation, currentDateJalali, true, consumptionPartialInfo, abCalcResult: sumAbonmanAbBaha);
-            TariffItemResult sumAbonmanAbDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, customerInfo.BranchType, sumAbonmanAbBaha.Summation, sumAbBahaDiscount, customerInfo.IsSpecial, consumptionInfo, customerInfo, consumptionPartialInfo, sumAbonmanAbBaha.Allowed, sumAbonmanAbBaha);
-            TariffItemResult sumAbonmanFazelabDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, customerInfo.BranchType, sumAbonmanFazelab.Summation, sumFazelabDiscount, customerInfo.IsSpecial, consumptionInfo, customerInfo, consumptionPartialInfo, sumAbonmanFazelab.Allowed, sumAbonmanFazelab);
+            TariffItemResult sumAbonmanAbBaha = _abonmanCalculator.CalculateAb(customerInfo, meterInfo, currentDateJalali, consumptionPartialInfo, out double before1403_12_02, out double before1404);
+            TariffItemResult sumAbonmanFazelab = _fazelabCalculator.Calculate(meterInfo.PreviousDateJalali, currentDateJalali, consumptionInfo.Duration, customerInfo, sumAbonmanAbBaha.Summation, currentDateJalali, true, consumptionPartialInfo, abCalcResult: sumAbonmanAbBaha, out double multiplierFazelab);
+            TariffItemResult sumAbonmanAbDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, customerInfo.BranchType, sumAbonmanAbBaha.Summation, sumAbBahaDiscount, customerInfo.IsSpecial, consumptionInfo, customerInfo, consumptionPartialInfo, sumAbonmanAbBaha.Allowed, sumAbonmanAbBaha, before1403_12_02, before1404);
+            TariffItemResult sumAbonmanFazelabDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, customerInfo.BranchType, sumAbonmanFazelab.Summation, sumFazelabDiscount, customerInfo.IsSpecial, consumptionInfo, customerInfo, consumptionPartialInfo, sumAbonmanFazelab.Allowed, sumAbonmanFazelab, before1403_12_02 * multiplierFazelab, before1404);
 
             double AbBahaResult = sumAbBaha + sumHotSeasonAbBaha + sumAbonmanAbBaha.Summation;
             double sumBoodje = sumBoodjePart1 + sumBoodjePart2;
@@ -263,11 +263,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             bool isVillageCalculation = IsVillage(customerInfo.ZoneId);
             double monthlyConsumption = consumptionInfo.DailyAverageConsumption * monthDays; 
 
-            TariffItemResult abBahaResult = _abBahaCalculator.Calculate(nerkh, nerkh1403, customerInfo, meterInfo, zarib, abAzad, consumptionPartialInfo, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, c, tagIds);
+            TariffItemResult abBahaResult = _abBahaCalculator.Calculate(nerkh, nerkh1403, customerInfo, meterInfo, zarib, abAzad, consumptionPartialInfo, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, c, tagIds, out double villageMultiplier);
             TariffItemResult boodje = _budgetCalculator.Calculate(consumptionPartialInfo, customerInfo, currentDateJalali, monthlyConsumption, olgoo, consumptionInfo);
-            TariffItemResult fazelab = _fazelabCalculator.Calculate(consumptionPartialInfo.StartDateJalali, consumptionPartialInfo.EndDateJalali, consumptionPartialInfo.Duration, customerInfo, abBahaResult.Summation, currentDateJalali, false, consumptionPartialInfo, abBahaResult);
-            TariffItemResult hotSeasonAbBaha = _hotSeasonCalculator.CalculateAb(abBahaResult.Summation, customerInfo, monthlyConsumption, abBahaResult, consumptionPartialInfo);
-            TariffItemResult hotSeasonFazelab = _hotSeasonCalculator.CalcFazelab(customerInfo, fazelab.Summation, monthlyConsumption, fazelab, consumptionPartialInfo);
+            TariffItemResult fazelab = _fazelabCalculator.Calculate(consumptionPartialInfo.StartDateJalali, consumptionPartialInfo.EndDateJalali, consumptionPartialInfo.Duration, customerInfo, abBahaResult.Summation, currentDateJalali, false, consumptionPartialInfo, abBahaResult, out double multiplierFazelab);
+            TariffItemResult hotSeasonAbBaha = _hotSeasonCalculator.CalculateAb(abBahaResult.Summation, customerInfo, monthlyConsumption, abBahaResult, consumptionPartialInfo, isVillageCalculation, villageMultiplier);
+            TariffItemResult hotSeasonFazelab = _hotSeasonCalculator.CalcFazelab(customerInfo, fazelab.Summation, monthlyConsumption, fazelab, consumptionPartialInfo, isVillageCalculation, villageMultiplier);
             TariffItemResult avarez = _avarezCalculator.Calculate(consumptionPartialInfo, customerInfo, monthlyConsumption);
             TariffItemResult javani = _javaniJamiatCalculator.Calculate(consumptionPartialInfo, customerInfo, abBahaResult.Summation, monthlyConsumption, olgoo);
 
@@ -278,7 +278,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             TariffItemResult hotSeasonFazelabDiscount = _hotSeasonCalculator.CalculateDiscount(fazelabDiscount.Summation, hotSeasonFazelab, customerInfo, abBahaResult, consumptionPartialInfo);
             TariffItemResult boodjeDiscount = _budgetCalculator.CalculateDiscount(consumptionPartialInfo,customerInfo, abBahaDiscount.Summation, boodje);
             TariffItemResult avarezDiscount = _avarezCalculator.CalculateDiscount();
-            TariffItemResult javaniDiscount= _javaniJamiatCalculator.CalculateDiscount();
+            TariffItemResult javaniDiscount= _javaniJamiatCalculator.CalculateDiscount(customerInfo,consumptionPartialInfo, javani);
+
+            //Mullah again
+
 
             return new BaseOldTariffEngineOutputDto(
                 abBahaValues: abBahaResult,

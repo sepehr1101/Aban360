@@ -9,5 +9,6 @@
         public string ToDateJalali { get; set; } = default!;
 
         public bool IsRegisterDate { get; set; }
+        public bool IncludeBodySerial { get; set; }
     }
 }

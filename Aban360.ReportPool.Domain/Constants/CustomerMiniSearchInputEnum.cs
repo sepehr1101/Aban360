@@ -7,6 +7,7 @@
         PostalCode=3,
         Name=4,
         PhoneNumber=5,
-        CustomerNumber=6
+        CustomerNumber=6,
+        BillId=7
     }
 }

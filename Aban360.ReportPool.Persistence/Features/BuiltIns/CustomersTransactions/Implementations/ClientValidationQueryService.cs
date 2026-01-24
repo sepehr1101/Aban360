@@ -94,12 +94,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                { 7  , (@" LEN(TRIM(c.MobileNo)) != 11 ", "شماره موبایل نامعتبر") },
                { 8  , (@" LEN(TRIM(c.PhoneNo)) != 8 ", "تلفن ثابت نامعتبر") },
                { 9  , (@" LEN(TRIM(c.Address)) < 10 ", "آدرس کوتاه‌تر از 10 کاراکتر") },
-               { 10 , (@" (c.UsageId NOT IN (1, 3) AND c.ContractCapacity = 0) ", "غیرمسکونی فاقد ظرفیت") },
+               { 10 , (@" (c.UsageId NOT IN (1, 3, 5, 15, 19, 25, 34, 39) AND c.ContractCapacity = 0) ", "غیرمسکونی فاقد ظرفیت") },
                { 11 , (@" (LEN(c.SewageInstallDate) != 0 AND c.MainSiphonTitle = '0') ", "دارای تاریخ نصب فاضلاب بدون سیفون") },
                { 12 , (@" (c.UsageId = 0) ", "کد کاربری صفر") },
                { 13 , (@" (c.FamilyCount IS NOT NULL AND c.FamilyCount > 0 AND LEN(TRIM(c.HouseholdDateJalali)) < 8) ", "تاریخ خالی از سکنه نامعتبر") },
                { 14 , (@" (c.EmptyCount IS NOT NULL AND c.EmptyCount > 0 AND c.UsageId NOT IN (1, 3)) ", "مغایرت خالی از سکنه با کاربری ") },
-               { 15 , (@" (LEN(TRIM(c.ReadingNumber))<5) ", " بدون اشتراک ")}
+               { 15 , (@" (LEN(TRIM(c.ReadingNumber))<5) ", " بدون اشتراک ") },
+               { 16 , (@" (c.UsageStateId IN (6,7) AND c.UsageId NOT IN (1)) ", " مخفف غیرمسکونی ") },
+               { 17 , (@" (c.UsageStateId IN (6,7) AND (c.DomesticCount+c.CommercialCount+c.OtherCount)>1) ", " مخفف بیش از یک واحد ") },
             };
         }
     }

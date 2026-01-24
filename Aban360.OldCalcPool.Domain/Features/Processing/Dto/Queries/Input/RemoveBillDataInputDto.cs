@@ -12,7 +12,7 @@
         public string CurrentDateJalali { get; set; }
         public string RegisterDateJalali { get; set; }
         public int Consumption { get; set; }
-        public long PaymentId { get; set; }
+        public string PaymentId { get; set; }
         public long AbBahaAmount { get; set; }
         public long FazelabAmount { get; set; }
         public long Baha { get; set; }

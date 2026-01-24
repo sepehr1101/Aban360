@@ -5,5 +5,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Contracts
     public interface IAutoBackCommandService
     {
         Task Create(AutoBackCreateDto input);
+        Task Create(IEnumerable<AutoBackCreateDto> input);
     }
 }

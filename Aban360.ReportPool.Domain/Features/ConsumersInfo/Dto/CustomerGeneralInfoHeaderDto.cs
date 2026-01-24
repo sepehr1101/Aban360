@@ -12,6 +12,7 @@
         public string UsageTitle { get; set; }
         public int ContractualCapacity { get; set; }
         public string MeterDiameterId { get; set; }
+        public string MeterDiameterTitle { get; set; }
         public string MainSiphon { get; set; }
         public string BranchTypeTitle { get; set; }
         public bool DiscountType { get; set; }
