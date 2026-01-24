@@ -34,7 +34,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             }
 
             ReportOutput<MeterReplacementLifeHeaderOutputDto, MeterReplacementLifeDataOutputDto> result = await _meterReplacementLifeService.Get(input);
-            //header
+
             return result;
         }
     }

@@ -22,7 +22,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             string reportTitle = ReportLiterals.ClosedSummary;
             string groupField = input.IsZoneGrouped ? ReportLiterals.ZoneTitle : ReportLiterals.UsageTitle;
             string query = GetQuery(groupField);
-            IEnumerable<ClosedSummaryDataOutputDto> data = await _sqlReportConnection.QueryAsync<ClosedSummaryDataOutputDto>(query, input);
+            IEnumerable<ClosedSummaryDataOutputDto> data = await _sqlReportConnection.QueryAsync<ClosedSummaryDataOutputDto>(query, input, null, 300);
             ClosedHeaderOutputDto header = new()
             {
                 FromDateJalali = input.FromDateJalali,

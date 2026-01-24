@@ -22,7 +22,6 @@ namespace Aban360.ReportPool.Persistence.Base
                         From [CustomerWarehouse].dbo.Clients c
 	                    Where				
 		                    c.ZoneId IN @zoneIds AND
-		                    c.UsageId IN @usageIds AND
 		                    (
 			                    @fromReadingNumber IS NULL OR 
 			                    @toReadingNumber IS NULL OR
@@ -60,6 +59,7 @@ namespace Aban360.ReportPool.Persistence.Base
 	                    On t51.C1=t46.C0
                     WHERE	  
                         c.RN=1 AND
+		                c.UsageId IN @usageIds AND
 		                c.{queryParams.DataField} BETWEEN @FromDateJalali AND @ToDateJalali AND
 	                    c.DeletionStateId NOT IN(1,2)";
         }
@@ -75,7 +75,6 @@ namespace Aban360.ReportPool.Persistence.Base
                         From [CustomerWarehouse].dbo.Clients c
 	                    Where				
 		                    c.ZoneId IN @zoneIds AND
-		                    c.UsageId IN @usageIds AND
 		                    (
 			                    @fromReadingNumber IS NULL OR 
 			                    @toReadingNumber IS NULL OR
@@ -111,6 +110,7 @@ namespace Aban360.ReportPool.Persistence.Base
 	                    On t51.C1=t46.C0
                     WHERE	  
                         c.RN=1 AND
+		                c.UsageId IN @usageIds AND
 		                c.{queryParams.DataField} BETWEEN @FromDateJalali AND @ToDateJalali AND
 	                    c.DeletionStateId NOT IN(1,2) 
                     GROUP BY
@@ -129,7 +129,6 @@ namespace Aban360.ReportPool.Persistence.Base
                         From [CustomerWarehouse].dbo.Clients c
 	                    Where				
 		                    c.ZoneId IN @zoneIds AND
-		                    c.UsageId IN @usageIds AND
 		                    (
 			                    @fromReadingNumber IS NULL OR 
 			                    @toReadingNumber IS NULL OR
@@ -164,6 +163,7 @@ namespace Aban360.ReportPool.Persistence.Base
 	                    On t51.C1=t46.C0
                     WHERE	  
                         c.RN=1 AND
+		                c.UsageId IN @usageIds AND
 	                    c.DeletionStateId NOT IN(1,2) AND
 		                c.{queryParams.DataField} BETWEEN @FromDateJalali AND @ToDateJalali 
                     GROUP BY

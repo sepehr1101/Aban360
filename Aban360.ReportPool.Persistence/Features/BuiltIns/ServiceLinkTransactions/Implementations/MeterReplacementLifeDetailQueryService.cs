@@ -39,7 +39,38 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         private string GetQuery()
         {
-            return $@"";
+            return $@";With ChangeMeter As(
+                		Select 
+                			mc.ZoneId,
+                			mc.CustomerNumber,
+                			MAX(mc.MeterNumber)MeterNumber,
+                			MIN(mc.ChangeDateJalali)ChangeDateJalali,
+                			MIN(mc.RegisterDateJalali)RegisterDateJalali,
+                			MAX(mc.ChangeCauseTitle)ChangeCauseTitle,
+                			MAx(DISTINCT mc.BodySerial) BodySerial
+                		From CustomerWarehouse.dbo.MeterChange mc
+                		Where 
+                			mc.ZoneId IN (131211,13102) AND
+                			mc.ChangeDateJalali BETWEEN @FromDateJalali AND @ToDateJalali AND
+                			customerNumber in (3309,22263779,20589880)
+                		Group By mc.zoneId, mc.Customernumber,TRIM(mc.bodySerial)
+                    )
+                    Select 
+                    	c.BillId,
+                    	c.ZoneTitle,
+                    	c.ZoneId,
+                    	c.CustomerNumber,
+                    	(TRIM(c.firstName)+' '+ TRIM(c.SureName)) FullName,
+                    	mc.ChangeDateJalali,
+                    	c.PhysicalWaterInstallDateJalali,
+                    	c.UsageId,
+                    	c.UsageTitle,
+                    	c.BranchType
+                    From ChangeMeter mc
+                    Join CustomerWarehouse.dbo.Clients c
+                    	ON mc.ZoneId=c.ZoneId AND mc.CustomerNumber=c.CustomerNumber
+                    Where c.ToDayJalali IS NULL
+                    Order By c.BillId , mc.ChangeDateJalali ASC	";
         }
     }
 }

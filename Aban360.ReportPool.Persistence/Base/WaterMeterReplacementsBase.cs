@@ -58,7 +58,6 @@ namespace Aban360.ReportPool.Persistence.Base
                         From [CustomerWarehouse].dbo.Clients c
                         Where				
                             c.ZoneId IN @zoneIds AND
-                            c.UsageId IN @UsageIds AND
                             (
                                 @fromReadingNumber IS NULL OR 
                                 @toReadingNumber IS NULL OR
@@ -91,6 +90,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     Where 
                     	c.RN=1 AND
                     	c.DeletionStateId NOT IN(1,2) AND
+                        c.UsageId IN @UsageIds AND
                     	mc.{dateParam} BETWEEN @FromDateJalali AND @ToDateJalali 
                     Order By
                     	mc.RegisterDateJalali Desc,
@@ -152,7 +152,6 @@ namespace Aban360.ReportPool.Persistence.Base
                         From [CustomerWarehouse].dbo.Clients c
                         Where				
                             c.ZoneId IN @zoneIds AND
-                            c.UsageId IN @UsageIds AND
                             (
                                 @fromReadingNumber IS NULL OR 
                                 @toReadingNumber IS NULL OR
@@ -191,6 +190,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     Where 
                     	c.RN=1 AND
                     	c.DeletionStateId NOT IN(1,2) AND
+                        c.UsageId IN @UsageIds AND
                     	mc.{dateParam} BETWEEN @FromDateJalali AND @ToDateJalali
                     Group By {groupingFiled}";
         }
