@@ -121,9 +121,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
                 return customerInfo.DomesticUnit < 1 ? 1 : customerInfo.DomesticUnit;//((/*customerInfo.OtherUnit + */customerInfo.DomesticUnit) == 0 ? 1 : /*customerInfo.OtherUnit + */ customerInfo.DomesticUnit);
             }
             int finalHousehold = GetHouseholdUnit(customerInfo.HouseholdNumber, customerInfo.HouseholdDate, readingDateJalali);
-            if (finalHousehold > 0)
+            if (finalHousehold > 1)
             {
-                return customerInfo.DomesticUnit + finalHousehold;
+                return customerInfo.HouseholdNumber;//customerInfo.DomesticUnit;
             }
             return customerInfo.DomesticUnit - customerInfo.EmptyUnit < 1 ? 1 : customerInfo.DomesticUnit - customerInfo.EmptyUnit;
         }

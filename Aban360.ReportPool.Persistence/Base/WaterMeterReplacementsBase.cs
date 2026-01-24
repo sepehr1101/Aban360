@@ -58,6 +58,10 @@ namespace Aban360.ReportPool.Persistence.Base
                         From [CustomerWarehouse].dbo.Clients c
                         Where				
                             c.ZoneId IN @zoneIds AND
+<<<<<<< HEAD
+=======
+                            c.UsageId IN @UsageIds AND
+>>>>>>> 2a14f43b7b9aae3264bf22751794a0853d384749
                             (
                                 @fromReadingNumber IS NULL OR 
                                 @toReadingNumber IS NULL OR
@@ -90,7 +94,10 @@ namespace Aban360.ReportPool.Persistence.Base
                     Where 
                     	c.RN=1 AND
                     	c.DeletionStateId NOT IN(1,2) AND
+<<<<<<< HEAD
                         c.UsageId IN @UsageIds AND
+=======
+>>>>>>> 2a14f43b7b9aae3264bf22751794a0853d384749
                     	mc.{dateParam} BETWEEN @FromDateJalali AND @ToDateJalali 
                     Order By
                     	mc.RegisterDateJalali Desc,
@@ -152,6 +159,10 @@ namespace Aban360.ReportPool.Persistence.Base
                         From [CustomerWarehouse].dbo.Clients c
                         Where				
                             c.ZoneId IN @zoneIds AND
+<<<<<<< HEAD
+=======
+                            c.UsageId IN @UsageIds AND
+>>>>>>> 2a14f43b7b9aae3264bf22751794a0853d384749
                             (
                                 @fromReadingNumber IS NULL OR 
                                 @toReadingNumber IS NULL OR
@@ -190,7 +201,10 @@ namespace Aban360.ReportPool.Persistence.Base
                     Where 
                     	c.RN=1 AND
                     	c.DeletionStateId NOT IN(1,2) AND
+<<<<<<< HEAD
                         c.UsageId IN @UsageIds AND
+=======
+>>>>>>> 2a14f43b7b9aae3264bf22751794a0853d384749
                     	mc.{dateParam} BETWEEN @FromDateJalali AND @ToDateJalali
                     Group By {groupingFiled}";
         }

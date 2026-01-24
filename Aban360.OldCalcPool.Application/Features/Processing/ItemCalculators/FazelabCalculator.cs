@@ -11,7 +11,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IFazelabCalculator
     {
-        TariffItemResult Calculate(string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult);
+        TariffItemResult Calculate(string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult, out double multiplier);
         TariffItemResult CalculateDiscount(TariffItemResult fazelabCalculationResult , double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo);
     }
 
@@ -23,12 +23,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         private const int _firstCalculation = 1;
         private const int _normal = 2;
 
-        public TariffItemResult Calculate(string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult)
+        public TariffItemResult Calculate(string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult, out double multiplier)
         {
             double sewageAmount = 0;
 
             //محاسبه کارمزد دفع در کاربری های گروه خانگی ضریب 0.7
-            double multiplier = GetMultiplier(isAbonman, customerInfo.UsageId);
+            multiplier = GetMultiplier(isAbonman, customerInfo.UsageId);
            
             if (IsConstruction(customerInfo.BranchType) && !isAbonman)
             {
@@ -109,12 +109,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return new TariffItemResult();
             }
-            if (date_1404_02_31.MoreOrEq(consumptionPartialInfo.EndDateJalali) && IsSchool(customerInfo.UsageId))
+           /* if (date_1404_02_31.MoreOrEq(consumptionPartialInfo.EndDateJalali) && IsSchool(customerInfo.UsageId))
             {
                 return new TariffItemResult();
-            }
+            }*/
             double fazelabDiscount = abBahaDiscount * GetMultiplier(false,customerInfo.UsageId);
-            double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, consumptionPartialInfo.Consumption, consumptionPartialInfo.Duration, fazelabDiscount);
+            double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, consumptionPartialInfo.Consumption, consumptionPartialInfo.Duration, fazelabDiscount, consumptionPartialInfo);
             double finalDiscount= virtualDiscount > 0 ? virtualDiscount : fazelabDiscount;//fazelabAmount
             return new TariffItemResult(finalDiscount);
         }

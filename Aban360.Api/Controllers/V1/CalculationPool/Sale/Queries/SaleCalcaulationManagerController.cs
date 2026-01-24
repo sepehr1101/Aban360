@@ -24,7 +24,6 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Queries
         public async Task<IActionResult> Calculate([FromBody] SaleInputDto inputDto, CancellationToken cancellationToken)
         {
             ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> result = await _getHandler.Handle(inputDto, cancellationToken);
-
             return Ok(result);
         }
     }

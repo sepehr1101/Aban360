@@ -53,7 +53,10 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         private void ValidationOffering(AfterSaleInputDto input)
         {
+<<<<<<< HEAD
             x(input.CompanyServiceIds);
+=======
+>>>>>>> 2a14f43b7b9aae3264bf22751794a0853d384749
             if (input.PreviousData.WaterDiameterId != input.CurrentData.WaterDiameterId && !input.CompanyServiceIds.Contains(1))
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeWaterDiameter));
@@ -204,6 +207,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         long CalcDiff(long? current, long? previous) => (current ?? 0) - (previous ?? 0);
 
+<<<<<<< HEAD
         private void x(ICollection<int> offeringIds)
         {
             var s = offeringIds.Select(s => (XEnum)s).ToList();
@@ -249,5 +253,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         Surveying = 67,
         OtherServices = 74,
         ChangeMeterLevel = 77
+=======
+>>>>>>> 2a14f43b7b9aae3264bf22751794a0853d384749
     }
 }

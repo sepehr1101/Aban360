@@ -203,5 +203,19 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
             bool canParse = int.TryParse(villageId.Substring(0, 4), out int villageCode);
             return (canParse, villageCode);
         }
+        internal static bool IsQuranAfter1404_01_01(int usageId, string startDateJalali)
+        {
+            return CheckConditions(usageId, [10]) && startDateJalali.MoreOrEq("1403/12/30");
+        }
+        internal static bool IsQuranBefore1404_01_01(int usageId, string endDateJalali)
+        {
+            return CheckConditions(usageId, [10]) && "1403/12/30".MoreOrEq(endDateJalali);
+        }
+        internal static bool IsQuranIn1403ContinuesNext(int usageId, string startDateJalali, string endDateJalali)
+        {
+            return CheckConditions(usageId, [10]) && 
+                   "1403/12/29".MoreOrEq(startDateJalali) &&
+                   endDateJalali.MoreOrEq("1404/01/01");
+        }
     }
 }

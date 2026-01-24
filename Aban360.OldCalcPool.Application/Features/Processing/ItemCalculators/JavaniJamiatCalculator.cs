@@ -1,13 +1,14 @@
 ﻿using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
+using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.VirtualCapacityCalculator;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IJavaniJamiatCalculator
     {
         TariffItemResult Calculate(ConsumptionPartialInfo consumptionPartialInfo, CustomerInfoOutputDto customerInfo, double abBahaAmount, double monthlyConsumption, int olgoo);
-        TariffItemResult CalculateDiscount();
+        TariffItemResult CalculateDiscount(CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult javaniRresult);
     }
 
     internal sealed class JavaniJamiatCalculator : IJavaniJamiatCalculator
@@ -31,6 +32,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return new TariffItemResult();
             }
+            //if(customerInfo.IsSpecial)
+            //{
+            //    return new TariffItemResult();
+            //}
 
             int domesticUnit = customerInfo.DomesticUnit;
             double baseAmount = 1000;
@@ -78,9 +83,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             }
             return new TariffItemResult();
         }
-        public TariffItemResult CalculateDiscount()
+        public TariffItemResult CalculateDiscount(CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult javaniResult)
         {
-            return new TariffItemResult();
+            // در تاریخ 30 دی 1404 طبق نظر جناب اقای اعلایی و خانم حبیبی نژاد در صورتی که مدرسه مشمول تخفیف شود مبلغ جوانی تخفیف داده شود
+            double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, consumptionPartialInfo.Consumption, consumptionPartialInfo.Duration, javaniResult.Summation, consumptionPartialInfo);
+            TariffItemResult discount = virtualDiscount > 0 ? new TariffItemResult(javaniResult.Summation) : new TariffItemResult();
+            return discount;
         }
     }
 }
