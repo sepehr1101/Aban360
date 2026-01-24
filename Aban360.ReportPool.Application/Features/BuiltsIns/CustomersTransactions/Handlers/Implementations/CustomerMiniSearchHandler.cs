@@ -1,4 +1,6 @@
-﻿using Aban360.Common.BaseEntities;
+﻿using Aban360.Common.ApplicationUser;
+using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.QueryServices;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Contracts;
@@ -14,6 +16,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
     {
         private readonly ICustomerMiniSearchQueryService _customerMiniSearchQueryService;
         private readonly IValidator<CustomerMiniSearchInputDto> _validator;
+      
         public CustomerMiniSearchHandler(
             ICustomerMiniSearchQueryService customerMiniSearchQueryService,
             IValidator<CustomerMiniSearchInputDto> validator)
@@ -33,7 +36,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
                 var messeState = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new CustomValidationException(messeState);
             }
-
+            
             ReportOutput<CustomerMiniSearchHeaderOutputDto, CustomerMiniSearchDataOutputDto> result = await _customerMiniSearchQueryService.Get(input);
             return result;
         }
