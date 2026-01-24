@@ -53,6 +53,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         private void ValidationOffering(AfterSaleInputDto input)
         {
+            x(input.CompanyServiceIds);
             if (input.PreviousData.WaterDiameterId != input.CurrentData.WaterDiameterId && !input.CompanyServiceIds.Contains(1))
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeWaterDiameter));
@@ -202,49 +203,51 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             return (previousItems, currentItems, differentItems);
         }
         long CalcDiff(long? current, long? previous) => (current ?? 0) - (previous ?? 0);
-       
-        //private void x(ICollection<int> offeringIds)
-        //{
-        //    var s= offeringIds.Contains((short)XEnum)
-        //}
+
+        private void x(ICollection<int> offeringIds)
+        {
+            var s = offeringIds.Select(s => (XEnum)s).ToList();
+
+            var ss = s;
+        }
     }
-    //public enum XEnum
-    //{
-    //    WastewaterBranch = 3,
-    //    MeterSeparation = 4,
-    //    ChangeSpecifications = 5,
-    //    ChangeUnit = 6,
-    //    ChangeUsage = 7,
-    //    ChangeBranchDiameter = 8,
-    //    InstallAdditionalSiphon = 9,
-    //    MeterRelocation = 10,
-    //    BranchDismantling = 11,
-    //    PropertyConsolidationAndMerger = 12,
-    //    TankerWaterSale = 13,
-    //    SuggestionsComplaintsCriticisms = 14,
-    //    BillPaymentFacility = 15,
-    //    ViewRecords = 16,
-    //    Settlement = 17,
-    //    BillReview = 18,
-    //    InterimBill = 19,
-    //    TemporaryDisconnectionAndReconnection = 20,
-    //    MeterTest = 21,
-    //    WaterAndWastewaterBranchTransfer = 22,
-    //    AfterSalesService = 23,
-    //    ChangeSiphonDiameter = 24,
-    //    SiphonReplacement = 25,
-    //    NotaryInquiry = 26,
-    //    DisconnectionAndReconnection = 27,
-    //    SiphonRelocation = 28,
-    //    EngineeringSystem = 29,
-    //    MeterReplacement = 30,
-    //    ChangeContractualCapacity = 31,
-    //    HouseholdCensus = 42,
-    //    WaterPreparation = 45,
-    //    WastewaterPreparation = 46,
-    //    TariffChange = 47,
-    //    Surveying = 67,
-    //    OtherServices = 74,
-    //    ChangeMeterLevel = 77
-    //}
+    public enum XEnum
+    {
+        WastewaterBranch = 3,
+        MeterSeparation = 4,
+        ChangeSpecifications = 5,
+        ChangeUnit = 6,
+        ChangeUsage = 7,
+        ChangeBranchDiameter = 8,
+        InstallAdditionalSiphon = 9,
+        MeterRelocation = 10,
+        BranchDismantling = 11,
+        PropertyConsolidationAndMerger = 12,
+        TankerWaterSale = 13,
+        SuggestionsComplaintsCriticisms = 14,
+        BillPaymentFacility = 15,
+        ViewRecords = 16,
+        Settlement = 17,
+        BillReview = 18,
+        InterimBill = 19,
+        TemporaryDisconnectionAndReconnection = 20,
+        MeterTest = 21,
+        WaterAndWastewaterBranchTransfer = 22,
+        AfterSalesService = 23,
+        ChangeSiphonDiameter = 24,
+        SiphonReplacement = 25,
+        NotaryInquiry = 26,
+        DisconnectionAndReconnection = 27,
+        SiphonRelocation = 28,
+        EngineeringSystem = 29,
+        MeterReplacement = 30,
+        ChangeContractualCapacity = 31,
+        HouseholdCensus = 42,
+        WaterPreparation = 45,
+        WastewaterPreparation = 46,
+        TariffChange = 47,
+        Surveying = 67,
+        OtherServices = 74,
+        ChangeMeterLevel = 77
+    }
 }
