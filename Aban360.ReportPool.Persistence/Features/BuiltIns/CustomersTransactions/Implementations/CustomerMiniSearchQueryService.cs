@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         {
             string fieldSearch = GetField(input.SearchType);
             string query = GetQuery(fieldSearch);
-            IEnumerable<CustomerMiniSearchDataOutputDto> data = await _sqlReportConnection.QueryAsync<CustomerMiniSearchDataOutputDto>(query, new { input = input.Input });
+            IEnumerable<CustomerMiniSearchDataOutputDto> data = await _sqlReportConnection.QueryAsync<CustomerMiniSearchDataOutputDto>(query, new { input = input.Input, zoneIds=input.UserZoneIds });
             CustomerMiniSearchHeaderOutputDto header = new CustomerMiniSearchHeaderOutputDto()
             {
                 Input = input.Input,
@@ -97,6 +97,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 					JOIN [Db70].dbo.T46 t46
 					    On t51.C1=t46.C0
 					Where 
+						c.ZoneId IN @zoneIds AND
 						c.ToDayJalali IS NULL AND
 						{fieldSearch}=@input";
         }
