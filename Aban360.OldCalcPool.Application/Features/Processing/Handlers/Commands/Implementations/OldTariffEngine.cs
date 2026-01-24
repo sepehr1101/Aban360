@@ -278,14 +278,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             TariffItemResult hotSeasonFazelabDiscount = _hotSeasonCalculator.CalculateDiscount(fazelabDiscount.Summation, hotSeasonFazelab, customerInfo, abBahaResult, consumptionPartialInfo);
             TariffItemResult boodjeDiscount = _budgetCalculator.CalculateDiscount(consumptionPartialInfo, customerInfo, abBahaDiscount.Summation, boodje);
             TariffItemResult avarezDiscount = _avarezCalculator.CalculateDiscount();
-<<<<<<< HEAD
-            TariffItemResult javaniDiscount = _javaniJamiatCalculator.CalculateDiscount();
-=======
             TariffItemResult javaniDiscount= _javaniJamiatCalculator.CalculateDiscount(customerInfo,consumptionPartialInfo, javani);
 
             //Mullah again
 
->>>>>>> 2a14f43b7b9aae3264bf22751794a0853d384749
 
             return new BaseOldTariffEngineOutputDto(
                 abBahaValues: abBahaResult,

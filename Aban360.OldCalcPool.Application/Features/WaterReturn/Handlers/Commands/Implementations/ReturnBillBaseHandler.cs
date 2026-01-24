@@ -2,6 +2,7 @@
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Constants;
 using Aban360.OldCalcPool.Domain.Features.Db70.Dto.Commands;
@@ -26,6 +27,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private readonly IAutoBackCommandService _autoBackCommandService;
         private readonly ICustomerInfoDetailQueryService _customerInfoDetailQueryService;
         private readonly IBillReturnCauseQueryService _billReturnCauseQueryService;
+        private readonly ITaxCalculator _taxCalculator;
         private readonly IValidator<ReturnBillFullInputDto> _returnFullValidator;
         private readonly IValidator<ReturnBillPartialInputDto> _returnPartialValidator;
         private static string _title = "برگشتی";
@@ -36,6 +38,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             IAutoBackCommandService autoBackCommandService,
             ICustomerInfoDetailQueryService customerInfoDetailQueryService,
             IBillReturnCauseQueryService billReturnCauseQueryService,
+            ITaxCalculator taxCalculator,
             IValidator<ReturnBillFullInputDto> returnFullValidator,
             IValidator<ReturnBillPartialInputDto> returnPartialValidator)
         {
@@ -50,6 +53,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             _billReturnCauseQueryService = billReturnCauseQueryService;
             _billReturnCauseQueryService.NotNull(nameof(billReturnCauseQueryService));
+
+            _taxCalculator = taxCalculator;
+            _taxCalculator.NotNull(nameof(taxCalculator));
 
             _returnFullValidator = returnFullValidator;
             _returnFullValidator.NotNull(nameof(returnFullValidator));
@@ -297,6 +303,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         }
         public AutoBackCreateDto GetNewCalculation(AbBahaCalculationDetails tariffInfo, BedBesCreateDto bedBes, int returnCauseId, int bedbesCount, float? consumptionHadar, long? abHadarAmount, int jalaseNumber)
         {
+            double wastedWaterTax = _taxCalculator.Calculate(new[] { (double)abHadarAmount }).Allowed;
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
             string currentDateJalali10Char = currentDateJalali.Substring(2);
 
@@ -315,12 +322,12 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 AbBaha = (decimal)tariffInfo.AbBahaAmount,
                 Ztadil = bedBes.Ztadil,//todo
                 Masraf = (decimal)tariffInfo.Consumption,
-                Shahrdari = (decimal)tariffInfo.MaliatAmount,
+                Shahrdari = (decimal)tariffInfo.MaliatAmount + (decimal)wastedWaterTax,
                 Modat = tariffInfo.Duration,
                 DateBed = currentDateJalali,
                 JalaseNo = jalaseNumber,
                 Mohlat = string.Empty,
-                Baha = (decimal)tariffInfo.SumItems,
+                Baha = (decimal)tariffInfo.SumItems + (decimal)wastedWaterTax + (decimal)abHadarAmount,
                 AbonAb = (decimal)tariffInfo.AbonmanAbAmount,
                 Pard = (decimal)tariffInfo.SumItems / 1000 * 1000,
                 Jam = (decimal)tariffInfo.SumItems,
@@ -349,7 +356,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 TavizDate = string.Empty,
                 ZaribCntr = 0,
                 Zabresani = 0,
-                ZaribD = 0,//
+                ZaribD = (decimal)tariffInfo.JavaniAmount,
                 Tafavot = 0,//
                 MasHadar = (decimal)(consumptionHadar ?? 0),//
                 AbHadar = abHadarAmount ?? 0,
