@@ -178,7 +178,7 @@
 
 
         public static string MalfunctionToChangeDetail { get { return $"{Report} جزئیات کنتورهای خراب تعویض شده"; } }
-        public static string MalfunctionToChangeSummary { get { return $"{Report} خلاصه کنتورهای خراب تعویض شده"; } }
+        public static string MalfunctionToChangeSummary { get { return $"{Report} خلاصه کنتورهای خراب تعویض` شده"; } }
         public static string MalfunctionMeterSummary { get { return $"{Report} خلاصه کنتورهای خراب"; } }
         public static string MalfunctionMeterDetail { get { return $"{Report} جزئیات کنتورهای خراب"; } }
         public static string MalfunctionMeterByDurationDetail { get { return $"{Report} جزئیات کنتورهای خراب-دوره"; } }
@@ -233,5 +233,11 @@
 
         public static string MeterDuplicateChangeDetail { get { return " جزئیات تعویض تکراری "; } }
         public static string MeterDuplicateChangeSummary { get { return " خلاصه تعویض تکراری "; } }
+
+        public static string MeterReplacementLifeDetail { get { return " جزئیات عمر کنتورهای تعویض شده "; } }
+        public static string MeterReplacementLifeSummary { get { return " خلاصه عمر کنتورهای تعویض شده "; } }
+
+        public static string WaterSaleSummary { get { return " خلاصه فروش آب‌بها "; } }
+        public static string WaterSaleDetail { get { return " جزئیات فروش آب‌بها "; } }
     }
 }

@@ -19,7 +19,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         public async Task<ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsSummaryDataOutputDto>> Get(WaterMeterReplacementsInputDto input)
         {
-            string query = GetGroupedQuery(input.IsChangeDate, "c.UsageTitle");
+            string query = GetGroupedWithCteQuery(input.IsChangeDate, "c.UsageTitle");
             string reportTitle = input.IsChangeDate == true ? ReportLiterals.WaterMeterReplacements(ReportLiterals.ChangeDate) + ReportLiterals.ByUsage : ReportLiterals.WaterMeterReplacements(ReportLiterals.RegisterDate) + ReportLiterals.ByUsage;
 
             IEnumerable<WaterMeterReplacementsSummaryDataOutputDto> waterMeterReplacementsData = await _sqlReportConnection.QueryAsync<WaterMeterReplacementsSummaryDataOutputDto>(query, input);

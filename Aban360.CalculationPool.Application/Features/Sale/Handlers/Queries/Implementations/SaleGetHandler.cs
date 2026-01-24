@@ -75,7 +75,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         private ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> CalcSaleHeader(IEnumerable<SaleDataOutputDto> salesData, bool hasBroker)
         {
-            short[] brokerOffering = [ (short)OfferingEnum.WaterEquipment ];
+            short[] brokerOffering = [(short)OfferingEnum.WaterEquipment];
 
             IEnumerable<SaleDataOutputDto>? brokerValues = hasBroker ? salesData.Where(s => brokerOffering.Contains(s.Id)) : null;
             IEnumerable<SaleDataOutputDto>? companyValues = hasBroker ? salesData.Where(s => !brokerOffering.Contains(s.Id)) : salesData;
@@ -145,9 +145,9 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         private IEnumerable<SaleDataOutputDto> CalcDiscount(SaleInputDto inputDto, IEnumerable<SaleDataOutputDto> salesData)
         {
-            int[] discount100Percent = [ 4, 5, 7, 16, 2, 14 ];//etc
-            int[] discount70Percent = [ 15 ];
-            int[] discount50Percent = [ 10 ];
+            int[] discount100Percent = [4, 5, 7, 16, 2, 14];//etc
+            int[] discount70Percent = [15];
+            int[] discount50Percent = [10];
 
             if (inputDto.DiscountTypeId != null && inputDto.DiscountTypeId > 0)
             {
@@ -172,7 +172,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         private IEnumerable<SaleDataOutputDto> CalcFinalDiscount(IEnumerable<SaleDataOutputDto> salesData, int discountPercent)
         {
-            short[] discountOffering = [ (short)OfferingEnum.WaterArticle11, (short)OfferingEnum.SewageArticle11, (short)OfferingEnum.WaterInstallation, (short)OfferingEnum.SewageInstalltion ];
+            short[] discountOffering = [(short)OfferingEnum.WaterArticle11, (short)OfferingEnum.SewageArticle11, (short)OfferingEnum.WaterInstallation, (short)OfferingEnum.SewageInstalltion];
 
             foreach (var item in salesData)
             {

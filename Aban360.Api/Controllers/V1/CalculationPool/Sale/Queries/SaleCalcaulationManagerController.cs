@@ -17,7 +17,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Queries
             _getHandler = getHandler;
             _getHandler.NotNull(nameof(getHandler));
         }
-        
+
         [HttpPost]
         [Route("calculate")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto>>), StatusCodes.Status200OK)]

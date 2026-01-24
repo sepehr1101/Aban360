@@ -19,7 +19,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
         public async Task<ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsDataOutputDto>> GetInfo(WaterMeterReplacementsInputDto input)
         {
-            string query = GetDetailQuery(input.IsChangeDate);
+            string query = GetDetailWithCteQuery(input.IsChangeDate);
 
             string reportTitle = input.IsChangeDate == true ? ReportLiterals.WaterMeterReplacements(ReportLiterals.ChangeDate) : ReportLiterals.WaterMeterReplacements(ReportLiterals.RegisterDate);
 

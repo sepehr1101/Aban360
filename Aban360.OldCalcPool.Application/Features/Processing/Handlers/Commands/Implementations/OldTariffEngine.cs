@@ -135,7 +135,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             ValidateCounterStateCode(input.CustomerInfo.CounterStateCode, input.MeterPreviousData.CurrentMeterNumber, input.MeterPreviousData.PreviousNumber);
 
             //TODO: direct create object from MeterComparisonBatchWithAggregatedNerkhGetHandler.cs
-            CustomerInfoOutputDto customerInfo = new (input);
+            CustomerInfoOutputDto customerInfo = new(input);
             try
             {
                 MeterInfoOutputDto meterInfo = new()
@@ -173,7 +173,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             ConsumptionInfo consumptionInfo = _consumptionCalculator.GetConsumptionInfo(meterInfo, customerInfo);
             NerkhByConsumptionInputDto nerkhInput = CreateNerkhInput(meterInfo, customerInfo, consumptionInfo);
             ValidatePreviousDate(meterInfo.PreviousDateJalali);
-            (IEnumerable<NerkhGetDto>, IEnumerable<AbAzadFormulaDto>, IEnumerable<ZaribGetDto>, int, IEnumerable<NerkhGetDto>) allNerkhAbAbAzad 
+            (IEnumerable<NerkhGetDto>, IEnumerable<AbAzadFormulaDto>, IEnumerable<ZaribGetDto>, int, IEnumerable<NerkhGetDto>) allNerkhAbAbAzad
                 = await _nerkhGetByConsumptionService.GetWithAggregatedNerkh(nerkhInput);
             AbBahaCalculationDetails result = await GetAbBahaCalculationDetails(allNerkhAbAbAzad.Item1, allNerkhAbAbAzad.Item2, allNerkhAbAbAzad.Item3, meterInfo.CurrentDateJalali, customerInfo, meterInfo, consumptionInfo, allNerkhAbAbAzad.Item5);
             return result;
@@ -192,7 +192,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         }
 
         private NerkhByConsumptionInputDto CreateNerkhInput(MeterInfoOutputDto meterInfo, CustomerInfoOutputDto customerInfo, ConsumptionInfo consumptionInfo)
-        {           
+        {
             return new NerkhByConsumptionInputDto(
                 _zoneId: customerInfo.ZoneId,
                 _usageId: customerInfo.UsageId,
@@ -239,7 +239,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
                 counter++;
             }
-            ConsumptionPartialInfo consumptionPartialInfo = _consumptionCalculator.GetPartial(meterInfo, consumptionInfo, meterInfo.PreviousDateJalali, meterInfo.CurrentDateJalali, IsDomestic(customerInfo.UsageId) ?  GetOlgoo(meterInfo.CurrentDateJalali, table1.olgo): customerInfo.ContractualCapacity);
+            ConsumptionPartialInfo consumptionPartialInfo = _consumptionCalculator.GetPartial(meterInfo, consumptionInfo, meterInfo.PreviousDateJalali, meterInfo.CurrentDateJalali, IsDomestic(customerInfo.UsageId) ? GetOlgoo(meterInfo.CurrentDateJalali, table1.olgo) : customerInfo.ContractualCapacity);
 
             TariffItemResult sumAbonmanAbBaha = _abonmanCalculator.CalculateAb(customerInfo, meterInfo, currentDateJalali, consumptionPartialInfo, out double before1403_12_02, out double before1404);
             TariffItemResult sumAbonmanFazelab = _fazelabCalculator.Calculate(meterInfo.PreviousDateJalali, currentDateJalali, consumptionInfo.Duration, customerInfo, sumAbonmanAbBaha.Summation, currentDateJalali, true, consumptionPartialInfo, abCalcResult: sumAbonmanAbBaha, out double multiplierFazelab);
@@ -254,14 +254,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             stopWatch.Stop();
             return new AbBahaCalculationDetails(Math.Round(AbBahaResult), Math.Round(sumAbBaha), Math.Round(sumFazelab), Math.Round(sumBoodjePart1), Math.Round(sumBoodjePart2), Math.Round(sumBoodje), Math.Round(sumHotSeasonAbBaha), Math.Round(sumHotSeasonFazelab), Math.Round(sumAbBahaDiscount), Math.Round(sumHotSeasonAbDiscount), Math.Round(sumFazelabDiscount), Math.Round(sumAbonmanAbBaha.Summation), Math.Round(sumAvarez), Math.Round(sumJavaniAmount), Math.Round(sumMaliatAmount.Summation), Math.Round(sumAbonmanFazelab.Summation),
                        Math.Round(sumAbonmanAbDiscount.Summation), Math.Round(sumAbonmanFazelabDiscount.Summation), Math.Round(sumAvarezDiscount), Math.Round(sumJavaniDiscount), Math.Round(maliatDiscount.Summation), Math.Round(sumBoodjeDiscount), allNerkh, abAzad, zarib, consumptionInfo, meterInfo, customerInfo, stopWatch.ElapsedMilliseconds, sumHotSeasonFazelabDiscount);
-        }       
+        }
         private BaseOldTariffEngineOutputDto CalculateWaterBill(NerkhGetDto nerkh, NerkhGetDto nerkh1403, AbAzadFormulaDto abAzad, ZaribGetDto zarib, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali, ConsumptionInfo consumptionInfo, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int>? tagIds)
         {
             ConsumptionPartialInfo consumptionPartialInfo = _consumptionCalculator.GetPartial(meterInfo, consumptionInfo, nerkh.Date1, nerkh.Date2, IsDomestic(customerInfo.UsageId) ? _olgoo : customerInfo.ContractualCapacity);
-          
+
             int olgoo = GetOlgoo(consumptionPartialInfo.EndDateJalali, _olgoo);
             bool isVillageCalculation = IsVillage(customerInfo.ZoneId);
-            double monthlyConsumption = consumptionInfo.DailyAverageConsumption * monthDays; 
+            double monthlyConsumption = consumptionInfo.DailyAverageConsumption * monthDays;
 
             TariffItemResult abBahaResult = _abBahaCalculator.Calculate(nerkh, nerkh1403, customerInfo, meterInfo, zarib, abAzad, consumptionPartialInfo, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, c, tagIds, out double villageMultiplier);
             TariffItemResult boodje = _budgetCalculator.Calculate(consumptionPartialInfo, customerInfo, currentDateJalali, monthlyConsumption, olgoo, consumptionInfo);
@@ -272,11 +272,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             TariffItemResult javani = _javaniJamiatCalculator.Calculate(consumptionPartialInfo, customerInfo, abBahaResult.Summation, monthlyConsumption, olgoo);
 
             //Discounts
-            TariffItemResult abBahaDiscount = _abBahaCalculator.CalculateDiscount(consumptionPartialInfo ,zarib, isVillageCalculation, monthlyConsumption, customerInfo, nerkh, olgoo, abBahaResult, consumptionInfo.FinalDomesticUnit);
+            TariffItemResult abBahaDiscount = _abBahaCalculator.CalculateDiscount(consumptionPartialInfo, zarib, isVillageCalculation, monthlyConsumption, customerInfo, nerkh, olgoo, abBahaResult, consumptionInfo.FinalDomesticUnit);
             TariffItemResult fazelabDiscount = _fazelabCalculator.CalculateDiscount(fazelab, abBahaDiscount.Summation, fazelab.Summation, customerInfo, consumptionPartialInfo);
             TariffItemResult hotSeasonAbDiscount = _hotSeasonCalculator.CalculateDiscount(abBahaDiscount.Summation, hotSeasonAbBaha, customerInfo, abBahaResult, consumptionPartialInfo);
             TariffItemResult hotSeasonFazelabDiscount = _hotSeasonCalculator.CalculateDiscount(fazelabDiscount.Summation, hotSeasonFazelab, customerInfo, abBahaResult, consumptionPartialInfo);
-            TariffItemResult boodjeDiscount = _budgetCalculator.CalculateDiscount(consumptionPartialInfo,customerInfo, abBahaDiscount.Summation, boodje);
+            TariffItemResult boodjeDiscount = _budgetCalculator.CalculateDiscount(consumptionPartialInfo, customerInfo, abBahaDiscount.Summation, boodje);
             TariffItemResult avarezDiscount = _avarezCalculator.CalculateDiscount();
             TariffItemResult javaniDiscount= _javaniJamiatCalculator.CalculateDiscount(customerInfo,consumptionPartialInfo, javani);
 
@@ -303,7 +303,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 boodjeDiscount: boodjeDiscount.Summation,
                 hotSeasonFazelabDiscount: hotSeasonFazelabDiscount.Summation,
                 multiplier: 0,/*TODO*/
-                fazelab:fazelab,
+                fazelab: fazelab,
                 hotSeasonAb: hotSeasonAbBaha,
                 hotSeasonFazelab: hotSeasonFazelab,
                 boodje: boodje);
