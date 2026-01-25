@@ -35,6 +35,7 @@
         public static string BaseBeforComparisonDate => "تاریخ مبنا بعد از تاریخ مقایسه وارد شود ";
         public static string CustomerNotFound => " مشترک یافت نشد.";
         public static string BillNotFound => " قبضی یافت نشد.";
+        public static string InvalidDiameterId => " امکان محاسبه تعرفه با قطر انتخابی وجود ندارد.";
         public static string InvalidZoneIdMoreThan1 => "با توجه به اینکه فیلد از/تا اشتراک مقدار دهی شده است، می‌توانید فقط یک ناحیه را انتخاب کنید.";
 
         public static string HasNotSiphon => "سیفون ندارد";

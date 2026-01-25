@@ -2,7 +2,7 @@
 
 namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts
 {
-    public interface ISubscriptionAssignmentQueryService
+    public interface ISubscriptionQueryService
     {
         Task<SubscriptionAssignmentGetDto> Get(string input);
         Task<SubscriptionGetDto> GetInfo(string input);

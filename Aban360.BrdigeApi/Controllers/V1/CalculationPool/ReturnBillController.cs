@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
@@ -25,19 +26,19 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
 
         [HttpPost, HttpGet]
         [Route("partial")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReturnBillOutputDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> PartialReturn([FromBody] ReturnBillPartialInputDto input, CancellationToken cancellationToken)
         {
-            ReturnBillOutputDto result = await _billToReturnedHandler.Handle(input, cancellationToken);
+            FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = await _billToReturnedHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
         [HttpPost, HttpGet]
         [Route("full")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReturnBillOutputDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> FullReturn([FromBody] ReturnBillFullInputDto input, CancellationToken cancellationToken)
         {
-            ReturnBillOutputDto result = await _billFullHandler.Handle(input, cancellationToken);
+            FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = await _billFullHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
     }

@@ -5,22 +5,28 @@ using Aban360.ClaimPool.Persistence.Features.Land.Commands.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using System.Transactions;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations
 {
     internal sealed class SubscriptionAssignmentUpdateHandler : ISubscriptionAssignmentUpdateHandler
     {
-        private readonly ISubscriptionAssignmentQueryService _subscriptionAssignmentQueryService;
-        private readonly ISubscriptionAssignmentCommandService _subscriptionAssignmentCommandService;
+        private readonly ISubscriptionQueryService _subscriptionAssignmentQueryService;
+        private readonly IArchMemCommandService _archMemCommandService;
+        private readonly IMembersCommandService _membersCommandService;
         public SubscriptionAssignmentUpdateHandler(
-            ISubscriptionAssignmentQueryService subscriptionAssignmentQueryService,
-            ISubscriptionAssignmentCommandService subscriptionAssignmentCommandService)
+            ISubscriptionQueryService subscriptionAssignmentQueryService,
+            IArchMemCommandService archMemCommandService,
+            IMembersCommandService membersCommandService)
         {
             _subscriptionAssignmentQueryService = subscriptionAssignmentQueryService;
             _subscriptionAssignmentQueryService.NotNull(nameof(subscriptionAssignmentQueryService));
 
-            _subscriptionAssignmentCommandService = subscriptionAssignmentCommandService;
-            _subscriptionAssignmentCommandService.NotNull(nameof(subscriptionAssignmentCommandService));
+            _archMemCommandService = archMemCommandService;
+            _archMemCommandService.NotNull(nameof(archMemCommandService));
+
+            _membersCommandService = membersCommandService;
+            _membersCommandService.NotNull(nameof(membersCommandService));
         }
 
         public async Task Handle(SubscriptionAssignmentUpdateDto updateDto, CancellationToken cancellationToken)
@@ -30,20 +36,31 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             {
                 throw new BaseException("شناسه قبض یافت نشد");
             }
-
-            SubscriptionUpdateDto subscriptionUpdate = new()
+            CustomerUpdateDto subscriptionUpdate = GetCustomerUpdateDto(updateDto, previousSubscription);
+           
+            using (TransactionScope transaction = TransactionBuilder.Create(0, 3))
             {
-                Id = updateDto.Id,
-                CustomerNumber=previousSubscription.CustomerNumber,
-                ZoneId=previousSubscription.ZoneId,
+                await _archMemCommandService.Insert(subscriptionUpdate);
+                await _membersCommandService.Update(subscriptionUpdate);
+
+                transaction.Complete();
+            }
+        }
+        private CustomerUpdateDto GetCustomerUpdateDto(SubscriptionAssignmentUpdateDto inputDto, SubscriptionGetDto previousSubscription)
+        {
+            return new CustomerUpdateDto()
+            {
+                Id = inputDto.Id,
+                CustomerNumber = previousSubscription.CustomerNumber,
+                ZoneId = previousSubscription.ZoneId,
                 BillId = previousSubscription.BillId,
-                X = updateDto.X,
-                Y = updateDto.Y,
-                ReadingNumber = updateDto.ReadingNumber,
+                X = inputDto.X,
+                Y = inputDto.Y,
+                ReadingNumber = inputDto.ReadingNumber,
                 FirstName = previousSubscription.FirstName,
                 SurName = previousSubscription.SurName,
-                Address = updateDto.Address,
-                PostalCode = updateDto.PostalCode,
+                Address = inputDto.Address,
+                PostalCode = inputDto.PostalCode,
                 Plaque = previousSubscription.Plaque,
                 NationalCode = previousSubscription.NationalCode,
                 PhoneNumber = previousSubscription.PhoneNumber,
@@ -61,10 +78,25 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 MeterDiamterId = previousSubscription.MeterDiamterId,
                 IsSpecial = previousSubscription.IsSpecial,
                 ContractualCapacity = previousSubscription.ContractualCapacity,
+                ImprovementCommertial = previousSubscription.ImprovementCommertial,
+                ImprovementDomestic = previousSubscription.ImprovementDomestic,
+                ImprovementOverall = previousSubscription.ImprovementOverall,
+                Premises = previousSubscription.Premises,
+                Operator = previousSubscription.Operator,
+                SewageInstallationDateJalali = previousSubscription.SewageInstallationDateJalali,
+                SewageRequestDateJalali = previousSubscription.SewageRequestDateJalali,
+                WaterInstallationDateJalali = previousSubscription.WaterInstallationDateJalali,
+                WaterRequestDateJalali = previousSubscription.WaterRequestDateJalali,
+                Siphon100 = previousSubscription.Siphon100,
+                Siphon125 = previousSubscription.Siphon125,
+                Siphon150 = previousSubscription.Siphon150,
+                Siphon200 = previousSubscription.Siphon200,
+                Siphon5 = previousSubscription.Siphon5,
+                Siphon6 = previousSubscription.Siphon6,
+                Siphon7 = previousSubscription.Siphon7,
+                Siphon8 = previousSubscription.Siphon8,
+                MainSiphon = previousSubscription.MainSiphon,
             };
-
-            //update
-            await _subscriptionAssignmentCommandService.Update(subscriptionUpdate);
         }
     }
 }
