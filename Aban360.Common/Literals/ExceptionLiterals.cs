@@ -105,6 +105,7 @@
 
         //Sale
         public static string InvalicZoneIdWithBlock => "ناحیه با بلوک انتخابی مطابقت ندارد.";
+        public static string InvalicZoneId => "امکان محاسبه فروش برای  ناحیه انتخابی وجود ندارد.";
 
         //AfterSale
         public static string CheckCompanyService(string item) => $"برای {item} ابتدا خدمت را انتخاب کنید.";
