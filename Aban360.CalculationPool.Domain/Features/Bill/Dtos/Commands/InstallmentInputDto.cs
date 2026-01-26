@@ -6,5 +6,6 @@
         public string BillId { get; set; }
         public int InstallmentCount { get; set; }
         public float AdvancePaymentPercentage { get; set; }
+        public bool IsConfirm { get; set; }
     }
 }
