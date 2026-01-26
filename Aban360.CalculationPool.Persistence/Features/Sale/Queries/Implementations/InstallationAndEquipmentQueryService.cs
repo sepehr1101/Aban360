@@ -3,6 +3,7 @@ using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
 using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Exceptions;
+using Aban360.Common.Literals;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
@@ -19,7 +20,11 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
         {
             string query = GetSaleQuery();
             InstallationAndEquipmentOutputDto data = await _sqlConnection.QueryFirstAsync<InstallationAndEquipmentOutputDto>(query, input);
-
+            if (data is null || data.Id <= 0)
+            {
+                throw new InvalidDataException(ExceptionLiterals.InvalidDiameterId);//todo
+            }
+            
             return data;
         }
         public async Task<InstallationAndEquipmentOutputDto> Get(int id, string currentDateJalali)

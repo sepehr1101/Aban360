@@ -2,8 +2,8 @@
 
 namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Contracts
 {
-    public interface ISubscriptionAssignmentCommandService
+    public interface IArchMemCommandService
     {
-        Task Update(SubscriptionUpdateDto updateDto);
+        Task Insert(CustomerUpdateDto updateDto);
     }
 }

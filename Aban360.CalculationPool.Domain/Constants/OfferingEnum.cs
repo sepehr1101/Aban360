@@ -2,6 +2,8 @@
 {
     public enum OfferingEnum:short
     { 
+        Subscription=2,
+
         WaterInstallation=1,
         SewageInstalltion=12,
 

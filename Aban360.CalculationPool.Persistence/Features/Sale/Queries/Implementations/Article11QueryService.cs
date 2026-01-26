@@ -49,6 +49,13 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
             int count = await _sqlConnection.QueryFirstOrDefaultAsync<int>(query, new { zoneId = zoneId, BlockCode = block });
             return count <= 0 ? false : true;
         }
+        public async Task<bool> ZoneValidation(int zoneId)
+        {
+            string query = GetZoneValidationQuery();
+            int count = await _sqlConnection.QueryFirstOrDefaultAsync<int>(query, new { zoneId = zoneId });
+
+            return count <= 0 ? false : true;
+        }
         private string GetQuery()
         {
             return @"Select *
@@ -86,6 +93,13 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
                     Where 
                     	ZoneId=@ZoneId AND
                     	{blockCondition}";
+        }
+        private string GetZoneValidationQuery()
+        {
+            return @$"Select COUNT(1)
+                    From Aban360.CalculationPool.Article11
+                    Where 
+                    	ZoneId=@ZoneId";
         }
     }
 }
