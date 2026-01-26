@@ -63,7 +63,6 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeSiphonDiameter));
             }
-
             if (input.PreviousData.UsageId != input.CurrentData.UsageId && !afterSaleCompanySelected.Contains(AfterSaleCompanyServiceEnum.ChangeUsage))
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeUsage));
@@ -147,6 +146,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         private async Task<(IEnumerable<SaleDataOutputDto>, IEnumerable<SaleDataOutputDto>, IEnumerable<SaleDataOutputDto>)> GetData(IEnumerable<SaleDataOutputDto> previousSaleData, IEnumerable<SaleDataOutputDto> currentSaleData)
         {
+            string subscriptionTitle = await _offeringQueryService.Get((short)OfferingEnum.Subscription);
             string waterInstallationTitle = await _offeringQueryService.Get((short)OfferingEnum.WaterInstallation);
             string sewageInstallationTitle = await _offeringQueryService.Get((short)OfferingEnum.SewageInstalltion);
             string waterEquipmentTitle = await _offeringQueryService.Get((short)OfferingEnum.WaterEquipment);
@@ -158,6 +158,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             var currentDictionary = currentSaleData.ToDictionary(x => x.Id);
             var previousItems = new List<SaleDataOutputDto>
             {
+                CreateOrGetZeroItem((short)OfferingEnum.Subscription, subscriptionTitle, previousDictionary),
                 CreateOrGetZeroItem((short)OfferingEnum.WaterInstallation, waterInstallationTitle, previousDictionary),
                 CreateOrGetZeroItem((short)OfferingEnum.SewageInstalltion, sewageInstallationTitle, previousDictionary),
                 CreateOrGetZeroItem((short)OfferingEnum.WaterEquipment, waterEquipmentTitle, previousDictionary),
@@ -167,12 +168,13 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             };
             var currentItems = new List<SaleDataOutputDto>
             {
+                CreateOrGetZeroItem((short)OfferingEnum.Subscription, subscriptionTitle, currentDictionary),
                 CreateOrGetZeroItem((short)OfferingEnum.WaterInstallation, waterInstallationTitle, currentDictionary),
                 CreateOrGetZeroItem((short)OfferingEnum.SewageInstalltion, sewageInstallationTitle, currentDictionary),
                 CreateOrGetZeroItem((short)OfferingEnum.WaterEquipment, waterEquipmentTitle, currentDictionary),
                 CreateOrGetZeroItem((short)OfferingEnum.SewageEquipment, sewageEquipmentTitle, currentDictionary),
                 CreateOrGetZeroItem((short)OfferingEnum.WaterArticle11, waterArtile11Title, currentDictionary),
-                CreateOrGetZeroItem((short)OfferingEnum.SewageArticle11, sewageArtile11Title, currentDictionary)
+                CreateOrGetZeroItem((short)OfferingEnum.SewageArticle11, sewageArtile11Title, currentDictionary),
             };
             var previousData = previousItems.ToDictionary(x => x.Id);
             var currentData = currentItems.ToDictionary(x => x.Id);

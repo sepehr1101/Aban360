@@ -1,6 +1,4 @@
-﻿using DNTPersianUtils.Core;
-
-namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Queries
+﻿namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Queries
 {
     public record SubscriptionAssignmentGetDto
     {

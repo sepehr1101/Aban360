@@ -9,5 +9,6 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts
         Task<Article11OutputDto> Get(short id, string currentDateJalali);
         Task<IEnumerable<Article11OutputDto>> Get(string currentDateJalali);
         Task<bool> ZoneWithBlockValidation(int zoneId, string? block);
+        Task<bool> ZoneValidation(int zoneId);
     }
 }

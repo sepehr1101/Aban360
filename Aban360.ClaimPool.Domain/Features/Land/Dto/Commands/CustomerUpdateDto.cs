@@ -2,7 +2,7 @@
 
 namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
 {
-    public record SubscriptionUpdateDto
+    public record CustomerUpdateDto
     {
         public int Id { get; set; }
         public int ZoneId { get; set; }
@@ -28,12 +28,33 @@ namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
         public int CommertialUnit { get; set; }
         public int DomesticUnit { get; set; }
         public int OtherUnit { get; set; }
+        public int ImprovementCommertial { get; set; }
+        public int ImprovementDomestic { get; set; }
+        public int ImprovementOverall { get; set; }
+        public int Premises { get; set; }
         public int HouseholdNumber { get; set; }
         public string HouseholdDateJalali { get; set; }
         public int MeterDiamterId { get; set; }
         public bool IsSpecial { get; set; }
         public int ContractualCapacity { get; set; }
         public string ToDayDateJalali => DateTime.Now.ToShortPersianDateString();
-        //اعیانی؟
+        public string ToDayDateJalaliWithFragmentYear => ToDayDateJalali.Substring(2, 8);
+
+
+        public string WaterInstallationDateJalali { get; set; }
+        public string WaterRequestDateJalali { get; set; }
+        public string? SewageInstallationDateJalali { get; set; }///
+        public string? SewageRequestDateJalali { get; set; }//
+        public int Siphon100 { get; set; }
+        public int Siphon125 { get; set; }
+        public int Siphon150 { get; set; }
+        public int Siphon200 { get; set; }
+        public int Siphon5 { get; set; }
+        public int Siphon6 { get; set; }
+        public int Siphon7 { get; set; }
+        public int Siphon8 { get; set; }
+        public int MainSiphon { get; set; }
+        public int Operator { get; set; }
+
     }
 }
