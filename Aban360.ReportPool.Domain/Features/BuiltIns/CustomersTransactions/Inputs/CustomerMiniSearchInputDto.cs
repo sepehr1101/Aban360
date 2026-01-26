@@ -5,6 +5,12 @@ namespace Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inpu
     public record CustomerMiniSearchInputDto
     {
         public CustomerMiniSearchInputEnum SearchType { get; set; }
-        public string Input { get; set; }
+        public string Input { get; set; } = default!;
+        public IEnumerable<int>? UserZoneIds { get; private set; }
+
+        public void AssignZoneIds(IEnumerable<int> zoneIds)
+        {
+            UserZoneIds = zoneIds;
+        }
     }
 }
