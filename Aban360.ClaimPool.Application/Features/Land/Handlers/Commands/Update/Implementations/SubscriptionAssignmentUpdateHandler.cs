@@ -38,13 +38,13 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             }
             CustomerUpdateDto subscriptionUpdate = GetCustomerUpdateDto(updateDto, previousSubscription);
            
-            using (TransactionScope transaction = TransactionBuilder.Create(0, 3))
-            {
+            //using (TransactionScope transaction = TransactionBuilder.Create(0, 3))
+            //{
                 await _archMemCommandService.Insert(subscriptionUpdate);
                 await _membersCommandService.Update(subscriptionUpdate);
 
-                transaction.Complete();
-            }
+                //transaction.Complete();
+            //}
         }
         private CustomerUpdateDto GetCustomerUpdateDto(SubscriptionAssignmentUpdateDto inputDto, SubscriptionGetDto previousSubscription)
         {
@@ -96,6 +96,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 Siphon7 = previousSubscription.Siphon7,
                 Siphon8 = previousSubscription.Siphon8,
                 MainSiphon = previousSubscription.MainSiphon,
+
             };
         }
     }

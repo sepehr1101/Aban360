@@ -74,7 +74,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 CommertialUnit = inputDto.CommertialUnit,
                 DomesticUnit = inputDto.DomesticUnit,
                 OtherUnit = inputDto.OtherUnit,
-                HouseholdDateJalali = inputDto.HouseholdDateJalali ?? string.Empty,
+                HouseholdDateJalali = GetCorrectDateJalali(inputDto.HouseholdDateJalali),
                 HouseholdNumber = inputDto.HouseholdNumber,
                 MeterDiamterId = inputDto.MeterDiamterId,
                 IsSpecial = inputDto.IsSpecial,
@@ -84,8 +84,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 ImprovementOverall = inputDto.ImprovementOverall,
                 Premises = inputDto.Premises,
                 Operator = inputDto.Operator,
-                SewageInstallationDateJalali = inputDto.SewageInstallationDateJalali ?? string.Empty,
-                SewageRequestDateJalali = inputDto.SewageRequestDateJalali ?? string.Empty,
+                SewageInstallationDateJalali = GetCorrectDateJalali(inputDto.SewageInstallationDateJalali),
+                SewageRequestDateJalali = GetCorrectDateJalali(inputDto.SewageRequestDateJalali),
                 WaterInstallationDateJalali = inputDto.WaterInstallationDateJalali,
                 WaterRequestDateJalali = inputDto.WaterRequestDateJalali,
                 Siphon100 = inputDto.Siphon100,
@@ -98,6 +98,10 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 Siphon8 = inputDto.Siphon8,
                 MainSiphon = inputDto.MainSiphon,
             };
+        }
+        private string GetCorrectDateJalali(string? inputDate)
+        {
+            return string.IsNullOrWhiteSpace(inputDate) || inputDate.Trim().Length != 10 ? string.Empty : inputDate.Trim();
         }
     }
 }

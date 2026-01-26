@@ -38,6 +38,7 @@ namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
         public bool IsSpecial { get; set; }
         public int ContractualCapacity { get; set; }
         public string ToDayDateJalali => DateTime.Now.ToShortPersianDateString();
+        public string ToDayDateJalaliWithFragmentYear => ToDayDateJalali.Substring(2, 8);
 
 
         public string WaterInstallationDateJalali { get; set; }
@@ -53,7 +54,7 @@ namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
         public int Siphon7 { get; set; }
         public int Siphon8 { get; set; }
         public int MainSiphon { get; set; }
-        public int Operator{ get; set; }
+        public int Operator { get; set; }
 
     }
 }

@@ -51,5 +51,9 @@
         public int MainSiphon { get; set; }
         public int Operator { get; set; }
 
+        public double Easting { get; set; }
+        public double Northing { get; set; }
+        public int UtmZone { get; set; }
+        public string? Letter { get; set; }
     }
 }

@@ -42,6 +42,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
             }
             var @params = new { customerNumber = data.CustomerNumber, zoneId = data.ZoneId };
             string dbName = GetDbName(data.ZoneId);
+            //string dbName = "Atlas";
 
             return (@params,dbName);
         }
@@ -62,7 +63,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         m.Id,
                         m.X,
                     	m.Y,
-						m.bill_id BillId,
+						TRIM(m.bill_id) BillId,
                     	TRIM(m.name) AS FirstName,
                     	TRIM(m.family) AS SurName,
                     	TRIM(m.address) AS Address,
