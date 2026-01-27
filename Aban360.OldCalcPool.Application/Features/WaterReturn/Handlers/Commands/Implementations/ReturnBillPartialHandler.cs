@@ -56,7 +56,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             var (bedBesInfo, bedBesResult) = await GetBedBesCreateDto(inputDto, customerInfo);
 
             int[] burstPipe = { 1 };
-            int[] misreaded = { 5 };
+            int[] misreaded = { 5, 7, 14, 15 };
             if (burstPipe.Contains(inputDto.ReturnCauseId))
             {
                 var (finalAmount, hadarConsumption, _consumptionAverage) = await GetAbHadarMasHadar(bedBesResult, customerInfo, consumptionAverage, bedBesResult.PriDate, bedBesResult.TodayDate);
@@ -67,7 +67,6 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             {
                 AbBahaCalculationDetails abBahaResult = await GetAbBahaTariff(inputDto, bedBesInfo, cancellationToken);
                 return await CreateAutoBacksAndReturn(abBahaResult, inputDto, bedBesInfo, bedBesResult, customerInfo, null, null, (float)abBahaResult.MonthlyConsumption, jalaseNumber, cancellationToken);
-
             }
             else
             {

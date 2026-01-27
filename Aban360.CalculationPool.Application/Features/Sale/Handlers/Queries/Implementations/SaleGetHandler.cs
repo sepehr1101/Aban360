@@ -25,6 +25,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private readonly IValidator<SaleInputDto> _validator;
         private static string title = "فروش انشعاب";
         private static int _nonDomesticAjustmentFactor = 285000;
+        private static int _nonDomesticFixed = 1140000;
         private static float _domesticSewageMultiplier = 0.7f;
         private static float _nonDomesticSewageMultiplier = 1f;
         public SaleGetHandler(
@@ -126,7 +127,8 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         {
             AdjustmentFactorGetDto adjustmentfactor = await _adjustmentFactorQueryService.Get(inputDto.ZoneId);
             long domesticAdjustmentFactor = adjustmentfactor.Price * inputDto.DomesticUnit;
-            long nonDomesticAdjustmentFactor = (long)(adjustmentfactor.AdjustmentFactor * _nonDomesticAjustmentFactor * inputDto.ContractualCapacity);
+            long constNonDomesticAdjustmentFactor = (long)(adjustmentfactor.AdjustmentFactor * _nonDomesticAjustmentFactor * inputDto.ContractualCapacity);
+            long nonDomesticSubscription = constNonDomesticAdjustmentFactor + (_nonDomesticFixed * inputDto.CommertialUnit);
 
             if (HasSiphon(inputDto))
             {
@@ -139,8 +141,8 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 }
                 else
                 {
-                    SaleDataOutputDto waterSubscription = await GetSaleData(OfferingEnum.WaterSubscription, nonDomesticAdjustmentFactor, null);
-                    SaleDataOutputDto sewageSubscription = await GetSaleData(OfferingEnum.SewageSubscription, (long)(nonDomesticAdjustmentFactor * _nonDomesticSewageMultiplier), null);
+                    SaleDataOutputDto waterSubscription = await GetSaleData(OfferingEnum.WaterSubscription, nonDomesticSubscription, null);
+                    SaleDataOutputDto sewageSubscription = await GetSaleData(OfferingEnum.SewageSubscription, (long)(nonDomesticSubscription * _nonDomesticSewageMultiplier), null);
 
                     return new[] { waterSubscription, sewageSubscription };
                 }
@@ -149,12 +151,14 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             {
                 return inputDto.IsDomestic ?
                     new[] { await GetSaleData(OfferingEnum.WaterSubscription, domesticAdjustmentFactor, null) } :
-                    new[] { await GetSaleData(OfferingEnum.WaterSubscription, (long)(nonDomesticAdjustmentFactor), null) };
+                    new[] { await GetSaleData(OfferingEnum.WaterSubscription, (long)(nonDomesticSubscription), null) };
             }
         }
         private async Task<IEnumerable<SaleDataOutputDto>> GetArticle11(SaleInputDto inputDto)
         {
             int usageMultiplier = inputDto.IsDomestic ? inputDto.DomesticUnit : inputDto.ContractualCapacity;
+            usageMultiplier = inputDto.UsageId == 3 ? inputDto.ContractualCapacity * inputDto.DomesticUnit : usageMultiplier;
+
             var article11 = new Article11GetDto(inputDto.ZoneId, inputDto.Block, DateTime.Now.ToShortPersianDateString());
             Article11OutputDto article11Data = await _article11QueryService.Get(article11);
             SaleDataOutputDto waterArticle11 = await GetSaleData(OfferingEnum.WaterArticle11, (inputDto.IsDomestic ? article11Data.DomesticWaterAmount : article11Data.NonDomesticWaterAmount) * usageMultiplier, null);
@@ -201,18 +205,19 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         private IEnumerable<SaleDataOutputDto> CalcDiscount(SaleInputDto inputDto, IEnumerable<SaleDataOutputDto> salesData)
         {
-            Dictionary<int, int> discountPercentList = new Dictionary<int, int>()
+            Dictionary<int, float> discountPercentList = new Dictionary<int, float>()
             {
-                { 2, 100 },
-                { 4, 100 },
-                { 5, 100 },
-                { 7, 100 },
-                { 14, 100 },
-                { 16, 100 },
-                { 15, 70 },
-                { 10, 50 }
+                { 1 , 1f },
+                { 2 , 1f },
+                { 4 , 1f },
+                { 5 , 1f },
+                { 7 , 1f },
+                { 14, 1f },
+                { 16, 1f },
+                { 15, 0.7f },
+                { 10, 0.5f }
             };
-            if (inputDto.DiscountTypeId is not int discountTypeId || discountTypeId <= 0)
+            if (!inputDto.DiscountTypeId.HasValue || inputDto.DiscountTypeId <= 0 || !IsDomestic(inputDto.UsageId))
             {
                 return salesData;
             }
@@ -221,9 +226,9 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 return salesData;
             }
 
-            return CalcFinalDiscount(salesData, discountPercent);
+            return CalcFinalDiscount(salesData, discountPercent, inputDto);
         }
-        private IEnumerable<SaleDataOutputDto> CalcFinalDiscount(IEnumerable<SaleDataOutputDto> salesData, int discountPercent)
+        private IEnumerable<SaleDataOutputDto> CalcFinalDiscount(IEnumerable<SaleDataOutputDto> salesData, float discountPercent, SaleInputDto inputDto)
         {
             short[] discountOffering = [(short)OfferingEnum.WaterArticle11, (short)OfferingEnum.SewageArticle11, (short)OfferingEnum.WaterSubscription, (short)OfferingEnum.SewageSubscription];
 
@@ -231,12 +236,18 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             {
                 if (discountOffering.Contains(item.Id))
                 {
-                    item.Discount = (long)(item.Amount * (discountPercent / 100m));
+                    long discountPerUnit = item.Amount / inputDto.DomesticUnit;
+                    item.Discount = discountPerUnit * inputDto.DiscountCount.Value;
                     item.FinalAmount = item.Amount - (item.Discount ?? 0);
                 }
             }
 
             return salesData;
+        }
+        private bool IsDomestic(int usageId)
+        {
+            int[] domestic = { 1, 3 };
+            return domestic.Contains(usageId);
         }
     }
 }
