@@ -154,13 +154,14 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         private async Task<IEnumerable<SaleDataOutputDto>> GetArticle11(SaleInputDto inputDto)
         {
+            int usageMultiplier = inputDto.IsDomestic ? inputDto.DomesticUnit : inputDto.ContractualCapacity;
             var article11 = new Article11GetDto(inputDto.ZoneId, inputDto.Block, DateTime.Now.ToShortPersianDateString());
             Article11OutputDto article11Data = await _article11QueryService.Get(article11);
-            SaleDataOutputDto waterArticle11 = await GetSaleData(OfferingEnum.WaterArticle11, inputDto.IsDomestic ? article11Data.DomesticWaterAmount : article11Data.NonDomesticWaterAmount, null);
+            SaleDataOutputDto waterArticle11 = await GetSaleData(OfferingEnum.WaterArticle11, (inputDto.IsDomestic ? article11Data.DomesticWaterAmount : article11Data.NonDomesticWaterAmount) * usageMultiplier, null);
 
             if (HasSiphon(inputDto))
             {
-                SaleDataOutputDto sewageArticle11 = await GetSaleData(OfferingEnum.SewageArticle11, inputDto.IsDomestic ? article11Data.DomesticSewageAmount : article11Data.NonDomesticSewageAmount, null);
+                SaleDataOutputDto sewageArticle11 = await GetSaleData(OfferingEnum.SewageArticle11, (inputDto.IsDomestic ? article11Data.DomesticSewageAmount : article11Data.NonDomesticSewageAmount) * usageMultiplier, null);
                 return new[] { waterArticle11, sewageArticle11 };
             }
 
