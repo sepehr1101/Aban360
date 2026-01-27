@@ -6,22 +6,22 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
 {
-    internal sealed class AjustmentFactorQueryService : AbstractBaseConnection, IAjustmentFactorQueryService
+    internal sealed class AdjustmentFactorQueryService : AbstractBaseConnection, IAdjustmentFactorQueryService
     {
-        public AjustmentFactorQueryService(IConfiguration configuration)
+        public AdjustmentFactorQueryService(IConfiguration configuration)
             : base(configuration)
         {
         }
-        public async Task<IEnumerable<AjustmentFactorGetDto>> Get()
+        public async Task<IEnumerable<AdjustmentFactorGetDto>> Get()
         {
             string query = GetAllQuery();
-            IEnumerable<AjustmentFactorGetDto> result = await _sqlReportConnection.QueryAsync<AjustmentFactorGetDto>(query, null);
+            IEnumerable<AdjustmentFactorGetDto> result = await _sqlReportConnection.QueryAsync<AdjustmentFactorGetDto>(query, null);
             return result;
         }
-        public async Task<AjustmentFactorGetDto> Get(int zoneId)
+        public async Task<AdjustmentFactorGetDto> Get(int zoneId)
         {
             string query = GetByZoneIdQuery();
-            AjustmentFactorGetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<AjustmentFactorGetDto>(query, new { zoneId });
+            AdjustmentFactorGetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<AdjustmentFactorGetDto>(query, new { zoneId });
             return result;
         }
         private string GetAllQuery()
@@ -29,18 +29,18 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
             return @"Select 
                     	Id,
                     	ZoneId,
-                    	AjustmentFactor,
+                    	AdjustmentFactor,
                     	Price
-                    From OldCalc.dbo.AjustmentFactor";
+                    From OldCalc.dbo.AdjustmentFactor";
         }
         private string GetByZoneIdQuery()
         {
             return @"Select 
                     	Id,
                     	ZoneId,
-                    	AjustmentFactor,
+                    	AdjustmentFactor,
                     	Price
-                    From OldCalc.dbo.AjustmentFactor
+                    From OldCalc.dbo.AdjustmentFactor
                     Where ZoneId=@zoneId";
         }
     }
