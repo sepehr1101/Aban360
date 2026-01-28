@@ -11,9 +11,9 @@ var configuration = builder.Configuration;
 //DI
 builder.Services.AddDI();
 builder.Services.AddAuth(configuration);
-builder.Services.AddControllers(options =>
-    options.Filters.Add<ZoneAuthorizationFilter>()
-);
+//builder.Services.AddControllers(options =>
+//    options.Filters.Add<ZoneAuthorizationFilter>()
+//);
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddEndpointsApiExplorer();

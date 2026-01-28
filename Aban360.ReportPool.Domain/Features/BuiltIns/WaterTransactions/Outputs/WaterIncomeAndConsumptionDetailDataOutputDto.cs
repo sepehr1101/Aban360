@@ -2,6 +2,7 @@
 {
     public record WaterIncomeAndConsumptionDetailDataOutputDto
     {
+        public string RegionTitle { get; set; }
         public string ZoneTitle { get; set; }
         public string BillId { get; set; }
         public string UsageTitle { get; set; }

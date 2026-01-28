@@ -52,7 +52,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         {
             CustomerInfoOutputDto customerInfo = await Validation(inputDto, cancellationToken);
             int jalaseNumber = await _returnBillBaseHandler.GetJalaliNumber(inputDto.MinutesNumber, customerInfo.ZoneId, customerInfo.Radif);
-            float consumptionAverage = await _returnBillBaseHandler.GetConsumptionAverage(inputDto.FromDateJalali, inputDto.CalculationType, inputDto.UserInput, customerInfo);
+            float consumptionAverage = await _returnBillBaseHandler.GetConsumptionAverage(inputDto.FromDateJalali, inputDto.CalculationType, inputDto.UserInput, customerInfo, inputDto.ReturnCauseId);
             var (bedBesInfo, bedBesResult) = await GetBedBesCreateDto(inputDto, customerInfo);
 
             int[] burstPipe = { 1 };
@@ -60,7 +60,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             if (burstPipe.Contains(inputDto.ReturnCauseId))
             {
                 var (finalAmount, hadarConsumption, _consumptionAverage) = await GetAbHadarMasHadar(bedBesResult, customerInfo, consumptionAverage, bedBesResult.PriDate, bedBesResult.TodayDate);
-                AbBahaCalculationDetails abBahaResult = await GetAbBahaTariff(inputDto, bedBesInfo, consumptionAverage, cancellationToken);
+                AbBahaCalculationDetails abBahaResult = await GetAbBahaTariff(inputDto, bedBesInfo, _consumptionAverage, cancellationToken);
                 return await CreateAutoBacksAndReturn(abBahaResult, inputDto, bedBesInfo, bedBesResult, customerInfo, hadarConsumption, (long)finalAmount, _consumptionAverage, jalaseNumber, cancellationToken);
             }
             if (misreaded.Contains(inputDto.ReturnCauseId))

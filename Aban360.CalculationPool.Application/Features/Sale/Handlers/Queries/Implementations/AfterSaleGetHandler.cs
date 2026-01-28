@@ -7,8 +7,9 @@ using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
+using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
 using FluentValidation;
-using System.Linq;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Implementations
 {
@@ -17,11 +18,13 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private readonly ISaleGetHandler _saleGetHandler;
         private readonly IEquipmentBrokerAndZoneQueryService _equipmentBrokerAndZoneQueryService;
         private readonly IOfferingQueryService _offeringQueryService;
+        private readonly ITable3QueryService _table3QueryService;
         private static string _title = "پس از فروش";
         public AfterSaleGetHandler(
             ISaleGetHandler saleGetHandler,
             IEquipmentBrokerAndZoneQueryService equipmentBrokerAndZoneQueryService,
-            IOfferingQueryService offeringQueryService)
+            IOfferingQueryService offeringQueryService,
+            ITable3QueryService table3QueryService)
         {
             _saleGetHandler = saleGetHandler;
             _saleGetHandler.NotNull(nameof(saleGetHandler));
@@ -31,6 +34,9 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
             _offeringQueryService = offeringQueryService;
             _offeringQueryService.NotNull(nameof(offeringQueryService));
+
+            _table3QueryService = table3QueryService;
+            _table3QueryService.NotNull(nameof(table3QueryService));
         }
 
         public async Task<FlatReportOutput<SaleHeaderOutputDto, AfterSaleDataOutputDto>> Handle(AfterSaleInputDto input, CancellationToken cancellationToken)
@@ -47,10 +53,17 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             //  IEnumerable<SaleDataOutputDto> differentData = GetDifferentData(previousSaleCalculation.ReportData, currentSaleCalculation.ReportData);
             SaleHeaderOutputDto differentHeader = await GetHeaderDifferent(previousSaleCalculation.ReportHeader, currentSaleCalculation.ReportHeader, input);
 
-            var (previousItems, currentItems, differentItems) = await GetData(previousSaleCalculation.ReportData, currentSaleCalculation.ReportData);
-            AfterSaleDataOutputDto data = new(previousItems, currentItems, differentItems);
+            AfterSaleDataOutputDto data = await GetData(input, previousSaleCalculation.ReportData, currentSaleCalculation.ReportData);
             FlatReportOutput<SaleHeaderOutputDto, AfterSaleDataOutputDto> result = new(_title, differentHeader, data);
             return result;
+        }
+        private async Task<AfterSaleDataOutputDto> GetData(AfterSaleInputDto input, IEnumerable<SaleDataOutputDto> previousSaleCalculationData, IEnumerable<SaleDataOutputDto> currentSaleCalculationData)
+        {
+            var (previousItems, currentItems, differentItems) = await GetCompanyData(previousSaleCalculationData, currentSaleCalculationData);
+            AfterSaleDataOutputDto companyServiceData = new(previousItems, currentItems, differentItems);
+            AfterSaleDataOutputDto companyServiceWithChangeCompany = await GetAllCompanyService(input, companyServiceData);
+
+            return companyServiceWithChangeCompany;
         }
         private void ValidationOffering(AfterSaleInputDto input)
         {
@@ -67,7 +80,45 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeUsage));
             }
+            if (input.PreviousData.ContractualCapacity != input.CurrentData.ContractualCapacity && !afterSaleCompanySelected.Contains(AfterSaleCompanyServiceEnum.ChangeContractualCapacity))
+            {
+                throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeContractualCapacity));
+            }
+            if (input.PreviousData.DiscountTypeId.HasValue && input.PreviousData.DiscountTypeId.Value > 0 &&
+                input.CurrentData.DiscountTypeId.HasValue && input.CurrentData.DiscountTypeId.Value > 0)
+            {
+                throw new AfterSaleException(ExceptionLiterals.InvalidTwoDiscount);
+            }
+            if (input.PreviousData.DiscountTypeId.HasValue && input.PreviousData.DiscountTypeId.Value > 0 &&
+                !input.PreviousData.DiscountCount.HasValue)
+            {
+                throw new AfterSaleException(ExceptionLiterals.InvalidDiscountCount);
+            }
+            if (input.CurrentData.DiscountTypeId.HasValue && input.CurrentData.DiscountTypeId.Value > 0 &&
+                !input.CurrentData.DiscountCount.HasValue)
+            {
+                throw new AfterSaleException(ExceptionLiterals.InvalidDiscountCount);
+            }
+        }
+        private async Task<AfterSaleDataOutputDto> GetAllCompanyService(AfterSaleInputDto input, AfterSaleDataOutputDto companyServiceData)
+        {
+            Table3InputDto table3Input = new(input.ZoneId, input.CurrentData.UsageId, input.CompanyServiceIds);
+            IEnumerable<Table3GetDto> table3 = await _table3QueryService.Get(table3Input);
+            ICollection<SaleDataOutputDto> previousItems = new List<SaleDataOutputDto>();
+            ICollection<SaleDataOutputDto> currentItems = new List<SaleDataOutputDto>();
+            ICollection<SaleDataOutputDto> differentItems = new List<SaleDataOutputDto>();
+            if (table3 is not null && table3.Count() > 0)
+            {
+                foreach (var item in table3)
+                {
+                    previousItems.Add(new SaleDataOutputDto((short)item.CompanyServiceId, item.CompanyServiceTitle, 0, 0, 0));
+                    currentItems.Add(new SaleDataOutputDto((short)item.CompanyServiceId, item.CompanyServiceTitle, 0, 0, 0));
+                    differentItems.Add(new SaleDataOutputDto((short)item.CompanyServiceId, item.CompanyServiceTitle, item.Price, 0, item.Price));
+                }
+            }
+            AfterSaleDataOutputDto companyServiceResult = new(companyServiceData.PreviousValue.Concat(previousItems), companyServiceData.CurrentValue.Concat(currentItems), companyServiceData.DifferentValue.Concat(differentItems));
 
+            return companyServiceResult;
         }
         private SaleInputDto GetPreviousSaleInput(AfterSaleInputDto input)
         {
@@ -96,6 +147,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 Block = input.Block,
                 IsDomestic = input.CurrentData.IsDomestic,
                 DiscountTypeId = input.CurrentData.DiscountTypeId,
+                DiscountCount = input.CurrentData.DiscountCount,
                 HasWaterBroker = input.CurrentData.HasWaterBroker,
                 ContractualCapacity = input.CurrentData.ContractualCapacity,
                 DomesticUnit = input.CurrentData.DomesticUnit,
@@ -144,7 +196,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 ItemCount = currentSaleHeader.ItemCount,
             };
         }
-        private async Task<(IEnumerable<SaleDataOutputDto>, IEnumerable<SaleDataOutputDto>, IEnumerable<SaleDataOutputDto>)> GetData(IEnumerable<SaleDataOutputDto> previousSaleData, IEnumerable<SaleDataOutputDto> currentSaleData)
+        private async Task<(IEnumerable<SaleDataOutputDto>, IEnumerable<SaleDataOutputDto>, IEnumerable<SaleDataOutputDto>)> GetCompanyData(IEnumerable<SaleDataOutputDto> previousSaleData, IEnumerable<SaleDataOutputDto> currentSaleData)
         {
             string waterSubscriptionTitle = await _offeringQueryService.Get((short)OfferingEnum.WaterSubscription);
             string sewageSubscriptionTitle = await _offeringQueryService.Get((short)OfferingEnum.SewageSubscription);
@@ -204,7 +256,6 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 return new SaleDataOutputDto(id, title, 0, 0, 0);
 
             }
-
 
             return (previousItems, currentItems, differentItems);
         }

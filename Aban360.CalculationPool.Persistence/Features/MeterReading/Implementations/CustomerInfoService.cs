@@ -16,16 +16,17 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         {
         }
 
-		public async Task<ZoneIdAndCustomerNumberGetDto> GetZoneIdAndCustomerNumber(string billId)
-		{
-			string query = GetZoneIdAndCustomerNumberQuery();
-			ZoneIdAndCustomerNumberGetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZoneIdAndCustomerNumberGetDto>(query, new { billId = billId });
-			if (result is null)
-			{
-				throw new InvalidBillIdException(ExceptionLiterals.BillIdNotFound);
-			}
 
-			return result;
+        public async Task<ZoneIdAndCustomerNumberGetDto> GetZoneIdAndCustomerNumber(string billId)
+        {
+            string query = GetZoneIdAndCustomerNumberQuery();
+            ZoneIdAndCustomerNumberGetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZoneIdAndCustomerNumberGetDto>(query, new { billId = billId });
+            if (result is null)
+            {
+                throw new InvalidBillIdException(ExceptionLiterals.BillIdNotFound);
+            }
+
+            return result;
         }
         public async Task<CustomerInfoGetDto> Get(int zoneId, int customerNumber)
         {
@@ -53,11 +54,23 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 
             return new CustomersInfoGetDto(membersInfo, latestBedBesInfo, latestTavizInfo);
         }
+        public async Task<CustomerGeneralInfoGetDto> Get(string billId)
+        {
+            ZoneIdAndCustomerNumberGetDto zoneCustomerNumber = await GetZoneIdAndCustomerNumber(billId);
+            string dbName = GetDbName(zoneCustomerNumber.ZoneId);
+            string query = GetCustomerGeneralInfoQuery(dbName);
 
+            CustomerGeneralInfoGetDto data = await _sqlReportConnection.QueryFirstOrDefaultAsync<CustomerGeneralInfoGetDto>(query, new { zoneCustomerNumber.ZoneId, zoneCustomerNumber.CustomerNumber });
+            if (data is null)
+            {
+                throw new InvalidBillIdException(ExceptionLiterals.BillIdNotFound);
+            }
+			return data;
+        }
 
-		private string GetZoneIdAndCustomerNumberQuery()
-		{
-			return @"Select 
+        private string GetZoneIdAndCustomerNumberQuery()
+        {
+            return @"Select 
 						ZoneId,
 						ZoneTitle,
 						CustomerNumber
@@ -65,7 +78,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 					Where
 						ToDayJalali IS NULL AND
 						BillId=@billId";
-		}
+        }
 
         private string GetMembers(string dbName)
         {
@@ -127,7 +140,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 
 
         private string GetAllMembers(string dbName)
-        { 
+        {
 
             return @$"Select
 						m.town as ZoneId,
@@ -216,6 +229,29 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 						c.town=@zoneId AND
 						c.radif IN @customerNumbers AND
 						c.RN=1";
+        }
+
+        private string GetCustomerGeneralInfoQuery(string dbnName)
+        {
+            return $@"Select 
+						t51.C2 ZoneTitle,
+						m.bill_id BillId,
+						TRIM(m.eshtrak) ReadingNumber,
+						TRIM(m.name) FirstName,
+						TRIM(m.family) Surname,
+						TRIM(m.father_nam) FatherName,
+						TRIM(m.Address) Address,
+						t41.C1 UsageTitle,
+						TRIM(m.PHONE_NO) PhoneNumber,
+						TRIM(m.MOBILE) MobileNumber
+					From [{dbnName}].dbo.members m
+					Left Join [Db70].dbo.T51 t51
+						ON m.town=t51.C0
+					Left Join [Db70].dbo.T41 t41
+						ON m.cod_enshab=t41.C0
+					Where 
+						m.town=@zoneId AND
+						m.radif=@customerNumber";
         }
     }
 }
