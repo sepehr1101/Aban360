@@ -2,6 +2,7 @@
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
@@ -19,6 +20,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
         [HttpGet, HttpPost]
         [Route("update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<SubscriptionAssignmentUpdateDto>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> Update([FromBody] SubscriptionAssignmentUpdateDto updateDto, CancellationToken cancellationToken)
         {
             await _updateHandler.Handle(updateDto, cancellationToken);

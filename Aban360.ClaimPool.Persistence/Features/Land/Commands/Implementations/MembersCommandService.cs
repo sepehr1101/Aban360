@@ -1,16 +1,22 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
-using Aban360.ClaimPool.Persistence.Features.Land.Commands.Contracts;
-using Aban360.Common.Db.Dapper;
+using Aban360.Common.Extensions;
 using Dapper;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 {
-    internal sealed class MembersCommandService : AbstractBaseConnection, IMembersCommandService
+    public sealed class MembersCommandService
     {
-        public MembersCommandService(IConfiguration configuration)
-            : base(configuration)
+        private readonly SqlConnection _sqlConnection;
+        private readonly IDbTransaction _dbTransaction;
+        public MembersCommandService(SqlConnection sqlConnection, IDbTransaction transaction)
         {
+            _sqlConnection = sqlConnection;
+            _sqlConnection.NotNull(nameof(sqlConnection));
+
+            _dbTransaction = transaction;
+            _dbTransaction.NotNull(nameof(_dbTransaction));
         }
 
         public async Task Update(CustomerUpdateDto updateDto)
@@ -19,11 +25,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             string dbName = "Atlas";
             string command = GetUpdateCommand(dbName);
 
-            if (_sqlReportConnection.State != System.Data.ConnectionState.Open)
-                await _sqlReportConnection.OpenAsync();
+            //if (_sqlReportConnection.State != System.Data.ConnectionState.Open)
+            //    await _sqlReportConnection.OpenAsync();
 
-            var updateResult = await _sqlReportConnection.ExecuteAsync(command, updateDto);
-
+            var updateResult = await _sqlConnection.ExecuteAsync(command, updateDto);
         }
         private string GetUpdateCommand(string dbName)
         {
