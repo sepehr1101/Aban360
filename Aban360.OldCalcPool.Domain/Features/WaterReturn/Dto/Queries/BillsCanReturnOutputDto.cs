@@ -30,5 +30,6 @@
         public int HouseholdNumber { get; set; }
 
         public bool IsReturned { get; set; }
+        public bool IsDomestic { get; set; }
     }
 }

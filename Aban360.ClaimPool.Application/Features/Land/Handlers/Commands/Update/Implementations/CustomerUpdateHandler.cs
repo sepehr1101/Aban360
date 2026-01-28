@@ -1,32 +1,26 @@
 ﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
-using Aban360.ClaimPool.Persistence.Features.Land.Commands.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
+using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using System.Transactions;
+using Microsoft.Extensions.Configuration;
+using System.Data;
+using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations
 {
-    internal sealed class CustomerUpdateHandler : ICustomerUpdateHandler
+    internal sealed class CustomerUpdateHandler : AbstractBaseConnection, ICustomerUpdateHandler
     {
         private readonly ISubscriptionQueryService _customerQueryService;
-        private readonly IArchMemCommandService _archMemCommandService;
-        private readonly IMembersCommandService _membersCommandService;
         public CustomerUpdateHandler(
             ISubscriptionQueryService customerQueryService,
-            IArchMemCommandService archMemCommandService,
-            IMembersCommandService membersCommandService)
+            IConfiguration configuration)
+            :base(configuration)
         {
             _customerQueryService = customerQueryService;
             _customerQueryService.NotNull(nameof(customerQueryService));
-
-            _archMemCommandService = archMemCommandService;
-            _archMemCommandService.NotNull(nameof(archMemCommandService));
-
-            _membersCommandService = membersCommandService;
-            _membersCommandService.NotNull(nameof(membersCommandService));
         }
 
         public async Task Handle(SubscriptionGetDto inputDto, CancellationToken cancellationToken)
@@ -38,14 +32,23 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             }
             CustomerUpdateDto subscriptionUpdate = GetCustomerUpdateDto(inputDto, previousSubscription);
 
-            //System.Transactions.TransactionManager.ImplicitDistributedTransactions = true;
-            //using (TransactionScope transaction = TransactionBuilder.Create(0, 3, IsolationLevel.ReadCommitted))
-            //{
-            await _archMemCommandService.Insert(subscriptionUpdate);
-            await _membersCommandService.Update(subscriptionUpdate);
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    ArchMemCommandService _archMemCommandService = new(_sqlReportConnection, transaction);
+                    MembersCommandService _membersCommandService = new(_sqlReportConnection, transaction);
 
-            //    transaction.Complete();
-            //}
+                    await _archMemCommandService.Insert(subscriptionUpdate);
+                    await _membersCommandService.Update(subscriptionUpdate);
+
+                    transaction.Commit();
+                }
+            }
         }
         private CustomerUpdateDto GetCustomerUpdateDto(SubscriptionGetDto inputDto, SubscriptionGetDto previousSubscription)
         {
@@ -86,8 +89,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 Operator = inputDto.Operator,
                 SewageInstallationDateJalali = GetCorrectDateJalali(inputDto.SewageInstallationDateJalali),
                 SewageRequestDateJalali = GetCorrectDateJalali(inputDto.SewageRequestDateJalali),
-                WaterInstallationDateJalali = inputDto.WaterInstallationDateJalali,
-                WaterRequestDateJalali = inputDto.WaterRequestDateJalali,
+                WaterInstallationDateJalali = inputDto.MeterInstallationDateJalali,
+                WaterRequestDateJalali = inputDto.MeterRequestDateJalali,
                 Siphon100 = inputDto.Siphon100,
                 Siphon125 = inputDto.Siphon125,
                 Siphon150 = inputDto.Siphon150,

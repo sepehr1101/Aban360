@@ -12,7 +12,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
     {
         public SubscriptionQueryService(IConfiguration configuration)
             : base(configuration)
-        { }
+        { 
+        }
 
         public async Task<SubscriptionAssignmentGetDto> Get(string input)
         {
@@ -109,8 +110,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                     	m.aian ImprovementOverall,
                     	m.aian_mas ImprovementDomestic,
                     	m.aian_tej ImprovementCommertial,
-                    	TRIM(m.inst_ab) WaterInstallationDateJalali,
-                    	TRIM(m.ask_ab) WaterRequestDateJalali ,
+                    	TRIM(m.inst_ab) MeterInstallationDateJalali,
+                    	TRIM(m.ask_ab) MeterRequestDateJalali ,
                     	TRIM(m.inst_fas) SewageInstallationDateJalali,
                     	TRIM(m.ask_fas) SewageRequestDateJalali ,
                     	m.sif_1 Siphon100,
