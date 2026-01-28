@@ -1,32 +1,27 @@
 ﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
-using Aban360.ClaimPool.Persistence.Features.Land.Commands.Contracts;
+using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
+using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using System.Transactions;
+using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations
 {
-    internal sealed class SubscriptionAssignmentUpdateHandler : ISubscriptionAssignmentUpdateHandler
+    internal sealed class SubscriptionAssignmentUpdateHandler : AbstractBaseConnection, ISubscriptionAssignmentUpdateHandler
     {
         private readonly ISubscriptionQueryService _subscriptionAssignmentQueryService;
-        private readonly IArchMemCommandService _archMemCommandService;
-        private readonly IMembersCommandService _membersCommandService;
+
         public SubscriptionAssignmentUpdateHandler(
-            ISubscriptionQueryService subscriptionAssignmentQueryService,
-            IArchMemCommandService archMemCommandService,
-            IMembersCommandService membersCommandService)
+            IConfiguration configuration,
+            ISubscriptionQueryService subscriptionAssignmentQueryService)
+            : base(configuration)
         {
             _subscriptionAssignmentQueryService = subscriptionAssignmentQueryService;
             _subscriptionAssignmentQueryService.NotNull(nameof(subscriptionAssignmentQueryService));
-
-            _archMemCommandService = archMemCommandService;
-            _archMemCommandService.NotNull(nameof(archMemCommandService));
-
-            _membersCommandService = membersCommandService;
-            _membersCommandService.NotNull(nameof(membersCommandService));
         }
 
         public async Task Handle(SubscriptionAssignmentUpdateDto updateDto, CancellationToken cancellationToken)
@@ -37,14 +32,24 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 throw new BaseException("شناسه قبض یافت نشد");
             }
             CustomerUpdateDto subscriptionUpdate = GetCustomerUpdateDto(updateDto, previousSubscription);
-           
-            //using (TransactionScope transaction = TransactionBuilder.Create(0, 3))
-            //{
-                await _archMemCommandService.Insert(subscriptionUpdate);
-                await _membersCommandService.Update(subscriptionUpdate);
 
-                //transaction.Complete();
-            //}
+            using (IDbConnection connection = _sqlReportConnection)
+            {                
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    ArchMemCommandService _archMemCommandService = new (_sqlReportConnection, transaction);
+                    MembersCommandService _membersCommandService = new (_sqlReportConnection, transaction);
+
+                    await _archMemCommandService.Insert(subscriptionUpdate);
+                    await _membersCommandService.Update(subscriptionUpdate);
+
+                    transaction.Commit();
+                }
+            }
         }
         private CustomerUpdateDto GetCustomerUpdateDto(SubscriptionAssignmentUpdateDto inputDto, SubscriptionGetDto previousSubscription)
         {
@@ -85,8 +90,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 Operator = previousSubscription.Operator,
                 SewageInstallationDateJalali = previousSubscription.SewageInstallationDateJalali,
                 SewageRequestDateJalali = previousSubscription.SewageRequestDateJalali,
-                WaterInstallationDateJalali = previousSubscription.WaterInstallationDateJalali,
-                WaterRequestDateJalali = previousSubscription.WaterRequestDateJalali,
+                WaterInstallationDateJalali = previousSubscription.MeterInstallationDateJalali,
+                WaterRequestDateJalali = previousSubscription.MeterRequestDateJalali,
                 Siphon100 = previousSubscription.Siphon100,
                 Siphon125 = previousSubscription.Siphon125,
                 Siphon150 = previousSubscription.Siphon150,

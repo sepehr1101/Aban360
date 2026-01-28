@@ -4,6 +4,7 @@
     {
         public string BillId { get; set; }
         public int ZoneId { get; set; }
+        public int CustomerNumber { get; set; }
         public string ReadingNumber { get; set; }
         public string FirstName { get; set; }
         public string Surname { get; set; }
@@ -23,6 +24,8 @@
         public string MeterInstallationDateJalali { get; set; }
         public string SiphonRequestDateJalali { get; set; }
         public string SiphonInstallationDateJalali { get; set; }
+        public string MeterInstalltionRegisterDate { get; set; }
+        public string SiphonInstalltionRegisterDate { get; set; }
         public string Address { get; set; }
         public string HousePlate { get; set; }
         public bool IsSpecial { get; set; }
@@ -35,9 +38,7 @@
         public int Siphon4 { get; set; }
         public int CommonSiphon1 { get; set; }
         public int ContractualCapacity { get; set; }
-        public string BodySerial { get; set; }
-        public string WaterInstalltionRegistareDate { get; set; }
-        public string SewageInstalltionRegistareDate { get; set; }
+        public string BodySerial { get; set; }        
         public string PostalCode { get; set; }
         public string PhoneNumber { get; set; }
         public string MobileNumber { get; set; }
@@ -55,5 +56,6 @@
         public int Operator { get; set; }
         public int Guild { get; set; }
         public string HouseholdDateJalali { get; set; }
+        public string Plaque { get; set; }
     }
 }
