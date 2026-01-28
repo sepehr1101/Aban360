@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
 {
-    [Route("v1/customer-by-billid")]
+    [Route("v1/customer")]
     public class CustomerGetByBillIdController : BaseController
     {
         private readonly ICustomerGetByBillIdHandler _customerGetByBillIdHandler;
@@ -18,7 +18,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
         }
 
         [HttpGet, HttpPost]
-        [Route("get")]
+        [Route("get-to-update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<SubscriptionGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get([FromBody] SearchInput inputDto, CancellationToken cancellationToken)
         {

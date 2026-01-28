@@ -226,7 +226,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	b.tedad_tej as CommercialUnit,
                     	b.tedad_vahd as OtherUnit,
                     	b.ted_khane as HouseholdNumber,
-						b.del as IsReturned
+						b.del as IsReturned,
+                        IIF(b.cod_enshab IN (1,3), 1, 0) IsDomestic
                     FROM [{dbName}].dbo.bed_bes b
                     {condition}
                     JOIN [Db70].dbo.T41 t41 
