@@ -62,6 +62,30 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             var (previousItems, currentItems, differentItems) = await GetCompanyData(previousSaleCalculationData, currentSaleCalculationData);
             AfterSaleDataOutputDto companyServiceData = new(previousItems, currentItems, differentItems);
             AfterSaleDataOutputDto companyServiceWithChangeCompany = await GetAllCompanyService(input, companyServiceData);
+            //11
+            foreach (var item in companyServiceWithChangeCompany.DifferentValue)
+            {
+                if (item.FinalAmount < 0)
+                {
+                    if (item.Id == (short)OfferingEnum.WaterSubscription || item.Id == (short)OfferingEnum.SewageSubscription)
+                    {
+                        if (input.CompanyServiceIds.Contains(11))
+                        {
+                            item.FinalAmount = (long)(item.FinalAmount * 0.5);
+                        }
+                        else
+                        {
+                            item.FinalAmount = (long)(item.FinalAmount * 0.3);
+                        }
+
+                    }
+                    else
+                    {
+                        item.FinalAmount = 0;
+                    }
+
+                }
+            }
 
             return companyServiceWithChangeCompany;
         }
