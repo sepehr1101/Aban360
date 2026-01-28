@@ -41,7 +41,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Queries
         public async Task<IActionResult> GetStiReport(SaleInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 2011;
-            ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> data = await _getHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<SaleHeaderReportOutputDto, SaleDataOutputDto> data = await _getHandler.ReportHandle(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(data, cancellationToken, reportCode);
             return Ok(reportId);
         }

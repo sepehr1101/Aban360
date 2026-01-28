@@ -11,8 +11,15 @@
         WaterEquipment=76,
         SewageEquipment=77,
 
-        //todo: review
         WaterArticle11=32,
         SewageArticle11=33,
+
+        ////CompanyService
+        // ChangeMeterPlace=10,
+        // MeterTest=21,
+        // ConnectionAndDisconnectionService=27,
+        // ChangeName=5,
+        // Settlement=17,
+
     }
 }

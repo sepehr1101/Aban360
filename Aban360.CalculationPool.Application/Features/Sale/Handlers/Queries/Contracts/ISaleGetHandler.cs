@@ -7,5 +7,6 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Con
     public interface ISaleGetHandler
     {
         Task<ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto>> Handle(SaleInputDto inputDto, CancellationToken cancellationToken);
+        Task<ReportOutput<SaleHeaderReportOutputDto, SaleDataOutputDto>> ReportHandle(SaleInputDto inputDto, CancellationToken cancellationToken);
     }
 }

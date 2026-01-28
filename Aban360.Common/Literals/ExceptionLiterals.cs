@@ -112,6 +112,9 @@
         public static string ChangeWaterDiameter => "تغیر قطر انشعاب آب";
         public static string ChangeSiphonDiameter => "تغیر قطر سیفون";
         public static string ChangeUsage => "تغیر کاربری";
+        public static string ChangeContractualCapacity => "تغیر ظرفیت قراردادی";
+        public static string InvalidTwoDiscount => "قابلیت اعمال تخفیف همزمان برای اطلاعات قبلی و فعلی وجود ندارد. ";
+        public static string InvalidDiscountCount => "تعداد تخفیف را وارد کنید";
 
 
     }

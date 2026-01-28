@@ -683,10 +683,14 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             int[] domesticId = [0, 1, 3];
             return domesticId.Contains(customerNumber);
         }
-        public async Task<float> GetConsumptionAverage(string fromDateJalali, ReturnedBillCalculationTypeEnum calculationType, float? userInput, CustomerInfoOutputDto customerInfo)
+        public async Task<float> GetConsumptionAverage(string fromDateJalali, ReturnedBillCalculationTypeEnum calculationType, float? userInput, CustomerInfoOutputDto customerInfo,int returnCauseId)
         {
             float previousConsumptionAverage = await _bedBesQueryService.GetPreviousBill(customerInfo.ZoneId, customerInfo.Radif, fromDateJalali);
 
+            if (returnCauseId == 1)
+            {
+                return previousConsumptionAverage;
+            }
             return calculationType switch
             {
                 ReturnedBillCalculationTypeEnum.ByPreviousConsumptionAverage => previousConsumptionAverage,

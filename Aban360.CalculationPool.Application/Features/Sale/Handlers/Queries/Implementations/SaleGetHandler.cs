@@ -1,15 +1,18 @@
 ﻿using Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Contracts;
 using Aban360.CalculationPool.Domain.Constants;
+using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
+using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
 using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
+using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
-using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations;
 using DNTPersianUtils.Core;
 using FluentValidation;
 
@@ -34,6 +37,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             IEquipmentBrokerAndZoneQueryService equipmentBrokerAndZoneQueryService,
             IOfferingQueryService offeringQueryService,
             IAdjustmentFactorQueryService adjustmentFactorQueryService,
+            ICustomerInfoService customerInfoService,
             IValidator<SaleInputDto> validator)
         {
             _installationAndEquipmentService = installationAndEquipmentService;
@@ -65,7 +69,25 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
             return CalcSaleHeader(salesData, hasBroker);
         }
+        public async Task<ReportOutput<SaleHeaderReportOutputDto, SaleDataOutputDto>> ReportHandle(SaleInputDto inputDto, CancellationToken cancellationToken)
+        {
+            ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> data = await Handle(inputDto, cancellationToken);
+            SaleHeaderReportOutputDto reportHeader = new SaleHeaderReportOutputDto()
+            {
+                HasBroker = data.ReportHeader.HasBroker,
+                BrokerAmount = data.ReportHeader.BrokerAmount,
+                BrokerItemCount = data.ReportHeader.BrokerItemCount,
+                CompanyAmount = data.ReportHeader.CompanyAmount,
+                CompanyDiscountAmount = data.ReportHeader.CompanyDiscountAmount,
+                CompanyFinalAmount = data.ReportHeader.CompanyFinalAmount,
+                CompanyItemCount = data.ReportHeader.CompanyItemCount,
+                SumAmount = data.ReportHeader.SumAmount,
+                PayableAmount = data.ReportHeader.PayableAmount,
+                ItemCount = data.ReportHeader.ItemCount
+            };
 
+            return new ReportOutput<SaleHeaderReportOutputDto, SaleDataOutputDto>(data.Title, reportHeader, data.ReportData);
+        }
         private async Task Validation(SaleInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
