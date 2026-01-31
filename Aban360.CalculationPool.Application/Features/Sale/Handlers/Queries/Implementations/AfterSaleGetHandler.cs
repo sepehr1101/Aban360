@@ -10,6 +10,8 @@ using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
 using FluentValidation;
+using NetTopologySuite.Index.HPRtree;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Implementations
 {
@@ -20,6 +22,8 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private readonly IOfferingQueryService _offeringQueryService;
         private readonly ITable3QueryService _table3QueryService;
         private static string _title = "پس از فروش";
+        private static string _taxTitle = "مالیات بر ارزش افزوده";
+        private static float _tax = 0.1f;
         public AfterSaleGetHandler(
             ISaleGetHandler saleGetHandler,
             IEquipmentBrokerAndZoneQueryService equipmentBrokerAndZoneQueryService,
@@ -44,24 +48,66 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             //ToDo : ValidationDto
             ValidationOffering(input);
 
-            SaleInputDto previousDataInput = GetPreviousSaleInput(input);
-            SaleInputDto currentDataInput = GetCurrentSaleInput(input);
+            SaleInputDto previousDataInput = GetSaleInput(input.PreviousData, input.ZoneId, input.Block);
+            SaleInputDto currentDataInput = GetSaleInput(input.CurrentData, input.ZoneId, input.Block);
 
             ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> previousSaleCalculation = await _saleGetHandler.Handle(previousDataInput, cancellationToken);
             ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> currentSaleCalculation = await _saleGetHandler.Handle(currentDataInput, cancellationToken);
 
-            //  IEnumerable<SaleDataOutputDto> differentData = GetDifferentData(previousSaleCalculation.ReportData, currentSaleCalculation.ReportData);
-            SaleHeaderOutputDto differentHeader = await GetHeaderDifferent(previousSaleCalculation.ReportHeader, currentSaleCalculation.ReportHeader, input);
-
             AfterSaleDataOutputDto data = await GetData(input, previousSaleCalculation.ReportData, currentSaleCalculation.ReportData);
-            FlatReportOutput<SaleHeaderOutputDto, AfterSaleDataOutputDto> result = new(_title, differentHeader, data);
+            SaleHeaderOutputDto header = await GetHeader(data, input);
+            FlatReportOutput<SaleHeaderOutputDto, AfterSaleDataOutputDto> result = new(_title, header, data);
             return result;
+        }
+        private (SaleDataOutputDto, SaleDataOutputDto, SaleDataOutputDto) GetDataWithTax(IEnumerable<SaleDataOutputDto> differentData, AfterSaleInputDto input)
+        {
+            long taxAmount = 0;
+            IEnumerable<AfterSaleCompanyServiceEnum> companyServiceEnum = GetAfterSaleCompanyServiceSelected(input.CompanyServiceIds);
+            if (companyServiceEnum.Contains(AfterSaleCompanyServiceEnum.ChangeMeterDiameter))
+            {
+                taxAmount += differentData.Where(s => s.Id == (short)OfferingEnum.WaterInstallation).FirstOrDefault().FinalAmount;
+            }
+            if (companyServiceEnum.Contains(AfterSaleCompanyServiceEnum.ChangeSiphonDiameter) && input.PreviousData.SiphonDiameterId.HasValue)
+            {
+                taxAmount += differentData.Where(s => s.Id == (short)OfferingEnum.SewageInstalltion).FirstOrDefault().FinalAmount;
+            }
+            if (companyServiceEnum.Contains(AfterSaleCompanyServiceEnum.MeterRelocation))
+            {
+                taxAmount += differentData.Where(s => s.Id == (short)AfterSaleCompanyServiceEnum.MeterRelocation).FirstOrDefault().FinalAmount;
+            }
+            SaleDataOutputDto previousTax = new(0, _taxTitle, 0, 0, 0);
+            SaleDataOutputDto currentTax = new(0, _taxTitle, 0, 0, 0);
+            SaleDataOutputDto differentTax = new(0, _taxTitle, (long)(taxAmount * 0.1f), 0, (long)(taxAmount * 0.1f));
+
+            return (previousTax, currentTax, differentTax);
         }
         private async Task<AfterSaleDataOutputDto> GetData(AfterSaleInputDto input, IEnumerable<SaleDataOutputDto> previousSaleCalculationData, IEnumerable<SaleDataOutputDto> currentSaleCalculationData)
         {
-            var (previousItems, currentItems, differentItems) = await GetCompanyData(previousSaleCalculationData, currentSaleCalculationData);
+            var (previousItems, currentItems, differentItems) = await GetCompanyData(previousSaleCalculationData, currentSaleCalculationData, input);
             AfterSaleDataOutputDto companyServiceData = new(previousItems, currentItems, differentItems);
             AfterSaleDataOutputDto companyServiceWithChangeCompany = await GetAllCompanyService(input, companyServiceData);
+            //11
+            foreach (var item in companyServiceWithChangeCompany.DifferentValue)
+            {
+                if (item.FinalAmount < 0)
+                {
+                    if (item.Id == (short)OfferingEnum.WaterSubscription || item.Id == (short)OfferingEnum.SewageSubscription)
+                    {
+                        if (input.CompanyServiceIds.Contains(11))
+                        {
+                            item.FinalAmount = (long)(item.FinalAmount * 0.5);
+                        }
+                        else
+                        {
+                            item.FinalAmount = (long)(item.FinalAmount * 0.3);
+                        }
+                    }
+                    else
+                    {
+                        item.FinalAmount = 0;
+                    }
+                }
+            }
 
             return companyServiceWithChangeCompany;
         }
@@ -84,11 +130,11 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeContractualCapacity));
             }
-            if (input.PreviousData.DiscountTypeId.HasValue && input.PreviousData.DiscountTypeId.Value > 0 &&
-                input.CurrentData.DiscountTypeId.HasValue && input.CurrentData.DiscountTypeId.Value > 0)
-            {
-                throw new AfterSaleException(ExceptionLiterals.InvalidTwoDiscount);
-            }
+            //if (input.PreviousData.DiscountTypeId.HasValue && input.PreviousData.DiscountTypeId.Value > 0 &&
+            //    input.CurrentData.DiscountTypeId.HasValue && input.CurrentData.DiscountTypeId.Value > 0)
+            //{
+            //    throw new AfterSaleException(ExceptionLiterals.InvalidTwoDiscount);
+            //}   TODO
             if (input.PreviousData.DiscountTypeId.HasValue && input.PreviousData.DiscountTypeId.Value > 0 &&
                 !input.PreviousData.DiscountCount.HasValue)
             {
@@ -116,45 +162,34 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                     differentItems.Add(new SaleDataOutputDto((short)item.CompanyServiceId, item.CompanyServiceTitle, item.Price, 0, item.Price));
                 }
             }
+            var (previousTax, currentTax, differentTax) = GetDataWithTax(companyServiceData.DifferentValue.Concat(differentItems).ToList(), input);
+            previousItems.Add(previousTax);
+            currentItems.Add(currentTax);
+            differentItems.Add(differentTax);
+
             AfterSaleDataOutputDto companyServiceResult = new(companyServiceData.PreviousValue.Concat(previousItems), companyServiceData.CurrentValue.Concat(currentItems), companyServiceData.DifferentValue.Concat(differentItems));
 
             return companyServiceResult;
         }
-        private SaleInputDto GetPreviousSaleInput(AfterSaleInputDto input)
+        private SaleInputDto GetSaleInput(AfterSaleItemsInputDto input, int zoneId, string? block)
         {
             return new SaleInputDto()
             {
-                ZoneId = input.ZoneId,
-                UsageId = input.PreviousData.UsageId,
-                Block = input.Block,
-                IsDomestic = input.PreviousData.IsDomestic,
-                DiscountTypeId = input.PreviousData.DiscountTypeId,
-                HasWaterBroker = input.PreviousData.HasWaterBroker,
-                ContractualCapacity = input.PreviousData.ContractualCapacity,
-                DomesticUnit = input.PreviousData.DomesticUnit,
-                CommertialUnit = input.PreviousData.CommertialUnit,
-                OtherUnit = input.PreviousData.OtherUnit,
-                WaterDiameterId = input.PreviousData.WaterDiameterId,
-                SiphonDiameterId = input.PreviousData.SiphonDiameterId,
-            };
-        }
-        private SaleInputDto GetCurrentSaleInput(AfterSaleInputDto input)
-        {
-            return new SaleInputDto()
-            {
-                ZoneId = input.ZoneId,
-                UsageId = input.CurrentData.UsageId,
-                Block = input.Block,
-                IsDomestic = input.CurrentData.IsDomestic,
-                DiscountTypeId = input.CurrentData.DiscountTypeId,
-                DiscountCount = input.CurrentData.DiscountCount,
-                HasWaterBroker = input.CurrentData.HasWaterBroker,
-                ContractualCapacity = input.CurrentData.ContractualCapacity,
-                DomesticUnit = input.CurrentData.DomesticUnit,
-                CommertialUnit = input.CurrentData.CommertialUnit,
-                OtherUnit = input.CurrentData.OtherUnit,
-                WaterDiameterId = input.CurrentData.WaterDiameterId,
-                SiphonDiameterId = input.CurrentData.SiphonDiameterId,
+                ZoneId = zoneId,
+                UsageId = input.UsageId,
+                Block = block,
+                IsDomestic = input.IsDomestic,
+                DiscountTypeId = input.DiscountTypeId,
+                DiscountCount = input.DiscountCount,
+                HasWaterBroker = input.HasWaterBroker,
+                ContractualCapacity = input.ContractualCapacity,
+                DomesticUnit = input.DomesticUnit,
+                CommertialUnit = input.CommertialUnit,
+                OtherUnit = input.OtherUnit,
+                WaterDiameterId = input.WaterDiameterId,
+                SiphonDiameterId = input.SiphonDiameterId,
+                IsWaterDiscount = input.IsWaterDiscount,
+                IsSewageDiscount = input.IsSewageDiscount,
             };
         }
         private IEnumerable<SaleDataOutputDto> GetDifferentData(IEnumerable<SaleDataOutputDto> previousSaleCalculation, IEnumerable<SaleDataOutputDto> currentSaleCalculation)
@@ -196,7 +231,33 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 ItemCount = currentSaleHeader.ItemCount,
             };
         }
-        private async Task<(IEnumerable<SaleDataOutputDto>, IEnumerable<SaleDataOutputDto>, IEnumerable<SaleDataOutputDto>)> GetCompanyData(IEnumerable<SaleDataOutputDto> previousSaleData, IEnumerable<SaleDataOutputDto> currentSaleData)
+        private async Task<SaleHeaderOutputDto> GetHeader(AfterSaleDataOutputDto data, AfterSaleInputDto input)
+        {
+            bool hasBroker = input.CurrentData.HasWaterBroker ?? (await _equipmentBrokerAndZoneQueryService.Get(input.ZoneId)) is { Id: > 0 };
+            short[] brokerOffering = [(short)OfferingEnum.WaterEquipment];
+
+            IEnumerable<SaleDataOutputDto> differentData = data.DifferentValue;
+            IEnumerable<SaleDataOutputDto>? brokerValues = hasBroker ? differentData.Where(s => brokerOffering.Contains(s.Id)) : null;
+            IEnumerable<SaleDataOutputDto>? companyValues = hasBroker ? differentData.Where(s => !brokerOffering.Contains(s.Id)) : differentData;
+
+            return new SaleHeaderOutputDto()
+            {
+                HasBroker = hasBroker,
+
+                BrokerAmount = hasBroker ? brokerValues.Sum(s => s.Amount) : 0,
+                BrokerItemCount = hasBroker ? brokerValues.Count() : 0,
+
+                CompanyAmount = hasBroker ? companyValues.Sum(s => s.Amount) : differentData.Sum(s => s.Amount),
+                CompanyDiscountAmount = hasBroker ? companyValues.Sum(s => s.Discount) : differentData.Sum(s => s.Discount),
+                CompanyFinalAmount = hasBroker ? companyValues.Sum(s => s.FinalAmount) : differentData.Sum(s => s.FinalAmount),
+                CompanyItemCount = hasBroker ? companyValues.Count() : differentData.Count(),
+
+                SumAmount = differentData.Sum(s => s.Amount),
+                PayableAmount = differentData.Sum(s => s.FinalAmount),
+                ItemCount = differentData.Count(),
+            };
+        }
+        private async Task<(IEnumerable<SaleDataOutputDto>, IEnumerable<SaleDataOutputDto>, IEnumerable<SaleDataOutputDto>)> GetCompanyData(IEnumerable<SaleDataOutputDto> previousSaleData, IEnumerable<SaleDataOutputDto> currentSaleData, AfterSaleInputDto input)
         {
             string waterSubscriptionTitle = await _offeringQueryService.Get((short)OfferingEnum.WaterSubscription);
             string sewageSubscriptionTitle = await _offeringQueryService.Get((short)OfferingEnum.SewageSubscription);
@@ -234,17 +295,35 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             var previousData = previousItems.ToDictionary(x => x.Id);
             var currentData = currentItems.ToDictionary(x => x.Id);
 
+            //short[] dontCalcDifferent = { (short)OfferingEnum.WaterEquipment, (short)OfferingEnum.SewageEquipment, (short)OfferingEnum.WaterInstallation, (short)OfferingEnum.SewageInstalltion };
             ICollection<SaleDataOutputDto> differentItems = previousData
                 .Keys
                 .Union(currentData.Keys)
-                .Select(id => new SaleDataOutputDto
-                (
-                    id,
-                    previousData.GetValueOrDefault(id)?.Title,
-                    CalcDiff(currentData.GetValueOrDefault(id)?.Amount, previousData.GetValueOrDefault(id)?.Amount),
-                    CalcDiff(currentData.GetValueOrDefault(id)?.Discount, previousData.GetValueOrDefault(id)?.Discount),
-                    CalcDiff(currentData.GetValueOrDefault(id)?.FinalAmount, previousData.GetValueOrDefault(id)?.FinalAmount)
-                ))
+                .Select(id =>
+                {
+                    bool hasWaterDiameterChange = HasDiamterChange(input.PreviousData.WaterDiameterId, input.CurrentData.WaterDiameterId);
+                    bool hasSewageDiameterChange = HasDiamterChange(input.PreviousData.SiphonDiameterId, input.CurrentData.SiphonDiameterId);
+
+                    bool hasChange = false;
+                    if (id == (short)OfferingEnum.WaterEquipment || id == (short)OfferingEnum.WaterInstallation)
+                        hasChange = hasWaterDiameterChange;
+                    else if (id == (short)OfferingEnum.SewageEquipment || id == (short)OfferingEnum.SewageInstalltion)
+                        hasChange = hasSewageDiameterChange;
+
+
+                    long amount = CalcDiff(currentData.GetValueOrDefault(id)?.Amount, previousData.GetValueOrDefault(id)?.Amount);
+                    long discount = CalcDiff(currentData.GetValueOrDefault(id)?.Discount, previousData.GetValueOrDefault(id)?.Discount);
+                    long finalAmount = CalcDiff(currentData.GetValueOrDefault(id)?.FinalAmount, previousData.GetValueOrDefault(id)?.FinalAmount);
+
+                    return new SaleDataOutputDto
+                    (
+                        id,
+                        previousData.GetValueOrDefault(id)?.Title,
+                        hasChange ? currentData.GetValueOrDefault(id)?.Amount : amount,
+                        hasChange ? currentData.GetValueOrDefault(id)?.Discount : discount,
+                        hasChange ? currentData.GetValueOrDefault(id)?.FinalAmount : finalAmount
+                    );
+                })
                 .ToList();
 
             SaleDataOutputDto CreateOrGetZeroItem(short id, string title, Dictionary<short, SaleDataOutputDto> data)
@@ -266,6 +345,12 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             return offeringIds
                 .Select(s => (AfterSaleCompanyServiceEnum)s)
                 .ToList();
+        }
+        private bool HasDiamterChange(int? previousDiameter, int? currentDiameter)
+        {
+            return previousDiameter.HasValue && currentDiameter.HasValue && previousDiameter.Value == currentDiameter.Value ?
+                false :
+                true;
         }
     }
     public enum AfterSaleCompanyServiceEnum
@@ -307,4 +392,6 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         OtherServices = 74,
         ChangeMeterLevel = 77
     }
+
 }
+

@@ -252,14 +252,21 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         private IEnumerable<SaleDataOutputDto> CalcFinalDiscount(IEnumerable<SaleDataOutputDto> salesData, float discountPercent, SaleInputDto inputDto)
         {
-            short[] discountOffering = [(short)OfferingEnum.WaterArticle11, (short)OfferingEnum.SewageArticle11, (short)OfferingEnum.WaterSubscription, (short)OfferingEnum.SewageSubscription];
+            short[] waterDiscountOffering = [(short)OfferingEnum.WaterArticle11, (short)OfferingEnum.WaterSubscription];
+            short[] sewageDiscountOffering = [(short)OfferingEnum.SewageArticle11, (short)OfferingEnum.SewageSubscription];
 
             foreach (var item in salesData)
             {
-                if (discountOffering.Contains(item.Id))
+                if (waterDiscountOffering.Contains(item.Id) && inputDto.IsWaterDiscount)
                 {
                     long discountPerUnit = item.Amount / inputDto.DomesticUnit;
-                    item.Discount = discountPerUnit * inputDto.DiscountCount.Value;
+                    item.Discount = (long)(discountPerUnit * inputDto.DiscountCount.Value * discountPercent);
+                    item.FinalAmount = item.Amount - (item.Discount ?? 0);
+                }
+                if (sewageDiscountOffering.Contains(item.Id) && inputDto.IsSewageDiscount)
+                {
+                    long discountPerUnit = item.Amount / inputDto.DomesticUnit;
+                    item.Discount = (long)(discountPerUnit * inputDto.DiscountCount.Value * discountPercent);
                     item.FinalAmount = item.Amount - (item.Discount ?? 0);
                 }
             }

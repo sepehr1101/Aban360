@@ -110,7 +110,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
             return @$"use CustomerWarehouse
 					Select
-        				t51.C2 RegionTitle,
+        				t46.C2 RegionTitle,
 						b.ZoneTitle,
 						TRIM(b.BillId) as BillId,
 						b.UsageTitle,
@@ -142,7 +142,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						b.Item18
 					From [CustomerWarehouse].dbo.Bills b
                     Join [Db70].dbo.T51 t51
-                    	On t51.C0=b.ZoneId
+                    	On b.ZoneId=t51.C0
                     Join [Db70].dbo.T46 t46
                     	On t51.C1=t46.C0
 					Where 

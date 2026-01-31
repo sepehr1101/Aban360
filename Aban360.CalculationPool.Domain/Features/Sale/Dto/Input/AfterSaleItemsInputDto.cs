@@ -6,12 +6,16 @@
         public short? SiphonDiameterId { get; set; }
         public int UsageId { get; set; }
         public bool IsDomestic { get; set; }
-        public int? DiscountTypeId { get; set; }
-        public int? DiscountCount  { get; set; }
         public bool? HasWaterBroker { get; set; }
         public int ContractualCapacity { get; set; }
         public int DomesticUnit { get; set; }
         public int CommertialUnit { get; set; }
         public int OtherUnit { get; set; }
+
+
+        public int? DiscountTypeId { get; set; }
+        public int? DiscountCount { get; set; }
+        public bool IsWaterDiscount { get; set; }
+        public bool IsSewageDiscount { get; set; }
     }
 }
