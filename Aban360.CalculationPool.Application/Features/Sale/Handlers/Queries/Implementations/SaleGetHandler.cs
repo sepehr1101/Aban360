@@ -113,8 +113,13 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
                 if (!await _article11QueryService.ZoneValidation(inputDto.ZoneId))
                 {
-                    throw new SaleException(ExceptionLiterals.InvalicZoneId);
+                    throw new SaleException(ExceptionLiterals.InvalidZoneId);
                 }
+            }
+            int[] domesticUsage = { 1, 34 };
+            if (domesticUsage.Contains(inputDto.UsageId) && inputDto.DomesticUnit == 0)
+            {
+                throw new SaleException(ExceptionLiterals.InvalidDomesticUnit);
             }
         }
         private ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> CalcSaleHeader(IEnumerable<SaleDataOutputDto> salesData, bool hasBroker)
@@ -191,15 +196,25 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
             var article11 = new Article11GetDto(inputDto.ZoneId, inputDto.Block, DateTime.Now.ToShortPersianDateString());
             Article11OutputDto article11Data = await _article11QueryService.Get(article11);
-            SaleDataOutputDto waterArticle11 = await GetSaleData(OfferingEnum.WaterArticle11, (inputDto.IsDomestic ? article11Data.DomesticWaterAmount : article11Data.NonDomesticWaterAmount) * usageMultiplier, null);
+
+            SaleDataOutputDto waterArticle11 = await GetSaleData(OfferingEnum.WaterArticle11, inputDto.HasWaterArticle11 ? GetWaterAmount() : 0, null);
 
             if (HasSiphon(inputDto))
             {
-                SaleDataOutputDto sewageArticle11 = await GetSaleData(OfferingEnum.SewageArticle11, (inputDto.IsDomestic ? article11Data.DomesticSewageAmount : article11Data.NonDomesticSewageAmount) * usageMultiplier, null);
+                SaleDataOutputDto sewageArticle11 = await GetSaleData(OfferingEnum.SewageArticle11, inputDto.HasSewageArticle11 ? GetSewageAmount() : 0, null);
                 return new[] { waterArticle11, sewageArticle11 };
             }
 
             return new[] { waterArticle11 };
+
+            long GetWaterAmount()
+            {
+                return (inputDto.IsDomestic ? article11Data.DomesticWaterAmount : article11Data.NonDomesticWaterAmount) * usageMultiplier;
+            }
+            long? GetSewageAmount()
+            {
+                return (inputDto.IsDomestic ? article11Data.DomesticSewageAmount : article11Data.NonDomesticSewageAmount) * usageMultiplier;
+            }
         }
         private async Task<ICollection<SaleDataOutputDto>> GetInstallationAndEquipment(SaleInputDto inputDto)
         {
