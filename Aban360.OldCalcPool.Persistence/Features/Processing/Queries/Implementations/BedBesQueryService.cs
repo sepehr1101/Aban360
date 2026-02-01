@@ -319,7 +319,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         {
             return @$"use [{dbName}]
                     select AVG(rate) from bed_bes where 
-                    radif=3653 and today_date>=@fromDate and pri_date<@toDate";
+                    radif=3653 and today_date>=@fromDate and pri_date<@toDate AND
+                    cod_vas NOT IN(4,7,8)";
         }
         private string GetListByFromToDate(string dbName)
         {
