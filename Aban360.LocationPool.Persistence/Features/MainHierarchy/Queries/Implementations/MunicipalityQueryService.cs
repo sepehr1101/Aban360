@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Extensions;
 using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.LocationPool.Persistence.Contexts.Contracts;
 using Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contracts;
@@ -33,6 +34,13 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implem
                 .Include(m=>m.Zone)
                 .ToListAsync();
         }
+        public async Task<IEnumerable<NumericDictionary>> GetByZoneId(int zoneId)
+        {
+            return await _municipalities
+                .Where(m => m.ZoneId == zoneId)
+                .OrderBy(r=>r.Id)
+                .Select(r => new NumericDictionary(r.Id, r.Title))
+                .ToListAsync();
+        }
     }
-
 }

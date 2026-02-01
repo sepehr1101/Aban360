@@ -2,6 +2,6 @@
 {
     public interface IZoneAddHoc
     {
-        Task<bool> GetArticle11(int zoneId);
+        Task<bool> GetArticle2(int zoneId);
     }
 }

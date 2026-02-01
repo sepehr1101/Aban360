@@ -13,6 +13,7 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
+using Aban360.ReportPool.GatewayAdhoc.Features.ConsumersInfo.Contracts;
 using DNTPersianUtils.Core;
 using FluentValidation;
 
@@ -25,8 +26,10 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private readonly IEquipmentBrokerAndZoneQueryService _equipmentBrokerAndZoneQueryService;
         private readonly IOfferingQueryService _offeringQueryService;
         private readonly IAdjustmentFactorQueryService _adjustmentFactorQueryService;
+        private readonly IZoneAddHoc _zoneAddHoc;
         private readonly IValidator<SaleInputDto> _validator;
-        private static string title = "فروش انشعاب";
+        private static string _reportTitle = "فروش انشعاب";
+        private static string _article2Title = "تبصره 2";
         private static int _nonDomesticAjustmentFactor = 285000;
         private static int _nonDomesticFixed = 1140000;
         private static float _domesticSewageMultiplier = 0.7f;
@@ -38,6 +41,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             IOfferingQueryService offeringQueryService,
             IAdjustmentFactorQueryService adjustmentFactorQueryService,
             ICustomerInfoService customerInfoService,
+            IZoneAddHoc zoneAddHoc,
             IValidator<SaleInputDto> validator)
         {
             _installationAndEquipmentService = installationAndEquipmentService;
@@ -54,6 +58,9 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
             _adjustmentFactorQueryService = adjustmentFactorQueryService;
             _adjustmentFactorQueryService.NotNull(nameof(adjustmentFactorQueryService));
+
+            _zoneAddHoc = zoneAddHoc;
+            _zoneAddHoc.NotNull(nameof(zoneAddHoc));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -134,7 +141,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 ItemCount = salesData.Count(),
             };
 
-            ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> result = new(title, headerOutput, salesData);
+            ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> result = new(_reportTitle, headerOutput, salesData);
             return result;
         }
         private async Task<IEnumerable<SaleDataOutputDto>> CalcOfferingAmount(SaleInputDto inputDto)
@@ -151,6 +158,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             long domesticAdjustmentFactor = adjustmentfactor.Price * inputDto.DomesticUnit;
             long constNonDomesticAdjustmentFactor = (long)(adjustmentfactor.AdjustmentFactor * _nonDomesticAjustmentFactor * inputDto.ContractualCapacity);
             long nonDomesticSubscription = constNonDomesticAdjustmentFactor + (_nonDomesticFixed * inputDto.CommertialUnit);
+
 
             if (HasSiphon(inputDto))
             {
@@ -171,9 +179,9 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             }
             else
             {
-                return inputDto.IsDomestic ?
-                    new[] { await GetSaleData(OfferingEnum.WaterSubscription, domesticAdjustmentFactor, null) } :
-                    new[] { await GetSaleData(OfferingEnum.WaterSubscription, (long)(nonDomesticSubscription), null) };
+                SaleDataOutputDto waterSubscription = inputDto.IsDomestic ? await GetSaleData(OfferingEnum.WaterSubscription, domesticAdjustmentFactor, null) : await GetSaleData(OfferingEnum.WaterSubscription, (long)(nonDomesticSubscription), null);
+                SaleDataOutputDto article2 = await GetSewageArticle2(inputDto.ZoneId, waterSubscription.FinalAmount);
+                return new[] { waterSubscription, article2 };
             }
         }
         private async Task<IEnumerable<SaleDataOutputDto>> GetArticle11(SaleInputDto inputDto)
@@ -272,6 +280,15 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             }
 
             return salesData;
+        }
+        private async Task<SaleDataOutputDto> GetSewageArticle2(int zoneId, long amount)
+        {
+            bool hasArticle11 = await _zoneAddHoc.GetArticle2(zoneId);
+            long article2Amount = hasArticle11 ? (long)(amount * 0.1f) : 0;
+
+            SaleDataOutputDto article2 = new(79, _article2Title, article2Amount, 0, article2Amount);
+
+            return article2;
         }
         private bool IsDomestic(int usageId)
         {

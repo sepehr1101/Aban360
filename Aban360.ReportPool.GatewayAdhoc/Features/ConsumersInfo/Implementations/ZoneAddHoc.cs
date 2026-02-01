@@ -13,7 +13,7 @@ namespace Aban360.ReportPool.GatewayAdhoc.Features.ConsumersInfo.Implementations
             _zoneQueryService.NotNull(nameof(zoneQueryService));
         }
 
-        public async Task<bool> GetArticle11(int zoneId)
+        public async Task<bool> GetArticle2(int zoneId)
         {
             return await _zoneQueryService.GetArticle2(zoneId);
         }

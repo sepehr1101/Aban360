@@ -173,10 +173,10 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             currentItems.Add(currentTax);
             differentItems.Add(differentTax);
 
-            var (previousArticle11, currentArticle11, differentArticle11) = await GetSewageArticle11(input.ZoneId, companyServiceData.DifferentValue.Where(s => s.Id == (short)OfferingEnum.WaterSubscription).FirstOrDefault().FinalAmount);
-            previousItems.Add(previousArticle11);
-            currentItems.Add(currentArticle11);
-            differentItems.Add(differentArticle11);
+            //var (previousArticle11, currentArticle11, differentArticle11) = await GetSewageArticle11(input.ZoneId, companyServiceData.DifferentValue.Where(s => s.Id == (short)OfferingEnum.WaterSubscription).FirstOrDefault().FinalAmount);
+            //previousItems.Add(previousArticle11);
+            //currentItems.Add(currentArticle11);
+            //differentItems.Add(differentArticle11);
 
 
 
@@ -184,17 +184,17 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
             return companyServiceResult;
         }
-        private async Task<(SaleDataOutputDto, SaleDataOutputDto, SaleDataOutputDto)> GetSewageArticle11(int zoneId, long amount)
-        {
-            bool hasArticle11 = await _zoneAddHoc.GetArticle11(zoneId);
-            long article11Amount = hasArticle11 ? (long)(amount * 0.1f) : 0;
+        //private async Task<(SaleDataOutputDto, SaleDataOutputDto, SaleDataOutputDto)> GetSewageArticle11(int zoneId, long amount)
+        //{
+        //    bool hasArticle11 = await _zoneAddHoc.GetArticle2(zoneId);
+        //    long article11Amount = hasArticle11 ? (long)(amount * 0.1f) : 0;
 
-            SaleDataOutputDto previousArticle11 = new(79, _article11Title, 0, 0, 0);
-            SaleDataOutputDto currentArticle11 = new(79, _article11Title, 0, 0, 0);
-            SaleDataOutputDto differentArticle11 = new(79, _article11Title, article11Amount, 0, article11Amount);
+        //    SaleDataOutputDto previousArticle11 = new(79, _article11Title, 0, 0, 0);
+        //    SaleDataOutputDto currentArticle11 = new(79, _article11Title, 0, 0, 0);
+        //    SaleDataOutputDto differentArticle11 = new(79, _article11Title, article11Amount, 0, article11Amount);
 
-            return (previousArticle11, currentArticle11, differentArticle11);
-        }
+        //    return (previousArticle11, currentArticle11, differentArticle11);
+        //}
         private SaleInputDto GetSaleInput(AfterSaleItemsInputDto input, int zoneId, string? block)
         {
             return new SaleInputDto()
