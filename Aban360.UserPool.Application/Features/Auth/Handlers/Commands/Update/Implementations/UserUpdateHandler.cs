@@ -97,6 +97,10 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
             User userInDb = await _userQueryService.Get(userUpdateDto.Id);
             User user = _mapper.Map<User>(userInDb);
 
+            user.Mobile = userUpdateDto.Mobile;
+            user.FullName = userUpdateDto.FullName;
+            user.DisplayName = userUpdateDto.DisplayName;
+
             ICollection<UserClaim> previousClaims = await _userClaimsQueryService.Get(userUpdateDto.Id);
             ICollection<UserRole> previousRoles = await _userRoleQueryService.Get(userUpdateDto.Id);
 
