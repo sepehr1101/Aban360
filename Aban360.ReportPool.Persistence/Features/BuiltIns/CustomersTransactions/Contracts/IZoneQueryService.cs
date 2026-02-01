@@ -5,5 +5,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
     public interface IZoneQueryService
     {
         Task<IEnumerable<UserZoneIdsOutputDto>> Get();
+        Task<bool> GetArticle2(int zoneId);
     }
 }
