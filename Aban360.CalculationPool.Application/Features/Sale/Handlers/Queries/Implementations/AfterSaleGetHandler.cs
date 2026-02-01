@@ -9,9 +9,9 @@ using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
+using Aban360.ReportPool.GatewayAdhoc.Features.ConsumersInfo;
+using Aban360.ReportPool.GatewayAdhoc.Features.ConsumersInfo.Contracts;
 using FluentValidation;
-using NetTopologySuite.Index.HPRtree;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Implementations
 {
@@ -21,14 +21,17 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private readonly IEquipmentBrokerAndZoneQueryService _equipmentBrokerAndZoneQueryService;
         private readonly IOfferingQueryService _offeringQueryService;
         private readonly ITable3QueryService _table3QueryService;
+        private readonly IZoneAddHoc _zoneAddHoc;
         private static string _title = "پس از فروش";
+        private static string _article11Title = "تبصره 2";
         private static string _taxTitle = "مالیات بر ارزش افزوده";
         private static float _tax = 0.1f;
         public AfterSaleGetHandler(
             ISaleGetHandler saleGetHandler,
             IEquipmentBrokerAndZoneQueryService equipmentBrokerAndZoneQueryService,
             IOfferingQueryService offeringQueryService,
-            ITable3QueryService table3QueryService)
+            ITable3QueryService table3QueryService,
+            IZoneAddHoc zoneAddHoc)
         {
             _saleGetHandler = saleGetHandler;
             _saleGetHandler.NotNull(nameof(saleGetHandler));
@@ -41,6 +44,9 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
             _table3QueryService = table3QueryService;
             _table3QueryService.NotNull(nameof(table3QueryService));
+
+            _zoneAddHoc = zoneAddHoc;
+            _zoneAddHoc.NotNull(nameof(zoneAddHoc));
         }
 
         public async Task<FlatReportOutput<SaleHeaderOutputDto, AfterSaleDataOutputDto>> Handle(AfterSaleInputDto input, CancellationToken cancellationToken)
@@ -167,9 +173,27 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             currentItems.Add(currentTax);
             differentItems.Add(differentTax);
 
+            var (previousArticle11, currentArticle11, differentArticle11) = await GetSewageArticle11(input.ZoneId, companyServiceData.DifferentValue.Where(s => s.Id == (short)OfferingEnum.WaterSubscription).FirstOrDefault().FinalAmount);
+            previousItems.Add(previousArticle11);
+            currentItems.Add(currentArticle11);
+            differentItems.Add(differentArticle11);
+
+
+
             AfterSaleDataOutputDto companyServiceResult = new(companyServiceData.PreviousValue.Concat(previousItems), companyServiceData.CurrentValue.Concat(currentItems), companyServiceData.DifferentValue.Concat(differentItems));
 
             return companyServiceResult;
+        }
+        private async Task<(SaleDataOutputDto, SaleDataOutputDto, SaleDataOutputDto)> GetSewageArticle11(int zoneId, long amount)
+        {
+            bool hasArticle11 = await _zoneAddHoc.GetArticle11(zoneId);
+            long article11Amount = hasArticle11 ? (long)(amount * 0.1f) : 0;
+
+            SaleDataOutputDto previousArticle11 = new(79, _article11Title, 0, 0, 0);
+            SaleDataOutputDto currentArticle11 = new(79, _article11Title, 0, 0, 0);
+            SaleDataOutputDto differentArticle11 = new(79, _article11Title, article11Amount, 0, article11Amount);
+
+            return (previousArticle11, currentArticle11, differentArticle11);
         }
         private SaleInputDto GetSaleInput(AfterSaleItemsInputDto input, int zoneId, string? block)
         {
