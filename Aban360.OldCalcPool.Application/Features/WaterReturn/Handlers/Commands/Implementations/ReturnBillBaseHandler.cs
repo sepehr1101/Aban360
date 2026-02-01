@@ -683,10 +683,13 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             int[] domesticId = [0, 1, 3];
             return domesticId.Contains(customerNumber);
         }
-        public async Task<float> GetConsumptionAverage(string fromDateJalali, ReturnedBillCalculationTypeEnum calculationType, float? userInput, CustomerInfoOutputDto customerInfo,int returnCauseId)
+        public async Task<float> GetConsumptionAverage(string fromDateJalali, string toDateJalali, ReturnedBillCalculationTypeEnum calculationType, float? userInput, CustomerInfoOutputDto customerInfo,int returnCauseId)
         {
-            float previousConsumptionAverage = await _bedBesQueryService.GetPreviousBill(customerInfo.ZoneId, customerInfo.Radif, fromDateJalali);
-
+            float previousConsumptionAverage = await _bedBesQueryService.GetAverage(customerInfo.ZoneId, customerInfo.Radif, GetPreviousYear(fromDateJalali), GetPreviousYear(toDateJalali));
+            if(previousConsumptionAverage<=0)
+            {
+                await _bedBesQueryService.GetPreviousBill(customerInfo.ZoneId, customerInfo.Radif, fromDateJalali);
+            }
             if (returnCauseId == 1)
             {
                 return previousConsumptionAverage;
@@ -708,6 +711,16 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         {
             BillReturnCauseGetDto returnCause = await _billReturnCauseQueryService.Get(new SearchShortInputDto { Id = (short)bedBes.Elat });
             return string.Format(Literals.WaterReturnDescription, customerInfo.BillId, customerInfo.ReadingNumber, customerInfo.FullName, customerInfo.UsageTitle, returnCause.Title, bedBes.TedGhabs, bedBes.PriDate, bedBes.TodayDate, bedBes.Modat);
+        }
+        private string GetPreviousYear(string dateJalali)
+        {
+            DateOnly? dateOnly = dateJalali.ToGregorianDateOnly();
+            if(!dateOnly.HasValue)
+            {
+                throw new BaseException("تاریخ ناصحیح است");
+            }
+            string previousDateJalali =dateOnly.Value.AddYears(-1).ToShortPersianDateString();
+            return previousDateJalali;
         }
     }
 }

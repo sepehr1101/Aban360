@@ -52,7 +52,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         {
             CustomerInfoOutputDto customerInfo = await Validation(inputDto, cancellationToken);
             int jalaseNumber = await _returnBillBaseHandler.GetJalaliNumber(inputDto.MinutesNumber, customerInfo.ZoneId, customerInfo.Radif);
-            float consumptionAverage = await _returnBillBaseHandler.GetConsumptionAverage(inputDto.FromDateJalali, inputDto.CalculationType, inputDto.UserInput, customerInfo, inputDto.ReturnCauseId);
+            float consumptionAverage = await _returnBillBaseHandler.GetConsumptionAverage(inputDto.FromDateJalali, inputDto.ToDateJalali, inputDto.CalculationType, inputDto.UserInput, customerInfo, inputDto.ReturnCauseId);
             var (bedBesInfo, bedBesResult) = await GetBedBesCreateDto(inputDto, customerInfo);
 
             int[] burstPipe = { 1 };

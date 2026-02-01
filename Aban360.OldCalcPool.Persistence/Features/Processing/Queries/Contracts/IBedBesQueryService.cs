@@ -16,6 +16,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
         Task<IEnumerable<BillsCanRemoveOutputDto>> Get(BillToReturnInputDto input);
         Task<ReportOutput<ManualBillHeaderOutputDto, ManualBillDataOutputDto>> Get(ManualBillInputDto input);
         Task<float> GetPreviousBill(int zoneId, int customerNumber, string dateJalali);
+        Task<float> GetAverage(int zoneId, int customerNumber, string fromDate, string toDate);
         Task<IEnumerable<BedBesCreateDto>> Get(ZoneCustomerFromToDateDto input);
         Task<int> GetCountInDateBed(int zoneId, int customernumber, string date,bool isPreviousDate);
         Task<int?> GetLatestJalaseNumber(ZoneIdAndCustomerNumberOutputDto input);
