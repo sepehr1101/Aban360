@@ -36,8 +36,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
         }
         private SubscriptionGetDto GetLocationInfo(SubscriptionGetDto customerInfo, CustomerLocationDto customerLocation)
         {
-            customerInfo.X = customerInfo.X;
-            customerInfo.Y = customerInfo.Y;
+            customerInfo.X = customerLocation.X;
+            customerInfo.Y = customerLocation.Y;
 
             if (!string.IsNullOrWhiteSpace(customerInfo.X) && !string.IsNullOrWhiteSpace(customerInfo.Y))
             {
