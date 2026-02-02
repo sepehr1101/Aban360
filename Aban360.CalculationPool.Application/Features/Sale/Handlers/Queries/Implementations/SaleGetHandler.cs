@@ -13,6 +13,7 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
+using Aban360.ReportPool.GatewayAdhoc.Features.ConsumersInfo.Contracts;
 using DNTPersianUtils.Core;
 using FluentValidation;
 
@@ -25,8 +26,11 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private readonly IEquipmentBrokerAndZoneQueryService _equipmentBrokerAndZoneQueryService;
         private readonly IOfferingQueryService _offeringQueryService;
         private readonly IAdjustmentFactorQueryService _adjustmentFactorQueryService;
+        private readonly IZoneAddHoc _zoneAddHoc;
         private readonly IValidator<SaleInputDto> _validator;
-        private static string title = "فروش انشعاب";
+        private readonly int[] _domesticUsage = { 1, 34 };
+        private static string _reportTitle = "فروش انشعاب";
+        private static string _article2Title = "تبصره 2";
         private static int _nonDomesticAjustmentFactor = 285000;
         private static int _nonDomesticFixed = 1140000;
         private static float _domesticSewageMultiplier = 0.7f;
@@ -38,6 +42,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             IOfferingQueryService offeringQueryService,
             IAdjustmentFactorQueryService adjustmentFactorQueryService,
             ICustomerInfoService customerInfoService,
+            IZoneAddHoc zoneAddHoc,
             IValidator<SaleInputDto> validator)
         {
             _installationAndEquipmentService = installationAndEquipmentService;
@@ -55,6 +60,9 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             _adjustmentFactorQueryService = adjustmentFactorQueryService;
             _adjustmentFactorQueryService.NotNull(nameof(adjustmentFactorQueryService));
 
+            _zoneAddHoc = zoneAddHoc;
+            _zoneAddHoc.NotNull(nameof(zoneAddHoc));
+
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
@@ -64,10 +72,11 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             await Validation(inputDto, cancellationToken);
             bool hasBroker = inputDto.HasWaterBroker ?? (await _equipmentBrokerAndZoneQueryService.Get(inputDto.ZoneId)) is { Id: > 0 };
 
-            IEnumerable<SaleDataOutputDto> salesAmountData = await CalcOfferingAmount(inputDto);
-            IEnumerable<SaleDataOutputDto> salesData = CalcDiscount(inputDto, salesAmountData);
+            IEnumerable<SaleDataOutputDto> data = await GetData(inputDto);
+            SaleHeaderOutputDto header = CalcSaleHeader(data, hasBroker);
+            ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> result = new(_reportTitle, header, data);
 
-            return CalcSaleHeader(salesData, hasBroker);
+            return result;
         }
         public async Task<ReportOutput<SaleHeaderReportOutputDto, SaleDataOutputDto>> ReportHandle(SaleInputDto inputDto, CancellationToken cancellationToken)
         {
@@ -88,29 +97,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
             return new ReportOutput<SaleHeaderReportOutputDto, SaleDataOutputDto>(data.Title, reportHeader, data.ReportData);
         }
-        private async Task Validation(SaleInputDto inputDto, CancellationToken cancellationToken)
-        {
-            var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
-            if (!validationResult.IsValid)
-            {
-                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomValidationException(message);
-            }
-
-            if (inputDto.ZoneId < 140000)
-            {
-                if (!await _article11QueryService.ZoneWithBlockValidation(inputDto.ZoneId, inputDto.Block))
-                {
-                    throw new SaleException(ExceptionLiterals.InvalicZoneIdWithBlock);
-                }
-
-                if (!await _article11QueryService.ZoneValidation(inputDto.ZoneId))
-                {
-                    throw new SaleException(ExceptionLiterals.InvalicZoneId);
-                }
-            }
-        }
-        private ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> CalcSaleHeader(IEnumerable<SaleDataOutputDto> salesData, bool hasBroker)
+        private SaleHeaderOutputDto CalcSaleHeader(IEnumerable<SaleDataOutputDto> salesData, bool hasBroker)
         {
             short[] brokerOffering = [(short)OfferingEnum.WaterEquipment];
 
@@ -134,16 +121,60 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 ItemCount = salesData.Count(),
             };
 
-            ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> result = new(title, headerOutput, salesData);
-            return result;
+            return headerOutput;
+        }
+        private async Task<IEnumerable<SaleDataOutputDto>> GetData(SaleInputDto inputDto)
+        {
+            IEnumerable<SaleDataOutputDto> salesAmountData = await CalcOfferingAmount(inputDto);
+            IEnumerable<SaleDataOutputDto> salesData = CalcDiscount(inputDto, salesAmountData);
+
+            return salesData;
         }
         private async Task<IEnumerable<SaleDataOutputDto>> CalcOfferingAmount(SaleInputDto inputDto)
         {
             IEnumerable<SaleDataOutputDto> installationAndEquipment = await GetInstallationAndEquipment(inputDto);
-            IEnumerable<SaleDataOutputDto> article11Data = inputDto.ZoneId < 140000 ? await GetArticle11(inputDto) : Array.Empty<SaleDataOutputDto>();
+            IEnumerable<SaleDataOutputDto> article11Data = await GetArticle11(inputDto);
             IEnumerable<SaleDataOutputDto> ajustmentFactor = await CalcSubscription(inputDto);
 
             return installationAndEquipment.Concat(article11Data).Concat(ajustmentFactor);
+        }
+        private async Task<ICollection<SaleDataOutputDto>> GetInstallationAndEquipment(SaleInputDto inputDto)
+        {
+            ICollection<SaleDataOutputDto> waterInstallationAndEquipment = await GetInstallationAndEquipmentSaleData(true, inputDto.WaterDiameterId);
+
+            if (HasSiphon(inputDto))
+            {
+                ICollection<SaleDataOutputDto> sewageInstallationAndEquipment = await GetInstallationAndEquipmentSaleData(false, inputDto.SiphonDiameterId);
+                return waterInstallationAndEquipment.Concat(sewageInstallationAndEquipment).ToList();
+            }
+
+            return waterInstallationAndEquipment;
+        }
+        private async Task<IEnumerable<SaleDataOutputDto>> GetArticle11(SaleInputDto inputDto)
+        {
+            if (IsVillage(inputDto.ZoneId))
+                Array.Empty<SaleDataOutputDto>();
+
+            int usageMultiplier = GetUsageMultiplierForArticle11(inputDto);
+            Article11OutputDto article11Data = await GetArticle11Data(inputDto);
+
+            SaleDataOutputDto waterArticle11 = await GetSaleData(OfferingEnum.WaterArticle11, inputDto.HasWaterArticle11 ? GetWaterAmount() : 0, null);
+            if (HasSiphon(inputDto))
+            {
+                SaleDataOutputDto sewageArticle11 = await GetSaleData(OfferingEnum.SewageArticle11, inputDto.HasSewageArticle11 ? GetSewageAmount() : 0, null);
+                return new[] { waterArticle11, sewageArticle11 };
+            }
+
+            return new[] { waterArticle11 };
+
+            long GetWaterAmount()
+            {
+                return (inputDto.IsDomestic ? article11Data.DomesticWaterAmount : article11Data.NonDomesticWaterAmount) * usageMultiplier;
+            }
+            long? GetSewageAmount()
+            {
+                return (inputDto.IsDomestic ? article11Data.DomesticSewageAmount : article11Data.NonDomesticSewageAmount) * usageMultiplier;
+            }
         }
         private async Task<ICollection<SaleDataOutputDto>> CalcSubscription(SaleInputDto inputDto)
         {
@@ -171,41 +202,12 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             }
             else
             {
-                return inputDto.IsDomestic ?
-                    new[] { await GetSaleData(OfferingEnum.WaterSubscription, domesticAdjustmentFactor, null) } :
-                    new[] { await GetSaleData(OfferingEnum.WaterSubscription, (long)(nonDomesticSubscription), null) };
+                SaleDataOutputDto waterSubscription = inputDto.IsDomestic ? await GetSaleData(OfferingEnum.WaterSubscription, domesticAdjustmentFactor, null) : await GetSaleData(OfferingEnum.WaterSubscription, (long)(nonDomesticSubscription), null);
+                SaleDataOutputDto article2 = await GetSewageArticle2(inputDto.ZoneId, waterSubscription.FinalAmount);
+                return new[] { waterSubscription, article2 };
             }
         }
-        private async Task<IEnumerable<SaleDataOutputDto>> GetArticle11(SaleInputDto inputDto)
-        {
-            int usageMultiplier = inputDto.IsDomestic ? inputDto.DomesticUnit : inputDto.ContractualCapacity;
-            usageMultiplier = inputDto.UsageId == 3 ? inputDto.ContractualCapacity * inputDto.DomesticUnit : usageMultiplier;
-
-            var article11 = new Article11GetDto(inputDto.ZoneId, inputDto.Block, DateTime.Now.ToShortPersianDateString());
-            Article11OutputDto article11Data = await _article11QueryService.Get(article11);
-            SaleDataOutputDto waterArticle11 = await GetSaleData(OfferingEnum.WaterArticle11, (inputDto.IsDomestic ? article11Data.DomesticWaterAmount : article11Data.NonDomesticWaterAmount) * usageMultiplier, null);
-
-            if (HasSiphon(inputDto))
-            {
-                SaleDataOutputDto sewageArticle11 = await GetSaleData(OfferingEnum.SewageArticle11, (inputDto.IsDomestic ? article11Data.DomesticSewageAmount : article11Data.NonDomesticSewageAmount) * usageMultiplier, null);
-                return new[] { waterArticle11, sewageArticle11 };
-            }
-
-            return new[] { waterArticle11 };
-        }
-        private async Task<ICollection<SaleDataOutputDto>> GetInstallationAndEquipment(SaleInputDto inputDto)
-        {
-            ICollection<SaleDataOutputDto> waterInstallationAndEquipment = await GetInstallationAndEquipment(true, inputDto.WaterDiameterId);
-
-            if (HasSiphon(inputDto))
-            {
-                ICollection<SaleDataOutputDto> sewageInstallationAndEquipment = await GetInstallationAndEquipment(false, inputDto.SiphonDiameterId);
-                return waterInstallationAndEquipment.Concat(sewageInstallationAndEquipment).ToList();
-            }
-
-            return waterInstallationAndEquipment;
-        }
-        private async Task<ICollection<SaleDataOutputDto>> GetInstallationAndEquipment(bool isWater, short? meterDiameterId)
+        private async Task<ICollection<SaleDataOutputDto>> GetInstallationAndEquipmentSaleData(bool isWater, short? meterDiameterId)
         {
             var installationAndEquipment = new InstallationAndEquipmentGetDto(isWater, meterDiameterId, DateTime.Now.ToShortPersianDateString());
             InstallationAndEquipmentOutputDto installtionAndEquipmentData = await _installationAndEquipmentService.Get(installationAndEquipment);
@@ -213,10 +215,6 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             SaleDataOutputDto equipment = await GetSaleData(isWater ? OfferingEnum.WaterEquipment : OfferingEnum.SewageEquipment, installtionAndEquipmentData.EquipmentAmount, null);
 
             return new List<SaleDataOutputDto> { installation, equipment };
-        }
-        private bool HasSiphon(SaleInputDto input)
-        {
-            return input.SiphonDiameterId != null && input.SiphonDiameterId > 0 ? true : false;
         }
         private async Task<SaleDataOutputDto> GetSaleData(OfferingEnum offeringEnum, long? amount, long? discount)
         {
@@ -273,10 +271,58 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
             return salesData;
         }
+        private async Task<SaleDataOutputDto> GetSewageArticle2(int zoneId, long amount)
+        {
+            bool hasArticle11 = await _zoneAddHoc.GetArticle2(zoneId);
+            long article2Amount = hasArticle11 ? (long)(amount * 0.1f) : 0;
+
+            SaleDataOutputDto article2 = new(79, _article2Title, article2Amount, 0, article2Amount);
+
+            return article2;
+        }
+        private async Task Validation(SaleInputDto inputDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new CustomValidationException(message);
+            }
+
+            if (!IsVillage(inputDto.ZoneId))
+            {
+                if (!await _article11QueryService.ZoneValidation(inputDto.ZoneId))
+                {
+                    throw new SaleException(ExceptionLiterals.InvalidZoneId);
+                }
+                if (!await _article11QueryService.ZoneWithBlockValidation(inputDto.ZoneId, inputDto.Block))
+                {
+                    throw new SaleException(ExceptionLiterals.InvalicZoneIdWithBlock);
+                }
+            }
+            if (_domesticUsage.Contains(inputDto.UsageId) && inputDto.DomesticUnit == 0)
+            {
+                throw new SaleException(ExceptionLiterals.InvalidDomesticUnit);
+            }
+        }
+
+        private async Task<Article11OutputDto> GetArticle11Data(SaleInputDto inputDto)
+        {
+            var article11Dto = new Article11GetDto(inputDto.ZoneId, inputDto.Block, DateTime.Now.ToShortPersianDateString());
+            return await _article11QueryService.Get(article11Dto);
+        }
+        private int GetUsageMultiplierForArticle11(SaleInputDto inputDto)
+        {
+            int usageMultiplier = inputDto.IsDomestic ? inputDto.DomesticUnit : inputDto.ContractualCapacity;
+            return inputDto.UsageId == 3 ? inputDto.ContractualCapacity * inputDto.DomesticUnit : usageMultiplier;
+        }
+
+        private bool HasSiphon(SaleInputDto input) => input.SiphonDiameterId != null && input.SiphonDiameterId > 0 ? true : false;
         private bool IsDomestic(int usageId)
         {
             int[] domestic = { 1, 3 };
             return domestic.Contains(usageId);
         }
+        private bool IsVillage(int zoneId) => zoneId < 140000;
     }
 }

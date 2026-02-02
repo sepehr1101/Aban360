@@ -28,6 +28,7 @@
         public static string CurrentNumberNotMoreThanPreviousNumber => "رقم دوره قبلی نمیتوان از رقم دوره جاری بزرگ تر باشد";
         public static string BillIdNotFound => "شناسه قبض یافت نشد!";
         public static string InvalidBillId => "شناسه قبض معتبر نیست!";
+        public static string InvalidTrackNumber => "شماره پیگیری یافت نشد.";
         public static string InvalidDate => "تاریخ ناصحیح";
         public static string InvalidFromDate => "تاریخ شروع ناصحیح";
         public static string InvalidToDate => "تاریخ پایان ناصحیح";
@@ -105,7 +106,8 @@
 
         //Sale
         public static string InvalicZoneIdWithBlock => "ناحیه با بلوک انتخابی مطابقت ندارد.";
-        public static string InvalicZoneId => "امکان محاسبه فروش برای  ناحیه انتخابی وجود ندارد.";
+        public static string InvalidZoneId => "امکان محاسبه فروش برای  ناحیه انتخابی وجود ندارد.";
+        public static string InvalidDomesticUnit => "تعداد واحد مسکونی را وارد کنید.";
 
         //AfterSale
         public static string CheckCompanyService(string item) => $"برای {item} ابتدا خدمت را انتخاب کنید.";

@@ -19,5 +19,8 @@
         public int? DiscountCount { get; set; }
         public bool IsWaterDiscount { get; set; }
         public bool IsSewageDiscount { get; set; }
+
+        public bool HasWaterArticle11 { get; set; }
+        public bool HasSewageArticle11 { get; set; }
     }
 }

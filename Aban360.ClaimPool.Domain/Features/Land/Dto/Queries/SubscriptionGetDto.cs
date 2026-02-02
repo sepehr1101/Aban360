@@ -10,7 +10,7 @@
         public string Y { get; set; }
         public string ReadingNumber { get; set; }
         public string FirstName { get; set; }
-        public string SurName { get; set; }
+        public string Surname { get; set; }
         public string Address { get; set; }
         public string PostalCode { get; set; }
 
@@ -28,7 +28,7 @@
         public int OtherUnit { get; set; }
         public int HouseholdNumber { get; set; }
         public string? HouseholdDateJalali { get; set; }
-        public int MeterDiamterId { get; set; }
+        public int MeterDiameterId { get; set; }
         public bool IsSpecial { get; set; }
         public int ContractualCapacity { get; set; }
 

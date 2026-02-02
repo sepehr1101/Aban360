@@ -1,4 +1,5 @@
-﻿using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 
 namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contracts
 {
@@ -8,5 +9,6 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contra
         Task<ICollection<Zone>> Get();
         Task<ICollection<Zone>> GetIncludeAll();
         Task<int> GetCount(ICollection<int> ids);
+        Task<IEnumerable<NumericDictionary>> GetByRegionId(int regionId);
     }
 }

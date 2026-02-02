@@ -23,7 +23,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private readonly ITable3QueryService _table3QueryService;
         private readonly IZoneAddHoc _zoneAddHoc;
         private static string _title = "پس از فروش";
-        private static string _article11Title = "تبصره 2";
+        private static string _article2Title = "تبصره 2";
         private static string _taxTitle = "مالیات بر ارزش افزوده";
         private static float _tax = 0.1f;
         public AfterSaleGetHandler(
@@ -54,8 +54,8 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             //ToDo : ValidationDto
             ValidationOffering(input);
 
-            SaleInputDto previousDataInput = GetSaleInput(input.PreviousData, input.ZoneId, input.Block);
-            SaleInputDto currentDataInput = GetSaleInput(input.CurrentData, input.ZoneId, input.Block);
+            SaleInputDto previousDataInput = GetSaleInput(input.PreviousData, input.ZoneId, input.Block, input.HasWaterArticle11, input.HasSewageArticle11);
+            SaleInputDto currentDataInput = GetSaleInput(input.CurrentData, input.ZoneId, input.Block, input.HasWaterArticle11, input.HasSewageArticle11);
 
             ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> previousSaleCalculation = await _saleGetHandler.Handle(previousDataInput, cancellationToken);
             ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> currentSaleCalculation = await _saleGetHandler.Handle(currentDataInput, cancellationToken);
@@ -173,7 +173,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             currentItems.Add(currentTax);
             differentItems.Add(differentTax);
 
-            var (previousArticle11, currentArticle11, differentArticle11) = await GetSewageArticle11(input.ZoneId, companyServiceData.DifferentValue.Where(s => s.Id == (short)OfferingEnum.WaterSubscription).FirstOrDefault().FinalAmount);
+            var (previousArticle11, currentArticle11, differentArticle11) = await GetSewageArticle2(input.ZoneId, companyServiceData.DifferentValue.Where(s => s.Id == (short)OfferingEnum.WaterSubscription).FirstOrDefault().FinalAmount);
             previousItems.Add(previousArticle11);
             currentItems.Add(currentArticle11);
             differentItems.Add(differentArticle11);
@@ -184,18 +184,18 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
             return companyServiceResult;
         }
-        private async Task<(SaleDataOutputDto, SaleDataOutputDto, SaleDataOutputDto)> GetSewageArticle11(int zoneId, long amount)
+        private async Task<(SaleDataOutputDto, SaleDataOutputDto, SaleDataOutputDto)> GetSewageArticle2(int zoneId, long amount)
         {
-            bool hasArticle11 = await _zoneAddHoc.GetArticle11(zoneId);
+            bool hasArticle11 = await _zoneAddHoc.GetArticle2(zoneId);
             long article11Amount = hasArticle11 ? (long)(amount * 0.1f) : 0;
 
-            SaleDataOutputDto previousArticle11 = new(79, _article11Title, 0, 0, 0);
-            SaleDataOutputDto currentArticle11 = new(79, _article11Title, 0, 0, 0);
-            SaleDataOutputDto differentArticle11 = new(79, _article11Title, article11Amount, 0, article11Amount);
+            SaleDataOutputDto previousArticle11 = new(79, _article2Title, 0, 0, 0);
+            SaleDataOutputDto currentArticle11 = new(79, _article2Title, 0, 0, 0);
+            SaleDataOutputDto differentArticle11 = new(79, _article2Title, article11Amount, 0, article11Amount);
 
             return (previousArticle11, currentArticle11, differentArticle11);
         }
-        private SaleInputDto GetSaleInput(AfterSaleItemsInputDto input, int zoneId, string? block)
+        private SaleInputDto GetSaleInput(AfterSaleItemsInputDto input, int zoneId, string? block, bool hasWaterArticle11, bool hasSewageArticle11)
         {
             return new SaleInputDto()
             {
@@ -214,6 +214,8 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 SiphonDiameterId = input.SiphonDiameterId,
                 IsWaterDiscount = input.IsWaterDiscount,
                 IsSewageDiscount = input.IsSewageDiscount,
+                HasWaterArticle11 = hasWaterArticle11,
+                HasSewageArticle11 = hasSewageArticle11
             };
         }
         private IEnumerable<SaleDataOutputDto> GetDifferentData(IEnumerable<SaleDataOutputDto> previousSaleCalculation, IEnumerable<SaleDataOutputDto> currentSaleCalculation)

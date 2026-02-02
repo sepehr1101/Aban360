@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations
 {
-    public  class ZoneGetSingleHandler: IZoneGetSingleHandler
+    public class ZoneGetSingleHandler : IZoneGetSingleHandler
     {
         private readonly IZoneQueryService _zoneQueryService;
         private readonly IMapper _mapper;
