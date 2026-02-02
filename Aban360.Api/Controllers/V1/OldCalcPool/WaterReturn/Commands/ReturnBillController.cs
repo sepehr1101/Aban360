@@ -29,7 +29,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
             _reportGenerator = reportGenerator;
             _reportGenerator.NotNull(nameof(reportGenerator));
         }
-
+        [AllowAnonymous]
         [HttpPost, HttpGet]
         [Route("partial")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReturnBillOutputDto>), StatusCodes.Status200OK)]

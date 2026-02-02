@@ -123,7 +123,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             float rate = await _sqlReportConnection.QueryFirstOrDefaultAsync<float>(query, @params);
             return rate;
         }
-        public async Task<float> GetAverage(int zoneId, int customerNumber, string fromDate, string toDate)
+        public async Task<float?> GetAverage(int zoneId, int customerNumber, string fromDate, string toDate)
         {
             string dbName = GetDbName(zoneId);
             string query = GetAverageQuery(dbName);
@@ -134,7 +134,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                 fromDate,
                 toDate
             };
-            float rate = await _sqlReportConnection.QueryFirstOrDefaultAsync<float>(query, @params);
+            float? rate = await _sqlReportConnection.QueryFirstOrDefaultAsync<float?>(query, @params);
             return rate;
         }
         public async Task<IEnumerable<BedBesCreateDto>> Get(ZoneCustomerFromToDateDto input)
@@ -319,7 +319,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         {
             return @$"use [{dbName}]
                     select AVG(rate) from bed_bes where 
-                    radif=3653 and today_date>=@fromDate and pri_date<@toDate AND
+                    radif=@customerNumber and today_date>=@fromDate and pri_date<@toDate AND
                     cod_vas NOT IN(4,7,8)";
         }
         private string GetListByFromToDate(string dbName)
