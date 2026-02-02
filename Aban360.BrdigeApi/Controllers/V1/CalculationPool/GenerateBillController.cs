@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
 {
     [Route("v1/bill")]
-    public class GenerageBillController : BaseController
+    public class GenerateBillController : BaseController
     {
         private readonly IGenerateBillHandler _generageBillHandler;
-        public GenerageBillController(IGenerateBillHandler generageBillHandler)
+        public GenerateBillController(IGenerateBillHandler generageBillHandler)
         {
             _generageBillHandler = generageBillHandler;
             _generageBillHandler.NotNull(nameof(generageBillHandler));
