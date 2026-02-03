@@ -118,6 +118,8 @@
         public static string InvalidTwoDiscount => "قابلیت اعمال تخفیف همزمان برای اطلاعات قبلی و فعلی وجود ندارد. ";
         public static string InvalidDiscountCount => "تعداد تخفیف را وارد کنید";
 
+        //Tracking
+        public static string InvalidStateId => "وضعیت ارسالی یافت نشد.";
 
     }
 }

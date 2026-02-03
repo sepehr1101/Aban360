@@ -3,7 +3,8 @@
     public record TrackingDetailInputDto
     {
         public int ZoneId { get; set; }
-        public int TrackNumber { get; set; }
+        public Guid TrackId { get; set; }
+        public string TrackNumber{ get; set; }
         public int StateId { get; set; }
     }
 }

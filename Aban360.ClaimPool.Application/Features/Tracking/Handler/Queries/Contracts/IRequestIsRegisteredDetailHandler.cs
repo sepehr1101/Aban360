@@ -6,5 +6,4 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contra
     {
         Task<RequestIsRegisterdOutputDto> Handle(TrackingDetailGetDto inputDto, CancellationToken cancellationToken);
     }
-
 }

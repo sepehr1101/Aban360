@@ -9,7 +9,7 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Validations
     {
         public TrackingDetailValidator()
         {
-            RuleFor(t => t.TrackNumber)
+            RuleFor(t => t.TrackId)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 

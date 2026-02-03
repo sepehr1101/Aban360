@@ -10,11 +10,11 @@ using FluentValidation;
 
 namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implementations
 {
-    internal sealed class RequestIsRegisteredDetailHandler : IRequestIsRegisteredDetailHandler
+    internal sealed class CalculationConfirmedDetailHandler : ICalculationConfirmedDetailHandler
     {
         private readonly ITrackingDetailQueryService _trackingDetailQueryService;
         private readonly IValidator<TrackingDetailGetDto> _validator;
-        public RequestIsRegisteredDetailHandler(
+        public CalculationConfirmedDetailHandler(
             ITrackingDetailQueryService trackingDetailQueryService,
             IValidator<TrackingDetailGetDto> validator)
         {
@@ -25,12 +25,12 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<RequestIsRegisterdOutputDto> Handle(TrackingDetailGetDto inputDto, CancellationToken cancellationToken)
+        public async Task<CalculationConfirmedOutputDto> Handle(TrackingDetailGetDto inputDto, CancellationToken cancellationToken)
         {
             await Validation(inputDto, cancellationToken);
-            RequestIsRegisterdDto data = await _trackingDetailQueryService.GetRequestIsRegistered(inputDto);
+            CalculationConfirmedDto data = await _trackingDetailQueryService.GetCalculationConfirmed(inputDto);
             IEnumerable<NumericDictionary> s = GetCompanyService(data);
-            RequestIsRegisterdOutputDto result = GetOutput(data, s);
+            CalculationConfirmedOutputDto result = GetOutput(data, s);
 
             return result;
         }
@@ -43,7 +43,7 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
                 throw new BaseException(message);
             }
         }
-        private IEnumerable<NumericDictionary> GetCompanyService(RequestIsRegisterdDto input)
+        private IEnumerable<NumericDictionary> GetCompanyService(CalculationConfirmedDto input)
         {
             ICollection<NumericDictionary> companyServiceSelected = new List<NumericDictionary>();
 
@@ -192,9 +192,9 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
 
             return companyServiceSelected;
         }
-        private RequestIsRegisterdOutputDto GetOutput(RequestIsRegisterdDto result, IEnumerable<NumericDictionary> s)
+        private CalculationConfirmedOutputDto GetOutput(CalculationConfirmedDto result, IEnumerable<NumericDictionary> s)
         {
-            return new RequestIsRegisterdOutputDto()
+            return new CalculationConfirmedOutputDto()
             {
                 TrackNumber = result.TrackNumber,
                 BillId = result.BillId,
@@ -208,10 +208,38 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
                 FatherName = result.FatherName,
                 NationalCode = result.NationalCode,
                 MobileNumber = result.MobileNumber,
-                PhoneNumber=result.PhoneNumber,
-                Caller = result.Caller,
+                PhoneNumber = result.PhoneNumber,
                 MessageNumber = result.MessageNumber,
                 Address = result.Address,
+                UsageId = result.UsageId,
+                UsageTitle = result.UsageTitle,
+                Siphon100 = result.Siphon100,
+                Siphon125 = result.Siphon125,
+                Siphon150 = result.Siphon150,
+                Siphon200 = result.Siphon200,
+                Premises = result.Premises,
+                ImprovementOverall = result.ImprovementOverall,
+                ImprovementDomestic = result.ImprovementDomestic,
+                ImprovementCommertial = result.ImprovementCommertial,
+                CommertialUnit = result.CommertialUnit,
+                DomesticUnit = result.DomesticUnit,
+                OtherUnit = result.OtherUnit,
+                FamilyCount = result.FamilyCount,
+                HouseholdNumber = result.HouseholdNumber,
+                DiscountTypeId = result.DiscountTypeId,
+                DiscountTypeTitle = result.DiscountTypeTitle,
+                DiscountCount = result.DiscountCount,
+                HasBroker = result.HasBroker,
+                ContractualCapacity = result.ContractualCapacity,
+                BranchTypeId = result.BranchTypeId,
+                BranchTypeTitle = result.BranchTypeTitle,
+                RegionMultiplier = result.RegionMultiplier,
+                MeterTypeId = result.MeterTypeId,
+                MeterTypeTitle = result.MeterTypeTitle,
+                MeterDiamterId = result.MeterDiamterId,
+                MeterDiamterTitle = result.MeterDiamterTitle,
+                PostalCode = result.PostalCode,
+                Description=result.Description,
                 CompanyServiceSelected = s.ToList()
             };
         }
