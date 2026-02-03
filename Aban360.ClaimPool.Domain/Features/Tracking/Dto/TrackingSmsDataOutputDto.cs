@@ -7,5 +7,6 @@
         public string DeliverySatateTitle { get; set; }
         public string InsertDateJalali { get; set; }
         public string InsertTime { get; set; }
+        public string Receiver { get; set; }
     }
 }

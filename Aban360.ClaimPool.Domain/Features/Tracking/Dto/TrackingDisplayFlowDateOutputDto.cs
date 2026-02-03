@@ -11,5 +11,6 @@
         public Guid TrackingId { get; set; }
         public bool HasDetails { get; set; }
         public bool HasSms { get; set; }
+        public string? Description { get; set; }
     }
 }

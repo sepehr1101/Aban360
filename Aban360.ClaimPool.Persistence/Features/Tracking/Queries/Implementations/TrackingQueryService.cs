@@ -62,7 +62,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
                     	Format(t.DateAndTime,'HH:mm') RegisterTime,
                     	u.DisplayName UserDisplayName,
                     	s.HasDetails,
-                    	s.HasSms
+                    	s.HasSms,
+						t.Description
                     From [AbAndFazelab].dbo.Tracking t
                     Join [AbAndFazelab].dbo.Status s
                     	On t.Status=s.StatusID
