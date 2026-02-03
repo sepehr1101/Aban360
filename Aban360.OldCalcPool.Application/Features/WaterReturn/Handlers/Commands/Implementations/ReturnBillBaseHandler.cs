@@ -685,18 +685,19 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         }
         public async Task<float> GetConsumptionAverage(string fromDateJalali, string toDateJalali, ReturnedBillCalculationTypeEnum calculationType, float? userInput, CustomerInfoOutputDto customerInfo,int returnCauseId)
         {
-            float previousConsumptionAverage = await _bedBesQueryService.GetAverage(customerInfo.ZoneId, customerInfo.Radif, GetPreviousYear(fromDateJalali), GetPreviousYear(toDateJalali));
-            if(previousConsumptionAverage<=0)
+            float? previousConsumptionAverage = await _bedBesQueryService.GetAverage(customerInfo.ZoneId, customerInfo.Radif, GetPreviousYear(fromDateJalali), GetPreviousYear(toDateJalali));
+            if (!previousConsumptionAverage.HasValue || previousConsumptionAverage <= 0)
             {
-                await _bedBesQueryService.GetPreviousBill(customerInfo.ZoneId, customerInfo.Radif, fromDateJalali);
+                throw new BaseException("امکان براورد وجود ندارد");
+                //previousConsumptionAverage = await _bedBesQueryService.GetPreviousBill(customerInfo.ZoneId, customerInfo.Radif, fromDateJalali);
             }
             if (returnCauseId == 1)
             {
-                return previousConsumptionAverage;
+                return previousConsumptionAverage.Value;
             }
             return calculationType switch
             {
-                ReturnedBillCalculationTypeEnum.ByPreviousConsumptionAverage => previousConsumptionAverage,
+                ReturnedBillCalculationTypeEnum.ByPreviousConsumptionAverage => previousConsumptionAverage.Value,
                 ReturnedBillCalculationTypeEnum.UserInput => userInput.Value,
                 _ => userInput.Value
             };

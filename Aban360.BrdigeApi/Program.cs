@@ -1,5 +1,6 @@
 using Aban360.BrdigeApi.ExceptionHandlers;
 using Aban360.BrdigeApi.Extensions;
+using Aban360.BrdigeApi.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -8,7 +9,14 @@ var configuration = builder.Configuration;
 //DI
 builder.Services.AddDI();
 builder.Services.AddAuth(configuration);
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new TruncateDoubleConverter());
+        options.JsonSerializerOptions.Converters.Add(new TruncateFloatConverter());
+        options.JsonSerializerOptions.Converters.Add(new TruncateNullableDoubleConverter());
+    });
+
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddEndpointsApiExplorer();

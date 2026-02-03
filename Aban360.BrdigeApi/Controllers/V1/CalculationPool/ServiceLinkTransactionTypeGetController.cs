@@ -14,7 +14,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
         [HttpGet]
         [Route("transaction-type")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<NumericDictionary>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetOffering(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetTransactionTypes(CancellationToken cancellationToken)
         {
             ICollection<NumericDictionary> result = new List<NumericDictionary>()
             {
