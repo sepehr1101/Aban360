@@ -125,16 +125,16 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         private async Task<IEnumerable<SaleDataOutputDto>> GetData(SaleInputDto inputDto)
         {
-            IEnumerable<SaleDataOutputDto> salesAmountData = await CalcOfferingAmount(inputDto);
-            IEnumerable<SaleDataOutputDto> salesData = CalcDiscount(inputDto, salesAmountData);
+            IEnumerable<SaleDataOutputDto> salesAmountData = await GetOffering(inputDto);
+            IEnumerable<SaleDataOutputDto> salesData = GetDiscount(inputDto, salesAmountData);
 
             return salesData;
         }
-        private async Task<IEnumerable<SaleDataOutputDto>> CalcOfferingAmount(SaleInputDto inputDto)
+        private async Task<IEnumerable<SaleDataOutputDto>> GetOffering(SaleInputDto inputDto)
         {
             IEnumerable<SaleDataOutputDto> installationAndEquipment = await GetInstallationAndEquipment(inputDto);
             IEnumerable<SaleDataOutputDto> article11Data = await GetArticle11(inputDto);
-            IEnumerable<SaleDataOutputDto> ajustmentFactor = await CalcSubscription(inputDto);
+            IEnumerable<SaleDataOutputDto> ajustmentFactor = await GetSubscription(inputDto);
 
             return installationAndEquipment.Concat(article11Data).Concat(ajustmentFactor);
         }
@@ -176,7 +176,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 return (inputDto.IsDomestic ? article11Data.DomesticSewageAmount : article11Data.NonDomesticSewageAmount) * usageMultiplier;
             }
         }
-        private async Task<ICollection<SaleDataOutputDto>> CalcSubscription(SaleInputDto inputDto)
+        private async Task<ICollection<SaleDataOutputDto>> GetSubscription(SaleInputDto inputDto)
         {
             AdjustmentFactorGetDto adjustmentfactor = await _adjustmentFactorQueryService.Get(inputDto.ZoneId);
             long domesticAdjustmentFactor = adjustmentfactor.Price * inputDto.DomesticUnit;
@@ -223,7 +223,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
             return saleData;
         }
-        private IEnumerable<SaleDataOutputDto> CalcDiscount(SaleInputDto inputDto, IEnumerable<SaleDataOutputDto> salesData)
+        private IEnumerable<SaleDataOutputDto> GetDiscount(SaleInputDto inputDto, IEnumerable<SaleDataOutputDto> salesData)
         {
             Dictionary<int, float> discountPercentList = new Dictionary<int, float>()
             {

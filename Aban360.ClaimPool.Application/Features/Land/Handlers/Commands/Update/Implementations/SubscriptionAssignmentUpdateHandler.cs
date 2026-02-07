@@ -43,9 +43,11 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 {
                     ArchMemCommandService _archMemCommandService = new (_sqlReportConnection, transaction);
                     MembersCommandService _membersCommandService = new (_sqlReportConnection, transaction);
+                    //string dbName = GetDbName(subscriptionUpdate.ZoneId);
+                    string dbName = "Atlas";
 
-                    await _archMemCommandService.Insert(subscriptionUpdate);
-                    await _membersCommandService.Update(subscriptionUpdate);
+                    await _archMemCommandService.Insert(subscriptionUpdate, dbName);
+                    await _membersCommandService.Update(subscriptionUpdate, dbName);
 
                     transaction.Commit();
                 }
@@ -90,8 +92,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 Operator = previousSubscription.Operator,
                 SewageInstallationDateJalali = previousSubscription.SewageInstallationDateJalali,
                 SewageRequestDateJalali = previousSubscription.SewageRequestDateJalali,
-                WaterInstallationDateJalali = previousSubscription.MeterInstallationDateJalali,
-                WaterRequestDateJalali = previousSubscription.MeterRequestDateJalali,
+                MeterInstallationDateJalali = previousSubscription.MeterInstallationDateJalali,
+                MeterRequestDateJalali = previousSubscription.MeterRequestDateJalali,
                 Siphon100 = previousSubscription.Siphon100,
                 Siphon125 = previousSubscription.Siphon125,
                 Siphon150 = previousSubscription.Siphon150,

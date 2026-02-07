@@ -19,10 +19,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             _dbTransaction.NotNull(nameof(_dbTransaction));
         }
 
-        public async Task Update(CustomerUpdateDto updateDto)
+        public async Task Update(CustomerUpdateDto updateDto, string dbName)
         {
-            //string dbName = GetDbName(updateDto.ZoneId);
-            string dbName = "Atlas";
             string command = GetUpdateCommand(dbName);
 
             //if (_sqlReportConnection.State != System.Data.ConnectionState.Open)
@@ -48,8 +46,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 	                    aian=@ImprovementOverall,
 	                    aian_mas=@ImprovementDomestic,
 	                    aian_tej=@ImprovementCommertial,
-	                    ask_ab=@WaterRequestDateJalali,
-	                    inst_ab=@WaterInstallationDateJalali,
+	                    ask_ab=@MeterRequestDateJalali,
+	                    inst_ab=@MeterInstallationDateJalali,
 	                    ask_fas=@SewageRequestDateJalali,
 	                    inst_fas=@SewageInstallationDateJalali,
 	                    address=@Address,
@@ -76,7 +74,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 	                    date_KHANE=@HouseholdDateJalali,
 	                    X=@x,
 	                    Y=@y,
-	                    date_sabt=@ToDayDateJalali
+	                    date_sabt=@ToDayDateJalali,
+						hasf=@DeletionStateId,
+						serial_co=@BodySerial,
+						sif_mosh_1=@CommonSiphon,
+						G_inst_ab=@MeterRegisterDateJalali,
+						G_inst_fas=@SewageRegisterDateJalali,
+						Senf=@GuildId
                      WHERE 
                         id=@id AND
 						bill_id=@billId AND
