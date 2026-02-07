@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Aban360.NotificationPool.GatwwayAdhoc
+namespace Aban360.NotificationPool.GatewayAdhoc
 {
     public class Class1
     {

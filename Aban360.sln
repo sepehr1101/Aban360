@@ -88,7 +88,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aban360.NotificationPool.Pe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aban360.NotificationPool.Application", "Aban360.NotificationPool.Application\Aban360.NotificationPool.Application.csproj", "{AD998924-F6E4-47B6-B499-AD6997BD6EE8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aban360.NotificationPool.GatwwayAdhoc", "Aban360.NotificationPool.GatwwayAdhoc\Aban360.NotificationPool.GatwwayAdhoc.csproj", "{CC4A4C3E-855E-4854-99EB-5608CBB153CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aban360.NotificationPool.GatewayAdhoc", "Aban360.NotificationPool.GatwwayAdhoc\Aban360.NotificationPool.GatewayAdhoc.csproj", "{CC4A4C3E-855E-4854-99EB-5608CBB153CA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{40D9BE4D-CAB7-4BA9-8321-B6B4DC7C5E13}"
 EndProject
@@ -253,6 +253,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aban360.ReportPool.Infrastructure", "Aban360.ReportPool.Infrastructure\Aban360.ReportPool.Infrastructure.csproj", "{98AD19C1-9480-46BF-8778-08589BD37C79}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aban360.TaxPool.Infrastructure", "Aban360.TaxPool.Infrastructure\Aban360.TaxPool.Infrastructure.csproj", "{BFD81C81-8275-4D9B-AF34-3D25FF8FCD34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aban360.Sms", "Aban360.Sms\Aban360.Sms.csproj", "{3F4647CD-0BCE-4DEC-A762-780D2A44382E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -548,6 +550,10 @@ Global
 		{BFD81C81-8275-4D9B-AF34-3D25FF8FCD34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFD81C81-8275-4D9B-AF34-3D25FF8FCD34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BFD81C81-8275-4D9B-AF34-3D25FF8FCD34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F4647CD-0BCE-4DEC-A762-780D2A44382E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F4647CD-0BCE-4DEC-A762-780D2A44382E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F4647CD-0BCE-4DEC-A762-780D2A44382E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F4647CD-0BCE-4DEC-A762-780D2A44382E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -674,6 +680,7 @@ Global
 		{A249297E-D0FD-414B-A1E3-6352DC8C6CF4} = {D0B7CD7A-FDB1-4FC3-8B88-FACB4AEA4E0B}
 		{98AD19C1-9480-46BF-8778-08589BD37C79} = {7A69098B-0C9D-4D04-87BC-4A0231BB71EF}
 		{BFD81C81-8275-4D9B-AF34-3D25FF8FCD34} = {96A6DEF9-283A-476F-BD87-B951F6104223}
+		{3F4647CD-0BCE-4DEC-A762-780D2A44382E} = {D0B7CD7A-FDB1-4FC3-8B88-FACB4AEA4E0B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C0F258BB-DDA6-4E35-A9D0-53DD876EE11C}
