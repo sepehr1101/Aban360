@@ -32,7 +32,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
                     	q.FinalDeliveryState DeliverySatateId,
                     	m.Title DeliverySatateTitle,
 	                    q.InsertDateJalali ,
-	                    FORMAT(q.InsertDateTime,'HH:mm') InsertTime
+	                    FORMAT(q.InsertDateTime,'HH:mm') InsertTime,    
+                        q.Receiver
                     From [Sms].dbo.Queue q
                     Join [Sms].dbo.MagfaDeliveryState m
                     	 On q.FinalDeliveryState=m.Id

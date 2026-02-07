@@ -1,0 +1,18 @@
+﻿{
+  "title": "گزارش جرئیات انشعاب غیر‌دائم",
+  "reportHeader": {
+    "fromReadingNumber": null,
+    "toReadingNumber": null,
+    "fromDateJalali": "1404/08/06",
+    "toDateJalali": "1404/11/14",
+    "title": "گزارش جرئیات انشعاب غیر‌دائم",
+    "reportDateJalali": "1404/11/14",
+    "recordCount": 0,
+    "customerCount": 0,
+    "sumDomesticUnit": 0,
+    "sumCommercialUnit": 0,
+    "sumOtherUnit": 0,
+    "totalUnit": 0
+  },
+  "reportData": []
+}
