@@ -124,7 +124,8 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         {
             var (olgo, c) = await GetOlgoAndC(priDateLatestBill, todayDateLatestBill, customerInfo.ZoneId);
 
-            int customerConsumption = Math.Abs((int)(bedBes.TodayNo - bedBes.PriNo));
+            //int customerConsumption = Math.Abs((int)(bedBes.TodayNo - bedBes.PriNo));
+            int customerConsumption = (int)bedBes.Masraf;
             int amount = _returnBillBaseHandler.IsDomestic(customerInfo.UsageId) ? 68022 : c;
             //int duration = Duration(bedBes.TodayDate, bedBes.PriDate, (int)bedBes.CodVas);
             //float consumption = _consumptionAverage / 30 * duration;
