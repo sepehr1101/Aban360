@@ -118,6 +118,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
                 UsageTitle = input.UsageTitle,
                 ContractualCapacity = input.ContractualCapacity,
                 MeterDiameterId = input.MeterDiameterId,
+                MeterDiameterTitle=input.MeterDiameterTitle,        
                 MainSiphon = input.MainSiphon,
                 BranchTypeTitle = input.BranchTypeTitle,
                 DiscountType = input.DiscountType,

@@ -20,10 +20,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             _dbTransaction.NotNull(nameof(_dbTransaction));
         }
 
-        public async Task Insert(CustomerUpdateDto updateDto)
+        public async Task Insert(CustomerUpdateDto updateDto,string dbName)
         {
-            //string dbName = GetDbName(updateDto.ZoneId);
-            string dbName = "Atlas";
             string command = GetInsertQuery(dbName);
             int insertResult = await _sqlConnection.ExecuteAsync(command, updateDto);
         }
@@ -52,12 +50,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                     SELECT 
                          town, radif, ' ' AS par_no, @ReadingNumber, @FirstName, @SurName, @FatherName, @MeterDiamterId, @UsageSellId,
                         @OtherUnit, @DomesticUnit, @HouseholdNumber, @CommertialUnit, @ToDayDateJalali, @Premises, @ImprovementOverall, @ImprovementDomestic,
-                        @ImprovementCommertial, @WaterRequestDateJalali, @WaterInstallationDateJalali, @SewageRequestDateJalali, @SewageInstallationDateJalali, @Address, @Plaque, bed_bes, @IsSpecial,
-                        hasf, n_ab, n_faz, @BranchTypeId, @MainSiphon, @Siphon100, @Siphon125, @Siphon150, @Siphon200, sif_mosh_1,
-                        @ContractualCapacity, @UsageConsumptionId, serial_co, G_inst_ab, G_inst_fas, @Operator, @ToDayDateJalali AS date_roz, @PostalCode,
+                        @ImprovementCommertial, @MeterRequestDateJalali, @MeterInstallationDateJalali, @SewageRequestDateJalali, @SewageInstallationDateJalali, @Address, @Plaque, bed_bes, @IsSpecial,
+                        @DeletionStateId, n_ab, n_faz, @BranchTypeId, @MainSiphon, @Siphon100, @Siphon125, @Siphon150, @Siphon200, @CommonSiphon,
+                        @ContractualCapacity, @UsageConsumptionId, @BodySerial, @MeterRegisterDateJalali, @SewageRegisterDateJalali, @Operator, @ToDayDateJalali AS date_roz, @PostalCode,
                         @PhoneNumber, @MobileNumber, @NationalCode, oRadif, @Siphon5, @Siphon6, @Siphon7, @Siphon8, bill_id, MOJAVZ,
                          c20, balansing, tmp_date_sabt, tmp_ask_ab, tmp_ask_fas, tmp_inst_ab,
-                        tmp_inst_fas, tmp_g_inst_ab, tmp_g_inst_fas, tmp_date_sabt, @EmptyUnit, Senf, @HouseholdDateJalali--,@x,@y,@ToDayDateJalaliWithFragmentYear
+                        tmp_inst_fas, tmp_g_inst_ab, tmp_g_inst_fas, tmp_date_sabt, @EmptyUnit, @GuildId, @HouseholdDateJalali--,@x,@y,@ToDayDateJalaliWithFragmentYear
                     FROM cte m
                     WHERE 
                         m.town=@zoneId AND

@@ -55,7 +55,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         c.CustomerNumber
                      From  [CustomerWarehouse].dbo.Clients c
                      Where 
-						c.BillId=@billId AND
+						TRIM(c.BillId)=@billId AND
 						c.ToDayJalali IS NULL";
         }
         private string GetSubscriptionAssignmentQuery(string zoneId)
@@ -114,6 +114,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                     	TRIM(m.ask_ab) MeterRequestDateJalali ,
                     	TRIM(m.inst_fas) SewageInstallationDateJalali,
                     	TRIM(m.ask_fas) SewageRequestDateJalali ,
+                        TRIM(m.G_inst_ab) MeterRegisterDateJalali,
+                        TRIM(m.G_inst_fas) SewageRegisterDateJalali,
                     	m.sif_1 Siphon100,
                         m.sif_2 Siphon125,
                         m.sif_3 Siphon150,
@@ -123,7 +125,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         m.sif_7 Siphon7,
                         m.sif_8 Siphon8,
                         m.master_sif MainSiphon,
-                    	m.operator Operator
+                    	m.operator Operator,
+                        m.hasf DeletionStateId,
+                        m.sif_mosh_1 CommonSiphon,
+                        m.Senf GuildId
                     From [{dbName}].dbo.members m
                     Where
                         m.radif=@customerNumber AND

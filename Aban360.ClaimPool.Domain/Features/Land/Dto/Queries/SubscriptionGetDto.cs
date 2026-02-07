@@ -38,8 +38,11 @@
         public int Premises { get; set; }
         public string MeterInstallationDateJalali { get; set; }
         public string MeterRequestDateJalali { get; set; }
+        public string MeterRegisterDateJalali { get; set; }
         public string? SewageInstallationDateJalali { get; set; }
         public string? SewageRequestDateJalali { get; set; }
+        public string? SewageRegisterDateJalali { get; set; }
+        
         public int Siphon100{ get; set; }
         public int Siphon125{ get; set; }
         public int Siphon150{ get; set; }
@@ -50,6 +53,11 @@
         public int Siphon8{ get; set; }
         public int MainSiphon { get; set; }
         public int Operator { get; set; }
+
+        public int DeletionStateId { get; set; }
+        public string? BodySerial { get; set; }
+        public int CommonSiphon { get; set; }
+        public int GuildId { get; set; }
 
         public double Easting { get; set; }
         public double Northing { get; set; }

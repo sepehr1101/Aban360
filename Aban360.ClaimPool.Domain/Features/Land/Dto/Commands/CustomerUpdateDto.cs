@@ -41,10 +41,10 @@ namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
         public string ToDayDateJalaliWithFragmentYear => ToDayDateJalali.Substring(2, 8);
 
 
-        public string WaterInstallationDateJalali { get; set; }
-        public string WaterRequestDateJalali { get; set; }
-        public string? SewageInstallationDateJalali { get; set; }///
-        public string? SewageRequestDateJalali { get; set; }//
+        public string MeterInstallationDateJalali { get; set; }
+        public string MeterRequestDateJalali { get; set; }
+        public string? SewageInstallationDateJalali { get; set; }
+        public string? SewageRequestDateJalali { get; set; }
         public int Siphon100 { get; set; }
         public int Siphon125 { get; set; }
         public int Siphon150 { get; set; }
@@ -54,7 +54,14 @@ namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
         public int Siphon7 { get; set; }
         public int Siphon8 { get; set; }
         public int MainSiphon { get; set; }
+        public int CommonSiphon { get; set; }
         public int Operator { get; set; }
+
+        public int DeletionStateId { get; set; }
+        public string BodySerial { get; set; }
+        public string MeterRegisterDateJalali { get; set; }
+        public string? SewageRegisterDateJalali { get; set; }
+        public int GuildId { get; set; }
 
     }
 }
