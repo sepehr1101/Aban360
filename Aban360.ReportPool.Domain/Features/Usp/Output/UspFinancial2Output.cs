@@ -32,6 +32,7 @@
         public long Javani { get; set; }
         public long Bodjeh { get; set; }
         public long Maliat { get; set; }
+        public long Jam_kol { get; set; }
         public string ZoneTitle { get; set; }
         public int roz_gheraat { get; set; }
         public int roz_gheraat_faz { get; set; }        
