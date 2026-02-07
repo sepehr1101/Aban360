@@ -23,4 +23,6 @@
     <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="https://api.app-prg1.zerops.io/api/rest/public/settings/import-project-yml-json-schema.json" /></VisualStudio></ProjectExtensions>
+
 </Project>
