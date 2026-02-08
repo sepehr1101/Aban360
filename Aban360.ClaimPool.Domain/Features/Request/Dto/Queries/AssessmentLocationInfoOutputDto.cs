@@ -1,0 +1,39 @@
+﻿namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Queries
+{
+    public record AssessmentLocationInfoOutputDto
+    {
+        public string MobileNumber { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string NotificationMobileNumber { get; set; }
+        public string? BillId { get; set; }
+        public string? NeighbourBillId { get; set; }
+        public string StringTrackNumber { get; set; }
+        public int CustomerNumber { get; set; }
+        public int ServiceGroupId { get; set; }
+        public string ServiceGroupTitle { get; set; }
+        public string FirstName { get; set; }
+        public string Surname { get; set; }
+        public int ZoneId { get; set; }
+        public string ZoneTitle { get; set; }
+        public int DiscountCount { get; set; }
+        public string NationalCode { get; set; }
+        public string FatherName { get; set; }
+        public int HouseValue { get; set; }
+        public string? Description { get; set; }
+        public bool IsNonPermanent { get; set; }
+        public bool HasCustomerNumber { get; set; }
+        public string FullName { get; set; }
+        public bool IsVisited { get; set; }
+        public string DiscountTitle { get; set; }
+        public int UsageId { get; set; }
+        public string UsageTitle { get; set; }
+        public int MeterDiameterId { get; set; }
+        public string MeterDiameterTitle { get; set; }
+        public int? ExaminerCode { get; set; }
+        public string? ExaminationDateJalali { get; set; }
+        public string? ExaminerName { get; set; }
+        public string? ExaminerMobileNumber { get; set; }
+
+        public IEnumerable<ServiceGroupWithCheckedOutputDto> ServiceGroup { get; set; }
+    }
+}

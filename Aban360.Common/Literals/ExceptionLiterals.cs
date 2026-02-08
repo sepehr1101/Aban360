@@ -120,6 +120,7 @@
 
         //Tracking
         public static string InvalidStateId => "وضعیت ارسالی یافت نشد.";
+        public static string InvalidExaminerName => "کد ارزیابی صحیح نیست.";
 
     }
 }
