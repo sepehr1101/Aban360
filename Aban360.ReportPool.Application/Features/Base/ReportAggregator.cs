@@ -17,6 +17,7 @@
             var props = type.GetProperties()
                 .Where(p => p.CanWrite &&
                             (p.PropertyType == typeof(int) ||
+                             p.PropertyType == typeof(long) ||
                              p.PropertyType == typeof(decimal) ||
                              p.PropertyType == typeof(double)));
 
@@ -28,8 +29,10 @@
                     prop.SetValue(aggregated, (int)sum);
                 else if (prop.PropertyType == typeof(decimal))
                     prop.SetValue(aggregated, (decimal)sum);
+                else if (prop.PropertyType == typeof(long))
+                    prop.SetValue(aggregated, (long)sum);
                 else if (prop.PropertyType == typeof(double))
-                    prop.SetValue(aggregated, sum);
+                    prop.SetValue(aggregated, sum);                
             }
 
             return aggregated;
