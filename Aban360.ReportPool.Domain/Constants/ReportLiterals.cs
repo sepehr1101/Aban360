@@ -239,5 +239,7 @@
 
         public static string WaterSaleSummary { get { return " خلاصه فروش آب‌بها "; } }
         public static string WaterSaleDetail { get { return " جزئیات فروش آب‌بها "; } }
+
+        public static string UspFinancial2 { get { return "گزارش درامد2"; } }
     }
 }

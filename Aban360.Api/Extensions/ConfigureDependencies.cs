@@ -35,6 +35,7 @@ using Aban360.Common.Db.QueryServices;
 using Aban360.TaxPool.Application.Extensions;
 using Aban360.TaxPool.Infrastructure.Extensions;
 using Aban360.TaxPool.Persistence.Extensions;
+using Aban360.NotificationPool.Application.Extensions;
 
 namespace Aban360.Api.Extensions
 {
@@ -58,6 +59,7 @@ namespace Aban360.Api.Extensions
             services.AddOldCalcPoolDI();
             services.AddCommonDbDI();
             services.AddTaxPoolDI();
+            services.AddNotificationPoolDI();
         }
 
         private static void AddApiDI(this IServiceCollection services)
@@ -152,6 +154,11 @@ namespace Aban360.Api.Extensions
             services.AddTaxPoolApplicationInjections();
             services.AddTaxPoolInfrastructureInjections();
             services.AddTaxPoolPersistenceInjections();
+        }
+
+        private static void AddNotificationPoolDI(this IServiceCollection services)
+        {
+            services.AddNotificationPoolApplicationInjections();
         }
     }
 }
