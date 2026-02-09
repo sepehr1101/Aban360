@@ -44,7 +44,7 @@
         public string NationalCode { get; set; }
         public string MobileNumber { get; set; }
         public string? PhoneNumber { get; set; }
-        public string MessageNumber { get; set; }
+        public string NotificationMobile { get; set; }
         public string Address { get; set; }
         public string? Description { get; set; }
 

@@ -16,7 +16,7 @@
         public string MobileNumber { get; set; }
         public string? Caller { get; set; }
         public string? PhoneNumber { get; set; }
-        public string MessageNumber { get; set; }
+        public string NotificationMobile { get; set; }
         public string Address { get; set; }
 
         public int s0 { get; set; }

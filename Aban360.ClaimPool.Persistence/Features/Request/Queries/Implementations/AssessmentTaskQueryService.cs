@@ -59,6 +59,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	t.BillID, 
                     	t.NeighbourBillId ,
                     	m.par_no StringTrackNumber,
+                        t.TrackNumber TrackNumber,
                     	m.radif CustomerNumber,
                     	t.ServiceGroup_FK ServiceGroupId,
                     	t10.C1 ServiceGroupTitle,

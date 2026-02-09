@@ -18,7 +18,7 @@ namespace Aban360.ClaimPool.Domain.Features.Tracking.Dto
         public string MobileNumber { get; set; }
         public string? PhoneNumber { get; set; }
         public string? Caller { get; set; }
-        public string MessageNumber { get; set; }
+        public string NotificationMobile { get; set; }
         public string Address { get; set; }
         public ICollection<NumericDictionary> CompanyServiceSelected { get; set; }
     }

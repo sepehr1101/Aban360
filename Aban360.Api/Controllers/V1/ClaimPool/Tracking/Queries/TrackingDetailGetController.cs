@@ -53,7 +53,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking.Queries
         public async Task<IActionResult> Detail([FromBody] TrackingDetailInputDto input, CancellationToken cancellationToken)
         {
             TrackingDetailGetDto TrackDetailInput = GetTrackDetail(input);
-            switch (input.StateId)
+            switch (input.StatusId)
             {
                 case 0://ثبت درخواست
                     {
