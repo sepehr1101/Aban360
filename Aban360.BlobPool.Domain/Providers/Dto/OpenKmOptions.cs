@@ -13,7 +13,6 @@
         public string GetFilesListEndpoint { get; set; } = default!;
         public string GetBinaryFileEndpoint { get; set; } = default!;
         public string SearchByMetadataEndpoint { get; set; } = default!;
-        public string GetChildrenEndpoint { get; set; } = default!;
         public string GetThumbnailEndpoint { get; set; } = default!;
         public string GetDownloadLinkEndpoint { get; set; } = default!;
         public string GeMetadataEndpoint { get; set; } = default!;

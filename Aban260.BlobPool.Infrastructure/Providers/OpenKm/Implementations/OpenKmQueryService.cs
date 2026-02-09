@@ -100,8 +100,13 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             return new AuthenticationHeaderValue(token.TokenType, token.AccessToken);
         }
 
-        public async Task<FileListResponse> GetFilesByBillId(string billId)
+        public async Task<FileListResponse> GetFilesDiscount(string id)
         {
+            string fldId = $"{_options.BaseDiscountPath}{id}";
+            return await GetChildren(fldId, false);
+        }
+        public async Task<FileListResponse> GetFilesByBillId(string billId)
+        {            
             string fldId = $"{_options.BaseDirectoryPath}{billId}";
             return await GetChildren(fldId, false);
         }
