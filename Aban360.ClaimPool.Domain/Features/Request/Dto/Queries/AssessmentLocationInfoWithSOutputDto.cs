@@ -8,6 +8,7 @@
         public string? BillId { get; set; }
         public string? NeighbourBillId { get; set; }
         public string StringTrackNumber { get; set; }
+        public int TrackNumber { get; set; }
         public int CustomerNumber { get; set; }
         public int ServiceGroupId { get; set; }
         public string ServiceGroupTitle { get; set; }

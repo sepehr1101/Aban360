@@ -210,7 +210,7 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
                 MobileNumber = result.MobileNumber,
                 PhoneNumber=result.PhoneNumber,
                 Caller = result.Caller,
-                MessageNumber = result.MessageNumber,
+                NotificationMobile = result.NotificationMobile,
                 Address = result.Address,
                 CompanyServiceSelected = s.ToList()
             };

@@ -92,7 +92,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
 						TRIM(m.father_nam) FatherName,
 						TRIM(m.meli_cod) NationalCode,
 						TRIM(m.mobile) MobileNumber,
-						m.C99 MessageNumber,
+						m.C99 NotificationMobile,
 						TRIM(m.phone_no) PhoneNumber,
 						TRIM(m.Address) Address,
 						t.Caller,
@@ -113,15 +113,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
         private string GetExaminerResultQuery(string dbName)
         {
             return $@"Select 
-						e.ExaminerCode,
-						e.ExaminerName,
-						e.ExaminerMobile,
-						e.DayJalali ExaminerDayJalali,
+						e.ExaminerCode AssessmentCode,
+						e.ExaminerName AssessmentName,
+						e.ExaminerMobile AssessmentMobile,
+						e.DayJalali AssessmentDayJalali,
 						(TRIM(m.name) +' '+ TRIM(m.family)) FullName,
 						m.TrackingNumber TrackNumber,
 						TRIM(m.Address) Address,
 						TRIM(m.mobile) MobileNumber,
-						t64.C1 ExaminerResultTitle
+						t64.C1 AssessmentResultTitle
 					From AbAndFazelab.dbo.Examination e
 					Join [{dbName}].dbo.Moshtrak m
 						On e.TrackNumber=m.TrackingNumber
@@ -185,7 +185,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
 						TRIM(m.father_nam) FatherName,
 						TRIM(m.meli_cod) NationalCode,
 						TRIM(m.mobile) MobileNumber,
-						m.C99 MessageNumber,
+						m.C99 NotificationMobile,
 						TRIM(m.phone_no) PhoneNumber,
 						TRIM(m.Address) Address,
 						 m.s0, m.s1, m.s2, m.s3, m.s4, m.s5, m.s8, m.s9,

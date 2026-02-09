@@ -17,7 +17,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
             _changeMeterCause.NotNull(nameof(_changeMeterCause));
         }
 
-        [HttpPost]
+        [HttpPost, HttpGet]
         [Route("change-cuase")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<NumericDictionary>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ChangeCause(CancellationToken cancellationToken)

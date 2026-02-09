@@ -171,6 +171,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 BillId = locationInfoWithS.BillId,
                 NeighbourBillId = locationInfoWithS.NeighbourBillId,
                 StringTrackNumber = locationInfoWithS.StringTrackNumber,
+                TrackNumber=locationInfoWithS.TrackNumber,
                 CustomerNumber = locationInfoWithS.CustomerNumber,
                 ServiceGroupId = locationInfoWithS.ServiceGroupId,
                 ServiceGroupTitle = locationInfoWithS.ServiceGroupTitle,
