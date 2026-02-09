@@ -323,6 +323,6 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             int[] domestic = { 1, 3 };
             return domestic.Contains(usageId);
         }
-        private bool IsVillage(int zoneId) => zoneId < 140000;
+        private bool IsVillage(int zoneId) => zoneId > 140000;
     }
 }

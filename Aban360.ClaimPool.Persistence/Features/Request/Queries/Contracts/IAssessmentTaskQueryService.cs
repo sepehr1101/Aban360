@@ -3,7 +3,7 @@ using Aban360.Common.BaseEntities;
 
 namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts
 {
-    public interface IExaminerTaskQueryService
+    public interface IAssessmentTaskQueryService
     {
         Task<IEnumerable<GuidDictionary>> Get(int examinerCode);
         Task<IEnumerable<AssessmentLocationInfoWithSOutputDto>> GetLocationsInfo(IEnumerable<Guid> trackIds, int zoneId);

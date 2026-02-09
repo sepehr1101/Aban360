@@ -29,11 +29,11 @@
         public string UsageTitle { get; set; }
         public int MeterDiameterId { get; set; }
         public string MeterDiameterTitle { get; set; }
-        public int? ExaminerCode { get; set; }
-        public string? ExaminationDateJalali { get; set; }
-        public string? ExaminerName { get; set; }
-        public string? ExaminerMobileNumber { get; set; }
+        public int? AssessmentCode { get; set; }
+        public string? AssessmentDateJalali { get; set; }
+        public string? AssessmentName { get; set; }
+        public string? AssessmentMobileNumber { get; set; }
 
-        public IEnumerable<ServiceGroupWithCheckedOutputDto> ServiceGroup { get; set; }
+        public IEnumerable<ServiceGroupWithCheckedOutputDto> ServiceGroups { get; set; }
     }
 }
