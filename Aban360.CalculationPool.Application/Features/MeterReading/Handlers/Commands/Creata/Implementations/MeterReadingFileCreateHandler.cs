@@ -308,7 +308,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             {
                 ZoneId = readingDetail.ZoneId,
                 Radif = readingDetail.CustomerNumber,
-                BranchType = 0,//todo
+                BranchType = readingDetail.BranchTypeId,//todo
                 UsageId = readingDetail.UsageId,
                 DomesticUnit = readingDetail.DomesticUnit,
                 CommertialUnit = readingDetail.CommercialUnit,
