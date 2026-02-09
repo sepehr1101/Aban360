@@ -8,6 +8,7 @@
         public string? BillId { get; set; }
         public string? NeighbourBillId { get; set; }
         public string StringTrackNumber { get; set; }
+        public int TrackNumber { get; set; }
         public int CustomerNumber { get; set; }
         public int ServiceGroupId { get; set; }
         public string ServiceGroupTitle { get; set; }
@@ -29,11 +30,11 @@
         public string UsageTitle { get; set; }
         public int MeterDiameterId { get; set; }
         public string MeterDiameterTitle { get; set; }
-        public int? ExaminerCode { get; set; }
-        public string? ExaminationDateJalali { get; set; }
-        public string? ExaminerName { get; set; }
-        public string? ExaminerMobileNumber { get; set; }
+        public int? AssessmentCode { get; set; }
+        public string? AssessmentDateJalali { get; set; }
+        public string? AssessmentName { get; set; }
+        public string? AssessmentMobileNumber { get; set; }
 
-        public IEnumerable<ServiceGroupWithCheckedOutputDto> ServiceGroup { get; set; }
+        public IEnumerable<ServiceGroupWithCheckedOutputDto> ServiceGroups { get; set; }
     }
 }
