@@ -9,17 +9,17 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 {
-    internal sealed class ExaminerTaskQueryService : AbstractBaseConnection, IExaminerTaskQueryService
+    internal sealed class AssessmentTaskQueryService : AbstractBaseConnection, IAssessmentTaskQueryService
     {
-        public ExaminerTaskQueryService(IConfiguration configuration)
+        public AssessmentTaskQueryService(IConfiguration configuration)
             : base(configuration)
         {
         }
 
-        public async Task<IEnumerable<GuidDictionary>> Get(int examinerCode)
+        public async Task<IEnumerable<GuidDictionary>> Get(int assessmentCode)
         {
             string query = GetTrackIdsQuery();
-            IEnumerable<GuidDictionary> trackIds = await _sqlReportConnection.QueryAsync<GuidDictionary>(query, new { examinerCode });
+            IEnumerable<GuidDictionary> trackIds = await _sqlReportConnection.QueryAsync<GuidDictionary>(query, new { assessmentCode });
             if (!trackIds.Any())
             {
                 throw new InvalidTrackingException(ExceptionLiterals.NotFoundTask);
@@ -80,10 +80,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	T41.C1 UsageTitle,
                     	m.enshab MeterDiameterId,
                     	t5.C2 MeterDiameterTitle,
-                    	e.ExaminerCode,
-                    	e.ExaminerName, 
-                    	e.ExaminerMobile ExaminerMobileNumber,
-                    	e.DayJalali ExaminationDateJalali,
+                    	e.ExaminerCode AssessmentCode,
+                    	e.ExaminerName AssessmentName, 
+                    	e.ExaminerMobile AssessmentMobileNumber,
+                    	e.DayJalali AssessmentDateJalali,
                         m.s0, m.s1, m.s2, m.s3, m.s4, m.s5, m.s8, m.s9,
 					    m.s10, m.s11, m.s12, m.s13, m.s14, m.s15, m.s16, m.s17, m.s18, m.s19,
 					    m.s20, m.s21, m.s22, m.s23, m.s24, m.s25, m.s26, m.s27, m.s28, m.s29,

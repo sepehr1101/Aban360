@@ -18,7 +18,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 {
     internal sealed class AssessmentTaskGetAllHandler : IAssessmentTaskGetAllHandler
     {
-        private readonly IExaminerTaskQueryService _examinerTaskQueryService;
+        private readonly IAssessmentTaskQueryService _assessmentTaskQueryService;
         private readonly ITrackingResultQueryService _trackingResultQueryService;
         private readonly IUsageQuerySevice _usageQueryService;
         private readonly IHandoverQueryService _handoverQueryService;
@@ -28,7 +28,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         private readonly ICompanyServiceQueryService _companyServiceQueryService;
 
         public AssessmentTaskGetAllHandler(
-            IExaminerTaskQueryService examinerTaskQueryService,
+            IAssessmentTaskQueryService assessmentTaskQueryService,
             ITrackingResultQueryService trackingResultQueryService,
             IUsageQuerySevice usageQueryService,
             IHandoverQueryService handoverQueryService,
@@ -37,8 +37,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             IDiscountTypeQueryService discountTypeQueryService,
             ICompanyServiceQueryService companyServiceQueryService)
         {
-            _examinerTaskQueryService = examinerTaskQueryService;
-            _examinerTaskQueryService.NotNull(nameof(examinerTaskQueryService));
+            _assessmentTaskQueryService = assessmentTaskQueryService;
+            _assessmentTaskQueryService.NotNull(nameof(assessmentTaskQueryService));
 
             _trackingResultQueryService = trackingResultQueryService;
             _trackingResultQueryService.NotNull(nameof(trackingResultQueryService));
@@ -62,7 +62,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             _companyServiceQueryService.NotNull(nameof(companyServiceQueryService));
         }
 
-        public async Task<AssessmentTasksOutputDto> Handle(int examinerCode, CancellationToken cancellationToken)
+        public async Task<AssessmentTasksOutputDto> Handle(int assessmentCode, CancellationToken cancellationToken)
         {
             IEnumerable<NumericDictionary> trackingResultsDictionary = await _trackingResultQueryService.Get();
 
@@ -81,7 +81,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             ICollection<DiscountType> discountTypeList = await _discountTypeQueryService.Get();
             IEnumerable<NumericDictionary> discountTypeDictionary = discountTypeList.Select(d => new NumericDictionary((int)d.Id, d.Title));
 
-            IEnumerable<AssessmentLocationInfoOutputDto> locationsInfo = await GetLocationsInfo(examinerCode);
+            IEnumerable<AssessmentLocationInfoOutputDto> locationsInfo = await GetLocationsInfo(assessmentCode);
 
             return new AssessmentTasksOutputDto()
             {
@@ -94,9 +94,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 DiscountTypes = discountTypeDictionary,
             };
         }
-        private async Task<IEnumerable<AssessmentLocationInfoOutputDto>> GetLocationsInfo(int examinerCode)
+        private async Task<IEnumerable<AssessmentLocationInfoOutputDto>> GetLocationsInfo(int assessmentCode)
         {
-            IEnumerable<GuidDictionary> tracksDictionary = await _examinerTaskQueryService.Get(examinerCode);
+            IEnumerable<GuidDictionary> tracksDictionary = await _assessmentTaskQueryService.Get(assessmentCode);
             ICollection<AssessmentLocationInfoOutputDto> locationsInfoResult = new List<AssessmentLocationInfoOutputDto>();
 
             var tracksGroup = tracksDictionary.GroupBy(t => t.Id).ToList();
@@ -105,7 +105,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 int zoneId = track.Key;
                 IEnumerable<Guid> trackIds = track.Select(t => t.Title).ToList();
 
-                IEnumerable<AssessmentLocationInfoWithSOutputDto> locationsInfoWithS = await _examinerTaskQueryService.GetLocationsInfo(trackIds, zoneId);
+                IEnumerable<AssessmentLocationInfoWithSOutputDto> locationsInfoWithS = await _assessmentTaskQueryService.GetLocationsInfo(trackIds, zoneId);
                 foreach (var locationInfo in locationsInfoWithS)
                 {
                     AssessmentLocationInfoOutputDto info = await GetAssessmentLocationInfo(locationInfo);
@@ -192,11 +192,11 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 UsageTitle = locationInfoWithS.UsageTitle,
                 MeterDiameterId = locationInfoWithS.MeterDiameterId,
                 MeterDiameterTitle = locationInfoWithS.MeterDiameterTitle,
-                ExaminationDateJalali = locationInfoWithS.ExaminationDateJalali,
-                ExaminerCode = locationInfoWithS.ExaminerCode,
-                ExaminerMobileNumber = locationInfoWithS.ExaminerMobileNumber,
-                ExaminerName = locationInfoWithS.ExaminerName,
-                ServiceGroup = items
+                AssessmentDateJalali = locationInfoWithS.AssessmentDateJalali,
+                AssessmentCode = locationInfoWithS.AssessmentCode,
+                AssessmentMobileNumber = locationInfoWithS.AssessmentMobileNumber,
+                AssessmentName = locationInfoWithS.AssessmentName,
+                ServiceGroups = items
             };
 
             return locationInfo;
