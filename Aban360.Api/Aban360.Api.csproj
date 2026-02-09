@@ -90,6 +90,7 @@
     <ProjectReference Include="..\Aban360.LocationPool.Persistence\Aban360.LocationPool.Persistence.csproj" />
     <ProjectReference Include="..\Aban360.MeterPool.Application\Aban360.MeterPool.Application.csproj" />
     <ProjectReference Include="..\Aban360.MeterPool.Persistence\Aban360.MeterPool.Persistence.csproj" />
+    <ProjectReference Include="..\Aban360.NotificationPool.Application\Aban360.NotificationPool.Application.csproj" />
     <ProjectReference Include="..\Aban360.OldCalcPool.Application\Aban360.OldCalcPool.Application.csproj" />
     <ProjectReference Include="..\Aban360.OldCalcPool.Persistence\Aban360.OldCalcPool.Persistence.csproj" />
     <ProjectReference Include="..\Aban360.PaymentPool.Application\Aban360.PaymentPool.Application.csproj" />

@@ -18,6 +18,8 @@ using Aban360.ReportPool.Infrastructure.Extensions;
 using Aban360.ReportPool.Persistence.Extentions;
 using Aban360.UserPool.Application.Extensions;
 using Aban360.UserPool.Persistence.Extensions;
+using Aban360.NotificationPool.Application.Extensions;
+
 namespace Aban360.BrdigeApi.Extensions
 {
     internal static class ConfigureDependencies
@@ -31,7 +33,8 @@ namespace Aban360.BrdigeApi.Extensions
             services.AddClaimPoolDI();
             services.AddBlobPoolDI();
             services.AddCalculationPoolDI();
-            services.AddOldCalcPoolDI();           
+            services.AddOldCalcPoolDI();      
+            services.AddNotificationPoolDI();
         }
 
         private static void AddUserPoolDI(this IServiceCollection services)
@@ -77,6 +80,10 @@ namespace Aban360.BrdigeApi.Extensions
         private static void AddCommonDbDI(this IServiceCollection services)
         {
             services.AddCommonDbInjections();
+        }
+        private static void AddNotificationPoolDI(this IServiceCollection services)
+        {
+            services.AddNotificationPoolApplicationInjections();
         }
     }
 }

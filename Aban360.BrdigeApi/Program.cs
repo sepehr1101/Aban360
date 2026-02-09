@@ -23,6 +23,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerService();
 builder.Services.AddCustomDbContext(configuration);
 
+builder.AddHangfire();
 builder.Services.AddMvc();
 builder.Services.AddRazorPages();
 
