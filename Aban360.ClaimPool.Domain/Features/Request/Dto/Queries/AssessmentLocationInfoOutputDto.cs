@@ -2,6 +2,7 @@
 {
     public record AssessmentLocationInfoOutputDto
     {
+        public Guid TrackId { get; set; }
         public string MobileNumber { get; set; }
         public string? PhoneNumber { get; set; }
         public string NotificationMobileNumber { get; set; }

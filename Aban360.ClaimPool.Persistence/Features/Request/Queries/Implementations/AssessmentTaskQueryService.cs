@@ -53,6 +53,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
         private string GetTrackDetailQuery(string dbName)
         {
             return $@"Select
+                        t.TrackID,
                     	TRIM(m.mobile) MobileNumber,
                     	TRIM(m.phone_no) PhoneNumber,
                     	m.C99 NotificationMobileNumber,

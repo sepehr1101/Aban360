@@ -165,6 +165,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             IEnumerable<ServiceGroupWithCheckedOutputDto> items = await GetItemsService(locationInfoWithS);
             AssessmentLocationInfoOutputDto locationInfo = new()
             {
+                TrackId= locationInfoWithS.TrackId,
                 MobileNumber = locationInfoWithS.MobileNumber,
                 PhoneNumber = locationInfoWithS.PhoneNumber,
                 NotificationMobileNumber = locationInfoWithS.NotificationMobileNumber,
