@@ -47,7 +47,8 @@ namespace Aban360.ReportPool.Application.Features.Usp.Handlers.Implementations
                 Tedad_vahd_Moshtrak = output.Sum(x => x.Tedad_vahd_Moshtrak),
                 Tedad_vahed_Faz = output.Sum(x => x.Tedad_vahed_Faz),
                 waste_Faz = output.Sum(x => x.waste_Faz),
-                Zaribfasl = output.Sum(x => x.Zaribfasl)
+                Zaribfasl = output.Sum(x => x.Zaribfasl),
+                
             };
             ReportOutput<UspFinancialHeader, UspFinancial2Output> reportOutput = new( ReportLiterals.UspFinancial2, header, output);
             return reportOutput;

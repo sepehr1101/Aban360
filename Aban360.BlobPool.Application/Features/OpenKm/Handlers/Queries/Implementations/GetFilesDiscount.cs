@@ -4,7 +4,7 @@ using Aban360.Common.Extensions;
 
 namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Implementations
 {
-    internal sealed class GetFilesDiscount
+    internal sealed class GetFilesDiscount : IGetFilesDiscount
     {
         private readonly IOpenKmQueryService _openKmQueryService;
         public GetFilesDiscount(IOpenKmQueryService openKmQueryService)
