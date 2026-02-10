@@ -15,17 +15,17 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 
         public async Task Insert(TrackingInsertDto inputDto)
         {
-            //string dbName = "AbAndFazelab";
-            string dbName = "--";
+			string dbName = "AbAndFazelab";
+            //string dbName = "--";
             string command = GetInsertCommand(dbName);
             await _sqlReportConnection.ExecuteAsync(command, inputDto);
         }
-        public async Task UpdateIsConsiderd(int trackNumber)
+        public async Task UpdateIsConsiderdLatest(int trackNumber, bool isConsiderd)
         {
-            //string dbName = "AbAndFazelab";
-            string dbName = "--";
+			string dbName = "AbAndFazelab";
+            //string dbName = "--";
             string command = GetUpdateIsConsiderdCommand(dbName);
-            await _sqlReportConnection.ExecuteAsync(command, new { trackNumber });
+            await _sqlReportConnection.ExecuteAsync(command, new { trackNumber ,isConsiderd});
         }
 
 
@@ -65,7 +65,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
         private string GetUpdateIsConsiderdCommand(string dbName)
         {
             return $@"Update [{dbName}].dbo.Tracking
-					Set IsConsiderd=1
+					Set IsConsiderd=@isConsiderd
 					Where TrackNumber=@trachNumber
 					Order By DateAndTime DESC";
         }

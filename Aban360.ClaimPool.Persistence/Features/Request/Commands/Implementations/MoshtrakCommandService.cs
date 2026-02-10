@@ -15,8 +15,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 
         public async Task Update(MoshtrkUpdateDto input)
         {
-            //string dbName = GetDbName(input.ZoneId);
-            string dbName = "Atlas";
+            string dbName = GetDbName(input.ZoneId);
+            //string dbName = "Atlas";
             string command = GetUpdateCommand(dbName);
 
             await _sqlReportConnection.ExecuteAsync(command, input);
