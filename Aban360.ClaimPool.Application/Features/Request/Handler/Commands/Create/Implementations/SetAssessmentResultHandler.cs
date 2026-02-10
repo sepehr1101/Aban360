@@ -1,36 +1,56 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
 using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
-using Aban360.ClaimPool.Persistence.Features.Request.Commands.Contracts;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
+using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
+using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
+using Aban360.Common.Db.Dapper;
 using Aban360.Common.Extensions;
+using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations
 {
-    internal sealed class SetAssessmentResultHandler : ISetAssessmentResultHandler
+    internal sealed class SetAssessmentResultHandler : AbstractBaseConnection, ISetAssessmentResultHandler
     {
-        private readonly IMoshtrakCommandService _moshtrackCommandService;
-        private readonly ITrackingCommandService _trackingCommandService;
+        private readonly IAssessmentQueryService _assessmentQueryService;
         private static int _status = 110;
         public SetAssessmentResultHandler(
-            IMoshtrakCommandService moshtrackCommandService,
-            ITrackingCommandService trackingCommandService)
+            IConfiguration configuration,
+            IAssessmentQueryService assessmentQueryService)
+            : base(configuration)
         {
-            _moshtrackCommandService = moshtrackCommandService;
-            _moshtrackCommandService.NotNull(nameof(moshtrackCommandService));
-
-            _trackingCommandService = trackingCommandService;
-            _trackingCommandService.NotNull(nameof(trackingCommandService));
+            _assessmentQueryService = assessmentQueryService;
+            _assessmentQueryService.NotNull(nameof(assessmentQueryService));
         }
 
-        public async Task Handle(AssessmentResultInputDto inputDto, CancellationToken cancellationToken)
+        public async Task Handle(AssessmentResultInputDto inputDto, int assessmentCode, CancellationToken cancellationToken)
         {
-            TrackingInsertDto trackingInsertDto = new(inputDto.TrackNumber, _status, inputDto.Description);
+            TrackingInsertDto trackingInsertDto = new(inputDto.TrackNumber, _status, inputDto.Description, assessmentCode);
+            AssessmentInsertDto assessmentInsertDto = await GetAssessmentInsertDto(inputDto, assessmentCode);
 
-            await _trackingCommandService.UpdateIsConsiderdLatest(inputDto.TrackNumber, true);
-            await _trackingCommandService.Insert(trackingInsertDto);
-            await _moshtrackCommandService.Update(GetMoshtrackUpdateDto(inputDto));
-            //Examination
+            using (IDbConnection connection = _sqlReportConnection)//why didnt use SqlConnection?
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    MoshtrakCommandService _moshtrackCommandService = new(_sqlReportConnection, transaction);//wht didnt use connection
+                    TrackingCommandService _trackingCommandService = new(_sqlReportConnection, transaction);
+                    ExaminationCommandService _assessmentCommandService = new(_sqlReportConnection, transaction);
+                    string dbName = GetDbName(inputDto.ZoneId);
 
+
+                    await _trackingCommandService.UpdateIsConsiderdLatest(inputDto.TrackNumber, true);
+                    await _trackingCommandService.Insert(trackingInsertDto);
+                    await _moshtrackCommandService.Update(GetMoshtrackUpdateDto(inputDto), dbName);
+                    await _assessmentCommandService.Insert(assessmentInsertDto);
+
+                    transaction.Commit();
+                }
+            }
         }
         private MoshtrkUpdateDto GetMoshtrackUpdateDto(AssessmentResultInputDto inputDto)
         {
@@ -73,11 +93,12 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 PostalCode = inputDto.PostalCode,
                 IsNonPermanent = inputDto.IsNonPermanent,
                 Address = inputDto.Address,
-                Description = inputDto.Description,
                 PreViewId = inputDto.PreViewId,
                 CounterType = inputDto.CounterType,
                 InstallAgentState = inputDto.InstallAgentState,
                 BlockId = inputDto.BlockId,
+                MainSiphon = inputDto.MainSiphon,
+                CommonSiphon = inputDto.CommonSiphon,
 
                 s0 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.IsEnsheabAb) ? 1 : 0,
                 s1 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.IsEnsheabFazelab) ? 1 : 0,
@@ -128,6 +149,40 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 s48 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.Saier) ? 1 : 0,
             };
         }
-
+        private async Task<AssessmentInsertDto> GetAssessmentInsertDto(AssessmentResultInputDto inputDto, int assessmentCode)
+        {
+            AssessmentGetDto assessmentData = await _assessmentQueryService.Get(assessmentCode);
+            return new AssessmentInsertDto()
+            {
+                TrackNumber = inputDto.TrackNumber,
+                BillId = inputDto.BillId,
+                AssessmentCode = assessmentData.Code,
+                AssessmentMobile = assessmentData.PhoneNumber,
+                AssessmentName = assessmentData.FullName,
+                ZoneId = inputDto.ZoneId,
+                ResultId = inputDto.TrackingResultId,
+                Description = inputDto.Description,//todo: need or not?
+                TrackId = inputDto.TrackingId,
+                TrackIdResult = Guid.Empty,//todo
+                X1 = inputDto.X1,
+                Y1 = inputDto.Y1,
+                X2 = inputDto.X2,
+                Y2 = inputDto.Y2,
+                TrenchLenS = inputDto.TrenchLenS,
+                TrenchLenW = inputDto.TrenchLenW,
+                AsphaltLenW = inputDto.AsphaltLenW,
+                AsphaltLenS = inputDto.AsphaltLenS,
+                RockyLenS = inputDto.RockyLenS,
+                RockyLenW = inputDto.RockyLenW,
+                OtherLenS = inputDto.OtherLenS,
+                OtherLenW = inputDto.OtherLenW,
+                BasementDepth = inputDto.BasementDepth,
+                HasMap = inputDto.HasMap,
+                ReadingNumber = inputDto.ReadingNumber,
+                Premises = inputDto.Premises,
+                HouseValue = inputDto.HouseValue,
+                UsageId = inputDto.UsageId,
+            };
+        }
     }
 }

@@ -70,7 +70,30 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         {
             await Validate(input, cancellationToken);
             await CheckDuplicateFile(input.ReadingFile.FileName, cancellationToken);
+            ///////
+            //MeterReadingDetailCreateDto s = new()
+            //{
+            //    FlowImportedId=1,
+            //    ZoneId=131301,
+            //    CustomerNumber=11474231,
+            //    ReadingNumber="135486900",
+            //    BillId="1147423116310",
+            //    AgentCode=10,
+            //    CurrentCounterStateCode=6,
+            //};
+            //if (CounterStateValidation(6, 254, 254))
+            //{
+            //    MeterImaginaryInputDto meterImaginary = GetMeterImaginary(readingDetail);
+            //    AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterImaginary, cancellationToken);
+            //    readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false));
+            //}
+            //else
+            //{
+            //    readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true));
+            //}
 
+
+            ///////
             string filePath = await SaveToDisk(input.ReadingFile, _dbfPath);
             IEnumerable<MeterReadingDetailCreateDto> readingDetails = await GetMeterReadingDetails(input, filePath, appUser.UserId);
 

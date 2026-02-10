@@ -8,11 +8,13 @@ namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Commands
         public string CurrentDateJalali { get; set; } = DateTime.Now.ToShortPersianDateString();
         public string Description { get; set; }
         public int StatusId { get; set; }
-        public TrackingInsertDto(int trackNumber,int statusId,string description)
+        public int UserId { get; set; }
+        public TrackingInsertDto(int trackNumber,int statusId,string description,int userId)
         {
             TrackNumber = trackNumber;
             StatusId = statusId;
             Description = description;
+            UserId = userId;    
         }
     }
 }

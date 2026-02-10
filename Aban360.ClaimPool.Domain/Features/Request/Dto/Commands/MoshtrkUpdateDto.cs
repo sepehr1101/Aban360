@@ -1,4 +1,6 @@
-﻿namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Commands
+﻿using DNTPersianUtils.Core;
+
+namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Commands
 {
     public record MoshtrkUpdateDto
     {
@@ -15,7 +17,7 @@
         public int MeterDiameterId { get; set; }
         public int BranchTypeId { get; set; }
         public int DiscountTypeId { get; set; }
-        public int TrackingResultId { get; set; }
+        public int TrackingResultId { get; set; }//
 
         public string PhoneNumber { get; set; }
         public string MobileNumber { get; set; }
@@ -30,6 +32,8 @@
         public int Siphon125 { get; set; }
         public int Siphon150 { get; set; }
         public int Siphon200 { get; set; }
+        public int MainSiphon { get; set; }
+        public int CommonSiphon { get; set; }
 
         public int ContractualCapacity { get; set; }
         public int HouseValue { get; set; }
@@ -42,12 +46,12 @@
         public string PostalCode { get; set; }
         public bool IsNonPermanent { get; set; }
         public string Address { get; set; }
-        public string Description { get; set; }
        
         public string PreViewId { get; set; }
         public int CounterType { get; set; }
         public int InstallAgentState { get; set; }
         public string BlockId { get; set; }
+        public string CurrentDateJalali { get; set; } = DateTime.Now.ToShortPersianDateString();
 
         public int s0 { get; set; }
         public int s1 { get; set; }

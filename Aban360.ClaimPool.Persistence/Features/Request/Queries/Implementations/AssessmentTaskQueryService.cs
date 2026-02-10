@@ -44,7 +44,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     Join AbAndFazelab.dbo.Examination e
                     	ON t.TrackID=e.TrackId
                     Where 
-                    	e.ExaminerCode=@examinerCode AND
+                    	e.ExaminerCode=@assessmentCode AND
                     	t.Status IN (10,15) AND
                     	e.ResultId IS NULL AND
 						t.IsConsiderd=0 AND

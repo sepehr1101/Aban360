@@ -32,6 +32,8 @@
         public int Siphon125 { get; set; }
         public int Siphon150 { get; set; }
         public int Siphon200 { get; set; }
+        public int MainSiphon { get; set; }
+        public int CommonSiphon { get; set; }
 
         public int ContractualCapacity { get; set; }
         public int HouseValue { get; set; }
@@ -58,7 +60,7 @@
         public int? TrenchLenW { get; set; }
         public int? TrenchLenS { get; set; }
         public int? AsphaltLenW { get; set; }
-        public int? AaphaltLenS { get; set; }
+        public int? AsphaltLenS { get; set; }
         public int? RockyLenW { get; set; }
         public int? RockyLenS { get; set; }
         public int? OtherLenW { get; set; }

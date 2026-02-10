@@ -1,7 +1,9 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
  using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
@@ -21,7 +23,12 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<AssessmentResultInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SetReult([FromBody] AssessmentResultInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _setAssessmentResultHandler.Handle(inputDto, cancellationToken);
+            bool isSuccess = int.TryParse(CurrentUser.Username, out int examinerCode);
+            if (!isSuccess)
+            {
+                throw new InvalidBillIdException(ExceptionLiterals.InvalidExaminerName);
+            }
+            await _setAssessmentResultHandler.Handle(inputDto, examinerCode, cancellationToken);
             return Ok(inputDto);
         }
     }
