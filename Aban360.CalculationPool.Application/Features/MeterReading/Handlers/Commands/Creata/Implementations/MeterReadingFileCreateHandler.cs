@@ -290,8 +290,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         }
         private bool CounterStateValidation(int counterStateCode, int currentNumber, int previousNumber)
         {
-            int[] invalidCounterStateCode = new int[] { 4, 6, 7, 8, 9, 10 };
+            int[] invalidCounterStateCode = [4, /*6,*/ 7, 8, 9, 10];
 
+            //if(counterStateCode==6 && previousNumber!=currentNumber)
+            //{
+            //    return false;
+            //}
             if (invalidCounterStateCode.Contains(counterStateCode))
             {
                 return false;
@@ -308,7 +312,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             {
                 ZoneId = readingDetail.ZoneId,
                 Radif = readingDetail.CustomerNumber,
-                BranchType = 0,//todo
+                BranchType = readingDetail.BranchTypeId,//todo
                 UsageId = readingDetail.UsageId,
                 DomesticUnit = readingDetail.DomesticUnit,
                 CommertialUnit = readingDetail.CommercialUnit,

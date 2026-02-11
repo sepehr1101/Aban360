@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -101,17 +100,24 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             return new AuthenticationHeaderValue(token.TokenType, token.AccessToken);
         }
 
-        public async Task<FileListResponse> GetFilesByBillId(string billId)
+        public async Task<FileListResponse> GetFilesDiscount(string id)
         {
-            string fldId = $"{_options.BaseDirectoryPath}{billId}";
-            return await GetChildren(fldId);
+            string fldId = $"{_options.BaseDiscountPath}{id}";
+            return await GetChildren(fldId, false);
         }
-        private async Task<FileListResponse> GetChildren(string fldId)
+        public async Task<FileListResponse> GetFilesByBillId(string billId)
+        {            
+            string fldId = $"{_options.BaseDirectoryPath}{billId}";
+            return await GetChildren(fldId, false);
+        }
+        private async Task<FileListResponse> GetChildren(string fldId, bool isDiscount)
         {
             var authHeader = await GetAuthenticationHeaderAsync();
 
             // Only append the relative path/query; BaseAddress comes from DI
-            var requestUrl = $"{_options.GetChildrenEndpoint}?fldId={Uri.EscapeDataString(fldId)}";
+            //var requestUrl = $"{_options.GetChildrenEndpoint}?fldId={Uri.EscapeDataString(fldId)}";
+            //string directoryPath = isDiscount ? _options.BaseDiscountPath : _options.BaseDirectoryPath;
+            var requestUrl = $"{_options.GetFilesListEndpoint}?fldId={Uri.EscapeDataString(fldId)}";
 
             using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
             request.Headers.Authorization = authHeader;

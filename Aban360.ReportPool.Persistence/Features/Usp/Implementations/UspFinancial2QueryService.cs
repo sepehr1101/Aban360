@@ -12,6 +12,7 @@ namespace Aban360.ReportPool.Persistence.Features.Usp.Implementations
     {
         const string spName = "[GHABS].dbo.usp_daramad2";
         const string spName2 = "[GHABS].dbo.usp_daramad2_2";
+        const string spName5 = "[GHABS].dbo.usp_daramad5";
 
         public UspFinancial2QueryService(IConfiguration configuration) : base(configuration)
         {
@@ -19,6 +20,7 @@ namespace Aban360.ReportPool.Persistence.Features.Usp.Implementations
         public async Task<IEnumerable<UspFinancial2Output>> Get(UspFinancial2Input input)
         {
             string finalSpName=input.GroupingType<=2?spName:spName2;
+            finalSpName = input.UsageType == 3 || input.UsageType == 4 ? spName5 : finalSpName;
             DynamicParameters parameters = GetParams(input);
             IEnumerable<UspFinancial2Output> output = await _sqlReportConnection.QueryAsync<UspFinancial2Output>(spName, parameters, commandType: CommandType.StoredProcedure);
             return output;
