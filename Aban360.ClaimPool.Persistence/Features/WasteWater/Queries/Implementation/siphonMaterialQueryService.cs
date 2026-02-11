@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.ClaimPool.Persistence.Features.WasteWater.Queries.Implementation
 {
-    internal sealed class siphonMaterialQueryService : ISiphonMaterialQueryService
+    internal sealed class SiphonMaterialQueryService : ISiphonMaterialQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<SiphonMaterial> _siphonMaterial;
-        public siphonMaterialQueryService(IUnitOfWork uow)
+        public SiphonMaterialQueryService(IUnitOfWork uow)
         {
             _uow = uow;
             _uow.NotNull(nameof(_uow));

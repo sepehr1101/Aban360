@@ -2,18 +2,6 @@
 {
     public record AssessmentResultInputDto
     {
-        public int UsageId { get; set; }
-        public int BranchTypeId { get; set; }
-        public int DiscountTypeId { get; set; }
-        public int TrackingResultId { get; set; }
-        public int MeterDiameterId { get; set; }
-        public int SiphonDiameterId { get; set; }
-
-        public int TrackNumber { get; set; }
-        public string? Description { get; set; }
-    }
-    public class CalculationUserInput
-    {
         public Guid TrackingId { get; set; }
         public int TrackNumber { get; set; }
         public int ServiceGroupId { get; set; }//RequestType
@@ -25,10 +13,12 @@
         public string NotificationMobile { get; set; }
         public int UsageId { get; set; }
         public int MeterDiameterId { get; set; }
-        public int BranchTypeId{ get; set; }
+        public int BranchTypeId { get; set; }
         public int DiscountTypeId { get; set; }
+        public int TrackingResultId { get; set; }
+
         public ICollection<int> SelectedServices { get; set; }
-        
+
         public string PhoneNumber { get; set; }
         public string MobileNumber { get; set; }
         public string FirstName { get; set; }
@@ -42,6 +32,8 @@
         public int Siphon125 { get; set; }
         public int Siphon150 { get; set; }
         public int Siphon200 { get; set; }
+        public int MainSiphon { get; set; }
+        public int CommonSiphon { get; set; }
 
         public int ContractualCapacity { get; set; }
         public int HouseValue { get; set; }
@@ -65,18 +57,17 @@
         public string Y2 { get; set; }
         public string Accuracy { get; set; }
         //
-        public int? FaseleKhakiA { get; set; }
-        public int? FaseleKhakiF { get; set; }
-        public int? FaseleAsphaultA { get; set; }
-        public int? FaseleAsphaultF { get; set; }
-        public int? FaseleSangA { get; set; }
-        public int? FaseleSangF { get; set; }
-        public int? FaseleOtherA { get; set; }
-        public int? FaseleOtherF { get; set; }
-        public int? OmqeZirzamin { get; set; }
-        public bool? ChahAbBaran { get; set; }
+        public int? TrenchLenW { get; set; }
+        public int? TrenchLenS { get; set; }
+        public int? AsphaltLenW { get; set; }
+        public int? AsphaltLenS { get; set; }
+        public int? RockyLenW { get; set; }
+        public int? RockyLenS { get; set; }
+        public int? OtherLenW { get; set; }
+        public int? OtherLenS { get; set; }
+        public int? BasementDepth { get; set; }
         public bool? HasMap { get; set; }
-        public string Eshterak { get; set; }
+        public string ReadingNumber { get; set; }
         //
         public string PreViewId { get; set; }
         public int CounterType { get; set; }

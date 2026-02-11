@@ -70,7 +70,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         {
             await Validate(input, cancellationToken);
             await CheckDuplicateFile(input.ReadingFile.FileName, cancellationToken);
-
+           
             string filePath = await SaveToDisk(input.ReadingFile, _dbfPath);
             IEnumerable<MeterReadingDetailCreateDto> readingDetails = await GetMeterReadingDetails(input, filePath, appUser.UserId);
 

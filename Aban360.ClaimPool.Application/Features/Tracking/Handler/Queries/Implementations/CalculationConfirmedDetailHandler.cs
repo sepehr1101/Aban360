@@ -43,28 +43,28 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
                 throw new BaseException(message);
             }
         }
-        private IEnumerable<NumericDictionary> GetCompanyService(CalculationConfirmedDto input)
+        private IEnumerable<Common.BaseEntities.NumericDictionary> GetCompanyService(CalculationConfirmedDto input)
         {
-            ICollection<NumericDictionary> companyServiceSelected = new List<NumericDictionary>();
+            ICollection<Common.BaseEntities.NumericDictionary> companyServiceSelected = new List<Common.BaseEntities.NumericDictionary>();
 
             #region s
             if (input.s0 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsEnsheabAb, CompanySeviceLiterals.IsEnsheabAb));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.IsEnsheabAb, CompanySeviceLiterals.IsEnsheabAb));
 
             if (input.s1 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsEnsheabFazelab, CompanySeviceLiterals.IsEnsheabFazelab));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.IsEnsheabFazelab, CompanySeviceLiterals.IsEnsheabFazelab));
 
             if (input.s2 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsTaqirVahed, CompanySeviceLiterals.IsTaqirVahed));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.IsTaqirVahed, CompanySeviceLiterals.IsTaqirVahed));
 
             //if (input.s3 > 0)
             //companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsTaqirVahed, CompanySeviceLiterals.IsTaqirVahed));
 
             if (input.s4 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsTaqirNam, CompanySeviceLiterals.IsTaqirNam));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.IsTaqirNam, CompanySeviceLiterals.IsTaqirNam));
 
             if (input.s5 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsTaqirQotrEnsheab, CompanySeviceLiterals.IsTaqirQotrEnsheab));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.IsTaqirQotrEnsheab, CompanySeviceLiterals.IsTaqirQotrEnsheab));
 
             //if (input.s8 > 0)
             //companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.SifoonEzafe, CompanySeviceLiterals.SifoonEzafe));
@@ -73,16 +73,16 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
             //companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.JabejaiiKontor, CompanySeviceLiterals.JabejaiiKontor));
 
             if (input.s10 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.EstelamMahzar, CompanySeviceLiterals.EstelamMahzar));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.EstelamMahzar, CompanySeviceLiterals.EstelamMahzar));
 
             if (input.s11 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.TafkikArseAb, CompanySeviceLiterals.TafkikArseAb));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.TafkikArseAb, CompanySeviceLiterals.TafkikArseAb));
 
             if (input.s12 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsTafkikArseFazelab, CompanySeviceLiterals.IsTafkikArseFazelab));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.IsTafkikArseFazelab, CompanySeviceLiterals.IsTafkikArseFazelab));
 
             if (input.s13 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.TaqirSathCounter, CompanySeviceLiterals.TaqirSathCounter));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.TaqirSathCounter, CompanySeviceLiterals.TaqirSathCounter));
 
             //if (input.s14 > 0)
             //companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.JabejaiiSifoon, CompanySeviceLiterals.JabejaiiSifoon));
@@ -91,7 +91,7 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
             //companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.NezamMohandesi, CompanySeviceLiterals.NezamMohandesi));
 
             if (input.s16 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsTaqirKarbari, CompanySeviceLiterals.IsTaqirKarbari));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.IsTaqirKarbari, CompanySeviceLiterals.IsTaqirKarbari));
 
             //if (input.s17 > 0)
             //companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsZarfiatQarardadi, CompanySeviceLiterals.IsZarfiatQarardadi));
@@ -103,28 +103,28 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
             //companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsAmadeSaziFazelab, CompanySeviceLiterals.IsAmadeSaziFazelab));
 
             if (input.s20 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.JabejaiiKontor, CompanySeviceLiterals.JabejaiiKontor));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.JabejaiiKontor, CompanySeviceLiterals.JabejaiiKontor));
 
             if (input.s21 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.KhatEnteqhalAb, CompanySeviceLiterals.KhatEnteqhalAb));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.KhatEnteqhalAb, CompanySeviceLiterals.KhatEnteqhalAb));
 
             if (input.s22 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.KhatEnteqhalFazelab, CompanySeviceLiterals.KhatEnteqhalFazelab));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.KhatEnteqhalFazelab, CompanySeviceLiterals.KhatEnteqhalFazelab));
 
             if (input.s23 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.SahmManbaAb, CompanySeviceLiterals.SahmManbaAb));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.SahmManbaAb, CompanySeviceLiterals.SahmManbaAb));
 
             if (input.s24 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.TaqirQotrSifoon, CompanySeviceLiterals.TaqirQotrSifoon));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.TaqirQotrSifoon, CompanySeviceLiterals.TaqirQotrSifoon));
 
             //if (input.s25 > 0)
             //    companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum., CompanySeviceLiterals.));
 
             if (input.s26 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsAmadeSaziAb, CompanySeviceLiterals.IsAmadeSaziAb));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.IsAmadeSaziAb, CompanySeviceLiterals.IsAmadeSaziAb));
 
             if (input.s27 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsAmadeSaziFazelab, CompanySeviceLiterals.IsAmadeSaziFazelab));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.IsAmadeSaziFazelab, CompanySeviceLiterals.IsAmadeSaziFazelab));
 
             //if (input.s28 > 0)
             //companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum., CompanySeviceLiterals.));
@@ -139,60 +139,60 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
             //companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum., CompanySeviceLiterals.));
 
             if (input.s32 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.QatVaslEnsheab, CompanySeviceLiterals.QatVaslEnsheab));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.QatVaslEnsheab, CompanySeviceLiterals.QatVaslEnsheab));
 
             if (input.s33 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.SifoonEzafe, CompanySeviceLiterals.SifoonEzafe));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.SifoonEzafe, CompanySeviceLiterals.SifoonEzafe));
 
             if (input.s34 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.AdamTakhfifAb, CompanySeviceLiterals.AdamTakhfifAb));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.AdamTakhfifAb, CompanySeviceLiterals.AdamTakhfifAb));
 
             if (input.s35 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.AdamTakhfifFazelab, CompanySeviceLiterals.AdamTakhfifFazelab));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.AdamTakhfifFazelab, CompanySeviceLiterals.AdamTakhfifFazelab));
 
             if (input.s36 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.JabejaiiSifoon, CompanySeviceLiterals.JabejaiiSifoon));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.JabejaiiSifoon, CompanySeviceLiterals.JabejaiiSifoon));
 
             if (input.s37 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.NezamMohandesi, CompanySeviceLiterals.NezamMohandesi));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.NezamMohandesi, CompanySeviceLiterals.NezamMohandesi));
 
             if (input.s38 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.TavizSifoon, CompanySeviceLiterals.TavizSifoon));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.TavizSifoon, CompanySeviceLiterals.TavizSifoon));
 
             if (input.s39 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.KhanevarShomari, CompanySeviceLiterals.KhanevarShomari));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.KhanevarShomari, CompanySeviceLiterals.KhanevarShomari));
 
             if (input.s40 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.TafkikEdqam, CompanySeviceLiterals.TafkikEdqam));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.TafkikEdqam, CompanySeviceLiterals.TafkikEdqam));
 
             if (input.s41 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.TavizKontor, CompanySeviceLiterals.TavizKontor));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.TavizKontor, CompanySeviceLiterals.TavizKontor));
 
             if (input.s42 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.LooleGozariAb, CompanySeviceLiterals.LooleGozariAb));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.LooleGozariAb, CompanySeviceLiterals.LooleGozariAb));
 
             if (input.s43 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.LooleGozareAbFazelab, CompanySeviceLiterals.LooleGozareAbFazelab));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.LooleGozareAbFazelab, CompanySeviceLiterals.LooleGozareAbFazelab));
 
             if (input.s44 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsZarfiatQarardadi, CompanySeviceLiterals.IsZarfiatQarardadi));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.IsZarfiatQarardadi, CompanySeviceLiterals.IsZarfiatQarardadi));
 
             if (input.s45 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.KontorMojaza, CompanySeviceLiterals.KontorMojaza));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.KontorMojaza, CompanySeviceLiterals.KontorMojaza));
 
             if (input.s46 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.TaqirTarefe, CompanySeviceLiterals.TaqirTarefe));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.TaqirTarefe, CompanySeviceLiterals.TaqirTarefe));
 
             if (input.s47 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.Peymayesh, CompanySeviceLiterals.Peymayesh));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.Peymayesh, CompanySeviceLiterals.Peymayesh));
 
             if (input.s48 > 0)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.Saier, CompanySeviceLiterals.Saier));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.Saier, CompanySeviceLiterals.Saier));
             #endregion
 
             return companyServiceSelected;
         }
-        private CalculationConfirmedOutputDto GetOutput(CalculationConfirmedDto result, IEnumerable<NumericDictionary> s)
+        private CalculationConfirmedOutputDto GetOutput(CalculationConfirmedDto result, IEnumerable<Common.BaseEntities.NumericDictionary> s)
         {
             return new CalculationConfirmedOutputDto()
             {

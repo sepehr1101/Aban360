@@ -1,31 +1,45 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
-using Aban360.ClaimPool.Persistence.Features.Request.Commands.Contracts;
-using Aban360.Common.Db.Dapper;
 using Dapper;
-using Microsoft.Extensions.Configuration;
+using System.Data;
+using Microsoft.Data.SqlClient;
+using Aban360.Common.Extensions;
+using Aban360.Common.Exceptions;
+using Aban360.ClaimPool.Persistence.Constants.Literals;
 
 namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations
 {
-    internal sealed class TrackingCommandService : AbstractBaseConnection, ITrackingCommandService
+    public sealed class TrackingCommandService //: AbstractBaseConnection, ITrackingCommandService
     {
-        public TrackingCommandService(IConfiguration configuration)
-            : base(configuration)
+        private readonly SqlConnection _sqlConnection;
+        private readonly IDbTransaction _transaction;
+        public TrackingCommandService(
+            SqlConnection sqlConnection,
+            IDbTransaction transaction)
         {
+            _sqlConnection = sqlConnection;
+            _sqlConnection.NotNull(nameof(sqlConnection));
+
+            _transaction = transaction;
+            _transaction.NotNull(nameof(transaction));
         }
 
         public async Task Insert(TrackingInsertDto inputDto)
         {
-            //string dbName = "AbAndFazelab";
-            string dbName = "--";
+            string dbName = "AbAndFazelab";
+            //string dbName = "--";
             string command = GetInsertCommand(dbName);
-            await _sqlReportConnection.ExecuteAsync(command, inputDto);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, inputDto);
+            if (recordCount < 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertTracking);
+            }
         }
-        public async Task UpdateIsConsiderd(int trackNumber)
+        public async Task UpdateIsConsiderdLatest(int trackNumber, bool isConsiderd)
         {
-            //string dbName = "AbAndFazelab";
-            string dbName = "--";
+            string dbName = "AbAndFazelab";
+            //string dbName = "--";
             string command = GetUpdateIsConsiderdCommand(dbName);
-            await _sqlReportConnection.ExecuteAsync(command, new { trackNumber });
+            int recordCount = await _sqlConnection.ExecuteAsync(command, new { trackNumber, isConsiderd });
         }
 
 
@@ -40,11 +54,11 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 						@currentDateJalali DateTimeJalali,
 						t.BillId,
 						t.ServiceGroup_FK,
-						110 Status,
+						@StatusId Status,
 						t.RequestOrigin,
 						0 IsConsiderd,
-						t.InserrtedBy,
-						' --' Description,
+						@UserId InserrtedBy,
+						@Description Description,
 						t.Caller,
 						t.NotificationMobile,
 						t.NeighbourBillId,
@@ -62,12 +76,16 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 					Where t.TrackNumber=@trackNumber
 					Order By t.DateAndTime DESC";
         }
-        private string GetUpdateIsConsiderdCommand(string dbName)
+        private string GetUpdateIsConsiderdCommand(string dbName)//todo : use DateAndTime insteadof DateTimeJalali
         {
-            return $@"Update [{dbName}].dbo.Tracking
-					Set IsConsiderd=1
-					Where TrackNumber=@trachNumber
-					Order By DateAndTime DESC";
+            return $@"WITH FirstRecord AS (
+                        SELECT TOP 1 IsConsiderd
+                        FROM[{dbName}].dbo.Tracking
+                        WHERE TrackNumber = @trackNumber
+                        ORDER BY DateTimeJalali DESC
+                    )
+                    UPDATE FirstRecord
+                    SET IsConsiderd = @isConsiderd";
         }
     }
 }
