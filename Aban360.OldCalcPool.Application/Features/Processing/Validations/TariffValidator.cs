@@ -36,7 +36,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Validations
         }
         private static bool IsValidState(int counterStateCode)
         {
-            int[] invalidCounterStateCode = [4, 6, 7, 8, 9, 10];
+            int[] invalidCounterStateCode = [4, 7, 8, 9, 10];
             return invalidCounterStateCode.Contains(counterStateCode);
         }
         private static bool IsChangedOrReverse(int counterStateCode)

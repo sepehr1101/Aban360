@@ -126,7 +126,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
             if (response.StatusCode != System.Net.HttpStatusCode.OK)
             {
-                throw new InvalidBillIdException(ExceptionLiterals.BillIdNotFound);
+                throw new InvalidBillIdException(isDiscount ? ExceptionLiterals.InvalidDiscountFileName : ExceptionLiterals.BillIdNotFound);
             }
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<FileListResponse>(_jsonOptions);

@@ -121,6 +121,6 @@
         //Tracking
         public static string InvalidStateId => "وضعیت ارسالی یافت نشد.";
         public static string InvalidExaminerName => "کد ارزیابی صحیح نیست.";
-
+        public static string InvalidDiscountFileName => "اطلاعات در این پوشه یافت نشد";
     }
 }

@@ -65,5 +65,6 @@
         public long Bodjeh { get; set; }
         public long Maliat { get; set; }
         public long Jam_kol { get; set; }
+        public string? Karbari { get; set; }
     }
 }
