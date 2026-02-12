@@ -292,10 +292,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         {
             int[] invalidCounterStateCode = [4, /*6,*/ 7, 8, 9, 10];
 
-            //if(counterStateCode==6 && previousNumber!=currentNumber)
-            //{
-            //    return false;
-            //}
+            if (counterStateCode == 6 && previousNumber != currentNumber)
+            {
+                return false;
+            }
             if (invalidCounterStateCode.Contains(counterStateCode))
             {
                 return false;
