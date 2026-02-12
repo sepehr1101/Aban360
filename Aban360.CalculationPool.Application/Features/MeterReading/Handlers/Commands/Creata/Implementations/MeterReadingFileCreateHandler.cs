@@ -12,6 +12,7 @@ using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.Common.Timing;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
+using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Implementations;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using DotNetDBF;
@@ -34,6 +35,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
         private readonly IOldTariffEngine _tariffEngine;
         private readonly IValidator<MeterReadingFileCreateDto> _validator;
+        private readonly IPreviousAverageHandler _previousAverageHandler;
 
         public MeterReadingFileCreateHandler(
             IMeterReadingDetailService meterReadingFileService,
@@ -42,7 +44,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             IMeterReadingDetailService meterReadingDetailService,
             IOldTariffEngine tariffEngine,
             IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
-            IValidator<MeterReadingFileCreateDto> validator)
+            IValidator<MeterReadingFileCreateDto> validator,
+            IPreviousAverageHandler previousAverageHandler)
         {
             _meterReadingFileService = meterReadingFileService;
             _meterReadingFileService.NotNull(nameof(_meterReadingFileService));
@@ -64,6 +67,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
             _validator = validator;
             _validator.NotNull(nameof(_validator));
+
+            _previousAverageHandler = previousAverageHandler;
+            _previousAverageHandler.NotNull(nameof(_previousAverageHandler));
         }
 
         public async Task<ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto>> Handle(MeterReadingFileCreateDto input, IAppUser appUser, CancellationToken cancellationToken)
@@ -74,15 +80,53 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             string filePath = await SaveToDisk(input.ReadingFile, _dbfPath);
             IEnumerable<MeterReadingDetailCreateDto> readingDetails = await GetMeterReadingDetails(input, filePath, appUser.UserId);
 
-
             ICollection<MeterReadingDetailCreateDto> readingDetailsCreate = new List<MeterReadingDetailCreateDto>();
             foreach (var readingDetail in readingDetails)
             {
                 if (CounterStateValidation(readingDetail.CurrentCounterStateCode, readingDetail.CurrentNumber, readingDetail.PreviousNumber))
                 {
-                    MeterImaginaryInputDto meterImaginary = GetMeterImaginary(readingDetail);
-                    AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterImaginary, cancellationToken);
-                    readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false));
+                    if (readingDetail.CurrentCounterStateCode == 1)//xarab
+                    {
+                        float previousAverage = await _previousAverageHandler.HandleByPreviousYear(readingDetail.ZoneId, readingDetail.CustomerNumber, readingDetail.PreviousDateJalali, readingDetail.CurrentDateJalali) ??
+                           await _previousAverageHandler.HandleByLatestReading(readingDetail.ZoneId, readingDetail.CustomerNumber, readingDetail.PreviousDateJalali, readingDetail.CurrentDateJalali);
+                        MeterDateInfoWithMonthlyConsumptionOutputDto meterInfo = new MeterDateInfoWithMonthlyConsumptionOutputDto()
+                        {
+                            BillId = readingDetail.BillId,
+                            CurrentDateJalali = readingDetail.CurrentDateJalali,
+                            MonthlyAverageConsumption = previousAverage,
+                            PreviousDateJalali = readingDetail.PreviousDateJalali,
+                        };
+                        AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterInfo, cancellationToken);
+                        readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false));
+                    }
+                    else if (readingDetail.CurrentCounterStateCode == 2) //taviz
+                    {
+                        int previousNumber = readingDetail.PreviousNumber;
+                        string previousDateJalali = readingDetail.PreviousDateJalali;
+
+                        readingDetail.PreviousNumber = 0;
+                        readingDetail.PreviousDateJalali = readingDetail.TavizDateJalali;//TODO: check has value
+                        MeterImaginaryInputDto meterImaginaryTmp = GetMeterImaginary(readingDetail);
+                        AbBahaCalculationDetails abBahaCalcTmp = await _tariffEngine.Handle(meterImaginaryTmp, cancellationToken);
+
+                        readingDetail.PreviousNumber= previousNumber;
+                        readingDetail.PreviousDateJalali= previousDateJalali;
+                        MeterDateInfoWithMonthlyConsumptionOutputDto meterInfo = new MeterDateInfoWithMonthlyConsumptionOutputDto()
+                        {
+                            BillId = readingDetail.BillId,
+                            CurrentDateJalali = readingDetail.CurrentDateJalali,
+                            MonthlyAverageConsumption = abBahaCalcTmp.MonthlyConsumption,
+                            PreviousDateJalali = readingDetail.PreviousDateJalali,
+                        };                        
+                        AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterInfo, cancellationToken);
+                        readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false));
+                    }
+                    else //not xarab, nor taviz
+                    {
+                        MeterImaginaryInputDto meterImaginary = GetMeterImaginary(readingDetail);
+                        AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterImaginary, cancellationToken);
+                        readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false));
+                    }
                 }
                 else
                 {
