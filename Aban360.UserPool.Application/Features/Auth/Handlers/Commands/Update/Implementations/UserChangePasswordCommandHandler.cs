@@ -21,7 +21,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
         {
             Validate(changePasswordInput);
             User user = await _userQueryService.Get(userId);
-            user.Password = await SecurityOperations.GetSha512Hash(user.Password);            
+            user.Password = await SecurityOperations.GetSha512Hash(changePasswordInput.Password);            
         }
         private void Validate(ChangePasswordInput changePasswordInput)
         {
