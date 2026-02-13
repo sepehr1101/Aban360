@@ -47,7 +47,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
             return @"Select 
                     	MoshtarakinId as Id,
                     	Title	
-                    From [Db70].dbo.CounterVaziat";
+                    From [Db70].dbo.CounterVaziat 
+                    WHERE MoshtarakinId<9";
         }
     }
 }

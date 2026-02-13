@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                 {
                     WaterEventsSummaryOutputDataDto row = data.ElementAt(i);
                     row.EventDateJalali = row.PayDateJalali == null ? row.CurrentMeterDate : row.PayDateJalali;
-                    if (row.TypeCode == 7)
+                    if (row.TypeCode == 7 || row.TypeCode==17 /*17: قبض ابطال شده*/)
                     {
                         row.Remained = lastRemained;
                         continue;
@@ -66,7 +66,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         }
         public async Task<IEnumerable<WaterEventsSummaryOutputDataDto>> GetBillDto(int zoneId, string registerDate, string fromReadingNumber, string toReadingNumber)
         {
-            string query = GetSubscriptionEventsQuerybyZoneAndRegisterDay();
+            string query = GetSubscriptionEventsQueryByZoneAndRegisterDay();
             IEnumerable<WaterEventsSummaryOutputDataDto> result = await _sqlReportConnection.QueryAsync<WaterEventsSummaryOutputDataDto>(query, new { zoneId, registerDate, fromReadingNumber, toReadingNumber });
             if (result.Any())
             {
@@ -123,6 +123,38 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                 (BillId)=@billId  AND
 		        (@fromDate IS NULL OR
 		        RegisterDay<=@fromDate)
+             union
+             select
+	             TRIM(BillId) BillId ,
+                 Id,
+                 PreviousNumber PreviousMeterNumber,
+                 NextNumber NextMeterNumber, 
+                 PreviousDay PreviousMeterDate,
+                 NextDay CurrentMeterDate,
+                 0 Duration,
+                 RegisterDay RegisterDate,
+                 SumItems DebtAmount,
+                 0 CreditAmount,
+                 N'ابطال قبض' [Description],
+                 0 ConsumptionAverage, 
+                 Consumption,
+                 NULL BankTitle,
+                 NULL BankCode,
+                 0 CommercialUnit,
+                 0 DomesticUnit,
+                 0 OtherUnit,
+                 0 EmptyUnit,
+                 0 HouseholderNumber,
+                 0 ContractualCapacity,
+                 0 UsageSellId,
+                 0 UsageConsumptionId,
+                 '' UsageSellTitle,
+                 '' UsageConsumptionTitle,
+                 NULL AS PayDateJalali,
+                 17 TypeCode
+             from [CustomerWarehouse].dbo.RemovedBills
+             where 
+                (BillId=@billId )
              union
              select
                  TRIM(BillId) BillId,
@@ -205,7 +237,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     Order By m.RegisterDateJalali Desc";
         }
 
-        private string GetSubscriptionEventsQuerybyZoneAndRegisterDay()
+        private string GetSubscriptionEventsQueryByZoneAndRegisterDay()
         {
             string query = @"
             use CustomerWarehouse

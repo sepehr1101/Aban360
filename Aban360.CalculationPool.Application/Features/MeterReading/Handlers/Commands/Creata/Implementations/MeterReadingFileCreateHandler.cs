@@ -1,6 +1,5 @@
 ﻿using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Contracts;
 using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts;
-using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Implementations;
 using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
@@ -17,8 +16,6 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using DotNetDBF;
 using FluentValidation;
-using System.Collections.Generic;
-using System.Threading;
 using static Aban360.Common.Extensions.IoExtensions;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Implementations
