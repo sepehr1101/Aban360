@@ -6,5 +6,6 @@
         public short CurrentCounterStateCode { get; set; }
         public string? CurrentDateJalali { get; set; }
         public int CurrentNumber { get; set; }
+        public float? MonthlyAverage { get; set; }
     }
 }

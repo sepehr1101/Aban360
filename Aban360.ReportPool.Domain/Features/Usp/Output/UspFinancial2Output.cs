@@ -37,6 +37,7 @@
         public int roz_gheraat { get; set; }
         public int roz_gheraat_faz { get; set; }
         public string? date { get; set; }
+        public string? Karbari { get; set; }
     }
     public record UspFinancialHeader
     {
@@ -65,6 +66,6 @@
         public long Bodjeh { get; set; }
         public long Maliat { get; set; }
         public long Jam_kol { get; set; }
-        public string? Karbari { get; set; }
+        public string Sp { get; set; }
     }
 }

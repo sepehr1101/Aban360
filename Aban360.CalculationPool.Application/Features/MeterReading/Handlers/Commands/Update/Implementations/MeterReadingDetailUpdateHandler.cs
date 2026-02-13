@@ -57,9 +57,24 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private async Task<AbBahaCalculationDetails> CalcAbBahaTariff(MeterReadingDetailUpdateDto meterReadingDetailUpdate, CancellationToken cancellationToken)
         {
             MeterReadingDetailDataOutputDto meterReadingDetail = await _meterReadingDetailService.GetById(meterReadingDetailUpdate.Id);
+            if (meterReadingDetail.CurrentCounterStateCode == 1 &&
+                meterReadingDetailUpdate.CurrentCounterStateCode == 1 &&
+                meterReadingDetailUpdate.MonthlyAverage.HasValue &&
+                meterReadingDetail.MonthlyConsumption.Value > 0)
+            {
+                MeterDateInfoWithMonthlyConsumptionOutputDto meterInfo = new MeterDateInfoWithMonthlyConsumptionOutputDto()
+                {
+                    BillId = meterReadingDetail.BillId,
+                    CurrentDateJalali = meterReadingDetail.CurrentDateJalali,
+                    MonthlyAverageConsumption = meterReadingDetailUpdate.MonthlyAverage.Value,
+                    PreviousDateJalali = meterReadingDetail.PreviousDateJalali,
+                };
+                AbBahaCalculationDetails abBahaCalc = await _oldTariffEngine.Handle(meterInfo, cancellationToken);
+                return abBahaCalc;
+            }
 
             MeterImaginaryInputDto meterImaginary = GetMeterImaginary(meterReadingDetail, meterReadingDetailUpdate);
-            AbBahaCalculationDetails abBaha= await _oldTariffEngine.Handle(meterImaginary, cancellationToken);
+            AbBahaCalculationDetails abBaha = await _oldTariffEngine.Handle(meterImaginary, cancellationToken);
 
             return abBaha;
         }
