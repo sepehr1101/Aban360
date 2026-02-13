@@ -28,7 +28,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private readonly IAdjustmentFactorQueryService _adjustmentFactorQueryService;
         private readonly IZoneAddHoc _zoneAddHoc;
         private readonly IValidator<SaleInputDto> _validator;
-        private readonly int[] _domesticUsage = { 1, 34 };
+        private readonly int[] _domesticUsage = { 1, 3, 34 };
         private static string _reportTitle = "فروش انشعاب";
         private static string _article2Title = "تبصره 2";
         private static int _nonDomesticAjustmentFactor = 285000;
@@ -153,8 +153,9 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private async Task<IEnumerable<SaleDataOutputDto>> GetArticle11(SaleInputDto inputDto)
         {
             if (IsVillage(inputDto.ZoneId))
-                Array.Empty<SaleDataOutputDto>();
+                return Array.Empty<SaleDataOutputDto>();
 
+            bool isDomestic = _domesticUsage.Contains(inputDto.UsageId);
             int usageMultiplier = GetUsageMultiplierForArticle11(inputDto);
             Article11OutputDto article11Data = await GetArticle11Data(inputDto);
 
@@ -169,40 +170,66 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
             long GetWaterAmount()
             {
-                return (inputDto.IsDomestic ? article11Data.DomesticWaterAmount : article11Data.NonDomesticWaterAmount) * usageMultiplier;
+                if (inputDto.UsageId == 3)
+                    return (article11Data.DomesticWaterAmount * inputDto.DomesticUnit) + (article11Data.NonDomesticWaterAmount * inputDto.ContractualCapacity);
+
+                return (isDomestic ? article11Data.DomesticWaterAmount : article11Data.NonDomesticWaterAmount) * usageMultiplier;
             }
             long? GetSewageAmount()
             {
-                return (inputDto.IsDomestic ? article11Data.DomesticSewageAmount : article11Data.NonDomesticSewageAmount) * usageMultiplier;
+                if (inputDto.UsageId == 3)
+                    return (article11Data.DomesticSewageAmount * inputDto.DomesticUnit) + (article11Data.NonDomesticSewageAmount * inputDto.ContractualCapacity);
+
+                return (isDomestic ? article11Data.DomesticSewageAmount : article11Data.NonDomesticSewageAmount) * usageMultiplier;
             }
         }
         private async Task<ICollection<SaleDataOutputDto>> GetSubscription(SaleInputDto inputDto)
         {
+            bool isDomestic = _domesticUsage.Contains(inputDto.UsageId) ? true : false;
             AdjustmentFactorGetDto adjustmentfactor = await _adjustmentFactorQueryService.Get(inputDto.ZoneId);
+
             long domesticAdjustmentFactor = adjustmentfactor.Price * inputDto.DomesticUnit;
             long constNonDomesticAdjustmentFactor = (long)(adjustmentfactor.AdjustmentFactor * _nonDomesticAjustmentFactor * inputDto.ContractualCapacity);
             long nonDomesticSubscription = constNonDomesticAdjustmentFactor + (_nonDomesticFixed * inputDto.CommertialUnit);
 
+            long adjustmentWaterAmount = 0;
+            long adjustmentSewageAmount = 0;
+            if (inputDto.UsageId == 1)
+            {
+                adjustmentWaterAmount = domesticAdjustmentFactor;
+                adjustmentSewageAmount = (long)(domesticAdjustmentFactor * _domesticSewageMultiplier);
+            }
+            else if (inputDto.UsageId == 3)
+            {
+                adjustmentWaterAmount = domesticAdjustmentFactor + nonDomesticSubscription;
+                adjustmentSewageAmount = (long)((domesticAdjustmentFactor * _domesticSewageMultiplier) + nonDomesticSubscription);
+            }
+            else
+            {
+                adjustmentWaterAmount = nonDomesticSubscription;
+                adjustmentSewageAmount = (long)(nonDomesticSubscription * _nonDomesticSewageMultiplier);
+            }
+
             if (HasSiphon(inputDto))
             {
-                if (inputDto.IsDomestic)
+                if (isDomestic)
                 {
-                    SaleDataOutputDto waterSubscription = await GetSaleData(OfferingEnum.WaterSubscription, domesticAdjustmentFactor, null);
-                    SaleDataOutputDto sewageSubscription = await GetSaleData(OfferingEnum.SewageSubscription, (long)(domesticAdjustmentFactor * _domesticSewageMultiplier), null);
+                    SaleDataOutputDto waterSubscription = await GetSaleData(OfferingEnum.WaterSubscription, adjustmentWaterAmount, null);
+                    SaleDataOutputDto sewageSubscription = await GetSaleData(OfferingEnum.SewageSubscription, adjustmentSewageAmount, null);
 
                     return new[] { waterSubscription, sewageSubscription };
                 }
                 else
                 {
-                    SaleDataOutputDto waterSubscription = await GetSaleData(OfferingEnum.WaterSubscription, nonDomesticSubscription, null);
-                    SaleDataOutputDto sewageSubscription = await GetSaleData(OfferingEnum.SewageSubscription, (long)(nonDomesticSubscription * _nonDomesticSewageMultiplier), null);
+                    SaleDataOutputDto waterSubscription = await GetSaleData(OfferingEnum.WaterSubscription, adjustmentWaterAmount, null);
+                    SaleDataOutputDto sewageSubscription = await GetSaleData(OfferingEnum.SewageSubscription, adjustmentSewageAmount, null);
 
                     return new[] { waterSubscription, sewageSubscription };
                 }
             }
             else
             {
-                SaleDataOutputDto waterSubscription = inputDto.IsDomestic ? await GetSaleData(OfferingEnum.WaterSubscription, domesticAdjustmentFactor, null) : await GetSaleData(OfferingEnum.WaterSubscription, (long)(nonDomesticSubscription), null);
+                SaleDataOutputDto waterSubscription = isDomestic ? await GetSaleData(OfferingEnum.WaterSubscription, adjustmentWaterAmount, null) : await GetSaleData(OfferingEnum.WaterSubscription, (long)(adjustmentWaterAmount), null);
                 SaleDataOutputDto article2 = await GetSewageArticle2(inputDto.ZoneId, waterSubscription.FinalAmount);
                 return new[] { waterSubscription, article2 };
             }
@@ -313,8 +340,8 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         private int GetUsageMultiplierForArticle11(SaleInputDto inputDto)
         {
-            int usageMultiplier = inputDto.IsDomestic ? inputDto.DomesticUnit : inputDto.ContractualCapacity;
-            return inputDto.UsageId == 3 ? inputDto.ContractualCapacity * inputDto.DomesticUnit : usageMultiplier;
+            return IsDomestic(inputDto.UsageId) ? inputDto.DomesticUnit : inputDto.ContractualCapacity;
+            //  return inputDto.UsageId == 3 ? inputDto.ContractualCapacity + inputDto.DomesticUnit : usageMultiplier;
         }
 
         private bool HasSiphon(SaleInputDto input) => input.SiphonDiameterId != null && input.SiphonDiameterId > 0 ? true : false;
