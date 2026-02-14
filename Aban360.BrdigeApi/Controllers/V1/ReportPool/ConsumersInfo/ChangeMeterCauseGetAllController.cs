@@ -20,6 +20,15 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
         [HttpPost, HttpGet]
         [Route("change-cuase")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<NumericDictionary>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ChangeCuase(CancellationToken cancellationToken)
+        {
+            IEnumerable<NumericDictionary> result = await _changeMeterCause.Handle(cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("change-cause")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<NumericDictionary>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ChangeCause(CancellationToken cancellationToken)
         {
             IEnumerable<NumericDictionary> result = await _changeMeterCause.Handle(cancellationToken);

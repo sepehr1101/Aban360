@@ -1,5 +1,4 @@
 ﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
-using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
