@@ -81,6 +81,10 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             {
                 taxAmount += differentData.Where(s => s.Id == (short)AfterSaleCompanyServiceEnum.MeterRelocation).FirstOrDefault().FinalAmount;
             }
+            if (companyServiceEnum.Contains(AfterSaleCompanyServiceEnum.ChangeSpecifications))
+            {
+                taxAmount += differentData.Where(s => s.Id == (short)AfterSaleCompanyServiceEnum.ChangeSpecifications).FirstOrDefault().FinalAmount;
+            }
             SaleDataOutputDto previousTax = new(0, _taxTitle, 0, 0, 0);
             SaleDataOutputDto currentTax = new(0, _taxTitle, 0, 0, 0);
             SaleDataOutputDto differentTax = new(0, _taxTitle, (long)(taxAmount * 0.1f), 0, (long)(taxAmount * 0.1f));
@@ -119,6 +123,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         private void ValidationOffering(AfterSaleInputDto input)
         {
+            int[] domesticUsageWithoutContractual = { 1, 34 };
             IEnumerable<AfterSaleCompanyServiceEnum> afterSaleCompanySelected = GetAfterSaleCompanyServiceSelected(input.CompanyServiceIds);
             if (input.PreviousData.WaterDiameterId != input.CurrentData.WaterDiameterId && !afterSaleCompanySelected.Contains(AfterSaleCompanyServiceEnum.ChangeMeterDiameter))
             {
@@ -128,14 +133,27 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeSiphonDiameter));
             }
+            if (input.PreviousData.SiphonDiameterId is null && input.CurrentData.SiphonDiameterId is not null && !afterSaleCompanySelected.Contains(AfterSaleCompanyServiceEnum.WastewaterBranch))
+            {
+                throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.GetSewage));
+            }
+            if (input.PreviousData.SiphonDiameterId is not null && input.CurrentData.SiphonDiameterId is not null
+                && input.PreviousData.SiphonDiameterId != input.CurrentData.SiphonDiameterId
+                && !afterSaleCompanySelected.Contains(AfterSaleCompanyServiceEnum.ChangeSiphonDiameter))
+            {
+                throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeSiphonDiameter));
+            }
             if (input.PreviousData.UsageId != input.CurrentData.UsageId && !afterSaleCompanySelected.Contains(AfterSaleCompanyServiceEnum.ChangeUsage))
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeUsage));
             }
-            if (input.PreviousData.ContractualCapacity != input.CurrentData.ContractualCapacity && !afterSaleCompanySelected.Contains(AfterSaleCompanyServiceEnum.ChangeContractualCapacity))
+            if (!domesticUsageWithoutContractual.Contains(input.PreviousData.UsageId) && input.CurrentData.UsageId == 3 &&
+                input.PreviousData.ContractualCapacity != input.CurrentData.ContractualCapacity && !afterSaleCompanySelected.Contains(AfterSaleCompanyServiceEnum.ChangeContractualCapacity))
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeContractualCapacity));
             }
+
+
             //if (input.PreviousData.DiscountTypeId.HasValue && input.PreviousData.DiscountTypeId.Value > 0 &&
             //    input.CurrentData.DiscountTypeId.HasValue && input.CurrentData.DiscountTypeId.Value > 0)
             //{
@@ -173,10 +191,13 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             currentItems.Add(currentTax);
             differentItems.Add(differentTax);
 
-            var (previousArticle11, currentArticle11, differentArticle11) = await GetSewageArticle2(input.ZoneId, companyServiceData.DifferentValue.Where(s => s.Id == (short)OfferingEnum.WaterSubscription).FirstOrDefault().FinalAmount);
-            previousItems.Add(previousArticle11);
-            currentItems.Add(currentArticle11);
-            differentItems.Add(differentArticle11);
+            if (!HasSiphon(input.CurrentData.SiphonDiameterId))
+            {
+                var (previousArticle11, currentArticle11, differentArticle11) = await GetSewageArticle2(input.ZoneId, companyServiceData.DifferentValue.Where(s => s.Id == (short)OfferingEnum.WaterSubscription).FirstOrDefault().FinalAmount);
+                previousItems.Add(previousArticle11);
+                currentItems.Add(currentArticle11);
+                differentItems.Add(differentArticle11);
+            }
 
 
 
@@ -202,7 +223,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 ZoneId = zoneId,
                 UsageId = input.UsageId,
                 Block = block,
-                IsDomestic = input.IsDomestic,
+                //IsDomestic = input.IsDomestic,
                 DiscountTypeId = input.DiscountTypeId,
                 DiscountCount = input.DiscountCount,
                 HasWaterBroker = input.HasWaterBroker,
@@ -378,6 +399,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 false :
                 true;
         }
+        private bool HasSiphon(int? siphonDiameterId) => siphonDiameterId != null && siphonDiameterId > 0 ? true : false;
     }
     public enum AfterSaleCompanyServiceEnum
     {
