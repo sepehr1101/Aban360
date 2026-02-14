@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using System.Data;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.Common.Literals;
+using DNTPersianUtils.Core;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations
 {
@@ -56,6 +57,13 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         {
             SubscriptionGetDto previousSubscription = await GetConsumptionPreviousInfo(inputDto.BillId);
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, previousSubscription);
+
+            await UpdateCustomer(customerUpdate);
+        }
+        public async Task Handle(ServiceLinkConnectionInput inputDto, int deletionStateId, CancellationToken cancellationToken)
+        {
+            SubscriptionGetDto previousSubscription = await GetConsumptionPreviousInfo(inputDto.BillId);
+            CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, deletionStateId, previousSubscription);
 
             await UpdateCustomer(customerUpdate);
         }
@@ -121,8 +129,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 Operator = inputDto.Operator,
                 SewageInstallationDateJalali = DateValidation(inputDto.SewageInstallationDateJalali, false),
                 SewageRequestDateJalali = DateValidation(inputDto.SewageRequestDateJalali, false),
-                MeterInstallationDateJalali = DateValidation(inputDto.MeterInstallationDateJalali,true),
-                MeterRequestDateJalali = DateValidation(inputDto.MeterRequestDateJalali,true),
+                MeterInstallationDateJalali = DateValidation(inputDto.MeterInstallationDateJalali, true),
+                MeterRequestDateJalali = DateValidation(inputDto.MeterRequestDateJalali, true),
                 Siphon100 = inputDto.Siphon100,
                 Siphon125 = inputDto.Siphon125,
                 Siphon150 = inputDto.Siphon150,
@@ -370,6 +378,66 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 MeterRegisterDateJalali = DateValidation(inputDto.MeterRegisterDateJalali, true),
                 SewageRegisterDateJalali = DateValidation(inputDto.SewageRegisterDateJalali, false),
                 GuildId = previousSubscription.GuildId
+            };
+        }
+        private CustomerUpdateDto GetCustomerUpdate(ServiceLinkConnectionInput inputDto, int deletionStateId, SubscriptionGetDto previousSubscription)
+        {
+            return new CustomerUpdateDto()
+            {
+                Id = previousSubscription.Id,
+                CustomerNumber = previousSubscription.CustomerNumber,
+                ZoneId = previousSubscription.ZoneId,
+                BillId = previousSubscription.BillId,
+                X = previousSubscription.X,
+                Y = previousSubscription.Y,
+                ReadingNumber = previousSubscription.ReadingNumber,
+                FirstName = previousSubscription.FirstName,
+                Surname = previousSubscription.Surname,
+                Address = previousSubscription.Address,
+                PostalCode = previousSubscription.PostalCode,
+                Plaque = previousSubscription.Plaque,
+                NationalCode = previousSubscription.NationalCode,
+                PhoneNumber = previousSubscription.PhoneNumber,
+                MobileNumber = previousSubscription.MobileNumber,
+                FatherName = previousSubscription.FatherName,
+                BranchTypeId = previousSubscription.BranchTypeId,
+                UsageSellId = previousSubscription.UsageSellId,
+                UsageConsumptionId = previousSubscription.UsageConsumptionId,
+                EmptyUnit = previousSubscription.EmptyUnit,
+                CommertialUnit = previousSubscription.CommertialUnit,
+                DomesticUnit = previousSubscription.DomesticUnit,
+                OtherUnit = previousSubscription.OtherUnit,
+                HouseholdDateJalali = DateValidation(previousSubscription.HouseholdDateJalali, false),
+                HouseholdNumber = previousSubscription.HouseholdNumber,
+                MeterDiamterId = previousSubscription.MeterDiameterId,
+                IsSpecial = previousSubscription.IsSpecial,
+                ContractualCapacity = previousSubscription.ContractualCapacity,
+                ImprovementCommertial = previousSubscription.ImprovementCommertial,
+                ImprovementDomestic = previousSubscription.ImprovementDomestic,
+                ImprovementOverall = previousSubscription.ImprovementOverall,
+                Premises = previousSubscription.Premises,
+                Operator = 0,//todo
+                SewageInstallationDateJalali = DateValidation(previousSubscription.SewageInstallationDateJalali, false),
+                SewageRequestDateJalali = DateValidation(previousSubscription.SewageRequestDateJalali, false),
+                MeterInstallationDateJalali = DateValidation(previousSubscription.MeterInstallationDateJalali, false),
+                MeterRequestDateJalali = DateValidation(previousSubscription.MeterRequestDateJalali, false),
+                Siphon100 = previousSubscription.Siphon100,
+                Siphon125 = previousSubscription.Siphon125,
+                Siphon150 = previousSubscription.Siphon150,
+                Siphon200 = previousSubscription.Siphon200,
+                Siphon5 = previousSubscription.Siphon5,
+                Siphon6 = previousSubscription.Siphon6,
+                Siphon7 = previousSubscription.Siphon7,
+                Siphon8 = previousSubscription.Siphon8,
+                MainSiphon = previousSubscription.MainSiphon,
+                DeletionStateId = deletionStateId,
+                BodySerial = previousSubscription.BodySerial ?? string.Empty,
+                CommonSiphon = previousSubscription.CommonSiphon,
+                MeterRegisterDateJalali = DateValidation(previousSubscription.MeterRegisterDateJalali, false),
+                SewageRegisterDateJalali = DateValidation(previousSubscription.SewageRegisterDateJalali, false),
+                GuildId = previousSubscription.GuildId,
+                ToDayDateJalali = inputDto.When.ToShortPersianDateString(),
+                ToDayDateJalaliWithFragmentYear = inputDto.When.ToShortPersianDateString().Substring(2, 8),
             };
         }
 

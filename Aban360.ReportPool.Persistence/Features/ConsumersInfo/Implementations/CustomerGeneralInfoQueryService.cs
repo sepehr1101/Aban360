@@ -141,7 +141,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 						TRIM(m.MOBILE) as MobileNumber,
 						m.eshtrak as ReadingNumber,
 						m.bill_id as BillId,
-						m.cod_enshab as UsageTitle,
+						t41.C1 as UsageTitle,
 						m.fix_mas as ContractualCapacity,
 						m.enshab as MeterDiameterId,
 						t5.C2 as MeterDiameterTitle,
@@ -186,6 +186,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 						ON m.noe_va=t7.C0
 					Left join Db70.dbo.T5 t5
 						ON m.enshab=t5.C0
+					Left Join [Db70].dbo.T41 t41
+						ON m.cod_enshab=t41.C0
 					Where 
 						town=@zoneId AND
 						radif=@customerNumber";

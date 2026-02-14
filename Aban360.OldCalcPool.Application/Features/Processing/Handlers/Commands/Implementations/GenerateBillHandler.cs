@@ -1,6 +1,6 @@
 ﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
-using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
+using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
@@ -9,28 +9,33 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
+using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using DNTPersianUtils.Core;
 using FluentValidation;
+using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
-    internal sealed class GenerateBillHandler : IGenerateBillHandler
+    internal sealed class GenerateBillHandler : AbstractBaseConnection, IGenerateBillHandler
     {
-        private readonly IBedBesCommandService _bedBesCreateService;
+        // private readonly IBedBesCommandService _bedBesCreateService;
         private readonly ICustomerInfoService _customerInfoService;
         private readonly IOldTariffEngine _tariffEngine;
-        private readonly IKasrHaService _kasrHaService;
+        //private readonly IKasrHaService _kasrHaService;
         private readonly IValidator<GenerateBillInputDto> _validator;
         const int _paymentDeadline = 7;
 
-        public GenerateBillHandler(IBedBesCommandService bedBesCreateService,
+        public GenerateBillHandler(//IBedBesCommandService bedBesCreateService,
             ICustomerInfoService customerInfoService,
             IOldTariffEngine tariffEngine,
-            IKasrHaService kasrHaService,
+            //  IKasrHaService kasrHaService,
+            IConfiguration configuration,
             IValidator<GenerateBillInputDto> validator)
+            : base(configuration)
         {
-            _bedBesCreateService = bedBesCreateService;
-            _bedBesCreateService.NotNull(nameof(bedBesCreateService));
+            //_bedBesCreateService = bedBesCreateService;
+            //_bedBesCreateService.NotNull(nameof(bedBesCreateService));
 
             _customerInfoService = customerInfoService;
             _customerInfoService.NotNull(nameof(customerInfoService));
@@ -38,8 +43,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             _tariffEngine = tariffEngine;
             _tariffEngine.NotNull(nameof(tariffEngine));
 
-            _kasrHaService = kasrHaService;
-            _kasrHaService.NotNull(nameof(kasrHaService));
+            //_kasrHaService = kasrHaService;
+            //_kasrHaService.NotNull(nameof(kasrHaService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -52,63 +57,89 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             CustomerInfoGetDto customerInfo = await _customerInfoService.Get(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
             CounterStateValidation(inputDto.CounterStateCode, inputDto.MeterNumber, customerInfo.BedBesInfo.LastMeterNumber);
 
-            MeterImaginaryInputDto tariffImaginaryData = GetMeterImaginary(customerInfo, inputDto);
-            AbBahaCalculationDetails abBahaCalcResult = await _tariffEngine.Handle(tariffImaginaryData, cancellationToken);
+            MeterInfoByPreviousDataInputDto tariffMeterInfoByPreviousData = GetMeterInfoByPreviousData(customerInfo, inputDto);
+            AbBahaCalculationDetails abBahaCalcResult = await _tariffEngine.Handle(tariffMeterInfoByPreviousData, cancellationToken);
             if (!inputDto.IsConfirm)
             {
                 return abBahaCalcResult;
             }
             BedBesCreateDto bedBes = GetBedBes(customerInfo, abBahaCalcResult, inputDto);
-            await _bedBesCreateService.Create(bedBes, zoneIdAndCustomerNumber.ZoneId);
-            if (abBahaCalcResult.DiscountSum > 0)
+            KasrHaDto kasrHa = GerKasrHa(customerInfo, abBahaCalcResult, inputDto);
+
+            using (IDbConnection connection = _sqlReportConnection)
             {
-                KasrHaDto kasrHa = GerKasrHa(customerInfo, abBahaCalcResult, inputDto);
-                await _kasrHaService.Create(kasrHa, zoneIdAndCustomerNumber.ZoneId);
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    IBedBesCommandService bedBedCommandService = new BedBesCommandService(_sqlReportConnection, transaction);
+                    IKasrHaCommandService kasrHasCommandService = new KasrHaCommandService(_sqlReportConnection, transaction);
+
+                    await bedBedCommandService.Create(bedBes, zoneIdAndCustomerNumber.ZoneId);
+                    if (abBahaCalcResult.DiscountSum > 0)
+                    {
+                        await kasrHasCommandService.Create(kasrHa, zoneIdAndCustomerNumber.ZoneId);
+                    }
+                }
             }
 
             return abBahaCalcResult;
         }
-        private MeterImaginaryInputDto GetMeterImaginary(CustomerInfoGetDto customerInfo, GenerateBillInputDto generateBillInfo)
+        private MeterInfoByPreviousDataInputDto GetMeterInfoByPreviousData(CustomerInfoGetDto customerInfo, GenerateBillInputDto generateBillInfo)
         {
-            CustomerDetailInfoInputDto customerDetail = new()
+            return new MeterInfoByPreviousDataInputDto()
             {
-                ZoneId = customerInfo.MembersInfo.ZoneId,
-                Radif = customerInfo.MembersInfo.CustomerNumber,
-                BranchType = 0,//todo
-                UsageId = customerInfo.MembersInfo.UsageId,
-                DomesticUnit = customerInfo.MembersInfo.DomesticUnit,
-                CommertialUnit = customerInfo.MembersInfo.CommercialUnit,
-                OtherUnit = customerInfo.MembersInfo.OtherUnit,
-                EmptyUnit = customerInfo.MembersInfo.EmptyUnit,
-                WaterInstallationDateJalali = customerInfo.MembersInfo.WaterInstallationDateJalali,
-                SewageInstallationDateJalali = customerInfo.MembersInfo.SewageInstallationDateJalali,
-                WaterRegisterDate = customerInfo.MembersInfo.WaterRegisterDate,
-                SewageRegisterDate = customerInfo.MembersInfo.SewageRegisterDate,
-                SewageCalcState = customerInfo.MembersInfo.SewageCalcState,
-                ContractualCapacity = customerInfo.MembersInfo.ContractualCapacity,
-                HouseholdDate = customerInfo.MembersInfo.HouseholdDate,
-                HouseholdNumber = customerInfo.MembersInfo.HouseholdNumber,
-                ReadingNumber = customerInfo.MembersInfo.ReadingNumber,
-                VillageId = customerInfo.MembersInfo.VillageId,
-                IsSpecial = customerInfo.MembersInfo.IsSpecial,
-                VirtualCategoryId = customerInfo.MembersInfo.VirtualCategoryId,
-                CounterStateCode = 0,//s.MembersInfo.CurrentCounterStateCode,
-            };
-            MeterInfoByPreviousDataInputDto meterInfo = new()
-            {
-                BillId = generateBillInfo.BillId,
+                BillId = customerInfo.MembersInfo.BillId,
                 PreviousDateJalali = customerInfo.BedBesInfo.LastMeterDateJalali,
                 PreviousNumber = customerInfo.BedBesInfo.LastMeterNumber ?? 0,
                 CurrentDateJalali = DateTime.Now.ToShortPersianDateString(),
                 CurrentMeterNumber = generateBillInfo.MeterNumber,
-                CounterStateCode = 0
-            };
-            return new MeterImaginaryInputDto()
-            {
-                CustomerInfo = customerDetail,
-                MeterPreviousData = meterInfo,
+                CounterStateCode = generateBillInfo.CounterStateCode
             };
         }
+        //private MeterImaginaryInputDto GetMeterImaginary(CustomerInfoGetDto customerInfo, GenerateBillInputDto generateBillInfo)
+        //{
+        //    CustomerDetailInfoInputDto customerDetail = new()
+        //    {
+        //        ZoneId = customerInfo.MembersInfo.ZoneId,
+        //        Radif = customerInfo.MembersInfo.CustomerNumber,
+        //        BranchType = 0,//todo
+        //        UsageId = customerInfo.MembersInfo.UsageId,
+        //        DomesticUnit = customerInfo.MembersInfo.DomesticUnit,
+        //        CommertialUnit = customerInfo.MembersInfo.CommercialUnit,
+        //        OtherUnit = customerInfo.MembersInfo.OtherUnit,
+        //        EmptyUnit = customerInfo.MembersInfo.EmptyUnit,
+        //        WaterInstallationDateJalali = customerInfo.MembersInfo.WaterInstallationDateJalali,
+        //        SewageInstallationDateJalali = customerInfo.MembersInfo.SewageInstallationDateJalali,
+        //        WaterRegisterDate = customerInfo.MembersInfo.WaterRegisterDate,
+        //        SewageRegisterDate = customerInfo.MembersInfo.SewageRegisterDate,
+        //        SewageCalcState = customerInfo.MembersInfo.SewageCalcState,
+        //        ContractualCapacity = customerInfo.MembersInfo.ContractualCapacity,
+        //        HouseholdDate = customerInfo.MembersInfo.HouseholdDate,
+        //        HouseholdNumber = customerInfo.MembersInfo.HouseholdNumber,
+        //        ReadingNumber = customerInfo.MembersInfo.ReadingNumber,
+        //        VillageId = customerInfo.MembersInfo.VillageId,
+        //        IsSpecial = customerInfo.MembersInfo.IsSpecial,
+        //        VirtualCategoryId = customerInfo.MembersInfo.VirtualCategoryId,
+        //        CounterStateCode = 0,//s.MembersInfo.CurrentCounterStateCode,
+        //    };
+        //    MeterInfoByPreviousDataInputDto meterInfo = new()
+        //    {
+        //        BillId = generateBillInfo.BillId,
+        //        PreviousDateJalali = customerInfo.BedBesInfo.LastMeterDateJalali,
+        //        PreviousNumber = customerInfo.BedBesInfo.LastMeterNumber ?? 0,
+        //        CurrentDateJalali = DateTime.Now.ToShortPersianDateString(),
+        //        CurrentMeterNumber = generateBillInfo.MeterNumber,
+        //        CounterStateCode = 0
+        //    };
+        //    return new MeterImaginaryInputDto()
+        //    {
+        //        CustomerInfo = customerDetail,
+        //        MeterPreviousData = meterInfo,
+        //    };
+        //}
         private BedBesCreateDto GetBedBes(CustomerInfoGetDto customerInfo, AbBahaCalculationDetails abBahaCalc, GenerateBillInputDto generateBillInfo)
         {
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();

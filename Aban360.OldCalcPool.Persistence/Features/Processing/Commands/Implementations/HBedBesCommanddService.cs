@@ -1,22 +1,37 @@
 ﻿using Aban360.Common.Db.Dapper;
+using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
 using Dapper;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations
 {
-    internal sealed class HBedBesCommanddService : AbstractBaseConnection, IHBedBesCommanddService
+    public sealed class HBedBesCommanddService : IHBedBesCommanddService
     {
-        public HBedBesCommanddService(IConfiguration configuration)
-            : base(configuration)
+        private readonly SqlConnection _connection;
+        private readonly IDbTransaction _transaction;
+        public HBedBesCommanddService(
+            SqlConnection connection,
+            IDbTransaction transaction)
         {
+            _connection = connection;
+            _connection.NotNull(nameof(connection));
+
+            _transaction = transaction;
+            _transaction.NotNull(nameof(transaction));
         }
+
+        //public HBedBesCommanddService(IConfiguration configuration)
+        //    : base(configuration)
+        //{
+        //}
 
         public async Task Insert(RemoveBillDataInputDto input)
         {
             string command = GetInsertCommand();
-            await _sqlReportConnection.ExecuteAsync(command, input);
+            await _connection.ExecuteAsync(command, input);
         }
 
         private string GetInsertCommand()

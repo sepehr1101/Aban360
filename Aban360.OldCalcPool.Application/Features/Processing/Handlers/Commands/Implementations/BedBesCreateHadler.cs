@@ -1,23 +1,27 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Db.Dapper;
+using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
+using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
-    internal sealed class BedBesCreateHadler : IBedBesCreateHadler
+    internal sealed class BedBesCreateHadler : AbstractBaseConnection, IBedBesCreateHadler
     {
-        private readonly IBedBesCommandService _bedBesCreateService;
+        //private readonly IBedBesCommandService _bedBesCreateService;
         private readonly IConfiguration _configuration;
         public BedBesCreateHadler(
-            IBedBesCommandService bedBesCreateService,
+            //IBedBesCommandService bedBesCreateService,
             IConfiguration configuration)
+            : base(configuration)
         {
-            _bedBesCreateService = bedBesCreateService;
-            _bedBesCreateService.NotNull(nameof(_bedBesCreateService));
+            //_bedBesCreateService = bedBesCreateService;
+            //_bedBesCreateService.NotNull(nameof(_bedBesCreateService));
 
             _configuration = configuration;
             _configuration.NotNull(nameof(_configuration));
@@ -25,8 +29,17 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
         public async Task Handle(AbBahaCalculationDetails inputDto, decimal codVas, CancellationToken cancellationToken)
         {
-            int dayToPay = int.Parse(_configuration["Invoice:TimeToPay"]);
+            BedBesCreateDto bedBesDto = GetBedBesCreateDto(inputDto, (int)codVas);
 
+            using (IDbTransaction transaction = _sqlReportConnection.BeginTransaction(IsolationLevel.ReadUncommitted))
+            {
+                IBedBesCommandService bedBesCommandService = new BedBesCommandService(_sqlReportConnection,transaction);
+                await bedBesCommandService.Create(bedBesDto, (int)bedBesDto.Town);
+            }
+        }
+        private BedBesCreateDto GetBedBesCreateDto(AbBahaCalculationDetails inputDto, int codVas)
+        {
+            int dayToPay = int.Parse(_configuration["Invoice:TimeToPay"]);
 
             BedBesCreateDto bedBesDto = new BedBesCreateDto();
             #region
@@ -101,7 +114,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             bedBesDto.Avarez = (decimal)inputDto.AvarezAmount;
             bedBesDto.TrackNumber = 0;//from input
             #endregion
-            await _bedBesCreateService.Create(bedBesDto,(int)bedBesDto.Town);
+            return bedBesDto;
         }
         private double GetSumDiscount(AbBahaCalculationDetails ss)
         {

@@ -37,8 +37,8 @@ namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
         public int MeterDiamterId { get; set; }
         public bool IsSpecial { get; set; }
         public int ContractualCapacity { get; set; }
-        public string ToDayDateJalali => DateTime.Now.ToShortPersianDateString();
-        public string ToDayDateJalaliWithFragmentYear => ToDayDateJalali.Substring(2, 8);
+        public string ToDayDateJalali { get; set; } = DateTime.Now.ToShortPersianDateString();
+        public string ToDayDateJalaliWithFragmentYear { get; set; } = DateTime.Now.ToShortPersianDateString().Substring(2, 8);
 
 
         public string MeterInstallationDateJalali { get; set; }
