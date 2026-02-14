@@ -10,5 +10,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.C
         Task Handle(CustomerUpdate2Dto inputDto, CancellationToken cancellationToken);
         Task Handle(CustomerUpdate3Dto inputDto, CancellationToken cancellationToken);
         Task Handle(CustomerUpdate5Dto inputDto, CancellationToken cancellationToken);
+        Task Handle(ServiceLinkConnectionInput inputDto, int deletionStateId, CancellationToken cancellationToken);
     }
 }
