@@ -21,8 +21,8 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
         [Route("remove")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Remove(RemoveBillInputDto input, CancellationToken cancellationToken)
-        {
-            await _removedBillHandler.Handle(input, cancellationToken);
+        {           
+            //await _removedBillHandler.Handle(input, cancellationToken);
             return Ok(input);
         }
     }

@@ -2,7 +2,6 @@
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
-using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.ReportPool.Domain.Features.Transactions;
@@ -20,13 +19,16 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         //private readonly IHBedBesCommanddService _hbedBesCommanddService;
         //private readonly IKasrHaService _kasrHaService;
         private readonly IBedBesQueryService _billQueryService;
+        private readonly IVariabService _variabService;
+
         public RemoveBillHandler(
             ICustomerInfoQueryService customerInfoQueryService,
             //IBedBesCommandService bedBesCommandService,
             //IHBedBesCommanddService hbedBesCommanddService,
             //IKasrHaCommandService kasrHaService,
             IBedBesQueryService billQueryService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IVariabService variabService)
                 : base(configuration)
         {
             _customerInfoQueryService = customerInfoQueryService;
@@ -34,10 +36,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             _billQueryService = billQueryService;
             _billQueryService.NotNull(nameof(billQueryService));
+
+            _variabService = variabService;
+            _variabService.NotNull(nameof(_variabService));
         }
 
         public async Task Handle(RemoveBillInputDto input, CancellationToken cancellationToken)
         {
+            _variabService.GetAndRenew();
             RemoveBillDataInputDto removeBill = await GetRemoveBillInputDto(input);
             removeBill.ToDayDateJalali = DateTime.Now.ToShortPersianDateString();
 
@@ -53,9 +59,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     KasrHaCommandService kasrHaCommandService = new KasrHaCommandService(_sqlReportConnection, transaction);
                     HBedBesCommanddService hbedBesCommandService = new HBedBesCommanddService(_sqlReportConnection, transaction);
 
-                    await bedBesCommandService.Delete(removeBill.Id);
+                    await bedBesCommandService.Delete(removeBill.Id, removeBill.ZoneId);
                     await kasrHaCommandService.Delete(removeBill);
                     await hbedBesCommandService.Insert(removeBill);
+                    transaction.Commit();
                 }
             }
         }

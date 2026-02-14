@@ -8,8 +8,8 @@ using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Cont
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
-using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
+using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +24,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IOldTariffEngine _tariffEngine;
         //private readonly IKasrHaService _kasrHaService;
         private readonly IValidator<GenerateBillInputDto> _validator;
+        private readonly IVariabService _variabService;
+
         const int _paymentDeadline = 7;
 
         public GenerateBillHandler(//IBedBesCommandService bedBesCreateService,
@@ -31,7 +33,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             IOldTariffEngine tariffEngine,
             //  IKasrHaService kasrHaService,
             IConfiguration configuration,
-            IValidator<GenerateBillInputDto> validator)
+            IValidator<GenerateBillInputDto> validator,
+            IVariabService variabService)
             : base(configuration)
         {
             //_bedBesCreateService = bedBesCreateService;
@@ -48,6 +51,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
+
+            _variabService = variabService;
+            _variabService.NotNull(nameof(variabService));
         }
 
         public async Task<AbBahaCalculationDetails> Handle(GenerateBillInputDto inputDto, CancellationToken cancellationToken)
@@ -63,7 +69,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             {
                 return abBahaCalcResult;
             }
-            BedBesCreateDto bedBes = GetBedBes(customerInfo, abBahaCalcResult, inputDto);
+            BedBesCreateDto bedBes = await GetBedBes(customerInfo, abBahaCalcResult, inputDto);
             KasrHaDto kasrHa = GerKasrHa(customerInfo, abBahaCalcResult, inputDto);
 
             using (IDbConnection connection = _sqlReportConnection)
@@ -71,7 +77,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 if (connection.State != ConnectionState.Open)
                 {
                     connection.Open();
-                }
+                }                
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     BedBesCommandService bedBedCommandService = new BedBesCommandService(_sqlReportConnection, transaction);
@@ -82,6 +88,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     {
                         await kasrHasCommandService.Create(kasrHa, zoneIdAndCustomerNumber.ZoneId);
                     }
+                    transaction.Commit();
                 }
             }
 
@@ -140,18 +147,19 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         //        MeterPreviousData = meterInfo,
         //    };
         //}
-        private BedBesCreateDto GetBedBes(CustomerInfoGetDto customerInfo, AbBahaCalculationDetails abBahaCalc, GenerateBillInputDto generateBillInfo)
+        private async Task<BedBesCreateDto> GetBedBes(CustomerInfoGetDto customerInfo, AbBahaCalculationDetails abBahaCalc, GenerateBillInputDto generateBillInfo)
         {
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
             string mohlatDateJalali = DateTime.Now.AddDays(_paymentDeadline).ToShortPersianDateString();
             string paymentId = TransactionIdGenerator.GeneratePaymentId((long)abBahaCalc.SumItems, abBahaCalc.Customer.BillId);
+            decimal barge = await _variabService.GetAndRenew(abBahaCalc.Customer.ZoneId);
 
             return new BedBesCreateDto()
             {
                 Town = customerInfo.MembersInfo.ZoneId,
                 Radif = customerInfo.MembersInfo.CustomerNumber,
                 Eshtrak = customerInfo.MembersInfo.ReadingNumber,
-                Barge = 0,
+                Barge = barge,
                 PriNo = (decimal)customerInfo.BedBesInfo.LastMeterNumber,
                 TodayNo = generateBillInfo.MeterNumber,
                 PriDate = customerInfo.BedBesInfo.LastMeterDateJalali,
@@ -191,9 +199,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 Masjar = 0,
                 Sabt = 1,
                 Rate = (decimal)abBahaCalc.MonthlyConsumption,
-                Operator = 5,//generate manula bill
+                Operator = 5,//generate manual bill
                 Mamor = 0,
-                TavizDate = customerInfo.TavizInfo.TavizDateJalali ?? string.Empty,
+                TavizDate = customerInfo?.TavizInfo?.TavizDateJalali ?? string.Empty,
                 ZaribCntr = 0,
                 Zabresani = 0,
                 ZaribD = (decimal)abBahaCalc.JavaniAmount,
