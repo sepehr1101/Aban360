@@ -8,7 +8,7 @@
         public int ZoneId { get; set; }
         public int UsageId { get; set; }
         public string? Block { get; set; }
-        public bool IsDomestic { get; set; }
+       // public bool IsDomestic { get; set; }
         public bool? HasWaterBroker { get; set; }
         public int ContractualCapacity { get; set; }
         public int DomesticUnit { get; set; }

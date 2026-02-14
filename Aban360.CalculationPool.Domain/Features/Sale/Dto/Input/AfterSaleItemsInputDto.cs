@@ -5,7 +5,7 @@
         public short WaterDiameterId { get; set; }
         public short? SiphonDiameterId { get; set; }
         public int UsageId { get; set; }
-        public bool IsDomestic { get; set; }
+       // public bool IsDomestic { get; set; }
         public bool? HasWaterBroker { get; set; }
         public int ContractualCapacity { get; set; }
         public int DomesticUnit { get; set; }
