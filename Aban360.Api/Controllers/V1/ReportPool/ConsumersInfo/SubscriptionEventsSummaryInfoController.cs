@@ -20,6 +20,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
             _subscriptionEventHandler.NotNull(nameof(subscriptionEventHandler));
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("events-summary")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>>), StatusCodes.Status200OK)]

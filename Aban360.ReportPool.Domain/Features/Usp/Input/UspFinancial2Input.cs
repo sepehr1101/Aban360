@@ -11,5 +11,7 @@
         public short BranchGroupType { get; set; }
         public int ZoneId { get; set; }
         public int ZoneGroupingType { get; set; }
+
+        public string? Sp { get; set; } = default;
     }
 }

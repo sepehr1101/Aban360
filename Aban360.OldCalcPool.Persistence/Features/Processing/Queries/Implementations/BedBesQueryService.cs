@@ -312,7 +312,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     Where
                     	town=@zoneId AND
                     	radif=@customerNumber AND
-                    	today_date=@nexDay
+                    	today_date<@nexDay AND
+                        cod_vas=0
                     Order By date_bed Desc";
         }
         private string GetAverageQuery(string dbName)
@@ -320,7 +321,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             return @$"use [{dbName}]
                     select AVG(rate) from bed_bes where 
                     radif=@customerNumber and today_date>=@fromDate and pri_date<@toDate AND
-                    cod_vas NOT IN(4,7,8)";
+                    cod_vas NOT IN(1,2,3,4,5,6,7,8)";
         }
         private string GetListByFromToDate(string dbName)
         {
