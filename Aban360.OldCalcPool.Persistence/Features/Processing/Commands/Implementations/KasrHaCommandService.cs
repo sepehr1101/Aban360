@@ -1,22 +1,33 @@
-﻿using Aban360.Common.Db.Dapper;
-using Aban360.Common.Exceptions;
+﻿using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
 using Dapper;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 using System.Data;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations
 {
-    internal sealed class KasrHaService : AbstractBaseConnection, IKasrHaService
+    public sealed class KasrHaCommandService //: IKasrHaCommandService
     {
+        private readonly SqlConnection _connection;
+        private readonly IDbTransaction _transaction;
         private static string tableName = "KasrHa";
-        public KasrHaService(IConfiguration configuration)
-            : base(configuration)
+        //public KasrHaService(IConfiguration configuration)
+        //    : base(configuration)
+        //{
+        //}
+        public KasrHaCommandService(
+                SqlConnection connection,
+                IDbTransaction transaction)
         {
+            _connection = connection;
+            _connection.NotNull(nameof(connection));
+
+            _transaction = transaction;
+            _transaction.NotNull(nameof(transaction));
         }
 
         public async Task Create(KasrHaDto input, int zoneId)
@@ -25,14 +36,14 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             string dbName = "Atlas";
             string query = GetCreateQuery(dbName);
 
-            await _sqlReportConnection.ExecuteAsync(query, input);
+            await _connection.ExecuteAsync(query, input);
         }
         public async Task Create(ICollection<KasrHaDto> input)
         {
             //string dbName = GetDbName((int)input.FirstOrDefault().Town);
             string dbName = "Atlas";
 
-            using (var connection = _sqlReportConnection)
+            using (var connection = _connection)
             {
                 await connection.OpenAsync();
 
@@ -57,7 +68,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             var dbName = "Atlas";
             DataTable table = GetDataTable(input);
 
-            using var connection = _sqlReportConnection;
+            using var connection = _connection;
             await connection.OpenAsync();
 
             using var bulk = new SqlBulkCopy(connection)
@@ -75,7 +86,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         public async Task Delete(RemoveBillDataInputDto input)
         {
             string command = GetDeleteCommand();
-            await _sqlReportConnection.ExecuteAsync(command, input);
+            await _connection.ExecuteAsync(command, input);
         }
 
         private DataTable GetDataTable(ICollection<KasrHaDto> input)

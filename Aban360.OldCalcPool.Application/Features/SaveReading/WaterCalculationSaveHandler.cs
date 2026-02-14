@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Exceptions;
+﻿using Aban360.Common.Db.Dapper;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
@@ -6,8 +7,11 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
+using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using DNTPersianUtils.Core;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Aban360.OldCalcPool.Application.Features.SaveReading
 {
@@ -15,24 +19,26 @@ namespace Aban360.OldCalcPool.Application.Features.SaveReading
     {
         Task Handle(IEnumerable<ReadingBillInputDto> inputDto, int mamorCode, CancellationToken cancellationToken);
     }
-    internal sealed class WaterCalculationSaveHandler : IWaterCalculationSaveHandler
+    internal sealed class WaterCalculationSaveHandler : AbstractBaseConnection, IWaterCalculationSaveHandler
     {
         private readonly IOldTariffEngine _processing;
-        private readonly IBedBesCommandService _bedBesCreateService;
-        private readonly IKasrHaService _kasrHaService;
+        //private readonly IBedBesCommandService _bedBesCreateService;
+        //private readonly IKasrHaCommandService _kasrHaService;
         public WaterCalculationSaveHandler(
             IOldTariffEngine processing,
-            IBedBesCommandService bedBesCreateService,
-            IKasrHaService kasrHaService)
+            //IBedBesCommandService bedBesCreateService,
+            //IKasrHaCommandService kasrHaService,
+            IConfiguration configuration)
+            : base(configuration)
         {
             _processing = processing;
             _processing.NotNull(nameof(processing));
 
-            _bedBesCreateService = bedBesCreateService;
-            _bedBesCreateService.NotNull(nameof(bedBesCreateService));
+            //_bedBesCreateService = bedBesCreateService;
+            //_bedBesCreateService.NotNull(nameof(bedBesCreateService));
 
-            _kasrHaService = kasrHaService;
-            _kasrHaService.NotNull(nameof(kasrHaService));
+            //_kasrHaService = kasrHaService;
+            //_kasrHaService.NotNull(nameof(kasrHaService));
         }
 
         public async Task Handle(IEnumerable<ReadingBillInputDto> inputDto, int mamorCode, CancellationToken cancellationToken)
@@ -50,14 +56,31 @@ namespace Aban360.OldCalcPool.Application.Features.SaveReading
                 };
                 AbBahaCalculationDetails result = await _processing.Handle(meterInfo, cancellationToken);
                 calculationDetails.Add(result);
-                bedBes.Add(CreateBedBes(result, customer, mamorCode));
-                kasrHa.Add(CreateKasrha(result, customer));
+                bedBes.Add(GetBedBesCreateDto(result, customer, mamorCode));
+                kasrHa.Add(GetKasrhaCreateDto(result, customer));
             }
-            await _bedBesCreateService.Create(bedBes);
-            await _kasrHaService.Create(kasrHa);
-        }
 
-        private BedBesCreateDto CreateBedBes(AbBahaCalculationDetails abBahaCalculation, ReadingBillInputDto readingBillInfo, int mamorCode)
+            await CreateBedBesAndKasrHa(bedBes, kasrHa);
+        }
+        private async Task CreateBedBesAndKasrHa(ICollection<BedBesCreateDto> bedBes, ICollection<KasrHaDto> kasrHa)
+        {
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    BedBesCommandService bedBesCommandService = new BedBesCommandService(_sqlReportConnection, transaction);
+                    KasrHaCommandService kasrHaCommandService = new KasrHaCommandService(_sqlReportConnection, transaction);
+
+                    await bedBesCommandService.Create(bedBes);
+                    await kasrHaCommandService.Create(kasrHa);
+                }
+            }
+        }
+        private BedBesCreateDto GetBedBesCreateDto(AbBahaCalculationDetails abBahaCalculation, ReadingBillInputDto readingBillInfo, int mamorCode)
         {
             string dateNowJalali = DateTime.Now.ToShortPersianDateString();
             return new BedBesCreateDto()
@@ -146,7 +169,7 @@ namespace Aban360.OldCalcPool.Application.Features.SaveReading
             };
         }
 
-        private KasrHaDto CreateKasrha(AbBahaCalculationDetails s, ReadingBillInputDto readingBillInfo)
+        private KasrHaDto GetKasrhaCreateDto(AbBahaCalculationDetails s, ReadingBillInputDto readingBillInfo)
         {
             string dateNowJalali = DateTime.Now.ToShortPersianDateString();
             return new KasrHaDto()

@@ -4,6 +4,7 @@ using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
 using Aban360.Common.ApplicationUser;
+using Aban360.Common.Db.Dapper;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
@@ -11,18 +12,21 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
+using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using DNTPersianUtils.Core;
+using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Implementations
 {
-    internal sealed class CalculationConfirmationHandler : ICalculationConfirmationHandler
+    internal sealed class CalculationConfirmationHandler : AbstractBaseConnection, ICalculationConfirmationHandler
     {
         private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
         private readonly IMeterReadingDetailService _meterReadingDetailService;
         private readonly IMeterFlowService _meterFlowService;
         private readonly IOldTariffEngine _oldTariffEngine;
-        private readonly IBedBesCommandService _bedBesCreateService;
-        private readonly IKasrHaService _kasrHaService;
+        //private readonly IBedBesCommandService _bedBesCreateService;
+        //private readonly IKasrHaCommandService _kasrHaService;
         const int _paymentDeadline = 7;
 
         public CalculationConfirmationHandler(
@@ -30,8 +34,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             IMeterReadingDetailService meterReadingDetailService,
             IMeterFlowService meterFlowService,
             IOldTariffEngine oldTariffEngine,
-            IBedBesCommandService bedBesCreateService,
-            IKasrHaService kasrHaService)
+            //IBedBesCommandService bedBesCreateService,
+            //IKasrHaCommandService kasrHaService,
+            IConfiguration configuration)
+            : base(configuration)
         {
             _meterFlowValidationGetHandler = meterFlowValidationGetHandler;
             _meterFlowValidationGetHandler.NotNull(nameof(meterFlowValidationGetHandler));
@@ -45,11 +51,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             _oldTariffEngine = oldTariffEngine;
             _oldTariffEngine.NotNull(nameof(oldTariffEngine));
 
-            _bedBesCreateService = bedBesCreateService;
-            _bedBesCreateService.NotNull(nameof(bedBesCreateService));
+            //_bedBesCreateService = bedBesCreateService;
+            //_bedBesCreateService.NotNull(nameof(bedBesCreateService));
 
-            _kasrHaService = kasrHaService;
-            _kasrHaService.NotNull(nameof(kasrHaService));
+            //_kasrHaService = kasrHaService;
+            //_kasrHaService.NotNull(nameof(kasrHaService));
         }
 
         public async Task<MeterReadingCheckedOutputDto> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
@@ -89,8 +95,25 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 }
             }
 
-            await _bedBesCreateService.Create(BedBesBatch, zoneId);
-            await _kasrHaService.Create(kasrHaBatch, zoneId);
+            await CreateBedBesAndKasrHa(BedBesBatch, kasrHaBatch, zoneId);
+        }
+        private async Task CreateBedBesAndKasrHa(ICollection<BedBesCreateDto> BedBesBatch, ICollection<KasrHaDto> kasrHaBatch, int zoneId)
+        {
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    BedBesCommandService bedBesCreateService = new BedBesCommandService(_sqlReportConnection, transaction);
+                    KasrHaCommandService kasrHaCommandService = new KasrHaCommandService(_sqlConnection, transaction);
+
+                    await bedBesCreateService.Create(BedBesBatch, zoneId);
+                    await kasrHaCommandService.Create(kasrHaBatch, zoneId);
+                }
+            }
         }
         private BedBesCreateDto GetBedBes(MeterReadingDetailDataOutputDto meterReading, AbBahaCalculationDetails abBahaCalc)
         {

@@ -2,10 +2,10 @@
 {
     public record BranchHistoryBillDataOutputDto
     {
-        public string LastWaterBillRefundDate { get; set; }
-        public string LastMeterReadingDate { get; set; }
-        public string LastSubscriptionRefundDate { get; set; }
-        public string LastTemporaryDisconnectionDate { get; set; }//
+        public string? LastWaterBillRefundDate { get; set; }
+        public string? LastMeterReadingDate { get; set; }
+        public string? LastSubscriptionRefundDate { get; set; }
+        public string? LastTemporaryDisconnectionDate { get; set; }//
 
     }
 }
