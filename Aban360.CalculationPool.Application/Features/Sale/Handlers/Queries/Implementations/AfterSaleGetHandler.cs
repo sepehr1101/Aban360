@@ -130,10 +130,10 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeWaterDiameter));
             }
-            if (input.PreviousData.SiphonDiameterId != input.CurrentData.SiphonDiameterId && !afterSaleCompanySelected.Contains(AfterSaleCompanyServiceEnum.ChangeSiphonDiameter))
-            {
-                throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeSiphonDiameter));
-            }
+            //if (input.PreviousData.SiphonDiameterId != input.CurrentData.SiphonDiameterId && !afterSaleCompanySelected.Contains(AfterSaleCompanyServiceEnum.ChangeSiphonDiameter))
+            //{
+            //    throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeSiphonDiameter));
+            //}
             if (input.PreviousData.SiphonDiameterId is null && input.CurrentData.SiphonDiameterId is not null && !afterSaleCompanySelected.Contains(AfterSaleCompanyServiceEnum.WastewaterBranch))
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.GetSewage));
