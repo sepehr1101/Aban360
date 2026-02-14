@@ -41,7 +41,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
         public async Task Handle(RemoveBillInputDto input, CancellationToken cancellationToken)
         {
-            RemoveBillDataInputDto removeBill=await GetRemoveBillInputDto(input);
+            RemoveBillDataInputDto removeBill = await GetRemoveBillInputDto(input);
             removeBill.ToDayDateJalali = DateTime.Now.ToShortPersianDateString();
 
             //await _bedBesCommandService.Delete(removeBill.Id);//todo: tobeSure: DeleteBedBes OR Del=true?

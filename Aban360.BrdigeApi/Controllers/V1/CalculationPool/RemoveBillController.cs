@@ -2,6 +2,7 @@
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
@@ -16,7 +17,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
             _removedBillHandler.NotNull(nameof(removedBillHandler));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("remove")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Remove(RemoveBillInputDto input, CancellationToken cancellationToken)
