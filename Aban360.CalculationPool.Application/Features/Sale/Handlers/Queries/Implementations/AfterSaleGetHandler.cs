@@ -60,6 +60,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> previousSaleCalculation = await _saleGetHandler.Handle(previousDataInput, cancellationToken);
             ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> currentSaleCalculation = await _saleGetHandler.Handle(currentDataInput, cancellationToken);
 
+
             AfterSaleDataOutputDto data = await GetData(input, previousSaleCalculation.ReportData, currentSaleCalculation.ReportData);
             SaleHeaderOutputDto header = await GetHeader(data, input);
             FlatReportOutput<SaleHeaderOutputDto, AfterSaleDataOutputDto> result = new(_title, header, data);
