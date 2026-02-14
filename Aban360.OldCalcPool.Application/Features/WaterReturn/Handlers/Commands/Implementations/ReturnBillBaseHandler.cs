@@ -33,8 +33,6 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private static string _title = "برگشتی";
         public ReturnBillBaseHandler(
             IBedBesQueryService bedBesQueryService,
-            IBedBesCommandService bedBesCommandService,
-            IRepairCommandService repairCommandService,
             IAutoBackCommandService autoBackCommandService,
             ICustomerInfoDetailQueryService customerInfoDetailQueryService,
             IBillReturnCauseQueryService billReturnCauseQueryService,

@@ -72,8 +72,8 @@ namespace Aban360.OldCalcPool.Application.Features.SaveReading
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    IBedBesCommandService bedBesCommandService = new BedBesCommandService(_sqlReportConnection, transaction);
-                    IKasrHaCommandService kasrHaCommandService = new KasrHaCommandService(_sqlReportConnection, transaction);
+                    BedBesCommandService bedBesCommandService = new BedBesCommandService(_sqlReportConnection, transaction);
+                    KasrHaCommandService kasrHaCommandService = new KasrHaCommandService(_sqlReportConnection, transaction);
 
                     await bedBesCommandService.Create(bedBes);
                     await kasrHaCommandService.Create(kasrHa);

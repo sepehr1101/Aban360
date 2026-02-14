@@ -49,9 +49,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    IBedBesCommandService bedBesCommandService = new BedBesCommandService(_sqlReportConnection, transaction);
-                    IKasrHaCommandService kasrHaCommandService = new KasrHaCommandService(_sqlReportConnection, transaction);
-                    IHBedBesCommanddService hbedBesCommandService = new HBedBesCommanddService(_sqlReportConnection, transaction);
+                    BedBesCommandService bedBesCommandService = new BedBesCommandService(_sqlReportConnection, transaction);
+                    KasrHaCommandService kasrHaCommandService = new KasrHaCommandService(_sqlReportConnection, transaction);
+                    HBedBesCommanddService hbedBesCommandService = new HBedBesCommanddService(_sqlReportConnection, transaction);
 
                     await bedBesCommandService.Delete(removeBill.Id);
                     await kasrHaCommandService.Delete(removeBill);

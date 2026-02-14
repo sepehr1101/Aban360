@@ -10,7 +10,7 @@ using System.Data;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations
 {
-    public sealed class BedBesCommandService : IBedBesCommandService
+    public sealed class BedBesCommandService //: IBedBesCommandService
     {
         private readonly SqlConnection _connection;
         private readonly IDbTransaction _transaction;

@@ -33,7 +33,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             using (IDbTransaction transaction = _sqlReportConnection.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
-                IBedBesCommandService bedBesCommandService = new BedBesCommandService(_sqlReportConnection,transaction);
+                BedBesCommandService bedBesCommandService = new BedBesCommandService(_sqlReportConnection,transaction);
                 await bedBesCommandService.Create(bedBesDto, (int)bedBesDto.Town);
             }
         }

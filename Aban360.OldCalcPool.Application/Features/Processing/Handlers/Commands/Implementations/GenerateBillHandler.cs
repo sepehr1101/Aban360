@@ -74,8 +74,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    IBedBesCommandService bedBedCommandService = new BedBesCommandService(_sqlReportConnection, transaction);
-                    IKasrHaCommandService kasrHasCommandService = new KasrHaCommandService(_sqlReportConnection, transaction);
+                    BedBesCommandService bedBedCommandService = new BedBesCommandService(_sqlReportConnection, transaction);
+                    KasrHaCommandService kasrHasCommandService = new KasrHaCommandService(_sqlReportConnection, transaction);
 
                     await bedBedCommandService.Create(bedBes, zoneIdAndCustomerNumber.ZoneId);
                     if (abBahaCalcResult.DiscountSum > 0)

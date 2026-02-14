@@ -107,8 +107,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    IBedBesCommandService bedBesCreateService = new BedBesCommandService(_sqlReportConnection, transaction);
-                    IKasrHaCommandService kasrHaCommandService = new KasrHaCommandService(_sqlConnection, transaction);
+                    BedBesCommandService bedBesCreateService = new BedBesCommandService(_sqlReportConnection, transaction);
+                    KasrHaCommandService kasrHaCommandService = new KasrHaCommandService(_sqlConnection, transaction);
 
                     await bedBesCreateService.Create(BedBesBatch, zoneId);
                     await kasrHaCommandService.Create(kasrHaBatch, zoneId);

@@ -10,7 +10,7 @@ using System.Data;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations
 {
-    public sealed class KasrHaCommandService : IKasrHaCommandService
+    public sealed class KasrHaCommandService //: IKasrHaCommandService
     {
         private readonly SqlConnection _connection;
         private readonly IDbTransaction _transaction;

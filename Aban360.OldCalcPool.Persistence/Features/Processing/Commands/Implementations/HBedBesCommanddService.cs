@@ -8,7 +8,7 @@ using System.Data;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations
 {
-    public sealed class HBedBesCommanddService : IHBedBesCommanddService
+    public sealed class HBedBesCommanddService //: IHBedBesCommanddService
     {
         private readonly SqlConnection _connection;
         private readonly IDbTransaction _transaction;
