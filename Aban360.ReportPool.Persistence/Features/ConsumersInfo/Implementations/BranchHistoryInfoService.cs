@@ -29,8 +29,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                 throw new InvalidIdException();
 
             BranchHistoryBillDataOutputDto historyBillData = await _sqlReportConnection.QueryFirstOrDefaultAsync<BranchHistoryBillDataOutputDto>(billsQuery, new { billId });
-            if (historyBillData == null)
-                throw new InvalidIdException();
+			if (historyBillData == null)
+				historyBillData = new();
 
             result.LastMeterReadingDate = historyBillData.LastMeterReadingDate;
             result.LastWaterBillRefundDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(GetLatestWaterRefundDateQuery(), new { billId });
