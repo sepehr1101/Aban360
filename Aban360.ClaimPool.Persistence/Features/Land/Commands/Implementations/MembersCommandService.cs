@@ -1,4 +1,6 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
+using Aban360.ClaimPool.Persistence.Constants.Literals;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Dapper;
 using Microsoft.Data.SqlClient;
@@ -26,7 +28,11 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             //if (_sqlReportConnection.State != System.Data.ConnectionState.Open)
             //    await _sqlReportConnection.OpenAsync();
 
-            var updateResult = await _sqlConnection.ExecuteAsync(command, updateDto);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
         }
         private string GetUpdateCommand(string dbName)
         {
@@ -83,7 +89,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 						Senf=@GuildId
                      WHERE 
                         id=@id AND
-						bill_id=@billId AND
+						TRIM(bill_id)=@billId AND
 						town=@zoneId AND
 						radif=@customerNumber ";
         }

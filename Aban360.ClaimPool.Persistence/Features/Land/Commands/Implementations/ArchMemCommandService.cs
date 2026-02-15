@@ -20,10 +20,16 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             _dbTransaction.NotNull(nameof(_dbTransaction));
         }
 
-        public async Task Insert(CustomerUpdateDto updateDto,string dbName)
+        public async Task<int> Insert(CustomerUpdateDto updateDto,string dbName)
         {
             string command = GetInsertQuery(dbName);
-            int insertResult = await _sqlConnection.ExecuteAsync(command, updateDto);
+            int? insertResultId = await _sqlConnection.QueryFirstOrDefaultAsync<int>(command, updateDto);
+            if (insertResultId is null || insertResultId <= 0)
+            {
+                throw new InvalidDataException();//todo: change exception
+            }
+
+            return insertResultId.Value;
         }
 
         private string GetInsertQuery(string dbName)
@@ -59,7 +65,9 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                     FROM cte m
                     WHERE 
                         m.town=@zoneId AND
-                    	m.radif=@customerNumber ";
+                    	m.radif=@customerNumber 
+
+                    SELECT CAST(SCOPE_IDENTITY() AS INT)";
         }
     }
 }

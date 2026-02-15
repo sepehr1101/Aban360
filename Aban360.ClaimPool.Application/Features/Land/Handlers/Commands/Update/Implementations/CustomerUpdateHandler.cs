@@ -65,7 +65,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             SubscriptionGetDto previousSubscription = await GetConsumptionPreviousInfo(inputDto.BillId);
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, deletionStateId, previousSubscription);
 
-            await UpdateCustomer(customerUpdate);
+            await UpdateCustomerAndClient(customerUpdate);
         }
         private async Task UpdateCustomer(CustomerUpdateDto updateDto)
         {
@@ -82,8 +82,34 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                     //string dbName = GetDbName(updateDto.ZoneId);
                     string dbName = "Atlas";
 
-                    await _archMemCommandService.Insert(updateDto, dbName);
-                    //await _membersCommandService.Update(updateDto, dbName);
+                    int rowId = await _archMemCommandService.Insert(updateDto, dbName);
+                    await _membersCommandService.Update(updateDto, dbName);
+
+                    transaction.Commit();
+                }
+            }
+        }
+        private async Task UpdateCustomerAndClient(CustomerUpdateDto updateDto)
+        {
+            ZoneIdCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId,updateDto.CustomerNumber.ToString());
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    ArchMemCommandService _archMemCommandService = new(_sqlReportConnection, transaction);
+                    MembersCommandService _membersCommandService = new(_sqlReportConnection, transaction);
+                    ClientsCommandService _clientCommandService = new(_sqlReportConnection, transaction);
+                    string dbName = GetDbName(updateDto.ZoneId);
+                    //string dbName = "Atlas";
+
+                    int rowId = await _archMemCommandService.Insert(updateDto, dbName);
+                    await _membersCommandService.Update(updateDto, dbName);
+                    await _clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, updateDto.ToDayDateJalali);
+                    await _clientCommandService.InsertByArchMemId(rowId, dbName);
 
                     transaction.Commit();
                 }

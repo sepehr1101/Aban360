@@ -53,6 +53,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         {
             string query = @$"USE [{dbName}]
                             SELECT date_check FROM variab";
+            return query;//todo: remove
         }
     }
 }
