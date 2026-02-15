@@ -9,5 +9,6 @@
         public string ZoneTitle { get; set; } = default!;
         public int? OldCustomerNumber { get; set; }
         public string? OldBillId { get; set; }
+        public string Mobile { get; set; } = default!;
     }
 }
