@@ -219,7 +219,9 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	c.SewageInstallDate AS SewageInstallationDate,
 						'-' AS WaterReplacementDate,
 						'-' AS WaterReplacementNumber,
-                        c.ZoneId AS ZoneId
+                        c.ZoneId AS ZoneId,
+						c.DeletionStateTitle DeletionStateTitle,
+						c.BranchType BranchTypeTitle
                     From [CustomerWarehouse].dbo.Clients c
                     Where
 						c.ToDayJalali IS NULL AND

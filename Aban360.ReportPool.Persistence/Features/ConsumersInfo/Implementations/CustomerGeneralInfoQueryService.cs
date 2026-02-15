@@ -1,7 +1,6 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
-using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
@@ -9,8 +8,6 @@ using Aban360.ReportPool.Domain.Features.Transactions;
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
-using System.Net;
-using System.Reflection.PortableExecutable;
 
 namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 {
@@ -126,12 +123,13 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
                 WaterInstallationDateJalali = input.WaterInstallationDateJalali,
                 SewageRequestDateJalali = input.SewageRequestDateJalali,
                 SewageInstallationDateJalali = input.SewageInstallationDateJalali,
+                DeletionStateTitle=input.DeletionStateTitle,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 Title= ReportLiterals.CustomerGeneralInfo
             };
         }
 
-        private string GetPersonalQuery(string dbName)
+        private string GetPersonalQuery(string dbName)//todo: DeletionStateTitle
         {
             return @$"Select 
 						TRIM(m.name) FirstName,
@@ -158,6 +156,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 
 						m.noe_va as BranchTypeId,
 						t7.C1 as BranchTypeTitle,
+						d.Title DeletionStateTitle,
 						0 as DiscountType,
 						'-' as WaterRequestDateJalali,
 						m.inst_ab as WaterInstallationDateJalali,
@@ -188,6 +187,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 						ON m.enshab=t5.C0
 					Left Join [Db70].dbo.T41 t41
 						ON m.cod_enshab=t41.C0
+					Left Join [Db70].dbo.DeletionState d
+						ON m.hasf=d.Id
 					Where 
 						town=@zoneId AND
 						radif=@customerNumber";

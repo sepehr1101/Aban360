@@ -20,6 +20,7 @@
         public string WaterInstallationDateJalali { get; set; }
         public string SewageRequestDateJalali { get; set; }
         public string SewageInstallationDateJalali { get; set; }
+        public string DeletionStateTitle { get; set; }
 
         public string ReportDateJalali { get; set; }
         public string Title { get; set; }
