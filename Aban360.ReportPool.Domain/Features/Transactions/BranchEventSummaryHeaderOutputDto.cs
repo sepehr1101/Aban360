@@ -21,6 +21,8 @@ namespace Aban360.ReportPool.Domain.Features.Transactions
         public int OtherUnit { get; set; }
         public string MeterDiameterTitle { get; set; }
         public string SiphonDiameterTitle { get; set; }
+        public string BranchTypeTitle { get; set; }
+        public string DeletionStateTitle { get; set; }
 
         public long Remained { get; set; }
     }

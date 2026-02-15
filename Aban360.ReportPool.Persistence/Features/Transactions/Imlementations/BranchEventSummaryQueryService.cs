@@ -79,7 +79,9 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	c.CommercialCount AS CommercialUnit,
                     	c.OtherCount AS OtherUnit,
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
-                    	MainSiphonTitle AS SiphonDiameterTitle 
+                    	MainSiphonTitle AS SiphonDiameterTitle ,
+						c.DeletionStateTitle DeletionStateTitle,
+						c.BranchType BranchTypeTitle
                     From [CustomerWarehouse].dbo.Clients c
                     Where 
                     	c.ToDayJalali IS NULL AND

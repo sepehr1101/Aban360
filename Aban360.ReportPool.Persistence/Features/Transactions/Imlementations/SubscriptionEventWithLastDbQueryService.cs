@@ -227,16 +227,16 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             return $@"Select 
 						TRIM(m.name)+' '+TRIM(m.family) AS FullName,
 						TRIM(m.eshtrak) ReadingNumber,
-						m.bill_id,
+						m.bill_id BillId,
 						TRIM(m.address) Address,
-						m.radif,
+						m.radif CustomerNumber,
 						m.radif AS LastCustomerNumber,
 						m.bill_id AS LastBillId,
-						'' AS GuildTitle,--todo
-						'-' AS JobTitle,
 						t41_sell.C1 AS UsageTitle,
-						(m.tedad_mas+m.tedad_tej+m.tedad_vahd) AS TotalUnit,
+						'-' AS JobTitle,--todo
+						'' AS GuildTitle,--todo
 						m.fix_mas AS ContractualCapacity,
+						(m.tedad_mas+m.tedad_tej+m.tedad_vahd) AS TotalUnit,
 						0 AS HasTag,
 						m.Khali_s AS EmptyUnit,
 						m.ted_khane AS HouseholdNumber,
@@ -252,11 +252,13 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 											 Else N'ندارد'
 						End as SiphonDiameterTitle,
 						0 AS MeterTagCount,
-						t7.C1 AS UsageStateTitle,
+						t7.C1 AS BranchTypeTitle,
 						m.ask_ab WaterRequestDate,--todo
 						m.ask_fas SewageRequestDate,--todo
 						m.inst_ab AS WaterInstallationDate,
 						m.inst_fas AS SewageInstallationDate,
+						m.G_inst_ab,--todo
+						m.G_inst_fas,--todo
 						'-' AS WaterReplacementDate,
 						'-' AS WaterReplacementNumber,
 					    m.town AS ZoneId
