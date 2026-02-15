@@ -43,6 +43,7 @@
         public ICollection<string>? WaterMeterTags { get; set; }
 
 
+        public string DeletionStateTitle { get; set; }
         public int MunicipalityId { get; set; }
         public int ZoneId { get; set; }
         public string? PostalCode{ get; set; }

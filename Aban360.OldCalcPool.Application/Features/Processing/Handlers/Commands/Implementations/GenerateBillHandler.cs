@@ -91,7 +91,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     transaction.Commit();
                 }
             }
-
+            //warehouse bills
+            //contor
+            //members  bedbes+sumitems
             return abBahaCalcResult;
         }
         private MeterInfoByPreviousDataInputDto GetMeterInfoByPreviousData(CustomerInfoGetDto customerInfo, GenerateBillInputDto generateBillInfo)
