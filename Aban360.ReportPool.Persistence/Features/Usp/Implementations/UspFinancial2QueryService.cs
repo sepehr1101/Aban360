@@ -20,12 +20,12 @@ namespace Aban360.ReportPool.Persistence.Features.Usp.Implementations
         }
         public async Task<IEnumerable<UspFinancial2Output>> Get(UspFinancial2Input input)
         {
-            string finalSpName=input.GroupingType<=2?spName:spName2;
-            finalSpName = input.UsageType == 3 ? spName5 : finalSpName;
+            string finalSpName=input.GroupingType<=2?spName:spName;
+            finalSpName = input.UsageType == 3 ? spName : finalSpName;
             finalSpName=input.UsageType==4 ? spName4:finalSpName;
             input.Sp = finalSpName;
             DynamicParameters parameters = GetParams(input);
-            IEnumerable<UspFinancial2Output> output = await _sqlReportConnection.QueryAsync<UspFinancial2Output>(finalSpName, parameters, commandType: CommandType.StoredProcedure);
+            IEnumerable<UspFinancial2Output> output = await _sqlReportConnection.QueryAsync<UspFinancial2Output>(spName4, parameters, commandType: CommandType.StoredProcedure, commandTimeout:360);
             return output;
         }
         private DynamicParameters GetParams(UspFinancial2Input input)

@@ -1,9 +1,7 @@
-﻿using Aban360.Common.Db.Dapper;
-using Aban360.Common.Exceptions;
+﻿using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
-using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -31,8 +29,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 
         public async Task Create(BedBesCreateDto input, int zoneId)
         {
-            //string dbName=GetDbName(zoneId);
-            string dbName = "Atlas";
+            string dbName= GetDbName(zoneId);
+            //string dbName = "Atlas";
             string BedBesCreateQueryString = GetBedBesCreateQuery(dbName);
 
             await _connection.ExecuteAsync(BedBesCreateQueryString, input);
@@ -83,9 +81,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 
             await bulk.WriteToServerAsync(dt);
         }
-        public async Task Delete(int id)
+        public async Task Delete(int id, int zoneId)
         {
-            string query = GetDeleteQuery();
+            //string dbName = "Atlas";
+            string dbName = GetDbName(zoneId);
+            string query = GetDeleteQuery(dbName);
             int rowsAffected = await _connection.ExecuteAsync(query, new { id });
 
             if (rowsAffected == 0)
@@ -309,10 +309,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                         @Absevom, @Absevom1, @Khalis, @edarehk,@Avarez
                     )";
         }
-        private string GetDeleteQuery()
+        private string GetDeleteQuery(string dbName)
         {
-            return @"Delete FROM [Atlas].dbo.bed_bes
-                    Where Id=@id";
+            return $"Delete FROM [{dbName}].dbo.bed_bes " +
+                    "Where Id=@id";
         }
         private string GetUpdateDelCommand(string dbName)
         {
@@ -333,6 +333,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     )
                     Update bills
                     Set del=Del";
+        }
+        private string GetDbName(int zoneId)
+        {
+            return zoneId > 140000 ? "Abfar" : zoneId.ToString();
         }
     }
 }

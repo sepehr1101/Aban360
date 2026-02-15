@@ -83,7 +83,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                     string dbName = "Atlas";
 
                     await _archMemCommandService.Insert(updateDto, dbName);
-                    await _membersCommandService.Update(updateDto, dbName);
+                    //await _membersCommandService.Update(updateDto, dbName);
 
                     transaction.Commit();
                 }
@@ -436,8 +436,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 MeterRegisterDateJalali = DateValidation(previousSubscription.MeterRegisterDateJalali, false),
                 SewageRegisterDateJalali = DateValidation(previousSubscription.SewageRegisterDateJalali, false),
                 GuildId = previousSubscription.GuildId,
-                ToDayDateJalali = inputDto.When.ToShortPersianDateString(),
-                ToDayDateJalaliWithFragmentYear = inputDto.When.ToShortPersianDateString().Substring(2, 8),
+                ToDayDateJalali = DateTime.Now.ToShortPersianDateString(),
+                ToDayDateJalaliWithFragmentYear = DateTime.Now.ToShortPersianDateString().Substring(2, 8),
             };
         }
 

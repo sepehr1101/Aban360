@@ -32,8 +32,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 
         public async Task Create(KasrHaDto input, int zoneId)
         {
-            //string dbName = GetDbName(zoneId);
-            string dbName = "Atlas";
+            string dbName = GetDbName(zoneId);
+            //string dbName = "Atlas";
             string query = GetCreateQuery(dbName);
 
             await _connection.ExecuteAsync(query, input);
@@ -85,7 +85,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         }
         public async Task Delete(RemoveBillDataInputDto input)
         {
-            string command = GetDeleteCommand();
+            string dbName = GetDbName(input.ZoneId);
+            string command = GetDeleteCommand(dbName);
             await _connection.ExecuteAsync(command, input);
         }
 
@@ -199,10 +200,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                         @Bodjeh
                     );";
         }
-        private string GetDeleteCommand()
+        private string GetDeleteCommand(string dbName)
         {
-            return @"Delete From Atlas.dbo.kasr_ha
-                    Where 
+            return $"Delete From {dbName}.dbo.kasr_ha "+
+                    @"Where 
                     	TOWN=@ZoneId AND
                     	radif=@CustomerNumber AND
                     	barge=@Barge AND
@@ -214,6 +215,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     	SH_GHABS=@BillId AND
                     	SH_PARD=@PaymentId AND
                     	date_bed=@RegisterDateJalali ";
+        }
+
+        private string GetDbName(int zoneId)
+        {
+            return zoneId > 140000 ? "Abfar" : zoneId.ToString();
         }
     }
 }

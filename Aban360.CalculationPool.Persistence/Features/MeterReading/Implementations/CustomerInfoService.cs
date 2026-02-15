@@ -84,7 +84,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         {
             return @$"Select
 						m.town as ZoneId,
-						m.radif as Radif,
+						m.radif as CustomerNumber,
 						m.bill_id as BillId,
 						Trim(m.bill_id) as BillId,
 						m.noe_va as BranchType,
