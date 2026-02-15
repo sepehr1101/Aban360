@@ -4,5 +4,14 @@
     {
         public int ZoneId { get; set; }
         public string CustomerNumber { get; set; }
+        public ZoneIdCustomerNumber(int zoneId, string customerNumber)
+        {
+            ZoneId = zoneId;
+            CustomerNumber = customerNumber;
+        }
+        public ZoneIdCustomerNumber()
+        {
+
+        }
     }
 }

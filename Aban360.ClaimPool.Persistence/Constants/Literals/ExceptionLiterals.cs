@@ -8,5 +8,8 @@
         public static string InvalidInsertTracking => "خطا در ذخیره درخواست";
         public static string InvalidUpdateMoshtrakin=> "خطا در ویرایش اطلاعات مشترک";
         public static string InvalidInsertAssessment => "خطا در ذخیره نتیجه ارزیابی";
+        public static string InvalidUpdateToDayJalali => "خطا در ویرایش 'تا تاریخ'";
+        public static string InvalidInsertArchmem=> "خطا در ذخیره تاریخچه مشترک";
+
     }
 }

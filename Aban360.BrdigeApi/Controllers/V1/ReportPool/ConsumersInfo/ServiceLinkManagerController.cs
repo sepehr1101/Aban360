@@ -11,7 +11,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
     {
         private readonly ICustomerUpdateHandler _customerUpdateHandler;
         string successfullyDone = "با موفقیت انجام شد";
-        int _disconnectState = 1;
+        int _disconnectState = 5;
         int _connectState = 0;
         public ServiceLinkManagerController(ICustomerUpdateHandler customerUpdateHandler)
         {
