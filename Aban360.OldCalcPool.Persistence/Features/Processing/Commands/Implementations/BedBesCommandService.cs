@@ -2,7 +2,9 @@
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
+using Aban360.OldCalcPool.Persistence.Constants;
 using Dapper;
+using DNTPersianUtils.Core;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
@@ -27,13 +29,19 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             _transaction.NotNull(nameof(transaction));
         }
 
-        public async Task Create(BedBesCreateDto input, int zoneId)
+        public async Task<int> Create(BedBesCreateDto input, int zoneId)
         {
-            string dbName= GetDbName(zoneId);
+            string dbName = GetDbName(zoneId);
             //string dbName = "Atlas";
             string BedBesCreateQueryString = GetBedBesCreateQuery(dbName);
 
-            await _connection.ExecuteAsync(BedBesCreateQueryString, input);
+            int? recordCount = await _connection.QueryFirstOrDefaultAsync<int>(BedBesCreateQueryString, input, _transaction);
+            if (recordCount is null || recordCount <= 0)
+            {
+                throw new InvalidBillCommandException(Exceptionliterals.InvalidBillInsert);
+            }
+
+            return recordCount.Value;
         }
         public async Task Create(ICollection<BedBesCreateDto> input)
         {
@@ -307,7 +315,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                         @kasrha, @fixmas, @shghabs1, @shpard1, @TABABNA, @TABABNF, @TABSFA,
                         @NEWAB, @NEWFA, @bodjeh, @group1, @MASFAS, @FAZ, @CHKKARBARI, @C200,
                         @Absevom, @Absevom1, @Khalis, @edarehk,@Avarez
-                    )";
+                    )
+
+                 SELECT CAST(SCOPE_IDENTITY() AS INT)";
         }
         private string GetDeleteQuery(string dbName)
         {

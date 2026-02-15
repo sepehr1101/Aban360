@@ -1,4 +1,6 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
+using Aban360.ClaimPool.Persistence.Constants.Literals;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Dapper;
 using Microsoft.Data.SqlClient;
@@ -11,7 +13,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
         private readonly SqlConnection _sqlConnection;
         private readonly IDbTransaction _dbTransaction;
 
-        public ArchMemCommandService(SqlConnection sqlConnection, IDbTransaction transaction)            
+        public ArchMemCommandService(SqlConnection sqlConnection, IDbTransaction transaction)
         {
             _sqlConnection = sqlConnection;
             _sqlConnection.NotNull(nameof(sqlConnection));
@@ -20,13 +22,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             _dbTransaction.NotNull(nameof(_dbTransaction));
         }
 
-        public async Task<int> Insert(CustomerUpdateDto updateDto,string dbName)
+        public async Task<int> Insert(CustomerUpdateDto updateDto, string dbName)
         {
             string command = GetInsertQuery(dbName);
-            int? insertResultId = await _sqlConnection.QueryFirstOrDefaultAsync<int>(command, updateDto);
+            int? insertResultId = await _sqlConnection.QueryFirstOrDefaultAsync<int>(command, updateDto, _dbTransaction);
             if (insertResultId is null || insertResultId <= 0)
             {
-                throw new InvalidDataException();//todo: change exception
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidInsertArchmem);
             }
 
             return insertResultId.Value;

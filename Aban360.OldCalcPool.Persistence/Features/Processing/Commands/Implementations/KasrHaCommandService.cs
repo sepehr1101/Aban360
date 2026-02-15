@@ -36,7 +36,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             //string dbName = "Atlas";
             string query = GetCreateQuery(dbName);
 
-            await _connection.ExecuteAsync(query, input);
+            await _connection.ExecuteAsync(query, input, _transaction);
         }
         public async Task Create(ICollection<KasrHaDto> input)
         {
@@ -202,7 +202,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         }
         private string GetDeleteCommand(string dbName)
         {
-            return $"Delete From {dbName}.dbo.kasr_ha "+
+            return $"Delete From {dbName}.dbo.kasr_ha " +
                     @"Where 
                     	TOWN=@ZoneId AND
                     	radif=@CustomerNumber AND

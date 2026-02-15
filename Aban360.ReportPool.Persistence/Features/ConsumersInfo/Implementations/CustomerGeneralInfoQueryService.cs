@@ -98,6 +98,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
                 LatestMeterReading = input.LatestMeterReading,
                 UsageStatusTitle = input.UsageStatusTitle,
                 CommonSiphon = input.CommonSiphon,
+                DeletionStateTitle=input.DeletionStateTitle,
 
             };
         }
