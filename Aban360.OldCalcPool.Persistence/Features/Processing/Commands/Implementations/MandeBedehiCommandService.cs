@@ -10,10 +10,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 {
     public sealed class MandeBedehiCommandService
     {
-        private readonly SqlConnection _connection;
+        private readonly IDbConnection _connection;
         private readonly IDbTransaction _transaction;
         public MandeBedehiCommandService(
-                SqlConnection connection,
+                IDbConnection connection,
                 IDbTransaction transaction)
         {
             _connection = connection;

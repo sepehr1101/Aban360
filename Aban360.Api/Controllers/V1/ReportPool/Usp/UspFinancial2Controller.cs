@@ -32,7 +32,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Usp
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<UspFinancial2Output>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get([FromBody] UspFinancial2Input input, CancellationToken cancellationToken)
         {            
-            ReportOutput<UspPayment2Header, UspFinancial2Output> output = await _handler.Handle(input, cancellationToken);
+            ReportOutput<UspFinancial2Header, UspFinancial2Output> output = await _handler.Handle(input, cancellationToken);
             return Ok(output);
         }
 
