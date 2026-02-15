@@ -16,12 +16,12 @@ namespace Aban360.ReportPool.Application.Features.Usp.Handlers.Implementations
             _queryService = queryService;
             _queryService.NotNull(nameof(_queryService));
         }
-        public async Task<ReportOutput<UspFinancialHeader, UspFinancial2Output>> Handle(UspFinancial2Input input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<UspFinancial2Header, UspFinancial2Output>> Handle(UspFinancial2Input input, CancellationToken cancellationToken)
         {
             //TODO: validate
             input.VillageOrCityType = input.ZoneId > 140000 ? 2 : 1;
             IEnumerable<UspFinancial2Output> output= await _queryService.Get(input);
-            UspFinancialHeader header = new()
+            UspFinancial2Header header = new()
             {
                 Abon_ab = output.Sum(x => x.Abon_ab),
                 Abon_fas = output.Sum(x => x.Abon_fas),
@@ -50,7 +50,7 @@ namespace Aban360.ReportPool.Application.Features.Usp.Handlers.Implementations
                 Zaribfasl = output.Sum(x => x.Zaribfasl),
                 Sp=input.Sp
             };
-            ReportOutput<UspFinancialHeader, UspFinancial2Output> reportOutput = new( ReportLiterals.UspFinancial2, header, output);
+            ReportOutput<UspFinancial2Header, UspFinancial2Output> reportOutput = new( ReportLiterals.UspFinancial2, header, output);
             return reportOutput;
         }
     }

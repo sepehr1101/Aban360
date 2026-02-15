@@ -33,7 +33,6 @@ namespace Aban360.BrdigeApi.Controllers.V1.NotificationPool
             _jobClient.NotNull(nameof(_jobClient));
         }
 
-        [AllowAnonymous]
         [HttpPost]
         [Route("connected")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<SearchInput>), StatusCodes.Status200OK)]
@@ -62,7 +61,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.NotificationPool
         public async Task<IActionResult> SendConnectAlert([FromBody] ServiceConnectSmsDto input, CancellationToken cancellationToken)
         {
             var customerInfo = await _customerInfoHandler.Handle(input.BillId, cancellationToken);
-            string text = string.Format(SmsTemplates.ServiceLinkConnectAlert, customerInfo.ZoneTitle, input.BillId, input.When, Environment.NewLine);
+            string text = string.Format(SmsTemplates.ServiceLinkConnectAlert, customerInfo.ZoneTitle, input.BillId, input.Hour, Environment.NewLine);
             _jobClient.Enqueue(() => _smsHandler.Send(customerInfo.MobileNumber, text));
             return Ok(input);
         }
@@ -73,7 +72,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.NotificationPool
         public async Task<IActionResult> SendDisonnectAlert([FromBody] ServiceLinkDisconnectSmsDto input, CancellationToken cancellationToken)
         {
             var customerInfo = await _customerInfoHandler.Handle(input.BillId, cancellationToken);
-            string text = string.Format(SmsTemplates.ServiceLinkDisconnectAlert, customerInfo.ZoneTitle, input.BillId, input.Why, input.When, Environment.NewLine);
+            string text = string.Format(SmsTemplates.ServiceLinkDisconnectAlert, customerInfo.ZoneTitle, input.BillId, input.Why, input.Hour, Environment.NewLine);
             _jobClient.Enqueue(() => _smsHandler.Send(customerInfo.MobileNumber, text));
             return Ok(input);
         }

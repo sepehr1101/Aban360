@@ -11,13 +11,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aban360.Api.Controllers.V1.ReportPool.Usp
 {
     [Route("v1/usp")]
-    public class UspFinancial2Controller:BaseController
+    public class UspPayment2Controller : BaseController
     {
-        private readonly IUspFinancial2Handler _handler;
+        private readonly IUspPayment2Handler _handler;
         private readonly IReportGenerator _reportGenerator;
 
-        public UspFinancial2Controller(
-            IUspFinancial2Handler handler,
+        public UspPayment2Controller(
+            IUspPayment2Handler handler,
             IReportGenerator reportGenerator)
         {
             _handler = handler;
@@ -28,18 +28,18 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Usp
         }
        
         [HttpPost]
-        [Route("financial2")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<UspFinancial2Output>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get([FromBody] UspFinancial2Input input, CancellationToken cancellationToken)
+        [Route("payment2/raw")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<UspPayment2Output>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Get([FromBody] UspPayment2Input input, CancellationToken cancellationToken)
         {            
-            ReportOutput<UspPayment2Header, UspFinancial2Output> output = await _handler.Handle(input, cancellationToken);
+            ReportOutput<UspPayment2Header, UspPayment2Output> output = await _handler.Handle(input, cancellationToken);
             return Ok(output);
         }
 
         [HttpPost]
-        [Route("financial2/excel/{connectionId}")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<UspFinancial2Output>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetExcel(string connectionId,[FromBody] UspFinancial2Input input, CancellationToken cancellationToken)
+        [Route("payment2/excel/{connectionId}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<UspPayment2Output>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetExcel(string connectionId,[FromBody] UspPayment2Input input, CancellationToken cancellationToken)
         {
             await _reportGenerator.FireAndInform(input, cancellationToken, _handler.Handle, CurrentUser, ReportLiterals.UspFinancial2, connectionId);
             return Ok(input);
