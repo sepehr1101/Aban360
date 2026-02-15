@@ -31,6 +31,7 @@
     <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
     <ProjectReference Include="..\Aban360.LocationPool.GatewayAdhoc\Aban360.LocationPool.GatewayAdhoc.csproj" />
     <ProjectReference Include="..\Aban360.NotificationPool.Application\Aban360.NotificationPool.Application.csproj" />
+    <ProjectReference Include="..\Aban360.NotificationPool.Domain\Aban360.NotificationPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.ReportPool.Application\Aban360.ReportPool.Application.csproj" />
     <ProjectReference Include="..\Aban360.ReportPool.Domain\Aban360.ReportPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.ReportPool.GatewayAdhoc\Aban360.ReportPool.GatewayAdhoc.csproj" />

@@ -28,8 +28,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             {
                 return false;
             }
-            string _15daysAgo = DateTime.Now.AddDays(-15).ToShortPersianDateString();
-            if (operationDate.CompareTo(_15daysAgo) < 0)
+            string _30daysAgo = DateTime.Now.AddDays(-30).ToShortPersianDateString();
+            if (operationDate.CompareTo(_30daysAgo) < 0)
+            {
+                return false;
+            }
+            string today = DateTime.Now.ToShortPersianDateString();
+            if(today.Substring(3,2)!=operationDate.Substring(3,2))
             {
                 return false;
             }
@@ -53,6 +58,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         {
             string query = @$"USE [{dbName}]
                             SELECT date_check FROM variab";
+            return query;
         }
     }
 }
