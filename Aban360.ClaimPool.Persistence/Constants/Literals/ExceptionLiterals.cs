@@ -10,6 +10,8 @@
         public static string InvalidInsertAssessment => "خطا در ذخیره نتیجه ارزیابی";
         public static string InvalidUpdateToDayJalali => "خطا در ویرایش 'تا تاریخ'";
         public static string InvalidInsertArchmem=> "خطا در ذخیره تاریخچه مشترک";
+        public static string InvalidUpdateBillAmount=> "خطا در ویرایش مبلغ قبض";
+
 
     }
 }

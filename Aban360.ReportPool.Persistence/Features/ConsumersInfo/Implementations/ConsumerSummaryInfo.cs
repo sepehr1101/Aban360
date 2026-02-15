@@ -115,7 +115,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	c.PhysicalWaterInstallDateJalali AS InstallationDate,
                     	'' AS ProductDate,
                     	'' AS GuaranteeDate,
-                    	c.Address AS Address,
+                    	TRIM(c.Address) AS Address,
                     	'' AS CounterState,
                     	'' AS CounterStatus,
                     	c.ContractCapacity AS ContractualCapacity,
@@ -130,10 +130,10 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	c.BranchType as ConstructionType,
                     	c.UsageTitle2 AS UsageConsumption,
                     	c.UsageTitle AS UsageSell,
-                    	c.FirstName+' '+c.SureName AS FullName,
-                    	c.FirstName,
-                    	c.SureName AS Surname,
-                        c.SewageRequestDate AS SiphonRequestDate,
+                    	(TRIM(c.FirstName)+' '+TRIM(c.SureName)) AS FullName,
+                    	TRIM(c.FirstName) FirstName,
+                    	TRIM(c.SureName) AS Surname,
+                        TRIM(c.SewageRequestDate) AS SiphonRequestDate,
                     	c.PhysicalSewageInstallDateJalali AS SiphonInstallationDate,
                     	'' AS HeadquartersTitle,
                     	'' AS CordinalDirectionTitle,
@@ -141,14 +141,15 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	'' AS RegionTitle,
                     	c.ZoneTitle AS ZoneTitle,
                     	c.ZoneId AS ZoneId,
-                    	c.VillageName AS MunicipalityTitle,
+                    	TRIM(c.VillageName) AS MunicipalityTitle,
                     	--c.VillageId AS MunicipalityId,
 	                    TRY_CAST(c.VillageId AS int) AS MunicipalityId,
                     	c.PostalCode ,
                     	c.MobileNo AS MobileNumber,
                         c.DiscountTypeTitle AS DiscountType,
                         c.WaterDiameterTitle AS MeterDiameterTitle,
-                        c.MainSiphonTitle AS SiphonDiameterTitle
+                        c.MainSiphonTitle AS SiphonDiameterTitle,
+						c.DeletionStateTitle
                     from [CustomerWarehouse].dbo.Clients c
                     where c.BillId=@id 
                     and c.ToDayJalali is null";

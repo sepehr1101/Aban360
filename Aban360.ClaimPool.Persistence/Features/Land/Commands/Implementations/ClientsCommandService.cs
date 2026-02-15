@@ -32,7 +32,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
         public async Task UpdateToDayJalali(ZoneIdCustomerNumber input, string CurrentDateJalali)
         {
             string command = GetUpdateToDayJalaliCommand();
-            int rowEffectCount = await _connection.ExecuteAsync(command, new { input.ZoneId, input.CustomerNumber, CurrentDateJalali });
+            int rowEffectCount = await _connection.ExecuteAsync(command, new { input.ZoneId, input.CustomerNumber, CurrentDateJalali }, _transaction);
             if (rowEffectCount <= 0)
             {
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidUpdateToDayJalali);
