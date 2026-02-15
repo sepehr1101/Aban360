@@ -1,4 +1,5 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Constants.Literals;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
@@ -24,16 +25,22 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
         public async Task Update(CustomerUpdateDto updateDto, string dbName)
         {
             string command = GetUpdateCommand(dbName);
-
-            //if (_sqlReportConnection.State != System.Data.ConnectionState.Open)
-            //    await _sqlReportConnection.OpenAsync();
-
-            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
             if (recordCount <= 0)
             {
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidUpdateMoshtrakin);
             }
         }
+        public async Task UpdateBedbes(ZoneIdCustomerNumber inputDto, long amount, string dbName)
+        {
+            string command = GetUpdateBedBesCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, new { inputDto.CustomerNumber, amount }, _dbTransaction);
+			if (recordCount <= 0)
+			{
+				throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidUpdateBillAmount);
+			}
+        }
+
         private string GetUpdateCommand(string dbName)
         {
             return @$"UPDATE [{dbName}].dbo.members
@@ -92,6 +99,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 						TRIM(bill_id)=@billId AND
 						town=@zoneId AND
 						radif=@customerNumber ";
+        }
+        private string GetUpdateBedBesCommand(string dbName)
+        {
+            return $@" Update [{dbName}].dbo.members
+					Set bed_bes=bed_bes+@amount
+					Where radif=@customerNumber";
         }
     }
 

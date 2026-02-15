@@ -26,7 +26,7 @@
         public string? MeterChangeDateJalali { get; set; }
         public string LatestMeterReading { get; set; }
 
-
+        public string DeletionStateTitle { get; set; }
         public string UsageStatusTitle { get; set; }
         public bool CommonSiphon { get; set; }
 

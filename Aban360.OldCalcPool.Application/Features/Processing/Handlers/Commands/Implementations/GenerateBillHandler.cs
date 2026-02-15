@@ -1,5 +1,7 @@
 ﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
+using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
+using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
@@ -59,8 +61,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         public async Task<AbBahaCalculationDetails> Handle(GenerateBillInputDto inputDto, CancellationToken cancellationToken)
         {
             await Validation(inputDto, cancellationToken);
-            ZoneIdAndCustomerNumberGetDto zoneIdAndCustomerNumber = await _customerInfoService.GetZoneIdAndCustomerNumber(inputDto.BillId);
-            CustomerInfoGetDto customerInfo = await _customerInfoService.Get(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
+            ZoneIdAndCustomerNumberGetDto zoneIdAndCustomerNumber_1 = await _customerInfoService.GetZoneIdAndCustomerNumber(inputDto.BillId);
+            CustomerInfoGetDto customerInfo = await _customerInfoService.Get(zoneIdAndCustomerNumber_1.ZoneId, zoneIdAndCustomerNumber_1.CustomerNumber);
             CounterStateValidation(inputDto.CounterStateCode, inputDto.MeterNumber, customerInfo.BedBesInfo.LastMeterNumber);
 
             MeterInfoByPreviousDataInputDto tariffMeterInfoByPreviousData = GetMeterInfoByPreviousData(customerInfo, inputDto);
@@ -71,30 +73,67 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             }
             BedBesCreateDto bedBes = await GetBedBes(customerInfo, abBahaCalcResult, inputDto);
             KasrHaDto kasrHa = GerKasrHa(customerInfo, abBahaCalcResult, inputDto);
+            ZoneIdCustomerNumber zoneIdAndCustomerNumber_2 = new(zoneIdAndCustomerNumber_1.ZoneId, zoneIdAndCustomerNumber_1.CustomerNumber.ToString());
+            ZoneIdAndCustomerNumberOutputDto zoneIdAndCustomerNumber_3 = new(zoneIdAndCustomerNumber_1.ZoneId, zoneIdAndCustomerNumber_1.CustomerNumber);
+            ContorUpdateDto contorUpdate = GetControUpdateDto(customerInfo, bedBes);
+            string dbName = GetDbName(zoneIdAndCustomerNumber_2.ZoneId);
 
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
                 {
                     connection.Open();
-                }                
+                }
+                
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    BedBesCommandService bedBedCommandService = new BedBesCommandService(_sqlReportConnection, transaction);
-                    KasrHaCommandService kasrHasCommandService = new KasrHaCommandService(_sqlReportConnection, transaction);
-
-                    await bedBedCommandService.Create(bedBes, zoneIdAndCustomerNumber.ZoneId);
-                    if (abBahaCalcResult.DiscountSum > 0)
+                    try
                     {
-                        await kasrHasCommandService.Create(kasrHa, zoneIdAndCustomerNumber.ZoneId);
+                        BedBesCommandService bedBedCommandService = new BedBesCommandService(_sqlReportConnection, transaction);
+                        KasrHaCommandService kasrHasCommandService = new KasrHaCommandService(_sqlReportConnection, transaction);
+                        MembersCommandService membersCommandService = new MembersCommandService(_sqlReportConnection, transaction);
+                        MandeBedehiCommandService mandeBedehiCommandService = new MandeBedehiCommandService(_sqlReportConnection, transaction);
+                        BillCommandService billCommandService = new BillCommandService(_sqlReportConnection, transaction);
+                        ContorCommandService controCommandService = new ContorCommandService(_sqlReportConnection, transaction);
+
+                        int bedBesRecordId = await bedBedCommandService.Create(bedBes, zoneIdAndCustomerNumber_1.ZoneId);
+                        if (abBahaCalcResult.DiscountSum > 0)
+                        {
+                            await kasrHasCommandService.Create(kasrHa, zoneIdAndCustomerNumber_1.ZoneId);
+                        }
+
+                        await membersCommandService.UpdateBedbes(zoneIdAndCustomerNumber_2, (long)bedBes.Baha, dbName);
+                        await mandeBedehiCommandService.UpdateAmount(zoneIdAndCustomerNumber_3, (long)bedBes.Baha, dbName);
+                        await controCommandService.Update(contorUpdate, dbName);                                                                                                   //update contro
+                        await billCommandService.InsertByBedBesId(zoneIdAndCustomerNumber_3, bedBesRecordId, dbName);
+
+                        transaction.Commit();
                     }
-                    transaction.Commit();
+                    catch (Exception es)
+                    {
+                        transaction.Rollback();
+                        throw  es;
+                    }
                 }
             }
             //warehouse bills
             //contor
-            //members  bedbes+sumitems
+            //members  bedbes+sumitems  ----
             return abBahaCalcResult;
+        }
+        private ContorUpdateDto GetControUpdateDto(CustomerInfoGetDto customerInfo, BedBesCreateDto bedBes)
+        {
+            return new ContorUpdateDto()
+            {
+                ZoneId = customerInfo.MembersInfo.ZoneId,
+                CustomerNumber = customerInfo.MembersInfo.CustomerNumber,
+                CurrentDateJalali = bedBes.TodayDate,
+                CurrentNumber = (int)bedBes.TodayNo,
+                Consumption = (int)bedBes.Masraf,
+                ConsumptionAverage = (float)bedBes.Rate,
+                MeterChangeDateJalali = customerInfo.TavizInfo.TavizDateJalali ?? string.Empty,
+                MeterChangeNumber = customerInfo.TavizInfo.TavizNumber ?? 0
+            };
         }
         private MeterInfoByPreviousDataInputDto GetMeterInfoByPreviousData(CustomerInfoGetDto customerInfo, GenerateBillInputDto generateBillInfo)
         {

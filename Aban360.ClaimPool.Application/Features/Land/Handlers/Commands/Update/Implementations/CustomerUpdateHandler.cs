@@ -62,6 +62,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         }
         public async Task Handle(ServiceLinkConnectionInput inputDto, int deletionStateId, CancellationToken cancellationToken)
         {
+            
+            //Todo: جلوگیری از ثبت دوباره وضعیت جاری
             SubscriptionGetDto previousSubscription = await GetConsumptionPreviousInfo(inputDto.BillId);
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, deletionStateId, previousSubscription);
 
