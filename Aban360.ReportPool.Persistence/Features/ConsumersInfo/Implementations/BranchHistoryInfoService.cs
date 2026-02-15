@@ -52,6 +52,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             return @"select Top 1	
 						c.ZoneId AS ZoneId,
 						c.CustomerNumber AS CustomerNumber,
+						c.DeletionStateTitle DeletionStateTitle,
+						c.BranchType BranchTypeTitle,
 						c.WaterRequestDate , 
 						c.WaterInstallDate AS WaterInstallationDate,
 						c.WaterRegisterDateJalali AS WaterRegistrationDate,

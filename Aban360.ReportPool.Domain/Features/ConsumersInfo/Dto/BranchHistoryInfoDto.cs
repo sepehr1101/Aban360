@@ -4,6 +4,8 @@
     {
         public string CustomerNumber { get; set; }
         public int ZoneId { get; set; }
+        public string BranchTypeTitle { get; set; }
+        public string DeletionStateTitle { get; set; }
         #region Water
         //watermeter
         public string WaterRequestDate { get; set; }//

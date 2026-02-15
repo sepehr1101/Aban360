@@ -22,6 +22,8 @@
         public string WaterReplacementNumber { get; set; } = default!;
         public int ZoneId { get; set; }
         public long Remained { get; set; }
+        public string BranchTypeTitle { get; set; }
+        public string DeletionStateTitle { get; set; }
         public string ReportDateJalali{ get; set; } = default!;
         public string Title{ get; set; } = default!;
 
