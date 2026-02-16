@@ -1,5 +1,4 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
-using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Domain.Features.People.Entities;
@@ -26,6 +25,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         private readonly ISiphonDiameterQueryService _siphonDiameterQueryService;
         private readonly IDiscountTypeQueryService _discountTypeQueryService;
         private readonly ICompanyServiceQueryService _companyServiceQueryService;
+        private readonly IMeterMaterialQueryService _meterMaterialQueryService;
 
         public AssessmentTaskGetAllHandler(
             IAssessmentTaskQueryService assessmentTaskQueryService,
@@ -35,7 +35,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             IMeterDiameterQueryService meterDiameterQueryService,
             ISiphonDiameterQueryService siphonDiameterQueryService,
             IDiscountTypeQueryService discountTypeQueryService,
-            ICompanyServiceQueryService companyServiceQueryService)
+            ICompanyServiceQueryService companyServiceQueryService,
+            IMeterMaterialQueryService meterMaterialQueryService)
         {
             _assessmentTaskQueryService = assessmentTaskQueryService;
             _assessmentTaskQueryService.NotNull(nameof(assessmentTaskQueryService));
@@ -60,28 +61,32 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
             _companyServiceQueryService = companyServiceQueryService;
             _companyServiceQueryService.NotNull(nameof(companyServiceQueryService));
+
+            _meterMaterialQueryService = meterMaterialQueryService;
+            _meterMaterialQueryService.NotNull(nameof(meterMaterialQueryService));
         }
 
         public async Task<AssessmentTasksOutputDto> Handle(int assessmentCode, CancellationToken cancellationToken)
         {
-            IEnumerable<Common.BaseEntities.NumericDictionary> trackingResultsDictionary = await _trackingResultQueryService.Get();
+            IEnumerable<NumericDictionary> trackingResultsDictionary = await _trackingResultQueryService.Get();
 
             ICollection<Usage> usageList = await _usageQueryService.Get();
-            IEnumerable<Common.BaseEntities.NumericDictionary> usagesDictionary = usageList.Select(u => new Common.BaseEntities.NumericDictionary(u.Id, u.Title));
+            IEnumerable<NumericDictionary> usagesDictionary = usageList.Select(u => new NumericDictionary(u.Id, u.Title));
 
             ICollection<Handover> branchTypeList = await _handoverQueryService.Get();
-            IEnumerable<Common.BaseEntities.NumericDictionary> branchTypeDictionary = branchTypeList.Select(b => new Common.BaseEntities.NumericDictionary(b.Id, b.Title));
+            IEnumerable<NumericDictionary> branchTypeDictionary = branchTypeList.Select(b => new NumericDictionary(b.Id, b.Title));
 
             ICollection<MeterDiameter> meterDiameterList = await _meterDiameterQueryService.Get();
-            IEnumerable<Common.BaseEntities.NumericDictionary> meterDiameterDictionary = meterDiameterList.Select(m => new Common.BaseEntities.NumericDictionary(m.Id, m.Title));
+            IEnumerable<NumericDictionary> meterDiameterDictionary = meterDiameterList.Select(m => new NumericDictionary(m.Id, m.Title));
 
             ICollection<SiphonDiameter> siphonDiameterList = await _siphonDiameterQueryService.Get();
             IEnumerable<NumericDictionary> siphonDiameterDictionary = siphonDiameterList.Select(s => new NumericDictionary(s.Id, s.Title));
 
             ICollection<DiscountType> discountTypeList = await _discountTypeQueryService.Get();
-            IEnumerable<Common.BaseEntities.NumericDictionary> discountTypeDictionary = discountTypeList.Select(d => new Common.BaseEntities.NumericDictionary((int)d.Id, d.Title));
+            IEnumerable<NumericDictionary> discountTypeDictionary = discountTypeList.Select(d => new NumericDictionary((int)d.Id, d.Title));
 
-            //Material
+            ICollection<MeterMaterial> meterMaterialList = await _meterMaterialQueryService.Get();
+            IEnumerable<NumericDictionary> meterMaterialDictionary = meterMaterialList.Select(m => new NumericDictionary(m.Id,m.Title));
 
             IEnumerable<AssessmentLocationInfoOutputDto> locationsInfo = await GetLocationsInfo(assessmentCode);
 
@@ -94,6 +99,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 MeterDiameters = meterDiameterDictionary,
                 SiphonDiameters = siphonDiameterDictionary,
                 DiscountTypes = discountTypeDictionary,
+                MeterMaterials=meterMaterialDictionary,
             };
         }
         private async Task<IEnumerable<AssessmentLocationInfoOutputDto>> GetLocationsInfo(int assessmentCode)
@@ -167,14 +173,14 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             IEnumerable<ServiceGroupWithCheckedOutputDto> items = await GetItemsService(locationInfoWithS);
             AssessmentLocationInfoOutputDto locationInfo = new()
             {
-                TrackId= locationInfoWithS.TrackId,
+                TrackId = locationInfoWithS.TrackId,
                 MobileNumber = locationInfoWithS.MobileNumber,
                 PhoneNumber = locationInfoWithS.PhoneNumber,
                 NotificationMobileNumber = locationInfoWithS.NotificationMobileNumber,
                 BillId = locationInfoWithS.BillId,
                 NeighbourBillId = locationInfoWithS.NeighbourBillId,
                 StringTrackNumber = locationInfoWithS.StringTrackNumber,
-                TrackNumber=locationInfoWithS.TrackNumber,
+                TrackNumber = locationInfoWithS.TrackNumber,
                 CustomerNumber = locationInfoWithS.CustomerNumber,
                 ServiceGroupId = locationInfoWithS.ServiceGroupId,
                 ServiceGroupTitle = locationInfoWithS.ServiceGroupTitle,
@@ -200,7 +206,37 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 AssessmentCode = locationInfoWithS.AssessmentCode,
                 AssessmentMobileNumber = locationInfoWithS.AssessmentMobileNumber,
                 AssessmentName = locationInfoWithS.AssessmentName,
-                ServiceGroups = items
+                ServiceGroups = items,
+                CertificateNumber = locationInfoWithS.CertificateNumber,
+                Address = locationInfoWithS.Address,
+                PostalCode = locationInfoWithS.PostalCode,
+                ReadingNumber = locationInfoWithS.ReadingNumber,
+                BranchTypeTitle = locationInfoWithS.BranchTypeTitle,
+                BranchTypeId = locationInfoWithS.BranchTypeId,
+                ContractualCapacity = locationInfoWithS.ContractualCapacity,
+                Primesses = locationInfoWithS.Primesses,
+                ImprovementCommercial = locationInfoWithS.ImprovementCommercial,
+                ImprovementDomestic = locationInfoWithS.ImprovementDomestic,
+                ImprovementOverall = locationInfoWithS.ImprovementOverall,
+                CommercialUnit = locationInfoWithS.CommercialUnit,
+                DomesticUnit = locationInfoWithS.DomesticUnit,
+                OtherUnit = locationInfoWithS.OtherUnit,
+                LicenseIssuanceDateJalali = locationInfoWithS.LicenseIssuanceDateJalali,
+                BlockCode = locationInfoWithS.BlockCode,
+                Siphon100 = locationInfoWithS.Siphon100,
+                Siphon125 = locationInfoWithS.Siphon125,
+                Siphon150 = locationInfoWithS.Siphon150,
+                Siphon200 = locationInfoWithS.Siphon200,
+                MainSiphon = locationInfoWithS.MainSiphon,
+                TrenchLenS = locationInfoWithS.TrenchLenS,
+                TrenchLenW = locationInfoWithS.TrenchLenW,
+                AsphaltLenS = locationInfoWithS.AsphaltLenS,
+                AsphaltLenW = locationInfoWithS.AsphaltLenW,
+                RockyLenS = locationInfoWithS.RockyLenS,
+                RockyLenW = locationInfoWithS.RockyLenW,
+                OtherLenS = locationInfoWithS.OtherLenS,
+                OtherLenW = locationInfoWithS.OtherLenW,
+                BasementDepth = locationInfoWithS.BasementDepth,
             };
 
             return locationInfo;
