@@ -92,6 +92,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     await contorCommandService.Update(controUpdate, dbName, false);
                     await mandeBedehiCommandService.UpdateAmount(zoneIdAndCustomerNumber_1, amount, dbName);
 
+
                     transaction.Commit();
                 }
             }
