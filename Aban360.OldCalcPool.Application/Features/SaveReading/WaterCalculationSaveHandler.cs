@@ -75,8 +75,8 @@ namespace Aban360.OldCalcPool.Application.Features.SaveReading
                     BedBesCommandService bedBesCommandService = new BedBesCommandService(_sqlReportConnection, transaction);
                     KasrHaCommandService kasrHaCommandService = new KasrHaCommandService(_sqlReportConnection, transaction);
 
-                    await bedBesCommandService.Create(bedBes);
-                    await kasrHaCommandService.Create(kasrHa);
+                    await bedBesCommandService.Insert(bedBes);
+                    await kasrHaCommandService.Insert(kasrHa);
                 }
             }
         }
