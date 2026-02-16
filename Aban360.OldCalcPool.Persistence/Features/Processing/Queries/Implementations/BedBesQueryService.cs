@@ -21,6 +21,18 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         {
         }
 
+        public async Task<BedBesSmsDto> GetSmsDto(string billId, int zoneId, int customerNumber)
+        {
+            string dbName = GetDbName(zoneId);
+            string query = GetLatest(dbName);
+            var @params = new
+            {
+                customerNumber,
+                zoneId
+            };
+            BedBesSmsDto bedBesSmsDto = await _sqlReportConnection.QuerySingleOrDefaultAsync<BedBesSmsDto>(query, @params);
+            return bedBesSmsDto;
+        }
         public async Task<BedBesConsumptionOutputDto> Get(string billId)
         {
             string zoneIdQueryString = GetZoneIdQuery();
@@ -450,6 +462,31 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	date_bed=@Date
                     Order By date_bed desc,id desc";
         }
+
+        private string GetLatest(string dbName)
+        {
+            string query = @$"select top 1 
+	                    TRIM(sh_ghabs1) BillId,
+	                    TRIM(sh_pard1) PayId,
+	                    pri_date PreviousDateJalali,
+	                    today_date CurrentDateJalali,
+	                    date_bed DateBed,
+	                    mohlat Deadline,
+	                    noe_va BranchTypeId,
+	                    pri_no PreviousNumber,
+	                    today_no CurrentNumber,
+	                    kasr_ha Discount,
+	                    pard Payable,
+	                    baha SumCurrentItems,
+	                    jam SumAll,
+	                    cod_vas CounterStateCode,
+	                    cod_enshab UsageId
+                    from [{dbName}].dbo.bed_bes
+                    where town=@zoneId and radif=@customerNumber and cod_vas not in (4,7,8)
+                    order by date_bed desc, id desc";
+            return query;
+        }
+        
         private string GetPreviousBedBesQuery(string dbName)
         {
             return $@"Select Top 1

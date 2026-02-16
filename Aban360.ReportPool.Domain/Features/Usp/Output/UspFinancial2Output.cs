@@ -54,6 +54,7 @@
         public int Ahad_ghabs_Faz { get; set; }
         public double Tedad_ensh_Faz { get; set; }
         public double Tedad_vahed_Faz { get; set; }
+        public long masraf { get; set; }
         public long Ab_baha { get; set; }
         public long Abon_ab { get; set; }
         public long Tabsare3_ab { get; set; }

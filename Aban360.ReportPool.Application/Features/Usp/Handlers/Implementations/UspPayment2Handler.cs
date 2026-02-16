@@ -22,6 +22,7 @@ namespace Aban360.ReportPool.Application.Features.Usp.Handlers.Implementations
             IEnumerable<UspPayment2Output> output = await _queryService.Get(input);
             UspPayment2Header header = new()
             {
+                pard = output.Sum(i => i.pard),
                 pard1 = output.Sum(i => i.pard1),
                 pard2 = output.Sum(i => i.pard2),
                 pard3 = output.Sum(i => i.pard3),

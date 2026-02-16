@@ -20,6 +20,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
         Task<IEnumerable<BedBesCreateDto>> Get(ZoneCustomerFromToDateDto input);
         Task<int> GetCountInDateBed(int zoneId, int customernumber, string date,bool isPreviousDate);
         Task<int?> GetLatestJalaseNumber(ZoneIdAndCustomerNumberOutputDto input);
+        Task<BedBesSmsDto> GetSmsDto(string billId, int zoneId, int customerNumber);
         Task<BedBesWithConsumptionOutputDto> GetPrevious(ZoneIdAndCustomerNumberOutputDto input, string dateJalali);
     }
 }

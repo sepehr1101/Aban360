@@ -135,7 +135,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                          NULL,
                          b.noe_va,
                          IIF(b.ghabs='2' AND b.cod_vas NOT IN(4,7,8),1,0) IsSettlement
-                    FROM [{dbName}].bed_bes b
+                    FROM [{dbName}].dbo.bed_bes b
                     JOIN Db70.dbo.T51 z
                     	ON b.town=z.C0
                     LEFT OUTER JOIN [{dbName}].dbo.kasr_ha k
