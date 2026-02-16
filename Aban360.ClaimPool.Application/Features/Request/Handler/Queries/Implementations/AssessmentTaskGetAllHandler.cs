@@ -81,6 +81,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             ICollection<DiscountType> discountTypeList = await _discountTypeQueryService.Get();
             IEnumerable<Common.BaseEntities.NumericDictionary> discountTypeDictionary = discountTypeList.Select(d => new Common.BaseEntities.NumericDictionary((int)d.Id, d.Title));
 
+            //Material
+
             IEnumerable<AssessmentLocationInfoOutputDto> locationsInfo = await GetLocationsInfo(assessmentCode);
 
             return new AssessmentTasksOutputDto()

@@ -84,5 +84,15 @@
         public int s47 { get; set; }
         public int s48 { get; set; }
 
+        public int? TrenchLenW { get; set; }
+        public int? TrenchLenS { get; set; }
+        public int? AsphaltLenW { get; set; }
+        public int? AsphaltLenS { get; set; }
+        public int? RockyLenW { get; set; }
+        public int? RockyLenS { get; set; }
+        public int? OtherLenW { get; set; }
+        public int? OtherLenS { get; set; }
+        public int? BasementDepth { get; set; }
+
     }
 }
