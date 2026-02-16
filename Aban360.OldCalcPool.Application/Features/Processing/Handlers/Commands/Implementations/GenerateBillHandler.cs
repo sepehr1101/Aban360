@@ -84,7 +84,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 {
                     connection.Open();
                 }
-                
+
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     try
@@ -96,7 +96,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                         BillCommandService billCommandService = new BillCommandService(connection, transaction);
                         ContorCommandService controCommandService = new ContorCommandService(connection, transaction);
 
-                        int bedBesRecordId = await bedBedCommandService.Insert(bedBes, zoneIdAndCustomerNumber_1.ZoneId);
+                        int bedBesRecordId =  await bedBedCommandService.Insert(bedBes, zoneIdAndCustomerNumber_1.ZoneId);
                         if (abBahaCalcResult.DiscountSum > 0)
                         {
                             await kasrHasCommandService.Insert(kasrHa, zoneIdAndCustomerNumber_1.ZoneId);
@@ -112,7 +112,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     catch (Exception es)
                     {
                         transaction.Rollback();
-                        throw  es;
+                        throw es;
                     }
                 }
             }
