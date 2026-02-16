@@ -4,7 +4,6 @@ using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Persistence.Constants;
 using Dapper;
-using DNTPersianUtils.Core;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
@@ -30,7 +29,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             _transaction.NotNull(nameof(transaction));
         }
 
-        public async Task<int> Create(BedBesCreateDto input, int zoneId)
+        public async Task<int> Insert(BedBesCreateDto input, int zoneId)
         {
             string dbName = GetDbName(zoneId);
             //string dbName = "Atlas";
@@ -44,7 +43,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 
             return recordCount.Value;
         }
-        public async Task Create(ICollection<BedBesCreateDto> input)
+        public async Task Insert(ICollection<BedBesCreateDto> input)
         {
             //string dbName = GetDbName((int)input.FirstOrDefault().Town);
             string dbName = "Atlas";
@@ -57,7 +56,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             //    {
             //        try
             //        {
-            await _connection.ExecuteAsync(GetBedBesCreateQuery(dbName), input);
+            await _connection.ExecuteAsync(GetBedBesCreateQuery(dbName), input, transaction:_transaction);
             //            transaction.Commit();
             //        }
             //        catch (Exception ex)
@@ -69,7 +68,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 
             //}
         }
-        public async Task Create(ICollection<BedBesCreateDto> input, int zoneId)
+        public async Task Insert(ICollection<BedBesCreateDto> input, int zoneId)
         {
             // string dbName=GetDbName(zoneId);
             string dbName = "Atlas";

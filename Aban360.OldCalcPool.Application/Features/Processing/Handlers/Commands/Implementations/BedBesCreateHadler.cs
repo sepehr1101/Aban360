@@ -34,7 +34,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             using (IDbTransaction transaction = _sqlReportConnection.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 BedBesCommandService bedBesCommandService = new BedBesCommandService(_sqlReportConnection,transaction);
-                await bedBesCommandService.Create(bedBesDto, (int)bedBesDto.Town);
+                await bedBesCommandService.Insert(bedBesDto, (int)bedBesDto.Town);
             }
         }
         private BedBesCreateDto GetBedBesCreateDto(AbBahaCalculationDetails inputDto, int codVas)

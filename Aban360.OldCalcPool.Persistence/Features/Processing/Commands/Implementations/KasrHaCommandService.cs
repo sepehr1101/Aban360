@@ -30,7 +30,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             _transaction.NotNull(nameof(transaction));
         }
 
-        public async Task Create(KasrHaDto input, int zoneId)
+        public async Task Insert(KasrHaDto input, int zoneId)
         {
             string dbName = GetDbName(zoneId);
             //string dbName = "Atlas";
@@ -38,7 +38,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 
             await _connection.ExecuteAsync(query, input, _transaction);
         }
-        public async Task Create(ICollection<KasrHaDto> input)
+        public async Task Insert(ICollection<KasrHaDto> input)
         {
             //string dbName = GetDbName((int)input.FirstOrDefault().Town);
             string dbName = "Atlas";
@@ -62,7 +62,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                 //}
             //}
         }
-        public async Task Create(ICollection<KasrHaDto> input, int zoneId)
+        public async Task Insert(ICollection<KasrHaDto> input, int zoneId)
         {
             //var dbName=GetDbName(zoneId);   
             var dbName = "Atlas";

@@ -110,8 +110,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                     BedBesCommandService bedBesCreateService = new BedBesCommandService(_sqlReportConnection, transaction);
                     KasrHaCommandService kasrHaCommandService = new KasrHaCommandService(_sqlConnection, transaction);
 
-                    await bedBesCreateService.Create(BedBesBatch, zoneId);
-                    await kasrHaCommandService.Create(kasrHaBatch, zoneId);
+                    await bedBesCreateService.Insert(BedBesBatch, zoneId);
+                    await kasrHaCommandService.Insert(kasrHaBatch, zoneId);
                 }
             }
         }
