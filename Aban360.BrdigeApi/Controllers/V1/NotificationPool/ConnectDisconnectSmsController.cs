@@ -7,9 +7,7 @@ using Aban360.NotificationPool.Application.Features.Sms;
 using Aban360.NotificationPool.Domain.Features.Sms;
 using Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contracts;
 using Hangfire;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
 namespace Aban360.BrdigeApi.Controllers.V1.NotificationPool
 {
