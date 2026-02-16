@@ -37,7 +37,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         public async Task<ZoneIdAndCustomerNumberOutputDto> GetZoneIdAndCustomerNumber(string billId)
         {
             string query = GetZoneIdAndCustomerNumberByBillIdQuery();
-            ZoneIdAndCustomerNumberOutputDto result=await _sqlReportConnection.QueryFirstOrDefaultAsync<ZoneIdAndCustomerNumberOutputDto>(query, new { billId });
+            ZoneIdAndCustomerNumberOutputDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZoneIdAndCustomerNumberOutputDto>(query, new { billId });
             if (result is null || result.ZoneId <= 0)
             {
                 throw new InvalidBillIdException(ExceptionLiterals.InvalidBillId);

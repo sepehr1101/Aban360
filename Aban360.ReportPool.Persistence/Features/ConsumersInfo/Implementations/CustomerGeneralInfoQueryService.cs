@@ -43,14 +43,14 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
         {
             string query = GetBillInfo(dbName);
             CustomerGeneralBillInfoDto billInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<CustomerGeneralBillInfoDto>(query, input);
-            if (billInfo == null)
+            /*if (billInfo == null)
             {
                 throw new InvalidBillIdException(ExceptionLiterals.BillIdNotFound);
-            }
-            customerInfo.CounterStateCode = billInfo.CounterStateCode;
-            customerInfo.LatestMeterNumber = billInfo.LatestMeterNumber;
-            customerInfo.LatestMeterReading = billInfo.LatestMeterReading;
-            customerInfo.UsageStatusTitle = billInfo.UsageStatusTitle;
+            }*/
+            customerInfo.CounterStateCode = billInfo == null ? "0" : billInfo.CounterStateCode;
+            customerInfo.LatestMeterNumber = billInfo == null ? 0 : billInfo.LatestMeterNumber;
+            customerInfo.LatestMeterReading = billInfo == null ? "0" : billInfo.LatestMeterReading;
+            customerInfo.UsageStatusTitle = billInfo == null ? string.Empty : billInfo.UsageStatusTitle;
 
             return customerInfo;
         }
@@ -66,7 +66,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
         {
             string query = GetPaymentInfo(dbName);
             CustomerGeneralPaymentInfoDto latestMeterChange = await _sqlReportConnection.QueryFirstOrDefaultAsync<CustomerGeneralPaymentInfoDto>(query, input);
-            customerInfo.LatestPaymentDateJalali = latestMeterChange.LatestPaymentDateJalali;
+            customerInfo.LatestPaymentDateJalali = latestMeterChange == null ? string.Empty : latestMeterChange.LatestPaymentDateJalali;
 
             return customerInfo;
         }
