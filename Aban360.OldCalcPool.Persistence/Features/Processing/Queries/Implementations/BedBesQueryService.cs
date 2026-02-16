@@ -145,7 +145,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             IEnumerable<BedBesCreateDto> result = await _sqlReportConnection.QueryAsync<BedBesCreateDto>(query, input);
             return result;
         }
-        public async Task<int> GetCountInDateBed(int zoneId, int customernumber, string date,bool isPreviousDate)
+        public async Task<int> GetCountInDateBed(int zoneId, int customernumber, string date, bool isPreviousDate)
         {
             string dbName = GetDbName(zoneId);
             //string dbName = "Atlas";
@@ -154,7 +154,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             {
                 zoneId = zoneId,
                 customerNumber = customernumber,
-                isPreviousDate= isPreviousDate,
+                isPreviousDate = isPreviousDate,
                 date = date
             };
             int count = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(query, @params);
@@ -173,6 +173,27 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             };
             int? jalaseNumber = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(query, @params);
             return jalaseNumber;
+        }
+        public async Task<BedBesWithConsumptionOutputDto> GetPrevious(ZoneIdAndCustomerNumberOutputDto input, string dateJalali)
+        {
+            string dbName = GetDbName(input.ZoneId);
+            string query = GetPreviousBedBesQuery(dbName);
+            BedBesWithConsumptionOutputDto? previousBill = await _sqlReportConnection.QueryFirstOrDefaultAsync<BedBesWithConsumptionOutputDto>(query, new { input.CustomerNumber, dateJalali });
+            if (previousBill is null || previousBill.ZoneId <= 0)
+            {
+                return new BedBesWithConsumptionOutputDto()
+                {
+                    ZoneId = input.ZoneId,
+                    CustomerNumber = input.CustomerNumber,
+                    previousNumber = 0,
+                    PreviousDateJalali = string.Empty,
+                    CurrentNumber = 0,
+                    CurrentDateJalali = string.Empty,
+                    Consumption=0,
+                    ConsumptionAverage=0
+                };
+            }
+            return previousBill;
         }
 
         private string GetBedBesConsumptionDataQuery(string dataBaseName)
@@ -264,7 +285,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                         b.barge as Barge,
                     	b.pri_no as PreviousNumber, 
                     	b.today_no as CurrentNumber,
-                    	b.pri_date as PrviousDateJalali,
+                    	b.pri_date as PreviousDateJalali,
                     	b.today_date as CurrentDateJalali,
                     	b.date_bed as RegisterDateJalali,
                     	b.masraf as Consumption,
@@ -272,7 +293,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 						b.ab_baha as AbBahaAmount,
 						b.fas_baha as FazelabAmount,
                     	b.baha as Baha,
-                    	b.sh_ghabs1 as BillId
+                    	b.sh_ghabs1 as BillId,
+						b.kasr_ha Discount
                     FROM [{dbName}].dbo.bed_bes b
                     WHERE 
                     	b.id=@id";
@@ -427,6 +449,24 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	radif=@CustomerNumber AND
                     	date_bed=@Date
                     Order By date_bed desc,id desc";
+        }
+        private string GetPreviousBedBesQuery(string dbName)
+        {
+            return $@"Select Top 1
+                    	town ZoneId,
+                    	radif CustomerNumber,
+                    	pri_date PreviousDateJalali,
+                    	pri_no PreviousNumber,
+                    	today_date CurrentDateJalali,
+                    	today_no CurrentNumber,
+                        masraf Consumption,
+						rate ConsumptionAverage
+                    From [{dbName}].dbo.bed_bes
+                    Where
+                    	radif=@customerNumber AND
+                    	today_date<=@dateJalali  AND
+						cod_vas NOT IN (4,7,8)
+					Order By date_bed Desc";
         }
     }
 }

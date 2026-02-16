@@ -21,35 +21,25 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 {
     internal sealed class GenerateBillHandler : AbstractBaseConnection, IGenerateBillHandler
     {
-        // private readonly IBedBesCommandService _bedBesCreateService;
         private readonly ICustomerInfoService _customerInfoService;
         private readonly IOldTariffEngine _tariffEngine;
-        //private readonly IKasrHaService _kasrHaService;
         private readonly IValidator<GenerateBillInputDto> _validator;
         private readonly IVariabService _variabService;
-
         const int _paymentDeadline = 7;
 
-        public GenerateBillHandler(//IBedBesCommandService bedBesCreateService,
+        public GenerateBillHandler(
             ICustomerInfoService customerInfoService,
             IOldTariffEngine tariffEngine,
-            //  IKasrHaService kasrHaService,
             IConfiguration configuration,
             IValidator<GenerateBillInputDto> validator,
             IVariabService variabService)
             : base(configuration)
         {
-            //_bedBesCreateService = bedBesCreateService;
-            //_bedBesCreateService.NotNull(nameof(bedBesCreateService));
-
             _customerInfoService = customerInfoService;
             _customerInfoService.NotNull(nameof(customerInfoService));
 
             _tariffEngine = tariffEngine;
             _tariffEngine.NotNull(nameof(tariffEngine));
-
-            //_kasrHaService = kasrHaService;
-            //_kasrHaService.NotNull(nameof(kasrHaService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -96,7 +86,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                         BillCommandService billCommandService = new BillCommandService(connection, transaction);
                         ContorCommandService controCommandService = new ContorCommandService(connection, transaction);
 
-                        int bedBesRecordId =  await bedBedCommandService.Insert(bedBes, zoneIdAndCustomerNumber_1.ZoneId);
+                        int bedBesRecordId = await bedBedCommandService.Insert(bedBes, zoneIdAndCustomerNumber_1.ZoneId);
                         if (abBahaCalcResult.DiscountSum > 0)
                         {
                             await kasrHasCommandService.Insert(kasrHa, zoneIdAndCustomerNumber_1.ZoneId);
@@ -104,7 +94,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
                         await membersCommandService.UpdateBedbes(zoneIdAndCustomerNumber_2, (long)bedBes.Baha, dbName);
                         await mandeBedehiCommandService.UpdateAmount(zoneIdAndCustomerNumber_3, (long)bedBes.Baha, dbName);
-                        await controCommandService.Update(contorUpdate, dbName);                                                                                                   //update contro
+                        await controCommandService.Update(contorUpdate, dbName, true);                                                                                                   //update contro
                         await billCommandService.InsertByBedBesId(zoneIdAndCustomerNumber_3, bedBesRecordId, dbName);
 
                         transaction.Commit();
@@ -116,9 +106,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     }
                 }
             }
-            //warehouse bills
-            //contor
-            //members  bedbes+sumitems  ----
             return abBahaCalcResult;
         }
         private ContorUpdateDto GetControUpdateDto(CustomerInfoGetDto customerInfo, BedBesCreateDto bedBes)

@@ -34,11 +34,11 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
         public async Task UpdateBedbes(ZoneIdCustomerNumber inputDto, long amount, string dbName)
         {
             string command = GetUpdateBedBesCommand(dbName);
-            int recordCount = await _sqlConnection.ExecuteAsync(command, new { inputDto.CustomerNumber, amount }, _dbTransaction);
-			if (recordCount <= 0)
-			{
-				throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidUpdateBillAmount);
-			}
+            int recordCount = await _sqlConnection.ExecuteAsync(command, new { inputDto.CustomerNumber, inputDto.ZoneId, amount }, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidUpdateBillAmount);
+            }
         }
 
         private string GetUpdateCommand(string dbName)
@@ -102,9 +102,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
         }
         private string GetUpdateBedBesCommand(string dbName)
         {
+
             return $@" Update [{dbName}].dbo.members
-					Set bed_bes=bed_bes+@amount
-					Where radif=@customerNumber";
+					Set bed_bes=bed_bes + @amount
+					Where 
+						radif=@customerNumber AND
+						town=@zoneId";
         }
     }
 

@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Persistence.Constants;
 using Dapper;
@@ -30,6 +31,15 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             if (recordCount <= 0)
             {
                 throw new InvalidBillCommandException(Exceptionliterals.InvalidBillInsert);
+            }
+        }
+        public async Task Delete(RemoveBillDto input)
+        {
+            string command = GetDeleteCommand();
+            int recordCount = await _connection.ExecuteAsync(command, input, _transaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidBillCommandException(Exceptionliterals.InvalidRemoveBill);
             }
         }
         private string GetInsertByBedBesCommand(string dbName)//todo:check
@@ -143,6 +153,17 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     LEFT OUTER JOIN [{dbName}].dbo.members m
                         ON b.radif=m.radif and b.town=m.town
                     WHERE b.Id=@bedBesId";//
+        }
+        private string GetDeleteCommand()
+        {
+            return $@"Delete [CustomerWarehouse].dbo.Bills
+                    Where 
+                    	ZoneId=@ZoneId AND
+                    	CustomerNumber=@CustomerNumber AND
+                    	PreviousDay=@PreviousDateJalali AND
+                    	PreviousNumber=@previousNumber AND
+                    	NextDay=@CurrentDateJalali AND
+                    	NextNumber=@CurrentNumber ";
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
     public sealed class BedBesCommandService //: IBedBesCommandService
     {
         private readonly IDbConnection _connection;
-       // private readonly SqlConnection _connection;
+        // private readonly SqlConnection _connection;
         private readonly IDbTransaction _transaction;
         private static string tableName = "BedBes";
         //public BedBesCommandService(IConfiguration configuration)
@@ -56,7 +56,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             //    {
             //        try
             //        {
-            await _connection.ExecuteAsync(GetBedBesCreateQuery(dbName), input, transaction:_transaction);
+            await _connection.ExecuteAsync(GetBedBesCreateQuery(dbName), input, transaction: _transaction);
             //            transaction.Commit();
             //        }
             //        catch (Exception ex)
@@ -94,7 +94,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             //string dbName = "Atlas";
             string dbName = GetDbName(zoneId);
             string query = GetDeleteQuery(dbName);
-            int rowsAffected = await _connection.ExecuteAsync(query, new { id });
+            int rowsAffected = await _connection.ExecuteAsync(query, new { id, zoneId }, _transaction);
 
             if (rowsAffected == 0)
             {
@@ -322,7 +322,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         private string GetDeleteQuery(string dbName)
         {
             return $"Delete FROM [{dbName}].dbo.bed_bes " +
-                    "Where Id=@id";
+                    "Where Id=@id AND town=@zoneId";
         }
         private string GetUpdateDelCommand(string dbName)
         {
