@@ -3,6 +3,7 @@
     public record UspPayment2Output
     {
         public int cod_enshab { get; set; }
+        public long pard { get; set; }
         public long pard1 { get; set; }
         public long ted1 { get; set; }
         public long pard2 { get; set; }
@@ -15,7 +16,8 @@
         public string? Karbari { get; set; }
     }
     public record UspPayment2Header
-    {      
+    {
+        public long pard { get; set; }
         public long pard1 { get; set; }
         public long ted1 { get; set; }
         public long pard2 { get; set; }

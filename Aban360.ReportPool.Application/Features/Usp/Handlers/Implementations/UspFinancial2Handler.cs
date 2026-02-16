@@ -36,6 +36,7 @@ namespace Aban360.ReportPool.Application.Features.Usp.Handlers.Implementations
                 Jam_kol = output.Sum(x => x.Jam_kol),
                 Javani = output.Sum(x => x.Javani),
                 Maliat = output.Sum(x => x.Maliat),
+                masraf = output.Sum(x => x.masraf),
                 Tabsare2 = output.Sum(x => x.Tabsare2),
                 Tabsare3_ab = output.Sum(x => x.Tabsare3_ab),
                 Tabsare_abon = output.Sum(x => x.Tabsare_abon),
@@ -48,7 +49,7 @@ namespace Aban360.ReportPool.Application.Features.Usp.Handlers.Implementations
                 Tedad_vahed_Faz = output.Sum(x => x.Tedad_vahed_Faz),
                 waste_Faz = output.Sum(x => x.waste_Faz),
                 Zaribfasl = output.Sum(x => x.Zaribfasl),
-                Sp=input.Sp
+                Sp = input.Sp
             };
             ReportOutput<UspFinancial2Header, UspFinancial2Output> reportOutput = new( ReportLiterals.UspFinancial2, header, output);
             return reportOutput;
