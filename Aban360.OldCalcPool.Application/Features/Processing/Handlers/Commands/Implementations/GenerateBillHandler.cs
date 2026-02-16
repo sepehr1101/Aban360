@@ -89,12 +89,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 {
                     try
                     {
-                        BedBesCommandService bedBedCommandService = new BedBesCommandService(_sqlReportConnection, transaction);
-                        KasrHaCommandService kasrHasCommandService = new KasrHaCommandService(_sqlReportConnection, transaction);
-                        MembersCommandService membersCommandService = new MembersCommandService(_sqlReportConnection, transaction);
-                        MandeBedehiCommandService mandeBedehiCommandService = new MandeBedehiCommandService(_sqlReportConnection, transaction);
-                        BillCommandService billCommandService = new BillCommandService(_sqlReportConnection, transaction);
-                        ContorCommandService controCommandService = new ContorCommandService(_sqlReportConnection, transaction);
+                        BedBesCommandService bedBedCommandService = new BedBesCommandService(connection, transaction);
+                        KasrHaCommandService kasrHasCommandService = new KasrHaCommandService(connection, transaction);
+                        MembersCommandService membersCommandService = new MembersCommandService(connection, transaction);
+                        MandeBedehiCommandService mandeBedehiCommandService = new MandeBedehiCommandService(connection, transaction);
+                        BillCommandService billCommandService = new BillCommandService(connection, transaction);
+                        ContorCommandService controCommandService = new ContorCommandService(connection, transaction);
 
                         int bedBesRecordId = await bedBedCommandService.Create(bedBes, zoneIdAndCustomerNumber_1.ZoneId);
                         if (abBahaCalcResult.DiscountSum > 0)
@@ -131,8 +131,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 CurrentNumber = (int)bedBes.TodayNo,
                 Consumption = (int)bedBes.Masraf,
                 ConsumptionAverage = (float)bedBes.Rate,
-                MeterChangeDateJalali = customerInfo.TavizInfo.TavizDateJalali ?? string.Empty,
-                MeterChangeNumber = customerInfo.TavizInfo.TavizNumber ?? 0
+                MeterChangeDateJalali = customerInfo.TavizInfo?.TavizDateJalali ?? string.Empty,
+                MeterChangeNumber = customerInfo.TavizInfo?.TavizNumber ?? 0
             };
         }
         private MeterInfoByPreviousDataInputDto GetMeterInfoByPreviousData(CustomerInfoGetDto customerInfo, GenerateBillInputDto generateBillInfo)

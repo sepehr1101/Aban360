@@ -3,17 +3,16 @@ using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Persistence.Constants;
 using Dapper;
-using Microsoft.Data.SqlClient;
 using System.Data;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations
 {
     public sealed class ContorCommandService
     {
-        private readonly SqlConnection _connection;
+        private readonly IDbConnection _connection;
         private readonly IDbTransaction _transaction;
         public ContorCommandService(
-                SqlConnection connection,
+                IDbConnection connection,
                 IDbTransaction transaction)
         {
             _connection = connection;

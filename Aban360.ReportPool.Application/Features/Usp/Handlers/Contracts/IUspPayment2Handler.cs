@@ -4,8 +4,8 @@ using Aban360.ReportPool.Domain.Features.Usp.Output;
 
 namespace Aban360.ReportPool.Application.Features.Usp.Handlers.Contracts
 {
-    public interface IUspFinancial2Handler
+    public interface IUspPayment2Handler
     {
-        Task<ReportOutput<UspFinancial2Header, UspFinancial2Output>> Handle(UspFinancial2Input input, CancellationToken cancellationToken);
+        Task<ReportOutput<UspPayment2Header, UspPayment2Output>> Handle(UspPayment2Input input, CancellationToken cancellationToken);
     }
 }

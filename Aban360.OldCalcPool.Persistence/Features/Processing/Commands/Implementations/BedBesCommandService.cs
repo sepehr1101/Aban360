@@ -12,14 +12,15 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 {
     public sealed class BedBesCommandService //: IBedBesCommandService
     {
-        private readonly SqlConnection _connection;
+        private readonly IDbConnection _connection;
+       // private readonly SqlConnection _connection;
         private readonly IDbTransaction _transaction;
         private static string tableName = "BedBes";
         //public BedBesCommandService(IConfiguration configuration)
         //    : base(configuration)
         //{ }
         public BedBesCommandService(
-            SqlConnection connection,
+            IDbConnection connection,
             IDbTransaction transaction)
         {
             _connection = connection;
@@ -75,9 +76,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             var dt = ToDataTable(input);
 
             using var connection = _connection;
-            await connection.OpenAsync();
+            connection.Open();
 
-            using var bulk = new SqlBulkCopy(connection)
+            using var bulk = new SqlBulkCopy((SqlConnection)connection)
             {
                 DestinationTableName = $"[{dbName}].dbo.bed_bes",
                 BatchSize = 5000,
@@ -293,8 +294,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         }
         private string GetBedBesCreateQuery(string dbName)
         {
-            return @$"USE [{dbName}]
-                    INSERT INTO bed_bes(
+            return @$"
+                    INSERT INTO [{dbName}].dbo.bed_bes(
                         town, radif, eshtrak, barge, pri_no, today_no, pri_date, today_date,
                         abon_fas, fas_baha, ab_baha, ztadil, masraf, shahrdari, modat, date_bed,
                         jalase_no, mohlat, baha, abon_ab, pard, jam, cod_vas, ghabs, del, [type],

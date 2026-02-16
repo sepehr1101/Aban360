@@ -102,9 +102,9 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    ArchMemCommandService _archMemCommandService = new(_sqlReportConnection, transaction);
-                    MembersCommandService _membersCommandService = new(_sqlReportConnection, transaction);
-                    ClientsCommandService _clientCommandService = new(_sqlReportConnection, transaction);
+                    ArchMemCommandService _archMemCommandService = new(connection, transaction);
+                    MembersCommandService _membersCommandService = new(connection, transaction);
+                    ClientsCommandService _clientCommandService = new(connection, transaction);
                     string dbName = GetDbName(updateDto.ZoneId);
                     //string dbName = "Atlas";
 

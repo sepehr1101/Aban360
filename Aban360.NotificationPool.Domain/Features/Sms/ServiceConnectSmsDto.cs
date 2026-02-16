@@ -3,7 +3,7 @@
     public record ServiceConnectSmsDto
     {
         public string BillId { get; set; } = default!;
-        public int Hour { get; set; }
+        public int? Hour { get; set; }
         public string? When { get; set; }
     }
 }

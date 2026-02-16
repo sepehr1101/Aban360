@@ -95,7 +95,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                     	TRIM(m.MOBILE) MobileNumber,
                     	TRIM(m.father_nam) FatherName,
                     	m.noe_va BranchTypeId,
-                    	m.enshab UsageSellId,
+                    	m.cod_enshab UsageSellId,
                     	m.group1 UsageConsumptionId,
                     	m.Khali_s EmptyUnit,
                     	m.tedad_tej CommertialUnit,

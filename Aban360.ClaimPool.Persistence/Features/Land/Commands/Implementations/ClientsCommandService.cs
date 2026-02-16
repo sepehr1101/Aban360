@@ -11,10 +11,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 {
     public sealed class ClientsCommandService
     {
-        private readonly SqlConnection _connection;
+        private readonly IDbConnection _connection;
         private readonly IDbTransaction _transaction;
         public ClientsCommandService(
-            SqlConnection connection,
+            IDbConnection connection,
             IDbTransaction transaction)
         {
             _connection = connection;
@@ -27,7 +27,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
         public async Task InsertByArchMemId(int id, string dbName)
         {
             string command = GetInsertByArchMemCommand(dbName);
-            await _connection.ExecuteAsync(command, new { id });
+			await _connection.ExecuteAsync(command, new { id }, transaction: _transaction);
         }
         public async Task UpdateToDayJalali(ZoneIdCustomerNumber input, string CurrentDateJalali)
         {
@@ -40,8 +40,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
         }
         private string GetInsertByArchMemCommand(string dbName)
         {
-            return $@"Use [{dbName}]
-					INSERT INTO [CustomerWarehouse].dbo.Clients 
+            return $@"INSERT INTO [CustomerWarehouse].dbo.Clients 
 					(
 					   [ZoneId]--1
 					  ,[ZoneTitle]
@@ -196,8 +195,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 					  NULL BlockCode,
 					  m.inst_ab,
 					  m.inst_fas
-					FROM arch_mem m
-					LEFT OUTER JOIN members old_m
+					FROM [{dbName}].dbo.arch_mem m
+					LEFT OUTER JOIN [{dbName}].dbo.members old_m
 						ON m.town=old_m.town AND m.radif=old_m.radif
 					LEFT OUTER JOIN [Db70].dbo.T41 k1
 						ON m.cod_enshab=k1.C9

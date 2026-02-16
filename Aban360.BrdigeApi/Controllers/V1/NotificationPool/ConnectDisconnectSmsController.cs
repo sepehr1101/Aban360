@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.NotificationPool.Application.Features.Sms;
@@ -8,6 +9,7 @@ using Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contracts;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Aban360.BrdigeApi.Controllers.V1.NotificationPool
 {
@@ -33,12 +35,12 @@ namespace Aban360.BrdigeApi.Controllers.V1.NotificationPool
             _jobClient.NotNull(nameof(_jobClient));
         }
 
-        [AllowAnonymous]
         [HttpPost]
         [Route("connected")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<SearchInput>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SendConnected([FromBody] ServiceConnectSmsDto input, CancellationToken cancellationToken)
         {
+            Validate(input);
             var customerInfo= await _customerInfoHandler.Handle(input.BillId, cancellationToken);
             string text = string.Format(SmsTemplates.ServiceLinkConnected, customerInfo.ZoneTitle, input.BillId, input.When, Environment.NewLine);
             _jobClient.Enqueue(() => _smsHandler.Send(customerInfo.MobileNumber, text));
@@ -50,6 +52,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.NotificationPool
         [ProducesResponseType(typeof(ApiResponseEnvelope<SearchInput>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SendDisonnected([FromBody] ServiceLinkDisconnectSmsDto input, CancellationToken cancellationToken)
         {
+            Validate(input);
             var customerInfo = await _customerInfoHandler.Handle(input.BillId, cancellationToken);
             string text = string.Format(SmsTemplates.ServiceLinkDisconnected, customerInfo.ZoneTitle, input.BillId, input.When, Environment.NewLine);
             _jobClient.Enqueue(() => _smsHandler.Send(customerInfo.MobileNumber, text));
@@ -61,8 +64,9 @@ namespace Aban360.BrdigeApi.Controllers.V1.NotificationPool
         [ProducesResponseType(typeof(ApiResponseEnvelope<SearchInput>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SendConnectAlert([FromBody] ServiceConnectSmsDto input, CancellationToken cancellationToken)
         {
+            Validate(input);
             var customerInfo = await _customerInfoHandler.Handle(input.BillId, cancellationToken);
-            string text = string.Format(SmsTemplates.ServiceLinkConnectAlert, customerInfo.ZoneTitle, input.BillId, input.When, Environment.NewLine);
+            string text = string.Format(SmsTemplates.ServiceLinkConnectAlert, customerInfo.ZoneTitle, input.BillId, input.Hour, Environment.NewLine);
             _jobClient.Enqueue(() => _smsHandler.Send(customerInfo.MobileNumber, text));
             return Ok(input);
         }
@@ -72,10 +76,28 @@ namespace Aban360.BrdigeApi.Controllers.V1.NotificationPool
         [ProducesResponseType(typeof(ApiResponseEnvelope<SearchInput>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SendDisonnectAlert([FromBody] ServiceLinkDisconnectSmsDto input, CancellationToken cancellationToken)
         {
+            Validate(input);
             var customerInfo = await _customerInfoHandler.Handle(input.BillId, cancellationToken);
-            string text = string.Format(SmsTemplates.ServiceLinkDisconnectAlert, customerInfo.ZoneTitle, input.BillId, input.Why, input.When, Environment.NewLine);
+            string text = string.Format(SmsTemplates.ServiceLinkDisconnectAlert, customerInfo.ZoneTitle, input.BillId, input.Why, input.Hour, Environment.NewLine);
             _jobClient.Enqueue(() => _smsHandler.Send(customerInfo.MobileNumber, text));
             return Ok(input);
+        }
+
+        private void Validate(ServiceLinkDisconnectSmsDto input)
+        {
+            if (!string.IsNullOrWhiteSpace(input.When) &&
+                input.When.Length != 10)
+            {
+                throw new BaseException($"تاریخ بصورت 10 نویسه و به شمسی وارد شود {input.When}");
+            }
+        }
+        private void Validate(ServiceConnectSmsDto input)
+        {
+            if (!string.IsNullOrWhiteSpace(input.When) &&
+                input.When.Length != 10)
+            {
+                throw new BaseException($"تاریخ بصورت 10 نویسه و به شمسی وارد شود {input.When}");
+            }
         }
     }
 }
