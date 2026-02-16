@@ -90,7 +90,37 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 					    m.s10, m.s11, m.s12, m.s13, m.s14, m.s15, m.s16, m.s17, m.s18, m.s19,
 					    m.s20, m.s21, m.s22, m.s23, m.s24, m.s25, m.s26, m.s27, m.s28, m.s29,
 					    m.s30, m.s31, m.s32, m.s33, m.s34, m.s35, m.s36, m.s37, m.s38, m.s39,
-					    m.s40, m.s41, m.s42, m.s43, m.s44, m.s45, m.s46, m.s47, m.s48
+					    m.s40, m.s41, m.s42, m.s43, m.s44, m.s45, m.s46, m.s47, m.s48,
+						m.sh_no CertificateNumber,
+						m.address, 
+						m.POST_COD PostalCode,
+						m.eshtrak ReadingNumber,
+						t7.C1 BranchTypeTitle,
+						m.noe_va BranchTypeId,
+						m.sif_1 Siphon100,
+						m.sif_2 Siphon125,
+						m.sif_3 Siphon150,
+						m.sif_4 Sipohon200,
+						m.master_sif MainSiphon,
+						m.fix_mas ContractualCapacity,
+						m.sodor LicenseIssuanceDateJalali,
+						m.arse Primesses,
+						m.aian ImprovementOverall,
+						m.aian_mas ImprovementDomestic,
+						m.aian_tej ImprovementCommercial,
+						m.tedad_mas DomesticUnit,
+						m.tedad_tej CommercialUnit,
+						m.tedad_vahd OtherUnit,
+						m.BLOCK_COD BlodCode,
+						e.FaseleKhakiA TrenchLenW,
+						e.FaseleKhakiF TrenchLenS,
+						e.FaseleAsphaultA AsphaltLenW,
+						e.FaseleAsphaultF AsphaltLenS,
+						e.FaseleSangA RockyLenW,
+						e.FaseleSangF RockyLenS,
+						e.FaseleOtherA OtherLenW,
+						e.FaseleOtherF OtherLenS,
+						e.OmgheZirzamin BasementDepth
                     From [AbAndFazelab].dbo.Tracking t
                     Join [{dbName}].dbo.moshtrak m
                     	ON t.TrackNumber=m.TrackingNumber
@@ -104,6 +134,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	ON m.cod_enshab=T41.C0
                     Join [Db70].dbo.t5
                     	ON m.enshab=T5.C0	
+					Join [Db70].dbo.T7 t7
+						ON mem.noe_va=t7.C0
                     Where t.TrackID IN @trackIds";
         }
     }
