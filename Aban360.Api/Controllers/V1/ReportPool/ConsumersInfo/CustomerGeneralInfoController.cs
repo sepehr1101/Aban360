@@ -26,6 +26,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
             _reportGenerator.NotNull(nameof(reportGenerator));
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("info")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto>>), StatusCodes.Status200OK)]
