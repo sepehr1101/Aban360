@@ -24,7 +24,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         public async Task<bool> IsOperationValid(int zoneId, string operationDate)
         {
             string dateCheck = await _sqlReportConnection.QuerySingleAsync<string>(GetCheckDate1(GetDbName(zoneId)));
-            if (operationDate.CompareTo(dateCheck) > 0)
+            if (operationDate.CompareTo(dateCheck) < 0)
             {
                 return false;
             }
@@ -34,7 +34,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                 return false;
             }
             string today = DateTime.Now.ToShortPersianDateString();
-            if(today.Substring(3,2)!=operationDate.Substring(3,2))
+            if (today.Substring(5,2)!=operationDate.Substring(5,2))
             {
                 return false;
             }

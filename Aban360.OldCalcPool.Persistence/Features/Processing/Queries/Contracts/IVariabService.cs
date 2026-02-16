@@ -3,5 +3,6 @@
     public interface IVariabService
     {
         Task<decimal> GetAndRenew(int zoneId);
+        Task<bool> IsOperationValid(int zoneId, string operationDate);
     }
 }

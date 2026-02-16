@@ -22,17 +22,21 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             _transaction.NotNull(nameof(transaction));
         }
 
-        public async Task Update(ContorUpdateDto inputDto,string dbName)
+        public async Task Update(ContorUpdateDto inputDto, string dbName, bool isUpdateTavizField)
         {
-            string command = GetUpdateCommand(dbName);
-            int recordCount=await _connection.ExecuteAsync(command,inputDto, _transaction);
+            string command = GetUpdateCommand(dbName, isUpdateTavizField);
+            int recordCount = await _connection.ExecuteAsync(command, inputDto, _transaction);
             if (recordCount <= 0)
             {
                 throw new InvalidBillCommandException(Exceptionliterals.InvalidControUpdate);
             }
         }
-        private string GetUpdateCommand(string dbName)
+        private string GetUpdateCommand(string dbName, bool isUpdateTavizField)
         {
+            string tavizUpdate = isUpdateTavizField ?
+                @"taviz_date=@MeterChangeDateJalali,
+                  taviz_no=@MeterChangeNumber," :
+                string.Empty;
             return $@"Update [{dbName}].dbo.contor
                     Set
                     	pri_no=@CurrentNumber,
@@ -40,8 +44,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     	pri_date=@CurrentDateJalali,
                     	today_date='',
                     	masraf=@Consumption,
-                    	taviz_date=@MeterChangeDateJalali,
-                    	taviz_no=@MeterChangeNumber,
+                    	{tavizUpdate}
                     	cod_vas=0,
                     	average=@ConsumptionAverage,
                     	mohasbat=2,
