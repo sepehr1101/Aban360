@@ -1,34 +1,38 @@
-﻿using Aban360.Common.Db.Dapper;
+﻿using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
+using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
+using Aban360.Common.Db.Dapper;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
-using Aban360.ReportPool.Domain.Features.Transactions;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
+using ReportPoolDomain = Aban360.ReportPool.Domain.Features.Transactions;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using Aban360.Common.Exceptions;
+using Aban360.OldCalcPool.Persistence.Constants;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
     internal sealed class RemoveBillHandler : AbstractBaseConnection, IRemoveBillHandler
     {
         private readonly ICustomerInfoQueryService _customerInfoQueryService;
-        //private readonly IBedBesCommandService _bedBesCommandService;
-        //private readonly IHBedBesCommanddService _hbedBesCommanddService;
-        //private readonly IKasrHaService _kasrHaService;
         private readonly IBedBesQueryService _billQueryService;
         private readonly IVariabService _variabService;
+        private readonly IBedBesQueryService _bedBesQueryService;
+        private readonly ITavizQueryService _tavizQueryService;
 
         public RemoveBillHandler(
             ICustomerInfoQueryService customerInfoQueryService,
-            //IBedBesCommandService bedBesCommandService,
-            //IHBedBesCommanddService hbedBesCommanddService,
-            //IKasrHaCommandService kasrHaService,
             IBedBesQueryService billQueryService,
             IConfiguration configuration,
-            IVariabService variabService)
+            IVariabService variabService,
+            IBedBesQueryService bedBesQueryService,
+            ITavizQueryService tavizQueryService)
                 : base(configuration)
         {
             _customerInfoQueryService = customerInfoQueryService;
@@ -39,13 +43,27 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             _variabService = variabService;
             _variabService.NotNull(nameof(_variabService));
+
+            _bedBesQueryService = bedBesQueryService;
+            _bedBesQueryService.NotNull(nameof(bedBesQueryService));
+
+            _tavizQueryService = tavizQueryService;
+            _tavizQueryService.NotNull(nameof(tavizQueryService));
         }
 
         public async Task Handle(RemoveBillInputDto input, CancellationToken cancellationToken)
-        {            
+        {
             RemoveBillDataInputDto removeBill = await GetRemoveBillInputDto(input);
-            await _variabService.GetAndRenew(removeBill.ZoneId);
+            if (!(await _variabService.IsOperationValid(removeBill.ZoneId, removeBill.RegisterDateJalali)))
+            {
+                throw new RemovedBillException(Exceptionliterals.InvalidRemoveBill_ClosedVariab);
+            }
             removeBill.ToDayDateJalali = DateTime.Now.ToShortPersianDateString();
+            RemoveBillDto removeBillDto = GetRemoveBillDto(removeBill);
+            ContorUpdateDto controUpdate = await GetControUpdate(removeBill);
+            var (zoneIdAndCustomerNumber_1, zoneIdAndCustomerNumber_2) = GetZoneIdAndCustomerNumber(removeBill);
+            string dbName = GetDbName(removeBill.ZoneId);
+            long amount = removeBill.Baha * -1;
 
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -55,20 +73,69 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    BedBesCommandService bedBesCommandService = new BedBesCommandService(_sqlReportConnection, transaction);
-                    KasrHaCommandService kasrHaCommandService = new KasrHaCommandService(_sqlReportConnection, transaction);
-                    HBedBesCommanddService hbedBesCommandService = new HBedBesCommanddService(_sqlReportConnection, transaction);
+                    BedBesCommandService bedBesCommandService = new(connection, transaction);
+                    KasrHaCommandService kasrHaCommandService = new(connection, transaction);
+                    HBedBesCommanddService hbedBesCommandService = new(connection, transaction);
+                    BillCommandService billCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ContorCommandService contorCommandService = new(connection, transaction);
+                    MandeBedehiCommandService mandeBedehiCommandService = new(connection, transaction);
 
                     await bedBesCommandService.Delete(removeBill.Id, removeBill.ZoneId);
-                    await kasrHaCommandService.Delete(removeBill);
+                    if (removeBill.Discount > 0)
+                    {
+                        await kasrHaCommandService.Delete(removeBill);
+                    }
                     await hbedBesCommandService.Insert(removeBill);
+                    await billCommandService.Delete(removeBillDto);
+                    await membersCommandService.UpdateBedbes(zoneIdAndCustomerNumber_2, amount, dbName);
+                    await contorCommandService.Update(controUpdate, dbName, false);
+                    await mandeBedehiCommandService.UpdateAmount(zoneIdAndCustomerNumber_1, amount, dbName);
+
                     transaction.Commit();
                 }
             }
         }
+        private async Task<ContorUpdateDto> GetControUpdate(RemoveBillDataInputDto input)
+        {
+            BedBesWithConsumptionOutputDto previousBill = await GetPreviousBedBesData(input);
+            return new ContorUpdateDto()
+            {
+                ZoneId = previousBill.ZoneId,
+                CustomerNumber = previousBill.CustomerNumber,
+                CurrentDateJalali = previousBill.CurrentDateJalali,
+                CurrentNumber = previousBill.CurrentNumber,
+                Consumption = previousBill.Consumption,
+                ConsumptionAverage = previousBill.ConsumptionAverage,
+            };
+        }
+        private async Task<BedBesWithConsumptionOutputDto> GetPreviousBedBesData(RemoveBillDataInputDto input)
+        {
+            ZoneIdAndCustomerNumberOutputDto zoneIdAndCustomerNumber = new(input.ZoneId, input.CustomerNumber);
+            BedBesWithConsumptionOutputDto previousBill = await _bedBesQueryService.GetPrevious(zoneIdAndCustomerNumber, input.PreviousDateJalali);
+            return previousBill;
+        }
+        private (ZoneIdAndCustomerNumberOutputDto, ZoneIdCustomerNumber) GetZoneIdAndCustomerNumber(RemoveBillDataInputDto input)
+        {
+            ZoneIdAndCustomerNumberOutputDto result_1 = new ZoneIdAndCustomerNumberOutputDto(input.ZoneId, input.CustomerNumber);
+            ZoneIdCustomerNumber result_2 = new ZoneIdCustomerNumber(input.ZoneId, input.CustomerNumber.ToString());
+            return (result_1, result_2);
+        }
+        private RemoveBillDto GetRemoveBillDto(RemoveBillDataInputDto input)
+        {
+            return new RemoveBillDto()
+            {
+                ZoneId = input.ZoneId,
+                CustomerNumber = input.CustomerNumber,
+                previousNumber = input.PreviousNumber,
+                PreviousDateJalali = input.PreviousDateJalali,
+                CurrentNumber = input.CurrentNumber,
+                CurrentDateJalali = input.CurrentDateJalali,
+            };
+        }
         public async Task<RemoveBillDataInputDto> GetRemoveBillInputDto(RemoveBillInputDto input)
         {
-            ZoneIdAndCustomerNumberOutputDto zoneIdAndCustomerNumber = await _customerInfoQueryService.GetZoneIdAndCustomerNumber(input.BillId);
+            ReportPoolDomain.ZoneIdAndCustomerNumberOutputDto zoneIdAndCustomerNumber = await _customerInfoQueryService.GetZoneIdAndCustomerNumber(input.BillId);
             RemoveBillGetDto removebillGet = new(input.Id, zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
             RemoveBillDataInputDto result = await _billQueryService.GetToRemove(removebillGet);
             return result;

@@ -1,6 +1,8 @@
 ﻿using Aban360.Common.Db.Dapper;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
+using Aban360.OldCalcPool.Persistence.Constants;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
 using Dapper;
 using Microsoft.Data.SqlClient;
@@ -10,10 +12,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 {
     public sealed class HBedBesCommanddService //: IHBedBesCommanddService
     {
-        private readonly SqlConnection _connection;
+        //private readonly SqlConnection _connection;
+        private readonly IDbConnection _connection;
         private readonly IDbTransaction _transaction;
         public HBedBesCommanddService(
-            SqlConnection connection,
+            IDbConnection connection,
             IDbTransaction transaction)
         {
             _connection = connection;
@@ -31,7 +34,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         public async Task Insert(RemoveBillDataInputDto input)
         {
             string command = GetInsertCommand(GetDbName(input.ZoneId));
-            await _connection.ExecuteAsync(command, input);
+            int rowCount = await _connection.ExecuteAsync(command, input, _transaction);
+            if (rowCount == 0)
+            {
+                throw new InvalidBillCommandException(Exceptionliterals.InvalidInsertHBedBes);
+            }
         }
 
         private string GetInsertCommand(string dbName)
@@ -43,7 +50,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                         SH_GHABS1,SH_PARD1,date,operator)
                     VALUES(
                         @ZoneId,@CustomerNumber,@Barge,
-                        @RegisterDateJalali,@PrviousDateJalali,@CurrentDateJalali,@PreviousNumber,@CurrentNumber,
+                        @RegisterDateJalali,@PreviousDateJalali,@CurrentDateJalali,@PreviousNumber,@CurrentNumber,
                         @Consumption,@AbBahaAmount,@FazelabAmount,@Baha,
                         @BillId,@PaymentId,@ToDayDateJalali,0)";
         }

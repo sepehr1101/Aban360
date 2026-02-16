@@ -1,8 +1,8 @@
 ﻿using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
+using Aban360.OldCalcPool.Persistence.Constants;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
 using Dapper;
 using Microsoft.Data.SqlClient;
@@ -45,21 +45,21 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 
             //using (var connection = _connection)
             //{
-                //connection.Open();
+            //connection.Open();
 
-                //using (var transaction = connection.BeginTransaction())
-                //{
-                //    try
-                //    {
-                        await _connection.ExecuteAsync(GetCreateQuery(dbName), input, transaction: _transaction);
-                        //transaction.Commit();
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    transaction.Rollback();
-                    //    throw new IWaterCalculationAddException(ExceptionLiterals.UnSuccessfulToSave(tableName));
-                    //}
-                //}
+            //using (var transaction = connection.BeginTransaction())
+            //{
+            //    try
+            //    {
+            await _connection.ExecuteAsync(GetCreateQuery(dbName), input, transaction: _transaction);
+            //transaction.Commit();
+            //}
+            //catch (Exception ex)
+            //{
+            //    transaction.Rollback();
+            //    throw new IWaterCalculationAddException(ExceptionLiterals.UnSuccessfulToSave(tableName));
+            //}
+            //}
             //}
         }
         public async Task Insert(ICollection<KasrHaDto> input, int zoneId)
@@ -87,7 +87,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         {
             string dbName = GetDbName(input.ZoneId);
             string command = GetDeleteCommand(dbName);
-            await _connection.ExecuteAsync(command, input);
+            int rowCount = await _connection.ExecuteAsync(command, input, _transaction);
+            if (rowCount == 0)
+            {
+                throw new InvalidBillCommandException(Exceptionliterals.InvalidRemoveBill);
+            }
         }
 
         private DataTable GetDataTable(ICollection<KasrHaDto> input)
@@ -201,12 +205,12 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         }
         private string GetDeleteCommand(string dbName)
         {
-            return $"Delete From {dbName}.dbo.kasr_ha " +
+            return $"Delete From [{dbName}].dbo.kasr_ha " +
                     @"Where 
                     	TOWN=@ZoneId AND
                     	radif=@CustomerNumber AND
                     	barge=@Barge AND
-                    	Pri_date=@PrviousDateJalali AND
+                    	Pri_date=@PreviousDateJalali AND
                     	today_date=@CurrentDateJalali AND
                     	pri_no=@PreviousNumber AND
                     	today_no=@CurrentNumber AND
