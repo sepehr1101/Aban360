@@ -92,9 +92,9 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 					    m.s30, m.s31, m.s32, m.s33, m.s34, m.s35, m.s36, m.s37, m.s38, m.s39,
 					    m.s40, m.s41, m.s42, m.s43, m.s44, m.s45, m.s46, m.s47, m.s48,
 						m.sh_no CertificateNumber,
-						m.address, 
-						m.POST_COD PostalCode,
-						m.eshtrak ReadingNumber,
+						TRIM(m.address) Address , 
+						TRIM(m.POST_COD) PostalCode,
+						TRIM(m.eshtrak) ReadingNumber,
 						t7.C1 BranchTypeTitle,
 						m.noe_va BranchTypeId,
 						m.sif_1 Siphon100,
@@ -103,7 +103,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 						m.sif_4 Sipohon200,
 						m.master_sif MainSiphon,
 						m.fix_mas ContractualCapacity,
-						m.sodor LicenseIssuanceDateJalali,
+						TRIM(m.sodor) LicenseIssuanceDateJalali,
 						m.arse Primesses,
 						m.aian ImprovementOverall,
 						m.aian_mas ImprovementDomestic,
@@ -111,7 +111,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 						m.tedad_mas DomesticUnit,
 						m.tedad_tej CommercialUnit,
 						m.tedad_vahd OtherUnit,
-						m.BLOCK_COD BlodCode,
+						TRIM(m.BLOCK_COD) BlockCode,
 						e.FaseleKhakiA TrenchLenW,
 						e.FaseleKhakiF TrenchLenS,
 						e.FaseleAsphaultA AsphaltLenW,
@@ -135,7 +135,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     Join [Db70].dbo.t5
                     	ON m.enshab=T5.C0	
 					Join [Db70].dbo.T7 t7
-						ON mem.noe_va=t7.C0
+						ON m.noe_va=t7.C0
                     Where t.TrackID IN @trackIds";
         }
     }

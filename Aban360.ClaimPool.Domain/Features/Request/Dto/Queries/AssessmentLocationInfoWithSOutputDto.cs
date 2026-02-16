@@ -84,6 +84,27 @@
         public int s47 { get; set; }
         public int s48 { get; set; }
 
+        public string CertificateNumber { get; set; }
+        public string Address { get; set; }
+        public string PostalCode { get; set; }
+        public string ReadingNumber { get; set; }
+        public string BranchTypeTitle { get; set; }
+        public int BranchTypeId{ get; set; }
+        public int ContractualCapacity { get; set; }
+        public int Primesses { get; set; }
+        public int ImprovementOverall { get; set; }
+        public int ImprovementDomestic { get; set; }
+        public int ImprovementCommercial { get; set; }
+        public int DomesticUnit { get; set; }
+        public int CommercialUnit { get; set; }
+        public int OtherUnit { get; set; }
+        public string? LicenseIssuanceDateJalali { get; set; }
+        public string? BlockCode { get; set; }
+        public int Siphon100 { get; set; }
+        public int Siphon125 { get; set; }
+        public int Siphon150 { get; set; }
+        public int Siphon200 { get; set; }
+        public int MainSiphon { get; set; }
         public int? TrenchLenW { get; set; }
         public int? TrenchLenS { get; set; }
         public int? AsphaltLenW { get; set; }
