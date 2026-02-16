@@ -10,10 +10,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 {
     public sealed class ArchMemCommandService
     {
-        private readonly SqlConnection _sqlConnection;
+        private readonly IDbConnection _sqlConnection;
         private readonly IDbTransaction _dbTransaction;
 
-        public ArchMemCommandService(SqlConnection sqlConnection, IDbTransaction transaction)
+        public ArchMemCommandService(IDbConnection sqlConnection, IDbTransaction transaction)
         {
             _sqlConnection = sqlConnection;
             _sqlConnection.NotNull(nameof(sqlConnection));

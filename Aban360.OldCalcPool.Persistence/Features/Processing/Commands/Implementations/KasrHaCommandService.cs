@@ -12,7 +12,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 {
     public sealed class KasrHaCommandService //: IKasrHaCommandService
     {
-        private readonly SqlConnection _connection;
+        private readonly IDbConnection _connection;
         private readonly IDbTransaction _transaction;
         private static string tableName = "KasrHa";
         //public KasrHaService(IConfiguration configuration)
@@ -20,7 +20,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         //{
         //}
         public KasrHaCommandService(
-                SqlConnection connection,
+                IDbConnection connection,
                 IDbTransaction transaction)
         {
             _connection = connection;
@@ -43,24 +43,24 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             //string dbName = GetDbName((int)input.FirstOrDefault().Town);
             string dbName = "Atlas";
 
-            using (var connection = _connection)
-            {
-                await connection.OpenAsync();
+            //using (var connection = _connection)
+            //{
+                //connection.Open();
 
-                using (var transaction = connection.BeginTransaction())
-                {
-                    try
-                    {
-                        await connection.ExecuteAsync(GetCreateQuery(dbName), input, transaction: transaction);
-                        transaction.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        transaction.Rollback();
-                        throw new IWaterCalculationAddException(ExceptionLiterals.UnSuccessfulToSave(tableName));
-                    }
-                }
-            }
+                //using (var transaction = connection.BeginTransaction())
+                //{
+                //    try
+                //    {
+                        await _connection.ExecuteAsync(GetCreateQuery(dbName), input, transaction: _transaction);
+                        //transaction.Commit();
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    transaction.Rollback();
+                    //    throw new IWaterCalculationAddException(ExceptionLiterals.UnSuccessfulToSave(tableName));
+                    //}
+                //}
+            //}
         }
         public async Task Create(ICollection<KasrHaDto> input, int zoneId)
         {
@@ -69,9 +69,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             DataTable table = GetDataTable(input);
 
             using var connection = _connection;
-            await connection.OpenAsync();
+            connection.Open();
 
-            using var bulk = new SqlBulkCopy(connection)
+            using var bulk = new SqlBulkCopy((SqlConnection)_connection)
             {
                 DestinationTableName = $"[{dbName}].dbo.kasr_ha",
                 BatchSize = 5000,
@@ -176,8 +176,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         }
         private string GetCreateQuery(string dbName)
         {
-            return @$"USE [{dbName}]
-                    INSERT INTO kasr_ha (
+            return @$"INSERT INTO [{dbName}].dbo.kasr_ha (
                         TOWN, Id_bedbes, radif,
                         cod_enshab, barge, pri_date, today_date,
                         pri_no, today_no, masraf, ab_baha,

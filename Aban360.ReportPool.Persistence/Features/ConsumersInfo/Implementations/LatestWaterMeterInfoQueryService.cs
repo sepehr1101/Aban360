@@ -70,7 +70,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                         c.UsageId
 					From [CustomerWarehouse].dbo.Clients c
 					Where
-						c.BillId=@billId
+						c.BillId=@billId AND
+                        c.ToDayJalali IS NULL
 					Order by 
 						c.RegisterDayJalali Desc";
         }

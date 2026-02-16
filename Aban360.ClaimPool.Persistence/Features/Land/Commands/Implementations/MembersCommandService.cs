@@ -11,9 +11,9 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 {
     public sealed class MembersCommandService
     {
-        private readonly SqlConnection _sqlConnection;
+        private readonly IDbConnection _sqlConnection;
         private readonly IDbTransaction _dbTransaction;
-        public MembersCommandService(SqlConnection sqlConnection, IDbTransaction transaction)
+        public MembersCommandService(IDbConnection sqlConnection, IDbTransaction transaction)
         {
             _sqlConnection = sqlConnection;
             _sqlConnection.NotNull(nameof(sqlConnection));

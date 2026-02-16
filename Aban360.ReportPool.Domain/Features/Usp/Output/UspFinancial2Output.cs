@@ -36,10 +36,15 @@
         public string ZoneTitle { get; set; }
         public int roz_gheraat { get; set; }
         public int roz_gheraat_faz { get; set; }
+        public double Zarfiat { get; set; }
+        public double Zarfiat_ab { get; set; }
+        public double Mazad_zarfiat { get; set; }
+        public double Zarfiat_faz { get; set; }
+        public double Mazad_zarfiat_faz { get; set; }
         public string? date { get; set; }
         public string? Karbari { get; set; }
     }
-    public record UspFinancialHeader
+    public record UspFinancial2Header
     {
         public int Tedad_ghabs { get; set; }
         public int Ahad_ghabs { get; set; }
