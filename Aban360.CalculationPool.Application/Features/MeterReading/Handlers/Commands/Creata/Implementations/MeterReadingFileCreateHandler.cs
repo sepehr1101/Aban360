@@ -73,7 +73,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         {
             await Validate(input, cancellationToken);
             await CheckDuplicateFile(input.ReadingFile.FileName, cancellationToken);
-           
+
             string filePath = await SaveToDisk(input.ReadingFile, _dbfPath);
             IEnumerable<MeterReadingDetailCreateDto> readingDetails = await GetMeterReadingDetails(input, filePath, appUser.UserId);
 
@@ -96,6 +96,18 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                         AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterInfo, cancellationToken);
                         readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false));
                     }
+                    else if (readingDetail.CurrentCounterStateCode == 2 && string.IsNullOrWhiteSpace(readingDetail.TavizDateJalali))
+                    {
+                        readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true));
+                    }
+                    else if (readingDetail.CurrentCounterStateCode == 2 && readingDetail.TavizDateJalali.CompareTo(readingDetail.CurrentDateJalali) > 0)
+                    {
+                        readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true));
+                    }
+                    else if (readingDetail.CurrentCounterStateCode == 2 && readingDetail.TavizDateJalali.CompareTo(readingDetail.PreviousDateJalali) < 0)
+                    {
+                        readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true));
+                    }
                     else if (readingDetail.CurrentCounterStateCode == 2) //taviz
                     {
                         int previousNumber = readingDetail.PreviousNumber;
@@ -106,15 +118,15 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                         MeterImaginaryInputDto meterImaginaryTmp = GetMeterImaginary(readingDetail);
                         AbBahaCalculationDetails abBahaCalcTmp = await _tariffEngine.Handle(meterImaginaryTmp, cancellationToken);
 
-                        readingDetail.PreviousNumber= previousNumber;
-                        readingDetail.PreviousDateJalali= previousDateJalali;
+                        readingDetail.PreviousNumber = previousNumber;
+                        readingDetail.PreviousDateJalali = previousDateJalali;
                         MeterDateInfoWithMonthlyConsumptionOutputDto meterInfo = new MeterDateInfoWithMonthlyConsumptionOutputDto()
                         {
                             BillId = readingDetail.BillId,
                             CurrentDateJalali = readingDetail.CurrentDateJalali,
                             MonthlyAverageConsumption = abBahaCalcTmp.MonthlyConsumption,
                             PreviousDateJalali = readingDetail.PreviousDateJalali,
-                        };                        
+                        };
                         AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterInfo, cancellationToken);
                         readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false));
                     }
@@ -130,6 +142,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true));
                 }
             }
+
             await _meterReadingDetailService.Insert(readingDetailsCreate);
 
             int firstFlowId = readingDetailsCreate.FirstOrDefault().FlowImportedId;
@@ -151,7 +164,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 Obstacle = data.Count(r => r.CurrentCounterStateCode == 7),
                 Temporarily = data.Count(r => r.CurrentCounterStateCode == 8),
                 PureReading = data.Count(r => !closedAndObstacleCounterState.Contains(r.CurrentCounterStateCode)),
-                Ruined=data.Count(r=>r.CurrentCounterStateCode==1)
+                Ruined = data.Count(r => r.CurrentCounterStateCode == 1)
             };
             ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto> result = new(_reportTitle, header, data);
 
@@ -186,6 +199,16 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
             return meterReadingsDetailCreate;
         }
+        //private async Task<IEnumerable<MeterReadingDetailCreateDto>> GetMeterReadingDetails(MeterReadingFileDetail firstMeterDetail, string filePath, Guid userId)
+        //{
+        //    MeterFlowCreateDto importedMeterFlow = CreateImportedMeterFlowStep("TestFile", firstMeterDetail.ZoneId, userId, "--");
+        //    int meterFlowId = await _meterFlowService.Create(importedMeterFlow);
+
+        //    CustomersInfoGetDto customersInfo = await _customerInfoService.Get(firstMeterDetail.ZoneId, new[] { firstMeterDetail.CustomerNumber });
+        //    IEnumerable<MeterReadingDetailCreateDto> meterReadingsDetailCreate = GetReadingMeterDetails(new[] { firstMeterDetail }, customersInfo, meterFlowId);
+
+        //    return meterReadingsDetailCreate;
+        //}
         private IEnumerable<MeterReadingDetailCreateDto> GetReadingMeterDetails(ICollection<MeterReadingFileDetail> meterReadings, CustomersInfoGetDto customersInfo, int meterFlowId)
         {
             return from meterReading in meterReadings
@@ -397,6 +420,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 readingDetail.DiscountSum = 0;
                 readingDetail.Consumption = 0;
                 readingDetail.MonthlyConsumption = 0;
+                readingDetail.CurrentCounterStateCode = 4;
             }
             else
             {
