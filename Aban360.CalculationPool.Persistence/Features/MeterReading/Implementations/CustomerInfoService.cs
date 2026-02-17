@@ -65,7 +65,14 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             {
                 throw new InvalidBillIdException(ExceptionLiterals.BillIdNotFound);
             }
-			return data;
+            return data;
+        }
+        public async Task<double> GetMembersBedBes(ZoneIdAndCustomerNumberGetDto input)
+        {
+            string dbName = GetDbName(input.ZoneId);
+            string query = GetMembersBedBesQueru(dbName);
+            double bedBesAmount = await _sqlReportConnection.QueryFirstOrDefaultAsync<double>(query, input);
+            return bedBesAmount;
         }
 
         private string GetZoneIdAndCustomerNumberQuery()
@@ -77,7 +84,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 					From CustomerWarehouse.dbo.Clients 
 					Where
 						ToDayJalali IS NULL AND
-						BillId=@billId";
+						BillId=@billId AND
+						DeletionStateId NOT IN (1)";
         }
 
         private string GetMembers(string dbName)
@@ -122,8 +130,9 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 					From [{dbName}].dbo.bed_bes b
 					Where
 						b.town=@zoneId AND
-						b.radif=@customerNumber
-					Order By today_date DESC;";
+						b.radif=@customerNumber  AND
+						b.cod_vas NOT IN (4,7,8)
+					Order By today_date DESC, Id DESC;";
         }
         private string GetTavisQuery(string dbName)
         {
@@ -229,6 +238,14 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 						c.town=@zoneId AND
 						c.radif IN @customerNumbers AND
 						c.RN=1";
+        }
+        private string GetMembersBedBesQueru(string dbName)
+        {
+            return $@"Select bed_bes
+					From [{dbName}].dbo.members
+					Where
+						 town=@zoneId AND
+						 radif=@customerNumber";
         }
 
         private string GetCustomerGeneralInfoQuery(string dbnName)

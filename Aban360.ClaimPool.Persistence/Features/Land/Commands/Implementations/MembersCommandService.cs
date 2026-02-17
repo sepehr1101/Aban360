@@ -102,7 +102,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
         }
         private string GetUpdateBedBesCommand(string dbName)
         {
-
             return $@" Update [{dbName}].dbo.members
 					Set bed_bes=bed_bes + @amount
 					Where 

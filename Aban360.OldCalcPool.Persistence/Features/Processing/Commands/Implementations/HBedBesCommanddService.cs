@@ -37,7 +37,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             int rowCount = await _connection.ExecuteAsync(command, input, _transaction);
             if (rowCount == 0)
             {
-                throw new InvalidBillCommandException(Exceptionliterals.InvalidInsertHBedBes);
+                throw new InvalidBillCommandException(Exceptionliterals.InvalidInsertBillHistory);
             }
         }
 
