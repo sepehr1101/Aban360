@@ -42,7 +42,23 @@
         {
             get
             {
-                return "قبض جدید آب بها برای شما صادر گردید";
+                string
+                    abBahaLiteral = "صورتحساب آب بها" + Environment.NewLine,
+                    abBahaAlalHesabLiteral = "علی الحساب آب بها" + Environment.NewLine,
+                    fromDateLiteral = "از: ",
+                    toDateLiteral = "تا: ",
+                    fromCounterNumberLiteral = "از شماره: ",
+                    toCounterNumberLiteral = "تا شماره: ",
+                    thisPeriodAmountLiteral = "دوره: ",
+                    payableLiteral = "مبلغ: ",
+                    billIdLiteral = "ش ق: ",
+                    payIdLiteral = "ش پ: ",
+                    deadLineLiteral = "مهلت: ",
+                    spaceRialsLiteral = " ریال",
+                    tarefeSaxt = "تعرفه: ساخت و ساز" + Environment.NewLine;
+
+                 
+                    return "قبض جدید آب بها برای شما صادر گردید";
             }
         }
         //public static string GenerateBillSms()
