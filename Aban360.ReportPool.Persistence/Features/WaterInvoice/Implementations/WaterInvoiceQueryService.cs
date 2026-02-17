@@ -17,7 +17,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
     {
         public WaterInvoiceQueryService(IConfiguration configuration)
             : base(configuration)
-        {
+        { 
         }
 
         public WaterInvoiceDto Get()

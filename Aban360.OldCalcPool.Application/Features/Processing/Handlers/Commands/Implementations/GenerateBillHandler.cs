@@ -83,7 +83,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                         BedBesCommandService bedBedCommandService = new BedBesCommandService(connection, transaction);
                         KasrHaCommandService kasrHasCommandService = new KasrHaCommandService(connection, transaction);
                         MembersCommandService membersCommandService = new MembersCommandService(connection, transaction);
-                        MandeBedehiCommandService mandeBedehiCommandService = new MandeBedehiCommandService(connection, transaction);
+                        WaterDebtCommandService waterDebtCommandService = new WaterDebtCommandService(connection, transaction);
                         BillCommandService billCommandService = new BillCommandService(connection, transaction);
                         ContorCommandService controCommandService = new ContorCommandService(connection, transaction);
 
@@ -93,7 +93,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                             await kasrHasCommandService.Insert(kasrHa, zoneIdAndCustomerNumber_1.ZoneId);
                         }
                         await membersCommandService.UpdateBedbes(zoneIdAndCustomerNumber_2, (long)bedBes.Baha, dbName);
-                        await mandeBedehiCommandService.UpdateAmount(zoneIdAndCustomerNumber_3, (long)bedBes.Baha, dbName);
+                        await waterDebtCommandService.UpdateAmount(bedBes.ShGhabs1, (long)bedBes.Baha);
                         await controCommandService.Update(contorUpdate, dbName, true);                                                                                                   //update contro
                         await billCommandService.InsertByBedBesId(zoneIdAndCustomerNumber_3, bedBesRecordId, dbName);
 
@@ -152,7 +152,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             string paymentId = TransactionIdGenerator.GeneratePaymentId((long)abBahaCalc.SumItems, abBahaCalc.Customer.BillId);
             decimal barge = await _variabService.GetAndRenew(abBahaCalc.Customer.ZoneId);
 
-            return new BedBesCreateDto()
+            return new BedBesCreateDto()// ToDo :check
             {
                 Town = customerInfo.MembersInfo.ZoneId,
                 Radif = customerInfo.MembersInfo.CustomerNumber,
@@ -214,7 +214,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 NewAb = 0,
                 NewFa = 0,
                 Bodjeh = (decimal)abBahaCalc.SumBoodje,
-                Group1 = 0,//todo:  meterReading.ConsumptionUsageId,
+                Group1 = customerInfo.MembersInfo.ConsumptionUsageId,
                 MasFas = (decimal)abBahaCalc.Consumption,
                 Faz = false,
                 ChkKarbari = 0,
