@@ -38,7 +38,14 @@
                         @"انشعاب شما در تاریخ {2} وصل گردید.";
             }
         }
-        //public static string GenerateBillSms(string mohlat, MemberAndBill bedBesMember, string zoneTitle)
+        public static string SimpleBill
+        {
+            get
+            {
+                return "قبض جدید آب بها برای شما صادر گردید";
+            }
+        }
+        //public static string GenerateBillSms()
         //{
         //    string
         //        abBahaLiteral = "صورتحساب آب بها" + Environment.NewLine,

@@ -94,6 +94,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     await mandeBedehiCommandService.UpdateAmount(zoneIdAndCustomerNumber_1, amount, dbName);
                     await removedBillCommandService.Insert(zoneIdAndCustomerNumber_1, removeBill.Barge, dbName);
 
+
                     transaction.Commit();
                 }
             }
