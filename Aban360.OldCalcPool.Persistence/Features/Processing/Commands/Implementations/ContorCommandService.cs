@@ -37,6 +37,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                 @"taviz_date=@MeterChangeDateJalali,
                   taviz_no=@MeterChangeNumber," :
                 string.Empty;
+
             return $@"Update [{dbName}].dbo.contor
                     Set
                     	pri_no=@CurrentNumber,

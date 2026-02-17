@@ -26,6 +26,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IValidator<GenerateBillInputDto> _validator;
         private readonly IVariabService _variabService;
         const int _paymentDeadline = 7;
+        const int _conditionPayableAmount = 10000;
 
         public GenerateBillHandler(
             ICustomerInfoService customerInfoService,
@@ -61,7 +62,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             {
                 return abBahaCalcResult;
             }
-            BedBesCreateDto bedBes = await GetBedBes(customerInfo, abBahaCalcResult, inputDto);
+            BedBesCreateDto bedBes = await GetBedBes(customerInfo, abBahaCalcResult, inputDto, zoneIdAndCustomerNumber_1);
             KasrHaDto kasrHa = GerKasrHa(customerInfo, abBahaCalcResult, inputDto);
             ZoneIdCustomerNumber zoneIdAndCustomerNumber_2 = new(zoneIdAndCustomerNumber_1.ZoneId, zoneIdAndCustomerNumber_1.CustomerNumber.ToString());
             ZoneIdAndCustomerNumberOutputDto zoneIdAndCustomerNumber_3 = new(zoneIdAndCustomerNumber_1.ZoneId, zoneIdAndCustomerNumber_1.CustomerNumber);
@@ -91,7 +92,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                         {
                             await kasrHasCommandService.Insert(kasrHa, zoneIdAndCustomerNumber_1.ZoneId);
                         }
-
                         await membersCommandService.UpdateBedbes(zoneIdAndCustomerNumber_2, (long)bedBes.Baha, dbName);
                         await mandeBedehiCommandService.UpdateAmount(zoneIdAndCustomerNumber_3, (long)bedBes.Baha, dbName);
                         await controCommandService.Update(contorUpdate, dbName, true);                                                                                                   //update contro
@@ -134,49 +134,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 CounterStateCode = generateBillInfo.CounterStateCode
             };
         }
-        //private MeterImaginaryInputDto GetMeterImaginary(CustomerInfoGetDto customerInfo, GenerateBillInputDto generateBillInfo)
-        //{
-        //    CustomerDetailInfoInputDto customerDetail = new()
-        //    {
-        //        ZoneId = customerInfo.MembersInfo.ZoneId,
-        //        Radif = customerInfo.MembersInfo.CustomerNumber,
-        //        BranchType = 0,//todo
-        //        UsageId = customerInfo.MembersInfo.UsageId,
-        //        DomesticUnit = customerInfo.MembersInfo.DomesticUnit,
-        //        CommertialUnit = customerInfo.MembersInfo.CommercialUnit,
-        //        OtherUnit = customerInfo.MembersInfo.OtherUnit,
-        //        EmptyUnit = customerInfo.MembersInfo.EmptyUnit,
-        //        WaterInstallationDateJalali = customerInfo.MembersInfo.WaterInstallationDateJalali,
-        //        SewageInstallationDateJalali = customerInfo.MembersInfo.SewageInstallationDateJalali,
-        //        WaterRegisterDate = customerInfo.MembersInfo.WaterRegisterDate,
-        //        SewageRegisterDate = customerInfo.MembersInfo.SewageRegisterDate,
-        //        SewageCalcState = customerInfo.MembersInfo.SewageCalcState,
-        //        ContractualCapacity = customerInfo.MembersInfo.ContractualCapacity,
-        //        HouseholdDate = customerInfo.MembersInfo.HouseholdDate,
-        //        HouseholdNumber = customerInfo.MembersInfo.HouseholdNumber,
-        //        ReadingNumber = customerInfo.MembersInfo.ReadingNumber,
-        //        VillageId = customerInfo.MembersInfo.VillageId,
-        //        IsSpecial = customerInfo.MembersInfo.IsSpecial,
-        //        VirtualCategoryId = customerInfo.MembersInfo.VirtualCategoryId,
-        //        CounterStateCode = 0,//s.MembersInfo.CurrentCounterStateCode,
-        //    };
-        //    MeterInfoByPreviousDataInputDto meterInfo = new()
-        //    {
-        //        BillId = generateBillInfo.BillId,
-        //        PreviousDateJalali = customerInfo.BedBesInfo.LastMeterDateJalali,
-        //        PreviousNumber = customerInfo.BedBesInfo.LastMeterNumber ?? 0,
-        //        CurrentDateJalali = DateTime.Now.ToShortPersianDateString(),
-        //        CurrentMeterNumber = generateBillInfo.MeterNumber,
-        //        CounterStateCode = 0
-        //    };
-        //    return new MeterImaginaryInputDto()
-        //    {
-        //        CustomerInfo = customerDetail,
-        //        MeterPreviousData = meterInfo,
-        //    };
-        //}
-        private async Task<BedBesCreateDto> GetBedBes(CustomerInfoGetDto customerInfo, AbBahaCalculationDetails abBahaCalc, GenerateBillInputDto generateBillInfo)
+        private async Task<BedBesCreateDto> GetBedBes(CustomerInfoGetDto customerInfo, AbBahaCalculationDetails abBahaCalc, GenerateBillInputDto generateBillInfo, ZoneIdAndCustomerNumberGetDto zoneIdAndCustomerNumber)
         {
+            double preDebtAmount = await _customerInfoService.GetMembersBedBes(zoneIdAndCustomerNumber);
+            var (sumItems, jam, pard) = GetAmounts(preDebtAmount, abBahaCalc.SumItems);
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
             string mohlatDateJalali = DateTime.Now.AddDays(_paymentDeadline).ToShortPersianDateString();
             string paymentId = TransactionIdGenerator.GeneratePaymentId((long)abBahaCalc.SumItems, abBahaCalc.Customer.BillId);
@@ -202,10 +163,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 DateBed = currentDateJalali,
                 JalaseNo = 0,
                 Mohlat = mohlatDateJalali,
-                Baha = (decimal)abBahaCalc.SumItems,
+                Baha = (decimal)sumItems,
                 AbonAb = (decimal)abBahaCalc.AbonmanAbAmount,
-                Pard = (decimal)Math.Round(abBahaCalc.SumItems, 3),//bedehi gahbli+currentSumItems  
-                Jam = (decimal)abBahaCalc.SumItems,//bedehi gahbli+currentSumItems  
+                Pard = (decimal)pard,
+                Jam = (decimal)jam,
                 CodVas = 0,
                 Ghabs = "1",
                 Del = false,
@@ -267,6 +228,21 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 Avarez = (decimal)abBahaCalc.AvarezAmount,
                 TrackNumber = 0
             };
+        }
+        private (double, double, double) GetAmounts(double preDebt, double sumItems)
+        {
+            double jam = preDebt + sumItems;
+            if (jam > _conditionPayableAmount)
+            {
+                long divideJam = (long)(jam / 1000);
+                double payable = divideJam * 1000;
+                double remained = sumItems - payable;
+                return (sumItems, jam, payable);
+            }
+            else
+            {
+                return (sumItems, jam, 0);
+            }
         }
         private KasrHaDto GerKasrHa(CustomerInfoGetDto customerInfo, AbBahaCalculationDetails abBahaCalc, GenerateBillInputDto generateBillInfo)
         {

@@ -65,7 +65,14 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             {
                 throw new InvalidBillIdException(ExceptionLiterals.BillIdNotFound);
             }
-			return data;
+            return data;
+        }
+        public async Task<double> GetMembersBedBes(ZoneIdAndCustomerNumberGetDto input)
+        {
+            string dbName = GetDbName(input.ZoneId);
+            string query = GetMembersBedBesQueru(dbName);
+            double bedBesAmount = await _sqlReportConnection.QueryFirstOrDefaultAsync<double>(query, input);
+            return bedBesAmount;
         }
 
         private string GetZoneIdAndCustomerNumberQuery()
@@ -229,6 +236,14 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 						c.town=@zoneId AND
 						c.radif IN @customerNumbers AND
 						c.RN=1";
+        }
+        private string GetMembersBedBesQueru(string dbName)
+        {
+            return $@"Select bed_bes
+					From [{dbName}].dbo.members
+					Where
+						 town=@zoneId AND
+						 radif=@customerNumber";
         }
 
         private string GetCustomerGeneralInfoQuery(string dbnName)
