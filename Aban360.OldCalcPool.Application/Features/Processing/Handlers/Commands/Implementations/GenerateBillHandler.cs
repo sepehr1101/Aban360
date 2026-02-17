@@ -127,8 +127,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             return new MeterInfoByPreviousDataInputDto()
             {
                 BillId = customerInfo.MembersInfo.BillId,
-                PreviousDateJalali = customerInfo.BedBesInfo.LastMeterDateJalali,
-                PreviousNumber = customerInfo.BedBesInfo.LastMeterNumber ?? 0,
+                PreviousDateJalali = customerInfo.BedBesInfo?.LastMeterDateJalali ?? customerInfo.MembersInfo.WaterInstallationDateJalali,
+                PreviousNumber = customerInfo.BedBesInfo?.LastMeterNumber ?? 0,
                 CurrentDateJalali = DateTime.Now.ToShortPersianDateString(),
                 CurrentMeterNumber = generateBillInfo.MeterNumber,
                 CounterStateCode = generateBillInfo.CounterStateCode

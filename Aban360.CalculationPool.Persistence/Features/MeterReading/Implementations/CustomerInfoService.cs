@@ -84,7 +84,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 					From CustomerWarehouse.dbo.Clients 
 					Where
 						ToDayJalali IS NULL AND
-						BillId=@billId";
+						BillId=@billId AND
+						DeletionStateId NOT IN (1)";
         }
 
         private string GetMembers(string dbName)
@@ -129,8 +130,9 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 					From [{dbName}].dbo.bed_bes b
 					Where
 						b.town=@zoneId AND
-						b.radif=@customerNumber
-					Order By today_date DESC;";
+						b.radif=@customerNumber  AND
+						b.cod_vas NOT IN (4,7,8)
+					Order By today_date DESC, Id DESC;";
         }
         private string GetTavisQuery(string dbName)
         {
