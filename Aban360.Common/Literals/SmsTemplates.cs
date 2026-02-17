@@ -74,7 +74,6 @@ namespace Aban360.Common.Literals
                 sb.AppendLine(billIdLiteral  + space +                         "{8}");
                 sb.AppendLine(payIdLiteral  + space +                          "{9}");
                 sb.AppendLine(deadLineLiteral  + space +                       "{10}");
-                sb.AppendLine(rls  + space +                                   "{11}");
                 sb.AppendLine(portalLinkPre + "{8}"+ portalLinkPost);
 
                 return abBahaLiteral;//sb.ToString();
