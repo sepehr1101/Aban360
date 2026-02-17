@@ -8,5 +8,6 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts
         Task<CustomerInfoGetDto> Get(int zoneId, int customerNumber);
         Task<CustomersInfoGetDto> Get(int zoneId, ICollection<int> customerNumbers);
         Task<CustomerGeneralInfoGetDto> Get(string billId);
+        Task<double> GetMembersBedBes(ZoneIdAndCustomerNumberGetDto input);
     }
 }
