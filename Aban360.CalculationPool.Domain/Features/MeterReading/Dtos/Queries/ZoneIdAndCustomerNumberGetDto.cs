@@ -5,5 +5,6 @@
         public int ZoneId { get; set; }
         public string ZoneTitle { get; set; }
         public int CustomerNumber { get; set; }
+        public int DeletionStateId { get; set; }
     }
 }

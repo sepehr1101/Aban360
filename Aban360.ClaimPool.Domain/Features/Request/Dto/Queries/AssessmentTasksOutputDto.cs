@@ -12,5 +12,7 @@ namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Queries
         public IEnumerable<NumericDictionary> SiphonDiameters { get; set; }
         public IEnumerable<NumericDictionary> DiscountTypes { get; set; }
         public IEnumerable<NumericDictionary>  MeterMaterials{ get; set; }
+        public IEnumerable<NumericDictionary>  ArchiveFileTypes{ get; set; }
+        public IEnumerable<StringDictionary> BlockCodes{ get; set; }
     }
 }

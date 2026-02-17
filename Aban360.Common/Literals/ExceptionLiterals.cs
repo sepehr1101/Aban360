@@ -26,6 +26,7 @@
         public static string CurrentDateIsInvalid => "تاریخ فعلی قرائت ناصحیح است";
         public static string CurrentDateNotMoreThanPreviousDate => "تاریخ دوره قبلی نمیتوان از تاریخ دوره جاری بزرگ تر باشد";
         public static string CurrentNumberNotMoreThanPreviousNumber => "رقم دوره قبلی نمیتوان از رقم دوره جاری بزرگ تر باشد";
+        public static string InvalidDeletionState => "نامعتبر! کنتور جمع‌آوری شده";
         public static string BillIdNotFound => "شناسه قبض یافت نشد!";
         public static string InvalidBillId => "شناسه قبض معتبر نیست!";
         public static string InvalidTrackNumber => "شماره پیگیری یافت نشد.";

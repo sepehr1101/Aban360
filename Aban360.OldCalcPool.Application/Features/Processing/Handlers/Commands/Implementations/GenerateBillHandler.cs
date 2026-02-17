@@ -52,7 +52,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         public async Task<AbBahaCalculationDetails> Handle(GenerateBillInputDto inputDto, CancellationToken cancellationToken)
         {
             await Validation(inputDto, cancellationToken);
-            ZoneIdAndCustomerNumberGetDto zoneIdAndCustomerNumber_1 = await _customerInfoService.GetZoneIdAndCustomerNumber(inputDto.BillId);
+            ZoneIdAndCustomerNumberGetDto zoneIdAndCustomerNumber_1 = await GetZoneIdANdCustomerNumber(inputDto.BillId);
             CustomerInfoGetDto customerInfo = await _customerInfoService.Get(zoneIdAndCustomerNumber_1.ZoneId, zoneIdAndCustomerNumber_1.CustomerNumber);
             CounterStateValidation(inputDto.CounterStateCode, inputDto.MeterNumber, customerInfo.BedBesInfo.LastMeterNumber);
 
@@ -107,6 +107,15 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 }
             }
             return abBahaCalcResult;
+        }
+        private async Task<ZoneIdAndCustomerNumberGetDto> GetZoneIdANdCustomerNumber(string billId)
+        {
+            ZoneIdAndCustomerNumberGetDto result = await _customerInfoService.GetZoneIdAndCustomerNumber(billId);
+            if (result.DeletionStateId == 1)
+            {
+                throw new InvalidBillIdException(ExceptionLiterals.InvalidDeletionState);
+            }
+            return result;
         }
         private ContorUpdateDto GetControUpdateDto(CustomerInfoGetDto customerInfo, BedBesCreateDto bedBes)
         {

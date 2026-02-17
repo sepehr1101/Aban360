@@ -20,8 +20,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         public async Task<ZoneIdAndCustomerNumberGetDto> GetZoneIdAndCustomerNumber(string billId)
         {
             string query = GetZoneIdAndCustomerNumberQuery();
-            ZoneIdAndCustomerNumberGetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZoneIdAndCustomerNumberGetDto>(query, new { billId = billId });
-            if (result is null)
+            ZoneIdAndCustomerNumberGetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZoneIdAndCustomerNumberGetDto>(query, new { billId = billId });			
+			if (result is null)
             {
                 throw new InvalidBillIdException(ExceptionLiterals.BillIdNotFound);
             }
@@ -84,8 +84,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 					From CustomerWarehouse.dbo.Clients 
 					Where
 						ToDayJalali IS NULL AND
-						BillId=@billId AND
-						DeletionStateId NOT IN (1)";
+						BillId=@billId ";
         }
 
         private string GetMembers(string dbName)
