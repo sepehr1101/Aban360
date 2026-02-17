@@ -27,6 +27,7 @@
         public string FullName { get; set; }
         public bool IsVisited { get; set; }
         public string DiscountTitle { get; set; }
+        public int DiscountId { get; set; }
         public int UsageId { get; set; }
         public string UsageTitle { get; set; }
         public int MeterDiameterId { get; set; }
@@ -89,7 +90,7 @@
         public string PostalCode { get; set; }
         public string ReadingNumber { get; set; }
         public string BranchTypeTitle { get; set; }
-        public int BranchTypeId{ get; set; }
+        public int BranchTypeId { get; set; }
         public int ContractualCapacity { get; set; }
         public int Primesses { get; set; }
         public int ImprovementOverall { get; set; }

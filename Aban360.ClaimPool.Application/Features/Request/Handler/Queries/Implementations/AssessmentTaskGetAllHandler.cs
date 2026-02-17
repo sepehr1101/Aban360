@@ -1,4 +1,5 @@
-﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
+﻿using Aban360.BlobPool.Persistence.Features.DmsServices.Queries.Contracts;
+using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Domain.Features.People.Entities;
@@ -26,6 +27,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         private readonly IDiscountTypeQueryService _discountTypeQueryService;
         private readonly ICompanyServiceQueryService _companyServiceQueryService;
         private readonly IMeterMaterialQueryService _meterMaterialQueryService;
+        private readonly IOpenKmMetaDataQueryServices _openKmMetaDataQueryService;
 
         public AssessmentTaskGetAllHandler(
             IAssessmentTaskQueryService assessmentTaskQueryService,
@@ -36,7 +38,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             ISiphonDiameterQueryService siphonDiameterQueryService,
             IDiscountTypeQueryService discountTypeQueryService,
             ICompanyServiceQueryService companyServiceQueryService,
-            IMeterMaterialQueryService meterMaterialQueryService)
+            IMeterMaterialQueryService meterMaterialQueryService,
+            IOpenKmMetaDataQueryServices openKmMetaDataQueryService)
         {
             _assessmentTaskQueryService = assessmentTaskQueryService;
             _assessmentTaskQueryService.NotNull(nameof(assessmentTaskQueryService));
@@ -64,6 +67,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
             _meterMaterialQueryService = meterMaterialQueryService;
             _meterMaterialQueryService.NotNull(nameof(meterMaterialQueryService));
+
+            _openKmMetaDataQueryService= openKmMetaDataQueryService;
+            _openKmMetaDataQueryService.NotNull(nameof(openKmMetaDataQueryService));
         }
 
         public async Task<AssessmentTasksOutputDto> Handle(int assessmentCode, CancellationToken cancellationToken)
@@ -86,7 +92,12 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             IEnumerable<NumericDictionary> discountTypeDictionary = discountTypeList.Select(d => new NumericDictionary((int)d.Id, d.Title));
 
             ICollection<MeterMaterial> meterMaterialList = await _meterMaterialQueryService.Get();
-            IEnumerable<NumericDictionary> meterMaterialDictionary = meterMaterialList.Select(m => new NumericDictionary(m.Id,m.Title));
+            IEnumerable<NumericDictionary> meterMaterialDictionary = meterMaterialList.Select(m => new NumericDictionary(m.Id, m.Title));
+
+            IEnumerable<NumericDictionary> archiveFileTypesDictionary = await _openKmMetaDataQueryService.GetFileTitles();
+
+            IEnumerable<StringDictionary> BlockCodeDictionary = GetBlockCodes();
+
 
             IEnumerable<AssessmentLocationInfoOutputDto> locationsInfo = await GetLocationsInfo(assessmentCode);
 
@@ -99,7 +110,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 MeterDiameters = meterDiameterDictionary,
                 SiphonDiameters = siphonDiameterDictionary,
                 DiscountTypes = discountTypeDictionary,
-                MeterMaterials=meterMaterialDictionary,
+                MeterMaterials = meterMaterialDictionary,
+                ArchiveFileTypes = archiveFileTypesDictionary,
+                BlockCodes = BlockCodeDictionary
             };
         }
         private async Task<IEnumerable<AssessmentLocationInfoOutputDto>> GetLocationsInfo(int assessmentCode)
@@ -240,6 +253,23 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             };
 
             return locationInfo;
+        }
+        private IEnumerable<StringDictionary> GetBlockCodes()
+        {
+            return [new StringDictionary("A", "A"),
+                    new StringDictionary("B", "B"),
+                    new StringDictionary("C", "C"),
+                    new StringDictionary("D", "D"),
+                    new StringDictionary("E", "E"),
+                    new StringDictionary("F", "F"),
+                    new StringDictionary("G", "G"),
+                    new StringDictionary("H", "H"),
+                    new StringDictionary("I", "I"),
+                    new StringDictionary("J", "J"),
+                    new StringDictionary("K", "K"),
+                    new StringDictionary("L", "L"),
+                    new StringDictionary("M", "M"),
+                    new StringDictionary("N", "N")];
         }
     }
 }

@@ -77,7 +77,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	IIF(m.radif>0,1,0) HasCustomerNumber,
                     	(TRIM(m.name)+ ' ' + TRIM(m.family)) FullName,
                     	0 IsVisited,
-                    	TRIM(m.nam_takhfif) DiscountTitle,
+                    	t15.C1 DiscountTitle,
+						m.cod_takh DiscountId,
                     	m.cod_enshab UsageId,
                     	T41.C1 UsageTitle,
                     	m.enshab MeterDiameterId,
@@ -136,6 +137,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	ON m.enshab=T5.C0	
 					Join [Db70].dbo.T7 t7
 						ON m.noe_va=t7.C0
+					Join Db70.dbo.T15 t15
+						ON m.cod_takh=t15.C0
                     Where t.TrackID IN @trackIds";
         }
     }
