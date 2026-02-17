@@ -80,6 +80,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     MembersCommandService membersCommandService = new(connection, transaction);
                     ContorCommandService contorCommandService = new(connection, transaction);
                     MandeBedehiCommandService mandeBedehiCommandService = new(connection, transaction);
+                    RemovedBillCommandService removedBillCommandService = new(connection,transaction);
 
                     await bedBesCommandService.Delete(removeBill.Id, removeBill.ZoneId);
                     if (removeBill.Discount > 0)
@@ -91,6 +92,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     await membersCommandService.UpdateBedbes(zoneIdAndCustomerNumber_2, amount, dbName);
                     await contorCommandService.Update(controUpdate, dbName, false);
                     await mandeBedehiCommandService.UpdateAmount(zoneIdAndCustomerNumber_1, amount, dbName);
+                    await removedBillCommandService.Insert(zoneIdAndCustomerNumber_1, removeBill.Barge, dbName);
 
 
                     transaction.Commit();
