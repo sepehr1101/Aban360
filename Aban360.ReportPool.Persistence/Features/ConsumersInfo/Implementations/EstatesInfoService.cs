@@ -88,11 +88,11 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	N'نامشخص' AS ConstructionTypeTitle,
                     	0 AS Storeys,
                     	c.DomesticCount AS UnitDomesticWater,
-                    	c.DomesticCount AS UnitDomesticSewage,
+                    	IIF(LEN(TRIM(c.PhysicalSewageInstallDateJalali))=10, c.DomesticCount,0) AS UnitDomesticSewage,
                     	c.CommercialCount AS UnitCommercialWater,
-                    	c.CommercialCount AS UnitCommercialSewage,
+                    	IIF(LEN(TRIM(c.PhysicalSewageInstallDateJalali))=10, c.CommercialCount,0) AS UnitCommercialSewage,
                     	c.OtherCount AS UnitOtherWater,
-                    	c.OtherCount AS UnitOtherSewage                    
+                    	IIF(LEN(TRIM(c.PhysicalSewageInstallDateJalali))=10, c.OtherCount,0) AS UnitOtherSewage     
                     from [CustomerWarehouse].dbo.Clients c
                     where c.BillId=@billId
                     and c.ToDayJalali is null";

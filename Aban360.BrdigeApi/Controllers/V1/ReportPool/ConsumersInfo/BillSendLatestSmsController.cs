@@ -36,7 +36,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
         {
             var customerInfo = await _customerInfoHandler.Handle(input.Input, cancellationToken);
             string text = SmsTemplates.SimpleBill;
-            _jobClient.Enqueue(() => _smsHandler.Send(customerInfo.MobileNumber, text));
+            _jobClient.Enqueue(() => _smsHandler.Send(/*customerInfo.MobileNumber*/"09135742556", text));
             return Ok(input);
         }
     }

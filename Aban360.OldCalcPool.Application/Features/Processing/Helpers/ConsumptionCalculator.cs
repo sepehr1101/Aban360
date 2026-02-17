@@ -95,11 +95,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         }
         private int GetDuration(string previousDate, string currentDate)
         {
-            int thresholdDay = 4;
+            int thresholdDay = 1;
             var previousGregorian = previousDate.ToGregorianDateTime();
             var currentGregorian = currentDate.ToGregorianDateTime();
             int duration = (currentGregorian.Value - previousGregorian.Value).Days;
-            if (duration <= thresholdDay)
+            if (duration < thresholdDay)
             {
                 throw new InvalidBillIdException(Literals.InvalidDuration);
             }
