@@ -197,9 +197,9 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 					Where 
 						m.town=@zoneId AND
 						m.radif=@customerNumber AND 
-						b.type In ('1', '7') AND
-						b.cod_vas NOT IN (4,7) 
-					Order By b.pri_date DESC";
+						--b.type In ('1', '7') AND
+						b.cod_vas NOT IN (4,7,8) 
+					Order By b.date_bed DESC, id desc";
         }
         private string GetItemsQuery(string dbName)
         {
@@ -211,8 +211,8 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						 	b.town=@zoneId AND
 						 	b.radif=@customerNumber AND
 						 	--b.TypeId In (N'قبض', N'علی الحساب') AND
-						 	b.cod_vas NOT IN (4,7) 
-						 Order By b.pri_date DESC
+						 	b.cod_vas NOT IN (4,7,8) 
+						 Order By b.date_bed DESC, id desc
 						 )b
 					Cross Apply(
 						Values
