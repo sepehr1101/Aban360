@@ -1,4 +1,6 @@
-﻿namespace Aban360.Common.Literals
+﻿using System.Text;
+
+namespace Aban360.Common.Literals
 {
     public static class SmsTemplates
     {        
@@ -43,22 +45,39 @@
             get
             {
                 string
+                    space = " ",
+                    abfa = "آبفا",
                     abBahaLiteral = "صورتحساب آب بها" + Environment.NewLine,
                     abBahaAlalHesabLiteral = "علی الحساب آب بها" + Environment.NewLine,
-                    fromDateLiteral = "از: ",
-                    toDateLiteral = "تا: ",
-                    fromCounterNumberLiteral = "از شماره: ",
-                    toCounterNumberLiteral = "تا شماره: ",
-                    thisPeriodAmountLiteral = "دوره: ",
-                    payableLiteral = "مبلغ: ",
-                    billIdLiteral = "ش ق: ",
-                    payIdLiteral = "ش پ: ",
-                    deadLineLiteral = "مهلت: ",
-                    spaceRialsLiteral = " ریال",
+                    fromDateLiteral = "از:",
+                    toDateLiteral = "تا:",
+                    fromCounterNumberLiteral = "از شماره:",
+                    toCounterNumberLiteral = "تا شماره:",
+                    thisPeriodAmountLiteral = "دوره:",
+                    payableLiteral = "مبلغ:",
+                    billIdLiteral = "ش ق:",
+                    payIdLiteral = "ش پ:",
+                    deadLineLiteral = "مهلت:",
+                    rls = "ریال",
+                    portalLinkPre = @"https://crm.abfaesfahan.ir/",
+                    portalLinkPost = @"/sms/bill",
                     tarefeSaxt = "تعرفه: ساخت و ساز" + Environment.NewLine;
+                var sb = new StringBuilder();
+                sb.AppendLine(abBahaLiteral + space +                          "{0}");
+                sb.AppendLine(abfa + space +                                   "{1}");
+                sb.AppendLine(fromDateLiteral  + space +                       "{2}");
+                sb.AppendLine(toDateLiteral  + space +                         "{3}");
+                sb.AppendLine(fromCounterNumberLiteral  + space +              "{4}");
+                sb.AppendLine(toCounterNumberLiteral  + space +                "{5}");
+                sb.AppendLine(thisPeriodAmountLiteral  + space +               "{6}");
+                sb.AppendLine(payableLiteral  + space +                        "{7}" + space + rls);
+                sb.AppendLine(billIdLiteral  + space +                         "{8}");
+                sb.AppendLine(payIdLiteral  + space +                          "{9}");
+                sb.AppendLine(deadLineLiteral  + space +                       "{10}");
+                sb.AppendLine(rls  + space +                                   "{11}");
+                sb.AppendLine(portalLinkPre + "{8}"+ portalLinkPost);
 
-                 
-                    return "قبض جدید آب بها برای شما صادر گردید";
+                return abBahaLiteral;//sb.ToString();
             }
         }
         //public static string GenerateBillSms()
