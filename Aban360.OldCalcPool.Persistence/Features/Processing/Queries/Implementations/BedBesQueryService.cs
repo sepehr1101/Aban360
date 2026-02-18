@@ -201,8 +201,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     PreviousDateJalali = string.Empty,
                     CurrentNumber = 0,
                     CurrentDateJalali = string.Empty,
-                    Consumption=0,
-                    ConsumptionAverage=0
+                    Consumption = 0,
+                    ConsumptionAverage = 0
                 };
             }
             return previousBill;
@@ -297,17 +297,19 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                         b.barge as Barge,
                     	b.pri_no as PreviousNumber, 
                     	b.today_no as CurrentNumber,
-                    	b.pri_date as PreviousDateJalali,
-                    	b.today_date as CurrentDateJalali,
-                    	b.date_bed as RegisterDateJalali,
+                    	TRIM(b.pri_date) as PreviousDateJalali,
+                    	TRIM(b.today_date) as CurrentDateJalali,
+                    	TRIM(b.date_bed) as RegisterDateJalali,
                     	b.masraf as Consumption,
-                        b.sh_pard1 as PaymentId,
+                        TRIM(b.sh_pard1) as PaymentId,
 						b.ab_baha as AbBahaAmount,
 						b.fas_baha as FazelabAmount,
                     	b.baha as Baha,
-                    	b.sh_ghabs1 as BillId,
+                    	TRIM(m.bill_id) as BillId,
 						b.kasr_ha Discount
                     FROM [{dbName}].dbo.bed_bes b
+				    Join [{dbName}].dbo.members m
+						ON b.town=m.town AND b.radif=m.radif
                     WHERE 
                     	b.id=@id";
         }
@@ -486,7 +488,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     order by date_bed desc, id desc";
             return query;
         }
-        
+
         private string GetPreviousBedBesQuery(string dbName)
         {
             return $@"Select Top 1
