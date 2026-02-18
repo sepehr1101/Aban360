@@ -48,7 +48,7 @@ namespace Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Command
         }
         public async Task<AbBahaCalculationDetails> Handle(MeterInfoWithMonthlyConsumptionOutputDto input, CancellationToken cancellationToken)
         {
-            BedBesDataInfoOutptuDto bedBesData = await _billQueryService.Get(input.InvoiceId);
+            BedBesDataInfoOutptuDto bedBesData = await _billQueryService.GetInAtlas(input.InvoiceId);
             ValidationBedBes(bedBesData, input.CurrentDateJalali, input.PreviousDateJalali);
 
             MeterDateInfoWithMonthlyConsumptionOutputDto meterDateInfo = new MeterDateInfoWithMonthlyConsumptionOutputDto(input.BillId, input.PreviousDateJalali, input.CurrentDateJalali, input.MonthlyAverageConsumption);
@@ -63,7 +63,7 @@ namespace Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Command
         }
         public async Task<AbBahaCalculationDetails> Handle(MeterInfoByLastMonthlyConsumptionOutputDto input, CancellationToken cancellationToken)
         {
-            BedBesDataInfoOutptuDto bedBesData = await _billQueryService.Get(input.InvoiceId);
+            BedBesDataInfoOutptuDto bedBesData = await _billQueryService.GetInAtlas(input.InvoiceId);
             ValidationBedBes(bedBesData, input.CurrentDateJalali, input.PreviousDateJalali);
 
             MeterDateInfoByLastMonthlyConsumptionOutputDto meterDateInfo = new MeterDateInfoByLastMonthlyConsumptionOutputDto(input.BillId, input.PreviousDateJalali, input.CurrentDateJalali);
@@ -78,7 +78,7 @@ namespace Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Command
         }
         public async Task<AbBahaCalculationDetails> Handle(MeterInfoByPreviousDataWithInvoiceIdInputDto input, CancellationToken cancellationToken)
         {
-            BedBesDataInfoOutptuDto bedBesData = await _billQueryService.Get(input.InvoiceId);
+            BedBesDataInfoOutptuDto bedBesData = await _billQueryService.GetInAtlas(input.InvoiceId);
             ValidationBedBes(bedBesData, input.CurrentDateJalali, input.PreviousDateJalali);
 
             MeterInfoByPreviousDataInputDto meterInfoByPreviousData = GetMeterInfoByPreviousData(input);

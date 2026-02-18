@@ -14,6 +14,9 @@
         public int OtherUnit { get; set; }
         public int EmptyUnit { get; set; }
         public int HouseholdNumber { get; set; }
+        public string FullName { get; set; }
+        public string UsageTitle { get; set; }
+        public string ZoneTitle { get; set; }
 
     }
 }
