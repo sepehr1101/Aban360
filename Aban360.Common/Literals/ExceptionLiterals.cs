@@ -39,6 +39,7 @@
         public static string BillNotFound => " قبضی یافت نشد.";
         public static string InvalidDiameterId => " امکان محاسبه تعرفه با قطر انتخابی وجود ندارد.";
         public static string InvalidZoneIdMoreThan1 => "با توجه به اینکه فیلد از/تا اشتراک مقدار دهی شده است، می‌توانید فقط یک ناحیه را انتخاب کنید.";
+        public static string InvalidInstallmentMoreThan6 => "تعداد اقساط باید کمتر از 6 قسط باشد.";
 
         public static string HasNotSiphon => "سیفون ندارد";
         public static string DuplicateBillIdTags => "شناسه قبض با شناسه تگ جاری تکراری است.";

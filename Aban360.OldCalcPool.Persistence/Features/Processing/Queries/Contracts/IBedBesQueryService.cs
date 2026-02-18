@@ -9,7 +9,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
     public interface IBedBesQueryService
     {
         Task<BedBesConsumptionOutputDto> Get(string billId);
-        Task<BedBesDataInfoOutptuDto> Get(int id);
+        Task<BedBesDataInfoOutptuDto> GetInAtlas(int id);
+        Task<BedBesWithAmountOutputDto> GetLatest(ZoneIdAndCustomerNumberOutputDto input);
         Task<IEnumerable<BillsCanRemoveOutputDto>> GetToRemove(RemovedBillSearchDto input);
         Task<RemoveBillDataInputDto> GetToRemove(RemoveBillGetDto input);
         Task<IEnumerable<BillsCanReturnOutputDto>> GetToReturned(ReturnBillSearchDto input);

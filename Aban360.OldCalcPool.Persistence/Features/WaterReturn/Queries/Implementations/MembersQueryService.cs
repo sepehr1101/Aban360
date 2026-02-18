@@ -45,9 +45,12 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Implemen
         {
             return @$"Select 
                     	town as ZoneId,
+						t51.C2 ZoneTitle,
 	                    radif as CustomerNumber,
                     	eshtrak as ReadingNumber,
+						(TRIM(name)+' '+TRIM(family)) FullName,
                         cod_enshab as UsageId,
+						t41.C1 UsageTitle,
                     	noe_va as BranchTypeId,
                     	enshab as MeterDiamterId,
                     	serial_co as BodySerial,
@@ -57,6 +60,10 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Implemen
                     	ted_khane as HouseholdNumber,
                     	Khali_s as EmptyUnit
                     From [{dbName}].dbo.members
+					Join [Db70].dbo.T51 t51
+						ON town=t51.C0
+					Join [Db70].dbo.T41 t41
+						ON cod_enshab=t41.C0
                     Where TRIM(bill_id)=@billId";
         }
         private string GetZoneId()
