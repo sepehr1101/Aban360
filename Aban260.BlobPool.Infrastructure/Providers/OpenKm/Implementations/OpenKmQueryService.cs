@@ -106,7 +106,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             return await GetChildren(fldId, false);
         }
         public async Task<FileListResponse> GetFilesByBillId(string billId)
-        {            
+        {
             string fldId = $"{_options.BaseDirectoryPath}{billId}";
             return await GetChildren(fldId, false);
         }
@@ -216,7 +216,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
 
                 metaDataProperties = new MetaDataProperties()
                 {
-                    RawMetaDatas = new List<PropertyGroupItem> 
+                    RawMetaDatas = new List<PropertyGroupItem>
                     {
                         singleMetaData
                     }

@@ -47,10 +47,23 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 
             return result;
         }
-        public async Task<BedBesDataInfoOutptuDto> Get(int id)
+        public async Task<BedBesDataInfoOutptuDto> GetInAtlas(int id)
         {
-            string customerInfoQueryString = GetBedBesByIdQuery();
+            string dbName = "Atlas";
+            string customerInfoQueryString = GetBedBesByIdQuery(dbName);
             BedBesDataInfoOutptuDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BedBesDataInfoOutptuDto>(customerInfoQueryString, new { Id = id });
+
+            return result;
+        }
+        public async Task<BedBesWithAmountOutputDto> GetLatest(ZoneIdAndCustomerNumberOutputDto input)
+        {
+            string dbName = GetDbName(input.ZoneId);
+            string query = GetLatestBedBesWithAmount(dbName);
+            BedBesWithAmountOutputDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BedBesWithAmountOutputDto>(query, new { input.ZoneId, input.CustomerNumber});
+            if (result is null || result.ZoneId <= 0)
+            {
+                throw new InvalidBillIdException(ExceptionLiterals.InvalidBillId);
+            }
 
             return result;
         }
@@ -220,7 +233,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	today_date DESC,
                     	pri_date DESC";
         }
-        private string GetBedBesByIdQuery()
+        private string GetBedBesByIdQuery(string dbName)
         {
             return @$"Select 
                         sh_ghabs1 as BillId,
@@ -229,10 +242,29 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 	                    date_bed as DateBed,
 	                    cod_vas as CounterStateCode,
 	                    serial as BodySerial
-                    From [Atlas].dbo.bed_bes 
+                    From [{dbName}].dbo.bed_bes 
                     Where 
                     	Id=@Id AND
                     	cod_vas NOT IN (4,7,8)";
+        }
+        private string GetLatestBedBesWithAmount(string dbName)
+        {
+            return $@"Select top 1
+                    	town ZoneId,
+                    	radif CustomerNumber,
+                    	pard Payable,
+						pri_date PreviousDateJalali,
+						today_date CurrentDateJalali,
+						pri_no PreviousMeterNumber,
+						today_no CurrentMeterNumber,
+						rate ConsumptionAverage,
+						masraf Consumption, 
+                        date_bed RegisterDateJalali
+                    From [{dbName}].dbo.bed_bes
+                    Where 
+                    	town=@zoneId AND
+                    	radif=@customerNumber 
+					Order By date_bed Desc, id Desc";
         }
         private string GetZoneIdQuery()
         {
@@ -507,5 +539,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 						cod_vas NOT IN (4,7,8)
 					Order By date_bed Desc";
         }
+
     }
 }

@@ -14,11 +14,25 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         }
 
         public async Task<decimal> GetAndRenew(int zoneId)
-        {            
+        {
             decimal barge = await _sqlReportConnection.QuerySingleAsync<decimal>(GetBargeQuery(GetDbName(zoneId)));
             await _sqlReportConnection.QuerySingleAsync<decimal>(GetBargeQuery(GetDbName(zoneId)));
             await _sqlReportConnection.ExecuteAsync(IncreaseBarge(GetDbName(zoneId)));
             return barge;
+        }
+        public async Task<decimal[]> GetAndRenew(int zoneId, int count)
+        {
+            decimal barge = await _sqlReportConnection.QuerySingleAsync<decimal>(GetBargeQuery(GetDbName(zoneId)));
+            await _sqlReportConnection.QuerySingleAsync<decimal>(GetBargeQuery(GetDbName(zoneId)));
+            await _sqlReportConnection.ExecuteAsync(IncreaseBarge(GetDbName(zoneId), count));
+
+            decimal[] range=new decimal[count];
+            for (int i = 0; i < count; i++)
+            {
+                range[i] = barge + i;
+            }
+
+            return range;
         }
 
         public async Task<bool> IsOperationValid(int zoneId, string operationDate)
@@ -34,7 +48,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                 return false;
             }
             string today = DateTime.Now.ToShortPersianDateString();
-            if (today.Substring(5,2)!=operationDate.Substring(5,2))
+            if (today.Substring(5, 2) != operationDate.Substring(5, 2))
             {
                 return false;
             }
@@ -53,7 +67,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                 $"UPDATE variab SET barge=barge+1;";
             return query;
         }
-        
+        private string IncreaseBarge(string dbName, int count)
+        {
+            string query = $"USE [{dbName}] " +
+                $"UPDATE variab SET barge=barge+{count};";
+            return query;
+        }
+
         private string GetCheckDate1(string dbName)
         {
             string query = @$"USE [{dbName}]
