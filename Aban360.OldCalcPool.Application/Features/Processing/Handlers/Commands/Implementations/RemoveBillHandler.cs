@@ -79,8 +79,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     BillCommandService billCommandService = new(connection, transaction);
                     MembersCommandService membersCommandService = new(connection, transaction);
                     ContorCommandService contorCommandService = new(connection, transaction);
-                    MandeBedehiCommandService mandeBedehiCommandService = new(connection, transaction);
-                    RemovedBillCommandService removedBillCommandService = new(connection,transaction);
+                    WaterDebtCommandService waterDebtCommandService = new(connection, transaction);
+                    RemovedBillCommandService removedBillCommandService = new(connection, transaction);
 
                     await bedBesCommandService.Delete(removeBill.Id, removeBill.ZoneId);
                     if (removeBill.Discount > 0)
@@ -91,7 +91,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     await billCommandService.Delete(removeBillDto);
                     await membersCommandService.UpdateBedbes(zoneIdAndCustomerNumber_2, amount, dbName);
                     await contorCommandService.Update(controUpdate, dbName, false);
-                    await mandeBedehiCommandService.UpdateAmount(zoneIdAndCustomerNumber_1, amount, dbName);
+                    await waterDebtCommandService.UpdateAmount(removeBill.BillId, amount);
                     await removedBillCommandService.Insert(zoneIdAndCustomerNumber_1, removeBill.Barge, dbName);
 
 

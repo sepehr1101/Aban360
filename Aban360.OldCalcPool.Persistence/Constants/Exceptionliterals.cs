@@ -2,7 +2,7 @@
 {
     public static class Exceptionliterals
     {
-        public static string InvalidUpdateMandeBedehiAmount => "خطا در ویرایش مبلغ قبض";
+        public static string InvalidUpdateWaterDebtAmount => "خطا در ویرایش مبلغ قبض";
         public static string InvalidBillInsert => "خطا در ذخیره قبض";
         public static string InvalidControUpdate => "خطا در ویرایش کنتور";
         public static string InvalidRemoveBill => "خطا در حذف قبض";

@@ -58,7 +58,7 @@ namespace Aban360.ReportPool.Persistence.Base
                             ) AND                
                             c.DeletionStateId IN (0) AND
                             c.HasWater=1 AND
-                            c.PhysicalWaterInstallDateJalali <= @FromDateJalali AND
+                            c.PhysicalWaterInstallDateJalali <= @ToDateJalali AND
                     		b.TypeCode IN (1,7,8) AND
                     		c.ToDayJalali IS NULL 
                             {parameters.CZoneQuery}
