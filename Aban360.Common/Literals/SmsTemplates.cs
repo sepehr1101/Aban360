@@ -76,7 +76,7 @@ namespace Aban360.Common.Literals
                 sb.AppendLine(deadLineLiteral  + space +                       "{10}");
                 sb.AppendLine(portalLinkPre + "{8}"+ portalLinkPost);
 
-                return abBahaLiteral;//sb.ToString();
+                return sb.ToString();
             }
         }
         //public static string GenerateBillSms()
