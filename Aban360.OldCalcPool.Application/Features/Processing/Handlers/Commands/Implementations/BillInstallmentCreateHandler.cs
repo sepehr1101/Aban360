@@ -13,20 +13,19 @@ using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using DNTPersianUtils.Core;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
     internal sealed class BillInstallmentCreateHandler : AbstractBaseConnection, IBillInstallmentCreateHandler
     {
         private readonly IMembersQueryService _membersQueryService;
-        private readonly IBedBesQueryService _bedBesQueryService;
         private readonly IVariabService _variabService;
         private readonly IValidator<GhestAbInputDto> _validator;
         private const int _operator = 5;
         private const int _deadLineDay = 30;
         public BillInstallmentCreateHandler(
             IMembersQueryService membersQueryService,
-            IBedBesQueryService bedBesQueryService,
             IVariabService variabService,
             IValidator<GhestAbInputDto> validator,
             IConfiguration configuration)
@@ -34,9 +33,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         {
             _membersQueryService = membersQueryService;
             _membersQueryService.NotNull(nameof(membersQueryService));
-
-            _bedBesQueryService = bedBesQueryService;
-            _bedBesQueryService.NotNull(nameof(bedBesQueryService));
 
             _variabService = variabService;
             _variabService.NotNull(nameof(variabService));
@@ -50,8 +46,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             await Validation(input, cancellationToken);
             MemberGetDto memberInfo = await _membersQueryService.Get(input.BillId);
             ZoneIdAndCustomerNumberOutputDto zoneIdCustomerNumber = new(memberInfo.ZoneId, memberInfo.CustomerNumber);
-            BedBesWithAmountOutputDto bedBesInfo = await _bedBesQueryService.GetLatest(zoneIdCustomerNumber);
-            ICollection<BillInstallmentCreateDto> installments = await GetInstallment(bedBesInfo, memberInfo, input);
+            ICollection<BillInstallmentCreateDto> installments = await GetInstallment(memberInfo, input);
 
             if (input.IsConfirmed)
             {
@@ -72,22 +67,20 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 }
             }
 
-            return GetResult(installments, memberInfo, bedBesInfo);
+            return GetResult(installments, memberInfo);
         }
-        private ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto> GetResult(ICollection<BillInstallmentCreateDto> installment, MemberGetDto memberInfo, BedBesWithAmountOutputDto bedBesInfo)
+        private ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto> GetResult(ICollection<BillInstallmentCreateDto> installment, MemberGetDto memberInfo)
         {
             BillInstallmentHeaderOutputDto header = new()
             {
                 FullName = memberInfo.FullName,
                 ZoneTitle = memberInfo.ZoneTitle,
                 UsageTitle = memberInfo.UsageTitle,
-                PreviousDateJalali = bedBesInfo.PreviousDateJalali,
-                CurrentDateJalali = bedBesInfo.CurrentDateJalali,
-                PreviousMeter = bedBesInfo.PreviousMeterNumber,
-                CurrentMeter = bedBesInfo.CurrentMeterNumber,
-                Consumption = bedBesInfo.Consumption,
-                Payable = bedBesInfo.Payable,
-                RegisterDateJalali = bedBesInfo.RegisterDateJalali
+                Payable = memberInfo.LatestDebt,
+                BillId = memberInfo.BillId,
+                MobileNumber = memberInfo.MobileNumber,
+                NationalCode = memberInfo.NationalCode,
+                PhoneNumber = memberInfo.PhoneNumber
             };
             IEnumerable<BillInstallmentDataOutputDto> data = installment.Select(s =>
             {
@@ -95,18 +88,21 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 {
                     DeadLineDateJalali = s.DeadLineDateJalali,
                     Payable = s.Payable,
-                    QueueNumber = s.QueueNumber
+                    QueueNumber = s.QueueNumber,
+                    BillId = memberInfo.BillId,
+                    PaymentId = TransactionIdGenerator.GeneratePaymentId(s.Payable,memberInfo.BillId,$"00{s.QueueNumber}"),
+                    QueueNumberTitle = $"قسط {s.QueueNumber.NumberToText(Language.Persian)}"
                 };
             });
 
             return new ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto>("اقساط آب‌بها", header, data);
         }
-        private async Task<ICollection<BillInstallmentCreateDto>> GetInstallment(BedBesWithAmountOutputDto bedBesInfo, MemberGetDto memberInfo, GhestAbInputDto input)
+        private async Task<ICollection<BillInstallmentCreateDto>> GetInstallment(MemberGetDto memberInfo, GhestAbInputDto input)
         {
             ICollection<BillInstallmentCreateDto> allInstallments = new List<BillInstallmentCreateDto>();
             decimal[] rangeBarge = input.IsConfirmed ? await _variabService.GetAndRenew(memberInfo.ZoneId, input.InstallmentCount) : Array.Empty<decimal>();
             DateTime currentDate = DateTime.Now;
-            long amount = bedBesInfo.Payable / input.InstallmentCount;
+            long amount = memberInfo.LatestDebt / input.InstallmentCount;
             long installmenAmount = (amount / 1000) * 1000;
 
             for (int i = 1; i <= input.InstallmentCount; i++)

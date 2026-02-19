@@ -47,7 +47,7 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Implemen
                     	town as ZoneId,
 						t51.C2 ZoneTitle,
 	                    radif as CustomerNumber,
-                    	eshtrak as ReadingNumber,
+                    	TRIM(eshtrak) as ReadingNumber,
 						(TRIM(name)+' '+TRIM(family)) FullName,
                         cod_enshab as UsageId,
 						t41.C1 UsageTitle,
@@ -58,7 +58,12 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Implemen
                     	tedad_mas as DomesticUnit,
                     	tedad_vahd as OtherUnit,
                     	ted_khane as HouseholdNumber,
-                    	Khali_s as EmptyUnit
+                    	Khali_s as EmptyUnit,
+						TRIM(PHONE_NO) PhoneNumber,
+						TRIM(MOBILE) MobileNumber,
+						TRIM(MELI_COD) NationalCode,
+						bed_bes LatestDebt,
+                        TRIM(bill_id) BillId
                     From [{dbName}].dbo.members
 					Join [Db70].dbo.T51 t51
 						ON town=t51.C0
