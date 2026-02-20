@@ -1,8 +1,4 @@
-﻿using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
-using Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts;
+﻿using Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts;
 using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
@@ -10,6 +6,10 @@ using Aban360.Common.Literals;
 using HttpClientToCurl;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
 
 namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
 {
@@ -256,7 +256,31 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
 
 
         //Commands
+        public async Task<bool> CheckFolderExists(string fldId)
+        {            
+            AuthenticationHeaderValue authHeader = await GetAuthenticationHeaderAsync();
+            string requestUrl = $"{_options.PathExistsEndpoint}/{fldId}";
+            var response = await _httpClient.GetAsync(requestUrl);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<bool>(_jsonOptions);
+        }
+        public async Task<AddFileDto> AddFile(string path, StreamContent content)
+        {
+            var authHeader = await GetAuthenticationHeaderAsync();
+            var requestUrl = $"{_options.AddFileEndpoint}";
 
+            using var form = new MultipartFormDataContent();
+            using var request = new HttpRequestMessage(HttpMethod.Post, requestUrl);
+            content.Headers.ContentType = (new MediaTypeWithQualityHeaderValue("application/octet-stream"));
+
+            form.Add(content, nameof(content), "fileName");
+            form.Add(new StringContent(path), "docPath");
+
+            var response = await _httpClient.PostAsync(requestUrl, form);
+            response.EnsureSuccessStatusCode();
+            AddFileDto result = await response.Content.ReadFromJsonAsync<AddFileDto>(_jsonOptions);
+            return result;
+        }
         public async Task<AddFileDto> AddFileByBillId(string billId, string localFilePath)
         {
             string fileName = Path.GetFileName(localFilePath);

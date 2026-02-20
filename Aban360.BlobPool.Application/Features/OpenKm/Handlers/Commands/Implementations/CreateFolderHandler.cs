@@ -1,6 +1,5 @@
 ﻿using Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts;
 using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Querys.Contracts;
-using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.Common.Extensions;
 
 namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Implementations
