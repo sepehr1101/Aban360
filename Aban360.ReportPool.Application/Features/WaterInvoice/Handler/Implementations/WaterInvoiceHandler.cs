@@ -1,10 +1,10 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Extensions;
+using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Contracts;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Domain.Features.Transactions;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
-using Aban360.ReportPool.Persistence.Features.Transactions.Contracts;
 using Aban360.ReportPool.Persistence.Features.WaterInvoice.Contracts;
 using DNTPersianUtils.Core;
 using static Aban360.Common.Timing.CalculationDistanceDate;
@@ -16,9 +16,12 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
         private readonly IWaterInvoiceQueryService _waterInvoiceQueryService;
         private readonly IWaterInvoiceWithLastDbQueryService _waterInvoiceWithLastDbQueryService;
         private readonly ICustomerInfoQueryService _customerInfoQueryService;
+        private readonly IVariabService _variabService;
+
         public WaterInvoiceHandler(IWaterInvoiceQueryService waterInvoiceQueryService,
             IWaterInvoiceWithLastDbQueryService waterInvoiceWithLastDbQueryService,
-            ICustomerInfoQueryService customerInfoQueryService)
+            ICustomerInfoQueryService customerInfoQueryService,
+            IVariabService variabService)
         {
             _waterInvoiceQueryService = waterInvoiceQueryService;
             _waterInvoiceQueryService.NotNull(nameof(waterInvoiceQueryService));
@@ -28,6 +31,9 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
 
             _customerInfoQueryService= customerInfoQueryService;
             _customerInfoQueryService.NotNull(nameof(customerInfoQueryService));
+
+            _variabService=variabService;
+            _variabService.NotNull(nameof(variabService));
         }
 
         public async Task<ReportOutput<WaterInvoiceDto, LineItemsDto>> Handle(string input)
@@ -43,7 +49,10 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
             
             ReportOutput<WaterInvoiceDto, LineItemsDto> result = await _waterInvoiceWithLastDbQueryService.Get(zoneIdAndCustomerNumber);
             result.ReportHeader.ChartIndex = await GetGuageValue(result.ReportHeader.ConsumptionAverage, result.ReportHeader.ContractualCapacity, input, result.ReportHeader.UsageId, result.ReportHeader.ZoneId);
-
+            if(result.ReportHeader.IsRemovable)//to double check
+            {
+                result.ReportHeader.IsRemovable = await _variabService.IsOperationValid(result.ReportHeader.ZoneId, result.ReportHeader.RegisterDateJalali);
+            }            
             return new ReportOutput<WaterInvoiceDto, LineItemsDto>(result.Title, GetWaterInvoiceData(result.ReportHeader), result.ReportData);
         }
         public WaterInvoiceDto Handle()
