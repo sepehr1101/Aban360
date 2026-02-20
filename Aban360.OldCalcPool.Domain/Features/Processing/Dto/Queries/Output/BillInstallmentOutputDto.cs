@@ -15,6 +15,7 @@
         public int MeterDiameterId { get; set; }
         public string MeterDiameterTitle { get; set; }
         public int QueueNumber { get; set; }
+        public string QueueNumberTitle { get; set; }
 
     }
 }

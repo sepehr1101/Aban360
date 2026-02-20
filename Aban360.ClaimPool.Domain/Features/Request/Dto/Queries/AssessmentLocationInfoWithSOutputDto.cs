@@ -92,7 +92,7 @@
         public string BranchTypeTitle { get; set; }
         public int BranchTypeId { get; set; }
         public int ContractualCapacity { get; set; }
-        public int Primesses { get; set; }
+        public int Premises { get; set; }
         public int ImprovementOverall { get; set; }
         public int ImprovementDomestic { get; set; }
         public int ImprovementCommercial { get; set; }

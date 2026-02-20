@@ -105,7 +105,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 						m.master_sif MainSiphon,
 						m.fix_mas ContractualCapacity,
 						TRIM(m.sodor) LicenseIssuanceDateJalali,
-						m.arse Primesses,
+						m.arse Premises,
 						m.aian ImprovementOverall,
 						m.aian_mas ImprovementDomestic,
 						m.aian_tej ImprovementCommercial,

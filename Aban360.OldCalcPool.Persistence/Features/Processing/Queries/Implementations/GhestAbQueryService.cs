@@ -25,15 +25,16 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	g.ID,
                     	g.town ZoneId,
                     	g.radif CustomerNumber,
-                    	g.enshab ReadingNumber,
-                    	g.barge Brage,
+                    	TRIM(g.eshtrak) ReadingNumber,
+                    	g.barge Barge,
                     	g.date_bed RegisterDateJalali,
                     	g.mohlat DeadLineDateJalali,
                     	g.pard Payable,
                     	g.cod_enshab UsageId,
                     	t41.C1 UsageTitle,
                     	g.enshab MeterDiamterId,
-                    	t5.C2 MeterDiameterTitle
+                    	t5.C2 MeterDiameterTitle,
+						g.serial QueueNumber
                     From [{dbName}].dbo.ghest_ab g
                     Join [Db70].dbo.T41 t41
                     	ON g.cod_enshab=t41.C0
@@ -41,7 +42,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	ON g.enshab=t5.C0
                     Where 
                     	g.town=@zoneId AND
-                    	g.radif=@customerNumber";
+                    	g.radif=@customerNumber
+					Order By RegisterDateJalali Asc, DeadLineDateJalali Asc";
         }
     }
 }

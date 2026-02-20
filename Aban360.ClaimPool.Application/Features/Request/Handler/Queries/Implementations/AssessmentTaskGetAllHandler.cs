@@ -227,7 +227,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 BranchTypeTitle = locationInfoWithS.BranchTypeTitle,
                 BranchTypeId = locationInfoWithS.BranchTypeId,
                 ContractualCapacity = locationInfoWithS.ContractualCapacity,
-                Primesses = locationInfoWithS.Primesses,
+                Premises = locationInfoWithS.Premises,
                 ImprovementCommercial = locationInfoWithS.ImprovementCommercial,
                 ImprovementDomestic = locationInfoWithS.ImprovementDomestic,
                 ImprovementOverall = locationInfoWithS.ImprovementOverall,
