@@ -17,19 +17,25 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 
         public async Task<CustomerInfoOutputDto> GetInfo(string billId)
         {
-            string zoneIdQueryString = GetZoneIdQuery();
-            ZoneIdAndCustomerNumberOutputDto zoneIdAndCustomerNumber = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZoneIdAndCustomerNumberOutputDto>(zoneIdQueryString, new { billId });
-            if (zoneIdAndCustomerNumber == null)
-            {
-                throw new InvalidBillIdException(ExceptionLiterals.BillIdNotFound+billId);
-            }
-            string DataBaseName = GetDbName(zoneIdAndCustomerNumber.ZoneId);
-            string customerInfoQueryString = GetCustomerInfoDataQuery(DataBaseName);
-            CustomerInfoOutputDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<CustomerInfoOutputDto>(customerInfoQueryString, new { zoneId= zoneIdAndCustomerNumber.ZoneId, customerNumber= zoneIdAndCustomerNumber.CustomerNumber });
+            ZoneIdAndCustomerNumberOutputDto zoneIdAndCustomerNumber = await GetZoneIdCustomerNumber(billId);
+
+            string dbName = GetDbName(zoneIdAndCustomerNumber.ZoneId);
+            string query = GetCustomerInfoDataQuery(dbName);
+            CustomerInfoOutputDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<CustomerInfoOutputDto>(query, new { zoneId = zoneIdAndCustomerNumber.ZoneId, customerNumber = zoneIdAndCustomerNumber.CustomerNumber });
 
             return result;
         }
+        public async Task<ZoneIdAndCustomerNumberOutputDto> GetZoneIdCustomerNumber(string billId)
+        {
+            string query = GetZoneIdQuery();
+            ZoneIdAndCustomerNumberOutputDto zoneIdAndCustomerNumber = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZoneIdAndCustomerNumberOutputDto>(query, new { billId });
+            if (zoneIdAndCustomerNumber == null)
+            {
+                throw new InvalidBillIdException(ExceptionLiterals.BillIdNotFound + billId);
+            }
 
+            return zoneIdAndCustomerNumber;
+        }
 
         private string GetCustomerInfoDataQuery(string dataBaseName)
         {
