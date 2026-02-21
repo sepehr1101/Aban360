@@ -1,4 +1,5 @@
 ﻿using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Contracts;
+using Aban360.BlobPool.Domain.Features.DmsServices.Dto.Commands;
 using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
@@ -21,9 +22,19 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Commands
         [Route("add-file")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AddFileDto>), StatusCodes.Status200OK)]
         [AllowAnonymous]
-        public async Task<IActionResult> AddFile(string billId, string localFilePath, CancellationToken cancellation)
+        public async Task<IActionResult> AddFile(AddFormFileInput input, CancellationToken cancellation)
         {
-            AddFileDto result = await _addFileHandler.Handle(billId, localFilePath, cancellation);
+            AddFileDto result = await _addFileHandler.Handle(input, cancellation);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("add-file-base64")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<AddFileDto>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> AddFile(AddBase64FileInput input, CancellationToken cancellation)
+        {
+            AddFileDto result = await _addFileHandler.Handle(input, cancellation);
             return Ok(result);
         }
     }

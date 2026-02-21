@@ -16,5 +16,9 @@
         public string GetThumbnailEndpoint { get; set; } = default!;
         public string GetDownloadLinkEndpoint { get; set; } = default!;
         public string GeMetadataEndpoint { get; set; } = default!;
+        public string PathExistsEndpoint { get; set; } = default!;
+        public string AddFileEndpoint { get; set; } = default!;
+        public string AddFolderEndpoint { get; set; } = default!;
+        public string AddMetadataEndpoint { get; set; } = default!;
     }
 }

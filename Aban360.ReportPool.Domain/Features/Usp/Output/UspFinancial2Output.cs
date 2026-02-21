@@ -46,6 +46,7 @@
     }
     public record UspFinancial2Header
     {
+        public double Avrage { get; set; }
         public int Tedad_ghabs { get; set; }
         public int Ahad_ghabs { get; set; }
         public double Tedad_Moshtrak { get; set; }
@@ -55,6 +56,8 @@
         public double Tedad_ensh_Faz { get; set; }
         public double Tedad_vahed_Faz { get; set; }
         public long masraf { get; set; }
+        public long modat { get; set; }
+        public double Sahm { get; set; }
         public long Ab_baha { get; set; }
         public long Abon_ab { get; set; }
         public long Tabsare3_ab { get; set; }

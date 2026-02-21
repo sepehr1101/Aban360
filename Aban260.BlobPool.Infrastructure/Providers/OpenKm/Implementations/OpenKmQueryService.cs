@@ -1,8 +1,4 @@
-﻿using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
-using Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts;
+﻿using Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts;
 using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
@@ -10,6 +6,11 @@ using Aban360.Common.Literals;
 using HttpClientToCurl;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
+using System.Web;
 
 namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
 {
@@ -115,8 +116,6 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             var authHeader = await GetAuthenticationHeaderAsync();
 
             // Only append the relative path/query; BaseAddress comes from DI
-            //var requestUrl = $"{_options.GetChildrenEndpoint}?fldId={Uri.EscapeDataString(fldId)}";
-            //string directoryPath = isDiscount ? _options.BaseDiscountPath : _options.BaseDirectoryPath;
             var requestUrl = $"{_options.GetFilesListEndpoint}?fldId={Uri.EscapeDataString(fldId)}";
 
             using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
@@ -128,7 +127,6 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             {
                 throw new InvalidBillIdException(isDiscount ? ExceptionLiterals.InvalidDiscountFileName : ExceptionLiterals.BillIdNotFound);
             }
-            response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<FileListResponse>(_jsonOptions);
         }
 
@@ -244,7 +242,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
         }
         private void LogRequestToConsole(HttpRequestMessage requestMessage)
         {
-            string curl = _httpClient.GenerateCurlInString(
+            /*string curl = */_httpClient.GenerateCurlInFile(
             requestMessage,
             config =>
             {
@@ -254,53 +252,48 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             int x = 2;
         }
 
-
         //Commands
-
-        public async Task<AddFileDto> AddFileByBillId(string billId, string localFilePath)
-        {
-            string fileName = Path.GetFileName(localFilePath);
-            string fldId = $"{_options.BasePath}{billId}/{fileName}";
-
-            return await AddFile(fldId, localFilePath);
+        public async Task<bool> CheckFolderExists(string fldId)
+        {            
+            AuthenticationHeaderValue authHeader = await GetAuthenticationHeaderAsync();
+            string requestUrl = $"{_options.PathExistsEndpoint}/{fldId}";
+            var response = await _httpClient.GetAsync(requestUrl);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<bool>(_jsonOptions);
         }
-        private async Task<AddFileDto> AddFile(string serverPath, string localFilePath)
-        {
-            string url = $"https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-AddFile/1.0/";
+        public async Task<AddFileDto> AddFile(string path, StreamContent content, string fileName)
+        {           
+            string docPath= nameof(docPath);
+
+            string fullPath = $"{_options.BaseDirectoryPath}{path}";
+            var requestUrl = $"{_options.AddFileEndpoint}";
+            var authHeader = await GetAuthenticationHeaderAsync();            
+
             using var form = new MultipartFormDataContent();
+            form.Add(content, nameof(content), fileName);
+            form.Add(new StringContent(fullPath), docPath);
 
-            _httpClient.DefaultRequestHeaders.Accept.Clear();
-            var authHeader = await GetAuthenticationHeaderAsync();
-            _httpClient.DefaultRequestHeaders.Authorization = authHeader;
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
-
-            var fileStream = File.OpenRead(localFilePath);
-            var fileContent = new StreamContent(fileStream);
-            fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-
-            form.Add(fileContent, "content", Path.GetFileName(localFilePath));
-            form.Add(new StringContent(serverPath), "docPath");
-
-
-            var response = await _httpClient.PostAsync(url, form);
+            using var request = new HttpRequestMessage(HttpMethod.Post, requestUrl);
+            request.Headers.Authorization = authHeader;
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));           
+            request.Content = form;
+          
+            var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
             AddFileDto result = await response.Content.ReadFromJsonAsync<AddFileDto>(_jsonOptions);
-
-            await EditFile(result.Uuid);
             return result;
         }
-
         public async Task<string> AddFolderByBillId(string billId)
         {
             string fldId = $"{_options.BasePath}{billId}";
             return await AddFolder(fldId);
         }
-        private async Task<string> AddFolder(string folderPath)
+        private async Task<string> AddFolder(string fullPath)
         {
-            string url = $"https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-CreateFolder/1.0";
+            string url = $"{_options.AddFolderEndpoint}";
             string _content = "application/json";
 
-            var jsonContent = new StringContent($"{folderPath}", Encoding.UTF8, _content);
+            var jsonContent = new StringContent($"{fullPath}", Encoding.UTF8, _content);
 
             using var request = new HttpRequestMessage(HttpMethod.Post, url)
             {
@@ -328,20 +321,24 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
         public async Task AddOrUpdateMetadata(string body, string nodeId)
         {
             string accept = "application/xml";
-            string textPlain = "text/plain";
-            string baseUrl = "https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-SetMetadata/1.0";
-            _httpClient.DefaultRequestHeaders.Clear();
+
+            string requestUrl = $"{_options.AddMetadataEndpoint}";
+            UriBuilder uriBuilder = new (requestUrl);
+            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+            query["nodeId"] = nodeId;
+            query["grpName"] = GroupNameFolder;
+            uriBuilder.Query = query.ToString();
+            string finalUrl = uriBuilder.ToString();
 
             var authHeader = await GetAuthenticationHeaderAsync();
-            _httpClient.DefaultRequestHeaders.Authorization = authHeader;
+            using var request = new HttpRequestMessage(HttpMethod.Put, requestUrl);
+            request.Headers.Authorization = authHeader;
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
 
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+            StringContent content = new (body, Encoding.UTF8, accept);
+            request.Content=content;
 
-            var content = new StringContent(body, Encoding.UTF8, accept);
-            string finalUrl = $"{baseUrl}?nodeId={nodeId}&grpName={GroupNameFolder}";
-
-
-            var response = await _httpClient.PutAsync(finalUrl, content);
+            var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();
         }

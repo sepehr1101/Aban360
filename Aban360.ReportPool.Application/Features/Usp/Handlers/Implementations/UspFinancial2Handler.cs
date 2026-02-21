@@ -49,8 +49,12 @@ namespace Aban360.ReportPool.Application.Features.Usp.Handlers.Implementations
                 Tedad_vahed_Faz = output.Sum(x => x.Tedad_vahed_Faz),
                 waste_Faz = output.Sum(x => x.waste_Faz),
                 Zaribfasl = output.Sum(x => x.Zaribfasl),
+                Sahm = output.Sum(x => x.Sahm),
+                modat = output.Sum(x => x.modat),
                 Sp = input.Sp
             };
+            //(((masraf / (sahm * (Ahad_ghabs / tedad_ghabs))) / 12) * (360 / (modat / sahm)))
+            header.Avrage = (((header.masraf / (header.Sahm * (header.Ahad_ghabs / header.Tedad_ghabs))) / 12) * (360 / (header.modat / header.Sahm)));
             ReportOutput<UspFinancial2Header, UspFinancial2Output> reportOutput = new( ReportLiterals.UspFinancial2, header, output);
             return reportOutput;
         }

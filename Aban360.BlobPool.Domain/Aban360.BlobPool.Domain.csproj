@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Features\Analyctics\" />
-    <Folder Include="Features\DmsServices\Dto\Commands\" />
     <Folder Include="Features\Searching\" />
     <Folder Include="Features\Policies\" />
     <Folder Include="Features\Rendering\" />
