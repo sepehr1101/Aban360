@@ -11,28 +11,41 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
     internal sealed class AddFileHandler : IAddFileHandler
     {  
         private readonly IOpenKmQueryService _openKmQueryService;
-        public AddFileHandler(IOpenKmQueryService openKmQueryService)
+        private readonly IAddOrUpdateMetaDataHandler _addMetaHandler;
+        public AddFileHandler(
+            IOpenKmQueryService openKmQueryService,
+            IAddOrUpdateMetaDataHandler addMetaHandler)
         {
             _openKmQueryService = openKmQueryService;
             _openKmQueryService.NotNull(nameof(openKmQueryService));
+
+            _addMetaHandler = addMetaHandler;
+            _addMetaHandler.NotNull(nameof(addMetaHandler));
         }
    
         public async Task<AddFileDto> Handle(AddFormFileInput input, CancellationToken cancellationToken)
         {           
             StreamContent content = await GetStreamContent(input.File);
-            return await Handle(input.BillId, input.TrackNumber, content, input.File.FileName);
+            return await Handle(input.BillId, input.TrackNumber, input.DocumentTypeId, content, input.File.FileName, cancellationToken);
         }
         public async Task<AddFileDto> Handle(AddBase64FileInput input, CancellationToken cancellationToken)
         {   
             StreamContent content = GetStreamContent(input.File);
-            return await Handle(input.BillId, input.TrackNumber, content, input.FileName);
+            return await Handle(input.BillId, input.TrackNumber, input.DocumentTypeId, content, input.FileName, cancellationToken);
         }
 
-        private async Task<AddFileDto> Handle(string billId, long? trackNumber, StreamContent content, string name)
+        private async Task<AddFileDto> Handle(string billId, long? trackNumber, int documentTypeId, StreamContent content, string name, CancellationToken cancellationToken)
         {
             string path = GetPath(billId, trackNumber, name);
             await CreateFolder(path);
-            return await _openKmQueryService.AddFile(path, content, name);
+            AddFileDto addFileDto= await _openKmQueryService.AddFile(path, content, name);
+            await _openKmQueryService.MarkNodeAsMetadatable(addFileDto.Uuid, true);
+            AddOrUpdateMetaDataDto addMetaDto = new()
+            {               
+                title=documentTypeId
+            };
+            await _addMetaHandler.Handle(addMetaDto, addFileDto.Uuid, cancellationToken);
+            return addFileDto;
         }
         private string GetPath(string billId, long? trackNumber, string fileName)
         {
