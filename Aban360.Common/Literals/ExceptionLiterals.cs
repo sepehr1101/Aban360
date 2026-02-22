@@ -6,7 +6,7 @@
         public static string Date1403_01_01 { get { return "1403/01/01"; } }
         public static string ArgumentIsNull_1 { get { return "آرگومان ارائه شده NULL است. نام آرگومان"; } }
         public static string EmptyString { get { return "نوع داده رشته ای تهی یا خالی است"; } }
-        public static string AppBasePathNotFound_1 { get {return "ریشه پروژه در مسیر {0} پیدا نشد"; } }
+        public static string AppBasePathNotFound_1 { get { return "ریشه پروژه در مسیر {0} پیدا نشد"; } }
         public static string InvalidIp { get { return "Ip وارد شده صحیح نمیباشد: {0}"; } }
         public static string MustEnum => "مقدار وارد شده باید یک Enum باشد";
         public static string GreaterThan0 => "مقدار وارد شده باید بزرگ تر از 0 باشد";
@@ -125,5 +125,7 @@
         public static string InvalidStateId => "وضعیت ارسالی یافت نشد.";
         public static string InvalidExaminerName => "کد ارزیابی صحیح نیست.";
         public static string InvalidDiscountFileName => "اطلاعات در این پوشه یافت نشد";
+
+        public static string InvalidDuplicateDeletionState => "خطا در تغییر وضعیت کنتور - وضعیت تکراری";
     }
 }

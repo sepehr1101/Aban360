@@ -10,19 +10,26 @@ using System.Data;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.Common.Literals;
 using DNTPersianUtils.Core;
+using Aban360.Common.Db.QueryServices;
+using Aban360.Common.BaseEntities;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations
 {
     internal sealed class CustomerUpdateHandler : AbstractBaseConnection, ICustomerUpdateHandler
     {
         private readonly ISubscriptionQueryService _customerQueryService;
+        private readonly ICommonMemberQueryService _memberQueryService;
         public CustomerUpdateHandler(
             ISubscriptionQueryService customerQueryService,
+            ICommonMemberQueryService memberQueryService,
             IConfiguration configuration)
             : base(configuration)
         {
             _customerQueryService = customerQueryService;
             _customerQueryService.NotNull(nameof(customerQueryService));
+
+            _memberQueryService = memberQueryService;
+            _memberQueryService.NotNull(nameof(memberQueryService));
         }
 
         public async Task Handle(SubscriptionGetDto inputDto, CancellationToken cancellationToken)
@@ -62,8 +69,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         }
         public async Task Handle(ServiceLinkConnectionInput inputDto, int deletionStateId, CancellationToken cancellationToken)
         {
-            
-            //Todo: جلوگیری از ثبت دوباره وضعیت جاری
+            await LastDeletionStateValidation(inputDto.BillId, deletionStateId);
+
             SubscriptionGetDto previousSubscription = await GetConsumptionPreviousInfo(inputDto.BillId);
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, deletionStateId, previousSubscription);
 
@@ -93,7 +100,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         }
         private async Task UpdateCustomerAndClient(CustomerUpdateDto updateDto)
         {
-            ZoneIdCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId,updateDto.CustomerNumber.ToString());
+            ZoneIdCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber.ToString());
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
@@ -488,6 +495,15 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                     inputDate.Trim();
             }
             return string.IsNullOrWhiteSpace(inputDate) || inputDate.Trim().Length != 10 ? string.Empty : inputDate.Trim();
+        }
+        private async Task LastDeletionStateValidation(string billId, int deletionStateId)
+        {
+            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _memberQueryService.Get(billId);
+            MemberInfoGetDto memberInfo = await _memberQueryService.Get(zoneIdAndCustomerNumber);
+            if (memberInfo.DeletionStateId == deletionStateId)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidDuplicateDeletionState);
+            }
         }
     }
 }
