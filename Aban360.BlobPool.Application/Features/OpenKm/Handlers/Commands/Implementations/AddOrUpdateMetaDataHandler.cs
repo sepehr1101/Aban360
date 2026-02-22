@@ -1,5 +1,6 @@
 ﻿using Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts;
 using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Contracts;
+using Aban360.BlobPool.Domain.Features.DmsServices.Dto.Commands;
 using Aban360.Common.Extensions;
 using System.Reflection;
 
@@ -37,13 +38,7 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
                                     {valuesOfBody}
                                 </simplePropertiesGroup>";
 
-            await _openKmQueryService.AddOrUpdateMetadata(body, uuid);
+            await _openKmQueryService.AddOrUpdateMetadata(body, uuid, true);
         }
-    }
-    public record AddOrUpdateMetaDataDto
-    {
-        public int? section { get; set; }
-        public int? city { get; set; }
-        public int? village { get; set; }
     }
 }

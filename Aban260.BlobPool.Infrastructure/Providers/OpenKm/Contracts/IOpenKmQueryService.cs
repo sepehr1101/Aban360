@@ -9,7 +9,6 @@ namespace Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts
         Task<byte[]> GetFileBinary(string documentId);
         Task<FileListResponse> GetFilesDiscount(string id);
         Task<FileListResponse> GetFilesByBillId(string billId);
-        Task<FileListResponse> GetFilesInDirectory(string fieldId);
         Task<byte[]> GetImageThumbnail(string documentId);
         Task<SearchDocumentsResponse> SearchDocuments(string folderPath, string property, string path);
         Task<MetaDataProperties> GetMetaDataProperties(string documentId);
@@ -18,6 +17,15 @@ namespace Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts
         //commands
         Task<AddFileDto> AddFile(string path, StreamContent content, string fileName);
         Task<string> AddFolderByBillId(string billId);
-        Task AddOrUpdateMetadata(string body, string nodeId);
+
+        Task MarkNodeAsMetadatable(string nodeId, bool isFile);
+
+        /// <summary>
+        /// adds or updates document metadata
+        /// </summary>
+        /// <param name="body">xml body</param>
+        /// <param name="nodeId">document uuid</param>
+        /// <returns></returns>
+        Task AddOrUpdateMetadata(string body, string nodeId, bool isFile);
     }
 }

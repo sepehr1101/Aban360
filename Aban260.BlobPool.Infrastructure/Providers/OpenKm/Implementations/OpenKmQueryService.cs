@@ -10,13 +10,13 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-using System.Web;
 
 namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
 {
     internal sealed class OpenKmQueryService : IOpenKmQueryService
     {
         const string applicationJson = @"application/json";
+        string applicationXml = "application/xml";
         private readonly HttpClient _httpClient;
         private readonly OpenKmOptions _options;
         private readonly IMemoryCache _cache;
@@ -130,18 +130,6 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             return await response.Content.ReadFromJsonAsync<FileListResponse>(_jsonOptions);
         }
 
-        public async Task<FileListResponse> GetFilesInDirectory(string fieldId)
-        {
-            var authHeader = await GetAuthenticationHeaderAsync();
-            _httpClient.DefaultRequestHeaders.Authorization = authHeader;
-
-            // Build endpoint from config
-            string requestUrl = $"{_options.GetFilesListEndpoint}?{Uri.EscapeDataString(fieldId)}";
-
-            var response = await _httpClient.GetAsync(requestUrl);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<FileListResponse>(_jsonOptions);
-        }
         public async Task<byte[]> GetFileBinary(string documentId)
         {
             // Ensure Bearer token
@@ -275,7 +263,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
 
             using var request = new HttpRequestMessage(HttpMethod.Post, requestUrl);
             request.Headers.Authorization = authHeader;
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));           
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));           
             request.Content = form;
           
             var response = await _httpClient.SendAsync(request);
@@ -291,16 +279,15 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
         private async Task<string> AddFolder(string fullPath)
         {
             string url = $"{_options.AddFolderEndpoint}";
-            string _content = "application/json";
 
-            var jsonContent = new StringContent($"{fullPath}", Encoding.UTF8, _content);
+            var jsonContent = new StringContent($"{fullPath}", Encoding.UTF8, applicationJson);
 
             using var request = new HttpRequestMessage(HttpMethod.Post, url)
             {
                 Content = jsonContent
             };
 
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
             var authHeader = await GetAuthenticationHeaderAsync();
             request.Headers.Authorization = authHeader;
             HttpResponseMessage response = await _httpClient.SendAsync(request);
@@ -318,31 +305,39 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
 
             return uuid;
         }
-        public async Task AddOrUpdateMetadata(string body, string nodeId)
+        public async Task AddOrUpdateMetadata(string body, string nodeId, bool isFile)
         {
-            string accept = "application/xml";
-
-            string requestUrl = $"{_options.AddMetadataEndpoint}";
-            UriBuilder uriBuilder = new (requestUrl);
-            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
-            query["nodeId"] = nodeId;
-            query["grpName"] = GroupNameFolder;
-            uriBuilder.Query = query.ToString();
-            string finalUrl = uriBuilder.ToString();
+            string grpName = isFile ? GroupNameFile : GroupNameFolder;
+            string requestUrl = $"{_options.BaseUrl}{_options.AddMetadataEndpoint}";
+            string finalUrl = $"{_options.BaseUrl}{_options.AddMetadataEndpoint}";
+            finalUrl = finalUrl + "?nodeId=" + nodeId + "&grpName=" + grpName;
 
             var authHeader = await GetAuthenticationHeaderAsync();
-            using var request = new HttpRequestMessage(HttpMethod.Put, requestUrl);
+            using var request = new HttpRequestMessage(HttpMethod.Put, finalUrl);
             request.Headers.Authorization = authHeader;
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationXml));
 
-            StringContent content = new (body, Encoding.UTF8, accept);
+            StringContent content = new (body, Encoding.UTF8, applicationXml);
             request.Content=content;
-
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();
         }
-        public async Task EditFile(string nodeId)
+        public async Task MarkNodeAsMetadatable(string nodeId, bool isFile)
+        {
+            string grpName = isFile ? GroupNameFile : GroupNameFolder;
+            string baseUrl = $"{_options.BaseUrl}{_options.MetadatableEndpoint}";
+            string finalUrl = $"{baseUrl}?nodeId={nodeId}&grpName={grpName}";
+
+            var authHeader = await GetAuthenticationHeaderAsync();
+            using var request = new HttpRequestMessage(HttpMethod.Put, finalUrl);
+            request.Headers.Authorization = authHeader;
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
+
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+        }
+        private async Task EditFile(string nodeId)
         {
             string accept = "application/json";
             string cookie = "Cookie";

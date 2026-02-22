@@ -1,6 +1,4 @@
-﻿using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Implementations;
-using DNTPersianUtils.Core.IranCities;
-using static Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Implementations.AddOrUpdateMetaDataHandler;
+﻿using Aban360.BlobPool.Domain.Features.DmsServices.Dto.Commands;
 
 namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Contracts
 {
