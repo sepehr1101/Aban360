@@ -24,8 +24,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
             string pendingPaymentsQueryString = GetPendingPaymentsDataQuery(input.UsageSellIds.HasValue(),input.UsageConsumptionIds.HasValue());
             var @params = new
             {
-                FromReadingNumber = string.IsNullOrWhiteSpace(input.FromReadingNumber)? input.FromReadingNumber :"0000000000",
-                ToReadingNumber = string.IsNullOrWhiteSpace(input.ToReadingNumber)? input.ToReadingNumber :"9999999999",
+                FromReadingNumber = !string.IsNullOrWhiteSpace(input.FromReadingNumber)? input.FromReadingNumber :"0000000000",
+                ToReadingNumber = !string.IsNullOrWhiteSpace(input.ToReadingNumber)? input.ToReadingNumber :"9999999999",
                 FromDate = input.FromDateJalali,
                 ToDate = input.ToDateJalali,
                 input.FromAmount,
