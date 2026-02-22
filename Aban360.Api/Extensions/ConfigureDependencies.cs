@@ -36,6 +36,7 @@ using Aban360.TaxPool.Application.Extensions;
 using Aban360.TaxPool.Infrastructure.Extensions;
 using Aban360.TaxPool.Persistence.Extensions;
 using Aban360.NotificationPool.Application.Extensions;
+using Aban360.Common.Db.Extensions;
 
 namespace Aban360.Api.Extensions
 {
@@ -146,7 +147,7 @@ namespace Aban360.Api.Extensions
 
         private static void AddCommonDbDI(this IServiceCollection services)
         {
-            services.AddTransient<ICommonZoneService, CommonZoneService>();
+            services.AddCommonDbInjections();
         }
 
         private static void AddTaxPoolDI(this IServiceCollection services)
