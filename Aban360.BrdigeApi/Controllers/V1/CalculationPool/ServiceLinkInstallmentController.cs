@@ -20,7 +20,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
         [HttpPost]
         [Route("installment")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<InstallmentHeaderOutputDto, InstallmentDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Installment([FromBody] InstallmentInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Installment([FromBody] ServiceLinkInstallmentInputDto inputDto, CancellationToken cancellationToken)
         {
             ReportOutput<InstallmentHeaderOutputDto, InstallmentDataOutputDto> result = await _serviceLinkInstallmentHandler.Handle(inputDto, cancellationToken);
             return Ok(result);

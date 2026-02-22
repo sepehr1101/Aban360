@@ -1,4 +1,5 @@
 ﻿using Aban360.Api.Cronjobs;
+using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
@@ -34,7 +35,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         [HttpPost]
         [Route("add")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> AddInstallment([FromBody] GhestAbInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> AddInstallment([FromBody] BillInstallmentInputDto inputDto, CancellationToken cancellationToken)
         {
             ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto> result = await _billInstallmentCreateHandler.Handle(inputDto, cancellationToken);
             return Ok(result);

@@ -9,5 +9,6 @@
         public static string InvalidInsertBillHistory => "خطا در ذخیره تاریخچه قبض";
         public static string InvalidRemoveBill_ClosedVariab => "امکان حذف قبض برقرار نیست (حساب بسته شده)";
         public static string InvalidGhestAbInsert => "خطا در ذخیره اقساط آب‌بها";
+        public static string InvalidDebtlessThan100000 => "مبلغ بدهی کمتر از 100.000تومان است.";
     }
 }

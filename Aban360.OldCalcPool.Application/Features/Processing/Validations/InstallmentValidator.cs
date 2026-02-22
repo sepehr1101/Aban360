@@ -1,14 +1,14 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
+using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Features.Base;
-using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using FluentValidation;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Validations
 {
-    public class GhestAbValidator : BaseValidator<GhestAbInputDto>
+    public class InstallmentValidator : BaseValidator<BillInstallmentInputDto>
     {
-        public GhestAbValidator()
+        public InstallmentValidator()
         {
             RuleFor(g => g.BillId)
             .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)

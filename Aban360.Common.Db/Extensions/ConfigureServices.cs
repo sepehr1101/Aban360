@@ -8,6 +8,7 @@ namespace Aban360.Common.Db.Extensions
         public static void AddCommonDbInjections(this IServiceCollection services)
         {
             services.AddTransient<ICommonZoneService, CommonZoneService>();
+            services.AddTransient<ICommonMemberQueryService, CommonMemberQueryService>();
         }
     }
 }

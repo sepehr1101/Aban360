@@ -1,10 +1,12 @@
-﻿using Aban360.Common.BaseEntities;
+﻿using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+using Aban360.OldCalcPool.Persistence.Constants;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Contracts;
@@ -13,7 +15,6 @@ using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using System.Data;
-using DNTPersianUtils.Core;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
@@ -21,13 +22,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
     {
         private readonly IMembersQueryService _membersQueryService;
         private readonly IVariabService _variabService;
-        private readonly IValidator<GhestAbInputDto> _validator;
+        private readonly IValidator<BillInstallmentInputDto> _validator;
         private const int _operator = 5;
         private const int _deadLineDay = 30;
+        private const long _debtAmountLimit = 1000000;
         public BillInstallmentCreateHandler(
             IMembersQueryService membersQueryService,
             IVariabService variabService,
-            IValidator<GhestAbInputDto> validator,
+            IValidator<BillInstallmentInputDto> validator,
             IConfiguration configuration)
             : base(configuration)
         {
@@ -41,14 +43,15 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto>> Handle(GhestAbInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto>> Handle(BillInstallmentInputDto input, CancellationToken cancellationToken)
         {
             await Validation(input, cancellationToken);
-            MemberGetDto memberInfo = await _membersQueryService.Get(input.BillId);
+            MemberGetDto memberInfo = await GetMemberInfo(input.BillId);
+
             ZoneIdAndCustomerNumberOutputDto zoneIdCustomerNumber = new(memberInfo.ZoneId, memberInfo.CustomerNumber);
             ICollection<BillInstallmentCreateDto> installments = await GetInstallment(memberInfo, input);
 
-            if (input.IsConfirmed)
+            if (input.IsConfirm)
             {
                 string dbName = GetDbName(memberInfo.ZoneId);
                 using (IDbConnection connection = _sqlReportConnection)
@@ -68,6 +71,16 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             }
 
             return GetResult(installments, memberInfo);
+        }
+        private async Task<MemberGetDto> GetMemberInfo(string billId)
+        {
+            MemberGetDto memberInfo = await _membersQueryService.Get(billId);
+            if (memberInfo.LatestDebt < _debtAmountLimit)
+            {
+                throw new InvalidInstallmentException(Exceptionliterals.InvalidDebtlessThan100000);
+            }
+
+            return memberInfo;
         }
         private ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto> GetResult(ICollection<BillInstallmentCreateDto> installment, MemberGetDto memberInfo)
         {
@@ -97,10 +110,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             return new ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto>("اقساط آب‌بها", header, data);
         }
-        private async Task<ICollection<BillInstallmentCreateDto>> GetInstallment(MemberGetDto memberInfo, GhestAbInputDto input)
+        private async Task<ICollection<BillInstallmentCreateDto>> GetInstallment(MemberGetDto memberInfo, BillInstallmentInputDto input)
         {
             ICollection<BillInstallmentCreateDto> allInstallments = new List<BillInstallmentCreateDto>();
-            decimal[] rangeBarge = input.IsConfirmed ? await _variabService.GetAndRenew(memberInfo.ZoneId, input.InstallmentCount) : Array.Empty<decimal>();
+            decimal[] rangeBarge = input.IsConfirm ? await _variabService.GetAndRenew(memberInfo.ZoneId, input.InstallmentCount) : Array.Empty<decimal>();
             DateTime currentDate = DateTime.Now;
             long amount = memberInfo.LatestDebt / input.InstallmentCount;
             long installmenAmount = (amount / 1000) * 1000;
@@ -113,7 +126,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     ZoneId = memberInfo.ZoneId,
                     CustomerNumber = memberInfo.CustomerNumber,
                     ReadingNumber = memberInfo.ReadingNumber,
-                    Barge = input.IsConfirmed ? (int)rangeBarge[i - 1] : 0,
+                    Barge = input.IsConfirm ? (int)rangeBarge[i - 1] : 0,
                     DeadLineDateJalali = currentDate.AddDays(deadLineDay).FormatDateToShortPersianDate(),
                     Payable = installmenAmount,
                     UsageId = memberInfo.UsageId,
@@ -126,7 +139,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             return allInstallments;
         }
-        private async Task Validation(GhestAbInputDto inputDto, CancellationToken cancellationToken)
+        private async Task Validation(BillInstallmentInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)

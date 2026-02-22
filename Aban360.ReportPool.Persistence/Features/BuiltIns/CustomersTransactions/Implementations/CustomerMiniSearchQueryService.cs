@@ -43,17 +43,17 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         {
             return input switch
             {
-                CustomerMiniSearchInputEnum.MobileNumber => "c.MobileNo",
-                CustomerMiniSearchInputEnum.NationalCode => "c.NationalId",
-                CustomerMiniSearchInputEnum.PostalCode => "c.PostalCode",
-                CustomerMiniSearchInputEnum.Name => "(TRIM(c.FirstName)+' '+TRIM(c.SureName))",
-                CustomerMiniSearchInputEnum.PhoneNumber => "c.PhoneNo",
-                CustomerMiniSearchInputEnum.CustomerNumber => "c.CustomerNumber",
-				CustomerMiniSearchInputEnum.BillId=>"c.BillId",
+                CustomerMiniSearchInputEnum.MobileNumber => "c.MobileNo=@input",
+                CustomerMiniSearchInputEnum.NationalCode => "c.NationalId=@input",
+                CustomerMiniSearchInputEnum.PostalCode => "c.PostalCode=@input",
+                CustomerMiniSearchInputEnum.Name => "(TRIM(c.FirstName)+' '+TRIM(c.SureName))=@input",
+                CustomerMiniSearchInputEnum.PhoneNumber => "c.PhoneNo=@input",
+                CustomerMiniSearchInputEnum.CustomerNumber => "c.CustomerNumber=@input OR TRIM(c.ReadingNumber)=@input",
+				CustomerMiniSearchInputEnum.BillId=> "c.BillId=@input",
                 _ => throw new InvalidDateException(ExceptionLiterals.MustEnum),
             };
         }
-        private string GetQuery(string fieldSearch)
+        private string GetQuery(string condition)
         {
             return $@"Select 
 						TRIM(c.FirstName) FirstName,
@@ -98,7 +98,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 					Where 
 						c.ZoneId IN @zoneIds AND
 						c.ToDayJalali IS NULL AND
-						{fieldSearch}=@input";
+						{condition}";
         }
     }
 }
