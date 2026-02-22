@@ -128,7 +128,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                     	m.operator Operator,
                         m.hasf DeletionStateId,
                         m.sif_mosh_1 CommonSiphon,
-                        m.Senf GuildId
+                        m.Senf GuildId,
+                        TRIM(m.serial_co) BodySerial
                     From [{dbName}].dbo.members m
                     Where
                         m.radif=@customerNumber AND
