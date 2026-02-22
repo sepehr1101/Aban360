@@ -52,6 +52,7 @@ namespace Aban360.Common.Db.QueryServices
         private string GetMemeberInfoQuery(string dbName)
         {
             return $@"Select
+						m.radif CustomerNumber,
 						m.bill_id BillId,
 						m.town ZoneId,
 						m.eshtrak ReadingNumber,

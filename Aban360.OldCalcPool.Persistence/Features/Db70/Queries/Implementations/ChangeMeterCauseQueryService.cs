@@ -43,9 +43,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
         }
         private string GetAllQuery()
         {
-            return @"Select 
-                    	Id,Title
-                    From Db70.dbo.MeterCause";
+                return @"Select 
+                    	    Id,Title
+                        From Db70.dbo.MeterCause";
         }
     }
 }
