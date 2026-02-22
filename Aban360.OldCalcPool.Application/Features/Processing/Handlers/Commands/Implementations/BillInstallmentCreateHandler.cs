@@ -5,6 +5,7 @@ using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+using Aban360.OldCalcPool.Persistence.Constants;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Contracts;
@@ -13,7 +14,6 @@ using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using System.Data;
-using DNTPersianUtils.Core;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
@@ -24,6 +24,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IValidator<GhestAbInputDto> _validator;
         private const int _operator = 5;
         private const int _deadLineDay = 30;
+        private const long _debtAmountLimit = 1000000;
         public BillInstallmentCreateHandler(
             IMembersQueryService membersQueryService,
             IVariabService variabService,
@@ -44,7 +45,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         public async Task<ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto>> Handle(GhestAbInputDto input, CancellationToken cancellationToken)
         {
             await Validation(input, cancellationToken);
-            MemberGetDto memberInfo = await _membersQueryService.Get(input.BillId);
+            MemberGetDto memberInfo = await GetMemberInfo(input.BillId);
+
             ZoneIdAndCustomerNumberOutputDto zoneIdCustomerNumber = new(memberInfo.ZoneId, memberInfo.CustomerNumber);
             ICollection<BillInstallmentCreateDto> installments = await GetInstallment(memberInfo, input);
 
@@ -68,6 +70,16 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             }
 
             return GetResult(installments, memberInfo);
+        }
+        private async Task<MemberGetDto> GetMemberInfo(string billId)
+        {
+            MemberGetDto memberInfo = await _membersQueryService.Get(billId);
+            if (memberInfo.LatestDebt < _debtAmountLimit)
+            {
+                throw new InvalidInstallmentException(Exceptionliterals.InvalidDebtlessThan100000);
+            }
+
+            return memberInfo;
         }
         private ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto> GetResult(ICollection<BillInstallmentCreateDto> installment, MemberGetDto memberInfo)
         {
