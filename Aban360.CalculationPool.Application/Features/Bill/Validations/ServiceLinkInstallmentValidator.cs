@@ -5,17 +5,17 @@ using FluentValidation;
 
 namespace Aban360.CalculationPool.Application.Features.Bill.Validations
 {
-    public class InstallmentValidator : BaseValidator<InstallmentInputDto>
+    public class ServiceLinkInstallmentValidator : BaseValidator<ServiceLinkInstallmentInputDto>
     {
-        public InstallmentValidator()
+        public ServiceLinkInstallmentValidator()
         {
             RuleFor(o => o.BillId)
                .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(o => o.TrackNumber)
-               .NotNull().WithMessage(ExceptionLiterals.NotNull)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
+            //RuleFor(o => o.TrackNumber)
+            //   .NotNull().WithMessage(ExceptionLiterals.NotNull)
+            //   .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(o => o.InstallmentCount)
                .NotNull().WithMessage(ExceptionLiterals.NotNull)

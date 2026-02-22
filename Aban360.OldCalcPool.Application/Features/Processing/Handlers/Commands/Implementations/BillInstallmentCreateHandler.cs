@@ -1,4 +1,5 @@
-﻿using Aban360.Common.BaseEntities;
+﻿using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
@@ -21,14 +22,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
     {
         private readonly IMembersQueryService _membersQueryService;
         private readonly IVariabService _variabService;
-        private readonly IValidator<GhestAbInputDto> _validator;
+        private readonly IValidator<BillInstallmentInputDto> _validator;
         private const int _operator = 5;
         private const int _deadLineDay = 30;
         private const long _debtAmountLimit = 1000000;
         public BillInstallmentCreateHandler(
             IMembersQueryService membersQueryService,
             IVariabService variabService,
-            IValidator<GhestAbInputDto> validator,
+            IValidator<BillInstallmentInputDto> validator,
             IConfiguration configuration)
             : base(configuration)
         {
@@ -42,7 +43,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto>> Handle(GhestAbInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto>> Handle(BillInstallmentInputDto input, CancellationToken cancellationToken)
         {
             await Validation(input, cancellationToken);
             MemberGetDto memberInfo = await GetMemberInfo(input.BillId);
@@ -50,7 +51,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             ZoneIdAndCustomerNumberOutputDto zoneIdCustomerNumber = new(memberInfo.ZoneId, memberInfo.CustomerNumber);
             ICollection<BillInstallmentCreateDto> installments = await GetInstallment(memberInfo, input);
 
-            if (input.IsConfirmed)
+            if (input.IsConfirm)
             {
                 string dbName = GetDbName(memberInfo.ZoneId);
                 using (IDbConnection connection = _sqlReportConnection)
@@ -109,10 +110,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             return new ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto>("اقساط آب‌بها", header, data);
         }
-        private async Task<ICollection<BillInstallmentCreateDto>> GetInstallment(MemberGetDto memberInfo, GhestAbInputDto input)
+        private async Task<ICollection<BillInstallmentCreateDto>> GetInstallment(MemberGetDto memberInfo, BillInstallmentInputDto input)
         {
             ICollection<BillInstallmentCreateDto> allInstallments = new List<BillInstallmentCreateDto>();
-            decimal[] rangeBarge = input.IsConfirmed ? await _variabService.GetAndRenew(memberInfo.ZoneId, input.InstallmentCount) : Array.Empty<decimal>();
+            decimal[] rangeBarge = input.IsConfirm ? await _variabService.GetAndRenew(memberInfo.ZoneId, input.InstallmentCount) : Array.Empty<decimal>();
             DateTime currentDate = DateTime.Now;
             long amount = memberInfo.LatestDebt / input.InstallmentCount;
             long installmenAmount = (amount / 1000) * 1000;
@@ -125,7 +126,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     ZoneId = memberInfo.ZoneId,
                     CustomerNumber = memberInfo.CustomerNumber,
                     ReadingNumber = memberInfo.ReadingNumber,
-                    Barge = input.IsConfirmed ? (int)rangeBarge[i - 1] : 0,
+                    Barge = input.IsConfirm ? (int)rangeBarge[i - 1] : 0,
                     DeadLineDateJalali = currentDate.AddDays(deadLineDay).FormatDateToShortPersianDate(),
                     Payable = installmenAmount,
                     UsageId = memberInfo.UsageId,
@@ -138,7 +139,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             return allInstallments;
         }
-        private async Task Validation(GhestAbInputDto inputDto, CancellationToken cancellationToken)
+        private async Task Validation(BillInstallmentInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)

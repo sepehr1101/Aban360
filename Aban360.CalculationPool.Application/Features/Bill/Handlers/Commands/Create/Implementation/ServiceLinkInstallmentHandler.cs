@@ -10,14 +10,14 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
 {
     internal class ServiceLinkInstallmentHandler : IServiceLinkInstallmentHandler
     {
-        private readonly IValidator<InstallmentInputDto> _validator;
-        public ServiceLinkInstallmentHandler(IValidator<InstallmentInputDto> validator)
+        private readonly IValidator<ServiceLinkInstallmentInputDto> _validator;
+        public ServiceLinkInstallmentHandler(IValidator<ServiceLinkInstallmentInputDto> validator)
         {
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<InstallmentHeaderOutputDto, InstallmentDataOutputDto>> Handle(InstallmentInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<ReportOutput<InstallmentHeaderOutputDto, InstallmentDataOutputDto>> Handle(ServiceLinkInstallmentInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -55,7 +55,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
                 AdvancePaymentPercentage = inputDto.AdvancePaymentPercentage,
                 Amount = data.Sum(x => x.Amount),
                 InstallmentCount = data.Count(),
-                TrackNumber = inputDto.TrackNumber,
+                TrackNumber = "-"///inputDto.TrackNumber,
             };
             ReportOutput<InstallmentHeaderOutputDto, InstallmentDataOutputDto> result = new(title, header, data);
 

@@ -5,6 +5,6 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
 {
     public interface IServiceLinkInstallmentHandler
     {
-        Task<ReportOutput<InstallmentHeaderOutputDto, InstallmentDataOutputDto>> Handle(InstallmentInputDto inputDto, CancellationToken cancellationToken);
+        Task<ReportOutput<InstallmentHeaderOutputDto, InstallmentDataOutputDto>> Handle(ServiceLinkInstallmentInputDto inputDto, CancellationToken cancellationToken);
     }
 }
