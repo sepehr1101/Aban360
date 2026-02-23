@@ -115,7 +115,11 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 	             UsageTitle UsageSellTitle,
 	             UsageTitle2 UsageConsumptionTitle,
                  NULL AS PayDateJalali,
-                 TypeCode
+                 TypeCode,
+                 BranchTypeId,
+                 BranchType BranchTypeTitle,
+           	     CounterStateCode,
+           	     CounterStateTitle
              from [CustomerWarehouse].dbo.Bills
              LEFT Join [Db70].dbo.CounterVaziat v On
             	CounterStateCode=v.MoshtarakinId
@@ -151,7 +155,11 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                  '' UsageSellTitle,
                  '' UsageConsumptionTitle,
                  NULL AS PayDateJalali,
-                 17 TypeCode
+                 17 TypeCode,
+                 0 BranchTypeId,
+                 '-' BranchTypeTitle,
+           	     0 CounterStateCode,
+           	     '-' CounterStateTitle
              from [CustomerWarehouse].dbo.RemovedBills
              where 
                 (BillId=@billId )
@@ -183,7 +191,11 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 	             '' UsageSellTitle,
 	             '' UsageConsumptionTitle,
                  PayDateJalali,
-                 0 TypeCode
+                 0 TypeCode,
+                 0 BranchTypeId ,
+                 '-' BranchTypeTitle,
+           	     0 CounterStateCode,
+           	     '-' CounterStateTitle
              from [CustomerWarehouse].dbo.Payments
              where 
                 (BillId)=@billId  AND

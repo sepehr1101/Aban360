@@ -31,6 +31,16 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                 throw new InvalidBillCommandException(Exceptionliterals.InvalidControUpdate);
             }
         }
+        public async Task UpdateMeterChange(ContorMeterChangeUpdateDto inputDto, string dbName)
+        {
+            string command = GetUpdateMeterChangeCommand(dbName);
+            int recordCount = await _connection.ExecuteAsync(command, inputDto, _transaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidBillCommandException(Exceptionliterals.InvalidInsertMeterChange);
+            }
+        }
+
         private string GetUpdateCommand(string dbName, bool isUpdateTavizField)
         {
             string tavizUpdate = isUpdateTavizField ?
@@ -55,6 +65,16 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     	old_vas=0,
                     	eslah=0
                     Where town=@ZoneId AND radif=@CustomerNumber  ";
+        }
+        private string GetUpdateMeterChangeCommand(string dbName)
+        {
+            return $@"Update [{dbName}].dbo.contor
+                    Set 
+                    	taviz_date=@MeterChangeDateJalali , 
+                    	taviz_no=@MeterChangeNumber
+                    Where 
+                    	town=@ZoneId AND
+                    	radif=@CustomerNumber";
         }
     }
 }

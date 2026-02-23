@@ -2,7 +2,9 @@
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Db.QueryServices;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
@@ -23,6 +25,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
     {
         private readonly ICustomerInfoService _customerInfoService;
         private readonly IOldTariffEngine _tariffEngine;
+        private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly IValidator<GenerateBillInputDto> _validator;
         private readonly IVariabService _variabService;
         const int _paymentDeadline = 7;
@@ -31,6 +34,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         public GenerateBillHandler(
             ICustomerInfoService customerInfoService,
             IOldTariffEngine tariffEngine,
+            ICommonMemberQueryService commonMemberQueryService,
             IConfiguration configuration,
             IValidator<GenerateBillInputDto> validator,
             IVariabService variabService)
@@ -42,6 +46,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             _tariffEngine = tariffEngine;
             _tariffEngine.NotNull(nameof(tariffEngine));
 
+            _commonMemberQueryService = commonMemberQueryService;
+            _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
+
             _validator = validator;
             _validator.NotNull(nameof(validator));
 
@@ -52,8 +59,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         public async Task<AbBahaCalculationDetails> Handle(GenerateBillInputDto inputDto, CancellationToken cancellationToken)
         {
             await Validation(inputDto, cancellationToken);
-            ZoneIdAndCustomerNumberGetDto zoneIdAndCustomerNumber_1 = await GetZoneIdANdCustomerNumber(inputDto.BillId);
-            CustomerInfoGetDto customerInfo = await _customerInfoService.Get(zoneIdAndCustomerNumber_1.ZoneId, zoneIdAndCustomerNumber_1.CustomerNumber);
+            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await GetZoneIdANdCustomerNumber(inputDto.BillId);
+
+            CustomerInfoGetDto customerInfo = await _customerInfoService.Get(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
             CounterStateValidation(inputDto.CounterStateCode, inputDto.MeterNumber, customerInfo.BedBesInfo.LastMeterNumber);
 
             MeterInfoByPreviousDataInputDto tariffMeterInfoByPreviousData = GetMeterInfoByPreviousData(customerInfo, inputDto);
@@ -62,12 +70,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             {
                 return abBahaCalcResult;
             }
-            BedBesCreateDto bedBes = await GetBedBes(customerInfo, abBahaCalcResult, inputDto, zoneIdAndCustomerNumber_1);
+            BedBesCreateDto bedBes = await GetBedBes(customerInfo, abBahaCalcResult, inputDto, zoneIdAndCustomerNumber);
             KasrHaDto kasrHa = GerKasrHa(customerInfo, abBahaCalcResult, inputDto);
-            ZoneIdCustomerNumber zoneIdAndCustomerNumber_2 = new(zoneIdAndCustomerNumber_1.ZoneId, zoneIdAndCustomerNumber_1.CustomerNumber.ToString());
-            ZoneIdAndCustomerNumberOutputDto zoneIdAndCustomerNumber_3 = new(zoneIdAndCustomerNumber_1.ZoneId, zoneIdAndCustomerNumber_1.CustomerNumber);
             ContorUpdateDto contorUpdate = GetControUpdateDto(customerInfo, bedBes);
-            string dbName = GetDbName(zoneIdAndCustomerNumber_2.ZoneId);
+            string dbName = GetDbName(zoneIdAndCustomerNumber.ZoneId);
 
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -87,15 +93,15 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                         BillCommandService billCommandService = new BillCommandService(connection, transaction);
                         ContorCommandService controCommandService = new ContorCommandService(connection, transaction);
 
-                        int bedBesRecordId = await bedBedCommandService.Insert(bedBes, zoneIdAndCustomerNumber_1.ZoneId);
+                        int bedBesRecordId = await bedBedCommandService.Insert(bedBes, zoneIdAndCustomerNumber.ZoneId);
                         if (abBahaCalcResult.DiscountSum > 0)
                         {
-                            await kasrHasCommandService.Insert(kasrHa, zoneIdAndCustomerNumber_1.ZoneId);
+                            await kasrHasCommandService.Insert(kasrHa, zoneIdAndCustomerNumber.ZoneId);
                         }
-                        await membersCommandService.UpdateBedbes(zoneIdAndCustomerNumber_2, (long)bedBes.Baha, dbName);
+                        await membersCommandService.UpdateBedbes(zoneIdAndCustomerNumber, (long)bedBes.Baha, dbName);
                         await waterDebtCommandService.UpdateAmount(bedBes.ShGhabs1, (long)bedBes.Baha);
                         await controCommandService.Update(contorUpdate, dbName, true);                                                                                                   //update contro
-                        await billCommandService.InsertByBedBesId(zoneIdAndCustomerNumber_3, bedBesRecordId, dbName);
+                        await billCommandService.InsertByBedBesId(zoneIdAndCustomerNumber, bedBesRecordId, dbName);
 
                         transaction.Commit();
                     }
@@ -108,9 +114,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             }
             return abBahaCalcResult;
         }
-        private async Task<ZoneIdAndCustomerNumberGetDto> GetZoneIdANdCustomerNumber(string billId)
+        private async Task<ZoneIdAndCustomerNumber> GetZoneIdANdCustomerNumber(string billId)
         {
-            ZoneIdAndCustomerNumberGetDto result = await _customerInfoService.GetZoneIdAndCustomerNumber(billId);
+            ZoneIdAndCustomerNumber result = await _commonMemberQueryService.Get(billId);
             if (result.DeletionStateId == 1)
             {
                 throw new InvalidBillIdException(ExceptionLiterals.InvalidDeletionState);
@@ -143,9 +149,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 CounterStateCode = generateBillInfo.CounterStateCode
             };
         }
-        private async Task<BedBesCreateDto> GetBedBes(CustomerInfoGetDto customerInfo, AbBahaCalculationDetails abBahaCalc, GenerateBillInputDto generateBillInfo, ZoneIdAndCustomerNumberGetDto zoneIdAndCustomerNumber)
+        private async Task<BedBesCreateDto> GetBedBes(CustomerInfoGetDto customerInfo, AbBahaCalculationDetails abBahaCalc, GenerateBillInputDto generateBillInfo, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber)
         {
-            double preDebtAmount = await _customerInfoService.GetMembersBedBes(zoneIdAndCustomerNumber);
+            double preDebtAmount = await _customerInfoService.GetMembersBedBes(zoneIdAndCustomerNumber);//checkResult: changeDto
             var (sumItems, jam, pard) = GetAmounts(preDebtAmount, abBahaCalc.SumItems);
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
             string mohlatDateJalali = DateTime.Now.AddDays(_paymentDeadline).ToShortPersianDateString();

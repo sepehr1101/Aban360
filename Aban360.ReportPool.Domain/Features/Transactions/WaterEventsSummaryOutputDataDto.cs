@@ -36,5 +36,10 @@
         public string? EventDateJalali { get; set; }
         public int TypeCode { get; set; }
         public int MeterStateCode { get; set; }
+        public int BranchTypeId { get; set; }
+        public string BranchTypeTitle { get; set; }
+        public int CounterStateCode { get; set; }
+        public string CounterStateTitle { get; set; }
+
     }
 }

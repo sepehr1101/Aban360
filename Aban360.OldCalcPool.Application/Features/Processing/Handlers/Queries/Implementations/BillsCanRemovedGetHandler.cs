@@ -2,6 +2,7 @@
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.QueryServices;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
@@ -12,10 +13,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
 {
     internal sealed class BillsCanRemovedGetHandler : IBillsCanRemovedGetHandler
     {
-        private readonly ICustomerInfoService _customerInfoService;
+        private readonly ICommonMemberQueryService _customerInfoService;
         private readonly IBedBesQueryService _billQueryService;
         public BillsCanRemovedGetHandler(
-            ICustomerInfoService customerInfoService,
+            ICommonMemberQueryService customerInfoService,
             IBedBesQueryService billQueryService)
         {
             _customerInfoService = customerInfoService;
@@ -28,7 +29,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
         public async Task<IEnumerable<BillsCanRemoveOutputDto>> Handle(SearchInput inputDto, CancellationToken cancellationToken)
         {
             //validation
-            ZoneIdAndCustomerNumberGetDto zoneIdAndCustomerNumber = await _customerInfoService.GetZoneIdAndCustomerNumber(inputDto.Input);
+            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _customerInfoService.Get(inputDto.Input);
             RemovedBillSearchDto removedBillSearchDto = new(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
 
             IEnumerable<BillsCanRemoveOutputDto> billsCanRemoved = await _billQueryService.GetToRemove(removedBillSearchDto);

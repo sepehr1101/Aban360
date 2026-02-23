@@ -48,7 +48,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 CustomerMiniSearchInputEnum.PostalCode => "c.PostalCode=@input",
                 CustomerMiniSearchInputEnum.Name => "(TRIM(c.FirstName)+' '+TRIM(c.SureName))=@input",
                 CustomerMiniSearchInputEnum.PhoneNumber => "c.PhoneNo=@input",
-                CustomerMiniSearchInputEnum.CustomerNumber => "c.CustomerNumber=@input OR TRIM(c.ReadingNumber)=@input",
+                CustomerMiniSearchInputEnum.CustomerNumber => "(c.CustomerNumber=@input OR TRIM(c.ReadingNumber)=@input)",
 				CustomerMiniSearchInputEnum.BillId=> "c.BillId=@input",
                 _ => throw new InvalidDateException(ExceptionLiterals.MustEnum),
             };

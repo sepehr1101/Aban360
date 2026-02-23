@@ -51,6 +51,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
             customerInfo.LatestMeterNumber = billInfo == null ? 0 : billInfo.LatestMeterNumber;
             customerInfo.LatestMeterReading = billInfo == null ? "0" : billInfo.LatestMeterReading;
             customerInfo.UsageStatusTitle = billInfo == null ? string.Empty : billInfo.UsageStatusTitle;
+            customerInfo.CounterStateTitle= billInfo == null ? string.Empty : billInfo.CounterStateTitle;
 
             return customerInfo;
         }
@@ -159,9 +160,9 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 						t7.C1 as BranchTypeTitle,
 						d.Title DeletionStateTitle,
 						0 as DiscountType,
-						'-' as WaterRequestDateJalali,
+						ask_ab as WaterRequestDateJalali,
 						m.inst_ab as WaterInstallationDateJalali,
-						'-'  as SewageRequestDateJalali,
+						ask_fas as SewageRequestDateJalali,
 						m.inst_fas as SewageInstallationDateJalali,
 					
 						t46.C2 as RegionTitle,
@@ -198,10 +199,13 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
         {
             return @$"Select Top 1
 						b.cod_vas as CounterStateCode,
+						v.Title as CounterStateTitle,
 						b.today_no as LatestMeterNumber,
 						b.today_date as LatestMeterReading,
 						'-' as UsageStatusTitle
 					From [{dbName}].dbo.bed_bes b
+					Join Db70.dbo.CounterVaziat v
+						ON b.cod_vas=v.MoshtarakinId
 					Where 
 						b.town=@zoneId AND
 						b.radif=@customerNumber

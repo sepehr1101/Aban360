@@ -1,6 +1,7 @@
 ﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
@@ -17,7 +18,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         }
 
 
-        public async Task<ZoneIdAndCustomerNumberGetDto> GetZoneIdAndCustomerNumber(string billId)
+        private async Task<ZoneIdAndCustomerNumberGetDto> GetZoneIdAndCustomerNumber(string billId)
         {
             string query = GetZoneIdAndCustomerNumberQuery();
             ZoneIdAndCustomerNumberGetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZoneIdAndCustomerNumberGetDto>(query, new { billId = billId });			
@@ -67,7 +68,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             }
             return data;
         }
-        public async Task<double> GetMembersBedBes(ZoneIdAndCustomerNumberGetDto input)
+        public async Task<double> GetMembersBedBes(ZoneIdAndCustomerNumber input)
         {
             string dbName = GetDbName(input.ZoneId);
             string query = GetMembersBedBesQueru(dbName);

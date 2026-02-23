@@ -2,6 +2,8 @@
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.ServiceLink;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
+using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.QueryServices;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using FluentValidation;
@@ -11,10 +13,10 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
     internal sealed class ServiceLinkRegisterManualHandler : IServiceLinkRegisterManualHandler
     {
         private readonly IValidator<ServiceLinkRegisterManualInputDto> _validator;
-        private readonly ICustomerInfoService _customerInfoService;
+        private readonly ICommonMemberQueryService _customerInfoService;
         public ServiceLinkRegisterManualHandler(
             IValidator<ServiceLinkRegisterManualInputDto> validator,
-            ICustomerInfoService customerInfoService)
+            ICommonMemberQueryService customerInfoService)
         {
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -32,7 +34,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 throw new CustomValidationException(message);
             }
 
-            ZoneIdAndCustomerNumberGetDto zoneIdAndCustomerNumber = await _customerInfoService.GetZoneIdAndCustomerNumber(input.BillId);
+            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _customerInfoService.Get(input.BillId);
             //register
         }
     }

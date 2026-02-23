@@ -1,6 +1,7 @@
 ﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.QueryServices;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.Contracts;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
@@ -10,10 +11,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.
 {
     internal sealed class BillToReturnListGetHandler : IBillToReturnListGetHandler
     {
-        private readonly ICustomerInfoService _customerInfoService;
+        private readonly ICommonMemberQueryService _customerInfoService;
         private readonly IBedBesQueryService _billQueryService;
         public BillToReturnListGetHandler(
-            ICustomerInfoService customerInfoService,
+            ICommonMemberQueryService customerInfoService,
             IBedBesQueryService billQueryService)
         {
             _customerInfoService = customerInfoService;
@@ -25,7 +26,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.
 
         public async Task<IEnumerable<BillsCanReturnOutputDto>> Handle(SearchInput input, CancellationToken cancellationToken)
         {
-            ZoneIdAndCustomerNumberGetDto zoneIdAndCustomerNumber = await _customerInfoService.GetZoneIdAndCustomerNumber(input.Input);
+            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _customerInfoService.Get(input.Input);
             ReturnBillSearchDto returnedBillSearchDto = new(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
 
             IEnumerable<BillsCanReturnOutputDto> billsCanReturned = await _billQueryService.GetToReturned(returnedBillSearchDto);

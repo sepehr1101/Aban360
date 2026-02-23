@@ -3,6 +3,7 @@
     public record CustomerGeneralBillInfoDto
     {
         public string CounterStateCode { get; set; }
+        public string CounterStateTitle { get; set; }
         public int LatestMeterNumber { get; set; }
         public string LatestMeterReading { get; set; }
         public string UsageStatusTitle { get; set; }

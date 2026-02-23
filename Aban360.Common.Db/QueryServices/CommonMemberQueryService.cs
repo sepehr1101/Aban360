@@ -43,7 +43,11 @@ namespace Aban360.Common.Db.QueryServices
 
         private string GetZoneIdAndCustomerNumberQuery()
         {
-            return @"Select ZoneId,CustomerNumber
+            return @"Select 
+						ZoneId,
+						ZoneTitle,
+						CustomerNumber,
+						DeletionStateId
                     From CustomerWarehouse.dbo.Clients	
                     Where 
                     	BillId=@billId AND
@@ -52,6 +56,7 @@ namespace Aban360.Common.Db.QueryServices
         private string GetMemeberInfoQuery(string dbName)
         {
             return $@"Select
+						m.radif CustomerNumber,
 						m.bill_id BillId,
 						m.town ZoneId,
 						m.eshtrak ReadingNumber,
