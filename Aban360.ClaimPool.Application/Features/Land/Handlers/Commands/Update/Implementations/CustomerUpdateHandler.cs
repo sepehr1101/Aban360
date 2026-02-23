@@ -34,35 +34,35 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
 
         public async Task Handle(SubscriptionGetDto inputDto, CancellationToken cancellationToken)
         {
-            SubscriptionGetDto previousSubscription = await GetConsumptionPreviousInfo(inputDto.BillId);
+            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(inputDto.BillId);
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, previousSubscription);
 
             await UpdateCustomer(customerUpdate);
         }
         public async Task Handle(CustomerUpdate1Dto inputDto, CancellationToken cancellationToken)
         {
-            SubscriptionGetDto previousSubscription = await GetConsumptionPreviousInfo(inputDto.BillId);
+            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(inputDto.BillId);
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, previousSubscription);
 
             await UpdateCustomer(customerUpdate);
         }
         public async Task Handle(CustomerUpdate2Dto inputDto, CancellationToken cancellationToken)
         {
-            SubscriptionGetDto previousSubscription = await GetConsumptionPreviousInfo(inputDto.BillId);
+            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(inputDto.BillId);
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, previousSubscription);
 
             await UpdateCustomer(customerUpdate);
         }
         public async Task Handle(CustomerUpdate3Dto inputDto, CancellationToken cancellationToken)
         {
-            SubscriptionGetDto previousSubscription = await GetConsumptionPreviousInfo(inputDto.BillId);
+            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(inputDto.BillId);
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, previousSubscription);
 
             await UpdateCustomer(customerUpdate);
         }
         public async Task Handle(CustomerUpdate5Dto inputDto, CancellationToken cancellationToken)
         {
-            SubscriptionGetDto previousSubscription = await GetConsumptionPreviousInfo(inputDto.BillId);
+            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(inputDto.BillId);
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, previousSubscription);
 
             await UpdateCustomer(customerUpdate);
@@ -71,7 +71,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         {
             await LastDeletionStateValidation(inputDto.BillId, deletionStateId);
 
-            SubscriptionGetDto previousSubscription = await GetConsumptionPreviousInfo(inputDto.BillId);
+            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(inputDto.BillId);
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, deletionStateId, previousSubscription);
 
             await UpdateCustomerAndClient(customerUpdate);
@@ -476,7 +476,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             };
         }
 
-        private async Task<SubscriptionGetDto> GetConsumptionPreviousInfo(string billId)
+        private async Task<SubscriptionGetDto> GetCustomerPreviousInfo(string billId)
         {
             SubscriptionGetDto previousSubscription = await _customerQueryService.GetInfo(billId);
             if (previousSubscription == null)

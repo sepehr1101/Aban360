@@ -20,6 +20,7 @@
 
 
         public string CounterStateCode { get; set; }
+        public string CounterStateTitle{ get; set; }
         public int LatestMeterNumber { get; set; }
         public string MeterLife { get; set; }
         public string BodySerial { get; set; }
