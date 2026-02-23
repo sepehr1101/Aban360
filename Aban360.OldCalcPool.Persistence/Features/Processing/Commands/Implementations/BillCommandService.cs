@@ -1,10 +1,9 @@
-﻿using Aban360.Common.Exceptions;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
-using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Persistence.Constants;
 using Dapper;
-using Microsoft.Data.SqlClient;
 using System.Data;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations
@@ -24,7 +23,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             _transaction.NotNull(nameof(transaction));
         }
 
-        public async Task InsertByBedBesId(ZoneIdAndCustomerNumberOutputDto inputDto, int bedBesId, string dbName)
+        public async Task InsertByBedBesId(ZoneIdAndCustomerNumber inputDto, int bedBesId, string dbName)
         {
             string command = GetInsertByBedBesCommand(dbName);
             int recordCount = await _connection.ExecuteAsync(command, new { inputDto.CustomerNumber, inputDto.ZoneId, bedBesId }, _transaction);

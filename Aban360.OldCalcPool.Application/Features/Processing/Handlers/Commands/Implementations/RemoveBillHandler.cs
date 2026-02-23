@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using System.Data;
 using Aban360.Common.Exceptions;
 using Aban360.OldCalcPool.Persistence.Constants;
+using Aban360.Common.BaseEntities;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
@@ -61,7 +62,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             removeBill.ToDayDateJalali = DateTime.Now.ToShortPersianDateString();
             RemoveBillDto removeBillDto = GetRemoveBillDto(removeBill);
             ContorUpdateDto controUpdate = await GetControUpdate(removeBill);
-            var (zoneIdAndCustomerNumber_1, zoneIdAndCustomerNumber_2) = GetZoneIdAndCustomerNumber(removeBill);
+            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = GetZoneIdAndCustomerNumber(removeBill);
             string dbName = GetDbName(removeBill.ZoneId);
             long amount = removeBill.Baha * -1;
 
@@ -89,10 +90,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     }
                     await hbedBesCommandService.Insert(removeBill);
                     await billCommandService.Delete(removeBillDto);
-                    await membersCommandService.UpdateBedbes(zoneIdAndCustomerNumber_2, amount, dbName);
+                    await membersCommandService.UpdateBedbes(zoneIdAndCustomerNumber, amount, dbName);
                     await contorCommandService.Update(controUpdate, dbName, false);
                     await waterDebtCommandService.UpdateAmount(removeBill.BillId, amount);
-                    await removedBillCommandService.Insert(zoneIdAndCustomerNumber_1, removeBill.Barge, dbName);
+                    await removedBillCommandService.Insert(zoneIdAndCustomerNumber, removeBill.Barge, dbName);
 
 
                     transaction.Commit();
@@ -118,11 +119,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             BedBesWithConsumptionOutputDto previousBill = await _bedBesQueryService.GetPrevious(zoneIdAndCustomerNumber, input.PreviousDateJalali);
             return previousBill;
         }
-        private (ZoneIdAndCustomerNumberOutputDto, ZoneIdCustomerNumber) GetZoneIdAndCustomerNumber(RemoveBillDataInputDto input)
+        private ZoneIdAndCustomerNumber GetZoneIdAndCustomerNumber(RemoveBillDataInputDto input)
         {
-            ZoneIdAndCustomerNumberOutputDto result_1 = new ZoneIdAndCustomerNumberOutputDto(input.ZoneId, input.CustomerNumber);
-            ZoneIdCustomerNumber result_2 = new ZoneIdCustomerNumber(input.ZoneId, input.CustomerNumber.ToString());
-            return (result_1, result_2);
+            return new ZoneIdAndCustomerNumber()
+            {
+                ZoneId=input.ZoneId,
+                CustomerNumber=input.CustomerNumber,
+            };
         }
         private RemoveBillDto GetRemoveBillDto(RemoveBillDataInputDto input)
         {

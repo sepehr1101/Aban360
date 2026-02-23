@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Exceptions;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
@@ -164,7 +165,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     	NextDay=@CurrentDateJalali AND
                     	NextNumber=@CurrentNumber ";
         }
-        public async Task Insert(ZoneIdAndCustomerNumberOutputDto inputDto, long barge, string dbName)
+        public async Task Insert(ZoneIdAndCustomerNumber inputDto, long barge, string dbName)
         {
             string command = GetInsertCommand(dbName);
             int recordCount = await _connection.ExecuteAsync(command, new { inputDto.ZoneId, inputDto.CustomerNumber, barge }, _transaction);

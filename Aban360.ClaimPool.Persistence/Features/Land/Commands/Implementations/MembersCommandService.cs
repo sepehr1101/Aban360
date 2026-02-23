@@ -1,6 +1,6 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
-using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Constants.Literals;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Dapper;
@@ -31,7 +31,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidUpdateMoshtrakin);
             }
         }
-        public async Task UpdateBedbes(ZoneIdCustomerNumber inputDto, long amount, string dbName)
+        public async Task UpdateBedbes(ZoneIdAndCustomerNumber inputDto, long amount, string dbName)
         {
             string command = GetUpdateBedBesCommand(dbName);
             int recordCount = await _sqlConnection.ExecuteAsync(command, new { inputDto.CustomerNumber, inputDto.ZoneId, amount }, _dbTransaction);
