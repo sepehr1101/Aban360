@@ -11,7 +11,7 @@ var configuration = builder.Configuration;
 builder.Services.AddDI();
 builder.Services.AddAuth(configuration);
 //builder.Services.AddControllers(options =>
-//    options.Filters.Add<ZoneAuthorizationFilter>()
+//    options.Filters.Add<BillIdAuthorizationFilter>()
 //);
 builder.Services.AddHttpContextAccessor();
 

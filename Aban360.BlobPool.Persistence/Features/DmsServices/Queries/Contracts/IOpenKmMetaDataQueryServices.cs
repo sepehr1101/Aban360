@@ -7,5 +7,6 @@ namespace Aban360.BlobPool.Persistence.Features.DmsServices.Queries.Contracts
     {
         Task<IEnumerable<OpenKmMetaData>> Get();
         Task<IEnumerable<NumericDictionary>> GetFileTitles();
+        Task<int> GetFileValue(int id);
     }
 }

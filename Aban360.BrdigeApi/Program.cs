@@ -9,13 +9,13 @@ var configuration = builder.Configuration;
 //DI
 builder.Services.AddDI();
 builder.Services.AddAuth(configuration);
-builder.Services.AddControllers();
-    //.AddJsonOptions(options =>
-    //{
-    //    options.JsonSerializerOptions.Converters.Add(new TruncateDoubleConverter());
-    //    options.JsonSerializerOptions.Converters.Add(new TruncateFloatConverter());
-    //    options.JsonSerializerOptions.Converters.Add(new TruncateNullableDoubleConverter());
-    //});
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new TruncateDoubleConverter());
+        options.JsonSerializerOptions.Converters.Add(new TruncateFloatConverter());
+        options.JsonSerializerOptions.Converters.Add(new TruncateNullableDoubleConverter());
+    });
 
 builder.Services.AddHttpContextAccessor();
 

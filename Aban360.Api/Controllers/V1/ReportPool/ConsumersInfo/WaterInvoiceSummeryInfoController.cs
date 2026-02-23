@@ -2,6 +2,7 @@
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Contracts;
+using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -36,6 +37,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
             return Ok(waterInvoice);
         }
 
+        [HttpPost]
+        [Route("summery-2-by-id")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterInvoiceDto, LineItemsDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetSummary2ById([FromBody] DisplayThisBillInput searchInput)
+        {
+            ReportOutput<WaterInvoiceDto, LineItemsDto> waterInvoice = await _waterInvoiceHandler.Handle(searchInput);
+            return Ok(waterInvoice);
+        }
 
         [HttpPost]
         [Route("summery-2-withLastDb")]

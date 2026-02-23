@@ -7,6 +7,7 @@ using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Domain.Features.Transactions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Aban360.Api.Filters;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
 {
@@ -29,7 +30,6 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [HttpPost]
         [Route("summary-beta")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<BranchEventsDto>>), StatusCodes.Status200OK)]
-        [AllowAnonymous]
         public async Task<IActionResult> GetBranchEventsSummary([FromBody] SearchInput searchInput, CancellationToken cancellationToken)
         {
             IEnumerable<BranchEventsDto> eventsBranchsDtos = await _customerBranchEventHandler.Handle(searchInput.Input, cancellationToken);
@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [HttpPost]
         [Route("summary")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto>>), StatusCodes.Status200OK)]
-        [AllowAnonymous]
+        //[BillIdFromSearchInputAuthorization]
         public async Task<IActionResult> Get([FromBody] SearchInput searchInput, CancellationToken cancellationToken)
         {
             ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> eventsBranchsDtos = await _branchEventSummaryHandler.Handle(searchInput.Input, cancellationToken);

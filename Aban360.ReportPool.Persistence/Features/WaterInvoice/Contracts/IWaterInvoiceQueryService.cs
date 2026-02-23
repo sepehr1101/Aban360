@@ -7,6 +7,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Contracts
     {
         WaterInvoiceDto Get();
         Task<ReportOutput<WaterInvoiceDto, LineItemsDto>> Get(string billId);
+        Task<ReportOutput<WaterInvoiceDto, LineItemsDto>> Get(string billId, long id);
         Task<int> GetOlgo(int zoneId);
     }
 }

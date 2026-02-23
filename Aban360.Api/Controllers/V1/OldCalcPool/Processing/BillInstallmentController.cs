@@ -41,7 +41,6 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
             return Ok(result);
         }
 
-
         [HttpPost]
         [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentOutputDto>>), StatusCodes.Status200OK)]

@@ -49,6 +49,31 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 
             return result;
         }
+        public async Task<ReportOutput<WaterInvoiceDto, LineItemsDto>> Get(string billId, long id)
+        {
+            string IdPart = $" AND id={id} ";
+            string getWaterInvoiceQuery = GetWaterInvoiceQuery(IdPart);
+            string getItemValueQuery = GetItemsQuery();
+            string getPreviousConsumptionQuery = GetPreviousConsumptionQuery();
+            string getHeadquarterQuery = GetHeadquarterQuery();
+            string getPaymentQuery = GetPaymentInfoQuery();
+
+            WaterInvoiceDto waterInvoice = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterInvoiceDto>(getWaterInvoiceQuery, new { billId = billId });
+            if (waterInvoice == null)
+            {
+                throw new BaseException(ExceptionLiterals.NotFoundAnyData);
+            }
+            IEnumerable<LineItemsDto> lineitems = await _sqlReportConnection.QueryAsync<LineItemsDto>(getItemValueQuery, new { billId = billId });
+            IEnumerable<PreviousConsumptionsDto> previousConsumptions = await _sqlReportConnection.QueryAsync<PreviousConsumptionsDto>(getPreviousConsumptionQuery, new { billId = billId });
+            string headquarterTitle = await _sqlConnection.QueryFirstAsync<string>(getHeadquarterQuery, new { zoneId = waterInvoice.ZoneId });
+            WaterInvoicePaymentOutputDto? paymentInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterInvoicePaymentOutputDto>(getPaymentQuery, new { billId = billId, payId = waterInvoice.PayId == null ? "0" : waterInvoice.PayId, billRegisterDate = waterInvoice.RegisterDateJalali });
+            waterInvoice.DebtorOrCreditorAmount = await GetRemained(billId);
+            waterInvoice = MappingWaterInvoice(waterInvoice, paymentInfo, previousConsumptions, lineitems, headquarterTitle);
+
+            ReportOutput<WaterInvoiceDto, LineItemsDto> result = new(ReportLiterals.WaterInvoice, waterInvoice, lineitems);
+
+            return result;
+        }
         public async Task<int> GetOlgo(int zoneId)
         {
             string getOlgoQuery = GetOlgoQuery();
@@ -89,9 +114,9 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                         b.CounterStateCode NOT IN (4,7,8)
 	                 order by PreviousDay desc";
         }
-        private string GetWaterInvoiceQuery()
+        private string GetWaterInvoiceQuery(string idPart="")
         {
-            return @"Select top 1
+            return @$"Select top 1
                     	N'شرکت آب و فاضلاب استان اصفهان' AS Headquarters,
                     	'411-7676-4864' AS EconomicalNumber,--todo
                     	b.ZoneTitle AS ZoneTitle,
@@ -146,7 +171,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                         c.ToDayJalali IS NULL AND
                     	b.BillId=@billId AND
                         b.CounterStateCode NOT IN (4,7) And
-						b.TypeId In (N'قبض', N'علی الحساب')
+						b.TypeId In (N'قبض', N'علی الحساب') {idPart} 
                     order by PreviousDay desc";
         }
 
