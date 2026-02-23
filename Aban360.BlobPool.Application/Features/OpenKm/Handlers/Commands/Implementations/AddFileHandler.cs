@@ -2,6 +2,7 @@
 using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Contracts;
 using Aban360.BlobPool.Domain.Features.DmsServices.Dto.Commands;
 using Aban360.BlobPool.Domain.Providers.Dto;
+using Aban360.BlobPool.Persistence.Features.DmsServices.Queries.Contracts;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Http;
@@ -12,15 +13,21 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
     {  
         private readonly IOpenKmQueryService _openKmQueryService;
         private readonly IAddOrUpdateMetaDataHandler _addMetaHandler;
+        private readonly IOpenKmMetaDataQueryServices _matadataService;
+
         public AddFileHandler(
             IOpenKmQueryService openKmQueryService,
-            IAddOrUpdateMetaDataHandler addMetaHandler)
+            IAddOrUpdateMetaDataHandler addMetaHandler,
+            IOpenKmMetaDataQueryServices metadataService)
         {
             _openKmQueryService = openKmQueryService;
             _openKmQueryService.NotNull(nameof(openKmQueryService));
 
             _addMetaHandler = addMetaHandler;
             _addMetaHandler.NotNull(nameof(addMetaHandler));
+
+            _matadataService = metadataService;
+            _matadataService.NotNull(nameof(_addMetaHandler));
         }
    
         public async Task<AddFileDto> Handle(AddFormFileInput input, CancellationToken cancellationToken)
@@ -36,13 +43,14 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
 
         private async Task<AddFileDto> Handle(string billId, long? trackNumber, int documentTypeId, StreamContent content, string name, CancellationToken cancellationToken)
         {
+            int documentTypeValue = await _matadataService.GetFileValue(documentTypeId);
             string path = GetPath(billId, trackNumber, name);
             await CreateFolder(path);
             AddFileDto addFileDto= await _openKmQueryService.AddFile(path, content, name);
             await _openKmQueryService.MarkNodeAsMetadatable(addFileDto.Uuid, true);
             AddOrUpdateMetaDataDto addMetaDto = new()
             {               
-                title=documentTypeId
+                title=documentTypeValue
             };
             await _addMetaHandler.Handle(addMetaDto, addFileDto.Uuid, cancellationToken);
             return addFileDto;
