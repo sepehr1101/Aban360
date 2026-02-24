@@ -85,7 +85,6 @@
         public string CustomerSignature { get; set; }
         public string CertificateNumber { get; set; }
         public string? LicenseIssuanceDateJalali { get; set; }
-
-
+        public string? LicenseNum { get; set; }
     }
 }

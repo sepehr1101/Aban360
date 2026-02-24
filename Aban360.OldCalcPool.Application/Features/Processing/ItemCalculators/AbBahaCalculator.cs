@@ -358,15 +358,15 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             }
             else if (IsGtFromLqTo(nerkhDate2, date_1403_12_30, date_1404_02_31))
             {
-                return (7000, 7000);// _7000_350000;
+                return (7000, 70000);// _7000_350000;
             }
             else if (IsGtFromLqTo(nerkhDate2, date_1404_02_31, date_1404_09_09))
             {
-                return (9000, 9000);//_9000_450000;
+                return (9000, 90000);//_9000_450000;
             }
             else if (nerkhDate2.MoreOrEq(date_1404_09_09))
             {
-                return (11000, 11000);//_11000_550000;
+                return (11000, 110000);//_11000_550000;
             }
             return _zero;
         }
