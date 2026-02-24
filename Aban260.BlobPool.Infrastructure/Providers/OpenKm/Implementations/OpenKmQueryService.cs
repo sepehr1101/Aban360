@@ -276,25 +276,21 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             AddFileDto result = await response.Content.ReadFromJsonAsync<AddFileDto>(_jsonOptions);
             return result;
         }
-        public async Task<string> AddFolderByBillId(string billId)
+        public async Task<string> CreateFolder(string folderName)
         {
-            string fldId = $"{_options.BasePath}{billId}";
-            return await AddFolder(fldId);
-        }
-        private async Task<string> AddFolder(string fullPath)
-        {
+            string fullPath = $"{_options.BaseDirectoryPath}{folderName}";
             string url = $"{_options.AddFolderEndpoint}";
 
-            var jsonContent = new StringContent($"{fullPath}", Encoding.UTF8, applicationJson);
-
+            var content = new StringContent($"{fullPath}", Encoding.UTF8, applicationJson);
             using var request = new HttpRequestMessage(HttpMethod.Post, url)
             {
-                Content = jsonContent
+                Content = content
             };
 
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
             var authHeader = await GetAuthenticationHeaderAsync();
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));            
             request.Headers.Authorization = authHeader;
+
             HttpResponseMessage response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
