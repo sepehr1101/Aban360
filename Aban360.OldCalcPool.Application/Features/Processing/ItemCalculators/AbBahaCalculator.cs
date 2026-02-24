@@ -294,7 +294,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         {
             if (IsReligiousWithCharity(customerInfo.UsageId))
             {
-                return Get2PartAmount(consumptionPartialInfo.EndDateJalali);
+                return Get2PartAmountReligious(consumptionPartialInfo.EndDateJalali);
             }
             return GetEducationOrBathMultiplier(customerInfo.UsageId, consumptionPartialInfo.StartDateJalali, consumptionPartialInfo.EndDateJalali, customerInfo.IsSpecial, (long)CalcFormulaByRate(abAzad8And39.Formula, monthlyConsumption, olgoo, c, tagIds), abBahaFromExpression);//Azad:39
         }
@@ -329,7 +329,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 return ((long)abBahaFromExpression, abAzad);
             }
         }
-        private (long, long) Get2PartAmount(string nerkhDate2)
+        private (long, long) Get2PartAmountReligious(string nerkhDate2)
         {   
             if (date_1400_12_25.MoreOrEq(nerkhDate2))
             {
@@ -347,21 +347,26 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return _4323_350000;
             }
-            //else if (IsGtFromLqTo(nerkhDate2, date_1402_04_23, date_1403_06_25))
+            //به دو نرخ شکسته شد در تاریخ 5 اسفند 1404
+            //else if (IsGtFromLqTo(nerkhDate2, date_1403_09_13, date_1404_02_31))
             //{
-            //    return _4040_168110;
+            //    return _7000_350000;
             //}
-            else if (IsGtFromLqTo(nerkhDate2, date_1403_09_13, date_1404_02_31))
+            else if (IsGtFromLqTo(nerkhDate2, date_1403_09_13, date_1403_12_30))
             {
                 return _7000_350000;
             }
+            else if (IsGtFromLqTo(nerkhDate2, date_1403_12_30, date_1404_02_31))
+            {
+                return (7000, 7000);// _7000_350000;
+            }
             else if (IsGtFromLqTo(nerkhDate2, date_1404_02_31, date_1404_09_09))
             {
-                return _9000_450000;
+                return (9000, 9000);//_9000_450000;
             }
             else if (nerkhDate2.MoreOrEq(date_1404_09_09))
             {
-                return _11000_550000;
+                return (11000, 11000);//_11000_550000;
             }
             return _zero;
         }

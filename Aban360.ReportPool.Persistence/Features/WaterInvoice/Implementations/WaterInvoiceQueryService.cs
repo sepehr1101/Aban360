@@ -4,12 +4,10 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
-using Aban360.ReportPool.Domain.Features.Transactions;
 using Aban360.ReportPool.Persistence.Features.WaterInvoice.Contracts;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using System.Data;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 {
@@ -51,7 +49,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
         }
         public async Task<ReportOutput<WaterInvoiceDto, LineItemsDto>> Get(string billId, long id)
         {
-            string IdPart = $" AND id={id} ";
+            string IdPart = $" AND b.id={id} ";
             string getWaterInvoiceQuery = GetWaterInvoiceQuery(IdPart);
             string getItemValueQuery = GetItemsQuery();
             string getPreviousConsumptionQuery = GetPreviousConsumptionQuery();
