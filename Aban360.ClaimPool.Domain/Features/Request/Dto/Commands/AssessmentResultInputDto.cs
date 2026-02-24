@@ -73,5 +73,19 @@
         public int CounterType { get; set; }
         public int InstallAgentState { get; set; }
         public string BlockId { get; set; }
+
+
+        public int RegisterPlaqueNumber { get; set; }
+        public int MeterMaterialId { get; set; }
+        public bool HasWater { get; set; }
+        public bool HasSewage { get; set; }
+        public bool IsSpecial { get; set; }
+        public string Map { get; set; }
+        public string AssessmentSignature { get; set; }
+        public string CustomerSignature { get; set; }
+        public string CertificateNumber { get; set; }
+        public string? LicenseIssuanceDateJalali { get; set; }
+
+
     }
 }

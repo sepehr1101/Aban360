@@ -36,7 +36,7 @@
         public string? AssessmentName { get; set; }
         public string? AssessmentMobileNumber { get; set; }
 
-        public string CertificateNumber { get; set; }
+        public string CertificateNumber { get; set; }//
         public string Address { get; set; }
         public string PostalCode { get; set; }
         public string ReadingNumber { get; set; }
@@ -50,7 +50,7 @@
         public int DomesticUnit { get; set; }
         public int CommercialUnit { get; set; }
         public int OtherUnit { get; set; }
-        public string? LicenseIssuanceDateJalali { get; set; }
+        public string? LicenseIssuanceDateJalali { get; set; }//
         public string? BlockCode { get; set; }
         public int Siphon100 { get; set; }
         public int Siphon125 { get; set; }

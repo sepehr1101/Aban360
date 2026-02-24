@@ -155,7 +155,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             var (sumItems, jam, pard) = GetAmounts(preDebtAmount, abBahaCalc.SumItems);
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
             string mohlatDateJalali = DateTime.Now.AddDays(_paymentDeadline).ToShortPersianDateString();
-            string paymentId = TransactionIdGenerator.GeneratePaymentId((long)abBahaCalc.SumItems, abBahaCalc.Customer.BillId);
+            string paymentId = TransactionIdGenerator.GeneratePaymentId((long)pard, abBahaCalc.Customer.BillId);
             decimal barge = await _variabService.GetAndRenew(abBahaCalc.Customer.ZoneId);
 
             return new BedBesCreateDto()// ToDo :check

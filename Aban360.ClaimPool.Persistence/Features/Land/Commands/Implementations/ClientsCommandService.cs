@@ -27,7 +27,11 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
         public async Task InsertByArchMemId(int id, string dbName)
         {
             string command = GetInsertByArchMemCommand(dbName);
-			await _connection.ExecuteAsync(command, new { id }, transaction: _transaction);
+            int rowEffectCount = await _connection.ExecuteAsync(command, new { id }, transaction: _transaction);
+            if (rowEffectCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidUpdateToDayJalali);
+            }
         }
         public async Task UpdateToDayJalali(ZoneIdCustomerNumber input, string CurrentDateJalali)
         {
@@ -123,15 +127,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 					  z.C2  AS  [ZoneTitle], 
 					  IIF(m.town>140000,1,0) AS IsVillage,
 				      m.radif  AS  [CustomerNumber], 
-				      old_m.bill_id  AS  [BillId], 
+				      TRIM(old_m.bill_id)  AS  [BillId], 
 				      TRIM(m.eshtrak)  AS  [ReadingNumber],
-				      m.[name] AS  [FirstName], 
-				      m.family  AS  [SureName], 
-				      m.father_nam  AS  [FatherName], 
-					  m.PHONE_NO [PhoneNo],  --10
+				      TRIM(m.[name]) AS  [FirstName], 
+				      TRIM(m.family)  AS  [SureName], 
+				      TRIM(m.father_nam) AS  [FatherName], 
+					  TRIM(m.PHONE_NO) [PhoneNo],  --10
 					  IIF(old_m.MOBILE IS NULL, '', old_m.MOBILE)  AS  [MobileNo],
-					  m.POST_COD  AS  [PostalCode], 
-					  m.MELI_COD  AS  [NationalId],
+					  TRIM(m.POST_COD)  AS  [PostalCode], 
+					  TRIM(m.MELI_COD)  AS  [NationalId],
 				      m.cod_enshab  AS  [UsageId], 
 					  m.group1 [UsageId2], 
 					  k1.C1  AS  [UsageTitle], 
