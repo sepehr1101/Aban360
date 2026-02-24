@@ -7,8 +7,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 {
     internal sealed class MeterFlowGetHandler : IMeterFlowGetHandler
     {
-        private readonly IMeterFlowService _meterFlowService;
-        public MeterFlowGetHandler(IMeterFlowService meterFlowService)
+        private readonly IMeterFlowQueryService _meterFlowService;
+        public MeterFlowGetHandler(IMeterFlowQueryService meterFlowService)
         {
             _meterFlowService = meterFlowService;
             _meterFlowService.NotNull(nameof(meterFlowService));

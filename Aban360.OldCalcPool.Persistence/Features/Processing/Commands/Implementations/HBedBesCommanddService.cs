@@ -10,9 +10,8 @@ using System.Data;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations
 {
-    public sealed class HBedBesCommanddService //: IHBedBesCommanddService
+    public sealed class HBedBesCommanddService 
     {
-        //private readonly SqlConnection _connection;
         private readonly IDbConnection _connection;
         private readonly IDbTransaction _transaction;
         public HBedBesCommanddService(
@@ -26,14 +25,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             _transaction.NotNull(nameof(transaction));
         }
 
-        //public HBedBesCommanddService(IConfiguration configuration)
-        //    : base(configuration)
-        //{
-        //}
-
-        public async Task Insert(RemoveBillDataInputDto input)
+        public async Task Insert(RemoveBillDataInputDto input,string dbName)
         {
-            string command = GetInsertCommand(GetDbName(input.ZoneId));
+            string command = GetInsertCommand(dbName);
             int rowCount = await _connection.ExecuteAsync(command, input, _transaction);
             if (rowCount == 0)
             {
@@ -53,10 +47,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                         @RegisterDateJalali,@PreviousDateJalali,@CurrentDateJalali,@PreviousNumber,@CurrentNumber,
                         @Consumption,@AbBahaAmount,@FazelabAmount,@Baha,
                         @BillId,@PaymentId,@ToDayDateJalali,0)";
-        }
-        private string GetDbName(int zoneId)
-        {
-            return zoneId > 140000 ? "Abfar" : zoneId.ToString();
         }
     }
 }

@@ -1,54 +1,50 @@
 ﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
-using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
-using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Dapper;
-using LiteDB;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 using System.Data;
 
 namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementations
 {
-    internal sealed class MeterReadingDetailService : AbstractBaseConnection, IMeterReadingDetailService
+    public sealed class MeterReadingDetailCommandService
     {
-        public MeterReadingDetailService(IConfiguration configuration)
-            : base(configuration)
+        private readonly IDbConnection _connection;
+        private readonly IDbTransaction _transaction;
+        public MeterReadingDetailCommandService(
+            IDbConnection connection,
+            IDbTransaction transaction)
         {
-        }
+            _connection = connection;
+            _connection.NotNull(nameof(connection));
 
+            _transaction = transaction;
+            _transaction.NotNull(nameof(transaction));
+        }
         public async Task Insert(IEnumerable<MeterReadingDetailCreateDto> input)
         {
             var dataTable = ToDataTable(input);
 
-            using (var sqlConnection = _sqlReportConnection)
+            using (var bulkCopy = new SqlBulkCopy((SqlConnection)_connection, SqlBulkCopyOptions.Default, (SqlTransaction)_transaction))
             {
-                await sqlConnection.OpenAsync();
+                bulkCopy.DestinationTableName = "[Atlas].dbo.MeterReadingDetail";
 
-                using (var bulkCopy = new SqlBulkCopy(sqlConnection))
+                foreach (DataColumn col in dataTable.Columns)
                 {
-                    bulkCopy.DestinationTableName = "[Atlas].dbo.MeterReadingDetail";
-
-                    foreach (DataColumn col in dataTable.Columns)
-                    {
-                        bulkCopy.ColumnMappings.Add(col.ColumnName, col.ColumnName);
-                    }
-
-                    bulkCopy.BatchSize = 10000;
-                    bulkCopy.BulkCopyTimeout = 0;
-
-                    await bulkCopy.WriteToServerAsync(dataTable);
+                    bulkCopy.ColumnMappings.Add(col.ColumnName, col.ColumnName);
                 }
+
+                bulkCopy.BatchSize = 10000;
+                bulkCopy.BulkCopyTimeout = 0;
+
+                await bulkCopy.WriteToServerAsync(dataTable);
             }
         }
         public async Task Update(IEnumerable<MeterReadingWithAbBahaResultUpdateDto> items)
         {
             var dt = ToDataTable(items);
-
-            using var connection = _sqlReportConnection;
-            await connection.OpenAsync();
 
             string createTemp = @"
                     CREATE TABLE #TempMeterReadingDetail
@@ -61,9 +57,9 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                         MonthlyConsumption FLOAT(53) NULL
                     );";
 
-            await new SqlCommand(createTemp, connection).ExecuteNonQueryAsync();
+            await new SqlCommand(createTemp, (SqlConnection)_connection, (SqlTransaction)_transaction).ExecuteNonQueryAsync();
 
-            using (var bulk = new SqlBulkCopy(connection))
+            using (var bulk = new SqlBulkCopy((SqlConnection)_connection, SqlBulkCopyOptions.Default, (SqlTransaction)_transaction))
             {
                 bulk.DestinationTableName = "#TempMeterReadingDetail";
                 await bulk.WriteToServerAsync(dt);
@@ -81,40 +77,22 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                             target.Consumption = source.Consumption,
                             target.MonthlyConsumption = source.MonthlyConsumption;";
 
-            await new SqlCommand(mergeSql, connection).ExecuteNonQueryAsync();
+            await new SqlCommand(mergeSql, (SqlConnection)_connection, (SqlTransaction)_transaction).ExecuteNonQueryAsync();
         }
         public async Task Delete(MeterReadingDetailDeleteDto input)
         {
             string query = GetDeleteCommands();
-            await _sqlReportConnection.ExecuteAsync(query, input);
+            int rowEffect = await _connection.ExecuteAsync(query, input);
         }
         public async Task CreateDuplicateForLog(MeterReadingDetailCreateDuplicateDto input)
         {
             string query = GetCreateDuplicateForLogCommand();
-            await _sqlReportConnection.ExecuteAsync(query, input);
+            await _connection.ExecuteAsync(query, input);
         }
         public async Task Exclude(MeterReadingDetailExcludedDto input)
         {
             string query = GetExcludeCommand();
-            await _sqlReportConnection.ExecuteAsync(query, input);
-        }
-        public async Task<IEnumerable<MeterReadingDetailDataOutputDto>> Get(int flowImportedId)
-        {
-            string query = GetQuery();
-            IEnumerable<MeterReadingDetailDataOutputDto> details = await _sqlReportConnection.QueryAsync<MeterReadingDetailDataOutputDto>(query, new { flowImportedId = flowImportedId });
-
-            return details;
-        }
-        public async Task<MeterReadingDetailDataOutputDto> GetById(int id)
-        {
-            string query = GetSingleQuery();
-
-            MeterReadingDetailDataOutputDto detail = await _sqlReportConnection.QueryFirstOrDefaultAsync<MeterReadingDetailDataOutputDto>(query, new { id = id });
-            if (detail is null || detail.Id <= 0)
-            {
-                throw new ReadingException(ExceptionLiterals.InvalidId);
-            }
-            return detail;
+            await _connection.ExecuteAsync(query, input);
         }
         private DataTable ToDataTable(IEnumerable<MeterReadingDetailCreateDto> input)
         {
@@ -268,72 +246,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 
             return dt;
         }
-        private string GetQuery()
-        {
-            return @"Select 
-	                     m.Id,
-	                     m.FlowImportedId,
-	                     m.ZoneId,
-	                     m.CustomerNumber,
-	                     m.ReadingNumber,
-	                     m.BillId,
-	                     m.AgentCode,
-	                     m.CurrentCounterStateCode,
-	                     m.PreviousDateJalali,
-	                     m.CurrentDateJalali,
-	                     m.PreviousNumber,
-	                     m.CurrentNumber,
-	                     m.ExcludedByUserId, 
-	                     m.ExcludedDateTime,
-	                     m.InsertByUserId,
-	                     m.InsertDateTime,
-	                     m.RemovedByUserId,
-	                     m.RemovedDateTime,
-	                     m.BranchTypeId,
-	                     t7.C1 as BranchTypeTitle,
-	                     m.UsageId,
-	                     t41.C1 as UsageTitle,
-	                     m.ConsumptionUsageId,
-	                     m.CommercialUnit,
-	                     m.CommercialUnit,
-	                     m.OtherUnit,
-	                     m.EmptyUnit,
-	                     m.WaterInstallationDateJalali,
-	                     m.SewageInstallationDateJalali,
-	                     m.WaterRegisterDate,
-	                     m.SewageRegisterDate,
-	                     m.WaterCount,
-	                     m.SewageCalcState,
-	                     m.ContractualCapacity,
-	                     m.HouseholdNumber,
-	                     m.HouseholdDate,
-	                     m.VillageId,
-	                     m.IsSpecial,
-	                     m.MeterDiameterId,
-	                     m.VirtualCategoryId,
-	                     m.BodySerial, TavizDateJalali,
-	                     m.TavizCause,
-	                     m.TavizRegisterDateJalali,
-	                     m.TavizNumber,
-	                     m.LastMeterDateJalali,
-	                     m.LastMeterNumber,
-	                     m.LastMonthlyConsumption,
-	                     m.LastCounterStateCode,
-	                     m.LastSumItems,
-	                     m.SumItems,
-	                     m.SumItemsBeforeDiscount,
-	                     m.DiscountSum,
-	                     m.Consumption,
-	                     m.MonthlyConsumption
-                     From Atlas.dbo.MeterReadingDetail m
-					 Left Join [Db70].dbo.T7 t7
-						On m.BranchTypeId=t7.C0
-					Left Join [Db70].dbo.T41 t41
-						On m.UsageId=t41.C0
-                     Where 
-                        m.FlowImportedId=@flowImportedId AND
-					    m.RemovedByUserId IS NULL";
-        }
+
         private string GetDeleteCommands()
         {
             return @"Update Atlas.dbo.MeterReadingDetail	
@@ -474,12 +387,6 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                     	ExcludedByUserId=@ExcludedByUserId ,
                     	ExcludedDateTime=@ExcludedDateTime
                     Where Id=@Id";
-        }
-        private string GetSingleQuery()
-        {
-            return @"Select *
-                     From Atlas.dbo.MeterReadingDetail
-                     Where Id=@id";
         }
     }
 }

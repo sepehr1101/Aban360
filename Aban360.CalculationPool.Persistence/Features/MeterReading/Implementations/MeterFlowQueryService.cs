@@ -3,37 +3,23 @@ using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Dapper;
 using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementations
 {
-    internal sealed class MeterFlowService : AbstractBaseConnection, IMeterFlowService
+    public sealed class MeterFlowQueryService : AbstractBaseConnection, IMeterFlowQueryService
     {
-        public MeterFlowService(IConfiguration configuration)
+        public MeterFlowQueryService(IConfiguration configuration)
             : base(configuration)
         {
         }
 
-        public async Task<int> Create(MeterFlowCreateDto input)
-        {
-            string command = GetInsertCommand();
-            int id = await _sqlReportConnection.ExecuteScalarAsync<int>(command, input);
 
-            return id;
-        }
-        public async Task Create(ICollection<MeterFlowCreateDto> input)
-        {
-            string command = GetInsertCommand();
-            await _sqlReportConnection.ExecuteAsync(command, input);
 
-        }
-        public async Task Update(MeterFlowUpdateDto input)
-        {
-            string query = GetUpdateCommand();
-            await _sqlReportConnection.ExecuteAsync(query, input);
-        }
         public async Task<MeterFlowGetDto> Get(int id)
         {
             string query = GetQuery();
@@ -77,26 +63,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             return firstFlowId.Value;
         }
 
-        private string GetInsertCommand()
-        {
-            return @"INSERT [Atlas].[dbo].[MeterFlow] 
-                        (
-                            MeterFlowStepId,FileName,ZoneId,
-                            InsertDateTime,InsertByUserId,Description
-                        )
-                    VALUES 
-                        (
-                            @MeterFlowStepId,@FileName,@ZoneId,
-                            @InsertDateTime,@InsertByUserId,@Description
-                        );
-                    SELECT CAST(SCOPE_IDENTITY() AS int);";
-        }
-        private string GetUpdateCommand()
-        {
-            return @"Update Atlas.dbo.MeterFlow
-                        Set RemovedDateTime=@RemovedDateTime , RemovedByUserId=@RemovedByUserId
-                        Where Id=@id";
-        }
+
         private string GetQuery()
         {
             return @"Select 
@@ -116,7 +83,10 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         {
             return @"Select InsertDateTime
                     From Atlas.dbo.MeterFlow
-                    Where FileName=@fileName";
+                    Where 
+                        FileName=@fileName AND
+						RemovedByUserId IS NULL AND
+						RemovedDateTime IS NULL";
         }
         private string GetValidationByIdQuery()
         {
@@ -129,7 +99,6 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                     Where	
                     	Id=@id";
         }
-
         private string GetFirstFlowId()
         {
             return @"select f1.Id

@@ -8,9 +8,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 {
     internal sealed class CartableHandler : ICartableHandler
     {
-        private readonly IMeterFlowService _meterFlowService;
+        private readonly IMeterFlowQueryService _meterFlowService;
         private const int _expirePercent = 50;
-        public CartableHandler(IMeterFlowService meterFlowService)
+        public CartableHandler(IMeterFlowQueryService meterFlowService)
         {
             _meterFlowService = meterFlowService;
             _meterFlowService.NotNull(nameof(meterFlowService));

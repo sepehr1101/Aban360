@@ -64,6 +64,7 @@ namespace Aban360.OldCalcPool.Application.Features.SaveReading
         }
         private async Task CreateBedBesAndKasrHa(ICollection<BedBesCreateDto> bedBes, ICollection<KasrHaDto> kasrHa)
         {
+            string dbName = GetDbName((int)bedBes.FirstOrDefault().Town);
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
@@ -75,8 +76,8 @@ namespace Aban360.OldCalcPool.Application.Features.SaveReading
                     BedBesCommandService bedBesCommandService = new BedBesCommandService(_sqlReportConnection, transaction);
                     KasrHaCommandService kasrHaCommandService = new KasrHaCommandService(_sqlReportConnection, transaction);
 
-                    await bedBesCommandService.Insert(bedBes);
-                    await kasrHaCommandService.Insert(kasrHa);
+                    await bedBesCommandService.Insert(bedBes,dbName);
+                    await kasrHaCommandService.Insert(kasrHa,dbName);
                 }
             }
         }

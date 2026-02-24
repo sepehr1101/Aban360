@@ -30,19 +30,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             _transaction.NotNull(nameof(transaction));
         }
 
-        public async Task Insert(KasrHaDto input, int zoneId)
+        public async Task Insert(KasrHaDto input, string dbName)
         {
-            string dbName = GetDbName(zoneId);
-            //string dbName = "Atlas";
             string query = GetCreateQuery(dbName);
-
             await _connection.ExecuteAsync(query, input, _transaction);
         }
-        public async Task Insert(ICollection<KasrHaDto> input)
+        public async Task Insert(ICollection<KasrHaDto> input,string dbName)
         {
-            //string dbName = GetDbName((int)input.FirstOrDefault().Town);
-            string dbName = "Atlas";
-
             //using (var connection = _connection)
             //{
             //connection.Open();
@@ -62,16 +56,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             //}
             //}
         }
-        public async Task Insert(ICollection<KasrHaDto> input, int zoneId)
+        public async Task InsertByBulk(ICollection<KasrHaDto> input, string dbName)
         {
-            //var dbName=GetDbName(zoneId);   
-            var dbName = "Atlas";
             DataTable table = GetDataTable(input);
 
-            using var connection = _connection;
-            connection.Open();
-
-            using var bulk = new SqlBulkCopy((SqlConnection)_connection)
+            using var bulk = new SqlBulkCopy((SqlConnection)_connection, SqlBulkCopyOptions.Default, (SqlTransaction)_transaction)
             {
                 DestinationTableName = $"[{dbName}].dbo.kasr_ha",
                 BatchSize = 5000,
@@ -83,9 +72,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 
             await bulk.WriteToServerAsync(table);
         }
-        public async Task Delete(RemoveBillDataInputDto input)
+        public async Task Delete(RemoveBillDataInputDto input, string dbName)
         {
-            string dbName = GetDbName(input.ZoneId);
             string command = GetDeleteCommand(dbName);
             int rowCount = await _connection.ExecuteAsync(command, input, _transaction);
             if (rowCount == 0)

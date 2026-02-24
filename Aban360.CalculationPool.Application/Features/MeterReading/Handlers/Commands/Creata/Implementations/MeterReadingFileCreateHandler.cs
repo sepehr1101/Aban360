@@ -4,8 +4,10 @@ using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
+using Aban360.CalculationPool.Persistence.Features.MeterReading.Implementations;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
@@ -16,37 +18,36 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using DotNetDBF;
 using FluentValidation;
+using Microsoft.Extensions.Configuration;
+using System.Data;
 using static Aban360.Common.Extensions.IoExtensions;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Implementations
 {
-    internal sealed class MeterReadingFileCreateHandler : IMeterReadingFileCreateHandler
+    internal sealed class MeterReadingFileCreateHandler : AbstractBaseConnection, IMeterReadingFileCreateHandler
     {
         const string _dbfPath = @"AppData\Dbfs";
         const string _reportTitle = "آپلود و محاسبه اولیه";
 
-        private readonly IMeterReadingDetailService _meterReadingFileService;
-        private readonly IMeterFlowService _meterFlowService;
+        private readonly IMeterFlowQueryService _meterFlowService;
         private readonly ICustomerInfoService _customerInfoService;
-        private readonly IMeterReadingDetailService _meterReadingDetailService;
+        private readonly IMeterReadingDetailQueryService _meterReadingDetailService;
         private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
         private readonly IOldTariffEngine _tariffEngine;
         private readonly IValidator<MeterReadingFileCreateDto> _validator;
         private readonly IPreviousAverageHandler _previousAverageHandler;
 
         public MeterReadingFileCreateHandler(
-            IMeterReadingDetailService meterReadingFileService,
-            IMeterFlowService meterFlowService,
+              IMeterFlowQueryService meterFlowService,
             ICustomerInfoService customerInfoService,
-            IMeterReadingDetailService meterReadingDetailService,
+             IMeterReadingDetailQueryService meterReadingDetailService,
             IOldTariffEngine tariffEngine,
             IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
             IValidator<MeterReadingFileCreateDto> validator,
-            IPreviousAverageHandler previousAverageHandler)
+            IPreviousAverageHandler previousAverageHandler,
+            IConfiguration configuration)
+            : base(configuration)
         {
-            _meterReadingFileService = meterReadingFileService;
-            _meterReadingFileService.NotNull(nameof(_meterReadingFileService));
-
             _meterFlowService = meterFlowService;
             _meterFlowService.NotNull(nameof(_meterFlowService));
 
@@ -143,15 +144,40 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 }
             }
 
-            await _meterReadingDetailService.Insert(readingDetailsCreate);
-
-            int firstFlowId = readingDetailsCreate.FirstOrDefault().FlowImportedId;
-            int zoneId = readingDetailsCreate.FirstOrDefault().ZoneId;
-            await CompleteMeterFlow(firstFlowId, zoneId, input.ReadingFile.FileName, appUser, input.Description);
-
+            await InsertAndUpdate(readingDetailsCreate, input, appUser, filePath);
             return GetReturnData(readingDetailsCreate);
         }
+        private async Task InsertAndUpdate(ICollection<MeterReadingDetailCreateDto> readingDetailsCreate, MeterReadingFileCreateDto input, IAppUser appUser, string filePath)
+        {
+            int firstFlowId = readingDetailsCreate.FirstOrDefault().FlowImportedId;
+            int zoneId = readingDetailsCreate.FirstOrDefault().ZoneId;
 
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                    connection.Open();
+
+                IDbTransaction transaction = null;
+                using (transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    MeterReadingDetailCommandService meterReadingDetailService = new(connection, transaction);
+                    try
+                    {
+                        await meterReadingDetailService.Insert(readingDetailsCreate);
+                        await MeterFlowCommands(connection, transaction, firstFlowId, zoneId, input.ReadingFile.FileName, appUser, input.Description);
+
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        await meterReadingDetailService.Delete(new MeterReadingDetailDeleteDto(firstFlowId, appUser.UserId, DateTime.Now));
+                        DeleteFromDisk(filePath);
+                    }
+                }
+            }
+
+        }
         private ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto> GetReturnData(IEnumerable<MeterReadingDetailCreateDto> data)
         {
             int[] closedAndObstacleCounterState = { 4, 7, 8 };
@@ -170,45 +196,41 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
             return result;
         }
-        private async Task CompleteMeterFlow(int latestFlowId, int ZoneId, string fileName, IAppUser appUser, string? description)
+        private async Task MeterFlowCommands(IDbConnection connection, IDbTransaction transaction, int latestFlowId, int ZoneId, string fileName, IAppUser appUser, string? description)
         {
-            MeterFlowUpdateDto meterFlowUpdate = new(latestFlowId, appUser.UserId, DateTime.Now);
-            _meterFlowService.Update(meterFlowUpdate);
+            MeterFlowCommandService meterFlowService = new(connection, transaction);
 
-            MeterFlowCreateDto newMeterFlow = new()
-            {
-                MeterFlowStepId = MeterFlowStepEnum.Calculated,
-                ZoneId = ZoneId,
-                FileName = fileName,
-                InsertByUserId = appUser.UserId,
-                InsertDateTime = DateTime.Now,
-                Description = description
-            };
-            await _meterFlowService.Create(newMeterFlow);
+            MeterFlowUpdateDto meterFlowUpdate = new(latestFlowId, appUser.UserId, DateTime.Now);
+            await meterFlowService.Update(meterFlowUpdate);
+
+            MeterFlowCreateDto newMeterFlow = GetMeterFlowCreateDto(MeterFlowStepEnum.Calculated, fileName, ZoneId, appUser.UserId, description);
+            await meterFlowService.Insert(newMeterFlow);
         }
         private async Task<IEnumerable<MeterReadingDetailCreateDto>> GetMeterReadingDetails(MeterReadingFileCreateDto meterFile, string filePath, Guid userId)
         {
             ICollection<MeterReadingFileDetail> meterReadings = ReadDb(filePath, userId);
             MeterReadingFileDetail firstMeterDetail = meterReadings.FirstOrDefault();
+            MeterFlowCreateDto importedMeterFlow = GetMeterFlowCreateDto(MeterFlowStepEnum.Imported, meterFile.ReadingFile.FileName, firstMeterDetail.ZoneId, userId, meterFile.Description);
+            int meterFlowId = 0;
 
-            MeterFlowCreateDto importedMeterFlow = CreateImportedMeterFlowStep(meterFile.ReadingFile.FileName, firstMeterDetail.ZoneId, userId, meterFile.Description);
-            int meterFlowId = await _meterFlowService.Create(importedMeterFlow);
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                    connection.Open();
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    MeterFlowCommandService meterflowCommandService = new(connection, transaction);
+                    meterFlowId = await meterflowCommandService.Insert(importedMeterFlow);
+
+                    transaction.Commit();
+                }
+            }
 
             CustomersInfoGetDto customersInfo = await _customerInfoService.Get(firstMeterDetail.ZoneId, meterReadings.Select(m => m.CustomerNumber).ToList());
             IEnumerable<MeterReadingDetailCreateDto> meterReadingsDetailCreate = GetReadingMeterDetails(meterReadings, customersInfo, meterFlowId);
 
             return meterReadingsDetailCreate;
         }
-        //private async Task<IEnumerable<MeterReadingDetailCreateDto>> GetMeterReadingDetails(MeterReadingFileDetail firstMeterDetail, string filePath, Guid userId)
-        //{
-        //    MeterFlowCreateDto importedMeterFlow = CreateImportedMeterFlowStep("TestFile", firstMeterDetail.ZoneId, userId, "--");
-        //    int meterFlowId = await _meterFlowService.Create(importedMeterFlow);
-
-        //    CustomersInfoGetDto customersInfo = await _customerInfoService.Get(firstMeterDetail.ZoneId, new[] { firstMeterDetail.CustomerNumber });
-        //    IEnumerable<MeterReadingDetailCreateDto> meterReadingsDetailCreate = GetReadingMeterDetails(new[] { firstMeterDetail }, customersInfo, meterFlowId);
-
-        //    return meterReadingsDetailCreate;
-        //}
         private IEnumerable<MeterReadingDetailCreateDto> GetReadingMeterDetails(ICollection<MeterReadingFileDetail> meterReadings, CustomersInfoGetDto customersInfo, int meterFlowId)
         {
             return from meterReading in meterReadings
@@ -322,11 +344,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
             return meterReadingFileDetail;
         }
-        private MeterFlowCreateDto CreateImportedMeterFlowStep(string fileName, int zoneId, Guid userId, string description)
+        private MeterFlowCreateDto GetMeterFlowCreateDto(MeterFlowStepEnum step, string fileName, int zoneId, Guid userId, string description)
         {
             return new MeterFlowCreateDto()
             {
-                MeterFlowStepId = MeterFlowStepEnum.Imported,
+                MeterFlowStepId = step,
                 FileName = fileName,
                 ZoneId = zoneId,
                 InsertByUserId = userId,

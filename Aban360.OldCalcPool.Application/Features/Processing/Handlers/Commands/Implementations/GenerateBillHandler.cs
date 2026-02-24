@@ -93,10 +93,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                         BillCommandService billCommandService = new BillCommandService(connection, transaction);
                         ContorCommandService controCommandService = new ContorCommandService(connection, transaction);
 
-                        int bedBesRecordId = await bedBedCommandService.Insert(bedBes, zoneIdAndCustomerNumber.ZoneId);
+                        int bedBesRecordId = await bedBedCommandService.Insert(bedBes, dbName);
                         if (abBahaCalcResult.DiscountSum > 0)
                         {
-                            await kasrHasCommandService.Insert(kasrHa, zoneIdAndCustomerNumber.ZoneId);
+                            await kasrHasCommandService.Insert(kasrHa, dbName);
                         }
                         await membersCommandService.UpdateBedbes(zoneIdAndCustomerNumber, (long)bedBes.Baha, dbName);
                         await waterDebtCommandService.UpdateAmount(bedBes.ShGhabs1, (long)bedBes.Baha);
