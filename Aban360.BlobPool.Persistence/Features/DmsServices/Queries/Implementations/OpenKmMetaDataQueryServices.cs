@@ -36,7 +36,7 @@ namespace Aban360.BlobPool.Persistence.Features.DmsServices.Queries.Implementati
         public async Task<int> GetFileValue(int id)
         {
             return await _openKmMetaData
-                    .Where(o => o.Section == _fileTypes)
+                    .Where(o => o.Section == _fileTypes && o.Id==id)
                     .Select(o => o.Value)
                     .SingleAsync();
         }

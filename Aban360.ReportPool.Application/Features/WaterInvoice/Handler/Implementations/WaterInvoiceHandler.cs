@@ -49,7 +49,7 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
             ReportOutput<WaterInvoiceDto, LineItemsDto> result = await _waterInvoiceQueryService.Get(input.BillId, input.Id);
             result.ReportHeader.ChartIndex = await GetGuageValue(result.ReportHeader.ConsumptionAverage, result.ReportHeader.ContractualCapacity, input.BillId, result.ReportHeader.UsageId, result.ReportHeader.ZoneId);
 
-            return new ReportOutput<WaterInvoiceDto, LineItemsDto>(result.Title, GetWaterInvoiceData(result.ReportHeader), result.ReportData);
+            return new ReportOutput<WaterInvoiceDto, LineItemsDto>(result.Title, GetWaterInvoiceData(result.ReportHeader, input.DisplayPreviousDebt), result.ReportData);
         }
         public async Task<ReportOutput<WaterInvoiceDto, LineItemsDto>> Handle_WithLastDb(string input, CancellationToken cancellationToken)
         {
@@ -68,8 +68,10 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
             WaterInvoiceDto result = _waterInvoiceQueryService.Get();
             return result;
         }
-        private WaterInvoiceDto GetWaterInvoiceData(WaterInvoiceDto input)
+        private WaterInvoiceDto GetWaterInvoiceData(WaterInvoiceDto input, bool displayPreviousDebt=true)
         {
+            input.PayId = displayPreviousDebt ? input.PayId : TransactionIdGenerator.GeneratePaymentId(input.Sum, input.BillId);
+            
             input.BarCode = (input.BillId is null ? new string('0', 13) : input.BillId.PadLeft(13, '0')) +
                             (input.PayId is null ? new string('0', 13) : input.PayId.PadLeft(13, '0'));
 

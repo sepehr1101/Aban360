@@ -61,6 +61,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                 		n.ebt AS Ebt,
                 		n.ent AS Ent,
                 		n.vaj AS Vaj,
+                        n.AllowedFormula,
+                        n.DisallowedFormula,
                 		n.cod AS Cod,
                 		n.olgo AS Olgo,
                 		n.[desc] AS [Desc],

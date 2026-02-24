@@ -8,6 +8,7 @@ namespace Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts
         Task<string> GetDownloadLink(string uuid, bool oneTimeUse);
         Task<byte[]> GetFileBinary(string documentId);
         Task<FileListResponse> GetFilesDiscount(string id);
+        Task<FileListResponse> GetFilesTracknumber(string r_trackNumber);
         Task<FileListResponse> GetFilesByBillId(string billId);
         Task<byte[]> GetImageThumbnail(string documentId);
         Task<SearchDocumentsResponse> SearchDocuments(string folderPath, string property, string path);
@@ -16,7 +17,7 @@ namespace Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts
 
         //commands
         Task<AddFileDto> AddFile(string path, StreamContent content, string fileName);
-        Task<string> AddFolderByBillId(string billId);
+        Task<string> CreateFolder(string billId);
 
         Task MarkNodeAsMetadatable(string nodeId, bool isFile);
 

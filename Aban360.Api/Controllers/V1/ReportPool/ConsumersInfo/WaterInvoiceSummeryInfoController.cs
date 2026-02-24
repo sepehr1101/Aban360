@@ -58,7 +58,6 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [HttpPost]
         [Route("sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
-        [AllowAnonymous]
         public async Task<IActionResult> GetStiReport(SearchInput inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 90;
