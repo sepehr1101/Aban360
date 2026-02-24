@@ -19,12 +19,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 
 
         private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
-        private readonly IMeterFlowService _meterFlowService;
-        private readonly IMeterReadingDetailService _meterReadingDetailService;
+        private readonly IMeterFlowQueryService _meterFlowService;
+        private readonly IMeterReadingDetailQueryService _meterReadingDetailService;
         public CheckedListGetHandler(
             IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
-            IMeterFlowService meterFlowService,
-            IMeterReadingDetailService meterReadingDetailService)
+            IMeterFlowQueryService meterFlowService,
+            IMeterReadingDetailQueryService meterReadingDetailService)
         {
             _meterFlowValidationGetHandler = meterFlowValidationGetHandler;
             _meterFlowValidationGetHandler.NotNull(nameof(meterFlowValidationGetHandler));

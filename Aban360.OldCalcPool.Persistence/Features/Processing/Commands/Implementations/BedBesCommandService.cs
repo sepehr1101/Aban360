@@ -29,10 +29,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             _transaction.NotNull(nameof(transaction));
         }
 
-        public async Task<int> Insert(BedBesCreateDto input, int zoneId)
+        public async Task<int> Insert(BedBesCreateDto input, string dbName)
         {
-            string dbName = GetDbName(zoneId);
-            //string dbName = "Atlas";
             string BedBesCreateQueryString = GetBedBesCreateQuery(dbName);
 
             int? recordCount = await _connection.QueryFirstOrDefaultAsync<int>(BedBesCreateQueryString, input, _transaction);
@@ -43,11 +41,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 
             return recordCount.Value;
         }
-        public async Task Insert(ICollection<BedBesCreateDto> input)
+        public async Task Insert(ICollection<BedBesCreateDto> input,string dbName)
         {
-            //string dbName = GetDbName((int)input.FirstOrDefault().Town);
-            string dbName = "Atlas";
-
             //using (var connection = _connection)
             //{
             //    await connection.OpenAsync();
@@ -68,16 +63,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 
             //}
         }
-        public async Task Insert(ICollection<BedBesCreateDto> input, int zoneId)
+        public async Task InsertByBulk(ICollection<BedBesCreateDto> input, string dbName)
         {
-            // string dbName=GetDbName(zoneId);
-            string dbName = "Atlas";
             var dt = ToDataTable(input);
 
-            using var connection = _connection;
-            connection.Open();
-
-            using var bulk = new SqlBulkCopy((SqlConnection)connection)
+            using var bulk = new SqlBulkCopy((SqlConnection)_connection, SqlBulkCopyOptions.Default, (SqlTransaction)_transaction)
             {
                 DestinationTableName = $"[{dbName}].dbo.bed_bes",
                 BatchSize = 5000,
@@ -89,10 +79,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 
             await bulk.WriteToServerAsync(dt);
         }
-        public async Task Delete(int id, int zoneId)
+        public async Task Delete(int id,int zoneId, string dbName)
         {
-            //string dbName = "Atlas";
-            string dbName = GetDbName(zoneId);
             string query = GetDeleteQuery(dbName);
             int rowsAffected = await _connection.ExecuteAsync(query, new { id, zoneId }, _transaction);
 
@@ -343,10 +331,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     )
                     Update bills
                     Set del=Del";
-        }
-        private string GetDbName(int zoneId)
-        {
-            return zoneId > 140000 ? "Abfar" : zoneId.ToString();
         }
     }
 }

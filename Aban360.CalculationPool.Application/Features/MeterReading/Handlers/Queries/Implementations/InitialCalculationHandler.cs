@@ -3,25 +3,31 @@ using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
+using Aban360.CalculationPool.Persistence.Features.MeterReading.Implementations;
 using Aban360.Common.ApplicationUser;
+using Aban360.Common.Db.Dapper;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Implementations
 {
-    internal sealed class InitialCalculationHandler : IInitialCalculationHandler
+    internal sealed class InitialCalculationHandler : AbstractBaseConnection, IInitialCalculationHandler
     {
         private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
-        private readonly IMeterReadingDetailService _meterReadingDetailService;
-        private readonly IMeterFlowService _meterFlowService;
+        private readonly IMeterReadingDetailQueryService _meterReadingDetailService;
+        private readonly IMeterFlowQueryService _meterFlowQueryService;
         private readonly IOldTariffEngine _tariffEngine;
         public InitialCalculationHandler(
             IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
-            IMeterReadingDetailService meterReadingDetailService,
-            IMeterFlowService meterFlowService,
-            IOldTariffEngine tariffEngine)
+            IMeterReadingDetailQueryService meterReadingDetailService,
+            IMeterFlowQueryService meterFlowQueryService,
+            IOldTariffEngine tariffEngine,
+            IConfiguration configuration)
+            : base(configuration)
         {
 
             _meterFlowValidationGetHandler = meterFlowValidationGetHandler;
@@ -30,8 +36,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             _meterReadingDetailService = meterReadingDetailService;
             _meterReadingDetailService.NotNull(nameof(meterReadingDetailService));
 
-            _meterFlowService = meterFlowService;
-            _meterFlowService.NotNull(nameof(meterFlowService));
+            _meterFlowQueryService = meterFlowQueryService;
+            _meterFlowQueryService.NotNull(nameof(meterFlowQueryService));
 
             _tariffEngine = tariffEngine;
             _tariffEngine.NotNull(nameof(tariffEngine));
@@ -41,7 +47,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         {
             await _meterFlowValidationGetHandler.Handle(latestFlowId, cancellationToken);
             //todo: use cancellationToken
-            int firstFlowId=await _meterFlowService.GetFirstFlowId(latestFlowId);
+            int firstFlowId = await _meterFlowQueryService.GetFirstFlowId(latestFlowId);
             IEnumerable<MeterReadingDetailDataOutputDto> readingDetails = await _meterReadingDetailService.Get(firstFlowId);
             ICollection<MeterReadingWithAbBahaResultUpdateDto> consumptionsInfo = new List<MeterReadingWithAbBahaResultUpdateDto>();
             foreach (var readingDetail in readingDetails)
@@ -72,27 +78,59 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                     readingDetail.MonthlyConsumption = 0;
                 }
             }
-            await _meterReadingDetailService.Update(consumptionsInfo);
-            await CreateCalculatedFlow(latestFlowId, appUser);
+            await CommandTransactions(consumptionsInfo, latestFlowId, appUser);
 
             return readingDetails;
         }
-        private async Task CreateCalculatedFlow(int latestFlowId, IAppUser appUser)
+        private async Task CommandTransactions(ICollection<MeterReadingWithAbBahaResultUpdateDto> consumptionsInfo, int latestFlowId, IAppUser appUser)
         {
-            MeterFlowUpdateDto meterFlowUpdate = new(latestFlowId, appUser.UserId, DateTime.Now);
-            _meterFlowService.Update(meterFlowUpdate);
-
-            MeterFlowGetDto meterFlow = await _meterFlowService.Get(latestFlowId);
-            MeterFlowCreateDto newMeterFlow = new()
+            using (IDbConnection connection = _sqlReportConnection)
             {
-                MeterFlowStepId = MeterFlowStepEnum.Calculated,
-                ZoneId = meterFlow.ZoneId,
-                FileName = meterFlow.FileName,
-                InsertByUserId = appUser.UserId,
-                InsertDateTime = DateTime.Now,
-            };
-            await _meterFlowService.Create(newMeterFlow);
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    MeterReadingDetailCommandService meterReadingDetailCommandService = new(connection, transaction);
+                    MeterFlowCommandService meterFlowCommandService = new(connection, transaction);
+
+                    await meterReadingDetailCommandService.Update(consumptionsInfo);
+
+                    MeterFlowUpdateDto meterFlowUpdate = new(latestFlowId, appUser.UserId, DateTime.Now);
+                    await meterFlowCommandService.Update(meterFlowUpdate);
+
+                    MeterFlowGetDto meterFlow = await _meterFlowQueryService.Get(latestFlowId);
+                    MeterFlowCreateDto newMeterFlow = new()
+                    {
+                        MeterFlowStepId = MeterFlowStepEnum.Calculated,
+                        ZoneId = meterFlow.ZoneId,
+                        FileName = meterFlow.FileName,
+                        InsertByUserId = appUser.UserId,
+                        InsertDateTime = DateTime.Now,
+                    };
+                    await meterFlowCommandService.Insert(newMeterFlow);
+
+                    transaction.Commit();
+                }
+            }
         }
+        //private async Task CreateCalculatedFlow(int latestFlowId, IAppUser appUser)
+        //{
+        //    MeterFlowUpdateDto meterFlowUpdate = new(latestFlowId, appUser.UserId, DateTime.Now);
+        //    _meterFlowQueryService.Update(meterFlowUpdate);
+
+        //    MeterFlowGetDto meterFlow = await _meterFlowQueryService.Get(latestFlowId);
+        //    MeterFlowCreateDto newMeterFlow = new()
+        //    {
+        //        MeterFlowStepId = MeterFlowStepEnum.Calculated,
+        //        ZoneId = meterFlow.ZoneId,
+        //        FileName = meterFlow.FileName,
+        //        InsertByUserId = appUser.UserId,
+        //        InsertDateTime = DateTime.Now,
+        //    };
+        //    await _meterFlowQueryService.Create(newMeterFlow);
+        //}
         private MeterImaginaryInputDto GetMeterImaginary(MeterReadingDetailDataOutputDto readingDetail)
         {
             CustomerDetailInfoInputDto customerInfo = new()

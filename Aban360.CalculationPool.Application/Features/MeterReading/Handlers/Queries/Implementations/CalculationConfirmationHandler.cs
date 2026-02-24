@@ -3,6 +3,7 @@ using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
+using Aban360.CalculationPool.Persistence.Features.MeterReading.Implementations;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Extensions;
@@ -11,7 +12,6 @@ using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Cont
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
-using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
@@ -22,20 +22,16 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
     internal sealed class CalculationConfirmationHandler : AbstractBaseConnection, ICalculationConfirmationHandler
     {
         private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
-        private readonly IMeterReadingDetailService _meterReadingDetailService;
-        private readonly IMeterFlowService _meterFlowService;
+        private readonly IMeterReadingDetailQueryService _meterReadingDetailService;
+        private readonly IMeterFlowQueryService _meterFlowQueryService;
         private readonly IOldTariffEngine _oldTariffEngine;
-        //private readonly IBedBesCommandService _bedBesCreateService;
-        //private readonly IKasrHaCommandService _kasrHaService;
         const int _paymentDeadline = 7;
 
         public CalculationConfirmationHandler(
             IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
-            IMeterReadingDetailService meterReadingDetailService,
-            IMeterFlowService meterFlowService,
+            IMeterReadingDetailQueryService meterReadingDetailService,
+            IMeterFlowQueryService meterFlowQueryService,
             IOldTariffEngine oldTariffEngine,
-            //IBedBesCommandService bedBesCreateService,
-            //IKasrHaCommandService kasrHaService,
             IConfiguration configuration)
             : base(configuration)
         {
@@ -45,33 +41,28 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             _meterReadingDetailService = meterReadingDetailService;
             _meterReadingDetailService.NotNull(nameof(meterReadingDetailService));
 
-            _meterFlowService = meterFlowService;
-            _meterFlowService.NotNull(nameof(meterFlowService));
+            _meterFlowQueryService = meterFlowQueryService;
+            _meterFlowQueryService.NotNull(nameof(meterFlowQueryService));
 
             _oldTariffEngine = oldTariffEngine;
             _oldTariffEngine.NotNull(nameof(oldTariffEngine));
-
-            //_bedBesCreateService = bedBesCreateService;
-            //_bedBesCreateService.NotNull(nameof(bedBesCreateService));
-
-            //_kasrHaService = kasrHaService;
-            //_kasrHaService.NotNull(nameof(kasrHaService));
         }
 
         public async Task<MeterReadingCheckedOutputDto> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
         {
             await _meterFlowValidationGetHandler.Handle(latestFlowId, MeterFlowStepEnum.ConsumptionChecked, cancellationToken);
 
-            int firstFlowId = await _meterFlowService.GetFirstFlowId(latestFlowId);
+            int firstFlowId = await _meterFlowQueryService.GetFirstFlowId(latestFlowId);
             IEnumerable<MeterReadingDetailDataOutputDto> meterReadings = await _meterReadingDetailService.Get(firstFlowId);
-            await CreateBedBesAndKasrHaBatch(meterReadings, cancellationToken);//Insert in Atlas.dbo.BedBes
-            int newMeterFlowId = await CreateCalculationConfirmedFlow(latestFlowId, appUser);
+
+            int zoneId = meterReadings.FirstOrDefault().ZoneId;
+            var (bedBesBatch, kasrHaBatch) = await GetBedBesAndKasrHaDto(meterReadings, cancellationToken);
+            int newMeterFlowId = await CommandTransactions(bedBesBatch, kasrHaBatch, zoneId, latestFlowId, appUser);
 
             return GetResult(newMeterFlowId);
         }
-        private async Task CreateBedBesAndKasrHaBatch(IEnumerable<MeterReadingDetailDataOutputDto> meterReadings, CancellationToken cancellationToken)
+        private async Task<(ICollection<BedBesCreateDto>, ICollection<KasrHaDto>)> GetBedBesAndKasrHaDto(IEnumerable<MeterReadingDetailDataOutputDto> meterReadings, CancellationToken cancellationToken)
         {
-            int zoneId = meterReadings.FirstOrDefault().ZoneId;
             ICollection<BedBesCreateDto> BedBesBatch = new List<BedBesCreateDto>();
             ICollection<KasrHaDto> kasrHaBatch = new List<KasrHaDto>();
             foreach (var mr in meterReadings)
@@ -94,11 +85,13 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                     }
                 }
             }
-
-            await CreateBedBesAndKasrHa(BedBesBatch, kasrHaBatch, zoneId);
+            return (BedBesBatch, kasrHaBatch);
         }
-        private async Task CreateBedBesAndKasrHa(ICollection<BedBesCreateDto> BedBesBatch, ICollection<KasrHaDto> kasrHaBatch, int zoneId)
+        private async Task<int> CommandTransactions(ICollection<BedBesCreateDto> BedBesBatch, ICollection<KasrHaDto> kasrHaBatch, int zoneId, int latestFlowId, IAppUser appUser)
         {
+            //string dbName = GetDbName(zoneId);
+            string dbName = "Atlas";
+
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
@@ -107,11 +100,15 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    BedBesCommandService bedBesCreateService = new BedBesCommandService(_sqlReportConnection, transaction);
-                    KasrHaCommandService kasrHaCommandService = new KasrHaCommandService(_sqlConnection, transaction);
+                    BedBesCommandService bedBesCreateService = new BedBesCommandService(connection, transaction);
+                    KasrHaCommandService kasrHaCommandService = new KasrHaCommandService(connection, transaction);
 
-                    await bedBesCreateService.Insert(BedBesBatch, zoneId);
-                    await kasrHaCommandService.Insert(kasrHaBatch, zoneId);
+                    await bedBesCreateService.InsertByBulk(BedBesBatch, dbName);
+                    await kasrHaCommandService.InsertByBulk(kasrHaBatch, dbName);
+                    int newMeterFlowId = await CreateCalculationConfirmedFlow(connection, transaction, latestFlowId, appUser);
+
+                    transaction.Commit();
+                    return newMeterFlowId;
                 }
             }
         }
@@ -248,12 +245,14 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 Bodjeh = (decimal)abBahaCalc.BoodjeDiscount,
             };
         }
-        private async Task<int> CreateCalculationConfirmedFlow(int latestFlowId, IAppUser appUser)
+        private async Task<int> CreateCalculationConfirmedFlow(IDbConnection connection, IDbTransaction transaction, int latestFlowId, IAppUser appUser)
         {
-            MeterFlowUpdateDto meterFlowUpdate = new(latestFlowId, appUser.UserId, DateTime.Now);
-            _meterFlowService.Update(meterFlowUpdate);
+            MeterFlowCommandService meterFlowCommandService = new(connection, transaction);
 
-            MeterFlowGetDto meterFlow = await _meterFlowService.Get(latestFlowId);
+            MeterFlowUpdateDto meterFlowUpdate = new(latestFlowId, appUser.UserId, DateTime.Now);
+            await meterFlowCommandService.Update(meterFlowUpdate);
+
+            MeterFlowGetDto meterFlow = await _meterFlowQueryService.Get(latestFlowId);
             MeterFlowCreateDto newMeterFlow = new()
             {
                 MeterFlowStepId = MeterFlowStepEnum.CalculationConfirmed,
@@ -263,7 +262,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 InsertDateTime = DateTime.Now,
                 Description = meterFlow.Description
             };
-            int newMeterFlowId = await _meterFlowService.Create(newMeterFlow);
+            int newMeterFlowId = await meterFlowCommandService.Insert(newMeterFlow);
             return newMeterFlowId;
         }
         private MeterImaginaryInputDto GetMeterImaginary(MeterReadingDetailDataOutputDto readingDetail)

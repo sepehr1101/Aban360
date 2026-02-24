@@ -11,29 +11,29 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 {
     internal sealed class MeterFlowValidationGetHandler : IMeterFlowValidationGetHandler
     {
-        private readonly IMeterFlowService _meterFlowService;
-        public MeterFlowValidationGetHandler(IMeterFlowService meterFlowService)
+        private readonly IMeterFlowQueryService _meterFlowService;
+        public MeterFlowValidationGetHandler(IMeterFlowQueryService meterFlowService)
         {
             _meterFlowService = meterFlowService;
             _meterFlowService.NotNull(nameof(meterFlowService));
         }
         public async Task Handle(int id, CancellationToken cancellationToken)
         {
-            MeterFlowValidationDto? meterFlowData=await _meterFlowService.GetMeterFlowValidation(id);
-            if (meterFlowData is not null && 
+            MeterFlowValidationDto? meterFlowData = await _meterFlowService.GetMeterFlowValidation(id);
+            if (meterFlowData is not null &&
                 ((meterFlowData.RemovedDateTime is not null) ||
-                 (meterFlowData.RemovedDateTime is null && meterFlowData.MeterFlowStepId==MeterFlowStepEnum.CalculationConfirmed)))
+                 (meterFlowData.RemovedDateTime is null && meterFlowData.MeterFlowStepId == MeterFlowStepEnum.CalculationConfirmed)))
             {
                 string insertDateJalali = ConvertDate.GregorianToJalali(meterFlowData.InsertDateTime);
                 throw new ReadingException(ExceptionLiterals.InvalidDuplicateStepFlow(insertDateJalali));
             }
         }
-        public async Task Handle(int id, MeterFlowStepEnum latestFlowId , CancellationToken cancellationToken)
+        public async Task Handle(int id, MeterFlowStepEnum latestFlowId, CancellationToken cancellationToken)
         {
-            MeterFlowValidationDto? meterFlowData=await _meterFlowService.GetMeterFlowValidation(id);
-            if (meterFlowData is not null && 
+            MeterFlowValidationDto? meterFlowData = await _meterFlowService.GetMeterFlowValidation(id);
+            if (meterFlowData is not null &&
                 ((meterFlowData.RemovedDateTime is not null) ||
-                 (meterFlowData.RemovedDateTime is null && meterFlowData.MeterFlowStepId==MeterFlowStepEnum.CalculationConfirmed)))
+                 (meterFlowData.RemovedDateTime is null && meterFlowData.MeterFlowStepId == MeterFlowStepEnum.CalculationConfirmed)))
             {
                 string insertDateJalali = ConvertDate.GregorianToJalali(meterFlowData.InsertDateTime);
                 throw new ReadingException(ExceptionLiterals.InvalidDuplicateStepFlow(insertDateJalali));

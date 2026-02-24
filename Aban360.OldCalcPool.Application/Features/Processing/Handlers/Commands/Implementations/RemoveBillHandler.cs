@@ -83,12 +83,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     WaterDebtCommandService waterDebtCommandService = new(connection, transaction);
                     RemovedBillCommandService removedBillCommandService = new(connection, transaction);
 
-                    await bedBesCommandService.Delete(removeBill.Id, removeBill.ZoneId);
+                    await bedBesCommandService.Delete(removeBill.Id, removeBill.ZoneId, dbName);
                     if (removeBill.Discount > 0)
                     {
-                        await kasrHaCommandService.Delete(removeBill);
+                        await kasrHaCommandService.Delete(removeBill, dbName);
                     }
-                    await hbedBesCommandService.Insert(removeBill);
+                    await hbedBesCommandService.Insert(removeBill, dbName);
                     await billCommandService.Delete(removeBillDto);
                     await membersCommandService.UpdateBedbes(zoneIdAndCustomerNumber, amount, dbName);
                     await contorCommandService.Update(controUpdate, dbName, false);
@@ -123,8 +123,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         {
             return new ZoneIdAndCustomerNumber()
             {
-                ZoneId=input.ZoneId,
-                CustomerNumber=input.CustomerNumber,
+                ZoneId = input.ZoneId,
+                CustomerNumber = input.CustomerNumber,
             };
         }
         private RemoveBillDto GetRemoveBillDto(RemoveBillDataInputDto input)

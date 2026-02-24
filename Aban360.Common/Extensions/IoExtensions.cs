@@ -13,5 +13,12 @@ namespace Aban360.Common.Extensions
             }
             return filePath;
         }
+        public static void DeleteFromDisk(string filePath)
+        {
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+        }
     }
 }

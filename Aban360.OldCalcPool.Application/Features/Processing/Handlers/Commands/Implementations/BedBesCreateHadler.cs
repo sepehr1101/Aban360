@@ -30,11 +30,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         public async Task Handle(AbBahaCalculationDetails inputDto, decimal codVas, CancellationToken cancellationToken)
         {
             BedBesCreateDto bedBesDto = GetBedBesCreateDto(inputDto, (int)codVas);
+            string dbName = GetDbName((int)bedBesDto.Town);
 
             using (IDbTransaction transaction = _sqlReportConnection.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 BedBesCommandService bedBesCommandService = new BedBesCommandService(_sqlReportConnection,transaction);
-                await bedBesCommandService.Insert(bedBesDto, (int)bedBesDto.Town);
+                await bedBesCommandService.Insert(bedBesDto, dbName);
             }
         }
         private BedBesCreateDto GetBedBesCreateDto(AbBahaCalculationDetails inputDto, int codVas)

@@ -2,25 +2,31 @@
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
+using Aban360.CalculationPool.Persistence.Features.MeterReading.Implementations;
 using Aban360.Common.ApplicationUser;
+using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using FluentValidation;
+using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Update.Implementations
 {
-    internal sealed class MeterReadingDetailUpdateHandler : IMeterReadingDetailUpdateHandler
+    internal sealed class MeterReadingDetailUpdateHandler : AbstractBaseConnection, IMeterReadingDetailUpdateHandler
     {
-        private readonly IMeterReadingDetailService _meterReadingDetailService;
+        private readonly IMeterReadingDetailQueryService _meterReadingDetailService;
         private readonly IOldTariffEngine _oldTariffEngine;
         private readonly IValidator<MeterReadingDetailUpdateDto> _validator;
         public MeterReadingDetailUpdateHandler(
-             IMeterReadingDetailService meterReadingDetailService,
+             IMeterReadingDetailQueryService meterReadingDetailService,
              IOldTariffEngine oldTariffEngine,
-             IValidator<MeterReadingDetailUpdateDto> validator)
+             IValidator<MeterReadingDetailUpdateDto> validator,
+             IConfiguration configuration)
+            : base(configuration)
         {
             _meterReadingDetailService = meterReadingDetailService;
             _meterReadingDetailService.NotNull(nameof(meterReadingDetailService));
@@ -36,13 +42,25 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         {
             await Validate(input, cancellationToken);
             AbBahaCalculationDetails abBahaResult = await CalcAbBahaTariff(input, cancellationToken);
-
-            MeterReadingDetailCreateDuplicateDto readingCreateDuplicate = new(input.Id, input.CurrentCounterStateCode, input.CurrentDateJalali, input.CurrentNumber, appUser.UserId, DateTime.Now,abBahaResult.SumItems,abBahaResult.SumItemsBeforeDiscount,abBahaResult.DiscountSum,abBahaResult.Consumption,abBahaResult.MonthlyConsumption);
-            await _meterReadingDetailService.CreateDuplicateForLog(readingCreateDuplicate);
-
-            //remove previous
+            MeterReadingDetailCreateDuplicateDto readingCreateDuplicate = new(input.Id, input.CurrentCounterStateCode, input.CurrentDateJalali, input.CurrentNumber, appUser.UserId, DateTime.Now, abBahaResult.SumItems, abBahaResult.SumItemsBeforeDiscount, abBahaResult.DiscountSum, abBahaResult.Consumption, abBahaResult.MonthlyConsumption);
             MeterReadingDetailDeleteDto readingDelete = new(input.Id, appUser.UserId, DateTime.Now);
-            await _meterReadingDetailService.Delete(readingDelete);
+
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    MeterReadingDetailCommandService meterReadingDetailCommandService = new(connection, transaction);
+                    await meterReadingDetailCommandService.CreateDuplicateForLog(readingCreateDuplicate);
+
+                    //remove previous
+                    await meterReadingDetailCommandService.Delete(readingDelete);
+                }
+            }
+
         }
 
         private async Task Validate(MeterReadingDetailUpdateDto input, CancellationToken cancellationToken)
