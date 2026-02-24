@@ -101,6 +101,11 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             return new AuthenticationHeaderValue(token.TokenType, token.AccessToken);
         }
 
+        public async Task<FileListResponse> GetFilesTracknumber(string r_trackNumber)
+        {
+            string fldId = $"{_options.BaseDirectoryPath}{r_trackNumber}";
+            return await GetChildren(fldId, false);
+        }
         public async Task<FileListResponse> GetFilesDiscount(string id)
         {
             string fldId = $"{_options.BaseDiscountPath}{id}";
@@ -301,7 +306,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             {
                 return "invalid uuid";
             }
-            await EditFile(uuid);
+            //await EditFile(uuid);
 
             return uuid;
         }
@@ -337,23 +342,23 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
         }
-        private async Task EditFile(string nodeId)
-        {
-            string accept = "application/json";
-            string cookie = "Cookie";
-            string cookieDate = "cookiesession1=678ADA5C33A30F49D180AB6CBD34D5FC";
-            string baseUrl = $"https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-CreateMetadata/1.0";
-            string finalUrl = $"{baseUrl}?nodeId={nodeId}&grpName={GroupNameFolder}";
+        //private async Task EditFile(string nodeId)
+        //{
+        //    string accept = "application/json";
+        //    string cookie = "Cookie";
+        //    string cookieDate = "cookiesession1=678ADA5C33A30F49D180AB6CBD34D5FC";
+        //    string baseUrl = $"https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-CreateMetadata/1.0";
+        //    string finalUrl = $"{baseUrl}?nodeId={nodeId}&grpName={GroupNameFolder}";
 
-            _httpClient.DefaultRequestHeaders.Clear();
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+        //    _httpClient.DefaultRequestHeaders.Clear();
+        //    _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
 
-            var authHeader = await GetAuthenticationHeaderAsync();
-            _httpClient.DefaultRequestHeaders.Authorization = authHeader;
+        //    var authHeader = await GetAuthenticationHeaderAsync();
+        //    _httpClient.DefaultRequestHeaders.Authorization = authHeader;
 
-            var response = await _httpClient.PutAsync(finalUrl, null);
-            response.EnsureSuccessStatusCode();
-            var result = await response.Content.ReadAsStringAsync();
-        }
+        //    var response = await _httpClient.PutAsync(finalUrl, null);
+        //    response.EnsureSuccessStatusCode();
+        //    var result = await response.Content.ReadAsStringAsync();
+        //}
     }
 }

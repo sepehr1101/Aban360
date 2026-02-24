@@ -12,16 +12,21 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
     {
         private readonly IGetFilesByBillId _getFilesByBillIdHandler;
         private readonly IGetFilesDiscount _discountHandler;
+        private readonly IGetFilesRequest _requestHandler;
 
         public GetFilesByBillIdController(
             IGetFilesByBillId getFilesByBillIdHandler,
-            IGetFilesDiscount getFilesDiscountHandler)
+            IGetFilesDiscount getFilesDiscountHandler,
+            IGetFilesRequest getFilesRequest)
         {
             _getFilesByBillIdHandler = getFilesByBillIdHandler;
             _getFilesByBillIdHandler.NotNull(nameof(getFilesByBillIdHandler));
 
             _discountHandler= getFilesDiscountHandler;
             _discountHandler.NotNull(nameof(getFilesDiscountHandler));
+
+            _requestHandler= getFilesRequest;
+            _requestHandler.NotNull(nameof(getFilesRequest));
         }
 
         [HttpGet]
@@ -39,6 +44,15 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
         public async Task<IActionResult> GetDiscountDirectoryTree(string input, CancellationToken cancellation)
         {
             FileListResponse result = await _discountHandler.Handle(input, cancellation);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("request-directory-tree")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<FileListResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetRequestDirectoryTree(string input, CancellationToken cancellation)
+        {
+            FileListResponse result = await _requestHandler.Handle(input, cancellation);
             return Ok(result);
         }
     }
