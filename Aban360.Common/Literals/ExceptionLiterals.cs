@@ -89,6 +89,7 @@
         public static string InvalidFlowStep => "خطا در شناسه روند. ";
         public static string FlowStepNotFound => "شناسه روند یافت نشد";
         public static string InvalidMeterFlow => "خطا در ذخیره مرحله";
+        public static string InvalidUpdate => "خطا در ویرایش";
         public static string CurrentNumberLessThanPreviousNumber => "شماره کنتور فعلی کمتر از قبلی است.";
 
 

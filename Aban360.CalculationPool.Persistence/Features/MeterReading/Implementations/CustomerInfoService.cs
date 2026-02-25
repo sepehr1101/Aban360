@@ -93,7 +93,6 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             return @$"Select
 						m.town as ZoneId,
 						m.radif as CustomerNumber,
-						m.bill_id as BillId,
 						Trim(m.bill_id) as BillId,
 						m.noe_va as BranchType,
 						m.cod_enshab as UsageId,
@@ -114,7 +113,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 					    TRIM(m.VillageId) as VillageId,
 						m.edareh_k as IsSpecial,
 						m.enshab as MeterDiameterId,
-						m.Khali_s as EmptyUnit
+						m.Khali_s as EmptyUnit,
+						m.bed_bes LatestDebtAmount
 					From [{dbName}].dbo.members m
 					Where 
 						m.town=@zoneId AND
@@ -154,7 +154,6 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             return @$"Select
 						m.town as ZoneId,
 						m.radif as CustomerNumber,
-						m.bill_id as BillId,
 						Trim(m.bill_id) as BillId,
 						m.noe_va as BranchTypeId,
 						m.cod_enshab as UsageId,
@@ -177,7 +176,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 						m.edareh_k as IsSpecial,
 						m.enshab as MeterDiameterId,
 						m.Khali_s as EmptyUnit,
-						m.serial_co as BodySerial
+						Trim(m.serial_co) as BodySerial
 					From [{dbName}].dbo.members m
 					Where 
 						m.town=@zoneId AND
