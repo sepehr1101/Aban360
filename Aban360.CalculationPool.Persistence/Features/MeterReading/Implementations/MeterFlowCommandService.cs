@@ -43,8 +43,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         public async Task Update(MeterFlowUpdateDto input)
         {
             string query = GetUpdateCommand();
-            // int rowEffected = await _connection.ExecuteAsync(query, input, _transaction);
-            int rowEffected = 0;
+            int rowEffected = await _connection.ExecuteAsync(query, input, _transaction);
+           // int rowEffected = 0;
             if (rowEffected <= 0)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidMeterFlow);

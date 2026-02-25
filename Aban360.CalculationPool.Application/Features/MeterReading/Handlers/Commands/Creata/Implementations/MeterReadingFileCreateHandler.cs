@@ -171,8 +171,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     catch (Exception ex)
                     {
                         transaction.Rollback();
-                        await meterReadingDetailService.Delete(new MeterReadingDetailDeleteDto(firstFlowId, appUser.UserId, DateTime.Now));
-                        DeleteFromDisk(filePath);
+                        await meterReadingDetailService.Delete(new MeterReadingDetailDeleteDto(firstFlowId, appUser.UserId, DateTime.Now));//todo: notWork
+                        DeleteFromDisk(filePath);//todo:Error
                     }
                 }
             }

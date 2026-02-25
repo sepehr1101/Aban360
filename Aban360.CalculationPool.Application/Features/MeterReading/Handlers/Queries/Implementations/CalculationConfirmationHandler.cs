@@ -9,6 +9,7 @@ using Aban360.Common.Db.Dapper;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
+using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Implementations;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
@@ -91,6 +92,17 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         {
             //string dbName = GetDbName(zoneId);
             string dbName = "Atlas";
+            MeterFlowGetDto meterFlow = await _meterFlowQueryService.Get(latestFlowId);
+            MeterFlowUpdateDto meterFlowUpdate = new(latestFlowId, appUser.UserId, DateTime.Now);
+            MeterFlowCreateDto newMeterFlow = new()
+            {
+                MeterFlowStepId = MeterFlowStepEnum.CalculationConfirmed,
+                ZoneId = meterFlow.ZoneId,
+                FileName = meterFlow.FileName,
+                InsertByUserId = appUser.UserId,
+                InsertDateTime = DateTime.Now,
+                Description = meterFlow.Description
+            };
 
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -102,10 +114,13 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 {
                     BedBesCommandService bedBesCreateService = new BedBesCommandService(connection, transaction);
                     KasrHaCommandService kasrHaCommandService = new KasrHaCommandService(connection, transaction);
+                    MeterFlowCommandService meterFlowCommandService = new(connection, transaction);
 
                     await bedBesCreateService.InsertByBulk(BedBesBatch, dbName);
                     await kasrHaCommandService.InsertByBulk(kasrHaBatch, dbName);
-                    int newMeterFlowId = await CreateCalculationConfirmedFlow(connection, transaction, latestFlowId, appUser);
+
+                    await meterFlowCommandService.Update(meterFlowUpdate);
+                    int newMeterFlowId = await meterFlowCommandService.Insert(newMeterFlow);
 
                     transaction.Commit();
                     return newMeterFlowId;
@@ -309,6 +324,24 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         private MeterReadingCheckedOutputDto GetResult(int flowId)
         {
             return new MeterReadingCheckedOutputDto(flowId, MeterFlowStepEnum.ClientNotification, MessageLiterals.SuccessfullOperation);
+        }
+        private bool CounterStateValidation(int counterStateCode, int currentNumber, int previousNumber)
+        {
+            int[] invalidCounterStateCode = [4, /*6,*/ 7, 8, 9, 10];
+
+            if (counterStateCode == 6 && previousNumber != currentNumber)
+            {
+                return false;
+            }
+            if (invalidCounterStateCode.Contains(counterStateCode))
+            {
+                return false;
+            }
+            else if ((counterStateCode == 3 || counterStateCode == 5) && currentNumber > previousNumber)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

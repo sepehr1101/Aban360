@@ -45,6 +45,17 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         private async Task<int> CreateConsumpitonCheckedFlow(int latestFlowId, IAppUser appUser)
         {
             MeterFlowUpdateDto meterFlowUpdate = new(latestFlowId, appUser.UserId, DateTime.Now);
+            MeterFlowGetDto meterflow = await _meterFlowQueryService.Get(latestFlowId);//todo: Latest check
+            MeterFlowCreateDto newMeterFlow = new()
+            {
+                MeterFlowStepId = MeterFlowStepEnum.ConsumptionChecked,
+                ZoneId = meterflow.ZoneId,
+                FileName = meterflow.FileName,
+                InsertByUserId = appUser.UserId,
+                InsertDateTime = DateTime.Now,
+                Description = meterflow.Description
+            };
+
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
@@ -55,17 +66,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 {
                     MeterFlowCommandService meterFlowCommandService = new(connection, transaction);
                     await meterFlowCommandService.Update(meterFlowUpdate);
-                    MeterFlowGetDto meterflow = await _meterFlowQueryService.Get(latestFlowId);//todo: check and remove from Transaction
-
-                    MeterFlowCreateDto newMeterFlow = new()
-                    {
-                        MeterFlowStepId = MeterFlowStepEnum.ConsumptionChecked,
-                        ZoneId = meterflow.ZoneId,
-                        FileName = meterflow.FileName,
-                        InsertByUserId = appUser.UserId,
-                        InsertDateTime = DateTime.Now,
-                        Description = meterflow.Description
-                    };
                     int newMeterFlowId = await meterFlowCommandService.Insert(newMeterFlow);
 
                     transaction.Commit();

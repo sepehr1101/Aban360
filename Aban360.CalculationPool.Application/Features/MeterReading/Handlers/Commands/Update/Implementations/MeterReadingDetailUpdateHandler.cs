@@ -75,10 +75,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private async Task<AbBahaCalculationDetails> CalcAbBahaTariff(MeterReadingDetailUpdateDto meterReadingDetailUpdate, CancellationToken cancellationToken)
         {
             MeterReadingDetailDataOutputDto meterReadingDetail = await _meterReadingDetailService.GetById(meterReadingDetailUpdate.Id);
-            if (meterReadingDetail.CurrentCounterStateCode == 1 &&
-                meterReadingDetailUpdate.CurrentCounterStateCode == 1 &&
-                meterReadingDetailUpdate.MonthlyAverage.HasValue &&
-                meterReadingDetail.MonthlyConsumption.Value > 0)
+            if (meterReadingDetail.CurrentCounterStateCode == 1 && meterReadingDetail.MonthlyConsumption.Value > 0 &&
+                meterReadingDetailUpdate.CurrentCounterStateCode == 1 && meterReadingDetailUpdate.MonthlyAverage.HasValue)
             {
                 MeterDateInfoWithMonthlyConsumptionOutputDto meterInfo = new MeterDateInfoWithMonthlyConsumptionOutputDto()
                 {
@@ -102,7 +100,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             {
                 ZoneId = readingDetail.ZoneId,
                 Radif = readingDetail.CustomerNumber,
-                BranchType = 0,//todo
+                BranchType = readingDetail.BranchTypeId,
                 UsageId = readingDetail.UsageId,
                 DomesticUnit = readingDetail.DomesticUnit,
                 CommertialUnit = readingDetail.CommercialUnit,
