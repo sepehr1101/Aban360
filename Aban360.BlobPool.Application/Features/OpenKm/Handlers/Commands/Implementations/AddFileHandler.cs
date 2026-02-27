@@ -1,5 +1,6 @@
 ﻿using Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts;
 using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Contracts;
+using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Querys.Contracts;
 using Aban360.BlobPool.Domain.Features.DmsServices.Dto.Commands;
 using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.BlobPool.Persistence.Features.DmsServices.Queries.Contracts;
@@ -14,11 +15,13 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
         private readonly IOpenKmQueryService _openKmQueryService;
         private readonly IAddOrUpdateMetaDataHandler _addMetaHandler;
         private readonly IOpenKmMetaDataQueryServices _matadataService;
+        private readonly ICreateFolderHandler _createFolderHandler;
 
         public AddFileHandler(
             IOpenKmQueryService openKmQueryService,
             IAddOrUpdateMetaDataHandler addMetaHandler,
-            IOpenKmMetaDataQueryServices metadataService)
+            IOpenKmMetaDataQueryServices metadataService,
+            ICreateFolderHandler createFolderHandler)
         {
             _openKmQueryService = openKmQueryService;
             _openKmQueryService.NotNull(nameof(openKmQueryService));
@@ -28,6 +31,10 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
 
             _matadataService = metadataService;
             _matadataService.NotNull(nameof(_addMetaHandler));
+
+            _createFolderHandler = createFolderHandler;
+            _createFolderHandler.NotNull(nameof(_createFolderHandler));
+
         }
    
         public async Task<AddFileDto> Handle(AddFormFileInput input, CancellationToken cancellationToken)

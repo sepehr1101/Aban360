@@ -35,6 +35,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
         {
             ZoneIdAndCustomerNumberOutputDto zoneIdCustomerNumber = await _customerInfoService.GetZoneIdCustomerNumber(input);
             IEnumerable<BillInstallmentOutputDto> data = await _ghestAbQueryService.Get(zoneIdCustomerNumber);
+            foreach (var dataItem in data)
+            {
+                dataItem.BillId = input;
+                dataItem.PaymentId = TransactionIdGenerator.GeneratePaymentId(dataItem.Payable, input, $"00{dataItem.QueueNumber}");
+            }
             MemberGetDto memberInfo = await _membersQueryService.Get(input);
 
             return GetResult(data, memberInfo);

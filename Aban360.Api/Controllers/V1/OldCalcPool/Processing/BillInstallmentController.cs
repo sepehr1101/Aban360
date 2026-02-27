@@ -50,7 +50,6 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
             return Ok(result);
         }
 
-
         [HttpPost]
         [Route("sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]

@@ -13,6 +13,7 @@ using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.ClaimPool.Persistence.Features.WasteWater.Queries.Contracts;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Extensions;
+using Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implementations;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations
 {
@@ -28,6 +29,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         private readonly ICompanyServiceQueryService _companyServiceQueryService;
         private readonly IMeterMaterialQueryService _meterMaterialQueryService;
         private readonly IOpenKmMetaDataQueryServices _openKmMetaDataQueryService;
+        private readonly IGuildQueryHandler _guildQueryHandler;
 
         public AssessmentTaskGetAllHandler(
             IAssessmentTaskQueryService assessmentTaskQueryService,
@@ -39,7 +41,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             IDiscountTypeQueryService discountTypeQueryService,
             ICompanyServiceQueryService companyServiceQueryService,
             IMeterMaterialQueryService meterMaterialQueryService,
-            IOpenKmMetaDataQueryServices openKmMetaDataQueryService)
+            IOpenKmMetaDataQueryServices openKmMetaDataQueryService,
+            IGuildQueryHandler guildQueryHandler)
         {
             _assessmentTaskQueryService = assessmentTaskQueryService;
             _assessmentTaskQueryService.NotNull(nameof(assessmentTaskQueryService));
@@ -68,8 +71,11 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             _meterMaterialQueryService = meterMaterialQueryService;
             _meterMaterialQueryService.NotNull(nameof(meterMaterialQueryService));
 
-            _openKmMetaDataQueryService= openKmMetaDataQueryService;
+            _openKmMetaDataQueryService = openKmMetaDataQueryService;
             _openKmMetaDataQueryService.NotNull(nameof(openKmMetaDataQueryService));
+
+            _guildQueryHandler = guildQueryHandler;
+            _guildQueryHandler.NotNull(nameof(guildQueryHandler));
         }
 
         public async Task<AssessmentTasksOutputDto> Handle(int assessmentCode, CancellationToken cancellationToken)
@@ -98,6 +104,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
             IEnumerable<StringDictionary> BlockCodeDictionary = GetBlockCodes();
 
+            IEnumerable<NumericDictionary> guildDictionary =  await _guildQueryHandler.Handle(cancellationToken);
+
 
             IEnumerable<AssessmentLocationInfoOutputDto> locationsInfo = await GetLocationsInfo(assessmentCode);
 
@@ -112,7 +120,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 DiscountTypes = discountTypeDictionary,
                 MeterMaterials = meterMaterialDictionary,
                 ArchiveFileTypes = archiveFileTypesDictionary,
-                BlockCodes = BlockCodeDictionary
+                BlockCodes = BlockCodeDictionary,
+                Guilds = guildDictionary,
             };
         }
         private async Task<IEnumerable<AssessmentLocationInfoOutputDto>> GetLocationsInfo(int assessmentCode)
