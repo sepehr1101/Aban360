@@ -13,16 +13,16 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Validations
                .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(m => m.CurrentCounterStateCode)
-               .NotNull().WithMessage(ExceptionLiterals.NotNull) ;
+            //RuleFor(m => m.CurrentCounterStateCode)
+            //   .NotNull().WithMessage(ExceptionLiterals.NotNull) ;
 
-            RuleFor(m=>m.CurrentNumber)
-               .NotNull().WithMessage(ExceptionLiterals.NotNull)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
+            //RuleFor(m=>m.CurrentNumber)
+            //   .NotNull().WithMessage(ExceptionLiterals.NotNull)
+            //   .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(m=>m.CurrentDateJalali)
-               .NotNull().WithMessage(ExceptionLiterals.NotNull)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
+            //RuleFor(m=>m.CurrentDateJalali)
+            //   .NotNull().WithMessage(ExceptionLiterals.NotNull)
+            //   .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
         }
     }
 }
