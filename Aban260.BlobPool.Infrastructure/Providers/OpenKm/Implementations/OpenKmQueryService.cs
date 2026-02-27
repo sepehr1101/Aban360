@@ -10,6 +10,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using System.Web;
 
 namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
 {
@@ -17,6 +18,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
     {
         const string applicationJson = @"application/json";
         string applicationXml = "application/xml";
+        string plainText = @"text/plain";
         private readonly HttpClient _httpClient;
         private readonly OpenKmOptions _options;
         private readonly IMemoryCache _cache;
@@ -132,7 +134,19 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             {
                 throw new InvalidBillIdException(isDiscount ? ExceptionLiterals.InvalidDiscountFileName : ExceptionLiterals.BillIdNotFound);
             }
-            return await response.Content.ReadFromJsonAsync<FileListResponse>(_jsonOptions);
+            try
+            {
+                return await response.Content.ReadFromJsonAsync<FileListResponse>(_jsonOptions);
+            }
+            catch
+            {
+                FileListResponseSingle document = await response.Content.ReadFromJsonAsync<FileListResponseSingle>(_jsonOptions);
+                FileListResponse documents = new FileListResponse()
+                {
+                    Documents = [document.Document]
+                };
+                return documents;
+            }
         }
 
         public async Task<byte[]> GetFileBinary(string documentId)
@@ -249,10 +263,17 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
         public async Task<bool> CheckFolderExists(string fldId)
         {            
             AuthenticationHeaderValue authHeader = await GetAuthenticationHeaderAsync();
-            string requestUrl = $"{_options.PathExistsEndpoint}/{fldId}";
-            var response = await _httpClient.GetAsync(requestUrl);
+            string requestUrl = $"{_options.BaseUrl}{_options.PathExistsEndpoint}?fldId={HttpUtility.UrlEncode(_options.BaseDirectoryPath)}{fldId}";
+            using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+            request.Headers.Authorization = authHeader;
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(plainText));
+            var response = await _httpClient.SendAsync(request);
+            if(await response.Content.ReadAsStringAsync()== "PathNotFoundException: Invalid path")
+            {
+                return false;
+            }
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<bool>(_jsonOptions);
+            return true;
         }
         public async Task<AddFileDto> AddFile(string path, StreamContent content, string fileName)
         {           

@@ -21,9 +21,9 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Commands
         [Route("create-folder")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<string>), StatusCodes.Status200OK)]
         [AllowAnonymous]
-        public async Task<IActionResult> CreateFolder(string billId, CancellationToken cancellation)
+        public async Task<IActionResult> CreateFolder(string folderName, CancellationToken cancellation)
         {
-            string uuid = await _createFolderHandler.Handle(billId, cancellation);
+            string uuid = await _createFolderHandler.Handle(folderName, cancellation);
             return Ok(uuid);
         }
     }

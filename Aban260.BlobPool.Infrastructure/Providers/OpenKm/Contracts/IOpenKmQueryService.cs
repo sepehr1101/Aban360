@@ -14,6 +14,7 @@ namespace Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts
         Task<SearchDocumentsResponse> SearchDocuments(string folderPath, string property, string path);
         Task<MetaDataProperties> GetMetaDataProperties(string documentId);
         Task<AuthenticationHeaderValue> GetAuthenticationHeaderAsync();
+        Task<bool> CheckFolderExists(string fldId);
 
         //commands
         Task<AddFileDto> AddFile(string path, StreamContent content, string fileName);
