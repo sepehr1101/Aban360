@@ -15,9 +15,14 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
 
         public async Task<string> Handle(string folderName, CancellationToken cancellationToken)
         {
-            string uuid= await _openKmQueryService.CreateFolder(folderName);
-            await _openKmQueryService.MarkNodeAsMetadatable(uuid, false);
-            return uuid;
+            bool doesFolderExist = await _openKmQueryService.CheckFolderExists(folderName);
+            if (!doesFolderExist)
+            {
+                string uuid = await _openKmQueryService.CreateFolder(folderName);
+                await _openKmQueryService.MarkNodeAsMetadatable(uuid, false);
+                return uuid;
+            }
+            return string.Empty;
         }
     }
 }

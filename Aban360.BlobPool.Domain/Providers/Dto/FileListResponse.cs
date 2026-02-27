@@ -7,6 +7,11 @@ namespace Aban360.BlobPool.Domain.Providers.Dto
         [JsonPropertyName("document")]
         public List<Document> Documents { get; set; }
     }
+    public class FileListResponseSingle
+    {
+        [JsonPropertyName("document")]
+        public Document Document { get; set; }
+    }
 
     public class Document
     {
