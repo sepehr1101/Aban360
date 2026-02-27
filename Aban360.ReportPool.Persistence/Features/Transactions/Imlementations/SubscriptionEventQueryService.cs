@@ -215,7 +215,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						c.BillId AS LastBillId,
 						c.GuildTitle AS GuildTitle,
 						'-' AS JobTitle,
-                    	c.UsageTitle2 AS UsageTitle,
+                    	c.UsageTitle AS UsageTitle,
                     	c.CommercialCount+c.DomesticCount+c.OtherCount AS TotalUnit,
                     	c.ContractCapacity AS ContractualCapacity,
 						0 AS HasTag,
