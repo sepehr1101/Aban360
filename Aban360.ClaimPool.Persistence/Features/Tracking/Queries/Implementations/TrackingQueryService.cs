@@ -24,7 +24,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
             IEnumerable<TrackingDisplayFlowDateOutputDto> data = await GetDataByTrackNumber(trackNumber);
             string dbName = GetDbName(data.FirstOrDefault().ZoneId);
             TrackingDisplayFlowHeaderOutputDto header = await GetHeaderByTrackNumber(trackNumber, dbName);
-
+            header.BillId = data.LastOrDefault().BillId;
             return new ReportOutput<TrackingDisplayFlowHeaderOutputDto, TrackingDisplayFlowDateOutputDto>(_title, header, data);
         }
         private async Task<IEnumerable<TrackingDisplayFlowDateOutputDto>> GetDataByTrackNumber(int trackNumber)
@@ -63,7 +63,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
                     	u.DisplayName UserDisplayName,
                     	s.HasDetails,
                     	s.HasSms,
-						t.Description
+						t.Description,
+                        t.BillId
                     From [AbAndFazelab].dbo.Tracking t
                     Join [AbAndFazelab].dbo.Status s
                     	On t.Status=s.StatusID
@@ -77,6 +78,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
             return $@"Select 
                     	m.town ZoneId,
                     	t51.C2 ZoneTitle,
+                        IIF(m.radif=0, 0, 1) HasBillId,
                     	m.radif CustomerNumber,
                     	TRIM(m.name) FirstName,
                     	TRIM(m.family) Surname,

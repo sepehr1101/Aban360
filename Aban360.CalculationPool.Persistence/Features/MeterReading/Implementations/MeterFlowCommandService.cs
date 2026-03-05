@@ -50,6 +50,11 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                 throw new ReadingException(ExceptionLiterals.InvalidMeterFlow);
             }
         }
+        public async Task Delete(MeterFlowDeleteDto input)
+        {
+            string command= GetDeleteCommand();
+            await _connection.ExecuteAsync(command, input,_transaction);
+        }
 
         private string GetInsertCommand()
         {
@@ -71,6 +76,13 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                         Set RemovedDateTime=@RemovedDateTime , RemovedByUserId=@RemovedByUserId
                         Where Id=@id";
         }
-
+        private string GetDeleteCommand()
+        {
+            return @"Update Atlas.dbo.MeterFlow	
+                    Set 
+                    	RemovedByUserId=@RemovedByUserId ,
+                    	RemovedDateTime=@RemovedDateTime
+                    Where Id=@Id";
+        }
     }
 }

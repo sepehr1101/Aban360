@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
 {
     [Route("v1/subscription-assignment")]    
-    public class SubscriptionAssignmentGetSingleController : ControllerBase
+    public class SubscriptionAssignmentGetSingleController : BaseController
     {
         private readonly IUnitOfWork _uow;
         private readonly ISubscriptionAssignmentGetHandler _getSingleHandler;

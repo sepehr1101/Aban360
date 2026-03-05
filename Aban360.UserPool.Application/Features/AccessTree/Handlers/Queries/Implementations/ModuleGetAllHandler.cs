@@ -25,7 +25,14 @@ namespace Aban360.UserPool.Application.Features.AccessTree.Handlers.Queries.Impl
         public async Task<ICollection<ModuleGetDto>> Handle(CancellationToken cancellationToken)
         {
             ICollection<Module> module = await _moduleQueryService.GetInclude();
-            return _mapper.Map<ICollection<ModuleGetDto>>(module);
+            ICollection<ModuleGetDto> list = _mapper.Map<ICollection<ModuleGetDto>>(module);
+            foreach (var item in list)
+            {
+                string description = string.IsNullOrWhiteSpace(item.Description) ?string.Empty:$"-{item.Description}";
+                item.Title = $"{item.Title}{description}";
+            }
+
+            return list;
         }
     }
 }

@@ -9,10 +9,8 @@ using Aban360.Common.Db.Dapper;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
-using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Implementations;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
-using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using DNTPersianUtils.Core;
@@ -29,7 +27,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         private readonly IOldTariffEngine _oldTariffEngine;
         private readonly IVariabService _variabService;
         const int _paymentDeadline = 7;
-
+        const int _maxPayIdLen = 13;
         public CalculationConfirmationHandler(
             IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
             IMeterReadingDetailQueryService meterReadingDetailService,
@@ -187,7 +185,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 KasrHa = (decimal)meterReading.DiscountSum,
                 FixMas = meterReading.ContractualCapacity,
                 ShGhabs1 = meterReading.BillId,
-                ShPard1 = paymentId,
+                ShPard1 = paymentId.Length <= _maxPayIdLen ? paymentId : string.Empty,
                 TabAbnA = 0,
                 TabAbnF = 0,
                 TabsFa = 0,

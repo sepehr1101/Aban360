@@ -134,13 +134,14 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             {
                 throw new InvalidBillIdException(isDiscount ? ExceptionLiterals.InvalidDiscountFileName : ExceptionLiterals.BillIdNotFound);
             }
+            string stringContent = await response.Content.ReadAsStringAsync();
             try
-            {
-                return await response.Content.ReadFromJsonAsync<FileListResponse>(_jsonOptions);
+            {                
+                return JsonSerializer.Deserialize<FileListResponse>(stringContent, _jsonOptions);
             }
-            catch
-            {
-                FileListResponseSingle document = await response.Content.ReadFromJsonAsync<FileListResponseSingle>(_jsonOptions);
+            catch (Exception e)
+            {                
+                FileListResponseSingle document = JsonSerializer.Deserialize<FileListResponseSingle>(stringContent, _jsonOptions);
                 FileListResponse documents = new FileListResponse()
                 {
                     Documents = [document.Document]

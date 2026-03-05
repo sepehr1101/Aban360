@@ -12,5 +12,6 @@
         public bool HasDetails { get; set; }
         public bool HasSms { get; set; }
         public string? Description { get; set; }
+        public string? BillId { get; set; }
     }
 }
