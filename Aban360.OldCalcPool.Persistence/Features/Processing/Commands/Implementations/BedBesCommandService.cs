@@ -41,7 +41,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 
             return recordCount.Value;
         }
-        public async Task Insert(ICollection<BedBesCreateDto> input,string dbName)
+        public async Task Insert(ICollection<BedBesCreateDto> input, string dbName)
         {
             //using (var connection = _connection)
             //{
@@ -79,7 +79,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 
             await bulk.WriteToServerAsync(dt);
         }
-        public async Task Delete(int id,int zoneId, string dbName)
+        public async Task Delete(int id, int zoneId, string dbName)
         {
             string query = GetDeleteQuery(dbName);
             int rowsAffected = await _connection.ExecuteAsync(query, new { id, zoneId }, _transaction);
@@ -89,20 +89,19 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                 throw new ReadingException(ExceptionLiterals.NotFoundBillsToRemoved);
             }
         }
-        public async Task UpdateDel(IEnumerable<BedBesUpdateDelDto> input)
+        public async Task UpdateDel(IEnumerable<BedBesUpdateDelDto> input, string dbName)
         {
-            //string dbName = GetDbName(input.FirstOrDefault().ZoneId);
-            string dbName = "Atlas";
             string command = GetUpdateDelCommand(dbName);
-            await _connection.ExecuteAsync(command, input);
+            await _connection.ExecuteAsync(command, input, _transaction);
         }
-        public async Task UpdateDel(BedBesUpdateDelWithDateDto input)
+        public async Task UpdateDel(BedBesUpdateDelWithDateDto input, string dbName)
         {
-            //string dbName = GetDbName(input.ZoneId);
-            string dbName = "Atlas";
             string command = GetUpdateDelWithDateCommand(dbName);
-            await _connection.ExecuteAsync(command, input);
-
+            int recordCount = await _connection.ExecuteAsync(command, input, _transaction);
+            if (recordCount <= 0)
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvalidSaveReturn);
+            }
         }
 
         public DataTable ToDataTable(IEnumerable<BedBesCreateDto> items)
@@ -330,7 +329,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     		today_date<=@ToDateJalali
                     )
                     Update bills
-                    Set del=Del";
+                    Set del=@Del";
         }
     }
 }

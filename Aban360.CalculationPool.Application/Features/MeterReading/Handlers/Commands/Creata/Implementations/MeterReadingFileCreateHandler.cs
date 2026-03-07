@@ -179,7 +179,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     {
                         transaction.Rollback();
                         await meterFlowCommand.Delete(meterFlowDeleteDto);
-                        DeleteFromDisk(filePath);//todo:Error
+                        //DeleteFromDisk(filePath);//todo:Error
                     }
                 }
             }

@@ -37,7 +37,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         {
             return $@"Update CustomerWarehouse.dbo.WaterDebt
                     Set Debt=Debt+@Amount
-                    Where BillId=@billId";
+                    Where TRIM(BillId)=@billId";
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using Aban360.Common.Db.Dapper;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Contracts;
 using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Commands;
 using Dapper;
@@ -17,7 +19,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Implement
         {
             //string dbName = GetDbName((int)input.Town);
             string dbName = "Atlas";
-            string query = GetCreateQuery(dbName);  
+            string query = GetCreateQuery(dbName);
 
             await _sqlReportConnection.ExecuteScalarAsync(query, input);
         }
@@ -27,7 +29,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Implement
             string dbName = "Atlas";
             string query = GetCreateQuery(dbName);
 
-            await _sqlReportConnection.ExecuteAsync(query, input);
+            int recordCount = await _sqlReportConnection.ExecuteAsync(query, input);
+            if (recordCount <= 0)
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvalidSaveReturn);
+            }
         }
         private string GetCreateQuery(string dbName)
         {

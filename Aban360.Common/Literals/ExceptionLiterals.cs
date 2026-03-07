@@ -103,7 +103,8 @@
         public static string RepairAmountMoreThanBedBesAmount => "مبلغ برگشتی از مبلغ قبوض بیشتر است.";
         public static string InvalidBillWithDel => "در بازه وارد شده، قبض برگشتی وجود دارد.";
         public static string InvalidReturnDuplicate => "قبلا قبضی با اطلاعات وارد شده برگشت داده شده است.";
-
+        public static string InvalidSaveReturn => "خطا در ذخیره برگشتی";
+        public static string InvalidConfirmedReturn => "خطا در ذخیره تایید برگشتی";
 
         //Tax
         public static string InvalidMaaherWrapperInsert => "خطا در درج دسته مالیات";
