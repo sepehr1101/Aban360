@@ -1,4 +1,4 @@
-﻿using Aban360.BlobPool.Application.Features.Base;
+﻿using Aban360.ClaimPool.Application.Features.Base.Validations;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;

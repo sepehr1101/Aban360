@@ -10,10 +10,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 {
     public sealed class MoshtrakCommandService //: AbstractBaseConnection, IMoshtrakCommandService
     {
-        private readonly SqlConnection _sqlConnection;
+        private readonly IDbConnection _sqlConnection;
         private readonly IDbTransaction _transaction;
         public MoshtrakCommandService(
-            SqlConnection sqlConnection,
+            IDbConnection sqlConnection,
             IDbTransaction transaction)
         {
             _sqlConnection = sqlConnection;
@@ -23,16 +23,79 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
             _transaction.NotNull(nameof(transaction));
         }
 
+        public async Task Insert(MoshtrakCreateDto input, string dbName)
+        {
+            string command = GetInsertCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, input, _transaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertTracking);
+            }
+        }
         public async Task Update(MoshtrkUpdateDto input, string dbName)
         {
             string command = GetUpdateCommand(dbName);
-            int recordCount = await _sqlConnection.ExecuteAsync(command, input);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, input, _transaction);
             if (recordCount != 1)
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateMoshtrakin);
             }
         }
 
+     //   private string GetInsertCommand(string dbName)
+     //   {
+     //       return $@"Insert [{dbName}].dbo.moshtrak(
+					//	town,radif,par_no,name,family,
+					//	father_nam,date_ask,address,s0,s1,
+					//	meli_cod,post_cod,phone_no,mobile,ICT_CO,
+					//	TrackingNumber,NeighbourBillID)
+					//Values(
+					//	@ZoneId ,@CustomerNumber ,@StringTrackNumber ,@FirstName ,@Surname	,
+					//	@FatherName ,@CurrentDateJalali ,@Address ,@s0 ,@s1 ,
+					//	@NationalCode ,@PostalCode ,@PhoneNumber ,@MobileNumber ,@InsertWayTitle ,
+					//	@TrackNumber ,@NeighbourBillId) ";
+     //   }
+        private string GetInsertCommand(string dbName)
+        {
+            return $@"Insert [{dbName}].dbo.moshtrak(
+						town,radif,par_no,name,family,
+						father_nam,date_ask,date,address,
+						meli_cod,post_cod,phone_no,mobile,ICT_CO,
+						TrackingNumber,NeighbourBillID,
+					    eshtrak,arse,aian,aian_mas,
+					    aian_tej,tedad_mas,tedad_tej,tedad_vahd,noe_va,
+					    enshab,master_sif,sif_1,sif_2,sif_3,
+					    sif_4,sif_mosh_1,cod_enshab,
+					    s0,s2,s1,s3,s4,s5,
+					    s8,s9,s10,s11,s12,
+					    s13,s14,s15,s16,s17,
+					    s18,s19,s20,s21,s22,
+					    s23,s24,s25,s26,s27,
+					    s28,s29,s30,s31,s32,
+					    s33,s34,s35,s36,s37,
+					    s38,s39,s40,s41,s42,
+					    s43,s44,s45,s46,s47,
+					    s48,edareh_k,fix_mas)
+					Values(
+						@ZoneId ,@CustomerNumber ,@StringTrackNumber ,@FirstName ,@Surname	,
+						@FatherName ,@CurrentDateJalali ,@CurrentDateJalali ,@Address ,
+						@NationalCode ,@PostalCode ,@PhoneNumber ,@MobileNumber ,@InsertWayTitle ,
+						@TrackNumber ,@NeighbourBillId,
+						@ReadingNumber ,@Premises ,@ImprovementOverall ,@ImprovementDomestic ,
+						@ImprovementCommertial ,@DomesticUnit ,@CommertialUnit ,@OtherUnit ,@BranchTypeId ,
+						@MeterDiameterId ,@MainSiphon ,@Siphon100 ,@Siphon125 ,@Siphon150 ,
+						@Siphon200 ,@CommonSiphon ,@UsageId ,
+						@s0 ,@s1 ,@s2 ,@s3 ,@s4 ,@s5 ,
+						@s8 ,@s9 ,@s10 ,@s11 ,@s12 ,
+						@s13 ,@s14 ,@s15 ,@s16 ,@s17 ,
+						@s18 ,@s19 ,@s20 ,@s21 ,@s22 ,
+						@s23 ,@s24 ,@s25 ,@s26 ,@s27 ,
+						@s28 ,@s29 ,@s30 ,@s31 ,@s32 ,
+						@s33 ,@s34 ,@s35 ,@s36 ,@s37 ,
+						@s38 ,@s39 ,@s40 ,@s41 ,@s42 ,
+						@s43 ,@s44 ,@s45 ,@s46 ,@s47 ,
+						@s48 ,@IsSpecial ,@ContractualCapacity) ";
+        }
         private string GetUpdateCommand(string dbName)
         {
             return $@"Update [{dbName}].dbo.moshtrak

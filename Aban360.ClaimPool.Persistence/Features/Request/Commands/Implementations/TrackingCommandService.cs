@@ -10,10 +10,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 {
     public sealed class TrackingCommandService //: AbstractBaseConnection, ITrackingCommandService
     {
-        private readonly SqlConnection _sqlConnection;
+        private readonly IDbConnection _sqlConnection;
         private readonly IDbTransaction _transaction;
         public TrackingCommandService(
-            SqlConnection sqlConnection,
+            IDbConnection sqlConnection,
             IDbTransaction transaction)
         {
             _sqlConnection = sqlConnection;
@@ -23,29 +23,53 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
             _transaction.NotNull(nameof(transaction));
         }
 
+        public async Task InsertDuplicate(TrackingInsertDuplicateDto inputDto)
+        {
+            string command = GetInsertDuplicateCommand();
+            int recordCount = await _sqlConnection.ExecuteAsync(command, inputDto, _transaction);
+            if (recordCount < 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertTracking);
+            }
+        }
         public async Task Insert(TrackingInsertDto inputDto)
         {
-            string dbName = "AbAndFazelab";
-            //string dbName = "--";
-            string command = GetInsertCommand(dbName);
-            int recordCount = await _sqlConnection.ExecuteAsync(command, inputDto);
-            if (recordCount < 0)
+            string command = GetInsertCommand();
+            int recordCount = await _sqlConnection.ExecuteAsync(command, inputDto, _transaction);
+            if (recordCount <= 0)
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertTracking);
             }
         }
         public async Task UpdateIsConsiderdLatest(int trackNumber, bool isConsiderd)
         {
-            string dbName = "AbAndFazelab";
-            //string dbName = "--";
-            string command = GetUpdateIsConsiderdCommand(dbName);
-            int recordCount = await _sqlConnection.ExecuteAsync(command, new { trackNumber, isConsiderd });
+            string command = GetUpdateIsConsiderdCommand();
+            int recordCount = await _sqlConnection.ExecuteAsync(command, new { trackNumber, isConsiderd }, _transaction);
+            if (recordCount < 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertTracking);
+            }
         }
 
 
-        private string GetInsertCommand(string dbName)//remove dbName:forTest
+        private string GetInsertCommand()
         {
-            return $@"Insert [{dbName}].dbo.Tracking
+            return $@"Insert Into AbAndFazelab.dbo.Tracking(
+                    	TrackID,TrackNumber,ZoneID,
+                    	DateAndTime,DateTimeJalali,BillID,
+                    	ServiceGroup_FK,Status,IsConsiderd,
+                    	InserrtedBy,Description,NotificationMobile,
+                    	NeighbourBillId,RequestOrigin)
+                    Values(
+                        @TrackId ,@TrackNumber ,@ZoneId ,
+                        @CurrentDateGregorian ,@CurrentDateJalali ,@BillId ,
+                        @ServiceGroupId ,@StatusId ,0 ,
+                        @InsertByUserId ,@Description ,@NotificationMobile ,
+                        @NeighbourBillId ,@RequestOrigin)";
+        }
+        private string GetInsertDuplicateCommand()
+        {
+            return $@"Insert [AbAndFazelab].dbo.Tracking
 					Select Top 1
 						NEWID() TrackId,
 						t.TrackNumber,
@@ -76,11 +100,11 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 					Where t.TrackNumber=@trackNumber
 					Order By t.DateAndTime DESC";
         }
-        private string GetUpdateIsConsiderdCommand(string dbName)//todo : use DateAndTime insteadof DateTimeJalali
+        private string GetUpdateIsConsiderdCommand()//todo : use DateAndTime insteadof DateTimeJalali
         {
             return $@"WITH FirstRecord AS (
                         SELECT TOP 1 IsConsiderd
-                        FROM[{dbName}].dbo.Tracking
+                        FROM[AbAndFazelab].dbo.Tracking
                         WHERE TrackNumber = @trackNumber
                         ORDER BY DateTimeJalali DESC
                     )
