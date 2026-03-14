@@ -153,6 +153,8 @@
         public static string InvalidDiscountFileName => "اطلاعات در این پوشه یافت نشد";
         public static string InvalidOpenRequest(string trackNumber) => $"شمار دارای درخواست نیمه تمام با شماره پیگیری {trackNumber} هستید. ";
 
+        public static string NotFountOpenRequest => "درخواستی با وضعیت نیمه‌تمام یافت نشد.";
+        public static string CantSetTime => "امکان انتساب زمانبندی ارزیابی وجود ندارد";
         public static string InvalidDuplicateDeletionState => "خطا در تغییر وضعیت کنتور - وضعیت تکراری";
     }
 }

@@ -71,7 +71,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
         {
             return $@"Insert [AbAndFazelab].dbo.Tracking
 					Select Top 1
-						NEWID() TrackId,
+						@TrackId TrackId,
 						t.TrackNumber,
 						t.ZoneId,
 						GETDATE() DateAndTime,

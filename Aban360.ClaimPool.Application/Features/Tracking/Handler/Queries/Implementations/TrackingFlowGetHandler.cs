@@ -8,8 +8,8 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
 {
     internal sealed class TrackingFlowGetHandler : ITrackingFlowGetHandler
     {
-        private readonly ITrackingQueryService _trackingQueryService;
-        public TrackingFlowGetHandler(ITrackingQueryService trackingQueryService)
+        private readonly ITrackingKartableQueryService _trackingQueryService;
+        public TrackingFlowGetHandler(ITrackingKartableQueryService trackingQueryService)
         {
             _trackingQueryService = trackingQueryService;
             _trackingQueryService.NotNull(nameof(trackingQueryService));

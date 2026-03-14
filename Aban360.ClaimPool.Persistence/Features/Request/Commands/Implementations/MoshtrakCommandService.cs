@@ -41,20 +41,29 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateMoshtrakin);
             }
         }
+        public async Task UpdateSabt(MoshtrakSabtUpdateDto input, string dbName)
+        {
+            string command = GetUpdateSabtCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, input, _transaction);
+            if (recordCount != 1)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
+        }
 
-     //   private string GetInsertCommand(string dbName)
-     //   {
-     //       return $@"Insert [{dbName}].dbo.moshtrak(
-					//	town,radif,par_no,name,family,
-					//	father_nam,date_ask,address,s0,s1,
-					//	meli_cod,post_cod,phone_no,mobile,ICT_CO,
-					//	TrackingNumber,NeighbourBillID)
-					//Values(
-					//	@ZoneId ,@CustomerNumber ,@StringTrackNumber ,@FirstName ,@Surname	,
-					//	@FatherName ,@CurrentDateJalali ,@Address ,@s0 ,@s1 ,
-					//	@NationalCode ,@PostalCode ,@PhoneNumber ,@MobileNumber ,@InsertWayTitle ,
-					//	@TrackNumber ,@NeighbourBillId) ";
-     //   }
+        //   private string GetInsertCommand(string dbName)
+        //   {
+        //       return $@"Insert [{dbName}].dbo.moshtrak(
+        //	town,radif,par_no,name,family,
+        //	father_nam,date_ask,address,s0,s1,
+        //	meli_cod,post_cod,phone_no,mobile,ICT_CO,
+        //	TrackingNumber,NeighbourBillID)
+        //Values(
+        //	@ZoneId ,@CustomerNumber ,@StringTrackNumber ,@FirstName ,@Surname	,
+        //	@FatherName ,@CurrentDateJalali ,@Address ,@s0 ,@s1 ,
+        //	@NationalCode ,@PostalCode ,@PhoneNumber ,@MobileNumber ,@InsertWayTitle ,
+        //	@TrackNumber ,@NeighbourBillId) ";
+        //   }
         private string GetInsertCommand(string dbName)
         {
             return $@"Insert [{dbName}].dbo.moshtrak(
@@ -177,6 +186,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 							CounterType=@CounterType,
 							fix_mas=@ContractualCapacity ,
 							zarib_f=@HouseValue
+						Where TrackingNumber=@TrackNumber";
+        }
+        private string GetUpdateSabtCommand(string dbName)
+        {
+            return $@"Update [{dbName}].dbo.moshtrak
+						Set sabt=@IsRegister 
 						Where TrackingNumber=@TrackNumber";
         }
     }

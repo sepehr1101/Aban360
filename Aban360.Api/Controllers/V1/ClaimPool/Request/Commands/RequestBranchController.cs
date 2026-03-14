@@ -1,5 +1,9 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
+using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
@@ -13,15 +17,25 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
     {
         private readonly IRequestNewBranchHandler _requestNewBranchHandler;
         private readonly IRequestAfterSaleHandler _requestAfterSaleHandler;
+        private readonly IRequestDuplicateValidation _requestDuplicateValidation;
+        private readonly ICloseRequestHandler _closeRequestHandle;
         public RequestBranchController(
             IRequestNewBranchHandler requestNewBranchHandler,
-            IRequestAfterSaleHandler requestAfterSaleHandler)
+            IRequestAfterSaleHandler requestAfterSaleHandler,
+            IRequestDuplicateValidation requestDuplicateValidation,
+            ICloseRequestHandler closeRequestHandle)
         {
             _requestNewBranchHandler = requestNewBranchHandler;
             _requestNewBranchHandler.NotNull(nameof(requestNewBranchHandler));
 
             _requestAfterSaleHandler = requestAfterSaleHandler;
             _requestAfterSaleHandler.NotNull(nameof(requestAfterSaleHandler));
+
+            _requestDuplicateValidation = requestDuplicateValidation;
+            _requestDuplicateValidation.NotNull(nameof(requestDuplicateValidation));
+
+            _closeRequestHandle = closeRequestHandle;
+            _closeRequestHandle.NotNull(nameof(closeRequestHandle));
         }
 
         [HttpPost]
@@ -43,6 +57,38 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             int userCode = GetUserCode();
             await _requestAfterSaleHandler.Handle(inputDto, userCode, cancellationToken);
             return Ok(inputDto);
+        }
+
+
+        [HttpPost]
+        [Route("is-duplicate/new")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<TrackingDuplicateValidationOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> IsDuplicateNewRequest([FromBody] NewTrackingDuplicateValidationInputDto inputDto, CancellationToken cancellationToken)
+        {
+            TrackingDuplicateValidationInputDto totalValidation = new(null, inputDto.NeighbourBillId, inputDto.NationalCode, TrackingDuplicateValidationTypeEnum.ByNationalCode);
+            TrackingDuplicateValidationOutputDto result = await _requestDuplicateValidation.Handle(totalValidation, cancellationToken);
+            return Ok(result);
+        }
+
+
+        [HttpPost]
+        [Route("is-duplicate/a-s")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<TrackingDuplicateValidationOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> IsDuplicateAfterSaleRequest([FromBody] AfterSaleTrackingDuplicateValidationInputDto inputDto, CancellationToken cancellationToken)
+        {
+            TrackingDuplicateValidationInputDto totalValidation = new(inputDto.BillId, null, null, TrackingDuplicateValidationTypeEnum.ByBillId);
+            TrackingDuplicateValidationOutputDto result = await _requestDuplicateValidation.Handle(totalValidation, cancellationToken);
+            return Ok(result);
+        }
+
+
+        [HttpPost]
+        [Route("close")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<RequestCloseOuputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> CloseRequest([FromBody] SearchInput inputDto, CancellationToken cancellationToken)
+        {
+            RequestCloseOuputDto result = await _closeRequestHandle.Handle(int.Parse(inputDto.Input), cancellationToken);
+            return Ok(result);
         }
 
         private int GetUserCode()

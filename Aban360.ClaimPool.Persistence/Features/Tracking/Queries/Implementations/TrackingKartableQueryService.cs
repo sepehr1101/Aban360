@@ -7,14 +7,13 @@ using Aban360.Common.Literals;
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementations
 {
-    internal sealed class TrackingQueryService : AbstractBaseConnection, ITrackingQueryService
+    internal sealed class TrackingKartableQueryService : AbstractBaseConnection, ITrackingKartableQueryService
     {
         private static string _title = "پیگیری درخواست";
-        public TrackingQueryService(IConfiguration configuration)
+        public TrackingKartableQueryService(IConfiguration configuration)
             : base(configuration)
         {
         }
@@ -86,6 +85,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
                     Left join [Db70].dbo.t51 t51
                     	ON m.town=t51.C0
                     where m.trackingNumber=@trackNumber	";
+        }
+        private string GetDuplicateQuery()
+        {
+            return @"Select top 1  
+                    	ZoneID,
+                    	TrackNumber
+                    From AbAndFazelab.dbo.tracking 
+                    where tracknumber=@trackNumber
+                    Order by DateAndTime ";
         }
 
     }

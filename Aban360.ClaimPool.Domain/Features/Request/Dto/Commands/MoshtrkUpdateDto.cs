@@ -46,7 +46,7 @@ namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Commands
         public string PostalCode { get; set; }
         public bool IsNonPermanent { get; set; }
         public string Address { get; set; }
-       
+
         public string PreViewId { get; set; }
         public int CounterType { get; set; }
         public int InstallAgentState { get; set; }
@@ -100,5 +100,5 @@ namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Commands
         public int s46 { get; set; }
         public int s47 { get; set; }
         public int s48 { get; set; }
-    } 
+    }
 }

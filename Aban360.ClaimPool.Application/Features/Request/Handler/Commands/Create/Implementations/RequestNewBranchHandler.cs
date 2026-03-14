@@ -177,7 +177,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         }
         private TrackingInsertDto GetTrackingCreateDto(RequestNewBranchInputDto inputDto, int userName, int trackNumber, int zoneId)
         {
-
             return new TrackingInsertDto()
             {
                 TrackNumber = trackNumber,

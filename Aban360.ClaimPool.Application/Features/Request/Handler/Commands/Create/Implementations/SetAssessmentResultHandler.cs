@@ -36,7 +36,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         {
             await Validation(inputDto, cancellationToken);
             TrackingInsertDuplicateDto trackingInsertDto = new(inputDto.TrackNumber, _status, inputDto.Description, assessmentCode);
-            AssessmentInsertDto assessmentInsertDto = await GetAssessmentInsertDto(inputDto, assessmentCode);
+            AssessmentInsertDto assessmentInsertDto = await GetAssessmentInsertDto(inputDto, assessmentCode, trackingInsertDto.TrackId);
 
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -159,7 +159,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 s48 = serviceSelected.s48,
             };
         }
-        private async Task<AssessmentInsertDto> GetAssessmentInsertDto(AssessmentResultInputDto inputDto, int assessmentCode)
+        private async Task<AssessmentInsertDto> GetAssessmentInsertDto(AssessmentResultInputDto inputDto, int assessmentCode, Guid trackIdResult)
         {
             AssessmentGetDto assessmentData = await _assessmentQueryService.Get(assessmentCode);
             return new AssessmentInsertDto()
@@ -173,7 +173,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 ResultId = inputDto.ResultId,
                 Description = inputDto.Description,
                 TrackId = inputDto.TrackingId,
-                TrackIdResult = Guid.Empty,//todo
+                TrackIdResult = trackIdResult,
                 X1 = inputDto.X1,
                 Y1 = inputDto.Y1,
                 X2 = inputDto.X2,
