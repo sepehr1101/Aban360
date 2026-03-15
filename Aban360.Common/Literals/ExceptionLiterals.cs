@@ -147,6 +147,8 @@
         public static string InvalidDiscountCount => "تعداد تخفیف را وارد کنید";
 
         //Tracking
+        public static string CantUpdate => "امکان ویرایش وجود ندارد";
+        public static string NotFoundAnyOpenTrack => "درخواست باز یافت نشد.";
         public static string InvalidStateId => "وضعیت ارسالی یافت نشد.";
         public static string InvalidExaminerName => "کد ارزیابی صحیح نیست.";
         public static string InvalidUserName => "کد کاربری صحیح نیست.";

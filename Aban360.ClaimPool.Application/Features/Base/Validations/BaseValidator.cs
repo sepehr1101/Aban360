@@ -15,6 +15,11 @@ namespace Aban360.ClaimPool.Application.Features.Base.Validations
             input.Length == 11 &&
             input.StartsWith("09") &&
             IsDigit(input);
+        protected virtual bool IsValidMobileNumberOrNull(string? input) =>
+            string.IsNullOrEmpty(input) ||
+            (input.Length == 11 &&
+            input.StartsWith("09") &&
+            IsDigit(input));
         protected virtual bool IsValidPhoneNumber(string input) =>
             !string.IsNullOrEmpty(input) &&
             (input.Length == 8 || input.Length == 11) &&

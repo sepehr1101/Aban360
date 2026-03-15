@@ -8,7 +8,6 @@ using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using System.Data;
@@ -54,7 +53,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             TrackingOutputDto latestTrackingInfo = await Validation(input.TrackNumber);
 
             MoshtrakOutputDto moshtrakInfo = await GetMoshtrakInfo(latestTrackingInfo.ZoneId, input.TrackNumber);
-    
+
             TrackingInsertDuplicateDto trackingInsert = GetTrackingCreateDto(input, userName);
             AssessmentInsertDto assessmentInsert = await GetAssessmentInsertDto(input, latestTrackingInfo, trackingInsert.TrackId, moshtrakInfo);
 
@@ -98,7 +97,13 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         {
             MoshtrakGetDto moshtrakSearch = new(zoneId, null, null, trackNumber);
             IEnumerable<MoshtrakOutputDto> moshtrakListInfo = await _moshtrakQueryService.Get(moshtrakSearch, MoshtrakSearchTypeEnum.ByTrackNumber);
-            return moshtrakListInfo.Where(m => m.IsRegistered == false).FirstOrDefault();
+            MoshtrakOutputDto? validMoshtrackRequest = moshtrakListInfo.Where(m => m.IsRegistered == false).FirstOrDefault();
+            if (validMoshtrackRequest is null)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.NotFountOpenRequest);
+            }
+
+            return validMoshtrackRequest;
         }
         private TrackingInsertDuplicateDto GetTrackingCreateDto(AssessmentSetTimeInputDto inputDto, int userName)
         {

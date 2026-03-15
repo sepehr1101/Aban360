@@ -6,5 +6,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts
     {
         Task<TrackingOutputDto> GetFirstStep(int trackNumber);
         Task<TrackingOutputDto> GetLatest(int trackNumber);
+        Task<IEnumerable<TrackingKartableDataOutputDto>> GetAllOpenRequest();
     }
 }

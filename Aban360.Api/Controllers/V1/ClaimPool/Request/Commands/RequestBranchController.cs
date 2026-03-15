@@ -1,4 +1,5 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
+using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update.Contracts;
 using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
@@ -15,16 +16,31 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
     [Route("v1/request")]
     public class RequestBranchController : BaseController
     {
+        private readonly IKartableRequestGetAllHandler _requestKartableGetAllHandler;
+        private readonly IDisplayRequestHandler _displayRequestHandler;
+        private readonly IMoshtrakRequestUpdateHandler _moshtrakRequestUpdateHandler;
         private readonly IRequestNewBranchHandler _requestNewBranchHandler;
         private readonly IRequestAfterSaleHandler _requestAfterSaleHandler;
         private readonly IRequestDuplicateValidation _requestDuplicateValidation;
         private readonly ICloseRequestHandler _closeRequestHandle;
         public RequestBranchController(
+            IKartableRequestGetAllHandler requestKartableGetAllHandler,
+            IDisplayRequestHandler displayRequestHandler,
+            IMoshtrakRequestUpdateHandler moshtrakRequestUpdateHandler,
             IRequestNewBranchHandler requestNewBranchHandler,
             IRequestAfterSaleHandler requestAfterSaleHandler,
             IRequestDuplicateValidation requestDuplicateValidation,
             ICloseRequestHandler closeRequestHandle)
         {
+            _requestKartableGetAllHandler = requestKartableGetAllHandler;
+            _requestKartableGetAllHandler.NotNull(nameof(requestKartableGetAllHandler));
+
+            _displayRequestHandler = displayRequestHandler;
+            _displayRequestHandler.NotNull(nameof(displayRequestHandler));
+
+            _moshtrakRequestUpdateHandler = moshtrakRequestUpdateHandler;
+            _moshtrakRequestUpdateHandler.NotNull(nameof(requestNewBranchHandler));
+
             _requestNewBranchHandler = requestNewBranchHandler;
             _requestNewBranchHandler.NotNull(nameof(requestNewBranchHandler));
 
@@ -37,6 +53,37 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             _closeRequestHandle = closeRequestHandle;
             _closeRequestHandle.NotNull(nameof(closeRequestHandle));
         }
+
+
+        [HttpGet]
+        [Route("kartable")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<TrackingKartableHeaderOutputDto, TrackingKartableDataOutputDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> RequestKartable(CancellationToken cancellationToken)
+        {
+            ReportOutput<TrackingKartableHeaderOutputDto, TrackingKartableDataOutputDto> result = await _requestKartableGetAllHandler.Handle(cancellationToken);
+            return Ok(result);
+        }
+
+
+        [HttpPost]
+        [Route("display")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> DisplayRequest([FromBody] ZoneIdAndTrackNumber inputDto, CancellationToken cancellationToken)
+        {
+            MoshtrakOutputDto result = await _displayRequestHandler.Handle(inputDto, cancellationToken);
+            return Ok(result);
+        }
+
+
+        [HttpPost]
+        [Route("edit")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakUpdateInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> EditRequest([FromBody] MoshtrakUpdateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _moshtrakRequestUpdateHandler.Handle(inputDto, cancellationToken);
+            return Ok(inputDto);
+        }
+
 
         [HttpPost]
         [Route("new")]
