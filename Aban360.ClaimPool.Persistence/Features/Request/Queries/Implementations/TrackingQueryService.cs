@@ -23,6 +23,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             {
                 throw new InvalidTrackNumberException(ExceptionLiterals.InvalidTrackNumber);
             }
+            result.StringTrackNumber = trackNumber.ToString().PadLeft(11, '0');
             return result;
         }
         public async Task<TrackingOutputDto> GetLatest(int trackNumber)
@@ -33,6 +34,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             {
                 throw new InvalidTrackNumberException(ExceptionLiterals.InvalidTrackNumber);
             }
+            result.StringTrackNumber = trackNumber.ToString().PadLeft(11, '0');
             return result;
         }
         public async Task<IEnumerable<TrackingKartableDataOutputDto>> GetAllOpenRequest()

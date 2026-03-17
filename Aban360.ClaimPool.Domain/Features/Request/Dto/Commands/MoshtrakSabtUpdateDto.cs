@@ -4,10 +4,12 @@
     {
         public int TrackNumber { get; set; }
         public bool IsRegister { get; set; }
-        public MoshtrakSabtUpdateDto(int trackNumber, bool isRegister)
+        public string? Description { get; set; }
+        public MoshtrakSabtUpdateDto(int trackNumber, bool isRegister,string? description)
         {
             TrackNumber = trackNumber;
             IsRegister = isRegister;
+            Description = description;
         }
         public MoshtrakSabtUpdateDto()
         {

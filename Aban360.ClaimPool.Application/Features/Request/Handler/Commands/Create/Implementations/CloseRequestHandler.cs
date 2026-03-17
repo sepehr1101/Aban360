@@ -30,12 +30,13 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             _trackingQueryService.NotNull(nameof(trackingQueryService));
         }
 
-        public async Task<RequestCloseOuputDto> Handle(int tracknumber, CancellationToken cancellationToken)
+        public async Task<RequestCloseOuputDto> Handle(int tracknumber,int userName ,CancellationToken cancellationToken)
         {
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetFirstStep(tracknumber);
             await Validation(trackingInfo.ZoneId, tracknumber);
             string dbName = GetDbName(trackingInfo.ZoneId);
-            MoshtrakSabtUpdateDto moshtrakSabtUpdate = new(tracknumber, true);
+            MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, tracknumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
+            MoshtrakSabtUpdateDto moshtrakSabtUpdate = new(tracknumber, true, moshtrakInfo.Description +" - "+ $"حذف توسط {userName}");
 
             using (IDbConnection connection = _sqlReportConnection)
             {

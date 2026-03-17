@@ -1,6 +1,7 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Db.QueryServices;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
@@ -23,11 +24,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<AssessmentTasksOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            bool isSuccess = int.TryParse(CurrentUser.Username, out int examinerCode);
-            if (!isSuccess)
-            {
-                throw new InvalidBillIdException(ExceptionLiterals.InvalidExaminerName);
-            }
+            int examinerCode = UserService.GetUserCode(CurrentUser.Username);
             AssessmentTasksOutputDto result = await _assessmentTaskHandler.Handle(examinerCode, cancellationToken);
             return Ok(result);
         }

@@ -284,7 +284,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
         private string GetUpdateSabtCommand(string dbName)
         {
             return $@"Update [{dbName}].dbo.moshtrak
-						Set sabt=@IsRegister 
+						Set sabt=@IsRegister , sharh=@Description
 						Where TrackingNumber=@TrackNumber";
         }
     }

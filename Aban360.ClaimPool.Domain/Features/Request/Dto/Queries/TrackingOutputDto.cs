@@ -4,6 +4,7 @@
     {
         public Guid TrackId { get; set; }
         public int TrackNumber { get; set; }
+        public string StringTrackNumber { get; set; } = default!;
         public string? BillId { get; set; }
         public int ZoneId { get; set; }
         public string ZoneTitle { get; set; }

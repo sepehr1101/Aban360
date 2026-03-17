@@ -1,9 +1,8 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
  using Aban360.Common.Categories.ApiResponse;
-using Aban360.Common.Exceptions;
+using Aban360.Common.Db.QueryServices;
 using Aban360.Common.Extensions;
-using Aban360.Common.Literals;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
@@ -13,15 +12,20 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
     {
         private readonly ISetAssessmentResultHandler _setAssessmentResultHandler;
         private readonly ISetAssessmentTimeHandler _setAssessmentTimeHandler;
+        private readonly ISetLightAssessmentResultHandler _setLightAssessmentResultHandler;
         public AssessmentController(
             ISetAssessmentResultHandler setAssessmentResultHandler,
-            ISetAssessmentTimeHandler setAssessmentTimeHandler)
+            ISetAssessmentTimeHandler setAssessmentTimeHandler,
+            ISetLightAssessmentResultHandler setLightAssessmentResultHandler)
         {
             _setAssessmentResultHandler = setAssessmentResultHandler;
             _setAssessmentResultHandler.NotNull(nameof(setAssessmentResultHandler));
             
             _setAssessmentTimeHandler = setAssessmentTimeHandler;
             _setAssessmentTimeHandler.NotNull(nameof(setAssessmentTimeHandler));
+
+            _setLightAssessmentResultHandler = setLightAssessmentResultHandler;
+            _setLightAssessmentResultHandler.NotNull(nameof(setLightAssessmentResultHandler));
         }
 
         [HttpPost]
@@ -29,7 +33,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<AssessmentResultInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SetReult([FromBody] AssessmentResultInputDto inputDto, CancellationToken cancellationToken)
         {
-            int examinerCode = GetUserCode();
+            int examinerCode = UserService.GetUserCode(CurrentUser.Username);
             await _setAssessmentResultHandler.Handle(inputDto, examinerCode, cancellationToken);
             return Ok(inputDto);
         }
@@ -39,20 +43,19 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<AssessmentResultInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SetTime([FromBody] AssessmentSetTimeInputDto inputDto, CancellationToken cancellationToken)
         {
-            int examinerCode = GetUserCode();
+            int examinerCode = UserService.GetUserCode(CurrentUser.Username);
             await _setAssessmentTimeHandler.Handle(inputDto, examinerCode, cancellationToken);
             return Ok(inputDto);
         }
 
-        private int GetUserCode()
+        [HttpPost]
+        [Route("set-light-result")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakUpdateInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SetAssessmentLite([FromBody] LightAssessmentResultInputDto inputDto, CancellationToken cancellationToken)
         {
-            bool isSuccess = int.TryParse(CurrentUser.Username, out int userCode);
-            if (!isSuccess)
-            {
-                throw new InvalidBillIdException(ExceptionLiterals.InvalidUserName);
-            }
-
-            return userCode;
+            int userName = UserService.GetUserCode(CurrentUser.Username);
+            await _setLightAssessmentResultHandler.Handle(inputDto, userName, cancellationToken);
+            return Ok(inputDto);
         }
     }
 }

@@ -4,6 +4,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 {
     public interface ICloseRequestHandler
     {
-        Task<RequestCloseOuputDto> Handle(int tracknumber, CancellationToken cancellationToken);
+        Task<RequestCloseOuputDto> Handle(int tracknumber, int userName, CancellationToken cancellationToken);
     }
 }
