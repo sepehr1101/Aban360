@@ -4,31 +4,45 @@ using Aban360.Common.Db.Dapper;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
+using System.Data;
+using Aban360.Common.Extensions;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Literals;
 
 namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implementations
 {
-    internal sealed class RepairCommandService : AbstractBaseConnection, IRepairCommandService
+    public sealed class RepairCommandService //: AbstractBaseConnection, IRepairCommandService
     {
-        public RepairCommandService(IConfiguration configuration)
-            : base(configuration)
+        private readonly IDbConnection _connection;
+        private readonly IDbTransaction _transaction;
+        public RepairCommandService(
+            IDbConnection connection,
+            IDbTransaction transaction)
         {
+            _connection = connection;
+            _connection.NotNull(nameof(connection));
+
+            _transaction = transaction;
+            _transaction.NotNull(nameof(transaction));
         }
-
-        public async Task Create(RepairCreateDto input)
+        public async Task<int> Insert(RepairCreateDto input, string dbName)
         {
-            //string dbName = GetDbName((int)input.Town);
-            string dbName = "Atlas";
-            string query = CreateQuery(dbName);
-
-            await _sqlReportConnection.ExecuteScalarAsync(query, input);
+            string query = InsertCommand(dbName,true);
+            int recordId = await _connection.QueryFirstOrDefaultAsync<int>(query, input, _transaction);
+            if (recordId <= 0)
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvalidConfirmedReturn);
+            }
+            return recordId;
         }
-        public async Task Create(IEnumerable<RepairCreateDto> input)
+        public async Task Insert(IEnumerable<RepairCreateDto> input, string dbName)
         {
-            //string dbName = GetDbName((int)input.First().Town);
-            string dbName = "Atlas";
-            string query = CreateQuery(dbName);
-
-            await _sqlReportConnection.ExecuteAsync(query, input);
+            string query = InsertCommand(dbName,false);
+            int recordCount = await _connection.ExecuteAsync(query, input, _transaction);
+            if (recordCount <= 0)
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvalidConfirmedReturn);
+            }
         }
 
         public async Task Update(RepairUpdateDto input)
@@ -42,8 +56,12 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implemen
             localQueryParameters.Add("barge", zoneIdAndBarge.Barge);
             localQueryParameters.Add("zoneId", zoneIdAndBarge.ZoneId);
 
-            await _sqlReportConnection.ExecuteScalarAsync(atlasQuery, input);
-            await _sqlReportConnection.ExecuteScalarAsync(localQuery, localQueryParameters);
+            int atlasRecordCount = await _connection.ExecuteAsync(atlasQuery, input, _transaction);
+            int zoneRecordCount = await _connection.ExecuteAsync(localQuery, localQueryParameters, _transaction);
+            if (atlasRecordCount <= 0 || zoneRecordCount <= 0)
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvalidConfirmedReturn);
+            }
         }
         public async Task Delete(RepairDeleteDto input)
         {
@@ -56,19 +74,29 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implemen
             localQueryParameters.Add("barge", zoneIdAndBarge.Barge);
             localQueryParameters.Add("zoneId", zoneIdAndBarge.ZoneId);
 
-            await _sqlReportConnection.ExecuteScalarAsync(atlasQuery, input);
-            await _sqlReportConnection.ExecuteScalarAsync(query, localQueryParameters);
+            int atlasRecordCount = await _connection.ExecuteAsync(atlasQuery, input, _transaction);
+            int zoneRecordCount = await _connection.ExecuteAsync(query, localQueryParameters, _transaction);
+            if (atlasRecordCount <= 0 || zoneRecordCount <= 0)
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvalidConfirmedReturn);
+            }
         }
         private async Task<ZoneIdAndBargeGetDto> GetZoneIdAndBarege(int id)
         {
             string query = GetZoneIdAndBargeQuery();
-            ZoneIdAndBargeGetDto zoneIdAndBarge = await _sqlConnection.QueryFirstOrDefaultAsync<ZoneIdAndBargeGetDto>(query, new { id = id });
+            ZoneIdAndBargeGetDto zoneIdAndBarge = await _connection.QueryFirstOrDefaultAsync<ZoneIdAndBargeGetDto>(query, new { id = id }, _transaction);
 
             return zoneIdAndBarge;
         }
 
-        private string CreateQuery(string dbName)
+        public string GetDbName(int zoneId)
         {
+            return zoneId > 140000 ? "Abfar" : zoneId.ToString();
+        }
+        private string InsertCommand(string dbName, bool hasRecordId)
+        {
+            string recordIdQuery = hasRecordId ? "Select SCOPE_IDENTITY();" : string.Empty;
+
             return @$"USE [{dbName}];
                     INSERT INTO [{dbName}].dbo.REPAIR (
                         town, radif, eshtrak, barge, pri_no, today_no, pri_date, today_date,
@@ -93,7 +121,8 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implemen
                        @TabsFa, @Bodjeh, @Group1, @Faz, @ChkKarbari, @C200, @TmpPriDate,
                        @TmpTodayDate, @TmpMohlat, @TmpTavizDate, @TmpDateBed, @EdarehK,
                        @DateSbt, @Avarez
-                    );";
+                    );
+                    {recordIdQuery}";
         }
         private string UpdateAtlasQuery()
         {

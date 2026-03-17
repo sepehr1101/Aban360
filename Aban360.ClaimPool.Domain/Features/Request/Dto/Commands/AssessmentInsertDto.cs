@@ -39,5 +39,6 @@ namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Commands
         public int Premises { get; set; }
         public int HouseValue { get; set; }
         public int UsageId { get; set; }
+        public string? AllInJson { get; set; }
     }
 }

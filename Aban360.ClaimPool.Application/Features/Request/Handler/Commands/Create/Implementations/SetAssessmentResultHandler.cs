@@ -5,31 +5,40 @@ using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using System.Text.Json;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations
 {
     internal sealed class SetAssessmentResultHandler : AbstractBaseConnection, ISetAssessmentResultHandler
     {
         private readonly IAssessmentQueryService _assessmentQueryService;
+        private readonly IValidator<AssessmentResultInputDto> _validator;
         private static int _status = 110;
         public SetAssessmentResultHandler(
-            IConfiguration configuration,
-            IAssessmentQueryService assessmentQueryService)
+            IAssessmentQueryService assessmentQueryService,
+            IValidator<AssessmentResultInputDto> validator,
+            IConfiguration configuration)
             : base(configuration)
         {
             _assessmentQueryService = assessmentQueryService;
             _assessmentQueryService.NotNull(nameof(assessmentQueryService));
+
+            _validator = validator;
+            _validator.NotNull(nameof(validator));
         }
 
         public async Task Handle(AssessmentResultInputDto inputDto, int assessmentCode, CancellationToken cancellationToken)
         {
-            TrackingInsertDto trackingInsertDto = new(inputDto.TrackNumber, _status, inputDto.Description, assessmentCode);
+            await Validation(inputDto, cancellationToken);
+            TrackingInsertDuplicateDto trackingInsertDto = new(inputDto.TrackNumber, _status, inputDto.Description, assessmentCode);
             AssessmentInsertDto assessmentInsertDto = await GetAssessmentInsertDto(inputDto, assessmentCode);
 
-            using (IDbConnection connection = _sqlReportConnection)//why didnt use SqlConnection?
+            using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
                 {
@@ -37,16 +46,15 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    MoshtrakCommandService _moshtrackCommandService = new(_sqlReportConnection, transaction);//wht didnt use connection
-                    TrackingCommandService _trackingCommandService = new(_sqlReportConnection, transaction);
-                    ExaminationCommandService _assessmentCommandService = new(_sqlReportConnection, transaction);
+                    MoshtrakCommandService _moshtrackCommandService = new(connection, transaction);
+                    TrackingCommandService _trackingCommandService = new(connection, transaction);
+                    ExaminationCommandService _assessmentCommandService = new(connection, transaction);
                     string dbName = GetDbName(inputDto.ZoneId);
 
-
                     await _trackingCommandService.UpdateIsConsiderdLatest(inputDto.TrackNumber, true);
-                    await _trackingCommandService.Insert(trackingInsertDto);
-                    await _moshtrackCommandService.Update(GetMoshtrackUpdateDto(inputDto), dbName);
-                    await _assessmentCommandService.Insert(assessmentInsertDto);
+                    await _trackingCommandService.InsertDuplicate(trackingInsertDto);
+                    //await _moshtrackCommandService.Update(GetMoshtrackUpdateDto(inputDto), dbName);//todo: uncommited
+                    await _assessmentCommandService.Update(assessmentInsertDto);
 
                     transaction.Commit();
                 }
@@ -54,12 +62,14 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         }
         private MoshtrkUpdateDto GetMoshtrackUpdateDto(AssessmentResultInputDto inputDto)
         {
+            MoshtrakServiceDto serviceSelected = MoshtrakService.GetServicesSelected(inputDto.SelectedServices);
+
             return new MoshtrkUpdateDto()
             {
                 TrackingId = inputDto.TrackingId,
                 TrackNumber = inputDto.TrackNumber,
                 ServiceGroupId = inputDto.ServiceGroupId,
-                StringTrackNumber = inputDto.StringTrackNumber,
+                StringTrackNumber = inputDto.TrackNumber.ToString().PadLeft(11, '0'),//inputDto.StringTrackNumber,
                 BillId = inputDto.BillId,
                 CustomerNumber = inputDto.CustomerNumber,
                 NeighbourBillId = inputDto.NeighbourBillId,
@@ -100,53 +110,53 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 MainSiphon = inputDto.MainSiphon,
                 CommonSiphon = inputDto.CommonSiphon,
 
-                s0 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.IsEnsheabAb) ? 1 : 0,
-                s1 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.IsEnsheabFazelab) ? 1 : 0,
-                s2 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.IsEnsheabFazelab) ? 1 : 0,
-                //s3=s.SelectedServices.Contains((int)CompanyServiceEnum.) ? 1 : 0,
-                s4 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.IsTaqirNam) ? 1 : 0,
-                s5 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.IsTaqirQotrEnsheab) ? 1 : 0,
-                //s8=s.SelectedServices.Contains((int)CompanyServiceEnum.) ? 1 : 0,
-                //s9= s.SelectedServices.Contains((int)CompanyServiceEnum.) ? 1 : 0,
-                s10 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.EstelamMahzar) ? 1 : 0,
-                s11 = inputDto.SelectedServices.Contains(0) ? 1 : 0,//تفکیک عرصه اب
-                s12 = inputDto.SelectedServices.Contains(0) ? 1 : 0,//تفکیک عرصه فاضلاب
-                s13 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.TaqirSathCounter) ? 1 : 0,
-                //s14=s.SelectedServices.Contains((int)CompanyServiceEnum.) ? 1 : 0,
-                //s15=s.SelectedServices.Contains((int)CompanyServiceEnum.) ? 1 : 0,
-                s16 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.IsTaqirKarbari) ? 1 : 0,
-                //s17=s.SelectedServices.Contains((int)CompanyServiceEnum.) ? 1 : 0,
-                //s18=s.SelectedServices.Contains((int)CompanyServiceEnum.) ? 1 : 0,
-                //s19=s.SelectedServices.Contains((int)CompanyServiceEnum.) ? 1 : 0,
-                s20 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.JabejaiiKontor) ? 1 : 0,
-                s21 = inputDto.SelectedServices.Contains(0) ? 1 : 0,//خط انتقال اب
-                s22 = inputDto.SelectedServices.Contains(0) ? 1 : 0,//خط انتقال فاضلاب
-                s23 = inputDto.SelectedServices.Contains(0) ? 1 : 0,//سهم منبع اب
-                s24 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.TaqirQotrSifoon) ? 1 : 0,
-                //s25=s.SelectedServices.Contains((int)CompanyServiceEnum.) ? 1 : 0,
-                s26 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.IsAmadeSaziAb) ? 1 : 0,
-                s27 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.IsAmadeSaziFazelab) ? 1 : 0,
-                //s28=s.SelectedServices.Contains((int)CompanyServiceEnum.) ? 1 : 0,
-                //s29=s.SelectedServices.Contains((int)CompanyServiceEnum.) ? 1 : 0,
-                //s30=s.SelectedServices.Contains((int)CompanyServiceEnum.) ? 1 : 0,
-                //s31=s.SelectedServices.Contains((int)CompanyServiceEnum.) ? 1 : 0,
-                s32 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.QatVaslEnsheab) ? 1 : 0,
-                s33 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.SifoonEzafe) ? 1 : 0,
-                s34 = inputDto.SelectedServices.Contains(0) ? 1 : 0,//عدم تخفیف آب
-                s35 = inputDto.SelectedServices.Contains(0) ? 1 : 0,//عدم تخفیف فاضلاب
-                s36 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.JabejaiiSifoon) ? 1 : 0,
-                s37 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.NezamMohandesi) ? 1 : 0,
-                s38 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.TavizSifoon) ? 1 : 0,
-                s39 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.KhanevarShomari) ? 1 : 0,
-                s40 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.TafkikEdqam) ? 1 : 0,
-                s41 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.TavizKontor) ? 1 : 0,
-                s42 = inputDto.SelectedServices.Contains(0) ? 1 : 0,//لوله گذاری آب
-                s43 = inputDto.SelectedServices.Contains(0) ? 1 : 0,//لوله گذاری فاضلاب
-                s44 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.IsZarfiatQarardadi) ? 1 : 0,
-                s45 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.KontorMojaza) ? 1 : 0,
-                s46 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.TaqirTarefe) ? 1 : 0,
-                s47 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.Peymayesh) ? 1 : 0,
-                s48 = inputDto.SelectedServices.Contains((int)CompanyServiceEnum.Saier) ? 1 : 0,
+                s0 = serviceSelected.s0,
+                s1 = serviceSelected.s1,
+                s2 = serviceSelected.s2,
+                s3 = serviceSelected.s3,
+                s4 = serviceSelected.s4,
+                s5 = serviceSelected.s5,
+                s8 = serviceSelected.s8,
+                s9 = serviceSelected.s9,
+                s10 = serviceSelected.s10,
+                s11 = serviceSelected.s11,
+                s12 = serviceSelected.s12,
+                s13 = serviceSelected.s13,
+                s14 = serviceSelected.s14,
+                s15 = serviceSelected.s15,
+                s16 = serviceSelected.s16,
+                s17 = serviceSelected.s17,
+                s18 = serviceSelected.s18,
+                s19 = serviceSelected.s19,
+                s20 = serviceSelected.s20,
+                s21 = serviceSelected.s21,
+                s22 = serviceSelected.s22,
+                s23 = serviceSelected.s23,
+                s24 = serviceSelected.s24,
+                s25 = serviceSelected.s25,
+                s26 = serviceSelected.s26,
+                s27 = serviceSelected.s27,
+                s28 = serviceSelected.s28,
+                s29 = serviceSelected.s29,
+                s30 = serviceSelected.s30,
+                s31 = serviceSelected.s31,
+                s32 = serviceSelected.s32,
+                s33 = serviceSelected.s33,
+                s34 = serviceSelected.s34,
+                s35 = serviceSelected.s35,
+                s36 = serviceSelected.s36,
+                s37 = serviceSelected.s37,
+                s38 = serviceSelected.s38,
+                s39 = serviceSelected.s39,
+                s40 = serviceSelected.s40,
+                s41 = serviceSelected.s41,
+                s42 = serviceSelected.s42,
+                s43 = serviceSelected.s43,
+                s44 = serviceSelected.s44,
+                s45 = serviceSelected.s45,
+                s46 = serviceSelected.s46,
+                s47 = serviceSelected.s47,
+                s48 = serviceSelected.s48,
             };
         }
         private async Task<AssessmentInsertDto> GetAssessmentInsertDto(AssessmentResultInputDto inputDto, int assessmentCode)
@@ -155,13 +165,13 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             return new AssessmentInsertDto()
             {
                 TrackNumber = inputDto.TrackNumber,
-                BillId = inputDto.BillId,
+                BillId = string.IsNullOrWhiteSpace(inputDto.BillId) ? string.Empty : inputDto.BillId,
                 AssessmentCode = assessmentData.Code,
                 AssessmentMobile = assessmentData.PhoneNumber,
                 AssessmentName = assessmentData.FullName,
                 ZoneId = inputDto.ZoneId,
-                ResultId = inputDto.TrackingResultId,
-                Description = inputDto.Description,//todo: need or not?
+                ResultId = inputDto.ResultId,
+                Description = inputDto.Description,
                 TrackId = inputDto.TrackingId,
                 TrackIdResult = Guid.Empty,//todo
                 X1 = inputDto.X1,
@@ -182,7 +192,17 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 Premises = inputDto.Premises,
                 HouseValue = inputDto.HouseValue,
                 UsageId = inputDto.UsageId,
+                AllInJson = JsonSerializer.Serialize<AssessmentResultInputDto>(inputDto)
             };
+        }
+        private async Task Validation(AssessmentResultInputDto inputDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new CustomValidationException(message);
+            }
         }
     }
 }

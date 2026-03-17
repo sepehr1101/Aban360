@@ -6,7 +6,7 @@
         public string ZoneTitle { get; set; }
         public int CustomerNumber { get; set; }
         public int DeletionStateId { get; set; }
-        public ZoneIdAndCustomerNumber(int zoneId,int customerNumber)
+        public ZoneIdAndCustomerNumber(int zoneId, int customerNumber)
         {
             ZoneId = zoneId;
             CustomerNumber = customerNumber;

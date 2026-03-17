@@ -2,9 +2,7 @@
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
-using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Contracts;
-using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Contracts;
 using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Contracts;
 using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Commands;
 using Aban360.OldCalcPools.WaterReturn.Dto.Queries;
@@ -13,39 +11,33 @@ using FluentValidation;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
-using NetTopologySuite.Index.HPRtree;
 using Microsoft.Extensions.Configuration;
 using Aban360.Common.Db.Dapper;
 using System.Data;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
+using Aban360.Common.BaseEntities;
+using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
+using Aban360.Common.Db.QueryServices;
 using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implementations;
 
 namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Implementations
 {
     internal sealed class ReturnBillConfirmeHandler : AbstractBaseConnection, IReturnBillConfirmeHandler
     {
-        private readonly IRepairCommandService _repairCommandService;
-        //private readonly IBedBesCommandService _billCommandService;
         private readonly IAutoBackQueryService _autoBackQueryService;
         private readonly IMembersQueryService _membersQueryService;
         private readonly IRepairQueryService _repairQueryService;
+        private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly IValidator<ReturnBillConfirmeByBillIdInputDto> _validator;
         public ReturnBillConfirmeHandler(
-            IRepairCommandService repairCommandService,
-            //IBedBesCommandService billCommandService,
             IAutoBackQueryService autoBackQueryService,
             IMembersQueryService membersQueryService,
             IRepairQueryService repairQueryService,
+            ICommonMemberQueryService commonMemberQueryService,
             IValidator<ReturnBillConfirmeByBillIdInputDto> validator,
             IConfiguration configuration)
                 : base(configuration)
         {
-            _repairCommandService = repairCommandService;
-            _repairCommandService.NotNull(nameof(repairCommandService));
-
-            //_billCommandService = billCommandService;
-            //_billCommandService.NotNull(nameof(billCommandService));
-
             _autoBackQueryService = autoBackQueryService;
             _autoBackQueryService.NotNull(nameof(autoBackQueryService));
 
@@ -54,6 +46,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             _repairQueryService = repairQueryService;
             _repairQueryService.NotNull(nameof(repairQueryService));
+
+            _commonMemberQueryService = commonMemberQueryService;
+            _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -73,6 +68,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private async Task CreateRepairAndUpdateBedBesDel(RepairCreateDto input)
         {
             BedBesUpdateDelWithDateDto bedBesUpdate = new((int)input.Town, (int)input.Radif, true, input.PriDate, input.TodayDate);
+            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = new((int)input.Town, (int)input.Radif);
+            MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumber);
+            //string dbName = GetDbName((int)input.Town);
+            string dbName = "Atlas";
 
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -82,14 +81,21 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    BedBesCommandService bedBesCommandService = new BedBesCommandService(_sqlReportConnection, transaction);
-                    //  IRepairCommandService repairCommandService = new RepairCommandService(_sqlReportConnection, transaction);
+                    BedBesCommandService bedBesCommandService = new BedBesCommandService(connection, transaction);
+                    RepairCommandService repairCommandService = new(connection, transaction);
+                    WaterDebtCommandService waterDebtCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    BillCommandService billCommandService = new(connection, transaction);
 
-                    await bedBesCommandService.UpdateDel(bedBesUpdate);
+                    await bedBesCommandService.UpdateDel(bedBesUpdate, dbName);
+                    //await waterDebtCommandService.UpdateAmount(memberInfo.BillId, (long)input.Baha);//todo: Uncomment
+                    //await membersCommandService.UpdateBedbes(zoneIdAndCustomerNumber, (long)input.Baha, dbName);//todo: Uncomment
+                    int repairId = await repairCommandService.Insert(input, dbName);
+                    //await billCommandService.InsertReturnByRepair(repairId, dbName);//todo: Uncomment
 
+                    transaction.Commit();
                 }
             }
-            await _repairCommandService.Create(input);//todo: Move to Transaction
         }
         private ReturnBillDataOutputDto GetReturn(RepairCreateDto input)
         {

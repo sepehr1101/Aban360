@@ -57,7 +57,7 @@ namespace Aban360.Common.Db.QueryServices
         {
             return $@"Select
 						m.radif CustomerNumber,
-						m.bill_id BillId,
+						TRIM(m.bill_id) BillId,
 						m.town ZoneId,
 						m.eshtrak ReadingNumber,
 						m.name FirstName,

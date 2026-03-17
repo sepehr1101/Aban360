@@ -4,20 +4,21 @@ using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Contracts;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using FluentValidation;
+using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implementations;
+using System.Data;
+using Aban360.Common.Db.Dapper;
+using Microsoft.Extensions.Configuration;
 
 namespace Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Commands.Implementations
 {
-    internal sealed class RepairDeleteHandler : IRepairDeleteHandler
+    internal sealed class RepairDeleteHandler : AbstractBaseConnection, IRepairDeleteHandler
     {
-        private readonly IRepairCommandService _commandService;
         private readonly IValidator<RepairDeleteDto> _validator;
         public RepairDeleteHandler(
-            IRepairCommandService commandService,
-            IValidator<RepairDeleteDto> validator)
+            IValidator<RepairDeleteDto> validator,
+            IConfiguration configuration)
+            : base(configuration)
         {
-            _commandService = commandService;
-            _commandService.NotNull(nameof(commandService));
-
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
@@ -30,8 +31,18 @@ namespace Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Command
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new CustomValidationException(message);
             }
-
-            await _commandService.Delete(deleteDto);
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    RepairCommandService repairCommandService = new(connection, transaction);
+                    await repairCommandService.Delete(deleteDto);
+                }
+            }
         }
     }
 }

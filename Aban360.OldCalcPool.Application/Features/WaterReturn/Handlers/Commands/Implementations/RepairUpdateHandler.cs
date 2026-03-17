@@ -4,20 +4,21 @@ using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Contracts;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using FluentValidation;
+using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implementations;
+using System.Data;
+using Aban360.Common.Db.Dapper;
+using Microsoft.Extensions.Configuration;
 
 namespace Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Commands.Implementations
 {
-    internal sealed class RepairUpdateHandler : IRepairUpdateHandler
+    internal sealed class RepairUpdateHandler : AbstractBaseConnection, IRepairUpdateHandler
     {
-        private readonly IRepairCommandService _commandService;
         private readonly IValidator<RepairUpdateDto> _validator;
         public RepairUpdateHandler(
-            IRepairCommandService commandService,
-            IValidator<RepairUpdateDto> validator)
+            IValidator<RepairUpdateDto> validator,
+            IConfiguration configuration)
+            :base(configuration)
         {
-            _commandService = commandService;
-            _commandService.NotNull(nameof(commandService));
-
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
@@ -35,7 +36,19 @@ namespace Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Command
             updateDto.Jam = sum;
             updateDto.Pard = sum;
             updateDto.Baha = sum;
-            await _commandService.Update(updateDto);
+
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    RepairCommandService repairCommandService = new(connection, transaction);
+                    await repairCommandService.Update(updateDto);
+                }
+            }
         }
     }
 }

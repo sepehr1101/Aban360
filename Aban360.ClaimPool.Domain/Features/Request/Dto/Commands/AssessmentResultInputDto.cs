@@ -6,7 +6,7 @@
         public int TrackNumber { get; set; }
         public int ServiceGroupId { get; set; }//RequestType
         public string StringTrackNumber { get; set; }//ParNumber
-        public string BillId { get; set; }
+        public string? BillId { get; set; }
         public int CustomerNumber { get; set; }
         public string NeighbourBillId { get; set; }
         public int ZoneId { get; set; }
@@ -15,7 +15,8 @@
         public int MeterDiameterId { get; set; }
         public int BranchTypeId { get; set; }
         public int DiscountTypeId { get; set; }
-        public int TrackingResultId { get; set; }
+        public Guid? TrackingResultId { get; set; }
+        public int ResultId { get; set; }//new
 
         public ICollection<int> SelectedServices { get; set; }
 

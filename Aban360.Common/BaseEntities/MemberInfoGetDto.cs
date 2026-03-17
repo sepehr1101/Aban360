@@ -31,6 +31,7 @@
         public bool IsSpecial { get; set; }
         public int DeletionStateId { get; set; }
         public string UseStateTitle { get; set; }//different update
+        public int UseStateId { get; set; }
         public string MainSiphon { get; set; }
         public int Siphon1 { get; set; }
         public int Siphon2 { get; set; }

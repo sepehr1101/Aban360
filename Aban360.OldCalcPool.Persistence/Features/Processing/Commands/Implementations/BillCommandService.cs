@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Persistence.Constants;
 using Dapper;
@@ -32,6 +33,15 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                 throw new InvalidBillCommandException(Exceptionliterals.InvalidBillInsert);
             }
         }
+        public async Task InsertReturnByRepair(int repairId, string dbName)
+        {
+            string command = GetInsertReturnByRepairCommand(dbName);
+            int recordCount = await _connection.ExecuteAsync(command, new { id = repairId }, _transaction);
+            if (recordCount <= 0)
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvalidSaveReturn);
+            }
+        }
         public async Task Delete(RemoveBillDto input)
         {
             string command = GetDeleteCommand();
@@ -41,6 +51,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                 throw new InvalidBillCommandException(Exceptionliterals.InvalidRemoveBill);
             }
         }
+
         private string GetInsertByBedBesCommand(string dbName)//todo:check
         {
             return $@"insert into [CustomerWarehouse].dbo.Bills 
@@ -164,5 +175,116 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     	NextDay=@CurrentDateJalali AND
                     	NextNumber=@CurrentNumber ";
         }
+        private string GetInsertReturnByRepairCommand(string dbName)
+        {
+            return $@"insert into [CustomerWarehouse].dbo.Bills 
+                    select
+                    	b.town ZoneId,
+                    	z.C2 ZoneTitle,
+                    	b.radif CustomerNumber,
+                    	IIF(m.bill_id IS NOT NULL, m.bill_id,'') BillId,
+                    	b.eshtrak ReadingNumber,
+                    	b.pri_no PreviousNumber,
+                    	b.today_no NextNumber,
+                    	b.pri_date PreviousDay,
+                    	b.today_date NextDay,
+                    	b.date_bed RegisterDay,
+                    	AbAndFazelab.dbo.PersianToMiladi(b.date_bed) RegisterDayGregorian,
+                    	'' CounterStateTitle,
+                    	b.cod_enshab AS [UsageId], 
+                    	b.group1 [UsageId2], 
+                    	k1.C1 AS [UsageTitle], 
+                    	k2.C1 AS [UsageTitle2], 
+                    	va.C1 AS [BranchType], 
+                    	b.enshab AS [WaterDiameterId],
+                    	q.C2  AS  [WaterDiameterTitle],
+                    	IIF(m.sif_1 IS NULL,0,m.sif_1), 
+                    	IIF(m.sif_2 IS NULL,0,m.sif_2), 
+                    	IIF(m.sif_3 IS NULL,0,m.sif_3), 
+                    	IIF(m.sif_4 IS NULL,0,m.sif_4), 
+                    	IIF(m.sif_5 IS NULL,0,m.sif_5),   
+                    	IIF(m.sif_6 IS NULL,0,m.sif_6),   
+                    	IIF(m.sif_7 IS NULL,0,m.sif_7),   
+                    	IIF(m.sif_8 IS NULL,0,m.sif_8),   
+                    	IIF(m.fix_mas IS NOT NULL, m.fix_mas, 0) ContractCapacity,
+                    	b.tedad_mas DomesticCount,
+                    	b.tedad_tej CommercialCount,
+                    	b.tedad_vahd OtherCount,
+                    	IIF(m.Khali_s IS NOT NULL, m.khali_s,0) EmptyCount,
+                    	IIF(type in(1,9) or (type=4 and elat=1) or (type=6 and elat =1),1,-1)*b.masraf Consumption,
+                    	b.modat Duration,
+                    	IIF(type in(1,9) or (type=4 and elat=1) or (type=6 and elat =1),1,-1)* b.rate ConsumptionAverage,
+                    	b.mohlat Deadline,
+                    	b.jam -b.baha PreDebt,
+                    	IIF(type in(1,9) or (type=4 and elat=1) or (type=6 and elat =1),1,-1)*b.ab_baha Item1,
+                    	IIF(type in(1,9) or (type=4 and elat=1) or (type=6 and elat =1),1,-1)*b.fas_baha, 
+                    	IIF(type in(1,9) or (type=4 and elat=1) or (type=6 and elat =1),1,-1)*abon_ab Item3, 
+                    	IIF(type in(1,9) or (type=4 and elat=1) or (type=6 and elat =1),1,-1)*abon_fas,
+                    	IIF(type in(1,9) or (type=4 and elat=1) or (type=6 and elat =1),1,-1)*shahrdari Item5,
+                    	IIF(type in(1,9) or (type=4 and elat=1) or (type=6 and elat =1),1,-1)*ab_10 ,
+                    	IIF(type in(1,9) or (type=4 and elat=1) or (type=6 and elat =1),1,-1)*ab_20 Item7, 
+                    	IIF(type in(1,9) or (type=4 and elat=1) or (type=6 and elat =1),1,-1)*jarime, 
+                    	IIF(type in(1,9) or (type=4 and elat=1) or (type=6 and elat =1),1,-1)*zabresani Item9,
+                    	IIF(type in(1,9) or (type=4 and elat=1) or (type=6 and elat =1),1,-1)*zarib_d,
+                    	IIF(type in(1,9) or (type=4 and elat=1) or (type=6 and elat =1),1,-1)*zaribfasl Item11, 
+                    	IIF(type in(1,9) or (type=4 and elat=1) or (type=6 and elat =1),1,-1)*ztadil,
+                    	IIF(type in(1,9) or (type=4 and elat=1) or (type=6 and elat =1),1,-1)*TAB_ABN_A Item13, 
+                    	IIF(type in(1,9) or (type=4 and elat=1) or (type=6 and elat =1),1,-1)*TAB_ABN_F,
+                    	IIF(type in(1,9) or (type=4 and elat=1) or (type=6 and elat =1),1,-1)*TABS_FA Item15,
+                    	IIF(type in(1,9) or (type=4 and elat=1) or (type=6 and elat =1),1,-1)*bodjeh,
+                    	IIF(type in(1,9) or (type=4 and elat=1) or (type=6 and elat =1),1,-1)*C200 Item17,
+                    	IIF(type in(1,9) or (type=4 and elat=1) or (type=6 and elat =1),1,-1)*Avarez,
+                    	IIF(type in(1,9) or (type=4 and elat=1) or (type=6 and elat =1),1,-1)*baha SumItems,
+                    	0 Payable,
+                    	N'برگشتی' TypeId,
+                    	0,
+                    	0, 
+                    	0, 
+                    	0,
+                    	0,
+                    	0,
+                    	0, 
+                    	0, 
+                    	0,
+                    	0,
+                    	0, 
+                    	0,
+                    	0, 
+                    	0,
+                    	0,
+                    	0,
+                    	0,
+                    	0,
+                    	0 IsFree,
+                    	IIF(m.VillageId IS NOT NULL,m.VillageId,'' ) VillageId,
+                    	IIF(m.VillageName IS NOT NULL,m.VillageName,'') VillageName,
+                    	b.town ZoneId2, 
+                    	NULL ReadingStateTitle, 
+                    	'' PayId,
+                    	NULL CounterStateCode,
+                    	IIF(type=4 and elat=1,3,IIF(type=4 and elat=2,4,5)) TypeCode,
+                    	IIF(type=4 and elat=1,N'اصلاحات مثبت',IIF(type=4 and elat=2,N'اصلاحات منفی',N'برگشتی')) TypeTitle,
+                    	rc.Id,
+                    	rc.Title,
+                    	b.noe_va,
+                    	0 IsSettlement
+                    from [{dbName}].dbo.REPAIR b
+                    join Db70.dbo.T51 z
+                    	on b.town=z.C0
+                    JOIN [Db70].dbo.T7 va
+                    	ON b.noe_va=va.C0
+                    LEFT OUTER JOIN [{dbName}].dbo.members m
+                    	on b.radif=m.radif and b.town=m.town
+                    LEFT OUTER JOIN [Db70].dbo.T41 k1
+                    	ON b.cod_enshab=k1.C9
+                    LEFT OUTER JOIN [Db70].dbo.T41 k2
+                    	ON b.group1=k2.C9
+                    JOIN [Db70].dbo.T5 q
+                    	ON b.enshab=q.C0
+                    LEFT OUTER JOIN [Db70].dbo.BillReturnCause rc
+                    	ON b.elat=rc.Id
+                    WHERE b.id=@id";
+        }
+
     }
 }
