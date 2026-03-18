@@ -147,12 +147,19 @@
         public static string InvalidDiscountCount => "تعداد تخفیف را وارد کنید";
 
         //Tracking
+        public static string UseUpdateApi => "از آدرس  ویرایش استفاده کنید.";
+        public static string InvalidMotherRequest => "درخواست مادر-فرزند قابل پذیرش نیست";
+        public static string CantUpdate => "امکان ویرایش وجود ندارد";
+        public static string NotFoundAnyOpenTrack => "درخواست باز یافت نشد.";
         public static string InvalidStateId => "وضعیت ارسالی یافت نشد.";
         public static string InvalidExaminerName => "کد ارزیابی صحیح نیست.";
         public static string InvalidUserName => "کد کاربری صحیح نیست.";
         public static string InvalidDiscountFileName => "اطلاعات در این پوشه یافت نشد";
+        public static string InvalidStatusId => "خطا در کد وضعیت ";
         public static string InvalidOpenRequest(string trackNumber) => $"شمار دارای درخواست نیمه تمام با شماره پیگیری {trackNumber} هستید. ";
 
+        public static string NotFountOpenRequest => "درخواستی با وضعیت نیمه‌تمام یافت نشد.";
+        public static string CantSetTime => "امکان انتساب زمانبندی ارزیابی وجود ندارد";
         public static string InvalidDuplicateDeletionState => "خطا در تغییر وضعیت کنتور - وضعیت تکراری";
     }
 }
