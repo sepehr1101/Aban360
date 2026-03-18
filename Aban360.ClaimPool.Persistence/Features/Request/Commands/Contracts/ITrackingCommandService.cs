@@ -4,7 +4,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Contracts
 {
     public interface ITrackingCommandService
     {
-        Task Insert(TrackingInsertDto inputDto);
+        Task Insert(TrackingInsertDuplicateDto inputDto);
         Task UpdateIsConsiderdLatest(int trackNumber, bool isConsiderd);
     }
 }
