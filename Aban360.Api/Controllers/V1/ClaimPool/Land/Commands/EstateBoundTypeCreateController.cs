@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
 {
     [Route("v1/estate-bound-type")]
-    public class EstateBoundTypeCreateController : ControllerBase
+    public class EstateBoundTypeCreateController : BaseController
     {
         private readonly IUnitOfWork _uow;
         private readonly IEstateBoundTypeCreateHandler _createHandler;

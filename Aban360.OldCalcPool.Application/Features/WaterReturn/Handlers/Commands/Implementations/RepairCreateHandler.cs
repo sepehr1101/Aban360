@@ -1,6 +1,5 @@
 ﻿using Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Commands.Contracts;
 using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Commands;
-using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Contracts;
 using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Contracts;
 using Aban360.Common.Extensions;
 using DNTPersianUtils.Core;
@@ -12,25 +11,26 @@ using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
+using System.Data;
+using Aban360.Common.Db.Dapper;
+using Microsoft.Extensions.Configuration;
+using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implementations;
 
 namespace Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Commands.Implementations
 {
-    internal sealed class RepairCreateHandler : IRepairCreateHandler
+    internal sealed class RepairCreateHandler : AbstractBaseConnection, IRepairCreateHandler
     {
         static int invoiceDeadline = 7;
-        private readonly IRepairCommandService _commandService;
         private readonly IMembersQueryService _membersQueryService;
         private readonly IOldTariffEngine _tariffEngine;
         private readonly IBedBesQueryService _billQueryService;
         public RepairCreateHandler(
-            IRepairCommandService commandService,
             IMembersQueryService membersQueryService,
             IOldTariffEngine tariffEngine,
-            IBedBesQueryService billQueryService)
+            IBedBesQueryService billQueryService,
+            IConfiguration configuration)
+            : base(configuration)
         {
-            _commandService = commandService;
-            _commandService.NotNull(nameof(commandService));
-
             _membersQueryService = membersQueryService;
             _membersQueryService.NotNull(nameof(membersQueryService));
 
@@ -44,7 +44,7 @@ namespace Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Command
         {
             MemberGetDto memberInfo = await _membersQueryService.Get(input.BillId);
             RepairCreateDto repairDto = GetRepairCreateDto(input, memberInfo);
-            await _commandService.Create(repairDto);
+            await InsertRepair(repairDto);
         }
         public async Task<AbBahaCalculationDetails> Handle(MeterInfoWithMonthlyConsumptionOutputDto input, CancellationToken cancellationToken)
         {
@@ -58,7 +58,8 @@ namespace Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Command
                 return tariff;
             }
             RepairCreateDto repairDto = GetRepairCreateDto(tariff, bedBesData, input.MeetingNumber, input.Cause);
-            await _commandService.Create(repairDto);
+            await InsertRepair(repairDto);
+
             return tariff;
         }
         public async Task<AbBahaCalculationDetails> Handle(MeterInfoByLastMonthlyConsumptionOutputDto input, CancellationToken cancellationToken)
@@ -73,7 +74,7 @@ namespace Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Command
                 return tariff;
             }
             RepairCreateDto repairDto = GetRepairCreateDto(tariff, bedBesData, input.MeetingNumber, input.Cause);
-            await _commandService.Create(repairDto);
+            await InsertRepair(repairDto);
             return tariff;
         }
         public async Task<AbBahaCalculationDetails> Handle(MeterInfoByPreviousDataWithInvoiceIdInputDto input, CancellationToken cancellationToken)
@@ -88,7 +89,7 @@ namespace Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Command
                 return tariff;
             }
             RepairCreateDto repairDto = GetRepairCreateDto(tariff, bedBesData, input.MeetingNumber, input.Cause);
-            await _commandService.Create(repairDto);
+            await InsertRepair(repairDto);
             return tariff;
         }
         private void ValidationBedBes(BedBesDataInfoOutptuDto bedBesData, string currentDateJalali, string previousDateJalali)
@@ -99,7 +100,6 @@ namespace Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Command
             {
                 throw new InvalidBillIdException(ExceptionLiterals.InvalidBillId);
             }
-
         }
         private RepairCreateDto GetRepairCreateDto(AbBahaCalculationDetails tariffInfo, BedBesDataInfoOutptuDto bedBesInfo, decimal meetingNumber, int cause)
         {
@@ -274,6 +274,24 @@ namespace Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Command
                 CurrentMeterNumber = input.CurrentMeterNumber,
                 PreviousNumber = input.PreviousNumber
             };
+        }
+        private async Task InsertRepair(RepairCreateDto repairDto)
+        {
+            //string dbName = GetDbName((int)repairDto.Town);
+            string dbName = "Atlas";
+
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    RepairCommandService repairCommandService = new(connection, transaction);
+                    await repairCommandService.Insert(repairDto, dbName);
+                }
+            }
         }
     }
 }

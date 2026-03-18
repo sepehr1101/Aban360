@@ -3,6 +3,7 @@ using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Implementati
 using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
@@ -50,6 +51,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
         [HttpGet]
         [Route("request-directory-tree")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<FileListResponse>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetRequestDirectoryTree(string input, CancellationToken cancellation)
         {
             FileListResponse result = await _requestHandler.Handle(input, cancellation);

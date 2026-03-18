@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
 {
     [Route("v1/subscription-assignment")]
-    public class SubscriptionAssignmentUpdateController : ControllerBase
+    public class SubscriptionAssignmentUpdateController : BaseController
     {
         private readonly ISubscriptionAssignmentUpdateHandler _updateHandler;
         public SubscriptionAssignmentUpdateController(ISubscriptionAssignmentUpdateHandler updateHandler)

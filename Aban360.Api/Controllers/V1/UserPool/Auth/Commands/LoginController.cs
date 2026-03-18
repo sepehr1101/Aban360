@@ -102,6 +102,10 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
         public async Task<IActionResult> PaceFirstStep([FromBody] FirstStepLoginInput loginInput, CancellationToken cancellationToken)
         {            
             bool isCaptchaValid = HasRequestValidCaptchaEntry(loginInput);
+            if (!isCaptchaValid)
+            {
+                return ClientError(MessageResources.CaptchaInvalid);
+            }
             var (user, result) = await _userFindByPasswordHandler.Handle(loginInput, cancellationToken);
             if (!result || user is null)
             {

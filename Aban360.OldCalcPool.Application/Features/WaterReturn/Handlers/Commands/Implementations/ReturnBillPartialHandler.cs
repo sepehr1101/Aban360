@@ -61,7 +61,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             {
                 float _consumptionAverage = await GetConsumptionAverage(customerInfo, bedBesResult.PriDate, bedBesResult.TodayDate, consumptionAverage);
                 AbBahaCalculationDetails abBahaResult = await GetAbBahaTariff(inputDto, bedBesInfo, _consumptionAverage, cancellationToken);
-                var (finalAmount, hadarConsumption) = await GetAbHadarMasHadar(bedBesResult, customerInfo,(float)abBahaResult.Consumption , bedBesResult.PriDate, bedBesResult.TodayDate);
+                var (finalAmount, hadarConsumption) = await GetAbHadarMasHadar(bedBesResult, customerInfo, (float)abBahaResult.Consumption, bedBesResult.PriDate, bedBesResult.TodayDate);
                 return await CreateAutoBacksAndReturn(abBahaResult, inputDto, bedBesInfo, bedBesResult, customerInfo, hadarConsumption, (long)finalAmount, _consumptionAverage, jalaseNumber, cancellationToken);
             }
             if (misreaded.Contains(inputDto.ReturnCauseId))
@@ -77,6 +77,17 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         }
         private async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> CreateAutoBacksAndReturn(AbBahaCalculationDetails abBahaResult, ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBesInfo, BedBesCreateDto bedBesResult, CustomerInfoOutputDto customerInfo, float? hadarConsumption, long? finalAmount, float consumptionAverage, int jalaseNumber, CancellationToken cancellationToken)
         {
+            int[] notCalcAbon = { 14, 15 };
+            if (notCalcAbon.Contains(input.ReturnCauseId))
+            {
+                double abon = abBahaResult.AbonmanAbAmount + abBahaResult.AbonmanFazelabAmount;
+                double abonMaliat = (long)(abon * 0.1f);
+                abBahaResult.MaliatAmount -= abonMaliat;
+                abBahaResult.SumItems -= (abon + abonMaliat);
+
+                abBahaResult.AbonmanAbAmount = 0;
+                abBahaResult.AbonmanFazelabAmount = 0;
+            }
             AutoBackCreateDto bedBes = _returnBillBaseHandler.GetBedBes(bedBesResult, bedBesInfo.Count(), jalaseNumber, input.ReturnCauseId);
             AutoBackCreateDto newCalculation = _returnBillBaseHandler.GetNewCalculation(abBahaResult, bedBesResult, input.ReturnCauseId, bedBesInfo.Count(), hadarConsumption ?? 0, (long)(finalAmount ?? 0), jalaseNumber);
             AutoBackCreateDto different = _returnBillBaseHandler.GetDifferent(bedBesResult, newCalculation, jalaseNumber);

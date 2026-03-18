@@ -155,6 +155,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             int firstFlowId = readingDetailsCreate.FirstOrDefault().FlowImportedId;
             int zoneId = readingDetailsCreate.FirstOrDefault().ZoneId;
 
+            MeterFlowDeleteDto meterFlowDeleteDto = new(firstFlowId, appUser.UserId, DateTime.Now);
+
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
@@ -164,6 +166,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 using (transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     MeterReadingDetailCommandService meterReadingDetailService = new(connection, transaction);
+                    MeterFlowCommandService meterFlowCommand = new(connection, transaction);
+
                     try
                     {
                         await meterReadingDetailService.Insert(readingDetailsCreate);
@@ -174,8 +178,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     catch (Exception ex)
                     {
                         transaction.Rollback();
-                        await meterReadingDetailService.Delete(new MeterReadingDetailDeleteDto(firstFlowId, appUser.UserId, DateTime.Now));//todo: notWork
-                        DeleteFromDisk(filePath);//todo:Error
+                        await meterFlowCommand.Delete(meterFlowDeleteDto);
+                       // DeleteFromDisk(filePath);//todo:Error
                     }
                 }
             }
@@ -514,16 +518,16 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             r.EdarehK = r.IsSpecial;
             r.Avarez = (decimal)(abBahaCalc?.AvarezAmount ?? 0);
 
-            r.AbBahaDiscount=abBahaCalc.AbBahaDiscount;
-            r.HotSeasonDiscount=abBahaCalc.HotSeasonDiscount;
-            r.HotSeasonFazelabDiscount = abBahaCalc.HotSeasonFazelabDiscount;
-            r.FazelabDiscount=abBahaCalc.FazelabDiscount;
-            r.AbonmanAbDiscount= abBahaCalc.AbonmanAbDiscount;
-            r.AbonmanFazelabDiscount = abBahaCalc.AbonmanFazelabDiscount;
-            r.AvarezDiscount=abBahaCalc.AvarezDiscount;
-            r.JavaniDiscount=abBahaCalc.JavaniDiscount;
-            r.BoodjeDiscount=abBahaCalc.BoodjeDiscount;
-            r.MaliatDiscount=abBahaCalc.MaliatDiscount;
+            r.AbBahaDiscount = abBahaCalc?.AbBahaDiscount ?? 0;
+            r.HotSeasonDiscount = abBahaCalc?.HotSeasonDiscount ?? 0;
+            r.HotSeasonFazelabDiscount = abBahaCalc?.HotSeasonFazelabDiscount ?? 0;
+            r.FazelabDiscount = abBahaCalc?.FazelabDiscount ?? 0;
+            r.AbonmanAbDiscount = abBahaCalc?.AbonmanAbDiscount ?? 0;
+            r.AbonmanFazelabDiscount = abBahaCalc?.AbonmanFazelabDiscount ?? 0;
+            r.AvarezDiscount = abBahaCalc?.AvarezDiscount ?? 0;
+            r.JavaniDiscount = abBahaCalc?.JavaniDiscount ?? 0;
+            r.BoodjeDiscount = abBahaCalc?.BoodjeDiscount ?? 0;
+            r.MaliatDiscount = abBahaCalc?.MaliatDiscount ?? 0;
 
             if (hasZeroValue)
             {

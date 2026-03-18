@@ -9,6 +9,8 @@
         public string Surname { get; set; }
         public string MobileNumber { get; set; }
 
+        public string? BillId { get; set; }
+        public bool HasBillId { get; set; }
         public string TrackNumber { get; set; }
         public string ReportDateJalali { get; set; }
         public string Title { get; set; }

@@ -96,10 +96,5 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
             StreamContent content = new(stream);
             return content;
         }
-        private async Task CreateFolder(string path)
-        {
-            //TODO: if exists skip
-            //ELSE: create Folder
-        }
     }
 }

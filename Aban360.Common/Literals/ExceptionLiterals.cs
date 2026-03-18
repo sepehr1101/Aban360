@@ -9,16 +9,25 @@
         public static string AppBasePathNotFound_1 { get { return "ریشه پروژه در مسیر {0} پیدا نشد"; } }
         public static string InvalidIp { get { return "Ip وارد شده صحیح نمیباشد: {0}"; } }
         public static string MustEnum => "مقدار وارد شده باید یک Enum باشد";
+        public static string MustDigit => "مقدار وارد شده باید عدد باشد";
         public static string GreaterThan0 => "مقدار وارد شده باید بزرگ تر از 0 باشد";
         public static string NotNull => "از پر بودن تمامی فیلد ها اطمینان حاصل کنید";
         public static string NotNullAll => "حداقل یکی از فیلد ها را پر کنید";
+        public static string Equal1 => "مقدار وارد شده باید برابر 1 کاراکتر باشد";
         public static string Equal10 => "مقدار وارد شده باید برابر 10 کاراکتر باشد";
+        public static string Equal11 => "مقدار وارد شده باید برابر 11 کاراکتر باشد";
+        public static string Between3And15 => "مقدار وارد شده باید بین 3-15 کاراکتر باشد";
+        public static string Between5And25 => "مقدار وارد شده باید بین 5-25 کاراکتر باشد";
+        public static string Between5And100 => "مقدار وارد شده باید بین 5-100 کاراکتر باشد";
+        public static string Equal8Or11 => "مقدار وارد شده باید برابر 8 یا 11 کاراکتر باشد";
         public static string NotLessThan6 => "مقدار وارد شده نباید کمتر از 6 کاراکتر باشد";
+        public static string NotLessThan3 => "مقدار وارد شده نباید کمتر از 3 کاراکتر باشد";
         public static string NotMoreThan3 => "مقدار وارد شده نباید بیش از 3 کاراکتر باشد";
         public static string NotMoreThan11 => "مقدار وارد شده نباید بیش از 11 کاراکتر باشد";
         public static string NotMoreThan13 => "مقدار وارد شده نباید بیش از 13 کاراکتر باشد";
         public static string NotMoreThan15 => "مقدار وارد شده نباید بیش از 15 کاراکتر باشد";
         public static string NotMoreThan31 => "مقدار وارد شده نباید بیش از 31 کاراکتر باشد";
+        public static string NotMoreThan60 => "مقدار وارد شده نباید بیش از 60 کاراکتر باشد";
         public static string NotMoreThan100 => "مقدار وارد شده نباید بیش از 100 باشد";
         public static string NotMoreThan255 => "مقدار وارد شده نباید بیش از 255 کاراکتر باشد";
         public static string NotMoreThan1023 => "مقدار وارد شده نباید بیش از 1023 کاراکتر باشد";
@@ -40,6 +49,19 @@
         public static string InvalidDiameterId => " امکان محاسبه تعرفه با قطر انتخابی وجود ندارد.";
         public static string InvalidZoneIdMoreThan1 => "با توجه به اینکه فیلد از/تا اشتراک مقدار دهی شده است، می‌توانید فقط یک ناحیه را انتخاب کنید.";
         public static string InvalidInstallmentMoreThan6 => "تعداد اقساط باید کمتر از 6 قسط باشد.";
+
+        public static string InvlaidStringLength => "طول رشته نامعتبر است.";
+        public static string InvalidEmailFormat => "فرمت ایمیل نامعتبر است.";
+        public static string MobileNumberFormat => "شماره موبایل باید با 09 شروع شده و شامل 11 رقم باشد.";
+        public static string PhoneNumberFormat => "شماره تلفن باید شامل 8 یا 11 رقم باشد.";
+        public static string NationalCodeFormat => "کد ملی باید ۱۰ رقم باشد.";
+        public static string PostalCodeFormat => "کد پستی باید ۱۰ رقم باشد.";
+        public static string DateFormat => "فرمت تاریخ نامعتبر است.";
+        public static string NumericFormat => "این فیلد باید عددی باشد.";
+        public static string Length8Or11 => "طول رشته باید ۸ یا ۱۱ رقم باشد.";
+        public static string OnlyDigits => "این فیلد باید فقط شامل اعداد باشد.";
+        public static string GreaterThanZero => "مقدار باید بزرگتر از صفر باشد.";
+        public static string InvalidGuid => "مقدار Guid نامعتبر است.";
 
         public static string HasNotSiphon => "سیفون ندارد";
         public static string DuplicateBillIdTags => "شناسه قبض با شناسه تگ جاری تکراری است.";
@@ -103,7 +125,8 @@
         public static string RepairAmountMoreThanBedBesAmount => "مبلغ برگشتی از مبلغ قبوض بیشتر است.";
         public static string InvalidBillWithDel => "در بازه وارد شده، قبض برگشتی وجود دارد.";
         public static string InvalidReturnDuplicate => "قبلا قبضی با اطلاعات وارد شده برگشت داده شده است.";
-
+        public static string InvalidSaveReturn => "خطا در ذخیره برگشتی";
+        public static string InvalidConfirmedReturn => "خطا در ذخیره تایید برگشتی";
 
         //Tax
         public static string InvalidMaaherWrapperInsert => "خطا در درج دسته مالیات";
@@ -126,7 +149,9 @@
         //Tracking
         public static string InvalidStateId => "وضعیت ارسالی یافت نشد.";
         public static string InvalidExaminerName => "کد ارزیابی صحیح نیست.";
+        public static string InvalidUserName => "کد کاربری صحیح نیست.";
         public static string InvalidDiscountFileName => "اطلاعات در این پوشه یافت نشد";
+        public static string InvalidOpenRequest(string trackNumber) => $"شمار دارای درخواست نیمه تمام با شماره پیگیری {trackNumber} هستید. ";
 
         public static string InvalidDuplicateDeletionState => "خطا در تغییر وضعیت کنتور - وضعیت تکراری";
     }
