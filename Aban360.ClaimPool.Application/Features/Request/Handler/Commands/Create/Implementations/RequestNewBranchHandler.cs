@@ -126,6 +126,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 PostalCode = string.Empty,
                 ReadingNumber = string.Empty,
                 IsSpecial = false,
+                BrokerId=0,//todo8
                 s0 = serviceSelected.s0,
                 s1 = serviceSelected.s1,
                 s2 = serviceSelected.s2,

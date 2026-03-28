@@ -287,12 +287,14 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                     long discountPerUnit = item.Amount / inputDto.DomesticUnit;
                     item.Discount = (long)(discountPerUnit * inputDto.DiscountCount.Value * discountPercent);
                     item.FinalAmount = item.Amount - (item.Discount ?? 0);
+                    item.DiscountTypeId=inputDto.DiscountTypeId.Value;
                 }
                 if (sewageDiscountOffering.Contains(item.Id) && inputDto.IsSewageDiscount)
                 {
                     long discountPerUnit = item.Amount / inputDto.DomesticUnit;
                     item.Discount = (long)(discountPerUnit * inputDto.DiscountCount.Value * discountPercent);
                     item.FinalAmount = item.Amount - (item.Discount ?? 0);
+                    item.DiscountTypeId = inputDto.DiscountTypeId.Value;
                 }
             }
 

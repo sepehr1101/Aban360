@@ -55,7 +55,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetStiReport(SearchInput inputDto, CancellationToken cancellationToken)
         {
-            int reportCode = 2020;
+            int reportCode = 2010;
             ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentOutputDto> result = await _billInstallmentGetHandler.Handle(inputDto.Input, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
             return Ok(reportId);
