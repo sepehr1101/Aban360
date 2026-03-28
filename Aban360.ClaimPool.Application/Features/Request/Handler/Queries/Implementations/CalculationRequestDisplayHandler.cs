@@ -30,7 +30,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
             long amount = data?.Sum(c => c.Amount) ?? 0;
             long discount = data?.Sum(c => c.Discount ) ?? 0;
-            CalculationRequestDisplayHeaderOutputDto header = new(amount, discount, amount - discount);
+            CalculationRequestDisplayHeaderOutputDto header = new(amount, discount, amount - discount);//todo: true or not
 
             return new ReportOutput<CalculationRequestDisplayHeaderOutputDto, CalculationRequestDisplayDataOutputDto>(_title, header, data);
         }
