@@ -1,8 +1,6 @@
-﻿using System.Runtime.InteropServices;
-
-namespace Aban360.CalculationPool.Domain.Features.Sale.Dto.Output
+﻿namespace Aban360.CalculationPool.Domain.Features.Sale.Dto.Output
 {
-    public record SaleDataOutputDto
+    public record SaleAndAfterSaleDataOutputDto
     {
         public short Id { get; set; }
         public string Title { get; set; } = null!;
@@ -10,7 +8,8 @@ namespace Aban360.CalculationPool.Domain.Features.Sale.Dto.Output
         public long? Discount { get; set; }
         public long FinalAmount { get; set; }
         public int DiscountTypeId { get; set; }
-        public SaleDataOutputDto(short id, string title, long? amount, long? discount, long? finalAmount, [Optional] int discountTypeId)
+        public bool Removable { get; set; }
+        public SaleAndAfterSaleDataOutputDto(short id, string title, long? amount, long? discount, long? finalAmount, int discountTypeId, bool removable)
         {
             Id = id;
             Title = title;
@@ -18,6 +17,7 @@ namespace Aban360.CalculationPool.Domain.Features.Sale.Dto.Output
             Discount = discount;
             FinalAmount = finalAmount ?? 0;
             DiscountTypeId = discountTypeId;
+            Removable = removable;
         }
     }
 }

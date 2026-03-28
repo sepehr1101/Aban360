@@ -15,6 +15,7 @@
         public static string InvalidInsertArchmem=> "خطا در ذخیره تاریخچه مشترک";
         public static string InvalidUpdateBillAmount=> "خطا در ویرایش مبلغ قبض";
         public static string InvalidUpdateTrackNumber => "خطا در ویرایش شماره پیگیری";
+        public static string InvalidInsertKart => "خطا در ذخیره اقلام محاسبه شده";
 
     }
 }

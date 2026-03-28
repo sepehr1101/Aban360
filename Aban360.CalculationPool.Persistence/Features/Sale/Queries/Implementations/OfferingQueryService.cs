@@ -15,9 +15,11 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
 
         public async Task<string> Get(short id)
         {
-            string Sql() => @"Select Title
-                From Aban360.CalculationPool.Offering
-                Where Id=@id";
+            //string Sql() => @"Select Title
+                //From Aban360.CalculationPool.Offering
+                //Where Id=@id";
+            
+            string Sql() => @"select C1 From Db70.dbo.T100 Where C0=@id";
 
             string? title=await _sqlConnection.QueryFirstOrDefaultAsync<string>(Sql(), new {id=id});
             if (string.IsNullOrWhiteSpace(title))

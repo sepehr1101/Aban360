@@ -2,17 +2,17 @@
 {
     public enum OfferingEnum:short
     { 
-        WaterSubscription=2,
-        SewageSubscription=13,
+        WaterSubscription=101,//2,
+        SewageSubscription=201,//13,
 
-        WaterInstallation=1,
-        SewageInstalltion=12,
+        WaterInstallation=100,//1,
+        SewageInstalltion=200,//12,
 
-        WaterEquipment=76,
-        SewageEquipment=77,
+        WaterEquipment=701,//76,
+        SewageEquipment=702,//77,
 
-        WaterArticle11=32,
-        SewageArticle11=33,
+        WaterArticle11=311,//32,
+        SewageArticle11=312,//33,
 
         ////CompanyService
         // ChangeMeterPlace=10,

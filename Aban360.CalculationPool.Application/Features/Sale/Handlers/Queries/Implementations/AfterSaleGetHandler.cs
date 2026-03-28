@@ -3,13 +3,13 @@ using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
 using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Features.People.Entities;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
-using Aban360.ReportPool.GatewayAdhoc.Features.ConsumersInfo;
 using Aban360.ReportPool.GatewayAdhoc.Features.ConsumersInfo.Contracts;
 using FluentValidation;
 
@@ -26,6 +26,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private static string _article2Title = "تبصره 2";
         private static string _taxTitle = "مالیات بر ارزش افزوده";
         private static float _tax = 0.1f;
+        private static int _removeBranchTypeId = 11;
         public AfterSaleGetHandler(
             ISaleGetHandler saleGetHandler,
             IEquipmentBrokerAndZoneQueryService equipmentBrokerAndZoneQueryService,
@@ -97,14 +98,14 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             var (previousItems, currentItems, differentItems) = await GetCompanyData(previousSaleCalculationData, currentSaleCalculationData, input);
             AfterSaleDataOutputDto companyServiceData = new(previousItems, currentItems, differentItems);
             AfterSaleDataOutputDto companyServiceWithChangeCompany = await GetAllCompanyService(input, companyServiceData);
-            //11
+
             foreach (var item in companyServiceWithChangeCompany.DifferentValue)
             {
                 if (item.FinalAmount < 0)
                 {
                     if (item.Id == (short)OfferingEnum.WaterSubscription || item.Id == (short)OfferingEnum.SewageSubscription)
                     {
-                        if (input.CompanyServiceIds.Contains(11))
+                        if (input.CompanyServiceIds.Contains(_removeBranchTypeId))
                         {
                             item.FinalAmount = (long)(item.FinalAmount * 0.5);
                         }
@@ -369,7 +370,8 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                         previousData.GetValueOrDefault(id)?.Title,
                         hasChange ? currentData.GetValueOrDefault(id)?.Amount : amount,
                         hasChange ? currentData.GetValueOrDefault(id)?.Discount : discount,
-                        hasChange ? currentData.GetValueOrDefault(id)?.FinalAmount : finalAmount
+                        hasChange ? currentData.GetValueOrDefault(id)?.FinalAmount : finalAmount,
+                        currentData.GetValueOrDefault(id)?.DiscountTypeId ?? 0//todo: check
                     );
                 })
                 .ToList();
@@ -404,42 +406,42 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
     }
     public enum AfterSaleCompanyServiceEnum
     {
-        WastewaterBranch = 3,
-        MeterSeparation = 4,
-        ChangeSpecifications = 5,
-        ChangeUnit = 6,
-        ChangeUsage = 7,
-        ChangeMeterDiameter = 8,
-        InstallAdditionalSiphon = 9,
-        MeterRelocation = 10,
-        BranchDismantling = 11,
-        PropertyConsolidationAndMerger = 12,
-        TankerWaterSale = 13,
-        SuggestionsComplaintsCriticisms = 14,
-        BillPaymentFacility = 15,
-        ViewRecords = 16,
-        Settlement = 17,
-        BillReview = 18,
-        InterimBill = 19,
-        TemporaryDisconnectionAndReconnection = 20,
-        MeterTest = 21,
-        WaterAndWastewaterBranchTransfer = 22,
-        AfterSalesService = 23,
-        ChangeSiphonDiameter = 24,
-        SiphonReplacement = 25,
-        NotaryInquiry = 26,
-        DisconnectionAndReconnection = 27,
-        SiphonRelocation = 28,
-        EngineeringSystem = 29,
-        MeterReplacement = 30,
-        ChangeContractualCapacity = 31,
-        HouseholdCensus = 42,
-        WaterPreparation = 45,
-        WastewaterPreparation = 46,
-        TariffChange = 47,
-        Surveying = 67,
-        OtherServices = 74,
-        ChangeMeterLevel = 77
+        WastewaterBranch = 3,// انشعاب فاضلاب   s2=201
+        MeterSeparation = 4,//تفکیک کنتور
+        ChangeSpecifications = 5,//تغییر مشخصات    s4=301
+        ChangeUnit = 6,//تغییر واحد 
+        ChangeUsage = 7,//تغییر کاربری    s16=331
+        ChangeMeterDiameter = 8,//تغییر قطر انشعاب    s5=302
+        InstallAdditionalSiphon = 9,//نصب سیفون اضافی    s33=310
+        MeterRelocation = 10,//جابجایی کنتور    s20=308
+        BranchDismantling = 11,//برچیدن انشعاب
+        PropertyConsolidationAndMerger = 12,//تجمیع و ادغام املاک     s40=205
+        TankerWaterSale = 13,//فروش آب تانکری
+        SuggestionsComplaintsCriticisms = 14,//پیشنهادات،انتقادات،شکایات
+        BillPaymentFacility = 15,//امکان پرداخت صورتحساب
+        ViewRecords = 16,//مشاهده سوابق
+        Settlement = 17,//تسویه حساب
+        BillReview = 18,//بررسی صورتحساب
+        InterimBill = 19,//صورتحساب میاندوره
+        TemporaryDisconnectionAndReconnection = 20,//قطع موقت و وصل انشعاب    s32=303
+        MeterTest = 21,//آزمایش کنتور
+        WaterAndWastewaterBranchTransfer = 22,//واگذاری انشعاب آب و فاضلاب
+        AfterSalesService = 23,//خدمات پس از فروش
+        ChangeSiphonDiameter = 24,//تغییر قطر سیفون    s24=309
+        SiphonReplacement = 25,//تعویض سیفون    s38
+        NotaryInquiry = 26,//استعلام محضر
+        DisconnectionAndReconnection = 27,//قطع و وصل انشعاب     ??s32
+        SiphonRelocation = 28,//جابجایی سیفون     s36=323
+        EngineeringSystem = 29,//نظام مهندسی    s37
+        MeterReplacement = 30,//تعویض کنتور    s41
+        ChangeContractualCapacity = 31,//تغییر ظرفیت قراردادی    s44
+        HouseholdCensus = 42,//خانوار شماری    s39
+        WaterPreparation = 45,//آماده سازی آب    s26=109
+        WastewaterPreparation = 46,//آماده سازی فاضلاب     s27=209
+        TariffChange = 47,//تغییر تعرفه     s46
+        Surveying = 67,//پیمایش      s47
+        OtherServices = 74,//سایر خدمات      s48=500
+        ChangeMeterLevel = 77//تغییر سطح کنتور    s13=304
     }
 
 }
