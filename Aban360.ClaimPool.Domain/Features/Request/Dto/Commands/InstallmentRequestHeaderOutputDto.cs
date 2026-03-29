@@ -4,12 +4,10 @@
     {
         public long Amount { get; set; }
         public int InstallmentCount { get; set; }
-        public int PrepaymentPercent { get; set; }
-        public InstallmentRequestHeaderOutputDto(long amount,int installmentCount,int prepaymentPercent)
+        public InstallmentRequestHeaderOutputDto(long amount,int installmentCount)
         {
             Amount = amount;
             InstallmentCount = installmentCount;
-            PrepaymentPercent = prepaymentPercent;
         }
         public InstallmentRequestHeaderOutputDto()
         {

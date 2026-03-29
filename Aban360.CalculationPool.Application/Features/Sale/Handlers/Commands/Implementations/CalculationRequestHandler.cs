@@ -1,6 +1,5 @@
 ﻿using Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts;
 using Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Contracts;
-using Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Implementations;
 using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
@@ -10,6 +9,7 @@ using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
+using Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.QueryServices;
@@ -32,6 +32,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         private static int _saleServiceId = 1;
         private static int _afterSaleServiceId = 2;
         private static int _kartTypeId = 2;
+        private static int _intervalDueDate = 30;
         private static string _insertBy = "Aban";
 
         public CalculationRequestHandler(
@@ -88,7 +89,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 };
                 ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> saleResult = await _saleGetHandler.Handle(saleInputDto, cancellationToken);
                 ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = new(saleResult.Title, saleResult.ReportHeader, GetSaleResult(saleResult.ReportData));
-                await Commands(result, moshtrakInfo, userCode);
+                await Commands(result, moshtrakInfo, userCode, trackingInfo.BillId);
                 return result;
             }
             else if (trackingInfo.ServiceGroupId == _afterSaleServiceId)
@@ -140,7 +141,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 //todo: not working
                 FlatReportOutput<SaleHeaderOutputDto, AfterSaleDataOutputDto> afterSaleResult = await _afterSaleGetHandler.Handle(afterSaleInputDto, cancellationToken);
                 ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = new(afterSaleResult.Title, afterSaleResult.ReportHeader, GetAfterSaleResult(afterSaleResult.ReportData));
-                await Commands(result, moshtrakInfo, userCode);
+                await Commands(result, moshtrakInfo, userCode, trackingInfo.BillId);
                 return result;
             }
 
@@ -201,9 +202,10 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         }
         private IEnumerable<SaleAndAfterSaleDataOutputDto> GetSaleResult(IEnumerable<SaleDataOutputDto> data) => data.Select(s => new SaleAndAfterSaleDataOutputDto(s.Id, s.Title, s.Amount, s.Discount, s.FinalAmount, s.DiscountTypeId, false));
         private IEnumerable<SaleAndAfterSaleDataOutputDto> GetAfterSaleResult(AfterSaleDataOutputDto data) => data.DifferentValue.Select(s => new SaleAndAfterSaleDataOutputDto(s.Id, s.Title, s.Amount, s.Discount, s.FinalAmount, s.DiscountTypeId, false));
-        private async Task Commands(ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> input, MoshtrakOutputDto moshtrakInfo, int userCode)
+        private async Task Commands(ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> input, MoshtrakOutputDto moshtrakInfo, int userCode, string billId)
         {
             ICollection<KartInsertDto> kartsInsertDto = GetKartsInsertDto(input.ReportHeader, input.ReportData, moshtrakInfo, userCode);
+            GhestInsertDto ghestInsertDto = GetGhestInsertDto(input.ReportHeader, input.ReportData, moshtrakInfo, billId);
             string dbName = GetDbName(moshtrakInfo.ZoneId);
 
             using (IDbConnection connection = _sqlReportConnection)
@@ -215,7 +217,10 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     KartCommandService kartCommandService = new(connection, transaction);
+                    GhestCommandService ghestCommandService = new(connection, transaction);
+
                     await kartCommandService.Insert(kartsInsertDto, dbName);
+                    await ghestCommandService.Insert(ghestInsertDto, dbName);
 
                     transaction.Commit();
                 }
@@ -266,6 +271,32 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                     Type = 0,//todo
                 })
             .ToList();
+        }
+        private GhestInsertDto GetGhestInsertDto(SaleHeaderOutputDto header, IEnumerable<SaleAndAfterSaleDataOutputDto> datas, MoshtrakOutputDto m, string billId)
+        {
+            if (string.IsNullOrWhiteSpace(billId))
+            {
+                throw new InvalidBillIdException(ExceptionLiterals.InvalidBillId);
+            }
+            return new GhestInsertDto()
+            {
+                ZoneId = m.ZoneId,
+                CustomerNumber = m.CustomerNumber,
+                StringTrackNumber = m.TrackNumber.ToString().PadLeft(11, '0'),
+                Identify = 0,//todo
+                Cod1 = 0,
+                Cod2 = 0,
+                Cod3 = 0,
+                Barge = 0,//todo
+                Payable = header.CompanyFinalAmount,
+                Type = 0,//todo
+                InstallmentNumber = 0,
+                CurrentDateJalali = DateTime.Now.ToShortPersianDateString(),
+                DueDateJalali = DateTime.Now.AddDays(_intervalDueDate).ToShortPersianDateString(),
+                InsertBy = _insertBy,
+                BillId = billId??string.Empty,//todo:remove
+                PaymentId = TransactionIdGenerator.GeneratePaymentId(header.CompanyFinalAmount, billId)
+            };
         }
     }
 }
