@@ -26,7 +26,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             return $@"Select 
                     	t100.C1 Title,
                     	k.pard Amount,
-                    	k.takhfif
+                    	k.takhfif Discount
                     From [{dbName}].dbo.kart k
                     Join [Db70].dbo.T100 t100	
                     	ON k.noe_bed=t100.C0

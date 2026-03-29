@@ -63,7 +63,7 @@ namespace Aban360.Common.Db.QueryServices
 						m.name FirstName,
 						m.family AS Surname,
 						m.father_nam FatherName,
-						m.enshab WaterDiameterId,
+						m.enshab MeterDiameterId,
 						m.cod_enshab UsageId,
 						m.tedad_vahd AS OtherUnit,
 						m.tedad_tej AS CommercialUnit,

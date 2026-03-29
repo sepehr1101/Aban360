@@ -3,7 +3,7 @@ using Aban360.Common.BaseEntities;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts
 {
-    public interface IInstallmentRequestHandler
+    public interface ISetInstallmentRequestHandler
     {
         Task<ReportOutput<InstallmentRequestHeaderOutputDto, InstallmentRequestDataOutputDto>> Handle(InstallmentRequestInputDto inputDto, CancellationToken cancellationToken);
     }

@@ -32,6 +32,25 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidInsertGhest);
             }
         }
+        public async Task Insert(GhestInsertDto inputDto, string dbName)
+        {
+            string command = GetInsertCommand(dbName);
+            int recordCount = await _connection.ExecuteAsync(command, inputDto, _transaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidInsertGhest);
+            }
+        }
+        public async Task Remove(string stringTrackNumber, string dbName)
+        {
+            string command = GetRemoveByStringTrackNumber(dbName);
+            int recordCount = await _connection.ExecuteAsync(command, new { stringTrackNumber }, _transaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidInsertGhest);
+            }
+        }
+
         private string GetInsertCommand(string dbName)
         {
             return $@"Insert Into [{dbName}].dbo.ghest(
@@ -44,6 +63,11 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                         @Cod1 ,@Cod2 ,@Cod3 ,@Barge ,
                         @Payable ,@Type ,0 ,@CurrentDateJalali ,@InstallmentNumber ,
                         @DueDateJalali ,@InsertBy ,@BillId ,@PaymentId )";
+        }
+        private string GetRemoveByStringTrackNumber(string dbName)
+        {
+            return $@"Delete [{dbName}].dbo.ghest 
+                    Where par_no=@stringTrackNumber";
         }
     }
 }

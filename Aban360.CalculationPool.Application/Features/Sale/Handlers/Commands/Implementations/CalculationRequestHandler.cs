@@ -1,6 +1,5 @@
 ﻿using Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts;
 using Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Contracts;
-using Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Implementations;
 using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
@@ -10,6 +9,7 @@ using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
+using Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.QueryServices;
@@ -32,6 +32,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         private static int _saleServiceId = 1;
         private static int _afterSaleServiceId = 2;
         private static int _kartTypeId = 2;
+        private static int _intervalDueDate = 30;
         private static string _insertBy = "Aban";
 
         public CalculationRequestHandler(
@@ -67,84 +68,94 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
 
             if (trackingInfo.ServiceGroupId == _saleServiceId)
             {
-                SaleInputDto saleInputDto = new()
-                {
-                    WaterDiameterId = (short)moshtrakInfo.MeterDiameterId,
-                    SiphonDiameterId = (short)moshtrakInfo.MainSiphon,
-                    ZoneId = moshtrakInfo.ZoneId,
-                    UsageId = moshtrakInfo.UsageId,
-                    Block = moshtrakInfo.BlockId,
-                    HasWaterBroker = moshtrakInfo.BrokerId == 0 ? false : true,
-                    ContractualCapacity = moshtrakInfo.ContractualCapacity,
-                    DomesticUnit = moshtrakInfo.DomesticUnit,
-                    CommertialUnit = moshtrakInfo.CommercialUnit,
-                    OtherUnit = moshtrakInfo.OtherUnit,
-                    DiscountCount = moshtrakInfo.DiscountCount,
-                    DiscountTypeId = moshtrakInfo.DiscountTypeId,
-                    IsSewageDiscount = moshtrakInfo.s35 == 1 ? true : false,
-                    IsWaterDiscount = moshtrakInfo.s34 == 1 ? true : false,
-                    HasWaterArticle11 = false,//todo
-                    HasSewageArticle11 = false,//todo
-                };
-                ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> saleResult = await _saleGetHandler.Handle(saleInputDto, cancellationToken);
-                ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = new(saleResult.Title, saleResult.ReportHeader, GetSaleResult(saleResult.ReportData));
-                await Commands(result, moshtrakInfo, userCode);
+                ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = await GetSaleResult(moshtrakInfo, cancellationToken);
+                await Commands(result, moshtrakInfo, userCode, trackingInfo.BillId);
                 return result;
             }
             else if (trackingInfo.ServiceGroupId == _afterSaleServiceId)
             {
-                MoshtrakServiceDto moshtrakServiceSelected = GetMoshtrakService(moshtrakInfo);
-                MemberInfoGetDto previousMoshtrakInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber(trackingInfo.ZoneId, moshtrakInfo.CustomerNumber));
-
-                AfterSaleItemsInputDto previousInfo = new()
-                {
-                    WaterDiameterId = (short)previousMoshtrakInfo.MeterDiameterId,
-                    SiphonDiameterId = short.Parse(previousMoshtrakInfo.MainSiphon),
-                    UsageId = previousMoshtrakInfo.UsageId,
-                    HasWaterBroker = moshtrakInfo.BrokerId == 0 ? false : true,
-                    ContractualCapacity = previousMoshtrakInfo.ContractualCapacity,
-                    DomesticUnit = previousMoshtrakInfo.DomesticUnit,
-                    CommertialUnit = previousMoshtrakInfo.CommercialUnit,
-                    OtherUnit = previousMoshtrakInfo.OtherUnit,
-                    IsSewageDiscount = moshtrakInfo.s35 == 1 ? true : false,
-                    IsWaterDiscount = moshtrakInfo.s34 == 1 ? true : false,
-                    DiscountCount = 0,//todo,
-                    DiscountTypeId = 0,//todo,
-                };
-                AfterSaleItemsInputDto currentInfo = new()
-                {
-                    WaterDiameterId = (short)moshtrakInfo.MeterDiameterId,
-                    SiphonDiameterId = (short)moshtrakInfo.MainSiphon,
-                    UsageId = moshtrakInfo.UsageId,
-                    HasWaterBroker = moshtrakInfo.BrokerId == 0 ? false : true,
-                    ContractualCapacity = moshtrakInfo.ContractualCapacity,
-                    DomesticUnit = moshtrakInfo.DomesticUnit,
-                    CommertialUnit = moshtrakInfo.CommercialUnit,
-                    OtherUnit = moshtrakInfo.OtherUnit,
-                    IsSewageDiscount = moshtrakInfo.s35 == 1 ? true : false,
-                    IsWaterDiscount = moshtrakInfo.s34 == 1 ? true : false,
-                    DiscountCount = moshtrakInfo.DiscountCount,
-                    DiscountTypeId = moshtrakInfo.DiscountTypeId,
-                };
-                AfterSaleInputDto afterSaleInputDto = new()
-                {
-                    ZoneId = moshtrakInfo.ZoneId,
-                    Block = moshtrakInfo.BlockId,
-                    HasWaterArticle11 = false,//todo
-                    HasSewageArticle11 = false,//todo
-                    CompanyServiceIds = MoshtrakService.GetServicesSelected(moshtrakServiceSelected),
-                    PreviousData = previousInfo,
-                    CurrentData = currentInfo,
-                };
-                //AfterSaleCompanyServiceEnum
-                //todo: not working
-                FlatReportOutput<SaleHeaderOutputDto, AfterSaleDataOutputDto> afterSaleResult = await _afterSaleGetHandler.Handle(afterSaleInputDto, cancellationToken);
-                ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = new(afterSaleResult.Title, afterSaleResult.ReportHeader, GetAfterSaleResult(afterSaleResult.ReportData));
-                await Commands(result, moshtrakInfo, userCode);
+                ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = await GetAfterSaleResult(moshtrakInfo, cancellationToken);
+                await Commands(result, moshtrakInfo, userCode, trackingInfo.BillId);
                 return result;
             }
 
             throw new InvalidTrackingException(ExceptionLiterals.InvalidCalculation);
+        }
+        private async Task<ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>> GetSaleResult(MoshtrakOutputDto moshtrakInfo, CancellationToken cancellationToken)
+        {
+            SaleInputDto saleInputDto = new()
+            {
+                WaterDiameterId = (short)moshtrakInfo.MeterDiameterId,
+                SiphonDiameterId = (short)moshtrakInfo.MainSiphon,
+                ZoneId = moshtrakInfo.ZoneId,
+                UsageId = moshtrakInfo.UsageId,
+                Block = moshtrakInfo.BlockId,
+                HasWaterBroker = moshtrakInfo.BrokerId == 0 ? false : true,
+                ContractualCapacity = moshtrakInfo.ContractualCapacity,
+                DomesticUnit = moshtrakInfo.DomesticUnit,
+                CommertialUnit = moshtrakInfo.CommercialUnit,
+                OtherUnit = moshtrakInfo.OtherUnit,
+                DiscountCount = moshtrakInfo.DiscountCount,
+                DiscountTypeId = moshtrakInfo.DiscountTypeId,
+                IsSewageDiscount = moshtrakInfo.s35 == 1 ? true : false,
+                IsWaterDiscount = moshtrakInfo.s34 == 1 ? true : false,
+                HasWaterArticle11 = false,//todo
+                HasSewageArticle11 = false,//todo
+            };
+            ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> saleResult = await _saleGetHandler.Handle(saleInputDto, cancellationToken);
+            ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = new(saleResult.Title, saleResult.ReportHeader, GetSaleResult(saleResult.ReportData));
+            return result;
+        }
+        private async Task<ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>> GetAfterSaleResult(MoshtrakOutputDto moshtrakInfo, CancellationToken cancellationToken)
+        {
+            MoshtrakServiceDto moshtrakServiceSelected = GetMoshtrakService(moshtrakInfo);
+            MemberInfoGetDto previousMoshtrakInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber(moshtrakInfo.ZoneId, moshtrakInfo.CustomerNumber));
+
+            AfterSaleItemsInputDto previousInfo = new()
+            {
+                WaterDiameterId = (short)previousMoshtrakInfo.MeterDiameterId,
+                SiphonDiameterId = short.Parse(previousMoshtrakInfo.MainSiphon),
+                UsageId = previousMoshtrakInfo.UsageId,
+                HasWaterBroker = moshtrakInfo.BrokerId == 0 ? false : true,
+                ContractualCapacity = previousMoshtrakInfo.ContractualCapacity,
+                DomesticUnit = previousMoshtrakInfo.DomesticUnit,
+                CommertialUnit = previousMoshtrakInfo.CommercialUnit,
+                OtherUnit = previousMoshtrakInfo.OtherUnit,
+                IsSewageDiscount = moshtrakInfo.s35 == 1 ? true : false,
+                IsWaterDiscount = moshtrakInfo.s34 == 1 ? true : false,
+                DiscountCount = 0,//todo,
+                DiscountTypeId = 0,//todo,
+            };
+            AfterSaleItemsInputDto currentInfo = new()
+            {
+                WaterDiameterId = (short)moshtrakInfo.MeterDiameterId,
+                SiphonDiameterId = (short)moshtrakInfo.MainSiphon,
+                UsageId = moshtrakInfo.UsageId,
+                HasWaterBroker = moshtrakInfo.BrokerId == 0 ? false : true,
+                ContractualCapacity = moshtrakInfo.ContractualCapacity,
+                DomesticUnit = moshtrakInfo.DomesticUnit,
+                CommertialUnit = moshtrakInfo.CommercialUnit,
+                OtherUnit = moshtrakInfo.OtherUnit,
+                IsSewageDiscount = moshtrakInfo.s35 == 1 ? true : false,
+                IsWaterDiscount = moshtrakInfo.s34 == 1 ? true : false,
+                DiscountCount = moshtrakInfo.DiscountCount,
+                DiscountTypeId = moshtrakInfo.DiscountTypeId,
+            };
+            AfterSaleInputDto afterSaleInputDto = new()
+            {
+                ZoneId = moshtrakInfo.ZoneId,
+                Block = moshtrakInfo.BlockId,
+                HasWaterArticle11 = false,//todo
+                HasSewageArticle11 = false,//todo
+                CompanyServiceIds = MoshtrakService.GetServicesSelected(moshtrakServiceSelected),
+                PreviousData = previousInfo,
+                CurrentData = currentInfo,
+            };
+            //AfterSaleCompanyServiceEnum
+            //todo: not working
+            FlatReportOutput<SaleHeaderOutputDto, AfterSaleDataOutputDto> afterSaleResult = await _afterSaleGetHandler.Handle(afterSaleInputDto, cancellationToken);
+            ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = new(afterSaleResult.Title, afterSaleResult.ReportHeader, GetAfterSaleResult(afterSaleResult.ReportData));
+            return result;
         }
         private MoshtrakServiceDto GetMoshtrakService(MoshtrakOutputDto serviceSelected)
         {
@@ -201,9 +212,10 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         }
         private IEnumerable<SaleAndAfterSaleDataOutputDto> GetSaleResult(IEnumerable<SaleDataOutputDto> data) => data.Select(s => new SaleAndAfterSaleDataOutputDto(s.Id, s.Title, s.Amount, s.Discount, s.FinalAmount, s.DiscountTypeId, false));
         private IEnumerable<SaleAndAfterSaleDataOutputDto> GetAfterSaleResult(AfterSaleDataOutputDto data) => data.DifferentValue.Select(s => new SaleAndAfterSaleDataOutputDto(s.Id, s.Title, s.Amount, s.Discount, s.FinalAmount, s.DiscountTypeId, false));
-        private async Task Commands(ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> input, MoshtrakOutputDto moshtrakInfo, int userCode)
+        private async Task Commands(ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> input, MoshtrakOutputDto moshtrakInfo, int userCode, string billId)
         {
             ICollection<KartInsertDto> kartsInsertDto = GetKartsInsertDto(input.ReportHeader, input.ReportData, moshtrakInfo, userCode);
+            GhestInsertDto ghestInsertDto = GetGhestInsertDto(input.ReportHeader, input.ReportData, moshtrakInfo, billId);
             string dbName = GetDbName(moshtrakInfo.ZoneId);
 
             using (IDbConnection connection = _sqlReportConnection)
@@ -215,7 +227,10 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     KartCommandService kartCommandService = new(connection, transaction);
+                    GhestCommandService ghestCommandService = new(connection, transaction);
+
                     await kartCommandService.Insert(kartsInsertDto, dbName);
+                    await ghestCommandService.Insert(ghestInsertDto, dbName);
 
                     transaction.Commit();
                 }
@@ -226,7 +241,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             int[] disallowedInsertCategory = { (int)OfferingEnum.WaterEquipment };
 
             return datas
-                .Where(s => moshtrakInfo.BrokerId == 0 || (moshtrakInfo.BrokerId == 1 && !disallowedInsertCategory.Contains(s.Id)))
+                .Where(s => moshtrakInfo.BrokerId == 0 ||  !disallowedInsertCategory.Contains(s.Id))
                 .Select(s => new KartInsertDto()
                 {
                     ZoneId = moshtrakInfo.ZoneId,
@@ -266,6 +281,32 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                     Type = 0,//todo
                 })
             .ToList();
+        }
+        private GhestInsertDto GetGhestInsertDto(SaleHeaderOutputDto header, IEnumerable<SaleAndAfterSaleDataOutputDto> datas, MoshtrakOutputDto m, string billId)
+        {
+            if (string.IsNullOrWhiteSpace(billId))
+            {
+                throw new InvalidBillIdException(ExceptionLiterals.InvalidBillId);
+            }
+            return new GhestInsertDto()
+            {
+                ZoneId = m.ZoneId,
+                CustomerNumber = m.CustomerNumber,
+                StringTrackNumber = m.TrackNumber.ToString().PadLeft(11, '0'),
+                Identify = 0,//todo
+                Cod1 = 0,
+                Cod2 = 0,
+                Cod3 = 0,
+                Barge = 0,//todo
+                Payable = header.CompanyFinalAmount,
+                Type = 0,//todo
+                InstallmentNumber = 0,
+                CurrentDateJalali = DateTime.Now.ToShortPersianDateString(),
+                DueDateJalali = DateTime.Now.AddDays(_intervalDueDate).ToShortPersianDateString(),
+                InsertBy = _insertBy,
+                BillId = billId ?? string.Empty,//todo:remove
+                PaymentId = TransactionIdGenerator.GeneratePaymentId(header.CompanyFinalAmount, billId)
+            };
         }
     }
 }
