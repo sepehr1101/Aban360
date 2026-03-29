@@ -123,7 +123,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	noe_va BranchTypeId,
                     	t7.c1 BranchTypeTitle,
                         mojavz IsNonPermanent,
-                        BLOCK_COD BlockId,
+                        TRIM(BLOCK_COD) BlockId,
                         Kargozari BrokerId,
                         s0,
                         s1,

@@ -26,6 +26,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             _requestDuplicateValidation.NotNull(nameof(requestDuplicateValidation));
 
         }
+
         [HttpPost]
         [Route("a-s")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<RequestAfterSaleInputDto>), StatusCodes.Status200OK)]
@@ -35,7 +36,6 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             await _requestAfterSaleHandler.Handle(inputDto, userName, cancellationToken);
             return Ok(inputDto);
         }
-
 
         [HttpPost]
         [Route("is-duplicate/a-s")]

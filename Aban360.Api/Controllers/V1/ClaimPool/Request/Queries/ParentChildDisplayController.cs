@@ -17,7 +17,6 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
             _motherChildGetHandler.NotNull(nameof(motherChildGetHandler));
         }
 
-
         [HttpGet]
         [Route("display-parent-child")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MotherChildOutputDto>), StatusCodes.Status200OK)]

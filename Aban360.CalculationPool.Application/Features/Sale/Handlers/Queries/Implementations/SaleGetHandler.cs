@@ -236,7 +236,20 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         private async Task<ICollection<SaleDataOutputDto>> GetInstallationAndEquipmentSaleData(bool isWater, short? meterDiameterId)
         {
-            var installationAndEquipment = new InstallationAndEquipmentGetDto(isWater, meterDiameterId, DateTime.Now.ToShortPersianDateString());
+            short meterDiamter = meterDiameterId ?? 0;
+            if (!isWater)
+            {
+                if (meterDiameterId == 100)
+                    meterDiamter = 1;
+                if (meterDiameterId == 125)
+                    meterDiamter = 2;
+                if (meterDiameterId == 150)
+                    meterDiamter = 3;
+                if (meterDiameterId == 200)
+                    meterDiamter = 4;
+            }
+
+            var installationAndEquipment = new InstallationAndEquipmentGetDto(isWater, meterDiamter, DateTime.Now.ToShortPersianDateString());
             InstallationAndEquipmentOutputDto installtionAndEquipmentData = await _installationAndEquipmentService.Get(installationAndEquipment);
             SaleDataOutputDto installation = await GetSaleData(isWater ? OfferingEnum.WaterInstallation : OfferingEnum.SewageInstalltion, installtionAndEquipmentData.InstallationAmount, null);
             SaleDataOutputDto equipment = await GetSaleData(isWater ? OfferingEnum.WaterEquipment : OfferingEnum.SewageEquipment, installtionAndEquipmentData.EquipmentAmount, null);
@@ -287,7 +300,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                     long discountPerUnit = item.Amount / inputDto.DomesticUnit;
                     item.Discount = (long)(discountPerUnit * inputDto.DiscountCount.Value * discountPercent);
                     item.FinalAmount = item.Amount - (item.Discount ?? 0);
-                    item.DiscountTypeId=inputDto.DiscountTypeId.Value;
+                    item.DiscountTypeId = inputDto.DiscountTypeId.Value;
                 }
                 if (sewageDiscountOffering.Contains(item.Id) && inputDto.IsSewageDiscount)
                 {
