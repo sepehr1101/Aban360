@@ -1,0 +1,134 @@
+﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
+using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
+using Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations;
+using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Dapper;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
+using DNTPersianUtils.Core;
+using FluentValidation;
+using Microsoft.Extensions.Configuration;
+using System.Data;
+
+namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations
+{
+    internal sealed class InstallmentRequestHandler : AbstractBaseConnection, IInstallmentRequestHandler
+    {
+        private readonly ITrackingQueryService _trackingQueryService;
+        private readonly IMoshtrakQueryService _moshtrakQueryService;
+        private readonly IKartQueryService _kartQueryService;
+        private readonly IValidator<InstallmentRequestInputDto> _validator;
+        static int _intervalDueDate = 30;
+        static string _title = "تقسیط";
+        static string _insertBy = "Aban";
+        public InstallmentRequestHandler(
+            ITrackingQueryService trackingQueryService,
+            IMoshtrakQueryService moshtrakQueryService,
+            IKartQueryService kartQueryService,
+            IValidator<InstallmentRequestInputDto> validator,
+            IConfiguration configuration)
+                : base(configuration)
+        {
+            _trackingQueryService = trackingQueryService;
+            _trackingQueryService.NotNull(nameof(trackingQueryService));
+
+            _moshtrakQueryService = moshtrakQueryService;
+            _moshtrakQueryService.NotNull(nameof(moshtrakQueryService));
+
+            _kartQueryService = kartQueryService;
+            _kartQueryService.NotNull(nameof(kartQueryService));
+
+            _validator = validator;
+            _validator.NotNull(nameof(validator));
+        }
+
+        public async Task<ReportOutput<InstallmentRequestHeaderOutputDto, InstallmentRequestDataOutputDto>> Handle(InstallmentRequestInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await InputValidation(inputDto, cancellationToken);
+            TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
+            MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
+            IEnumerable<CalculationRequestDisplayDataOutputDto> kartInfo = await _kartQueryService.Get(trackingInfo.StringTrackNumber, trackingInfo.ZoneId);
+
+            long amount = kartInfo?.Sum(x => x.Amount) ?? 0;
+            long discount = kartInfo?.Sum(x => x.Discount) ?? 0;
+            long payable = amount - discount;//todo: true or not?
+
+            long firstInstallmentWithZero = (long)(payable * (inputDto.PrepaymentPercent / 100.0));//todo: check
+            long firstInstallmentWithoutZero = (firstInstallmentWithZero / 1000) * 1000;//todo :check
+
+            long otherAmount = payable - firstInstallmentWithoutZero;
+            long eachInstallmentAmountWithZero = otherAmount / (inputDto.InstallmentCount - 1);
+            long eachInstallmentAmountWithoutZero = (eachInstallmentAmountWithZero / 1000) * 1000;//todo : check
+            long remain = otherAmount - (eachInstallmentAmountWithoutZero * (inputDto.InstallmentCount - 1));
+            //todo: remain save in BedBes->Member
+
+            InstallmentRequestDataOutputDto firstInstallment = new(firstInstallmentWithoutZero, DateTime.Now.AddDays(_intervalDueDate).ToShortPersianDateString(), string.Empty);
+            ICollection<InstallmentRequestDataOutputDto> data = new List<InstallmentRequestDataOutputDto>(); ;
+            data.Add(firstInstallment);
+            for (int i = 2; i <= inputDto.InstallmentCount; i++)
+            {
+                string dueDateJalali = DateTime.Now.AddDays(i * _intervalDueDate).ToShortPersianDateString();
+                InstallmentRequestDataOutputDto otherinstallment = new(eachInstallmentAmountWithoutZero, dueDateJalali, string.Empty);
+                data.Add(otherinstallment);
+            }
+            InstallmentRequestHeaderOutputDto header = new(payable - remain, inputDto.InstallmentCount, inputDto.PrepaymentPercent);
+            ReportOutput<InstallmentRequestHeaderOutputDto, InstallmentRequestDataOutputDto> result = new(_title, header, data);
+            if (!inputDto.IsConfirm)
+            {
+                return result;
+            }
+
+
+            IEnumerable<GhestInsertDto> ghestsInsertDto = GetGhestsInsertDto(data, trackingInfo, moshtrakInfo);
+            string dbName = GetDbName(trackingInfo.ZoneId);
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                    connection.Open();
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.Serializable))
+                {
+                    GhestCommandService ghestCommandService = new(connection, transaction);
+                    await ghestCommandService.Insert(ghestsInsertDto, dbName);
+
+                    transaction.Commit();
+                }
+            }
+            return result;
+        }
+        private async Task InputValidation(InstallmentRequestInputDto inputDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new CustomValidationException(message);
+            }
+        }
+        private IEnumerable<GhestInsertDto> GetGhestsInsertDto(IEnumerable<InstallmentRequestDataOutputDto> data, TrackingOutputDto trackingInfo, MoshtrakOutputDto moshtrakInfo)
+        {
+            int counter = 0;
+            return data.Select(x => new GhestInsertDto()
+            {
+                ZoneId = trackingInfo.ZoneId,
+                CustomerNumber = moshtrakInfo.CustomerNumber,
+                StringTrackNumber = trackingInfo.StringTrackNumber,
+                Identify = 0,//todo
+                Cod1 = 0,//todo
+                Cod2 = 0,//todo
+                Cod3 = 0,//todo
+                Barge = 0,//todo
+                Payable = x.Amount,
+                Type = 0,//todo
+                InstallmentNumber = counter,
+                CurrentDateJalali = DateTime.Now.ToShortDateString(),
+                DueDateJalali = x.DueDateJalali,
+                InsertBy = _insertBy,
+                BillId = trackingInfo.BillId ?? string.Empty,
+                PaymentId = TransactionIdGenerator.GeneratePaymentId(x.Amount, trackingInfo.BillId, $"00{counter++}"),//todo: need BillId Validation??
+            });
+        }
+    }
+}
