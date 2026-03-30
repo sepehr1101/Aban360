@@ -7,12 +7,10 @@ using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Commands;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using System.Data;
-using System.Threading;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations
 {

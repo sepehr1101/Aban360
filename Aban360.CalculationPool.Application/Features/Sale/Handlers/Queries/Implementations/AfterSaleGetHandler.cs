@@ -3,7 +3,6 @@ using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
 using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
-using Aban360.ClaimPool.Domain.Features.People.Entities;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
@@ -22,17 +21,18 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private readonly IOfferingQueryService _offeringQueryService;
         private readonly ITable3QueryService _table3QueryService;
         private readonly IZoneAddHoc _zoneAddHoc;
+        private readonly IValidator<AfterSaleInputDto> _validator;
         private static string _title = "پس از فروش";
         private static string _article2Title = "تبصره 2";
         private static string _taxTitle = "مالیات بر ارزش افزوده";
-        private static float _tax = 0.1f;
         private static int _removeBranchTypeId = 11;
         public AfterSaleGetHandler(
             ISaleGetHandler saleGetHandler,
             IEquipmentBrokerAndZoneQueryService equipmentBrokerAndZoneQueryService,
             IOfferingQueryService offeringQueryService,
             ITable3QueryService table3QueryService,
-            IZoneAddHoc zoneAddHoc)
+            IZoneAddHoc zoneAddHoc,
+            IValidator<AfterSaleInputDto> validator)
         {
             _saleGetHandler = saleGetHandler;
             _saleGetHandler.NotNull(nameof(saleGetHandler));
@@ -48,11 +48,14 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
             _zoneAddHoc = zoneAddHoc;
             _zoneAddHoc.NotNull(nameof(zoneAddHoc));
+
+            _validator = validator;
+            _validator.NotNull(nameof(validator));
         }
 
         public async Task<FlatReportOutput<SaleHeaderOutputDto, AfterSaleDataOutputDto>> Handle(AfterSaleInputDto input, CancellationToken cancellationToken)
         {
-            //ToDo : ValidationDto
+            await InputValidation(input, cancellationToken);
             ValidationOffering(input);
 
             SaleInputDto previousDataInput = GetSaleInput(input.PreviousData, input.ZoneId, input.Block, input.HasWaterArticle11, input.HasSewageArticle11);
@@ -122,6 +125,15 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             }
 
             return companyServiceWithChangeCompany;
+        }
+        private async Task InputValidation(AfterSaleInputDto input, CancellationToken cancellationToken)
+        {
+            var validationResult = await _validator.ValidateAsync(input, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                string message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new CustomValidationException(message);
+            }
         }
         private void ValidationOffering(AfterSaleInputDto input)
         {
@@ -406,16 +418,16 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
     }
     public enum AfterSaleCompanyServiceEnum
     {
-        WastewaterBranch = 3,// انشعاب فاضلاب   s2=201
+        WastewaterBranch = 201,//t9:3,  // انشعاب فاضلاب   s2=201
         MeterSeparation = 4,//تفکیک کنتور
-        ChangeSpecifications = 5,//تغییر مشخصات    s4=301
+        ChangeSpecifications = 301,//t9:35      ,//تغییر مشخصات    s4=301
         ChangeUnit = 6,//تغییر واحد 
-        ChangeUsage = 7,//تغییر کاربری    s16=331
-        ChangeMeterDiameter = 8,//تغییر قطر انشعاب    s5=302
-        InstallAdditionalSiphon = 9,//نصب سیفون اضافی    s33=310
-        MeterRelocation = 10,//جابجایی کنتور    s20=308
+        ChangeUsage = 331,//t9:37,//تغییر کاربری    s16=331
+        ChangeMeterDiameter = 302,//t9:38       ,//تغییر قطر انشعاب    s5=302
+        InstallAdditionalSiphon = 310,//t9:39       ,//نصب سیفون اضافی    s33=310
+        MeterRelocation = 308,//t9:310      ,//جابجایی کنتور    s20=308
         BranchDismantling = 11,//برچیدن انشعاب
-        PropertyConsolidationAndMerger = 12,//تجمیع و ادغام املاک     s40=205
+        PropertyConsolidationAndMerger = 205,//t9:312       ,//تجمیع و ادغام املاک     s40=205
         TankerWaterSale = 13,//فروش آب تانکری
         SuggestionsComplaintsCriticisms = 14,//پیشنهادات،انتقادات،شکایات
         BillPaymentFacility = 15,//امکان پرداخت صورتحساب
@@ -423,11 +435,11 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         Settlement = 17,//تسویه حساب
         BillReview = 18,//بررسی صورتحساب
         InterimBill = 19,//صورتحساب میاندوره
-        TemporaryDisconnectionAndReconnection = 20,//قطع موقت و وصل انشعاب    s32=303
+        TemporaryDisconnectionAndReconnection = 303,//t9:320        ,//قطع موقت و وصل انشعاب    s32=303
         MeterTest = 21,//آزمایش کنتور
         WaterAndWastewaterBranchTransfer = 22,//واگذاری انشعاب آب و فاضلاب
         AfterSalesService = 23,//خدمات پس از فروش
-        ChangeSiphonDiameter = 24,//تغییر قطر سیفون    s24=309
+        ChangeSiphonDiameter = 309,//t9:324     ,//تغییر قطر سیفون    s24=309
         SiphonReplacement = 25,//تعویض سیفون    s38
         NotaryInquiry = 26,//استعلام محضر
         DisconnectionAndReconnection = 27,//قطع و وصل انشعاب     ??s32
@@ -437,11 +449,11 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         ChangeContractualCapacity = 31,//تغییر ظرفیت قراردادی    s44
         HouseholdCensus = 42,//خانوار شماری    s39
         WaterPreparation = 45,//آماده سازی آب    s26=109
-        WastewaterPreparation = 46,//آماده سازی فاضلاب     s27=209
+        WastewaterPreparation = 209,//t9:346        ,//آماده سازی فاضلاب     s27=209
         TariffChange = 47,//تغییر تعرفه     s46
         Surveying = 67,//پیمایش      s47
-        OtherServices = 74,//سایر خدمات      s48=500
-        ChangeMeterLevel = 77//تغییر سطح کنتور    s13=304
+        OtherServices = 500,//t9:34     ,//سایر خدمات      s48=500
+        ChangeMeterLevel = 304,//t9:377     //تغییر سطح کنتور    s13=304
     }
 
 }

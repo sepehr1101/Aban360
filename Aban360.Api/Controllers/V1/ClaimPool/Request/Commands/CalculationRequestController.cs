@@ -43,7 +43,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         [HttpPost]
         [Route("calculation")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Calculation([FromBody] SearchNumericInput inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Calculate([FromBody] SearchNumericInput inputDto, CancellationToken cancellationToken)
         {
             int userCode = UserService.GetUserCode(CurrentUser.Username);
             ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = await _calculationRequestHandler.Handle(inputDto.Input, userCode, cancellationToken);

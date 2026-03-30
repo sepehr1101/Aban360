@@ -30,6 +30,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         private readonly IMeterMaterialQueryService _meterMaterialQueryService;
         private readonly IOpenKmMetaDataQueryServices _openKmMetaDataQueryService;
         private readonly IGuildQueryHandler _guildQueryHandler;
+        private readonly IT9QueryService _t9QueryService;
 
         public AssessmentTaskGetAllHandler(
             IAssessmentTaskQueryService assessmentTaskQueryService,
@@ -42,7 +43,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             ICompanyServiceQueryService companyServiceQueryService,
             IMeterMaterialQueryService meterMaterialQueryService,
             IOpenKmMetaDataQueryServices openKmMetaDataQueryService,
-            IGuildQueryHandler guildQueryHandler)
+            IGuildQueryHandler guildQueryHandler,
+            IT9QueryService t9QueryService)
         {
             _assessmentTaskQueryService = assessmentTaskQueryService;
             _assessmentTaskQueryService.NotNull(nameof(assessmentTaskQueryService));
@@ -76,6 +78,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
             _guildQueryHandler = guildQueryHandler;
             _guildQueryHandler.NotNull(nameof(guildQueryHandler));
+
+            _t9QueryService = t9QueryService;
+            _t9QueryService.NotNull(nameof(t9QueryService));
         }
 
         public async Task<AssessmentTasksOutputDto> Handle(int assessmentCode, CancellationToken cancellationToken)
@@ -104,7 +109,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
             IEnumerable<StringDictionary> BlockCodeDictionary = GetBlockCodes();
 
-            IEnumerable<NumericDictionary> guildDictionary =  await _guildQueryHandler.Handle(cancellationToken);
+            IEnumerable<NumericDictionary> guildDictionary = await _guildQueryHandler.Handle(cancellationToken);
 
 
             IEnumerable<AssessmentLocationInfoOutputDto> locationsInfo = await GetLocationsInfo(assessmentCode);
@@ -146,45 +151,46 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         }
         private async Task<IEnumerable<ServiceGroupWithCheckedOutputDto>> GetItemsService(AssessmentLocationInfoWithSOutputDto inputDto)
         {
-            IEnumerable<Common.BaseEntities.NumericDictionary> itemsService = await _companyServiceQueryService.GetByTypeId(inputDto.ServiceGroupId);
+            // IEnumerable<NumericDictionary> itemsService = await _t9QueryService.GetByTypeId(inputDto.ServiceGroupId);
+            //IEnumerable<NumericDictionary> itemsService = await _companyServiceQueryService.GetByTypeId(inputDto.ServiceGroupId);//todo:Use T100
             ICollection<ServiceGroupWithCheckedOutputDto> itemsServiceWithChecked = new List<ServiceGroupWithCheckedOutputDto>();
 
             if (inputDto.ServiceGroupId == 1)//Sale
             {
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsEnsheabAb, CompanySeviceLiterals.IsEnsheabAb, inputDto.s0 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsEnsheabFazelab, CompanySeviceLiterals.IsEnsheabFazelab, inputDto.s1 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.NezamMohandesi, CompanySeviceLiterals.NezamMohandesi, inputDto.s37 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsAmadeSaziAb, CompanySeviceLiterals.IsAmadeSaziAb, inputDto.s26 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsAmadeSaziFazelab, CompanySeviceLiterals.IsAmadeSaziFazelab, inputDto.s27 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.LooleGozareAbFazelab, CompanySeviceLiterals.LooleGozareAbFazelab, inputDto.s43 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.KontorMojaza, CompanySeviceLiterals.KontorMojaza, inputDto.s45 > 0 ? true : false));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsEnsheabAb, CompanySeviceLiterals.IsEnsheabAb, inputDto.HasEnsheabAb));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsEnsheabFazelab, CompanySeviceLiterals.IsEnsheabFazelab, inputDto.HasEnsheabFazelab));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.NezamMohandesi, CompanySeviceLiterals.NezamMohandesi, inputDto.HasNezamMohandesi));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsAmadeSaziAb, CompanySeviceLiterals.IsAmadeSaziAb, inputDto.HasAmadeSaziAb));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsAmadeSaziFazelab, CompanySeviceLiterals.IsAmadeSaziFazelab, inputDto.HazAmadeSaziFazelab));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.LooleGozareAbFazelab, CompanySeviceLiterals.LooleGozareAbFazelab, inputDto.HasLooleGozareAbFazelab));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.KontorMojaza, CompanySeviceLiterals.KontorMojaza, inputDto.HasKontorMojaza));
             }
             else//AfterSale
             {
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsEnsheabFazelab, CompanySeviceLiterals.IsEnsheabFazelab, inputDto.s1 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsTaqirNam, CompanySeviceLiterals.IsTaqirNam, inputDto.s4 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsTaqirVahed, CompanySeviceLiterals.IsTaqirVahed, inputDto.s2 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsTaqirKarbari, CompanySeviceLiterals.IsTaqirKarbari, inputDto.s16 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsTaqirQotrEnsheab, CompanySeviceLiterals.IsTaqirQotrEnsheab, inputDto.s5 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.SifoonEzafe, CompanySeviceLiterals.SifoonEzafe, inputDto.s33 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.JabejaiiKontor, CompanySeviceLiterals.JabejaiiKontor, inputDto.s20 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.TafkikEdqam, CompanySeviceLiterals.TafkikEdqam, inputDto.s40 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.TaqirQotrSifoon, CompanySeviceLiterals.TaqirQotrSifoon, inputDto.s24 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.EstelamMahzar, CompanySeviceLiterals.EstelamMahzar, inputDto.s10 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.QatVaslEnsheab, CompanySeviceLiterals.QatVaslEnsheab, inputDto.s32 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.JabejaiiSifoon, CompanySeviceLiterals.JabejaiiSifoon, inputDto.s36 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.NezamMohandesi, CompanySeviceLiterals.NezamMohandesi, inputDto.s37 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.TavizKontor, CompanySeviceLiterals.TavizKontor, inputDto.s41 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsZarfiatQarardadi, CompanySeviceLiterals.IsZarfiatQarardadi, inputDto.s44 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsAmadeSaziAb, CompanySeviceLiterals.IsAmadeSaziAb, inputDto.s26 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsAmadeSaziFazelab, CompanySeviceLiterals.IsAmadeSaziFazelab, inputDto.s27 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.LooleGozareAbFazelab, CompanySeviceLiterals.LooleGozareAbFazelab, inputDto.s43 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.KontorMojaza, CompanySeviceLiterals.KontorMojaza, inputDto.s45 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.KhanevarShomari, CompanySeviceLiterals.KhanevarShomari, inputDto.s39 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.TaqirTarefe, CompanySeviceLiterals.TaqirTarefe, inputDto.s46 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.Peymayesh, CompanySeviceLiterals.Peymayesh, inputDto.s47 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.Saier, CompanySeviceLiterals.Saier, inputDto.s48 > 0 ? true : false));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.TaqirSathCounter, CompanySeviceLiterals.TaqirSathCounter, inputDto.s13 > 0 ? true : false));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsEnsheabFazelab, CompanySeviceLiterals.IsEnsheabFazelab, inputDto.HasEnsheabFazelab));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsTaqirNam, CompanySeviceLiterals.IsTaqirNam, inputDto.HasTaqirName));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsTaqirVahed, CompanySeviceLiterals.IsTaqirVahed, inputDto.HasTaqirVahed));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsTaqirKarbari, CompanySeviceLiterals.IsTaqirKarbari, inputDto.HasTaqirKarbari));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsTaqirQotrEnsheab, CompanySeviceLiterals.IsTaqirQotrEnsheab, inputDto.HasTaqirQotrEnsheab));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.SifoonEzafe, CompanySeviceLiterals.SifoonEzafe, inputDto.HasSifoonEzafe));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.JabejaiiKontor, CompanySeviceLiterals.JabejaiiKontor, inputDto.HasJabejaiiKontor));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.TafkikEdqam, CompanySeviceLiterals.TafkikEdqam, inputDto.HasTafkikEdqam));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.TaqirQotrSifoon, CompanySeviceLiterals.TaqirQotrSifoon, inputDto.HasTaqirQotrSifoon));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.EstelamMahzar, CompanySeviceLiterals.EstelamMahzar, inputDto.HasEstelamMahzar));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.QatVaslEnsheab, CompanySeviceLiterals.QatVaslEnsheab, inputDto.HasQatVaslEnsheab));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.JabejaiiSifoon, CompanySeviceLiterals.JabejaiiSifoon, inputDto.HasJabejaiiSifoon));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.NezamMohandesi, CompanySeviceLiterals.NezamMohandesi, inputDto.HasNezamMohandesi));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.TavizKontor, CompanySeviceLiterals.TavizKontor, inputDto.HasTavizKontor));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsZarfiatQarardadi, CompanySeviceLiterals.IsZarfiatQarardadi, inputDto.HasZarfiatQarardadi));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsAmadeSaziAb, CompanySeviceLiterals.IsAmadeSaziAb, inputDto.HasAmadeSaziAb));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsAmadeSaziFazelab, CompanySeviceLiterals.IsAmadeSaziFazelab, inputDto.HazAmadeSaziFazelab));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.LooleGozareAbFazelab, CompanySeviceLiterals.LooleGozareAbFazelab, inputDto.HasLooleGozareAbFazelab));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.KontorMojaza, CompanySeviceLiterals.KontorMojaza, inputDto.HasKontorMojaza));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.KhanevarShomari, CompanySeviceLiterals.KhanevarShomari, inputDto.HasKhanevarShomari));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.TaqirTarefe, CompanySeviceLiterals.TaqirTarefe, inputDto.HasTaqirTarefe));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.Peymayesh, CompanySeviceLiterals.Peymayesh, inputDto.HasPeymayesh));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.Saier, CompanySeviceLiterals.Saier, inputDto.HasSaier));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.TaqirSathCounter, CompanySeviceLiterals.TaqirSathCounter, inputDto.HasTaqirSathCounter));
 
             }
 
