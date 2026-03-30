@@ -16,7 +16,6 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
             _trackingResultGetAllHandler.NotNull(nameof(trackingResultGetAllHandler));
         }
 
-
         [HttpGet]
         [Route("result-dictionary")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<NumericDictionary>>), StatusCodes.Status200OK)]

@@ -47,7 +47,6 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             return Ok(result);
         }
 
-
         [HttpPost]
         [Route("display")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakOutputDto>), StatusCodes.Status200OK)]
@@ -57,7 +56,6 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             return Ok(result);
         }
 
-
         [HttpPost]
         [Route("edit")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakUpdateInputDto>), StatusCodes.Status200OK)]
@@ -66,7 +64,6 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             await _moshtrakRequestUpdateHandler.Handle(inputDto, cancellationToken);
             return Ok(inputDto);
         }
-
 
         [HttpPost]
         [Route("close")]

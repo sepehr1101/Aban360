@@ -38,7 +38,6 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             _motherDeleteHandler.NotNull(nameof(motherDeleteHandler));
         }
 
-
         [HttpPost, HttpGet]
         [Route("set-common-siphon")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CommonSiphonRequestInputDto>), StatusCodes.Status200OK)]
@@ -58,7 +57,6 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             return Ok(inputDto);
         }
 
-
         [HttpPost, HttpGet]
         [Route("set-mother-child")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MotherChildRequestInputDto>), StatusCodes.Status200OK)]
@@ -69,7 +67,6 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             return Ok(inputDto);
         }
 
-
         [HttpPost, HttpGet]
         [Route("update-mother-child")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MotherChildUpdateInputDto>), StatusCodes.Status200OK)]
@@ -78,7 +75,6 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             await _motherUpdateHandler.Handle(inputDto, cancellationToken);
             return Ok(inputDto);
         }
-
 
         [HttpPost, HttpGet]
         [Route("delete-mother-child")]
