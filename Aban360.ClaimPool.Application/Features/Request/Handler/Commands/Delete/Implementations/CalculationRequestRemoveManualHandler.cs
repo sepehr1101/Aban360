@@ -3,6 +3,7 @@ using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
+using Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
@@ -16,10 +17,12 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Delete
     {
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IMoshtrakQueryService _moshtrakQueryService;
+        private readonly IKartQueryService _kartQueryService;
         private readonly IValidator<KartRemoveManualInputDto> _validator;
         public CalculationRequestRemoveManualHandler(
             ITrackingQueryService trackingQueryService,
             IMoshtrakQueryService moshtrakQueryService,
+            IKartQueryService kartQueryService,
             IValidator<KartRemoveManualInputDto> validator,
             IConfiguration configuration)
             : base(configuration)
@@ -30,6 +33,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Delete
             _moshtrakQueryService = moshtrakQueryService;
             _moshtrakQueryService.NotNull(nameof(moshtrakQueryService));
 
+            _kartQueryService = kartQueryService;
+            _kartQueryService.NotNull(nameof(kartQueryService));
+
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
@@ -38,6 +44,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Delete
         {
             await InputValidation(inputDto, cancellationToken);
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
+
+            CalculationRequestDisplayDataOutputDto kartData = await _kartQueryService.Get(inputDto.Id, trackingInfo.ZoneId);
+            GhestUpdateDto ghestInsertDto = new(trackingInfo.StringTrackNumber, kartData.Amount * -1);
             string dbName = GetDbName(trackingInfo.ZoneId);
 
             using (IDbConnection connection = _sqlReportConnection)
@@ -47,7 +56,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Delete
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.Serializable))
                 {
                     KartCommandService kartCommandService = new(connection, transaction);
+                    GhestCommandService ghestCommandService = new(connection, transaction);
+
                     await kartCommandService.Remove(inputDto.Id, dbName);
+                    await ghestCommandService.Update(ghestInsertDto, dbName);
 
                     transaction.Commit();
                 }

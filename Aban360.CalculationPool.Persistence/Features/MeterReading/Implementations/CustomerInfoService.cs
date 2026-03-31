@@ -96,6 +96,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 						Trim(m.bill_id) as BillId,
 						m.noe_va as BranchType,
 						m.cod_enshab as UsageId,
+						m.group1 ConsumptionUsageId,
 						m.tedad_mas as DomesticUnit,
 						m.tedad_tej as CommercialUnit,
 						m.tedad_vahd as OtherUnit,
@@ -144,7 +145,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 					From [{dbName}].dbo.taviz t
 					Where
 						t.town=@zoneId AND
-						t.radif=@customerNumber;";
+						t.radif=@customerNumber
+					Order by t.taviz_date Desc;";
         }
 
 

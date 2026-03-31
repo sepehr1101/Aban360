@@ -5,6 +5,6 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Co
 {
     public interface ICalculationRequestHandler
     {
-        Task<ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>> Handle(int trackNumber, int userCode, CancellationToken cancellationToken);
+        Task<ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>> Handle(int trackNumber, int userCode, CancellationToken cancellationToken);
     }
 }

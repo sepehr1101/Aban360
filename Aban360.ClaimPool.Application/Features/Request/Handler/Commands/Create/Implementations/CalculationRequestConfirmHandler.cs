@@ -12,14 +12,14 @@ using System.Data;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations
 {
-    internal sealed class SetCalculationRequestHandler : AbstractBaseConnection, ISetCalculationRequestHandler
+    internal sealed class CalculationRequestConfirmHandler : AbstractBaseConnection, ICalculationRequestConfirmHandler
     {
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IGhestQueryService _ghestQueryService;
-        static int _amountIsConfirmedStatus = 75;
+        static int _calculationConfirmedStatus = 60;
         static int _requestOrigin = 12;//todo:True?
 
-        public SetCalculationRequestHandler(
+        public CalculationRequestConfirmHandler(
             ITrackingQueryService trackingQueryService,
             IGhestQueryService ghestQueryService,
             IConfiguration configuration)
@@ -52,7 +52,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 ZoneId = latestTrackingInfo.ZoneId,
                 BillId = latestTrackingInfo.BillId,
                 ServiceGroupId = latestTrackingInfo.ServiceGroupId,
-                StatusId = _amountIsConfirmedStatus,
+                StatusId = _calculationConfirmedStatus,
                 InsertByUserId = userCode,
                 Description = inputDto.Description,
                 NotificationMobile = latestTrackingInfo.NotificationMobile,

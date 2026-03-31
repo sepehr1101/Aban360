@@ -20,6 +20,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             IEnumerable<InstallmentRequestDataOutputDto> data = await _sqlReportConnection.QueryAsync<InstallmentRequestDataOutputDto>(query, new { stringTrackNumber });
             return data;
         }
+        public async Task<InstallmentRequestDataOutputDto> Get(int id, int zoneId)
+        {
+            string dbName = GetDbName(zoneId);
+            string query = GetByIdQuery(dbName);
+            InstallmentRequestDataOutputDto data = await _sqlReportConnection.QueryFirstOrDefaultAsync<InstallmentRequestDataOutputDto>(query, new { id });
+            return data;
+        }
 
         private string GetByTrackNumberQuery(string dbName)
         {
@@ -29,6 +36,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	sh_pard1 PaymentId
                     From [{dbName}].dbo.ghest
                     Where par_no=@stringTrackNumber";
+        }
+        private string GetByIdQuery(string dbName)
+        {
+            return $@"Select 
+                    	pard Amount,
+                    	mohlat DueDateJalali,
+                    	sh_pard1 PaymentId
+                    From [{dbName}].dbo.ghest
+                    Where id=@id";
         }
     }
 }

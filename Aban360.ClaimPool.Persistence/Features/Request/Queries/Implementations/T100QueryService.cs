@@ -31,7 +31,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	C0 Id,
                     	C1 Title
                     From Db70.dbo.T100
-                    Where C0=id";
+                    Where C0=@id";
         }
         private string GetQuery()
         {
