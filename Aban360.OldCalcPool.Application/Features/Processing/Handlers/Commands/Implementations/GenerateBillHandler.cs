@@ -1,6 +1,5 @@
 ﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
-using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
@@ -28,8 +27,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly IValidator<GenerateBillInputDto> _validator;
         private readonly IVariabService _variabService;
+        static int[] _domesticUsage = { 1, 3 };//todo: IsTrue?
         const int _paymentDeadline = 7;
         const int _conditionPayableAmount = 10000;
+        const float _domesticMaltiplier = 0.7f;
 
         public GenerateBillHandler(
             ICustomerInfoService customerInfoService,
@@ -182,7 +183,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 AbonAb = (decimal)abBahaCalc.AbonmanAbAmount,
                 Pard = (decimal)pard,
                 Jam = (decimal)jam,
-                CodVas = 0,
+                CodVas = abBahaCalc.MeterInfo.CounterStateCode ?? 0,
                 Ghabs = "1",
                 Del = false,
                 Type = "1",
@@ -201,7 +202,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 NoeVa = abBahaCalc.Customer.BranchType,
                 Jarime = 0,
                 Masjar = 0,
-                Sabt = 1,
+                Sabt = 1,//todo
                 Rate = (decimal)abBahaCalc.MonthlyConsumption,
                 Operator = 5,//generate manual bill
                 Mamor = 0,
@@ -221,8 +222,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 NewFa = 0,
                 Bodjeh = (decimal)abBahaCalc.SumBoodje,
                 Group1 = customerInfo.MembersInfo.ConsumptionUsageId,
-                MasFas = (decimal)abBahaCalc.Consumption,
-                Faz = false,
+                MasFas = GetSewageConsumption(abBahaCalc.Customer.UsageId, abBahaCalc.Consumption),
+                Faz = customerInfo.MembersInfo.SewageCalcState >= 1,
                 ChkKarbari = 0,
                 C200 = 0,
                 DateIns = currentDateJalali,
@@ -244,6 +245,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 TrackNumber = 0
             };
         }
+        private decimal GetSewageConsumption(int usageId, double consumption) => IsDomestic(usageId) ? (decimal)(consumption * _domesticMaltiplier) : (decimal)consumption;
+
         private (double, double, double) GetAmounts(double preDebt, double sumItems)
         {
             double jam = preDebt + sumItems;
@@ -325,5 +328,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             int reverseCode = 5;
             return counterStateCode == changeCode || counterStateCode == reverseCode;
         }
+        private bool IsDomestic(int usageId) => _domesticUsage.Contains(usageId);
     }
 }

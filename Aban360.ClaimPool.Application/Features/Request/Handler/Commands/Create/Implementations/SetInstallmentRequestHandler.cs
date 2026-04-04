@@ -58,7 +58,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             ReportOutput<InstallmentRequestHeaderOutputDto, InstallmentRequestDataOutputDto> result = new(_title, header, data);
 
             IEnumerable<GhestInsertDto> ghestsInsertDto = GetGhestsInsertDto(data, trackingInfo, moshtrakInfo);
-            await Command(ghestsInsertDto, trackingInfo.ZoneId);
+            await ExecuteSqlCommand(ghestsInsertDto, trackingInfo.ZoneId);
 
             return result;
         }
@@ -140,7 +140,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 PaymentId = TransactionIdGenerator.GeneratePaymentId(x.Amount, trackingInfo.BillId, $"00{counter++}"),
             });
         }
-        private async Task Command(IEnumerable<GhestInsertDto> ghestsInsertDto, int zoneId)
+        private async Task ExecuteSqlCommand(IEnumerable<GhestInsertDto> ghestsInsertDto, int zoneId)
         {
             string dbName = GetDbName(zoneId);
             using (IDbConnection connection = _sqlReportConnection)

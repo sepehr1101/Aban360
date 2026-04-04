@@ -60,7 +60,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
         }
 
-        public async Task<ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>> Handle(int trackNumber, int userCode, CancellationToken cancellationToken)
+        public async Task<ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>> Handle(int trackNumber, int userCode, CancellationToken cancellationToken)
         {
             //validation ->todo: whitch status enable?  
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(trackNumber);
@@ -68,20 +68,20 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
 
             if (trackingInfo.ServiceGroupId == _saleServiceId)
             {
-                ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = await GetSaleResult(moshtrakInfo, cancellationToken);
-                await Commands(result, moshtrakInfo, userCode, trackingInfo.BillId);
+                ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = await GetSaleResult(moshtrakInfo, cancellationToken);
+                await ExecuteSqlCommand(result, moshtrakInfo, userCode, trackingInfo.BillId);
                 return result;
             }
             else if (trackingInfo.ServiceGroupId == _afterSaleServiceId)
             {
-                ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = await GetAfterSaleResult(moshtrakInfo, cancellationToken);
-                await Commands(result, moshtrakInfo, userCode, trackingInfo.BillId);
+                ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = await GetAfterSaleResult(moshtrakInfo, cancellationToken);
+                await ExecuteSqlCommand(result, moshtrakInfo, userCode, trackingInfo.BillId);
                 return result;
             }
 
             throw new InvalidTrackingException(ExceptionLiterals.InvalidCalculation);
         }
-        private async Task<ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>> GetSaleResult(MoshtrakOutputDto moshtrakInfo, CancellationToken cancellationToken)
+        private async Task<ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>> GetSaleResult(MoshtrakOutputDto moshtrakInfo, CancellationToken cancellationToken)
         {
             SaleInputDto saleInputDto = new()
             {
@@ -90,23 +90,25 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 ZoneId = moshtrakInfo.ZoneId,
                 UsageId = moshtrakInfo.UsageId,
                 Block = moshtrakInfo.BlockId,
-                HasWaterBroker = moshtrakInfo.BrokerId == 0 ? false : true,
+                HasWaterBroker = moshtrakInfo.HasBroker,
                 ContractualCapacity = moshtrakInfo.ContractualCapacity,
                 DomesticUnit = moshtrakInfo.DomesticUnit,
                 CommertialUnit = moshtrakInfo.CommercialUnit,
                 OtherUnit = moshtrakInfo.OtherUnit,
                 DiscountCount = moshtrakInfo.DiscountCount,
                 DiscountTypeId = moshtrakInfo.DiscountTypeId,
-                IsSewageDiscount = moshtrakInfo.s35 == 1 ? true : false,
-                IsWaterDiscount = moshtrakInfo.s34 == 1 ? true : false,
+                IsSewageDiscount = moshtrakInfo.HasSewageDiscount,
+                IsWaterDiscount = moshtrakInfo.HasWaterDiscount,
                 HasWaterArticle11 = false,//todo
                 HasSewageArticle11 = false,//todo
             };
             ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> saleResult = await _saleGetHandler.Handle(saleInputDto, cancellationToken);
-            ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = new(saleResult.Title, saleResult.ReportHeader, GetSaleResult(saleResult.ReportData));
+
+            IEnumerable<SaleAndAfterSaleDataOutputDto> data = GetSaleResult(saleResult.ReportData);
+            ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = new(saleResult.Title, GetHeaderResul(data), data);
             return result;
         }
-        private async Task<ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>> GetAfterSaleResult(MoshtrakOutputDto moshtrakInfo, CancellationToken cancellationToken)
+        private async Task<ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>> GetAfterSaleResult(MoshtrakOutputDto moshtrakInfo, CancellationToken cancellationToken)
         {
             MoshtrakServiceDto moshtrakServiceSelected = GetMoshtrakService(moshtrakInfo);
             MemberInfoGetDto previousMoshtrakInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber(moshtrakInfo.ZoneId, moshtrakInfo.CustomerNumber));
@@ -116,13 +118,13 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 WaterDiameterId = (short)previousMoshtrakInfo.MeterDiameterId,
                 SiphonDiameterId = short.Parse(previousMoshtrakInfo.MainSiphon),
                 UsageId = previousMoshtrakInfo.UsageId,
-                HasWaterBroker = moshtrakInfo.BrokerId == 0 ? false : true,
+                HasWaterBroker = moshtrakInfo.HasBroker,
                 ContractualCapacity = previousMoshtrakInfo.ContractualCapacity,
                 DomesticUnit = previousMoshtrakInfo.DomesticUnit,
                 CommertialUnit = previousMoshtrakInfo.CommercialUnit,
                 OtherUnit = previousMoshtrakInfo.OtherUnit,
-                IsSewageDiscount = moshtrakInfo.s35 == 1 ? true : false,
-                IsWaterDiscount = moshtrakInfo.s34 == 1 ? true : false,
+                IsSewageDiscount = moshtrakInfo.HasSewageDiscount,
+                IsWaterDiscount = moshtrakInfo.HasWaterDiscount,
                 DiscountCount = 0,//todo,
                 DiscountTypeId = 0,//todo,
             };
@@ -131,13 +133,13 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 WaterDiameterId = (short)moshtrakInfo.MeterDiameterId,
                 SiphonDiameterId = (short)moshtrakInfo.MainSiphon,
                 UsageId = moshtrakInfo.UsageId,
-                HasWaterBroker = moshtrakInfo.BrokerId == 0 ? false : true,
+                HasWaterBroker = moshtrakInfo.HasBroker,
                 ContractualCapacity = moshtrakInfo.ContractualCapacity,
                 DomesticUnit = moshtrakInfo.DomesticUnit,
                 CommertialUnit = moshtrakInfo.CommercialUnit,
                 OtherUnit = moshtrakInfo.OtherUnit,
-                IsSewageDiscount = moshtrakInfo.s35 == 1 ? true : false,
-                IsWaterDiscount = moshtrakInfo.s34 == 1 ? true : false,
+                IsSewageDiscount = moshtrakInfo.HasSewageDiscount,
+                IsWaterDiscount = moshtrakInfo.HasWaterDiscount,
                 DiscountCount = moshtrakInfo.DiscountCount,
                 DiscountTypeId = moshtrakInfo.DiscountTypeId,
             };
@@ -151,10 +153,10 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 PreviousData = previousInfo,
                 CurrentData = currentInfo,
             };
-            //AfterSaleCompanyServiceEnum
-            //todo: not working
             FlatReportOutput<SaleHeaderOutputDto, AfterSaleDataOutputDto> afterSaleResult = await _afterSaleGetHandler.Handle(afterSaleInputDto, cancellationToken);
-            ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = new(afterSaleResult.Title, afterSaleResult.ReportHeader, GetAfterSaleResult(afterSaleResult.ReportData));
+
+            IEnumerable<SaleAndAfterSaleDataOutputDto> data = GetAfterSaleResult(afterSaleResult.ReportData);
+            ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = new(afterSaleResult.Title, GetHeaderResul(data), data);
             return result;
         }
         private MoshtrakServiceDto GetMoshtrakService(MoshtrakOutputDto serviceSelected)
@@ -212,7 +214,13 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         }
         private IEnumerable<SaleAndAfterSaleDataOutputDto> GetSaleResult(IEnumerable<SaleDataOutputDto> data) => data.Select(s => new SaleAndAfterSaleDataOutputDto(s.Id, s.Title, s.Amount, s.Discount, s.FinalAmount, s.DiscountTypeId, false));
         private IEnumerable<SaleAndAfterSaleDataOutputDto> GetAfterSaleResult(AfterSaleDataOutputDto data) => data.DifferentValue.Select(s => new SaleAndAfterSaleDataOutputDto(s.Id, s.Title, s.Amount, s.Discount, s.FinalAmount, s.DiscountTypeId, false));
-        private async Task Commands(ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> input, MoshtrakOutputDto moshtrakInfo, int userCode, string billId)
+        private SaleAndAfterSaleHeaderOutputDto GetHeaderResul(IEnumerable<SaleAndAfterSaleDataOutputDto> data)
+        {
+            long amount = data?.Sum(s => s.Amount) ?? 0;
+            long discount = data?.Sum(s => s.Discount) ?? 0;
+            return new SaleAndAfterSaleHeaderOutputDto(amount, discount, amount - discount, data?.Count() ?? 0);
+        }
+        private async Task ExecuteSqlCommand(ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> input, MoshtrakOutputDto moshtrakInfo, int userCode, string billId)
         {
             ICollection<KartInsertDto> kartsInsertDto = GetKartsInsertDto(input.ReportHeader, input.ReportData, moshtrakInfo, userCode);
             GhestInsertDto ghestInsertDto = GetGhestInsertDto(input.ReportHeader, input.ReportData, moshtrakInfo, billId);
@@ -236,12 +244,12 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 }
             }
         }
-        private ICollection<KartInsertDto> GetKartsInsertDto(SaleHeaderOutputDto header, IEnumerable<SaleAndAfterSaleDataOutputDto> datas, MoshtrakOutputDto moshtrakInfo, int userCode)
+        private ICollection<KartInsertDto> GetKartsInsertDto(SaleAndAfterSaleHeaderOutputDto header, IEnumerable<SaleAndAfterSaleDataOutputDto> datas, MoshtrakOutputDto moshtrakInfo, int userCode)
         {
             int[] disallowedInsertCategory = { (int)OfferingEnum.WaterEquipment };
 
             return datas
-                .Where(s => moshtrakInfo.BrokerId == 0 ||  !disallowedInsertCategory.Contains(s.Id))
+                .Where(s => moshtrakInfo.BrokerId == 0 || !disallowedInsertCategory.Contains(s.Id))
                 .Select(s => new KartInsertDto()
                 {
                     ZoneId = moshtrakInfo.ZoneId,
@@ -262,7 +270,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                     SiphonId = moshtrakInfo.MainSiphon,
                     UsageId = moshtrakInfo.UsageId,
                     IsRegister = false,
-                    TotalServicesAmount = header.CompanyFinalAmount,
+                    TotalServicesAmount = header.FinalAmount,
                     FirstInstallment = s.FinalAmount,
                     JGEST_FA = 0,
                     PishFa = 0,
@@ -282,7 +290,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 })
             .ToList();
         }
-        private GhestInsertDto GetGhestInsertDto(SaleHeaderOutputDto header, IEnumerable<SaleAndAfterSaleDataOutputDto> datas, MoshtrakOutputDto m, string billId)
+        private GhestInsertDto GetGhestInsertDto(SaleAndAfterSaleHeaderOutputDto header, IEnumerable<SaleAndAfterSaleDataOutputDto> datas, MoshtrakOutputDto m, string billId)
         {
             if (string.IsNullOrWhiteSpace(billId))
             {
@@ -298,14 +306,14 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 Cod2 = 0,
                 Cod3 = 0,
                 Barge = 0,//todo
-                Payable = header.CompanyFinalAmount,
+                Payable = header.FinalAmount,
                 Type = 0,//todo
                 InstallmentNumber = 0,
                 CurrentDateJalali = DateTime.Now.ToShortPersianDateString(),
                 DueDateJalali = DateTime.Now.AddDays(_intervalDueDate).ToShortPersianDateString(),
                 InsertBy = _insertBy,
                 BillId = billId ?? string.Empty,//todo:remove
-                PaymentId = TransactionIdGenerator.GeneratePaymentId(header.CompanyFinalAmount, billId)
+                PaymentId = TransactionIdGenerator.GeneratePaymentId(header.FinalAmount, billId)
             };
         }
     }

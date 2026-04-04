@@ -1,5 +1,6 @@
 ﻿using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations
 {
@@ -62,40 +63,40 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         {
             ICollection<int> servicesSelected = new List<int>();//todo: s1,s2
 
-            if (inputDto.s0 == 1) servicesSelected.Add(101);// CompanyServiceEnum.IsEnsheabAb,101
-            if (inputDto.s1 == 1) servicesSelected.Add(201);// CompanyServiceEnum.IsEnsheabFazelab, 201
-            if (inputDto.s2 == 1) servicesSelected.Add(201);// CompanyServiceEnum.IsEnsheabFazelab, 201
-            if (inputDto.s4 == 1) servicesSelected.Add(301);// CompanyServiceEnum.IsTaqirNam,301
-            if (inputDto.s5 == 1) servicesSelected.Add(302);// CompanyServiceEnum.IsTaqirQotrEnsheab,302
-            if (inputDto.s10 == 1) servicesSelected.Add(300);// CompanyServiceEnum.EstelamMahzar,300
-            if (inputDto.s11 == 1) servicesSelected.Add(105);//تفکیک عرصه اب   105
-            if (inputDto.s12 == 1) servicesSelected.Add(205);//تفکیک عرصه فاضلاب  205
-            if (inputDto.s13 == 1) servicesSelected.Add(304);// CompanyServiceEnum.TaqirSathCounter,304
-            if (inputDto.s16 == 1) servicesSelected.Add(331);// CompanyServiceEnum.IsTaqirKarbari,331
-            if (inputDto.s20 == 1) servicesSelected.Add(308);// CompanyServiceEnum.JabejaiiKontor,308
-            if (inputDto.s21 == 1) servicesSelected.Add(107);//خط انتقال اب   107
-            if (inputDto.s22 == 1) servicesSelected.Add(203);//خط انتقال فاضلاب  203
-            if (inputDto.s23 == 1) servicesSelected.Add(108);//سهم منبع اب   108
-            if (inputDto.s24 == 1) servicesSelected.Add(309);// CompanyServiceEnum.TaqirQotrSifoon,309
-            if (inputDto.s26 == 1) servicesSelected.Add(109);// CompanyServiceEnum.IsAmadeSaziAb,109
-            if (inputDto.s27 == 1) servicesSelected.Add(209);// CompanyServiceEnum.IsAmadeSaziFazelab,209
-            if (inputDto.s32 == 1) servicesSelected.Add(303);// CompanyServiceEnum.QatVaslEnsheab,303
-            if (inputDto.s33 == 1) servicesSelected.Add(310);// CompanyServiceEnum.SifoonEzafe,310
-            if (inputDto.s34 == 1) servicesSelected.Add(-1);//,//عدم تخفیف آب
-            if (inputDto.s35 == 1) servicesSelected.Add(-2);//,//عدم تخفیف فاضلاب
-            if (inputDto.s36 == 1) servicesSelected.Add(323);// CompanyServiceEnum.JabejaiiSifoon,323
-            if (inputDto.s37 == 1) servicesSelected.Add(0);// CompanyServiceEnum.NezamMohandesi,؟
-            if (inputDto.s38 == 1) servicesSelected.Add(0);// CompanyServiceEnum.TavizSifoon,؟
-            if (inputDto.s39 == 1) servicesSelected.Add(0);// CompanyServiceEnum.KhanevarShomari,
-            if (inputDto.s40 == 1) servicesSelected.Add(205);// CompanyServiceEnum.TafkikEdqam,205
-            if (inputDto.s41 == 1) servicesSelected.Add(0);// CompanyServiceEnum.TavizKontor,
-            if (inputDto.s42 == 1) servicesSelected.Add(375);// ,//لوله گذاری آب  375
-            if (inputDto.s43 == 1) servicesSelected.Add(376);// ,//لوله گذاری فاضلاب  376
-            if (inputDto.s44 == 1) servicesSelected.Add(0);// CompanyServiceEnum.IsZarfiatQarardadi,
-            if (inputDto.s45 == 1) servicesSelected.Add(0);// CompanyServiceEnum.KontorMojaza,
-            if (inputDto.s46 == 1) servicesSelected.Add(0);// CompanyServiceEnum.TaqirTarefe,
-            if (inputDto.s47 == 1) servicesSelected.Add(0);// CompanyServiceEnum.Peymayesh,
-            if (inputDto.s48 == 1) servicesSelected.Add(500);// CompanyServiceEnum.Saier,500
+            if (inputDto.s0 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsEnsheabAb);// CompanyServiceEnum.IsEnsheabAb,101
+            if (inputDto.s1 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsEnsheabFazelab);// CompanyServiceEnum.IsEnsheabFazelab, 201
+            if (inputDto.s2 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsEnsheabFazelab);// CompanyServiceEnum.IsEnsheabFazelab, 201
+            if (inputDto.s4 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsTaqirNam);// CompanyServiceEnum.IsTaqirNam,301
+            if (inputDto.s5 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsTaqirQotrEnsheab);// CompanyServiceEnum.IsTaqirQotrEnsheab,302
+            if (inputDto.s10 == 1) servicesSelected.Add((int)CompanyServiceEnum.EstelamMahzar);// CompanyServiceEnum.EstelamMahzar,300
+            if (inputDto.s11 == 1) servicesSelected.Add((int)CompanyServiceEnum.TafkikArseAb);//تفکیک عرصه اب   105
+            if (inputDto.s12 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsTafkikArseFazelab);//تفکیک عرصه فاضلاب  205
+            if (inputDto.s13 == 1) servicesSelected.Add((int)CompanyServiceEnum.TaqirSathCounter);// CompanyServiceEnum.TaqirSathCounter,304
+            if (inputDto.s16 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsTaqirKarbari);// CompanyServiceEnum.IsTaqirKarbari,331
+            if (inputDto.s20 == 1) servicesSelected.Add((int)CompanyServiceEnum.JabejaiiKontor);// CompanyServiceEnum.JabejaiiKontor,308
+            if (inputDto.s21 == 1) servicesSelected.Add((int)CompanyServiceEnum.KhatEnteqhalAb);//خط انتقال اب   107
+            if (inputDto.s22 == 1) servicesSelected.Add((int)CompanyServiceEnum.KhatEnteqhalFazelab);//خط انتقال فاضلاب  203
+            if (inputDto.s23 == 1) servicesSelected.Add((int)CompanyServiceEnum.SahmManbaAb);//سهم منبع اب   108
+            if (inputDto.s24 == 1) servicesSelected.Add((int)CompanyServiceEnum.TaqirQotrSifoon);// CompanyServiceEnum.TaqirQotrSifoon,309
+            if (inputDto.s26 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsAmadeSaziAb);// CompanyServiceEnum.IsAmadeSaziAb,109
+            if (inputDto.s27 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsAmadeSaziFazelab);// CompanyServiceEnum.IsAmadeSaziFazelab,209
+            if (inputDto.s32 == 1) servicesSelected.Add((int)CompanyServiceEnum.QatVaslEnsheab);// CompanyServiceEnum.QatVaslEnsheab,303
+            if (inputDto.s33 == 1) servicesSelected.Add((int)CompanyServiceEnum.SifoonEzafe);// CompanyServiceEnum.SifoonEzafe,310
+            if (inputDto.s34 == 1) servicesSelected.Add((int)CompanyServiceEnum.AdamTakhfifAb);//,//عدم تخفیف آب
+            if (inputDto.s35 == 1) servicesSelected.Add((int)CompanyServiceEnum.AdamTakhfifFazelab);//,//عدم تخفیف فاضلاب
+            if (inputDto.s36 == 1) servicesSelected.Add((int)CompanyServiceEnum.JabejaiiSifoon);// CompanyServiceEnum.JabejaiiSifoon,323
+            if (inputDto.s37 == 1) servicesSelected.Add((int)CompanyServiceEnum.NezamMohandesi);// CompanyServiceEnum.NezamMohandesi,؟
+            if (inputDto.s38 == 1) servicesSelected.Add((int)CompanyServiceEnum.TavizSifoon);// CompanyServiceEnum.TavizSifoon,؟
+            if (inputDto.s39 == 1) servicesSelected.Add((int)CompanyServiceEnum.KhanevarShomari);// CompanyServiceEnum.KhanevarShomari,
+            if (inputDto.s40 == 1) servicesSelected.Add((int)CompanyServiceEnum.TafkikEdqam);// CompanyServiceEnum.TafkikEdqam,205
+            if (inputDto.s41 == 1) servicesSelected.Add((int)CompanyServiceEnum.TavizKontor);// CompanyServiceEnum.TavizKontor,
+            if (inputDto.s42 == 1) servicesSelected.Add((int)CompanyServiceEnum.LooleGozariAb);// ,//لوله گذاری آب  375
+            if (inputDto.s43 == 1) servicesSelected.Add((int)CompanyServiceEnum.LooleGozareAbFazelab);// ,//لوله گذاری فاضلاب  376
+            if (inputDto.s44 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsZarfiatQarardadi);// CompanyServiceEnum.IsZarfiatQarardadi,
+            if (inputDto.s45 == 1) servicesSelected.Add((int)CompanyServiceEnum.KontorMojaza);// CompanyServiceEnum.KontorMojaza,
+            if (inputDto.s46 == 1) servicesSelected.Add((int)CompanyServiceEnum.TaqirTarefe);// CompanyServiceEnum.TaqirTarefe,
+            if (inputDto.s47 == 1) servicesSelected.Add((int)CompanyServiceEnum.Peymayesh);// CompanyServiceEnum.Peymayesh,
+            if (inputDto.s48 == 1) servicesSelected.Add((int)CompanyServiceEnum.Saier);// CompanyServiceEnum.Saier,500
 
             return servicesSelected;
         }

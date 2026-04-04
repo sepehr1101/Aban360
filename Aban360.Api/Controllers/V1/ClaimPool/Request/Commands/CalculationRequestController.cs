@@ -20,11 +20,13 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         private readonly ICalculationRequestInsertManualHandler _calculationRequestInsertManualHandler;
         private readonly ICalculationRequestRemoveManualHandler _calculationRequestRemoveManualHandler;
         private readonly ICalculationRequestDisplayHandler _calculationRequestDisplayHandler;
+        private readonly ICalculationRequestConfirmHandler _calculationRequestConfirmHandler;
         public CalculationRequestController(
             ICalculationRequestHandler calculationRequestHandler,
             ICalculationRequestInsertManualHandler calculationRequestInsertManualHandler,
             ICalculationRequestRemoveManualHandler calculationRequestRemoveManualHandler,
-            ICalculationRequestDisplayHandler calculationRequestDisplayHandler)
+            ICalculationRequestDisplayHandler calculationRequestDisplayHandler,
+            ICalculationRequestConfirmHandler calculationRequestConfirmHandler)
         {
             _calculationRequestHandler = calculationRequestHandler;
             _calculationRequestHandler.NotNull(nameof(calculationRequestHandler));
@@ -37,27 +39,30 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 
             _calculationRequestDisplayHandler = calculationRequestDisplayHandler;
             _calculationRequestDisplayHandler.NotNull(nameof(calculationRequestDisplayHandler));
+
+            _calculationRequestConfirmHandler = calculationRequestConfirmHandler;
+            _calculationRequestConfirmHandler.NotNull(nameof(calculationRequestConfirmHandler));
         }
 
 
         [HttpPost]
         [Route("calculation")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Calculation([FromBody] SearchNumericInput inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Calculate([FromBody] SearchNumericInput inputDto, CancellationToken cancellationToken)
         {
             int userCode = UserService.GetUserCode(CurrentUser.Username);
-            ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = await _calculationRequestHandler.Handle(inputDto.Input, userCode, cancellationToken);
+            ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = await _calculationRequestHandler.Handle(inputDto.Input, userCode, cancellationToken);
             return Ok(result);
         }
 
         [HttpPost]
         [Route("calculation-insert-manual")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<KartInsertManualInputDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<SaleAndAfterSaleDataOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> InsertManualCalculation([FromBody] KartInsertManualInputDto inputDto, CancellationToken cancellationToken)
         {
             int userCode = UserService.GetUserCode(CurrentUser.Username);
-            await _calculationRequestInsertManualHandler.Handle(inputDto, userCode, cancellationToken);
-            return Ok(inputDto);
+            SaleAndAfterSaleDataOutputDto result = await _calculationRequestInsertManualHandler.Handle(inputDto, userCode, cancellationToken);
+            return Ok(result);
         }
 
         [HttpPost]
@@ -74,9 +79,18 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<CalculationRequestDisplayHeaderOutputDto, CalculationRequestDisplayDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> CalculationDisplay([FromBody] SearchNumericInput inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<CalculationRequestDisplayHeaderOutputDto, CalculationRequestDisplayDataOutputDto> result = await _calculationRequestDisplayHandler.Handle(inputDto.Input, cancellationToken);
+            ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = await _calculationRequestDisplayHandler.Handle(inputDto.Input, cancellationToken);
             return Ok(result);
         }
 
+        [HttpPost]
+        [Route("calculation-confirm")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<SetCalculationRequestInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> CalculationConfirm([FromBody] SetCalculationRequestInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int userCode = UserService.GetUserCode(CurrentUser.Username);
+            await _calculationRequestConfirmHandler.Handle(inputDto, userCode, cancellationToken);
+            return Ok(inputDto);
+        }
     }
 }

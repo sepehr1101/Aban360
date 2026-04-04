@@ -47,9 +47,19 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             int recordCount = await _connection.ExecuteAsync(command, new { stringTrackNumber }, _transaction);
             if (recordCount <= 0)
             {
-                throw new InvalidBillCommandException(ExceptionLiterals.InvalidInsertGhest);
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidDeleteGhest);
             }
         }
+        public async Task Update(GhestUpdateDto inputdto, string dbName)
+        {
+            string command = GetUpdateCommand(dbName);
+            int recordCount = await _connection.ExecuteAsync(command, inputdto, _transaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidUpdateGhest);
+            }
+        }
+
 
         private string GetInsertCommand(string dbName)
         {
@@ -67,6 +77,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
         private string GetRemoveByStringTrackNumber(string dbName)
         {
             return $@"Delete [{dbName}].dbo.ghest 
+                    Where par_no=@stringTrackNumber";
+        }
+        private string GetUpdateCommand(string dbName)
+        {
+            return $@"Update [{dbName}].dbo.ghest
+                    Set pard=pard+@amount
                     Where par_no=@stringTrackNumber";
         }
     }

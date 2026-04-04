@@ -59,26 +59,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(latestTrackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
             AssessmentInsertDto assessmentInsertDto = await GetAssessmentInsertDto(inputDto, latestTrackingInfo, moshtrakInfo, assessmentCode, trackingInsertDto.TrackId);
 
-            string dbName = GetDbName(latestTrackingInfo.ZoneId);
-
-            using (IDbConnection connection = _sqlReportConnection)
-            {
-                if (connection.State != ConnectionState.Open)
-                {
-                    connection.Open();
-                }
-                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
-                {
-                    TrackingCommandService _trackingCommandService = new(connection, transaction);
-                    ExaminationCommandService _examinationCommandService = new(connection, transaction);
-
-                    await _trackingCommandService.UpdateIsConsiderdLatest(inputDto.TrackNumber, true);
-                    await _trackingCommandService.InsertDuplicate(trackingInsertDto);
-                    await _examinationCommandService.Insert(assessmentInsertDto);
-
-                    transaction.Commit();
-                }
-            }
+            await ExecuteSqlCommand(latestTrackingInfo.ZoneId, trackingInsertDto, assessmentInsertDto);
         }
         private async Task InputValidation(LightAssessmentResultInputDto input, CancellationToken cancellationToken)
         {
@@ -124,6 +105,28 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 UsageId = moshtrakInfo.UsageId,
                 AllInJson = JsonSerializer.Serialize<LightAssessmentResultInputDto>(inputDto)
             };
+        }
+        private async Task ExecuteSqlCommand(int zoneId, TrackingInsertDuplicateDto trackingInsertDto, AssessmentInsertDto assessmentInsertDto)
+        {
+            string dbName = GetDbName(zoneId);
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    TrackingCommandService _trackingCommandService = new(connection, transaction);
+                    ExaminationCommandService _examinationCommandService = new(connection, transaction);
+
+                    await _trackingCommandService.UpdateIsConsiderdLatest(trackingInsertDto.TrackNumber, true);
+                    await _trackingCommandService.InsertDuplicate(trackingInsertDto);
+                    await _examinationCommandService.Insert(assessmentInsertDto);
+
+                    transaction.Commit();
+                }
+            }
         }
     }
 }

@@ -1,18 +1,19 @@
-﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
+﻿using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
+using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
 using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
+using Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Commands;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using System.Data;
-using System.Threading;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations
 {
@@ -20,11 +21,13 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
     {
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IMoshtrakQueryService _moshtrakQueryService;
+        private readonly IT100QueryService _t100QueryService;
         private readonly IValidator<KartInsertManualInputDto> _validator;
         static string _insertBy = "Aban";
         public CalculationRequestInsertManualHandler(
             ITrackingQueryService trackingQueryService,
             IMoshtrakQueryService moshtrakQueryService,
+            IT100QueryService t100QueryService,
             IValidator<KartInsertManualInputDto> validator,
             IConfiguration configuration)
             : base(configuration)
@@ -35,16 +38,20 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             _moshtrakQueryService = moshtrakQueryService;
             _moshtrakQueryService.NotNull(nameof(moshtrakQueryService));
 
+            _t100QueryService = t100QueryService;
+            _t100QueryService.NotNull(nameof(t100QueryService));
+
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task Handle(KartInsertManualInputDto inputDto, int userCode, CancellationToken cancellationToken)
+        public async Task<SaleAndAfterSaleDataOutputDto> Handle(KartInsertManualInputDto inputDto, int userCode, CancellationToken cancellationToken)
         {
             await InputValidation(inputDto, cancellationToken);
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
             KartInsertDto kartInsertDto = GetKartInsertDto(inputDto, moshtrakInfo, userCode);
+            GhestUpdateDto ghestInsertDto = new(trackingInfo.StringTrackNumber, kartInsertDto.FinalAmount);
             string dbName = GetDbName(trackingInfo.ZoneId);
 
             using (IDbConnection connection = _sqlReportConnection)
@@ -54,11 +61,16 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.Serializable))
                 {
                     KartCommandService kartCommandService = new(connection, transaction);
+                    GhestCommandService ghestCommandService = new(connection, transaction);
+
                     await kartCommandService.Insert(kartInsertDto, dbName);
+                    await ghestCommandService.Update(ghestInsertDto, dbName);
 
                     transaction.Commit();
                 }
             }
+            NumericDictionary NumericDictionary = await _t100QueryService.Get(inputDto.ServiceGroupId);
+            return new SaleAndAfterSaleDataOutputDto((short)kartInsertDto.ServiceSelectedId, NumericDictionary.Title, kartInsertDto.FinalAmount + kartInsertDto.DiscountAmount, kartInsertDto.DiscountAmount, kartInsertDto.FinalAmount, kartInsertDto.DiscountTypeId, true);
         }
         private async Task InputValidation(KartInsertManualInputDto inputDto, CancellationToken cancellationToken)
         {
