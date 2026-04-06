@@ -69,6 +69,8 @@ namespace Aban360.ReportPool.Persistence.Base
                     SELECT 
                         v.BillId,
                         v.CustomerNumber,
+	                    t46.C0 RegionId,
+	                    t46.C2 RegionTitle,
                         v.ZoneId,
                         v.ZoneTitle,
                         v.ReadingNumber,
@@ -103,6 +105,10 @@ namespace Aban360.ReportPool.Persistence.Base
                     	ON v.BillId = f.BillId 
 					INNER JOIN [CustomerWarehouse].dbo.Clients c
 						ON v.BillId=c.BillId
+                    Join [Db70].dbo.T51 t51
+                    	ON v.ZoneId=t51.C0
+                    Join [Db70].dbo.T46 t46
+                    	ON t51.C1=t46.C0
                     OUTER APPLY (
                         SELECT TOP 1 mc.ChangeDateJalali
                         FROM [CustomerWarehouse].dbo.MeterChange mc
@@ -153,6 +159,8 @@ namespace Aban360.ReportPool.Persistence.Base
                         ISNULL(lc.ChangeDateJalali, 0) AS LastChangeDateJalali,
 						c.BillId,
                         c.CustomerNumber,
+	                    t46.C0 RegionId,
+	                    t46.C2 RegionTitle,
                         c.ZoneId,
                         c.ZoneTitle,
                         c.ReadingNumber,
@@ -179,6 +187,10 @@ namespace Aban360.ReportPool.Persistence.Base
                     FROM ValidLatestBills v
                     INNER JOIN [CustomerWarehouse].dbo.Clients c 
                     	ON v.BillId = c.BillId
+                    Join [Db70].dbo.T51 t51
+                    	ON v.ZoneId=t51.C0
+                    Join [Db70].dbo.T46 t46
+                    	ON t51.C1=t46.C0
                     OUTER APPLY (
                         SELECT TOP 1 mc.ChangeDateJalali
                         FROM [CustomerWarehouse].dbo.MeterChange mc
