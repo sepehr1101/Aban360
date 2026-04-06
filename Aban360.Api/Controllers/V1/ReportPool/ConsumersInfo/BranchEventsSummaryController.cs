@@ -7,7 +7,6 @@ using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Domain.Features.Transactions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Aban360.Api.Filters;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
 {
@@ -54,6 +53,31 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         {
             int reportCode = 231;
             ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> calculationDetails = await _branchEventSummaryHandler.Handle(searchInput.Input, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode);
+            return Ok(reportId);
+        }
+
+
+        //with-last-db
+
+        [HttpPost]
+        [Route("summary-lastdb")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetBranchSummaryInfo_LastDb([FromBody] CardexInput searchInput, CancellationToken cancellationToken)
+        {
+            ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> items = await _branchEventSummaryHandler.HandleWithLastDb(searchInput.Input, searchInput.FromDateJalali, cancellationToken);
+            return Ok(items);
+        }
+
+
+        [HttpPost]
+        [Route("sti-lastdb")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetStiReport_LastDb([FromBody] CardexInput searchInput, CancellationToken cancellationToken)
+        {
+            int reportCode = 230;
+            ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> calculationDetails = await _branchEventSummaryHandler.HandleWithLastDb(searchInput.Input, searchInput.FromDateJalali, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode);
             return Ok(reportId);
         }

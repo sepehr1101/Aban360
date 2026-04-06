@@ -10,8 +10,11 @@
         public string MeterDiameterTitle { get; set; }
         public string MeterChangeDate { get; set; }
         public string WaterRegistrationDate { get; set; }
-        public string BodySerial { get; set; }
+        public int RegionId { get; set; }
+        public string RegionTitle { get; set; }
+        public int ZoneId { get; set; }
         public string ZoneTitle { get; set; }
+        public string BodySerial { get; set; }
         public string ChangeCauseTitle { get; set; }
         public string SiphonDiameterTitle { get; set; }
         public int DomesticUnit { get; set; }

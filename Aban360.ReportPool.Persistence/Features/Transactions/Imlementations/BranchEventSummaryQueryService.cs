@@ -64,12 +64,12 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         private string GetBrachEventSummaryHeaderQuery()
         {
             return @"Select 
-                    	c.FirstName ,
-                    	c.SureName AS Surname,
+                    	TRIM(c.FirstName) AS FirstName ,
+                    	TRIM(c.SureName) AS Surname,
                     	TRIM(c.FirstName) + ' ' + TRIM(c.SureName) AS FullName,
                     	c.ZoneTitle ,
                     	c.BillId,
-                    	c.ReadingNumber,
+                    	TRIM(c.ReadingNumber) ReadingNumber,
                     
                     	c.UsageTitle,
                     	'' AS JobTitle,
@@ -92,7 +92,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             return @"Select 
                     	r.UsageTitle AS UsageTitle,
                     	r.UsageId AS UsageId,
-                    	r.TrackNumber,
+                    	TRIM(r.TrackNumber) TrackNumber,
                     	r.RegisterDate collate SQL_Latin1_General_CP1_CI_AS AS RegisterDateJalali,
                         IIF(r.Amount>0 AND TypeCode NOT IN (3,4,6) , r.Amount, 0) DebtAmount,
                         IIF(r.FinalAmount>0, r.FinalAmount,0) AS AmountAfterDiscount,  

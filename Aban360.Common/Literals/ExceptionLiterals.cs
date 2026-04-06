@@ -31,6 +31,8 @@
         public static string NotMoreThan100 => "مقدار وارد شده نباید بیش از 100 باشد";
         public static string NotMoreThan255 => "مقدار وارد شده نباید بیش از 255 کاراکتر باشد";
         public static string NotMoreThan1023 => "مقدار وارد شده نباید بیش از 1023 کاراکتر باشد";
+        public static string InvalidFridayDate => "روز انتخابی، جمعه است";
+        public static string InvalidOfficialHolidayDate => "روز انتخابی، تعطیل است";
         public static string PreviousDateIsInvalid => "تاریخ قبلی قرائت ناصحیح است";
         public static string CurrentDateIsInvalid => "تاریخ فعلی قرائت ناصحیح است";
         public static string CurrentDateNotMoreThanPreviousDate => "تاریخ دوره قبلی نمیتوان از تاریخ دوره جاری بزرگ تر باشد";

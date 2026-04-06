@@ -78,6 +78,9 @@ namespace Aban360.ReportPool.Persistence.Base
                      	mc.RegisterDateJalali AS WaterRegistrationDate,
                      	TRIM(mc.BodySerial) AS BodySerial,
                      	c.ZoneTitle AS ZoneTitle,
+                        c.ZoneId As ZoneId,
+	                    t46.C0 RegionId,
+	                    t46.C2 RegionTitle,
                          mc.ChangeCauseTitle,
                      	c.DomesticCount	AS DomesticUnit,
                      	c.CommercialCount AS CommercialUnit,
@@ -87,6 +90,10 @@ namespace Aban360.ReportPool.Persistence.Base
                     From [CustomerWarehouse].dbo.MeterChange mc
                     Join CTE c	
                     	  ON mc.CustomerNumber=c.CustomerNumber AND mc.ZoneId=c.ZoneId
+                    Join [Db70].dbo.T51 t51
+                    	ON c.ZoneId=t51.C0
+                    Join [Db70].dbo.T46 t46
+                    	ON t51.C1=t46.C0
                     Where 
                     	c.RN=1 AND
                     	c.DeletionStateId NOT IN(1,2) AND

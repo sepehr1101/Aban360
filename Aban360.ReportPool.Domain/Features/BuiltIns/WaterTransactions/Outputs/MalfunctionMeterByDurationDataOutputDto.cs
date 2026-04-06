@@ -2,6 +2,8 @@
 {
     public record MalfunctionMeterByDurationDataOutputDto
     {
+        public int RegionId { get; set; }
+        public string RegionTitle { get; set; }
         public string ZoneTitle { get; set; }
         public int ZoneId { get; set; }
         public int CustomerNumber { get; set; }
