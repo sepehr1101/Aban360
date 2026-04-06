@@ -61,39 +61,6 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         private string GetSubscriptionEventsDataQuery(string dbName)
         {
             return $@"Select 
-						'' BillId,
-						m.id,
-						0 PreviousMeterNumber,
-						0 NextMeterNumber,
-						'' PreviousMeterDate,
-						'' CurrentMeterDate,
-						0 Duration,
-						m.date RegisterDate,
-						m.mandeh DebtAmount,
-						0 CreditAmount,
-						N'مانده ابتدا' [Description],
-						0 ConsumptionAverage, 
-						0 Consumption,
-						'' BankTitle, 
-						0 BankCode, 
-						0 CommercialUnit,
-						0 DomesticUnit, 
-						0 OtherUnit,
-						0 EmptyUnit,
-						0 HouseholderNumber,
-						0 ContractualCapacity,
-						m.noe_ensh UsageSellId,
-						m.group1 UsageConsumptionId,
-						'' UsageSellTitle,
-						'' UsageConsumptionTitle,
-						'' PayDateJalali,
-						9 TypeCode
-					From [{dbName}].dbo.base_mand m
-					Where 
-						m.Town=@zoneId AND
-						m.radif=@customerNumber 
-					Union All
-					Select 
 						b.sh_ghabs1 BillId,
 						b.id,
 						b.pri_no PreviousMeterNumber,
@@ -104,7 +71,11 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						b.date_bed RegisterDate,
 						b.baha DebtAmount,
 						0 CreditAmount,
-						IIF(cv.MoshtarakinId Not IN (4,7,8),N'قبض',cv.Title) [Description],--todo
+						Case 
+							When cv.MoshtarakinId IN (4,7) Then N'بسته' 
+							When cv.MoshtarakinId = 8 Then N'عدم قرائت'
+							Else N'قبض'
+						End [Description],--todo
 						b.rate ConsumptionAverage, 
 						b.masraf Consumption,
 						null BankTitle, 
