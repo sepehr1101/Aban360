@@ -37,7 +37,7 @@ namespace Aban360.ReportPool.Application.Features.Transactions.Handler.Implement
             _customerInfoQueryService.NotNull(nameof(customerInfoQueryService));
         }
 
-        public async Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> Handle(string input, string fromDate)
+        public async Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> Handle(string input, string? fromDate)
         {
             bool hasBillId = await _billQueryService.HasBillId(input);
             if (!hasBillId)
@@ -46,7 +46,7 @@ namespace Aban360.ReportPool.Application.Features.Transactions.Handler.Implement
             ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> result = await _subscriptionEventQueryService.GetEventsSummaryDtos(input, fromDate);
             return result;
         }
-        public async Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> HandleWithLastDb(string input, string fromDate)
+        public async Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> HandleWithLastDb(string input, string? fromDate)
         {
             bool hasBillId = await _billQueryService.HasBillId(input);
             if (!hasBillId)
@@ -55,6 +55,13 @@ namespace Aban360.ReportPool.Application.Features.Transactions.Handler.Implement
             ZoneIdAndCustomerNumberOutputDto zoneIdAndCustomerNumber = await _customerInfoQueryService.GetZoneIdAndCustomerNumber(input);
             CardexInputDto cardexInfo = new(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber, fromDate);
             ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> result = await _subscriptionEventWithLastDbQueryService.GetEventsSummaryDtos(cardexInfo);
+
+            if (!string.IsNullOrWhiteSpace(fromDate))
+            {
+                IEnumerable<WaterEventsSummaryOutputDataDto> data = result.ReportData.Where(d => d.RegisterDate.CompareTo(fromDate) >= 0);
+                return new ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>(result.Title, result.ReportHeader, data);
+            }
+
             return result;
         }
     }

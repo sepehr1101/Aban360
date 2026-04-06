@@ -35,7 +35,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                 {
                     WaterEventsSummaryOutputDataDto row = data.ElementAt(i);
                     row.EventDateJalali = row.PayDateJalali == null ? row.CurrentMeterDate : row.PayDateJalali;
-                    if (row.TypeCode == 7)
+                    if (row.TypeCode == 7 || row.TypeCode == 17)
                     {
                         row.Remained = lastRemained;
                         continue;
@@ -61,6 +61,39 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         private string GetSubscriptionEventsDataQuery(string dbName)
         {
             return $@"Select 
+						'' BillId,
+						m.id,
+						0 PreviousMeterNumber,
+						0 NextMeterNumber,
+						'' PreviousMeterDate,
+						'' CurrentMeterDate,
+						0 Duration,
+						m.date RegisterDate,
+						m.mandeh DebtAmount,
+						0 CreditAmount,
+						N'مانده ابتدا' [Description],
+						0 ConsumptionAverage, 
+						0 Consumption,
+						'' BankTitle, 
+						0 BankCode, 
+						0 CommercialUnit,
+						0 DomesticUnit, 
+						0 OtherUnit,
+						0 EmptyUnit,
+						0 HouseholderNumber,
+						0 ContractualCapacity,
+						m.noe_ensh UsageSellId,
+						m.group1 UsageConsumptionId,
+						'' UsageSellTitle,
+						'' UsageConsumptionTitle,
+						'' PayDateJalali,
+						9 TypeCode
+					From [{dbName}].dbo.base_mand m
+					Where 
+						m.Town=@zoneId AND
+						m.radif=@customerNumber 
+					Union All
+					Select 
 						b.sh_ghabs1 BillId,
 						b.id,
 						b.pri_no PreviousMeterNumber,
@@ -71,7 +104,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						b.date_bed RegisterDate,
 						b.baha DebtAmount,
 						0 CreditAmount,
-						cv.Title [Description],--todo
+						IIF(cv.MoshtarakinId Not IN (4,7,8),N'قبض',cv.Title) [Description],--todo
 						b.rate ConsumptionAverage, 
 						b.masraf Consumption,
 						null BankTitle, 
@@ -87,8 +120,11 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						t41_sell.C1 UsageSellTitle,
 						t41_consumption.C1 UsageConsumptionTitle,
 						'' PayDateJalali,
-						b.cod_vas TypeCode
-						--b.type TypeCode
+						Case 
+							When cv.MoshtarakinId IN (4,7) Then 8
+							When cv.MoshtarakinId=8 Then 7
+							Else 1
+						End TypeCode
 					From [{dbName}].dbo.bed_bes b
 					Left Join [Db70].dbo.CounterVaziat cv 
 						On b.cod_vas=cv.MoshtarakinId
@@ -137,7 +173,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						On b.group1=t41_consumption.c0 --group1?
 					Where 
 						b.town=@zoneId AND
-						b.radif=@customerNumber 
+						b.radif=@customerNumber  
 						Union
 					Select 
 						m.bill_id BillId,
@@ -148,13 +184,28 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						r.today_date CurrentMeterDate,
 						r.modat Duration,
 						r.date_bed RegisterDate,
-						--r.baha DebtAmount,
-						IIF((IIF(r.type in(1,9) or (r.type=4 and r.elat=1) or (r.type=6 and r.elat =1),1,-1)*r.baha)<0,
-						  IIF(r.type in(1,9) or (r.type=4 and r.elat=1) or (r.type=6 and r.elat =1),1,-1)*r.baha,
-						  0) CreditAmount, 
-						IIF((IIF(r.type in(1,9) or (r.type=4 and r.elat=1) or (r.type=6 and r.elat =1),1,-1)*r.baha)<0,
-						  0,
-						  IIF(r.type in(1,9) or (r.type=4 and r.elat=1) or (r.type=6 and r.elat =1),1,-1)*r.baha) DebtAmount, 
+						
+							--کد قبل
+				--IIF((IIF(r.type in(1,9) or (r.type=4 and r.elat=1) or (r.type=6 and r.elat =1),1,-1)*r.baha)<0,
+				--  IIF(r.type in(1,9) or (r.type=4 and r.elat=1) or (r.type=6 and r.elat =1),1,-1)*r.baha,
+				--  0) CreditAmount, 
+				--IIF((IIF(r.type in(1,9) or (r.type=4 and r.elat=1) or (r.type=6 and r.elat =1),1,-1)*r.baha)<0,
+				--  0,
+				--  IIF(r.type in(1,9) or (r.type=4 and r.elat=1) or (r.type=6 and r.elat =1),1,-1)*r.baha) DebtAmount, 
+
+
+
+	 
+
+				IIF((IIF(r.type in(1,9) or (r.type=4 and r.elat=1) or (r.type=6 and r.elat =1),1,-1)*r.baha)<0,
+				  0,
+				  IIF(r.type in(1,9) or (r.type=4 and r.elat=1) or (r.type=6 and r.elat =1),1,-1)*r.baha)  CreditAmount, 
+				
+ 
+				IIF((IIF(r.type in(1,9) or (r.type=4 and r.elat=1) or (r.type=6 and r.elat =1),1,-1)*r.baha)<0,
+				  IIF(r.type in(1,9) or (r.type=4 and r.elat=1) or (r.type=6 and r.elat =1),1,-1)*r.baha,
+				  0) DebtAmount, 
+						
 						N'برگشتی' [Description],--todo
 						0 ConsumptionAverage, 
 						0 Consumption,
@@ -181,7 +232,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						On r.group1=t41_consumption.c0 
 					Where 
 						r.town=@zoneId AND
-						r.radif=@customerNumber 
+						r.radif=@customerNumber  
 					Union
 					Select 
 						m.bill_id BillId,
@@ -193,7 +244,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						0 Duration,
 						v.date_sabt RegisterDate,
 						0 DebtAmount,
-						v.pard*-1 CreditAmount,
+						v.pard CreditAmount,
 						N'پرداخت' [Description],--todo
 						0 ConsumptionAverage, 
 						0 Consumption,
@@ -220,7 +271,40 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						On v.cod_enshab=t41_consumption.c0 
 					Where 
 						v.town=@zoneId AND
-						v.radif=@customerNumber";
+						v.radif=@customerNumber 
+					Union
+					select
+					    h.Sh_GhABS1 BillId,
+						0 Id,
+						h.Pri_no PreviousMeterNumber,
+						h.today_no NextMeterNumber,
+						h.pri_date PreviousMeterDate,
+						h.today_date CurrentMeterDate,
+						0 Duration,
+						h.today_date RegisterDate,
+						h.baha DebtAmount,
+						0 CreditAmount,
+						N'ابطال قبض' [Description],
+						0 ConsumptionAverage, 
+						h.masraf Consumption,
+						'' BankTitle,
+						0 BankCode, 
+						0 CommercialUnit,
+						0 DomesticUnit, 
+						0 OtherUnit,
+						0 EmptyUnit,
+						0 HouseholderNumber,
+						0 ContractualCapacity,
+						0 UsageSellId,
+						0 UsageConsumptionId,
+						'' UsageSellTitle,
+						'' UsageConsumptionTitle,
+						'' PayDateJalali,--todo
+						17 TypeCode
+					From [{dbName}].dbo.HbedBes h
+					Where 
+						h.town=@zoneId AND
+						h.radif=@customerNumber ";
         }
         private string GetSubscriptionEventHeaderQuery(string dbName)
         {
@@ -261,7 +345,8 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						m.G_inst_fas,--todo
 						'-' AS WaterReplacementDate,
 						'-' AS WaterReplacementNumber,
-					    m.town AS ZoneId
+					    m.town AS ZoneId,
+						d.Title DeletionStateTitle
 					From [{dbName}].dbo.members m
 					Left Join [Db70].dbo.T41 t41_sell
 						On m.cod_enshab=t41_sell.c0 
@@ -271,6 +356,8 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						ON m.enshab=t5.C0
 					Join [Db70].dbo.T7 t7
 						ON m.noe_va=t7.C0
+					Join [Db70].dbo.DeletionState d
+						ON m.hasf=d.id
 					Where
 						m.town=@zoneId AND
 						m.radif=@customerNumber ";
