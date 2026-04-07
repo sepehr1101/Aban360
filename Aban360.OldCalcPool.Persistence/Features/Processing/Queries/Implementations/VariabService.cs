@@ -55,6 +55,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             return true;
         }
 
+        public async Task<int> GetAndRenewRadif(int zoneId)
+        {
+            int radif = await _sqlReportConnection.QuerySingleAsync<int>(GetRadifQuery(GetDbName(zoneId)), new { zoneId });
+            await _sqlReportConnection.ExecuteAsync(IncreaseRadif(GetDbName(zoneId)), new { zoneId });
+            return radif;
+        }
+
         private string GetBargeQuery(string dbName)
         {
             string query = $"USE [{dbName}] " +
@@ -74,6 +81,18 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             return query;
         }
 
+        private string GetRadifQuery(string dbName)
+        {
+            string query = $"USE [{dbName}] " +
+                $"SELECT radif FROM variab Where town=@zoneId";
+            return query;
+        }
+        private string IncreaseRadif(string dbName)
+        {
+            string query = $"USE [{dbName}] " +
+                $"UPDATE variab SET radif=radif+1 Where town=@zoneId;";
+            return query;
+        }
         private string GetCheckDate1(string dbName)
         {
             string query = @$"USE [{dbName}]

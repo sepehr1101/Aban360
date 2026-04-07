@@ -12,5 +12,6 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts
         Task<User?> Get(string username);
         Task<User> GetIncludeUserAndClaims(Guid userId);
         Task<IEnumerable<UserQueryDto>> Search(SearchUserDto input);
+        Task<IEnumerable<UserQueryDto>> Get(UserSearchByRoleTitleAndZoneIdDto inputDto);
     }
 }

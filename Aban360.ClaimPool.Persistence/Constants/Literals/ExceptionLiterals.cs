@@ -1,12 +1,15 @@
 ﻿namespace Aban360.ClaimPool.Persistence.Constants.Literals
 {
     internal static class ExceptionLiterals
-    {
+    {   
+        public static string NotFoundUniqueCode => "کد یکتا ناحیه انتخاب شده یافت نشد";
         public static string InvalidIdentifier { get { return "موجودیت با شناسه ارسالی پیدا نشد"; } }
         public static string InvalidStateId => "وضعیت ارسالی یافت نشد.";
         public static string NotFoundTask => "وظیفه ای یافت نشد.";
         public static string InvalidInsertTracking => "خطا در ذخیره درخواست";
+        public static string InvalidInsertBillId => "خطا در ذخیره شناسه قبض";
         public static string InvalidUpdateMoshtrakin=> "خطا در ویرایش اطلاعات مشترک";
+        public static string InvalidInsertCustomerNumber=> "خطا در ذخیره ردیف";
         public static string InvalidInsertAssessment => "خطا در ذخیره نتیجه ارزیابی";
         public static string InvalidInsertMother => "خطا در ذخیره اطلاعات مادر-فرزند";
         public static string InvalidUpdateMother => "خطا در ویرایش اطلاعات مادر-فرزند";
