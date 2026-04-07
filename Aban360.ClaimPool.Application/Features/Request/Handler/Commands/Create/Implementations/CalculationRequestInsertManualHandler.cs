@@ -24,6 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IT100QueryService _t100QueryService;
         private readonly IValidator<KartInsertManualInputDto> _validator;
         static string _insertBy = "Aban";
+        static int _manualSerial = 10000;
         public CalculationRequestInsertManualHandler(
             ITrackingQueryService trackingQueryService,
             IMoshtrakQueryService moshtrakQueryService,
@@ -90,7 +91,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 CustomerNumber = moshtrakInfo.CustomerNumber,
                 ReadingNumber = moshtrakInfo.ReadingNumber,
                 StringTrackNumber = moshtrakInfo.TrackNumber.ToString().PadLeft(11, '0'),
-                Serial = 0,
+                Serial = _manualSerial,
                 Barge = 0,
                 CurrentDateJalali = DateTime.Now.ToShortPersianDateString(),
                 DueDateJalali = DateTime.Now.AddMonths(1).ToShortPersianDateString(),

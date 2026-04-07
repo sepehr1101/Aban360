@@ -16,6 +16,7 @@
         public static string InvalidUpdateBillAmount=> "خطا در ویرایش مبلغ قبض";
         public static string InvalidUpdateTrackNumber => "خطا در ویرایش شماره پیگیری";
         public static string InvalidInsertKart => "خطا در ذخیره اقلام محاسبه شده";
+        public static string InvalidRemoveKart => "خطا در حذف قلم";
         public static string InvalidInsertGhest => "خطا در ذخیره اقساط";
         public static string InvalidDeleteGhest => "خطا در حذف اقساط";
         public static string InvalidUpdateGhest => "خطا در ویرایش اقساط";

@@ -40,13 +40,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertKart);
             }
         }
-        public async Task Remove(int id, string dbName)
+        public async Task Remove(KartRemoveDto input, string dbName)
         {
             string command = GetRemoveCommand(dbName);
-            int rowEffected = await _connection.ExecuteAsync(command, new { id }, _transaction);
+            int rowEffected = await _connection.ExecuteAsync(command,input, _transaction);
             if (rowEffected <= 0)
             {
-                throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertKart);
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidRemoveKart);
             }
         }
 
@@ -74,7 +74,9 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
         private string GetRemoveCommand(string dbName)
         {
             return $@"Delete [{dbName}].dbo.kart 
-                    Where id=@id";
+                    Where 
+                        id=@id AND
+                        Serial=@serial";
         }
     }
 }
