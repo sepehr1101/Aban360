@@ -19,6 +19,7 @@
         public static string InvalidInsertGhest => "خطا در ذخیره اقساط";
         public static string InvalidDeleteGhest => "خطا در حذف اقساط";
         public static string InvalidUpdateGhest => "خطا در ویرایش اقساط";
+        public static string InvalidInsertComment=> "خطا در ذخیره کامنت";
 
     }
 }
