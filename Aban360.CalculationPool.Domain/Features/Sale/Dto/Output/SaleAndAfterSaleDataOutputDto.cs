@@ -2,14 +2,14 @@
 {
     public record SaleAndAfterSaleDataOutputDto
     {
-        public short Id { get; set; }
+        public int Id { get; set; }
         public string Title { get; set; } = null!;
         public long Amount { get; set; }
         public long? Discount { get; set; }
         public long FinalAmount { get; set; }
         public int DiscountTypeId { get; set; }
         public bool Removable { get; set; }
-        public SaleAndAfterSaleDataOutputDto(short id, string title, long? amount, long? discount, long? finalAmount, int discountTypeId, bool removable)
+        public SaleAndAfterSaleDataOutputDto(int id, string title, long? amount, long? discount, long? finalAmount, int discountTypeId, bool removable)
         {
             Id = id;
             Title = title;

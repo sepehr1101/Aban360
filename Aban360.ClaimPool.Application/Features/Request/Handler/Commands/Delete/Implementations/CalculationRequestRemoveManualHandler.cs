@@ -19,6 +19,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Delete
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly IKartQueryService _kartQueryService;
         private readonly IValidator<KartRemoveManualInputDto> _validator;
+        static int _manualSerial = 10000;
         public CalculationRequestRemoveManualHandler(
             ITrackingQueryService trackingQueryService,
             IMoshtrakQueryService moshtrakQueryService,
@@ -47,6 +48,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Delete
 
             CalculationRequestDisplayDataOutputDto kartData = await _kartQueryService.Get(inputDto.Id, trackingInfo.ZoneId);
             GhestUpdateDto ghestInsertDto = new(trackingInfo.StringTrackNumber, kartData.Amount * -1);
+            KartRemoveDto kartRemoveDto = new(inputDto.Id, _manualSerial);
             string dbName = GetDbName(trackingInfo.ZoneId);
 
             using (IDbConnection connection = _sqlReportConnection)
@@ -58,7 +60,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Delete
                     KartCommandService kartCommandService = new(connection, transaction);
                     GhestCommandService ghestCommandService = new(connection, transaction);
 
-                    await kartCommandService.Remove(inputDto.Id, dbName);
+                    await kartCommandService.Remove(kartRemoveDto, dbName);
                     await ghestCommandService.Update(ghestInsertDto, dbName);
 
                     transaction.Commit();

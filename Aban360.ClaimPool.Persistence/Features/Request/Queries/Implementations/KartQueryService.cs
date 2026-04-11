@@ -31,10 +31,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
         private string GetByTrackNumberQuery(string dbName)
         {
             return $@"Select 
+                        k.id,
                     	t100.C1 Title,
                     	k.pard Amount,
                     	k.takhfif Discount,
-                        k.cod_takh  DiscountTypeId
+                        k.cod_takh  DiscountTypeId,
+						IIF(k.Serial=0,0,1) Removable
                     From [{dbName}].dbo.kart k
                     Join [Db70].dbo.T100 t100	
                     	ON k.noe_bed=t100.C0
@@ -43,10 +45,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
         private string GetByIdQuery(string dbName)
         {
             return $@"Select 
+                        k.id,
                     	t100.C1 Title,
                     	k.pard Amount,
                     	k.takhfif Discount,
-                        k.cod_takh  DiscountTypeId
+                        k.cod_takh  DiscountTypeId,
+						IIF(k.Serial=0,0,1) Removable
                     From [{dbName}].dbo.kart k
                     Join [Db70].dbo.T100 t100	
                     	ON k.noe_bed=t100.C0

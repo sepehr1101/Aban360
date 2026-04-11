@@ -5,6 +5,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contrac
 {
     public interface IDisplayRequestHandler
     {
-        Task<MoshtrakOutputDto> Handle(ZoneIdAndTrackNumber inputDto, CancellationToken cancellationToken);
+        Task<MoshtrakDataOutputDto> Handle(ZoneIdAndTrackNumber inputDto, CancellationToken cancellationToken);
     }
 }

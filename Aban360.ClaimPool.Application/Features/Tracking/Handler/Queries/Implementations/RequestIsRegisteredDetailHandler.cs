@@ -1,7 +1,7 @@
-﻿using Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts;
-using Aban360.ClaimPool.Domain.Constants;
+﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations;
+using Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Tracking.Dto;
-using Aban360.ClaimPool.Persistence.Constants.Literals;
 using Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Contracts;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
@@ -29,8 +29,11 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
         {
             await Validation(inputDto, cancellationToken);
             RequestIsRegisterdDto data = await _trackingDetailQueryService.GetRequestIsRegistered(inputDto);
-            IEnumerable<NumericDictionary> s = GetCompanyService(data);
+            MoshtrakServiceDto sData=GetSDto(data);
+
+            IEnumerable<NumericDictionary> s = MoshtrakService.GetServicesSelectedDto(sData);
             RequestIsRegisterdOutputDto result = GetOutput(data, s);
+
 
             return result;
         }
@@ -43,154 +46,58 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
                 throw new BaseException(message);
             }
         }
-        private IEnumerable<Common.BaseEntities.NumericDictionary> GetCompanyService(RequestIsRegisterdDto input)
+        private MoshtrakServiceDto GetSDto(RequestIsRegisterdDto input)
         {
-            ICollection<Common.BaseEntities.NumericDictionary> companyServiceSelected = new List<Common.BaseEntities.NumericDictionary>();
-
-            #region s
-            if (input.s0 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.IsEnsheabAb, CompanySeviceLiterals.IsEnsheabAb));
-
-            if (input.s1 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.IsEnsheabFazelab, CompanySeviceLiterals.IsEnsheabFazelab));
-
-            if (input.s2 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.IsTaqirVahed, CompanySeviceLiterals.IsTaqirVahed));
-
-            //if (input.s3 > 0)
-            //companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsTaqirVahed, CompanySeviceLiterals.IsTaqirVahed));
-
-            if (input.s4 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.IsTaqirNam, CompanySeviceLiterals.IsTaqirNam));
-
-            if (input.s5 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.IsTaqirQotrEnsheab, CompanySeviceLiterals.IsTaqirQotrEnsheab));
-
-            //if (input.s8 > 0)
-            //companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.SifoonEzafe, CompanySeviceLiterals.SifoonEzafe));
-
-            //if (input.s9 > 0)
-            //companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.JabejaiiKontor, CompanySeviceLiterals.JabejaiiKontor));
-
-            if (input.s10 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.EstelamMahzar, CompanySeviceLiterals.EstelamMahzar));
-
-            if (input.s11 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.TafkikArseAb, CompanySeviceLiterals.TafkikArseAb));
-
-            if (input.s12 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.IsTafkikArseFazelab, CompanySeviceLiterals.IsTafkikArseFazelab));
-
-            if (input.s13 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.TaqirSathCounter, CompanySeviceLiterals.TaqirSathCounter));
-
-            //if (input.s14 > 0)
-            //companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.JabejaiiSifoon, CompanySeviceLiterals.JabejaiiSifoon));
-
-            //if (input.s15 > 0)
-            //companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.NezamMohandesi, CompanySeviceLiterals.NezamMohandesi));
-
-            if (input.s16 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.IsTaqirKarbari, CompanySeviceLiterals.IsTaqirKarbari));
-
-            //if (input.s17 > 0)
-            //companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsZarfiatQarardadi, CompanySeviceLiterals.IsZarfiatQarardadi));
-
-            //if (input.s18 > 0)
-            //companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsAmadeSaziAb, CompanySeviceLiterals.IsAmadeSaziAb));
-
-            //if (input.s19 > 0)
-            //companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsAmadeSaziFazelab, CompanySeviceLiterals.IsAmadeSaziFazelab));
-
-            if (input.s20 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.JabejaiiKontor, CompanySeviceLiterals.JabejaiiKontor));
-
-            if (input.s21 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.KhatEnteqhalAb, CompanySeviceLiterals.KhatEnteqhalAb));
-
-            if (input.s22 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.KhatEnteqhalFazelab, CompanySeviceLiterals.KhatEnteqhalFazelab));
-
-            if (input.s23 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.SahmManbaAb, CompanySeviceLiterals.SahmManbaAb));
-
-            if (input.s24 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.TaqirQotrSifoon, CompanySeviceLiterals.TaqirQotrSifoon));
-
-            //if (input.s25 > 0)
-            //    companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum., CompanySeviceLiterals.));
-
-            if (input.s26 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.IsAmadeSaziAb, CompanySeviceLiterals.IsAmadeSaziAb));
-
-            if (input.s27 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.IsAmadeSaziFazelab, CompanySeviceLiterals.IsAmadeSaziFazelab));
-
-            //if (input.s28 > 0)
-            //companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum., CompanySeviceLiterals.));
-
-            //if (input.s29 > 0)
-            //companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum., CompanySeviceLiterals.));
-
-            //if (input.s30 > 0)
-            //companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum., CompanySeviceLiterals.));
-
-            //if (input.s31 > 0)
-            //companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum., CompanySeviceLiterals.));
-
-            if (input.s32 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.QatVaslEnsheab, CompanySeviceLiterals.QatVaslEnsheab));
-
-            if (input.s33 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.SifoonEzafe, CompanySeviceLiterals.SifoonEzafe));
-
-            if (input.s34 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.AdamTakhfifAb, CompanySeviceLiterals.AdamTakhfifAb));
-
-            if (input.s35 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.AdamTakhfifFazelab, CompanySeviceLiterals.AdamTakhfifFazelab));
-
-            if (input.s36 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.JabejaiiSifoon, CompanySeviceLiterals.JabejaiiSifoon));
-
-            if (input.s37 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.NezamMohandesi, CompanySeviceLiterals.NezamMohandesi));
-
-            if (input.s38 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.TavizSifoon, CompanySeviceLiterals.TavizSifoon));
-
-            if (input.s39 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.KhanevarShomari, CompanySeviceLiterals.KhanevarShomari));
-
-            if (input.s40 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.TafkikEdqam, CompanySeviceLiterals.TafkikEdqam));
-
-            if (input.s41 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.TavizKontor, CompanySeviceLiterals.TavizKontor));
-
-            if (input.s42 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.LooleGozariAb, CompanySeviceLiterals.LooleGozariAb));
-
-            if (input.s43 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.LooleGozareAbFazelab, CompanySeviceLiterals.LooleGozareAbFazelab));
-
-            if (input.s44 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.IsZarfiatQarardadi, CompanySeviceLiterals.IsZarfiatQarardadi));
-
-            if (input.s45 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.KontorMojaza, CompanySeviceLiterals.KontorMojaza));
-
-            if (input.s46 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.TaqirTarefe, CompanySeviceLiterals.TaqirTarefe));
-
-            if (input.s47 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.Peymayesh, CompanySeviceLiterals.Peymayesh));
-
-            if (input.s48 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)CompanyServiceEnum.Saier, CompanySeviceLiterals.Saier));
-            #endregion
-
-            return companyServiceSelected;
+            return new MoshtrakServiceDto()
+            {
+                s0 = input.s0,
+                s1 = input.s1,
+                s2 = input.s2,
+                s3 = input.s3,
+                s4 = input.s4,
+                s5 = input.s5,
+                s8 = input.s8,
+                s9 = input.s9,
+                s10 = input.s10,
+                s11 = input.s11,
+                s12 = input.s12,
+                s13 = input.s13,
+                s14 = input.s14,
+                s15 = input.s15,
+                s16 = input.s16,
+                s17 = input.s17,
+                s18 = input.s18,
+                s19 = input.s19,
+                s20 = input.s20,
+                s21 = input.s21,
+                s22 = input.s22,
+                s23 = input.s23,
+                s24 = input.s24,
+                s25 = input.s25,
+                s26 = input.s26,
+                s27 = input.s27,
+                s28 = input.s28,
+                s29 = input.s29,
+                s30 = input.s30,
+                s31 = input.s31,
+                s32 = input.s32,
+                s33 = input.s33,
+                s34 = input.s34,
+                s35 = input.s35,
+                s36 = input.s36,
+                s37 = input.s37,
+                s38 = input.s38,
+                s39 = input.s39,
+                s40 = input.s40,
+                s41 = input.s41,
+                s42 = input.s42,
+                s43 = input.s43,
+                s44 = input.s44,
+                s45 = input.s45,
+                s46 = input.s46,
+                s47 = input.s47,
+                s48 = input.s48,
+            };
         }
         private RequestIsRegisterdOutputDto GetOutput(RequestIsRegisterdDto result, IEnumerable<Common.BaseEntities.NumericDictionary> s)
         {
