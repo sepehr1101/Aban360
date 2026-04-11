@@ -17,12 +17,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
     public class CalculationRequestController : BaseController
     {
         private readonly ICalculationRequestHandler _calculationRequestHandler;
+        private readonly IReCalculationRequestHandler _reCalculationRequestHandler;
         private readonly ICalculationRequestInsertManualHandler _calculationRequestInsertManualHandler;
         private readonly ICalculationRequestRemoveManualHandler _calculationRequestRemoveManualHandler;
         private readonly ICalculationRequestDisplayHandler _calculationRequestDisplayHandler;
         private readonly ICalculationRequestConfirmHandler _calculationRequestConfirmHandler;
         public CalculationRequestController(
             ICalculationRequestHandler calculationRequestHandler,
+            IReCalculationRequestHandler reCalculationRequestHandler,
             ICalculationRequestInsertManualHandler calculationRequestInsertManualHandler,
             ICalculationRequestRemoveManualHandler calculationRequestRemoveManualHandler,
             ICalculationRequestDisplayHandler calculationRequestDisplayHandler,
@@ -30,6 +32,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         {
             _calculationRequestHandler = calculationRequestHandler;
             _calculationRequestHandler.NotNull(nameof(calculationRequestHandler));
+
+            _reCalculationRequestHandler = reCalculationRequestHandler;
+            _reCalculationRequestHandler.NotNull(nameof(reCalculationRequestHandler));
 
             _calculationRequestInsertManualHandler = calculationRequestInsertManualHandler;
             _calculationRequestInsertManualHandler.NotNull(nameof(calculationRequestInsertManualHandler));
@@ -53,6 +58,16 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             int userCode = UserService.GetUserCode(CurrentUser.Username);
             ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = await _calculationRequestHandler.Handle(inputDto.Input, userCode, cancellationToken);
             return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("reCalculate")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<TrackNumberWithDescriptionInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ReCalculate([FromBody] TrackNumberWithDescriptionInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int userCode = UserService.GetUserCode(CurrentUser.Username);
+            await _reCalculationRequestHandler.Handle(inputDto, userCode, cancellationToken);
+            return Ok(inputDto);
         }
 
         [HttpPost]

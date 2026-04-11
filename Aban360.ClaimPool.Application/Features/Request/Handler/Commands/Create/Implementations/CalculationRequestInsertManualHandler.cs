@@ -64,6 +64,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     KartCommandService kartCommandService = new(connection, transaction);
                     GhestCommandService ghestCommandService = new(connection, transaction);
 
+                    await kartCommandService.Remove(trackingInfo.StringTrackNumber, dbName);//Remove All Karts Befor InsertNewRecord
                     await kartCommandService.Insert(kartInsertDto, dbName);
                     await ghestCommandService.Update(ghestInsertDto, dbName);
 

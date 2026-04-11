@@ -40,15 +40,21 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertKart);
             }
         }
-        public async Task Remove(KartRemoveDto input, string dbName)
+        public async Task Remove(string stringTrackNumber, string dbName)
         {
             string command = GetRemoveCommand(dbName);
-            int rowEffected = await _connection.ExecuteAsync(command,input, _transaction);
+            int rowEffected = await _connection.ExecuteAsync(command, new { stringTrackNumber }, _transaction);
+        }
+        public async Task Remove(KartRemoveDto input, string dbName)
+        {
+            string command = GetRemoveByIdCommand(dbName);
+            int rowEffected = await _connection.ExecuteAsync(command, input, _transaction);
             if (rowEffected <= 0)
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidRemoveKart);
             }
         }
+
 
         private string GetInsertCommand(string dbName)
         {
@@ -72,6 +78,11 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                     	@InsertedBy ,@Barge)";
         }
         private string GetRemoveCommand(string dbName)
+        {
+            return $@"Delete [{dbName}].dbo.kart 
+                    Where par_no=@stringTrackNumber";
+        }
+        private string GetRemoveByIdCommand(string dbName)
         {
             return $@"Delete [{dbName}].dbo.kart 
                     Where 

@@ -29,8 +29,8 @@
         TaqirSathCounter = 304,// t9:77 ,//afterSale
 
         //not in CompanyService
-        TafkikArseAb = 105,
-        IsTafkikArseFazelab = 205,
+        TafkikArseAb = 105, //s11
+        IsTafkikArseFazelab = 205, //s12
         KhatEnteqhalAb = 107,
         KhatEnteqhalFazelab = 203,
         SahmManbaAb = 108,
