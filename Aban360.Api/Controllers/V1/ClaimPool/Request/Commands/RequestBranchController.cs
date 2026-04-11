@@ -1,8 +1,11 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
 using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update.Contracts;
 using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
+using Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts;
+using Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implementations;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
+using Aban360.ClaimPool.Domain.Features.Tracking.Dto;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Db.QueryServices;
@@ -19,12 +22,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         private readonly IMoshtrakRequestUpdateHandler _moshtrakRequestUpdateHandler;
         private readonly ICloseRequestHandler _closeRequestHandle;
         private readonly IPreviousStatusRequestHandler _previousStatusRequestHandler;
+        private readonly IGeneralInformationHandler _generalInformationRequestHandler;
         public RequestBranchController(
             IKartableRequestGetAllHandler requestKartableGetAllHandler,
             IDisplayRequestHandler displayRequestHandler,
             IMoshtrakRequestUpdateHandler moshtrakRequestUpdateHandler,
             ICloseRequestHandler closeRequestHandle,
-            IPreviousStatusRequestHandler previousStatusRequestHandler)
+            IPreviousStatusRequestHandler previousStatusRequestHandler,
+            IGeneralInformationHandler generalInformationRequestHandler)
         {
             _requestKartableGetAllHandler = requestKartableGetAllHandler;
             _requestKartableGetAllHandler.NotNull(nameof(requestKartableGetAllHandler));
@@ -40,6 +45,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 
             _previousStatusRequestHandler = previousStatusRequestHandler;
             _previousStatusRequestHandler.NotNull(nameof(previousStatusRequestHandler));
+
+            _generalInformationRequestHandler = generalInformationRequestHandler;
+            _generalInformationRequestHandler.NotNull(nameof(generalInformationRequestHandler));
         }
 
 
@@ -88,6 +96,16 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             int userName = UserService.GetUserCode(CurrentUser.Username);
             await _previousStatusRequestHandler.Handle(inputDto, userName, cancellationToken);
             return Ok(inputDto);
+        }
+
+        [HttpPost]
+        [Route("general/{trackId}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<GeneralRequestDataOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SetPreviousStatus(Guid trackId, CancellationToken cancellationToken)
+        {
+            int userName = UserService.GetUserCode(CurrentUser.Username);
+            GeneralRequestDataOutputDto result= await _generalInformationRequestHandler.Handle(trackId,  cancellationToken);
+            return Ok(result);
         }
     }
 }
