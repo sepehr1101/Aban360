@@ -70,6 +70,16 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             }
             return result;
         }
+        public async Task<IEnumerable<TrackingKartableDataOutputDto>> GetAllArchivedRequest()
+        {
+            string query = GetAllArchivedTrackingQuery();
+            IEnumerable<TrackingKartableDataOutputDto> result = await _sqlReportConnection.QueryAsync<TrackingKartableDataOutputDto>(query, null);
+            if (!result.Any())
+            {
+                throw new InvalidTrackNumberException(ExceptionLiterals.NotFoundAnyOpenTrack);
+            }
+            return result;
+        }
 
         private string GetNewRequestByTrackNumberQuery()
         {
@@ -220,6 +230,34 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	t.IsConsiderd=0 AND 
                      	t.DateTimeJalali>='1404/07/01' AND
                     	t.Status IN (0,10,15,20,50,60,65,70,75,110,150,90002)
+                    Order by sg.Title,t.DateAndTime desc";
+        }
+        private string GetAllArchivedTrackingQuery()
+        {
+            return $@"Select 
+                    	t.TrackID,
+                    	t.ZoneID,
+                    	T51.C2 ZoneTitle,
+                    	t.TrackNumber,
+                    	t.BillId,
+                    	t.NeighbourBillId,
+                    	t.Status StatusId,
+                    	s.Description StatusTitle,
+                    	t.ServiceGroup_Fk ServiceGroupId,
+                    	sg.Title ServiceGroupTitle,
+                    	IIF( (format(GETDATE(),'yyyy-MM-dd')) = (Format(t.DateAndTime,'yyyy-MM-dd')),0,1) HasAttention,
+                    	t.DateTimeJalali RequestDateJalali
+                    From [AbAndFazelab].dbo.Tracking t
+                    Join [Db70].dbo.T51 T51
+                    	ON t.ZoneID=T51.C0
+                    Join [AbAndFazelab].dbo.ServiceGroup sg
+                    	ON t.ServiceGroup_Fk=sg.Id
+                    Join AbAndFazelab.dbo.Status s
+                    	ON t.Status=s.StatusID
+                    Where 
+                    	t.IsConsiderd=0 AND 
+                     	t.DateTimeJalali>='1404/07/01' AND
+                    	t.Status IN (90003)
                     Order by sg.Title,t.DateAndTime desc";
         }
     }
