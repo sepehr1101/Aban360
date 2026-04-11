@@ -5,5 +5,6 @@
         public int TrackNumber { get; set; }
         public int InstallmentCount { get; set; }
         public int PrepaymentPercent { get; set; }
+        public int MonthlyDuration { get; set; }
     }
 }

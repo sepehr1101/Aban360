@@ -157,7 +157,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	ON t.ServiceGroup_FK=sg.Id
 					Join Db70.dbo.T51 t51
 						ON t.ZoneID=t51.C0
-						ON t.ZoneID=t51.C0
 					Join Db70.dbo.T46 t46
 						ON t51.C1=t46.C0
                     Where t.TrackNumber=@TrackNumber 
@@ -189,7 +188,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     Join AbAndFazelab.dbo.ServiceGroup sg
                     	ON t.ServiceGroup_FK=sg.Id
 					Join Db70.dbo.T51 t51
-						ON t.ZoneID=t51.C0
 						ON t.ZoneID=t51.C0
 					Join Db70.dbo.T46 t46
 						ON t51.C1=t46.C0
