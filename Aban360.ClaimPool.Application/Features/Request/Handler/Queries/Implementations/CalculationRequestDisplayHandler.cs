@@ -29,7 +29,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(trackNumber);
             IEnumerable<CalculationRequestDisplayDataOutputDto> data = await _kartQueryService.Get(trackingInfo.StringTrackNumber, trackingInfo.ZoneId);
 
-            IEnumerable<SaleAndAfterSaleDataOutputDto> resultData = data.Select(s => new SaleAndAfterSaleDataOutputDto((short)s.Id, s.Title, s.Amount + s.Discount, s.Discount, s.Amount, s.DiscountTypeId, s.Removable));
+            IEnumerable<SaleAndAfterSaleDataOutputDto> resultData = data.Select(s => new SaleAndAfterSaleDataOutputDto(s.Id, s.Title, s.Amount + s.Discount, s.Discount, s.Amount, s.DiscountTypeId, s.Removable));
             long amount = resultData?.Sum(c => c.Amount) ?? 0;
             long discount = resultData?.Sum(c => c.Discount) ?? 0;
             SaleAndAfterSaleHeaderOutputDto header = new(amount, discount, amount - discount, resultData?.Count()??0);//todo: true or not

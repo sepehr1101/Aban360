@@ -59,6 +59,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateMoshtrakin);
             }
         }
+		public async Task Update(MoshtrakCustomerNumberUpdateDto input, string dbName)
+        {
+            string command = GetUpdateCustomerNumberCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, input, _transaction);
+            if (recordCount != 1)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertCustomerNumber);
+            }
+        }
 
         //   private string GetInsertCommand(string dbName)
         //   {
@@ -285,6 +294,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
         {
             return $@"Update [{dbName}].dbo.moshtrak
 						Set sabt=@IsRegister , sharh=@Description
+						Where TrackingNumber=@TrackNumber";
+        }
+		private string GetUpdateCustomerNumberCommand(string dbName)
+        {
+            return $@"Update [{dbName}].dbo.moshtrak
+						Set radif=@CustomerNumber
 						Where TrackingNumber=@TrackNumber";
         }
     }

@@ -16,20 +16,20 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
         public async Task<IEnumerable<NumericDictionary>> Get()
         {
             string query = GetQuery();
-            IEnumerable<NumericDictionary> result = await _sqlConnection.QueryAsync<NumericDictionary>(query, null);
+            IEnumerable<NumericDictionary> result = await _sqlReportConnection.QueryAsync<NumericDictionary>(query, null);
             return result;
         }
         public async Task<NumericDictionary> Get(int Id)
         {
             string query = GetByIdQuery();
-            NumericDictionary result = await _sqlConnection.QueryFirstOrDefaultAsync<NumericDictionary>(query, new { Id });
+            NumericDictionary result = await _sqlReportConnection.QueryFirstOrDefaultAsync<NumericDictionary>(query, new { Id });
             return result;
 
         }
         public async Task<IEnumerable<NumericDictionary>> GetByTypeId(int typeId)
         {
             string query = GetByTypeIdQuery();
-            IEnumerable<NumericDictionary> result = await _sqlConnection.QueryAsync<NumericDictionary>(query, new { typeId });
+            IEnumerable<NumericDictionary> result = await _sqlReportConnection.QueryAsync<NumericDictionary>(query, new { typeId });
             return result;
         }
 
@@ -53,7 +53,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             return @"Select 
                     	C0 Id,
                     	C3 Title
-                 From Db70.dbo.T9
+                 From [Db70].dbo.T9
                  Where C1=@typeId";
         }
     }

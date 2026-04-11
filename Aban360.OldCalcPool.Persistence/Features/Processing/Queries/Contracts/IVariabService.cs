@@ -5,5 +5,6 @@
         Task<decimal> GetAndRenew(int zoneId);
         Task<decimal[]> GetAndRenew(int zoneId, int count);
         Task<bool> IsOperationValid(int zoneId, string operationDate);
+        Task<int> GetAndRenewRadif(int zoneId);
     }
 }

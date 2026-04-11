@@ -26,18 +26,18 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
                 .AsNoTracking()
                 .AsQueryable();
         }
-        private IQueryable<User> _query 
-        { 
-            get 
+        private IQueryable<User> _query
+        {
+            get
             {
                 return _users.
                     AsNoTracking()
-                    .Where(user=>user.ValidTo==null) ;
+                    .Where(user => user.ValidTo == null);
             }
         }
         public async Task<ICollection<User>> Get()
         {
-            return await 
+            return await
                 _query
                 .ToListAsync();
         }
@@ -52,12 +52,12 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
         }
         public async Task<User> GetIncludeUserAndClaims(Guid userId)
         {
-            return await 
+            return await
                 _query
-                .Include(user=>user.UserRoles.Where(userRole=> userRole.ValidTo == null))
-                .ThenInclude(userRole=>userRole.Role)
-                .Include(user=>user.UserClaims.Where(userClaim=>userClaim.ValidTo==null))
-                .SingleAsync(user=>user.Id==userId);
+                .Include(user => user.UserRoles.Where(userRole => userRole.ValidTo == null))
+                .ThenInclude(userRole => userRole.Role)
+                .Include(user => user.UserClaims.Where(userClaim => userClaim.ValidTo == null))
+                .SingleAsync(user => user.Id == userId);
         }
 
         public async Task<IEnumerable<UserQueryDto>> Search(SearchUserDto input)
@@ -66,12 +66,21 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
             var endpointIds = string.Join(",", input.EndpointIds);
             var roleIds = string.Join(",", input.RoleIds);
 
-            string query = GetSearchUserQuery(zoneIds,endpointIds,roleIds);
-            IEnumerable<UserQueryDto> result=await _uow.ExecuteQuery<UserQueryDto>(query);
+            string query = GetSearchUserQuery(zoneIds, endpointIds, roleIds);
+            IEnumerable<UserQueryDto> result = await _uow.ExecuteQuery<UserQueryDto>(query);
 
             return result;
         }
-        private string GetSearchUserQuery(string zoneIds,string endpointIds,string roleIds)
+        public async Task<IEnumerable<UserQueryDto>> Get(UserSearchByRoleTitleAndZoneIdDto inputDto)
+        {
+            string query = GetSearchByRoleTitleAndZoneIdQuery(inputDto);
+            IEnumerable<UserQueryDto> result = await _uow.ExecuteQuery<UserQueryDto>(query);
+
+            return result;
+        }
+
+
+        private string GetSearchUserQuery(string zoneIds, string endpointIds, string roleIds)
         {
             return @$";WITH OneRowPerUser AS
                     (
@@ -114,6 +123,29 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
                     FROM OneRowPerUser
                     WHERE rn = 1;";
         }
-      
+        private string GetSearchByRoleTitleAndZoneIdQuery(UserSearchByRoleTitleAndZoneIdDto _params)
+        {
+            return @$"Select 
+                    	u.Id, 
+                    	u.FullName,
+                    	u.DisplayName, 
+                    	u.Username,
+                    	u.Mobile, 
+                    	u.MobileConfirmed,
+                    	u.HasTwoStepVerification, 
+                    	IIF(u.LockTimespan Is NUll,0,1) IsLocked
+                    From Aban360.UserPool.UserClaim uc
+                    Left Join Aban360.UserPool.UserRole ur
+                    	ON uc.UserId=ur.UserId
+                    Left Join Aban360.UserPool.Role r
+                    	ON ur.RoleId=r.Id
+                    Left Join Aban360.UserPool.[User] u
+                    	ON ur.UserId=u.Id
+                    Where 
+                    	uc.ClaimTypeId={(int)_params.ClaimType} AND
+                    	uc.ClaimValue='{_params.ZoneId}' AND
+                    	r.Name='{_params.RoleName}'";
+        }
+
     }
 }

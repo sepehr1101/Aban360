@@ -18,11 +18,13 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         private readonly IDisplayRequestHandler _displayRequestHandler;
         private readonly IMoshtrakRequestUpdateHandler _moshtrakRequestUpdateHandler;
         private readonly ICloseRequestHandler _closeRequestHandle;
+        private readonly IPreviousStatusRequestHandler _previousStatusRequestHandler;
         public RequestBranchController(
             IKartableRequestGetAllHandler requestKartableGetAllHandler,
             IDisplayRequestHandler displayRequestHandler,
             IMoshtrakRequestUpdateHandler moshtrakRequestUpdateHandler,
-            ICloseRequestHandler closeRequestHandle)
+            ICloseRequestHandler closeRequestHandle,
+            IPreviousStatusRequestHandler previousStatusRequestHandler)
         {
             _requestKartableGetAllHandler = requestKartableGetAllHandler;
             _requestKartableGetAllHandler.NotNull(nameof(requestKartableGetAllHandler));
@@ -35,6 +37,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 
             _closeRequestHandle = closeRequestHandle;
             _closeRequestHandle.NotNull(nameof(closeRequestHandle));
+
+            _previousStatusRequestHandler = previousStatusRequestHandler;
+            _previousStatusRequestHandler.NotNull(nameof(previousStatusRequestHandler));
         }
 
 
@@ -49,10 +54,10 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 
         [HttpPost]
         [Route("display")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakOutputDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakDataOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> DisplayRequest([FromBody] ZoneIdAndTrackNumber inputDto, CancellationToken cancellationToken)
         {
-            MoshtrakOutputDto result = await _displayRequestHandler.Handle(inputDto, cancellationToken);
+            MoshtrakDataOutputDto result = await _displayRequestHandler.Handle(inputDto, cancellationToken);
             return Ok(result);
         }
 
@@ -73,6 +78,16 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             int userName = UserService.GetUserCode(CurrentUser.Username);
             RequestCloseOuputDto result = await _closeRequestHandle.Handle(inputDto.Input, userName, cancellationToken);
             return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("previous-status")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<TrackNumberWithDescriptionInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SetPreviousStatus([FromBody] TrackNumberWithDescriptionInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int userName = UserService.GetUserCode(CurrentUser.Username);
+            await _previousStatusRequestHandler.Handle(inputDto, userName, cancellationToken);
+            return Ok(inputDto);
         }
     }
 }

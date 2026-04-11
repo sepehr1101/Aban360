@@ -50,7 +50,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertTracking);
             }
         }
-
+        public async Task UpdateBillId(TrackingBillIdUpdateDto inputDto)
+        {
+            string command = GetUpdateBillIdOnLatestCommand();
+            int recordCount = await _sqlConnection.ExecuteAsync(command, inputDto, _transaction);
+            if (recordCount < 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertBillId);
+            }
+        }
 
         private string GetInsertCommand()
         {
@@ -110,6 +118,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                     )
                     UPDATE FirstRecord
                     SET IsConsiderd = @isConsiderd";
+        }
+        private string GetUpdateBillIdOnLatestCommand()
+        {
+            return @"Update AbAndFazelab.dbo.Tracking 
+                    Set BillID=@billId
+                    Where TrackNumber=@trackNumber AND IsConsiderd=0";
         }
     }
 }
