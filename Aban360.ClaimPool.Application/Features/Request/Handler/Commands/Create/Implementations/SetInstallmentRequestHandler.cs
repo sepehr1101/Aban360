@@ -68,7 +68,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
             if (trackingInfo.StatusId != _calculationConfirmedStatus)
             {
-                throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
+                // throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
             }
 
             return trackingInfo;
@@ -91,14 +91,15 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         }
         private IEnumerable<InstallmentRequestDataOutputDto> GetInstallments(InstallmentRequestInputDto inputDto, IEnumerable<CalculationRequestDisplayDataOutputDto> kartInfo)
         {
+            int dailyInterval = 30 * inputDto.MonthlyDuration;
             var (payable, firstInstallmentWithoutZero, eachInstallmentAmountWithoutZero, remain) = GetInstallmentAmount(inputDto, kartInfo);
-            InstallmentRequestDataOutputDto firstInstallment = new(firstInstallmentWithoutZero, DateTime.Now.AddDays(_intervalDueDate).ToShortPersianDateString(), string.Empty);
+            InstallmentRequestDataOutputDto firstInstallment = new(firstInstallmentWithoutZero + remain, DateTime.Now.AddDays(dailyInterval).ToShortPersianDateString(), string.Empty);
             ICollection<InstallmentRequestDataOutputDto> data = new List<InstallmentRequestDataOutputDto>(); ;
             data.Add(firstInstallment);
             for (int i = 2; i <= inputDto.InstallmentCount; i++)
             {
-                string dueDateJalali = DateTime.Now.AddDays(i * _intervalDueDate).ToShortPersianDateString();
-                InstallmentRequestDataOutputDto otherinstallment = new(i == inputDto.InstallmentCount ? eachInstallmentAmountWithoutZero + remain : eachInstallmentAmountWithoutZero, dueDateJalali, string.Empty);
+                string dueDateJalali = DateTime.Now.AddDays(i * dailyInterval).ToShortPersianDateString();
+                InstallmentRequestDataOutputDto otherinstallment = new(eachInstallmentAmountWithoutZero, dueDateJalali, string.Empty);
                 data.Add(otherinstallment);
             }
 
