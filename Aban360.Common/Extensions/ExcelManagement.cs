@@ -508,7 +508,10 @@ namespace Aban360.Common.Extensions
                     { "LessThanContractualOrOlgo","کمتر از الگو/ظرفیت"},
                     { "Between1_2ContractualOrOlgo","بین 1 تا 2 برابر الگو/ظرفیت"},
                     { "Between2_3ContractualOrOlgo","بین 2 تا 3 برابر الگو/ظرفیت"},
-                    { "MoreThanContractualOrOlgo","بیش از 3 برابر الگو/ظرفیت"}
+                    { "MoreThanContractualOrOlgo","بیش از 3 برابر الگو/ظرفیت"},
+                    { "RequestCount","تعداد درخواست"},
+                    { "StatusId","کد وضعیت"},
+                    { "StatusTitle","وضعیت"},
             };
         }
     }

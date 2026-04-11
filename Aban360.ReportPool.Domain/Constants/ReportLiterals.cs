@@ -9,6 +9,7 @@
         public static string RegisterDate { get { return "تاریخ ثبت"; } }
         public static string ChangeDate { get { return "تاریخ تعویض"; } }
         public static string ByZone { get { return " بر اساس ناحیه "; } }
+        public static string ByRegion { get { return " بر اساس منطقه "; } }
         public static string ZoneTitle { get { return "ZoneTitle"; } }
         public static string ByDay { get { return " بر اساس روز "; } }
         public static string ByUsage { get { return " بر اساس کاربری "; } }
@@ -242,5 +243,10 @@
 
         public static string UspFinancial2 { get { return "گزارش درامد2"; } }
         public static string UspPayment2 { get { return "گزارش وصولی 2"; } }
+
+
+
+        //Request
+        public static string Tracking { get { return "درخواست ها"; }  }
     }
 }
