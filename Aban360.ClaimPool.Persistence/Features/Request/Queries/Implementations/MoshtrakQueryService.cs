@@ -1,6 +1,7 @@
 ﻿using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
@@ -47,6 +48,18 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             }
             return result;
         }
+        public async Task<IEnumerable<PreviousRequestGetDto>> GetAllRequestByCustomerNumber(ZoneIdAndCustomerNumber inputDto)
+        {
+            string dbName = GetDbName(inputDto.ZoneId);
+            string query = GetAllRequestByCustomerNumber(dbName);
+            IEnumerable<PreviousRequestGetDto> result = await _sqlReportConnection.QueryAsync<PreviousRequestGetDto>(query, inputDto);
+            if (!result.Any())
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidBillId);
+            }
+            return result;
+        }
+
         private string GetCondition(MoshtrakSearchTypeEnum searchType)
         {
             return searchType switch
@@ -57,7 +70,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                 _ => string.Empty,
             };
         }
-
         private string GetHasOpenRequestByNationalCodeQuery(string dbName)
         {
             return $@"Select TrackingNumber
@@ -185,6 +197,77 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	On noe_va=t7.C0
                     where {condition}
                     Order By date_ask Desc";
+        }
+        private string GetAllRequestByCustomerNumber(string dbName)
+        {
+            return $@"Select 
+                    	m.radif CustomerNumber,
+                    	m.town ZoneId,
+                    	t51.C2 ZoneTitle,
+                    	t46.C0 RegionId,
+                    	t46.C2 RegionTitle,
+                    	m.Cod_enshab UsageId,
+                    	t41.C1 UsageTitle,
+                    	m.TrackingNumber TrackNumber,
+                    	m.par_no StringTrackNumber,
+                    	m.date_ask RequestDateJalali,
+                    	m.date_sabt RegisterDateJalali,
+                    	m.s0,
+                    	m.s1,
+                    	m.s2,
+                    	m.s3,
+                    	m.s4,
+                    	m.s5,
+                    	m.s8,
+                    	m.s9,
+                    	m.s10,
+                    	m.s11,
+                    	m.s12,
+                    	m.s13,
+                    	m.s14,
+                    	m.s15,
+                    	m.s16,
+                    	m.s17,
+                    	m.s18,
+                    	m.s19,
+                    	m.s20,
+                    	m.s21,
+                    	m.s22,
+                    	m.s23,
+                    	m.s24,
+                    	m.s25,
+                    	m.s26,
+                    	m.s27,
+                    	m.s28,
+                    	m.s29,
+                    	m.s30,
+                    	m.s31,
+                    	m.s32,
+                    	m.s33,
+                    	m.s34,
+                    	m.s35,
+                    	m.s36,
+                    	m.s37,
+                    	m.s38,
+                    	m.s39,
+                    	m.s40,
+                    	m.s41,
+                    	m.s42,
+                    	m.s43,
+                    	m.s44,
+                    	m.s45,
+                    	m.s46,
+                    	m.s47,
+                    	m.s48
+                    From [{dbName}].dbo.moshtrak m
+                    Join [Db70].dbo.T51 t51 
+                    	ON m.town=t51.C0
+                    Join [Db70].dbo.T46 t46 
+                    	ON t51.C1=t46.C0
+                    Join [Db70].dbo.T41 t41 
+                    	ON m.cod_enshab=t41.C0
+                    Where m.radif=@customerNumber
+                    Order By m.date_ask";
         }
     }
 }

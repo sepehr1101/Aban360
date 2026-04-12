@@ -103,7 +103,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     Payable = s.Payable,
                     QueueNumber = s.QueueNumber,
                     BillId = memberInfo.BillId,
-                    PaymentId = TransactionIdGenerator.GeneratePaymentId(s.Payable,memberInfo.BillId,$"00{s.QueueNumber}"),
+                    PaymentId = TransactionIdGenerator.GeneratePaymentId(s.Payable, memberInfo.BillId, $"00{s.QueueNumber}"),
                     QueueNumberTitle = $"قسط {s.QueueNumber.NumberToText(Language.Persian)}"
                 };
             });
@@ -115,10 +115,28 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             ICollection<BillInstallmentCreateDto> allInstallments = new List<BillInstallmentCreateDto>();
             decimal[] rangeBarge = input.IsConfirm ? await _variabService.GetAndRenew(memberInfo.ZoneId, input.InstallmentCount) : Array.Empty<decimal>();
             DateTime currentDate = DateTime.Now;
-            long amount = memberInfo.LatestDebt / input.InstallmentCount;
-            long installmenAmount = (amount / 1000) * 1000;
 
-            for (int i = 1; i <= input.InstallmentCount; i++)
+            long firstPayment = (long)(memberInfo.LatestDebt * input.PrepaymentPercent / 100.0);
+            long otherPaymentTotal = memberInfo.LatestDebt - firstPayment;
+            long eachInstallmentWithZero = otherPaymentTotal / (input.InstallmentCount - 1);
+            long eachInstallmentWithoutZero = (eachInstallmentWithZero / 1000) * 1000;
+            long remained = otherPaymentTotal - (eachInstallmentWithoutZero * (input.InstallmentCount - 1));
+            firstPayment += remained;
+
+            allInstallments.Add(new BillInstallmentCreateDto()
+            {
+                ZoneId = memberInfo.ZoneId,
+                CustomerNumber = memberInfo.CustomerNumber,
+                ReadingNumber = memberInfo.ReadingNumber,
+                Barge = input.IsConfirm ? (int)rangeBarge[0] : 0,
+                DeadLineDateJalali = currentDate.AddDays(_deadLineDay).FormatDateToShortPersianDate(),
+                Payable = firstPayment,
+                UsageId = memberInfo.UsageId,
+                MeterDiameterId = memberInfo.MeterDiamterId,
+                QueueNumber = 1,
+                Operator = _operator
+            });
+            for (int i = 2; i <= input.InstallmentCount; i++)
             {
                 int deadLineDay = _deadLineDay * i;
                 BillInstallmentCreateDto ghestAdDto = new BillInstallmentCreateDto()
@@ -128,7 +146,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     ReadingNumber = memberInfo.ReadingNumber,
                     Barge = input.IsConfirm ? (int)rangeBarge[i - 1] : 0,
                     DeadLineDateJalali = currentDate.AddDays(deadLineDay).FormatDateToShortPersianDate(),
-                    Payable = installmenAmount,
+                    Payable = eachInstallmentWithoutZero,
                     UsageId = memberInfo.UsageId,
                     MeterDiameterId = memberInfo.MeterDiamterId,
                     QueueNumber = i,
