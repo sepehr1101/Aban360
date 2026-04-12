@@ -79,8 +79,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                 throw new InvalidTrackNumberException(ExceptionLiterals.NotFoundAnyOpenTrack);
             }
             return result;
-        }
-
+        }   
+        
         private string GetNewRequestByTrackNumberQuery()
         {
             return $@"Select	
