@@ -23,13 +23,15 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         private readonly ICloseRequestHandler _closeRequestHandle;
         private readonly IPreviousStatusRequestHandler _previousStatusRequestHandler;
         private readonly IGeneralInformationHandler _generalInformationRequestHandler;
+        private readonly IPreviousRequestGetByBillIdHandler _previousRequestGetByBillIdHandler;
         public RequestBranchController(
             IKartableRequestGetAllHandler requestKartableGetAllHandler,
             IDisplayRequestHandler displayRequestHandler,
             IMoshtrakRequestUpdateHandler moshtrakRequestUpdateHandler,
             ICloseRequestHandler closeRequestHandle,
             IPreviousStatusRequestHandler previousStatusRequestHandler,
-            IGeneralInformationHandler generalInformationRequestHandler)
+            IGeneralInformationHandler generalInformationRequestHandler,
+            IPreviousRequestGetByBillIdHandler previousRequestGetByBillIdHandler)
         {
             _requestKartableGetAllHandler = requestKartableGetAllHandler;
             _requestKartableGetAllHandler.NotNull(nameof(requestKartableGetAllHandler));
@@ -48,6 +50,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 
             _generalInformationRequestHandler = generalInformationRequestHandler;
             _generalInformationRequestHandler.NotNull(nameof(generalInformationRequestHandler));
+
+            _previousRequestGetByBillIdHandler = previousRequestGetByBillIdHandler;
+            _previousRequestGetByBillIdHandler.NotNull(nameof(previousRequestGetByBillIdHandler));
         }
 
 
@@ -104,7 +109,16 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> SetPreviousStatus(Guid trackId, CancellationToken cancellationToken)
         {
             int userName = UserService.GetUserCode(CurrentUser.Username);
-            GeneralRequestDataOutputDto result= await _generalInformationRequestHandler.Handle(trackId,  cancellationToken);
+            GeneralRequestDataOutputDto result = await _generalInformationRequestHandler.Handle(trackId, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("prvious/{billId}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<PreviousRequestDataOutputDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetPreviousRequests(string billId, CancellationToken cancellationToken)
+        {
+            IEnumerable<PreviousRequestDataOutputDto> result = await _previousRequestGetByBillIdHandler.Handle(billId, cancellationToken);
             return Ok(result);
         }
     }
