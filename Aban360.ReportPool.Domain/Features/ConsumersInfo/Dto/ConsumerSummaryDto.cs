@@ -12,7 +12,7 @@
         public string Address { get; set; } = default!;
         public string? CounterState { get; set; }
         public string? CounterStatus { get; set; }
-        public short ContractualCapacity { get; set; }
+        public int ContractualCapacity { get; set; }
         public short HouseholdNumber { get; set; }
         public short UnitDomesticWater { get; set; }
         public short UnitCommercialWater { get; set; }

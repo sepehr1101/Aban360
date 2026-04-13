@@ -80,7 +80,14 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             }
             return result;
         }   
-        
+        public async Task<IEnumerable<UnconfirmedRequestDataOutputDto>> GetUnconfirmedRequestByZoneId(int zoneId)
+        {
+            string dbName=GetDbName(zoneId);
+            string query = GetUnconfirmedRequestByZoneIdQuery(dbName);
+            IEnumerable<UnconfirmedRequestDataOutputDto> result = await _sqlReportConnection.QueryAsync<UnconfirmedRequestDataOutputDto>(query, new { zoneId});
+            return result;
+        }
+
         private string GetNewRequestByTrackNumberQuery()
         {
             return $@"Select	
@@ -259,6 +266,56 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                      	t.DateTimeJalali>='1404/07/01' AND
                     	t.Status IN (90003)
                     Order by sg.Title,t.DateAndTime desc";
+        }
+        private string GetUnconfirmedRequestByZoneIdQuery(string dbName)
+        {
+            return $@";With AllTracking  As(
+                    	Select 
+                    		*,
+                    		Rn=Row_Number() Over(Partition By t.TrackNumber Order By t.DateAndTime Desc)
+                    	From AbAndFazelab.dbo.Tracking t
+                    	Where t.ZoneID=@zoneId 
+                    ),
+                    Karts As(
+                    	Select 
+                    		k.par_no,
+                    		MAX(k.total) Total
+                    	From [{dbName}].dbo.kart k
+                    	Group By k.par_no
+                    )
+                    Select 
+                    	t46.C0 RegionId,
+                    	t46.C2 RegionTitle,
+                    	t.ZoneID,
+                    	t51.C2 ZoneTitle,
+                    	t.TrackNumber,
+                    	t.BillID,
+                    	k.Total Amount,
+                    	m.radif CustomerNumber,
+                    	TRIM(m.name) FirstName,
+                    	TRIM(m.family) Surname,
+                    	TRIM(m.name)+' '+TRIM(m.family) FullName,
+                    	TRIM(m.meli_cod) NationalCode,
+                    	TRIM(m.mobile) MobileNumber,
+                    	TRIM(m.phone_no) PhoneNumber,
+                    	TRIM(m.post_cod) PostalCode,
+                    	TRIM(m.address) Address,
+                    	m.cod_enshab UsageId,
+                    	t41.C1 UsageTitle
+                    From AllTracking t
+                    Join [{dbName}].dbo.moshtrak m
+                    	ON t.TrackNumber=m.TrackingNumber
+                    Join karts k
+                    	ON m.par_no=k.par_no
+                    Join [Db70].dbo.T51 t51	
+                    	ON t.ZoneID=t51.C0
+                    Join [Db70].dbo.T46 t46	
+                    	ON t51.C1=t46.C0
+                    Join [Db70].dbo.T41 t41	
+                    	ON m.cod_enshab=t41.C0
+                    Where 
+                    	t.Rn=1 And 
+                    	t.Status=75";
         }
     }
 }
