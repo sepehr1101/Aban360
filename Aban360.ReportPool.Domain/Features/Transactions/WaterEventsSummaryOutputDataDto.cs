@@ -8,7 +8,7 @@
         public short OtherUnit { get; set; }
         public short EmptyUnit { get; set; }
         public short HouseholderNumber { get; set; }
-        public short ContractualCapacity { get; set; }
+        public int ContractualCapacity { get; set; }
         public short UsageSellId { get; set; }
         public short UsageConsumptionId { get; set; }
         public string UsageSellTitle { get; set; } = default!;

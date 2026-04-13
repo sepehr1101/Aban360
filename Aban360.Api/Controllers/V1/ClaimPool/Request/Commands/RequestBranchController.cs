@@ -108,7 +108,6 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<GeneralRequestDataOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SetPreviousStatus(Guid trackId, CancellationToken cancellationToken)
         {
-            int userName = UserService.GetUserCode(CurrentUser.Username);
             GeneralRequestDataOutputDto result = await _generalInformationRequestHandler.Handle(trackId, cancellationToken);
             return Ok(result);
         }
