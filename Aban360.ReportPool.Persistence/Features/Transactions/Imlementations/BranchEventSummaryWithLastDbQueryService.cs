@@ -113,7 +113,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	ON k.cod_enshab=t41.c0
                     Join [Db70].dbo.T15 t15  
                     	ON k.cod_takh=t15.c0
-                    Join [Db70].dbo.T100 t100
+                    Left Join [Db70].dbo.T100 t100
                     	ON k.noe_bed=t100.c0
                     Where	
                     	k.town=@zoneId AND
@@ -136,7 +136,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     From [{dbName}].dbo.vosolEN v
                     Join [Db70].dbo.T41 t41
                     	ON v.cod_enshab=t41.c0
-                    Join [Db70].dbo.T150 t150
+                    Left Join [Db70].dbo.T150 t150
                     	ON v.type_pay collate Arabic_CI_AS=t150.c1
                     	Where 
                     	v.town=@zoneId AND

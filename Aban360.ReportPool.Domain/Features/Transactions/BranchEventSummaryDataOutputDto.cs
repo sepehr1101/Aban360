@@ -11,7 +11,7 @@
         public long Remained { get; set; }
         public string BankDateJalali { get; set; }
         public string BankName { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public int BankCode { get; set; }
         public long DiscountAmount { get; set; }
         public string DiscountTitle { get; set; }

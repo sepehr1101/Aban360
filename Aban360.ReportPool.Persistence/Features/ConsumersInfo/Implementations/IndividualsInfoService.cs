@@ -62,6 +62,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	c.FamilyCount AS HouseholdNumber,
                     	0 AS NumberOfPeople,
                     	c.DiscountTypeTitle AS DiscountType,
+						c.DiscountTypeId,
+						c.BlockCode,
                     	1 AS IsOwnerAgent
                     from [CustomerWarehouse].dbo.Clients c
                     where c.BillId=@billId

@@ -1,9 +1,12 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Db.QueryServices;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
+using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 {
@@ -41,6 +44,16 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             int examinerCode = UserService.GetUserCode(CurrentUser.Username);
             await _setAssessmentResultHandler.Handle(inputDto, examinerCode, cancellationToken);
             return Ok(inputDto);
+        }
+
+        [HttpPost]
+        [Route("result-sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetResultSti([FromBody] AssessmentResultInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int reportCode = 2021;
+            JsonReportId reportId = await JsonOperation.ExportToJson(inputDto, cancellationToken, reportCode);
+            return Ok(reportId);
         }
 
         [HttpPost]

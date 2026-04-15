@@ -13,6 +13,8 @@
         public short HouseholdNumber { get; set; }
         public short NumberOfPeople { get; set; }//
         public string DiscountType { get; set; }
+        public int DiscountTypeId { get; set; }
+        public string? BlockCode { get; set; }
         public bool IsOwnerAgent { get; set; }//
     }
 }
