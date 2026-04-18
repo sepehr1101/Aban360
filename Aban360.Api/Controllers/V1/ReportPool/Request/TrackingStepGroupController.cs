@@ -11,11 +11,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aban360.Api.Controllers.V1.ReportPool.Request
 {
     [Route("v1/tracking-step-group")]
-    public class TrackingStrepGroupController : BaseController
+    public class TrackingStepGroupController : BaseController
     {
         private readonly ITrackingStepGroupHandler _trackingStepGroupHandler;
         private readonly IReportGenerator _reportGenerator;
-        public TrackingStrepGroupController(
+        public TrackingStepGroupController(
             ITrackingStepGroupHandler trackingStepGroupHandler,
             IReportGenerator reportGenerator)
         {
