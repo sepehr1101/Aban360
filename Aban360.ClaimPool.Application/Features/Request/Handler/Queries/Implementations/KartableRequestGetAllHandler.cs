@@ -1,7 +1,9 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
+using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.QueryServices;
 using Aban360.Common.Extensions;
 using DNTPersianUtils.Core;
 
@@ -10,16 +12,23 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
     internal sealed class KartableRequestGetAllHandler : IKartableRequestGetAllHandler
     {
         private readonly ITrackingQueryService _trackingQueryService;
+        private readonly ICommonZoneService _commonZoneService;
         static string _title = "کارتابل درخواست‌ها";
-        public KartableRequestGetAllHandler(ITrackingQueryService trackingQueryService)
+        public KartableRequestGetAllHandler(
+            ITrackingQueryService trackingQueryService,
+            ICommonZoneService commonZoneService)
         {
             _trackingQueryService = trackingQueryService;
             _trackingQueryService.NotNull(nameof(trackingQueryService));
+            
+            _commonZoneService = commonZoneService;
+            _commonZoneService.NotNull(nameof(_commonZoneService));
         }
 
-        public async Task<ReportOutput<TrackingKartableHeaderOutputDto, TrackingKartableDataOutputDto>> Handle(CancellationToken cancellationToken)
+        public async Task<ReportOutput<TrackingKartableHeaderOutputDto, TrackingKartableDataOutputDto>> Handle(IAppUser currentUser, CancellationToken cancellationToken)
         {
-            IEnumerable<TrackingKartableDataOutputDto> data = await _trackingQueryService.GetAllOpenRequest();
+            IEnumerable<int> zoneIds = await _commonZoneService.GetMyZoneIds(currentUser);
+            IEnumerable<TrackingKartableDataOutputDto> data = await _trackingQueryService.GetAllOpenRequest(zoneIds);
             TrackingKartableHeaderOutputDto header = new()
             {
                 ZoneCount = data?.DistinctBy(d => d.ZoneId)?.Count() ?? 0,

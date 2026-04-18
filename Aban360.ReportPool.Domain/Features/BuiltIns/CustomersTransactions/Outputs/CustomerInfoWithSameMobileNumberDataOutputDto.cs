@@ -10,5 +10,6 @@
         public string FullName { get; set; }
         public int DeletionStateId { get; set; }
         public string DeletionStateTitle { get; set; }
+        public string? Address { get; set; }
     }
 }
