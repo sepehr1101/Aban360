@@ -40,7 +40,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	FirstName,
                     	SureName as Surname,
                     	DeletionStateId,
-                    	DeletionStateTitle
+                    	DeletionStateTitle,
+                        Address
                     From CustomerWarehouse.dbo.Clients
                     Where 
                     	ToDayJalali IS NULL AND

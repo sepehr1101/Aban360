@@ -60,14 +60,11 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             secondToLatest.StringTrackNumber = trackNumber.ToString().PadLeft(11, '0');
             return secondToLatest;
         }
-        public async Task<IEnumerable<TrackingKartableDataOutputDto>> GetAllOpenRequest()
+        public async Task<IEnumerable<TrackingKartableDataOutputDto>> GetAllOpenRequest(IEnumerable<int> zoneIds)
         {
             string query = GetAllOpenTrackingQuery();
-            IEnumerable<TrackingKartableDataOutputDto> result = await _sqlReportConnection.QueryAsync<TrackingKartableDataOutputDto>(query, null);
-            if (!result.Any())
-            {
-                throw new InvalidTrackNumberException(ExceptionLiterals.NotFoundAnyOpenTrack);
-            }
+            var @params = new { zoneIds };
+            IEnumerable<TrackingKartableDataOutputDto> result = await _sqlReportConnection.QueryAsync<TrackingKartableDataOutputDto>(query, @params);            
             return result;
         }
         public async Task<IEnumerable<TrackingKartableDataOutputDto>> GetAllArchivedRequest()
@@ -221,7 +218,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	t.BillId,
                     	t.NeighbourBillId,
                     	t.Status StatusId,
-                    	s.Description StatusTitle,
+                    	s.SummaryDescription StatusTitle,
                     	t.ServiceGroup_Fk ServiceGroupId,
                     	sg.Title ServiceGroupTitle,
                     	IIF( (format(GETDATE(),'yyyy-MM-dd')) = (Format(t.DateAndTime,'yyyy-MM-dd')),0,1) HasAttention,
@@ -236,7 +233,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     Where 
                     	t.IsConsiderd=0 AND 
                      	t.DateTimeJalali>='1404/07/01' AND
-                    	t.Status IN (0,10,15,20,50,60,65,70,75,110,150,90002)
+                    	t.Status IN (0,15,20,50,60,65,70, /*75,110,150,*/ 90002) AND
+                        t.ZoneId IN @zoneIds
                     Order by sg.Title,t.DateAndTime desc";
         }
         private string GetAllArchivedTrackingQuery()

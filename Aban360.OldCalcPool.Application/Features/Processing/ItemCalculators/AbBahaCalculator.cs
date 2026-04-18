@@ -25,6 +25,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
         const string date_1400_12_25 = "1400/12/25";
         const string date_1402_04_23 = "1402/04/23";
+        const string date_1402_12_29 = "1402/12/29";
         const string date_1403_06_25 = "1403/06/25";
         const string date_1403_09_13 = "1403/09/13";
         const string date_1403_12_30 = "1403/12/30";
@@ -339,13 +340,24 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return _4323_225000;//_4040_168110;
             }
-            else if (IsGtFromLqTo(nerkhDate2, date_1402_04_23, date_1403_06_25))
+
+            // در تاریخ 25 فروردین 1405 به 2 نرخ شکسته شد
+            /*else if (IsGtFromLqTo(nerkhDate2, date_1402_04_23, date_1403_06_25))
+            {
+                return _4323_225000;
+            }*/
+            else if (IsGtFromLqTo(nerkhDate2, date_1402_04_23, date_1402_12_29))
             {
                 return _4323_225000;
             }
+            else if (IsGtFromLqTo(nerkhDate2, date_1402_12_29, date_1403_06_25))
+            {
+                return (4323, 45000);//_4323_225000; 25 فروردین 1405
+            }
+
             else if (IsGtFromLqTo(nerkhDate2, date_1403_06_25, date_1403_09_13))
             {
-                return _4323_350000;
+                return (4323, 70000);//_4323_350000;//25 فروردین 1405
             }
             //به دو نرخ شکسته شد در تاریخ 5 اسفند 1404
             //else if (IsGtFromLqTo(nerkhDate2, date_1403_09_13, date_1404_02_31))
@@ -354,7 +366,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             //}
             else if (IsGtFromLqTo(nerkhDate2, date_1403_09_13, date_1403_12_30))
             {
-                return _7000_350000;
+                return (7000, 70000);//_7000_350000 (changed in 1405/01/25)
             }
             else if (IsGtFromLqTo(nerkhDate2, date_1403_12_30, date_1404_02_31))
             {
