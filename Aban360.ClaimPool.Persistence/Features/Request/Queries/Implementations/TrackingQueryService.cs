@@ -101,7 +101,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	t.InserrtedBy ,
                     	t.Description,
                     	t.NotificationMobile,
-                    	t.NeighbourBillId
+                    	t.NeighbourBillId,
+						t.RequestOrigin
                     From AbAndFazelab.dbo.Tracking t
                     Join AbAndFazelab.dbo.Status s
                     	ON t.Status=s.StatusID

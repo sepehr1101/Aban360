@@ -134,6 +134,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
         private string GetPersonalQuery(string dbName)//todo: DeletionStateTitle
         {
             return @$"Select 
+                        m.radif CustomerNumber,
+						m.town ZoneId,
 						TRIM(m.name) FirstName,
 						TRIM(m.family) Surname,
 						(TRIM(m.name)+' '+TRIM(m.family)) as FullName,
