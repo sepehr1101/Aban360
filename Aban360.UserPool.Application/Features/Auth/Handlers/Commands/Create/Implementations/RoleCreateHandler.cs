@@ -48,7 +48,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
                 throw new CustomValidationException(message);
             }//
 
-                Role role = _mapper.Map<Role>(createDto);
+            Role role = _mapper.Map<Role>(createDto);
             if (createDto.SelectedEndpointIds is not null && createDto.SelectedEndpointIds.Any())
             {
                 role.DefaultClaims = JsonOperation.Marshal(createDto.SelectedEndpointIds);
