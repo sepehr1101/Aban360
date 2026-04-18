@@ -17,5 +17,9 @@ namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Commands
             Description = description;
             UserId = userId;
         }
+        public TrackingInsertDuplicateDto()
+        {
+
+        }
     }
 }

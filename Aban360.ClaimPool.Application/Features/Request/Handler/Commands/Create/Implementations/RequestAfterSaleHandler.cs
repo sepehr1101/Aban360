@@ -45,7 +45,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             await InputValidation(input, cancellationToken);
             MemberInfoGetDto memberInfo = await OpenRequestValidation(input);
             string dbName = GetDbName(memberInfo.ZoneId);
-
+            
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
@@ -101,8 +101,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 UsageId = memberInfo.UsageId,
                 MeterDiameterId = memberInfo.MeterDiameterId,
                 BranchTypeId = memberInfo.UseStateId,
-                DiscountTypeId = inputDto.DiscountTypeId,
-                DiscountCount = inputDto.DiscountCount,
+                DiscountTypeId = memberInfo.DiscountId,
+                DiscountCount = memberInfo.DiscountCount,
                 PhoneNumber = memberInfo.PhoneNumber,
                 MobileNumber = memberInfo.MobileNumber,
                 NationalCode = memberInfo.NationalCode,
@@ -129,7 +129,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 PreViewId = string.Empty,//todo
                 CounterType = memberInfo.DeletionStateId,
                 InstallAgentState = 0,//todo
-                BlockId = string.IsNullOrWhiteSpace(inputDto.BlockCode) ? string.Empty : inputDto.BlockCode,
+                BlockId = string.IsNullOrWhiteSpace(memberInfo.BlockCode) ? string.Empty : memberInfo.BlockCode,
                 InsertWayTitle = _insertWayTitle,
                 PostalCode = memberInfo.PostalCode,
                 IsSpecial = memberInfo.IsSpecial,

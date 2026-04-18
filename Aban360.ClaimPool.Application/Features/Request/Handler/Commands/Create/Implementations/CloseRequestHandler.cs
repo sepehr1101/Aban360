@@ -17,6 +17,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
     {
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly ITrackingQueryService _trackingQueryService;
+        static int _removeRequestStatusId = 90000;
         public CloseRequestHandler(
             IMoshtrakQueryService moshtrakQueryService,
             ITrackingQueryService trackingQueryService,
@@ -30,13 +31,17 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             _trackingQueryService.NotNull(nameof(trackingQueryService));
         }
 
-        public async Task<RequestCloseOuputDto> Handle(int tracknumber,int userName ,CancellationToken cancellationToken)
+        public async Task<RequestCloseOuputDto> Handle(int tracknumber, int userName, CancellationToken cancellationToken)
         {
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetFirstStep(tracknumber);
             await Validation(trackingInfo.ZoneId, tracknumber);
             string dbName = GetDbName(trackingInfo.ZoneId);
+            string deleteDescription = $"حذف توسط {userName}";
+           
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, tracknumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
-            MoshtrakSabtUpdateDto moshtrakSabtUpdate = new(tracknumber, true, moshtrakInfo.Description +" - "+ $"حذف توسط {userName}");
+            MoshtrakSabtUpdateDto moshtrakSabtUpdate = new(tracknumber, true, $"{moshtrakInfo.Description} - {deleteDescription}");
+            TrackingInsertDuplicateDto trackingInsertDto = new(trackingInfo.TrackNumber, _removeRequestStatusId, deleteDescription, userName);
+
 
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -46,7 +51,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
+                    TrackingCommandService _trackingCommandService = new(connection, transaction);
                     MoshtrakCommandService _moshtrackCommandService = new(connection, transaction);
+
+                    await _trackingCommandService.InsertDuplicate(trackingInsertDto);
                     await _moshtrackCommandService.UpdateSabt(moshtrakSabtUpdate, dbName);
                     transaction.Commit();
                 }

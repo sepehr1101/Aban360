@@ -44,21 +44,25 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 moshtrakSearch = new(customerInfo.ZoneId, customerInfo.CustomerNumber, null, null);
                 moshtrakSearchType = MoshtrakSearchTypeEnum.ByCustomerNumber;
             }
-            IEnumerable<MoshtrakOutputDto> moshtrakInfo = await _moshtrakQueryService.Get(moshtrakSearch, moshtrakSearchType);
-            MoshtrakOutputDto latestRequest = moshtrakInfo.FirstOrDefault();
+            MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(moshtrakSearch, moshtrakSearchType)).FirstOrDefault();
+            TrackingOutputDto latestTrackingInfo=await  _trackingQueryService.GetLatest(moshtrakInfo.TrackNumber);
+            TrackingOutputDto firstTrackingInfo=await _trackingQueryService.GetFirstStep(moshtrakInfo.TrackNumber);
 
             return new TrackingDuplicateValidationOutputDto()
             {
-                ZoneId = latestRequest.ZoneId,
-                CustomerNumber = latestRequest.CustomerNumber,
-                NationalCode = latestRequest.NationalCode,
-                TrackNumber = latestRequest.TrackNumber,
-                FirstName = latestRequest.FirstName,
-                Surname = latestRequest.Surname,
-                FatherName = latestRequest.FatherName,
-                MobileNumber = latestRequest.MobileNumber,
-                RequestDateJalali = latestRequest.RequestDateJalali,
-                IsDuplicate = moshtrakInfo.Where(m => m.IsRegistered == false).Any(),
+                ZoneId = moshtrakInfo.ZoneId,
+                CustomerNumber = moshtrakInfo.CustomerNumber,
+                NationalCode = moshtrakInfo.NationalCode,
+                TrackNumber = moshtrakInfo.TrackNumber,
+                FirstName = moshtrakInfo.FirstName,
+                Surname = moshtrakInfo.Surname,
+                FatherName = moshtrakInfo.FatherName,
+                MobileNumber = moshtrakInfo.MobileNumber,
+                RequestDateJalali = moshtrakInfo.RequestDateJalali,
+                IsDuplicate = moshtrakInfo.IsRegistered ? false : true,
+                LatestStatusId=latestTrackingInfo.StatusId,
+                LatestStatusTitle = latestTrackingInfo.StatusTitle,
+                RequestOrigin=firstTrackingInfo.RequestOrigin
             };
         }
     }

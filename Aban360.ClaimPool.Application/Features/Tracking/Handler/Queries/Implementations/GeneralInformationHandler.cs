@@ -27,7 +27,7 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
 
         public async Task<GeneralRequestDataOutputDto> Handle(Guid trackId, CancellationToken cancellationToken)
         {
-            TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(trackId);
+            TrackingOutputDto trackingInfo = await _trackingQueryService.Get(trackId);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, trackingInfo.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
             MoshtrakServiceDto sData = GetSDto(moshtrakInfo);
 

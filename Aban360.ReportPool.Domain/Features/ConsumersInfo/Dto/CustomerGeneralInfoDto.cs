@@ -2,6 +2,8 @@
 {
     public record CustomerGeneralInfoDto
     {
+        public int CustomerNumber { get; set; }
+        public int ZoneId { get; set; }
         public string FirstName { get; set; }
         public string Surname { get; set; }
         public string FullName { get; set; }

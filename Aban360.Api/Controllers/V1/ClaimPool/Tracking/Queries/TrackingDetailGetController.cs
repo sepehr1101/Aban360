@@ -4,6 +4,8 @@ using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
+using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking.Queries
 {
@@ -17,6 +19,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking.Queries
         private readonly ICalculationConfirmedDetailHandler _calculationConfirmedDetailHandler;
         private readonly ICustomerNumberSpecifiedDetailHandler _customerNumberSpecifiedDetailHandler;
         private readonly IAmountConfirmedDetailHandler _amountConfirmedDetailHandler;
+        private readonly ITrackingDetailGetByIdHandler _trackingDetailGetByIdHandler;
         public TrackingDetailGetController(
             IRequestIsRegisteredDetailHandler requestIsRegisteredHandler,
             IExamineTimeSetDetailHandler examineTimeSetDetailHandler,
@@ -24,7 +27,8 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking.Queries
             ITrackNumberAndDescriptionDetailHandler trackNumberAndDescriptionDetailHandler,
             ICalculationConfirmedDetailHandler calculationConfirmedDetailHandler,
             ICustomerNumberSpecifiedDetailHandler customerNumberSpecifiedDetailHandler,
-            IAmountConfirmedDetailHandler amountConfirmedDetailHandler)
+            IAmountConfirmedDetailHandler amountConfirmedDetailHandler,
+            ITrackingDetailGetByIdHandler trackingDetailGetByIdHandler)
         {
             _requestIsRegisteredHandler = requestIsRegisteredHandler;
             _requestIsRegisteredHandler.NotNull(nameof(requestIsRegisteredHandler));
@@ -46,14 +50,18 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking.Queries
 
             _amountConfirmedDetailHandler = amountConfirmedDetailHandler;
             _amountConfirmedDetailHandler.NotNull(nameof(amountConfirmedDetailHandler));
+
+            _trackingDetailGetByIdHandler = trackingDetailGetByIdHandler;
+            _trackingDetailGetByIdHandler.NotNull(nameof(trackingDetailGetByIdHandler));
         }
 
         [HttpPost]
         [Route("display-detail")]
         public async Task<IActionResult> Detail([FromBody] TrackingDetailInputDto input, CancellationToken cancellationToken)
         {
-            TrackingDetailGetDto TrackDetailInput = GetTrackDetail(input);
-            switch (input.StatusId)
+            TrackingOutputDto trackingInfo = await _trackingDetailGetByIdHandler.Handle(input.TrackId, cancellationToken);
+            TrackingDetailGetDto TrackDetailInput = GetTrackDetail(trackingInfo);
+            switch (trackingInfo.StatusId)
             {
                 case 0://ثبت درخواست
                     {
@@ -70,7 +78,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking.Queries
                         SetExaminationResultOutputDto result = await _setExaminationResultDetailHandler.Handle(TrackDetailInput, cancellationToken);
                         return Ok(result);
                     }
-                case  65 or 90000 or 90003:// برگشت به محاسبه,آرشیو شده ,حذف درخواست
+                case 65 or 90000 or 90003:// برگشت به محاسبه,آرشیو شده ,حذف درخواست
                     {
                         TrackNumberAndDescriptionOutputDto result = await _trackNumberAndDescriptionDetailHandler.Handle(TrackDetailInput, cancellationToken);
                         return Ok(result);
@@ -93,9 +101,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking.Queries
                 default: throw new InvalidTrackNumberException(ExceptionLiterals.InvalidStateId);
             }
         }
-        private TrackingDetailGetDto GetTrackDetail(TrackingDetailInputDto input)
+        private TrackingDetailGetDto GetTrackDetail(TrackingOutputDto input)
         {
-            return new TrackingDetailGetDto(input.ZoneId, input.TrackId, input.TrackNumber);
+            return new TrackingDetailGetDto(input.ZoneId, input.TrackId, input.TrackNumber.ToString());
         }
     }
 }

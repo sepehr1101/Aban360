@@ -58,5 +58,9 @@
         public int Guild { get; set; }
         public string HouseholdDateJalali { get; set; }
         public string Plaque { get; set; }
+        public int DiscountCount { get; set; }
+        public int DiscountId { get; set; }
+        public string? DiscountTitle { get; set; }
+        public string? BlockCode { get; set; }
     }
 }
