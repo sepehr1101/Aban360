@@ -33,12 +33,24 @@ namespace Aban360.Common.Db.QueryServices
         {
             string dbName = GetDbName(input.ZoneId);
             string query = GetMemeberInfoQuery(dbName);
-            MemberInfoGetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<MemberInfoGetDto>(query, input);
-            if (result is null || result.ZoneId <= 0)
+            MemberInfoGetDto data = await _sqlReportConnection.QueryFirstOrDefaultAsync<MemberInfoGetDto>(query, input);
+            if (data is null || data.ZoneId <= 0)
             {
                 throw new InvalidBillIdException(ExceptionLiterals.InvalidBillId);
             }
-			return result;
+            MemberInfoGetDto result = await GetFromMoshtrak(data, dbName);
+            return result;
+        }
+        public async Task<MemberInfoGetDto> GetFromMoshtrak(MemberInfoGetDto input, string dbName)
+        {
+            string query = GetMoshtrakInfoQuery(dbName);
+            MoshtrakInfoGetDto moshtrakInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<MoshtrakInfoGetDto>(query, new { customerNumber = input.CustomerNumber });
+
+            input.DiscountCount = moshtrakInfo?.DiscountCount ?? 0;
+            input.DiscountId = moshtrakInfo?.DiscountId ?? 0;
+            input.DiscountTitle = moshtrakInfo?.DiscountTitle ?? string.Empty;
+            input.BlockCode = moshtrakInfo?.BlockCode ?? null;
+            return input;
         }
 
         private string GetZoneIdAndCustomerNumberQuery()
@@ -114,6 +126,18 @@ namespace Aban360.Common.Db.QueryServices
 					Where
 						m.town=@ZoneId AND
 						m.radif=@CustomerNumber";
+        }
+        private string GetMoshtrakInfoQuery(string dbName)
+        {
+            return $@"Select 
+						m.BLOCK_COD BlockCode,
+						m.ted_takh DiscountCount ,
+						m.cod_takh DiscountId ,
+						t15.C1 DiscountTitle
+					From [131301].dbo.moshtrak m
+					Left Join [Db70].dbo.T15 t15
+						ON m.cod_takh=t15.C0
+					where m.radif=@customerNumber";
         }
     }
 }

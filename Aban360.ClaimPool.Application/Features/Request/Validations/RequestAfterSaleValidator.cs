@@ -27,11 +27,16 @@ namespace Aban360.ClaimPool.Application.Features.Request.Validations
                 .NotNull().WithMessage(ExceptionLiterals.NotNull)
                 .MinimumLength(6).WithMessage(ExceptionLiterals.NotLessThan6);
 
-            RuleFor(f => f.DiscountTypeId)
+            RuleFor(f => f.PhoneNumber)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(f => f.DiscountCount)
+            RuleFor(f => f.NotificationNumber)
+                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                .NotNull().WithMessage(ExceptionLiterals.NotNull);
+
+            RuleFor(f => f.PostalCode)
+                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
         }
     }
