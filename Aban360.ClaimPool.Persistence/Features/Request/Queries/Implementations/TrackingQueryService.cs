@@ -37,9 +37,9 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             result.StringTrackNumber = trackNumber.ToString().PadLeft(11, '0');
             return result;
         }
-        public async Task<TrackingOutputDto> GetLatest(Guid trackId)
+        public async Task<TrackingOutputDto> Get(Guid trackId)
         {
-            string query = GetLatestByTrackIdQuery();
+            string query = GetByTrackIdQuery();
             TrackingOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<TrackingOutputDto>(query, new { trackId });
             if (result is null)
             {
@@ -113,7 +113,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	t.TrackNumber=@TrackNumber AND
                     	t.Status=0";
         }
-        private string GetLatestByTrackIdQuery()
+        private string GetByTrackIdQuery()
         {
             return $@"Select
                     	t.TrackID,

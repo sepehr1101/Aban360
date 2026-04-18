@@ -133,7 +133,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
         {
             return @"Select 
 						TrackNumber,
-						Description
+						TRIM(Description) Description
 					From AbAndFazelab.dbo.Tracking
 					Where TrackID=@trackId";
         }
@@ -175,7 +175,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
 						t5.C2 MeterDiamterTitle,
 						m.ted_takh DiscountCount,
 						TRIM(m.post_cod) PostalCode,
-						m.sharh Description,
+						TRIM(m.sharh) Description,
 					--adam takhfif ab
 					--adam takhfif fazelab
 					--shomare shenasname					

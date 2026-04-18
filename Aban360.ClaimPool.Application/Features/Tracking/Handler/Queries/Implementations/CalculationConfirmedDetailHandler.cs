@@ -240,7 +240,8 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
                 MeterDiamterTitle = result.MeterDiamterTitle,
                 PostalCode = result.PostalCode,
                 Description=result.Description,
-                CompanyServiceSelected = s.ToList()
+                CompanyServiceSelected = s.ToList(),
+
             };
         }
     }
