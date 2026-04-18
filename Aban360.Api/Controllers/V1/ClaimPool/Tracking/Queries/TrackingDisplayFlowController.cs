@@ -13,7 +13,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking.Queries
         private readonly ITrackingFlowGetHandler _trackingFlowHandler;
         public TrackingDisplayFlowController(ITrackingFlowGetHandler trackingFlowHandler)
         {
-            _trackingFlowHandler=trackingFlowHandler;
+            _trackingFlowHandler = trackingFlowHandler;
             _trackingFlowHandler.NotNull(nameof(trackingFlowHandler));
         }
 
@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<TrackingDisplayFlowHeaderOutputDto, TrackingDisplayFlowDateOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> DisplayFlow([FromBody] SearchByIdInput input, CancellationToken cancellationToken)
         {
-            ReportOutput<TrackingDisplayFlowHeaderOutputDto, TrackingDisplayFlowDateOutputDto> result = await _trackingFlowHandler.Handle(input.Id, cancellationToken);
+            ReportOutput<TrackingDisplayFlowHeaderOutputDto, TrackingDisplayFlowDateOutputDto> result = await _trackingFlowHandler.Handle(input.Id, CurrentUser, cancellationToken);
             return Ok(result);
         }
     }

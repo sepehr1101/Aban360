@@ -46,10 +46,12 @@
         public string DeletionStateTitle { get; set; }
         public int MunicipalityId { get; set; }
         public int ZoneId { get; set; }
-        public string? PostalCode{ get; set; }
+        public string? PostalCode { get; set; }
         public string? MobileNumber { get; set; }
         public string DiscountType { get; set; } = default!;
+        public int DiscountTypeId { get; set; } = default!;
         public string MeterDiameterTitle { get; set; } = default!;
         public string SiphonDiameterTitle { get; set; } = default!;
+        public string? BlockCode { get; set; }
     }
 }

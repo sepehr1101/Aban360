@@ -69,6 +69,11 @@ namespace Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.
             ICollection<Credit> credits = new List<Credit>();
             foreach (var item in userData)
             {
+                Console.WriteLine(item + " ->item , from:" + paymentIdBankFileInfo.FromIndex + ", to:" + paymentIdBankFileInfo.StringLenght);
+                if (item == "0025490504020297136157999110000012810112429708")
+                {
+                    long s = 5;
+                }
                 string paymentId = item.Substring(paymentIdBankFileInfo.FromIndex, paymentIdBankFileInfo.StringLenght);
                 var invoiceInstallment = await _InvoiceInstallmentGetByPaymentId.Handle(paymentId, cancellationToken);
 
@@ -115,7 +120,7 @@ namespace Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.
 
 
             BankFileValidation(bankFileStructure, firstSentence, BankStructureItemEnum.TotalPrice, creditsAmount, ExceptionLiterals.InvalidTotalPrice);
-            BankFileValidation(bankFileStructure,firstSentence, BankStructureItemEnum.RecordNO, credits.Count(), ExceptionLiterals.InvalidRecordCount);
+            BankFileValidation(bankFileStructure, firstSentence, BankStructureItemEnum.RecordNO, credits.Count(), ExceptionLiterals.InvalidRecordCount);
             BankFileValidation(bankFileStructure, firstSentence, BankStructureItemEnum.BankCode, bankId, ExceptionLiterals.InvalidBankId);
 
             if (bankFileStructure.Count() < 2)
@@ -127,7 +132,7 @@ namespace Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.
             uploader.Credits = credits;
             await _uploaderCommandService.Add(uploader);
         }
-        private void BankFileValidation(List<BankFileStructure> bankFileStructure,string text, BankStructureItemEnum bankStructureId,long credits,string errorMessage)
+        private void BankFileValidation(List<BankFileStructure> bankFileStructure, string text, BankStructureItemEnum bankStructureId, long credits, string errorMessage)
         {
             BankFileStructure singleBankFileStucture = bankFileStructure
                 .Where(b => b.BankStructureItemId == bankStructureId)

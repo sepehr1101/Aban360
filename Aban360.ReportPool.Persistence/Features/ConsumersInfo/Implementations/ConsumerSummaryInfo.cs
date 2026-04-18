@@ -147,9 +147,11 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     	c.PostalCode ,
                     	c.MobileNo AS MobileNumber,
                         c.DiscountTypeTitle AS DiscountType,
+                        c.DiscountTypeId AS DiscountTypeId,
                         c.WaterDiameterTitle AS MeterDiameterTitle,
                         c.MainSiphonTitle AS SiphonDiameterTitle,
-						c.DeletionStateTitle
+						c.DeletionStateTitle,
+                        c.BlockCode
                     from [CustomerWarehouse].dbo.Clients c
                     where c.BillId=@id 
                     and c.ToDayJalali is null";

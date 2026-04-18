@@ -26,6 +26,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private const int _operator = 5;
         private const int _deadLineDay = 30;
         private const long _debtAmountLimit = 1000000;
+        private const string _title = "اقساط آب‌بها";
         public BillInstallmentCreateHandler(
             IMembersQueryService membersQueryService,
             IVariabService variabService,
@@ -93,7 +94,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 BillId = memberInfo.BillId,
                 MobileNumber = memberInfo.MobileNumber,
                 NationalCode = memberInfo.NationalCode,
-                PhoneNumber = memberInfo.PhoneNumber
+                PhoneNumber = memberInfo.PhoneNumber,
+                Title = _title,
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                RecordCount = installment?.Count() ?? 0,
             };
             IEnumerable<BillInstallmentDataOutputDto> data = installment.Select(s =>
             {
@@ -108,7 +112,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 };
             });
 
-            return new ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto>("اقساط آب‌بها", header, data);
+            return new ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto>(_title, header, data);
         }
         private async Task<ICollection<BillInstallmentCreateDto>> GetInstallment(MemberGetDto memberInfo, BillInstallmentInputDto input)
         {

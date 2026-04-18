@@ -15,7 +15,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
         private readonly IGhestAbQueryService _ghestAbQueryService;
         private readonly ICustomerInfoDetailQueryService _customerInfoService;
         private readonly IMembersQueryService _membersQueryService;
-
+        static string _title = "اقساط آب‌بها";
         public BillInstallmentGetHandler(
             IGhestAbQueryService ghestAbQueryService,
             ICustomerInfoDetailQueryService customerInfoService,
@@ -55,11 +55,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                 BillId = memberInfo.BillId,
                 MobileNumber = memberInfo.MobileNumber,
                 NationalCode = memberInfo.NationalCode,
-                PhoneNumber = memberInfo.PhoneNumber
+                PhoneNumber = memberInfo.PhoneNumber,
+                Title=_title,
+                RecordCount=data?.Count() ?? 0,
+                ReportDateJalali=DateTime.Now.ToShortPersianDateString(),
             };
             data.ForEach(b => b.QueueNumberTitle = $"قسط {b.QueueNumber.NumberToText(Language.Persian)}");
 
-            return new ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentOutputDto>("اقساط آب‌بها", header, data);
+            return new ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentOutputDto>(_title, header, data);
         }
     }
 }
