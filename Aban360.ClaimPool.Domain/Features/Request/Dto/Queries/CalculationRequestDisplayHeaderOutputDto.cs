@@ -5,7 +5,7 @@
         public long Amount { get; set; }
         public long Discount { get; set; }
         public long Payable { get; set; }
-        public CalculationRequestDisplayHeaderOutputDto(long amount,long discount,long payable)
+        public CalculationRequestDisplayHeaderOutputDto(long amount, long discount, long payable)
         {
             Amount = amount;
             Discount = discount;
@@ -15,4 +15,4 @@
         {
         }
     }
-}   
+}

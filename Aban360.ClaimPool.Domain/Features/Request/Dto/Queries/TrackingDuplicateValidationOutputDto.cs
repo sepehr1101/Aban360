@@ -1,4 +1,6 @@
-﻿namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Queries
+﻿using Aban360.Common.BaseEntities;
+
+namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Queries
 {
     public record TrackingDuplicateValidationOutputDto
     {
@@ -14,7 +16,10 @@
         public bool IsDuplicate { get; set; }
 
         public string RequestOrigin { get; set; }
+        public int RequestOriginId { get; set; }
         public string LatestStatusTitle { get; set; }
         public int LatestStatusId { get; set; }
+
+        public IEnumerable<NumericDictionary> ServiceSelected { get; set; }
     }
 }

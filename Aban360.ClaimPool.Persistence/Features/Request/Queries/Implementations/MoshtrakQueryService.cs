@@ -46,6 +46,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidTrackNumber);
             }
+            foreach (var item in result)
+            {
+                if (item.TrackNumber == 0)
+                {
+                    throw new InvalidTrackingException(ExceptionLiterals.InvalidLastDbData(item.StringTrackNumber));
+                }
+            }
             return result;
         }
         public async Task<IEnumerable<PreviousRequestGetDto>> GetAllRequestByCustomerNumber(ZoneIdAndCustomerNumber inputDto)
@@ -105,6 +112,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	TRIM(post_cod)PostalCode,
                     	TRIM(NeighbourBillID) NeighbourBillId,
                     	TrackingNumber TrackNumber,
+                        par_no	StringTrackNumber,
                         cod_enshab UsageId,
 						t41.C1 UsageTitle,	
                         Sabt IsRegistered,

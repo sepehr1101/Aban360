@@ -22,7 +22,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
         public async Task<ExamineTimeSetOutputDto> GetExamineTimeSetDto(TrackingDetailGetDto inputDto)
         {
             string dbName = GetDbName(inputDto.ZoneId);
-            string query = GetExaminerResultQuery(dbName);
+            string query = GetExaminerSetTimeQuery(dbName);
             return await _sqlReportConnection.QueryFirstOrDefaultAsync<ExamineTimeSetOutputDto>(query, new { inputDto.TrackId });
         }
         public async Task<SetExaminationResultOutputDto> GetSetExaminationResultDto(TrackingDetailGetDto inputDto)
@@ -127,6 +127,22 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
 						On e.TrackNumber=m.TrackingNumber
 					Join [Db70].dbo.T64 t64
 						On e.ResultId=t64.C0
+					where e.TrackIdResult=@trackId";
+        }
+		private string GetExaminerSetTimeQuery(string dbName)
+        {
+            return $@"Select 
+						e.ExaminerCode AssessmentCode,
+						e.ExaminerName AssessmentName,
+						e.ExaminerMobile AssessmentMobile,
+						e.DayJalali AssessmentDayJalali,
+						(TRIM(m.name) +' '+ TRIM(m.family)) FullName,
+						m.TrackingNumber TrackNumber,
+						TRIM(m.Address) Address,
+						TRIM(m.mobile) MobileNumber
+					From AbAndFazelab.dbo.Examination e
+					Join [{dbName}].dbo.Moshtrak m
+						On e.TrackNumber=m.TrackingNumber
 					where e.TrackId=@trackId";
         }
         private string GetTrackNumberAndDescriptionQuery()

@@ -17,6 +17,7 @@
         public string? PostalCode { get; set; }
         public string? NeighbourBillId { get; set; }
         public int TrackNumber { get; set; }
+        public string StringTrackNumber { get; set; }
         public int UsageId { get; set; }
         public string UsageTitle { get; set; }
         public bool IsRegistered { get; set; }

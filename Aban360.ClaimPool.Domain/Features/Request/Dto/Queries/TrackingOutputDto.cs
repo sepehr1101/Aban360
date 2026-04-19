@@ -20,6 +20,7 @@
         public string NotificationMobile { get; set; }
         public string NeighbourBillId { get; set; }
         public string? Caller { get; set; }
+        public int RequestOriginId { get; set; }
         public string RequestOrigin { get; set; }
     }
 }

@@ -102,7 +102,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	t.Description,
                     	t.NotificationMobile,
                     	t.NeighbourBillId,
-						t.RequestOrigin
+						t.RequestOrigin RequestOriginId
                     From AbAndFazelab.dbo.Tracking t
                     Join AbAndFazelab.dbo.Status s
                     	ON t.Status=s.StatusID
@@ -133,7 +133,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	t.Description,
                     	t.NotificationMobile,
                     	t.NeighbourBillId,
-						t.Caller
+						t.Caller,
+						t.RequestOrigin RequestOriginId
                     From AbAndFazelab.dbo.Tracking t
                     Join AbAndFazelab.dbo.Status s
                     	ON t.Status=s.StatusID
@@ -164,7 +165,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	t.Description,
                     	t.NotificationMobile,
                     	t.NeighbourBillId,
-						t.Caller
+						t.Caller,
+						t.RequestOrigin RequestOriginId
                     From AbAndFazelab.dbo.Tracking t
                     Join AbAndFazelab.dbo.Status s
                     	ON t.Status=s.StatusID
@@ -196,7 +198,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	t.Description,
                     	t.NotificationMobile,
                     	t.NeighbourBillId,
-						t.Caller
+						t.Caller,
+						t.RequestOrigin RequestOriginId
                     From AbAndFazelab.dbo.Tracking t
                     Join AbAndFazelab.dbo.Status s
                     	ON t.Status=s.StatusID
