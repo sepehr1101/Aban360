@@ -77,7 +77,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
             return $@"Select 
                     	m.town ZoneId,
                     	t51.C2 ZoneTitle,
-                        IIF(m.radif=0, 0, 1) HasBillId,
+                        IIF(mem.radif IS NULL, 0, 1) HasBillId,
                     	m.radif CustomerNumber,
                     	TRIM(m.name) FirstName,
                     	TRIM(m.family) Surname,
@@ -86,6 +86,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
                     From [{dbName}].dbo.moshtrak m
                     Left join [Db70].dbo.t51 t51
                     	ON m.town=t51.C0
+                    LEFT JOIN [{dbName}].dbo.members mem
+						ON m.town=mem.town AND m.radif=mem.radif
                     where m.trackingNumber=@trackNumber	";
         }
         private string GetDuplicateQuery()

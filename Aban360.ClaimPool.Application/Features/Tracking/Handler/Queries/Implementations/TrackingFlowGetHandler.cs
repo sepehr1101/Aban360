@@ -5,9 +5,7 @@ using Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.QueryServices;
-using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using Aban360.Common.Literals;
 
 namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implementations
 {
