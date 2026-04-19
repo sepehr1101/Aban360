@@ -21,10 +21,6 @@ namespace Aban360.UserPool.Application.Features.Auth.Validations
                 .NotNull().WithMessage(ExceptionLiterals.NotNull)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .MaximumLength(255).WithMessage("Not More than 255");
-
-            RuleFor(u => u.SensitiveInfo)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
         }
     }
 }
