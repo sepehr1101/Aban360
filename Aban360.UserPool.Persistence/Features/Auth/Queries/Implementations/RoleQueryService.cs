@@ -25,6 +25,12 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
                 .Where(r => r.ValidTo == null)
                 .ToListAsync();
         }
+        public async Task<ICollection<Role>> Get(int[] ids)
+        {
+            return await _roles
+                .Where(r => ids.Contains(r.Id) && r.ValidTo == null)
+                .ToListAsync();
+        }
         public async Task<Role> Get(int id)
         {
             return await _uow.FindOrThrowAsync<Role>(id);

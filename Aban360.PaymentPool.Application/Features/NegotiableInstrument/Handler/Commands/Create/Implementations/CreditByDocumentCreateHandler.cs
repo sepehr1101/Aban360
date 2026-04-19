@@ -6,12 +6,10 @@ using Aban360.PaymentPool.Application.Exceptions;
 using Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Commands.Create.Contracts;
 using Aban360.PaymentPool.Domain.Constansts;
 using Aban360.PaymentPool.Domain.Features.NegotiableInstrument.Entities;
-using Aban360.PaymentPool.Domain.Features.Remuneration.Entities;
 using Aban360.PaymentPool.Persistence.Features.NegotiableInstrument.Commands.Contracts;
 using Aban360.PaymentPool.Persistence.Features.NegotiableInstrument.Queries.Contracts;
 using AutoMapper;
 using System.Text;
-using System.Threading;
 
 namespace Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Commands.Create.Implementations
 {
@@ -64,7 +62,7 @@ namespace Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.
 
             uploader.Credits = credits;
             await _uploaderCommandService.Add(uploader);
-            //insert F_Vosol
+            //Crete F_Vosol in CustomerWarehouse --then-->  insert F_Vosol
         }
         private async Task<(BankFileStructure, List<BankFileStructure>, string?)> GetBankFileStructure(Guid documentId, CancellationToken cancellationToken)
         {

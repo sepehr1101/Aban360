@@ -8,6 +8,7 @@ using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Constants.Enums;
 using Aban360.UserPool.Persistence.Features.Auth.Commands.Contracts;
+using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts;
 using AutoMapper;
 using FluentValidation;
@@ -24,6 +25,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IZoneCountQueryAddhoc _zoneCountQueryAddhoc;
         private readonly IEndpointQueryService _endpointQueryService;
+        private readonly IRoleQueryService _roleQueryService;
         private readonly IValidator<UserCreateDto> _userValidator;
 
         public UserCreateHandler(
@@ -34,6 +36,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
             IHttpContextAccessor contextAccessor,
             IZoneCountQueryAddhoc zoneCountQueryAddhoc,
             IEndpointQueryService endpointQueryService,
+            IRoleQueryService roleQueryService,
             IValidator<UserCreateDto> userValidator)
         {
             _userCommandService = userCommandService;
@@ -57,6 +60,9 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
             _endpointQueryService = endpointQueryService;
             _endpointQueryService.NotNull(nameof(endpointQueryService));
 
+            _roleQueryService = roleQueryService;
+            _roleQueryService.NotNull(nameof(roleQueryService));
+
             _userValidator = userValidator;
             _userValidator.NotNull(nameof(userValidator));
         }
@@ -69,17 +75,17 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
                 throw new CustomValidationException(message);
             }//
 
-
             LogInfo logInfo = DeviceDetection.GetLogInfo(_contextAccessor.HttpContext.Request);
             string logInfoString = JsonOperation.Marshal(logInfo);
             Guid operationGroupId = Guid.NewGuid();
 
             int zoneCount = await _zoneCountQueryAddhoc.GetCount(userCreateDto.SelectedZoneIds, cancellationToken);
-            List<string> endpointValue = await _endpointQueryService.GetAuthValue(userCreateDto.SelectedEndpointIds.ToArray());
-            Validate(zoneCount,userCreateDto.SelectedZoneIds.Count(),endpointValue.Count(), userCreateDto.SelectedEndpointIds.Count());
+            //List<string> endpointValue = await _endpointQueryService.GetAuthValue(userCreateDto.SelectedEndpointIds.ToArray());
+            List<string> endpointValue = await GetEndpointsValue(userCreateDto);
+            Validate(zoneCount, userCreateDto.SelectedZoneIds.Count(), endpointValue.Count(), userCreateDto.SelectedEndpointIds.Count());
 
-            ICollection<UserClaim> zones = CreateUserClaim(userCreateDto.SelectedZoneIds.Select(x=>x.ToString()).ToList(), ClaimType.ZoneId, logInfoString, operationGroupId, operationGroupId);
-            ICollection<UserClaim> endpionts = CreateUserClaim(endpointValue,ClaimType.Endpoint, logInfoString, operationGroupId, operationGroupId);
+            ICollection<UserClaim> zones = CreateUserClaim(userCreateDto.SelectedZoneIds.Select(x => x.ToString()).ToList(), ClaimType.ZoneId, logInfoString, operationGroupId, operationGroupId);
+            ICollection<UserClaim> endpionts = CreateUserClaim(endpointValue, ClaimType.Endpoint, logInfoString, operationGroupId, operationGroupId);
             ICollection<UserClaim> defaultZoneId = CreateUserClaim(new List<string> { userCreateDto.SelectedZoneIds.Select(x => x.ToString()).First() }, ClaimType.DefaultZoneId, logInfoString, operationGroupId, operationGroupId);
             List<UserClaim> userCliams = zones.Union(endpionts).ToList();
 
@@ -91,6 +97,25 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
             await _userCommandService.Add(user);
             await _userClaimCommandService.Add(userCliams);
             await _userRoleCommandService.Add(userRoles);
+        }
+        private async Task<List<string>> GetEndpointsValue(UserCreateDto userCreateDto)
+        {
+            List<string> endpointValue = await _endpointQueryService.GetAuthValue(userCreateDto.SelectedEndpointIds.ToArray());
+            ICollection<Role> selectedRoles = await _roleQueryService.Get(userCreateDto.SelectedRoleIds);
+            foreach (Role role in selectedRoles)
+            {
+                if (!string.IsNullOrWhiteSpace(role.DefaultClaims))
+                {
+                    int[] roleEndpiontsId = JsonOperation.Unmarshal<int[]>(role.DefaultClaims);//check
+                    List<string> roleEndpointsValue = await _endpointQueryService.GetAuthValue(roleEndpiontsId);
+                    if (roleEndpointsValue.Any())
+                    {
+                        endpointValue = endpointValue.Union(roleEndpointsValue).ToList();
+                    }
+                }
+            }
+
+            return endpointValue;
         }
     }
 }

@@ -5,6 +5,7 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts
     public interface IRoleQueryService
     {
         Task<ICollection<Role>> Get();
+        Task<ICollection<Role>> Get(int[] ids);
         Task<Role> Get(int id);
     }
 }

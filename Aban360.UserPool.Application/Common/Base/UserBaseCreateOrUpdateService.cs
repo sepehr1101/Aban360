@@ -22,7 +22,7 @@ namespace Aban360.UserPool.Application.Common.Base
         }
         internal void Validate(int zoneCount, int dtoZoneCount, int endpointCount, int dtoEndpointCount)
         {
-            if (zoneCount != dtoZoneCount || endpointCount != dtoEndpointCount)
+            if (zoneCount != dtoZoneCount || endpointCount < dtoEndpointCount)
             {
                 throw new InvalidIdException();
             }
