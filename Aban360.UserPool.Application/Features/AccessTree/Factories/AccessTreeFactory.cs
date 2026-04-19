@@ -25,7 +25,7 @@ namespace Aban360.UserPool.Application.Features.AccessTree.Factories
             {
                 if (!subModuleDict.TryGetValue(endpoint.SubModuleId, out var subModuleTree))
                 {
-                    subModuleTree = new SubModuleValueKey(endpoint.Id, endpoint.Title, endpoint.Style, new List<EndpointValueKey>());
+                    subModuleTree = new SubModuleValueKey(endpoint.SubModule.Id, endpoint.SubModule.Title, endpoint.Style, new List<EndpointValueKey>());
                     subModuleDict[endpoint.SubModuleId] = subModuleTree;
                 }
                 if (!moduleDict.TryGetValue(endpoint.SubModule.ModuleId, out var moduleTree))
