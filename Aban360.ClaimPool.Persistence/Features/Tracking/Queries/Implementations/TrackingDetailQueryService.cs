@@ -52,12 +52,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
         public async Task<AmountConfirmedOutputDto> GetAmountConfirmed(TrackingDetailGetDto inputDto)
         {
             string dbName = GetDbName(inputDto.ZoneId);
-            string isRegisterQuery = GetIsRegisterAmountQuery(dbName);
-            bool isRegister = await _sqlReportConnection.QueryFirstOrDefaultAsync<bool>(isRegisterQuery, new { inputDto.TrackNumber });
 
-            string tableName = isRegister ? "karten75" : "kart";
-            string offeringQuery = GetRegisterOfferingQuery(dbName, tableName);
-            IEnumerable<OfferingAmountOutputDto> offerings = await _sqlReportConnection.QueryAsync<OfferingAmountOutputDto>(offeringQuery, new { inputDto.TrackNumber });
+			IEnumerable<OfferingAmountOutputDto> offerings = await GetOfferings("karten75", dbName, inputDto.TrackNumber);
+			if (!offerings.Any())
+			{
+               offerings = await GetOfferings("kart", dbName, inputDto.TrackNumber);
+            }
 
             string installmentQuery = GetIstallmentAndpaymentQuery(dbName);
             IEnumerable<InstallmentAndPaymentOutputDto> installments = await _sqlReportConnection.QueryAsync<InstallmentAndPaymentOutputDto>(installmentQuery, new { inputDto.TrackNumber });
@@ -76,7 +76,11 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
                 IstallmentAndPaymentAmount = installments?.Sum(x => x.Amount) ?? 0,
             };
         }
-
+        private async Task<IEnumerable<OfferingAmountOutputDto>> GetOfferings(string tableName, string dbName,string trackNumber)
+        {
+            string offeringQuery = GetRegisterOfferingQuery(dbName, tableName);
+            return await _sqlReportConnection.QueryAsync<OfferingAmountOutputDto>(offeringQuery, new { trackNumber });
+        }
         private string GetRequestIsRegisteredQuery(string dbName)
         {
             return @$"Select 
@@ -129,7 +133,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
 						On e.ResultId=t64.C0
 					where e.TrackIdResult=@trackId";
         }
-		private string GetExaminerSetTimeQuery(string dbName)
+        private string GetExaminerSetTimeQuery(string dbName)
         {
             return $@"Select 
 						e.ExaminerCode AssessmentCode,
@@ -237,15 +241,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
 					Join [{dbName}].dbo.Moshtrak m
 						ON t.TrackNumber=m.TrackingNumber
 					Where t.TrackID=@trackId";
-        }
-        private string GetIsRegisterAmountQuery(string dbName)
-        {
-            return $@"Select 1
-					From [{dbName}].dbo.moshtrak
-					Where
-						TrackingNumber=@trackNumber AND
-						sabt = 1 AND
-						LEN(TRIM(date_sabt))=10";
         }
         private string GetRegisterOfferingQuery(string dbName, string tableName)
         {
