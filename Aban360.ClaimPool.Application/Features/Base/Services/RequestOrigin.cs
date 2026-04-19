@@ -1,6 +1,6 @@
 ﻿using Aban360.Common.BaseEntities;
 
-namespace Aban360.ClaimPool.Application.Features.Base
+namespace Aban360.ClaimPool.Application.Features.Base.Services
 {
     public static class RequestOrigin
     {

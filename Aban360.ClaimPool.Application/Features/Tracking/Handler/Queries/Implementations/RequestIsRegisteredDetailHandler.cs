@@ -1,7 +1,9 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations;
 using Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Domain.Features.Tracking.Dto;
+using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Contracts;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
@@ -13,13 +15,18 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
     internal sealed class RequestIsRegisteredDetailHandler : IRequestIsRegisteredDetailHandler
     {
         private readonly ITrackingDetailQueryService _trackingDetailQueryService;
+        private readonly ITrackingQueryService _trackingQueryService;
         private readonly IValidator<TrackingDetailGetDto> _validator;
         public RequestIsRegisteredDetailHandler(
             ITrackingDetailQueryService trackingDetailQueryService,
+            ITrackingQueryService trackingQueryService,
             IValidator<TrackingDetailGetDto> validator)
         {
             _trackingDetailQueryService = trackingDetailQueryService;
             _trackingDetailQueryService.NotNull(nameof(trackingDetailQueryService));
+
+            _trackingQueryService = trackingQueryService;
+            _trackingQueryService.NotNull(nameof(trackingQueryService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -29,7 +36,10 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
         {
             await Validation(inputDto, cancellationToken);
             RequestIsRegisterdDto data = await _trackingDetailQueryService.GetRequestIsRegistered(inputDto);
-            MoshtrakServiceDto sData=GetSDto(data);
+            TrackingOutputDto latestTrackingInfo = await _trackingQueryService.GetLatest(data.TrackNumber);
+            data.BillId = latestTrackingInfo.BillId ?? string.Empty;
+
+            MoshtrakServiceDto sData = GetSDto(data);
 
             IEnumerable<NumericDictionary> s = MoshtrakService.GetServicesSelectedDto(sData);
             RequestIsRegisterdOutputDto result = GetOutput(data, s);

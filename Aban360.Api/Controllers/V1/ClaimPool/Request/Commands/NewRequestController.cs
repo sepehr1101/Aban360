@@ -14,10 +14,10 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
     public class NewRequestController : BaseController
     {
         private readonly IRequestNewBranchHandler _requestNewBranchHandler;
-        private readonly IRequestDuplicateValidation _requestDuplicateValidation;
+        private readonly IRequestDuplicateValidationHandler _requestDuplicateValidation;
         public NewRequestController(
             IRequestNewBranchHandler requestNewBranchHandler,
-            IRequestDuplicateValidation requestDuplicateValidation)
+            IRequestDuplicateValidationHandler requestDuplicateValidation)
         {
             _requestNewBranchHandler = requestNewBranchHandler;
             _requestNewBranchHandler.NotNull(nameof(requestNewBranchHandler));

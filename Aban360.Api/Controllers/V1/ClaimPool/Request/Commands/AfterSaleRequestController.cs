@@ -14,10 +14,10 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
     public class AfterSaleRequestController : BaseController
     {
         private readonly IRequestAfterSaleHandler _requestAfterSaleHandler;
-        private readonly IRequestDuplicateValidation _requestDuplicateValidation;
+        private readonly IRequestDuplicateValidationHandler _requestDuplicateValidation;
         public AfterSaleRequestController(
             IRequestAfterSaleHandler requestAfterSaleHandler,
-            IRequestDuplicateValidation requestDuplicateValidation)
+            IRequestDuplicateValidationHandler requestDuplicateValidation)
         {
             _requestAfterSaleHandler = requestAfterSaleHandler;
             _requestAfterSaleHandler.NotNull(nameof(requestAfterSaleHandler));
