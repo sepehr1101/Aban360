@@ -1,4 +1,5 @@
-﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
+﻿using Aban360.ClaimPool.Application.Features.Base;
+using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
@@ -45,8 +46,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 moshtrakSearchType = MoshtrakSearchTypeEnum.ByCustomerNumber;
             }
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(moshtrakSearch, moshtrakSearchType)).FirstOrDefault();
-            TrackingOutputDto latestTrackingInfo=await  _trackingQueryService.GetLatest(moshtrakInfo.TrackNumber);
-            TrackingOutputDto firstTrackingInfo=await _trackingQueryService.GetFirstStep(moshtrakInfo.TrackNumber);
+            TrackingOutputDto latestTrackingInfo = await _trackingQueryService.GetLatest(moshtrakInfo.TrackNumber);
+            TrackingOutputDto firstTrackingInfo = await _trackingQueryService.GetFirstStep(moshtrakInfo.TrackNumber);
+            NumericDictionary? requestOrigin = RequestOrigin.GetRequestOrigin(firstTrackingInfo.RequestOriginId);
 
             return new TrackingDuplicateValidationOutputDto()
             {
@@ -60,9 +62,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 MobileNumber = moshtrakInfo.MobileNumber,
                 RequestDateJalali = moshtrakInfo.RequestDateJalali,
                 IsDuplicate = moshtrakInfo.IsRegistered ? false : true,
-                LatestStatusId=latestTrackingInfo.StatusId,
+                LatestStatusId = latestTrackingInfo.StatusId,
                 LatestStatusTitle = latestTrackingInfo.StatusTitle,
-                RequestOrigin=firstTrackingInfo.RequestOrigin
+                RequestOriginId = firstTrackingInfo.RequestOriginId,
+                RequestOrigin = requestOrigin?.Title ?? string.Empty,
             };
         }
     }

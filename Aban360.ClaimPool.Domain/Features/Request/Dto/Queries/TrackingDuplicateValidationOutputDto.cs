@@ -14,6 +14,7 @@
         public bool IsDuplicate { get; set; }
 
         public string RequestOrigin { get; set; }
+        public int RequestOriginId { get; set; }
         public string LatestStatusTitle { get; set; }
         public int LatestStatusId { get; set; }
     }
