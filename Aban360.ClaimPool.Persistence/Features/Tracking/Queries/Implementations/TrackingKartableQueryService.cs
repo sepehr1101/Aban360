@@ -77,7 +77,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
             return $@"Select 
                     	m.town ZoneId,
                     	t51.C2 ZoneTitle,
-                        IIF(mem.radif IS NULL, 0, 1) HasBillId,
+                        IIF(mem.radif IS NULL or mem.radif=0, 0, 1) HasBillId,
                     	m.radif CustomerNumber,
                     	TRIM(m.name) FirstName,
                     	TRIM(m.family) Surname,

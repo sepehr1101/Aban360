@@ -21,6 +21,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Commands
         [HttpPost]
         [Route("add-file")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AddFileDto>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> AddFile([FromForm]AddFormFileInput input, CancellationToken cancellation)
         {
             AddFileDto result = await _addFileHandler.Handle(input, cancellation);

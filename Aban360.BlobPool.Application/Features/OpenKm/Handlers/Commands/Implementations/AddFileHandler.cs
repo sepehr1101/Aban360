@@ -50,6 +50,10 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
 
         private async Task<AddFileDto> Handle(string billId, long? trackNumber, int documentTypeId, StreamContent content, string name, CancellationToken cancellationToken)
         {
+            if(string.IsNullOrWhiteSpace(billId) && !trackNumber.HasValue)
+            {
+                throw new BaseException("خطای پارامتر، شماره پیگیری و شناسه قبض هر دو بدون مقدار هستند");
+            }
             int documentTypeValue = await _matadataService.GetFileValue(documentTypeId);
             var (folderName, filePath) = GetFoldernameAndPath(billId, trackNumber, name);
             string folderUuid = await _createFolderHandler.Handle(folderName, cancellationToken);
