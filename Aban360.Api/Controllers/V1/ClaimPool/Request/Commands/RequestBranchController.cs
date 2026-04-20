@@ -2,7 +2,6 @@
 using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update.Contracts;
 using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts;
-using Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implementations;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Domain.Features.Tracking.Dto;
@@ -106,7 +105,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         [HttpPost]
         [Route("general/{trackId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<GeneralRequestDataOutputDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> SetPreviousStatus(Guid trackId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetRequestGeneral(Guid trackId, CancellationToken cancellationToken)
         {
             GeneralRequestDataOutputDto result = await _generalInformationRequestHandler.Handle(trackId, cancellationToken);
             return Ok(result);

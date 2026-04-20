@@ -43,11 +43,12 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
          
             long lastRemained = 0;
             for (int i = 0; i < branchDateOrder.Count(); i++)
-            {
+            {   
                 BranchEventSummaryDataOutputDto row = branchDateOrder.ElementAt(i);
                 lastRemained = lastRemained + (row.DebtAmount - row.CreditAmount - row.DiscountAmount);
                 row.Remained = lastRemained;
             }
+
             ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> result = new(ReportLiterals.BranchEventSummary, branchHeader, branchDateOrder);
             return result;
         }

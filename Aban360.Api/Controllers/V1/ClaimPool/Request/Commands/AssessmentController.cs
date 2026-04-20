@@ -5,8 +5,6 @@ using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Db.QueryServices;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
-using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 {
