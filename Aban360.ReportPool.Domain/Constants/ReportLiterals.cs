@@ -243,6 +243,8 @@
 
         public static string UspFinancial2 { get { return "گزارش درامد2"; } }
         public static string UspPayment2 { get { return "گزارش وصولی 2"; } }
+       
+        public static string LatestCustomersInfo{ get { return "آخرین اطلاعات مشترکین"; } }
 
 
 
