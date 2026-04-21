@@ -125,6 +125,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	t.ZoneID, 
 						t51.C2 ZoneTitle,
                     	t.DateTimeJalali InsertDateJalali,
+                        t.DateAndTime InsertDateTimeGregorian,
                     	t.ServiceGroup_FK ServiceGroupId,
                     	sg.Title ServiceGroupTitle,
                     	t.Status StatusId,

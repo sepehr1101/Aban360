@@ -117,6 +117,7 @@ namespace Aban360.Common.Extensions
                     {"Surname", "نام خانوادگی"},
                     {"FullName", "نام و نام خانوادگی"},
                     {"UsageTitle", "نوع کاربری"},
+                    {"UsageId", "کد نوع کاربری"},
                     {"MeterDiameterTitle", "قطر کنتور"},
                     {"EventDateJalali", "تاریخ رویداد"},
                     {"Address", "آدرس"},
@@ -161,7 +162,7 @@ namespace Aban360.Common.Extensions
                     {"Consumption", "مصرف"},
                     {"MalfunctionPeriodCount", "تعداد دوره خراب"},
                     {"LastChangeDateJalali", "تاریخ آخرین تغیرات"},
-                    {"MeterRequestDateJalali", "تاریخ درخواست"},
+                    {"MeterRequestDateJalali", "تاریخ درخواست آب"},
                     {"DeletionStateTitle", "وضعیت انشعاب"},
                     {"SumItems", "جمع"},
                     {"MeterLife", "عمر کنتور"},
@@ -512,6 +513,13 @@ namespace Aban360.Common.Extensions
                     { "RequestCount","تعداد درخواست"},
                     { "StatusId","کد وضعیت"},
                     { "StatusTitle","وضعیت"},
+                    { "SewageRequestDateJalali","تاریخ درخواست فاضلاب"},
+                    { "LatestMeterNumber","آخرین شماره قرائت"},
+                    { "WaterRemained","آخرین مانده بدهی آب‌بها"},
+                    { "SubscriptionRemained","آخرین مانده بدهی انشعاب"},
+                    { "Premises","عرصه"},
+                    { "ImprovementsCommercial","اعیانی تجاری"},
+                    { "ImprovementsOther","اعیانی سایر"},
             };
         }
     }

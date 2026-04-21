@@ -20,6 +20,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking.Queries
         private readonly ICustomerNumberSpecifiedDetailHandler _customerNumberSpecifiedDetailHandler;
         private readonly IAmountConfirmedDetailHandler _amountConfirmedDetailHandler;
         private readonly ITrackingDetailGetByIdHandler _trackingDetailGetByIdHandler;
+        private readonly ISeenByAssessmentHandler _seenByAssessmentHandler;
         public TrackingDetailGetController(
             IRequestIsRegisteredDetailHandler requestIsRegisteredHandler,
             IExamineTimeSetDetailHandler examineTimeSetDetailHandler,
@@ -28,7 +29,8 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking.Queries
             ICalculationConfirmedDetailHandler calculationConfirmedDetailHandler,
             ICustomerNumberSpecifiedDetailHandler customerNumberSpecifiedDetailHandler,
             IAmountConfirmedDetailHandler amountConfirmedDetailHandler,
-            ITrackingDetailGetByIdHandler trackingDetailGetByIdHandler)
+            ITrackingDetailGetByIdHandler trackingDetailGetByIdHandler,
+            ISeenByAssessmentHandler seenByAssessmentHandler)
         {
             _requestIsRegisteredHandler = requestIsRegisteredHandler;
             _requestIsRegisteredHandler.NotNull(nameof(requestIsRegisteredHandler));
@@ -53,6 +55,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking.Queries
 
             _trackingDetailGetByIdHandler = trackingDetailGetByIdHandler;
             _trackingDetailGetByIdHandler.NotNull(nameof(trackingDetailGetByIdHandler));
+
+            _seenByAssessmentHandler = seenByAssessmentHandler;
+            _seenByAssessmentHandler.NotNull(nameof(seenByAssessmentHandler));
         }
 
         [HttpPost]
@@ -96,6 +101,11 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking.Queries
                 case 75://تایید مبلغ
                     {
                         AmountConfirmedOutputDto result = await _amountConfirmedDetailHandler.Handle(TrackDetailInput, cancellationToken);
+                        return Ok(result);
+                    }
+                case 150:// مراجعه ارزیاب
+                    {
+                        SeenByAssessmentOutputDto result = await _seenByAssessmentHandler.Handle(input, cancellationToken);
                         return Ok(result);
                     }
                 default: throw new InvalidTrackNumberException(ExceptionLiterals.InvalidStateId);

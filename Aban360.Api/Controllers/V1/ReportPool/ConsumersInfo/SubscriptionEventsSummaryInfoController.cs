@@ -23,9 +23,9 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [HttpPost]
         [Route("events-summary")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetEventsSummaryInfo([FromBody] CardexInput searchInput)
+        public async Task<IActionResult> GetEventsSummaryInfo([FromBody] CardexInput searchInput, CancellationToken cancellationToken)
         {
-            ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> items = await _subscriptionEventHandler.Handle(searchInput.Input,searchInput.FromDateJalali);
+            ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> items = await _subscriptionEventHandler.Handle(searchInput, cancellationToken);
             return Ok(items);
         }
 
@@ -36,20 +36,20 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         public async Task<IActionResult> GetStiReport([FromBody] CardexInput searchInput, CancellationToken cancellationToken)
         {
             int reportCode = 230;
-            ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> calculationDetails = await _subscriptionEventHandler.Handle(searchInput.Input, searchInput.FromDateJalali);
+            ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> calculationDetails = await _subscriptionEventHandler.Handle(searchInput, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode);
             return Ok(reportId);
         }
-        
-        
+
+
         //with-last-db
-        
+
         [HttpPost]
         [Route("events-summary-lastdb")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetEventsSummaryInfo_LastDb([FromBody] CardexInput searchInput)
+        public async Task<IActionResult> GetEventsSummaryInfo_LastDb([FromBody] CardexInput searchInput, CancellationToken cancellationToken)
         {
-            ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> items = await _subscriptionEventHandler.HandleWithLastDb(searchInput.Input,searchInput.FromDateJalali);
+            ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> items = await _subscriptionEventHandler.HandleWithLastDb(searchInput, cancellationToken);
             return Ok(items);
         }
 
@@ -60,7 +60,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         public async Task<IActionResult> GetStiReport_LastDb([FromBody] CardexInput searchInput, CancellationToken cancellationToken)
         {
             int reportCode = 230;
-            ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> calculationDetails = await _subscriptionEventHandler.HandleWithLastDb(searchInput.Input, searchInput.FromDateJalali);
+            ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> calculationDetails = await _subscriptionEventHandler.HandleWithLastDb(searchInput, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode);
             return Ok(reportId);
         }

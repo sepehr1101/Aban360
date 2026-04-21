@@ -53,10 +53,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
         {
             string dbName = GetDbName(inputDto.ZoneId);
 
-			IEnumerable<OfferingAmountOutputDto> offerings = await GetOfferings("karten75", dbName, inputDto.TrackNumber);
-			if (!offerings.Any())
-			{
-               offerings = await GetOfferings("kart", dbName, inputDto.TrackNumber);
+            IEnumerable<OfferingAmountOutputDto> offerings = await GetOfferings("karten75", dbName, inputDto.TrackNumber);
+            if (!offerings.Any())
+            {
+                offerings = await GetOfferings("kart", dbName, inputDto.TrackNumber);
             }
 
             string installmentQuery = GetIstallmentAndpaymentQuery(dbName);
@@ -76,11 +76,19 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
                 IstallmentAndPaymentAmount = installments?.Sum(x => x.Amount) ?? 0,
             };
         }
-        private async Task<IEnumerable<OfferingAmountOutputDto>> GetOfferings(string tableName, string dbName,string trackNumber)
+        private async Task<IEnumerable<OfferingAmountOutputDto>> GetOfferings(string tableName, string dbName, string trackNumber)
         {
             string offeringQuery = GetRegisterOfferingQuery(dbName, tableName);
             return await _sqlReportConnection.QueryAsync<OfferingAmountOutputDto>(offeringQuery, new { trackNumber });
         }
+        public async Task<SeenByAssessmentOutputDto> GetSeenByAssessment(SeenByAssessmentGetDto inputDto)
+        {
+            string query = GetSeenByAssessmentQuery();
+            SeenByAssessmentOutputDto result = (await _sqlReportConnection.QueryAsync<SeenByAssessmentOutputDto>(query, inputDto)).FirstOrDefault();
+            return result;
+
+        }
+
         private string GetRequestIsRegisteredQuery(string dbName)
         {
             return @$"Select 
@@ -264,6 +272,40 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
 					where  LTRIM(par_no,'0')=@trackNumber
 					Order by mohlat ";
         }
-
+        private string GetSeenByAssessmentQuery()
+        {
+            return @"Select
+						e.TrackNumber,
+						e.TrackId AssessmentTrackId, 
+						e.BillId,
+						e.ExaminerMobile AssessmentMobile,
+						e.ExaminerCode AssessmentCode,
+						e.ExaminerName AssessmentName,
+						e.ZoneId,
+						t51.C2 ZoneTitle,
+						t46.C0 RegionId,
+						t46.C2  RegionTitle,
+						e.DayJalali AssessmentDayJalali,
+						e.ResultId,
+						t64.C1 ResultTitle ,
+						e.ResultDescription,
+						e.TrackIdResult,
+						e.SetResultDateTime,
+						e.X1 ,
+						e.Y1,
+						e.X2,
+						e.Y2
+					From AbAndFazelab.dbo.Examination e
+					Left Join [Db70].dbo.T64 t64 
+						On e.ResultId=t64.C0
+					Left Join [Db70].dbo.T51 t51 
+						On e.ZoneId=t51.C0
+					Left Join [Db70].dbo.T46 t46 
+						On t51.C1=t46.C0
+					Where 
+						e.TrackNumber=@TrackNumber  AND
+						e.SetResultDateTime IS NOT NULL AND
+						Cast(e.SetResultDateTime as Date)=@RegisterDateGregorian";
+        }
     }
 }

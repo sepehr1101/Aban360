@@ -17,7 +17,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             : base(configuration)
         {
         }
-        public async Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> GetEventsSummaryDtos(string billId,string fromDate)
+        public async Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> GetEventsSummaryDtos(string billId, string fromDate)
         {
             string subscriptionDataQuery = GetSubscriptionEventsDataQuery();
             string subscriptionHeaderQuery = GetSubscriptionEventHeaderQuery();
@@ -33,18 +33,18 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                 {
                     WaterEventsSummaryOutputDataDto row = data.ElementAt(i);
                     row.EventDateJalali = row.PayDateJalali == null ? row.CurrentMeterDate : row.PayDateJalali;
-                    if (row.TypeCode == 7 || row.TypeCode==17 /*17: قبض ابطال شده*/)
+                    if (row.TypeCode == 7 || row.TypeCode == 17 /*17: قبض ابطال شده*/)
                     {
                         row.Remained = lastRemained;
                         continue;
                     }
-                    lastRemained = lastRemained + (row.DebtAmount.Value - row.CreditAmount);                    
+                    lastRemained = lastRemained + (row.DebtAmount.Value - row.CreditAmount);
                     row.Remained = lastRemained;
                 }
             }
-            WaterEventsSummaryOutputHeaderDto? header = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterEventsSummaryOutputHeaderDto>(subscriptionHeaderQuery, new { billId = billId});
+            WaterEventsSummaryOutputHeaderDto? header = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterEventsSummaryOutputHeaderDto>(subscriptionHeaderQuery, new { billId = billId });
             WaterReplacementInfoOutputDto? replacementInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterReplacementInfoOutputDto>(waterReplacementInHeaderQuery, new { billId = billId, customerNumber = header.CustomerNumber, zoneId = header.ZoneId });
-            header.WaterReplacementDate = replacementInfo is not null? replacementInfo.WaterReplacementDate:string.Empty;
+            header.WaterReplacementDate = replacementInfo is not null ? replacementInfo.WaterReplacementDate : string.Empty;
             header.WaterReplacementNumber = replacementInfo is not null ? replacementInfo.WaterReplacementNumber : string.Empty;
             header.Remained = lastRemained;
             header.ReportDateJalali = DateTime.Now.ToShortPersianDateString();
@@ -124,9 +124,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
              LEFT Join [Db70].dbo.CounterVaziat v On
             	CounterStateCode=v.MoshtarakinId
              where 
-                (BillId)=@billId  AND
-		        (@fromDate IS NULL OR
-		        RegisterDay<=@fromDate)
+                (BillId)=@billId 
              union
              select
 	             TRIM(BillId) BillId ,
@@ -198,9 +196,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
            	     '-' CounterStateTitle
              from [CustomerWarehouse].dbo.Payments
              where 
-                (BillId)=@billId  AND
-		        (@fromDate IS NULL OR
-		        RegisterDay<=@fromDate)";
+                (BillId)=@billId  ";
             return query;
         }
         private string GetSubscriptionEventHeaderQuery()

@@ -41,7 +41,8 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         //[BillIdFromSearchInputAuthorization]
         public async Task<IActionResult> Get([FromBody] SearchInput searchInput, CancellationToken cancellationToken)
         {
-            ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> eventsBranchsDtos = await _branchEventSummaryHandler.Handle(searchInput.Input, cancellationToken);
+            CardexInput input = new(searchInput.Input,null);
+            ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> eventsBranchsDtos = await _branchEventSummaryHandler.Handle(input, cancellationToken);
             return Ok(eventsBranchsDtos);
         }
 
@@ -52,7 +53,8 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         public async Task<IActionResult> GetStiReport([FromBody] SearchInput searchInput, CancellationToken cancellationToken)
         {
             int reportCode = 231;
-            ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> calculationDetails = await _branchEventSummaryHandler.Handle(searchInput.Input, cancellationToken);
+            CardexInput input = new(searchInput.Input, null);
+            ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> calculationDetails = await _branchEventSummaryHandler.Handle(input, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode);
             return Ok(reportId);
         }
@@ -65,7 +67,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetBranchSummaryInfo_LastDb([FromBody] CardexInput searchInput, CancellationToken cancellationToken)
         {
-            ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> items = await _branchEventSummaryHandler.HandleWithLastDb(searchInput.Input, searchInput.FromDateJalali, cancellationToken);
+            ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> items = await _branchEventSummaryHandler.HandleWithLastDb(searchInput, cancellationToken);
             return Ok(items);
         }
 
@@ -77,7 +79,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         public async Task<IActionResult> GetStiReport_LastDb([FromBody] CardexInput searchInput, CancellationToken cancellationToken)
         {
             int reportCode = 230;
-            ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> calculationDetails = await _branchEventSummaryHandler.HandleWithLastDb(searchInput.Input, searchInput.FromDateJalali, cancellationToken);
+            ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> calculationDetails = await _branchEventSummaryHandler.HandleWithLastDb(searchInput, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode);
             return Ok(reportId);
         }

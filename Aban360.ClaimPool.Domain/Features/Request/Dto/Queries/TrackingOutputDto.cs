@@ -11,6 +11,7 @@
         public int ZoneId { get; set; }
         public string ZoneTitle { get; set; }
         public string InsertDateJalali { get; set; }
+        public DateTime InsertDateTimeGregorian { get; set; }
         public int ServiceGroupId { get; set; }
         public string ServiceGroupTitle { get; set; }
         public int StatusId { get; set; }
