@@ -59,6 +59,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertBillId);
             }
         }
+        public async Task SwapRequestType(TrackingRequestTypeUpdateDto inputDto)
+        {
+            string command = GetUpdateRequestTypeCommand();
+            int recordCount = await _sqlConnection.ExecuteAsync(command, inputDto, _transaction);
+            if (recordCount < 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidSwapRequestType);
+            }
+        }
 
         private string GetInsertCommand()
         {
@@ -124,6 +133,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
             return @"Update AbAndFazelab.dbo.Tracking 
                     Set BillID=@billId
                     Where TrackNumber=@trackNumber AND IsConsiderd=0";
+        }
+        private string GetUpdateRequestTypeCommand()
+        {
+            return @"Update AbAndFazelab.dbo.Tracking
+                    Set ServiceGroup_FK=@ServiceGroupId , Description=ISNULL(Description,'')+@Description
+                    Where TrackNumber=@TrackNumber";
         }
     }
 }

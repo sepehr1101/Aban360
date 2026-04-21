@@ -68,6 +68,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertCustomerNumber);
             }
         }
+		public async Task Update(MoshtrakServicesUpdateDto input, string dbName)
+        {
+            string command = GetUpdateServicesSelectedCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, input, _transaction);
+            if (recordCount != 1)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidSwapRequestType);
+            }
+        }
 
         //   private string GetInsertCommand(string dbName)
         //   {
@@ -302,5 +311,58 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 						Set radif=@CustomerNumber
 						Where TrackingNumber=@TrackNumber";
         }
-    }
+		private string GetUpdateServicesSelectedCommand(string dbName)
+		{
+			return $@"Update [{dbName}].dbo.moshtrak
+						Set 
+							s0=@s0,
+							s1=@s1,
+							s2=@s2,
+							s3=@s3,
+							s4=@s4,
+							s5=@s5,
+							s8=@s8,
+							s9=@s9,
+							s10=@s10,
+							s11=@s11,
+							s12=@s12,
+							s13=@s13,
+							s14=@s14,
+							s15=@s15,
+							s16=@s16,
+							s17=@s17,
+							s18=@s18,
+							s19=@s19,
+							s20=@s20,
+							s21=@s21,
+							s22=@s22,
+							s23=@s23,
+							s24=@s24,
+							s25=@s25,
+							s26=@s26,
+							s27=@s27,
+							s28=@s28,
+							s29=@s29,
+							s30=@s30,
+							s31=@s31,
+							s32=@s32,
+							s33=@s33,
+							s34=@s34,
+							s35=@s35,
+							s36=@s36,
+							s37=@s37,
+							s38=@s38,
+							s39=@s39,
+							s40=@s40,
+							s41=@s41,
+							s42=@s42,
+							s43=@s43,
+							s44=@s44,
+							s45=@s45,
+							s46=@s46,
+							s47=@s47,
+							s48=@s48
+						Where TrackingNumber=@TrackNumber";
+		}
+	}
 }

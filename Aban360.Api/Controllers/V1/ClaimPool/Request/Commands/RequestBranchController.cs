@@ -23,6 +23,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         private readonly IPreviousStatusRequestHandler _previousStatusRequestHandler;
         private readonly IGeneralInformationHandler _generalInformationRequestHandler;
         private readonly IPreviousRequestGetByBillIdHandler _previousRequestGetByBillIdHandler;
+        private readonly ISwapRequestTypeHandler _swapRequestTypeHandler;
         public RequestBranchController(
             IKartableRequestGetAllHandler requestKartableGetAllHandler,
             IDisplayRequestHandler displayRequestHandler,
@@ -30,7 +31,8 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             ICloseRequestHandler closeRequestHandle,
             IPreviousStatusRequestHandler previousStatusRequestHandler,
             IGeneralInformationHandler generalInformationRequestHandler,
-            IPreviousRequestGetByBillIdHandler previousRequestGetByBillIdHandler)
+            IPreviousRequestGetByBillIdHandler previousRequestGetByBillIdHandler,
+            ISwapRequestTypeHandler swapRequestTypeHandler)
         {
             _requestKartableGetAllHandler = requestKartableGetAllHandler;
             _requestKartableGetAllHandler.NotNull(nameof(requestKartableGetAllHandler));
@@ -52,6 +54,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 
             _previousRequestGetByBillIdHandler = previousRequestGetByBillIdHandler;
             _previousRequestGetByBillIdHandler.NotNull(nameof(previousRequestGetByBillIdHandler));
+
+            _swapRequestTypeHandler = swapRequestTypeHandler;
+            _swapRequestTypeHandler.NotNull(nameof(swapRequestTypeHandler));
         }
 
 
@@ -118,6 +123,15 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         {
             IEnumerable<PreviousRequestDataOutputDto> result = await _previousRequestGetByBillIdHandler.Handle(billId, cancellationToken);
             return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("swap-request-type")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SwapRequestType([FromBody] SwapRequestTypeInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _swapRequestTypeHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            return Ok(inputDto);
         }
     }
 }
