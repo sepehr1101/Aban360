@@ -5,6 +5,7 @@ using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.InteropServices;
 
 namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
 {
@@ -33,9 +34,10 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
         [HttpGet]
         [Route("directory-tree")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<FileListResponse>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetDirectoryTree(string input, CancellationToken cancellation)
+        [AllowAnonymous]
+        public async Task<IActionResult> GetDirectoryTree(string input, [Optional]string? trackNumber, CancellationToken cancellation)
         {
-            FileListResponse result = await _getFilesByBillIdHandler.Handle(input, cancellation);
+            FileListResponse result = await _getFilesByBillIdHandler.Handle(input, trackNumber, cancellation);
             return Ok(result);
         }
 

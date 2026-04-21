@@ -4,6 +4,6 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Contract
 {
     public interface IGetFilesByBillId
     {
-        Task<FileListResponse> Handle(string input, CancellationToken cancellationToken);
+        Task<FileListResponse> Handle(string input, string? trackNumber, CancellationToken cancellationToken);
     }
 }
