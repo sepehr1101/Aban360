@@ -10,4 +10,4 @@
         public IEnumerable<InstallmentAndPaymentOutputDto> IstallmentsAndPayments { get; set; }
         public long IstallmentAndPaymentAmount { get; set; }
     }
-}
+}   

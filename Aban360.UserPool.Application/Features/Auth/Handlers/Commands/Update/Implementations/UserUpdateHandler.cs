@@ -30,6 +30,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
         private readonly IZoneCountQueryAddhoc _zoneCountQueryAddhoc;
         private readonly IEndpointQueryService _endpointQueryService;
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IRoleQueryService _roleQueryService;
         private readonly IValidator<UserUpdateDto> _userValidator;
         public UserUpdateHandler(
             IUnitOfWork uow,
@@ -43,6 +44,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
             IZoneCountQueryAddhoc zoneCountQueryAddhoc,
             IEndpointQueryService endpointQueryService,
             IHttpContextAccessor contextAccessor,
+            IRoleQueryService roleQueryService,
             IValidator<UserUpdateDto> userValidator)
         {
             _uow = uow;
@@ -78,6 +80,9 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
             _contextAccessor = contextAccessor;
             _contextAccessor.NotNull(nameof(contextAccessor));
 
+            _roleQueryService = roleQueryService;   
+            _roleQueryService.NotNull(nameof(roleQueryService));
+
             _userValidator = userValidator;
             _userValidator.NotNull(nameof(userValidator));
         }
@@ -108,7 +113,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
             _userRoleCommandService.Remove(previousRoles, logInfoString);
 
             int zoneCount = await _zoneCountQueryAddhoc.GetCount(userUpdateDto.SelectedZoneIds, cancellationToken);
-            List<string> endpointValue = await _endpointQueryService.GetAuthValue(userUpdateDto.SelectedEndpointIds.Distinct().ToArray());
+            //List<string> endpointValue = await _endpointQueryService.GetAuthValue(userUpdateDto.SelectedEndpointIds.Distinct().ToArray());
+            List<string> endpointValue = await GetEndpointsValue(userUpdateDto);
             Validate(zoneCount, userUpdateDto.SelectedZoneIds.Count(), endpointValue.Count(), userUpdateDto.SelectedEndpointIds.Count());
 
             ICollection<UserClaim> zones = CreateUserClaim(userUpdateDto.SelectedZoneIds.Select(x => x.ToString()).Distinct().ToList(), ClaimType.ZoneId, logInfoString, operationGroupId, userUpdateDto.Id);
@@ -120,6 +126,25 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
 
             await _userClaimCommandService.Add(userCliams);
             await _userRoleCommandService.Add(userRoles);
+        }
+        private async Task<List<string>> GetEndpointsValue(UserUpdateDto userUpdateDto)
+        {
+            List<string> endpointValue = await _endpointQueryService.GetAuthValue(userUpdateDto.SelectedEndpointIds.ToArray());
+            ICollection<Role> selectedRoles = await _roleQueryService.Get(userUpdateDto.SelectedRoleIds);
+            foreach (Role role in selectedRoles)
+            {
+                if (!string.IsNullOrWhiteSpace(role.DefaultClaims))
+                {
+                    int[] roleEndpiontsId = JsonOperation.Unmarshal<int[]>(role.DefaultClaims);//check
+                    List<string> roleEndpointsValue = await _endpointQueryService.GetAuthValue(roleEndpiontsId);
+                    if (roleEndpointsValue.Any())
+                    {
+                        endpointValue = endpointValue.Union(roleEndpointsValue).ToList();
+                    }
+                }
+            }
+
+            return endpointValue;
         }
     }
 }

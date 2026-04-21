@@ -15,6 +15,12 @@ namespace Aban360.Common.Timing
 
             return ExceptionLiterals.Incalculable;
         }
+        public static DateTime GregorianStringToDateTime(string dateGregorian)
+        {
+            string[] values = dateGregorian.Split('-');
+            DateTime date = new(Convert.ToInt32(values[0]), Convert.ToInt32(values[1]), Convert.ToInt32(values[2]));
+            return date;
+        }
         private static bool DateValidation(string dateJalali)
         {
             var part = dateJalali.Split('/');

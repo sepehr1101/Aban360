@@ -11,5 +11,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Contracts
         Task<CalculationConfirmedDto> GetCalculationConfirmed(TrackingDetailGetDto inputDto);
         Task<CustomerNumberSpecifiedOutputDto> GetCustomerNumberSpecified(TrackingDetailGetDto inputDto);
         Task<AmountConfirmedOutputDto> GetAmountConfirmed(TrackingDetailGetDto inputDto);
+        Task<SeenByAssessmentOutputDto> GetSeenByAssessment(SeenByAssessmentGetDto inputDto);
     }
 }

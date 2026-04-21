@@ -26,6 +26,7 @@
         public string DeletionStateTitle { get; set; }
         public string ReportDateJalali{ get; set; } = default!;
         public string Title{ get; set; } = default!;
+        public int RowCount { get; set; }
 
     }
 }
