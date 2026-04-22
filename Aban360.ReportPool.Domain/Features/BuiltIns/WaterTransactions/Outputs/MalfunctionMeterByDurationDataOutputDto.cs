@@ -18,7 +18,7 @@
         public string FullName { get; set; }
         public string MeterDiameterTitle { get; set; }
         public string SiphonDiameterTitle { get; set; }
-        public int DomesticUnit{ get; set; }
+        public int DomesticUnit { get; set; }
         public int CommercialUnit { get; set; }
         public int OtherUnit { get; set; }
         public int TotalUnit { get; set; }
@@ -26,6 +26,9 @@
         public int Consumption { get; set; }
         public int MalfunctionPeriodCount { get; set; }
         public string LastChangeDateJalali { get; set; }
+        public int NextNumber { get; set; }
+        public string? LatestChangeBodySerial { get; set; }
+        public string? ClientBodySerial { get; set; }
         public string Address { get; set; }
         public string MeterLife { get; set; }
         public string PhoneNumber { get; set; }
