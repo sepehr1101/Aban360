@@ -246,6 +246,7 @@
        
         public static string LatestCustomersInfo{ get { return "آخرین اطلاعات مشترکین"; } }
 
+        public static string InstallmentPrint { get { return "کروکی"; } }
 
 
         //Request

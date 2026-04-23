@@ -86,7 +86,8 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
                 Temporarily = input.Temporarily,
                 SumItems=input.SumItems,
                 SelfClaimedCount=input.SelfClaimedCount,
-                Debt=input.Debt
+                Debt=input.Debt,
+                ReadCount=input.ReadCount,
             };
         }
     }

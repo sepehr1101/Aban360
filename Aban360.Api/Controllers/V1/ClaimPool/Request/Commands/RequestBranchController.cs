@@ -116,8 +116,8 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             return Ok(result);
         }
 
-        [HttpPost]
-        [Route("prvious/{billId}")]
+        [HttpPost,HttpGet]
+        [Route("previous/{billId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<PreviousRequestDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetPreviousRequests(string billId, CancellationToken cancellationToken)
         {
