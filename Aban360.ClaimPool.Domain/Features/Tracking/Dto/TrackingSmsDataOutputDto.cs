@@ -2,6 +2,7 @@
 {
     public record TrackingSmsDataOutputDto
     {
+        public Guid Id { get; set; }
         public string Message { get; set; }
         public int DeliverySatateId { get; set; }
         public string DeliverySatateTitle { get; set; }

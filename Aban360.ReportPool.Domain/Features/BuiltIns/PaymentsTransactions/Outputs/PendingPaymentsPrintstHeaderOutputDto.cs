@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs
 {
-    public record PendingPaymentsHeaderOutputDto
+    public record PendingPaymentsPrintstHeaderOutputDto
     {
         public string? FromReadingNumber { get; set; }
         public string? ToReadingNumber { get; set; }
@@ -13,9 +13,7 @@
         public int ZoneCount { get; set; }
         public int RecordCount { get; set; }
         public long TotalDebtPeriodCount { get; set; }
-        public long TotalBeginDebt { get; set; }
-        public long TotalEndingDebt { get; set; }
-        public long TotalPayedAmount { get; set; }
+        public long TotalDebtAmount { get; set; }
         public string ReportDateJalali { get; set; }
         public int CustomerCount { get; set; }
         public string? Title { get; set; }

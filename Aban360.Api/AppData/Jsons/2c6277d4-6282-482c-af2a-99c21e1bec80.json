@@ -1,0 +1,34 @@
+﻿{
+  "title": "کروکی",
+  "reportHeader": {
+    "title": "کروکی",
+    "reportDateJalali": "1405/02/03"
+  },
+  "reportData": {
+    "firstName": "کرمعلي",
+    "surname": "سرمست",
+    "fullName": "کرمعلي سرمست",
+    "billId": "1000001816318",
+    "readingNumber": "100477000",
+    "usageTitle": "مسکونی",
+    "usageId": 1,
+    "zoneTitle": "1  - منطقه يک",
+    "zoneId": 131301,
+    "branchTypeTitle": "عادی",
+    "branchTypeId": 1,
+    "domesticUnit": 1,
+    "commercialUnit": 0,
+    "otherUnit": 0,
+    "premises": 892,
+    "improvementsCommercial": 0,
+    "improvementsDomestic": 888,
+    "improvementsOverall": 888,
+    "contractualCapacity": 0,
+    "householdeNumber": 0,
+    "address": "سيدعليخان ج مسجدالهادي نبش بن پ2729",
+    "postalCode": "0",
+    "meterDiameterTitle": null,
+    "meterDiameterId": 2,
+    "base64Image": "test"
+  }
+}
