@@ -19,6 +19,7 @@ using Aban360.Common.BaseEntities;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.Common.Db.QueryServices;
 using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implementations;
+using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 
 namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Implementations
 {
@@ -28,12 +29,14 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private readonly IMembersQueryService _membersQueryService;
         private readonly IRepairQueryService _repairQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
+        private readonly IHBedBesQueryService _hbedBesQueryService;
         private readonly IValidator<ReturnBillConfirmeByBillIdInputDto> _validator;
         public ReturnBillConfirmeHandler(
             IAutoBackQueryService autoBackQueryService,
             IMembersQueryService membersQueryService,
             IRepairQueryService repairQueryService,
             ICommonMemberQueryService commonMemberQueryService,
+            IHBedBesQueryService hbedBesQueryService,
             IValidator<ReturnBillConfirmeByBillIdInputDto> validator,
             IConfiguration configuration)
                 : base(configuration)
@@ -46,6 +49,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             _repairQueryService = repairQueryService;
             _repairQueryService.NotNull(nameof(repairQueryService));
+
+            _hbedBesQueryService = hbedBesQueryService;
+            _hbedBesQueryService.NotNull(nameof(hbedBesQueryService));
 
             _commonMemberQueryService = commonMemberQueryService;
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
@@ -63,7 +69,8 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             RepairCreateDto repairCreate = GetRepairDto(autoBack_difference);
 
             await CreateRepairAndUpdateBedBesDel(repairCreate);
-            return GetReturn(repairCreate);
+            bool hasReturned = await _hbedBesQueryService.Get(new ZoneIdAndCustomerNumber(memberInfo.ZoneId, memberInfo.CustomerNumber));
+            return GetReturn(repairCreate, hasReturned);
         }
         private async Task CreateRepairAndUpdateBedBesDel(RepairCreateDto input)
         {
@@ -97,7 +104,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 }
             }
         }
-        private ReturnBillDataOutputDto GetReturn(RepairCreateDto input)
+        private ReturnBillDataOutputDto GetReturn(RepairCreateDto input, bool hasReturned)
         {
             return new ReturnBillDataOutputDto
             {
@@ -146,7 +153,8 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 UsageConsumption = input.Group1,
                 HasSewage = input.Faz,
                 IsSpecial = input.EdarehK,
-                Lavazem = 0
+                Lavazem = 0,
+                HasReturned = hasReturned,
             };
         }
         private async Task<AutoBackGetDto> GetDifferenceAutoBack(ReturnBillConfirmeByBillIdInputDto input, MemberGetDto memberInfo)

@@ -53,5 +53,6 @@
 
         public bool? IsSpecial { get; set; }
         public decimal Lavazem { get; set; }//todo
+        public bool HasReturned { get; set; }
     }
 }

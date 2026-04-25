@@ -159,7 +159,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     	UsageId IN @usageIds AND
 	                    (@FromLifeInDay IS NULL OR
 	                    @ToLifeInDay IS NULL OR
-	                    LifeInDay BETWEEN @FromLifeInDay AND @ToLifeInDay)";
+	                   (LifeInDay>@FromLifeInDay and LifeInDay<=@toLifeInDay))";
         }
         private string GetTruncateQuery()
         {
@@ -192,7 +192,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                        	UsageId IN @usageIds AND
                         (@FromLifeInDay IS NULL OR
                         @ToLifeInDay IS NULL OR
-                        LifeInDay BETWEEN @FromLifeInDay AND @ToLifeInDay)
+                        (LifeInDay>@FromLifeInDay and LifeInDay<=@toLifeInDay))
                     GROUP By m.ZoneTitle";
         }
     }

@@ -8,14 +8,16 @@ namespace Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries
         public string IssueDateJalali { get; set; }
         public string MinutesNumber { get; set; }
         public string ZoneTitle { get; set; }
-        public ReturnBillHeaderOutputDto(string description, string zoneTitle,string minutesNumber)
+        public bool HasReturned { get; set; }
+        public ReturnBillHeaderOutputDto(string description, string zoneTitle,string minutesNumber,bool hasReturned)
         {
             Description = description;
             ZoneTitle = zoneTitle;
 
             IssueDateJalali = DateTime.Now.ToShortPersianDateString();
             MinutesNumber = minutesNumber;
-
+             
+            HasReturned = hasReturned;
         }
     }
 }

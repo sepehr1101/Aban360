@@ -55,7 +55,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         }
 
         [HttpPost]
-        [Route("set-time")]
+        [Route("set-time")] 
         [ProducesResponseType(typeof(ApiResponseEnvelope<AssessmentResultInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SetTime([FromBody] AssessmentSetTimeInputDto inputDto, CancellationToken cancellationToken)
         {

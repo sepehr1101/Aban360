@@ -7,6 +7,7 @@
         public string ReadingNumber { get; set; }
         public int UsageId { get; set; }
         public int BranchTypeId { get; set; }
+        public string BranchTypeTitle { get; set; }
         public int MeterDiamterId { get; set; }
         public string BodySerial { get; set; }
         public int CommertialUnit { get; set; }

@@ -15,26 +15,26 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
         {
         }
 
-        public async Task<TrackingOutputDto> GetFirstStep(int trackNumber)
+        public async Task<TrackingOutputDto?> GetFirstStep(int trackNumber, bool hasException = true)
         {
             string query = GetNewRequestByTrackNumberQuery();
             TrackingOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<TrackingOutputDto>(query, new { trackNumber });
-            if (result is null)
+            if (hasException && result is null)
             {
                 throw new InvalidTrackNumberException(ExceptionLiterals.InvalidTrackNumber);
+                result.StringTrackNumber = trackNumber.ToString().PadLeft(11, '0');
             }
-            result.StringTrackNumber = trackNumber.ToString().PadLeft(11, '0');
             return result;
         }
-        public async Task<TrackingOutputDto> GetLatest(int trackNumber)
+        public async Task<TrackingOutputDto> GetLatest(int trackNumber, bool hasException = true)
         {
             string query = GetLatestByTrackNumberQuery();
             TrackingOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<TrackingOutputDto>(query, new { trackNumber });
-            if (result is null)
+            if (hasException && result is null)
             {
                 throw new InvalidTrackNumberException(ExceptionLiterals.InvalidTrackNumber);
+                result.StringTrackNumber = trackNumber.ToString().PadLeft(11, '0');
             }
-            result.StringTrackNumber = trackNumber.ToString().PadLeft(11, '0');
             return result;
         }
         public async Task<TrackingOutputDto> Get(Guid trackId)
@@ -64,7 +64,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
         {
             string query = GetAllOpenTrackingQuery();
             var @params = new { zoneIds };
-            IEnumerable<TrackingKartableDataOutputDto> result = await _sqlReportConnection.QueryAsync<TrackingKartableDataOutputDto>(query, @params);            
+            IEnumerable<TrackingKartableDataOutputDto> result = await _sqlReportConnection.QueryAsync<TrackingKartableDataOutputDto>(query, @params);
             return result;
         }
         public async Task<IEnumerable<TrackingKartableDataOutputDto>> GetAllArchivedRequest()
@@ -76,12 +76,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                 throw new InvalidTrackNumberException(ExceptionLiterals.NotFoundAnyOpenTrack);
             }
             return result;
-        }   
+        }
         public async Task<IEnumerable<UnconfirmedRequestDataOutputDto>> GetUnconfirmedRequestByZoneId(int zoneId)
         {
-            string dbName=GetDbName(zoneId);
+            string dbName = GetDbName(zoneId);
             string query = GetUnconfirmedRequestByZoneIdQuery(dbName);
-            IEnumerable<UnconfirmedRequestDataOutputDto> result = await _sqlReportConnection.QueryAsync<UnconfirmedRequestDataOutputDto>(query, new { zoneId});
+            IEnumerable<UnconfirmedRequestDataOutputDto> result = await _sqlReportConnection.QueryAsync<UnconfirmedRequestDataOutputDto>(query, new { zoneId });
             return result;
         }
 

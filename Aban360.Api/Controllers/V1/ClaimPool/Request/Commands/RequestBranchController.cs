@@ -90,10 +90,10 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         [HttpPost]
         [Route("close")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<RequestCloseOuputDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> CloseRequest([FromBody] SearchNumericInput inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> CloseRequest([FromBody] CloseRequestInputDto inputDto, CancellationToken cancellationToken)
         {
             int userName = UserService.GetUserCode(CurrentUser.Username);
-            RequestCloseOuputDto result = await _closeRequestHandle.Handle(inputDto.Input, userName, cancellationToken);
+            RequestCloseOuputDto result = await _closeRequestHandle.Handle(inputDto , userName, cancellationToken);
             return Ok(result);
         }
 

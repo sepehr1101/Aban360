@@ -4,6 +4,7 @@ namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Queries
 {
     public record TrackingDuplicateValidationOutputDto
     {
+        public int Id { get; set; }
         public int ZoneId { get; set; }
         public int CustomerNumber { get; set; }
         public string NationalCode { get; set; }

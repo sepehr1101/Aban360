@@ -45,7 +45,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 							b.ZoneId IN @ZoneIds AND 
 							b.CounterStateCode NOT IN(4,7,8)
 					)
-					Select top 10 
+					Select 
 						t46.C0 RegionId,
 						t46.C2 RegionTitle,
 						t51.C0 ZoneId,
