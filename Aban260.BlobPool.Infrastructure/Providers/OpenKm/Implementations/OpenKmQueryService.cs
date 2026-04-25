@@ -393,7 +393,6 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             //request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
 
             var response = await _httpClient.SendAsync(request);
-            string x = await response.Content.ReadAsStringAsync();
             response.EnsureSuccessStatusCode();
         }
         //private async Task EditFile(string nodeId)

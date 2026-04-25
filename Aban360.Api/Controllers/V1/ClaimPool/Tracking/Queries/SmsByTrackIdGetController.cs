@@ -1,5 +1,4 @@
 ﻿using Aban360.ClaimPool.Application.Features.Sms.Handler.Queries.Contracts;
-using Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Tracking.Dto;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
