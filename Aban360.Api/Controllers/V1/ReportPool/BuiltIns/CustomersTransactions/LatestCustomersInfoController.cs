@@ -1,6 +1,6 @@
 ﻿using Aban360.Api.Cronjobs;
 using Aban360.Common.Extensions;
-using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Implementations;
+using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Microsoft.AspNetCore.Mvc;

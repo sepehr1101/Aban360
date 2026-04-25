@@ -52,6 +52,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     	COUNT(Case When b.CounterStateCode=7 Then 1 End) AS Obstacle,
                     	COUNT(Case When b.CounterStateCode=8 Then 1 End) AS Temporarily,
                     	COUNT(Case When b.CounterStateCode!=1 Then 1 End) AS AllCount,
+                    	COUNT(Case When b.CounterStateCode!=8 AND b.IsSettlement!=1 Then 1 End) AS ReadCount,
 						COUNT(Case When b.IsSettlement=1 Then 1 End) AS SelfClaimedCount,
                     	COUNT(Case When b.CounterStateCode=1 Then 1 End) AS Ruined
                     From [CustomerWarehouse].dbo.Bills b	

@@ -520,6 +520,8 @@ namespace Aban360.Common.Extensions
                     { "Premises","عرصه"},
                     { "ImprovementsCommercial","اعیانی تجاری"},
                     { "ImprovementsOther","اعیانی سایر"},
+                    { "FromDebtPeriodCount","از دوره"},
+                    { "ToDebtPeriodCount","تا دوره"},
             };
         }
     }

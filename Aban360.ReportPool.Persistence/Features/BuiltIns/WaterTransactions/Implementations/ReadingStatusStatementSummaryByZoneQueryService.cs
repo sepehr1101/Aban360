@@ -14,7 +14,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
     {
         public ReadingStatusStatementSummaryByZoneQueryService(IConfiguration configuration)
             : base(configuration)
-        { 
+        {
         }
 
         public async Task<ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryDataOutputDto>> GetInfo(ReadingStatusStatementInputDto input)
@@ -43,6 +43,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 header.SumAll = data.Sum(x => x.AllCount);
                 header.SumDebt = data.Sum(x => x.Debt);
                 header.SumSelfClaimed = data.Sum(x => x.SelfClaimedCount);
+                header.ReadCount = data.Sum(x => x.PureReading + x.Closed + x.Obstacle - x.SelfClaimedCount);
             }
 
             var result = new ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryDataOutputDto>(reportTitle, header, data);

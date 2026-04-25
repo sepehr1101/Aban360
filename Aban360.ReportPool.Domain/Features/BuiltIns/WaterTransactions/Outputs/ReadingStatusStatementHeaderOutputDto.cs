@@ -20,6 +20,7 @@
         public int SumRuined { get; set; }
         public int SumSelfClaimed { get; set; }
         public double SumDebt { get; set; }
+        public int ReadCount { get; set; }
         //public int SumSettlement { get; set; }
 
 

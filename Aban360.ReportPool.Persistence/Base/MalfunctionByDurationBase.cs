@@ -24,6 +24,7 @@ namespace Aban360.ReportPool.Persistence.Base
 	                        b.SumItems,
                             b.CounterStateCode,
                             b.RegisterDay AS LatestRegisterDay,
+	                    	b.NextNumber,
                             b.ContractCapacity AS ContractualCapacity
                         FROM (
                             SELECT *,
@@ -80,7 +81,10 @@ namespace Aban360.ReportPool.Persistence.Base
                         v.ContractualCapacity,
                         v.LatestRegisterDay,
                         f.MalfunctionPeriodCount,
+	                    v.NextNumber ,
                         ISNULL(lc.ChangeDateJalali, 0) AS LastChangeDateJalali,
+                    	TRIM(lc.BodySerial) LatestChangeBodySerial
+                        TRIM(c.MeterSerialBody) ClientBodySerial ,
 						c.BillId,
                         TRIM(c.FirstName)+' '+TRIM(c.SureName) AS FullName,
                         TRIM(c.FirstName) AS FirstName,
@@ -110,7 +114,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     Join [Db70].dbo.T46 t46
                     	ON t51.C1=t46.C0
                     OUTER APPLY (
-                        SELECT TOP 1 mc.ChangeDateJalali
+                        SELECT TOP 1 mc.ChangeDateJalali,mc.BodySerial
                         FROM [CustomerWarehouse].dbo.MeterChange mc
                         WHERE 
                     		mc.CustomerNumber = v.CustomerNumber AND 
@@ -136,7 +140,8 @@ namespace Aban360.ReportPool.Persistence.Base
                             AVG(b.ConsumptionAverage)as ConsumptionAverage,
                             SUM(b.Consumption)as Consumption,
 	                        SUM(b.SumItems)as SumItems,
-                            MAX(b.RegisterDay) AS LatestRegisterDay
+                            MAX(b.RegisterDay) AS LatestRegisterDay,
+		                    MAX(b.NextNumber) NextNumber
                         FROM [CustomerWarehouse].dbo.Bills b
                         WHERE                     		
                     		b.CounterStateCode = 1 --AND 
@@ -155,8 +160,11 @@ namespace Aban360.ReportPool.Persistence.Base
                     SELECT 
                         v.ConsumptionAverage,
                         v.LatestRegisterDay,
+	                    v.NextNumber,
                         v.MalfunctionPeriodCount,
                         ISNULL(lc.ChangeDateJalali, 0) AS LastChangeDateJalali,
+                    	TRIM(lc.BodySerial) LatestChangeBodySerial
+                        TRIM(c.MeterSerialBody) ClientBodySerial ,
 						c.BillId,
                         c.CustomerNumber,
 	                    t46.C0 RegionId,
@@ -188,11 +196,11 @@ namespace Aban360.ReportPool.Persistence.Base
                     INNER JOIN [CustomerWarehouse].dbo.Clients c 
                     	ON v.BillId = c.BillId
                     Join [Db70].dbo.T51 t51
-                    	ON v.ZoneId=t51.C0
+                    	ON c.ZoneId=t51.C0
                     Join [Db70].dbo.T46 t46
                     	ON t51.C1=t46.C0
                     OUTER APPLY (
-                        SELECT TOP 1 mc.ChangeDateJalali
+                        SELECT TOP 1 mc.ChangeDateJalali,mc.BodySerial
                         FROM [CustomerWarehouse].dbo.MeterChange mc
                         WHERE 
                     		mc.CustomerNumber = c.CustomerNumber AND 

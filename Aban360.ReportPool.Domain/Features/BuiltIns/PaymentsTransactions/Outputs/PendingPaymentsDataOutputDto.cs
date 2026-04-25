@@ -20,5 +20,4 @@
         public long EndingDebt { get; set; }//FinalDebt
         public long PayedAmount { get; set; }//PaymentInInterval
     }
-
 }
