@@ -31,7 +31,6 @@ using Aban360.OldCalcPool.Application.Extentions;
 using Aban360.SystemPool.Persistence.Extensions;
 using Aban260.BlobPool.Infrastructure.Extenstions;
 using Aban360.ReportPool.Infrastructure.Extensions;
-using Aban360.Common.Db.QueryServices;
 using Aban360.TaxPool.Application.Extensions;
 using Aban360.TaxPool.Infrastructure.Extensions;
 using Aban360.TaxPool.Persistence.Extensions;

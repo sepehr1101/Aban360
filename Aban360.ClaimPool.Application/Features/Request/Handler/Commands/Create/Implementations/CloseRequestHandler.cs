@@ -31,18 +31,46 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             _trackingQueryService.NotNull(nameof(trackingQueryService));
         }
 
-        public async Task<RequestCloseOuputDto> Handle(int tracknumber, int userName, CancellationToken cancellationToken)
+        public async Task<RequestCloseOuputDto> Handle(CloseRequestInputDto inputDto, int userName, CancellationToken cancellationToken)
         {
-            TrackingOutputDto trackingInfo = await _trackingQueryService.GetFirstStep(tracknumber);
-            await Validation(trackingInfo.ZoneId, tracknumber);
-            string dbName = GetDbName(trackingInfo.ZoneId);
+            TrackingOutputDto? trackingInfo = await _trackingQueryService.GetFirstStep(inputDto.TrackNumber, false);
             string deleteDescription = $"حذف توسط {userName}";
-           
-            MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, tracknumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
-            MoshtrakSabtUpdateDto moshtrakSabtUpdate = new(tracknumber, true, $"{moshtrakInfo.Description} - {deleteDescription}");
-            TrackingInsertDuplicateDto trackingInsertDto = new(trackingInfo.TrackNumber, _removeRequestStatusId, deleteDescription, userName);
 
+            var (moshtrakSabtUpdate, moshtrakInfo) = await GetMoshtrakUpdateDto(trackingInfo, inputDto, userName, deleteDescription);
+            TrackingInsertDuplicateDto trackingInsertDto = new(trackingInfo?.TrackNumber ?? 0, _removeRequestStatusId, deleteDescription, userName);
+          
+            string dbName = GetDbName(moshtrakInfo.ZoneId);
+            await SqlCommands(trackingInfo, moshtrakSabtUpdate, trackingInsertDto, dbName);
 
+            return new RequestCloseOuputDto(moshtrakInfo.ZoneId, moshtrakInfo.ZoneTitle, inputDto.TrackNumber);
+        }
+        private async Task<(MoshtrakSabtUpdateDto, MoshtrakOutputDto)> GetMoshtrakUpdateDto(TrackingOutputDto? trackingInfo, CloseRequestInputDto inputDto, int userName, string deleteDescription)
+        {
+            MoshtrakOutputDto moshtrakInfo;
+
+            if (trackingInfo == null)
+            {
+                moshtrakInfo = await _moshtrakQueryService.Get(inputDto.Id, inputDto.ZoneId);
+                if (moshtrakInfo.IsRegistered == false)
+                {
+                    throw new InvalidTrackingException(ExceptionLiterals.NotFountOpenRequest);
+                }
+            }
+            else
+            {
+                IEnumerable<MoshtrakOutputDto> moshtrakListInfo = await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, trackingInfo.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber);
+                if (!moshtrakListInfo.Where(m => m.IsRegistered == false).Any())
+                {
+                    throw new InvalidTrackingException(ExceptionLiterals.NotFountOpenRequest);
+                }
+                moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
+            }
+            MoshtrakSabtUpdateDto moshtrakSabtUpdate = new(moshtrakInfo.Id, true, $"{moshtrakInfo.Description} - {deleteDescription}");
+
+            return (moshtrakSabtUpdate, moshtrakInfo);
+        }
+        private async Task SqlCommands(TrackingOutputDto? trackingInfo, MoshtrakSabtUpdateDto moshtrakSabtUpdate, TrackingInsertDuplicateDto trackingInsertDto, string dbName)
+        {
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
@@ -51,24 +79,16 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    TrackingCommandService _trackingCommandService = new(connection, transaction);
+                    if (trackingInfo != null)
+                    {
+                        TrackingCommandService _trackingCommandService = new(connection, transaction);
+                        await _trackingCommandService.InsertDuplicate(trackingInsertDto);
+                    }
                     MoshtrakCommandService _moshtrackCommandService = new(connection, transaction);
-
-                    await _trackingCommandService.InsertDuplicate(trackingInsertDto);
                     await _moshtrackCommandService.UpdateSabt(moshtrakSabtUpdate, dbName);
+
                     transaction.Commit();
                 }
-            }
-
-            return new RequestCloseOuputDto(trackingInfo.ZoneId, trackingInfo.ZoneTitle, tracknumber);
-        }
-        private async Task Validation(int zoneId, int trackNumber)
-        {
-            MoshtrakGetDto moshtrakSearch = new(zoneId, null, null, trackNumber);
-            IEnumerable<MoshtrakOutputDto> moshtrakListInfo = await _moshtrakQueryService.Get(moshtrakSearch, MoshtrakSearchTypeEnum.ByTrackNumber);
-            if (!moshtrakListInfo.Where(m => m.IsRegistered == false).Any())
-            {
-                throw new InvalidTrackingException(ExceptionLiterals.NotFountOpenRequest);
             }
         }
     }

@@ -34,10 +34,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         public async Task<TrackingDuplicateValidationOutputDto> Handle(TrackingDuplicateValidationInputDto inputDto, CancellationToken cancellationToken)
         {
             var (moshtrakSearch, moshtrakSearchType) = await GetMoshtrakDto(inputDto);
-            MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(moshtrakSearch, moshtrakSearchType)).FirstOrDefault();
-            TrackingOutputDto latestTrackingInfo = await _trackingQueryService.GetLatest(moshtrakInfo.TrackNumber);
-            TrackingOutputDto firstTrackingInfo = await _trackingQueryService.GetFirstStep(moshtrakInfo.TrackNumber);
-            NumericDictionary? requestOrigin = RequestOrigin.GetRequestOrigin(firstTrackingInfo.RequestOriginId);
+            MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(moshtrakSearch, moshtrakSearchType)).OrderBy(m => m.IsRegistered).ThenByDescending(m => m.RequestDateJalali).FirstOrDefault();
+            TrackingOutputDto? latestTrackingInfo = await _trackingQueryService.GetLatest(moshtrakInfo.TrackNumber, false);
+            TrackingOutputDto? firstTrackingInfo = await _trackingQueryService.GetFirstStep(moshtrakInfo.TrackNumber, false);
+            NumericDictionary? requestOrigin = RequestOrigin.GetRequestOrigin(firstTrackingInfo?.RequestOriginId ?? 0);
 
             MoshtrakServiceDto moshtrakServiceDto = GetMoshtrakService(moshtrakInfo);
             IEnumerable<NumericDictionary> serviceSelected = MoshtrakService.GetServicesSelectedDto(moshtrakServiceDto);
@@ -116,10 +116,11 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 s48 = serviceSelected.s48,
             };
         }
-        private TrackingDuplicateValidationOutputDto GetResultDto(IEnumerable<NumericDictionary> serviceSelected,MoshtrakOutputDto moshtrakInfo, TrackingOutputDto latestTrackingInfo, TrackingOutputDto firstTrackingInfo, NumericDictionary? requestOrigin)
+        private TrackingDuplicateValidationOutputDto GetResultDto(IEnumerable<NumericDictionary> serviceSelected, MoshtrakOutputDto moshtrakInfo, TrackingOutputDto? latestTrackingInfo, TrackingOutputDto? firstTrackingInfo, NumericDictionary? requestOrigin)
         {
             return new TrackingDuplicateValidationOutputDto()
             {
+                Id = moshtrakInfo.Id,
                 ZoneId = moshtrakInfo.ZoneId,
                 CustomerNumber = moshtrakInfo.CustomerNumber,
                 NationalCode = moshtrakInfo.NationalCode,
@@ -130,11 +131,11 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 MobileNumber = moshtrakInfo.MobileNumber,
                 RequestDateJalali = moshtrakInfo.RequestDateJalali,
                 IsDuplicate = moshtrakInfo.IsRegistered ? false : true,
-                LatestStatusId = latestTrackingInfo.StatusId,
-                LatestStatusTitle = latestTrackingInfo.StatusTitle,
-                RequestOriginId = firstTrackingInfo.RequestOriginId,
+                LatestStatusId = latestTrackingInfo?.StatusId ?? 0,
+                LatestStatusTitle = latestTrackingInfo?.StatusTitle ?? string.Empty,
+                RequestOriginId = firstTrackingInfo?.RequestOriginId ?? 0,
                 RequestOrigin = requestOrigin?.Title ?? string.Empty,
-                ServiceSelected=serviceSelected
+                ServiceSelected = serviceSelected
             };
         }
     }
