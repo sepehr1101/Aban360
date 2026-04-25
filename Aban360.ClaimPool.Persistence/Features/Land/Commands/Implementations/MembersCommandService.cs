@@ -31,6 +31,24 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidUpdateMoshtrakin);
             }
         }
+		public async Task Update(CustomerMobileUpdateDto updateDto, string dbName)
+        {
+            string command = GetUpdateMobileCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
+        }
+        public async Task Update(CustomerBranchTypeUpdateDto updateDto, string dbName)
+        {
+            string command = GetUpdateBranchTypeCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
+        }
         public async Task UpdateBedbes(ZoneIdAndCustomerNumber inputDto, long amount, string dbName)
         {
             string command = GetUpdateBedBesCommand(dbName);
@@ -94,6 +112,30 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 						G_inst_ab=@MeterRegisterDateJalali,
 						G_inst_fas=@SewageRegisterDateJalali,
 						Senf=@GuildId
+                     WHERE 
+                        id=@id AND
+						TRIM(bill_id)=@billId AND
+						town=@zoneId AND
+						radif=@customerNumber ";
+        }
+		private string GetUpdateMobileCommand(string dbName)
+        {
+            return @$"UPDATE [{dbName}].dbo.members
+                     SET 
+	                    MOBILE=@MobileNumber,
+	                    date_sabt=@ToDayDateJalali
+                     WHERE 
+                        id=@id AND
+						TRIM(bill_id)=@billId AND
+						town=@zoneId AND
+						radif=@customerNumber ";
+        }
+        private string GetUpdateBranchTypeCommand(string dbName)
+        {
+            return @$"UPDATE [{dbName}].dbo.members
+                     SET 
+	                    noe_va=@BranchTypeId,
+	                    date_sabt=@ToDayDateJalali
                      WHERE 
                         id=@id AND
 						TRIM(bill_id)=@billId AND

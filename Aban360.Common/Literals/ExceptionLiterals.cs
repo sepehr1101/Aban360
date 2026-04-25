@@ -116,6 +116,8 @@
         public static string InvalidMeterFlow => "خطا در ذخیره مرحله";
         public static string InvalidUpdate => "خطا در ویرایش";
         public static string CurrentNumberLessThanPreviousNumber => "شماره کنتور فعلی کمتر از قبلی است.";
+        public static string InvalidRepeatConstructionBranchType => "وضعیت فعلی -ساخت و ساز- است.";
+        public static string InvalidBranchTypeId => "خطا در کد نوع واگذاری فعلی.";
 
 
         //RemovedBill
@@ -167,5 +169,7 @@
         public static string InvalidCalculation => "امکان محاسبه وجود ندارد.";
         public static string InvalidCalculationConfirmed => "محاسبه تایید نشده است.";
         public static string InvalidLastDbData(string stringTrackNumber) => $"درخواست {stringTrackNumber} ، در سیتم قدیم ثبت شده است.";
+    
+    
     }
 }

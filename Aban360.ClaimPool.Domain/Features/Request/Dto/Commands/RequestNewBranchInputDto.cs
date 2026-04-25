@@ -13,6 +13,7 @@
         public string NeighbourBillId { get; set; }
         public string PostalCode { get; set; }
         public string Description { get; set; }
+        public bool HasSendSms { get; set; }
         public ICollection<int> SelectedServices { get; set; }
 
     }

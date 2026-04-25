@@ -26,8 +26,8 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
         public async Task<FlatReportOutput<InstallationPrintHeaderOutputDto, InstallationPrintDataOutputDto>> Handle(InstallationPrintInputDto inputDto, CancellationToken cancellationToken)
         {
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _memberQueryService.Get(inputDto.BillId);
-            FlatReportOutput<InstallationPrintHeaderOutputDto, InstallationPrintDataOutputDto> result=await _queryService.Get(zoneIdAndCustomerNumber);
-            result.ReportData.Base64Image=inputDto.Base64Image;
+            FlatReportOutput<InstallationPrintHeaderOutputDto, InstallationPrintDataOutputDto> result = await _queryService.Get(zoneIdAndCustomerNumber);
+            result.ReportData.Base64Image = inputDto.Base64Image;
 
             return result;
         }

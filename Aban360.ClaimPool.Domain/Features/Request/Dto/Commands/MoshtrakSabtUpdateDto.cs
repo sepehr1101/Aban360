@@ -2,12 +2,12 @@
 {
     public record MoshtrakSabtUpdateDto
     {
-        public int TrackNumber { get; set; }
+        public int Id { get; set; }
         public bool IsRegister { get; set; }
         public string? Description { get; set; }
-        public MoshtrakSabtUpdateDto(int trackNumber, bool isRegister,string? description)
+        public MoshtrakSabtUpdateDto(int id, bool isRegister,string? description)
         {
-            TrackNumber = trackNumber;
+            Id = id;
             IsRegister = isRegister;
             Description = description;
         }

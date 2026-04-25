@@ -58,9 +58,18 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
         
 
         [HttpGet, HttpPost]
-        [Route("update-5")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerUpdate5Dto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Update5([FromBody] CustomerUpdate5Dto inputDto, CancellationToken cancellationToken)
+        [Route("update-mobile")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerMobileUpdateInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateMobile([FromBody] CustomerMobileUpdateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _customerUpdateHandler.Handle(inputDto, cancellationToken);
+            return Ok(inputDto);
+        }
+
+        [HttpGet, HttpPost]
+        [Route("swap-0-4-branchtype")]//todo: rename
+        [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerBranchTypeUpdateInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SwapBranchType([FromBody] CustomerBranchTypeUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
             await _customerUpdateHandler.Handle(inputDto, cancellationToken);
             return Ok(inputDto);

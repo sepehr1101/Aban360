@@ -52,7 +52,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
         }
         public async Task UpdateSabt(MoshtrakSabtUpdateDto input, string dbName)
         {
-            string command = GetUpdateSabtCommand(dbName);
+            string command = GetUpdateSabtByIdCommand(dbName);
             int recordCount = await _sqlConnection.ExecuteAsync(command, input, _transaction);
             if (recordCount != 1)
             {
@@ -299,11 +299,11 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 							s48=@s48
 						Where TrackingNumber=@TrackNumber";
         }
-        private string GetUpdateSabtCommand(string dbName)
+        private string GetUpdateSabtByIdCommand(string dbName)
         {
             return $@"Update [{dbName}].dbo.moshtrak
 						Set sabt=@IsRegister , sharh=@Description
-						Where TrackingNumber=@TrackNumber";
+						Where Id=@Id";
         }
 		private string GetUpdateCustomerNumberCommand(string dbName)
         {

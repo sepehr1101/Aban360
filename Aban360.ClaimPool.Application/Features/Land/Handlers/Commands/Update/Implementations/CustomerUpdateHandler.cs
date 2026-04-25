@@ -12,24 +12,38 @@ using Aban360.Common.Literals;
 using DNTPersianUtils.Core;
 using Aban360.Common.Db.QueryServices;
 using Aban360.Common.BaseEntities;
+using FluentValidation;
+using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Contracts;
+using Aban360.OldCalcPools.WaterReturn.Dto.Queries;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations
 {
     internal sealed class CustomerUpdateHandler : AbstractBaseConnection, ICustomerUpdateHandler
     {
         private readonly ISubscriptionQueryService _customerQueryService;
-        private readonly ICommonMemberQueryService _memberQueryService;
+        private readonly ICommonMemberQueryService _commonMemberQueryService;
+        private readonly IMembersQueryService _membersQueryService;
+        private readonly IValidator<CustomerMobileUpdateInputDto> _updateMobilevalidator;
+        static int _constructionId = 4;
         public CustomerUpdateHandler(
             ISubscriptionQueryService customerQueryService,
-            ICommonMemberQueryService memberQueryService,
+            ICommonMemberQueryService commonMemberQueryService,
+            IMembersQueryService membersQueryService,
+            IValidator<CustomerMobileUpdateInputDto> updateMobilevalidator,
             IConfiguration configuration)
             : base(configuration)
         {
             _customerQueryService = customerQueryService;
             _customerQueryService.NotNull(nameof(customerQueryService));
 
-            _memberQueryService = memberQueryService;
-            _memberQueryService.NotNull(nameof(memberQueryService));
+            _commonMemberQueryService = commonMemberQueryService;
+            _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
+
+            _updateMobilevalidator = updateMobilevalidator;
+            _updateMobilevalidator.NotNull(nameof(updateMobilevalidator));
+
+            _membersQueryService = membersQueryService;
+            _membersQueryService.NotNull(nameof(membersQueryService));
         }
 
         public async Task Handle(SubscriptionGetDto inputDto, CancellationToken cancellationToken)
@@ -76,6 +90,30 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
 
             await UpdateCustomerAndClient(customerUpdate);
         }
+        public async Task Handle(CustomerMobileUpdateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await Validation(inputDto, cancellationToken);
+            SubscriptionGetDto previousSubscriptioninfo = await GetCustomerPreviousInfo(inputDto.BillId);
+            CustomerMobileUpdateDto updateDto = new(previousSubscriptioninfo.Id, previousSubscriptioninfo.ZoneId, previousSubscriptioninfo.CustomerNumber, previousSubscriptioninfo.BillId, inputDto.MobileNumber);
+            await UpdateCustomerAndClient(updateDto);
+        }
+        public async Task Handle(CustomerBranchTypeUpdateInputDto inputDto, CancellationToken cancellation)
+        {
+            SubscriptionGetDto previousSubscriptioninfo = await GetCustomerPreviousInfo(inputDto.BillId);
+            if (previousSubscriptioninfo.BranchTypeId == 4)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidRepeatConstructionBranchType);
+            }
+            if (previousSubscriptioninfo.BranchTypeId == 1)
+            {
+                CustomerBranchTypeUpdateDto branchTypeUpdateDto = new(previousSubscriptioninfo.Id, previousSubscriptioninfo.ZoneId, previousSubscriptioninfo.CustomerNumber, previousSubscriptioninfo.BillId, _constructionId);
+                await UpdateCustomerAndClient(branchTypeUpdateDto);
+            }
+            else
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidBranchTypeId);
+            }
+        }
         private async Task UpdateCustomer(CustomerUpdateDto updateDto)
         {
             using (IDbConnection connection = _sqlReportConnection)
@@ -99,6 +137,58 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             }
         }
         private async Task UpdateCustomerAndClient(CustomerUpdateDto updateDto)
+        {
+            ZoneIdCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber.ToString());
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    ArchMemCommandService _archMemCommandService = new(connection, transaction);
+                    MembersCommandService _membersCommandService = new(connection, transaction);
+                    ClientsCommandService _clientCommandService = new(connection, transaction);
+                    string dbName = GetDbName(updateDto.ZoneId);
+                    //string dbName = "Atlas";
+
+                    int rowId = await _archMemCommandService.Insert(updateDto, dbName);
+                    await _membersCommandService.Update(updateDto, dbName);
+                    await _clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, updateDto.ToDayDateJalali);
+                    await _clientCommandService.InsertByArchMemId(rowId, dbName);
+
+                    transaction.Commit();
+                }
+            }
+        }
+        private async Task UpdateCustomerAndClient(CustomerMobileUpdateDto updateDto)
+        {
+            ZoneIdCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber.ToString());
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    ArchMemCommandService _archMemCommandService = new(connection, transaction);
+                    MembersCommandService _membersCommandService = new(connection, transaction);
+                    ClientsCommandService _clientCommandService = new(connection, transaction);
+                    string dbName = GetDbName(updateDto.ZoneId);
+                    //string dbName = "Atlas";
+
+                    int rowId = await _archMemCommandService.Insert(updateDto, dbName);
+                    await _membersCommandService.Update(updateDto, dbName);
+                    await _clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, updateDto.ToDayDateJalali);
+                    await _clientCommandService.InsertByArchMemId(rowId, dbName);
+
+                    transaction.Commit();
+                }
+            }
+        }
+        private async Task UpdateCustomerAndClient(CustomerBranchTypeUpdateDto updateDto)
         {
             ZoneIdCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber.ToString());
             using (IDbConnection connection = _sqlReportConnection)
@@ -475,7 +565,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 ToDayDateJalaliWithFragmentYear = DateTime.Now.ToShortPersianDateString().Substring(2, 8),
             };
         }
-
         private async Task<SubscriptionGetDto> GetCustomerPreviousInfo(string billId)
         {
             SubscriptionGetDto previousSubscription = await _customerQueryService.GetInfo(billId);
@@ -498,11 +587,20 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         }
         private async Task LastDeletionStateValidation(string billId, int deletionStateId)
         {
-            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _memberQueryService.Get(billId);
-            MemberInfoGetDto memberInfo = await _memberQueryService.Get(zoneIdAndCustomerNumber);
+            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(billId);
+            MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumber);
             if (memberInfo.DeletionStateId == deletionStateId)
             {
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidDuplicateDeletionState);
+            }
+        }
+        private async Task Validation(CustomerMobileUpdateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _updateMobilevalidator.ValidateAsync(inputDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new BaseException(message);
             }
         }
     }
