@@ -8,7 +8,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts
     {
         Task CheckOpenRequest(string nationalCode, int zoneId);
         Task CheckOpenRequest(int customerNumber, int zoneId);
-        Task<IEnumerable<MoshtrakOutputDto>> Get(MoshtrakGetDto inputDto, MoshtrakSearchTypeEnum searchType);
+        Task<IEnumerable<MoshtrakOutputDto>> Get(MoshtrakGetDto inputDto, MoshtrakSearchTypeEnum searchType, bool hasException = true);
         Task<MoshtrakOutputDto> Get(int id, int zoneId);
         Task<IEnumerable<PreviousRequestGetDto>> GetAllRequestByCustomerNumber(ZoneIdAndCustomerNumber inputDto);
     }

@@ -37,12 +37,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidOpenRequest(trackNumber));
             }
         }
-        public async Task<IEnumerable<MoshtrakOutputDto>> Get(MoshtrakGetDto inputDto, MoshtrakSearchTypeEnum searchType)
+        public async Task<IEnumerable<MoshtrakOutputDto>> Get(MoshtrakGetDto inputDto, MoshtrakSearchTypeEnum searchType, bool hasException = true)
         {
             string dbName = GetDbName(inputDto.ZoneId);
             string query = GetInfoByConditionQuery(dbName, GetCondition(searchType));
             IEnumerable<MoshtrakOutputDto> result = await _sqlReportConnection.QueryAsync<MoshtrakOutputDto>(query, inputDto);
-            if (!result.Any())
+            if (hasException && !result.Any())
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidTrackNumber);
             }
@@ -70,7 +70,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
         {
             string dbName = GetDbName(zoneId);
             string query = GetInfoByIdQuery(dbName);
-            MoshtrakOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<MoshtrakOutputDto>(query, new { id});
+            MoshtrakOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<MoshtrakOutputDto>(query, new { id });
             if (result is null)
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidTrackNumber);

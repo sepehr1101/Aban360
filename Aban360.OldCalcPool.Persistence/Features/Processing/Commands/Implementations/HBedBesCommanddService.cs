@@ -1,11 +1,8 @@
-﻿using Aban360.Common.Db.Dapper;
-using Aban360.Common.Exceptions;
+﻿using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Persistence.Constants;
-using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
 using Dapper;
-using Microsoft.Data.SqlClient;
 using System.Data;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations

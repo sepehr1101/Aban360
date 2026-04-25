@@ -26,6 +26,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private readonly ICustomerInfoDetailQueryService _customerInfoDetailQueryService;
         private readonly IBillReturnCauseQueryService _billReturnCauseQueryService;
         private readonly ITaxCalculator _taxCalculator;
+        private readonly IHBedBesQueryService _hBedBesQueryService;
         private readonly IValidator<ReturnBillFullInputDto> _returnFullValidator;
         private readonly IValidator<ReturnBillPartialInputDto> _returnPartialValidator;
         private static string _title = "برگشتی";
@@ -35,6 +36,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             ICustomerInfoDetailQueryService customerInfoDetailQueryService,
             IBillReturnCauseQueryService billReturnCauseQueryService,
             ITaxCalculator taxCalculator,
+            IHBedBesQueryService hBedBesQueryService,
             IValidator<ReturnBillFullInputDto> returnFullValidator,
             IValidator<ReturnBillPartialInputDto> returnPartialValidator)
         {
@@ -52,6 +54,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             _taxCalculator = taxCalculator;
             _taxCalculator.NotNull(nameof(taxCalculator));
+
+            _hBedBesQueryService=hBedBesQueryService;
+            _hBedBesQueryService.NotNull(nameof(hBedBesQueryService));
 
             _returnFullValidator = returnFullValidator;
             _returnFullValidator.NotNull(nameof(returnFullValidator));
@@ -211,7 +216,8 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Lavazem = 0
             };
 
-            ReturnBillHeaderOutputDto header = new(description, customerInfo.ZoneTitle, previousValues.MinutesNumber.ToString());
+            bool hasReturned = await HasReturned(customerInfo.ZoneId, customerInfo.Radif);
+            ReturnBillHeaderOutputDto header = new(description, customerInfo.ZoneTitle, previousValues.MinutesNumber.ToString(), hasReturned);
             ReturnBillOutputDto data = new(previousValues, currentValues, returnValues);
             FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = new(_title, header, data);
 
@@ -719,5 +725,6 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             string previousDateJalali =dateOnly.Value.AddYears(-1).ToShortPersianDateString();
             return previousDateJalali;
         }
+        private async Task<bool> HasReturned(int zoneId, int customerNumber) => await _hBedBesQueryService.Get(new ZoneIdAndCustomerNumber(zoneId, customerNumber));
     }
 }

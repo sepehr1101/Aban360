@@ -34,13 +34,17 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         public async Task<TrackingDuplicateValidationOutputDto> Handle(TrackingDuplicateValidationInputDto inputDto, CancellationToken cancellationToken)
         {
             var (moshtrakSearch, moshtrakSearchType) = await GetMoshtrakDto(inputDto);
-            MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(moshtrakSearch, moshtrakSearchType)).OrderBy(m => m.IsRegistered).ThenByDescending(m => m.RequestDateJalali).FirstOrDefault();
-            TrackingOutputDto? latestTrackingInfo = await _trackingQueryService.GetLatest(moshtrakInfo.TrackNumber, false);
-            TrackingOutputDto? firstTrackingInfo = await _trackingQueryService.GetFirstStep(moshtrakInfo.TrackNumber, false);
+            MoshtrakOutputDto? moshtrakInfo = (await _moshtrakQueryService.Get(moshtrakSearch, moshtrakSearchType, false)).OrderBy(m => m.IsRegistered).ThenByDescending(m => m.RequestDateJalali).FirstOrDefault();
+            TrackingOutputDto? latestTrackingInfo = await _trackingQueryService.GetLatest(moshtrakInfo?.TrackNumber ?? 0, false);
+            TrackingOutputDto? firstTrackingInfo = await _trackingQueryService.GetFirstStep(moshtrakInfo?.TrackNumber ?? 0, false);
             NumericDictionary? requestOrigin = RequestOrigin.GetRequestOrigin(firstTrackingInfo?.RequestOriginId ?? 0);
 
-            MoshtrakServiceDto moshtrakServiceDto = GetMoshtrakService(moshtrakInfo);
-            IEnumerable<NumericDictionary> serviceSelected = MoshtrakService.GetServicesSelectedDto(moshtrakServiceDto);
+            IEnumerable<NumericDictionary> serviceSelected = new List<NumericDictionary>();
+            if (moshtrakInfo is not null)
+            {
+                MoshtrakServiceDto moshtrakServiceDto = GetMoshtrakService(moshtrakInfo);
+                serviceSelected = MoshtrakService.GetServicesSelectedDto(moshtrakServiceDto);
+            }
 
             return GetResultDto(serviceSelected, moshtrakInfo, latestTrackingInfo, firstTrackingInfo, requestOrigin);
         }
@@ -116,21 +120,21 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 s48 = serviceSelected.s48,
             };
         }
-        private TrackingDuplicateValidationOutputDto GetResultDto(IEnumerable<NumericDictionary> serviceSelected, MoshtrakOutputDto moshtrakInfo, TrackingOutputDto? latestTrackingInfo, TrackingOutputDto? firstTrackingInfo, NumericDictionary? requestOrigin)
+        private TrackingDuplicateValidationOutputDto GetResultDto(IEnumerable<NumericDictionary>? serviceSelected, MoshtrakOutputDto? moshtrakInfo, TrackingOutputDto? latestTrackingInfo, TrackingOutputDto? firstTrackingInfo, NumericDictionary? requestOrigin)
         {
             return new TrackingDuplicateValidationOutputDto()
             {
-                Id = moshtrakInfo.Id,
-                ZoneId = moshtrakInfo.ZoneId,
-                CustomerNumber = moshtrakInfo.CustomerNumber,
-                NationalCode = moshtrakInfo.NationalCode,
-                TrackNumber = moshtrakInfo.TrackNumber,
-                FirstName = moshtrakInfo.FirstName,
-                Surname = moshtrakInfo.Surname,
-                FatherName = moshtrakInfo.FatherName,
-                MobileNumber = moshtrakInfo.MobileNumber,
-                RequestDateJalali = moshtrakInfo.RequestDateJalali,
-                IsDuplicate = moshtrakInfo.IsRegistered ? false : true,
+                Id = moshtrakInfo?.Id ?? 0,
+                ZoneId = moshtrakInfo?.ZoneId ?? 0,
+                CustomerNumber = moshtrakInfo?.CustomerNumber ?? 0,
+                NationalCode = moshtrakInfo?.NationalCode ?? string.Empty,
+                TrackNumber = moshtrakInfo?.TrackNumber ?? 0,
+                FirstName = moshtrakInfo?.FirstName ?? string.Empty,
+                Surname = moshtrakInfo?.Surname ?? string.Empty,
+                FatherName = moshtrakInfo?.FatherName ?? string.Empty,
+                MobileNumber = moshtrakInfo?.MobileNumber ?? string.Empty,
+                RequestDateJalali = moshtrakInfo?.RequestDateJalali ?? string.Empty,
+                IsDuplicate = (moshtrakInfo?.IsRegistered ?? true) ? false : true,
                 LatestStatusId = latestTrackingInfo?.StatusId ?? 0,
                 LatestStatusTitle = latestTrackingInfo?.StatusTitle ?? string.Empty,
                 RequestOriginId = firstTrackingInfo?.RequestOriginId ?? 0,
