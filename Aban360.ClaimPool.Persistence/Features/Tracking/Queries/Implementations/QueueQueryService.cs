@@ -56,7 +56,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
                     	m.Title DeliverySatateTitle,
 	                    q.InsertDateJalali ,
 	                    FORMAT(q.InsertDateTime,'HH:mm') InsertTime,    
-                        q.Receiver
+                        q.Receiver,
+						q.TrackingId TrackId
                     From [Sms].dbo.Queue q
                     Join [Sms].dbo.MagfaDeliveryState m
                     	 On q.FinalDeliveryState=m.Id

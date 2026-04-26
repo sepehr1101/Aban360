@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1
         [Route("sms")]
         public IActionResult TesCalc()
         {
-            BackgroundJob.Enqueue(() => _smsHandler.Send("09135742556", "این پیام جهت تست ارسال میگردد" + Environment.NewLine + "خط بعد"));
+            BackgroundJob.Enqueue(() => _smsHandler.Send("09135742556", "این پیام جهت تست ارسال میگردد" + Environment.NewLine + "خط بعد",Guid.NewGuid()));
             return Ok();
         }
     }

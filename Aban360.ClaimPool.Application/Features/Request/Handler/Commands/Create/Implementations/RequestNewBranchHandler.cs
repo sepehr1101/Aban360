@@ -42,13 +42,14 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<MoshtrakCreateDto> Handle(RequestNewBranchInputDto inputDto, int userName, CancellationToken cancellationToken)
+        public async Task<(MoshtrakCreateDto, Guid)> Handle(RequestNewBranchInputDto inputDto, int userName, CancellationToken cancellationToken)
         {
             await Validation(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber neighbourCustomerInfo = await _commonMemberQueryService.Get(inputDto.NeighbourBillId);
             await _moshtrakQueryService.CheckOpenRequest(inputDto.NationalCode, neighbourCustomerInfo.ZoneId);
             string dbName = GetDbName(neighbourCustomerInfo.ZoneId);
             MoshtrakCreateDto moshtrakInsertDto;
+            Guid trackId = new Guid();
 
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -63,6 +64,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     int trackNumber = (int)(await t0CommandService.GetTrackNumber());
                     moshtrakInsertDto = GetMoshtrackCreateDto(inputDto, trackNumber, neighbourCustomerInfo.ZoneId);
                     TrackingInsertDto trackingInsertDto = GetTrackingCreateDto(inputDto, userName, trackNumber, neighbourCustomerInfo.ZoneId);
+                    trackId = trackingInsertDto.TrackId;
 
                     await moshtrakCommandService.Insert(moshtrakInsertDto, dbName);
                     await trackingCommandService.Insert(trackingInsertDto);
@@ -70,7 +72,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     transaction.Commit();
                 }
             }
-            return moshtrakInsertDto;
+            return (moshtrakInsertDto, trackId);
         }
         private async Task Validation(RequestNewBranchInputDto inputDto, CancellationToken cancellationToken)
         {
@@ -195,6 +197,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 NeighbourBillId = inputDto.NeighbourBillId,
                 RequestOrigin = _requestOrigin,
             };
-        }  
+        }
     }
 }
