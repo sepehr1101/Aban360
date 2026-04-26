@@ -58,7 +58,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Validations
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.PhoneNumber)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .Must(IsValidPhoneNumber).WithMessage(ExceptionLiterals.PhoneNumberFormat);
 
             RuleFor(f => f.MobileNumber)
