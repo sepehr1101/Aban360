@@ -33,6 +33,9 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             if (hasException && result is null)
             {
                 throw new InvalidTrackNumberException(ExceptionLiterals.InvalidTrackNumber);
+            }
+            if (result is not null)
+            {
                 result.StringTrackNumber = trackNumber.ToString().PadLeft(11, '0');
             }
             return result;

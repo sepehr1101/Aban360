@@ -67,9 +67,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
         }
 
         [HttpGet, HttpPost]
-        [Route("swap-0-4-branchtype")]//todo: rename
+        [Route("set-construction-type")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerBranchTypeUpdateInputDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> SwapBranchType([FromBody] CustomerBranchTypeUpdateInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> SetConstructionType([FromBody] CustomerBranchTypeUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
             await _customerUpdateHandler.Handle(inputDto, cancellationToken);
             return Ok(inputDto);

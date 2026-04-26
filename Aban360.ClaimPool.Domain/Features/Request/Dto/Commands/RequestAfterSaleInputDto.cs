@@ -9,7 +9,7 @@
         public string PostalCode { get; set; }
         public string Address { get; set; }
         public string? Description { get; set; }
-        public bool HasSendSms { get; set; }
+        public bool HasSms { get; set; }
         public ICollection<int> SelectedServices { get; set; }
     }
 }

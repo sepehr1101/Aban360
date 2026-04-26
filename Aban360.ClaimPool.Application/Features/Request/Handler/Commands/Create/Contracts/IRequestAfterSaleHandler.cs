@@ -4,6 +4,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 {
     public interface IRequestAfterSaleHandler
     {
-        Task Handle(RequestAfterSaleInputDto input, int userName, CancellationToken cancellationToken);
+        Task<MoshtrakCreateDto> Handle(RequestAfterSaleInputDto input, int userName, CancellationToken cancellationToken);
     }
 }
