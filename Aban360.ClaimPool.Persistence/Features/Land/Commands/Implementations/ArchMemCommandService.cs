@@ -3,7 +3,6 @@ using Aban360.ClaimPool.Persistence.Constants.Literals;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Dapper;
-using Microsoft.Data.SqlClient;
 using System.Data;
 
 namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations

@@ -46,11 +46,11 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> AfterSaleRequest([FromBody] RequestAfterSaleInputDto inputDto, CancellationToken cancellationToken)
         {
             int userName = UserService.GetUserCode(CurrentUser.Username);
-            MoshtrakCreateDto moshtrakInfo = await _requestAfterSaleHandler.Handle(inputDto, userName, cancellationToken);
+            var (moshtrakInfo, trackId) = await _requestAfterSaleHandler.Handle(inputDto, userName, cancellationToken);
             string text = string.Format(SmsTemplates.RequestRegister, moshtrakInfo.TrackNumber);
             if (inputDto.HasSms)
             {
-                _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(moshtrakInfo.NotificationMobile, text));
+                _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(moshtrakInfo.NotificationMobile, text, trackId));
             }
             NewRequestOutputDto outputDto = new(moshtrakInfo.TrackNumber, inputDto.HasSms, inputDto.HasSms ? text : null);
 

@@ -51,7 +51,8 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking.Queries
         public async Task<IActionResult> ResendSms([FromBody] GuidInput input, CancellationToken cancellationToken)
         {
             TrackingSmsDataOutputDto result = await _smsByQueueIdHandler.Handle(input.Input, cancellationToken);
-            _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(result.Receiver, result.Message));
+            result.TrackId = result.TrackId is null ? Guid.Empty : result.TrackId;
+            _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(result.Receiver, result.Message, result.TrackId.Value));
             return Ok(result);
         }
     }

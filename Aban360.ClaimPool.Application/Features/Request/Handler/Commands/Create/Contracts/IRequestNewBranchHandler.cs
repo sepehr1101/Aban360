@@ -4,6 +4,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 {
     public interface IRequestNewBranchHandler
     {
-        Task<MoshtrakCreateDto> Handle(RequestNewBranchInputDto inputDto, int userName, CancellationToken cancellationToken);
+        Task<(MoshtrakCreateDto, Guid)> Handle(RequestNewBranchInputDto inputDto, int userName, CancellationToken cancellationToken);
     }
 }
