@@ -12,7 +12,7 @@ namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Commands
         public string AssessmentDateJalali { get; set; } = DateTime.Now.ToShortPersianDateString(); //todo : check
         public DateTime AssessmentGregorianDateTime { get; set; } = DateTime.Now; //todo: check
         public int ZoneId { get; set; }
-        public int ResultId { get; set; }
+        public int? ResultId { get; set; }
         public DateTime SetResultDateTime { get; set; } = DateTime.Now;//todo : check
         public string? Description { get; set; }
         public Guid TrackId { get; set; }

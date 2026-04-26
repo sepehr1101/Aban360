@@ -84,6 +84,9 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
                 Address = input.Address,
 
                 TotalUnit = input.TotalUnit,
+                CommercialUnit=input.CommercialUnit,
+                DomesticUnit=input.DomesticUnit,
+                OtherUnit=input.OtherUnit,
                 EmptyUnit = input.EmptyUnit,
                 HouseholdNumber = input.HouseholdNumber,
 
@@ -172,7 +175,10 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 						m.POST_COD as PostalCode,
 						TRIM(m.address) as Address,
 
-						m.tedad_mas+tedad_tej+tedad_vahd as TotalUnit,
+						m.tedad_mas+m.tedad_tej+m.tedad_vahd as TotalUnit,
+						m.tedad_mas DomesticUnit,
+						m.tedad_tej CommercialUnit,
+						m.tedad_vahd OtherUnit,
 						m.Khali_s as EmptyUnit,
 						m.ted_khane as HouseholdNumber,
 

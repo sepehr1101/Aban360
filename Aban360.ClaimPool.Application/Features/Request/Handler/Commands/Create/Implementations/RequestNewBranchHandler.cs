@@ -1,7 +1,9 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Tracking.Dto;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
+using Aban360.ClaimPool.Persistence.Features.Tracking.Commands.Implementations;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.QueryServices;
@@ -40,12 +42,13 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task Handle(RequestNewBranchInputDto inputDto, int userName, CancellationToken cancellationToken)
+        public async Task<MoshtrakCreateDto> Handle(RequestNewBranchInputDto inputDto, int userName, CancellationToken cancellationToken)
         {
             await Validation(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber neighbourCustomerInfo = await _commonMemberQueryService.Get(inputDto.NeighbourBillId);
             await _moshtrakQueryService.CheckOpenRequest(inputDto.NationalCode, neighbourCustomerInfo.ZoneId);
             string dbName = GetDbName(neighbourCustomerInfo.ZoneId);
+            MoshtrakCreateDto moshtrakInsertDto;
 
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -58,15 +61,16 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     T0CommandService t0CommandService = new(connection, transaction);
 
                     int trackNumber = (int)(await t0CommandService.GetTrackNumber());
-                    MoshtrakCreateDto moshtrak = GetMoshtrackCreateDto(inputDto, trackNumber, neighbourCustomerInfo.ZoneId);
-                    TrackingInsertDto tracking = GetTrackingCreateDto(inputDto, userName, trackNumber, neighbourCustomerInfo.ZoneId);
+                    moshtrakInsertDto = GetMoshtrackCreateDto(inputDto, trackNumber, neighbourCustomerInfo.ZoneId);
+                    TrackingInsertDto trackingInsertDto = GetTrackingCreateDto(inputDto, userName, trackNumber, neighbourCustomerInfo.ZoneId);
 
-                    await moshtrakCommandService.Insert(moshtrak, dbName);
-                    await trackingCommandService.Insert(tracking);
+                    await moshtrakCommandService.Insert(moshtrakInsertDto, dbName);
+                    await trackingCommandService.Insert(trackingInsertDto);
 
                     transaction.Commit();
                 }
             }
+            return moshtrakInsertDto;
         }
         private async Task Validation(RequestNewBranchInputDto inputDto, CancellationToken cancellationToken)
         {
@@ -126,7 +130,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 PostalCode = string.Empty,
                 ReadingNumber = string.Empty,
                 IsSpecial = false,
-                BrokerId=0,//todo8
+                BrokerId = 0,//todo8
                 s0 = serviceSelected.s0,
                 s1 = serviceSelected.s1,
                 s2 = serviceSelected.s2,
@@ -191,6 +195,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 NeighbourBillId = inputDto.NeighbourBillId,
                 RequestOrigin = _requestOrigin,
             };
-        }
+        }  
     }
 }

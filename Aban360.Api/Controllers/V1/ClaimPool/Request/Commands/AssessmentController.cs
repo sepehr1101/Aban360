@@ -1,9 +1,13 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Db.QueryServices;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
+using Aban360.NotificationPool.Application.Features.Sms;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
@@ -15,11 +19,15 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         private readonly ISetAssessmentTimeHandler _setAssessmentTimeHandler;
         private readonly ISetLightAssessmentResultHandler _setLightAssessmentResultHandler;
         private readonly IReAssessmentRequestHandler _reAssessmentRequestHandler;
+        private readonly ISmsOldHandler _smsOldHandler;
+        private readonly IBackgroundJobClient _backgroudJobClient;
         public AssessmentController(
             ISetAssessmentResultHandler setAssessmentResultHandler,
             ISetAssessmentTimeHandler setAssessmentTimeHandler,
             ISetLightAssessmentResultHandler setLightAssessmentResultHandler,
-            IReAssessmentRequestHandler reAssessmentRequestHandler)
+            IReAssessmentRequestHandler reAssessmentRequestHandler,
+            ISmsOldHandler smsOldHandler,
+            IBackgroundJobClient backgroudJobClient)
         {
             _setAssessmentResultHandler = setAssessmentResultHandler;
             _setAssessmentResultHandler.NotNull(nameof(setAssessmentResultHandler));
@@ -32,6 +40,12 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 
             _reAssessmentRequestHandler = reAssessmentRequestHandler;
             _reAssessmentRequestHandler.NotNull(nameof(reAssessmentRequestHandler));
+
+            _smsOldHandler = smsOldHandler;
+            _smsOldHandler.NotNull(nameof(smsOldHandler));
+
+            _backgroudJobClient = backgroudJobClient;
+            _backgroudJobClient.NotNull(nameof(backgroudJobClient));
         }
 
         [HttpPost]
@@ -55,13 +69,15 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         }
 
         [HttpPost]
-        [Route("set-time")] 
-        [ProducesResponseType(typeof(ApiResponseEnvelope<AssessmentResultInputDto>), StatusCodes.Status200OK)]
+        [Route("set-time")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<SetAssessmentTimeOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SetTime([FromBody] AssessmentSetTimeInputDto inputDto, CancellationToken cancellationToken)
         {
             int examinerCode = UserService.GetUserCode(CurrentUser.Username);
-            await _setAssessmentTimeHandler.Handle(inputDto, examinerCode, cancellationToken);
-            return Ok(inputDto);
+            SetAssessmentTimeDataOutputDto result = await _setAssessmentTimeHandler.Handle(inputDto, examinerCode, cancellationToken);
+            SetAssessmentTimeOutputDto outputDto = GetAssessmentTimeOutputDto(inputDto, result);
+
+            return Ok(outputDto);
         }
 
         [HttpPost]
@@ -82,6 +98,23 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             int userName = UserService.GetUserCode(CurrentUser.Username);
             await _reAssessmentRequestHandler.Handle(inputDto, userName, cancellationToken);
             return Ok(inputDto);
+        }
+        private SetAssessmentTimeOutputDto GetAssessmentTimeOutputDto(AssessmentSetTimeInputDto inputDto, SetAssessmentTimeDataOutputDto result)
+        {
+            string customerText = string.Format(SmsTemplates.RequestTimeSet, result.AssessmentName, result.AssessmentMobileNumber, result.AssessmentDateJalai, result.TrackNumber);
+            string assessmentText = result.ServiceGroupId == 1 ?
+                string.Format(SmsTemplates.NewRequestTimeSetAssessment, result.AssessmentName, result.AssessmentDateJalai, result.Address, result.FullName, result.NeighbourBillId, result.MobileNumber, result.ServiceSelectedList, result.TrackNumber, result.NeighbourBillId) :
+                string.Format(SmsTemplates.AfterSaleRequestTimeSetAssessment, result.AssessmentName, result.AssessmentDateJalai, result.Address, result.FullName, result.BillId, result.MobileNumber, result.ServiceSelectedList, result.TrackNumber);
+            if (inputDto.HasAssessmentSms)
+            {
+                _backgroudJobClient.Enqueue(() => _smsOldHandler.Send(result.AssessmentMobileNumber, assessmentText));
+            }
+            if (inputDto.HasCustomerSms)
+            {
+                _backgroudJobClient.Enqueue(() => _smsOldHandler.Send(result.MobileNumber, customerText));
+            }
+            return new SetAssessmentTimeOutputDto(inputDto.HasAssessmentSms, inputDto.HasCustomerSms, inputDto.HasAssessmentSms ? assessmentText : null, inputDto.HasCustomerSms ? customerText : null);
+
         }
     }
 }

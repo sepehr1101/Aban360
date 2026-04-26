@@ -36,7 +36,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 						t7.C0 BranchTypeId,
 						t7.C1 BranchTypeTitle,
 						t5.C0 MeterDiameterId,
-						t5.C2 MeterDiamterTitle,
+						t5.C2 MeterDiameterTitle,
 						t41.C0 UsageId,
 						t41.C1 UsageTitle,
 						m.radif CustomerNumber,

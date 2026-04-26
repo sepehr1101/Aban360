@@ -6,7 +6,7 @@
         public int AssessmentCode { get; set; }
         public string AssessmentDateJalali { get; set; }
         public string? Description { get; set; }
-        public bool HasCustomerNotification { get; set; }
-        public bool HasAssessmentNotification { get; set; }
+        public bool HasCustomerSms { get; set; }
+        public bool HasAssessmentSms { get; set; }
     }
 }

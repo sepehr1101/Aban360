@@ -29,14 +29,14 @@ namespace Aban360.ClaimPool.Application.Features.Request.Validations
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.CustomerNumber)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .GreaterThan(0).WithMessage(ExceptionLiterals.GreaterThanZero); 
+                .NotNull().WithMessage(ExceptionLiterals.NotNull);
+                //.GreaterThan(0).WithMessage(ExceptionLiterals.GreaterThanZero); //
 
             RuleFor(f => f.NeighbourBillId)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
+                .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.ZoneId)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                .NotNull().WithMessage(ExceptionLiterals.NotNull)
                 .GreaterThan(0).WithMessage(ExceptionLiterals.GreaterThanZero);
 
             RuleFor(f => f.NotificationMobile)
@@ -44,12 +44,12 @@ namespace Aban360.ClaimPool.Application.Features.Request.Validations
                 .Must(IsValidMobileNumber).WithMessage(ExceptionLiterals.MobileNumberFormat);
 
             RuleFor(f => f.UsageId)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                .NotNull().WithMessage(ExceptionLiterals.NotNull)
                 .GreaterThan(0).WithMessage(ExceptionLiterals.GreaterThanZero);
 
             RuleFor(f => f.MeterDiameterId)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .GreaterThan(0).WithMessage(ExceptionLiterals.GreaterThanZero);
+                .NotNull().WithMessage(ExceptionLiterals.NotNull);
+                //.GreaterThan(0).WithMessage(ExceptionLiterals.GreaterThanZero);
 
             RuleFor(f => f.BranchTypeId)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);

@@ -3,7 +3,7 @@
     public record MeterLifeCalculationOutputDto
     {
         public int ZoneId { get; set; }
-        public string ZoneTitle { get; set; } =     default!;
+        public string ZoneTitle { get; set; } = default!;
         public int CustomerNumber { get; set; }
         public string BillId { get; set; }=default!;
         public int BranchTypeId { get; set; }

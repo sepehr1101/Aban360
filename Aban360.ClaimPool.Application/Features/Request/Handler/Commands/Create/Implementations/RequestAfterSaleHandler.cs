@@ -1,7 +1,9 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Tracking.Dto;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
+using Aban360.ClaimPool.Persistence.Features.Tracking.Commands.Implementations;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.QueryServices;
@@ -22,7 +24,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         static int _requestOrigin = 12;
         static int _afterSaleRequestServiceId = 2;
         static int _firstStepStatusId = 0;
-
         public RequestAfterSaleHandler(
            ICommonMemberQueryService commonMemberQueryService,
            IMoshtrakQueryService moshtrakQueryService,
@@ -40,12 +41,13 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task Handle(RequestAfterSaleInputDto input, int userName, CancellationToken cancellationToken)
+        public async Task<MoshtrakCreateDto> Handle(RequestAfterSaleInputDto input, int userName, CancellationToken cancellationToken)
         {
             await InputValidation(input, cancellationToken);
             MemberInfoGetDto memberInfo = await OpenRequestValidation(input);
+            MoshtrakCreateDto moshtrakInsertDto;
             string dbName = GetDbName(memberInfo.ZoneId);
-            
+
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
@@ -57,16 +59,16 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     T0CommandService t0CommandService = new(connection, transaction);
 
                     int trackNumber = (int)(await t0CommandService.GetTrackNumber());
-                    MoshtrakCreateDto moshtrak = GetMoshtrackCreateDto(input, memberInfo, trackNumber);
-                    TrackingInsertDto tracking = GetTrackingCreateDto(input, memberInfo, userName, trackNumber);
+                    moshtrakInsertDto = GetMoshtrackCreateDto(input, memberInfo, trackNumber);
+                    TrackingInsertDto trackingInsertDto = GetTrackingCreateDto(input, memberInfo, userName, trackNumber);
 
-                    await moshtrakCommandService.Insert(moshtrak, dbName);
-                    await trackingCommandService.Insert(tracking);
+                    await moshtrakCommandService.Insert(moshtrakInsertDto, dbName);
+                    await trackingCommandService.Insert(trackingInsertDto);
 
                     transaction.Commit();
                 }
             }
-
+            return moshtrakInsertDto;
         }
         private async Task InputValidation(RequestAfterSaleInputDto inputDto, CancellationToken cancellationToken)
         {
@@ -134,7 +136,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 PostalCode = memberInfo.PostalCode,
                 IsSpecial = memberInfo.IsSpecial,
                 ReadingNumber = memberInfo.ReadingNumber,
-                BrokerId=0,//todo
+                BrokerId = 0,//todo
                 s0 = serviceSelected.s0,
                 s1 = serviceSelected.s1,
                 s2 = serviceSelected.s2,
