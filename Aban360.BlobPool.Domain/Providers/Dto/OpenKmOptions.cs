@@ -22,5 +22,6 @@
         public string AddMetadataEndpoint { get; set; } = default!;
         public string MetadatableEndpoint { get; set; } = default!;
         public string RenameFolderEndpoint { get; set; } = default!;
+        public string GetUuidEndpoint { get;set; } = default!;
     }
 }

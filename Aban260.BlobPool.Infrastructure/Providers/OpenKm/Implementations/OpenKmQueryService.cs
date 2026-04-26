@@ -248,6 +248,28 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<SearchDocumentsResponse>(_jsonOptions);
         }
+
+        public async Task<string> GetFolderUuid(string folderPath)
+        {
+            string baseUrl = $"{_options.BaseUrl}{_options.GetUuidEndpoint}";
+            string finalUrl = $"{baseUrl}?fldId={_options.BaseDirectoryPath}{folderPath}";
+
+            var authHeader = await GetAuthenticationHeaderAsync();
+            using var request = new HttpRequestMessage(HttpMethod.Get, finalUrl);
+            request.Headers.Authorization = authHeader;
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
+
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            using var stream = await response.Content.ReadAsStreamAsync();
+            using var doc = await JsonDocument.ParseAsync(stream);
+            string? uuid = doc.RootElement.GetProperty("uuid").GetString();
+            if (uuid == null)
+            {
+                return "invalid uuid";
+            }
+            return uuid;
+        }
         private void LogRequestToConsole(HttpRequestMessage requestMessage)
         {
             /*string curl = */_httpClient.GenerateCurlInFile(
@@ -356,6 +378,19 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             using var request = new HttpRequestMessage(HttpMethod.Put, finalUrl);
             request.Headers.Authorization = authHeader;
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
+
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+        }
+        public async Task RenameFolder(string folderUuid, string newName)
+        {           
+            string baseUrl = $"{_options.BaseUrl}{_options.RenameFolderEndpoint}";
+            string finalUrl = $"{baseUrl}?fldId={folderUuid}&newName={newName}";
+
+            var authHeader = await GetAuthenticationHeaderAsync();
+            using var request = new HttpRequestMessage(HttpMethod.Put, finalUrl);
+            request.Headers.Authorization = authHeader;
+            //request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
 
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();

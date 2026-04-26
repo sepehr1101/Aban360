@@ -15,6 +15,7 @@ namespace Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts
         Task<MetaDataProperties> GetMetaDataProperties(string documentId);
         Task<AuthenticationHeaderValue> GetAuthenticationHeaderAsync();
         Task<bool> CheckFolderExists(string fldId);
+        Task<string> GetFolderUuid(string folderPath);
 
         //commands
         Task<AddFileDto> AddFile(string path, StreamContent content, string fileName);
@@ -29,5 +30,7 @@ namespace Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts
         /// <param name="nodeId">document uuid</param>
         /// <returns></returns>
         Task AddOrUpdateMetadata(string body, string nodeId, bool isFile);
+
+        Task RenameFolder(string folderUuid, string newName);
     }
 }

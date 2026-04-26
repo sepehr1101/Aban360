@@ -39,12 +39,12 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
 
         public async Task Handle(RoleUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            var validationResult = await _roleValidator.ValidateAsync(updateDto, cancellationToken);
-            if (!validationResult.IsValid)
-            {
-                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomValidationException(message);
-            }//
+            //var validationResult = await _roleValidator.ValidateAsync(updateDto, cancellationToken);
+            //if (!validationResult.IsValid)
+            //{
+            //    var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+            //    throw new CustomValidationException(message);
+            //}//
 
 
             Role role = await _roleQueryService.Get(updateDto.Id);
