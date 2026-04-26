@@ -23,14 +23,16 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
             _transaction.NotNull(nameof(transaction));
         }
 
-        public async Task InsertDuplicate(TrackingInsertDuplicateDto inputDto)
+        public async Task<Guid> InsertDuplicate(TrackingInsertDuplicateDto inputDto)
         {
             string command = GetInsertDuplicateCommand();
-            int recordCount = await _sqlConnection.ExecuteAsync(command, inputDto, _transaction);
-            if (recordCount < 0)
+            Guid? recordId = await _sqlConnection.QueryFirstOrDefaultAsync<Guid>(command, inputDto, _transaction);
+            if (recordId is null)
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertTracking);
             }
+
+            return recordId.Value;
         }
         public async Task Insert(TrackingInsertDto inputDto)
         {
@@ -115,7 +117,9 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 						t.C24
 					From AbAndFazelab.dbo.Tracking t
 					Where t.TrackNumber=@trackNumber
-					Order By t.DateAndTime DESC";
+					Order By t.DateAndTime DESC
+
+                      SELECT CAST(SCOPE_IDENTITY() AS uniqueidentifier)";
         }
         private string GetUpdateIsConsiderdCommand()//todo : use DateAndTime insteadof DateTimeJalali
         {

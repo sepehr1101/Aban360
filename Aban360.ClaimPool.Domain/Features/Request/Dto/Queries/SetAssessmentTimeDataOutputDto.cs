@@ -2,6 +2,7 @@
 {
     public record SetAssessmentTimeDataOutputDto
     {
+        public Guid TrackId { get; set; }
         public int ServiceGroupId { get; set; }
         public int TrackNumber { get; set; }
         public string Address { get; set; }

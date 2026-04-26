@@ -47,11 +47,11 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> NewRequest([FromBody] RequestNewBranchInputDto inputDto, CancellationToken cancellationToken)
         {
             int userCode = UserService.GetUserCode(CurrentUser.Username);
-            MoshtrakCreateDto moshtrakInfo = await _requestNewBranchHandler.Handle(inputDto, userCode, cancellationToken);
+            var (moshtrakInfo, trackId) = await _requestNewBranchHandler.Handle(inputDto, userCode, cancellationToken);
             string text = string.Format(SmsTemplates.RequestRegister, moshtrakInfo.TrackNumber);
             if (inputDto.HasSms)
             {
-                _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(moshtrakInfo.NotificationMobile, text));
+                _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(moshtrakInfo.NotificationMobile, text, trackId));
             }
             NewRequestOutputDto outputDto = new(moshtrakInfo.TrackNumber, inputDto.HasSms, inputDto.HasSms ? text : null);
 

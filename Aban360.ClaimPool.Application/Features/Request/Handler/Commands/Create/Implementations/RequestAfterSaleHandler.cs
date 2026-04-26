@@ -41,11 +41,12 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<MoshtrakCreateDto> Handle(RequestAfterSaleInputDto input, int userName, CancellationToken cancellationToken)
+        public async Task<(MoshtrakCreateDto, Guid)> Handle(RequestAfterSaleInputDto input, int userName, CancellationToken cancellationToken)
         {
             await InputValidation(input, cancellationToken);
             MemberInfoGetDto memberInfo = await OpenRequestValidation(input);
             MoshtrakCreateDto moshtrakInsertDto;
+            Guid trackId = new Guid();
             string dbName = GetDbName(memberInfo.ZoneId);
 
             using (IDbConnection connection = _sqlReportConnection)
@@ -61,6 +62,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     int trackNumber = (int)(await t0CommandService.GetTrackNumber());
                     moshtrakInsertDto = GetMoshtrackCreateDto(input, memberInfo, trackNumber);
                     TrackingInsertDto trackingInsertDto = GetTrackingCreateDto(input, memberInfo, userName, trackNumber);
+                    trackId = trackingInsertDto.TrackId;
 
                     await moshtrakCommandService.Insert(moshtrakInsertDto, dbName);
                     await trackingCommandService.Insert(trackingInsertDto);
@@ -68,7 +70,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     transaction.Commit();
                 }
             }
-            return moshtrakInsertDto;
+            return (moshtrakInsertDto, trackId);
         }
         private async Task InputValidation(RequestAfterSaleInputDto inputDto, CancellationToken cancellationToken)
         {

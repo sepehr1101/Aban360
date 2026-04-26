@@ -69,6 +69,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             MoshtrakOutputDto moshtrakInfo = await GetMoshtrakInfo(latestTrackingInfo.ZoneId, input.TrackNumber);
             TrackingInsertDuplicateDto trackingInsert = GetTrackingCreateDto(input, userName);
             AssessmentInsertDto assessmentInsert = await GetAssessmentInsertDto(input, latestTrackingInfo, trackingInsert.TrackId, moshtrakInfo);
+            Guid trackId = new Guid();
 
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -79,14 +80,14 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     TrackingCommandService trackingCommandService = new(connection, transaction);
                     ExaminationCommandService examinationCommandService = new(connection, transaction);
 
-                    await trackingCommandService.InsertDuplicate(trackingInsert);
+                    trackId = await trackingCommandService.InsertDuplicate(trackingInsert);
                     await examinationCommandService.Insert(assessmentInsert);
 
                     transaction.Commit();
                 }
             }
 
-            return await GetOutputDto(input, moshtrakInfo, assessmentInsert);
+            return await GetOutputDto(input, moshtrakInfo, assessmentInsert, trackId);
         }
         private async Task<TrackingOutputDto> Validation(AssessmentSetTimeInputDto input, CancellationToken cancellationToken)
         {
@@ -192,7 +193,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 AllInJson = JsonSerializer.Serialize<AssessmentSetTimeInputDto>(inputDto)
             };
         }
-        private async Task<SetAssessmentTimeDataOutputDto> GetOutputDto(AssessmentSetTimeInputDto input, MoshtrakOutputDto moshtrakInfo, AssessmentInsertDto assessmentInsert)
+        private async Task<SetAssessmentTimeDataOutputDto> GetOutputDto(AssessmentSetTimeInputDto input, MoshtrakOutputDto moshtrakInfo, AssessmentInsertDto assessmentInsert, Guid trackId)
         {
             IEnumerable<NumericDictionary> moshtrakServiceSelected = MoshtrakService.GetServicesSelectedDto(GetMoshtrakServiceDto(moshtrakInfo));
             string serviceSelected = string.Join(",", moshtrakServiceSelected.Select(m => m.Title));
@@ -208,6 +209,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             }
             return new SetAssessmentTimeDataOutputDto()
             {
+                TrackId = trackId,
                 BillId = trackingInfo.BillId,
                 ServiceGroupId = trackingInfo.ServiceGroupId,
                 TrackNumber = moshtrakInfo.TrackNumber,
