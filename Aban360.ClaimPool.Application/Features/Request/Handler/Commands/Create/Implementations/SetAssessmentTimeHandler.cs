@@ -6,16 +6,17 @@ using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Db.QueryServices;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.Common.Timing;
-using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
 using System.Data;
+using System.Net;
 using System.Text.Json;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations
@@ -26,17 +27,18 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly IAssessmentQueryService _assessmentQueryService;
         private readonly IOfficialHolidayQueryService _officialHolidayQueryService;
+        private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly IValidator<AssessmentSetTimeInputDto> _validator;
         static int _firstStepStatusId = 0;
         static int _setAssessmentTimeStatusId = 10;
         static int _setReAssessmentRequired = 15;
-        static int _firstStepExamination = 1;
 
         public SetAssessmentTimeHandler(
             ITrackingQueryService trackingQueryService,
             IMoshtrakQueryService moshtrakQueryService,
             IAssessmentQueryService assessmentQueryService,
             IOfficialHolidayQueryService officialHolidayQueryService,
+            ICommonMemberQueryService commonMemberQueryService,
             IValidator<AssessmentSetTimeInputDto> validator,
             IConfiguration configuration)
             : base(configuration)
@@ -53,11 +55,14 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             _officialHolidayQueryService = officialHolidayQueryService;
             _officialHolidayQueryService.NotNull(nameof(officialHolidayQueryService));
 
+            _commonMemberQueryService = commonMemberQueryService;
+            _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
+
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task Handle(AssessmentSetTimeInputDto input, int userName, CancellationToken cancellationToken)
+        public async Task<SetAssessmentTimeDataOutputDto> Handle(AssessmentSetTimeInputDto input, int userName, CancellationToken cancellationToken)
         {
             TrackingOutputDto latestTrackingInfo = await Validation(input, cancellationToken);
 
@@ -80,6 +85,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     transaction.Commit();
                 }
             }
+
+            return await GetOutputDto(input, moshtrakInfo, assessmentInsert);
         }
         private async Task<TrackingOutputDto> Validation(AssessmentSetTimeInputDto input, CancellationToken cancellationToken)
         {
@@ -160,7 +167,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 AssessmentMobile = assessmentData.PhoneNumber,
                 AssessmentName = assessmentData.FullName,
                 ZoneId = latestTrackingInfo.ZoneId,
-                ResultId = _firstStepExamination,
+                ResultId = null,
                 Description = inputDto.Description,
                 TrackId = newTrackId,
                 TrackIdResult = Guid.Empty,//todo
@@ -183,6 +190,91 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 HouseValue = 0,
                 UsageId = moshtrakInfo.UsageId,
                 AllInJson = JsonSerializer.Serialize<AssessmentSetTimeInputDto>(inputDto)
+            };
+        }
+        private async Task<SetAssessmentTimeDataOutputDto> GetOutputDto(AssessmentSetTimeInputDto input, MoshtrakOutputDto moshtrakInfo, AssessmentInsertDto assessmentInsert)
+        {
+            IEnumerable<NumericDictionary> moshtrakServiceSelected = MoshtrakService.GetServicesSelectedDto(GetMoshtrakServiceDto(moshtrakInfo));
+            string serviceSelected = string.Join(",", moshtrakServiceSelected.Select(m => m.Title));
+
+            TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(input.TrackNumber);
+
+            string? neighbourAddress = null;
+            if (!string.IsNullOrWhiteSpace(moshtrakInfo.NeighbourBillId))
+            {
+                ZoneIdAndCustomerNumber neighbourZoneId = await _commonMemberQueryService.Get(moshtrakInfo.NeighbourBillId);
+                MemberInfoGetDto neighbourInfo = await _commonMemberQueryService.Get(neighbourZoneId);
+                neighbourAddress = neighbourInfo.Address;
+            }
+            return new SetAssessmentTimeDataOutputDto()
+            {
+                BillId = trackingInfo.BillId,
+                ServiceGroupId = trackingInfo.ServiceGroupId,
+                TrackNumber = moshtrakInfo.TrackNumber,
+                Address = moshtrakInfo.Address,
+                FullName = $@"{moshtrakInfo.Surname} {moshtrakInfo.FirstName}",
+                MobileNumber = moshtrakInfo.NotificationMobile ?? moshtrakInfo.MobileNumber,
+                ServiceSelectedList = serviceSelected,
+                NeighbourBillId = moshtrakInfo.NeighbourBillId,
+                NeighbourAddress = neighbourAddress,
+
+                AssessmentName = assessmentInsert.AssessmentName,
+                AssessmentCode = assessmentInsert.AssessmentCode,
+                AssessmentMobileNumber = assessmentInsert.AssessmentMobile,
+                AssessmentDateJalai = assessmentInsert.AssessmentDateJalali
+            };
+        }
+        private MoshtrakServiceDto GetMoshtrakServiceDto(MoshtrakOutputDto moshtrakInfo)
+        {
+            return new MoshtrakServiceDto()
+            {
+                s0 = moshtrakInfo.s0,
+                s1 = moshtrakInfo.s1,
+                s2 = moshtrakInfo.s2,
+                s3 = moshtrakInfo.s3,
+                s4 = moshtrakInfo.s4,
+                s5 = moshtrakInfo.s5,
+                s8 = moshtrakInfo.s8,
+                s9 = moshtrakInfo.s9,
+                s10 = moshtrakInfo.s10,
+                s11 = moshtrakInfo.s11,
+                s12 = moshtrakInfo.s12,
+                s13 = moshtrakInfo.s13,
+                s14 = moshtrakInfo.s14,
+                s15 = moshtrakInfo.s15,
+                s16 = moshtrakInfo.s16,
+                s17 = moshtrakInfo.s17,
+                s18 = moshtrakInfo.s18,
+                s19 = moshtrakInfo.s19,
+                s20 = moshtrakInfo.s20,
+                s21 = moshtrakInfo.s21,
+                s22 = moshtrakInfo.s22,
+                s23 = moshtrakInfo.s23,
+                s24 = moshtrakInfo.s24,
+                s25 = moshtrakInfo.s25,
+                s26 = moshtrakInfo.s26,
+                s27 = moshtrakInfo.s27,
+                s28 = moshtrakInfo.s28,
+                s29 = moshtrakInfo.s29,
+                s30 = moshtrakInfo.s30,
+                s31 = moshtrakInfo.s31,
+                s32 = moshtrakInfo.s32,
+                s33 = moshtrakInfo.s33,
+                s34 = moshtrakInfo.s34,
+                s35 = moshtrakInfo.s35,
+                s36 = moshtrakInfo.s36,
+                s37 = moshtrakInfo.s37,
+                s38 = moshtrakInfo.s38,
+                s39 = moshtrakInfo.s39,
+                s40 = moshtrakInfo.s40,
+                s41 = moshtrakInfo.s41,
+                s42 = moshtrakInfo.s42,
+                s43 = moshtrakInfo.s43,
+                s44 = moshtrakInfo.s44,
+                s45 = moshtrakInfo.s45,
+                s46 = moshtrakInfo.s46,
+                s47 = moshtrakInfo.s47,
+                s48 = moshtrakInfo.s48,
             };
         }
     }

@@ -25,6 +25,7 @@
         public static string InvalidUpdateGhest => "خطا در ویرایش اقساط";
         public static string InvalidInsertComment=> "خطا در ذخیره کامنت";
         public static string InvalidSwapRequestType=> "خطا در ویرایش نوع درخواست";
+        public static string InvalidInsertQueue=> "خطا در ذخیره پیامک";
 
     }
 }

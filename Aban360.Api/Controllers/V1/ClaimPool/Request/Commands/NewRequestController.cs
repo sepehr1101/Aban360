@@ -1,11 +1,16 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
 using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
+using Aban360.ClaimPool.Application.Features.Sms.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
+using Aban360.ClaimPool.Domain.Features.Tracking.Dto;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Db.QueryServices;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
+using Aban360.NotificationPool.Application.Features.Sms;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
@@ -15,25 +20,42 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
     {
         private readonly IRequestNewBranchHandler _requestNewBranchHandler;
         private readonly IRequestDuplicateValidationHandler _requestDuplicateValidation;
+        private readonly ISmsOldHandler _smsOldHandler;
+        private readonly IBackgroundJobClient _backgroundJobClient;
         public NewRequestController(
             IRequestNewBranchHandler requestNewBranchHandler,
-            IRequestDuplicateValidationHandler requestDuplicateValidation)
+            IRequestDuplicateValidationHandler requestDuplicateValidation,
+            ISmsOldHandler smsOldHandler,
+            IBackgroundJobClient backgroundJobClient)
         {
             _requestNewBranchHandler = requestNewBranchHandler;
             _requestNewBranchHandler.NotNull(nameof(requestNewBranchHandler));
 
             _requestDuplicateValidation = requestDuplicateValidation;
             _requestDuplicateValidation.NotNull(nameof(requestDuplicateValidation));
+
+            _smsOldHandler = smsOldHandler;
+            _smsOldHandler.NotNull(nameof(smsOldHandler));
+
+            _backgroundJobClient = backgroundJobClient;
+            _backgroundJobClient.NotNull(nameof(backgroundJobClient));
         }
 
         [HttpPost]
         [Route("new")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<RequestNewBranchInputDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<NewRequestOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> NewRequest([FromBody] RequestNewBranchInputDto inputDto, CancellationToken cancellationToken)
         {
             int userCode = UserService.GetUserCode(CurrentUser.Username);
-            await _requestNewBranchHandler.Handle(inputDto, userCode, cancellationToken);
-            return Ok(inputDto);
+            MoshtrakCreateDto moshtrakInfo = await _requestNewBranchHandler.Handle(inputDto, userCode, cancellationToken);
+            string text = string.Format(SmsTemplates.RequestRegister, moshtrakInfo.TrackNumber);
+            if (inputDto.HasSms)
+            {
+                _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(moshtrakInfo.NotificationMobile, text));
+            }
+            NewRequestOutputDto outputDto = new(moshtrakInfo.TrackNumber, inputDto.HasSms, inputDto.HasSms ? text : null);
+
+            return Ok(outputDto);
         }
 
         [HttpPost]

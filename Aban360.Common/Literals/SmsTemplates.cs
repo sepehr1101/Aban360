@@ -3,7 +3,7 @@
 namespace Aban360.Common.Literals
 {
     public static class SmsTemplates
-    {        
+    {
         public static string ServiceLinkDisconnectAlert
         {
             get
@@ -28,7 +28,7 @@ namespace Aban360.Common.Literals
             {
                 return @"آبفا {0}{3}مشترک گرامی به شناسه قبض {1}{3}" +
                          @"با عنایت به درخواست جنابعالی مبنی بر وصل مجدد انشعاب، دستور وصل انشعاب شما صادر گردید" +
-                         @"لذا ظرف مدت {2} ساعت آینده انشعاب شما وصل خواهد شد."+
+                         @"لذا ظرف مدت {2} ساعت آینده انشعاب شما وصل خواهد شد." +
                          @"خواهشمند است جهت تحویل انشعاب در محل حضور بعمل آورید";
             }
         }
@@ -63,18 +63,18 @@ namespace Aban360.Common.Literals
                     portalLinkPost = @"/sms/bill",
                     tarefeSaxt = "تعرفه: ساخت و ساز" + Environment.NewLine;
                 var sb = new StringBuilder();
-                sb.AppendLine(abBahaLiteral + space +                          "{0}");
-                sb.AppendLine(abfa + space +                                   "{1}");
-                sb.AppendLine(fromDateLiteral  + space +                       "{2}");
-                sb.AppendLine(toDateLiteral  + space +                         "{3}");
-                sb.AppendLine(fromCounterNumberLiteral  + space +              "{4}");
-                sb.AppendLine(toCounterNumberLiteral  + space +                "{5}");
-                sb.AppendLine(thisPeriodAmountLiteral  + space +               "{6}");
-                sb.AppendLine(payableLiteral  + space +                        "{7}" + space + rls);
-                sb.AppendLine(billIdLiteral  + space +                         "{8}");
-                sb.AppendLine(payIdLiteral  + space +                          "{9}");
-                sb.AppendLine(deadLineLiteral  + space +                       "{10}");
-                sb.AppendLine(portalLinkPre + "{8}"+ portalLinkPost);
+                sb.AppendLine(abBahaLiteral + space + "{0}");
+                sb.AppendLine(abfa + space + "{1}");
+                sb.AppendLine(fromDateLiteral + space + "{2}");
+                sb.AppendLine(toDateLiteral + space + "{3}");
+                sb.AppendLine(fromCounterNumberLiteral + space + "{4}");
+                sb.AppendLine(toCounterNumberLiteral + space + "{5}");
+                sb.AppendLine(thisPeriodAmountLiteral + space + "{6}");
+                sb.AppendLine(payableLiteral + space + "{7}" + space + rls);
+                sb.AppendLine(billIdLiteral + space + "{8}");
+                sb.AppendLine(payIdLiteral + space + "{9}");
+                sb.AppendLine(deadLineLiteral + space + "{10}");
+                sb.AppendLine(portalLinkPre + "{8}" + portalLinkPost);
 
                 return sb.ToString();
             }
@@ -137,5 +137,38 @@ namespace Aban360.Common.Literals
         {
             get { return ""; }
         }
+        public static string RequestRegister
+        {
+            get
+            {
+                return @"آبفا استان اصفهان    درخواست شما تایید شد. کد پیگیری:  {0}";
+            }
+        }
+        public static string NewRequestTimeSetAssessment
+        {
+            get
+            {
+                return @" ارزیاب محترم آقای {0} ارزیابی جدید شما در تاریخ {1} به"+
+                    @"آدرس {2} به نام {3} میباشد شناسه همسایه:{4} تلفن همراه مشترک:{5} "+
+                    @"فهرست خدمات: {6} شماره پیگیری:{7} آدرس همسایه: {8}";
+            }
+        }
+        public static string AfterSaleRequestTimeSetAssessment
+        {
+            get
+            {
+                return @"ارزیاب محترم {0} ارزیابی جدید شما در تاریخ {1} به آدرس {2} به نام {3} میباشد شناسه مشترک:{4} تلفن همراه مشترک:{5} فهرست خدمات: {6} شماره پیگیری:{7}";
+            }
+        }
+        public static string RequestTimeSet
+        {
+            get
+            {
+                return @"متقاضی گرامی مامور بازدید ملک شما آقای {0} با شماره موبایل {1} میباشد."+
+                    @"لطفا در تاریخ {2} با اصل کلیه مدارک اعم از پروانه ساختمان ،سند مالکیت یا قولنامه و"+
+                    @"کد پستی در محل حضور داشته باشید شماره پیگیری:{3}";
+            }
+        }
+
     }
 }

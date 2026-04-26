@@ -24,6 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly IMembersQueryService _membersQueryService;
         private readonly IValidator<CustomerMobileUpdateInputDto> _updateMobilevalidator;
+        static int[] _allowedToSetConstructionType = { 0, 1 };
         static int _constructionId = 4;
         public CustomerUpdateHandler(
             ISubscriptionQueryService customerQueryService,
@@ -104,7 +105,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             {
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidRepeatConstructionBranchType);
             }
-            if (previousSubscriptioninfo.BranchTypeId == 1)
+            if (_allowedToSetConstructionType.Contains(previousSubscriptioninfo.BranchTypeId))
             {
                 CustomerBranchTypeUpdateDto branchTypeUpdateDto = new(previousSubscriptioninfo.Id, previousSubscriptioninfo.ZoneId, previousSubscriptioninfo.CustomerNumber, previousSubscriptioninfo.BillId, _constructionId);
                 await UpdateCustomerAndClient(branchTypeUpdateDto);
