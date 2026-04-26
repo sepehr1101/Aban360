@@ -83,7 +83,7 @@ namespace Aban360.ReportPool.Persistence.Base
                         f.MalfunctionPeriodCount,
 	                    v.NextNumber ,
                         ISNULL(lc.ChangeDateJalali, 0) AS LastChangeDateJalali,
-                    	TRIM(lc.BodySerial) LatestChangeBodySerial
+                    	TRIM(lc.BodySerial) LatestChangeBodySerial,
                         TRIM(c.MeterSerialBody) ClientBodySerial ,
 						c.BillId,
                         TRIM(c.FirstName)+' '+TRIM(c.SureName) AS FullName,
@@ -163,7 +163,7 @@ namespace Aban360.ReportPool.Persistence.Base
 	                    v.NextNumber,
                         v.MalfunctionPeriodCount,
                         ISNULL(lc.ChangeDateJalali, 0) AS LastChangeDateJalali,
-                    	TRIM(lc.BodySerial) LatestChangeBodySerial
+                    	TRIM(lc.BodySerial) LatestChangeBodySerial ,
                         TRIM(c.MeterSerialBody) ClientBodySerial ,
 						c.BillId,
                         c.CustomerNumber,

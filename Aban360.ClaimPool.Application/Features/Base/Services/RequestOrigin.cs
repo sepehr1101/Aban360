@@ -15,7 +15,8 @@ namespace Aban360.ClaimPool.Application.Features.Base.Services
                 { 5,"نظام "},
                 { 6,"CRM"},
                 { 8,"SMS"},
-                { 10,"پنجره واحد هما" }
+                { 10,"پنجره واحد هما" },
+                { 12,"رایاب"}
             };
 
             NumericDictionary? result = valueKeys
