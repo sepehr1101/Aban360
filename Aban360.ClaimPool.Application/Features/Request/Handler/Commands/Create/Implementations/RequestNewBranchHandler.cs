@@ -67,6 +67,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     trackId = trackingInsertDto.TrackId;
 
                     await moshtrakCommandService.Insert(moshtrakInsertDto, dbName);
+                    await trackingCommandService.UpdateIsConsiderdLatest(trackingInsertDto.TrackNumber, true);
                     await trackingCommandService.Insert(trackingInsertDto);
 
                     transaction.Commit();

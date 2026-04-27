@@ -31,7 +31,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertAssessment);
             }
         }
-        public async Task Update(AssessmentInsertDto inputDto)
+        public async Task Update(AssessmentUpdateDto inputDto)
         {
             string command = GetUpdateQuery();
             int recordCount = await _sqlRonnection.ExecuteAsync(command, inputDto, _transaction);
@@ -63,14 +63,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
         {
             return $@"UPDATE AbAndFazelab.dbo.Examination
                     SET
-                        TrackNumber = @TrackNumber,
-                        BillId = @BillId,
-                        ExaminerCode = @AssessmentCode,
-                        ExaminerName = @AssessmentName,
-                        ExaminerMobile = @AssessmentMobile,
-                        DayJalali = @AssessmentDateJalali,
-                        DayMiladi = @AssessmentGregorianDateTime,
-                        ZoneId = @ZoneId,
                         ResultId = @ResultId,
                         SetResultDateTime = @SetResultDateTime,
                         ResultDescription = @Description,

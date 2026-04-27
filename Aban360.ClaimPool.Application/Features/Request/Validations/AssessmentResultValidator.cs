@@ -124,10 +124,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Validations
                 .NotNull().WithMessage(ExceptionLiterals.NotNull)
                 .Must(IsValidNationalCode).WithMessage(ExceptionLiterals.NationalCodeFormat);
 
-            RuleFor(f => f.FatherName)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull)
-                .Length(3, 15).WithMessage(ExceptionLiterals.InvlaidStringLength);
-
             RuleFor(f => f.PostalCode)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull)
                 .Must(IsValidPostalCode).WithMessage(ExceptionLiterals.PostalCodeFormat);

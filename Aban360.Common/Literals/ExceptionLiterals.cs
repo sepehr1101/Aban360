@@ -161,6 +161,7 @@
         public static string InvalidUserName => "کد کاربری صحیح نیست.";
         public static string InvalidDiscountFileName => "اطلاعات در این پوشه یافت نشد";
         public static string InvalidStatusId => "خطا در کد وضعیت ";
+        public static string InvalidSetResultDuplicate => "ثبت نتیجه ارزیابی قبلا انجام شده.";
         public static string InvalidOpenRequest(string trackNumber) => $"شمار دارای درخواست نیمه تمام با شماره پیگیری {trackNumber} هستید. ";
 
         public static string NotFountOpenRequest => "درخواستی با وضعیت نیمه‌تمام یافت نشد.";
