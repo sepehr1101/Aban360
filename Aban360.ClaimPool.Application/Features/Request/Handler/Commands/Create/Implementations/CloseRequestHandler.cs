@@ -38,7 +38,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             string deleteDescription = $"حذف توسط {userName}";
 
             var (moshtrakSabtUpdate, moshtrakInfo) = await GetMoshtrakUpdateDto(trackingInfo, inputDto, userName, deleteDescription);
-            TrackingInsertDuplicateDto trackingInsertDto = new(trackingInfo?.TrackNumber ?? 0, _removeRequestStatusId, deleteDescription, userName, _requestOrigin);
+            TrackingInsertDuplicateDto trackingInsertDto = new(trackingInfo?.TrackNumber ?? 0, _removeRequestStatusId, deleteDescription, userName, _requestOrigin, true, false);
 
             string dbName = GetDbName(moshtrakInfo.ZoneId);
             await SqlCommands(trackingInfo, moshtrakSabtUpdate, trackingInsertDto, dbName);

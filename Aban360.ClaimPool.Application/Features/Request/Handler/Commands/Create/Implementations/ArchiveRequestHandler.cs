@@ -64,15 +64,14 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         {
             if (isRegistered == true ||
                 previousStatusId == _deletedSatatus ||
-                (inputDto.SendToArchive && previousStatusId == _archiveStatusId) ||
-                (!inputDto.SendToArchive && !_allowedRemoveArchivedStatusId.Contains(inputDto.StatusId.Value)))//and not Deleted
+                (previousStatusId == _archiveStatusId))//and not Deleted
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
             }
         }
         private TrackingInsertDuplicateDto GetTrackingInsertDto(ArchiveRequestInputDto inputDto, int userCode)
         {
-            return new TrackingInsertDuplicateDto(inputDto.TrackNumber, inputDto.SendToArchive ? _archiveStatusId : inputDto.StatusId.Value, inputDto.Description, userCode, _requestOrigin);
+            return new TrackingInsertDuplicateDto(inputDto.TrackNumber, _archiveStatusId, inputDto.Description, userCode, _requestOrigin, true, false);
         }
     }
 }
