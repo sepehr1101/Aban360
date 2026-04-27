@@ -17,7 +17,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IGhestQueryService _ghestQueryService;
         static int _calculationConfirmedStatus = 60;
-        static int _requestOrigin = 12;//todo:True?
+        static int _requestOrigin = 12;
 
         public CalculationRequestConfirmHandler(
             ITrackingQueryService trackingQueryService,

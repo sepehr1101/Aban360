@@ -16,7 +16,6 @@ using Aban360.Common.Timing;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using System.Data;
-using System.Net;
 using System.Text.Json;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations
@@ -32,6 +31,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         static int _firstStepStatusId = 0;
         static int _setAssessmentTimeStatusId = 10;
         static int _setReAssessmentRequired = 15;
+        static int _requestOrigin = 12;
 
         public SetAssessmentTimeHandler(
             ITrackingQueryService trackingQueryService,
@@ -69,7 +69,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             MoshtrakOutputDto moshtrakInfo = await GetMoshtrakInfo(latestTrackingInfo.ZoneId, input.TrackNumber);
             TrackingInsertDuplicateDto trackingInsert = GetTrackingCreateDto(input, userName);
             AssessmentInsertDto assessmentInsert = await GetAssessmentInsertDto(input, latestTrackingInfo, trackingInsert.TrackId, moshtrakInfo);
-            Guid trackId = new Guid();
 
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -80,14 +79,15 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     TrackingCommandService trackingCommandService = new(connection, transaction);
                     ExaminationCommandService examinationCommandService = new(connection, transaction);
 
-                    trackId = await trackingCommandService.InsertDuplicate(trackingInsert);
+                    await trackingCommandService.InsertDuplicate(trackingInsert);
+                    await trackingCommandService.UpdateIsConsiderdLatest(trackingInsert.TrackNumber, true);
                     await examinationCommandService.Insert(assessmentInsert);
 
                     transaction.Commit();
                 }
             }
 
-            return await GetOutputDto(input, moshtrakInfo, assessmentInsert, trackId);
+            return await GetOutputDto(input, moshtrakInfo, assessmentInsert, trackingInsert.TrackId);
         }
         private async Task<TrackingOutputDto> Validation(AssessmentSetTimeInputDto input, CancellationToken cancellationToken)
         {
@@ -117,19 +117,14 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
             return latestTrackingInfo;
         }
-        private void FridayValidation(string date)
+        private DateTime FridayValidation(string date)
         {
-            string gregorianDate = ConvertDate.JalaliToGregorian(date);
-            string[] partsDate = gregorianDate.Split('-');
-            int year = int.Parse(partsDate[0]);
-            int month = int.Parse(partsDate[1]);
-            int day = int.Parse(partsDate[2]);
-
-            DateTime _date = new(year, month, day);
+            DateTime _date=ConvertDate.JalaliToDateTime(date);
             if (_date.DayOfWeek == DayOfWeek.Friday)
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidFridayDate);
             }
+            return _date;
         }
         private async Task OfficialHolidayValidation(string date)
         {
@@ -154,7 +149,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         }
         private TrackingInsertDuplicateDto GetTrackingCreateDto(AssessmentSetTimeInputDto inputDto, int userName)
         {
-            return new TrackingInsertDuplicateDto(inputDto.TrackNumber, _setAssessmentTimeStatusId, inputDto.Description, userName);
+            return new TrackingInsertDuplicateDto(inputDto.TrackNumber, _setAssessmentTimeStatusId, inputDto.Description, userName, _requestOrigin);
         }
         private async Task<AssessmentInsertDto> GetAssessmentInsertDto(AssessmentSetTimeInputDto inputDto, TrackingOutputDto latestTrackingInfo, Guid newTrackId, MoshtrakOutputDto moshtrakInfo)
         {
@@ -168,8 +163,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 AssessmentMobile = assessmentData.PhoneNumber,
                 AssessmentName = assessmentData.FullName,
                 ZoneId = latestTrackingInfo.ZoneId,
+                AssessmentDateJalali=inputDto.AssessmentDateJalali,
+                AssessmentGregorianDateTime= ConvertDate.JalaliToDateTime(inputDto.AssessmentDateJalali),
                 ResultId = null,
-                Description = inputDto.Description,
+                Description = null,
                 TrackId = newTrackId,
                 TrackIdResult = Guid.Empty,//todo
                 X1 = "0",

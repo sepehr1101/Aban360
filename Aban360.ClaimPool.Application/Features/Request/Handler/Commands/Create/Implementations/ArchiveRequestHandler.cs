@@ -19,6 +19,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         static int _archiveStatusId = 90003;
         static int _deletedSatatus = 90000;
+        static int _requestOrigin = 12;
         public ArchiveRequestHandler(
             ITrackingQueryService trackingQueryService,
             IMoshtrakQueryService moshtrakQueryService,
@@ -65,7 +66,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         }
         private TrackingInsertDuplicateDto GetTrackingInsertDto(ArchiveRequestInputDto inputDto, int userCode)
         {
-            return new TrackingInsertDuplicateDto(inputDto.TrackNumber, inputDto.SendToArchive ? _archiveStatusId : inputDto.StatusId.Value, inputDto.Description, userCode);
+            return new TrackingInsertDuplicateDto(inputDto.TrackNumber, inputDto.SendToArchive ? _archiveStatusId : inputDto.StatusId.Value, inputDto.Description, userCode, _requestOrigin);
         }
     }
 }

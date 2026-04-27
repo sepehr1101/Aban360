@@ -26,13 +26,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
         public async Task<Guid> InsertDuplicate(TrackingInsertDuplicateDto inputDto)
         {
             string command = GetInsertDuplicateCommand();
-            Guid? recordId = await _sqlConnection.QueryFirstOrDefaultAsync<Guid>(command, inputDto, _transaction);
-            if (recordId is null)
+            int recordEffected = await _sqlConnection.ExecuteAsync(command, inputDto, _transaction);
+            if (recordEffected <= 0)
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertTracking);
             }
 
-            return recordId.Value;
+            return inputDto.TrackId;
         }
         public async Task Insert(TrackingInsertDto inputDto)
         {
@@ -47,7 +47,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
         {
             string command = GetUpdateIsConsiderdCommand();
             int recordCount = await _sqlConnection.ExecuteAsync(command, new { trackNumber, isConsiderd }, _transaction);
-            if (recordCount < 0)
+            if (recordCount <= 0)
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertTracking);
             }
@@ -98,7 +98,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 						t.BillId,
 						t.ServiceGroup_FK,
 						@StatusId Status,
-						t.RequestOrigin,
+						@RequestOrigin,
 						0 IsConsiderd,
 						@UserId InserrtedBy,
 						@Description Description,
@@ -117,9 +117,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 						t.C24
 					From AbAndFazelab.dbo.Tracking t
 					Where t.TrackNumber=@trackNumber
-					Order By t.DateAndTime DESC
-
-                      SELECT CAST(SCOPE_IDENTITY() AS uniqueidentifier)";
+					Order By t.DateAndTime DESC";
         }
         private string GetUpdateIsConsiderdCommand()//todo : use DateAndTime insteadof DateTimeJalali
         {

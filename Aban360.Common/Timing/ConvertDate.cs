@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Literals;
+﻿using Aban360.Common.Exceptions;
+using Aban360.Common.Literals;
 using DNTPersianUtils.Core;
 
 namespace Aban360.Common.Timing
@@ -60,6 +61,15 @@ namespace Aban360.Common.Timing
 
             return ExceptionLiterals.Incalculable;
         }
+        public static DateTime JalaliToDateTime(string date)
+        {
+            string gregorianDate = ConvertDate.JalaliToGregorian(date);
+            string[] partsDate = gregorianDate.Split('-');
+            int year = int.Parse(partsDate[0]);
+            int month = int.Parse(partsDate[1]);
+            int day = int.Parse(partsDate[2]);
 
+             return new DateTime(year, month, day);
+        }
     }
 }

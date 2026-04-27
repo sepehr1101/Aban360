@@ -1,22 +1,12 @@
-﻿using DNTPersianUtils.Core;
-
-namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Commands
+﻿namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Commands
 {
-    public record AssessmentInsertDto
+    public record AssessmentUpdateDto
     {
-        public int TrackNumber { get; set; }
-        public string BillId { get; set; }
-        public int AssessmentCode { get; set; }
-        public string AssessmentName { get; set; }
-        public string AssessmentMobile { get; set; }
-        public string AssessmentDateJalali { get; set; } 
-        public DateTime? AssessmentGregorianDateTime { get; set; }
-        public int ZoneId { get; set; }
-        public int? ResultId { get; set; }
-        public DateTime? SetResultDateTime { get; set; }
+        public int ResultId { get; set; }
+        public DateTime SetResultDateTime { get; set; }
         public string? Description { get; set; }
         public Guid TrackId { get; set; }
-        public Guid? TrackIdResult { get; set; }//todo : check
+        public Guid TrackIdResult { get; set; }
 
 
         public string X1 { get; set; }
