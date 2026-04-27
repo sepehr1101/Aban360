@@ -18,6 +18,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly ITrackingQueryService _trackingQueryService;
         static int _removeRequestStatusId = 90000;
+        static int _requestOrigin = 12;
         public CloseRequestHandler(
             IMoshtrakQueryService moshtrakQueryService,
             ITrackingQueryService trackingQueryService,
@@ -37,8 +38,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             string deleteDescription = $"حذف توسط {userName}";
 
             var (moshtrakSabtUpdate, moshtrakInfo) = await GetMoshtrakUpdateDto(trackingInfo, inputDto, userName, deleteDescription);
-            TrackingInsertDuplicateDto trackingInsertDto = new(trackingInfo?.TrackNumber ?? 0, _removeRequestStatusId, deleteDescription, userName);
-          
+            TrackingInsertDuplicateDto trackingInsertDto = new(trackingInfo?.TrackNumber ?? 0, _removeRequestStatusId, deleteDescription, userName, _requestOrigin);
+
             string dbName = GetDbName(moshtrakInfo.ZoneId);
             await SqlCommands(trackingInfo, moshtrakSabtUpdate, trackingInsertDto, dbName);
 
@@ -83,6 +84,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     {
                         TrackingCommandService _trackingCommandService = new(connection, transaction);
                         await _trackingCommandService.InsertDuplicate(trackingInsertDto);
+                        await _trackingCommandService.UpdateIsConsiderdLatest(trackingInfo.TrackNumber, true);
                     }
                     MoshtrakCommandService _moshtrackCommandService = new(connection, transaction);
                     await _moshtrackCommandService.UpdateSabt(moshtrakSabtUpdate, dbName);

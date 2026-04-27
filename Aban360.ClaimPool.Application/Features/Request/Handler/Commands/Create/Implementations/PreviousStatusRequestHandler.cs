@@ -17,6 +17,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
     {
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IMoshtrakQueryService _moshtrakQueryService;
+        static int _requestOrigin = 12;
         public PreviousStatusRequestHandler(
             ITrackingQueryService trackingQueryService,
             IMoshtrakQueryService moshtrakQueryService,
@@ -65,7 +66,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         }
         private TrackingInsertDuplicateDto GetTrackingInsertDto(TrackNumberWithDescriptionInputDto inputDto, int statusId, int userCode)
         {
-            return new TrackingInsertDuplicateDto(inputDto.TrackNumber, statusId, inputDto.Description, userCode);
+            return new TrackingInsertDuplicateDto(inputDto.TrackNumber, statusId, inputDto.Description, userCode, _requestOrigin);
         }
     }
 }

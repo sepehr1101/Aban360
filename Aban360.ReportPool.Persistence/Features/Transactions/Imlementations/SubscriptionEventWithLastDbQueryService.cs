@@ -106,7 +106,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 					Where 
 						b.town=@zoneId AND
 						b.radif=@customerNumber 
-					Union
+					Union All
 					Select 
 						m.bill_id BillId,
 						b.id,
@@ -145,7 +145,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 					Where 
 						b.town=@zoneId AND
 						b.radif=@customerNumber  
-						Union
+						Union  All
 					Select 
 						m.bill_id BillId,
 						r.id,
@@ -204,7 +204,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 					Where 
 						r.town=@zoneId AND
 						r.radif=@customerNumber  
-					Union
+					Union All
 					Select 
 						m.bill_id BillId,
 						v.id,
@@ -243,7 +243,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 					Where 
 						v.town=@zoneId AND
 						v.radif=@customerNumber 
-					Union
+					Union All
 					select
 					    h.Sh_GhABS1 BillId,
 						0 Id,

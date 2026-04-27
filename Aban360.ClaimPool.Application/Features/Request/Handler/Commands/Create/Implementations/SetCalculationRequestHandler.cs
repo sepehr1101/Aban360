@@ -17,7 +17,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IGhestQueryService _ghestQueryService;
         static int _amountIsConfirmedStatus = 75;
-        static int _requestOrigin = 12;//todo:True?
+        static int _requestOrigin = 12;
 
         public SetCalculationRequestHandler(
             ITrackingQueryService trackingQueryService,
@@ -71,6 +71,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     TrackingCommandService trackingCommandService = new(connection, transaction);
+                    await trackingCommandService.UpdateIsConsiderdLatest(trackingInsertDto.TrackNumber, true);
                     await trackingCommandService.Insert(trackingInsertDto);
 
                     transaction.Commit();
