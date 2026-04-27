@@ -7,8 +7,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 {
     internal sealed class TrackingResultGetAllHandler : ITrackingResultGetAllHandler
     {
-        private readonly ITrackingResultQueryService _trackingResultQueryService;
-        public TrackingResultGetAllHandler(ITrackingResultQueryService trackingResultQueryService)
+        private readonly IT64QueryService _trackingResultQueryService;
+        public TrackingResultGetAllHandler(IT64QueryService trackingResultQueryService)
         {
             _trackingResultQueryService = trackingResultQueryService;
             _trackingResultQueryService.NotNull(nameof(trackingResultQueryService));

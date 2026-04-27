@@ -20,7 +20,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
     internal sealed class AssessmentTaskGetAllHandler : IAssessmentTaskGetAllHandler
     {
         private readonly IAssessmentTaskQueryService _assessmentTaskQueryService;
-        private readonly ITrackingResultQueryService _trackingResultQueryService;
+        private readonly IT64QueryService _trackingResultQueryService;
         private readonly IUsageQuerySevice _usageQueryService;
         private readonly IHandoverQueryService _handoverQueryService;
         private readonly IMeterDiameterQueryService _meterDiameterQueryService;
@@ -34,7 +34,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
         public AssessmentTaskGetAllHandler(
             IAssessmentTaskQueryService assessmentTaskQueryService,
-            ITrackingResultQueryService trackingResultQueryService,
+            IT64QueryService trackingResultQueryService,
             IUsageQuerySevice usageQueryService,
             IHandoverQueryService handoverQueryService,
             IMeterDiameterQueryService meterDiameterQueryService,

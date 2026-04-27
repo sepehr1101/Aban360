@@ -2,7 +2,7 @@
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts
 {
-    public interface ISetCalculationRequestHandler
+    public interface IAmountRequestConfirmHandler
     {
         Task Handle(SetCalculationRequestInputDto inputDto, int userCode, CancellationToken cancellationToken);
     }

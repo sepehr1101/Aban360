@@ -170,7 +170,7 @@
         public static string InvalidCalculation => "امکان محاسبه وجود ندارد.";
         public static string InvalidCalculationConfirmed => "محاسبه تایید نشده است.";
         public static string InvalidLastDbData(string stringTrackNumber) => $"درخواست {stringTrackNumber} ، در سیتم قدیم ثبت شده است.";
-    
+        public static string SetBillId => " شناسی قبض به درخواست جاری اختصاص داده نشده.";
     
     }
 }

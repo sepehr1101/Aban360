@@ -21,7 +21,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IAssessmentQueryService _assessmentQueryService;
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly IValidator<LightAssessmentResultInputDto> _validator;
-        private static int _status = 110;
+        private static int _setAssessmentResultStatus = 110;
+        private static int _seenByAssessmentStatus = 150;
         static int _assessmentSetTime = 10;
         static int _requestOrigin = 12;
         public SetLightAssessmentResultHandler(
@@ -51,11 +52,12 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             TrackingOutputDto latestTrackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
             await Validatoin(latestTrackingInfo.TrackId, latestTrackingInfo.StatusId);
 
-            TrackingInsertDuplicateDto trackingInsertDto = new(inputDto.TrackNumber, _status, inputDto.Description, assessmentCode, _requestOrigin);
+            TrackingInsertDuplicateDto trackingInsertSeenAssessmentDto = new(inputDto.TrackNumber, _seenByAssessmentStatus, inputDto.Description, assessmentCode, _requestOrigin, true, true);
+            TrackingInsertDuplicateDto trackingInsertSetAssessmentResultDto = new(inputDto.TrackNumber, _setAssessmentResultStatus, inputDto.Description, assessmentCode, _requestOrigin, true, false);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(latestTrackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
-            AssessmentUpdateDto assessmentUpdateDto = await GetAssessmentUpdateDto(inputDto, latestTrackingInfo, moshtrakInfo, assessmentCode, trackingInsertDto.TrackId);
+            AssessmentUpdateDto assessmentUpdateDto = await GetAssessmentUpdateDto(inputDto, latestTrackingInfo, moshtrakInfo, assessmentCode, trackingInsertSetAssessmentResultDto.TrackId);
 
-            await ExecuteSqlCommand(latestTrackingInfo.ZoneId, trackingInsertDto, assessmentUpdateDto);
+            await ExecuteSqlCommand(latestTrackingInfo.ZoneId, trackingInsertSetAssessmentResultDto, trackingInsertSeenAssessmentDto, assessmentUpdateDto);
         }
         private async Task InputValidation(LightAssessmentResultInputDto input, CancellationToken cancellationToken)
         {
@@ -112,7 +114,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 AllInJson = JsonSerializer.Serialize<LightAssessmentResultInputDto>(inputDto)
             };
         }
-        private async Task ExecuteSqlCommand(int zoneId, TrackingInsertDuplicateDto trackingInsertDto, AssessmentUpdateDto assessmentUpdateDto)
+        private async Task ExecuteSqlCommand(int zoneId, TrackingInsertDuplicateDto trackingInsertSetAssessmentResultDto, TrackingInsertDuplicateDto trackingInsertSeenAssessmentDto, AssessmentUpdateDto assessmentUpdateDto)
         {
             string dbName = GetDbName(zoneId);
             using (IDbConnection connection = _sqlReportConnection)
@@ -126,8 +128,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     TrackingCommandService _trackingCommandService = new(connection, transaction);
                     ExaminationCommandService _examinationCommandService = new(connection, transaction);
 
-                    await _trackingCommandService.UpdateIsConsiderdLatest(trackingInsertDto.TrackNumber, true);
-                    await _trackingCommandService.InsertDuplicate(trackingInsertDto);
+                    await _trackingCommandService.UpdateIsConsiderdLatest(trackingInsertSetAssessmentResultDto.TrackNumber, true);
+                    await _trackingCommandService.InsertDuplicate(trackingInsertSeenAssessmentDto);
+                    await _trackingCommandService.InsertDuplicate(trackingInsertSetAssessmentResultDto);
                     await _examinationCommandService.Update(assessmentUpdateDto);
 
                     transaction.Commit();
