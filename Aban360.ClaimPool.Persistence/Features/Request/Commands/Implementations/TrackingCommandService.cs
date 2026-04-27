@@ -125,7 +125,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                         SELECT TOP 1 IsConsiderd
                         FROM[AbAndFazelab].dbo.Tracking
                         WHERE TrackNumber = @trackNumber
-                        ORDER BY DateTimeJalali DESC
+                        ORDER BY DateAndTime DESC
                     )
                     UPDATE FirstRecord
                     SET IsConsiderd = @isConsiderd";

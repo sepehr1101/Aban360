@@ -43,7 +43,7 @@
         public int OtherUnit { get; set; }
         public int DiscountCount { get; set; }
         public string NationalCode { get; set; }
-        public string FatherName { get; set; }
+        public string? FatherName { get; set; }
         public string PostalCode { get; set; }
         public bool IsNonPermanent { get; set; }
         //public bool AdamTaxfifAb { get; set; }

@@ -23,9 +23,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IValidator<LightAssessmentResultInputDto> _validator;
         private static int _status = 110;
         static int _assessmentSetTime = 10;
-        static int _reAssessemntRequired = 15;
         static int _requestOrigin = 12;
-        static int[] allowedSetTime = { _assessmentSetTime, _reAssessemntRequired };//todo:
         public SetLightAssessmentResultHandler(
             ITrackingQueryService trackingQueryService,
             IAssessmentQueryService assessmentQueryService,
@@ -51,10 +49,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         {
             await InputValidation(inputDto, cancellationToken);
             TrackingOutputDto latestTrackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
-            if (!allowedSetTime.Contains(latestTrackingInfo.StatusId))
-            {
-                throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
-            }
+            await Validatoin(latestTrackingInfo.TrackId, latestTrackingInfo.StatusId);
 
             TrackingInsertDuplicateDto trackingInsertDto = new(inputDto.TrackNumber, _status, inputDto.Description, assessmentCode, _requestOrigin);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(latestTrackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
@@ -71,6 +66,20 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 throw new CustomValidationException(message);
             }
         }
+        private async Task Validatoin(Guid trackId, int previousStatusId)
+        {
+            if (_assessmentSetTime != previousStatusId)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
+            }
+
+
+            bool hasResult = await _assessmentQueryService.HasResultByTrackId(trackId);
+            if (hasResult)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidSetResultDuplicate);
+            }
+        }
         private async Task<AssessmentUpdateDto> GetAssessmentUpdateDto(LightAssessmentResultInputDto inputDto, TrackingOutputDto latestTrackingInfo, MoshtrakOutputDto moshtrakInfo, int assessmentCode, Guid trackIdResult)
         {
             AssessmentGetDto assessmentData = await _assessmentQueryService.Get(assessmentCode);
@@ -80,7 +89,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 Description = inputDto.Description,
                 TrackId = latestTrackingInfo.TrackId,
                 TrackIdResult = trackIdResult,
-                SetResultDateTime=DateTime.Now,
+                SetResultDateTime = DateTime.Now,
                 X1 = "0",
                 Y1 = "0",
                 X2 = "0",
@@ -99,7 +108,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 Premises = 0,
                 HouseValue = 0,
                 UsageId = moshtrakInfo.UsageId,
-                Accuracy=string.Empty,
+                Accuracy = string.Empty,
                 AllInJson = JsonSerializer.Serialize<LightAssessmentResultInputDto>(inputDto)
             };
         }

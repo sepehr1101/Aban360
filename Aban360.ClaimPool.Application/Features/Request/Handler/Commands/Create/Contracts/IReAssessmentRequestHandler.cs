@@ -4,6 +4,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 {
     public interface IReAssessmentRequestHandler
     {
-        Task Handle(AssessmentSetTimeInputDto inputDto, int userCode, CancellationToken cancellationToken);
+        Task Handle(TrackNumberWithDescriptionInputDto inputDto, int userCode, CancellationToken cancellationToken);
     }
 }

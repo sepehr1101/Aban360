@@ -71,8 +71,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     TrackingCommandService trackingCommandService = new(connection, transaction);
-                    await trackingCommandService.Insert(trackingInsertDto);
 
+                    await trackingCommandService.UpdateIsConsiderdLatest(trackingInsertDto.TrackNumber, true);
+                    await trackingCommandService.Insert(trackingInsertDto);
+                    
                     transaction.Commit();
                 }
             }

@@ -19,7 +19,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         static int _archiveStatusId = 90003;
         static int _deletedSatatus = 90000;
+        static int _reAssessmentRequest = 15;
+        static int _reCalculationRequest = 65;
         static int _requestOrigin = 12;
+        static int[] _allowedRemoveArchivedStatusId = { _reAssessmentRequest, _reCalculationRequest };
         public ArchiveRequestHandler(
             ITrackingQueryService trackingQueryService,
             IMoshtrakQueryService moshtrakQueryService,
@@ -35,12 +38,12 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
         public async Task Handle(ArchiveRequestInputDto inputDto, int userCode, CancellationToken cancellationToken)
         {
-            TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
-            MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
-            Validation(inputDto.TrackNumber, trackingInfo.StatusId, moshtrakInfo.IsRegistered);
+            TrackingOutputDto latestTrackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
+            MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(latestTrackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
+            Validation(inputDto, latestTrackingInfo.StatusId, moshtrakInfo.IsRegistered);
 
             TrackingInsertDuplicateDto trackingInsertDto = GetTrackingInsertDto(inputDto, userCode);
-            string dbName = GetDbName(trackingInfo.ZoneId);
+            string dbName = GetDbName(latestTrackingInfo.ZoneId);
 
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -57,9 +60,12 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 }
             }
         }
-        private void Validation(int trackNumber, int statusId, bool isRegistered)//todo: need Or not?
+        private void Validation(ArchiveRequestInputDto inputDto, int previousStatusId, bool isRegistered)//todo: need Or not?
         {
-            if (isRegistered == true || statusId == _deletedSatatus)//and not Deleted
+            if (isRegistered == true ||
+                previousStatusId == _deletedSatatus ||
+                (inputDto.SendToArchive && previousStatusId == _archiveStatusId) ||
+                (!inputDto.SendToArchive && !_allowedRemoveArchivedStatusId.Contains(inputDto.StatusId.Value)))//and not Deleted
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
             }

@@ -79,8 +79,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     TrackingCommandService trackingCommandService = new(connection, transaction);
                     ExaminationCommandService examinationCommandService = new(connection, transaction);
 
-                    await trackingCommandService.InsertDuplicate(trackingInsert);
                     await trackingCommandService.UpdateIsConsiderdLatest(trackingInsert.TrackNumber, true);
+                    await trackingCommandService.InsertDuplicate(trackingInsert);
                     await examinationCommandService.Insert(assessmentInsert);
 
                     transaction.Commit();
@@ -119,7 +119,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         }
         private DateTime FridayValidation(string date)
         {
-            DateTime _date=ConvertDate.JalaliToDateTime(date);
+            DateTime _date = ConvertDate.JalaliToDateTime(date);
             if (_date.DayOfWeek == DayOfWeek.Friday)
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidFridayDate);
@@ -163,12 +163,12 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 AssessmentMobile = assessmentData.PhoneNumber,
                 AssessmentName = assessmentData.FullName,
                 ZoneId = latestTrackingInfo.ZoneId,
-                AssessmentDateJalali=inputDto.AssessmentDateJalali,
-                AssessmentGregorianDateTime= ConvertDate.JalaliToDateTime(inputDto.AssessmentDateJalali),
+                AssessmentDateJalali = inputDto.AssessmentDateJalali,
+                AssessmentGregorianDateTime = ConvertDate.JalaliToDateTime(inputDto.AssessmentDateJalali),
                 ResultId = null,
                 Description = null,
                 TrackId = newTrackId,
-                TrackIdResult = Guid.Empty,//todo
+                TrackIdResult = null,
                 X1 = "0",
                 Y1 = "0",
                 X2 = "0",
