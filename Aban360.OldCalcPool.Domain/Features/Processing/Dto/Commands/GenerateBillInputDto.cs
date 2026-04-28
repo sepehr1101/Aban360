@@ -11,6 +11,6 @@
         public double? Precision { get; set; }
 
         public bool IsConfirm { get; set; }
-
+        public string? CurrentDateJalali { get; set; }
     }
 }

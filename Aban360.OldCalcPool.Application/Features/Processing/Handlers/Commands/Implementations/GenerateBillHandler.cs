@@ -59,7 +59,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
         public async Task<AbBahaCalculationDetails> Handle(GenerateBillInputDto inputDto, CancellationToken cancellationToken)
         {
-            await Validation(inputDto, cancellationToken);
+            await Validate(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await GetZoneIdANdCustomerNumber(inputDto.BillId);
 
             CustomerInfoGetDto customerInfo = await _customerInfoService.Get(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
@@ -138,14 +138,20 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 MeterChangeNumber = customerInfo.TavizInfo?.TavizNumber ?? 0
             };
         }
-        private MeterInfoByPreviousDataInputDto GetMeterInfoByPreviousData(CustomerInfoGetDto customerInfo, GenerateBillInputDto generateBillInfo)
+        private MeterInfoByPreviousDataInputDto
+            GetMeterInfoByPreviousData(CustomerInfoGetDto customerInfo, GenerateBillInputDto generateBillInfo)
         {
+            string currentDateJalali = DateTime.Now.ToShortPersianDateString();
+            if (!string.IsNullOrWhiteSpace(generateBillInfo.CurrentDateJalali))
+            {
+                currentDateJalali = generateBillInfo.CurrentDateJalali;
+            }
             return new MeterInfoByPreviousDataInputDto()
             {
                 BillId = customerInfo.MembersInfo.BillId,
                 PreviousDateJalali = customerInfo.BedBesInfo?.LastMeterDateJalali ?? customerInfo.MembersInfo.WaterInstallationDateJalali,
                 PreviousNumber = customerInfo.BedBesInfo?.LastMeterNumber ?? 0,
-                CurrentDateJalali = DateTime.Now.ToShortPersianDateString(),
+                CurrentDateJalali = currentDateJalali,
                 CurrentMeterNumber = generateBillInfo.MeterNumber,
                 CounterStateCode = generateBillInfo.CounterStateCode
             };
@@ -156,7 +162,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             var (sumItems, jam, pard) = GetAmounts(preDebtAmount, abBahaCalc.SumItems);
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
             string mohlatDateJalali = DateTime.Now.AddDays(_paymentDeadline).ToShortPersianDateString();
-            string paymentId = TransactionIdGenerator.GeneratePaymentId((long)pard, abBahaCalc.Customer.BillId);
+            string paymentIdOption = $"1{currentDateJalali.Substring(5, 2)}";
+            string paymentId = TransactionIdGenerator.GeneratePaymentId((long)pard, abBahaCalc.Customer.BillId, paymentIdOption);
             decimal barge = await _variabService.GetAndRenew(abBahaCalc.Customer.ZoneId);
 
             return new BedBesCreateDto()// ToDo :check
@@ -303,13 +310,22 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 Bodjeh = (decimal)abBahaCalc.BoodjeDiscount,
             };
         }
-        private async Task Validation(GenerateBillInputDto inputDto, CancellationToken cancellationToken)
+        private async Task Validate(GenerateBillInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new CustomValidationException(message);
+            }
+            if (!string.IsNullOrWhiteSpace(inputDto.CurrentDateJalali))
+            {
+                DateOnly? currentDate = inputDto.CurrentDateJalali.ToGregorianDateOnly();
+                if (!currentDate.HasValue)
+                {
+                    var message = string.Join("تاریخ ناصحیح");
+                    throw new BaseException(message);
+                }
             }
         }
         private void CounterStateValidation(int? counterStateCode, int currentNumber, int? previousNumber)

@@ -11,11 +11,14 @@ namespace Aban360.Api.Controllers.V1
     public class TestController : BaseController
     {
         private readonly ISmsOldHandler _smsHandler;
+        IHttpContextAccessor _contextAccessor;
 
-        public TestController(ISmsOldHandler smsHandler)
+        public TestController(ISmsOldHandler smsHandler, IHttpContextAccessor httpContextAccessor)
         {
             _smsHandler = smsHandler;
             _smsHandler.NotNull(nameof(smsHandler));
+
+            _contextAccessor = httpContextAccessor;
         }
 
         [HttpPost]
@@ -24,6 +27,14 @@ namespace Aban360.Api.Controllers.V1
         {
             BackgroundJob.Enqueue(() => _smsHandler.Send("09135742556", "این پیام جهت تست ارسال میگردد" + Environment.NewLine + "خط بعد",Guid.NewGuid()));
             return Ok();
+        }
+
+        [HttpPost]
+        [Route("check-body")]
+        public async Task<IActionResult> TestBody()
+        {
+            var requestBody = await new StreamReader(_contextAccessor.HttpContext.Request.Body).ReadToEndAsync();
+            return Ok(requestBody);
         }
     }
     public class ZoneTest
