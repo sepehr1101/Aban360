@@ -113,6 +113,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
             return @$";With cte as(
                     	Select
+							t46.C2 RegionTitle,
+							t46.C0 RegionId,
                     		b.ZoneTitle,
                     		TRIM(b.BillId) as BillId,
                     		t41.C1 as UsageTitle, 
@@ -147,6 +149,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     From [CustomerWarehouse].dbo.Bills b
                     Join [Db70].dbo.T41 t41
                     	ON b.UsageId=t41.C0
+                    Join [Db70].dbo.T51 t51
+                    	ON b.ZoneId=t51.C0
+                    Join [Db70].dbo.T46 t46
+                    	ON t51.C1=t46.C0
                     Where 
                     		(b.RegisterDay BETWEEN @fromDate AND @toDate) AND
                     		(@fromConsumption IS NULL OR
@@ -161,6 +167,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     		{branchTypeQuery}
                     )
                     Select
+						MAX(RegionId) RegionId,
+						MAX(RegionTitle) RegionTitle,
                     	{groupKey} as GroupKey,
                     	Count(1) as BillCount,
                     	SUM(SewageConsumption) as SewageConsumption,
