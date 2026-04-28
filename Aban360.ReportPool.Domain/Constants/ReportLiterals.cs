@@ -50,6 +50,7 @@
         public static string WaterCalculationDetails { get { return $"{Report} ریز محاسبه - آب بها"; } }
 
         public static string WaterInvoice { get { return $"{Report} قبض"; } }
+        public static string WaterItemsInvoice { get { return $"{Report} اقلام قبض"; } }
 
         public static string NonPermanentBranchDetail { get { return $"{Report} جرئیات انشعاب غیر‌دائم"; } }
         public static string NonPermanentBranchSummary { get { return $"{Report} خلاصه انشعاب غیر‌دائم"; } }
@@ -165,6 +166,7 @@
         public static string WaterInstallGtRequest { get { return "انشعاب آب نصب شده زودتر از واگذار"; } }
 
 
+        public static string ReceivedSms { get { return $"{Report} پیامک های دریافتی"; } }
         public static string SendSmsToMobile { get { return $"{Report} پیامک ارسالی به مشترک"; } }
 
         public static string HandoverDetail { get { return $"{Report} جزئیات نوع واگذاری"; } }
