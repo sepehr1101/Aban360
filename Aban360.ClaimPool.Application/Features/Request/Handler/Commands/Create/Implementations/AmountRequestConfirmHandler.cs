@@ -12,14 +12,15 @@ using System.Data;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations
 {
-    internal sealed class SetCalculationRequestHandler : AbstractBaseConnection, ISetCalculationRequestHandler
+    internal sealed class AmountRequestConfirmHandler : AbstractBaseConnection, IAmountRequestConfirmHandler
     {
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IGhestQueryService _ghestQueryService;
         static int _amountIsConfirmedStatus = 75;
+        static int _calculationConfirmedStatus = 60;
         static int _requestOrigin = 12;
 
-        public SetCalculationRequestHandler(
+        public AmountRequestConfirmHandler(
             ITrackingQueryService trackingQueryService,
             IGhestQueryService ghestQueryService,
             IConfiguration configuration)
@@ -34,15 +35,24 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
         public async Task Handle(SetCalculationRequestInputDto inputDto, int userCode, CancellationToken cancellationToken)
         {
-            TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
-            IEnumerable<InstallmentRequestDataOutputDto> installments = await _ghestQueryService.Get(trackingInfo.StringTrackNumber, trackingInfo.ZoneId);
+            TrackingOutputDto latestTrackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
+            IEnumerable<InstallmentRequestDataOutputDto> installments = await _ghestQueryService.Get(latestTrackingInfo.StringTrackNumber, latestTrackingInfo.ZoneId);
+            Validation(installments, latestTrackingInfo.StatusId);
+
+            TrackingInsertDuplicateDto trackingInsertDuplicateDto = new(latestTrackingInfo.TrackNumber, _amountIsConfirmedStatus, inputDto.Description, userCode, _requestOrigin, true, false);
+            //TrackingInsertDto trackingInsertDto = GetTrackingCreateDto(inputDto, trackingInfo, userCode);
+            await ExecuteSqlCommand(trackingInsertDuplicateDto);
+        }
+        private void Validation(IEnumerable<InstallmentRequestDataOutputDto> installments, int previousStatusId)
+        {
             if (!installments.Any())
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidCalculationConfirmed);
             }
-
-            TrackingInsertDto trackingInsertDto = GetTrackingCreateDto(inputDto, trackingInfo, userCode);
-            await ExecuteSqlCommand(trackingInsertDto);
+            if (previousStatusId != _calculationConfirmedStatus)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
+            }
         }
         private TrackingInsertDto GetTrackingCreateDto(SetCalculationRequestInputDto inputDto, TrackingOutputDto latestTrackingInfo, int userCode)
         {
@@ -60,7 +70,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 RequestOrigin = _requestOrigin,
             };
         }
-        private async Task ExecuteSqlCommand(TrackingInsertDto trackingInsertDto)
+        private async Task ExecuteSqlCommand(TrackingInsertDuplicateDto trackingInsertDuplicateDto)
         {
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -71,8 +81,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     TrackingCommandService trackingCommandService = new(connection, transaction);
-                    await trackingCommandService.UpdateIsConsiderdLatest(trackingInsertDto.TrackNumber, true);
-                    await trackingCommandService.Insert(trackingInsertDto);
+                    await trackingCommandService.UpdateIsConsiderdLatest(trackingInsertDuplicateDto.TrackNumber, true);
+                    await trackingCommandService.InsertDuplicate(trackingInsertDuplicateDto);
 
                     transaction.Commit();
                 }
