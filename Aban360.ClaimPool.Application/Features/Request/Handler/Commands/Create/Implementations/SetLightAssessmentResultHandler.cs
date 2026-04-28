@@ -9,6 +9,7 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Text.Json;
@@ -17,6 +18,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 {
     internal sealed class SetLightAssessmentResultHandler : AbstractBaseConnection, ISetLightAssessmentResultHandler
     {
+        private readonly IHttpContextAccessor _contextAccessor;
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IAssessmentQueryService _assessmentQueryService;
         private readonly IMoshtrakQueryService _moshtrakQueryService;
@@ -26,6 +28,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         static int _assessmentSetTime = 10;
         static int _requestOrigin = 12;
         public SetLightAssessmentResultHandler(
+            IHttpContextAccessor contextAccessor,
             ITrackingQueryService trackingQueryService,
             IAssessmentQueryService assessmentQueryService,
             IMoshtrakQueryService moshtrakQueryService,
@@ -33,6 +36,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             IConfiguration configuration)
             : base(configuration)
         {
+            _contextAccessor = contextAccessor;
+            _contextAccessor.NotNull(nameof(contextAccessor));
+
             _trackingQueryService = trackingQueryService;
             _trackingQueryService.NotNull(nameof(trackingQueryService));
 
@@ -84,7 +90,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         }
         private async Task<AssessmentUpdateDto> GetAssessmentUpdateDto(LightAssessmentResultInputDto inputDto, TrackingOutputDto latestTrackingInfo, MoshtrakOutputDto moshtrakInfo, int assessmentCode, Guid trackIdResult)
         {
+            string body = await new StreamReader(_contextAccessor.HttpContext.Request.Body).ReadToEndAsync();
             AssessmentGetDto assessmentData = await _assessmentQueryService.Get(assessmentCode);
+
             return new AssessmentUpdateDto()
             {
                 ResultId = inputDto.ResultId,
@@ -111,7 +119,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 HouseValue = 0,
                 UsageId = moshtrakInfo.UsageId,
                 Accuracy = string.Empty,
-                AllInJson = JsonSerializer.Serialize<LightAssessmentResultInputDto>(inputDto)
+                AllInJson = body //JsonSerializer.Serialize<LightAssessmentResultInputDto>(inputDto)
             };
         }
         private async Task ExecuteSqlCommand(int zoneId, TrackingInsertDuplicateDto trackingInsertSetAssessmentResultDto, TrackingInsertDuplicateDto trackingInsertSeenAssessmentDto, AssessmentUpdateDto assessmentUpdateDto)

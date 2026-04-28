@@ -9,6 +9,7 @@ using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using Aban360.Common.Timing;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
@@ -22,7 +23,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly IKartQueryService _kartQueryService;
         private readonly IValidator<InstallmentRequestInputDto> _validator;
-        static int _intervalDueDate = 30;
+        static int _maxInterval = 3;
+        static int _maxInstallmentCount = 9;
         static int _calculationConfirmedStatus = 60;
         static string _title = "تقسیط";
         static string _insertBy = "Aban";
@@ -68,7 +70,15 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
             if (trackingInfo.StatusId != _calculationConfirmedStatus)
             {
-                // throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
+            }
+            if (inputDto.MonthlyDuration > _maxInterval)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidMonthlyDuration(_maxInterval));
+            }
+            if (inputDto.InstallmentCount > _maxInstallmentCount)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidInstallmentCount(_maxInstallmentCount));
             }
 
             return trackingInfo;
@@ -91,14 +101,14 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         }
         private IEnumerable<InstallmentRequestDataOutputDto> GetInstallments(InstallmentRequestInputDto inputDto, IEnumerable<CalculationRequestDisplayDataOutputDto> kartInfo)
         {
-            int dailyInterval = 30 * inputDto.MonthlyDuration;
+            string[] dueDatesJalali = GetDate(inputDto.InstallmentCount, inputDto.MonthlyDuration);
             var (payable, firstInstallmentWithoutZero, eachInstallmentAmountWithoutZero, remain) = GetInstallmentAmount(inputDto, kartInfo);
-            InstallmentRequestDataOutputDto firstInstallment = new(firstInstallmentWithoutZero + remain, DateTime.Now.AddDays(dailyInterval).ToShortPersianDateString(), string.Empty);
+            InstallmentRequestDataOutputDto firstInstallment = new(firstInstallmentWithoutZero + remain, dueDatesJalali[0], string.Empty);
             ICollection<InstallmentRequestDataOutputDto> data = new List<InstallmentRequestDataOutputDto>(); ;
             data.Add(firstInstallment);
             for (int i = 2; i <= inputDto.InstallmentCount; i++)
             {
-                string dueDateJalali = DateTime.Now.AddDays(i * dailyInterval).ToShortPersianDateString();
+                string dueDateJalali = dueDatesJalali[i - 1];
                 InstallmentRequestDataOutputDto otherinstallment = new(eachInstallmentAmountWithoutZero, dueDateJalali, string.Empty);
                 data.Add(otherinstallment);
             }
@@ -158,6 +168,45 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     transaction.Commit();
                 }
             }
+        }
+        private string[] GetDate(int installmentCount, int monthlyDuration)
+        {
+            string dateJalali = DateTime.Now.ToShortPersianDateString();
+
+
+            string[] dateJalaliItems = dateJalali.Split('/');
+            short day = Convert.ToInt16(dateJalaliItems[2]);
+
+            string formalDay = "01";
+            if (day > 25 || day <= 5)
+                formalDay = "05";
+            else if (day > 5 && day <= 15)
+                formalDay = "15";
+            else if (day > 15 && day <= 25)
+                formalDay = "25";
+            string firstDateJalali = $@"{dateJalaliItems[0]}/{dateJalaliItems[1]}/{formalDay}";
+
+            string[] dueDatesJalali = new string[installmentCount];
+            dueDatesJalali[0] = firstDateJalali;
+            int month = Convert.ToInt32(dateJalaliItems[1]);
+            for (int i = 1; i < installmentCount; i++)
+            {
+                month = month + monthlyDuration;
+                if (month > 12)
+                {
+                    month = month - 12;
+                    dateJalaliItems[0] = (Convert.ToInt32(dateJalaliItems[0]) + 1).ToString();
+                }
+
+                string formalMonth = month.ToString();
+                if (formalMonth.Length != 2)
+                {
+                    formalMonth = $@"0{month.ToString()}";
+                }
+                string date = $@"{dateJalaliItems[0]}/{formalMonth}/{formalDay}";
+                dueDatesJalali[i] = date;
+            }
+            return dueDatesJalali;
         }
     }
 }

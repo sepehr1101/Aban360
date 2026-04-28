@@ -39,7 +39,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
             TrackingOutputDto previousTrackingInfo = await _trackingQueryService.GetSecondToLatest(inputDto.TrackNumber);//todo : check
             TrackingInsertDuplicateDto trackingInsertDto = GetTrackingInsertDto(inputDto, previousTrackingInfo.StatusId, userCode);
-            string dbName = GetDbName(trackingInfo.ZoneId);
 
             using (IDbConnection connection = _sqlReportConnection)
             {

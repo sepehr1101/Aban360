@@ -39,6 +39,7 @@
         public static string CurrentDateNotMoreThanPreviousDate => "تاریخ دوره قبلی نمیتوان از تاریخ دوره جاری بزرگ تر باشد";
         public static string CurrentNumberNotMoreThanPreviousNumber => "رقم دوره قبلی نمیتوان از رقم دوره جاری بزرگ تر باشد";
         public static string InvalidDeletionState => "نامعتبر! کنتور جمع‌آوری شده";
+        public static string InvoiceNotFound => " قبض یافت نشد!";
         public static string BillIdNotFound => "شناسه قبض یافت نشد!";
         public static string InvalidBillId => "شناسه قبض معتبر نیست!";
         public static string InvalidTrackNumber => "شماره پیگیری یافت نشد.";
@@ -163,6 +164,8 @@
         public static string InvalidStatusId => "خطا در کد وضعیت ";
         public static string InvalidSetResultDuplicate => "ثبت نتیجه ارزیابی قبلا انجام شده.";
         public static string InvalidOpenRequest(string trackNumber) => $"شمار دارای درخواست نیمه تمام با شماره پیگیری {trackNumber} هستید. ";
+        public static string InvalidMonthlyDuration(int normalDuration) => $"دوره اقساط باید کمتر از {normalDuration} ماه باشد.";
+        public static string InvalidInstallmentCount(int count) => $"تعداد اقساط باید کمتر از {count} قسط باشد.";
 
         public static string NotFountOpenRequest => "درخواستی با وضعیت نیمه‌تمام یافت نشد.";
         public static string CantSetTime => "امکان انتساب زمانبندی ارزیابی وجود ندارد";
