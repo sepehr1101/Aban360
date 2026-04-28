@@ -13,6 +13,9 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.Common.Timing;
+using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
+using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
+using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using System.Data;
@@ -24,9 +27,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
     {
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IMoshtrakQueryService _moshtrakQueryService;
-        private readonly IAssessmentQueryService _assessmentQueryService;
+        private readonly IExaminationQueryService _assessmentQueryService;
         private readonly IOfficialHolidayQueryService _officialHolidayQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
+        private readonly IExaminerOffQueryService _examinerOffQueryService;
         private readonly IValidator<AssessmentSetTimeInputDto> _validator;
         static int _firstStepStatusId = 0;
         static int _setAssessmentTimeStatusId = 10;
@@ -36,9 +40,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         public SetAssessmentTimeHandler(
             ITrackingQueryService trackingQueryService,
             IMoshtrakQueryService moshtrakQueryService,
-            IAssessmentQueryService assessmentQueryService,
+            IExaminationQueryService assessmentQueryService,
             IOfficialHolidayQueryService officialHolidayQueryService,
             ICommonMemberQueryService commonMemberQueryService,
+            IExaminerOffQueryService examinerOffQueryService,
             IValidator<AssessmentSetTimeInputDto> validator,
             IConfiguration configuration)
             : base(configuration)
@@ -57,6 +62,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
             _commonMemberQueryService = commonMemberQueryService;
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
+
+            _examinerOffQueryService = examinerOffQueryService;
+            _examinerOffQueryService.NotNull(nameof(examinerOffQueryService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -93,7 +101,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         {
             await InputDtoValidation(input, cancellationToken);
             FridayValidation(input.AssessmentDateJalali);
-            await OfficialHolidayValidation(input.AssessmentDateJalali);
+            await OfficialHolidayValidation(input.AssessmentDateJalali, input.AssessmentCode);
             TrackingOutputDto latestTrackingInfo = await StatusValidation(input.TrackNumber);
             return latestTrackingInfo;
         }
@@ -126,12 +134,23 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             }
             return _date;
         }
-        private async Task OfficialHolidayValidation(string date)
+        private async Task OfficialHolidayValidation(string date, int assessmentCode)
         {
             ICollection<OfficialHoliday> officialHolidays = await _officialHolidayQueryService.Get();
             if (officialHolidays.Select(o => o.DateJalali).Contains(date))
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidOfficialHolidayDate);
+            }
+
+            IEnumerable<AssessmentOffGetDto> assessmentOffs = await _examinerOffQueryService.Get(assessmentCode);
+            if (assessmentOffs.Where(a => a.OffDateJalali == date).Any())
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidOffDate);
+            }
+
+            if (date.CompareTo(DateTime.Now.ToShortPersianDateString()) < 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidPreviousDate);
             }
         }
 

@@ -45,7 +45,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
         {
             var customerInfo = await _customerInfoHandler.Handle(input.Input, cancellationToken);
             string text = await GetPreviousBill(input, cancellationToken);
-            _jobClient.Enqueue(() => _smsHandler.Send(customerInfo.MobileNumber, text));
+            _jobClient.Enqueue(() => _smsHandler.Send(customerInfo.MobileNumber, text, Guid.NewGuid()));
             return Ok(input);
         }
         private async Task<string> GetPreviousBill(SearchInput input, CancellationToken cancellationToken)

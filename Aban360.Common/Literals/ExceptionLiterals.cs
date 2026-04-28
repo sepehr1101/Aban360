@@ -34,6 +34,8 @@
         public static string NotMoreThan1023 => "مقدار وارد شده نباید بیش از 1023 کاراکتر باشد";
         public static string InvalidFridayDate => "روز انتخابی، جمعه است";
         public static string InvalidOfficialHolidayDate => "روز انتخابی، تعطیل است";
+        public static string InvalidOffDate => "ارزیاب در روز انتخابی مرخصی است";
+        public static string InvalidPreviousDate => "تاریخ ارزیابی باید از امروز بزرگتر باشد.";
         public static string PreviousDateIsInvalid => "تاریخ قبلی قرائت ناصحیح است";
         public static string CurrentDateIsInvalid => "تاریخ فعلی قرائت ناصحیح است";
         public static string CurrentDateNotMoreThanPreviousDate => "تاریخ دوره قبلی نمیتوان از تاریخ دوره جاری بزرگ تر باشد";
@@ -174,6 +176,8 @@
         public static string InvalidCalculationConfirmed => "محاسبه تایید نشده است.";
         public static string InvalidLastDbData(string stringTrackNumber) => $"درخواست {stringTrackNumber} ، در سیتم قدیم ثبت شده است.";
         public static string SetBillId => " شناسی قبض به درخواست جاری اختصاص داده نشده.";
+        public static string InvalidInsertAssessmentOff => " خطا در ذخیره مرخصی ";
     
+        
     }
 }

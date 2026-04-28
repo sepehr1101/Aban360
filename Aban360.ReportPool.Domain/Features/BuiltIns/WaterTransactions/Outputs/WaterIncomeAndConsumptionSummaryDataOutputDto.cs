@@ -2,6 +2,8 @@
 {
     public record WaterIncomeAndConsumptionSummaryDataOutputDto
     {
+        public int RegionId { get; set; }
+        public string RegionTitle { get; set; }
         public string GroupKey { get; set; }
         public int BillCount { get; set; }
         public float SewageConsumption { get; set; }

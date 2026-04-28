@@ -22,6 +22,7 @@
     <ProjectReference Include="..\Aban360.LocationPool.GatewayAdhoc\Aban360.LocationPool.GatewayAdhoc.csproj" />
     <ProjectReference Include="..\Aban360.ReportPool.Application\Aban360.ReportPool.Application.csproj" />
     <ProjectReference Include="..\Aban360.ReportPool.Infrastructure\Aban360.ReportPool.Infrastructure.csproj" />
+    <ProjectReference Include="..\Aban360.UserPool.Persistence\Aban360.UserPool.Persistence.csproj" />
   </ItemGroup>
 
   <ItemGroup>

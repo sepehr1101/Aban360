@@ -18,7 +18,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
     internal sealed class SetAssessmentResultHandler : AbstractBaseConnection, ISetAssessmentResultHandler
     {
         private readonly IHttpContextAccessor _contextAccessor;
-        private readonly IAssessmentQueryService _assessmentQueryService;
+        private readonly IExaminationQueryService _assessmentQueryService;
         private readonly IT64QueryService _t64QueryService;
         private readonly IValidator<AssessmentResultInputDto> _validator;
         private static int _setAssessmentResultStatus = 110;
@@ -27,7 +27,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         static int _requestOrigin = 12;
         public SetAssessmentResultHandler(
             IHttpContextAccessor contextAccessor,
-            IAssessmentQueryService assessmentQueryService,
+            IExaminationQueryService assessmentQueryService,
             IT64QueryService t64QueryService,
             IValidator<AssessmentResultInputDto> validator,
             IConfiguration configuration)
