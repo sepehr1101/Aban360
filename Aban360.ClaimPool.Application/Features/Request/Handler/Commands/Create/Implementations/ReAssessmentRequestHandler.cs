@@ -18,7 +18,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
     {
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IMoshtrakQueryService _moshtrakQueryService;
-        private readonly IAssessmentQueryService _assessmentQueryService;
+        private readonly IExaminationQueryService _assessmentQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         static int _reAssessmentStatusId = 15;
         static int _deletedSatatus = 90000;
@@ -26,7 +26,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         public ReAssessmentRequestHandler(
             ITrackingQueryService trackingQueryService,
             IMoshtrakQueryService moshtrakQueryService,
-            IAssessmentQueryService assessmentQueryService,
+            IExaminationQueryService assessmentQueryService,
             ICommonMemberQueryService commonMemberQueryService,
             IConfiguration configuration)
             : base(configuration)

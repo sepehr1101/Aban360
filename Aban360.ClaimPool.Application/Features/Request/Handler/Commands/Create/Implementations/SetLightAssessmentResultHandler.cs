@@ -20,7 +20,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
     {
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly ITrackingQueryService _trackingQueryService;
-        private readonly IAssessmentQueryService _assessmentQueryService;
+        private readonly IExaminationQueryService _assessmentQueryService;
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly IValidator<LightAssessmentResultInputDto> _validator;
         private static int _setAssessmentResultStatus = 110;
@@ -30,7 +30,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         public SetLightAssessmentResultHandler(
             IHttpContextAccessor contextAccessor,
             ITrackingQueryService trackingQueryService,
-            IAssessmentQueryService assessmentQueryService,
+            IExaminationQueryService assessmentQueryService,
             IMoshtrakQueryService moshtrakQueryService,
             IValidator<LightAssessmentResultInputDto> validator,
             IConfiguration configuration)

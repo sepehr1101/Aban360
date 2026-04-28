@@ -1,9 +1,7 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
-using Aban360.ClaimPool.Domain.Features.Tracking.Dto;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
-using Aban360.ClaimPool.Persistence.Features.Tracking.Commands.Implementations;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.QueryServices;

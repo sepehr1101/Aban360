@@ -6,9 +6,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 {
-    internal sealed class AssessmentQueryService : AbstractBaseConnection, IAssessmentQueryService
+    internal sealed class ExaminationQueryService : AbstractBaseConnection, IExaminationQueryService
     {
-        public AssessmentQueryService(IConfiguration configuration)
+        public ExaminationQueryService(IConfiguration configuration)
             : base(configuration)
         {
         }
