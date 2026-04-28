@@ -59,7 +59,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             {
                 throw new InvalidTrackNumberException(ExceptionLiterals.InvalidTrackNumber);
             }
-            TrackingOutputDto secondToLatest = result.OrderBy(x => x.InsertDateJalali).FirstOrDefault();
+            TrackingOutputDto secondToLatest = result.OrderBy(x => x.InsertDateTimeGregorian).FirstOrDefault();
             secondToLatest.StringTrackNumber = trackNumber.ToString().PadLeft(11, '0');
             return secondToLatest;
         }
@@ -203,7 +203,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	t.NotificationMobile,
                     	t.NeighbourBillId,
 						t.Caller,
-						t.RequestOrigin RequestOriginId
+						t.RequestOrigin RequestOriginId,
+                        t.DateAndTime InsertDateTimeGregorian
                     From AbAndFazelab.dbo.Tracking t
                     Join AbAndFazelab.dbo.Status s
                     	ON t.Status=s.StatusID

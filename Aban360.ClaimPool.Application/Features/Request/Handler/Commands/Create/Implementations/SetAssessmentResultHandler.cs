@@ -17,19 +17,30 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 {
     internal sealed class SetAssessmentResultHandler : AbstractBaseConnection, ISetAssessmentResultHandler
     {
+        private readonly IHttpContextAccessor _contextAccessor;
         private readonly IAssessmentQueryService _assessmentQueryService;
+        private readonly IT64QueryService _t64QueryService;
         private readonly IValidator<AssessmentResultInputDto> _validator;
         private static int _setAssessmentResultStatus = 110;
+        private static int _seenByAssessmentStatus = 150;
         private static int _setAssessmentTimeStatus = 10;
         static int _requestOrigin = 12;
         public SetAssessmentResultHandler(
+            IHttpContextAccessor contextAccessor,
             IAssessmentQueryService assessmentQueryService,
+            IT64QueryService t64QueryService,
             IValidator<AssessmentResultInputDto> validator,
             IConfiguration configuration)
             : base(configuration)
         {
+            _contextAccessor = contextAccessor;
+            _contextAccessor.NotNull(nameof(contextAccessor));
+
             _assessmentQueryService = assessmentQueryService;
             _assessmentQueryService.NotNull(nameof(assessmentQueryService));
+
+            _t64QueryService = t64QueryService;
+            _t64QueryService.NotNull(nameof(t64QueryService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -38,8 +49,11 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         public async Task Handle(AssessmentResultInputDto inputDto, int assessmentCode, CancellationToken cancellationToken)
         {
             await InputValidation(inputDto, cancellationToken);
-            TrackingInsertDuplicateDto trackingInsertDto = new(inputDto.TrackNumber, _setAssessmentResultStatus, inputDto.Description, assessmentCode, _requestOrigin);
-            AssessmentUpdateDto assessmentUpdateDto = await GetAssessmentUpdateDto(inputDto, assessmentCode, trackingInsertDto.TrackId);
+
+            bool isSuccessResult = await GetIsSucces(inputDto.ResultId);
+            TrackingInsertDuplicateDto trackingInsertSeenAssessmentDto = new(inputDto.TrackNumber, _seenByAssessmentStatus, inputDto.Description, assessmentCode, _requestOrigin, true, true);
+            TrackingInsertDuplicateDto trackingInsertSetAssessmentResultDto = new(inputDto.TrackNumber, _setAssessmentResultStatus, inputDto.Description, assessmentCode, _requestOrigin, isSuccessResult, false);
+            AssessmentUpdateDto assessmentUpdateDto = await GetAssessmentUpdateDto(inputDto, assessmentCode, trackingInsertSetAssessmentResultDto.TrackId);
             await Validation(inputDto.TrackingId);
 
             using (IDbConnection connection = _sqlReportConnection)
@@ -56,8 +70,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     string dbName = GetDbName(inputDto.ZoneId);
 
                     await _trackingCommandService.UpdateIsConsiderdLatest(inputDto.TrackNumber, true);
-                    await _trackingCommandService.InsertDuplicate(trackingInsertDto);
-                    //await _moshtrackCommandService.Update(GetMoshtrackUpdateDto(inputDto), dbName);//todo: uncommited
+                    await _trackingCommandService.InsertDuplicate(trackingInsertSeenAssessmentDto);
+                    await _trackingCommandService.InsertDuplicate(trackingInsertSetAssessmentResultDto);
+                    await _moshtrackCommandService.Update(GetMoshtrackUpdateDto(inputDto), dbName);//todo: uncommited
                     await _assessmentCommandService.Update(assessmentUpdateDto);
 
                     transaction.Commit();
@@ -84,7 +99,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 BranchTypeId = inputDto.BranchTypeId,
                 DiscountCount = inputDto.DiscountCount,
                 TrackingResultId = inputDto.TrackingResultId,
-                PhoneNumber = inputDto.PhoneNumber,
+                PhoneNumber = inputDto.PhoneNumber ?? string.Empty,
                 MobileNumber = inputDto.MobileNumber,
                 FirstName = inputDto.FirstName,
                 Surname = inputDto.Surname,
@@ -165,7 +180,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         }
         private async Task<AssessmentUpdateDto> GetAssessmentUpdateDto(AssessmentResultInputDto inputDto, int assessmentCode, Guid trackIdResult)
         {
+            string body = await new StreamReader(_contextAccessor.HttpContext.Request.Body).ReadToEndAsync();
             AssessmentGetDto assessmentData = await _assessmentQueryService.Get(assessmentCode);
+
             return new AssessmentUpdateDto()
             {
                 ResultId = inputDto.ResultId,
@@ -192,7 +209,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 HouseValue = inputDto.HouseValue,
                 UsageId = inputDto.UsageId,
                 Accuracy = inputDto.Accuracy,
-                AllInJson = JsonSerializer.Serialize<AssessmentResultInputDto>(inputDto)
+                AllInJson = body
             };
         }
         private async Task Validation(Guid trackId)
@@ -215,6 +232,11 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new CustomValidationException(message);
             }
+        }
+        private async Task<bool> GetIsSucces(int statusId)
+        {
+            IEnumerable<AssessmentResultOutputDto> results = await _t64QueryService.GetAll();
+            return results.Where(s => s.Id == statusId).Select(s => s.IsSuccess).FirstOrDefault();
         }
     }
 }

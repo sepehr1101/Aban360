@@ -149,7 +149,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         }
         private TrackingInsertDuplicateDto GetTrackingCreateDto(AssessmentSetTimeInputDto inputDto, int userName)
         {
-            return new TrackingInsertDuplicateDto(inputDto.TrackNumber, _setAssessmentTimeStatusId, inputDto.Description, userName, _requestOrigin);
+            return new TrackingInsertDuplicateDto(inputDto.TrackNumber, _setAssessmentTimeStatusId, inputDto.Description, userName, _requestOrigin, true, false);
         }
         private async Task<AssessmentInsertDto> GetAssessmentInsertDto(AssessmentSetTimeInputDto inputDto, TrackingOutputDto latestTrackingInfo, Guid newTrackId, MoshtrakOutputDto moshtrakInfo)
         {

@@ -21,7 +21,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IVariabService _variabService;
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IT52QueryService _t52QueryService;
-        static int[] _allowedStatus = { 65 };//65:ReCalculateRequired
+        static int _setAssessmentResult = 110;
+        static int _reCalculateRequired = 65;
+        static int[] _allowedStatus = { _reCalculateRequired, _setAssessmentResult };
         public SetBillIdHandler(
             ICommonMemberQueryService memberQueryService,
             IVariabService variabService,
@@ -45,19 +47,19 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
         public async Task Handle(int trackNumber, CancellationToken cancellationToken)
         {
-            TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(trackNumber);
-            if (!_allowedStatus.Contains(trackingInfo.StatusId))
+            TrackingOutputDto latestTrackingInfo = await _trackingQueryService.GetLatest(trackNumber);
+            if (!_allowedStatus.Contains(latestTrackingInfo.StatusId))
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
             }
 
-            int customerNumber = await GetCustomerNumber(trackingInfo.ZoneId);
-            string _3digitZoneId = await _t52QueryService.Get(new ZoneIdAndCustomerNumber(trackingInfo.ZoneId, customerNumber));
+            int customerNumber = await GetCustomerNumber(latestTrackingInfo.ZoneId);
+            string _3digitZoneId = await _t52QueryService.Get(new ZoneIdAndCustomerNumber(latestTrackingInfo.ZoneId, customerNumber));
             string billId = TransactionIdGenerator.GenerateBillId(customerNumber.ToString(), _3digitZoneId);
 
             TrackingBillIdUpdateDto trackingBillIdUpdateDto = new(trackNumber, billId);
             MoshtrakCustomerNumberUpdateDto moshtrackCustomerNumberUpdateDto = new(trackNumber, customerNumber);
-            string dbName = GetDbName(trackingInfo.ZoneId);
+            string dbName = GetDbName(latestTrackingInfo.ZoneId);
 
             using (IDbConnection connection = _sqlReportConnection)
             {

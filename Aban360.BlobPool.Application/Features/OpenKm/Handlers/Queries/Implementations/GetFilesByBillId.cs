@@ -17,6 +17,10 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Implemen
 
         public async Task<FileListResponse> Handle(string input, string? trackNumber, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                throw new BaseException("invalid billId in DMS");
+            }
             bool doesFolderExist = await _openKmQueryService.CheckFolderExists(input);
             if (!doesFolderExist)
             {
