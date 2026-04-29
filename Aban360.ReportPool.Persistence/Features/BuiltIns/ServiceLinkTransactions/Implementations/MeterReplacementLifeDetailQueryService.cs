@@ -50,9 +50,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 			MAx(DISTINCT mc.BodySerial) BodySerial
                 		From CustomerWarehouse.dbo.MeterChange mc
                 		Where 
-                			mc.ZoneId IN (131211,13102) AND
+                			mc.ZoneId IN @ZoneIds AND
                 			mc.ChangeDateJalali BETWEEN @FromDateJalali AND @ToDateJalali AND
-                			customerNumber in (3309,22263779,20589880)
                 		Group By mc.zoneId, mc.Customernumber,TRIM(mc.bodySerial)
                     )
                     Select 

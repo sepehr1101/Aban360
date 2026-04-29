@@ -2,6 +2,7 @@
 using Aban360.Common.Db.QueryServices;
 using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Contracts;
+using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Delete.Contracts;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Microsoft.AspNetCore.Mvc;
@@ -12,15 +13,20 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
     public class AssessmentOffController : BaseController
     {
         private readonly IAssessmentOffInsertHandler _insertHandler;
+        private readonly IAssessmentOffRemoveHandler _removeHandler;
         private readonly IAssessmentOffByAssessmentCodeGetHandler _byAssessmentCodeGetHandler;
         private readonly IAssessmentOffGetAllHandler _getAllHandler;
         public AssessmentOffController(
-            IAssessmentOffInsertHandler insertHandler,
+            IAssessmentOffInsertHandler insertHandler, 
+            IAssessmentOffRemoveHandler removeHandler,
             IAssessmentOffByAssessmentCodeGetHandler byAssessmentCodeGetHandler,
             IAssessmentOffGetAllHandler getAllHandler)
         {
             _insertHandler = insertHandler;
             _insertHandler.NotNull(nameof(insertHandler));
+
+            _removeHandler = removeHandler;
+            _removeHandler.NotNull(nameof(removeHandler));  
 
             _byAssessmentCodeGetHandler = byAssessmentCodeGetHandler;
             _byAssessmentCodeGetHandler.NotNull(nameof(byAssessmentCodeGetHandler));
@@ -37,6 +43,16 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             int examinerCode = UserService.GetUserCode(CurrentUser.Username);
             await _insertHandler.Handle(inputDto, examinerCode, cancellationToken);
             return Ok(inputDto);
+        }
+        
+        [HttpPost]
+        [Route("remove/{id}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<Guid>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> AddAssessmentOff(Guid id, CancellationToken cancellationToken)
+        {
+            int examinerCode = UserService.GetUserCode(CurrentUser.Username);
+            await _removeHandler.Handle(id, examinerCode, cancellationToken);
+            return Ok(id);
         }
 
         [HttpPost]

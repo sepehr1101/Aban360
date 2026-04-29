@@ -176,7 +176,8 @@
         public static string InvalidCalculationConfirmed => "محاسبه تایید نشده است.";
         public static string InvalidLastDbData(string stringTrackNumber) => $"درخواست {stringTrackNumber} ، در سیتم قدیم ثبت شده است.";
         public static string SetBillId => " شناسی قبض به درخواست جاری اختصاص داده نشده.";
-        public static string InvalidInsertAssessmentOff => " خطا در ذخیره مرخصی ";
+        public static string InvalidInsertAssessmentOff => " خطا در حذف مرخصی ";
+        public static string InvalidRemoveAssessmentOff => " خطا در ذخیره مرخصی ";
     
         
     }
