@@ -24,7 +24,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IVariabService _variabService;
         private readonly IValidator<BillInstallmentInputDto> _validator;
         private const int _operator = 5;
-        private const int _deadLineDay = 30;
         private const long _debtAmountLimit = 1000000;
         private const string _title = "اقساط آب‌بها";
         public BillInstallmentCreateHandler(
@@ -133,27 +132,27 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 CustomerNumber = memberInfo.CustomerNumber,
                 ReadingNumber = memberInfo.ReadingNumber,
                 Barge = input.IsConfirm ? (int)rangeBarge[0] : 0,
-                DeadLineDateJalali = currentDate.AddDays(_deadLineDay).FormatDateToShortPersianDate(),
+                DeadLineDateJalali = currentDate.ToShortPersianDateString(),
                 Payable = firstPayment,
                 UsageId = memberInfo.UsageId,
                 MeterDiameterId = memberInfo.MeterDiamterId,
                 QueueNumber = 1,
                 Operator = _operator
             });
-            for (int i = 2; i <= input.InstallmentCount; i++)
+            for (int i = 1; i < input.InstallmentCount; i++)
             {
-                int deadLineDay = _deadLineDay * i;
+                int deadLineDay = input.MonthlyDuration * i;
                 BillInstallmentCreateDto ghestAdDto = new BillInstallmentCreateDto()
                 {
                     ZoneId = memberInfo.ZoneId,
                     CustomerNumber = memberInfo.CustomerNumber,
                     ReadingNumber = memberInfo.ReadingNumber,
-                    Barge = input.IsConfirm ? (int)rangeBarge[i - 1] : 0,
-                    DeadLineDateJalali = currentDate.AddDays(deadLineDay).FormatDateToShortPersianDate(),
+                    Barge = input.IsConfirm ? (int)rangeBarge[i ] : 0,
+                    DeadLineDateJalali = currentDate.AddMonths(deadLineDay).FormatDateToShortPersianDate(),
                     Payable = eachInstallmentWithoutZero,
                     UsageId = memberInfo.UsageId,
                     MeterDiameterId = memberInfo.MeterDiamterId,
-                    QueueNumber = i,
+                    QueueNumber = i+1,
                     Operator = _operator
                 };
                 allInstallments.Add(ghestAdDto);

@@ -5,6 +5,7 @@
         public string BillId { get; set; }
         public int InstallmentCount { get; set; }
         public int PrepaymentPercent { get; set; }
+        public int MonthlyDuration { get; set; }
         public bool IsConfirm { get; set; }
     }
 }
