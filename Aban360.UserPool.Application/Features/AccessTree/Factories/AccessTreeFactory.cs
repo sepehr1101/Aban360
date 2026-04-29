@@ -7,7 +7,7 @@ namespace Aban360.UserPool.Application.Features.AccessTree.Factories
     {
         internal static AccessTreeValueKeyDto CreateAccessTree(this ICollection<Endpoint> endpoints)
         {
-            var appValueKeys= endpoints.BuildAccessTree(new List<int>());
+            var appValueKeys = endpoints.BuildAccessTree(new List<int>());
             return new AccessTreeValueKeyDto(appValueKeys);
         }
         internal static AccessTreeValueKeyDto CreateAccessTree(this ICollection<Endpoint> endpoints, ICollection<int> selectedEndpointIds)

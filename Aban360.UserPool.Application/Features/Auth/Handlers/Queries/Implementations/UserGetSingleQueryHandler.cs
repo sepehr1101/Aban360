@@ -48,11 +48,11 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
         {
             User user = await _userQueryService.GetIncludeUserAndClaims(userId);
             UserDisplayDto userDisplayDto = new();
-            if (user.UserClaims.Any())
-            {
-                userDisplayDto.AccessTree = await CreateAccessTree(user.UserClaims);
-                userDisplayDto.LocationTree = await CreateLocationTree(user.UserClaims, cancellationToken);
-            }
+            //if (user.UserClaims.Any())
+            //{
+            userDisplayDto.AccessTree = await CreateAccessTree(user.UserClaims);
+            userDisplayDto.LocationTree = await CreateLocationTree(user.UserClaims, cancellationToken);
+            //}
             userDisplayDto.RoleInfo = await CreateRoleInfo(user.UserRoles);
             userDisplayDto.UserInfo = _mapper.Map<UserQueryDto>(user);
             return userDisplayDto;
@@ -65,15 +65,15 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
             }
             ICollection<Role> roles = await _roleQueryService.Get();
             IEnumerable<UserRoleQueryDto> query = from role in roles
-                        join userRole in userRoles
-                        on role.Id equals userRole.RoleId into roleGroup
-                        from rg in roleGroup.DefaultIfEmpty()
-                        select new UserRoleQueryDto()
-                        {
-                            Id = role.Id,
-                            Title = role.Title,
-                            IsSelected = rg != null
-                        };
+                                                  join userRole in userRoles
+                                                  on role.Id equals userRole.RoleId into roleGroup
+                                                  from rg in roleGroup.DefaultIfEmpty()
+                                                  select new UserRoleQueryDto()
+                                                  {
+                                                      Id = role.Id,
+                                                      Title = role.Title,
+                                                      IsSelected = rg != null
+                                                  };
             List<UserRoleQueryDto> userRoleQueryDtos = query.ToList();
             return new UserRoleInfo(userRoleQueryDtos);
         }

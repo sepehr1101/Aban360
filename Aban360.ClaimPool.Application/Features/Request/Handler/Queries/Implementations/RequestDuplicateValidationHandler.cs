@@ -126,6 +126,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             {
                 Id = moshtrakInfo?.Id ?? 0,
                 ZoneId = moshtrakInfo?.ZoneId ?? 0,
+                ZoneTitle = moshtrakInfo?.ZoneTitle ?? string.Empty,
+                RegionId = latestTrackingInfo?.RegionId ?? 0,
+                RegionTitle = latestTrackingInfo?.RegionTitle ?? string.Empty,
                 CustomerNumber = moshtrakInfo?.CustomerNumber ?? 0,
                 NationalCode = moshtrakInfo?.NationalCode ?? string.Empty,
                 TrackNumber = moshtrakInfo?.TrackNumber ?? 0,
@@ -133,6 +136,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 Surname = moshtrakInfo?.Surname ?? string.Empty,
                 FatherName = moshtrakInfo?.FatherName ?? string.Empty,
                 MobileNumber = moshtrakInfo?.MobileNumber ?? string.Empty,
+                NotificationNumber = latestTrackingInfo?.NotificationMobile ?? string.Empty,
                 RequestDateJalali = moshtrakInfo?.RequestDateJalali ?? string.Empty,
                 IsDuplicate = (moshtrakInfo?.IsRegistered ?? true) ? false : true,
                 LatestStatusId = latestTrackingInfo?.StatusId ?? 0,

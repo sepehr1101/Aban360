@@ -209,7 +209,7 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
                 NationalCode = result.NationalCode,
                 MobileNumber = result.MobileNumber,
                 PhoneNumber = result.PhoneNumber,
-                NotificationMobile = result.NotificationMobile,
+                NotificationNumber = result.NotificationMobile,
                 Address = result.Address,
                 UsageId = result.UsageId,
                 UsageTitle = result.UsageTitle,

@@ -105,6 +105,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         {
             return new MoshtrakDataOutputDto()
             {
+                Id=input.Id,
                 ZoneId = input.ZoneId,
                 ZoneTitle = input.ZoneTitle,
                 CustomerNumber = input.CustomerNumber,
@@ -146,7 +147,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 DiscountCount = input.DiscountCount,
                 IsSpecial = input.IsSpecial,
                 CounterType = input.CounterType,
-                NotificationMobile = input.NotificationMobile,
+                NotificationNumber = input.NotificationMobile,
                 Description = input.Description,
                 HouseValue = input.HouseValue,
                 IsNonPermanent = input.IsNonPermanent,
