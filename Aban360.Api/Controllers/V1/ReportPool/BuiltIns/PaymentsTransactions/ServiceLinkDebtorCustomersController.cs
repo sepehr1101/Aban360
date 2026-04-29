@@ -1,4 +1,5 @@
 ﻿using Aban360.Api.Cronjobs;
+using Aban360.Api.Filters;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
@@ -6,8 +7,6 @@ using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
-using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
-using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
@@ -30,6 +29,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
+        [AllowTimeWindowFilter]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ServiceLinkDebtorCustomersHeaderOutputDto, ServiceLinkDebtorCustomersDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(ServiceLinkDebtorCustomersInputDto inputDto, CancellationToken cancellationToken)
         {
@@ -39,6 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
+        [AllowTimeWindowFilter]
         public async Task<IActionResult> GetExcel(string connectionId, ServiceLinkDebtorCustomersInputDto inputDto, CancellationToken cancellationToken)
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _serviceLinkDebtorCustomersHandler.Handle, CurrentUser, ReportLiterals.ServiceLinkDebtorCustomers, connectionId);
@@ -47,6 +48,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
 
         [HttpPost]
         [Route("sti")]
+        [AllowTimeWindowFilter]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetStiReport(ServiceLinkDebtorCustomersInputDto inputDto, CancellationToken cancellationToken)
         {

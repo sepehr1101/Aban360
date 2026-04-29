@@ -1,4 +1,5 @@
 ﻿using Aban360.Api.Cronjobs;
+using Aban360.Api.Filters;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
@@ -29,6 +30,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost]
         [Route("raw")]
+        [AllowTimeWindowFilter]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ReadingDailyStatementHeaderOutputDto, ReadingDailyStatementDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(ReadingDailyStatementInputDto inputDto, CancellationToken cancellationToken)
         {
@@ -37,6 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         }
 
         [HttpPost, HttpGet]
+        [AllowTimeWindowFilter]
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, ReadingDailyStatementInputDto inputDto, CancellationToken cancellationToken)
         {
@@ -46,6 +49,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost]
         [Route("sti")]
+        [AllowTimeWindowFilter]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         [AllowAnonymous]
         public async Task<IActionResult> GetStiReport(ReadingDailyStatementInputDto inputDto, CancellationToken cancellationToken)

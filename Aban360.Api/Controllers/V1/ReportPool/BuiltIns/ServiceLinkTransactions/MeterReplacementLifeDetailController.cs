@@ -1,4 +1,5 @@
 ﻿using Aban360.Api.Cronjobs;
+using Aban360.Api.Filters;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
@@ -29,6 +30,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpGet, HttpPost]
         [Route("raw")]
+        [AllowTimeWindowFilter]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<MeterReplacementLifeHeaderOutputDto, MeterReplacementLifeDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(MeterReplacementLifeInputDto input, CancellationToken cancellationToken)
         {
@@ -38,6 +40,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
+        [AllowTimeWindowFilter]
         public async Task<IActionResult> GetExcel(string connectionId, MeterReplacementLifeInputDto inputDto, CancellationToken cancellationToken)
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _meterReplacementLifeHandler.Handle, CurrentUser, ReportLiterals.MeterReplacementLifeDetail, connectionId);
@@ -48,6 +51,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         [Route("sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         [AllowAnonymous]
+        [AllowTimeWindowFilter]
         public async Task<IActionResult> GetStiReport(MeterReplacementLifeInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 730;

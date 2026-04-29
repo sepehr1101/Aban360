@@ -1,4 +1,5 @@
 ﻿using Aban360.Api.Cronjobs;
+using Aban360.Api.Filters;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
@@ -21,10 +22,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         {
             _readingListDetail = readingListDetail;
             _readingListDetail.NotNull(nameof(_readingListDetail));
+
+            _reportGenerator = reportGenerator; 
+            _readingListDetail.NotNull(nameof(readingListDetail));
         }
 
         [HttpPost]
         [Route("raw")]
+        [AllowTimeWindowFilter]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ReadingListHeaderOutputDto, ReadingListDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(ReadingListDetailInputDto inputDto, CancellationToken cancellationToken)
         {
@@ -34,6 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
+        [AllowTimeWindowFilter]
         public async Task<IActionResult> GetExcel(string connectionId, ReadingListDetailInputDto inputDto, CancellationToken cancellationToken)
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _readingListDetail.Handle, CurrentUser, ReportLiterals.ReadingListDetail, connectionId);
@@ -42,6 +48,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost, HttpGet]
         [Route("sti")]
+        [AllowTimeWindowFilter]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetStiReport(ReadingListDetailInputDto inputDto, CancellationToken cancellationToken)
         {
