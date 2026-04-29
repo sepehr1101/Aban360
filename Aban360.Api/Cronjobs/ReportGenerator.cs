@@ -2,7 +2,9 @@
 using Aban360.Api.Hubs.Implementations;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.CommunicationPool.Domain.Features.Hubs.Dto.Commands;
 using Aban360.ReportPool.Application.Features.FlatReports.Handler.Commands.Contracts;
 using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Commands;
@@ -28,6 +30,7 @@ namespace Aban360.Api.Cronjobs
         private readonly IServerReportsCreateHandler _serverReportsCreateHandler;
         private readonly IServerReportsUpdateHandler _serverReportsUpdateHandler;
         private readonly IServerReportsGetByIdService _serverReportsGetByIdServices;
+        private readonly IServerReportsQueryService _serverReportsGetByJsonInputService;
         private readonly IServiceProvider _serviceProvider;
         private IHubContext<NotifyHub, INotifyHub> _notifyHub { get; }
         private const string MethodName = "Handle";
@@ -36,6 +39,7 @@ namespace Aban360.Api.Cronjobs
             IServerReportsCreateHandler serverReportsCreateHandler,
             IServerReportsUpdateHandler serverReportsUpdateHandler,
             IServerReportsGetByIdService serverReportsGetByIdServices,
+            IServerReportsQueryService serverReportsGetByJsonInputService,
             IServiceProvider serviceProvider,
             IHubContext<NotifyHub, INotifyHub> notifyHub)
         {
@@ -47,6 +51,9 @@ namespace Aban360.Api.Cronjobs
 
             _serverReportsGetByIdServices = serverReportsGetByIdServices;
             _serverReportsGetByIdServices.NotNull(nameof(serverReportsGetByIdServices));
+
+            _serverReportsGetByJsonInputService = serverReportsGetByJsonInputService;
+            _serverReportsGetByJsonInputService.NotNull(nameof(serverReportsGetByJsonInputService));
 
             _serviceProvider = serviceProvider;
             _serviceProvider.NotNull(nameof(serviceProvider));
@@ -73,6 +80,7 @@ namespace Aban360.Api.Cronjobs
         public async Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId, string? methodName = MethodName, string[]? excludedProperties = null)
         {
             methodName ??= MethodName;
+            await DuplicateReportValidation(JsonConvert.SerializeObject(reportInput), appUser.UserId);//check
             ServerReportsCreateDto serverReportsCreateDto = CreateServerReportDto(Guid.NewGuid(), reportInput, GetData, appUser, reportTitle, connectionId);
             await _serverReportsCreateHandler.Handle(serverReportsCreateDto, cancellationToken);
             BackgroundJob.Enqueue(() => DoFireAndInform(serverReportsCreateDto, methodName, excludedProperties));
@@ -161,6 +169,20 @@ namespace Aban360.Api.Cronjobs
             string persianDate = DateTime.Now.ToShortPersianDateString();
 
             return $"{persianDate}_{timeNow}";
+        }
+        private async Task DuplicateReportValidation(string jsonInput, Guid userId)
+        {
+            ServerReportsGetByIdDto? sameReportByJsonInput = await _serverReportsGetByJsonInputService.Get(jsonInput);
+            if (sameReportByJsonInput is not null)
+            {
+                throw new InvalidReportException(ExceptionLiterals.InvalidDuplicateIncompleteReport);
+            }
+
+            ServerReportsGetByIdDto? sameReportByUserId = await _serverReportsGetByJsonInputService.Get(userId);
+            if (sameReportByUserId is not null)
+            {
+                throw new InvalidReportException(ExceptionLiterals.InvalidIncompleteReportByUserId);
+            }
         }
     }
 }
