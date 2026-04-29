@@ -1,5 +1,7 @@
 ﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Contracts;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
@@ -29,6 +31,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
             string title = "اقساط حق انشعاب";
             double amount = 160000000;
             double firstInstallmentAmount = 0;
+            string[] dueDatelist = GetDate(inputDto.InstallmentCount, inputDto.monthlyDuration);
             ICollection<InstallmentDataOutputDto> data = new List<InstallmentDataOutputDto>();
             for (int i = 0; i < inputDto.InstallmentCount; i++)
             {
@@ -42,7 +45,7 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
                 {
                     Amount = localAmount,
                     BillId = inputDto.BillId,
-                    DueDateJalali = DateTime.Now.AddMonths(i).ToShortPersianDateString(),
+                    DueDateJalali = dueDatelist[i],// DateTime.Now.AddMonths(i).ToShortPersianDateString(),
                     InstallmentOrder = i + 1,
                     PaymentId = inputDto.BillId + "361" + i.ToString()
                 };
@@ -60,6 +63,45 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Cr
             ReportOutput<InstallmentHeaderOutputDto, InstallmentDataOutputDto> result = new(title, header, data);
 
             return result;
+        }
+        private string[] GetDate(int installmentCount, int monthlyDuration)
+        {
+            string dateJalali = DateTime.Now.ToShortPersianDateString();
+
+
+            string[] dateJalaliItems = dateJalali.Split('/');
+            short day = Convert.ToInt16(dateJalaliItems[2]);
+
+            string formalDay = "01";
+            if (day > 25 || day <= 5)
+                formalDay = "05";
+            else if (day > 5 && day <= 15)
+                formalDay = "15";
+            else if (day > 15 && day <= 25)
+                formalDay = "25";
+            string firstDateJalali = $@"{dateJalaliItems[0]}/{dateJalaliItems[1]}/{formalDay}";
+
+            string[] dueDatesJalali = new string[installmentCount];
+            dueDatesJalali[0] = firstDateJalali;
+            int month = Convert.ToInt32(dateJalaliItems[1]);
+            for (int i = 1; i < installmentCount; i++)
+            {
+                month = month + monthlyDuration;
+                if (month > 12)
+                {
+                    month = month - 12;
+                    dateJalaliItems[0] = (Convert.ToInt32(dateJalaliItems[0]) + 1).ToString();
+                }
+
+                string formalMonth = month.ToString();
+                if (formalMonth.Length != 2)
+                {
+                    formalMonth = $@"0{month.ToString()}";
+                }
+                string date = $@"{dateJalaliItems[0]}/{formalMonth}/{formalDay}";
+                dueDatesJalali[i] = date;
+            }
+            return dueDatesJalali;
         }
     }
 }
