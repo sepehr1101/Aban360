@@ -29,6 +29,15 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Commands.Implementations
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertAssessmentOff);
             }
         }
+        public async Task Remove(AssessmentOffRemoveDto input)
+        {
+            string command = GetRemoveCommand();
+            int recordEffected = await _connection.ExecuteAsync(command, input, _transaction);
+            if (recordEffected <= 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidRemoveAssessmentOff);
+            }
+        }
         private string GetInsertCommand()
         {
             return @"Insert AbAndFazelab.dbo.ExaminerOff(
@@ -41,6 +50,17 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Commands.Implementations
                     	@OffDateJalali,@InsertedByUserCode,@InsertedByUserName,
                     	@InsertDateGregorian,@InsertDateJalali,@InsertTime,
                     	0,null,null,null,null)";
+        }
+        private string GetRemoveCommand()
+        {
+            return @"Update AbAndFazelab.dbo.ExaminerOff
+                    Set  
+                        IsCanceled=1 ,
+                        CancelDateTime=@CancelDateTimeGregorian , 
+                        CancelTime=@CancelTime ,
+                        CanellerCode=@CancellerCode , 
+                        CanellerName=@CancellerName    
+                    Where Id=@Id";
         }
     }
 }

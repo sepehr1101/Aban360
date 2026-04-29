@@ -1,6 +1,4 @@
-﻿using DNTPersianUtils.Core;
-
-namespace Aban360.UserPool.Domain.Features.Auth.Dto.Commands
+﻿namespace Aban360.UserPool.Domain.Features.Auth.Dto.Commands
 {
     public record AssessmentOffInsertDto
     {
