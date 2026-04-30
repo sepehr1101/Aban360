@@ -5,7 +5,10 @@ namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Queries
     public record TrackingDuplicateValidationOutputDto
     {
         public int Id { get; set; }
+        public int RegionId { get; set; }
+        public string RegionTitle { get; set; } 
         public int ZoneId { get; set; }
+        public string ZoneTitle { get; set; }
         public int CustomerNumber { get; set; }
         public string NationalCode { get; set; }
         public int TrackNumber { get; set; }
@@ -13,6 +16,7 @@ namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Queries
         public string Surname { get; set; }
         public string FatherName { get; set; }
         public string MobileNumber { get; set; }
+        public string NotificationNumber { get; set; }
         public string RequestDateJalali { get; set; }
         public bool IsDuplicate { get; set; }
 

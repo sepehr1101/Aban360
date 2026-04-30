@@ -1,11 +1,8 @@
-﻿using Aban360.ClaimPool.Domain.Constants;
-using Aban360.Common.BaseEntities;
-using Scrutor;
-
-namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Queries
+﻿namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Queries
 {
     public record MoshtrakDataOutputDto
     {
+        public int Id { get; set; }
         public int ZoneId { get; set; }
         public string ZoneTitle { get; set; }
         public int CustomerNumber { get; set; }
@@ -48,7 +45,7 @@ namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Queries
         public int DiscountCount { get; set; }
         public bool IsSpecial { get; set; }
         public bool CounterType { get; set; }
-        public string? NotificationMobile { get; set; }
+        public string? NotificationNumber { get; set; }
         public string? Description { get; set; }
         public int HouseValue { get; set; }
         public bool IsNonPermanent { get; set; }
