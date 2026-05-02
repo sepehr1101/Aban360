@@ -52,6 +52,7 @@ namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Commands
         public int InstallAgentState { get; set; }
         public string BlockId { get; set; }
         public int BrokerId { get; set; }
+        public string? CertificateNumber { get; set; }
         public string CurrentDateJalali { get; set; } = DateTime.Now.ToShortPersianDateString();
 
         public int s0 { get; set; }

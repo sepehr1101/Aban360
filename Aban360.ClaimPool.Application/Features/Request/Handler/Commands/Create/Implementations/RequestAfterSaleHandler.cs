@@ -1,5 +1,7 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
+using Aban360.ClaimPool.Persistence.Features.Request.Commands.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.BaseEntities;
@@ -7,7 +9,10 @@ using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.QueryServices;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Timing;
+using DNTPersianUtils.Core;
 using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
@@ -15,25 +20,41 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 {
     internal sealed class RequestAfterSaleHandler : AbstractBaseConnection, IRequestAfterSaleHandler
     {
+        private readonly IHttpContextAccessor _contextAccessor;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly IMoshtrakQueryService _moshtrakQueryService;
+        private readonly IExaminationScheduleQueryService _examinationScheduleQueryService;
+        private readonly IExaminationQueryService _examinationQueryService;
         private readonly IValidator<RequestAfterSaleInputDto> _validator;
+        static int _afterSaleRequestServiceId = 2;
+        static int _setAssessmentTimeStatusId = 10;
         static string _insertWayTitle = "رایاب";
         static int _requestOrigin = 12;
-        static int _afterSaleRequestServiceId = 2;
         static int _firstStepStatusId = 0;
         public RequestAfterSaleHandler(
+            IHttpContextAccessor contextAccessor,
            ICommonMemberQueryService commonMemberQueryService,
            IMoshtrakQueryService moshtrakQueryService,
+           IExaminationScheduleQueryService examinationScheduleQueryService,
+           IExaminationQueryService examinationQueryService,
            IValidator<RequestAfterSaleInputDto> validator,
            IConfiguration configuration)
            : base(configuration)
         {
+            _contextAccessor = contextAccessor;
+            _contextAccessor.NotNull(nameof(contextAccessor));
+
             _commonMemberQueryService = commonMemberQueryService;
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
 
             _moshtrakQueryService = moshtrakQueryService;
             _moshtrakQueryService.NotNull(nameof(moshtrakQueryService));
+
+            _examinationScheduleQueryService = examinationScheduleQueryService;
+            _examinationScheduleQueryService.NotNull(nameof(examinationScheduleQueryService));
+
+            _examinationQueryService = examinationQueryService;
+            _examinationQueryService.NotNull(nameof(examinationQueryService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -43,33 +64,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         {
             await InputValidation(input, cancellationToken);
             MemberInfoGetDto memberInfo = await OpenRequestValidation(input);
-            MoshtrakCreateDto moshtrakInsertDto;
-            Guid trackId = new Guid();
-            string dbName = GetDbName(memberInfo.ZoneId);
+            var (assessmentCode, assessmentDateJalali) = await GetAssessmentDateTime(memberInfo);
 
-            using (IDbConnection connection = _sqlReportConnection)
-            {
-                if (connection.State != ConnectionState.Open)
-                    connection.Open();
-                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.Serializable))
-                {
-                    MoshtrakCommandService moshtrakCommandService = new(connection, transaction);
-                    TrackingCommandService trackingCommandService = new(connection, transaction);
-                    T0CommandService t0CommandService = new(connection, transaction);
-
-                    int trackNumber = (int)(await t0CommandService.GetTrackNumber());
-                    moshtrakInsertDto = GetMoshtrackCreateDto(input, memberInfo, trackNumber);
-                    TrackingInsertDto trackingInsertDto = GetTrackingCreateDto(input, memberInfo, userName, trackNumber);
-                    trackId = trackingInsertDto.TrackId;
-
-                    await moshtrakCommandService.Insert(moshtrakInsertDto, dbName);
-                    await trackingCommandService.UpdateIsConsiderdLatest(trackingInsertDto.TrackNumber, true);
-                    await trackingCommandService.Insert(trackingInsertDto);
-
-                    transaction.Commit();
-                }
-            }
-            return (moshtrakInsertDto, trackId);
+            return await SqlCommands(input, memberInfo, userName, assessmentCode, assessmentDateJalali);
         }
         private async Task InputValidation(RequestAfterSaleInputDto inputDto, CancellationToken cancellationToken)
         {
@@ -87,6 +84,91 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             await _moshtrakQueryService.CheckOpenRequest(memberInfo.CustomerNumber, memberInfo.ZoneId);
 
             return memberInfo;
+        }
+        private async Task<(MoshtrakCreateDto, Guid)> SqlCommands(RequestAfterSaleInputDto input, MemberInfoGetDto memberInfo, int userName, int assessmentCode, string assessmentDateJalali)
+        {
+            MoshtrakCreateDto moshtrakInsertDto;
+            Guid trackId = new Guid();
+            string dbName = GetDbName(memberInfo.ZoneId);
+
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                    connection.Open();
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.Serializable))
+                {
+                    MoshtrakCommandService moshtrakCommandService = new(connection, transaction);
+                    TrackingCommandService trackingCommandService = new(connection, transaction);
+                    T0CommandService t0CommandService = new(connection, transaction);
+                    ExaminationCommandService examinationCommandService = new(connection, transaction);
+
+                    int trackNumber = (int)(await t0CommandService.GetTrackNumber());
+                    moshtrakInsertDto = GetMoshtrackCreateDto(input, memberInfo, trackNumber);
+                    TrackingInsertDto trackingSetRequestInsertDto = GetTrackingCreateDto(input, memberInfo, userName, trackNumber);
+                    trackId = trackingSetRequestInsertDto.TrackId;
+
+                    await moshtrakCommandService.Insert(moshtrakInsertDto, dbName);
+                    await trackingCommandService.Insert(trackingSetRequestInsertDto);
+
+                    if (!string.IsNullOrWhiteSpace(assessmentDateJalali))
+                    {
+                        TrackingInsertDuplicateDto trackingInsertSetTimeDto = new(trackNumber, _setAssessmentTimeStatusId, input.Description, userName, _requestOrigin, true, false);
+                        AssessmentInsertDto assessmentInsert = await GetAssessmentInsertDto(trackingInsertSetTimeDto, trackingSetRequestInsertDto, memberInfo, assessmentCode, assessmentDateJalali);
+                        await trackingCommandService.UpdateIsConsiderdLatest(trackingSetRequestInsertDto.TrackNumber, true);
+                        await trackingCommandService.InsertDuplicate(trackingInsertSetTimeDto);
+                        await examinationCommandService.Insert(assessmentInsert);
+                    }
+
+                    transaction.Commit();
+                }
+            }
+
+            return (moshtrakInsertDto, trackId);
+        }
+        private async Task<(int, string)> GetAssessmentDateTime(MemberInfoGetDto memberInfo)
+        {
+            IEnumerable<AssessmentScaduleGetDto> assessmentsScadule = await _examinationScheduleQueryService.Get(memberInfo.ZoneId, memberInfo.ReadingNumber);
+
+            for (int offset = 1; offset <= 14; offset++)
+            {
+                DateTime date = DateTime.Now.Date.AddDays(offset);
+                string dateJalali = date.ToShortPersianDateString();
+
+                int dayIndex =
+                    date.DayOfWeek == DayOfWeek.Saturday ? 0 :
+                    date.DayOfWeek == DayOfWeek.Sunday ? 1 :
+                    date.DayOfWeek == DayOfWeek.Monday ? 2 :
+                    date.DayOfWeek == DayOfWeek.Tuesday ? 3 :
+                    date.DayOfWeek == DayOfWeek.Wednesday ? 4 :
+                    date.DayOfWeek == DayOfWeek.Thursday ? 5 :
+                                                          6;
+
+                foreach (var eachAssessment in assessmentsScadule)
+                {
+                    int dayValue = dayIndex switch
+                    {
+                        0 => eachAssessment.Day0,
+                        1 => eachAssessment.Day1,
+                        2 => eachAssessment.Day2,
+                        3 => eachAssessment.Day3,
+                        4 => eachAssessment.Day4,
+                        5 => eachAssessment.Day5,
+                        6 => eachAssessment.Day6,
+                        _ => 0
+                    };
+
+                    if (dayValue <= 0) continue;
+
+                    int assessmentTaskCount =
+                        await _examinationQueryService.GetWithoutResultInDate(dateJalali, eachAssessment.AssessmentCode);
+
+                    if (assessmentTaskCount < dayValue)
+                    {
+                        return (eachAssessment.AssessmentCode, dateJalali);
+                    }
+                }
+            }
+            return (0, string.Empty);
         }
         private MoshtrakCreateDto GetMoshtrackCreateDto(RequestAfterSaleInputDto inputDto, MemberInfoGetDto memberInfo, int trackNumber)//todo
         {
@@ -200,7 +282,47 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 Description = inputDto.Description,
                 NotificationMobile = inputDto.MobileNumber,
                 NeighbourBillId = null,
-                RequestOrigin = _requestOrigin,
+                RequestOrigin = _requestOrigin
+            };
+        }
+        private async Task<AssessmentInsertDto> GetAssessmentInsertDto(TrackingInsertDuplicateDto trackingInsertSetTimeDto, TrackingInsertDto previousTrackingInfo, MemberInfoGetDto memberInfo, int assessmentCode, string assessmentDateJalali)
+        {
+            AssessmentGetDto assessmentData = await _examinationQueryService.Get(assessmentCode);
+            string body = await new StreamReader(_contextAccessor.HttpContext.Request.Body).ReadToEndAsync();
+
+            return new AssessmentInsertDto()
+            {
+                TrackNumber = trackingInsertSetTimeDto.TrackNumber,
+                BillId = previousTrackingInfo.BillId ?? string.Empty,
+                AssessmentCode = assessmentData.Code,
+                AssessmentMobile = assessmentData.PhoneNumber,
+                AssessmentName = assessmentData.FullName,
+                ZoneId = previousTrackingInfo.ZoneId,
+                AssessmentDateJalali = assessmentDateJalali,
+                AssessmentGregorianDateTime = ConvertDate.JalaliToDateTime(assessmentDateJalali),
+                ResultId = null,
+                Description = null,
+                TrackId = trackingInsertSetTimeDto.TrackId,
+                TrackIdResult = null,
+                X1 = "0",
+                Y1 = "0",
+                X2 = "0",
+                Y2 = "0",
+                TrenchLenS = 0,
+                TrenchLenW = 0,
+                AsphaltLenW = 0,
+                AsphaltLenS = 0,
+                RockyLenS = 0,
+                RockyLenW = 0,
+                OtherLenS = 0,
+                OtherLenW = 0,
+                BasementDepth = 0,
+                HasMap = false,//
+                ReadingNumber = memberInfo.ReadingNumber ?? string.Empty,
+                Premises = 0,
+                HouseValue = 0,
+                UsageId = memberInfo.UsageId,
+                AllInJson = body
             };
         }
     }

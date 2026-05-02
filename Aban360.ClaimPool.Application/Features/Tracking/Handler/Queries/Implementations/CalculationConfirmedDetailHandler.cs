@@ -163,7 +163,7 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
                 companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.KhanevarShomari, CompanySeviceLiterals.KhanevarShomari));
 
             if (input.s40 > 0)
-                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.TafkikEdqam, CompanySeviceLiterals.TafkikEdqam));
+                companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.TajmiEdqam, CompanySeviceLiterals.TajmiEdqam));
 
             if (input.s41 > 0)
                 companyServiceSelected.Add(new Common.BaseEntities.NumericDictionary((int)Domain.Constants.CompanyServiceEnum.TavizKontor, CompanySeviceLiterals.TavizKontor));

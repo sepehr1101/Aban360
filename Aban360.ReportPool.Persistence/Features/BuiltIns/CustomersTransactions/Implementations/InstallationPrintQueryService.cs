@@ -59,7 +59,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 						m.arse Premises,
 						m.aian_mas ImprovementsDomestic ,
 						m.aian ImprovementsOverall,
-						m.aian_tej ImprovementsCommercial 
+						m.aian_tej ImprovementsCommercial ,
+						m.sif_1 Siphon100,
+						m.sif_2 Siphon125,
+						m.sif_3 Siphon150,
+						m.sif_4 Siphon200,
+						m.master_sif MainSiphon,
+						m.sif_mosh_1 CommonSiphon
 					From [{dbName}].dbo.members m
 					Left Join [Db70].dbo.T51 t51
 						ON m.Town=t51.c0

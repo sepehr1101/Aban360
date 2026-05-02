@@ -111,7 +111,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 					    s33,s34,s35,s36,s37,
 					    s38,s39,s40,s41,s42,
 					    s43,s44,s45,s46,s47,
-					    s48,edareh_k,fix_mas,BLOCK_COD,Kargozari)
+					    s48,edareh_k,fix_mas,BLOCK_COD,Kargozari,sh_no)
 					Values(
 						@ZoneId ,@CustomerNumber ,@StringTrackNumber ,@FirstName ,@Surname	,
 						@FatherName ,@CurrentDateJalali ,@CurrentDateJalali ,@Address ,
@@ -130,7 +130,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 						@s33 ,@s34 ,@s35 ,@s36 ,@s37 ,
 						@s38 ,@s39 ,@s40 ,@s41 ,@s42 ,
 						@s43 ,@s44 ,@s45 ,@s46 ,@s47 ,
-						@s48 ,@IsSpecial ,@ContractualCapacity ,@BlockId ,@BrokerId) ";
+						@s48 ,@IsSpecial ,@ContractualCapacity ,@BlockId ,@BrokerId,@CertificateNumber) ";
         }
         private string GetUpdateCommand(string dbName)
         {

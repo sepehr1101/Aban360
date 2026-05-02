@@ -174,7 +174,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.IsTaqirQotrEnsheab, CompanySeviceLiterals.IsTaqirQotrEnsheab, inputDto.HasTaqirQotrEnsheab));
                 itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.SifoonEzafe, CompanySeviceLiterals.SifoonEzafe, inputDto.HasSifoonEzafe));
                 itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.JabejaiiKontor, CompanySeviceLiterals.JabejaiiKontor, inputDto.HasJabejaiiKontor));
-                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.TafkikEdqam, CompanySeviceLiterals.TafkikEdqam, inputDto.HasTafkikEdqam));
+                itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.TajmiEdqam, CompanySeviceLiterals.TajmiEdqam, inputDto.HasTafkikEdqam));
                 itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.TaqirQotrSifoon, CompanySeviceLiterals.TaqirQotrSifoon, inputDto.HasTaqirQotrSifoon));
                 itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.EstelamMahzar, CompanySeviceLiterals.EstelamMahzar, inputDto.HasEstelamMahzar));
                 itemsServiceWithChecked.Add(new ServiceGroupWithCheckedOutputDto((int)Domain.Constants.CompanyServiceEnum.QatVaslEnsheab, CompanySeviceLiterals.QatVaslEnsheab, inputDto.HasQatVaslEnsheab));

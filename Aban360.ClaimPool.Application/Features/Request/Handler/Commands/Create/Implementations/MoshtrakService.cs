@@ -50,7 +50,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 s37 = servicesSelected.Contains((int)CompanyServiceEnum.NezamMohandesi) ? 1 : 0,
                 s38 = servicesSelected.Contains((int)CompanyServiceEnum.TavizSifoon) ? 1 : 0,
                 s39 = servicesSelected.Contains((int)CompanyServiceEnum.KhanevarShomari) ? 1 : 0,
-                s40 = servicesSelected.Contains((int)CompanyServiceEnum.TafkikEdqam) ? 1 : 0,
+                s40 = servicesSelected.Contains((int)CompanyServiceEnum.TajmiEdqam) ? 1 : 0,
                 s41 = servicesSelected.Contains((int)CompanyServiceEnum.TavizKontor) ? 1 : 0,
                 s42 = servicesSelected.Contains(0) ? 1 : 0,//لوله گذاری آب
                 s43 = servicesSelected.Contains(0) ? 1 : 0,//لوله گذاری فاضلاب
@@ -90,7 +90,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             if (inputDto.s37 == 1) servicesSelected.Add((int)CompanyServiceEnum.NezamMohandesi);// CompanyServiceEnum.NezamMohandesi,؟
             if (inputDto.s38 == 1) servicesSelected.Add((int)CompanyServiceEnum.TavizSifoon);// CompanyServiceEnum.TavizSifoon,؟
             if (inputDto.s39 == 1) servicesSelected.Add((int)CompanyServiceEnum.KhanevarShomari);// CompanyServiceEnum.KhanevarShomari,
-            if (inputDto.s40 == 1) servicesSelected.Add((int)CompanyServiceEnum.TafkikEdqam);// CompanyServiceEnum.TafkikEdqam,205
+            if (inputDto.s40 == 1) servicesSelected.Add((int)CompanyServiceEnum.TajmiEdqam);// CompanyServiceEnum.TafkikEdqam,205
             if (inputDto.s41 == 1) servicesSelected.Add((int)CompanyServiceEnum.TavizKontor);// CompanyServiceEnum.TavizKontor,
             if (inputDto.s42 == 1) servicesSelected.Add((int)CompanyServiceEnum.LooleGozariAb);// ,//لوله گذاری آب  375
             if (inputDto.s43 == 1) servicesSelected.Add((int)CompanyServiceEnum.LooleGozareAbFazelab);// ,//لوله گذاری فاضلاب  376
@@ -137,7 +137,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.NezamMohandesi, CompanySeviceLiterals.NezamMohandesi, input.HasNezamMohandesi));
             companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.TavizSifoon, CompanySeviceLiterals.TavizSifoon, input.HasTavizSifoon));
             companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.KhanevarShomari, CompanySeviceLiterals.KhanevarShomari, input.HasKhanevarShomari));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.TafkikEdqam, CompanySeviceLiterals.TafkikEdqam, input.HasTafkikEdqam));
+            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.TajmiEdqam, CompanySeviceLiterals.TajmiEdqam, input.HasTafkikEdqam));
             companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.TavizKontor, CompanySeviceLiterals.TavizKontor, input.HasTavizKontor));
             companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.LooleGozariAb, CompanySeviceLiterals.LooleGozariAb, input.HasLooleGozareAb));
             companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.IsZarfiatQarardadi, CompanySeviceLiterals.IsZarfiatQarardadi, input.HasZarfiatQarardadi));
@@ -240,7 +240,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.KhanevarShomari, CompanySeviceLiterals.KhanevarShomari));
 
             if (input.HasTafkikEdqam)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.TafkikEdqam, CompanySeviceLiterals.TafkikEdqam));
+                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.TajmiEdqam, CompanySeviceLiterals.TajmiEdqam));
 
             if (input.HasTavizKontor)
                 companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.TavizKontor, CompanySeviceLiterals.TavizKontor));

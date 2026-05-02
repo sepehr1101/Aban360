@@ -1,4 +1,6 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
+using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
+using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.Common.BaseEntities;
@@ -18,6 +20,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         private readonly ISetAssessmentResultHandler _setAssessmentResultHandler;
         private readonly ISetAssessmentTimeHandler _setAssessmentTimeHandler;
         private readonly ISetLightAssessmentResultHandler _setLightAssessmentResultHandler;
+        private readonly IAssessmentByIdGetHandler _assessmentByIdGetHandler;
         private readonly IReAssessmentRequestHandler _reAssessmentRequestHandler;
         private readonly ISmsOldHandler _smsOldHandler;
         private readonly IBackgroundJobClient _backgroudJobClient;
@@ -25,6 +28,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             ISetAssessmentResultHandler setAssessmentResultHandler,
             ISetAssessmentTimeHandler setAssessmentTimeHandler,
             ISetLightAssessmentResultHandler setLightAssessmentResultHandler,
+            IAssessmentByIdGetHandler assessmentByIdGetHandler,
             IReAssessmentRequestHandler reAssessmentRequestHandler,
             ISmsOldHandler smsOldHandler,
             IBackgroundJobClient backgroudJobClient)
@@ -37,6 +41,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 
             _setLightAssessmentResultHandler = setLightAssessmentResultHandler;
             _setLightAssessmentResultHandler.NotNull(nameof(setLightAssessmentResultHandler));
+
+            _assessmentByIdGetHandler = assessmentByIdGetHandler;
+            _assessmentByIdGetHandler.NotNull(nameof(assessmentByIdGetHandler));
 
             _reAssessmentRequestHandler = reAssessmentRequestHandler;
             _reAssessmentRequestHandler.NotNull(nameof(reAssessmentRequestHandler));
@@ -61,10 +68,11 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         [HttpPost]
         [Route("result-sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetResultSti([FromBody] AssessmentResultInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetResultSti(Guid id, CancellationToken cancellationToken)
         {
             int reportCode = 2021;
-            JsonReportId reportId = await JsonOperation.ExportToJson(inputDto, cancellationToken, reportCode);
+            AssessmentDataOutputDto result = await _assessmentByIdGetHandler.Handle(id, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result.AllInJson, cancellationToken, reportCode);
             return Ok(reportId);
         }
 
