@@ -6,5 +6,6 @@
         public int InstallmentCount { get; set; }
         public bool IsConfirm { get; set; }
         public int AdvancePaymentPercentage { get; set; }
+        public int monthlyDuration { get; set; }
     }
 }
