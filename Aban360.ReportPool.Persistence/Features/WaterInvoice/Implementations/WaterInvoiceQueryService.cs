@@ -162,7 +162,8 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                     	1 As IsPayed,--todo
                     	N'--' AS Description,
                     	'-' AS PaymentDateJalali,--todo,
-                    	'-' AS PaymentMethod--todo
+                    	'-' AS PaymentMethod,--todo
+                        c.MobileNo Mobile
                     From [CustomerWarehouse].dbo.Bills b
                     join [CustomerWarehouse].dbo.Clients c on b.BillId=c.BillId
                     Where 
