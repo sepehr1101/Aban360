@@ -11,7 +11,7 @@
         public static string IsTaqirKarbari => "تغییر کاربری انشعاب";
         public static string IsTaqirQotrEnsheab => "تغییر قطر انشعاب";
         public static string SifoonEzafe => "نصب سیفون اضافه";
-        public static string TafkikEdqam => "تفکیک ادغام";
+        public static string TajmiEdqam => "تجمیع و ادغام املاک";
         public static string TaqirQotrSifoon => "تغییر قطر فاضلاب";
         public static string EstelamMahzar => "استعلام محضر";
         public static string QatVaslEnsheab => "قطع و وصل";
