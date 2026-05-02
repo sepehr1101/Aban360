@@ -8,7 +8,7 @@
         public string PhoneNumber { get; set; }
         public string MobileNumber { get; set; }
         public string NationalCode { get; set; }
-        public string CertificataNumber { get; set; }
+        public string CertificateNumber { get; set; }
         public string Address { get; set; }
         public string NeighbourBillId { get; set; }
         public string PostalCode { get; set; }

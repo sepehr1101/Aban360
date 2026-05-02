@@ -20,6 +20,12 @@ namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Queries
         public string RequestDateJalali { get; set; }
         public bool IsDuplicate { get; set; }
 
+        public string? CertificateNumber { get; set; }
+        public string?  Address { get; set; }
+        public string? NeighbourBillId { get; set; }
+        public string? PostalCode { get; set; }
+        public string? Description { get; set; }
+
         public string RequestOrigin { get; set; }
         public int RequestOriginId { get; set; }
         public string LatestStatusTitle { get; set; }
