@@ -29,6 +29,15 @@
         public string? PostalCode { get; set; }
         public string MeterDiameterTitle { get; set; }
         public int MeterDiameterId { get; set; }
+
+        public int Siphon100 { get; set; }
+        public int Siphon125 { get; set; }
+        public int Siphon150 { get; set; }
+        public int Siphon200 { get; set; }
+        public int MainSiphon { get; set; }
+        public int CommonSiphon { get; set; }
+
+
         public string Base64Image { get; set; }
     }
 }

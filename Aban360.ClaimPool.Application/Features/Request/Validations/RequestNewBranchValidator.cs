@@ -34,7 +34,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Validations
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .Must(IsValidNationalCode).WithMessage(ExceptionLiterals.NationalCodeFormat);
 
-            RuleFor(f => f.CertificataNumber)
+            RuleFor(f => f.CertificateNumber)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull)
                 .MinimumLength(3).WithMessage(ExceptionLiterals.NotLessThan3)

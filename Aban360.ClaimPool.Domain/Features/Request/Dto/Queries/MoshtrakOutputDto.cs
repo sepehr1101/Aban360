@@ -52,6 +52,7 @@
         public bool IsNonPermanent { get; set; }
         public string? BlockId { get; set; }
         public int BrokerId { get; set; }//has=1,2 hasnt=0
+        public string? CertificateNumber { get; set; }
         public bool HasBroker { get { return BrokerId >= 1; } }
 
         public int s0 { get; set; }

@@ -29,7 +29,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         }
 
         [HttpPost]
-        [Route("summery-2")]
+        [Route("summary-2")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterInvoiceDto, LineItemsDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSummary2([FromBody] SearchInput searchInput)
         {

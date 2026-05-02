@@ -10,7 +10,7 @@
         IsTaqirQotrEnsheab = 302,// t9:8    ,//afterSale
         SifoonEzafe = 310,// t9:9   ,//afterSale
         JabejaiiKontor = 308,// t9:10   ,//afterSale
-        TafkikEdqam = 205,// t9:12  ,//afterSale
+        TajmiEdqam = 205,// t9:12  ,//afterSale
         TaqirQotrSifoon = 309,// t9:24  ,//afterSale
         EstelamMahzar = 300,// t9:26    ,//afterSale
         QatVaslEnsheab = 303,// t9:27   ,//afterSale

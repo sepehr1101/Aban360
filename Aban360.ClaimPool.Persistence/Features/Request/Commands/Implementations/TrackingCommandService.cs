@@ -82,7 +82,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                     Values(
                         @TrackId ,@TrackNumber ,@ZoneId ,
                         @CurrentDateGregorian ,@CurrentDateJalali ,@BillId ,
-                        @ServiceGroupId ,@StatusId ,0 ,
+                        @ServiceGroupId ,@StatusId , 0,
                         @InsertByUserId ,@Description ,@NotificationMobile ,
                         @NeighbourBillId ,@RequestOrigin)";
         }
