@@ -181,7 +181,11 @@
         public static string SetBillId => " شناسی قبض به درخواست جاری اختصاص داده نشده.";
         public static string InvalidInsertAssessmentOff => " خطا در حذف مرخصی ";
         public static string InvalidRemoveAssessmentOff => " خطا در ذخیره مرخصی ";
-    
-        
+
+
+        //Tanker
+        public static string InvalidUpdateTankerRadif => "خطا در ویرایش ردیف تانکر آب";
+        public static string InvalidInsertTanker => "خطا در ذخیره اطلاعات تانکر";
+        public static string InvalidRemoveTanker => "خطا در حذف اطلاعات تانکر";
     }
 }
