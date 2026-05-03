@@ -20,7 +20,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         private readonly ISetAssessmentResultHandler _setAssessmentResultHandler;
         private readonly ISetAssessmentTimeHandler _setAssessmentTimeHandler;
         private readonly ISetLightAssessmentResultHandler _setLightAssessmentResultHandler;
-        private readonly IAssessmentByIdGetHandler _assessmentByIdGetHandler;
+        private readonly IAssessmentByTrackIdGetHandler _assessmentByIdGetHandler;
         private readonly IReAssessmentRequestHandler _reAssessmentRequestHandler;
         private readonly ISmsOldHandler _smsOldHandler;
         private readonly IBackgroundJobClient _backgroudJobClient;
@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             ISetAssessmentResultHandler setAssessmentResultHandler,
             ISetAssessmentTimeHandler setAssessmentTimeHandler,
             ISetLightAssessmentResultHandler setLightAssessmentResultHandler,
-            IAssessmentByIdGetHandler assessmentByIdGetHandler,
+            IAssessmentByTrackIdGetHandler assessmentByIdGetHandler,
             IReAssessmentRequestHandler reAssessmentRequestHandler,
             ISmsOldHandler smsOldHandler,
             IBackgroundJobClient backgroudJobClient)
@@ -72,7 +72,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         {
             int reportCode = 2021;
             AssessmentDataOutputDto result = await _assessmentByIdGetHandler.Handle(input.Input, cancellationToken);
-            JsonReportId reportId = await JsonOperation.ExportToJson(result.AllInJson, cancellationToken, reportCode);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result?.AllInJson ?? string.Empty, cancellationToken, reportCode);
             return Ok(reportId);
         }
 
@@ -83,7 +83,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         {
             int reportCode = 2022;
             AssessmentDataOutputDto result = await _assessmentByIdGetHandler.Handle(input.Input, cancellationToken);
-            JsonReportId reportId = await JsonOperation.ExportToJson(result.AllInJson, cancellationToken, reportCode);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result?.AllInJson ?? string.Empty, cancellationToken, reportCode);
             return Ok(reportId);
         }
 
@@ -94,7 +94,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         {
             int reportCode = 2023;
             AssessmentDataOutputDto result = await _assessmentByIdGetHandler.Handle(input.Input, cancellationToken);
-            JsonReportId reportId = await JsonOperation.ExportToJson(result.AllInJson, cancellationToken, reportCode);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result?.AllInJson ?? string.Empty, cancellationToken, reportCode);
             return Ok(reportId);
         }
 

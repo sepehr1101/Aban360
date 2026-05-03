@@ -5,10 +5,10 @@ using Aban360.Common.Extensions;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations
 {
-    internal sealed class AssessmentByIdGetHandler : IAssessmentByIdGetHandler
+    internal sealed class AssessmentByTrackIdGetHandler : IAssessmentByTrackIdGetHandler
     {
         private readonly IExaminationQueryService _examinationQueryService;
-        public AssessmentByIdGetHandler(IExaminationQueryService examinationQueryService)
+        public AssessmentByTrackIdGetHandler(IExaminationQueryService examinationQueryService)
         {
             _examinationQueryService = examinationQueryService;
             _examinationQueryService.NotNull(nameof(examinationQueryService));
@@ -16,7 +16,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
         public async Task<AssessmentDataOutputDto> Handle(Guid id, CancellationToken cancellationToken)
         {
-            return await _examinationQueryService.Get(id);
+            return await _examinationQueryService.GetByTrackId(id);
 
         }
     }

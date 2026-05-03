@@ -92,7 +92,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             AutoBackCreateDto newCalculation = _returnBillBaseHandler.GetNewCalculation(abBahaResult, bedBesResult, input.ReturnCauseId, bedBesInfo.Count(), hadarConsumption ?? 0, (long)(finalAmount ?? 0), jalaseNumber);
             AutoBackCreateDto different = _returnBillBaseHandler.GetDifferent(bedBesResult, newCalculation, jalaseNumber);
 
-            _returnBillBaseHandler.ValidationAmount(newCalculation.Baha, bedBesInfo.Sum(s => s.Baha));
+            //_returnBillBaseHandler.ValidationAmount(newCalculation.Baha, bedBesInfo.Sum(s => s.Baha));
             return await _returnBillBaseHandler.GetReturn(bedBes, newCalculation, different, customerInfo, bedBesInfo.Count(), input.IsConfirm);
         }
         private async Task<AbBahaCalculationDetails> GetAbBahaTariff(ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBes, double consumptionAverage, CancellationToken cancellationToken)
@@ -106,6 +106,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         }
         private async Task<AbBahaCalculationDetails> GetAbBahaTariff(ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBes, CancellationToken cancellationToken)
         {
+            double consumptionAverage=(double)bedBes.Average(b=>b.Rate);
             string previousDateJalali = bedBes.Min(x => x.PriDate);
             string currentDateJalali = bedBes.Max(x => x.TodayDate);
 
@@ -113,14 +114,17 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             int currentNumber = (int)bedBes.Max(x => x.TodayNo);
 
 
-            MeterInfoByPreviousDataInputDto meterData = new()
-            {
-                BillId = input.BillId,
-                PreviousDateJalali = previousDateJalali,
-                CurrentDateJalali = currentDateJalali,
-                PreviousNumber = previousNumber,
-                CurrentMeterNumber = currentNumber
-            };
+            //MeterInfoByPreviousDataInputDto meterData = new()
+            //{
+            //    BillId = input.BillId,
+            //    PreviousDateJalali = previousDateJalali,
+            //    CurrentDateJalali = currentDateJalali,
+            //    PreviousNumber = previousNumber,
+            //    CurrentMeterNumber = currentNumber,
+            //    CounterStateCode=
+            //};
+            MeterDateInfoWithMonthlyConsumptionOutputDto meterData = new(input.BillId, previousDateJalali, currentDateJalali, consumptionAverage);
+
             AbBahaCalculationDetails abBahaResult = await _oldTariffEngine.Handle(meterData, cancellationToken);
             return abBahaResult;
         }

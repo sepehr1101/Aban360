@@ -169,6 +169,12 @@ namespace Aban360.Common.Literals
                     @"کد پستی در محل حضور داشته باشید شماره پیگیری:{3}";
             }
         }
-
+        public static string TankerWater
+        {
+            get
+            {
+                return @"پیامک تست  آب تانکری مصرف:{0} مسافت:{1} مبلغ:{2}";
+            }
+        }
     }
 }
