@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Constants;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
@@ -16,10 +17,10 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
             _userQueryService.NotNull(nameof(userQueryService));
         }
 
-        public async Task<IEnumerable<UserQueryDto>> Handle(int zoneId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<StringDictionary>> Handle(int zoneId, CancellationToken cancellationToken)
         {
             UserSearchByRoleTitleAndZoneIdDto userSearch = new(zoneId, ClaimType.ZoneId, BaseRoles.Evaluator);
-            IEnumerable<UserQueryDto> result = await _userQueryService.Get(userSearch);
+            IEnumerable<StringDictionary> result = await _userQueryService.GetDictionary(userSearch);
             return result;
         }
     }

@@ -1,9 +1,9 @@
-﻿using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
+﻿using Aban360.Common.BaseEntities;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts
 {
     public interface IAssessmentGetByZoneIdHandler
     {
-        Task<IEnumerable<UserQueryDto>> Handle(int zoneId, CancellationToken cancellationToken);
+        Task<IEnumerable<StringDictionary>> Handle(int zoneId, CancellationToken cancellationToken);
     }
 }
