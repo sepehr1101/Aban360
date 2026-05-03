@@ -156,7 +156,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             string consumptionLevelSegmentQuery = @$" JOIN (
                                                        VALUES {rangeValues}
                                                    ) AS g(FromValue, ToValue)
-                                                       ON b.Consumption>g.FromValue AND ConsumptionAverage<=g.ToValue";
+                                                       ON b.Consumption>g.FromValue AND Consumption<=g.ToValue";
 
             if (inputState==ContractualAndOlgooLevelInputEnum.Olgoo)
 				return olgooLevelSegmentQuery;

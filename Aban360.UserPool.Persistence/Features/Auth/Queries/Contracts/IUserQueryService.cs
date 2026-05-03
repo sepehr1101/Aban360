@@ -1,6 +1,6 @@
-﻿using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
-using static Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations.UserQueryService;
 
 namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts
 {
@@ -13,5 +13,6 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts
         Task<User> GetIncludeUserAndClaims(Guid userId);
         Task<IEnumerable<UserQueryDto>> Search(SearchUserDto input);
         Task<IEnumerable<UserQueryDto>> Get(UserSearchByRoleTitleAndZoneIdDto inputDto);
+        Task<IEnumerable<StringDictionary>> GetDictionary(UserSearchByRoleTitleAndZoneIdDto inputDto);
     }
 }

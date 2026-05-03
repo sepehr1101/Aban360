@@ -66,11 +66,33 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         }
 
         [HttpPost]
-        [Route("result-sti")]
+        [Route("result-assessment-sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetResultSti(Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetResultAssessmentSti(Guid id, CancellationToken cancellationToken)
         {
             int reportCode = 2021;
+            AssessmentDataOutputDto result = await _assessmentByIdGetHandler.Handle(id, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result.AllInJson, cancellationToken, reportCode);
+            return Ok(reportId);
+        }
+
+        [HttpPost]
+        [Route("result-address-sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetResultAddressSti(Guid id, CancellationToken cancellationToken)
+        {
+            int reportCode = 2022;
+            AssessmentDataOutputDto result = await _assessmentByIdGetHandler.Handle(id, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result.AllInJson, cancellationToken, reportCode);
+            return Ok(reportId);
+        }
+
+        [HttpPost]
+        [Route("result-trench-sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetResultTrenchSti(Guid id, CancellationToken cancellationToken)
+        {
+            int reportCode = 2023;
             AssessmentDataOutputDto result = await _assessmentByIdGetHandler.Handle(id, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result.AllInJson, cancellationToken, reportCode);
             return Ok(reportId);
