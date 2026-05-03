@@ -40,6 +40,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [HttpPost]
         [Route("summary-2-by-id")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterInvoiceDto, LineItemsDto>>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetSummary2ById([FromBody] DisplayThisBillInput searchInput)
         {
             ReportOutput<WaterInvoiceDto, LineItemsDto> waterInvoice = await _waterInvoiceHandler.Handle(searchInput);

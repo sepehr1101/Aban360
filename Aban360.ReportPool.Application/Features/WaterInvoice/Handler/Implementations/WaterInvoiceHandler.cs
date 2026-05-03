@@ -70,6 +70,11 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
         }
         private WaterInvoiceDto GetWaterInvoiceData(WaterInvoiceDto input, bool displayPreviousDebt=true)
         {
+            if(!displayPreviousDebt)
+            {
+                input.DebtorOrCreditorAmount = 0;
+                input.PayableAmount = (input.Sum / 1000) * 1000;
+            }
             input.PayId = displayPreviousDebt ? input.PayId : TransactionIdGenerator.GeneratePaymentId(input.Sum, input.BillId);
             
             input.BarCode = (input.BillId is null ? new string('0', 13) : input.BillId.PadLeft(13, '0')) +

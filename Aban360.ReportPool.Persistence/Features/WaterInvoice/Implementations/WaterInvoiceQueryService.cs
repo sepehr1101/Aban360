@@ -50,9 +50,11 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
         public async Task<ReportOutput<WaterInvoiceDto, LineItemsDto>> Get(string billId, long id)
         {
             string idPart = $" AND b.id={id} ";
+            string idPartSimple = $" AND id={id} ";
             string idPartLt = $" AND b.id<{id} ";
+            
             string getWaterInvoiceQuery = GetWaterInvoiceQuery(idPart);
-            string getItemValueQuery = GetItemsQuery(idPart);
+            string getItemValueQuery = GetItemsQuery(idPartSimple);
             string getPreviousConsumptionQuery = GetPreviousConsumptionQuery(idPartLt);
             string getHeadquarterQuery = GetHeadquarterQuery();
             string getPaymentQuery = GetPaymentInfoQuery();//TODO: send date as date_part
@@ -66,7 +68,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             IEnumerable<PreviousConsumptionsDto> previousConsumptions = await _sqlReportConnection.QueryAsync<PreviousConsumptionsDto>(getPreviousConsumptionQuery, new { billId = billId });
             string headquarterTitle = await _sqlConnection.QueryFirstAsync<string>(getHeadquarterQuery, new { zoneId = waterInvoice.ZoneId });
             WaterInvoicePaymentOutputDto? paymentInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterInvoicePaymentOutputDto>(getPaymentQuery, new { billId = billId, payId = waterInvoice.PayId == null ? "0" : waterInvoice.PayId, billRegisterDate = waterInvoice.RegisterDateJalali });
-            waterInvoice.DebtorOrCreditorAmount = await GetRemained(billId);
+            //waterInvoice.DebtorOrCreditorAmount = await GetRemained(billId);
             waterInvoice = MappingWaterInvoice(waterInvoice, paymentInfo, previousConsumptions, lineitems, headquarterTitle);
 
             ReportOutput<WaterInvoiceDto, LineItemsDto> result = new(ReportLiterals.WaterInvoice, waterInvoice, lineitems);
