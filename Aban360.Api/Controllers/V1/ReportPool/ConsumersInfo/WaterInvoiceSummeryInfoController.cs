@@ -38,7 +38,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         }
 
         [HttpPost]
-        [Route("summery-2-by-id")]
+        [Route("summary-2-by-id")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterInvoiceDto, LineItemsDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSummary2ById([FromBody] DisplayThisBillInput searchInput)
         {
@@ -47,7 +47,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         }
 
         [HttpPost]
-        [Route("summery-2-withLastDb")]
+        [Route("summary-2-withLastDb")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterInvoiceDto, LineItemsDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSummary2WithLastDb([FromBody] SearchInput searchInput, CancellationToken cancellationToken)
         {
