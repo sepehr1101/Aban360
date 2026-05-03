@@ -21,14 +21,14 @@
                 (now >= _start) ||     // از 15:00 تا 23:59
                 (now <= _end);         // از 00:00 تا 07:00
 
-            //if (!isAllowed)
-            //{
-            //    context.Result = new ObjectResult(CreateEnvelope())
-            //    {
-            //        StatusCode = StatusCodes.Status403Forbidden
-            //    };
-            //    return;
-            //}
+            if (!isAllowed)
+            {
+                context.Result = new ObjectResult(CreateEnvelope())
+                {
+                    StatusCode = StatusCodes.Status403Forbidden
+                };
+                return;
+            }
 
             await next();
         }

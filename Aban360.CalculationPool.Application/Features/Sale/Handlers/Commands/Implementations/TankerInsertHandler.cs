@@ -77,6 +77,8 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                     int customerNumber = await variablesCommandService.GetAndRenewTankerRadif();
                     TankerInsertDto tankerInsertDto = GetTankerInsertDto(inputDto, calcResult, customerNumber, barge);
                     BedBesCreateDto bedBesInsertDto = await GetBedBesInsertDto(tankerInsertDto, calcResult, userCode);
+                    calcResult.BillId = bedBesInsertDto.ShGhabs1;
+                    calcResult.PaymentId = bedBesInsertDto.ShPard1;
 
                     await tankerCommandService.Insert(tankerInsertDto, dbName);
                     await bedBesCommandService.Insert(bedBesInsertDto, dbName);
@@ -84,6 +86,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                     transaction.Commit();
                 }
             }
+           
             return calcResult;
         }
         public async Task<TankerWaterCalculationOutputDto> Calc(TankerInsertInputDto input, CancellationToken cancellationToken)
