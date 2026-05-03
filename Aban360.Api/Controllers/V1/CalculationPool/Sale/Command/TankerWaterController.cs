@@ -4,6 +4,9 @@ using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Db.QueryServices;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
+using Aban360.NotificationPool.Application.Features.Sms;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Command
@@ -13,15 +16,25 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Command
     {
         private readonly ITankerInsertHandler _tankerInserHandler;
         private readonly ITankerRemoveHandler _tankerRemoveHandler;
+        private readonly ISmsOldHandler _smsOldHandler;
+        private readonly IBackgroundJobClient _backgroundJobClient;
         public TankerWaterController(
             ITankerRemoveHandler tankerRemoveHandler,
-            ITankerInsertHandler tankerInserHandler)
+            ITankerInsertHandler tankerInserHandler,
+            ISmsOldHandler smsOldHandler,
+            IBackgroundJobClient backgroundJobClient)
         {
             _tankerRemoveHandler = tankerRemoveHandler;
             _tankerRemoveHandler.NotNull(nameof(tankerRemoveHandler));
 
             _tankerInserHandler = tankerInserHandler;
             _tankerInserHandler.NotNull(nameof(tankerInserHandler));
+
+            _smsOldHandler = smsOldHandler;
+            _smsOldHandler.NotNull(nameof(smsOldHandler));
+
+            _backgroundJobClient = backgroundJobClient;
+            _backgroundJobClient.NotNull(nameof(backgroundJobClient));
         }
 
         [HttpGet, HttpPost]
@@ -31,6 +44,11 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Command
         {
             int userCode = UserService.GetUserCode(CurrentUser.Username);
             TankerWaterCalculationOutputDto result = await _tankerInserHandler.Handle(input, userCode, cancellationToken);
+            string text = string.Format(SmsTemplates.TankerWater, input.Consumption, input.Distance, result.Final);
+            if (input.HasSms && !string.IsNullOrWhiteSpace(input.MobileNumber))
+            {
+                _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(input.MobileNumber, text, Guid.NewGuid()));
+            }
             return Ok(result);
         }
 

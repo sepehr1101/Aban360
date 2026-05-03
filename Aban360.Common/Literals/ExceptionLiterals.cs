@@ -85,8 +85,8 @@
         public static string InvalidRequestData => $"کد درخواست ناصحیح است";
         public static string UnconfirmedRequest => $"درخواست ثبت قطعی نشده است";
         public static string NotCalculation => $"محاسبه انجام نشده است";
-        public static string SuccessedPay => $"پرداخت شد";
-        public static string UnsuccessedPay => $"پرداخت نشد";
+        public static string SuccessedPay => $"پرداخت شده";
+        public static string UnsuccessedPay => $"پرداخت نشده";
 
         public static string InvalidPercent => $"درصد اشتباه وارد شده";
         public static string Incalculable => $"غیر قابل محاسبه";

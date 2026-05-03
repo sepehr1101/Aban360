@@ -2284,3 +2284,21 @@ INSERT [BlobPool].[OpenKmMetaData] ([Id], [Section], [Label], [Value], [KeyLabel
 GO
 INSERT [BlobPool].[OpenKmMetaData] ([Id], [Section], [Label], [Value], [KeyLabel]) VALUES (1143, N'okp:moshtarakin.village', N'ونک سفلی', 953, N'روستا')
 GO
+INSERT [BlobPool].[OpenKmMetaData] ([Id], [Section], [Label], [Value], [KeyLabel]) VALUES (1144, N'okp:moshtarakin.title', N'رم غیر مجاز', 142, N'نوع فایل')
+GO
+INSERT [BlobPool].[OpenKmMetaData] ([Id], [Section], [Label], [Value], [KeyLabel]) VALUES (1145, N'okp:moshtarakin.title', N'نامه هزینه انشعابات خاص', 141, N'نوع فایل')
+GO
+INSERT [BlobPool].[OpenKmMetaData] ([Id], [Section], [Label], [Value], [KeyLabel]) VALUES (1146, N'okp:moshtarakin.title', N'گواهی احراز',140, N'نوع فایل')
+GO
+INSERT [BlobPool].[OpenKmMetaData] ([Id], [Section], [Label], [Value], [KeyLabel]) VALUES (1147, N'okp:moshtarakin.title', N'فرم قرارداد', 139, N'نوع فایل')
+GO
+INSERT [BlobPool].[OpenKmMetaData] ([Id], [Section], [Label], [Value], [KeyLabel]) VALUES (1148, N'okp:moshtarakin.title', N'فرم مکمل', 138, N'نوع فایل')
+GO
+INSERT [BlobPool].[OpenKmMetaData] ([Id], [Section], [Label], [Value], [KeyLabel]) VALUES (1149, N'okp:moshtarakin.title', N'نصب آب و فاضلاب', 86, N'نوع فایل')
+GO
+INSERT [BlobPool].[OpenKmMetaData] ([Id], [Section], [Label], [Value], [KeyLabel]) VALUES (1150, N'okp:moshtarakin.title', N'نامه', 85, N'نوع فایل')
+GO
+INSERT [BlobPool].[OpenKmMetaData] ([Id], [Section], [Label], [Value], [KeyLabel]) VALUES (1151, N'okp:moshtarakin.title', N'سند مالکیت', 83, N'نوع فایل')
+GO
+INSERT [BlobPool].[OpenKmMetaData] ([Id], [Section], [Label], [Value], [KeyLabel]) VALUES (1152, N'okp:moshtarakin.title', N'فرم چهار برگی درخواست', 82, N'نوع فایل')
+GO
