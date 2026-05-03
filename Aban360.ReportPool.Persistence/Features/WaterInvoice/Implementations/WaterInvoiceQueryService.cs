@@ -40,7 +40,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             IEnumerable<PreviousConsumptionsDto> previousConsumptions = await _sqlReportConnection.QueryAsync<PreviousConsumptionsDto>(getPreviousConsumptionQuery, new { billId = billId });
             string headquarterTitle = await _sqlConnection.QueryFirstAsync<string>(getHeadquarterQuery, new { zoneId = waterInvoice.ZoneId });
             WaterInvoicePaymentOutputDto? paymentInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterInvoicePaymentOutputDto>(getPaymentQuery, new { billId = billId, payId = waterInvoice.PayId == null ? "0" : waterInvoice.PayId, billRegisterDate = waterInvoice.RegisterDateJalali });
-            waterInvoice.DebtorOrCreditorAmount = await GetRemained(billId);
+            //waterInvoice.DebtorOrCreditorAmount = await GetRemained(billId);
             waterInvoice = MappingWaterInvoice(waterInvoice, paymentInfo, previousConsumptions, lineitems, headquarterTitle);
 
             ReportOutput<WaterInvoiceDto, LineItemsDto> result = new(ReportLiterals.WaterInvoice, waterInvoice, lineitems);
@@ -49,12 +49,13 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
         }
         public async Task<ReportOutput<WaterInvoiceDto, LineItemsDto>> Get(string billId, long id)
         {
-            string IdPart = $" AND b.id={id} ";
-            string getWaterInvoiceQuery = GetWaterInvoiceQuery(IdPart);
-            string getItemValueQuery = GetItemsQuery();
-            string getPreviousConsumptionQuery = GetPreviousConsumptionQuery();
+            string idPart = $" AND b.id={id} ";
+            string idPartLt = $" AND b.id<{id} ";
+            string getWaterInvoiceQuery = GetWaterInvoiceQuery(idPart);
+            string getItemValueQuery = GetItemsQuery(idPart);
+            string getPreviousConsumptionQuery = GetPreviousConsumptionQuery(idPartLt);
             string getHeadquarterQuery = GetHeadquarterQuery();
-            string getPaymentQuery = GetPaymentInfoQuery();
+            string getPaymentQuery = GetPaymentInfoQuery();//TODO: send date as date_part
 
             WaterInvoiceDto waterInvoice = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterInvoiceDto>(getWaterInvoiceQuery, new { billId = billId });
             if (waterInvoice == null)
@@ -101,16 +102,16 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 	                 join [Aban360].LocationPool.Headquarters h on r.HeadquartersId=h.Id
 	                 where z.Id=@zoneId";
         }
-        private string GetPreviousConsumptionQuery()
+        private string GetPreviousConsumptionQuery(string idPart="")
         {
-            return @"Select top 10
+            return @$"Select top 10
                         b.ConsumptionAverage AS ConsumptionAmount,
 			            b.RegisterDay AS ConsumptionDateJalali
 	                  From [CustomerWarehouse].dbo.Bills b
 	                  WHERE
 	                 	b.BillId=@billId AND
-                        b.CounterStateCode NOT IN (4,7,8)
-	                 order by PreviousDay desc";
+                        b.CounterStateCode NOT IN (4,7,8) {idPart}
+	                 order by NextDay desc";
         }
         private string GetWaterInvoiceQuery(string idPart="")
         {
@@ -171,17 +172,17 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                     	b.BillId=@billId AND
                         b.CounterStateCode NOT IN (4,7) And
 						b.TypeId In (N'قبض', N'علی الحساب') {idPart} 
-                    order by PreviousDay desc";
+                    order by NextDay desc";
         }
 
-        private string GetItemsQuery()
+        private string GetItemsQuery(string idPart = "")
         {
-            return @"SELECT v.Item, v.Amount
+            return @$"SELECT v.Item, v.Amount
                      FROM (
                          SELECT TOP 1 *
                          FROM [CustomerWarehouse].dbo.Bills
-                         WHERE BillId = @billId  AND TypeId IN (N'قبض', N'علی الحساب')
-                         ORDER BY PreviousDay DESC
+                         WHERE BillId = @billId  AND TypeId IN (N'قبض', N'علی الحساب') {idPart} 
+                         ORDER BY NextDay DESC
                      ) b
                      CROSS APPLY (
                          VALUES
