@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Extensions;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
@@ -78,6 +79,13 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
 
             return result;
         }
+        public async Task<IEnumerable<StringDictionary>> GetDictionary(UserSearchByRoleTitleAndZoneIdDto inputDto)
+        {
+            string query = GetSearchByRoleTitleAndZoneIdDictionaryQuery(inputDto);
+            IEnumerable<StringDictionary> result = await _uow.ExecuteQuery<StringDictionary>(query);
+
+            return result;
+        }
 
 
         private string GetSearchUserQuery(string zoneIds, string endpointIds, string roleIds)
@@ -134,6 +142,23 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
                     	u.MobileConfirmed,
                     	u.HasTwoStepVerification, 
                     	IIF(u.LockTimespan Is NUll,0,1) IsLocked
+                    From Aban360.UserPool.UserClaim uc
+                    Left Join Aban360.UserPool.UserRole ur
+                    	ON uc.UserId=ur.UserId
+                    Left Join Aban360.UserPool.Role r
+                    	ON ur.RoleId=r.Id
+                    Left Join Aban360.UserPool.[User] u
+                    	ON ur.UserId=u.Id
+                    Where 
+                    	uc.ClaimTypeId={(int)_params.ClaimType} AND
+                    	uc.ClaimValue='{_params.ZoneId}' AND
+                    	r.Name='{_params.RoleName}'";
+        }
+        private string GetSearchByRoleTitleAndZoneIdDictionaryQuery(UserSearchByRoleTitleAndZoneIdDto _params)
+        {
+            return @$"Select 
+                    	u.Username Id,
+                    	u.FullName Title
                     From Aban360.UserPool.UserClaim uc
                     Left Join Aban360.UserPool.UserRole ur
                     	ON uc.UserId=ur.UserId
