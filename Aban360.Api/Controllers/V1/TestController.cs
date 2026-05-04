@@ -1,8 +1,10 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
+using Aban360.Common.Extensions;
 using Aban360.NotificationPool.Application.Features.Sms;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Aban360.Api.Controllers.V1
 {
@@ -33,7 +35,10 @@ namespace Aban360.Api.Controllers.V1
         [Route("check-body")]
         public async Task<IActionResult> TestBody()
         {
-            var requestBody = await new StreamReader(_contextAccessor.HttpContext.Request.Body).ReadToEndAsync();
+            var requestBody = await new StreamReader(_contextAccessor.HttpContext.Request.Body)
+                 .ReadToEndAsync();
+            AssessmentResultInputDto input = JsonOperation.Unmarshal<AssessmentResultInputDto>(requestBody);
+
             return Ok(requestBody);
         }
     }
