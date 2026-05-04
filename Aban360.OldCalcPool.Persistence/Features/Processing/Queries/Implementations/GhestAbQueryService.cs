@@ -21,7 +21,14 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         }
         private string GetCustomerInstallmentsQuery(string dbName)
         {
-            return $@"Select 
+            return $@"With Cte As(
+                    	Select 
+                    		*,
+                    		Rn=ROW_NUMBER() OVER(Partition by date_bed Order By mohlat Desc)
+                    	From [{dbName}].dbo.ghest_ab
+                    	Where radif=@CustomerNumber
+                    )
+                    Select 
                     	g.ID,
                     	g.town ZoneId,
                     	g.radif CustomerNumber,
@@ -35,15 +42,19 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	g.enshab MeterDiamterId,
                     	t5.C2 MeterDiameterTitle,
 						g.serial QueueNumber
-                    From [{dbName}].dbo.ghest_ab g
-                    Join [Db70].dbo.T41 t41
+                   From [{dbName}].dbo.ghest_ab g
+                    Join Cte cg
+						On g.date_bed=cg.date_bed
+					Join [Db70].dbo.T41 t41
                     	ON g.cod_enshab=t41.C0
                     Join [Db70].dbo.T5 t5
                     	ON g.enshab=t5.C0
                     Where 
-                    	g.town=@zoneId AND
-                    	g.radif=@customerNumber
-					Order By RegisterDateJalali Asc, DeadLineDateJalali Asc";
+                    	g.town=@ZoneId AND
+                    	g.radif=@CustomerNumber AND
+						CustomerWarehouse.dbo.PersianToMiladi(cg.mohlat)>=CAST( DATEFROMPARTS( YEAR(GETDATE()), MONTH(GETDATE()), DAY(GETDATE() )) AS datetime)AND
+						cg.Rn=1
+					Order By g.date_bed Asc, g.mohlat Asc";
         }
     }
 }
