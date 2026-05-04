@@ -161,8 +161,8 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidShowPreviousRequest);
             }
-
-            dynamic jsonObject = JsonConvert.DeserializeObject<ExpandoObject>(result.AllInJson, new ExpandoObjectConverter());
+            string finalString = @" {""reportData"":" + result.AllInJson + "}";
+            dynamic jsonObject = JsonConvert.DeserializeObject<ExpandoObject>(finalString, new ExpandoObjectConverter());
             JsonReportId reportId = await JsonOperation.ExportToJson(jsonObject, cancellationToken, reportCode);
             return reportId;
         }
