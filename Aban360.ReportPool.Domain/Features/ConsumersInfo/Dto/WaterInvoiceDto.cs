@@ -74,5 +74,6 @@
         public string? IssueType { get; set; }
         public int? ReaderName { get; set; }
         public bool IsRemovable { get; set; }
+        public string Mobile { get; set; }
     }
 }

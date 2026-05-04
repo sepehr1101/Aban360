@@ -10,6 +10,7 @@ using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.NotificationPool.Application.Features.Sms;
 using Hangfire;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -21,6 +22,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
     [Route("v1/assessment")]
     public class AssessmentController : BaseController
     {
+        private readonly IHttpContextAccessor _contextAccessor;
         private readonly ISetAssessmentResultHandler _setAssessmentResultHandler;
         private readonly ISetAssessmentTimeHandler _setAssessmentTimeHandler;
         private readonly ISetLightAssessmentResultHandler _setLightAssessmentResultHandler;
@@ -28,7 +30,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         private readonly IReAssessmentRequestHandler _reAssessmentRequestHandler;
         private readonly ISmsOldHandler _smsOldHandler;
         private readonly IBackgroundJobClient _backgroudJobClient;
+
         public AssessmentController(
+            IHttpContextAccessor contextAccessor,
             ISetAssessmentResultHandler setAssessmentResultHandler,
             ISetAssessmentTimeHandler setAssessmentTimeHandler,
             ISetLightAssessmentResultHandler setLightAssessmentResultHandler,
@@ -37,6 +41,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             ISmsOldHandler smsOldHandler,
             IBackgroundJobClient backgroudJobClient)
         {
+            _contextAccessor=contextAccessor;
+            _contextAccessor.NotNull(nameof(contextAccessor));
+
             _setAssessmentResultHandler = setAssessmentResultHandler;
             _setAssessmentResultHandler.NotNull(nameof(setAssessmentResultHandler));
 
@@ -62,10 +69,10 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         [HttpPost]
         [Route("result")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AssessmentResultInputDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> SetReult([FromBody] AssessmentResultInputDto inputDto, CancellationToken cancellationToken)
-        {
+        public async Task<IActionResult> SetReult(CancellationToken cancellationToken)
+        {            
             int examinerCode = UserService.GetUserCode(CurrentUser.Username);
-            await _setAssessmentResultHandler.Handle(inputDto, examinerCode, cancellationToken);
+            AssessmentResultInputDto inputDto=await _setAssessmentResultHandler.Handle(examinerCode, cancellationToken);
             return Ok(inputDto);
         }
 
@@ -154,8 +161,8 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidShowPreviousRequest);
             }
-
-            dynamic jsonObject = JsonConvert.DeserializeObject<ExpandoObject>(result.AllInJson, new ExpandoObjectConverter());
+            string finalString = @" {""reportData"":" + result.AllInJson + "}";
+            dynamic jsonObject = JsonConvert.DeserializeObject<ExpandoObject>(finalString, new ExpandoObjectConverter());
             JsonReportId reportId = await JsonOperation.ExportToJson(jsonObject, cancellationToken, reportCode);
             return reportId;
         }

@@ -24,6 +24,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const string date1404_02_31 = "1404/02/31";
         const string date1404_09_09 = "1404/09/09";
         const string date1404_12_29 = "1404/12/29";
+        const string date1405_01_31 = "1405/02/01";
         const string date1405_12_29 = "1405/12/29";
 
         const double amountTo1403_12_01 = 10000.0;
@@ -31,7 +32,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const double amountTo404_02_31 = 45500.0;
         const double amountTo1404_09_09 = 58500.0;
         const double amountTo1404_12_29 = 71500.0;
-        const double amountTo1405_12_29 = 88000.0;
+        const double amountTo1405_01_31 = 88000.0;
+        const double amountTo1405_12_29 = 114400.0;
 
         public TariffItemResult CalculateAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali, ConsumptionPartialInfo consumptionPartialInfo, out double before1403_12_02, out double before1404)
         {
@@ -47,7 +49,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             }
 
             double abonAbAmount = 0;
-            double durationTo1403_12_01 = 0, durationTo1403_12_30 = 0, durationTo1404_02_14Or31 = 0, duration1404_09_09 = 0, duration1404_12_29=0, duration1405_12_29=0;
+            double durationTo1403_12_01 = 0, durationTo1403_12_30 = 0, durationTo1404_02_14Or31 = 0, duration1404_09_09 = 0, duration1404_12_29=0, duration1405_01_31=0, duration1405_12_29=0;
 
             durationTo1403_12_01 = PartTime(date_begin, date1403_12_01, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
             durationTo1403_12_30 = PartTime(date1403_12_01, date1403_12_30, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
@@ -70,7 +72,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 duration1404_09_09 = PartTime(date1404_02_31, date1404_09_09, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
             }
             duration1404_12_29 = PartTime(date1404_09_09, date1404_12_29, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-            duration1405_12_29 = PartTime(date1404_12_29, date1405_12_29, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
+            duration1405_01_31= PartTime(date1404_12_29, date1405_01_31, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
+            duration1405_12_29 = PartTime(date1405_01_31, date1405_12_29, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
 
             int sumUnit = customerInfo.OtherUnit + customerInfo.DomesticUnit + customerInfo.CommertialUnit;
 
@@ -84,12 +87,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 sumUnit = 1;
             }
 
-            abonAbAmount = sumUnit*
+            abonAbAmount = sumUnit *
                 (((amountTo1403_12_01 / monthDays) * durationTo1403_12_01) +
                 ((amountTo1403_12_30 / monthDays) * durationTo1403_12_30) +
                 ((amountTo404_02_31 / monthDays) * durationTo1404_02_14Or31) +
                 ((amountTo1404_09_09 / monthDays) * duration1404_09_09) +
                 ((amountTo1404_12_29 / monthDays) * duration1404_12_29) +
+                ((amountTo1405_01_31 / monthDays) * duration1405_01_31) +
                 ((amountTo1405_12_29 / monthDays) * duration1405_12_29));
 
             if (abonAbAmount < 0)
