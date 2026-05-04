@@ -43,10 +43,10 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
             if (input.IsConfirm)
             {
-                return new TankerWaterCalculationOutputDto("116416", "1230000", abBaha * multiplier, boodjeh, deliveryAmount);
+                return new TankerWaterCalculationOutputDto(123123, "116416", "1230000", abBaha * multiplier, boodjeh, deliveryAmount);
             }
 
-            return new TankerWaterCalculationOutputDto(null, null, abBaha * multiplier, boodjeh, deliveryAmount);
+            return new TankerWaterCalculationOutputDto(null, null, null, abBaha * multiplier, boodjeh, deliveryAmount);
         }
 
         private decimal GetVarzaneMultiplier(TankerWaterCalculationInputDto input)

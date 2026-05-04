@@ -31,6 +31,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         const int _paymentDeadline = 7;
         const int _conditionPayableAmount = 10000;
         const float _domesticMaltiplier = 0.7f;
+        const int _temporaryDeletionStateId = 5;
 
         public GenerateBillHandler(
             ICustomerInfoService customerInfoService,
@@ -61,8 +62,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         {
             await Validate(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await GetZoneIdANdCustomerNumber(inputDto.BillId);
+            await DeletionStateValidation(zoneIdAndCustomerNumber);
 
             CustomerInfoGetDto customerInfo = await _customerInfoService.Get(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
+
             CounterStateValidation(inputDto.CounterStateCode, inputDto.MeterNumber, customerInfo.BedBesInfo.LastMeterNumber);
 
             MeterInfoByPreviousDataInputDto tariffMeterInfoByPreviousData = GetMeterInfoByPreviousData(customerInfo, inputDto);
@@ -331,6 +334,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     var message = string.Join("تاریخ ناصحیح");
                     throw new BaseException(message);
                 }
+            }
+        }
+        private async Task DeletionStateValidation(ZoneIdAndCustomerNumber input)
+        {
+            MemberInfoGetDto customerInfo = await _commonMemberQueryService.Get(input);
+            if (customerInfo.DeletionStateId == _temporaryDeletionStateId)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidTemporaryDeletionState);
             }
         }
         private void CounterStateValidation(int? counterStateCode, int currentNumber, int? previousNumber)

@@ -1,17 +1,21 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
 using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
-using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Db.QueryServices;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.NotificationPool.Application.Features.Sms;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System.Dynamic;
+using System.Threading;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 {
@@ -78,8 +82,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> GetResultAssessmentSti([FromBody] GuidInput input, CancellationToken cancellationToken)
         {
             int reportCode = 2021;
-            AssessmentDataOutputDto result = await _assessmentByIdGetHandler.Handle(input.Input, cancellationToken);
-            JsonReportId reportId = await JsonOperation.ExportToJson(result?.AllInJson ?? string.Empty, cancellationToken, reportCode);
+            JsonReportId reportId = await GetSetResultJsonReport(input.Input, reportCode, cancellationToken);
             return Ok(reportId);
         }
 
@@ -89,8 +92,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> GetResultAddressSti([FromBody] GuidInput input, CancellationToken cancellationToken)
         {
             int reportCode = 2022;
-            AssessmentDataOutputDto result = await _assessmentByIdGetHandler.Handle(input.Input, cancellationToken);
-            JsonReportId reportId = await JsonOperation.ExportToJson(result?.AllInJson ?? string.Empty, cancellationToken, reportCode);
+            JsonReportId reportId = await GetSetResultJsonReport(input.Input, reportCode, cancellationToken);
             return Ok(reportId);
         }
 
@@ -100,8 +102,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> GetResultTrenchSti([FromBody] GuidInput input, CancellationToken cancellationToken)
         {
             int reportCode = 2023;
-            AssessmentDataOutputDto result = await _assessmentByIdGetHandler.Handle(input.Input, cancellationToken);
-            JsonReportId reportId = await JsonOperation.ExportToJson(result?.AllInJson ?? string.Empty, cancellationToken, reportCode);
+            JsonReportId reportId = await GetSetResultJsonReport(input.Input, reportCode, cancellationToken);
             return Ok(reportId);
         }
 
@@ -152,6 +153,18 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             }
             return new SetAssessmentTimeOutputDto(inputDto.HasAssessmentSms, inputDto.HasCustomerSms, inputDto.HasAssessmentSms ? assessmentText : null, inputDto.HasCustomerSms ? customerText : null);
 
+        }
+        private async Task<JsonReportId> GetSetResultJsonReport(Guid id, int reportCode, CancellationToken cancellationToken)
+        {
+            AssessmentDataOutputDto result = await _assessmentByIdGetHandler.Handle(id, cancellationToken);
+            if (result is null || result.AllInJson is null)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidShowPreviousRequest);
+            }
+
+            dynamic jsonObject = JsonConvert.DeserializeObject<ExpandoObject>(result.AllInJson, new ExpandoObjectConverter());
+            JsonReportId reportId = await JsonOperation.ExportToJson(jsonObject, cancellationToken, reportCode);
+            return reportId;
         }
     }
 }
