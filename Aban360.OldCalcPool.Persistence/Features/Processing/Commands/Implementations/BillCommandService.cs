@@ -2,6 +2,7 @@
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Persistence.Constants;
 using Dapper;
@@ -24,10 +25,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             _transaction.NotNull(nameof(transaction));
         }
 
-        public async Task InsertByBedBesId(ZoneIdAndCustomerNumber inputDto, int bedBesId, string dbName)
+        public async Task InsertByBedBesId(BillByBedBedIdInsertDto input, string dbName)
         {
             string command = GetInsertByBedBesCommand(dbName);
-            int recordCount = await _connection.ExecuteAsync(command, new { inputDto.CustomerNumber, inputDto.ZoneId, bedBesId }, _transaction);
+            int recordCount = await _connection.ExecuteAsync(command, input, _transaction);
             if (recordCount <= 0)
             {
                 throw new InvalidBillCommandException(Exceptionliterals.InvalidBillInsert);
@@ -66,7 +67,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                          b.pri_date PreviousDay,
                          b.today_date NextDay,
                          b.date_bed RegisterDay,
-                         AbAndFazelab.dbo.PersianToMiladi(b.date_bed) RegisterDayGregorian,
+                         CustomerWarehouse.dbo.PersianToMiladi(b.date_bed) RegisterDayGregorian,
                          IIF(c.Title IS NULL, '', c.Title) CounterStateTitle,
                          b.cod_enshab  AS  [UsageId], 
                          b.group1 [UsageId2], 
@@ -113,7 +114,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                          b.Avarez Item18,
                          b.baha SumItems,
                          b.pard Payable,
-                         N'قبض' TypeId,
+                         bt.Title TypeId,
                          IIF(k.ab_baha IS NULL,0, k.ab_baha) ItemOff1,
                          IIF(k.fas_baha IS NULL,0, k.fas_baha), 
                          IIF(k.abon_ab IS NULL,0, k.abon_ab ) ItemOff3, 
@@ -139,8 +140,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                          IIF(b.mamor=888,N'خوداظهاری غیرحضوری',IIF(b.mamor=999,N'خوداظهاری حضوری',IIF(b.mamor=0,N'بدون کد مامور',N'دارای کد مامور'))) ReadingStateTitle,
                          b.sh_pard1 PayId,
                          b.cod_vas CounterStateCode,
-                         1 TypeCode,
-                         N'قبض' TypeTitle,
+                         @TypeId TypeCode,
+                         bt.Title TypeTitle,
                          NULL ReturnCauseId,
                          NULL,
                          b.noe_va,
@@ -160,6 +161,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     	ON b.group1=k2.C9
                     JOIN [Db70].dbo.T5 q
                     	ON b.enshab=q.C0
+                    JOIN [Db70].dbo.BillType bt
+                    	ON bt.Id=@TypeId
                     LEFT OUTER JOIN [{dbName}].dbo.members m
                         ON b.radif=m.radif and b.town=m.town
                     WHERE b.Id=@bedBesId";//

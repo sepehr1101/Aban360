@@ -56,6 +56,7 @@
         public static string InvalidZoneIdMoreThan1 => "با توجه به اینکه فیلد از/تا اشتراک مقدار دهی شده است، می‌توانید فقط یک ناحیه را انتخاب کنید.";
         public static string InvalidInstallmentMoreThan6 => "تعداد اقساط باید کمتر از 6 قسط باشد.";
         public static string InvalidTemporaryDeletionState => "مشترک در وضعیت 'حذف موقت' قرار دارد.";
+        public static string InvalidDuration => "مدت زمان محاسبه نامعتبر";
 
         public static string InvlaidStringLength => "طول رشته نامعتبر است.";
         public static string InvalidEmailFormat => "فرمت ایمیل نامعتبر است.";

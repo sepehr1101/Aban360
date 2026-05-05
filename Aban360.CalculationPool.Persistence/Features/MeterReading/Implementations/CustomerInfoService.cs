@@ -94,7 +94,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 						m.town as ZoneId,
 						m.radif as CustomerNumber,
 						Trim(m.bill_id) as BillId,
-						m.noe_va as BranchType,
+						m.noe_va as BranchTypeId,
 						m.cod_enshab as UsageId,
 						m.group1 ConsumptionUsageId,
 						m.tedad_mas as DomesticUnit,
