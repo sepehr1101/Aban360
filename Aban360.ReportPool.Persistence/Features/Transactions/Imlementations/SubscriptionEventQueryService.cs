@@ -125,7 +125,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             	CounterStateCode=v.MoshtarakinId
              where 
                 (BillId)=@billId 
-             union
+             union all
              select
 	             TRIM(BillId) BillId ,
                  Id,
@@ -162,7 +162,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
              where 
                 (BillId=@billId )
              union
-             select
+             select all
                  TRIM(BillId) BillId,
 	             Id,
 	             0 PreviousMeterNumber,

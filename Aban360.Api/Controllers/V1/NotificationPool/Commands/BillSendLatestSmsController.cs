@@ -8,8 +8,9 @@ using Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Contracts;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
+using Aban360.NotificationPool.Domain.Features.Sms;
 
-namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
+namespace Aban360.Api.Controllers.V1.NotificationPool.Commands
 {
     [Route("v1/bill")]
     public class BillSendLatestSmsController : BaseController
@@ -40,11 +41,13 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
         [HttpPost]
         [Route("send-sms")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<SearchInput>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetByBillId(SearchInput input, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetByBillId(LatestBillSendDto input, CancellationToken cancellationToken)
         {
-            var customerInfo = await _customerInfoHandler.Handle(input.Input, cancellationToken);
-            string text = await GetPreviousBill(input, cancellationToken);
-            _jobClient.Enqueue(() => _smsHandler.Send(customerInfo.MobileNumber, text, Guid.NewGuid()));
+            SearchInput billIdInput= new SearchInput { Input=input.BillId };
+            var customerInfo = await _customerInfoHandler.Handle(input.BillId, cancellationToken);
+            string text = await GetPreviousBill(billIdInput, cancellationToken);
+            string mobile = string.IsNullOrWhiteSpace(input.Mobile) ? customerInfo.MobileNumber : input.Mobile;
+            _jobClient.Enqueue(() => _smsHandler.Send(mobile, text, Guid.NewGuid()));
             return Ok(input);
         }
         private async Task<string> GetPreviousBill(SearchInput input, CancellationToken cancellationToken)

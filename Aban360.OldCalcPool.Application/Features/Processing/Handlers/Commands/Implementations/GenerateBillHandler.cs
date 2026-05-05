@@ -454,6 +454,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     var message = string.Join("تاریخ ناصحیح");
                     throw new BaseException(message);
                 }
+                if(currentDate.Value>DateTime.Now.ToDateOnly())
+                {
+                    var message = string.Join("تاریخ ناصحیح");
+                    throw new BaseException(message);
+                }
             }
         }
         private async Task DeletionStateValidation(ZoneIdAndCustomerNumber input)

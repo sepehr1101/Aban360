@@ -31,6 +31,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const string date_1403_12_30 = "1403/12/30";
         const string date_1404_02_31 = "1404/02/31";
         const string date_1404_09_09 = "1404/09/09";
+        const string date_1405_01_31 = "1405/01/31";
 
         (long, long) _zero = (0, 0);
         (long, long) _8644_8644 = (8644, 8644);
@@ -39,6 +40,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         (long, long) _7000_350000 = (7000, 350000);
         (long, long) _9000_450000 = (9000, 450000);
         (long, long) _11000_550000 = (11000, 550000);
+        (long, long) _14300_715000 = (14300, 715000);
 
         public TariffItemResult Calculate(NerkhGetDto nerkh, NerkhGetDto nerkh1403, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, ConsumptionPartialInfo consumptionPartialInfo, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds, out double villageMultiplier)
         {
@@ -323,7 +325,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 {
                     return _9000_450000;
                 }
-                return _11000_550000;
+                else if (IsGtFromLqTo(nerkhDate2, date_1404_09_09, date_1405_01_31))
+                {
+                    return _11000_550000;
+                }
+                return _14300_715000;
             }
             else
             {
@@ -376,9 +382,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {
                 return (9000, 90000);//_9000_450000;
             }
-            else if (nerkhDate2.MoreOrEq(date_1404_09_09))
+            else if (IsGtFromLqTo(nerkhDate2, date_1404_09_09, date_1405_01_31))
             {
                 return (11000, 110000);//_11000_550000;
+            }
+            else if (nerkhDate2.MoreOrEq(date_1405_01_31))
+            {
+                return (14300, 143000);
             }
             return _zero;
         }
