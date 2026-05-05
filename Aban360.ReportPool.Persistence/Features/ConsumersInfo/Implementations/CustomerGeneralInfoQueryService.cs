@@ -4,7 +4,6 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
-using Aban360.ReportPool.Domain.Features.Transactions;
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
@@ -18,7 +17,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
         {
         }
 
-        public async Task<ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto>> Get(ZoneIdAndCustomerNumberOutputDto input)
+        public async Task<ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto>> Get(ZoneIdAndCustomerNumber input)
         {
             string dbName = GetDbName(input.ZoneId);
             string query = GetPersonalQuery(dbName);
@@ -39,7 +38,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 
             return result;
         }
-        private async Task<CustomerGeneralInfoDataDto> GetBillInfo(CustomerGeneralInfoDataDto customerInfo, ZoneIdAndCustomerNumberOutputDto input, string dbName)
+        private async Task<CustomerGeneralInfoDataDto> GetBillInfo(CustomerGeneralInfoDataDto customerInfo, ZoneIdAndCustomerNumber input, string dbName)
         {
             string query = GetBillInfo(dbName);
             CustomerGeneralBillInfoDto billInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<CustomerGeneralBillInfoDto>(query, input);
@@ -51,11 +50,12 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
             customerInfo.LatestMeterNumber = billInfo == null ? 0 : billInfo.LatestMeterNumber;
             customerInfo.LatestMeterReading = billInfo == null ? "0" : billInfo.LatestMeterReading;
             customerInfo.UsageStatusTitle = billInfo == null ? string.Empty : billInfo.UsageStatusTitle;
-            customerInfo.CounterStateTitle= billInfo == null ? string.Empty : billInfo.CounterStateTitle;
+            customerInfo.CounterStateTitle = billInfo == null ? string.Empty : billInfo.CounterStateTitle;
+            customerInfo.PaymentId = billInfo == null ? string.Empty : billInfo.PaymentId;
 
             return customerInfo;
         }
-        private async Task<CustomerGeneralInfoDataDto> GetMeterChangeInfo(CustomerGeneralInfoDataDto customerInfo, ZoneIdAndCustomerNumberOutputDto input, string dbName)
+        private async Task<CustomerGeneralInfoDataDto> GetMeterChangeInfo(CustomerGeneralInfoDataDto customerInfo, ZoneIdAndCustomerNumber input, string dbName)
         {
             string query = GetMeterChangeInfo(dbName);
             CustomerGeneralMeterChangeInfoDto? latestMeterChange = await _sqlReportConnection.QueryFirstOrDefaultAsync<CustomerGeneralMeterChangeInfoDto>(query, input);
@@ -63,7 +63,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 
             return customerInfo;
         }
-        private async Task<CustomerGeneralInfoDataDto> GetPaymentInfo(CustomerGeneralInfoDataDto customerInfo, ZoneIdAndCustomerNumberOutputDto input, string dbName)
+        private async Task<CustomerGeneralInfoDataDto> GetPaymentInfo(CustomerGeneralInfoDataDto customerInfo, ZoneIdAndCustomerNumber input, string dbName)
         {
             string query = GetPaymentInfo(dbName);
             CustomerGeneralPaymentInfoDto latestMeterChange = await _sqlReportConnection.QueryFirstOrDefaultAsync<CustomerGeneralPaymentInfoDto>(query, input);
@@ -76,6 +76,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
         {
             return new CustomerGeneralInfoDataDto()
             {
+                CustomerNumber=input.CustomerNumber,
                 RegionTitle = input.RegionTitle,
                 ZoneTitle = input.ZoneTitle,
                 PostalCode = input.PostalCode,
@@ -84,9 +85,9 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
                 Address = input.Address,
 
                 TotalUnit = input.TotalUnit,
-                CommercialUnit=input.CommercialUnit,
-                DomesticUnit=input.DomesticUnit,
-                OtherUnit=input.OtherUnit,
+                CommercialUnit = input.CommercialUnit,
+                DomesticUnit = input.DomesticUnit,
+                OtherUnit = input.OtherUnit,
                 EmptyUnit = input.EmptyUnit,
                 HouseholdNumber = input.HouseholdNumber,
 
@@ -102,7 +103,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
                 LatestMeterReading = input.LatestMeterReading,
                 UsageStatusTitle = input.UsageStatusTitle,
                 CommonSiphon = input.CommonSiphon,
-                DeletionStateTitle=input.DeletionStateTitle,
+                DeletionStateTitle = input.DeletionStateTitle,
 
             };
         }
@@ -113,6 +114,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
                 FirstName = input.FirstName,
                 Surname = input.Surname,
                 FullName = input.FullName,
+                FatherName = input.FatherName,
                 NationalCode = input.NationalCode,
                 MobileNumber = input.MobileNumber,
                 ReadingNumber = input.ReadingNumber,
@@ -120,7 +122,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
                 UsageTitle = input.UsageTitle,
                 ContractualCapacity = input.ContractualCapacity,
                 MeterDiameterId = input.MeterDiameterId,
-                MeterDiameterTitle=input.MeterDiameterTitle,        
+                MeterDiameterTitle = input.MeterDiameterTitle,
                 MainSiphon = input.MainSiphon,
                 BranchTypeTitle = input.BranchTypeTitle,
                 DiscountType = input.DiscountType,
@@ -128,9 +130,9 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
                 WaterInstallationDateJalali = input.WaterInstallationDateJalali,
                 SewageRequestDateJalali = input.SewageRequestDateJalali,
                 SewageInstallationDateJalali = input.SewageInstallationDateJalali,
-                DeletionStateTitle=input.DeletionStateTitle,
+                DeletionStateTitle = input.DeletionStateTitle,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                Title= ReportLiterals.CustomerGeneralInfo
+                Title = ReportLiterals.CustomerGeneralInfo
             };
         }
 
@@ -142,6 +144,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 						TRIM(m.name) FirstName,
 						TRIM(m.family) Surname,
 						(TRIM(m.name)+' '+TRIM(m.family)) as FullName,
+						TRIM(m.father_nam) FatherName,
 						TRIM(m.MELI_COD) as NationalCode,
 						TRIM(m.MOBILE) as MobileNumber,
 						m.eshtrak as ReadingNumber,
@@ -210,7 +213,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 						v.Title as CounterStateTitle,
 						b.today_no as LatestMeterNumber,
 						b.today_date as LatestMeterReading,
-						'-' as UsageStatusTitle
+						'-' as UsageStatusTitle,
+						b.sh_pard1 PaymentId
 					From [{dbName}].dbo.bed_bes b
 					Join Db70.dbo.CounterVaziat v
 						ON b.cod_vas=v.MoshtarakinId

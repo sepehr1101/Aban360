@@ -2,6 +2,7 @@
 {
     public record CustomerGeneralInfoDataDto
     {
+        public int CustomerNumber { get; set; }
         public string RegionTitle { get; set; }
         public string ZoneTitle { get; set; }
         public string PostalCode { get; set; }
@@ -29,6 +30,7 @@
         public string BodySerial { get; set; }
         public string? MeterChangeDateJalali { get; set; }
         public string LatestMeterReading { get; set; }
+        public string? PaymentId { get; set; }
 
         public string DeletionStateTitle { get; set; }
         public string UsageStatusTitle { get; set; }

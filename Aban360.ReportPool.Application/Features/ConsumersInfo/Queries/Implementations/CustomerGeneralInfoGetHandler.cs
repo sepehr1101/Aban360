@@ -2,13 +2,13 @@
 using static Aban360.Common.Timing.CalculationDistanceDate;
 using Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contracts;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
-using Aban360.ReportPool.Domain.Features.Transactions;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 using Aban360.Common.BaseEntities;
 using Aban360.ReportPool.Application.Features.Geo.Contracts;
 using Aban360.ReportPool.Domain.Features.Geo;
 using Aban360.ReportPool.Infrastructure.Features.Geo;
+using Aban360.Common.Db.QueryServices;
 
 namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implementations
 {
@@ -17,10 +17,12 @@ namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implemen
         private readonly ICustomerGeneralInfoQueryService _customerGeneralInfoService;
         private readonly ICustomerInfoQueryService _customerInfoQueryService;
         private readonly ILocationInfoGetHandler _locationInfoService;
+        private readonly ICommonMemberQueryService _commonMemberQueryService;
         public CustomerGeneralInfoGetHandler(
             ICustomerGeneralInfoQueryService customerGeneralInfoService,
             ICustomerInfoQueryService customerInfoQueryService,
-            ILocationInfoGetHandler locationInfoService)
+            ILocationInfoGetHandler locationInfoService,
+            ICommonMemberQueryService commonMemberQueryService)
         {
             _customerGeneralInfoService = customerGeneralInfoService;
             _customerGeneralInfoService.NotNull(nameof(customerGeneralInfoService));
@@ -30,11 +32,14 @@ namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implemen
 
             _locationInfoService = locationInfoService;
             _locationInfoService.NotNull(nameof(locationInfoService));
+
+            _commonMemberQueryService = commonMemberQueryService;
+            _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));    
         }
 
         public async Task<ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto>> Handle(SearchInput input, CancellationToken cancellationToken)
         {
-            ZoneIdAndCustomerNumberOutputDto zoneIdAndCustomerNumber = await _customerInfoQueryService.GetZoneIdAndCustomerNumber(input.Input);
+            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(input.Input);
 
             ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> result = await _customerGeneralInfoService.Get(zoneIdAndCustomerNumber);
             result.ReportData.FirstOrDefault().MeterLife = GetMeterLife(result.ReportData.FirstOrDefault(), result.ReportHeader);
