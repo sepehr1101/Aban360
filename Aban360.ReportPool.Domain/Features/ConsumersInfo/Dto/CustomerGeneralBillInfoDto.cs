@@ -7,6 +7,7 @@
         public int LatestMeterNumber { get; set; }
         public string LatestMeterReading { get; set; }
         public string UsageStatusTitle { get; set; }
+        public string? PaymentId { get; set; }
 
     }
 }
