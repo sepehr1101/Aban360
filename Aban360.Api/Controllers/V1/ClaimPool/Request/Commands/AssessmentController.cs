@@ -67,11 +67,12 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             _backgroudJobClient.NotNull(nameof(backgroudJobClient));
         }
 
+
         [HttpPost]
         [Route("result")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AssessmentResultInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SetReult(CancellationToken cancellationToken)
-        {            
+        {
             int examinerCode = UserService.GetUserCode(CurrentUser.Username);
             AssessmentResultInputDto inputDto=await _setAssessmentResultHandler.Handle(examinerCode, cancellationToken);
             return Ok(inputDto);
