@@ -107,12 +107,14 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    BedBesCommandService bedBesCreateService = new BedBesCommandService(connection, transaction);
-                    KasrHaCommandService kasrHaCommandService = new KasrHaCommandService(connection, transaction);
+                    BedBesCommandService bedBesCreateService = new (connection, transaction);
+                    KasrHaCommandService kasrHaCommandService = new (connection, transaction);
                     MeterFlowCommandService meterFlowCommandService = new(connection, transaction);
+                    BillCommandService billCommandService = new(connection,transaction);
 
                     await bedBesCreateService.InsertByBulk(BedBesBatch, dbName);
                     await kasrHaCommandService.InsertByBulk(kasrHaBatch, dbName);
+                    //todo: insert Bill
 
                     await meterFlowCommandService.Update(meterFlowUpdate);
                     int newMeterFlowId = await meterFlowCommandService.Insert(newMeterFlow);

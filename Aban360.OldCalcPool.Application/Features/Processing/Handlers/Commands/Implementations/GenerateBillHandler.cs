@@ -34,6 +34,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         const int _paymentDeadline = 7;
         const int _conditionPayableAmount = 10000;
         const float _domesticMaltiplier = 0.7f;
+        const int _collectedDeletionStateId = 1;
         const int _temporaryDeletionStateId = 5;
         const int _changeCodeCounterState = 3;
         const int _reverseCodeCounterSatate = 5;
@@ -454,7 +455,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     var message = string.Join("تاریخ ناصحیح");
                     throw new BaseException(message);
                 }
-                if(currentDate.Value>DateTime.Now.ToDateOnly())
+                if (currentDate.Value > DateTime.Now.ToDateOnly())
                 {
                     var message = string.Join("تاریخ ناصحیح");
                     throw new BaseException(message);
@@ -467,6 +468,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             if (customerInfo.DeletionStateId == _temporaryDeletionStateId)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidTemporaryDeletionState);
+            }
+            if (customerInfo.DeletionStateId == _collectedDeletionStateId)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidCollectedDeletionState);
             }
         }
         private void CounterStateValidation(int? counterStateCode, int currentNumber, int? previousNumber)

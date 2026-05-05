@@ -2,9 +2,11 @@
 {
     public record CustomerGeneralInfoHeaderDto
     {
+        public int CustomerNumber { get; set; }
         public string FirstName { get; set; }
         public string Surname { get; set; }
         public string FullName { get; set; }
+        public string? FatherName { get; set; }
         public string NationalCode { get; set; }
         public string MobileNumber { get; set; }
         public string ReadingNumber { get; set; }

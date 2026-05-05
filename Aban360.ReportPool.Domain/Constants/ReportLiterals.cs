@@ -253,5 +253,9 @@
 
         //Request
         public static string Tracking { get { return "درخواست ها"; }  }
+
+
+        public static string Disconnect { get { return "قطع"; }  }
+        public static string Connect { get { return "وصل"; }  }
     }
 }

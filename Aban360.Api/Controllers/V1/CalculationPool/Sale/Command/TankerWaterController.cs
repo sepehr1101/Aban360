@@ -45,7 +45,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Command
             int userCode = UserService.GetUserCode(CurrentUser.Username);
             TankerWaterCalculationOutputDto result = await _tankerInserHandler.Handle(input, userCode, cancellationToken);
             string text = string.Format(SmsTemplates.TankerWater, input.Consumption, input.Distance, result.Final);
-            if (input.HasSms && !string.IsNullOrWhiteSpace(input.MobileNumber))
+            if (input.IsConfirm && input.HasSms && !string.IsNullOrWhiteSpace(input.MobileNumber))
             {
                 _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(input.MobileNumber, text, Guid.NewGuid()));
             }

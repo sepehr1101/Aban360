@@ -79,7 +79,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                     BedBesCreateDto bedBesInsertDto = await GetBedBesInsertDto(tankerInsertDto, calcResult, userCode);
                     calcResult.BillId = bedBesInsertDto.ShGhabs1;
                     calcResult.PaymentId = bedBesInsertDto.ShPard1;
-                    calcResult.CustomerNumber= customerNumber;
+                    calcResult.CustomerNumber = customerNumber;
 
                     await tankerCommandService.Insert(tankerInsertDto, dbName);
                     await bedBesCommandService.Insert(bedBesInsertDto, dbName);
@@ -87,7 +87,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                     transaction.Commit();
                 }
             }
-           
+
             return calcResult;
         }
         public async Task<TankerWaterCalculationOutputDto> Calc(TankerInsertInputDto input, CancellationToken cancellationToken)
@@ -102,7 +102,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             decimal boodjeh = input.Consumption * 2000m;
             decimal multiplier = GetVarzaneMultiplier(input);
 
-            return new TankerWaterCalculationOutputDto(null,null, null, abBaha * multiplier, boodjeh, deliveryAmount);
+            return new TankerWaterCalculationOutputDto(null, null, null, input.MobileNumber, abBaha * multiplier, boodjeh, deliveryAmount);
         }
         private decimal GetVarzaneMultiplier(TankerInsertInputDto input)
         {
@@ -135,7 +135,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 ZoneId = inputDto.ZoneId,
                 CustomerNumber = customerNumber,
                 FirstName = inputDto.FirstName,
-                Surname = inputDto.Surname??string.Empty,
+                Surname = inputDto.Surname ?? string.Empty,
                 Address = inputDto.Address ?? string.Empty,
                 Barge = (int)barge,
                 Consumption = inputDto.Consumption,
