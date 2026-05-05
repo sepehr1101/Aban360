@@ -11,12 +11,14 @@ using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Cont
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using System.Diagnostics;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
@@ -28,11 +30,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IValidator<GenerateBillInputDto> _validator;
         private readonly IVariabService _variabService;
         static int[] _domesticUsage = { 1, 3 };//todo: IsTrue?
+        static int[] _allowedZeroMeterNumberCounterState = { 4, 7 };
         const int _paymentDeadline = 7;
         const int _conditionPayableAmount = 10000;
         const float _domesticMaltiplier = 0.7f;
         const int _temporaryDeletionStateId = 5;
-
+        const int _changeCodeCounterState = 3;
+        const int _reverseCodeCounterSatate = 5;
         public GenerateBillHandler(
             ICustomerInfoService customerInfoService,
             IOldTariffEngine tariffEngine,
@@ -60,23 +64,134 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
         public async Task<AbBahaCalculationDetails> Handle(GenerateBillInputDto inputDto, CancellationToken cancellationToken)
         {
-            await Validate(inputDto, cancellationToken);
+            await InputValidation(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await GetZoneIdANdCustomerNumber(inputDto.BillId);
-            await DeletionStateValidation(zoneIdAndCustomerNumber);
-
             CustomerInfoGetDto customerInfo = await _customerInfoService.Get(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
+            await Validation(inputDto, zoneIdAndCustomerNumber, customerInfo);
 
-            CounterStateValidation(inputDto.CounterStateCode, inputDto.MeterNumber, customerInfo.BedBesInfo.LastMeterNumber);
-
-            MeterInfoByPreviousDataInputDto tariffMeterInfoByPreviousData = GetMeterInfoByPreviousData(customerInfo, inputDto);
-            AbBahaCalculationDetails abBahaCalcResult = await _tariffEngine.Handle(tariffMeterInfoByPreviousData, cancellationToken);
+            AbBahaCalculationDetails abBahaCalcResult;
+            if (IsAllowedZeroMeterNumber(inputDto.CounterStateCode))
+            {
+                abBahaCalcResult = GetAbBahaCalcWithZeroValues(inputDto, customerInfo);
+            }
+            else
+            {
+                MeterInfoByPreviousDataInputDto tariffMeterInfoByPreviousData = GetMeterInfoByPreviousData(customerInfo, inputDto);
+                abBahaCalcResult = await _tariffEngine.Handle(tariffMeterInfoByPreviousData, cancellationToken);
+            }
             if (!inputDto.IsConfirm)
             {
                 return abBahaCalcResult;
             }
-            BedBesCreateDto bedBes = await GetBedBes(customerInfo, abBahaCalcResult, inputDto, zoneIdAndCustomerNumber);
+            BedBesCreateDto bedBes = await GetBedBes(customerInfo, abBahaCalcResult, inputDto, zoneIdAndCustomerNumber, inputDto.CounterStateCode);
             KasrHaDto kasrHa = GerKasrHa(customerInfo, abBahaCalcResult, inputDto);
             ContorUpdateDto contorUpdate = GetControUpdateDto(customerInfo, bedBes);
+
+            await SqlCommands(zoneIdAndCustomerNumber, bedBes, kasrHa, contorUpdate, abBahaCalcResult, inputDto.CounterStateCode);
+
+            return abBahaCalcResult;
+        }
+        private AbBahaCalculationDetails GetAbBahaCalcWithZeroValues(GenerateBillInputDto inputDto, CustomerInfoGetDto customerInfo)
+        {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            inputDto.MeterNumber = 0;
+            string previousDate = customerInfo.BedBesInfo?.LastMeterDateJalali ?? customerInfo.MembersInfo.WaterInstallationDateJalali;
+            int previousNumber = customerInfo.BedBesInfo?.LastMeterNumber ?? 0;
+            int finalUnit = GetFinalDomesticUnit(customerInfo, inputDto.CurrentDateJalali);
+            ConsumptionInfo consumptionInfo = new(previousDate, inputDto.CurrentDateJalali, 0, GetDuration(previousDate, inputDto.CurrentDateJalali), 0, finalUnit);
+            MeterInfoOutputDto meterInfo = new(previousDate, inputDto.CurrentDateJalali, previousNumber, 0, inputDto.CounterStateCode);
+
+            CustomerDetailInfoInputDto customerDetailInfo = new()
+            {
+                ZoneId = customerInfo.MembersInfo.ZoneId,
+                Radif = customerInfo.MembersInfo.CustomerNumber,
+                BranchType = customerInfo.MembersInfo.BranchTypeId,
+                UsageId = customerInfo.MembersInfo.UsageId,
+                DomesticUnit = customerInfo.MembersInfo.DomesticUnit,
+                CommertialUnit = customerInfo.MembersInfo.CommercialUnit,
+                OtherUnit = customerInfo.MembersInfo.OtherUnit,
+                EmptyUnit = customerInfo.MembersInfo.EmptyUnit,
+                WaterInstallationDateJalali = customerInfo.MembersInfo.WaterInstallationDateJalali,
+                SewageInstallationDateJalali = customerInfo.MembersInfo.SewageInstallationDateJalali,
+                WaterRegisterDate = customerInfo.MembersInfo.WaterRegisterDate,
+                SewageRegisterDate = customerInfo.MembersInfo.SewageRegisterDate,
+                SewageCalcState = customerInfo.MembersInfo.SewageCalcState,
+                ContractualCapacity = customerInfo.MembersInfo.ContractualCapacity,
+                HouseholdNumber = customerInfo.MembersInfo.HouseholdNumber,
+                HouseholdDate = customerInfo.MembersInfo.HouseholdDate,
+                ReadingNumber = customerInfo.MembersInfo.ReadingNumber,
+                VillageId = customerInfo.MembersInfo.VillageId,
+                IsSpecial = customerInfo.MembersInfo.IsSpecial,
+                VirtualCategoryId = customerInfo.MembersInfo.VirtualCategoryId,
+                CounterStateCode = inputDto.CounterStateCode,
+            };
+            MeterInfoByPreviousDataInputDto previousMeterInfo = new()
+            {
+                BillId = customerInfo.MembersInfo.BillId,
+                PreviousDateJalali = previousDate,
+                PreviousNumber = previousNumber,
+                CurrentDateJalali = inputDto.CurrentDateJalali,
+                CurrentMeterNumber = inputDto.MeterNumber,
+                CounterStateCode = inputDto.CounterStateCode,
+            };
+            MeterImaginaryInputDto meterImaginaryDto = new() { CustomerInfo = customerDetailInfo, MeterPreviousData = previousMeterInfo };
+            CustomerInfoOutputDto customerInfoOutputDto = new(meterImaginaryDto);
+            stopWatch.Stop();
+
+
+            AbBahaCalculationDetails abBahaCalcResult = new AbBahaCalculationDetails(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            new List<NerkhGetDto>(), new List<AbAzadFormulaDto>(), new List<ZaribGetDto>(),
+            consumptionInfo, meterInfo, customerInfoOutputDto, stopWatch.ElapsedMilliseconds, 0);
+
+            return abBahaCalcResult;
+        }
+        private int GetFinalDomesticUnit(CustomerInfoGetDto customerInfo, string readingDateJalali)
+        {
+            if (IsGardenAndResidence(customerInfo.MembersInfo.UsageId))
+            {
+                return customerInfo.MembersInfo.DomesticUnit < 1 ? 1 : customerInfo.MembersInfo.DomesticUnit;//((/*customerInfo.OtherUnit + */customerInfo.DomesticUnit) == 0 ? 1 : /*customerInfo.OtherUnit + */ customerInfo.DomesticUnit);
+            }
+            int finalHousehold = GetHouseholdUnit(customerInfo.MembersInfo.HouseholdNumber, customerInfo.MembersInfo.HouseholdDate, readingDateJalali);
+            if (finalHousehold > 1)
+            {
+                return customerInfo.MembersInfo.HouseholdNumber;//customerInfo.DomesticUnit;
+            }
+            return customerInfo.MembersInfo.DomesticUnit - customerInfo.MembersInfo.EmptyUnit < 1 ? 1 : customerInfo.MembersInfo.DomesticUnit - customerInfo.MembersInfo.EmptyUnit;
+        }
+        internal static bool IsGardenAndResidence(int usageId)
+        {
+            int[] s = [25, 34];
+            return s.Contains(usageId);
+        }
+        private int GetHouseholdUnit(int householdUnit, string? householdDate, string readingDateJalali)
+        {
+            if (householdUnit <= 0)
+            {
+                return 0;
+            }
+            if (string.IsNullOrWhiteSpace(householdDate))
+            {
+                return 0;
+            }
+            DateTime? expireHouseHoldGregorian = householdDate.ToGregorianDateTime();
+            if (!expireHouseHoldGregorian.HasValue)
+            {
+                return 0;
+            }
+            DateTime? readingDateGregorian = readingDateJalali.ToGregorianDateTime();
+            if (!readingDateGregorian.HasValue)
+            {
+                throw new InvalidDateException(readingDateJalali);
+            }
+            if (expireHouseHoldGregorian.Value.AddYears(1) < readingDateGregorian.Value)
+            {
+                return 0;
+            }
+            return householdUnit;
+        }
+        private async Task SqlCommands(ZoneIdAndCustomerNumber zoneIdAndCustomerNumber, BedBesCreateDto bedBes, KasrHaDto kasrHa, ContorUpdateDto contorUpdate, AbBahaCalculationDetails abBahaCalcResult, int? counterStateCode)
+        {
             string dbName = GetDbName(zoneIdAndCustomerNumber.ZoneId);
 
             using (IDbConnection connection = _sqlReportConnection)
@@ -98,14 +213,20 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                         ContorCommandService controCommandService = new ContorCommandService(connection, transaction);
 
                         int bedBesRecordId = await bedBedCommandService.Insert(bedBes, dbName);
+                        BillByBedBedIdInsertDto billInsertByBedBesIdDto = new(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber, GetTypeId(counterStateCode), bedBesRecordId);
+                        await billCommandService.InsertByBedBesId(billInsertByBedBesIdDto, dbName);
+
                         if (abBahaCalcResult.DiscountSum > 0)
                         {
                             await kasrHasCommandService.Insert(kasrHa, dbName);
                         }
-                        await membersCommandService.UpdateBedbes(zoneIdAndCustomerNumber, (long)bedBes.Baha, dbName);
-                        await waterDebtCommandService.UpdateAmount(bedBes.ShGhabs1, (long)bedBes.Baha);
-                        await controCommandService.Update(contorUpdate, dbName, true);                                                                                                   //update contro
-                        await billCommandService.InsertByBedBesId(zoneIdAndCustomerNumber, bedBesRecordId, dbName);
+                        if (!IsAllowedZeroMeterNumber(counterStateCode))
+                        {
+                            await waterDebtCommandService.UpdateAmount(bedBes.ShGhabs1, (long)bedBes.Baha);
+                            await membersCommandService.UpdateBedbes(zoneIdAndCustomerNumber, (long)bedBes.Baha, dbName);
+                            await controCommandService.Update(contorUpdate, dbName, true);                                                                                                   //update contro
+
+                        }
 
                         transaction.Commit();
                     }
@@ -116,7 +237,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     }
                 }
             }
-            return abBahaCalcResult;
         }
         private async Task<ZoneIdAndCustomerNumber> GetZoneIdANdCustomerNumber(string billId)
         {
@@ -141,8 +261,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 MeterChangeNumber = customerInfo.TavizInfo?.TavizNumber ?? 0
             };
         }
-        private MeterInfoByPreviousDataInputDto
-            GetMeterInfoByPreviousData(CustomerInfoGetDto customerInfo, GenerateBillInputDto generateBillInfo)
+        private MeterInfoByPreviousDataInputDto GetMeterInfoByPreviousData(CustomerInfoGetDto customerInfo, GenerateBillInputDto generateBillInfo)
         {
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
             if (!string.IsNullOrWhiteSpace(generateBillInfo.CurrentDateJalali))
@@ -159,14 +278,16 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 CounterStateCode = generateBillInfo.CounterStateCode
             };
         }
-        private async Task<BedBesCreateDto> GetBedBes(CustomerInfoGetDto customerInfo, AbBahaCalculationDetails abBahaCalc, GenerateBillInputDto generateBillInfo, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber)
+        private async Task<BedBesCreateDto> GetBedBes(CustomerInfoGetDto customerInfo, AbBahaCalculationDetails abBahaCalc, GenerateBillInputDto generateBillInfo, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber, int? counterSatetCode)
         {
             double preDebtAmount = await _customerInfoService.GetMembersBedBes(zoneIdAndCustomerNumber);//checkResult: changeDto
             var (sumItems, jam, pard) = GetAmounts(preDebtAmount, abBahaCalc.SumItems);
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
             string mohlatDateJalali = DateTime.Now.AddDays(_paymentDeadline).ToShortPersianDateString();
             string paymentIdOption = $"1{currentDateJalali.Substring(5, 2)}";
-            string paymentId = TransactionIdGenerator.GeneratePaymentId((long)pard, abBahaCalc.Customer.BillId, paymentIdOption);
+            string paymentId = IsAllowedZeroMeterNumber(counterSatetCode) ?
+                string.Empty :
+                TransactionIdGenerator.GeneratePaymentId((long)pard, abBahaCalc.Customer.BillId, paymentIdOption);
             decimal barge = await _variabService.GetAndRenew(abBahaCalc.Customer.ZoneId);
 
             return new BedBesCreateDto()// ToDo :check
@@ -256,7 +377,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             };
         }
         private decimal GetSewageConsumption(int usageId, double consumption) => IsDomestic(usageId) ? (decimal)(consumption * _domesticMaltiplier) : (decimal)consumption;
-
         private (double, double, double) GetAmounts(double preDebt, double sumItems)
         {
             double jam = preDebt + sumItems;
@@ -275,7 +395,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private KasrHaDto GerKasrHa(CustomerInfoGetDto customerInfo, AbBahaCalculationDetails abBahaCalc, GenerateBillInputDto generateBillInfo)
         {
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
-            string paymentId = TransactionIdGenerator.GeneratePaymentId((long)abBahaCalc.SumItems, abBahaCalc.Customer.BillId);
+            string paymentId = string.Empty;//TransactionIdGenerator.GeneratePaymentId((long)abBahaCalc.SumItems, abBahaCalc.Customer.BillId);
 
             return new KasrHaDto()
             {
@@ -313,7 +433,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 Bodjeh = (decimal)abBahaCalc.BoodjeDiscount,
             };
         }
-        private async Task Validate(GenerateBillInputDto inputDto, CancellationToken cancellationToken)
+        private async Task Validation(GenerateBillInputDto inputDto, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber, CustomerInfoGetDto customerInfo)
+        {
+            await DeletionStateValidation(zoneIdAndCustomerNumber);
+            CounterStateValidation(inputDto.CounterStateCode, inputDto.MeterNumber, customerInfo.BedBesInfo.LastMeterNumber);
+        }
+        private async Task InputValidation(GenerateBillInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -343,18 +468,35 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         {
             if ((counterStateCode is null || !IsChangedOrReverse(counterStateCode)) &&
                 (previousNumber.HasValue) &&
+                !IsAllowedZeroMeterNumber(counterStateCode) &&
                 (currentNumber < previousNumber))
             {
                 throw new TariffCalcException(ExceptionLiterals.CurrentNumberLessThanPreviousNumber);
             }
 
         }
-        private bool IsChangedOrReverse(int? counterStateCode)
-        {
-            int changeCode = 3;
-            int reverseCode = 5;
-            return counterStateCode == changeCode || counterStateCode == reverseCode;
-        }
+        private bool IsChangedOrReverse(int? counterStateCode) => counterStateCode == _changeCodeCounterState || counterStateCode == _reverseCodeCounterSatate;
         private bool IsDomestic(int usageId) => _domesticUsage.Contains(usageId);
+        private bool IsAllowedZeroMeterNumber(int? counterStateCode) => _allowedZeroMeterNumberCounterState.Contains(counterStateCode ?? 0);
+        private int GetDuration(string previousDate, string currentDate)
+        {
+            int thresholdDay = 1;
+            var previousGregorian = previousDate.ToGregorianDateTime();
+            var currentGregorian = currentDate.ToGregorianDateTime();
+            int duration = (currentGregorian.Value - previousGregorian.Value).Days;
+            if (duration < thresholdDay)
+            {
+                throw new InvalidBillIdException(ExceptionLiterals.InvalidDuration);
+            }
+            return duration;
+        }
+        private int GetTypeId(int? counterStateCode)
+        {
+            if (_allowedZeroMeterNumberCounterState.Contains(counterStateCode ?? 0))
+            {
+                return 8;
+            }
+            return 1;//todo: set other 
+        }
     }
 }
