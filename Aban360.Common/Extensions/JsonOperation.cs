@@ -54,7 +54,8 @@ namespace Aban360.Common.Extensions
             JsonSerializerSettings settings = new JsonSerializerSettings
             {
                 ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver(),
-                Formatting = Formatting.Indented
+                Formatting = Formatting.Indented,
+                NullValueHandling=NullValueHandling.Include
             };
             string jsonString = reportOutput.Marshal(settings);
             var fileName = Path.Combine(path, $"{id}.json");
