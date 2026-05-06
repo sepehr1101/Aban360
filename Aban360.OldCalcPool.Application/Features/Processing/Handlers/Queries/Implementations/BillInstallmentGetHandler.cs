@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.QueryServices;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
@@ -15,11 +16,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
         private readonly IGhestAbQueryService _ghestAbQueryService;
         private readonly ICustomerInfoDetailQueryService _customerInfoService;
         private readonly IMembersQueryService _membersQueryService;
+        private readonly ICommonMemberQueryService _commonMemberQueryService;
         static string _title = "اقساط آب‌بها";
         public BillInstallmentGetHandler(
             IGhestAbQueryService ghestAbQueryService,
             ICustomerInfoDetailQueryService customerInfoService,
-            IMembersQueryService membersQueryService)
+            IMembersQueryService membersQueryService,
+            ICommonMemberQueryService commonMemberQueryService)
         {
             _ghestAbQueryService = ghestAbQueryService;
             _ghestAbQueryService.NotNull(nameof(ghestAbQueryService));
@@ -29,11 +32,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
 
             _membersQueryService = membersQueryService;
             _membersQueryService.NotNull(nameof(membersQueryService));
+
+            _commonMemberQueryService = commonMemberQueryService;
+            _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
         }
 
         public async Task<ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentOutputDto>> Handle(string input, CancellationToken cancellationToken)
         {
-            ZoneIdAndCustomerNumberOutputDto zoneIdCustomerNumber = await _customerInfoService.GetZoneIdCustomerNumber(input);
+            ZoneIdAndCustomerNumber zoneIdCustomerNumber = await _commonMemberQueryService.Get(input);
             IEnumerable<BillInstallmentOutputDto> data = await _ghestAbQueryService.Get(zoneIdCustomerNumber);
             foreach (var dataItem in data)
             {
@@ -56,9 +62,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                 MobileNumber = memberInfo.MobileNumber,
                 NationalCode = memberInfo.NationalCode,
                 PhoneNumber = memberInfo.PhoneNumber,
-                Title=_title,
-                RecordCount=data?.Count() ?? 0,
-                ReportDateJalali=DateTime.Now.ToShortPersianDateString(),
+                Title = _title,
+                RecordCount = data?.Count() ?? 0,
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
             };
             data.ForEach(b => b.QueueNumberTitle = $"قسط {b.QueueNumber.NumberToText(Language.Persian)}");
 

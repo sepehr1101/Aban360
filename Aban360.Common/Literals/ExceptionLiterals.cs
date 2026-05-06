@@ -192,5 +192,8 @@
         public static string InvalidUpdateTankerRadif => "خطا در ویرایش ردیف تانکر آب";
         public static string InvalidInsertTanker => "خطا در ذخیره اطلاعات تانکر";
         public static string InvalidRemoveTanker => "خطا در حذف اطلاعات تانکر";
+
+
+        public static string InvalidDuplicateInstallment(string insertedBy, int installmentCount) => @$"تعداد {installmentCount} قسط، توسط کاربر{insertedBy} امروز ایجاد شد.";
     }
 }
