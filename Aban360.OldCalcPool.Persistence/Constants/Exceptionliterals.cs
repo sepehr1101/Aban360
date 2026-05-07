@@ -11,6 +11,7 @@
         public static string InvalidGhestAbInsert => "خطا در ذخیره اقساط آب‌بها";
         public static string InvalidDebtlessThan100000 => "مبلغ بدهی کمتر از 100.000تومان است.";
         public static string InvalidInsertMeterChange => "خطا در ذخیره تعویض";
-        public static string InvalidDateLessThan2Month => "تاریخ نمی‌تواند کمتر از 2 ماه باشد.";
+        public static string InvalidDateLessThan1Month => "تاریخ نمی‌تواند کمتر از 1 ماه باشد.";
+        public static string InvalidDateMoreThanCurrentDay => "تاریخ نمی‌تواند بزرگتر از امروز باشد.";
     }
 }

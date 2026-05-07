@@ -28,6 +28,14 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             return result;
 
         }
+        public async Task<IEnumerable<BillInstallmentOutputDto>> GetLatestBatch(ZoneIdAndCustomerNumber inputDto)
+        {
+            string dbName = GetDbName(inputDto.ZoneId);
+            string query = GetLatestBatchByCustomerNumberQuery(dbName);
+            IEnumerable<BillInstallmentOutputDto> result = await _sqlReportConnection.QueryAsync<BillInstallmentOutputDto>(query, inputDto);
+            return result;
+
+        }
         private string GetCustomerInstallmentsQuery(string dbName)
         {
             return $@"With Cte As(
@@ -90,6 +98,39 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 	                	ON g.enshab=t5.C0
 	                where radif=@CustomerNumber  AND date_bed=@dateJalali
 	                order by date_bed desc";
+        }
+        private string GetLatestBatchByCustomerNumberQuery(string dbName)
+        {
+            return $@"With Cte As(
+                    	Select Top 1*
+                    	From [{dbName}].dbo.ghest_ab
+                    	Where radif=@CustomerNumber
+                    	Order by date_bed Desc
+                    )
+                    Select 
+	                	g.ID,
+	                	g.town ZoneId,
+	                	g.radif CustomerNumber,
+	                	TRIM(g.eshtrak) ReadingNumber,
+	                	g.barge Barge,
+	                	g.date_bed RegisterDateJalali,
+	                	g.mohlat DeadLineDateJalali,
+	                	g.pard Payable,
+	                	g.cod_enshab UsageId,
+	                	t41.C1 UsageTitle,
+	                	g.enshab MeterDiamterId,
+	                	t5.C2 MeterDiameterTitle,
+	                	g.serial QueueNumber,
+	                	g.operator InsertedBy
+	                From [{dbName}].dbo.ghest_ab g
+					Join Cte c
+						ON g.date_bed=c.date_bed
+	                Join [Db70].dbo.T41 t41
+	                	ON g.cod_enshab=t41.C0
+	                Join [Db70].dbo.T5 t5
+	                	ON g.enshab=t5.C0
+	                where g.radif=@CustomerNumber  
+	                order by g.mohlat";
         }
     }
 }

@@ -9,6 +9,7 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Persistence.Constants;
 using Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
+using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using System.Data;
@@ -20,7 +21,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly ICommonMemberQueryService _memberQueryService;
         private readonly IChangeMeterCauseQueryService _changeMeterCauseQueryService;
         private readonly IValidator<MeterChangeInputDto> _validator;
-        private int _meterChangeDateLimitMonth = -2;
+        private int _meterChangeDateLimitMonth = -1;
         public MeterChangeCreateHandler(
             ICommonMemberQueryService memberQueryService,
             IChangeMeterCauseQueryService changeMeterCauseQueryService,
@@ -115,13 +116,18 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 string message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new CustomValidationException(message);
             }
+            DateTime currentDateGregorian = DateTime.Now;
             string meterChangeGregorian = ConvertDate.JalaliToGregorian(inputDto.MeterChangeDateJalali);
 
             if (meterChangeGregorian.Length != 10)
                 throw new InvalidDateException(meterChangeGregorian);
 
-            if (meterChangeGregorian.CompareTo(DateTime.Now.AddMonths(_meterChangeDateLimitMonth).Date.ToString("yyyy-MM-dd")) < 0)
-                throw new InvalidDateException(Exceptionliterals.InvalidDateLessThan2Month);
+            if (meterChangeGregorian.CompareTo(currentDateGregorian.AddMonths(_meterChangeDateLimitMonth).Date.ToString("yyyy-MM-dd")) < 0)
+                throw new InvalidDateException(Exceptionliterals.InvalidDateLessThan1Month);
+
+            if (meterChangeGregorian.CompareTo(currentDateGregorian.Date.ToString("yyyy-MM-dd")) > 0)
+                throw new InvalidDateException(Exceptionliterals.InvalidDateMoreThanCurrentDay);
+
         }
     }
 }

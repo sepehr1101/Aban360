@@ -75,7 +75,7 @@
 
         public static string HasNotSiphon => "سیفون ندارد";
         public static string DuplicateBillIdTags => "شناسه قبض با شناسه تگ جاری تکراری است.";
-        
+
         public static string InvalidDuplicateIncompleteReport => "درخواست گزارش جاری در 2 ساعت اخیر دریافت شده، تا اتمام گزارش از درخواست تکراری خودداری فرماید. ";
         public static string InvalidIncompleteReportByUserId => " کاربر گرامی، در 30دقیقه اخیر گزارش تکمیل نشده دارید. تا اتمام گزارش قبل صبر کنید.";
 
@@ -194,6 +194,6 @@
         public static string InvalidRemoveTanker => "خطا در حذف اطلاعات تانکر";
 
 
-        public static string InvalidDuplicateInstallment(string insertedBy, int installmentCount) => @$"تعداد {installmentCount} قسط، توسط کاربر{insertedBy} امروز ایجاد شد.";
+        public static string InvalidDuplicateInstallment(string insertedBy, int installmentCount, string registerDateJalali) => @$"تعداد {installmentCount} قسط، توسط کاربر{insertedBy} در تاریخ{registerDateJalali} ایجاد شده.";
     }
 }

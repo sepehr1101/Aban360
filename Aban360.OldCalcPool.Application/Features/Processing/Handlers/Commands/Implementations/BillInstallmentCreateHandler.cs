@@ -58,7 +58,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             if (input.IsConfirm)
             {
-                await DuplicateValidation(zoneIdCustomerNumber);
+                await DuplicateValidation(zoneIdCustomerNumber, memberInfo.LatestDebt);
                 string dbName = GetDbName(memberInfo.ZoneId);
                 using (IDbConnection connection = _sqlReportConnection)
                 {
@@ -69,7 +69,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                     {
                         GhestAbCommandService ghestAbCommandService = new(connection, transaction);
-                                
+
 
                         await ghestAbCommandService.Insert(installments, dbName);
 
@@ -177,12 +177,17 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 throw new CustomValidationException(message);
             }
         }
-        private async Task DuplicateValidation(ZoneIdAndCustomerNumber input)
+        private async Task DuplicateValidation(ZoneIdAndCustomerNumber input, long latestDebt)
         {
-            IEnumerable<BillInstallmentOutputDto> datas = await _ghestAbQueryService.Get(input, DateTime.Now.ToShortPersianDateString());
-            if (datas.Any())
+            IEnumerable<BillInstallmentOutputDto> currantInstallments = await _ghestAbQueryService.Get(input, DateTime.Now.ToShortPersianDateString());
+            IEnumerable<BillInstallmentOutputDto> latestBatchInstallment = await _ghestAbQueryService.GetLatestBatch(input);
+            if (currantInstallments.Any())
             {
-                throw new InvalidInstallmentException(ExceptionLiterals.InvalidDuplicateInstallment(datas?.FirstOrDefault()?.InsertedBy ?? "-", datas?.Count() ?? 0));
+                throw new InvalidInstallmentException(ExceptionLiterals.InvalidDuplicateInstallment(currantInstallments?.FirstOrDefault()?.InsertedBy ?? "-", currantInstallments?.Count() ?? 0,currantInstallments?.FirstOrDefault()?.RegisterDateJalali??"-"));
+            }
+            if ((latestBatchInstallment?.Sum(b => b.Payable) ?? 0) == latestDebt)
+            {
+                throw new InvalidInstallmentException(ExceptionLiterals.InvalidDuplicateInstallment(latestBatchInstallment?.FirstOrDefault()?.InsertedBy ?? "-", latestBatchInstallment?.Count() ?? 0, latestBatchInstallment?.FirstOrDefault()?.RegisterDateJalali ?? "-"));
             }
         }
     }

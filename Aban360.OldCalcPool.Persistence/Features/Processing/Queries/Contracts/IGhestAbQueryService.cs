@@ -7,5 +7,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
     {
         Task<IEnumerable<BillInstallmentOutputDto>> Get(ZoneIdAndCustomerNumber inputDto);
         Task<IEnumerable<BillInstallmentOutputDto>> Get(ZoneIdAndCustomerNumber inputDto, string dateJalali);
+        Task<IEnumerable<BillInstallmentOutputDto>> GetLatestBatch(ZoneIdAndCustomerNumber inputDto);
     }
 }
