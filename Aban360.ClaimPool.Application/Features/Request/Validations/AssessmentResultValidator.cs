@@ -133,7 +133,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Validations
                 .Length(5, 100).WithMessage(ExceptionLiterals.Between5And100); 
 
             RuleFor(f => f.Description)
-                .MaximumLength(60).WithMessage(ExceptionLiterals.NotMoreThan100);
+                .MaximumLength(500).WithMessage(ExceptionLiterals.NotMoreThan500);
 
         }
     }

@@ -156,7 +156,7 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
         }
         private string GetSearchByRoleTitleAndZoneIdDictionaryQuery(UserSearchByRoleTitleAndZoneIdDto _params)
         {
-            return @$"Select 
+            return @$"Select Distinct 
                     	u.Username Id,
                     	u.FullName Title
                     From Aban360.UserPool.UserClaim uc
