@@ -31,6 +31,7 @@
         public static string NotMoreThan60 => "مقدار وارد شده نباید بیش از 60 کاراکتر باشد";
         public static string NotMoreThan100 => "مقدار وارد شده نباید بیش از 100 باشد";
         public static string NotMoreThan255 => "مقدار وارد شده نباید بیش از 255 کاراکتر باشد";
+        public static string NotMoreThan500 => "مقدار وارد شده نباید بیش از 500 کاراکتر باشد";
         public static string NotMoreThan1023 => "مقدار وارد شده نباید بیش از 1023 کاراکتر باشد";
         public static string InvalidFridayDate => "روز انتخابی، جمعه است";
         public static string InvalidOfficialHolidayDate => "روز انتخابی، تعطیل است";
@@ -74,7 +75,7 @@
 
         public static string HasNotSiphon => "سیفون ندارد";
         public static string DuplicateBillIdTags => "شناسه قبض با شناسه تگ جاری تکراری است.";
-        
+
         public static string InvalidDuplicateIncompleteReport => "درخواست گزارش جاری در 2 ساعت اخیر دریافت شده، تا اتمام گزارش از درخواست تکراری خودداری فرماید. ";
         public static string InvalidIncompleteReportByUserId => " کاربر گرامی، در 30دقیقه اخیر گزارش تکمیل نشده دارید. تا اتمام گزارش قبل صبر کنید.";
 
@@ -191,5 +192,8 @@
         public static string InvalidUpdateTankerRadif => "خطا در ویرایش ردیف تانکر آب";
         public static string InvalidInsertTanker => "خطا در ذخیره اطلاعات تانکر";
         public static string InvalidRemoveTanker => "خطا در حذف اطلاعات تانکر";
+
+
+        public static string InvalidDuplicateInstallment(string insertedBy, int installmentCount, string registerDateJalali) => @$"تعداد {installmentCount} قسط، توسط کاربر{insertedBy} در تاریخ{registerDateJalali} ایجاد شده.";
     }
 }

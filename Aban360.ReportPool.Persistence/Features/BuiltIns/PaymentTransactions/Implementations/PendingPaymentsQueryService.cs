@@ -105,7 +105,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 								) AND
 								DeletionStateId NOT IN (1,2)
 								{usageSellQuery}
-								{usageConsumptionQuery}
+								--{usageConsumptionQuery}
 						),						
 						-- تجمیعی قبض‌ها
 						BillAgg AS (
@@ -149,8 +149,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 								ON b.ZoneId = p.ZoneId AND b.CustomerNumber = p.CustomerNumber
 							WHERE 
 							  b.RegisterDay > ISNULL(p.LastPaymentDate, '0001/01/01')
-							  AND b.RegisterDay < @ToDate
-							  AND b.TypeCode NOT IN(7,8) AND
+							  AND b.RegisterDay <= @ToDate
+							  AND b.TypeCode NOT IN(3,4,5,7,8) AND
 							  b.SumItems<>0
 							GROUP BY b.ZoneId, b.CustomerNumber
 						)

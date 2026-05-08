@@ -3,6 +3,7 @@ using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
@@ -21,6 +22,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
     internal sealed class BillInstallmentCreateHandler : AbstractBaseConnection, IBillInstallmentCreateHandler
     {
         private readonly IMembersQueryService _membersQueryService;
+        private readonly IGhestAbQueryService _ghestAbQueryService;
         private readonly IVariabService _variabService;
         private readonly IValidator<BillInstallmentInputDto> _validator;
         private const int _operator = 5;
@@ -28,6 +30,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private const string _title = "اقساط آب‌بها";
         public BillInstallmentCreateHandler(
             IMembersQueryService membersQueryService,
+            IGhestAbQueryService ghestAbQueryService,
             IVariabService variabService,
             IValidator<BillInstallmentInputDto> validator,
             IConfiguration configuration)
@@ -35,6 +38,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         {
             _membersQueryService = membersQueryService;
             _membersQueryService.NotNull(nameof(membersQueryService));
+
+            _ghestAbQueryService = ghestAbQueryService;
+            _ghestAbQueryService.NotNull(nameof(ghestAbQueryService));
 
             _variabService = variabService;
             _variabService.NotNull(nameof(variabService));
@@ -47,12 +53,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         {
             await Validation(input, cancellationToken);
             MemberGetDto memberInfo = await GetMemberInfo(input.BillId);
-
-            ZoneIdAndCustomerNumberOutputDto zoneIdCustomerNumber = new(memberInfo.ZoneId, memberInfo.CustomerNumber);
+            ZoneIdAndCustomerNumber zoneIdCustomerNumber = new(memberInfo.ZoneId, memberInfo.CustomerNumber);
             ICollection<BillInstallmentCreateDto> installments = await GetInstallment(memberInfo, input);
 
             if (input.IsConfirm)
             {
+                await DuplicateValidation(zoneIdCustomerNumber, memberInfo.LatestDebt);
                 string dbName = GetDbName(memberInfo.ZoneId);
                 using (IDbConnection connection = _sqlReportConnection)
                 {
@@ -63,6 +69,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                     {
                         GhestAbCommandService ghestAbCommandService = new(connection, transaction);
+
+
                         await ghestAbCommandService.Insert(installments, dbName);
 
                         transaction.Commit();
@@ -147,12 +155,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     ZoneId = memberInfo.ZoneId,
                     CustomerNumber = memberInfo.CustomerNumber,
                     ReadingNumber = memberInfo.ReadingNumber,
-                    Barge = input.IsConfirm ? (int)rangeBarge[i ] : 0,
+                    Barge = input.IsConfirm ? (int)rangeBarge[i] : 0,
                     DeadLineDateJalali = currentDate.AddMonths(deadLineDay).FormatDateToShortPersianDate(),
                     Payable = eachInstallmentWithoutZero,
                     UsageId = memberInfo.UsageId,
                     MeterDiameterId = memberInfo.MeterDiamterId,
-                    QueueNumber = i+1,
+                    QueueNumber = i + 1,
                     Operator = _operator
                 };
                 allInstallments.Add(ghestAdDto);
@@ -167,6 +175,19 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new CustomValidationException(message);
+            }
+        }
+        private async Task DuplicateValidation(ZoneIdAndCustomerNumber input, long latestDebt)
+        {
+            IEnumerable<BillInstallmentOutputDto> currantInstallments = await _ghestAbQueryService.Get(input, DateTime.Now.ToShortPersianDateString());
+            IEnumerable<BillInstallmentOutputDto> latestBatchInstallment = await _ghestAbQueryService.GetLatestBatch(input);
+            if (currantInstallments.Any())
+            {
+                throw new InvalidInstallmentException(ExceptionLiterals.InvalidDuplicateInstallment(currantInstallments?.FirstOrDefault()?.InsertedBy ?? "-", currantInstallments?.Count() ?? 0,currantInstallments?.FirstOrDefault()?.RegisterDateJalali??"-"));
+            }
+            if ((latestBatchInstallment?.Sum(b => b.Payable) ?? 0) == latestDebt)
+            {
+                throw new InvalidInstallmentException(ExceptionLiterals.InvalidDuplicateInstallment(latestBatchInstallment?.FirstOrDefault()?.InsertedBy ?? "-", latestBatchInstallment?.Count() ?? 0, latestBatchInstallment?.FirstOrDefault()?.RegisterDateJalali ?? "-"));
             }
         }
     }
