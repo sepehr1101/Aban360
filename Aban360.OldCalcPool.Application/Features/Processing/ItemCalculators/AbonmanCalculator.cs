@@ -24,7 +24,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const string date1404_02_31 = "1404/02/31";
         const string date1404_09_09 = "1404/09/09";
         const string date1404_12_29 = "1404/12/29";
-        const string date1405_01_31 = "1405/02/01";
+        const string date1405_01_31 = "1405/01/31";
         const string date1405_12_29 = "1405/12/29";
 
         const double amountTo1403_12_01 = 10000.0;
@@ -128,6 +128,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             if (IsUnderSocialService(customerInfo.BranchType) &&
              IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
              date1403_12_01.MoreOrEq(consumptionPartialInfo.EndDateJalali) &&
+             //consumptionPartialInfo.EndDateJalali.LessOrEq(date1405_01_31) && //درخواست در گروه نرم افزار مشترکین توسط خانم خلجی
              (consumptionPartialInfo.DisallowedConsumtion >0))
             {
                 return new TariffItemResult();
@@ -136,6 +137,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             if (IsUnderSocialService(branchTypeId) &&
                 IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
                 consumptionPartialInfo.EndDateJalali.More(date1403_12_01) &&
+                //consumptionPartialInfo.EndDateJalali.LessOrEq(date1405_01_31) && //درخواست در گروه نرم افزار مشترکین توسط خانم خلجی
                 consumptionPartialInfo.DisallowedConsumtion <= 0)
             {
                 return new TariffItemResult(abonmanAmount);
@@ -145,6 +147,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
                date1403_12_01.MoreOrEq(consumptionPartialInfo.StartDateJalali) &&
                consumptionPartialInfo.EndDateJalali.More(date1403_12_01) &&
+               //consumptionPartialInfo.EndDateJalali.LessOrEq(date1405_01_31) && //درخواست در گروه نرم افزار مشترکین توسط خانم خلجی
                consumptionPartialInfo.DisallowedConsumtion > 0 &&
                consumptionInfo.MonthlyAverageConsumption<olgooBefore1404)
             {
@@ -154,6 +157,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             if (IsUnderSocialService(branchTypeId) &&
                IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
                consumptionPartialInfo.EndDateJalali.More(date1403_12_01) &&
+               //consumptionPartialInfo.EndDateJalali.LessOrEq(date1405_01_31) && //درخواست در گروه نرم افزار مشترکین توسط خانم خلجی
                consumptionPartialInfo.DisallowedConsumtion > 0)
             {                
                 double abonTmp = abonmanAmount - before1403_12_02;
