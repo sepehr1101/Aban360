@@ -32,7 +32,8 @@ namespace Aban360.ReportPool.Persistence.Base
                             FROM [CustomerWarehouse].dbo.Bills
                             WHERE 
                     			ZoneId IN @zoneIds AND 
-                    			CounterStateCode NOT IN (4,7,8)
+                    			CounterStateCode NOT IN (4,7,8) AND
+                                 BranchTypeId IN @BranchTypeIds
                         ) b
                         WHERE 
                     		b.rn = 1 AND 
@@ -55,7 +56,8 @@ namespace Aban360.ReportPool.Persistence.Base
                         INNER JOIN ValidLatestBills v 
                     		ON v.CustomerNumber = b.CustomerNumber AND v.ZoneId=b.ZoneId
                         WHERE 
-                    	  b.CounterStateCode = 1 AND 
+                    	  b.CounterStateCode = 1 AND
+                          b.BranchTypeId IN @BranchTypeIds AND
                     		NOT EXISTS (--بعد از اخرین قرائت تعویض شده اند
                               SELECT 1
                               FROM [CustomerWarehouse].dbo.MeterChange mc
@@ -144,7 +146,8 @@ namespace Aban360.ReportPool.Persistence.Base
 		                    MAX(b.NextNumber) NextNumber
                         FROM [CustomerWarehouse].dbo.Bills b
                         WHERE                     		
-                    		b.CounterStateCode = 1 --AND 
+                    		b.CounterStateCode = 1  AND
+                            b.BranchTypeId IN @BranchTypeIds  --AND 
                     	--	NOT EXISTS (--بعد از اخرین قبض تعویض شده اند
                         --      SELECT 1
                         --      FROM [CustomerWarehouse].dbo.MeterChange mc
@@ -230,7 +233,8 @@ namespace Aban360.ReportPool.Persistence.Base
                             MAX(b.RegisterDay) AS LatestRegisterDay
                         FROM [CustomerWarehouse].dbo.Bills b
                         WHERE                     		
-                    		b.CounterStateCode = 1 -- AND 
+                    		b.CounterStateCode = 1  AND
+                            b.BranchTypeId IN @BranchTypeIds -- AND 
                     	--	NOT EXISTS (--بعد از اخرین قبض تعویض شده اند
                         --     SELECT 1
                         --     FROM [CustomerWarehouse].dbo.MeterChange mc
@@ -305,7 +309,8 @@ namespace Aban360.ReportPool.Persistence.Base
                             FROM [CustomerWarehouse].dbo.Bills
                             WHERE 
                        			ZoneId IN @zoneIds AND 
-                       			CounterStateCode NOT IN (4,7,8) 
+                       			CounterStateCode NOT IN (4,7,8)  AND
+                                BranchTypeId IN @BranchTypeIds
                         ) b
                         WHERE 
                        		b.rn = 1 AND 
@@ -328,7 +333,8 @@ namespace Aban360.ReportPool.Persistence.Base
                         INNER JOIN ValidLatestBills v 
                        		ON v.CustomerNumber = b.CustomerNumber AND v.ZoneId=b.ZoneId
                         WHERE 
-                       	  b.CounterStateCode = 1    
+                       	  b.CounterStateCode = 1  AND
+                          b.BranchTypeId IN @BranchTypeIds  
                             {registerBillCondition} AND
                     		NOT EXISTS (--بعد از اخرین قرائت تعویض شده اند
                               SELECT 1

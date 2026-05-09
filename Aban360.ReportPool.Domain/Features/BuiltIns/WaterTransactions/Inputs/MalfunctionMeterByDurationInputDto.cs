@@ -9,6 +9,6 @@
         public int FromMalfunctionPeriodCount { get; set; }
         public int ToMalfunctionPeriodCount { get; set; }
         public ICollection<int>? ZoneIds { get; set; }
-        //public ICollection<int> BranchTypeId { get; set; }
+        public ICollection<int> BranchTypeIds { get; set; }
     }
 }
