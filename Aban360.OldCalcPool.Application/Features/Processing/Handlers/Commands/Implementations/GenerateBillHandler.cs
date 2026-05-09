@@ -1,12 +1,14 @@
 ﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
+using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using Aban360.OldCalcPool.Application.Constant;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
@@ -16,6 +18,7 @@ using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementatio
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using DNTPersianUtils.Core;
 using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Diagnostics;
@@ -24,6 +27,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 {
     internal sealed class GenerateBillHandler : AbstractBaseConnection, IGenerateBillHandler
     {
+        private readonly IHttpContextAccessor _contextAccessor;
         private readonly ICustomerInfoService _customerInfoService;
         private readonly IOldTariffEngine _tariffEngine;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
@@ -39,6 +43,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         const int _changeCodeCounterState = 3;
         const int _reverseCodeCounterSatate = 5;
         public GenerateBillHandler(
+            IHttpContextAccessor contextAccessor,
             ICustomerInfoService customerInfoService,
             IOldTariffEngine tariffEngine,
             ICommonMemberQueryService commonMemberQueryService,
@@ -47,6 +52,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             IVariabService variabService)
             : base(configuration)
         {
+            _contextAccessor = contextAccessor;
+            _contextAccessor.NotNull(nameof(contextAccessor));
+
             _customerInfoService = customerInfoService;
             _customerInfoService.NotNull(nameof(customerInfoService));
 
@@ -63,7 +71,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             _variabService.NotNull(nameof(variabService));
         }
 
-        public async Task<AbBahaCalculationDetails> Handle(GenerateBillInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<AbBahaCalculationDetails> Handle(GenerateBillInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             await InputValidation(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await GetZoneIdANdCustomerNumber(inputDto.BillId);
@@ -87,8 +95,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             BedBesCreateDto bedBes = await GetBedBes(customerInfo, abBahaCalcResult, inputDto, zoneIdAndCustomerNumber, inputDto.CounterStateCode);
             KasrHaDto kasrHa = GerKasrHa(customerInfo, abBahaCalcResult, inputDto);
             ContorUpdateDto contorUpdate = GetControUpdateDto(customerInfo, bedBes);
+            string logtext = string.Format(Literals.GenerateBillOpLog, bedBes.ShGhabs1, bedBes.ShPard1, bedBes.Pard);
 
-            await SqlCommands(zoneIdAndCustomerNumber, bedBes, kasrHa, contorUpdate, abBahaCalcResult, inputDto.CounterStateCode);
+            await SqlCommands(zoneIdAndCustomerNumber, bedBes, kasrHa, contorUpdate, abBahaCalcResult, appUser, inputDto.CounterStateCode, logtext);
 
             return abBahaCalcResult;
         }
@@ -191,7 +200,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             }
             return householdUnit;
         }
-        private async Task SqlCommands(ZoneIdAndCustomerNumber zoneIdAndCustomerNumber, BedBesCreateDto bedBes, KasrHaDto kasrHa, ContorUpdateDto contorUpdate, AbBahaCalculationDetails abBahaCalcResult, int? counterStateCode)
+        private async Task SqlCommands(ZoneIdAndCustomerNumber zoneIdAndCustomerNumber, BedBesCreateDto bedBes, KasrHaDto kasrHa, ContorUpdateDto contorUpdate, AbBahaCalculationDetails abBahaCalcResult, IAppUser appUser, int? counterStateCode, string logText)
         {
             string dbName = GetDbName(zoneIdAndCustomerNumber.ZoneId);
 
@@ -206,16 +215,18 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 {
                     try
                     {
-                        BedBesCommandService bedBedCommandService = new BedBesCommandService(connection, transaction);
-                        KasrHaCommandService kasrHasCommandService = new KasrHaCommandService(connection, transaction);
-                        MembersCommandService membersCommandService = new MembersCommandService(connection, transaction);
-                        WaterDebtCommandService waterDebtCommandService = new WaterDebtCommandService(connection, transaction);
-                        BillCommandService billCommandService = new BillCommandService(connection, transaction);
-                        ContorCommandService controCommandService = new ContorCommandService(connection, transaction);
+                        BedBesCommandService bedBedCommandService = new(connection, transaction);
+                        KasrHaCommandService kasrHasCommandService = new(connection, transaction);
+                        MembersCommandService membersCommandService = new(connection, transaction);
+                        WaterDebtCommandService waterDebtCommandService = new(connection, transaction);
+                        BillCommandService billCommandService = new(connection, transaction);
+                        ContorCommandService controCommandService = new(connection, transaction);
+                        OpLogCommandService opLogcommandService = new(_contextAccessor, connection, transaction);
 
                         int bedBesRecordId = await bedBedCommandService.Insert(bedBes, dbName);
                         BillByBedBedIdInsertDto billInsertByBedBesIdDto = new(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber, GetTypeId(counterStateCode), bedBesRecordId);
                         await billCommandService.InsertByBedBesId(billInsertByBedBesIdDto, dbName);
+                        await opLogcommandService.Insert(logText, appUser);
 
                         if (abBahaCalcResult.DiscountSum > 0)
                         {
@@ -226,7 +237,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                             await waterDebtCommandService.UpdateAmount(bedBes.ShGhabs1, (long)bedBes.Baha);
                             await membersCommandService.UpdateBedbes(zoneIdAndCustomerNumber, (long)bedBes.Baha, dbName);
                             await controCommandService.Update(contorUpdate, dbName, true);                                                                                                   //update contro
-
                         }
 
                         transaction.Commit();

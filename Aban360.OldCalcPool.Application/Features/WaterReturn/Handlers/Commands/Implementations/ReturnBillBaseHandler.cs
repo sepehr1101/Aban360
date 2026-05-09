@@ -1,7 +1,11 @@
-﻿using Aban360.Common.BaseEntities;
+﻿using Aban360.Common.ApplicationUser;
+using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Dapper;
+using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using OpLogLiterals = Aban360.OldCalcPool.Application.Constant;
 using Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Constants;
@@ -12,17 +16,20 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
-using Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Contracts;
+using Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Implementations;
 using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Commands;
 using DNTPersianUtils.Core;
 using FluentValidation;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Implementations
 {
-    internal sealed class ReturnBillBaseHandler : IReturnBillBaseHandler
+    internal sealed class ReturnBillBaseHandler : AbstractBaseConnection, IReturnBillBaseHandler
     {
+        private readonly IHttpContextAccessor _contextAccessor;
         private readonly IBedBesQueryService _bedBesQueryService;
-        private readonly IAutoBackCommandService _autoBackCommandService;
         private readonly ICustomerInfoDetailQueryService _customerInfoDetailQueryService;
         private readonly IBillReturnCauseQueryService _billReturnCauseQueryService;
         private readonly ITaxCalculator _taxCalculator;
@@ -31,20 +38,22 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private readonly IValidator<ReturnBillPartialInputDto> _returnPartialValidator;
         private static string _title = "برگشتی";
         public ReturnBillBaseHandler(
+            IHttpContextAccessor contextAccessor,
             IBedBesQueryService bedBesQueryService,
-            IAutoBackCommandService autoBackCommandService,
             ICustomerInfoDetailQueryService customerInfoDetailQueryService,
             IBillReturnCauseQueryService billReturnCauseQueryService,
             ITaxCalculator taxCalculator,
             IHBedBesQueryService hBedBesQueryService,
             IValidator<ReturnBillFullInputDto> returnFullValidator,
-            IValidator<ReturnBillPartialInputDto> returnPartialValidator)
+            IValidator<ReturnBillPartialInputDto> returnPartialValidator,
+            IConfiguration configuration)
+            : base(configuration)
         {
+            _contextAccessor = contextAccessor;
+            _contextAccessor.NotNull(nameof(contextAccessor));
+
             _bedBesQueryService = bedBesQueryService;
             _bedBesQueryService.NotNull(nameof(bedBesQueryService));
-
-            _autoBackCommandService = autoBackCommandService;
-            _autoBackCommandService.NotNull(nameof(autoBackCommandService));
 
             _customerInfoDetailQueryService = customerInfoDetailQueryService;
             _customerInfoDetailQueryService.NotNull(nameof(customerInfoDetailQueryService));
@@ -55,7 +64,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             _taxCalculator = taxCalculator;
             _taxCalculator.NotNull(nameof(taxCalculator));
 
-            _hBedBesQueryService=hBedBesQueryService;
+            _hBedBesQueryService = hBedBesQueryService;
             _hBedBesQueryService.NotNull(nameof(hBedBesQueryService));
 
             _returnFullValidator = returnFullValidator;
@@ -65,7 +74,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             _returnPartialValidator.NotNull(nameof(returnPartialValidator));
         }
 
-        public async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> GetReturn(AutoBackCreateDto bedBes, AutoBackCreateDto newCalculation, AutoBackCreateDto different, CustomerInfoOutputDto customerInfo, int billCount, bool isConfirm)
+        public async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> GetReturn(AutoBackCreateDto bedBes, AutoBackCreateDto newCalculation, AutoBackCreateDto different, CustomerInfoOutputDto customerInfo, int billCount, bool isConfirm, bool isPartial, IAppUser appUser, string fromDateJalali, string toDateJalali)
         {
             string description = await GetDescription(customerInfo, bedBes);
             ReturnBillDataOutputDto previousValues = new ReturnBillDataOutputDto()
@@ -225,7 +234,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             {
                 return result;
             }
-            await CreateAutoBack(bedBes, newCalculation, different);
+            string returnMode = isPartial ? "محاسبه مجدد" : "کامل";
+            string logText = string.Format(OpLogLiterals.Literals.BillReturnOpLog, returnMode, customerInfo.BillId, billCount, fromDateJalali, toDateJalali, different.Baha);
+            await SqlCommands(bedBes, newCalculation, different, appUser, logText);
             return result;
         }
         public AutoBackCreateDto GetFullNewCalculation(BedBesCreateDto bedBes, int returnCauseId, int bedbesCount, int jalaseNumber)
@@ -685,7 +696,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             int[] domesticId = [0, 1, 3];
             return domesticId.Contains(customerNumber);
         }
-        public async Task<float> GetConsumptionAverage(string fromDateJalali, string toDateJalali, ReturnedBillCalculationTypeEnum calculationType, float? userInput, CustomerInfoOutputDto customerInfo,int returnCauseId)
+        public async Task<float> GetConsumptionAverage(string fromDateJalali, string toDateJalali, ReturnedBillCalculationTypeEnum calculationType, float? userInput, CustomerInfoOutputDto customerInfo, int returnCauseId)
         {
             float? previousConsumptionAverage = await _bedBesQueryService.GetAverage(customerInfo.ZoneId, customerInfo.Radif, GetPreviousYear(fromDateJalali), GetPreviousYear(toDateJalali));
             if (!previousConsumptionAverage.HasValue || previousConsumptionAverage <= 0)
@@ -704,10 +715,27 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 _ => userInput.Value
             };
         }
-        private async Task CreateAutoBack(AutoBackCreateDto bedBes, AutoBackCreateDto newCalculation, AutoBackCreateDto different)
+        private async Task SqlCommands(AutoBackCreateDto bedBes, AutoBackCreateDto newCalculation, AutoBackCreateDto different, IAppUser appUser, string logText)
         {
             ICollection<AutoBackCreateDto> datas = new List<AutoBackCreateDto>() { bedBes, newCalculation, different };
-            await _autoBackCommandService.Create(datas);//حتما به ترتیب باید ایجاد شود
+
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    AutoBackCommandService autoBackCommandService = new(connection, transaction);
+                    OpLogCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+
+                    await autoBackCommandService.Create(datas);//حتما به ترتیب باید ایجاد شود
+                    await opLogCommandService.Insert(logText, appUser);
+
+                    transaction.Commit();
+                }
+            }
         }
         private static decimal Diff(decimal firstValue, decimal secondValue) => firstValue - secondValue;
         private async Task<string> GetDescription(CustomerInfoOutputDto customerInfo, AutoBackCreateDto bedBes)
@@ -718,11 +746,11 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private string GetPreviousYear(string dateJalali)
         {
             DateOnly? dateOnly = dateJalali.ToGregorianDateOnly();
-            if(!dateOnly.HasValue)
+            if (!dateOnly.HasValue)
             {
                 throw new BaseException("تاریخ ناصحیح است");
             }
-            string previousDateJalali =dateOnly.Value.AddYears(-1).ToShortPersianDateString();
+            string previousDateJalali = dateOnly.Value.AddYears(-1).ToShortPersianDateString();
             return previousDateJalali;
         }
         private async Task<bool> HasReturned(int zoneId, int customerNumber) => await _hBedBesQueryService.Get(new ZoneIdAndCustomerNumber(zoneId, customerNumber));
