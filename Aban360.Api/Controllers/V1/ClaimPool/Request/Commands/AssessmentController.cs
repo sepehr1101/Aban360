@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using System.Dynamic;
 using System.Threading;
 
@@ -65,12 +66,12 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             _backgroudJobClient = backgroudJobClient;
             _backgroudJobClient.NotNull(nameof(backgroudJobClient));
         }
-
+               
         [HttpPost]
         [Route("result")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AssessmentResultInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SetReult(CancellationToken cancellationToken)
-        {            
+        {
             int examinerCode = UserService.GetUserCode(CurrentUser.Username);
             AssessmentResultInputDto inputDto=await _setAssessmentResultHandler.Handle(examinerCode, cancellationToken);
             return Ok(inputDto);
@@ -79,6 +80,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         [HttpPost]
         [Route("result-assessment-sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetResultAssessmentSti([FromBody] GuidInput input, CancellationToken cancellationToken)
         {
             int reportCode = 2021;
@@ -157,12 +159,36 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         private async Task<JsonReportId> GetSetResultJsonReport(Guid id, int reportCode, CancellationToken cancellationToken)
         {
             AssessmentDataOutputDto result = await _assessmentByIdGetHandler.Handle(id, cancellationToken);
-            if (result is null || result.AllInJson is null)
+            if (result is null || result.AllInJson is null || string.IsNullOrWhiteSpace(result.AllInJson))
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidShowPreviousRequest);
             }
-            string finalString = @" {""reportData"":" + result.AllInJson + "}";
-            dynamic jsonObject = JsonConvert.DeserializeObject<ExpandoObject>(finalString, new ExpandoObjectConverter());
+         
+            JObject jsonObject = new JObject
+            {
+                ["reportData"] = JToken.Parse(result.AllInJson)
+            };
+            // Transform the embedded JSON string into an actual array
+            JObject reportData = (JObject)jsonObject["reportData"];
+            if (reportData != null)
+            {
+                var property = reportData.Property("commercialUnitsDetailsJson");
+                if (property != null && property.Value.Type == JTokenType.String)
+                {
+                    string arrayJson = property.Value.ToString();                   
+                    // Guard against empty / whitespace JSON string
+                    if (!string.IsNullOrWhiteSpace(arrayJson))
+                    {
+                        // Parse the string into a JArray and replace the value
+                        property.Value = JToken.Parse(arrayJson);
+                    }
+                    else
+                    {                       
+                        // Optionally set to an empty array or leave as null
+                        property.Value = new JArray();
+                    }                    
+                }
+            }            
             JsonReportId reportId = await JsonOperation.ExportToJson(jsonObject, cancellationToken, reportCode);
             return reportId;
         }

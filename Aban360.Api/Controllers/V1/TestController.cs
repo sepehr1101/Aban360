@@ -41,6 +41,14 @@ namespace Aban360.Api.Controllers.V1
 
             return Ok(requestBody);
         }
+
+        [HttpGet]
+        [Route("gen-billid")]
+        public IActionResult GenerateBillId(string part1, string part2)
+        {
+           string billId= TransactionIdGenerator.GenerateBillId(part1, part2);
+           return Ok(billId);
+        }
     }
     public class ZoneTest
     {
