@@ -66,7 +66,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             await Validation(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber neighbourCustomerInfo = await _commonMemberQueryService.Get(inputDto.NeighbourBillId);
             MemberInfoGetDto neighbourMemeberInfo = await _commonMemberQueryService.Get(neighbourCustomerInfo);
-            await _moshtrakQueryService.CheckOpenRequest(inputDto.NationalCode, neighbourCustomerInfo.ZoneId);
+            if (!inputDto.IsSkipDuplicate)
+            {
+                await _moshtrakQueryService.CheckOpenRequest(inputDto.NationalCode, neighbourCustomerInfo.ZoneId);
+            }
             var (assessmentCode, assessmentDateJalali) = await GetAssessmentDateTime(neighbourMemeberInfo);
 
             return await SqlCommand(inputDto, neighbourCustomerInfo, userName, assessmentDateJalali, assessmentCode);

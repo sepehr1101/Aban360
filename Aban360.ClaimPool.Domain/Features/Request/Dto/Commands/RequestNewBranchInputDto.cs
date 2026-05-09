@@ -14,6 +14,7 @@
         public string PostalCode { get; set; }
         public string Description { get; set; }
         public bool HasSms { get; set; }
+        public bool IsSkipDuplicate { get; set; }
         public ICollection<int> SelectedServices { get; set; }
 
     }
