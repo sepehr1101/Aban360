@@ -9,7 +9,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         internal static bool LessThanEq(string baseString, string @from)
         {
             return baseString.CompareTo(from) <= 0;
-        }
+        }      
         internal static bool IsGtFromLqTo(string baseString, string @from, string @to)
         {
             return baseString.CompareTo(from) > 0 && baseString.CompareTo(to) <= 0;
@@ -50,6 +50,20 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
             }
 
             if (from.Value >= to.Value)
+                return true;
+
+            return false;
+        }
+        internal static bool LessOrEq(this string date1, string date2)
+        {
+            DateOnly? from = date1.ToGregorianDateOnly();
+            DateOnly? to = date2.ToGregorianDateOnly();
+            if (!from.HasValue && !to.HasValue)
+            {
+                throw new BaseException(ExceptionLiterals.InvalidDate);
+            }
+
+            if (from.Value <= to.Value)
                 return true;
 
             return false;

@@ -24,7 +24,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const string date1404_02_31 = "1404/02/31";
         const string date1404_09_09 = "1404/09/09";
         const string date1404_12_29 = "1404/12/29";
-        const string date1405_01_31 = "1405/02/01";
+        const string date1405_01_31 = "1405/01/31";
         const string date1405_12_29 = "1405/12/29";
 
         const double amountTo1403_12_01 = 10000.0;
@@ -126,8 +126,23 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             }
 
             if (IsUnderSocialService(customerInfo.BranchType) &&
+                IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
+                consumptionPartialInfo.DisallowedConsumtion > 0)
+            {
+                return new TariffItemResult();
+            }
+
+            if (IsUnderSocialService(branchTypeId) &&
+               IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
+               consumptionPartialInfo.DisallowedConsumtion <= 0)
+            {
+                return new TariffItemResult(abonmanAmount);
+            }
+
+            #region old_Social_Service
+            /*if (IsUnderSocialService(customerInfo.BranchType) &&
              IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
-             date1403_12_01.MoreOrEq(consumptionPartialInfo.EndDateJalali) &&
+             date1403_12_01.MoreOrEq(consumptionPartialInfo.EndDateJalali) &&             
              (consumptionPartialInfo.DisallowedConsumtion >0))
             {
                 return new TariffItemResult();
@@ -135,7 +150,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
             if (IsUnderSocialService(branchTypeId) &&
                 IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
-                consumptionPartialInfo.EndDateJalali.More(date1403_12_01) &&
+                consumptionPartialInfo.EndDateJalali.More(date1403_12_01) &&               
                 consumptionPartialInfo.DisallowedConsumtion <= 0)
             {
                 return new TariffItemResult(abonmanAmount);
@@ -158,7 +173,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             {                
                 double abonTmp = abonmanAmount - before1403_12_02;
                 return abonTmp > 0 ? new TariffItemResult(abonTmp) : new TariffItemResult();
-            }
+            }*/
+            #endregion
+
             if (IsMullah(customerInfo.BranchType) && abonmanResult.Disallowed > 0)
             {
                 return new TariffItemResult();
