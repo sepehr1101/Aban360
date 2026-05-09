@@ -2,7 +2,7 @@
 {
     using Aban360.Common.ApplicationUser;
     using Aban360.Common.Categories.ApiResponse;
-    using Aban360.Common.Db.QueryServices;
+    using Aban360.Common.Db.Services;
     using Aban360.UserPool.Domain.Constants;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;

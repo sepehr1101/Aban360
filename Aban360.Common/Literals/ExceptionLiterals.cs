@@ -193,6 +193,8 @@
         public static string InvalidInsertTanker => "خطا در ذخیره اطلاعات تانکر";
         public static string InvalidRemoveTanker => "خطا در حذف اطلاعات تانکر";
 
+        public static string InvalidInsertOpLog => "خطا در ثبت لاگ";
+
 
         public static string InvalidDuplicateInstallment(string insertedBy, int installmentCount, string registerDateJalali) => @$"تعداد {installmentCount} قسط، توسط کاربر{insertedBy} در تاریخ{registerDateJalali} ایجاد شده.";
     }

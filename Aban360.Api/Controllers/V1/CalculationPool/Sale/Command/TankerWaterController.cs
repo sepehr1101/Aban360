@@ -2,7 +2,7 @@
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
 using Aban360.Common.Categories.ApiResponse;
-using Aban360.Common.Db.QueryServices;
+using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.NotificationPool.Application.Features.Sms;

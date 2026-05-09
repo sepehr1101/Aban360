@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <Folder Include="Exceptions\" />
+    <Folder Include="Features\Processing\Handlers\Commands\Implementations\CommandServices\" />
   </ItemGroup>
 
 </Project>

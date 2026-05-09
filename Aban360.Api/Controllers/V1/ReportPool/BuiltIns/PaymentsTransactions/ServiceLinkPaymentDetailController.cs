@@ -29,7 +29,6 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [AllowTimeWindowFilter]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<PaymentDetailHeaderOutputDto, PaymentDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(PaymentDetailInputDto inputDto, CancellationToken cancellationToken)
         {
@@ -39,7 +38,6 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
-        [AllowTimeWindowFilter]
         public async Task<IActionResult> GetExcel(string connectionId, PaymentDetailInputDto inputDto, CancellationToken cancellationToken)
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _serviceLinkPaymentDetail.Handle, CurrentUser, ReportLiterals.ServiceLinkPaymentDetail, connectionId);
@@ -48,7 +46,6 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
 
         [HttpPost]
         [Route("sti")]
-        [AllowTimeWindowFilter]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetStiReport(PaymentDetailInputDto inputDto, CancellationToken cancellationToken)
         {

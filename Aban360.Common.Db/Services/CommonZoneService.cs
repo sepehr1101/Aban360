@@ -4,7 +4,7 @@ using Aban360.Common.Db.Dapper;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
-namespace Aban360.Common.Db.QueryServices
+namespace Aban360.Common.Db.Services
 {
     public interface ICommonZoneService
     {
@@ -16,7 +16,7 @@ namespace Aban360.Common.Db.QueryServices
     public sealed class CommonZoneService : AbstractBaseConnection, ICommonZoneService
     {
         public CommonZoneService(IConfiguration configuration)
-            :base(configuration)
+            : base(configuration)
         {
         }
 
@@ -24,7 +24,7 @@ namespace Aban360.Common.Db.QueryServices
         {
             string query = GetIdQuery();
             IEnumerable<int> result = await _sqlConnection.QueryAsync<int>(query, new { userId = appUser.UserId });
-            
+
             return result;
         }
         public async Task<IEnumerable<NumericDictionary>> GetIdTitle(IAppUser appUser)
@@ -38,7 +38,7 @@ namespace Aban360.Common.Db.QueryServices
         {
             string query = GetUserDefaultZoneQuery();
             NumericDictionary? result = await _sqlConnection.QueryFirstOrDefaultAsync<NumericDictionary>(query, new { userId = appUser.UserId });
-            if(result is null)
+            if (result is null)
             {
                 return new NumericDictionary();
             }
