@@ -1,4 +1,4 @@
-﻿using Aban360.Common.Db.QueryServices;
+﻿using Aban360.Common.Db.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aban360.Common.Db.Extensions

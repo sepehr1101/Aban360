@@ -10,11 +10,11 @@ using System.Data;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.Common.Literals;
 using DNTPersianUtils.Core;
-using Aban360.Common.Db.QueryServices;
 using Aban360.Common.BaseEntities;
 using FluentValidation;
 using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Contracts;
 using Aban360.OldCalcPools.WaterReturn.Dto.Queries;
+using Aban360.Common.Db.Services;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations
 {

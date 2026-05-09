@@ -6,7 +6,7 @@ using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Domain.Features.Tracking.Dto;
 using Aban360.Common.Categories.ApiResponse;
-using Aban360.Common.Db.QueryServices;
+using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.NotificationPool.Application.Features.Sms;

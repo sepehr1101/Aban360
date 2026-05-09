@@ -3,7 +3,7 @@ using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.QueryServices;
+using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using DNTPersianUtils.Core;
 

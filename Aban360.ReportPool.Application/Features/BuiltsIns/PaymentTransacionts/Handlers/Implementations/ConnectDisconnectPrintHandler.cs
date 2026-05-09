@@ -1,5 +1,5 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.QueryServices;
+using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Contracts;
 using Aban360.ReportPool.Application.Features.Geo.Contracts;

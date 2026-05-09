@@ -215,7 +215,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 						ON enshab=t15.C0
                     join [Db70].dbo.T7 t7
                     	On noe_va=t7.C0
-                    where {condition}
+                    where {condition} AND sabt<>1
                     Order By date_ask Desc";
         }
         private string GetInfoByIdQuery(string dbName)

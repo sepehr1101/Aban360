@@ -8,7 +8,7 @@ using Aban360.Common.BaseEntities;
 using Aban360.ReportPool.Application.Features.Geo.Contracts;
 using Aban360.ReportPool.Domain.Features.Geo;
 using Aban360.ReportPool.Infrastructure.Features.Geo;
-using Aban360.Common.Db.QueryServices;
+using Aban360.Common.Db.Services;
 
 namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implementations
 {

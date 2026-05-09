@@ -13,14 +13,15 @@ using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 using System.Data;
-using Aban360.Common.BaseEntities;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts;
+using Microsoft.AspNetCore.Http;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Implementations
 {
     internal sealed class TankerInsertHandler : AbstractBaseConnection, ITankerInsertHandler
     {
+        private readonly IHttpContextAccessor _contextAccessor;
         private readonly IVariabService _variabService;
         private readonly ITankerWaterDistanceTariffQueryService _tankerQueryService;
         private readonly IZaribCQueryService _zaribCQueryService;
@@ -28,6 +29,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         private readonly IT52QueryService _t52QueryService;
         static int _tankerWaterUsageId = 19;
         public TankerInsertHandler(
+            IHttpContextAccessor contextAccessor,
             IVariabService variabService,
             ITankerWaterDistanceTariffQueryService tankerQueryService,
             IZaribCQueryService zaribCQueryService,
@@ -36,6 +38,9 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             IConfiguration configuration)
             : base(configuration)
         {
+            _contextAccessor = contextAccessor;
+            _contextAccessor.NotNull(nameof(contextAccessor));
+
             _variabService = variabService;
             _variabService.NotNull(nameof(variabService));
 

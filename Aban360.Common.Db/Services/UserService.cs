@@ -1,7 +1,7 @@
 ﻿using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 
-namespace Aban360.Common.Db.QueryServices
+namespace Aban360.Common.Db.Services
 {
     public static class UserService
     {

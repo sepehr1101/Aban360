@@ -17,9 +17,9 @@ using System.Data;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.Common.BaseEntities;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
-using Aban360.Common.Db.QueryServices;
 using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
+using Aban360.Common.Db.Services;
 
 namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Implementations
 {

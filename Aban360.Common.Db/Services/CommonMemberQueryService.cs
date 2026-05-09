@@ -5,7 +5,7 @@ using Aban360.Common.Literals;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
-namespace Aban360.Common.Db.QueryServices
+namespace Aban360.Common.Db.Services
 {
     public interface ICommonMemberQueryService
     {

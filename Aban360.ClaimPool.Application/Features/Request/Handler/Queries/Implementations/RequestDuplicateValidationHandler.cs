@@ -6,7 +6,7 @@ using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.QueryServices;
+using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations
@@ -46,7 +46,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 serviceSelected = MoshtrakService.GetServicesSelectedDto(moshtrakServiceDto);
             }
 
-            return GetResultDto(serviceSelected, moshtrakInfo, latestTrackingInfo, firstTrackingInfo, requestOrigin);
+            return GetResultDto(inputDto, serviceSelected, moshtrakInfo, latestTrackingInfo, firstTrackingInfo, requestOrigin);
         }
         private async Task<(MoshtrakGetDto, MoshtrakSearchTypeEnum)> GetMoshtrakDto(TrackingDuplicateValidationInputDto inputDto)
         {
@@ -120,7 +120,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 s48 = serviceSelected.s48,
             };
         }
-        private TrackingDuplicateValidationOutputDto GetResultDto(IEnumerable<NumericDictionary>? serviceSelected, MoshtrakOutputDto? moshtrakInfo, TrackingOutputDto? latestTrackingInfo, TrackingOutputDto? firstTrackingInfo, NumericDictionary? requestOrigin)
+        private TrackingDuplicateValidationOutputDto GetResultDto(TrackingDuplicateValidationInputDto inputDto, IEnumerable<NumericDictionary>? serviceSelected, MoshtrakOutputDto? moshtrakInfo, TrackingOutputDto? latestTrackingInfo, TrackingOutputDto? firstTrackingInfo, NumericDictionary? requestOrigin)
         {
             return new TrackingDuplicateValidationOutputDto()
             {
@@ -129,19 +129,21 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 ZoneTitle = moshtrakInfo?.ZoneTitle ?? string.Empty,
                 RegionId = latestTrackingInfo?.RegionId ?? 0,
                 RegionTitle = latestTrackingInfo?.RegionTitle ?? string.Empty,
+                BillId = latestTrackingInfo?.BillId ?? inputDto.BillId ?? string.Empty,
                 CustomerNumber = moshtrakInfo?.CustomerNumber ?? 0,
-                NationalCode = moshtrakInfo?.NationalCode ?? string.Empty,
+                NationalCode = moshtrakInfo?.NationalCode ?? inputDto.NationalCode ?? string.Empty,
                 TrackNumber = moshtrakInfo?.TrackNumber ?? 0,
                 FirstName = moshtrakInfo?.FirstName ?? string.Empty,
                 Surname = moshtrakInfo?.Surname ?? string.Empty,
                 FatherName = moshtrakInfo?.FatherName ?? string.Empty,
+                PhoneNumber =moshtrakInfo?.PhoneNumber ?? string.Empty,
                 MobileNumber = moshtrakInfo?.MobileNumber ?? string.Empty,
                 NotificationNumber = latestTrackingInfo?.NotificationMobile ?? string.Empty,
-                Address=moshtrakInfo?.Address ?? string.Empty,  
-                CertificateNumber=moshtrakInfo?.CertificateNumber??string.Empty,
-                Description=moshtrakInfo?.Description ?? string.Empty,
-                NeighbourBillId=moshtrakInfo?.NeighbourBillId ?? string.Empty,
-                PostalCode=moshtrakInfo?.PostalCode ?? string.Empty,
+                Address = moshtrakInfo?.Address ?? string.Empty,
+                CertificateNumber = moshtrakInfo?.CertificateNumber ?? string.Empty,
+                Description = moshtrakInfo?.Description ?? string.Empty,
+                NeighbourBillId = moshtrakInfo?.NeighbourBillId ?? inputDto.NeighbourBillId ?? string.Empty,
+                PostalCode = moshtrakInfo?.PostalCode ?? string.Empty,
                 RequestDateJalali = moshtrakInfo?.RequestDateJalali ?? string.Empty,
                 IsDuplicate = (moshtrakInfo?.IsRegistered ?? true) ? false : true,
                 LatestStatusId = latestTrackingInfo?.StatusId ?? 0,

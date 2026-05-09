@@ -6,7 +6,7 @@ using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
-using Aban360.Common.Db.QueryServices;
+using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Timing;
@@ -66,7 +66,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             await Validation(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber neighbourCustomerInfo = await _commonMemberQueryService.Get(inputDto.NeighbourBillId);
             MemberInfoGetDto neighbourMemeberInfo = await _commonMemberQueryService.Get(neighbourCustomerInfo);
-            await _moshtrakQueryService.CheckOpenRequest(inputDto.NationalCode, neighbourCustomerInfo.ZoneId);
+            if (!inputDto.IsSkipDuplicate)
+            {
+                await _moshtrakQueryService.CheckOpenRequest(inputDto.NationalCode, neighbourCustomerInfo.ZoneId);
+            }
             var (assessmentCode, assessmentDateJalali) = await GetAssessmentDateTime(neighbourMemeberInfo);
 
             return await SqlCommand(inputDto, neighbourCustomerInfo, userName, assessmentDateJalali, assessmentCode);

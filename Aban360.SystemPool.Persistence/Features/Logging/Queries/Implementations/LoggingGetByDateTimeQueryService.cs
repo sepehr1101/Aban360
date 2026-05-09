@@ -30,7 +30,7 @@ namespace Aban360.SystemPool.Persistence.Features.Logging.Queries.Implementation
         private string GetLoggingQuery(LogLevelEnum logLevel)
         {
             string logLevelQueryPart = logLevel == LogLevelEnum.None ? "" : " AND l.Level=@logLevel";
-            return @$"Select top 500
+            return @$"Select top 10000
                         Format(l.TimeStamp ,'yyyy/MM/dd', 'fa-IR') as DateJalali,
                         Format(l.TimeStamp,'HH:mm','fa-IR') as Time,
                     	l.Level as LogLevel,
