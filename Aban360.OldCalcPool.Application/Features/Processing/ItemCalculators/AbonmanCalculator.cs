@@ -126,9 +126,23 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             }
 
             if (IsUnderSocialService(customerInfo.BranchType) &&
+                IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
+                consumptionPartialInfo.DisallowedConsumtion > 0)
+            {
+                return new TariffItemResult();
+            }
+
+            if (IsUnderSocialService(branchTypeId) &&
+               IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
+               consumptionPartialInfo.DisallowedConsumtion <= 0)
+            {
+                return new TariffItemResult(abonmanAmount);
+            }
+
+            #region old_Social_Service
+            /*if (IsUnderSocialService(customerInfo.BranchType) &&
              IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
-             date1403_12_01.MoreOrEq(consumptionPartialInfo.EndDateJalali) &&
-             //consumptionPartialInfo.EndDateJalali.LessOrEq(date1405_01_31) && //درخواست در گروه نرم افزار مشترکین توسط خانم خلجی
+             date1403_12_01.MoreOrEq(consumptionPartialInfo.EndDateJalali) &&             
              (consumptionPartialInfo.DisallowedConsumtion >0))
             {
                 return new TariffItemResult();
@@ -136,8 +150,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
             if (IsUnderSocialService(branchTypeId) &&
                 IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
-                consumptionPartialInfo.EndDateJalali.More(date1403_12_01) &&
-                //consumptionPartialInfo.EndDateJalali.LessOrEq(date1405_01_31) && //درخواست در گروه نرم افزار مشترکین توسط خانم خلجی
+                consumptionPartialInfo.EndDateJalali.More(date1403_12_01) &&               
                 consumptionPartialInfo.DisallowedConsumtion <= 0)
             {
                 return new TariffItemResult(abonmanAmount);
@@ -147,7 +160,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
                date1403_12_01.MoreOrEq(consumptionPartialInfo.StartDateJalali) &&
                consumptionPartialInfo.EndDateJalali.More(date1403_12_01) &&
-               //consumptionPartialInfo.EndDateJalali.LessOrEq(date1405_01_31) && //درخواست در گروه نرم افزار مشترکین توسط خانم خلجی
                consumptionPartialInfo.DisallowedConsumtion > 0 &&
                consumptionInfo.MonthlyAverageConsumption<olgooBefore1404)
             {
@@ -157,12 +169,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             if (IsUnderSocialService(branchTypeId) &&
                IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
                consumptionPartialInfo.EndDateJalali.More(date1403_12_01) &&
-               //consumptionPartialInfo.EndDateJalali.LessOrEq(date1405_01_31) && //درخواست در گروه نرم افزار مشترکین توسط خانم خلجی
                consumptionPartialInfo.DisallowedConsumtion > 0)
             {                
                 double abonTmp = abonmanAmount - before1403_12_02;
                 return abonTmp > 0 ? new TariffItemResult(abonTmp) : new TariffItemResult();
-            }
+            }*/
+            #endregion
+
             if (IsMullah(customerInfo.BranchType) && abonmanResult.Disallowed > 0)
             {
                 return new TariffItemResult();
