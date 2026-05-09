@@ -95,9 +95,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             BedBesCreateDto bedBes = await GetBedBes(customerInfo, abBahaCalcResult, inputDto, zoneIdAndCustomerNumber, inputDto.CounterStateCode);
             KasrHaDto kasrHa = GerKasrHa(customerInfo, abBahaCalcResult, inputDto);
             ContorUpdateDto contorUpdate = GetControUpdateDto(customerInfo, bedBes);
-            string logtext = string.Format(Literals.GenerateBillOpLog, bedBes.ShGhabs1, bedBes.ShPard1, bedBes.Pard);
+            string logtext = string .Format(Literals.GenerateBillOpLog,bedBes.ShGhabs1,bedBes.ShPard1,bedBes.Pard);
 
-            await SqlCommands(zoneIdAndCustomerNumber, bedBes, kasrHa, contorUpdate, abBahaCalcResult, appUser, inputDto.CounterStateCode, logtext);
+            await SqlCommands(zoneIdAndCustomerNumber, bedBes, kasrHa, contorUpdate, abBahaCalcResult,appUser, inputDto.CounterStateCode, logtext);
 
             return abBahaCalcResult;
         }
@@ -200,7 +200,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             }
             return householdUnit;
         }
-        private async Task SqlCommands(ZoneIdAndCustomerNumber zoneIdAndCustomerNumber, BedBesCreateDto bedBes, KasrHaDto kasrHa, ContorUpdateDto contorUpdate, AbBahaCalculationDetails abBahaCalcResult, IAppUser appUser, int? counterStateCode, string logText)
+        private async Task SqlCommands(ZoneIdAndCustomerNumber zoneIdAndCustomerNumber, BedBesCreateDto bedBes, KasrHaDto kasrHa, ContorUpdateDto contorUpdate, AbBahaCalculationDetails abBahaCalcResult,IAppUser appUser, int? counterStateCode, string logText)
         {
             string dbName = GetDbName(zoneIdAndCustomerNumber.ZoneId);
 
