@@ -39,6 +39,7 @@
         public static string InvalidPreviousDate => "تاریخ ارزیابی باید از امروز بزرگتر باشد.";
         public static string PreviousDateIsInvalid => "تاریخ قبلی قرائت ناصحیح است";
         public static string CurrentDateIsInvalid => "تاریخ فعلی قرائت ناصحیح است";
+        public static string InvalidChangeDate => "تاریخ تعویض ناصحیح";
         public static string CurrentDateNotMoreThanPreviousDate => "تاریخ دوره قبلی نمیتوان از تاریخ دوره جاری بزرگ تر باشد";
         public static string CurrentNumberNotMoreThanPreviousNumber => "رقم دوره قبلی نمیتوان از رقم دوره جاری بزرگ تر باشد";
         public static string InvalidLessThanCurrentDate => "تاریخ وارد شده نباید از تاریخ امروز کمتر باشد.";
