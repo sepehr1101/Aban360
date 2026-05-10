@@ -40,6 +40,8 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						UsageTitle,
 						BranchTypeId,
 						BranchType BranchTypeTitle,
+						Consumption	,
+						ConsumptionAverage,
 						Item1 AbBaha,
 						Item2 FazelabBaha,
 						Item3 AbonmanAb,
