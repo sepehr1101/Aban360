@@ -11,10 +11,16 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
     public class AssessmentTaskController : BaseController
     {
         private readonly IAssessmentTaskGetAllHandler _assessmentTaskHandler;
-        public AssessmentTaskController(IAssessmentTaskGetAllHandler assessmentTaskHandler)
+        private readonly IAssessmentLocatoinsGetHandler _assessmentLocatoinsGetHandler;
+        public AssessmentTaskController(
+            IAssessmentTaskGetAllHandler assessmentTaskHandler,
+            IAssessmentLocatoinsGetHandler assessmentLocatoinsGetHandler)
         {
             _assessmentTaskHandler = assessmentTaskHandler;
             _assessmentTaskHandler.NotNull(nameof(assessmentTaskHandler));
+
+            _assessmentLocatoinsGetHandler = assessmentLocatoinsGetHandler;
+            _assessmentLocatoinsGetHandler.NotNull(nameof(assessmentLocatoinsGetHandler));
         }
 
         [HttpPost, HttpGet]
@@ -24,6 +30,15 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
         {
             int examinerCode = UserService.GetUserCode(CurrentUser.Username);
             AssessmentTasksOutputDto result = await _assessmentTaskHandler.Handle(examinerCode, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("locations/{trackId}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<AssessmentLocationsGetDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetLocations(Guid trackId, CancellationToken cancellationToken)
+        {
+            AssessmentLocationsGetDto result = await _assessmentLocatoinsGetHandler.Handle(trackId, cancellationToken);
             return Ok(result);
         }
     }
