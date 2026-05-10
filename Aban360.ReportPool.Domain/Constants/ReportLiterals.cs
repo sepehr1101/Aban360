@@ -54,6 +54,7 @@
 
         public static string NonPermanentBranchDetail { get { return $"{Report} جرئیات انشعاب غیر‌دائم"; } }
         public static string NonPermanentBranchSummary { get { return $"{Report} خلاصه انشعاب غیر‌دائم"; } }
+        public static string Tanker { get { return $"{Report} آب تانکری"; } }
 
         public static string DeductionsAndDiscountsReportDetail { get { return $"{Report} جزئیات کسورات و تخفیفات"; } }
         public static string DeductionsAndDiscountsReportSummary { get { return $"{Report} خلاصه کسورات و تخفیفات"; } }
