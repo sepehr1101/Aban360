@@ -1,6 +1,5 @@
 ﻿using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
-using Aban360.Common.Timing;
 using DNTPersianUtils.Core;
 using static Aban360.Common.Timing.CalculationDistanceDate;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffStringChecker;
