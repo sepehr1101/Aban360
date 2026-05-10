@@ -13,6 +13,9 @@
         public string ReadingNumber { get; set; }
         public string BillId { get; set; }
         public string UsageTitle { get; set; }
+        public int UsageId { get; set; }
+        public string UsageConsumptionTitle { get; set; }
+        public int UsageConsumptionId { get; set; }
         public int ContractualCapacity { get; set; }
         public string MeterDiameterId { get; set; }
         public string MeterDiameterTitle { get; set; }
