@@ -15,15 +15,20 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
     public class BillInstallmentController : BaseController
     {
         private readonly IBillInstallmentCreateHandler _billInstallmentCreateHandler;
+        private readonly IBillInstallmentManualCreateHandler _billInstallmentManualCreateHandler;
         private readonly IBillInstallmentGetHandler _billInstallmentGetHandler;
         private readonly IReportGenerator _reportGenerator;
         public BillInstallmentController(
             IBillInstallmentCreateHandler billInstallmentCreateHandler,
+            IBillInstallmentManualCreateHandler billInstallmentManualCreateHandler,
             IBillInstallmentGetHandler billInstallmentGetHandler,
             IReportGenerator reportGenerator)
         {
             _billInstallmentCreateHandler = billInstallmentCreateHandler;
             _billInstallmentCreateHandler.NotNull(nameof(billInstallmentCreateHandler));
+
+            _billInstallmentManualCreateHandler = billInstallmentManualCreateHandler;
+            _billInstallmentManualCreateHandler.NotNull(nameof(billInstallmentManualCreateHandler));
 
             _billInstallmentGetHandler = billInstallmentGetHandler;
             _billInstallmentGetHandler.NotNull(nameof(billInstallmentGetHandler));
@@ -38,6 +43,15 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         public async Task<IActionResult> AddInstallment([FromBody] BillInstallmentInputDto inputDto, CancellationToken cancellationToken)
         {
             ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto> result = await _billInstallmentCreateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("add-manual")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> AddManualInstallment([FromBody] BillInstallmentManualInputDto inputDto, CancellationToken cancellationToken)
+        {
+            ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto> result = await _billInstallmentManualCreateHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
         }
 

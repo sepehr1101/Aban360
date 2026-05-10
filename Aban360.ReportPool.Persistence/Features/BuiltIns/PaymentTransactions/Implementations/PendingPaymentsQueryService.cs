@@ -85,8 +85,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 								IIF(UsageId2=0,UsageTitle,UsageTitle2) AS UsageConsumptionTitle,
 								FirstName As FirstName,
 								SureName Surname,
-								MobileNo AS MobileNumber,
-								PhoneNo AS PhoneNumber,
+								TRIM(MobileNo ) AS MobileNumber,
+								TRIM(PhoneNo ) AS PhoneNumber,
+								TRIM(Address) Address ,
+								TRIM(PostalCode) PostalCode ,
 								DeletionStateTitle AS UseStateTitle,
 								'--' AS HeadquarterTitle ,
 								t46.C2 AS RegionTitle
