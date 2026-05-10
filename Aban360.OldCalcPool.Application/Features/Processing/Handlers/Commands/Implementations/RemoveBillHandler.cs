@@ -1,5 +1,4 @@
-﻿using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
-using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
+﻿using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
@@ -16,11 +15,16 @@ using System.Data;
 using Aban360.Common.Exceptions;
 using Aban360.OldCalcPool.Persistence.Constants;
 using Aban360.Common.BaseEntities;
+using Microsoft.AspNetCore.Http;
+using Aban360.Common.ApplicationUser;
+using Aban360.Common.Db.Services;
+using Aban360.OldCalcPool.Application.Constant;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
     internal sealed class RemoveBillHandler : AbstractBaseConnection, IRemoveBillHandler
     {
+        private readonly IHttpContextAccessor _contextAccessor;
         private readonly ICustomerInfoQueryService _customerInfoQueryService;
         private readonly IBedBesQueryService _billQueryService;
         private readonly IVariabService _variabService;
@@ -28,6 +32,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly ITavizQueryService _tavizQueryService;
 
         public RemoveBillHandler(
+            IHttpContextAccessor contextAccessor,
             ICustomerInfoQueryService customerInfoQueryService,
             IBedBesQueryService billQueryService,
             IConfiguration configuration,
@@ -36,6 +41,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             ITavizQueryService tavizQueryService)
                 : base(configuration)
         {
+            _contextAccessor = contextAccessor;
+            _contextAccessor.NotNull(nameof(contextAccessor));
+
             _customerInfoQueryService = customerInfoQueryService;
             _customerInfoQueryService.NotNull(nameof(customerInfoQueryService));
 
@@ -52,7 +60,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             _tavizQueryService.NotNull(nameof(tavizQueryService));
         }
 
-        public async Task Handle(RemoveBillInputDto input, CancellationToken cancellationToken)
+        public async Task Handle(RemoveBillInputDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
             RemoveBillDataInputDto removeBill = await GetRemoveBillInputDto(input);
             if (!(await _variabService.IsOperationValid(removeBill.ZoneId, removeBill.RegisterDateJalali)))
@@ -63,6 +71,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             RemoveBillDto removeBillDto = GetRemoveBillDto(removeBill);
             ContorUpdateDto controUpdate = await GetControUpdate(removeBill);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = GetZoneIdAndCustomerNumber(removeBill);
+            string logText = string.Format(Literals.RemoveBillOpLog, input.Id, input.BillId);
+
+            await SqlCommands(removeBill, removeBillDto, controUpdate, zoneIdAndCustomerNumber, appUser, logText);
+
+        }
+        private async Task SqlCommands(RemoveBillDataInputDto removeBill, RemoveBillDto removeBillDto, ContorUpdateDto controUpdate, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber, IAppUser appUser, string logText)
+        {
             string dbName = GetDbName(removeBill.ZoneId);
             long amount = removeBill.Baha * -1;
 
@@ -82,6 +97,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     ContorCommandService contorCommandService = new(connection, transaction);
                     WaterDebtCommandService waterDebtCommandService = new(connection, transaction);
                     RemovedBillCommandService removedBillCommandService = new(connection, transaction);
+                    OpLogCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     await bedBesCommandService.Delete(removeBill.Id, removeBill.ZoneId, dbName);
                     if (removeBill.Discount > 0)
@@ -94,7 +110,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     await contorCommandService.Update(controUpdate, dbName, false);
                     await waterDebtCommandService.UpdateAmount(removeBill.BillId, amount);
                     await removedBillCommandService.Insert(zoneIdAndCustomerNumber, removeBill.Barge, dbName);
-
+                    await opLogCommandService.Insert(logText, appUser);
 
                     transaction.Commit();
                 }

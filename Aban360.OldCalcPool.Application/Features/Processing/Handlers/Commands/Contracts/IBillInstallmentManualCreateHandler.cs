@@ -5,8 +5,8 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts
 {
-    public interface IBillInstallmentCreateHandler
+    public interface IBillInstallmentManualCreateHandler
     {
-        Task<ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto>> Handle(BillInstallmentInputDto input, IAppUser appUser, CancellationToken cancellationToken);
+        Task<ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto>> Handle(BillInstallmentManualInputDto input, IAppUser appUser, CancellationToken cancellationToken);
     }
 }

@@ -7,7 +7,7 @@
         public string StatusTitle { get; set; }
         public string RegisterDateJalali { get; set; }
         public string RegisterTime { get; set; }
-        public string UserDisplayName { get; set; }
+        public string? UserDisplayName { get; set; }
         public Guid TrackingId { get; set; }
         public bool HasDetails { get; set; }
         public bool HasSms { get; set; }

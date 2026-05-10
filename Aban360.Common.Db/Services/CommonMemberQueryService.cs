@@ -71,12 +71,17 @@ namespace Aban360.Common.Db.Services
 						m.radif CustomerNumber,
 						TRIM(m.bill_id) BillId,
 						m.town ZoneId,
-						m.eshtrak ReadingNumber,
-						m.name FirstName,
-						m.family AS Surname,
-						m.father_nam FatherName,
+						t51.C2 ZoneTitle,
+						t46.C0 RegionId,
+						t46.C2 RegionTitle,
+						TRIM(m.eshtrak) ReadingNumber,
+						TRIM(m.name) FirstName,
+						TRIM(m.family) AS Surname,
+						TRIM(m.name)+' '+TRIM(m.family) FullName,
+						TRIM(m.father_nam) FatherName,
 						m.enshab MeterDiameterId,
 						m.cod_enshab UsageId,
+						t41.C1 UsageTitle,
 						m.tedad_vahd AS OtherUnit,
 						m.tedad_tej AS CommercialUnit,
 						m.ted_khane AS HouseholdNumber,
@@ -123,6 +128,12 @@ namespace Aban360.Common.Db.Services
 						m.Senf AS Guild,
 						m.date_KHANE HouseholdDateJalali 
 					From [{dbName}].dbo.members m
+					Left Join [Db70].dbo.T51 t51
+						ON m.town=t51.C0
+					Left Join [Db70].dbo.T46 t46
+						ON t51.C1=t46.C0
+					Left Join [Db70].dbo.T41 t41
+						ON m.cod_enshab=t41.C0
 					Where
 						m.town=@ZoneId AND
 						m.radif=@CustomerNumber";

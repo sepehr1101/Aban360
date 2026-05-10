@@ -36,5 +36,7 @@
         public string MeterRequestDateJalali { get; set; }
         public string DeletionStateTitle { get; set; }
         public long SumItems { get; set; }
+        public int BranchTypeId { get; set; }
+        public string BranchTypeTitle { get; set; }
     }
 }

@@ -67,7 +67,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
                     From [AbAndFazelab].dbo.Tracking t
                     Join [AbAndFazelab].dbo.Status s
                     	On t.Status=s.StatusID
-                    Join AuthDb.dbo.[Users] u
+                    Left Join AuthDb.dbo.[Users] u
                     	On t.InserrtedBy=u.UserCode
                     Where trackNumber=@trackNumber
                     Order by t.DateAndTime ASC";

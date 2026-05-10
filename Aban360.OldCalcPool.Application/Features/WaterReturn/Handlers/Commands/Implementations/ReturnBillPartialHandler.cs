@@ -1,11 +1,11 @@
-﻿using Aban360.Common.BaseEntities;
+﻿using Aban360.Common.ApplicationUser;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
-using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
@@ -48,7 +48,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             _returnBillBaseHandler.NotNull(nameof(returnBillBaseHandler));
         }
 
-        public async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> Handle(ReturnBillPartialInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> Handle(ReturnBillPartialInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             CustomerInfoOutputDto customerInfo = await Validation(inputDto, cancellationToken);
             int jalaseNumber = await _returnBillBaseHandler.GetJalaliNumber(inputDto.MinutesNumber, customerInfo.ZoneId, customerInfo.Radif);
@@ -62,20 +62,20 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 float _consumptionAverage = await GetConsumptionAverage(customerInfo, bedBesResult.PriDate, bedBesResult.TodayDate, consumptionAverage);
                 AbBahaCalculationDetails abBahaResult = await GetAbBahaTariff(inputDto, bedBesInfo, _consumptionAverage, cancellationToken);
                 var (finalAmount, hadarConsumption) = await GetAbHadarMasHadar(bedBesResult, customerInfo, (float)abBahaResult.Consumption, bedBesResult.PriDate, bedBesResult.TodayDate);
-                return await CreateAutoBacksAndReturn(abBahaResult, inputDto, bedBesInfo, bedBesResult, customerInfo, hadarConsumption, (long)finalAmount, _consumptionAverage, jalaseNumber, cancellationToken);
+                return await CreateAutoBacksAndReturn(abBahaResult, inputDto, bedBesInfo, bedBesResult, customerInfo, hadarConsumption, (long)finalAmount, _consumptionAverage, jalaseNumber, appUser, inputDto.FromDateJalali, inputDto.ToDateJalali, cancellationToken);
             }
             if (misreaded.Contains(inputDto.ReturnCauseId))
             {
                 AbBahaCalculationDetails abBahaResult = await GetAbBahaTariff(inputDto, bedBesInfo, cancellationToken);
-                return await CreateAutoBacksAndReturn(abBahaResult, inputDto, bedBesInfo, bedBesResult, customerInfo, null, null, (float)abBahaResult.MonthlyConsumption, jalaseNumber, cancellationToken);
+                return await CreateAutoBacksAndReturn(abBahaResult, inputDto, bedBesInfo, bedBesResult, customerInfo, null, null, (float)abBahaResult.MonthlyConsumption, jalaseNumber, appUser, inputDto.FromDateJalali, inputDto.ToDateJalali, cancellationToken);
             }
             else
             {
                 AbBahaCalculationDetails abBahaResult = await GetAbBahaTariff(inputDto, bedBesInfo, consumptionAverage, cancellationToken);
-                return await CreateAutoBacksAndReturn(abBahaResult, inputDto, bedBesInfo, bedBesResult, customerInfo, null, null, consumptionAverage, jalaseNumber, cancellationToken);
+                return await CreateAutoBacksAndReturn(abBahaResult, inputDto, bedBesInfo, bedBesResult, customerInfo, null, null, consumptionAverage, jalaseNumber, appUser, inputDto.FromDateJalali, inputDto.ToDateJalali, cancellationToken);
             }
         }
-        private async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> CreateAutoBacksAndReturn(AbBahaCalculationDetails abBahaResult, ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBesInfo, BedBesCreateDto bedBesResult, CustomerInfoOutputDto customerInfo, float? hadarConsumption, long? finalAmount, float consumptionAverage, int jalaseNumber, CancellationToken cancellationToken)
+        private async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> CreateAutoBacksAndReturn(AbBahaCalculationDetails abBahaResult, ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBesInfo, BedBesCreateDto bedBesResult, CustomerInfoOutputDto customerInfo, float? hadarConsumption, long? finalAmount, float consumptionAverage, int jalaseNumber, IAppUser appUser, string fromDateJalali, string toDateJalali, CancellationToken cancellationToken)
         {
             int[] notCalcAbon = { 14, 15 };
             if (notCalcAbon.Contains(input.ReturnCauseId))
@@ -93,7 +93,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             AutoBackCreateDto different = _returnBillBaseHandler.GetDifferent(bedBesResult, newCalculation, jalaseNumber);
 
             //_returnBillBaseHandler.ValidationAmount(newCalculation.Baha, bedBesInfo.Sum(s => s.Baha));
-            return await _returnBillBaseHandler.GetReturn(bedBes, newCalculation, different, customerInfo, bedBesInfo.Count(), input.IsConfirm);
+            return await _returnBillBaseHandler.GetReturn(bedBes, newCalculation, different, customerInfo, bedBesInfo.Count(), input.IsConfirm, true,appUser,fromDateJalali,toDateJalali);
         }
         private async Task<AbBahaCalculationDetails> GetAbBahaTariff(ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBes, double consumptionAverage, CancellationToken cancellationToken)
         {
@@ -106,7 +106,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         }
         private async Task<AbBahaCalculationDetails> GetAbBahaTariff(ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBes, CancellationToken cancellationToken)
         {
-            double consumptionAverage=(double)bedBes.Average(b=>b.Rate);
+            double consumptionAverage = (double)bedBes.Average(b => b.Rate);
             string previousDateJalali = bedBes.Min(x => x.PriDate);
             string currentDateJalali = bedBes.Max(x => x.TodayDate);
 

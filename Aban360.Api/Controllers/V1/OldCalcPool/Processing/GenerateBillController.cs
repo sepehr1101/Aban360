@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         [ProducesResponseType(typeof(ApiResponseEnvelope<AbBahaCalculationDetails>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Calculation(GenerateBillInputDto inputDto, CancellationToken cancellationToken)
         {
-            AbBahaCalculationDetails result =await _generateBillHandler.Handle(inputDto,cancellationToken);
+            AbBahaCalculationDetails result = await _generateBillHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
         }
     }
