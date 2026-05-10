@@ -13,6 +13,8 @@
         public string UsageTitle { get; set; }
         public int BranchTypeId { get; set; }
         public string BranchTypeTitle { get; set; }
+        public int Consumption { get; set; }
+        public float ConsumptionAverage { get; set; }
 
         public long AbBaha { get; set; }
         public long FazelabBaha { get; set; }
