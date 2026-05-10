@@ -1,18 +1,25 @@
-﻿using Aban360.Common.Db.Dapper;
-using Aban360.Common.Exceptions;
+﻿using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Contracts;
 using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Commands;
 using Dapper;
-using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Implementations
 {
-    internal sealed class AutoBackCommandService : AbstractBaseConnection, IAutoBackCommandService
+    public sealed class AutoBackCommandService //: AbstractBaseConnection, IAutoBackCommandService
     {
-        public AutoBackCommandService(IConfiguration configuration)
-            : base(configuration)
+        private readonly IDbConnection _connection;
+        private readonly IDbTransaction _transaction;
+        public AutoBackCommandService(
+            IDbConnection connection,
+            IDbTransaction transaction)
         {
+            _connection = connection;
+            _connection.NotNull(nameof(connection));
+
+            _transaction = transaction;
+            _transaction.NotNull(nameof(transaction));
         }
 
         public async Task Create(AutoBackCreateDto input)
@@ -21,7 +28,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Implement
             string dbName = "Atlas";
             string query = GetCreateQuery(dbName);
 
-            await _sqlReportConnection.ExecuteScalarAsync(query, input);
+            await _connection.ExecuteScalarAsync(query, input, _transaction);
         }
         public async Task Create(IEnumerable<AutoBackCreateDto> input)
         {
@@ -29,7 +36,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Implement
             string dbName = "Atlas";
             string query = GetCreateQuery(dbName);
 
-            int recordCount = await _sqlReportConnection.ExecuteAsync(query, input);
+            int recordCount = await _connection.ExecuteAsync(query, input, _transaction);
             if (recordCount <= 0)
             {
                 throw new ReturnedBillException(ExceptionLiterals.InvalidSaveReturn);

@@ -1,4 +1,5 @@
-﻿using Aban360.Common.BaseEntities;
+﻿using Aban360.Common.ApplicationUser;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
@@ -18,7 +19,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             _returnBillBaseHandler.NotNull(nameof(returnBillBaseHandler));
         }
 
-        public async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> Handle(ReturnBillFullInputDto input, CancellationToken cancellationToken)
+        public async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> Handle(ReturnBillFullInputDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
             CustomerInfoOutputDto customerInfo = await Validation(input, cancellationToken);
 
@@ -29,7 +30,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             AutoBackCreateDto bedBes = _returnBillBaseHandler.GetBedBes(bedBesResult, bedBesInfo.Count(), jalaseNumber, input.ReturnCauseId);
             AutoBackCreateDto newCalculation = _returnBillBaseHandler.GetFullNewCalculation(bedBesResult, input.ReturnCauseId, bedBesInfo.Count(), jalaseNumber);
 
-            return await _returnBillBaseHandler.GetReturn(bedBes, newCalculation, bedBes, customerInfo, bedBesInfo.Count(), input.IsConfirm);
+            return await _returnBillBaseHandler.GetReturn(bedBes, newCalculation, bedBes, customerInfo, bedBesInfo.Count(), input.IsConfirm, false, appUser, input.FromDateJalali, input.ToDateJalali);
 
         }
         private async Task<CustomerInfoOutputDto> Validation(ReturnBillFullInputDto input, CancellationToken cancellationToken)

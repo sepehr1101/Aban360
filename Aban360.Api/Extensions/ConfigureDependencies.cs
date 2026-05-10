@@ -36,6 +36,7 @@ using Aban360.TaxPool.Infrastructure.Extensions;
 using Aban360.TaxPool.Persistence.Extensions;
 using Aban360.NotificationPool.Application.Extensions;
 using Aban360.Common.Db.Extensions;
+using Aban360.Common.Db.Services;
 
 namespace Aban360.Api.Extensions
 {

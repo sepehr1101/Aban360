@@ -25,7 +25,9 @@ namespace Aban360.ReportPool.Persistence.Base
                             b.CounterStateCode,
                             b.RegisterDay AS LatestRegisterDay,
 	                    	b.NextNumber,
-                            b.ContractCapacity AS ContractualCapacity
+                            b.ContractCapacity AS ContractualCapacity,
+                            b.BranchType BranchTypeTitle,
+		                    b.BranchTypeId
                         FROM (
                             SELECT *,
                                    ROW_NUMBER() OVER (PARTITION BY BillId ORDER BY RegisterDay DESC) AS rn
@@ -84,6 +86,8 @@ namespace Aban360.ReportPool.Persistence.Base
                         v.LatestRegisterDay,
                         f.MalfunctionPeriodCount,
 	                    v.NextNumber ,
+                        v.BranchTypeId,
+                        v.BranchTypeTitle,
                         ISNULL(lc.ChangeDateJalali, 0) AS LastChangeDateJalali,
                     	TRIM(lc.BodySerial) LatestChangeBodySerial,
                         TRIM(c.MeterSerialBody) ClientBodySerial ,
@@ -143,7 +147,8 @@ namespace Aban360.ReportPool.Persistence.Base
                             SUM(b.Consumption)as Consumption,
 	                        SUM(b.SumItems)as SumItems,
                             MAX(b.RegisterDay) AS LatestRegisterDay,
-		                    MAX(b.NextNumber) NextNumber
+		                    MAX(b.NextNumber) NextNumber,
+		                    MAX(b.BranchTypeId) BranchTypeId
                         FROM [CustomerWarehouse].dbo.Bills b
                         WHERE                     		
                     		b.CounterStateCode = 1  AND
@@ -194,7 +199,9 @@ namespace Aban360.ReportPool.Persistence.Base
                         c.WaterRequestDate AS MeterRequestDateJalali,
                         c.DeletionStateTitle,
                         v.Consumption,
-	                    v.SumItems
+	                    v.SumItems,
+	                    v.BranchTypeId,
+	                    t7.C1 BranchTypeTitle
                     FROM ValidLatestBills v
                     INNER JOIN [CustomerWarehouse].dbo.Clients c 
                     	ON v.BillId = c.BillId
@@ -202,6 +209,8 @@ namespace Aban360.ReportPool.Persistence.Base
                     	ON c.ZoneId=t51.C0
                     Join [Db70].dbo.T46 t46
                     	ON t51.C1=t46.C0
+                    Join [Db70].dbo.T7 t7
+                       	ON v.BranchTypeId=t7.C0
                     OUTER APPLY (
                         SELECT TOP 1 mc.ChangeDateJalali,mc.BodySerial
                         FROM [CustomerWarehouse].dbo.MeterChange mc

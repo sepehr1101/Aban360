@@ -19,9 +19,9 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         [HttpPost]
         [Route("remove")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Remove( RemoveBillInputDto input, CancellationToken cancellationToken)
+        public async Task<IActionResult> Remove(RemoveBillInputDto input, CancellationToken cancellationToken)
         {
-            await _removedBillHandler.Handle(input, cancellationToken);
+            await _removedBillHandler.Handle(input, CurrentUser, cancellationToken);
             return Ok(input);
         }
     }
