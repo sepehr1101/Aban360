@@ -76,7 +76,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
         {
             return new CustomerGeneralInfoDataDto()
             {
-                CustomerNumber=input.CustomerNumber,
+                CustomerNumber = input.CustomerNumber,
                 RegionTitle = input.RegionTitle,
                 ZoneTitle = input.ZoneTitle,
                 PostalCode = input.PostalCode,
@@ -120,6 +120,9 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
                 ReadingNumber = input.ReadingNumber,
                 BillId = input.BillId,
                 UsageTitle = input.UsageTitle,
+                UsageId = input.UsageId,
+                UsageConsumptionId = input.UsageConsumptionId,
+                UsageConsumptionTitle = input.UsageConsumptionTitle,
                 ContractualCapacity = input.ContractualCapacity,
                 MeterDiameterId = input.MeterDiameterId,
                 MeterDiameterTitle = input.MeterDiameterTitle,
@@ -150,6 +153,9 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 						m.eshtrak as ReadingNumber,
 						m.bill_id as BillId,
 						t41.C1 as UsageTitle,
+						m.cod_enshab UsageId,
+						m.group1 UsageConsumptionId,
+						t41_c.C1 UsageConsumptionTitle,	
 						m.fix_mas as ContractualCapacity,
 						m.enshab as MeterDiameterId,
 						t5.C2 as MeterDiameterTitle,
@@ -200,6 +206,8 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 						ON m.enshab=t5.C0
 					Left Join [Db70].dbo.T41 t41
 						ON m.cod_enshab=t41.C0
+					Left Join [Db70].dbo.T41 t41_c
+						ON m.group1=t41_c.C0
 					Left Join [Db70].dbo.DeletionState d
 						ON m.hasf=d.Id
 					Where 
