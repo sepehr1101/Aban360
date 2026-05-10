@@ -70,7 +70,8 @@ namespace Aban360.ReportPool.Persistence.Base
                     	c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber
                     ) AND
                     c.ToDayJalali IS NULL AND
-                    c.DeletionStateId IN (0) 
+                    c.DeletionStateId IN (0) AND 
+                    CustomerWarehouse.dbo.PersianToMiladi(c.WaterRegisterDateJalali) < DATEADD(day,-45,CustomerWarehouse.dbo.PersianToMiladi(@ToDateJalali))
                     -- AND c.PhysicalWaterInstallDateJalali <= @FromDateJalali
                     {parameters.CZoneQuery}
                     {parameters.CUsageQuery}
@@ -174,7 +175,8 @@ namespace Aban360.ReportPool.Persistence.Base
                     		  c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber
                           ) AND
                          c.DeletionStateId IN (0) AND
-                    	 c.ToDayJalali IS NULL 
+                    	 c.ToDayJalali IS NULL  AND 
+                         CustomerWarehouse.dbo.PersianToMiladi(c.WaterRegisterDateJalali) < DATEADD(day,-45,CustomerWarehouse.dbo.PersianToMiladi(@ToDateJalali))
                          {parameters.CZoneQuery}
                          {parameters.CUsageQuery}
                     ),

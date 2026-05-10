@@ -50,6 +50,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateMoshtrakin);
             }
         }
+		public async Task Update(MoshtrakUpdateCustomerInfoDto input, string dbName)
+        {
+            string command = GetUpdateCustomerInfoCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, input, _transaction);
+            if (recordCount != 1)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
+        }
         public async Task UpdateSabt(MoshtrakSabtUpdateDto input, string dbName)
         {
             string command = GetUpdateSabtByIdCommand(dbName);
@@ -297,6 +306,37 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 							s46=@s46,
 							s47=@s47,
 							s48=@s48
+						Where TrackingNumber=@TrackNumber";
+        }
+        private string GetUpdateCustomerInfoCommand(string dbName)
+        {
+            return $@"Update [{dbName}].dbo.moshtrak
+						Set 
+							name=@FirstName,
+							family=@Surname,
+							father_nam=@FatherName ,
+							arse=@Premises,
+							aian=@ImprovementOverall ,
+							aian_mas=@ImprovementDomestic,
+							aian_tej=@ImprovementCommercial ,
+							tedad_mas=@CommercialUnit,
+							tedad_tej=@DomesticUnit	,
+							tedad_vahd=@OtherUnit,
+							noe_va=@BranchTypeId,
+							enshab=@UsageId,
+							master_sif=@MainSiphon,
+							sif_1=@Siphon100,
+							sif_2=@Siphon125,
+							sif_3=@Siphon150,
+							sif_4=@Siphon200,
+							sif_mosh_1=@CommonSiphon,
+							cod_enshab=@MeterDiameterId,
+							address=@Address ,
+							cod_takh=@DiscountTypeId,
+							ted_takh=@DiscountCount ,
+							meli_cod=@NationalCode,
+							post_cod=@PostalCode,
+							fix_mas=@ContractualCapacity
 						Where TrackingNumber=@TrackNumber";
         }
         private string GetUpdateSabtByIdCommand(string dbName)
