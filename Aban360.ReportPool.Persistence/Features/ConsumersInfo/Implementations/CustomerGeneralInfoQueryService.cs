@@ -104,6 +104,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
                 UsageStatusTitle = input.UsageStatusTitle,
                 CommonSiphon = input.CommonSiphon,
                 DeletionStateTitle = input.DeletionStateTitle,
+                DeletionStateId= input.DeletionStateId,
 
             };
         }
@@ -111,6 +112,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
         {
             return new CustomerGeneralInfoHeaderDto()
             {
+                CustomerNumber=input.CustomerNumber,
                 FirstName = input.FirstName,
                 Surname = input.Surname,
                 FullName = input.FullName,
@@ -173,6 +175,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 						m.noe_va as BranchTypeId,
 						t7.C1 as BranchTypeTitle,
 						d.Title DeletionStateTitle,
+						d.Id DeletionStateId,
 						0 as DiscountType,
 						ask_ab as WaterRequestDateJalali,
 						m.inst_ab as WaterInstallationDateJalali,
