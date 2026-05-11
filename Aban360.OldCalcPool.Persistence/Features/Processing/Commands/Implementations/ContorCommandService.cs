@@ -62,7 +62,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     	operator=5,
                     	mamor=0,
                     	cod_report=0,
-                    	old_vas=0,
+                    	old_vas=@PreviousCounterState,
                     	eslah=0
                     Where town=@ZoneId AND radif=@CustomerNumber  ";
         }

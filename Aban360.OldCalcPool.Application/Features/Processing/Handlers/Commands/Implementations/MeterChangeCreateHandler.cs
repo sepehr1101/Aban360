@@ -9,7 +9,6 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Persistence.Constants;
 using Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
-using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using System.Data;
@@ -21,7 +20,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly ICommonMemberQueryService _memberQueryService;
         private readonly IChangeMeterCauseQueryService _changeMeterCauseQueryService;
         private readonly IValidator<MeterChangeInputDto> _validator;
-        private int _meterChangeDateLimitMonth = -1;
+        const int _meterChangeDateLimitMonth = -1;
+        const int _changeCounterState = 2;
         public MeterChangeCreateHandler(
             ICommonMemberQueryService memberQueryService,
             IChangeMeterCauseQueryService changeMeterCauseQueryService,
@@ -46,27 +46,30 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             var (tavizInsertDto, meterChangeInsertDto, contorMeterChangeUpdateDto) = GetCommandDtos(inputDto, memberInfo, changeCause);
             string dbName = GetDbName(memberInfo.ZoneId);
 
-            using (IDbConnection connection = _sqlReportConnection)
+            if (inputDto.IsConfirm)
             {
-                if (connection.State != ConnectionState.Open)
+                using (IDbConnection connection = _sqlReportConnection)
                 {
-                    connection.Open();
-                }
-                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
-                {
-                    TavizCommandService tavizCommandService = new(connection, transaction);
-                    MeterChangeCommandService meterChangeCommandService = new(connection, transaction);
-                    ContorCommandService contorCommandService = new(connection, transaction);
+                    if (connection.State != ConnectionState.Open)
+                    {
+                        connection.Open();
+                    }
+                    using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                    {
+                        TavizCommandService tavizCommandService = new(connection, transaction);
+                        MeterChangeCommandService meterChangeCommandService = new(connection, transaction);
+                        ContorCommandService contorCommandService = new(connection, transaction);
 
-                    await tavizCommandService.Insert(tavizInsertDto, dbName);
-                    await meterChangeCommandService.Insert(meterChangeInsertDto);
-                    await contorCommandService.UpdateMeterChange(contorMeterChangeUpdateDto, dbName);
+                        await tavizCommandService.Insert(tavizInsertDto, dbName);
+                        await meterChangeCommandService.Insert(meterChangeInsertDto);
+                        await contorCommandService.Update(contorMeterChangeUpdateDto, dbName, true);
 
-                    transaction.Commit();
+                        transaction.Commit();
+                    }
                 }
             }
         }
-        private (TavizInsertDto, MeterChangeInsertDto, ContorMeterChangeUpdateDto) GetCommandDtos(MeterChangeInputDto inputDto, MemberInfoGetDto memberInfo, NumericDictionary changeCause)
+        private (TavizInsertDto, MeterChangeInsertDto, ContorUpdateDto /*ContorMeterChangeUpdateDto*/) GetCommandDtos(MeterChangeInputDto inputDto, MemberInfoGetDto memberInfo, NumericDictionary changeCause)
         {
             TavizInsertDto tavizInsertDto = new()
             {
@@ -90,14 +93,25 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 ChangeCauseId = changeCause.Id,
                 ChangeCauseTitle = changeCause.Title,
             };
-            ContorMeterChangeUpdateDto contorMeterChangeUpdateDto = new()
+            //ContorMeterChangeUpdateDto contorMeterChangeUpdateDto = new()
+            //{
+            //    ZoneId = memberInfo.ZoneId,
+            //    CustomerNumber = memberInfo.CustomerNumber,
+            //    MeterChangeDateJalali = inputDto.MeterChangeDateJalali,
+            //    MeterChangeNumber = inputDto.MeterNumber,
+            //};
+            ContorUpdateDto contorMeterChangeUpdateDto = new()
             {
                 ZoneId = memberInfo.ZoneId,
                 CustomerNumber = memberInfo.CustomerNumber,
+                CurrentDateJalali = inputDto.MeterChangeDateJalali,
+                CurrentNumber = 0,
+                Consumption = 0,
+                ConsumptionAverage = 0,
                 MeterChangeDateJalali = inputDto.MeterChangeDateJalali,
-                MeterChangeNumber = inputDto.MeterNumber
+                MeterChangeNumber = inputDto.MeterNumber,
+                PreviousCounterState = _changeCounterState
             };
-
             return (tavizInsertDto, meterChangeInsertDto, contorMeterChangeUpdateDto);
         }
         private async Task<(MemberInfoGetDto, NumericDictionary)> GetInfos(MeterChangeInputDto inputDto)

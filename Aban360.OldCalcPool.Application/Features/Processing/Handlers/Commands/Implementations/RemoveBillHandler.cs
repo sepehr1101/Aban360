@@ -127,6 +127,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 CurrentNumber = previousBill.CurrentNumber,
                 Consumption = previousBill.Consumption,
                 ConsumptionAverage = previousBill.ConsumptionAverage,
+                PreviousCounterState = 0
             };
         }
         private async Task<BedBesWithConsumptionOutputDto> GetPreviousBedBesData(RemoveBillDataInputDto input)

@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ClaimPool.Domain.Features.Tracking.Dto
 {
-    public record SetExaminationResultOutputDto
+    public record SetExaminationResultDataDto
     {
         public int AssessmentCode { get; set; }
         public string AssessmentName { get; set; }
@@ -11,7 +11,9 @@
         public string Address { get; set; }
         public string MobileNumber { get; set; }
         public string AssessmentResultTitle { get; set; }
-        public bool HasTrench { get; set; }
+        public bool IsNewBranch { get; set; }
+        public bool IsNewSewage { get; set; }
+        public bool IsResultSuccess { get; set; }
 
     }
 }

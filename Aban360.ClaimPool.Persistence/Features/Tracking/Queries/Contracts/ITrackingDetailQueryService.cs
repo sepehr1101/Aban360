@@ -6,7 +6,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Contracts
     {
         Task<RequestIsRegisterdDto> GetRequestIsRegistered(TrackingDetailGetDto inputDto);
         Task<ExamineTimeSetOutputDto> GetExamineTimeSetDto(TrackingDetailGetDto inputDto);
-        Task<SetExaminationResultOutputDto> GetSetExaminationResultDto(TrackingDetailGetDto inputDto);
+        Task<SetExaminationResultDataDto> GetSetExaminationResultDto(TrackingDetailGetDto inputDto);
         Task<TrackNumberAndDescriptionOutputDto> GetTrackNumberAndDescription(TrackingDetailGetDto inputDto);
         Task<CalculationConfirmedDto> GetCalculationConfirmed(TrackingDetailGetDto inputDto);
         Task<CustomerNumberSpecifiedOutputDto> GetCustomerNumberSpecified(TrackingDetailGetDto inputDto);

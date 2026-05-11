@@ -12,11 +12,7 @@ using Aban360.NotificationPool.Application.Features.Sms;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
-using System.Dynamic;
-using System.Threading;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 {

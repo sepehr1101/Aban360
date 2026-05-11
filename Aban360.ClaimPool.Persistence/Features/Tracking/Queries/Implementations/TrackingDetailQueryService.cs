@@ -25,11 +25,11 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
             string query = GetExaminerSetTimeQuery(dbName);
             return await _sqlReportConnection.QueryFirstOrDefaultAsync<ExamineTimeSetOutputDto>(query, new { inputDto.TrackId });
         }
-        public async Task<SetExaminationResultOutputDto> GetSetExaminationResultDto(TrackingDetailGetDto inputDto)
+        public async Task<SetExaminationResultDataDto> GetSetExaminationResultDto(TrackingDetailGetDto inputDto)
         {
             string dbName = GetDbName(inputDto.ZoneId);
             string query = GetExaminerResultQuery(dbName);
-            return await _sqlReportConnection.QueryFirstOrDefaultAsync<SetExaminationResultOutputDto>(query, new { inputDto.TrackId });
+            return await _sqlReportConnection.QueryFirstOrDefaultAsync<SetExaminationResultDataDto>(query, new { inputDto.TrackId });
         }
         public async Task<TrackNumberAndDescriptionOutputDto> GetTrackNumberAndDescription(TrackingDetailGetDto inputDto)
         {
@@ -131,9 +131,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
 						e.DayJalali AssessmentDayJalali,
 						(TRIM(m.name) +' '+ TRIM(m.family)) FullName,
 						m.TrackingNumber TrackNumber,
+						m.s0 IsNewBranch,
+						m.s1 IsNewSewage,
 						TRIM(m.Address) Address,
 						TRIM(m.mobile) MobileNumber,
-						t64.C1 AssessmentResultTitle
+						t64.C1 AssessmentResultTitle,
+						t64.C4 IsResultSuccess
 					From AbAndFazelab.dbo.Examination e
 					Join [{dbName}].dbo.Moshtrak m
 						On e.TrackNumber=m.TrackingNumber

@@ -99,7 +99,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             }
             BedBesCreateDto bedBes = await GetBedBes(customerInfo, abBahaCalcResult, inputDto, zoneIdAndCustomerNumber, inputDto.CounterStateCode);
             KasrHaDto kasrHa = GerKasrHa(customerInfo, abBahaCalcResult, inputDto);
-            ContorUpdateDto contorUpdate = GetControUpdateDto(customerInfo, bedBes);
+            ContorUpdateDto contorUpdate = GetControUpdateDto(customerInfo, bedBes, inputDto.CounterStateCode ?? 0);
             string logtext = string.Format(Literals.GenerateBillOpLog, bedBes.ShGhabs1, bedBes.ShPard1, bedBes.Pard);
 
             await SqlCommands(zoneIdAndCustomerNumber, bedBes, kasrHa, contorUpdate, abBahaCalcResult, appUser, inputDto.CounterStateCode, logtext);
@@ -108,7 +108,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         }
         private async Task<AbBahaCalculationDetails> GetChangeCounterStateData(GenerateBillInputDto inputDto, CustomerInfoGetDto customerInfo, CancellationToken cancellationToken)
         {
-            if (inputDto.CounterStateCode == _changeCounterState && string.IsNullOrWhiteSpace(customerInfo.TavizInfo?.TavizDateJalali??string.Empty))
+            if (inputDto.CounterStateCode == _changeCounterState && string.IsNullOrWhiteSpace(customerInfo.TavizInfo?.TavizDateJalali ?? string.Empty))
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidChangeDate);
             }
@@ -303,7 +303,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             }
             return result;
         }
-        private ContorUpdateDto GetControUpdateDto(CustomerInfoGetDto customerInfo, BedBesCreateDto bedBes)
+        private ContorUpdateDto GetControUpdateDto(CustomerInfoGetDto customerInfo, BedBesCreateDto bedBes, int counterStateCode)
         {
             return new ContorUpdateDto()
             {
@@ -314,7 +314,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 Consumption = (int)bedBes.Masraf,
                 ConsumptionAverage = (float)bedBes.Rate,
                 MeterChangeDateJalali = customerInfo.TavizInfo?.TavizDateJalali ?? string.Empty,
-                MeterChangeNumber = customerInfo.TavizInfo?.TavizNumber ?? 0
+                MeterChangeNumber = customerInfo.TavizInfo?.TavizNumber ?? 0,
+                PreviousCounterState = counterStateCode
             };
         }
         private MeterInfoByPreviousDataInputDto GetMeterInfoByPreviousData(CustomerInfoGetDto customerInfo, GenerateBillInputDto generateBillInfo)
