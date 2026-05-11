@@ -39,11 +39,11 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
 
         [HttpPost]
         [Route("add")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<AbBahaCalculationDetails>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<NewBillOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> AddMeterChange([FromBody] MeterChangeInputDto inputDto, CancellationToken cancellationToken)
         {
             GenerateBillInputDto generateBillInputdto = new(inputDto.BillId, inputDto.MeterNumber, DateTime.Now.ToShortPersianDateString(), inputDto.IsConfirm);
-            AbBahaCalculationDetails billResult = await _generateBillHandler.Handle(generateBillInputdto, CurrentUser, cancellationToken);
+            NewBillOutputDto billResult = await _generateBillHandler.Handle(generateBillInputdto, CurrentUser, cancellationToken);
             if (inputDto.IsConfirm)
             {
                 _backgroundJobClient.Enqueue(() => _meterChangeCreateHandler.Handle(inputDto, cancellationToken));

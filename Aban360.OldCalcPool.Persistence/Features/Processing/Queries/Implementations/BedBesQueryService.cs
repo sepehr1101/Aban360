@@ -220,6 +220,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             }
             return previousBill;
         }
+        public async Task<IEnumerable<PreviousConsumptionsDto>> GetPreviousConsumption(ZoneIdAndCustomerNumber input)
+        {
+            string dbName = GetDbName(input.ZoneId);
+            string query = GetPreviousConsumptionQuery(dbName);
+            IEnumerable<PreviousConsumptionsDto> datas = await _sqlReportConnection.QueryAsync<PreviousConsumptionsDto>(query, input);
+            return datas;
+        }
 
         private string GetBedBesConsumptionDataQuery(string dataBaseName)
         {
@@ -495,7 +502,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	date_bed=@Date
                     Order By date_bed desc,id desc";
         }
-
         private string GetLatest(string dbName)
         {
             string query = @$"select top 1 
@@ -519,7 +525,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     order by date_bed desc, id desc";
             return query;
         }
-
         private string GetPreviousBedBesQuery(string dbName)
         {
             return $@"Select Top 1
@@ -538,6 +543,17 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 						cod_vas NOT IN (4,7,8)
 					Order By date_bed Desc";
         }
-
+        private string GetPreviousConsumptionQuery(string dbName)
+        {
+            return @$"Select Top 10
+                    	rate ConsumptionAverage,
+                    	date_bed RegisterDateJalali
+                    From [{dbName}].dbo.bed_bes 
+                    Where 
+                    	town=@zoneId AND
+                    	radif=@customerNumber AND
+                    	cod_vas Not IN (4,7,8) 
+                    Order by date_bed Desc";
+        }
     }
 }

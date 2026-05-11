@@ -6,6 +6,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 {
     public interface IGenerateBillHandler
     {
-        Task<AbBahaCalculationDetails> Handle(GenerateBillInputDto inputDto, IAppUser appuser, CancellationToken cancellationToken);
+        Task<NewBillOutputDto> Handle(GenerateBillInputDto inputDto, IAppUser appuser, CancellationToken cancellationToken);
     }
 }
