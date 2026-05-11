@@ -12,7 +12,9 @@
         public string? Address { get; set; }
         public string? PostalCode { get; set; }
         public string UsageConsumptionTitle { get; set; }
+        public int UsageConsumptionId { get; set; }
         public string UsageSellTitle { get; set; }
+        public int UsageSellId { get; set; }
         public string BillId { get; set; }
         public string PhoneNumber { get; set; }
         public string MobileNumber { get; set; }

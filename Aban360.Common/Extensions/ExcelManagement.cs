@@ -112,12 +112,13 @@ namespace Aban360.Common.Extensions
             return new Dictionary<string, string>()
             {
                     {"CustomerNumber", "شماره ردیف"},
+                    {"CustomerNumber2", "شماره ردیف2"},
                     {"ReadingNumber", "شماره اشتراک"},
                     {"FirstName", "نام"},
                     {"Surname", "نام خانوادگی"},
                     {"FullName", "نام و نام خانوادگی"},
-                    {"UsageTitle", "نوع کاربری"},
-                    {"UsageId", "کد نوع کاربری"},
+                    {"UsageTitle", "کاربری"},
+                    {"UsageId", "کد کاربری"},
                     {"MeterDiameterTitle", "قطر کنتور"},
                     {"EventDateJalali", "تاریخ رویداد"},
                     {"Address", "آدرس"},
@@ -219,7 +220,7 @@ namespace Aban360.Common.Extensions
                     {"FieldMore5", "5 و بالاتر"},
                     {"WaterRequestDateJalali", "تاریخ درخواست انشعاب آب"},
                     {"WaterInstallationDate", "تاریخ نصب آب"},
-                    {"DebtAmount", "بدهکار"},
+                    {"DebtAmount", "مبلغ بدهی"},
                     {"MeterRequestDate", "تاریخ درخواست آب"},
                     {"MeterInstallationDate", "تاریخ نصب آب"},
                     {"FromHouseholdDateJalali", "از تاریخ خانواری"},
@@ -522,6 +523,10 @@ namespace Aban360.Common.Extensions
                     { "ImprovementsOther","اعیانی سایر"},
                     { "FromDebtPeriodCount","از دوره"},
                     { "ToDebtPeriodCount","تا دوره"},
+                    { "EmptyDueDateJalali","مهلت"},
+                    { "PreviousReadingDateJalali","تاریخ قرائت آخر"},
+                    { "PreviousBillAmount","مبلغ آخرین قبض"},
+                    { "DueDateJalali","مهلت قبض"},
             };
         }
     }

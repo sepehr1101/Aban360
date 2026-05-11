@@ -46,16 +46,22 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                  .Where(p => p.EndingDebt >= 0)
                  .Select(p => new PendingPaymentPrintsDataOutputDto()
                  {
+                     CustomerNumber = p.CustomerNumber,
+                     CustomerNumber2 = p.CustomerNumber,
+                     ReadingNumber = p.ReadingNumber,
+                     DebtAmount = p.EndingDebt,
                      FirstName = p.FirstName,
                      Surname = p.Surname,
-                     CustomerNumber = p.CustomerNumber,
-                     ReadingNumber = p.ReadingNumber,
-                     UsageTitle = p.UsageConsumptionTitle,
+                     Address = p.Address,
+                     UsageId = p.UsageSellId,
+                     PhoneNumber = p.PhoneNumber,
                      MobileNumber = p.MobileNumber,
+                     DebtPeriodCount = (int)p.DebtPeriodCount,
+                     PreviousReadingDateJalali = string.Empty,//todo
+                     PreviousBillAmount = 0,//todo
+                     DueDateJalali = string.Empty,//todo
                      BillId = p.BillId,
                      PayId = TransactionIdGenerator.GeneratePaymentId(p.EndingDebt, p.BillId),
-                     DebtAmount = p.EndingDebt,
-                     DebtPeriodCount = (int)p.DebtPeriodCount
                  });
             PendingPaymentsPrintstHeaderOutputDto header = new()
             {
