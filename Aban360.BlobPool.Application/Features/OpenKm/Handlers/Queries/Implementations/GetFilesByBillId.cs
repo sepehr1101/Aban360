@@ -16,15 +16,15 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Implemen
         }
 
         public async Task<FileListResponse> Handle(string input, string? trackNumber, CancellationToken cancellationToken)
-        {
-            if (string.IsNullOrWhiteSpace(input))
+        {            
+            if (string.IsNullOrWhiteSpace(input) || input=="null")
             {
                 throw new BaseException("invalid billId in DMS");
             }
             bool doesFolderExist = await _openKmQueryService.CheckFolderExists(input);
             if (!doesFolderExist)
             {
-                if (string.IsNullOrWhiteSpace(trackNumber))
+                if (string.IsNullOrWhiteSpace(trackNumber) || input == "null")
                 {
                     throw new BaseException("invalid billId and tracknumber in DMS");
                 }
