@@ -11,6 +11,7 @@
         public string Address { get; set; }
         public string MobileNumber { get; set; }
         public string AssessmentResultTitle { get; set; }
+        public bool IsResultSuccess { get; set; }
         public bool HasTrench { get; set; }
 
     }

@@ -50,6 +50,7 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
                 Address = input.Address,
                 MobileNumber = input.MobileNumber,
                 AssessmentResultTitle = input.AssessmentResultTitle,
+                IsResultSuccess=input.IsResultSuccess,
                 HasTrench = (input.IsNewBranch || input.IsNewSewage) && input.IsResultSuccess,
             };
         }
