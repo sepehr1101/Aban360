@@ -14,6 +14,7 @@
         public string FullName { get; set; }
         public string FatherName { get; set; }
         public int MeterDiameterId { get; set; }
+        public string MeterDiameterTitle { get; set; }
         public int UsageId { get; set; }
         public string UsageTitle { get; set; }
         public int OtherUnit { get; set; }

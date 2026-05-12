@@ -136,6 +136,9 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             MeterInfo = meterInfo;
             Customer = customerInfo;
         }
+        public AbBahaCalculationDetails()
+        {
+        }
         private double TrimAmount(double mainAmount, double discountAmount)
         {
             double remained = mainAmount - discountAmount;

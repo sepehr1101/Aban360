@@ -1,5 +1,4 @@
-﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
+﻿using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Features.InvoiceInfo.Dto;
@@ -26,7 +25,14 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 			}
 			return data;
         }
-        private string GetItemsByBillIdQuery()
+		public async Task<IEnumerable<BillTransactionDetailGetDto>> GetBillDetails(string billId)
+		{
+			string query = GetPreviousBillsDetailsQuery();
+			IEnumerable<BillTransactionDetailGetDto> result = await _sqlReportConnection.QueryAsync<BillTransactionDetailGetDto>(query, new { billId });
+			return result;
+		}
+		
+		private string GetItemsByBillIdQuery()
         {
             return $@"Select 
 						Id,
@@ -67,5 +73,38 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						On t51.C1=t46.C0
 					Where Id=@id";
         }
+		private string GetPreviousBillsDetailsQuery()
+		{
+			return $@"Select 
+						b.ZoneId,
+						b.ZoneTitle,
+						b.CustomerNumber,
+						b.BillId,
+						b.UsageId UsageSellId,
+						b.UsageTitle UsageSellTitle,
+						b.UsageId2 UsageConsumptionId,
+						b.UsageTitle2 UsageConsumptionTitle,
+						b.BranchTypeId,
+						b.BranchType BranchTypeTitle,
+						b.PreviousDay PreviousDateJalali,
+						b.PreviousNumber,
+						b.NextDay CurrentDateJalali,
+						b.NextNumber,
+						b.Consumption,
+						b.ConsumptionAverage,
+						b.SumItems,
+						b.DomesticCount DomesticUnit,
+						b.CommercialCount CommertialUnit,
+						b.OtherCount OtherUnit,
+						b.EmptyCount,
+						b.CounterStateCode,
+						b.CounterStateTitle,
+						b.RegisterDay RegisterDateJalali
+					From [CustomerWarehouse].dbo.Bills b
+					Where 
+						BillId=@BillId AND
+						CustomerWarehouse.dbo.PersianToMiladi(RegisterDay)>=DATEADD(YEAR,-1,GETDATE())
+					Order by RegisterDay ASC";
+		}
     }
 }

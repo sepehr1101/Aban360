@@ -80,6 +80,7 @@ namespace Aban360.Common.Db.Services
 						TRIM(m.name)+' '+TRIM(m.family) FullName,
 						TRIM(m.father_nam) FatherName,
 						m.enshab MeterDiameterId,
+						t5.C2 MeterDiameterTitle,
 						m.cod_enshab UsageId,
 						t41.C1 UsageTitle,
 						m.tedad_vahd AS OtherUnit,
@@ -134,6 +135,8 @@ namespace Aban360.Common.Db.Services
 						ON t51.C1=t46.C0
 					Left Join [Db70].dbo.T41 t41
 						ON m.cod_enshab=t41.C0
+					Left Join [Db70].dbo.T5 t5
+						ON m.enshab=t5.C0
 					Where
 						m.town=@ZoneId AND
 						m.radif=@CustomerNumber";
