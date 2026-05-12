@@ -220,11 +220,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             }
             return previousBill;
         }
-        public async Task<IEnumerable<PreviousConsumptionsDto>> GetPreviousConsumption(ZoneIdAndCustomerNumber input)
+        public async Task<IEnumerable<PreviousConsumptionDto>> GetPreviousConsumption(ZoneIdAndCustomerNumber input)
         {
             string dbName = GetDbName(input.ZoneId);
             string query = GetPreviousConsumptionQuery(dbName);
-            IEnumerable<PreviousConsumptionsDto> datas = await _sqlReportConnection.QueryAsync<PreviousConsumptionsDto>(query, input);
+            IEnumerable<PreviousConsumptionDto> datas = await _sqlReportConnection.QueryAsync<PreviousConsumptionDto>(query, input);
             return datas;
         }
 
