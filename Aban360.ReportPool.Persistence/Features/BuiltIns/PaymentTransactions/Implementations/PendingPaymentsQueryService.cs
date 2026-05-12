@@ -82,7 +82,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 								BillId,
 								ReadingNumber,
 								UsageTitle AS UsageSellTitle ,
+								UsageId UsageSellId,
 								IIF(UsageId2=0,UsageTitle,UsageTitle2) AS UsageConsumptionTitle,
+								UsageId2 UsageConsumptionId,
 								FirstName As FirstName,
 								SureName Surname,
 								TRIM(MobileNo ) AS MobileNumber,
@@ -158,7 +160,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 						)
 						
 						-- کوئری نهایی
-						SELECT	
+						SELECT
 							C.*,
 							ISNULL(P.PaymentBetween, 0) AS PayedAmount,
 							ISNULL(B.BillBefore, 0) - ISNULL(P.PaymentBefore, 0) AS BeginDebt,

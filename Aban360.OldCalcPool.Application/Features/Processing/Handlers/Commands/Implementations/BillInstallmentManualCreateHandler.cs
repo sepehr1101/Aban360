@@ -82,7 +82,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     ZoneId = memberInfo.ZoneId,
                     CustomerNumber = memberInfo.CustomerNumber,
                     ReadingNumber = memberInfo.ReadingNumber,
-                    Barge = input.IsConfirm ? (int)rangeBarge[0] : 0,
+                    Barge = input.IsConfirm ? (int)rangeBarge[i] : 0,
                     DeadLineDateJalali = input.Installments?.ElementAt(i)?.DueDateJalali ?? string.Empty,
                     Payable = input.Installments?.ElementAt(i).Amount ?? 0,
                     UsageId = memberInfo.UsageId,

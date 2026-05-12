@@ -34,7 +34,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         public async Task<TrackingDuplicateValidationOutputDto> Handle(TrackingDuplicateValidationInputDto inputDto, CancellationToken cancellationToken)
         {
             var (moshtrakSearch, moshtrakSearchType) = await GetMoshtrakDto(inputDto);
-            MoshtrakOutputDto? moshtrakInfo = (await _moshtrakQueryService.Get(moshtrakSearch, moshtrakSearchType, false)).OrderBy(m => m.IsRegistered).ThenByDescending(m => m.RequestDateJalali).FirstOrDefault();
+            MoshtrakOutputDto? moshtrakInfo = (await _moshtrakQueryService.GetValid(moshtrakSearch, moshtrakSearchType, false)).OrderBy(m => m.IsRegistered).ThenByDescending(m => m.RequestDateJalali).FirstOrDefault();
             TrackingOutputDto? latestTrackingInfo = await _trackingQueryService.GetLatest(moshtrakInfo?.TrackNumber ?? 0, false);
             TrackingOutputDto? firstTrackingInfo = await _trackingQueryService.GetFirstStep(moshtrakInfo?.TrackNumber ?? 0, false);
             NumericDictionary? requestOrigin = RequestOrigin.GetRequestOrigin(firstTrackingInfo?.RequestOriginId ?? 0);
@@ -136,7 +136,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 FirstName = moshtrakInfo?.FirstName ?? string.Empty,
                 Surname = moshtrakInfo?.Surname ?? string.Empty,
                 FatherName = moshtrakInfo?.FatherName ?? string.Empty,
-                PhoneNumber =moshtrakInfo?.PhoneNumber ?? string.Empty,
+                PhoneNumber = moshtrakInfo?.PhoneNumber ?? string.Empty,
                 MobileNumber = moshtrakInfo?.MobileNumber ?? string.Empty,
                 NotificationNumber = latestTrackingInfo?.NotificationMobile ?? string.Empty,
                 Address = moshtrakInfo?.Address ?? string.Empty,

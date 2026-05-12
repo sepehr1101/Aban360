@@ -25,8 +25,8 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
         public async Task<SetExaminationResultOutputDto> Handle(TrackingDetailGetDto inputDto, CancellationToken cancellationToken)
         {
             await Validation(inputDto, cancellationToken);
-            SetExaminationResultOutputDto data = await _trackingDetailQueryService.GetSetExaminationResultDto(inputDto);
-            return data;
+            SetExaminationResultDataDto data = await _trackingDetailQueryService.GetSetExaminationResultDto(inputDto);
+            return GetResult(data);
         }
         private async Task Validation(TrackingDetailGetDto inputDto, CancellationToken cancellationToken)
         {
@@ -36,6 +36,23 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new BaseException(message);
             }
+        }
+        private SetExaminationResultOutputDto GetResult(SetExaminationResultDataDto input)
+        {
+            return new SetExaminationResultOutputDto()
+            {
+                AssessmentCode = input.AssessmentCode,
+                AssessmentName = input.AssessmentName,
+                AssessmentMobile = input.AssessmentMobile,
+                AssessmentDayJalali = input.AssessmentDayJalali,
+                FullName = input.FullName,
+                TrackNumber = input.TrackNumber,
+                Address = input.Address,
+                MobileNumber = input.MobileNumber,
+                AssessmentResultTitle = input.AssessmentResultTitle,
+                IsResultSuccess=input.IsResultSuccess,
+                HasTrench = (input.IsNewBranch || input.IsNewSewage) && input.IsResultSuccess,
+            };
         }
     }
 }

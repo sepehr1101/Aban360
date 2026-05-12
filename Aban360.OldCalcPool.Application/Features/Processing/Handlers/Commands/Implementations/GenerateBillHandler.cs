@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
@@ -31,6 +32,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly ICustomerInfoService _customerInfoService;
         private readonly IOldTariffEngine _tariffEngine;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
+        private readonly IBedBesQueryService _bedBesQueryService;
         private readonly IValidator<GenerateBillInputDto> _validator;
         private readonly IVariabService _variabService;
         static int[] _domesticUsage = { 1, 3 };//todo: IsTrue?
@@ -48,6 +50,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             ICustomerInfoService customerInfoService,
             IOldTariffEngine tariffEngine,
             ICommonMemberQueryService commonMemberQueryService,
+            IBedBesQueryService bedBesQueryService,
             IConfiguration configuration,
             IValidator<GenerateBillInputDto> validator,
             IVariabService variabService)
@@ -65,6 +68,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             _commonMemberQueryService = commonMemberQueryService;
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
 
+            _bedBesQueryService = bedBesQueryService;
+            _bedBesQueryService.NotNull(nameof(bedBesQueryService));
+
             _validator = validator;
             _validator.NotNull(nameof(validator));
 
@@ -72,13 +78,39 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             _variabService.NotNull(nameof(variabService));
         }
 
-        public async Task<AbBahaCalculationDetails> Handle(GenerateBillInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task<NewBillOutputDto> Handle(GenerateBillInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             await InputValidation(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await GetZoneIdANdCustomerNumber(inputDto.BillId);
             CustomerInfoGetDto customerInfo = await _customerInfoService.Get(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
             await Validation(inputDto, zoneIdAndCustomerNumber, customerInfo);
 
+            AbBahaCalculationDetails abBahaCalcResult = await GetAbBahaCalc(inputDto, customerInfo, cancellationToken);
+            NewBillOutputDto result = new()
+            {
+                AbBahaCalculationDetail = abBahaCalcResult,
+                PreviousConsumption = await _bedBesQueryService.GetPreviousConsumption(zoneIdAndCustomerNumber),
+                PreviousMeterChangeDateJalali = customerInfo.TavizInfo?.TavizDateJalali ?? string.Empty,
+                PreviousMeterNumber = customerInfo.BedBesInfo?.LastMeterNumber ?? 0,
+                PreviousReadingDateJalali = customerInfo.BedBesInfo?.LastMeterDateJalali ?? string.Empty
+            };
+
+
+            if (!inputDto.IsConfirm)
+            {
+                return result;
+            }
+            BedBesCreateDto bedBes = await GetBedBes(customerInfo, abBahaCalcResult, inputDto, zoneIdAndCustomerNumber, inputDto.CounterStateCode);
+            KasrHaDto kasrHa = GerKasrHa(customerInfo, abBahaCalcResult, inputDto);
+            ContorUpdateDto contorUpdate = GetControUpdateDto(customerInfo, bedBes, inputDto.CounterStateCode ?? 0);
+            string logtext = string.Format(Literals.GenerateBillOpLog, bedBes.ShGhabs1, bedBes.ShPard1, bedBes.Pard);
+
+            await SqlCommands(zoneIdAndCustomerNumber, bedBes, kasrHa, contorUpdate, abBahaCalcResult, appUser, inputDto.CounterStateCode, logtext);
+
+            return result;
+        }
+        private async Task<AbBahaCalculationDetails> GetAbBahaCalc(GenerateBillInputDto inputDto, CustomerInfoGetDto customerInfo, CancellationToken cancellationToken)
+        {
             AbBahaCalculationDetails abBahaCalcResult;
             if (IsAllowedZeroMeterNumber(inputDto.CounterStateCode))
             {
@@ -93,22 +125,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 MeterInfoByPreviousDataInputDto tariffMeterInfoByPreviousData = GetMeterInfoByPreviousData(customerInfo, inputDto);
                 abBahaCalcResult = await _tariffEngine.Handle(tariffMeterInfoByPreviousData, cancellationToken);
             }
-            if (!inputDto.IsConfirm)
-            {
-                return abBahaCalcResult;
-            }
-            BedBesCreateDto bedBes = await GetBedBes(customerInfo, abBahaCalcResult, inputDto, zoneIdAndCustomerNumber, inputDto.CounterStateCode);
-            KasrHaDto kasrHa = GerKasrHa(customerInfo, abBahaCalcResult, inputDto);
-            ContorUpdateDto contorUpdate = GetControUpdateDto(customerInfo, bedBes);
-            string logtext = string.Format(Literals.GenerateBillOpLog, bedBes.ShGhabs1, bedBes.ShPard1, bedBes.Pard);
-
-            await SqlCommands(zoneIdAndCustomerNumber, bedBes, kasrHa, contorUpdate, abBahaCalcResult, appUser, inputDto.CounterStateCode, logtext);
-
             return abBahaCalcResult;
         }
         private async Task<AbBahaCalculationDetails> GetChangeCounterStateData(GenerateBillInputDto inputDto, CustomerInfoGetDto customerInfo, CancellationToken cancellationToken)
         {
-            if (inputDto.CounterStateCode == _changeCounterState && string.IsNullOrWhiteSpace(customerInfo.TavizInfo?.TavizDateJalali??string.Empty))
+            if (inputDto.CounterStateCode == _changeCounterState && string.IsNullOrWhiteSpace(customerInfo.TavizInfo?.TavizDateJalali ?? string.Empty))
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidChangeDate);
             }
@@ -303,7 +324,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             }
             return result;
         }
-        private ContorUpdateDto GetControUpdateDto(CustomerInfoGetDto customerInfo, BedBesCreateDto bedBes)
+        private ContorUpdateDto GetControUpdateDto(CustomerInfoGetDto customerInfo, BedBesCreateDto bedBes, int counterStateCode)
         {
             return new ContorUpdateDto()
             {
@@ -314,7 +335,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 Consumption = (int)bedBes.Masraf,
                 ConsumptionAverage = (float)bedBes.Rate,
                 MeterChangeDateJalali = customerInfo.TavizInfo?.TavizDateJalali ?? string.Empty,
-                MeterChangeNumber = customerInfo.TavizInfo?.TavizNumber ?? 0
+                MeterChangeNumber = customerInfo.TavizInfo?.TavizNumber ?? 0,
+                PreviousCounterState = counterStateCode
             };
         }
         private MeterInfoByPreviousDataInputDto GetMeterInfoByPreviousData(CustomerInfoGetDto customerInfo, GenerateBillInputDto generateBillInfo)

@@ -44,10 +44,10 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             }
             return result;
         }
-        public async Task<IEnumerable<MeterFlowCartableGetDto>> GetCartable()
+        public async Task<IEnumerable<MeterFlowCartableGetDto>> GetCartable(IEnumerable<int> zoneIds)
         {
             string query = GetCartablQuery();
-            IEnumerable<MeterFlowCartableGetDto> cartable = await _sqlReportConnection.QueryAsync<MeterFlowCartableGetDto>(query, null);
+            IEnumerable<MeterFlowCartableGetDto> cartable = await _sqlReportConnection.QueryAsync<MeterFlowCartableGetDto>(query, new { zoneIds});
 
             return cartable;
         }
@@ -127,7 +127,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 					Left Join Db70.dbo.T51 t51 
 						On f.ZoneId=t51.C0
                     Where
-                    	--f.ZoneId IN @zoneIds AND
+                    	f.ZoneId IN @zoneIds AND
                     	f.RemovedByUserId IS NULL AND 
                     	f.RemovedDateTime IS NULL";
         }

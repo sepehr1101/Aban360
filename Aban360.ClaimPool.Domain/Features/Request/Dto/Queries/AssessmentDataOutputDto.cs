@@ -25,7 +25,7 @@
         public string? X2 { get; set; }
         public string? Y2 { get; set; }
         public string? Accuracy { get; set; }
-        
+
         public string ReadingNumber { get; set; }
         public int Premises { get; set; }
         public int HouseValue { get; set; }

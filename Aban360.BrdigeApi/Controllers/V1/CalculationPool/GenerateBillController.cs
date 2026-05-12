@@ -19,10 +19,10 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
 
         [HttpPost, HttpGet]
         [Route("issue")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<AbBahaCalculationDetails>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<NewBillOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Generate(GenerateBillInputDto inputDto, CancellationToken cancellationToken)
         {
-            AbBahaCalculationDetails result = await _generageBillHandler.Handle(inputDto, cancellationToken);
+            NewBillOutputDto result = await _generageBillHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
         }
     }

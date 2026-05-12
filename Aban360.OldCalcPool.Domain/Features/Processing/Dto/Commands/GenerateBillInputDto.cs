@@ -12,7 +12,7 @@
 
         public bool IsConfirm { get; set; }
         public string? CurrentDateJalali { get; set; }
-        public GenerateBillInputDto(string billId,int meterNumber,string currentDateJalali,bool isConfirm)
+        public GenerateBillInputDto(string billId, int meterNumber, string currentDateJalali, bool isConfirm)
         {
             BillId = billId;
             MeterNumber = meterNumber;

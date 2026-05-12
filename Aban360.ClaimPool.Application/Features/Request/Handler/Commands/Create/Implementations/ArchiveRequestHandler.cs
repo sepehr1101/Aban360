@@ -39,7 +39,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         public async Task Handle(ArchiveRequestInputDto inputDto, int userCode, CancellationToken cancellationToken)
         {
             TrackingOutputDto latestTrackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
-            MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(latestTrackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
+            MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.GetValid(new MoshtrakGetDto(latestTrackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
             Validation(inputDto, latestTrackingInfo.StatusId, moshtrakInfo.IsRegistered);
 
             TrackingInsertDuplicateDto trackingInsertDto = GetTrackingInsertDto(inputDto, userCode);

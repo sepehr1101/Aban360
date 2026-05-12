@@ -33,6 +33,7 @@
         public string? PaymentId { get; set; }
 
         public string DeletionStateTitle { get; set; }
+        public int DeletionStateId { get; set; }
         public string UsageStatusTitle { get; set; }
         public bool CommonSiphon { get; set; }
 

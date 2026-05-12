@@ -12,6 +12,7 @@
         public float ConsumptionAverage { get; set; }
         public string MeterChangeDateJalali { get; set; }
         public int MeterChangeNumber { get; set; }
+        public int PreviousCounterState { get; set; }
 
     }
 }
