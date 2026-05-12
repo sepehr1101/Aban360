@@ -9,5 +9,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts
         Task<AssessmentDataOutputDto> GetByTrackId(Guid id);
         Task<bool> HasResultByTrackId(Guid trackId);
         Task<int> GetWithoutResultInDate(string assessmentDateJalai, int assessmentCode);
+        Task<IEnumerable<UnAssessmentDataOutputDto>> GetUnAssessment(IEnumerable<int> zoneIds);
     }
 }

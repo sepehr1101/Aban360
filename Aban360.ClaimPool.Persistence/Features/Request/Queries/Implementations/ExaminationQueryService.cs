@@ -39,11 +39,16 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
         }
         public async Task<int> GetWithoutResultInDate(string assessmentDateJalai, int assessmentCode)
         {
-            string query= GetWithoutResultInDateQuery();
-            int assessmentTaskCount=await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(query, new { assessmentDateJalai, assessmentCode });
+            string query = GetWithoutResultInDateQuery();
+            int assessmentTaskCount = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(query, new { assessmentDateJalai, assessmentCode });
             return assessmentTaskCount;
         }
-
+        public async Task<IEnumerable<UnAssessmentDataOutputDto>> GetUnAssessment(IEnumerable<int> zoneIds)
+        {
+            string query = GetUnAssessmentQuery();
+            IEnumerable<UnAssessmentDataOutputDto> result = await _sqlReportConnection.QueryAsync<UnAssessmentDataOutputDto>(query, new { zoneIds });
+            return result;
+        }
         private string GetSingleQuery()
         {
             return @"Select Top 1
@@ -147,6 +152,37 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	ExaminerCode=@assessmentCode AND
                     	DayJalali =@assessmentDateJalai AND
                     	TrackIdResult IS NULL";
+        }
+        private string GetUnAssessmentQuery()
+        {
+            return @"Select 
+                    	t46.C0 RegionId,
+                    	t46.C2 RegionTitle,
+                    	t.ZoneID ,
+                    	t51.C2 ZoneTitle,
+                    	t.BillID,
+                    	t.TrackNumber,
+                    	t.TrackID,
+                    	t.ServiceGroup_FK ServiceGoupId,
+                    	t10.C1 ServiceGoupTitle,
+                    	e.ExaminerName AssessmentName,
+                    	e.ExaminerCode AssessmentCode,
+                    	e.ExaminerMobile AssessmentMobile,
+                    	e.DayJalali AssessmentDateJalali
+                    From AbAndFazelab.dbo.Tracking t
+                    Join AbAndFazelab.dbo.Examination e
+                    	ON t.TrackID=e.TrackId
+                    Join [Db70].dbo.T51 t51 
+                    	ON t.ZoneID=t51.C0
+                    Join [Db70].dbo.T46 t46
+                    	ON t51.C1=t46.C0
+                    Join [Db70].dbo.T10 t10
+                    	ON t.ServiceGroup_FK=t10.C0
+                    where 
+                    	t.Status=10 AND 
+                    	t.IsConsiderd=0 AND 
+	                    t.ZoneID IN @ZoneIds AND
+                    	CustomerWarehouse.dbo.PersianToMiladi(t.DateTimeJalali)>=DATEADD(Month,-6,GETDATE())";
         }
     }
 }
