@@ -9,7 +9,9 @@ using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementations
 {
@@ -59,7 +61,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         {
             string dbName = GetDbName(input.ZoneId);
             string query = GetLatestBedBesWithAmount(dbName);
-            BedBesWithAmountOutputDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BedBesWithAmountOutputDto>(query, new { input.ZoneId, input.CustomerNumber});
+            BedBesWithAmountOutputDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BedBesWithAmountOutputDto>(query, new { input.ZoneId, input.CustomerNumber });
             if (result is null || result.ZoneId <= 0)
             {
                 throw new InvalidBillIdException(ExceptionLiterals.InvalidBillId);
@@ -226,6 +228,57 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             string query = GetPreviousConsumptionQuery(dbName);
             IEnumerable<PreviousConsumptionDto> datas = await _sqlReportConnection.QueryAsync<PreviousConsumptionDto>(query, input);
             return datas;
+        }
+        public async Task<IEnumerable<string>> GetDuplicateBill(ICollection<BedBesCreateDto> inputDto)
+        {
+            int zoneId = (int)(inputDto?.FirstOrDefault()?.Town ?? 0);
+            string dbName = GetDbName(zoneId);
+
+            var table = new DataTable();
+            table.Columns.Add("InputBillId", typeof(string));
+            table.Columns.Add("InputDateJalali", typeof(string));
+
+            foreach (var item in inputDto)
+            {
+                table.Rows.Add(item.ShGhabs1, item.TodayDate);
+            }
+
+            var createTmpTable = @"Create table #tempInput
+                                    (
+                                        InputBillId nvarchar(20)  not Null,
+                                        InputDateJalali nvarchar(10) not Null
+                                    );";
+            SqlConnection connection = _sqlReportConnection;
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+            await connection.ExecuteAsync(createTmpTable);
+            using (var bulkCopy = new SqlBulkCopy(connection))
+            {
+                bulkCopy.DestinationTableName = "#tempInput";
+                bulkCopy.ColumnMappings.Add("InputBillId", "InputBillId");
+                bulkCopy.ColumnMappings.Add("InputDateJalali", "InputDateJalali");
+
+                await bulkCopy.WriteToServerAsync(table);
+            }
+
+            string query = @$";With Cte As(
+                            	Select 
+                            		sh_ghabs1 BillId,
+                            		date_bed,
+                            		Rn=Row_Number() Over(Partition By radif Order By date_bed Desc)
+                            	From [{dbName}].dbo.bed_bes	
+                            )
+                            Select 	b.BillId
+                            From Cte b
+                            Inner Join #tempInput t
+                            	On t.InputBillId Collate Arabic_CI_AS=b.BillId	Collate Arabic_CI_AS
+                            Where CustomerWarehouse.dbo.PersianToMiladi(t.InputDateJalali) <
+                            DATEADD(DAY,+5,CustomerWarehouse.dbo.PersianToMiladi(b.date_bed))
+                            Order By b.date_bed Desc";
+            var result = await connection.QueryAsync<string>(query);
+            return result;
         }
 
         private string GetBedBesConsumptionDataQuery(string dataBaseName)

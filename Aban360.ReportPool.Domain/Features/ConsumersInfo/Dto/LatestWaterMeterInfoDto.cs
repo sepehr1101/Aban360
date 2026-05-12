@@ -19,7 +19,7 @@ namespace Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto
         public string MeterStateTitle { get; set; }
         public string LatestMeterNumber { get; set; }
         public string MeterLife { get; set; }
-        public string MeterReplacementDate { get; set; }
+        public string? MeterReplacementDate { get; set; }
         public string LatestMeterReading { get; set; }
 
         //Latest Branch Status

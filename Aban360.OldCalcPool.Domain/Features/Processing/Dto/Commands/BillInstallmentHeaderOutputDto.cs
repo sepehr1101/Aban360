@@ -10,8 +10,17 @@
         public long Payable { get; set; }
         public string UsageTitle { get; set; }
         public string ZoneTitle { get; set; }
-        public string  ReportDateJalali { get; set; }
+        public string ReportDateJalali { get; set; }
         public int RecordCount { get; set; }
-        public string  Title { get; set; }
+        public string Title { get; set; }
+
+        public int CommercialUnit { get; set; }
+        public int DomesticUnit { get; set; }
+        public int OtherUnit { get; set; }
+        public string? PostalCode { get; set; }
+        public int MeterDiameterId { get; set; }
+        public string MeterDiameterTitle { get; set; }
+        public string ReadingNumber { get; set; }
+        public int EmptyUnit { get; set; }
     }
 }
