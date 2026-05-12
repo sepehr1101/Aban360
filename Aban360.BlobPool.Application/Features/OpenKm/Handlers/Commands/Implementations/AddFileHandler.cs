@@ -7,22 +7,28 @@ using Aban360.BlobPool.Persistence.Features.DmsServices.Queries.Contracts;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Implementations
 {
     internal sealed class AddFileHandler : IAddFileHandler
-    {  
+    {
+        private readonly OpenKmOptions _options;
         private readonly IOpenKmQueryService _openKmQueryService;
         private readonly IAddOrUpdateMetaDataHandler _addMetaHandler;
         private readonly IOpenKmMetaDataQueryServices _matadataService;
         private readonly ICreateFolderHandler _createFolderHandler;
 
         public AddFileHandler(
+            IOptions<OpenKmOptions> options,
             IOpenKmQueryService openKmQueryService,
             IAddOrUpdateMetaDataHandler addMetaHandler,
             IOpenKmMetaDataQueryServices metadataService,
             ICreateFolderHandler createFolderHandler)
         {
+            _options = options.Value;
+            _options.NotNull(nameof(_options));
+
             _openKmQueryService = openKmQueryService;
             _openKmQueryService.NotNull(nameof(openKmQueryService));
 
@@ -34,9 +40,8 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
 
             _createFolderHandler = createFolderHandler;
             _createFolderHandler.NotNull(nameof(_createFolderHandler));
-
         }
-   
+        
         public async Task<AddFileDto> Handle(AddFormFileInput input, CancellationToken cancellationToken)
         {           
             StreamContent content = await GetStreamContent(input.File);
@@ -46,6 +51,21 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
         {   
             StreamContent content = GetStreamContent(input.File);
             return await Handle(input.BillId, input.TrackNumber, input.DocumentTypeId, content, input.FileName, cancellationToken);
+        }
+        public async Task<AddFileDto> Handle(AddDiscountFileInput input, CancellationToken cancellationToken)
+        {
+            StreamContent content = await GetStreamContent(input.File);
+            int documentTypeValue = await _matadataService.GetFileValue(input.DocumentTypeId);
+            var (folderName, filePath) = GetFoldernameAndPath(input);
+            string folderUuid = await _createFolderHandler.Handle(folderName, cancellationToken);
+            AddFileDto addFileDto = await _openKmQueryService.AddFileDiscount(filePath, content, input.File.FileName);
+            await _openKmQueryService.MarkNodeAsMetadatable(addFileDto.Uuid, true);
+            AddOrUpdateMetaDataDto addMetaDto = new()
+            {
+                title = documentTypeValue
+            };
+            await _addMetaHandler.Handle(addMetaDto, addFileDto.Uuid, cancellationToken);
+            return addFileDto;
         }
 
         private async Task<AddFileDto> Handle(string billId, long? trackNumber, int documentTypeId, StreamContent content, string name, CancellationToken cancellationToken)
@@ -70,6 +90,11 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
         {
             string path = trackNumber.HasValue ? $"r_{trackNumber.Value}" : billId;
             return (path, $@"{path}/{fileName}");
+        }
+        private (string, string) GetFoldernameAndPath(AddDiscountFileInput input)
+        {
+            string path = $"{_options.BaseDiscountPath}";
+            return (path, $@"{path}/{input.Id}");
         }
         private StreamContent GetStreamContent(string base64File)
         {

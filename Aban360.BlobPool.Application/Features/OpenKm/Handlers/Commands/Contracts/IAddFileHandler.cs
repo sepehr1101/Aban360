@@ -7,5 +7,6 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Contrac
     {       
         Task<AddFileDto> Handle(AddFormFileInput input, CancellationToken cancellationToken);
         Task<AddFileDto> Handle(AddBase64FileInput input, CancellationToken cancellationToken);
+        Task<AddFileDto> Handle(AddDiscountFileInput input, CancellationToken cancellationToken);
     }
 }
