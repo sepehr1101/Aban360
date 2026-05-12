@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Db.Dapper;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Exceptions;
 using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
@@ -19,9 +20,9 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             string latestMeterChangeDateQuery = GetMeterChangeNumberQuery();
             string latestReplacementMeterDateQuery = GetReplacementMeterDateQuery();
             string latestDisconnectionBranchDateQuery = GetLatestDisconnectionBranchQuery();
-			string waterDebtQuery = GetWaterDebtQuery();
-			string latestPaidQuery = GetLatestPaidQuery();
-            string branchDebtQuery= GetBranchDebtQuery();
+            string waterDebtQuery = GetWaterDebtQuery();
+            string latestPaidQuery = GetLatestPaidQuery();
+            string branchDebtQuery = GetBranchDebtQuery();
             string billsDataQuery = GetBillsDataQuery();
             double pattern = 12.5;
 
@@ -30,23 +31,29 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             {
                 throw new InvalidIdException();
             }
-            
-            
+
+
             LatestWaterMeterBillDataOutputDto LatestBillData = await _sqlReportConnection.QueryFirstOrDefaultAsync<LatestWaterMeterBillDataOutputDto>(billsDataQuery, new { billId = billId });
             latestData.ConsumptionAverage = LatestBillData.ConsumptionAverage;
-            latestData.MeterStateTitle= LatestBillData.MeterStatusTitle;
+            latestData.MeterStateTitle = LatestBillData.MeterStatusTitle;
             latestData.LatestMeterNumber = LatestBillData.LatestMeterNumber;
-            latestData.LatestMeterReading=LatestBillData.LatestMeterReading;
-            
-            latestData.WaterDebt = await _sqlReportConnection.QueryFirstOrDefaultAsync<long>(waterDebtQuery, new { billId=billId });
-			latestData.LatestWaterPaid=await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(latestPaidQuery,new { billId=billId });
-			latestData.BranchDebt=await _sqlReportConnection.QueryFirstOrDefaultAsync<long>(branchDebtQuery,new {billId=billId});
-            latestData.MeterReplacementDate= await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(latestMeterChangeDateQuery, new { billId = billId, customerNumber = latestData.CustomerNumber, zoneId = latestData.ZoneId });
-            latestData.LatestMainChangeDate= await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(latestReplacementMeterDateQuery, new { billId = billId, customerNumber = latestData.CustomerNumber, zoneId = latestData.ZoneId });
+            latestData.LatestMeterReading = LatestBillData.LatestMeterReading;
+
+            latestData.WaterDebt = await _sqlReportConnection.QueryFirstOrDefaultAsync<long>(waterDebtQuery, new { billId = billId });
+            latestData.LatestWaterPaid = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(latestPaidQuery, new { billId = billId });
+            latestData.BranchDebt = await _sqlReportConnection.QueryFirstOrDefaultAsync<long>(branchDebtQuery, new { billId = billId });
+            latestData.MeterReplacementDate = await GetLatestChangeDateJalali(new ZoneIdAndCustomerNumber(int.Parse(latestData.ZoneId), int.Parse(latestData.CustomerNumber)));
+            latestData.LatestMainChangeDate = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(latestReplacementMeterDateQuery, new { billId = billId, customerNumber = latestData.CustomerNumber, zoneId = latestData.ZoneId });
             latestData.LatestTemporarilyDisconnectionBranch = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(latestDisconnectionBranchDateQuery, new { billId = billId });
             latestData.ConsumptionState = CalcConsumptionState(latestData.ConsumptionAverage, latestData.ContractualCapacity == 0 ? pattern : latestData.ContractualCapacity);
-           
-			return latestData;
+
+            return latestData;
+        }
+        public async Task<string?> GetLatestChangeDateJalali(ZoneIdAndCustomerNumber input)
+        {
+            string query = GetMeterChangeNumberQuery();
+            string? latestMeterChangeDateJalali = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(query, input);
+            return latestMeterChangeDateJalali;
         }
         private string GetLatestInfoQuery()
         {
@@ -75,16 +82,16 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 					Order by 
 						c.RegisterDayJalali Desc";
         }
-		private string GetWaterDebtQuery()
-		{
-			return @"Select Top 1 w.Debt
+        private string GetWaterDebtQuery()
+        {
+            return @"Select Top 1 w.Debt
 					 From [CustomerWarehouse].dbo.WaterDebt w
 					 Where w.BillId=@billId";
 
         }
-		private string GetLatestPaidQuery()
-		{
-			return @"Select Top 1 p.RegisterDay
+        private string GetLatestPaidQuery()
+        {
+            return @"Select Top 1 p.RegisterDay
 				     From [CustomerWarehouse].dbo.Payments p
 				     Where p.BillId=@billId
 				     Order By p.RegisterDay Desc";
@@ -121,7 +128,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 						m.RegisterDateJalali Desc";
 
         }
-        
+
         private string GetReplacementMeterDateQuery()
         {
             return @"Select c.RegisterDayJalali as LatestMainChangeDate
