@@ -3,7 +3,6 @@ using Aban360.BlobPool.Domain.Features.DmsServices.Dto.Commands;
 using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Commands
@@ -22,6 +21,15 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Commands
         [Route("add-file")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AddFileDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> AddFile([FromForm]AddFormFileInput input, CancellationToken cancellation)
+        {
+            AddFileDto result = await _addFileHandler.Handle(input, cancellation);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("add-file-discount")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<AddFileDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> AddFileDiscount([FromForm] AddFormFileInput input, CancellationToken cancellation)
         {
             AddFileDto result = await _addFileHandler.Handle(input, cancellation);
             return Ok(result);

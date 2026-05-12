@@ -299,26 +299,12 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             return true;
         }
         public async Task<AddFileDto> AddFile(string path, StreamContent content, string fileName)
-        {           
-            string docPath= nameof(docPath);
-
-            string fullPath = $"{_options.BaseDirectoryPath}{path}";
-            var requestUrl = $"{_options.AddFileEndpoint}";
-            var authHeader = await GetAuthenticationHeaderAsync();            
-
-            using var form = new MultipartFormDataContent();
-            form.Add(content, nameof(content), fileName);
-            form.Add(new StringContent(fullPath), docPath);
-
-            using var request = new HttpRequestMessage(HttpMethod.Post, requestUrl);
-            request.Headers.Authorization = authHeader;
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));           
-            request.Content = form;
-          
-            var response = await _httpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            AddFileDto result = await response.Content.ReadFromJsonAsync<AddFileDto>(_jsonOptions);
-            return result;
+        {
+            return await AddFile($"{_options.BaseDirectoryPath}", path, content, fileName);
+        }
+        public async Task<AddFileDto> AddFileDiscount(string path, StreamContent content, string fileName)
+        {
+            return await AddFile($"{_options.BaseDiscountPath}", path, content, fileName);
         }
         public async Task<string> CreateFolder(string folderName)
         {
@@ -395,23 +381,29 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
         }
-        //private async Task EditFile(string nodeId)
-        //{
-        //    string accept = "application/json";
-        //    string cookie = "Cookie";
-        //    string cookieDate = "cookiesession1=678ADA5C33A30F49D180AB6CBD34D5FC";
-        //    string baseUrl = $"https://esb.abfaisfahan.com:8243/DMS-Moshtarakin-CreateMetadata/1.0";
-        //    string finalUrl = $"{baseUrl}?nodeId={nodeId}&grpName={GroupNameFolder}";
 
-        //    _httpClient.DefaultRequestHeaders.Clear();
-        //    _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+        //privates
+        private async Task<AddFileDto> AddFile(string basePath ,string path, StreamContent content, string fileName)
+        {
+            string docPath = nameof(docPath);
 
-        //    var authHeader = await GetAuthenticationHeaderAsync();
-        //    _httpClient.DefaultRequestHeaders.Authorization = authHeader;
+            string fullPath = $"{basePath}{path}";
+            var requestUrl = $"{_options.AddFileEndpoint}";
+            var authHeader = await GetAuthenticationHeaderAsync();
 
-        //    var response = await _httpClient.PutAsync(finalUrl, null);
-        //    response.EnsureSuccessStatusCode();
-        //    var result = await response.Content.ReadAsStringAsync();
-        //}
+            using var form = new MultipartFormDataContent();
+            form.Add(content, nameof(content), fileName);
+            form.Add(new StringContent(fullPath), docPath);
+
+            using var request = new HttpRequestMessage(HttpMethod.Post, requestUrl);
+            request.Headers.Authorization = authHeader;
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
+            request.Content = form;
+
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            AddFileDto result = await response.Content.ReadFromJsonAsync<AddFileDto>(_jsonOptions);
+            return result;
+        }
     }
 }

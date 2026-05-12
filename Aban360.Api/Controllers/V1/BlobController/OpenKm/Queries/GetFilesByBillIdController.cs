@@ -34,7 +34,6 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
         [HttpGet]
         [Route("directory-tree")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<FileListResponse>), StatusCodes.Status200OK)]
-        [AllowAnonymous]
         public async Task<IActionResult> GetDirectoryTree(string input, [Optional]string? trackNumber, CancellationToken cancellation)
         {
             FileListResponse result = await _getFilesByBillIdHandler.Handle(input, trackNumber, cancellation);
