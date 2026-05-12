@@ -130,6 +130,15 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 Title = _title,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = installment?.Count() ?? 0,
+
+                CommercialUnit=memberInfo.CommercialUnit,
+                DomesticUnit=memberInfo.DomesticUnit,
+                OtherUnit=memberInfo.OtherUnit, 
+                EmptyUnit=memberInfo.EmptyUnit,
+                MeterDiameterId=memberInfo.MeterDiameterId,
+                MeterDiameterTitle= memberInfo.MeterDiameterTitle,
+                PostalCode=memberInfo.PostalCode,
+                ReadingNumber=memberInfo.ReadingNumber, 
             };
             IEnumerable<BillInstallmentDataOutputDto> data = installment.Select(s =>
             {
