@@ -199,5 +199,6 @@
 
 
         public static string InvalidDuplicateInstallment(string insertedBy, int installmentCount, string registerDateJalali) => @$"تعداد {installmentCount} قسط، توسط کاربر{insertedBy} در تاریخ{registerDateJalali} ایجاد شده.";
+        public static string InvalidDuplicateGenerateBill(string billIds) => @$"طی 5 روز جاری برای مشترکین با شناسه قبض: {billIds} قبض صادر گردیده است. ";
     }
 }

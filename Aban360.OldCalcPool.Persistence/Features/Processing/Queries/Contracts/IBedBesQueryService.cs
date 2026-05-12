@@ -24,5 +24,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
         Task<BedBesSmsDto> GetSmsDto(string billId, int zoneId, int customerNumber);
         Task<BedBesWithConsumptionOutputDto> GetPrevious(ZoneIdAndCustomerNumberOutputDto input, string dateJalali);
         Task<IEnumerable<PreviousConsumptionDto>> GetPreviousConsumption(ZoneIdAndCustomerNumber input);
+        Task<IEnumerable<string>> GetDuplicateBill(ICollection<BedBesCreateDto> inputDto);
     }
 }

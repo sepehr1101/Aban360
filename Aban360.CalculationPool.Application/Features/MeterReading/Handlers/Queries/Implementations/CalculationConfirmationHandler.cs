@@ -24,6 +24,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
         private readonly IMeterReadingDetailQueryService _meterReadingDetailService;
         private readonly IMeterFlowQueryService _meterFlowQueryService;
+        private readonly IBedBesQueryService _bedBesQueryService;
         private readonly IOldTariffEngine _oldTariffEngine;
         private readonly IVariabService _variabService;
         const int _paymentDeadline = 7;
@@ -32,6 +33,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
             IMeterReadingDetailQueryService meterReadingDetailService,
             IMeterFlowQueryService meterFlowQueryService,
+            IBedBesQueryService bedBesQueryService,
             IOldTariffEngine oldTariffEngine,
             IVariabService variabService,
             IConfiguration configuration)
@@ -45,6 +47,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 
             _meterFlowQueryService = meterFlowQueryService;
             _meterFlowQueryService.NotNull(nameof(meterFlowQueryService));
+
+            _bedBesQueryService = bedBesQueryService;
+            _bedBesQueryService.NotNull(nameof(bedBesQueryService));
 
             _oldTariffEngine = oldTariffEngine;
             _oldTariffEngine.NotNull(nameof(oldTariffEngine));
@@ -62,9 +67,20 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 
             int zoneId = meterReadings.FirstOrDefault().ZoneId;
             var (bedBesBatch, kasrHaBatch) = await GetBedBesAndKasrHaDto(meterReadings, cancellationToken);
-            int newMeterFlowId = await CommandTransactions(bedBesBatch, kasrHaBatch, zoneId, latestFlowId, appUser);
 
-            return GetResult(newMeterFlowId);
+            var (warningMessageForDuplicateBills, duplicateBillIds) = await CheckDuplicateBill(bedBesBatch);
+            ICollection<BedBesCreateDto> bedBesBatchWithoutDuplicate = bedBesBatch.Where(s => !duplicateBillIds.Contains(s.ShGhabs1)).ToList();
+            ICollection<KasrHaDto> kasrhasBatchWithoutDuplicate = kasrHaBatch.Where(s => !duplicateBillIds.Contains(s.ShGhabs)).ToList();
+            int newMeterFlowId = await CommandTransactions(bedBesBatchWithoutDuplicate, kasrhasBatchWithoutDuplicate, zoneId, latestFlowId, appUser);
+
+            return GetResult(newMeterFlowId, warningMessageForDuplicateBills);
+        }
+        private async Task<(string?, IEnumerable<string>)> CheckDuplicateBill(ICollection<BedBesCreateDto> input)
+        {
+            IEnumerable<string> duplicateBillIds = await _bedBesQueryService.GetDuplicateBill(input);
+            string? billIds = string.Join(",", duplicateBillIds);
+            string warningMessage = string.IsNullOrWhiteSpace(billIds) ? string.Empty : ExceptionLiterals.InvalidDuplicateGenerateBill(billIds);
+            return (warningMessage, duplicateBillIds);
         }
         private async Task<(ICollection<BedBesCreateDto>, ICollection<KasrHaDto>)> GetBedBesAndKasrHaDto(IEnumerable<MeterReadingDetailDataOutputDto> meterReadings, CancellationToken cancellationToken)
         {
@@ -107,10 +123,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    BedBesCommandService bedBesCreateService = new (connection, transaction);
-                    KasrHaCommandService kasrHaCommandService = new (connection, transaction);
+                    BedBesCommandService bedBesCreateService = new(connection, transaction);
+                    KasrHaCommandService kasrHaCommandService = new(connection, transaction);
                     MeterFlowCommandService meterFlowCommandService = new(connection, transaction);
-                    BillCommandService billCommandService = new(connection,transaction);
+                    BillCommandService billCommandService = new(connection, transaction);
 
                     await bedBesCreateService.InsertByBulk(BedBesBatch, dbName);
                     await kasrHaCommandService.InsertByBulk(kasrHaBatch, dbName);
@@ -320,9 +336,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 MeterPreviousData = meterInfo,
             };
         }
-        private MeterReadingCheckedOutputDto GetResult(int flowId)
+        private MeterReadingCheckedOutputDto GetResult(int flowId, string? warningDuplicateBills)
         {
-            return new MeterReadingCheckedOutputDto(flowId, MeterFlowStepEnum.ClientNotification, MessageLiterals.SuccessfullOperation);
+            return new MeterReadingCheckedOutputDto(flowId, MeterFlowStepEnum.ClientNotification, string.Join(" . ", MessageLiterals.SuccessfullOperation, warningDuplicateBills));
         }
         private bool CounterStateValidation(int counterStateCode, int currentNumber, int previousNumber)
         {
