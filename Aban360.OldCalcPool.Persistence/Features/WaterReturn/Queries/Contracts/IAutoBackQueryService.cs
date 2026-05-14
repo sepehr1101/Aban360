@@ -6,5 +6,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Contracts
     {
         Task<AutoBackGetDto> Get(ReturnBillConfirmeByZoneAndCustomerNumberInputDto input);
         Task<IEnumerable<AutoBackGetByBargeDto>> GetByConfirmNumber(int confirmedNumber);
+        Task<IEnumerable<UnconfirmedBillReturnDataOutputDto>> GetUnconfirmed(int zoneId);
     }
 }

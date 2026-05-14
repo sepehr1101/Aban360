@@ -260,5 +260,10 @@
 
         public static string Disconnect { get { return "قطع"; }  }
         public static string Connect { get { return "وصل"; }  }
+       
+        
+        public static string UnconfirmedBillReturn { get { return "قبوض برگشتی تایید نشده."; }  }
+
+
     }
 }
