@@ -61,6 +61,7 @@
         public static string InvalidTemporaryDeletionState => "مشترک در وضعیت 'حذف موقت' قرار دارد.";
         public static string InvalidCollectedDeletionState => "مشترک در وضعیت 'جمع آوری' قرار دارد.";
         public static string InvalidDuration => "مدت زمان محاسبه نامعتبر";
+        public static string InvalidZeroServiceSelected => "حداقل یک درخواست انتخاب کنید.";
 
         public static string InvlaidStringLength => "طول رشته نامعتبر است.";
         public static string InvalidEmailFormat => "فرمت ایمیل نامعتبر است.";
@@ -100,6 +101,7 @@
         public static string IncalculableWithCounterStateCode => $"محاسبه قبض با این وضعیت کنتور امکان پذیر نیست";
         public static string ConfilictBetweenCounterNumberAndCounteState => $"رقم کنتور با وضعیت کنتور مغایرت دارد";
         public static string InvalidId => "شناسه نامعتبر است.";
+        public static string InvalidConfirmedNumber => "شناسه تایید نامعتبر است.";
         public static string MessageException(string message) => $"خطا : {message}";
 
 
@@ -141,7 +143,7 @@
         public static string CantReturn => "برگشتی در بازه تاریخی وارد شده امکان پذیر نیست.";
         public static string RepairAmountMoreThanBedBesAmount => "مبلغ برگشتی از مبلغ قبوض بیشتر است.";
         public static string InvalidBillWithDel => "در بازه وارد شده، قبض برگشتی وجود دارد.";
-        public static string InvalidReturnDuplicate => "قبلا قبضی با اطلاعات وارد شده برگشت داده شده است.";
+        public static string InvalidReturnDuplicate => "در گذشته قبضی با اطلاعات وارد شده برگشت داده شده است.";
         public static string InvalidSaveReturn => "خطا در ذخیره برگشتی";
         public static string InvalidConfirmedReturn => "خطا در ذخیره تایید برگشتی";
 

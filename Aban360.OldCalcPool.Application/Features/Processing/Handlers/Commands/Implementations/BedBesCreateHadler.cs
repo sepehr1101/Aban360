@@ -3,7 +3,6 @@ using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
-using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
@@ -13,16 +12,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 {
     internal sealed class BedBesCreateHadler : AbstractBaseConnection, IBedBesCreateHadler
     {
-        //private readonly IBedBesCommandService _bedBesCreateService;
         private readonly IConfiguration _configuration;
         public BedBesCreateHadler(
-            //IBedBesCommandService bedBesCreateService,
             IConfiguration configuration)
             : base(configuration)
         {
-            //_bedBesCreateService = bedBesCreateService;
-            //_bedBesCreateService.NotNull(nameof(_bedBesCreateService));
-
             _configuration = configuration;
             _configuration.NotNull(nameof(_configuration));
         }
