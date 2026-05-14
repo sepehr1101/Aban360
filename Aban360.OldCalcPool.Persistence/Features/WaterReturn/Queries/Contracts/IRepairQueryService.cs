@@ -6,6 +6,7 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Contract
     public interface IRepairQueryService
     {
         Task<RepairGetDto> Get(int id);
+        Task<RepairGetDto> GetByConfirmNumber(int confirmedNumber);
         Task<IEnumerable<RepairGetDto>> Get(string billId);
         Task<int> GetRepairCount(ZoneIdAndCustomerNumberOutputDto input, int jalaseNumber);
     }

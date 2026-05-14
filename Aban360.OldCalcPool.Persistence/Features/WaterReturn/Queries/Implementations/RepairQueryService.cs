@@ -4,6 +4,8 @@ using Aban360.Common.Db.Dapper;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Literals;
 
 namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Implementations
 {
@@ -17,8 +19,17 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Implemen
         public async Task<RepairGetDto> Get(int id)
         {
             string query = GetQuery();
-
             RepairGetDto repair = await _sqlReportConnection.QueryFirstOrDefaultAsync<RepairGetDto>(query, new { id });
+            return repair;
+        }
+        public async Task<RepairGetDto> GetByConfirmNumber(int confirmNumber)
+        {
+            string query = GetByConfirmNumberQuery();
+            RepairGetDto? repair = await _sqlReportConnection.QueryFirstOrDefaultAsync<RepairGetDto>(query, new { confirmNumber });
+            if (repair == null)
+            {
+                throw new InvalidBillIdException(ExceptionLiterals.InvalidConfirmedNumber);
+            }
 
             return repair;
         }
@@ -58,6 +69,83 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Implemen
             return @"Select * 
                     From [Atlas].dbo.REPAIR
                     Where Id=@Id";
+        }
+        private string GetByConfirmNumberQuery()
+        {
+            return @"SELECT
+                        town AS Town,
+                        radif AS Radif,
+                        eshtrak AS Eshtrak,
+                        barge AS Barge,
+                        pri_no AS PriNo,
+                        today_no AS TodayNo,
+                        pri_date AS PriDate,
+                        today_date AS TodayDate,
+                        abon_fas AS AbonFas,
+                        fas_baha AS FasBaha,
+                        ab_baha AS AbBaha,
+                        ztadil AS Ztadil,
+                        masraf AS Masraf,
+                        shahrdari AS Shahrdari,
+                        modat AS Modat,
+                        date_bed AS DateBed,
+                        jalase_no AS JalaseNo,
+                        mohlat AS Mohlat,
+                        baha AS Baha,
+                        abon_ab AS AbonAb,
+                        pard AS Pard,
+                        jam AS Jam,
+                        cod_vas AS CodVas,
+                        ghabs AS Ghabs,
+                        del AS Del,
+                        [type] AS Type,
+                        cod_enshab AS CodEnshab,
+                        enshab AS Enshab,
+                        elat AS Elat,
+                        serial AS Serial,
+                        ser AS Ser,
+                        zaribfasl AS ZaribFasl,
+                        ab_10 AS Ab10,
+                        ab_20 AS Ab20,
+                        tedad_vahd AS TedadVahd,
+                        ted_khane AS TedKhane,
+                        tedad_mas AS TedadMas,
+                        tedad_tej AS TedadTej,
+                        noe_va AS NoeVa,
+                        jarime AS Jarime,
+                        masjar AS Masjar,
+                        sabt AS Sabt,
+                        rate AS Rate,
+                        operator AS Operator,
+                        mamor AS Mamor,
+                        taviz_date AS TavizDate,
+                        zarib_cntr AS ZaribCntr,
+                        zabresani AS Zabresani,
+                        zarib_d AS ZaribD,
+                        tafavot AS Tafavot,
+                        mas_hadar AS MasHadar,
+                        ab_hadar AS AbHadar,
+                        range_mas AS RangeMas,
+                        taf_back AS TafBack,
+                        ted_ghabs AS TedGhabs,
+                        TAB_ABN_A AS TabAbnA,
+                        TAB_ABN_F AS TabAbnF,
+                        TABS_FA AS TabsFa,
+                        bodjeh AS Bodjeh,
+                        group1 AS Group1,
+                        FAZ AS Faz,
+                        CHK_KARBARI AS ChkKarbari,
+                        C200 AS C200,
+                        tmp_pri_date AS TmpPriDate,
+                        tmp_today_date AS TmpTodayDate,
+                        tmp_mohlat AS TmpMohlat,
+                        tmp_taviz_date AS TmpTavizDate,
+                        tmp_date_bed AS TmpDateBed,
+                        edareh_k AS EdarehK,
+                        date_sbt AS DateSbt,
+                        Avarez AS Avarez
+                    FROM [Atlas].dbo.REPAIR
+                    Where jalase_no=@confirmNumber";
         }
         private string GetByBillIdQuery()
         {
