@@ -89,7 +89,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             NewBillOutputDto result = new()
             {
                 AbBahaCalculationDetail = abBahaCalcResult,
-                PreviousConsumption = await _bedBesQueryService.GetPreviousConsumption(zoneIdAndCustomerNumber),
+                PreviousConsumption = await _bedBesQueryService.GetPreviousBillsInfo(zoneIdAndCustomerNumber),
                 PreviousMeterChangeDateJalali = customerInfo.TavizInfo?.TavizDateJalali ?? string.Empty,
                 PreviousMeterNumber = customerInfo.BedBesInfo?.LastMeterNumber ?? 0,
                 PreviousReadingDateJalali = customerInfo.BedBesInfo?.LastMeterDateJalali ?? string.Empty

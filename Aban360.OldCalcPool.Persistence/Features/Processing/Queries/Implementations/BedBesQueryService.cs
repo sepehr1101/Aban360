@@ -222,11 +222,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             }
             return previousBill;
         }
-        public async Task<IEnumerable<PreviousConsumptionDto>> GetPreviousConsumption(ZoneIdAndCustomerNumber input)
+        public async Task<IEnumerable<PreviousBillsInfoDto>> GetPreviousBillsInfo(ZoneIdAndCustomerNumber input)
         {
             string dbName = GetDbName(input.ZoneId);
-            string query = GetPreviousConsumptionQuery(dbName);
-            IEnumerable<PreviousConsumptionDto> datas = await _sqlReportConnection.QueryAsync<PreviousConsumptionDto>(query, input);
+            string query = GetPreviousBillsInfoQuery(dbName);
+            IEnumerable<PreviousBillsInfoDto> datas = await _sqlReportConnection.QueryAsync<PreviousBillsInfoDto>(query, input);
             return datas;
         }
         public async Task<IEnumerable<string>> GetDuplicateBill(ICollection<BedBesCreateDto> inputDto)
@@ -596,12 +596,20 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 						cod_vas NOT IN (4,7,8)
 					Order By date_bed Desc";
         }
-        private string GetPreviousConsumptionQuery(string dbName)
+        private string GetPreviousBillsInfoQuery(string dbName)
         {
             return @$"Select Top 10
                     	rate ConsumptionAverage,
-                    	date_bed RegisterDateJalali
-                    From [{dbName}].dbo.bed_bes 
+                    	date_bed RegisterDateJalali,
+						tedad_mas DomesticUnit ,
+						tedad_tej CommercialUnit,
+						tedad_vahd OtherUnit,
+						Khali_s EmptyCount,
+						cod_enshab UsageId,
+						t41.C1 UsageTitle
+                    From [{dbName}].dbo.bed_bes
+					Join [Db70].dbo.T41 t41	
+						On cod_enshab=t41.C0 
                     Where 
                     	town=@zoneId AND
                     	radif=@customerNumber AND
