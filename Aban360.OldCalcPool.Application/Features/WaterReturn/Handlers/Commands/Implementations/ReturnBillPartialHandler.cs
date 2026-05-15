@@ -58,7 +58,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             int[] burstPipe = { 1 };
             int[] misreaded = { 5, 7, 9, 14, 15 };
-            int[] misreadedCalcWithMeterNumber = { 14, 15 };
+            int[] misreadedCalcWithMeterNumber = {10, 14, 15 };
             if (burstPipe.Contains(inputDto.ReturnCauseId))
             {
                 float _consumptionAverage = await GetConsumptionAverage(customerInfo, bedBesResult.PriDate, bedBesResult.TodayDate, consumptionAverage);
