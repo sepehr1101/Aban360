@@ -23,6 +23,8 @@ using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implementations;
+using Aban360.ReportPool.Domain.Base;
 
 namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Implementations
 {
@@ -34,6 +36,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private readonly IBillReturnCauseQueryService _billReturnCauseQueryService;
         private readonly ITaxCalculator _taxCalculator;
         private readonly IHBedBesQueryService _hBedBesQueryService;
+        private readonly IVariabService _variabService;
         private readonly IValidator<ReturnBillFullInputDto> _returnFullValidator;
         private readonly IValidator<ReturnBillPartialInputDto> _returnPartialValidator;
         private static string _title = "برگشتی";
@@ -44,6 +47,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             IBillReturnCauseQueryService billReturnCauseQueryService,
             ITaxCalculator taxCalculator,
             IHBedBesQueryService hBedBesQueryService,
+            IVariabService variabService,
             IValidator<ReturnBillFullInputDto> returnFullValidator,
             IValidator<ReturnBillPartialInputDto> returnPartialValidator,
             IConfiguration configuration)
@@ -66,6 +70,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             _hBedBesQueryService = hBedBesQueryService;
             _hBedBesQueryService.NotNull(nameof(hBedBesQueryService));
+
+            _variabService = variabService;
+            _variabService.NotNull(nameof(variabService));
 
             _returnFullValidator = returnFullValidator;
             _returnFullValidator.NotNull(nameof(returnFullValidator));
@@ -226,7 +233,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             };
 
             bool hasReturned = await HasReturned(customerInfo.ZoneId, customerInfo.Radif);
-            ReturnBillHeaderOutputDto header = new(description, customerInfo.ZoneTitle, previousValues.MinutesNumber.ToString(), hasReturned);
+            ReturnBillHeaderOutputDto header = new(description, customerInfo.ZoneTitle, null, previousValues.MinutesNumber.ToString(), hasReturned);
             ReturnBillOutputDto data = new(previousValues, currentValues, returnValues);
             FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = new(_title, header, data);
 
@@ -234,8 +241,15 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             {
                 return result;
             }
+            decimal confirmNumber = await _variabService.GetAndRenewParvand(customerInfo.ZoneId, true);
+            header.ConfirmNumber = (int)confirmNumber;
+            bedBes.JalaseNo = confirmNumber;
+            newCalculation.JalaseNo = confirmNumber;
+            different.JalaseNo = confirmNumber;
+
             string returnMode = isPartial ? "محاسبه مجدد" : "کامل";
-            string logText = string.Format(OpLogLiterals.Literals.BillReturnOpLog, returnMode, customerInfo.BillId, billCount, fromDateJalali, toDateJalali, different.Baha);
+            string logText = string.Format(OpLogLiterals.Literals.BillReturnOpLog, returnMode, customerInfo.BillId, billCount, fromDateJalali, toDateJalali, different.Baha, confirmNumber);
+
             await SqlCommands(bedBes, newCalculation, different, appUser, logText);
             return result;
         }
@@ -312,6 +326,8 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 TmpTodayDate = string.Empty,
                 EdarehK = bedBes.EdarehK,
                 Group1 = bedBes.Group1,
+                Avarez = 0,//todo,
+                DateSbt = toDayDateJalali
             };
         }
         public AutoBackCreateDto GetNewCalculation(AbBahaCalculationDetails tariffInfo, BedBesCreateDto bedBes, int returnCauseId, int bedbesCount, float? consumptionHadar, long? abHadarAmount, int jalaseNumber)
@@ -465,6 +481,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 TmpMohlat = string.Empty,
                 TmpTavizDate = string.Empty,
                 TmpDateBed = currentDateJalali10Char,
+                DateSbt = currentDateJalali,
+                Avarez = 0,//todo
+                EdarehK = bedBes.EdarehK,
+                Group1 = bedBes.Group1
             };
         }
         public async Task<IEnumerable<BedBesCreateDto>> GetBedBesList(CustomerInfoOutputDto customerInfo, string fromDateJalali, string toDateJalali)
@@ -556,6 +576,8 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 TmpTodayDate = string.Empty,
                 EdarehK = bedBes.EdarehK,
                 Group1 = bedBes.Group1,
+                Avarez = 0,//todo,
+                DateSbt = toDayDateJalali
             };
         }
         public BedBesCreateDto GetBedbes(IEnumerable<BedBesCreateDto> input, CustomerInfoOutputDto customerInfo)
@@ -718,6 +740,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private async Task SqlCommands(AutoBackCreateDto bedBes, AutoBackCreateDto newCalculation, AutoBackCreateDto different, IAppUser appUser, string logText)
         {
             ICollection<AutoBackCreateDto> datas = new List<AutoBackCreateDto>() { bedBes, newCalculation, different };
+            RepairCreateDto repairCreateDto = GetRepairCreateDto(different);
+
+            //string dbName = GetDbName((int)bedBes.Town);
+            string dbName = ReportLiterals.Atlas;
 
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -728,9 +754,11 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     AutoBackCommandService autoBackCommandService = new(connection, transaction);
+                    RepairCommandService repairCommandService = new(connection, transaction);
                     OpLogCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
-                    await autoBackCommandService.Create(datas);//حتما به ترتیب باید ایجاد شود
+                    await autoBackCommandService.Create(datas, dbName, true);//حتما به ترتیب باید ایجاد شود
+                    int repairId = await repairCommandService.Insert(repairCreateDto, dbName);
                     await opLogCommandService.Insert(logText, appUser);
 
                     transaction.Commit();
@@ -754,5 +782,83 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             return previousDateJalali;
         }
         private async Task<bool> HasReturned(int zoneId, int customerNumber) => await _hBedBesQueryService.Get(new ZoneIdAndCustomerNumber(zoneId, customerNumber));
+        private RepairCreateDto GetRepairCreateDto(AutoBackCreateDto different)
+        {
+            return new RepairCreateDto()
+            {
+                Town = different.Town,
+                Radif = different.Radif,
+                Eshtrak = different.Eshtrak,
+                Barge = different.Barge,
+                PriNo = different.PriNo,
+                TodayNo = different.TodayNo,
+                PriDate = different.PriDate,
+                TodayDate = different.TodayDate,
+                AbonFas = different.AbonFas,
+                FasBaha = different.FasBaha,
+                AbBaha = different.AbBaha,
+                Ztadil = different.Ztadil,
+                Masraf = different.Masraf,
+                Shahrdari = different.Shahrdari,
+                Modat = different.Modat,
+                DateBed = different.DateBed,
+                JalaseNo = different.JalaseNo,
+                Mohlat = different.Mohlat,
+                Baha = different.Baha,
+                AbonAb = different.AbonAb,
+                Pard = different.Pard,
+                Jam = different.Jam,
+                CodVas = different.CodVas,
+                Ghabs = different.Ghabs,
+                Del = different.Del,
+                Type = different.Type,
+                CodEnshab = different.CodEnshab,
+                Enshab = different.Enshab,
+                Elat = different.Elat,
+                Serial = different.Serial,
+                Ser = different.Ser,
+                ZaribFasl = different.ZaribFasl,
+                Ab10 = different.Ab10,
+                Ab20 = different.Ab20,
+                TedadVahd = different.TedadVahd,
+                TedKhane = different.TedKhane,
+                TedadMas = different.TedadMas,
+                TedadTej = different.TedadTej,
+                NoeVa = different.NoeVa,
+                Jarime = different.Jarime,
+                Masjar = different.Masjar,
+                Sabt = different.Sabt,
+                Rate = different.Rate,
+                Operator = different.Operator,
+                Mamor = different.Mamor,
+                TavizDate = different.TavizDate,
+                ZaribCntr = different.ZaribCntr,
+                Zabresani = different.Zabresani,
+                ZaribD = different.ZaribD,
+                Tafavot = different.Tafavot,
+                MasHadar = different.MasHadar,
+                AbHadar = different.AbHadar,
+                RangeMas = different.RangeMas,
+                TafBack = different.TafBack,
+                TedGhabs = different.TedGhabs,
+                TabAbnA = different.TabAbnA,
+                TabAbnF = different.TabAbnF,
+                TabsFa = different.TabsFa,
+                Bodjeh = different.Bodjeh,
+                Group1 = different.Group1,
+                Faz = different.Faz,
+                ChkKarbari = 0,//todo
+                C200 = 0,
+                TmpPriDate = different.TmpPriDate,
+                TmpTodayDate = different.TmpTodayDate,
+                TmpMohlat = different.TmpMohlat,
+                TmpTavizDate = different.TmpTavizDate,
+                TmpDateBed = different.TmpDateBed,
+                EdarehK = different.EdarehK ?? false,
+                Lavazem = 0,//todo
+                DateSbt = different.DateSbt,
+                Avarez = different.Avarez,
+            };
+        }
     }
 }

@@ -8,6 +8,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 {
     internal sealed class VariabService : AbstractBaseConnection, IVariabService
     {
+        const string _atlasDbName = "Atlas";
         public VariabService(IConfiguration configuration)
             : base(configuration)
         {
@@ -33,6 +34,14 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             }
 
             return range;
+        }
+
+        public async Task<decimal> GetAndRenewParvand(int zoneId, bool isAtlas)
+        {
+            string dbName = isAtlas ? _atlasDbName : GetDbName(zoneId);
+            decimal parvand = await _sqlReportConnection.QueryFirstOrDefaultAsync<decimal>(GetParvandQuery(dbName, isAtlas), new { zoneId });
+            await _sqlReportConnection.ExecuteAsync(IncreaseParavand(dbName, isAtlas), new { zoneId });
+            return parvand;
         }
 
         public async Task<bool> IsOperationValid(int zoneId, string operationDate)
@@ -97,6 +106,20 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         {
             string query = @$"USE [{dbName}]
                             SELECT date_check FROM variab Where town=@zoneId";
+            return query;
+        }
+
+        private string GetParvandQuery(string dbName, bool isAtlas)
+        {
+            string zoneCondition = isAtlas ? string.Empty : " Where town=@zoneId";
+            string query = $"USE [{dbName}] SELECT parvand FROM variab {zoneCondition} ;";
+            return query;
+        }
+        private string IncreaseParavand(string dbName, bool isAtlas)
+        {
+            string zoneCondition = isAtlas ? string.Empty : " Where town=@zoneId";
+            string query = $"USE [{dbName}] " +
+               $"UPDATE variab SET parvand=parvand+1 {zoneCondition} ;";
             return query;
         }
     }

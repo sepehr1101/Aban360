@@ -22,19 +22,14 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Implement
             _transaction.NotNull(nameof(transaction));
         }
 
-        public async Task Create(AutoBackCreateDto input)
+        public async Task Create(AutoBackCreateDto input, string dbName, bool isAtlas)
         {
-            //string dbName = GetDbName((int)input.Town);
-            string dbName = "Atlas";
-            string query = GetCreateQuery(dbName);
-
+            string query = GetCreateCommand(dbName, isAtlas);
             await _connection.ExecuteScalarAsync(query, input, _transaction);
         }
-        public async Task Create(IEnumerable<AutoBackCreateDto> input)
+        public async Task Create(IEnumerable<AutoBackCreateDto> input, string dbName, bool isAtlas)
         {
-            //string dbName = GetDbName((int)input.First().Town);
-            string dbName = "Atlas";
-            string query = GetCreateQuery(dbName);
+            string query = GetCreateCommand(dbName, isAtlas);
 
             int recordCount = await _connection.ExecuteAsync(query, input, _transaction);
             if (recordCount <= 0)
@@ -42,9 +37,21 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Implement
                 throw new ReturnedBillException(ExceptionLiterals.InvalidSaveReturn);
             }
         }
-        private string GetCreateQuery(string dbName)
+        public async Task UpdateIsConfirmed(int confirmedNumber, string dbName)
         {
-            return @"INSERT INTO Atlas.dbo.[autoback]
+            string query = GetIsConfirmedUpdateCommand(dbName);
+            int recordEffected = await _connection.ExecuteAsync(query, new { confirmedNumber }, _transaction);
+            if (recordEffected != 3)
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvalidConfirmedNumber);
+            }
+        }
+
+        private string GetCreateCommand(string dbName, bool isAtlas)
+        {
+            string isConfirmedField = isAtlas ? ", IsConfirmed" : string.Empty;
+            string isConfirmedParm = isAtlas ? " , 0" : string.Empty;
+            return @$"INSERT INTO [{dbName}].dbo.[autoback]
                     (
                         town, radif, eshtrak, barge, pri_no, today_no, pri_date, today_date,
                         abon_fas, fas_baha, ab_baha, ztadil, masraf, shahrdari, modat, date_bed,
@@ -54,7 +61,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Implement
                         sabt, rate, operator, mamor, taviz_date, zarib_cntr, zabresani,
                         zarib_d, tafavot, mas_hadar, ab_hadar, range_mas, taf_back, ted_ghabs,
                         TAB_ABN_A, TAB_ABN_F, TABS_FA, bodjeh, FAZ,
-                        tmp_pri_date, tmp_today_date, tmp_date_bed, tmp_mohlat, tmp_taviz_date
+                        tmp_pri_date, tmp_today_date, tmp_date_bed, tmp_mohlat, tmp_taviz_date {isConfirmedField}
                     )
                     VALUES
                     (   
@@ -66,8 +73,14 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Implement
                         @Sabt, @Rate, @Operator, @Mamor, @TavizDate, @ZaribCntr, @Zabresani,
                         @ZaribD, @Tafavot, @MasHadar, @AbHadar, @RangeMas, @TafBack, @TedGhabs,
                         @TabAbnA, @TabAbnF, @TabsFa, @Bodjeh, @Faz,
-                        @TmpPriDate, @TmpTodayDate, @TmpDateBed, @TmpMohlat, @TmpTavizDate
+                        @TmpPriDate, @TmpTodayDate, @TmpDateBed, @TmpMohlat, @TmpTavizDate {isConfirmedParm}
                     );";
+        }
+        private string GetIsConfirmedUpdateCommand(string dbName)
+        {
+            return $@"Update [Atlas].dbo.autoback
+                    Set IsConfirmed=1
+                    Where jalase_no=@confirmedNumber";
         }
     }
 }

@@ -3,7 +3,7 @@
     public record NewBillOutputDto
     {
         public AbBahaCalculationDetails AbBahaCalculationDetail { get; set; }
-        public IEnumerable<PreviousConsumptionDto> PreviousConsumption { get; set; }
+        public IEnumerable<PreviousBillsInfoDto> PreviousBillsInfo { get; set; }
         public int? PreviousMeterNumber { get; set; }
         public string? PreviousReadingDateJalali { get; set; }
         public string? PreviousMeterChangeDateJalali { get; set; }

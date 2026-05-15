@@ -16,7 +16,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Validations
 
             RuleFor(f => f.SelectedServices)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull);
+                .NotNull().WithMessage(ExceptionLiterals.NotNull)
+                .Must(s => s.Count() < 1).WithMessage(ExceptionLiterals.InvalidZeroServiceSelected);
 
             RuleFor(f => f.MobileNumber)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
