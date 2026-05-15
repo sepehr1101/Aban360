@@ -5,6 +5,8 @@
         public static string HandleFlat { get { return "HandleFlat"; } }
         public static string Handle { get { return "Handle"; } }
 
+        public static string Atlas { get { return "Atlas"; } }
+
         public static string Report { get { return "گزارش"; } }
         public static string RegisterDate { get { return "تاریخ ثبت"; } }
         public static string ChangeDate { get { return "تاریخ تعویض"; } }
@@ -258,5 +260,10 @@
 
         public static string Disconnect { get { return "قطع"; }  }
         public static string Connect { get { return "وصل"; }  }
+       
+        
+        public static string UnconfirmedBillReturn { get { return "قبوض برگشتی تایید نشده."; }  }
+
+
     }
 }
