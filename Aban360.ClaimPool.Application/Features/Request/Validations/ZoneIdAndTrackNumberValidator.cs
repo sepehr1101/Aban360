@@ -13,9 +13,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Validations
              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
              .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(f => f.ZoneId)
-             .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-             .NotNull().WithMessage(ExceptionLiterals.NotNull);
+            //RuleFor(f => f.ZoneId)
+            // .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+            // .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
         }
     }
