@@ -25,5 +25,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
         Task<BedBesWithConsumptionOutputDto> GetPrevious(ZoneIdAndCustomerNumberOutputDto input, string dateJalali);
         Task<IEnumerable<PreviousBillsInfoDto>> GetPreviousBillsInfo(ZoneIdAndCustomerNumber input);
         Task<IEnumerable<string>> GetDuplicateBill(ICollection<BedBesCreateDto> inputDto);
+        Task<BedBesItemsOutputDto> GetLatestByCustomerNumber(ZoneIdAndCustomerNumber input);
     }
 }

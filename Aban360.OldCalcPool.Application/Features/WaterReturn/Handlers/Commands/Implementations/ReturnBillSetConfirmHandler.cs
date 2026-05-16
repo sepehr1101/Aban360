@@ -17,12 +17,10 @@ using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implementations;
 using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Contracts;
 using Aban360.ReportPool.Domain.Base;
-using Azure.Core;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
-using System.Xml.Linq;
 
 namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Implementations
 {
@@ -313,7 +311,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Difference = bedBes.Tafavot,
                 WastedWater = 0,
                 WastedConsumption = 0,
-                BillCount = 0,//todo
+                BillCount = bedBes.TedGhabs,
                 Item18 = bedBes.Bodjeh,
                 UsageConsumption = bedBes.Group1,
                 HasSewage = bedBes.Faz,

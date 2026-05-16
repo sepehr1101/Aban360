@@ -242,7 +242,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Implement
                     )
                     Select c.*
                     From Cte c
-                    Where c.Rn=1";
+                    Where c.Rn=1 
+					Order By c.RegisterDateJalali Desc";
         }
     }
 }
