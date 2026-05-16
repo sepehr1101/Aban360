@@ -7,6 +7,7 @@
 <div style="height: 90vh; overflow-y: auto;">
 @Html.StiNetCoreViewer(new StiNetCoreViewerOptions()
 {
+    Height=Stimulsoft.System.Web.UI.WebControls.Unit.Percentage(100),
     Actions =
     {
         GetReport = "display",
@@ -17,7 +18,8 @@
     {
         ShowTooltipsHelp = false,
         ShowDialogsHelp = false,
-        ShowTooltips=false
+        ShowTooltips=false,
+        ScrollbarsMode=true
     },
     Theme = StiViewerTheme.Office2022WhitePurple,
     Toolbar =

@@ -101,7 +101,9 @@ namespace Aban360.Api.Controllers.V1.ReportPool.DynamicGenerator
 
             var settings = new Stimulsoft.Report.Export.StiPdfExportSettings
             {
-                EmbeddedFonts = true
+                EmbeddedFonts = true,
+                StandardPdfFonts=false,
+                UseUnicode = true,
             };
             var service = new Stimulsoft.Report.Export.StiPdfExportService();
             using var stream = new MemoryStream();
