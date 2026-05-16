@@ -94,7 +94,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						b.ConsumptionAverage,
 						b.SumItems,
 						b.DomesticCount DomesticUnit,
-						b.CommercialCount CommertialUnit,
+						b.CommercialCount CommercialUnit,
 						b.OtherCount OtherUnit,
 						b.EmptyCount,
 						b.CounterStateCode,

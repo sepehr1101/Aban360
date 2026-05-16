@@ -145,6 +145,7 @@
         public static string CantReturn => "برگشتی در بازه تاریخی وارد شده امکان پذیر نیست.";
         public static string RepairAmountMoreThanBedBesAmount => "مبلغ برگشتی از مبلغ قبوض بیشتر است.";
         public static string InvalidBillWithDel => "در بازه وارد شده، قبض برگشتی وجود دارد.";
+        public static string InvalidTempReturnBill => "در بازه وارد شده، قبض برگشتی در حالت موقت وجود دارد.";
         public static string InvalidReturnDuplicate => "در گذشته قبضی با اطلاعات وارد شده برگشت داده شده است.";
         public static string InvalidSaveReturn => "خطا در ذخیره برگشتی";
         public static string InvalidConfirmedReturn => "خطا در ذخیره تایید برگشتی";

@@ -16,7 +16,7 @@
         public string CurrentDateJalali { get; set; }
         public string RegisterDateJalali { get; set; }
         public int DomesticUnit { get; set; }
-        public int CommertialUnit { get; set; }
+        public int CommercialUnit { get; set; }
         public int OtherUnit { get; set; }
         public int PreviousNumber { get; set; }
         public int NextNumber { get; set; }

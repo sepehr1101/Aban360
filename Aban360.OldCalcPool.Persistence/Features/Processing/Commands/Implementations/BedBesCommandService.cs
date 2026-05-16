@@ -92,7 +92,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         public async Task UpdateDel(IEnumerable<BedBesUpdateDelDto> input, string dbName)
         {
             string command = GetUpdateDelCommand(dbName);
-            await _connection.ExecuteAsync(command, input, _transaction);
+            int recordEffected = await _connection.ExecuteAsync(command, input, _transaction);
+            if (recordEffected != (input?.Count() ?? 0))
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvalidSaveReturn);
+            }
         }
         public async Task UpdateDel(BedBesUpdateDelWithDateDto input, string dbName)
         {

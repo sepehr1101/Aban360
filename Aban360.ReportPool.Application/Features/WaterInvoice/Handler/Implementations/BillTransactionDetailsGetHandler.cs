@@ -41,7 +41,7 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
                 CurrentDateJalali = b.CurrentDateJalali,
                 RegisterDateJalali = b.RegisterDateJalali,
                 DomesticUnit = b.DomesticUnit,
-                CommertialUnit = b.CommertialUnit,
+                CommercialUnit = b.CommercialUnit,
                 OtherUnit = b.OtherUnit,
                 PreviousNumber = b.PreviousNumber,
                 NextNumber = b.NextNumber,

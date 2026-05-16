@@ -46,7 +46,18 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Implement
             IEnumerable<UnconfirmedBillReturnDataOutputDto> data = await _sqlReportConnection.QueryAsync<UnconfirmedBillReturnDataOutputDto>(query, new { zoneId });
             return data;
         }
+        public async Task<int> GetCountByDateInterval(ReturnBillDateIntervalDto input)
+        {
+            string dbName = "Atlas";
+            string query = GetCountByDateIntervalQuery(dbName);
+            int count = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(query, input);
+            if (count > 0)
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvalidTempReturnBill);
+            }
 
+            return count; 
+        }
         private string GetQuery(string dbName)
         {
             return @$"Select 
@@ -243,7 +254,16 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Implement
                     Select c.*
                     From Cte c
                     Where c.Rn=1 
-					Order By c.RegisterDateJalali Desc";
+					Order By c.RegisterDateJalali Desc , c.jalase_no desc";
+        }
+        private string GetCountByDateIntervalQuery(string dbName)
+        {
+            return $@"Select COUNT(1)
+                    From [{dbName}].dbo.autoback 
+                    Where 
+                    	town=@ZoneId AND
+                    	radif=@CustomerNumber AND
+                    	(pri_date>=@FromDateJalali AND today_date<=@ToDateJalali) ";
         }
     }
 }

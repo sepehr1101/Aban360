@@ -284,11 +284,17 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         {
             string dbName = GetDbName(input.ZoneId);
             string query = GetLatestByCustomerNumberQuery(dbName);
-            BedBesItemsOutputDto? result=await _sqlReportConnection.QueryFirstOrDefaultAsync<BedBesItemsOutputDto>(query,input);
+            BedBesItemsOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BedBesItemsOutputDto>(query, input);
             if (result is null)
             {
                 throw new InvalidBillIdException(ExceptionLiterals.NotFoundCustomer);
             }
+            return result;
+        }
+        public async Task<IEnumerable<BedBesWithDelOutputDto>> GetByDateInterval(ZoneCustomerFromToDateDto input, string dbName)
+        {
+            string query = GetIdWithDateIntervalQuery(dbName);
+            IEnumerable<BedBesWithDelOutputDto> result = await _sqlReportConnection.QueryAsync<BedBesWithDelOutputDto>(query, input);
             return result;
         }
 
@@ -648,6 +654,16 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                      Join [Db70].dbo.T46 t46
                          On t51.C1=t46.C0
                      Where radif=@customerNumber";
+        }
+        private string GetIdWithDateIntervalQuery(string dbName)
+        {
+            return $@"Select 
+                            id,
+                            del IsReturned
+                    From [{dbName}].dbo.bed_bes
+                    Where 
+                    	radif=@CustomerNumber AND
+                    	(pri_date>=@FromDate AND today_date<=@ToDate)  ";
         }
     }
 }

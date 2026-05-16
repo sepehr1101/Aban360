@@ -17,12 +17,12 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
             _billTransactionDetailsGetHandler.NotNull(nameof(billTransactionDetailsGetHandler));
         }
 
-        [HttpPost]
-        [Route("transaction-details/{billId}")]
+        [HttpPost, HttpGet]
+        [Route("transaction-details/{billid}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<BillTransactionDetailHeaderOutputDto, BillTransactionDetailDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Info(string billId, CancellationToken cancellationToken)
+        public async Task<IActionResult> Info(string billid, CancellationToken cancellationToken)
         {
-            ReportOutput<BillTransactionDetailHeaderOutputDto, BillTransactionDetailDataOutputDto> result = await _billTransactionDetailsGetHandler.Handle(billId, cancellationToken);
+            ReportOutput<BillTransactionDetailHeaderOutputDto, BillTransactionDetailDataOutputDto> result = await _billTransactionDetailsGetHandler.Handle(billid, cancellationToken);
             return Ok(result);
         }
     }
