@@ -16,6 +16,7 @@ using System.Data;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts;
 using Microsoft.AspNetCore.Http;
+using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Implementations
 {
@@ -27,6 +28,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         private readonly IZaribCQueryService _zaribCQueryService;
         private readonly IZaribGetService _zaribGetService;
         private readonly IT52QueryService _t52QueryService;
+        private readonly IZoneQueryService _zoneQueryService;
         static int _tankerWaterUsageId = 19;
         public TankerInsertHandler(
             IHttpContextAccessor contextAccessor,
@@ -35,6 +37,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             IZaribCQueryService zaribCQueryService,
             IZaribGetService zaribGetService,
             IT52QueryService t52QueryService,
+            IZoneQueryService zoneQueryService,
             IConfiguration configuration)
             : base(configuration)
         {
@@ -53,16 +56,22 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             _t52QueryService = t52QueryService;
             _t52QueryService.NotNull(nameof(t52QueryService));
 
+            _zoneQueryService = zoneQueryService;
+            _zoneQueryService.NotNull(nameof(zoneQueryService));
+
             _tankerQueryService = tankerQueryService;
             _tankerQueryService.NotNull(nameof(tankerQueryService));
         }
 
-        public async Task<TankerWaterCalculationOutputDto> Handle(TankerInsertInputDto inputDto, int userCode, CancellationToken cancellationToken)
+        public async Task<TankerCalculationResultOutputDto> Handle(TankerInsertInputDto inputDto, int userCode, CancellationToken cancellationToken)
         {
+            inputDto.FirstName = inputDto.FirstName.Trim();
+            inputDto.Surname = inputDto?.Surname?.Trim() ?? string.Empty;
+            inputDto.Address = inputDto?.Address?.Trim() ?? string.Empty;
             TankerWaterCalculationOutputDto calcResult = await Calc(inputDto, cancellationToken);
             if (!inputDto.IsConfirm)
             {
-                return calcResult;
+                return await GetResult(calcResult, inputDto);
             }
             string dbName = GetDbName(inputDto.ZoneId);
             decimal barge = await _variabService.GetAndRenew(inputDto.ZoneId);
@@ -93,7 +102,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 }
             }
 
-            return calcResult;
+            return await GetResult(calcResult, inputDto);
         }
         public async Task<TankerWaterCalculationOutputDto> Calc(TankerInsertInputDto input, CancellationToken cancellationToken)
         {
@@ -242,6 +251,35 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 Avarez = 0,
                 TrackNumber = 0,//todo
 
+            };
+        }
+        private async Task<TankerCalculationResultOutputDto> GetResult(TankerWaterCalculationOutputDto calcResult, TankerInsertInputDto inputDto)
+        {
+            return new TankerCalculationResultOutputDto()
+            {
+                CustomerNumber = calcResult.CustomerNumber,
+                BillId = calcResult.BillId,
+                PaymentId = calcResult.PaymentId,
+                MobileNumber = calcResult.MobileNumber,
+                Water = calcResult.Water,
+                Delivery = calcResult.Delivery,
+                Budget = calcResult.Budget,
+                ZoneId = inputDto.ZoneId,
+                ZoneTitle = await _zoneQueryService.Get(inputDto.ZoneId),
+                FirstName = inputDto.FirstName,
+                Surname = inputDto.Surname,
+                SaleStateTitle = GetSaleStateTitle(inputDto.SaleState),
+                Consumption = inputDto.Consumption,
+            };
+        }
+        private string GetSaleStateTitle(TankerWaterSaleStateEnum saleState)
+        {
+            return saleState switch
+            {
+                TankerWaterSaleStateEnum.WithTanker => "با تانکر",
+                TankerWaterSaleStateEnum.WithoutTanker => "بدون تانکر",
+                TankerWaterSaleStateEnum.Nomads => "به عشایر",
+                _ => string.Empty,
             };
         }
     }
