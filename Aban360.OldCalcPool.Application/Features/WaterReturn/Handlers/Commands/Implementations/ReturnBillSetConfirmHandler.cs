@@ -1,4 +1,5 @@
-﻿using Aban360.Common.ApplicationUser;
+﻿using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
+using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
@@ -8,6 +9,7 @@ using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Constant;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
+using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Contracts;
 using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Commands;
@@ -20,6 +22,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using System.Xml.Linq;
 
 namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Implementations
 {
@@ -72,10 +75,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             string logText = string.Format(Literals.BillReturnConfirmedOpLog, memberInfo.BillId, autoBackCreate?.FirstOrDefault()?.TedGhabs ?? 0, autoBackCreate?.FirstOrDefault()?.PriDate ?? string.Empty, autoBackCreate?.FirstOrDefault()?.TodayDate ?? string.Empty, autoBackCreate?.ElementAt(2)?.Baha ?? 0, input.ConfirmedNumber);
 
 
-            await SqlCommands(autoBackCreate, repairCreate, appUser, logText);
+            await SqlCommands(autoBackCreate, repairCreate, memberInfo, appUser, logText);
             return await GetResult(autoBacksInfo, input, memberInfo);
         }
-        private async Task SqlCommands(IEnumerable<AutoBackCreateDto> autoBacksCreateDto, RepairCreateDto repairCreateDto, IAppUser appUser, string logText)
+        private async Task SqlCommands(IEnumerable<AutoBackCreateDto> autoBacksCreateDto, RepairCreateDto repairCreateDto, MemberInfoGetDto memberInfo, IAppUser appUser, string logText)
         {
             string zoneDbName = GetDbName((int)(repairCreateDto?.Town ?? 0));
             string atlasDbName = ReportLiterals.Atlas;
@@ -90,15 +93,18 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 {
                     AutoBackCommandService autoBackCommandService = new(connection, transaction);
                     RepairCommandService repairCommandService = new(connection, transaction);
+                    WaterDebtCommandService waterDebtCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    BillCommandService billCommandService = new(connection, transaction);
                     OpLogCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     await autoBackCommandService.UpdateIsConfirmed((int)repairCreateDto.JalaseNo, atlasDbName);
                     await autoBackCommandService.Create(autoBacksCreateDto, zoneDbName, false);
-                    await repairCommandService.Insert(repairCreateDto, zoneDbName);
+                    int repairId = await repairCommandService.Insert(repairCreateDto, zoneDbName);
+                    await waterDebtCommandService.UpdateAmount(memberInfo.BillId, (long)repairCreateDto.Baha);
+                    await membersCommandService.UpdateBedbes(new ZoneIdAndCustomerNumber(memberInfo.ZoneId, memberInfo.CustomerNumber), (long)repairCreateDto.Baha, zoneDbName);
+                    await billCommandService.InsertReturnByRepair(repairId, zoneDbName);
                     await opLogCommandService.Insert(logText, appUser);
-                    //todo: update waterDebtCommandService-amount
-                    //todo: update membersCommandService-bedBes
-                    //todo: update billCommandService
 
                     transaction.Commit();
                 }
