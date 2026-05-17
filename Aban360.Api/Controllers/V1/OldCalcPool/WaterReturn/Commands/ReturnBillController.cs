@@ -3,6 +3,8 @@ using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
+using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.Contracts;
+using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.Implementations;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +16,12 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
     {
         private readonly IReturnBillPartialHandler _billPartialHandler;
         private readonly IReturnBillFullHandler _billFullHandler;
+        private readonly IReturnBillByConfirmedNumberGetHandler _billByConfirmedNumberGetHandler;
         private readonly IReportGenerator _reportGenerator;
         public ReturnBillController(
             IReturnBillPartialHandler billPartialHandler,
             IReturnBillFullHandler billFullHandler,
+            IReturnBillByConfirmedNumberGetHandler billByConfirmedNumberGetHandler,
             IReportGenerator reportGenerator)
         {
             _billPartialHandler = billPartialHandler;
@@ -25,6 +29,9 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
 
             _billFullHandler = billFullHandler;
             _billFullHandler.NotNull(nameof(billFullHandler));
+
+            _billByConfirmedNumberGetHandler = billByConfirmedNumberGetHandler;
+            _billByConfirmedNumberGetHandler.NotNull(nameof(billByConfirmedNumberGetHandler));
 
             _reportGenerator = reportGenerator;
             _reportGenerator.NotNull(nameof(reportGenerator));
@@ -60,7 +67,6 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
             return Ok(reportId);
         }
 
-
         [HttpPost]
         [Route("partial-sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
@@ -69,6 +75,18 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
         {
             int reportCode = 2000;
             FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = await _billPartialHandler.Handle(input, CurrentUser, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
+        }
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetStiReport(ReturnBillStiInputDto input, CancellationToken cancellationToken)
+        {
+            int reportCode = 2000;
+            FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = await _billByConfirmedNumberGetHandler.Handle(input.ConfirmedNumber, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
             return Ok(reportId);
         }
