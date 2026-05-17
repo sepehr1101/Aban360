@@ -112,7 +112,8 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 	                  From [CustomerWarehouse].dbo.Bills b
 	                  WHERE
 	                 	b.BillId=@billId AND
-                        b.CounterStateCode NOT IN (4,7,8) {idPart}
+                        b.CounterStateCode NOT IN (4,7,8) AND
+						b.TypeCode<>5 {idPart}
 	                 order by NextDay desc";
         }
         private string GetWaterInvoiceQuery(string idPart="")

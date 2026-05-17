@@ -28,11 +28,13 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         {
             TankerOutputDto tankerInfo = await _tankerQueryService.Get(input);
             BedBesItemsOutputDto bedBesInfo = await _besQueryService.GetLatestByCustomerNumber(input);
+            long deliveryAmount = bedBesInfo.SumItems - (bedBesInfo.Water + bedBesInfo.Budget + bedBesInfo.Tax);
             ICollection<StringDictionary> data = new List<StringDictionary>()
             {
                 new StringDictionary("آب‌بها",bedBesInfo.Water.ToString()),
                 new StringDictionary("بودجه",bedBesInfo.Budget.ToString()),
                 new StringDictionary("مالیات",bedBesInfo.Tax.ToString()),
+                new StringDictionary("جابجایی",( deliveryAmount < 0 ? 0 : deliveryAmount ).ToString()),
             };
             TankerHeaderOutputDto header = new()
             {
@@ -48,9 +50,10 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 Surname = tankerInfo.Surname,
                 Address = tankerInfo.Address,
                 Amount = tankerInfo.Amount,
-                Duration = 0,
+                Duration = "-",
+                PhoneNumber = "-",
                 Consumption = tankerInfo.Consumption,
-                SaleState = string.Empty,
+                SaleState = "-",
                 Title = _title,
             };
 
