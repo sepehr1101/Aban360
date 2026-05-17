@@ -7,5 +7,6 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts
     public interface ITankerQueryService
     {
         Task<ReportOutput<TankerWaterHeaderOutputDto, TankerWaterDateOutputDto>> Get(TankerWaterInputDto input);
+        Task<TankerOutputDto> Get(ZoneIdAndCustomerNumber input);
     }
 }

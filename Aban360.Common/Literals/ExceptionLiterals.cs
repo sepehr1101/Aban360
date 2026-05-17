@@ -47,6 +47,8 @@
         public static string InvoiceNotFound => " قبض یافت نشد!";
         public static string BillIdNotFound => "شناسه قبض یافت نشد!";
         public static string InvalidBillId => "شناسه قبض معتبر نیست!";
+        public static string InvalidCustomerNumber => "ردیف یافت نشد!";
+        public static string NotFoundCustomer => "مشترک با اطلاعات وارد شده یافت نشد!";
         public static string InvalidTrackNumber => "شماره پیگیری یافت نشد.";
         public static string InvalidDate => "تاریخ ناصحیح";
         public static string InvalidFromDate => "تاریخ شروع ناصحیح";
@@ -62,6 +64,7 @@
         public static string InvalidCollectedDeletionState => "مشترک در وضعیت 'جمع آوری' قرار دارد.";
         public static string InvalidDuration => "مدت زمان محاسبه نامعتبر";
         public static string InvalidZeroServiceSelected => "حداقل یک درخواست انتخاب کنید.";
+        public static string InvalidZoneTitle => "ناحیه یافت نشد!";
 
         public static string InvlaidStringLength => "طول رشته نامعتبر است.";
         public static string InvalidEmailFormat => "فرمت ایمیل نامعتبر است.";
@@ -143,6 +146,7 @@
         public static string CantReturn => "برگشتی در بازه تاریخی وارد شده امکان پذیر نیست.";
         public static string RepairAmountMoreThanBedBesAmount => "مبلغ برگشتی از مبلغ قبوض بیشتر است.";
         public static string InvalidBillWithDel => "در بازه وارد شده، قبض برگشتی وجود دارد.";
+        public static string InvalidTempReturnBill => "در بازه وارد شده، قبض برگشتی در حالت موقت وجود دارد.";
         public static string InvalidReturnDuplicate => "در گذشته قبضی با اطلاعات وارد شده برگشت داده شده است.";
         public static string InvalidSaveReturn => "خطا در ذخیره برگشتی";
         public static string InvalidConfirmedReturn => "خطا در ذخیره تایید برگشتی";

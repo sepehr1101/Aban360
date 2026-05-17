@@ -6,5 +6,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
     {
         Task<IEnumerable<UserZoneIdsOutputDto>> Get();
         Task<bool> GetArticle2(int zoneId);
+        Task<string> Get(int zoneId);
     }
 }

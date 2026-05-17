@@ -14,13 +14,18 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
     internal sealed class DisplayRequestHandler : IDisplayRequestHandler
     {
         private readonly IMoshtrakQueryService _moshtrakQueryService;
+        private readonly ITrackingQueryService _trackingQueryService;
         private readonly IValidator<ZoneIdAndTrackNumber> _validator;
         public DisplayRequestHandler(
             IMoshtrakQueryService moshtrakQueryService,
+            ITrackingQueryService trackingQueryService,
             IValidator<ZoneIdAndTrackNumber> validator)
         {
             _moshtrakQueryService = moshtrakQueryService;
             _moshtrakQueryService.NotNull(nameof(moshtrakQueryService));
+
+            _trackingQueryService = trackingQueryService;
+            _trackingQueryService.NotNull(nameof(trackingQueryService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -30,13 +35,14 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         {
             await Validation(inputDto, cancellationToken);
 
-            MoshtrakGetDto moshtrackSearch = new(inputDto.ZoneId, null, null, inputDto.TrackNumber);
+            TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
+            MoshtrakGetDto moshtrackSearch = new(trackingInfo.ZoneId, null, null, inputDto.TrackNumber);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(moshtrackSearch, MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
 
             MoshtrakServiceDto sData = GetSDto(moshtrakInfo);
             IEnumerable<MoshtrakCompanyService> companyServices = MoshtrakService.GetMoshtrakCompanyServiceDto(sData);
 
-            MoshtrakDataOutputDto moshtrakData = GetMoshtrakData(moshtrakInfo, companyServices);
+            MoshtrakDataOutputDto moshtrakData = GetMoshtrakData(moshtrakInfo, companyServices, trackingInfo);
             return moshtrakData;
         }
         private async Task Validation(ZoneIdAndTrackNumber inputDto, CancellationToken cancellationToken)
@@ -101,11 +107,11 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 s48 = input.s48,
             };
         }
-        private MoshtrakDataOutputDto GetMoshtrakData(MoshtrakOutputDto input, IEnumerable<MoshtrakCompanyService> companyServices)
+        private MoshtrakDataOutputDto GetMoshtrakData(MoshtrakOutputDto input, IEnumerable<MoshtrakCompanyService> companyServices, TrackingOutputDto trackingInfo)
         {
             return new MoshtrakDataOutputDto()
             {
-                Id=input.Id,
+                Id = input.Id,
                 ZoneId = input.ZoneId,
                 ZoneTitle = input.ZoneTitle,
                 CustomerNumber = input.CustomerNumber,
@@ -153,8 +159,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 IsNonPermanent = input.IsNonPermanent,
                 BlockId = input.BlockId,
                 BrokerId = input.BrokerId,
+                ServiceGroupTitle = trackingInfo.ServiceGroupTitle,
+                ServiceGroupId = trackingInfo.ServiceGroupId,
                 CompanyServiceItems = companyServices
-
             };
         }
 
