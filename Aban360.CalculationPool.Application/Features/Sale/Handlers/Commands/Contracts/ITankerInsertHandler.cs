@@ -5,6 +5,6 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Co
 {
     public interface ITankerInsertHandler
     {
-        Task<TankerWaterCalculationOutputDto> Handle(TankerInsertInputDto inputDto, int userCode, CancellationToken cancellationToken);
+        Task<TankerCalculationResultOutputDto> Handle(TankerInsertInputDto inputDto, int userCode, CancellationToken cancellationToken);
     }
 }

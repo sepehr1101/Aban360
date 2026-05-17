@@ -280,6 +280,23 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             var result = await connection.QueryAsync<string>(query);
             return result;
         }
+        public async Task<BedBesItemsOutputDto> GetLatestByCustomerNumber(ZoneIdAndCustomerNumber input)
+        {
+            string dbName = GetDbName(input.ZoneId);
+            string query = GetLatestByCustomerNumberQuery(dbName);
+            BedBesItemsOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BedBesItemsOutputDto>(query, input);
+            if (result is null)
+            {
+                throw new InvalidBillIdException(ExceptionLiterals.NotFoundCustomer);
+            }
+            return result;
+        }
+        public async Task<IEnumerable<BedBesWithDelOutputDto>> GetByDateInterval(ZoneCustomerFromToDateDto input, string dbName)
+        {
+            string query = GetIdWithDateIntervalQuery(dbName);
+            IEnumerable<BedBesWithDelOutputDto> result = await _sqlReportConnection.QueryAsync<BedBesWithDelOutputDto>(query, input);
+            return result;
+        }
 
         private string GetBedBesConsumptionDataQuery(string dataBaseName)
         {
@@ -615,6 +632,38 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	radif=@customerNumber AND
                     	cod_vas Not IN (4,7,8) 
                     Order by date_bed Desc";
+        }
+        private string GetLatestByCustomerNumberQuery(string dbName)
+        {
+            return $@"Select 
+                        b.id,
+                        b.town ZoneId,
+                        t51.C2 ZoneTitle,
+                        t46.C0 RegionId,
+                        t46.C2 RegionTitle,
+                        b.town CustomerNumber,
+                        b.sh_ghabs1 BillId,
+                        b.sh_pard1 PayId,
+                        b.baha SumItems,
+                        b.ab_baha Water,
+                        b.shahrdari Tax,
+                        b.bodjeh Budget
+                     From [{dbName}].dbo.bed_bes b
+                     Join [Db70].dbo.T51 t51
+                         On b.town=t51.C0
+                     Join [Db70].dbo.T46 t46
+                         On t51.C1=t46.C0
+                     Where radif=@customerNumber";
+        }
+        private string GetIdWithDateIntervalQuery(string dbName)
+        {
+            return $@"Select 
+                            id,
+                            del IsReturned
+                    From [{dbName}].dbo.bed_bes
+                    Where 
+                    	radif=@CustomerNumber AND
+                    	(pri_date>=@FromDate AND today_date<=@ToDate)  ";
         }
     }
 }

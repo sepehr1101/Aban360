@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.Db.Dapper;
+using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
 using Dapper;
@@ -10,7 +11,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
     {
         public ZoneQueryService(IConfiguration configuration)
             : base(configuration)
-        { 
+        {
         }
 
         public async Task<IEnumerable<UserZoneIdsOutputDto>> Get()
@@ -26,6 +27,17 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             bool hasArticle11 = await _sqlReportConnection.QueryFirstOrDefaultAsync<bool>(query, new { zoneId });
             return hasArticle11;
         }
+        public async Task<string> Get(int zoneId)
+        {
+            string query = GetTitleQuery();
+            string? zoneTitle= await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(query, new { zoneId });
+            if (string.IsNullOrWhiteSpace(zoneTitle))
+            {
+                throw new InvalidDataException(ExceptionLiterals.InvalidZoneTitle);
+            }
+            return zoneTitle;
+        }
+
         private string GetUserZoneIdsQuery()
         {
             return @"Select	
@@ -40,6 +52,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         {
             return @"Select C8
                     From [Db70].dbo.T51
+                    Where C0=@zoneId";
+        }
+        private string GetTitleQuery()
+        {
+            return @"Select C2 
+                    From Db70.dbo.T51
                     Where C0=@zoneId";
         }
     }

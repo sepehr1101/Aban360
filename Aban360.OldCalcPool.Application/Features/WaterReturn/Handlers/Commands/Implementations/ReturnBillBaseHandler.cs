@@ -25,6 +25,7 @@ using Microsoft.Extensions.Configuration;
 using System.Data;
 using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implementations;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Contracts;
 
 namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Implementations
 {
@@ -37,9 +38,12 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private readonly ITaxCalculator _taxCalculator;
         private readonly IHBedBesQueryService _hBedBesQueryService;
         private readonly IVariabService _variabService;
+        private readonly IAutoBackQueryService _autoBackQueryService;
         private readonly IValidator<ReturnBillFullInputDto> _returnFullValidator;
         private readonly IValidator<ReturnBillPartialInputDto> _returnPartialValidator;
         private static string _title = "برگشتی";
+        const string _type = "5";
+        const int _operator = 666;
         public ReturnBillBaseHandler(
             IHttpContextAccessor contextAccessor,
             IBedBesQueryService bedBesQueryService,
@@ -48,6 +52,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             ITaxCalculator taxCalculator,
             IHBedBesQueryService hBedBesQueryService,
             IVariabService variabService,
+            IAutoBackQueryService autoBackQueryService,
             IValidator<ReturnBillFullInputDto> returnFullValidator,
             IValidator<ReturnBillPartialInputDto> returnPartialValidator,
             IConfiguration configuration)
@@ -73,6 +78,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             _variabService = variabService;
             _variabService.NotNull(nameof(variabService));
+
+            _autoBackQueryService = autoBackQueryService;
+            _autoBackQueryService.NotNull(nameof(autoBackQueryService));
 
             _returnFullValidator = returnFullValidator;
             _returnFullValidator.NotNull(nameof(returnFullValidator));
@@ -106,7 +114,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Item3 = bedBes.AbonAb,
                 PayableAmount = bedBes.Pard,
                 CounterStateCode = bedBes.CodVas,
-                BillsCount = bedBes.Ghabs,
+                BillsCount = "0",
                 Removable = bedBes.Del,
                 UsageId = bedBes.CodEnshab,
                 MeterDiameterId = bedBes.Enshab,
@@ -119,7 +127,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 BranchType = bedBes.NoeVa,
                 Item8 = bedBes.Jarime,
                 ConsumptionAverage = bedBes.Rate,
-                Operator = bedBes.Operator,
+                Operator = _operator,
                 LastMeterChangeDateJalali = bedBes.TavizDate,
                 Item9 = bedBes.Zabresani,
                 Item10 = bedBes.ZaribD,
@@ -155,7 +163,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Item3 = newCalculation.AbonAb,
                 PayableAmount = newCalculation.Pard,
                 CounterStateCode = newCalculation.CodVas,
-                BillsCount = newCalculation.Ghabs,
+                BillsCount = "0",
                 Removable = newCalculation.Del,
                 UsageId = newCalculation.CodEnshab,
                 MeterDiameterId = newCalculation.Enshab,
@@ -168,7 +176,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 BranchType = newCalculation.NoeVa,
                 Item8 = newCalculation.Jarime,
                 ConsumptionAverage = newCalculation.Rate,
-                Operator = newCalculation.Operator,
+                Operator = _operator,
                 LastMeterChangeDateJalali = newCalculation.TavizDate,
                 Item9 = newCalculation.Zabresani,
                 Item10 = newCalculation.ZaribD,
@@ -204,7 +212,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Item3 = different.AbonAb,
                 PayableAmount = different.Pard,
                 CounterStateCode = different.CodVas,
-                BillsCount = different.Ghabs,
+                BillsCount = "0",
                 Removable = different.Del,
                 UsageId = different.CodEnshab,
                 MeterDiameterId = different.Enshab,
@@ -217,7 +225,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 BranchType = different.NoeVa,
                 Item8 = different.Jarime,
                 ConsumptionAverage = different.Rate,
-                Operator = different.Operator,
+                Operator = _operator,
                 LastMeterChangeDateJalali = different.TavizDate,
                 Item9 = different.Zabresani,
                 Item10 = different.ZaribD,
@@ -241,11 +249,17 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             {
                 return result;
             }
+            await DuplicateReturnValidtion(previousValues);
             decimal confirmNumber = await _variabService.GetAndRenewParvand(customerInfo.ZoneId, true);
             header.ConfirmNumber = (int)confirmNumber;
             bedBes.JalaseNo = confirmNumber;
             newCalculation.JalaseNo = confirmNumber;
             different.JalaseNo = confirmNumber;
+
+            decimal barge = await _variabService.GetAndRenew(customerInfo.ZoneId);
+            bedBes.Barge = barge;
+            newCalculation.Barge = barge;
+            different.Barge = barge;
 
             string returnMode = isPartial ? "محاسبه مجدد" : "کامل";
             string logText = string.Format(OpLogLiterals.Literals.BillReturnOpLog, returnMode, customerInfo.BillId, billCount, fromDateJalali, toDateJalali, different.Baha, confirmNumber);
@@ -282,9 +296,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Pard = 0,
                 Jam = 0,
                 CodVas = bedBes.CodVas,
-                Ghabs = string.Empty,//
+                Ghabs = "0",//
                 Del = false,
-                Type = "4",
+                Type = _type,
                 CodEnshab = bedBes.CodEnshab,
                 Enshab = bedBes.Enshab,
                 Elat = returnCauseId,
@@ -303,7 +317,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Masjar = 0,
                 Sabt = 0,
                 Rate = 0,
-                Operator = bedBes.Operator,
+                Operator = _operator,
                 Mamor = bedBes.Mamor,
                 TavizDate = bedBes.TavizDate,
                 ZaribCntr = 0,
@@ -361,9 +375,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Pard = (decimal)tariffInfo.SumItems / 1000 * 1000,
                 Jam = (decimal)tariffInfo.SumItems,
                 CodVas = tariffInfo.MeterInfo.CounterStateCode ?? 0,
-                Ghabs = string.Empty,
+                Ghabs = "0",
                 Del = false,
-                Type = "4",
+                Type = _type,
                 CodEnshab = tariffInfo.Customer.UsageId,
                 Enshab = tariffInfo.Customer.MeterDiameterId,
                 Elat = returnCauseId,
@@ -380,7 +394,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Masjar = 0,
                 Sabt = 0,
                 Rate = (decimal)tariffInfo.MonthlyConsumption,
-                Operator = bedBes.Operator,
+                Operator = _operator,
                 Mamor = bedBes.Mamor,
                 TavizDate = string.Empty,
                 ZaribCntr = 0,
@@ -439,9 +453,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Pard = Diff(bedBes.Pard, repair.Pard),
                 Jam = Diff(bedBes.Jam, repair.Jam),
                 CodVas = bedBes.CodVas,
-                Ghabs = string.Empty,
+                Ghabs = "0",
                 Del = false,
-                Type = "4",
+                Type = _type,
                 CodEnshab = repair.CodEnshab,
                 Enshab = repair.Enshab,
                 Elat = repair.Elat,
@@ -459,7 +473,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Masjar = 0,
                 Sabt = 0,
                 Rate = Diff(bedBes.Rate, repair.Rate),
-                Operator = bedBes.Operator,
+                Operator = _operator,
                 Mamor = bedBes.Mamor,
                 TavizDate = bedBes.TavizDate,
                 ZaribCntr = Diff(bedBes.ZaribCntr, repair.ZaribCntr),
@@ -532,9 +546,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Pard = bedBes.Pard,
                 Jam = bedBes.Jam,
                 CodVas = bedBes.CodVas,
-                Ghabs = string.Empty,//
+                Ghabs = "0",//
                 Del = false,
-                Type = "4",
+                Type = _type,
                 CodEnshab = bedBes.CodEnshab,
                 Enshab = bedBes.Enshab,
                 Elat = returnCauseId,
@@ -553,7 +567,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Masjar = bedBes.Masjar,
                 Sabt = 0,
                 Rate = bedBes.Rate,
-                Operator = bedBes.Operator,
+                Operator = _operator,
                 Mamor = bedBes.Mamor,
                 TavizDate = bedBes.TavizDate,
                 ZaribCntr = bedBes.ZaribCntr,
@@ -648,7 +662,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             r.DateBed = string.Empty;
             r.Mohlat = string.Empty;
             r.TavizDate = string.Empty;
-            r.Ghabs = string.Empty;
+            r.Ghabs = "0";
             r.TmpDateBed = string.Empty;
             r.TmpPriDate = string.Empty;
             r.TmpTodayDate = string.Empty;
@@ -809,7 +823,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Pard = different.Pard,
                 Jam = different.Jam,
                 CodVas = different.CodVas,
-                Ghabs = different.Ghabs,
+                Ghabs = "0",
                 Del = different.Del,
                 Type = different.Type,
                 CodEnshab = different.CodEnshab,
@@ -829,7 +843,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Masjar = different.Masjar,
                 Sabt = different.Sabt,
                 Rate = different.Rate,
-                Operator = different.Operator,
+                Operator = _operator,
                 Mamor = different.Mamor,
                 TavizDate = different.TavizDate,
                 ZaribCntr = different.ZaribCntr,
@@ -859,6 +873,11 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 DateSbt = different.DateSbt,
                 Avarez = different.Avarez,
             };
+        }
+        private async Task DuplicateReturnValidtion(ReturnBillDataOutputDto previousValues)
+        {
+            ReturnBillDateIntervalDto dateInterval = new((int)previousValues.ZoneId, (int)previousValues.CustomerNumber, previousValues.PreviousDateJalali, previousValues.CurrentDateJalali);
+            int count = await _autoBackQueryService.GetCountByDateInterval(dateInterval);
         }
     }
 }

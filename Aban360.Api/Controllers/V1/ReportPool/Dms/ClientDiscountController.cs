@@ -40,7 +40,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Dms
         [HttpPost, HttpGet]
         [Route("add")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ClientDiscountInsertDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Add([FromForm] ClientDiscountInsertDto input, CancellationToken cancellationToken)
+        public async Task<IActionResult> Add([FromBody] ClientDiscountInsertDto input, CancellationToken cancellationToken)
         {
             await _requestDiscountInsertHandler.Handle(input, cancellationToken);
             return Ok(input);
@@ -49,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Dms
         [HttpPost, HttpGet]
         [Route("edit")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ClientDiscountInsertDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Edit([FromForm] ClientDiscountUpdateDto input, CancellationToken cancellationToken)
+        public async Task<IActionResult> Edit([FromBody] ClientDiscountUpdateDto input, CancellationToken cancellationToken)
         {
             await _requestDiscountUpdateHandler.Handle(input, cancellationToken);
             return Ok(input);

@@ -192,7 +192,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     	b.pri_date PreviousDay,
                     	b.today_date NextDay,
                     	b.date_bed RegisterDay,
-                    	AbAndFazelab.dbo.PersianToMiladi(b.date_bed) RegisterDayGregorian,
+                    	CustomerWarehouse.dbo.PersianToMiladi(b.date_bed) RegisterDayGregorian,
                     	'' CounterStateTitle,
                     	b.cod_enshab AS [UsageId], 
                     	b.group1 [UsageId2], 
