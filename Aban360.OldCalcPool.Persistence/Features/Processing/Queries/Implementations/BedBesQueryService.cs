@@ -630,7 +630,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     Where 
                     	town=@zoneId AND
                     	radif=@customerNumber AND
-                    	cod_vas Not IN (4,7,8) 
+                    	cod_vas Not IN (4,7,8) AND
+						del=0 
                     Order by date_bed Desc";
         }
         private string GetLatestByCustomerNumberQuery(string dbName)
