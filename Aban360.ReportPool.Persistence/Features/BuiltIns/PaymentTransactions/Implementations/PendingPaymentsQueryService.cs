@@ -108,8 +108,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 									TRIM(ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber
 								) AND
 								DeletionStateId NOT IN (1,2)
-								{usageSellQuery}
-								--{usageConsumptionQuery}
+								--{usageSellQuery}
+								{usageConsumptionQuery}
 						),						
 						-- تجمیعی قبض‌ها
 						BillAgg AS (

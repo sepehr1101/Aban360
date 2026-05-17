@@ -1,4 +1,5 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.NotificationPool.Application.Features.Sms;
 using Hangfire;
@@ -40,6 +41,17 @@ namespace Aban360.Api.Controllers.V1
             AssessmentResultInputDto input = JsonOperation.Unmarshal<AssessmentResultInputDto>(requestBody);
 
             return Ok(requestBody);
+        }
+
+        [HttpGet]
+        [Route("check-null")]
+        public IActionResult CheckNull(string part1)
+        {
+            if (string.IsNullOrWhiteSpace(part1))
+            {
+                throw new BaseException("invalid part1");
+            }
+            return Ok(part1);
         }
 
         [HttpGet]

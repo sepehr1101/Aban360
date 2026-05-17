@@ -58,7 +58,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             int[] burstPipe = { 1 };
             int[] misreaded = { 5, 7, 9, 14, 15 };
-            int[] misreadedCalcWithMeterNumber = { 14, 15 };
+            int[] misreadedCalcWithMeterNumber = {10, 14, 15 };
             if (burstPipe.Contains(inputDto.ReturnCauseId))
             {
                 float _consumptionAverage = await GetConsumptionAverage(customerInfo, bedBesResult.PriDate, bedBesResult.TodayDate, consumptionAverage);
@@ -87,7 +87,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         }
         private async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> CreateAutoBacksAndReturn(AbBahaCalculationDetails abBahaResult, ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBesInfo, BedBesCreateDto bedBesResult, CustomerInfoOutputDto customerInfo, float? hadarConsumption, long? finalAmount, float consumptionAverage, int jalaseNumber, IAppUser appUser, string fromDateJalali, string toDateJalali, CancellationToken cancellationToken)
         {
-            int[] notCalcAbon = { 14, 15 };
+            /*int[] notCalcAbon = { 14, 15 };
             if (notCalcAbon.Contains(input.ReturnCauseId))
             {
                 double abon = abBahaResult.AbonmanAbAmount + abBahaResult.AbonmanFazelabAmount;
@@ -97,7 +97,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
                 abBahaResult.AbonmanAbAmount = 0;
                 abBahaResult.AbonmanFazelabAmount = 0;
-            }
+            }*/
             AutoBackCreateDto bedBes = _returnBillBaseHandler.GetBedBes(bedBesResult, bedBesInfo.Count(), jalaseNumber, input.ReturnCauseId);
             AutoBackCreateDto newCalculation = _returnBillBaseHandler.GetNewCalculation(abBahaResult, bedBesResult, input.ReturnCauseId, bedBesInfo.Count(), hadarConsumption ?? 0, (long)(finalAmount ?? 0), jalaseNumber);
             AutoBackCreateDto different = _returnBillBaseHandler.GetDifferent(bedBesResult, newCalculation, jalaseNumber);
