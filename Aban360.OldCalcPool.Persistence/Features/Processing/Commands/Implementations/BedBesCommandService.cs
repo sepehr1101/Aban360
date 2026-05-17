@@ -33,13 +33,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         {
             string BedBesCreateQueryString = GetBedBesCreateQuery(dbName);
 
-            int? recordCount = await _connection.QueryFirstOrDefaultAsync<int>(BedBesCreateQueryString, input, _transaction);
-            if (recordCount is null || recordCount <= 0)
+            int? recordId = await _connection.QueryFirstOrDefaultAsync<int>(BedBesCreateQueryString, input, _transaction);
+            if (recordId is null || recordId <= 0)
             {
                 throw new InvalidBillCommandException(Exceptionliterals.InvalidBillInsert);
             }
 
-            return recordCount.Value;
+            return recordId.Value;
         }
         public async Task Insert(ICollection<BedBesCreateDto> input, string dbName)
         {

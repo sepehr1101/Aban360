@@ -30,6 +30,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         private readonly IT52QueryService _t52QueryService;
         private readonly IZoneQueryService _zoneQueryService;
         static int _tankerWaterUsageId = 19;
+        static int _typeId = 1;
         public TankerInsertHandler(
             IHttpContextAccessor contextAccessor,
             IVariabService variabService,
@@ -65,16 +66,20 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
 
         public async Task<TankerCalculationResultOutputDto> Handle(TankerInsertInputDto inputDto, int userCode, CancellationToken cancellationToken)
         {
-            inputDto.FirstName = inputDto.FirstName.Trim();
-            inputDto.Surname = inputDto?.Surname?.Trim() ?? string.Empty;
-            inputDto.Address = inputDto?.Address?.Trim() ?? string.Empty;
+            TrimInputProp(inputDto);
             TankerWaterCalculationOutputDto calcResult = await Calc(inputDto, cancellationToken);
             if (!inputDto.IsConfirm)
             {
                 return await GetResult(calcResult, inputDto);
             }
-            string dbName = GetDbName(inputDto.ZoneId);
             decimal barge = await _variabService.GetAndRenew(inputDto.ZoneId);
+            await SqlCommands(inputDto, calcResult, barge, userCode);
+
+            return await GetResult(calcResult, inputDto);
+        }
+        private async Task SqlCommands(TankerInsertInputDto inputDto, TankerWaterCalculationOutputDto calcResult, decimal barge, int userCode)
+        {
+            string dbName = GetDbName(inputDto.ZoneId);
 
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -87,6 +92,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                     VariablesCommandService variablesCommandService = new(connection, transaction);
                     TankerCommandService tankerCommandService = new(connection, transaction);
                     BedBesCommandService bedBesCommandService = new(connection, transaction);
+                    BillCommandService billCommandService = new(connection, transaction);
 
                     int customerNumber = await variablesCommandService.GetAndRenewTankerRadif();
                     TankerInsertDto tankerInsertDto = GetTankerInsertDto(inputDto, calcResult, customerNumber, barge);
@@ -96,13 +102,13 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                     calcResult.CustomerNumber = customerNumber;
 
                     await tankerCommandService.Insert(tankerInsertDto, dbName);
-                    await bedBesCommandService.Insert(bedBesInsertDto, dbName);
+                    int bedBesId = await bedBesCommandService.Insert(bedBesInsertDto, dbName);
+                    BillByBedBedIdInsertDto billByBedBesIdDto = new(tankerInsertDto.ZoneId, tankerInsertDto.CustomerNumber, _typeId, bedBesId);
+                    await billCommandService.InsertByBedBesId(billByBedBesIdDto, dbName);
 
                     transaction.Commit();
                 }
             }
-
-            return await GetResult(calcResult, inputDto);
         }
         public async Task<TankerWaterCalculationOutputDto> Calc(TankerInsertInputDto input, CancellationToken cancellationToken)
         {
@@ -193,7 +199,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 CodVas = 0,
                 Ghabs = string.Empty,
                 Del = false,
-                Type = "1",
+                Type = _typeId.ToString(),
                 CodEnshab = _tankerWaterUsageId,
                 Enshab = 1,
                 Elat = 0,
@@ -250,7 +256,6 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 Tafa402 = 0,
                 Avarez = 0,
                 TrackNumber = 0,//todo
-
             };
         }
         private async Task<TankerCalculationResultOutputDto> GetResult(TankerWaterCalculationOutputDto calcResult, TankerInsertInputDto inputDto)
@@ -281,6 +286,12 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 TankerWaterSaleStateEnum.Nomads => "به عشایر",
                 _ => string.Empty,
             };
+        }
+        private void TrimInputProp(TankerInsertInputDto inputDto)
+        {
+            inputDto.FirstName = inputDto.FirstName.Trim();
+            inputDto.Surname = inputDto?.Surname?.Trim() ?? string.Empty;
+            inputDto.Address = inputDto?.Address?.Trim() ?? string.Empty;
         }
     }
 }

@@ -58,6 +58,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Implement
 
             return count; 
         }
+        
         private string GetQuery(string dbName)
         {
             return @$"Select 
@@ -239,6 +240,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Implement
                     		a.operator Operator,
                     		a.elat ReturnCauseId,
                     		r.Title ReturnCauseTitle,
+							a.jalase_no,
                     		Rn=Row_Number() Over(Partition By a.jalase_no Order by a.date_bed Desc, a.Id Desc)
                     	From [Atlas].dbo.autoback a
                     	Join [Db70].dbo.T51 t51

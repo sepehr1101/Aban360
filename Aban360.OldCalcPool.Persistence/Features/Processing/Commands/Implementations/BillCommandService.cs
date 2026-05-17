@@ -165,7 +165,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     	ON bt.Id=@TypeId
                     LEFT OUTER JOIN [{dbName}].dbo.members m
                         ON b.radif=m.radif and b.town=m.town
-                    WHERE b.Id=@bedBesId";//
+                    WHERE 
+                        b.Id=@bedBesId AND
+                        b.town=@ZoneId AND
+                        b.radif=@CustomerNumber";//
         }
         private string GetDeleteCommand()
         {
