@@ -78,10 +78,6 @@ StiFontCollection.AddFontFile(Path.Combine(builder.Environment.ContentRootPath, 
 StiFontCollection.AddFontFile(Path.Combine(builder.Environment.ContentRootPath, "AppData", "Fonts", "Vazir-Bold.ttf"));
 StiFontCollection.AddFontFile(Path.Combine(builder.Environment.ContentRootPath, "AppData", "Fonts", "Vazir-Light.ttf"));
 StiFontCollection.AddFontFile(Path.Combine(builder.Environment.ContentRootPath, "AppData", "Fonts", "Vazir-Medium.ttf"));
-StiFontCollection.AddFontFile(Path.Combine(builder.Environment.ContentRootPath, "AppData", "Fonts", "Vazir-FD-WOL.ttf"));
-StiFontCollection.AddFontFile(Path.Combine(builder.Environment.ContentRootPath, "AppData", "Fonts", "Vazir-Bold-FD_WOL.ttf"));
-StiFontCollection.AddFontFile(Path.Combine(builder.Environment.ContentRootPath, "AppData", "Fonts", "Vazir-Light-FD_WOL.ttf"));
-StiFontCollection.AddFontFile(Path.Combine(builder.Environment.ContentRootPath, "AppData", "Fonts", "Vazir-Medium-FD_WOL.ttf"));
 app.Run();
 
 public partial class Program { }
