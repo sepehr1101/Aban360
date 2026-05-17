@@ -111,8 +111,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
             IEnumerable<NumericDictionary> guildDictionary = await _guildQueryHandler.Handle(cancellationToken);
 
-
             IEnumerable<AssessmentLocationInfoOutputDto> locationsInfo = await GetLocationsInfo(assessmentCode);
+
+            IEnumerable<StringDictionary> mapDictionary = GetMapDictionary();
 
             return new AssessmentTasksOutputDto()
             {
@@ -127,6 +128,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 ArchiveFileTypes = archiveFileTypesDictionary,
                 BlockCodes = BlockCodeDictionary,
                 Guilds = guildDictionary,
+                MapDictionary = mapDictionary,
             };
         }
         private async Task<IEnumerable<AssessmentLocationInfoOutputDto>> GetLocationsInfo(int assessmentCode)
@@ -285,6 +287,14 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                     new StringDictionary("L", "L"),
                     new StringDictionary("M", "M"),
                     new StringDictionary("N", "N")];
+        }
+        private IEnumerable<StringDictionary> GetMapDictionary()
+        {
+            return [new ("ماهواره","https://maps.abfaisfahan.com/api/tile/googlesatellite/"),
+                new ("ناهمواری","https://maps.abfaisfahan.com/api/tile/googleterrain/"),
+                new ("مسیر‌ها","https://maps.abfaisfahan.com/api/tile/osm/"),
+                new ("گوگل","https://maps.abfaisfahan.com/api/tile/googlestreet/"),
+                new ("هیبرید","https://maps.abfaisfahan.com/api/tile/googlehybrid/")];
         }
     }
 }
