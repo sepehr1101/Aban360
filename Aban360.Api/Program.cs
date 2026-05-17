@@ -2,7 +2,6 @@ using Aban360.Api.ExceptionHandlers;
 using Aban360.Api.Extensions;
 using Aban360.Api.Hubs.Implementations;
 using Microsoft.Extensions.FileProviders;
-using Stimulsoft.Base;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -42,6 +41,8 @@ builder.Services
 
 builder.Services.AddSignalR();    //todo: replace into configure signalR
 
+builder.AddStiFonts();
+
 //todo 
 //builder.Services.AddTransient<TokenInterceptor>();
 
@@ -74,10 +75,6 @@ configuration.AddCronjobs();
 app.MapHub<NotifyHub>("/v1/notify-hub");        //todo: replace into configure signalR
 
 app.MapControllers();
-StiFontCollection.AddFontFile(Path.Combine(builder.Environment.ContentRootPath, "AppData", "Fonts", "Vazir.ttf"));
-StiFontCollection.AddFontFile(Path.Combine(builder.Environment.ContentRootPath, "AppData", "Fonts", "Vazir-Bold.ttf"));
-StiFontCollection.AddFontFile(Path.Combine(builder.Environment.ContentRootPath, "AppData", "Fonts", "Vazir-Light.ttf"));
-StiFontCollection.AddFontFile(Path.Combine(builder.Environment.ContentRootPath, "AppData", "Fonts", "Vazir-Medium.ttf"));
 app.Run();
 
 public partial class Program { }
