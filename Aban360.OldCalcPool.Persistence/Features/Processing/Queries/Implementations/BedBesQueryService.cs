@@ -297,6 +297,17 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             IEnumerable<BedBesWithDelOutputDto> result = await _sqlReportConnection.QueryAsync<BedBesWithDelOutputDto>(query, input);
             return result;
         }
+        public async Task<BedBesPreviousNumberAndDateOutputDto> GetPreviousDateAndNumber(ZoneIdAndCustomerNumber input, string billId)
+        {
+            string dbName = GetDbName(input.ZoneId);
+            string query = GetPreviousMeterDateAndNumberQuery(dbName);
+            BedBesPreviousNumberAndDateOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BedBesPreviousNumberAndDateOutputDto>(query, input);
+            if (result is null)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidBedBesPreviousNumberAndDate(billId));
+            }
+            return result;
+        }
 
         private string GetBedBesConsumptionDataQuery(string dataBaseName)
         {
@@ -665,6 +676,43 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     Where 
                     	radif=@CustomerNumber AND
                     	(pri_date>=@FromDate AND today_date<=@ToDate)  ";
+        }
+        private string GetPreviousMeterDateAndNumberQuery(string dbName)
+        {
+            return $@"With Cte As(
+                        Select 
+                    		b.date_bed,
+                    		b.pri_date,
+                    		b.today_date,
+                    		b.pri_no,
+                    		b.today_no,
+                    		r.elat,
+                    		b.del,
+                            Case 
+                                When b.del = 0 And b.cod_vas In (4,7,8) Then b.pri_no
+                                When b.del = 0 And b.cod_vas Not In (4,7,8) Then b.today_no
+                                When b.del = 1 And r.elat Not In (2,3,4,5,6,9,10) And b.cod_vas Not In (4,7,8) Then b.today_no
+                                When b.del = 1 And r.elat Not In (2,3,4,5,6,9,10) And b.cod_vas In (4,7,8) Then b.pri_no
+                                Else NULL
+                            End As PreviousNumber,
+                    		Case 
+                                When b.del = 0 And b.cod_vas In (4,7,8) Then b.pri_date
+                                When b.del = 0 And b.cod_vas Not In(4,7,8) Then b.today_date
+                                When b.del = 1 And r.elat Not In(2,3,4,5,6,9,10) And b.cod_vas Not In (4,7,8) Then b.today_date
+                                When b.del = 1 And r.elat Not In(2,3,4,5,6,9,10) And b.cod_vas In (4,7,8) Then b.pri_date
+                                Else NULL
+                            End As PreviousDateJalali
+                        From  [{dbName}].dbo.bed_bes b
+                    	 Left Join [{dbName}].dbo.REPAIR r
+                    		On b.town=r.town And b.radif=r.radif And b.pri_date>=r.pri_date And b.today_date<=r.today_date
+                    	 Where b.radif=@CustomerNumber And b.town=@ZoneId
+                    )
+                    Select Top 1 
+                    		PreviousDateJalali,
+                    		PreviousNumber
+                    From Cte
+                    Where PreviousNumber Is Not Null
+                    Order By date_bed Desc";
         }
     }
 }

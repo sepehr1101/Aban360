@@ -34,6 +34,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IBedBesQueryService _bedBesQueryService;
         private readonly ICustomerInfoDetailQueryService _customerInfoDetailQueryService;
+        private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly IBillReturnCauseQueryService _billReturnCauseQueryService;
         private readonly ITaxCalculator _taxCalculator;
         private readonly IHBedBesQueryService _hBedBesQueryService;
@@ -48,6 +49,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             IHttpContextAccessor contextAccessor,
             IBedBesQueryService bedBesQueryService,
             ICustomerInfoDetailQueryService customerInfoDetailQueryService,
+            ICommonMemberQueryService commonMemberQueryService,
             IBillReturnCauseQueryService billReturnCauseQueryService,
             ITaxCalculator taxCalculator,
             IHBedBesQueryService hBedBesQueryService,
@@ -66,6 +68,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             _customerInfoDetailQueryService = customerInfoDetailQueryService;
             _customerInfoDetailQueryService.NotNull(nameof(customerInfoDetailQueryService));
+
+            _commonMemberQueryService = commonMemberQueryService;
+            _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
 
             _billReturnCauseQueryService = billReturnCauseQueryService;
             _billReturnCauseQueryService.NotNull(nameof(billReturnCauseQueryService));
@@ -91,7 +96,13 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
         public async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> GetReturn(AutoBackCreateDto bedBes, AutoBackCreateDto newCalculation, AutoBackCreateDto different, CustomerInfoOutputDto customerInfo, int billCount, bool isConfirm, bool isPartial, IAppUser appUser, string fromDateJalali, string toDateJalali)
         {
+            MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber((int)bedBes.Town, (int)bedBes.Radif));
+            decimal baha = Diff(bedBes.Baha, newCalculation.Baha);
+            different.Baha = baha;
+            different.Pard = baha;
+            different.Jam = (decimal)(memberInfo.DebtAmount ?? 0) - baha;
             string description = await GetDescription(customerInfo, bedBes);
+
             ReturnBillDataOutputDto previousValues = new ReturnBillDataOutputDto()
             {
                 ZoneId = bedBes.Town,
@@ -245,6 +256,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             ReturnBillOutputDto data = new(previousValues, currentValues, returnValues);
             FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = new(_title, header, data);
 
+
             if (!isConfirm)
             {
                 return result;
@@ -260,6 +272,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             bedBes.Barge = barge;
             newCalculation.Barge = barge;
             different.Barge = barge;
+
 
             string returnMode = isPartial ? "محاسبه مجدد" : "کامل";
             string logText = string.Format(OpLogLiterals.Literals.BillReturnOpLog, returnMode, customerInfo.BillId, billCount, fromDateJalali, toDateJalali, different.Baha, confirmNumber);
@@ -427,6 +440,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         {
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
             string currentDateJalali10Char = currentDateJalali.Substring(2);
+            decimal baha = Diff(bedBes.Baha, repair.Baha);
 
             return new AutoBackCreateDto()
             {
@@ -448,10 +462,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 DateBed = currentDateJalali,
                 JalaseNo = jalaseNumber,
                 Mohlat = string.Empty,
-                Baha = Diff(bedBes.Baha, repair.Baha),
                 AbonAb = Diff(bedBes.AbonAb, repair.AbonAb),
-                Pard = Diff(bedBes.Pard, repair.Pard),
-                Jam = Diff(bedBes.Jam, repair.Jam),
+                //Baha = baha,
+                //Pard = Diff(bedBes.Baha, repair.Baha),//Diff(bedBes.Pard, repair.Pard),
+                //Jam =,/
                 CodVas = bedBes.CodVas,
                 Ghabs = "0",
                 Del = false,

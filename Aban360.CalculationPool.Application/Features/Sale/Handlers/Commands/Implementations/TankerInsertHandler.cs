@@ -17,6 +17,9 @@ using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts;
 using Microsoft.AspNetCore.Http;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
+using Aban360.Common.Db.Services;
+using Aban360.OldCalcPool.Application.Constant;
+using Aban360.Common.ApplicationUser;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Implementations
 {
@@ -30,6 +33,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         private readonly IT52QueryService _t52QueryService;
         private readonly IZoneQueryService _zoneQueryService;
         static int _tankerWaterUsageId = 19;
+        static int _operator = 666;
         static int _typeId = 1;
         public TankerInsertHandler(
             IHttpContextAccessor contextAccessor,
@@ -64,7 +68,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             _tankerQueryService.NotNull(nameof(tankerQueryService));
         }
 
-        public async Task<TankerCalculationResultOutputDto> Handle(TankerInsertInputDto inputDto, int userCode, CancellationToken cancellationToken)
+        public async Task<TankerCalculationResultOutputDto> Handle(TankerInsertInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             TrimInputProp(inputDto);
             TankerWaterCalculationOutputDto calcResult = await Calc(inputDto, cancellationToken);
@@ -73,11 +77,11 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 return await GetResult(calcResult, inputDto);
             }
             decimal barge = await _variabService.GetAndRenew(inputDto.ZoneId);
-            await SqlCommands(inputDto, calcResult, barge, userCode);
+            await SqlCommands(inputDto, calcResult, barge, appUser);
 
             return await GetResult(calcResult, inputDto);
         }
-        private async Task SqlCommands(TankerInsertInputDto inputDto, TankerWaterCalculationOutputDto calcResult, decimal barge, int userCode)
+        private async Task SqlCommands(TankerInsertInputDto inputDto, TankerWaterCalculationOutputDto calcResult, decimal barge, IAppUser appUser)
         {
             string dbName = GetDbName(inputDto.ZoneId);
 
@@ -93,18 +97,21 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                     TankerCommandService tankerCommandService = new(connection, transaction);
                     BedBesCommandService bedBesCommandService = new(connection, transaction);
                     BillCommandService billCommandService = new(connection, transaction);
+                    OpLogCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     int customerNumber = await variablesCommandService.GetAndRenewTankerRadif();
                     TankerInsertDto tankerInsertDto = GetTankerInsertDto(inputDto, calcResult, customerNumber, barge);
-                    BedBesCreateDto bedBesInsertDto = await GetBedBesInsertDto(tankerInsertDto, calcResult, userCode);
+                    BedBesCreateDto bedBesInsertDto = await GetBedBesInsertDto(tankerInsertDto, calcResult);
                     calcResult.BillId = bedBesInsertDto.ShGhabs1;
                     calcResult.PaymentId = bedBesInsertDto.ShPard1;
                     calcResult.CustomerNumber = customerNumber;
+                    string opLogText = string.Format(Literals.TankerOpLog, appUser.Username, tankerInsertDto.CurrentDateJalali, inputDto.ZoneId, bedBesInsertDto.ShGhabs1, tankerInsertDto.CustomerNumber, calcResult.Final);
 
                     await tankerCommandService.Insert(tankerInsertDto, dbName);
                     int bedBesId = await bedBesCommandService.Insert(bedBesInsertDto, dbName);
                     BillByBedBedIdInsertDto billByBedBesIdDto = new(tankerInsertDto.ZoneId, tankerInsertDto.CustomerNumber, _typeId, bedBesId);
                     await billCommandService.InsertByBedBesId(billByBedBesIdDto, dbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
 
                     transaction.Commit();
                 }
@@ -164,7 +171,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 ReadingNumber = string.Empty,//todo
             };
         }
-        private async Task<BedBesCreateDto> GetBedBesInsertDto(TankerInsertDto tankerInsertDto, TankerWaterCalculationOutputDto calcResult, int userCode)
+        private async Task<BedBesCreateDto> GetBedBesInsertDto(TankerInsertDto tankerInsertDto, TankerWaterCalculationOutputDto calcResult)
         {
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
             //string _3digitZoneId = await _t52QueryService.Get(new ZoneIdAndCustomerNumber(tankerInsertDto.ZoneId, tankerInsertDto.CustomerNumber));
@@ -217,7 +224,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 Masjar = 0,
                 Sabt = 0,
                 Rate = 30,
-                Operator = userCode,
+                Operator = _operator,
                 Mamor = 0,
                 TavizDate = string.Empty,
                 ZaribCntr = 0,
