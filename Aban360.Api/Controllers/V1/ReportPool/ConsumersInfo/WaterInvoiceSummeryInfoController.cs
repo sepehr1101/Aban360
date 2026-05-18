@@ -6,6 +6,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
 {
@@ -62,9 +63,21 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         public async Task<IActionResult> GetStiReport(SearchInput inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 90;
-            ReportOutput<WaterInvoiceDto, LineItemsDto> WaterInvoiceDto = await _waterInvoiceHandler.Handle(inputDto.Input);
-            JsonReportId reportId = await JsonOperation.ExportToJson(WaterInvoiceDto, cancellationToken, reportCode);
+            ReportOutput<WaterInvoiceDto, LineItemsDto> waterInvoice = await _waterInvoiceHandler.Handle(inputDto.Input);
+            JsonReportId reportId = await JsonOperation.ExportToJson(waterInvoice, cancellationToken, reportCode);
             return Ok(reportId);
+        }
+
+        [HttpPost]
+        [Route("sti-summary-2-by-id")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterInvoiceDto, LineItemsDto>>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetStiReportSummary2ById([FromBody] DisplayThisBillInput searchInput,CancellationToken cancellationToken)
+        {
+            int reportCode = 90;
+            ReportOutput<WaterInvoiceDto, LineItemsDto> waterInvoice = await _waterInvoiceHandler.Handle(searchInput);
+            JsonReportId reportId = await JsonOperation.ExportToJson(waterInvoice, cancellationToken, reportCode);
+            return Ok(waterInvoice);
         }
     }
 }

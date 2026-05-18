@@ -127,7 +127,8 @@ namespace Aban360.Common.Db.Services
 						m.Khali_s AS EmptyUnit,
 						m.operator AS Operator,
 						m.Senf AS Guild,
-						m.date_KHANE HouseholdDateJalali 
+						m.date_KHANE HouseholdDateJalali ,
+						bed_bes DebtAmount
 					From [{dbName}].dbo.members m
 					Left Join [Db70].dbo.T51 t51
 						ON m.town=t51.C0

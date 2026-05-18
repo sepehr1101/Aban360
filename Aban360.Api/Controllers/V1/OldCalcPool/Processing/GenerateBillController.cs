@@ -11,10 +11,16 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
     public class GenerateBillController : BaseController
     {
         private readonly IGenerateBillHandler _generateBillHandler;
-        public GenerateBillController(IGenerateBillHandler generateBillHandler)
+        private readonly IFreeGenerateBillHandler _freeGenerateBillHandler;
+        public GenerateBillController(
+            IGenerateBillHandler generateBillHandler, 
+            IFreeGenerateBillHandler freeGenerateBillHandler)
         {
             _generateBillHandler = generateBillHandler;
             _generateBillHandler.NotNull(nameof(generateBillHandler));
+            
+            _freeGenerateBillHandler = freeGenerateBillHandler;
+            _freeGenerateBillHandler.NotNull(nameof(freeGenerateBillHandler));
         }
 
         [HttpPost, HttpGet]
@@ -23,6 +29,16 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         public async Task<IActionResult> Calculation(GenerateBillInputDto inputDto, CancellationToken cancellationToken)
         {
             NewBillOutputDto result = await _generateBillHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            return Ok(result);
+        }
+
+
+        [HttpPost, HttpGet]
+        [Route("free")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<NewBillOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> FreeCalculation(FreeGenerateBillInputDto inputDto, CancellationToken cancellationToken)
+        {
+            NewBillOutputDto result = await _freeGenerateBillHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
         }
     }

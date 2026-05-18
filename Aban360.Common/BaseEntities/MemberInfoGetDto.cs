@@ -68,5 +68,6 @@
         public int DiscountId { get; set; }
         public string? DiscountTitle { get; set; }
         public string? BlockCode { get; set; }
+        public long? DebtAmount { get; set; }
     }
 }

@@ -51,8 +51,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Command
         [ProducesResponseType(typeof(ApiResponseEnvelope<TankerWaterCalculationOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Add([FromBody] TankerInsertInputDto input, CancellationToken cancellationToken)
         {
-            int userCode = UserService.GetUserCode(CurrentUser.Username);
-            TankerCalculationResultOutputDto result = await _tankerInserHandler.Handle(input, userCode, cancellationToken);
+            TankerCalculationResultOutputDto result = await _tankerInserHandler.Handle(input, CurrentUser, cancellationToken);
             string text = string.Format(SmsTemplates.TankerWater, result.ZoneTitle, result.SaleStateTitle, result.FirstName, result.Surname, result.CurrentDateJalali, result.Consumption, (long)result.Final, result.BillId, result.PaymentId);
             if (input.IsConfirm && input.HasSms && !string.IsNullOrWhiteSpace(input.MobileNumber))
             {
