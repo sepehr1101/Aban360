@@ -37,7 +37,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         {
             int reportCode = 230;
             ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> calculationDetails = await _subscriptionEventHandler.Handle(searchInput, cancellationToken);
-            JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode);
+            JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode, true);
             return Ok(reportId);
         }
 
