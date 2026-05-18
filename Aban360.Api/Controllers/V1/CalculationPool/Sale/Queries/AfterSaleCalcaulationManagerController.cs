@@ -44,7 +44,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Queries
         {
             int reportCode = 2010;
             FlatReportOutput<SaleHeaderOutputDto, AfterSaleDataOutputDto> data = await _afterSaleGetHandler.Handle(inputDto, cancellationToken);
-            JsonReportId reportId = await JsonOperation.ExportToJson(data, cancellationToken, reportCode);
+            JsonReportId reportId = await JsonOperation.ExportToJsonFlat(data, cancellationToken, reportCode);
             return Ok(reportId);
         }
     }

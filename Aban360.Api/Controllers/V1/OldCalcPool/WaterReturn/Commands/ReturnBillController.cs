@@ -63,7 +63,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
         {
             int reportCode = 2000;
             FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = await _billFullHandler.Handle(input, CurrentUser, cancellationToken);
-            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode);
             return Ok(reportId);
         }
 
@@ -75,7 +75,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
         {
             int reportCode = 2000;
             FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = await _billPartialHandler.Handle(input, CurrentUser, cancellationToken);
-            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode);
             return Ok(reportId);
         }
 
@@ -87,7 +87,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
         {
             int reportCode = 2000;
             FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = await _billByConfirmedNumberGetHandler.Handle(input.ConfirmedNumber, cancellationToken);
-            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode);
             return Ok(reportId);
         }
     }

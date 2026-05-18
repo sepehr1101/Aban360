@@ -185,7 +185,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
                     }                    
                 }
             }            
-            JsonReportId reportId = await JsonOperation.ExportToJson(jsonObject, cancellationToken, reportCode);
+            JsonReportId reportId = await JsonOperation.ExportToJsonFlat(jsonObject, cancellationToken, reportCode);
             return reportId;
         }
     }

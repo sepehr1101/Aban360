@@ -43,7 +43,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         {
             int reportCode = 2040;
             FlatReportOutput<InstallationPrintHeaderOutputDto, InstallationPrintDataOutputDto> installationPrintHandler = await _installationPrintHandler.Handle(inputDto, cancellationToken);
-            JsonReportId reportId = await JsonOperation.ExportToJson(installationPrintHandler, cancellationToken, reportCode);
+            JsonReportId reportId = await JsonOperation.ExportToJsonFlat(installationPrintHandler, cancellationToken, reportCode);
             return Ok(reportId);
         }
     }

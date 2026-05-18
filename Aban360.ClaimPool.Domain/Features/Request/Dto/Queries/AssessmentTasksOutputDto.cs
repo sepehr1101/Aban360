@@ -15,5 +15,6 @@ namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Queries
         public IEnumerable<NumericDictionary>  ArchiveFileTypes{ get; set; }
         public IEnumerable<StringDictionary> BlockCodes{ get; set; }
         public IEnumerable<NumericDictionary> Guilds { get; set; }
+        public IEnumerable<StringDictionary> MapDictionary { get; set; } = default!;
     }
 }

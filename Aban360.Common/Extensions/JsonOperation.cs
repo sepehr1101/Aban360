@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.BaseEntities;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -31,9 +32,11 @@ namespace Aban360.Common.Extensions
             return JsonConvert.DeserializeObject<T>(jsonString);
         }
 
-        public static async Task<JsonReportId> ExportToJson<THeader, TData>(ReportOutput<THeader, TData> reportOutput, CancellationToken cancellationToken, [Optional]int fileCode)
+        public static async Task<JsonReportId> ExportToJson<THeader, TData>(ReportOutput<THeader, TData> reportOutput, CancellationToken cancellationToken, int fileCode, bool hasLogo=false)
         {
             const string path = @"AppData\Jsons\";
+            const string logoPath = @"AppData\Images\logoBase64.txt";
+
             reportOutput.NotNull(nameof(reportOutput));
             Guid id = Guid.NewGuid();
             JsonSerializerSettings settings = new JsonSerializerSettings
@@ -41,12 +44,25 @@ namespace Aban360.Common.Extensions
                 ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver(),
                 Formatting = Formatting.Indented
             };
-            string jsonString = reportOutput.Marshal(settings);
+
+            string? logoBase64 = null;           
+            var outputObject = JObject.FromObject(reportOutput, JsonSerializer.Create(settings));
+
+            if (hasLogo && Path.Exists(logoPath))
+            {
+                logoBase64 = await File.ReadAllTextAsync(logoPath, cancellationToken);
+            }
+            if (logoBase64 != null && outputObject["reportHeader"] is JObject headerObject)
+            {
+                headerObject["logoBase64"] = logoBase64;
+            }
+
+            string jsonString = outputObject.ToString(Formatting.Indented);//reportOutput.Marshal(settings);
             var fileName = Path.Combine(path, $"{id}.json");
             await File.WriteAllTextAsync(fileName, jsonString, Encoding.UTF8, cancellationToken);
             return new JsonReportId(id, fileCode);
         }
-        public static async Task<JsonReportId> ExportToJson<TFlatData>(TFlatData reportOutput, CancellationToken cancellationToken, [Optional]int fileCode)
+        public static async Task<JsonReportId> ExportToJsonFlat<TFlatData>(TFlatData reportOutput, CancellationToken cancellationToken, int fileCode)
         {
             const string path = @"AppData\Jsons\";
             reportOutput.NotNull(nameof(reportOutput));

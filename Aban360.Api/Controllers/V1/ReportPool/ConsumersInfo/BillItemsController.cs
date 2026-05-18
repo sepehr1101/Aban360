@@ -34,7 +34,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         {
             int reportCode = 3050;
             FlatReportOutput<BillItemsHeaderOutputDto, BillItemsDataOutputDto> result = await _billItemsDetailGetByBillIdHandler.Handle(inputDto.Id, cancellationToken);
-            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode);
             return Ok(reportId);
         }
     }
