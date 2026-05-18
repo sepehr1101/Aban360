@@ -4,6 +4,7 @@
     {
         public string BillId { get; set; }
         public int MeterNumber { get; set; }
+        public float? ConsumptionAverage { get; set; }
         public int? CounterStateCode { get; set; }
         public string? ClientDateTime { get; set; }
         public double? X { get; set; }
@@ -24,3 +25,5 @@
         }
     }
 }
+
+

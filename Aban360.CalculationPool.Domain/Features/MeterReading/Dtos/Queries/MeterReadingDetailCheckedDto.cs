@@ -71,5 +71,6 @@ namespace Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries
         public double? MonthlyConsumption { get; set; }
 
         public HighLowEnum AttentionState { get; set; }
+        public bool HasAttentionCounterState { get; set; }
     }
 }

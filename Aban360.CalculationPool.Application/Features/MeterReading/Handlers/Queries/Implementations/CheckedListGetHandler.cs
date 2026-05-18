@@ -13,10 +13,13 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
     internal sealed class CheckedListGetHandler : ICheckedListGetHandler
     {
         const string _reportTitle = " مشاهده لیست کنترل ";
-        const int _domesticConsumptionExpirePercent = 30;
-        const int _nonDomesticConsumptionExpirePercent = 30;
-        private const int _amountExpirePercent = 50;
-
+        const int _domesticConsumptionLimitPercent = 30;
+        const int _nonDomesticConsumptionLimitPercent = 30;
+        const int _consumptionLimit = 50;
+        const long _dailyDomesticAmount = 700_000;
+        const long _dailyNonDomesticAmount = 1_000_000;
+        int[] _misReadCounterStateCode = [4, 7, 8];
+        int[] _specialCounterStateCode = [1, 2, 3, 5];
 
         private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
         private readonly IMeterFlowQueryService _meterFlowService;
@@ -77,30 +80,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             });
 
             return readingsControl;
-        }
-        private HighLowEnum GetConsumptionOrAmountAttention(MeterReadingDetailDataOutputDto meterReading, MeterFlowStepEnum latestFlowStep)
-        {
-            return latestFlowStep switch
-            {
-                MeterFlowStepEnum.Calculated => ConsumptionAttention(meterReading),
-                MeterFlowStepEnum.ConsumptionChecked => AmountAttention(meterReading),
-                _ => throw new ReadingException(ExceptionLiterals.InvalidFlowStep)
-            };
-        }
-        private HighLowEnum ConsumptionAttention(MeterReadingDetailDataOutputDto input)
-        {
-            if (IsDomestic(input.UsageId))
-            {
-                return GetHasAttention(_domesticConsumptionExpirePercent, input.LastMonthlyConsumption.Value, input.MonthlyConsumption.Value);
-            }
-            else
-            {
-                return GetHasAttention(_nonDomesticConsumptionExpirePercent, input.ContractualCapacity, input.MonthlyConsumption.Value);
-            }
-        }
-        private HighLowEnum AmountAttention(MeterReadingDetailDataOutputDto input)
-        {
-            return GetHasAttention(_amountExpirePercent, input.LastSumItems.Value, input.SumItems.Value);
         }
         private MeterReadingDetailCheckedDto GetMeterReadingDetailControl(MeterReadingDetailDataOutputDto input, HighLowEnum attentionState)
         {
@@ -163,27 +142,62 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 Consumption = input.Consumption,
                 MonthlyConsumption = input.MonthlyConsumption,
 
-                AttentionState = attentionState
+                AttentionState = attentionState,
+                HasAttentionCounterState = _specialCounterStateCode.Contains(input.CurrentCounterStateCode)
             };
         }
-        private HighLowEnum GetHasAttention(int expirePercent, double lastItem, double currentItem)
+        private HighLowEnum GetConsumptionOrAmountAttention(MeterReadingDetailDataOutputDto meterReading, MeterFlowStepEnum latestFlowStep)
         {
-            if (currentItem == 0)
+            return latestFlowStep switch
             {
-                return HighLowEnum.Zero;
+                MeterFlowStepEnum.Calculated => ConsumptionAttention(meterReading),
+                MeterFlowStepEnum.ConsumptionChecked => GetAmountAttention(meterReading),
+                _ => throw new ReadingException(ExceptionLiterals.InvalidFlowStep)
+            };
+        }
+        private HighLowEnum ConsumptionAttention(MeterReadingDetailDataOutputDto input)
+        {
+            if (IsDomestic(input.UsageId))
+            {
+                return GetConsumptionAttention(_domesticConsumptionLimitPercent, input.LastMonthlyConsumption.Value, input.MonthlyConsumption.Value, input.CurrentCounterStateCode, input.UsageId);
             }
             else
             {
-                double expireValue = (double)(lastItem * expirePercent / 100d);
-                double minValue = (double)(lastItem - expireValue);
-                double maxValue = (double)(lastItem + expireValue);
-
-                return currentItem >= minValue && currentItem <= maxValue ? HighLowEnum.Low : HighLowEnum.High;
+                return GetConsumptionAttention(_nonDomesticConsumptionLimitPercent, input.ContractualCapacity, input.MonthlyConsumption.Value, input.CurrentCounterStateCode, input.UsageId);
             }
+        }
+        private HighLowEnum GetAmountAttention(MeterReadingDetailDataOutputDto input)
+        {
+            if (_misReadCounterStateCode.Contains(input.CurrentCounterStateCode)) return HighLowEnum.Normal;
+            if (input.SumItems == 0) return HighLowEnum.Zero;
+
+            int totalUnit = input.DomesticUnit + input.CommercialUnit + input.OtherUnit;
+            int duration = (int)(!input.Modat.HasValue || input.Modat <= 0 ? 1 : input.Modat);
+            double perUnitAmount = input.SumItems.Value / (totalUnit == 0 ? 1 : totalUnit);
+            double dailyPerUnitAmount = perUnitAmount / duration;
+
+            if (IsDomestic(input.UsageId) && dailyPerUnitAmount > _dailyDomesticAmount) return HighLowEnum.High;
+            if (!IsDomestic(input.UsageId) && dailyPerUnitAmount > _dailyNonDomesticAmount) return HighLowEnum.High;
+
+            return HighLowEnum.Normal;
+        }
+        private HighLowEnum GetConsumptionAttention(int limitPercent, double previousItem, double consumption, int counterStateCode, int usageId)
+        {
+            if (_misReadCounterStateCode.Contains(counterStateCode)) return HighLowEnum.Normal;
+            if (consumption == 0) return HighLowEnum.Zero;
+
+            double limitValue = (double)(previousItem * limitPercent / 100d);
+            double minValue = (double)(previousItem - limitValue);
+            double maxValue = (double)(previousItem + limitValue);
+
+            if (consumption < minValue) return HighLowEnum.Low;
+            if (consumption > maxValue) return HighLowEnum.High;
+            if (IsDomestic(usageId) && consumption > _consumptionLimit) return HighLowEnum.High;
+            return HighLowEnum.Normal;
         }
         private bool IsDomestic(int usageId)
         {
-            int[] domesticUsage = [0, 1, 3];
+            int[] domesticUsage = [1, 3];
             return domesticUsage.Contains(usageId);
         }
     }
