@@ -30,7 +30,9 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	C0 Id,
                     	C1 Title,
                         C4 IsSuccess
-                    From Db70.dbo.t64";
+                    From Db70.dbo.t64
+                    WHERE C3=1
+                    ORDER BY C0 DESC";                    
         }
     }
 }

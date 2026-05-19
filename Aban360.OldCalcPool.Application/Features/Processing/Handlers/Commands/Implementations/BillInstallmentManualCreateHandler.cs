@@ -56,7 +56,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
         public async Task<ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto>> Handle(BillInstallmentManualInputDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await Validation(input, cancellationToken);
+            await Validate(input, cancellationToken);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(input.BillId);
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumber);
 
@@ -69,7 +69,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             return GetResult(allInstallments, memberInfo);
         }
-        private async Task Validation(BillInstallmentManualInputDto inputDto, CancellationToken cancellationToken)
+        private async Task Validate(BillInstallmentManualInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -156,7 +156,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     Payable = s.Payable,
                     QueueNumber = s.QueueNumber,
                     BillId = memberInfo.BillId,
-                    PaymentId = TransactionIdGenerator.GeneratePaymentId(s.Payable, memberInfo.BillId, $"00{s.QueueNumber}"),
+                    PaymentId = TransactionIdGenerator.GeneratePaymentId(s.Payable, memberInfo.BillId, $"10{s.QueueNumber}"),
                     QueueNumberTitle = $"قسط {s.QueueNumber.NumberToText(Language.Persian)}"
                 };
             });
