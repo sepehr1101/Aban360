@@ -31,7 +31,7 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, trackingInfo.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
             MoshtrakServiceDto sData = GetSDto(moshtrakInfo);
 
-            IEnumerable<MoshtrakCompanyService> companyServices = MoshtrakService.GetMoshtrakCompanyServiceDto(sData);
+            IEnumerable<MoshtrakCompanyService> companyServices = MoshtrakService.GetMoshtrakCompanyServiceDto(sData, trackingInfo.ServiceGroupId);
             GeneralRequestDataOutputDto result = GetOutput(trackingInfo, moshtrakInfo, companyServices);
 
 

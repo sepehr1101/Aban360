@@ -95,7 +95,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 }
             }
 
-            return await GetOutputDto(input, moshtrakInfo, assessmentInsert, trackingInsert.TrackId);
+            return await GetOutputDto(input, moshtrakInfo, assessmentInsert, trackingInsert.TrackId, latestTrackingInfo.ServiceGroupId);
         }
         private async Task<TrackingOutputDto> Validation(AssessmentSetTimeInputDto input, CancellationToken cancellationToken)
         {
@@ -209,9 +209,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 AllInJson = JsonSerializer.Serialize<AssessmentSetTimeInputDto>(inputDto)
             };
         }
-        private async Task<SetAssessmentTimeDataOutputDto> GetOutputDto(AssessmentSetTimeInputDto input, MoshtrakOutputDto moshtrakInfo, AssessmentInsertDto assessmentInsert, Guid trackId)
+        private async Task<SetAssessmentTimeDataOutputDto> GetOutputDto(AssessmentSetTimeInputDto input, MoshtrakOutputDto moshtrakInfo, AssessmentInsertDto assessmentInsert, Guid trackId, int serviceGroupId)
         {
-            IEnumerable<NumericDictionary> moshtrakServiceSelected = MoshtrakService.GetServicesSelectedDto(GetMoshtrakServiceDto(moshtrakInfo));
+            IEnumerable<NumericDictionary> moshtrakServiceSelected = MoshtrakService.GetServicesSelectedDto(GetMoshtrakServiceDto(moshtrakInfo), serviceGroupId);
             string serviceSelected = string.Join(",", moshtrakServiceSelected.Select(m => m.Title));
 
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(input.TrackNumber);

@@ -41,7 +41,7 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
 
             MoshtrakServiceDto sData = GetSDto(data);
 
-            IEnumerable<NumericDictionary> s = MoshtrakService.GetServicesSelectedDto(sData);
+            IEnumerable<NumericDictionary> s = MoshtrakService.GetServicesSelectedDto(sData, data.ServiceGoupId);
             RequestIsRegisterdOutputDto result = GetOutput(data, s);
 
 

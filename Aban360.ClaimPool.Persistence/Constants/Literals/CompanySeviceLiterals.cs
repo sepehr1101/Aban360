@@ -2,9 +2,9 @@
 {
     public class CompanySeviceLiterals
     {
-        public static string IsEnsheabAb => "انشعاب آب جدید";
+        public static string IsEnsheabAb => "انشعاب آب ";
         public static string IsAmadeSaziAb => "آماده سازی آب";
-        public static string IsEnsheabFazelab => "درخواست فاضلاب جدید";
+        public static string IsEnsheabFazelab => "انشعاب فاضلاب ";
         public static string IsAmadeSaziFazelab => "آماده سازی فاضلاب";
         public static string IsTaqirNam => "تغییر نام";
         public static string IsTaqirVahed => "تغییر واحد";
@@ -36,5 +36,6 @@
         public static string SahmManbaAb => "سهم منبع آب";
         public static string TafkikArseAb => "تخفیف عرصه آب";
         public static string IsTafkikArseFazelab => "تخفیف عرصه فاضلاب";
+        public static string IsBarchidanEnsheab => "برچیدن انشعاب";
     }
 }
