@@ -18,6 +18,7 @@
         public string? PhoneNumber { get; set; }
         public string NotificationMobile { get; set; }
         public string Address { get; set; }
+        public int ServiceGoupId { get; set; }
 
         public int s0 { get; set; }
         public int s1 { get; set; }

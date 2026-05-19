@@ -107,6 +107,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
 						m.C99 NotificationMobile,
 						TRIM(m.phone_no) PhoneNumber,
 						TRIM(m.Address) Address,
+						t.ServiceGroup_FK ServiceGoupId,
 						t.Caller,
 						 m.s0, m.s1, m.s2, m.s3, m.s4, m.s5, m.s8, m.s9,
 					    m.s10, m.s11, m.s12, m.s13, m.s14, m.s15, m.s16, m.s17, m.s18, m.s19,
@@ -207,6 +208,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
 						m.ted_takh DiscountCount,
 						TRIM(m.post_cod) PostalCode,
 						TRIM(m.sharh) Description,
+						t.ServiceGroup_FK ServiceGroupId,
 					--adam takhfif ab
 					--adam takhfif fazelab
 					--shomare shenasname					

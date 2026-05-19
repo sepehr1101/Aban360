@@ -23,7 +23,7 @@
         public int HouseholdNumber { get; set; }
         public int DiscountTypeId { get; set; }
         public string DiscountTypeTitle { get; set; }
-        public bool HasBroker{ get; set; }
+        public bool HasBroker { get; set; }
         public int ContractualCapacity { get; set; }
         public int BranchTypeId { get; set; }
         public string BranchTypeTitle { get; set; }
@@ -37,7 +37,8 @@
         public string MeterDiamterTitle { get; set; }
         public int DiscountCount { get; set; }
         public string PostalCode { get; set; }
-  
+        public int ServiceGroupId { get; set; }
+
         public string FirstName { get; set; }
         public string Surname { get; set; }
         public string FatherName { get; set; }

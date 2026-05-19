@@ -70,14 +70,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
 
         [HttpPost]
         [Route("sti-summary-2-by-id")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterInvoiceDto, LineItemsDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         [AllowAnonymous]
         public async Task<IActionResult> GetStiReportSummary2ById([FromBody] DisplayThisBillInput searchInput,CancellationToken cancellationToken)
         {
             int reportCode = 90;
             ReportOutput<WaterInvoiceDto, LineItemsDto> waterInvoice = await _waterInvoiceHandler.Handle(searchInput);
             JsonReportId reportId = await JsonOperation.ExportToJson(waterInvoice, cancellationToken, reportCode);
-            return Ok(waterInvoice);
+            return Ok(reportId);
         }
     }
 }

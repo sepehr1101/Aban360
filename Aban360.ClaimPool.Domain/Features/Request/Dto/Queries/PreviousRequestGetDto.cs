@@ -14,6 +14,7 @@
         public string StringTrackNumber { get; set; }
         public string RequestDateJalali { get; set; }
         public string RegisterDateJalali { get; set; }
+        public int ServiceGroupId { get; set; }
         public int s0 { get; set; }
         public bool HasEnsheabAb { get { return s0 > 0; } }
 

@@ -149,7 +149,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 Block = moshtrakInfo.BlockId,
                 HasWaterArticle11 = false,//todo
                 HasSewageArticle11 = false,//todo
-                CompanyServiceIds = MoshtrakService.GetServicesSelected(moshtrakServiceSelected),
+                CompanyServiceIds = MoshtrakService.GetServicesSelected(moshtrakServiceSelected, _afterSaleServiceId),
                 PreviousData = previousInfo,
                 CurrentData = currentInfo,
             };

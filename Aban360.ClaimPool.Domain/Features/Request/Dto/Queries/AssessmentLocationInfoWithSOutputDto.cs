@@ -137,6 +137,7 @@
         public bool HasTavizKontor { get { return s41 > 0; } }
 
         public int s42 { get; set; }
+        public bool HasLooleGozareAb { get { return s43 > 0; } }
 
         public int s43 { get; set; }
         public bool HasLooleGozareAbFazelab { get { return s43 > 0; } }

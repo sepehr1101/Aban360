@@ -13,8 +13,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             return new MoshtrakServiceDto()//todo: s1,s2?
             {
                 s0 = servicesSelected.Contains((int)CompanyServiceEnum.IsEnsheabAb) ? 1 : 0,
-                s1 = servicesSelected.Contains((int)CompanyServiceEnum.IsEnsheabFazelab) ? 1 : 0,
-                s2 = servicesSelected.Contains((int)CompanyServiceEnum.IsEnsheabFazelab) ? 1 : 0,
+                s1 = servicesSelected.Contains((int)CompanyServiceEnum.IsSaleEnsheabFazelab) || servicesSelected.Contains((int)CompanyServiceEnum.IsAfterSaleEnsheabFazelab) ? 1 : 0,
+                s2 = servicesSelected.Contains((int)CompanyServiceEnum.IsTaqirVahed) ? 1 : 0,
                 //s3=s.SelectedServices.Contains((int)CompanyServiceEnum.) ? 1 : 0,
                 s4 = servicesSelected.Contains((int)CompanyServiceEnum.IsTaqirNam) ? 1 : 0,
                 s5 = servicesSelected.Contains((int)CompanyServiceEnum.IsTaqirQotrEnsheab) ? 1 : 0,
@@ -36,8 +36,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 s23 = servicesSelected.Contains(0) ? 1 : 0,//سهم منبع اب
                 s24 = servicesSelected.Contains((int)CompanyServiceEnum.TaqirQotrSifoon) ? 1 : 0,
                 //s25=s.SelectedServices.Contains((int)CompanyServiceEnum.) ? 1 : 0,
-                s26 = servicesSelected.Contains((int)CompanyServiceEnum.IsAmadeSaziAb) ? 1 : 0,
-                s27 = servicesSelected.Contains((int)CompanyServiceEnum.IsAmadeSaziFazelab) ? 1 : 0,
+                s26 = servicesSelected.Contains((int)CompanyServiceEnum.SaleIsAmadeSaziAb) || servicesSelected.Contains((int)CompanyServiceEnum.AfterSaleIsAmadeSaziAb) ? 1 : 0,
+                s27 = servicesSelected.Contains((int)CompanyServiceEnum.SaleIsAmadeSaziFazelab) || servicesSelected.Contains((int)CompanyServiceEnum.AfterSaleIsAmadeSaziFazelab) ? 1 : 0,
                 //s28=s.SelectedServices.Contains((int)CompanyServiceEnum.) ? 1 : 0,
                 //s29=s.SelectedServices.Contains((int)CompanyServiceEnum.) ? 1 : 0,
                 //s30=s.SelectedServices.Contains((int)CompanyServiceEnum.) ? 1 : 0,
@@ -47,7 +47,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 s34 = servicesSelected.Contains(0) ? 1 : 0,//عدم تخفیف آب00000
                 s35 = servicesSelected.Contains(0) ? 1 : 0,//عدم تخفیف فاضلاب000
                 s36 = servicesSelected.Contains((int)CompanyServiceEnum.JabejaiiSifoon) ? 1 : 0,
-                s37 = servicesSelected.Contains((int)CompanyServiceEnum.NezamMohandesi) ? 1 : 0,
+                s37 = servicesSelected.Contains((int)CompanyServiceEnum.SaleNezamMohandesi) || servicesSelected.Contains((int)CompanyServiceEnum.SaleNezamMohandesi) ? 1 : 0,
                 s38 = servicesSelected.Contains((int)CompanyServiceEnum.TavizSifoon) ? 1 : 0,
                 s39 = servicesSelected.Contains((int)CompanyServiceEnum.KhanevarShomari) ? 1 : 0,
                 s40 = servicesSelected.Contains((int)CompanyServiceEnum.TajmiEdqam) ? 1 : 0,
@@ -61,53 +61,63 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 s48 = servicesSelected.Contains((int)CompanyServiceEnum.Saier) ? 1 : 0,
             };
         }
-        public static ICollection<int> GetServicesSelected(MoshtrakServiceDto inputDto)
+        public static ICollection<int> GetServicesSelected(MoshtrakServiceDto inputDto, int serviceGroupId)
         {
+            bool isSaleRequest = serviceGroupId == 1;
             ICollection<int> servicesSelected = new List<int>();//todo: s1,s2
+            int fazelabId = isSaleRequest ? (int)CompanyServiceEnum.IsSaleEnsheabFazelab : (int)CompanyServiceEnum.IsAfterSaleEnsheabFazelab;
+            int nezamMohandesiId = isSaleRequest ? (int)CompanyServiceEnum.SaleNezamMohandesi : (int)CompanyServiceEnum.AfterSaleNezamMohandesi;
+            int amadesaziAbId = isSaleRequest ? (int)CompanyServiceEnum.SaleIsAmadeSaziAb : (int)CompanyServiceEnum.AfterSaleIsAmadeSaziAb;
+            int amadesaziFazelabId = isSaleRequest ? (int)CompanyServiceEnum.SaleIsAmadeSaziFazelab : (int)CompanyServiceEnum.AfterSaleIsAmadeSaziFazelab;
 
-            if (inputDto.s0 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsEnsheabAb);// CompanyServiceEnum.IsEnsheabAb,101
-            if (inputDto.s1 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsEnsheabFazelab);// CompanyServiceEnum.IsEnsheabFazelab, 201
-            if (inputDto.s2 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsEnsheabFazelab);// CompanyServiceEnum.IsEnsheabFazelab, 201
-            if (inputDto.s4 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsTaqirNam);// CompanyServiceEnum.IsTaqirNam,301
-            if (inputDto.s5 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsTaqirQotrEnsheab);// CompanyServiceEnum.IsTaqirQotrEnsheab,302
-            if (inputDto.s10 == 1) servicesSelected.Add((int)CompanyServiceEnum.EstelamMahzar);// CompanyServiceEnum.EstelamMahzar,300
-            if (inputDto.s11 == 1) servicesSelected.Add((int)CompanyServiceEnum.TafkikArseAb);//تفکیک عرصه اب   105
-            if (inputDto.s12 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsTafkikArseFazelab);//تفکیک عرصه فاضلاب  205
-            if (inputDto.s13 == 1) servicesSelected.Add((int)CompanyServiceEnum.TaqirSathCounter);// CompanyServiceEnum.TaqirSathCounter,304
-            if (inputDto.s16 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsTaqirKarbari);// CompanyServiceEnum.IsTaqirKarbari,331
-            if (inputDto.s20 == 1) servicesSelected.Add((int)CompanyServiceEnum.JabejaiiKontor);// CompanyServiceEnum.JabejaiiKontor,308
-            if (inputDto.s21 == 1) servicesSelected.Add((int)CompanyServiceEnum.KhatEnteqhalAb);//خط انتقال اب   107
-            if (inputDto.s22 == 1) servicesSelected.Add((int)CompanyServiceEnum.KhatEnteqhalFazelab);//خط انتقال فاضلاب  203
-            if (inputDto.s23 == 1) servicesSelected.Add((int)CompanyServiceEnum.SahmManbaAb);//سهم منبع اب   108
-            if (inputDto.s24 == 1) servicesSelected.Add((int)CompanyServiceEnum.TaqirQotrSifoon);// CompanyServiceEnum.TaqirQotrSifoon,309
-            if (inputDto.s26 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsAmadeSaziAb);// CompanyServiceEnum.IsAmadeSaziAb,109
-            if (inputDto.s27 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsAmadeSaziFazelab);// CompanyServiceEnum.IsAmadeSaziFazelab,209
-            if (inputDto.s32 == 1) servicesSelected.Add((int)CompanyServiceEnum.QatVaslEnsheab);// CompanyServiceEnum.QatVaslEnsheab,303
-            if (inputDto.s33 == 1) servicesSelected.Add((int)CompanyServiceEnum.SifoonEzafe);// CompanyServiceEnum.SifoonEzafe,310
-            if (inputDto.s34 == 1) servicesSelected.Add((int)CompanyServiceEnum.AdamTakhfifAb);//,//عدم تخفیف آب
-            if (inputDto.s35 == 1) servicesSelected.Add((int)CompanyServiceEnum.AdamTakhfifFazelab);//,//عدم تخفیف فاضلاب
-            if (inputDto.s36 == 1) servicesSelected.Add((int)CompanyServiceEnum.JabejaiiSifoon);// CompanyServiceEnum.JabejaiiSifoon,323
-            if (inputDto.s37 == 1) servicesSelected.Add((int)CompanyServiceEnum.NezamMohandesi);// CompanyServiceEnum.NezamMohandesi,؟
-            if (inputDto.s38 == 1) servicesSelected.Add((int)CompanyServiceEnum.TavizSifoon);// CompanyServiceEnum.TavizSifoon,؟
-            if (inputDto.s39 == 1) servicesSelected.Add((int)CompanyServiceEnum.KhanevarShomari);// CompanyServiceEnum.KhanevarShomari,
-            if (inputDto.s40 == 1) servicesSelected.Add((int)CompanyServiceEnum.TajmiEdqam);// CompanyServiceEnum.TafkikEdqam,205
-            if (inputDto.s41 == 1) servicesSelected.Add((int)CompanyServiceEnum.TavizKontor);// CompanyServiceEnum.TavizKontor,
-            if (inputDto.s42 == 1) servicesSelected.Add((int)CompanyServiceEnum.LooleGozariAb);// ,//لوله گذاری آب  375
-            if (inputDto.s43 == 1) servicesSelected.Add((int)CompanyServiceEnum.LooleGozareAbFazelab);// ,//لوله گذاری فاضلاب  376
-            if (inputDto.s44 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsZarfiatQarardadi);// CompanyServiceEnum.IsZarfiatQarardadi,
-            if (inputDto.s45 == 1) servicesSelected.Add((int)CompanyServiceEnum.KontorMojaza);// CompanyServiceEnum.KontorMojaza,
-            if (inputDto.s46 == 1) servicesSelected.Add((int)CompanyServiceEnum.TaqirTarefe);// CompanyServiceEnum.TaqirTarefe,
-            if (inputDto.s47 == 1) servicesSelected.Add((int)CompanyServiceEnum.Peymayesh);// CompanyServiceEnum.Peymayesh,
-            if (inputDto.s48 == 1) servicesSelected.Add((int)CompanyServiceEnum.Saier);// CompanyServiceEnum.Saier,500
+            if (inputDto.s0 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsEnsheabAb);
+            if (inputDto.s1 == 1) servicesSelected.Add(fazelabId);
+            if (inputDto.s2 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsTaqirVahed);
+            if (inputDto.s4 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsTaqirNam);
+            if (inputDto.s5 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsTaqirQotrEnsheab);
+            if (inputDto.s10 == 1) servicesSelected.Add((int)CompanyServiceEnum.EstelamMahzar);
+            if (inputDto.s11 == 1) servicesSelected.Add((int)CompanyServiceEnum.TafkikArseAb);
+            if (inputDto.s12 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsTafkikArseFazelab);
+            if (inputDto.s13 == 1) servicesSelected.Add((int)CompanyServiceEnum.TaqirSathCounter);
+            if (inputDto.s16 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsTaqirKarbari);
+            if (inputDto.s20 == 1) servicesSelected.Add((int)CompanyServiceEnum.JabejaiiKontor);
+            if (inputDto.s21 == 1) servicesSelected.Add((int)CompanyServiceEnum.KhatEnteqhalAb);
+            if (inputDto.s22 == 1) servicesSelected.Add((int)CompanyServiceEnum.KhatEnteqhalFazelab);
+            if (inputDto.s23 == 1) servicesSelected.Add((int)CompanyServiceEnum.SahmManbaAb);
+            if (inputDto.s24 == 1) servicesSelected.Add((int)CompanyServiceEnum.TaqirQotrSifoon);
+            if (inputDto.s26 == 1) servicesSelected.Add(amadesaziAbId);
+            if (inputDto.s27 == 1) servicesSelected.Add(amadesaziFazelabId);
+            if (inputDto.s32 == 1) servicesSelected.Add((int)CompanyServiceEnum.QatVaslEnsheab);
+            if (inputDto.s33 == 1) servicesSelected.Add((int)CompanyServiceEnum.SifoonEzafe);
+            if (inputDto.s34 == 1) servicesSelected.Add((int)CompanyServiceEnum.AdamTakhfifAb);
+            if (inputDto.s35 == 1) servicesSelected.Add((int)CompanyServiceEnum.AdamTakhfifFazelab);
+            if (inputDto.s36 == 1) servicesSelected.Add((int)CompanyServiceEnum.JabejaiiSifoon);
+            if (inputDto.s37 == 1) servicesSelected.Add(nezamMohandesiId);
+            if (inputDto.s38 == 1) servicesSelected.Add((int)CompanyServiceEnum.TavizSifoon);
+            if (inputDto.s39 == 1) servicesSelected.Add((int)CompanyServiceEnum.KhanevarShomari);
+            if (inputDto.s40 == 1) servicesSelected.Add((int)CompanyServiceEnum.TajmiEdqam);
+            if (inputDto.s41 == 1) servicesSelected.Add((int)CompanyServiceEnum.TavizKontor);
+            if (inputDto.s42 == 1) servicesSelected.Add((int)CompanyServiceEnum.LooleGozariAb);
+            if (inputDto.s43 == 1) servicesSelected.Add((int)CompanyServiceEnum.LooleGozareAbFazelab);
+            if (inputDto.s44 == 1) servicesSelected.Add((int)CompanyServiceEnum.IsZarfiatQarardadi);
+            if (inputDto.s45 == 1) servicesSelected.Add((int)CompanyServiceEnum.KontorMojaza);
+            if (inputDto.s46 == 1) servicesSelected.Add((int)CompanyServiceEnum.TaqirTarefe);
+            if (inputDto.s47 == 1) servicesSelected.Add((int)CompanyServiceEnum.Peymayesh);
+            if (inputDto.s48 == 1) servicesSelected.Add((int)CompanyServiceEnum.Saier);
 
             return servicesSelected;
         }
-        public static IEnumerable<MoshtrakCompanyService> GetMoshtrakCompanyServiceDto(MoshtrakServiceDto input)
+        public static IEnumerable<MoshtrakCompanyService> GetMoshtrakCompanyServiceDto(MoshtrakServiceDto input, int serviceGroupId)
         {
+            bool isSaleRequest = serviceGroupId == 1;
             ICollection<MoshtrakCompanyService> companyService = new List<MoshtrakCompanyService>();
+            int fazelabId = isSaleRequest ? (int)CompanyServiceEnum.IsSaleEnsheabFazelab : (int)CompanyServiceEnum.IsAfterSaleEnsheabFazelab;
+            int nezamMohandesiId = isSaleRequest ? (int)CompanyServiceEnum.SaleNezamMohandesi : (int)CompanyServiceEnum.AfterSaleNezamMohandesi;
+            int amadesaziAbId = isSaleRequest ? (int)CompanyServiceEnum.SaleIsAmadeSaziAb : (int)CompanyServiceEnum.AfterSaleIsAmadeSaziAb;
+            int amadesaziFazelabId = isSaleRequest ? (int)CompanyServiceEnum.SaleIsAmadeSaziFazelab : (int)CompanyServiceEnum.AfterSaleIsAmadeSaziFazelab;
 
             companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.IsEnsheabAb, CompanySeviceLiterals.IsEnsheabAb, input.HasEnsheabAb));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.IsEnsheabFazelab, CompanySeviceLiterals.IsEnsheabFazelab, input.HasEnsheabFazelab));
+            companyService.Add(new MoshtrakCompanyService(fazelabId, CompanySeviceLiterals.IsEnsheabFazelab, input.HasEnsheabFazelab));
             companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.IsTaqirVahed, CompanySeviceLiterals.IsTaqirVahed, input.HasTaqirVahed));
             //s3
             companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.IsTaqirNam, CompanySeviceLiterals.IsTaqirNam, input.HasTaqirName));
@@ -126,15 +136,15 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.SahmManbaAb, CompanySeviceLiterals.SahmManbaAb, input.HasSahmManbaAb));
             companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.TaqirQotrSifoon, CompanySeviceLiterals.TaqirQotrSifoon, input.HasTaqirQotrSifoon));
             //s25
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.IsAmadeSaziAb, CompanySeviceLiterals.IsAmadeSaziAb, input.HasAmadeSaziAb));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.IsAmadeSaziFazelab, CompanySeviceLiterals.IsAmadeSaziFazelab, input.HazAmadeSaziFazelab));
+            companyService.Add(new MoshtrakCompanyService(amadesaziAbId, CompanySeviceLiterals.IsAmadeSaziAb, input.HasAmadeSaziAb));
+            companyService.Add(new MoshtrakCompanyService(amadesaziFazelabId, CompanySeviceLiterals.IsAmadeSaziFazelab, input.HazAmadeSaziFazelab));
             //s28 , s29 , s30 , s31
             companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.QatVaslEnsheab, CompanySeviceLiterals.QatVaslEnsheab, input.HasQatVaslEnsheab));
             companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.SifoonEzafe, CompanySeviceLiterals.SifoonEzafe, input.HasSifoonEzafe));
             companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.AdamTakhfifAb, CompanySeviceLiterals.AdamTakhfifAb, input.HasAdamTakhfifAb));
             companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.AdamTakhfifFazelab, CompanySeviceLiterals.AdamTakhfifFazelab, input.HasAdamTakhfifFazelab));
             companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.JabejaiiSifoon, CompanySeviceLiterals.JabejaiiSifoon, input.HasJabejaiiSifoon));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.NezamMohandesi, CompanySeviceLiterals.NezamMohandesi, input.HasNezamMohandesi));
+            companyService.Add(new MoshtrakCompanyService(nezamMohandesiId, CompanySeviceLiterals.NezamMohandesi, input.HasNezamMohandesi));
             companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.TavizSifoon, CompanySeviceLiterals.TavizSifoon, input.HasTavizSifoon));
             companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.KhanevarShomari, CompanySeviceLiterals.KhanevarShomari, input.HasKhanevarShomari));
             companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.TajmiEdqam, CompanySeviceLiterals.TajmiEdqam, input.HasTafkikEdqam));
@@ -148,15 +158,20 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
             return companyService;
         }
-        public static IEnumerable<NumericDictionary> GetServicesSelectedDto(MoshtrakServiceDto input)
+        public static IEnumerable<NumericDictionary> GetServicesSelectedDto(MoshtrakServiceDto input, int serviceGroupId)
         {
+            bool isSaleRequest = serviceGroupId == 1;
             ICollection<NumericDictionary> companyServiceSelected = new List<NumericDictionary>();
+            int fazelabId = isSaleRequest ? (int)CompanyServiceEnum.IsSaleEnsheabFazelab : (int)CompanyServiceEnum.IsAfterSaleEnsheabFazelab;
+            int nezamMohandesiId = isSaleRequest ? (int)CompanyServiceEnum.SaleNezamMohandesi : (int)CompanyServiceEnum.AfterSaleNezamMohandesi;
+            int amadesaziAbId = isSaleRequest ? (int)CompanyServiceEnum.SaleIsAmadeSaziAb : (int)CompanyServiceEnum.AfterSaleIsAmadeSaziAb;
+            int amadesaziFazelabId = isSaleRequest ? (int)CompanyServiceEnum.SaleIsAmadeSaziFazelab : (int)CompanyServiceEnum.AfterSaleIsAmadeSaziFazelab;
 
             if (input.HasEnsheabAb)
                 companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsEnsheabAb, CompanySeviceLiterals.IsEnsheabAb));
 
             if (input.HasEnsheabFazelab)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsEnsheabFazelab, CompanySeviceLiterals.IsEnsheabFazelab));
+                companyServiceSelected.Add(new NumericDictionary(fazelabId, CompanySeviceLiterals.IsEnsheabFazelab));
 
             if (input.HasTaqirVahed)
                 companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsTaqirVahed, CompanySeviceLiterals.IsTaqirVahed));
@@ -208,10 +223,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             //s25
 
             if (input.HasAmadeSaziAb)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsAmadeSaziAb, CompanySeviceLiterals.IsAmadeSaziAb));
+                companyServiceSelected.Add(new NumericDictionary(amadesaziAbId, CompanySeviceLiterals.IsAmadeSaziAb));
 
             if (input.HazAmadeSaziFazelab)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.IsAmadeSaziFazelab, CompanySeviceLiterals.IsAmadeSaziFazelab));
+                companyServiceSelected.Add(new NumericDictionary(amadesaziFazelabId, CompanySeviceLiterals.IsAmadeSaziFazelab));
 
             //s28 , s29 , s30 , s31
 
@@ -231,7 +246,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.JabejaiiSifoon, CompanySeviceLiterals.JabejaiiSifoon));
 
             if (input.HasNezamMohandesi)
-                companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.NezamMohandesi, CompanySeviceLiterals.NezamMohandesi));
+                companyServiceSelected.Add(new NumericDictionary(nezamMohandesiId, CompanySeviceLiterals.NezamMohandesi));
 
             if (input.HasTavizSifoon)
                 companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.TavizSifoon, CompanySeviceLiterals.TavizSifoon));
