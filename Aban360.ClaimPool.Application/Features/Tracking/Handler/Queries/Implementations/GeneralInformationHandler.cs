@@ -5,6 +5,7 @@ using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Domain.Features.Tracking.Dto;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Extensions;
 using FluentValidation;
 
@@ -31,7 +32,7 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, trackingInfo.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
             MoshtrakServiceDto sData = GetSDto(moshtrakInfo);
 
-            IEnumerable<MoshtrakCompanyService> companyServices = MoshtrakService.GetMoshtrakCompanyServiceDto(sData, trackingInfo.ServiceGroupId);
+            IEnumerable<SelectionDto> companyServices = MoshtrakService.GetMoshtrakCompanyServiceDto(sData, trackingInfo.ServiceGroupId);
             GeneralRequestDataOutputDto result = GetOutput(trackingInfo, moshtrakInfo, companyServices);
 
 
@@ -90,7 +91,7 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
                 s48 = input.s48,
             };
         }
-        private GeneralRequestDataOutputDto GetOutput(TrackingOutputDto trackingInfo, MoshtrakOutputDto moshtrakInfo, IEnumerable<MoshtrakCompanyService> companyServices)
+        private GeneralRequestDataOutputDto GetOutput(TrackingOutputDto trackingInfo, MoshtrakOutputDto moshtrakInfo, IEnumerable<SelectionDto> companyServices)
         {
             return new GeneralRequestDataOutputDto()
             {

@@ -107,54 +107,54 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
             return servicesSelected;
         }
-        public static IEnumerable<MoshtrakCompanyService> GetMoshtrakCompanyServiceDto(MoshtrakServiceDto input, int serviceGroupId)
+        public static IEnumerable<SelectionDto> GetMoshtrakCompanyServiceDto(MoshtrakServiceDto input, int serviceGroupId)
         {
             bool isSaleRequest = serviceGroupId == 1;
-            ICollection<MoshtrakCompanyService> companyService = new List<MoshtrakCompanyService>();
+            ICollection<SelectionDto> companyService = new List<SelectionDto>();
             int fazelabId = isSaleRequest ? (int)CompanyServiceEnum.IsSaleEnsheabFazelab : (int)CompanyServiceEnum.IsAfterSaleEnsheabFazelab;
             int nezamMohandesiId = isSaleRequest ? (int)CompanyServiceEnum.SaleNezamMohandesi : (int)CompanyServiceEnum.AfterSaleNezamMohandesi;
             int amadesaziAbId = isSaleRequest ? (int)CompanyServiceEnum.SaleIsAmadeSaziAb : (int)CompanyServiceEnum.AfterSaleIsAmadeSaziAb;
             int amadesaziFazelabId = isSaleRequest ? (int)CompanyServiceEnum.SaleIsAmadeSaziFazelab : (int)CompanyServiceEnum.AfterSaleIsAmadeSaziFazelab;
 
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.IsEnsheabAb, CompanySeviceLiterals.IsEnsheabAb, input.HasEnsheabAb));
-            companyService.Add(new MoshtrakCompanyService(fazelabId, CompanySeviceLiterals.IsEnsheabFazelab, input.HasEnsheabFazelab));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.IsTaqirVahed, CompanySeviceLiterals.IsTaqirVahed, input.HasTaqirVahed));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.IsEnsheabAb, CompanySeviceLiterals.IsEnsheabAb, input.HasEnsheabAb));
+            companyService.Add(new SelectionDto(fazelabId, CompanySeviceLiterals.IsEnsheabFazelab, input.HasEnsheabFazelab));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.IsTaqirVahed, CompanySeviceLiterals.IsTaqirVahed, input.HasTaqirVahed));
             //s3
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.IsTaqirNam, CompanySeviceLiterals.IsTaqirNam, input.HasTaqirName));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.IsTaqirQotrEnsheab, CompanySeviceLiterals.IsTaqirQotrEnsheab, input.HasTaqirQotrEnsheab));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.IsTaqirNam, CompanySeviceLiterals.IsTaqirNam, input.HasTaqirName));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.IsTaqirQotrEnsheab, CompanySeviceLiterals.IsTaqirQotrEnsheab, input.HasTaqirQotrEnsheab));
             //s8 , s9
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.EstelamMahzar, CompanySeviceLiterals.EstelamMahzar, input.HasEstelamMahzar));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.TafkikArseAb, CompanySeviceLiterals.TafkikArseAb, input.HasTafkikArseAb));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.IsTafkikArseFazelab, CompanySeviceLiterals.IsTafkikArseFazelab, input.HasTafkikArseFazelab));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.TaqirSathCounter, CompanySeviceLiterals.TaqirSathCounter, input.HasTaqirSathCounter));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.EstelamMahzar, CompanySeviceLiterals.EstelamMahzar, input.HasEstelamMahzar));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.TafkikArseAb, CompanySeviceLiterals.TafkikArseAb, input.HasTafkikArseAb));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.IsTafkikArseFazelab, CompanySeviceLiterals.IsTafkikArseFazelab, input.HasTafkikArseFazelab));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.TaqirSathCounter, CompanySeviceLiterals.TaqirSathCounter, input.HasTaqirSathCounter));
             //s14 , s15
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.IsTaqirKarbari, CompanySeviceLiterals.IsTaqirKarbari, input.HasTaqirKarbari));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.IsTaqirKarbari, CompanySeviceLiterals.IsTaqirKarbari, input.HasTaqirKarbari));
             //s17 , s18 , s19
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.JabejaiiKontor, CompanySeviceLiterals.JabejaiiKontor, input.HasJabejaiiKontor));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.KhatEnteqhalAb, CompanySeviceLiterals.KhatEnteqhalAb, input.HasKhatEnteghalAb));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.KhatEnteqhalFazelab, CompanySeviceLiterals.KhatEnteqhalFazelab, input.HasKhatEnteghalFazelab));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.SahmManbaAb, CompanySeviceLiterals.SahmManbaAb, input.HasSahmManbaAb));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.TaqirQotrSifoon, CompanySeviceLiterals.TaqirQotrSifoon, input.HasTaqirQotrSifoon));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.JabejaiiKontor, CompanySeviceLiterals.JabejaiiKontor, input.HasJabejaiiKontor));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.KhatEnteqhalAb, CompanySeviceLiterals.KhatEnteqhalAb, input.HasKhatEnteghalAb));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.KhatEnteqhalFazelab, CompanySeviceLiterals.KhatEnteqhalFazelab, input.HasKhatEnteghalFazelab));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.SahmManbaAb, CompanySeviceLiterals.SahmManbaAb, input.HasSahmManbaAb));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.TaqirQotrSifoon, CompanySeviceLiterals.TaqirQotrSifoon, input.HasTaqirQotrSifoon));
             //s25
-            companyService.Add(new MoshtrakCompanyService(amadesaziAbId, CompanySeviceLiterals.IsAmadeSaziAb, input.HasAmadeSaziAb));
-            companyService.Add(new MoshtrakCompanyService(amadesaziFazelabId, CompanySeviceLiterals.IsAmadeSaziFazelab, input.HazAmadeSaziFazelab));
+            companyService.Add(new SelectionDto(amadesaziAbId, CompanySeviceLiterals.IsAmadeSaziAb, input.HasAmadeSaziAb));
+            companyService.Add(new SelectionDto(amadesaziFazelabId, CompanySeviceLiterals.IsAmadeSaziFazelab, input.HazAmadeSaziFazelab));
             //s28 , s29 , s30 , s31
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.QatVaslEnsheab, CompanySeviceLiterals.QatVaslEnsheab, input.HasQatVaslEnsheab));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.SifoonEzafe, CompanySeviceLiterals.SifoonEzafe, input.HasSifoonEzafe));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.AdamTakhfifAb, CompanySeviceLiterals.AdamTakhfifAb, input.HasAdamTakhfifAb));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.AdamTakhfifFazelab, CompanySeviceLiterals.AdamTakhfifFazelab, input.HasAdamTakhfifFazelab));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.JabejaiiSifoon, CompanySeviceLiterals.JabejaiiSifoon, input.HasJabejaiiSifoon));
-            companyService.Add(new MoshtrakCompanyService(nezamMohandesiId, CompanySeviceLiterals.NezamMohandesi, input.HasNezamMohandesi));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.TavizSifoon, CompanySeviceLiterals.TavizSifoon, input.HasTavizSifoon));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.KhanevarShomari, CompanySeviceLiterals.KhanevarShomari, input.HasKhanevarShomari));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.TajmiEdqam, CompanySeviceLiterals.TajmiEdqam, input.HasTafkikEdqam));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.TavizKontor, CompanySeviceLiterals.TavizKontor, input.HasTavizKontor));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.LooleGozariAb, CompanySeviceLiterals.LooleGozariAb, input.HasLooleGozareAb));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.IsZarfiatQarardadi, CompanySeviceLiterals.IsZarfiatQarardadi, input.HasZarfiatQarardadi));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.KontorMojaza, CompanySeviceLiterals.KontorMojaza, input.HasKontorMojaza));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.TaqirTarefe, CompanySeviceLiterals.TaqirTarefe, input.HasTaqirTarefe));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.Peymayesh, CompanySeviceLiterals.Peymayesh, input.HasPeymayesh));
-            companyService.Add(new MoshtrakCompanyService((int)CompanyServiceEnum.Saier, CompanySeviceLiterals.Saier, input.HasSaier));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.QatVaslEnsheab, CompanySeviceLiterals.QatVaslEnsheab, input.HasQatVaslEnsheab));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.SifoonEzafe, CompanySeviceLiterals.SifoonEzafe, input.HasSifoonEzafe));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.AdamTakhfifAb, CompanySeviceLiterals.AdamTakhfifAb, input.HasAdamTakhfifAb));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.AdamTakhfifFazelab, CompanySeviceLiterals.AdamTakhfifFazelab, input.HasAdamTakhfifFazelab));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.JabejaiiSifoon, CompanySeviceLiterals.JabejaiiSifoon, input.HasJabejaiiSifoon));
+            companyService.Add(new SelectionDto(nezamMohandesiId, CompanySeviceLiterals.NezamMohandesi, input.HasNezamMohandesi));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.TavizSifoon, CompanySeviceLiterals.TavizSifoon, input.HasTavizSifoon));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.KhanevarShomari, CompanySeviceLiterals.KhanevarShomari, input.HasKhanevarShomari));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.TajmiEdqam, CompanySeviceLiterals.TajmiEdqam, input.HasTafkikEdqam));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.TavizKontor, CompanySeviceLiterals.TavizKontor, input.HasTavizKontor));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.LooleGozariAb, CompanySeviceLiterals.LooleGozariAb, input.HasLooleGozareAb));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.IsZarfiatQarardadi, CompanySeviceLiterals.IsZarfiatQarardadi, input.HasZarfiatQarardadi));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.KontorMojaza, CompanySeviceLiterals.KontorMojaza, input.HasKontorMojaza));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.TaqirTarefe, CompanySeviceLiterals.TaqirTarefe, input.HasTaqirTarefe));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.Peymayesh, CompanySeviceLiterals.Peymayesh, input.HasPeymayesh));
+            companyService.Add(new SelectionDto((int)CompanyServiceEnum.Saier, CompanySeviceLiterals.Saier, input.HasSaier));
 
             return companyService;
         }

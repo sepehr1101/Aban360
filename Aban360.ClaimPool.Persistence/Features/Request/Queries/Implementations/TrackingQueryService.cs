@@ -228,6 +228,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	t.NeighbourBillId,
                     	t.Status StatusId,
                     	s.SummaryDescription StatusTitle,
+                        s.NextTitle NextStatusTitle,
                     	t.ServiceGroup_Fk ServiceGroupId,
                     	sg.Title ServiceGroupTitle,
                     	IIF( (format(GETDATE(),'yyyy-MM-dd')) = (Format(t.DateAndTime,'yyyy-MM-dd')),0,1) HasAttention,

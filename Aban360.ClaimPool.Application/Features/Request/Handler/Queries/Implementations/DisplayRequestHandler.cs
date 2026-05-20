@@ -40,7 +40,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(moshtrackSearch, MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
 
             MoshtrakServiceDto sData = GetSDto(moshtrakInfo);
-            IEnumerable<MoshtrakCompanyService> companyServices = MoshtrakService.GetMoshtrakCompanyServiceDto(sData, trackingInfo.ServiceGroupId);
+            IEnumerable<SelectionDto> companyServices = MoshtrakService.GetMoshtrakCompanyServiceDto(sData, trackingInfo.ServiceGroupId);
 
             MoshtrakDataOutputDto moshtrakData = GetMoshtrakData(moshtrakInfo, companyServices, trackingInfo);
             return moshtrakData;
@@ -107,7 +107,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 s48 = input.s48,
             };
         }
-        private MoshtrakDataOutputDto GetMoshtrakData(MoshtrakOutputDto input, IEnumerable<MoshtrakCompanyService> companyServices, TrackingOutputDto trackingInfo)
+        private MoshtrakDataOutputDto GetMoshtrakData(MoshtrakOutputDto input, IEnumerable<SelectionDto> companyServices, TrackingOutputDto trackingInfo)
         {
             return new MoshtrakDataOutputDto()
             {
