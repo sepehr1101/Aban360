@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<SelectionDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
-            IEnumerable<SelectionDto> result = await _requestKartableGetListByUserIdHandler.Handler(CurrentUser, cancellationToken);
+            IEnumerable<SelectionDto> result = await _requestKartableGetListByUserIdHandler.Handle(CurrentUser, cancellationToken);
             return Ok(result);
         }
     }

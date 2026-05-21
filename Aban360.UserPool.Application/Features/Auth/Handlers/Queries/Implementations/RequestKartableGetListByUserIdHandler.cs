@@ -24,7 +24,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
             _requestStatusQueryService.NotNull(nameof(requestStatusQueryService));
         }
 
-        public async Task<IEnumerable<SelectionDto>> Handler(IAppUser appUser, CancellationToken cancellationToken)
+        public async Task<IEnumerable<SelectionDto>> Handle(IAppUser appUser, CancellationToken cancellationToken)
         {
             IEnumerable<SelectionDto> requestStatuses = await _requestStatusQueryService.GetIsKartable();
             ICollection<UserClaim> userAccesses = await _userClaimQueryService.Get(appUser.UserId, ClaimType.RequestKartable);

@@ -5,6 +5,6 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts
 {
     public interface IRequestKartableGetListByUserIdHandler
     {
-        Task<IEnumerable<SelectionDto>> Handler(IAppUser appUser, CancellationToken cancellationToken);
+        Task<IEnumerable<SelectionDto>> Handle(IAppUser appUser, CancellationToken cancellationToken);
     }
 }
