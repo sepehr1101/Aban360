@@ -63,10 +63,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             secondToLatest.StringTrackNumber = trackNumber.ToString().PadLeft(11, '0');
             return secondToLatest;
         }
-        public async Task<IEnumerable<TrackingKartableDataOutputDto>> GetAllOpenRequest(IEnumerable<int> zoneIds)
+        public async Task<IEnumerable<TrackingKartableDataOutputDto>> GetAllOpenRequest(IEnumerable<int> zoneIds, IEnumerable<int> statusIds)
         {
             string query = GetAllOpenTrackingQuery();
-            var @params = new { zoneIds };
+            var @params = new { zoneIds, statusIds };
             IEnumerable<TrackingKartableDataOutputDto> result = await _sqlReportConnection.QueryAsync<TrackingKartableDataOutputDto>(query, @params);
             return result;
         }
@@ -243,8 +243,9 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     Where 
                     	t.IsConsiderd=0 AND 
                      	t.DateTimeJalali>='1404/07/01' AND
-                        ( t.Status IN (0,15,20,50,60,70, /*75,150,*/ 90002) OR
-						 (t.Status IN(17, 65, 110) AND C19=1)) AND
+                        --( t.Status IN (0,15,20,50,60,70, /*75,150,*/ 90002) OR
+						-- (t.Status IN(17, 65, 110) AND C19=1)) AND
+                        t.Status IN @statusIds AND
                         t.ZoneId IN @zoneIds
                     Order by sg.Title,t.DateAndTime desc";
         }
