@@ -9,10 +9,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
 {
     internal sealed class ZoneAllHandler : IZoneAllHandler
     {
-        private readonly IZoneQueryService _zoneQueryService;
+        private readonly IT51QueryService _zoneQueryService;
         private readonly ICommonZoneService _commonZoneService;
         public ZoneAllHandler(
-            IZoneQueryService zoneQueryService,
+            IT51QueryService zoneQueryService,
             ICommonZoneService commonZoneService)
         {
             _zoneQueryService = zoneQueryService;

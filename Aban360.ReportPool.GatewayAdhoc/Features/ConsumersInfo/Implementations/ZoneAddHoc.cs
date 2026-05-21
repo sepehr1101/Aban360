@@ -6,8 +6,8 @@ namespace Aban360.ReportPool.GatewayAdhoc.Features.ConsumersInfo.Implementations
 {
     internal sealed class ZoneAddHoc : IZoneAddHoc
     {
-        private readonly IZoneQueryService _zoneQueryService;
-        public ZoneAddHoc(IZoneQueryService zoneQueryService)
+        private readonly IT51QueryService _zoneQueryService;
+        public ZoneAddHoc(IT51QueryService zoneQueryService)
         {
             _zoneQueryService = zoneQueryService;
             _zoneQueryService.NotNull(nameof(zoneQueryService));

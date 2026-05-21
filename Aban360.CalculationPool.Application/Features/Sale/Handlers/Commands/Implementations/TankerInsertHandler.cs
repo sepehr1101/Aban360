@@ -31,7 +31,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         private readonly IZaribCQueryService _zaribCQueryService;
         private readonly IZaribGetService _zaribGetService;
         private readonly IT52QueryService _t52QueryService;
-        private readonly IZoneQueryService _zoneQueryService;
+        private readonly IT51QueryService _zoneQueryService;
         static int _tankerWaterUsageId = 19;
         static int _operator = 666;
         static int _typeId = 1;
@@ -42,7 +42,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             IZaribCQueryService zaribCQueryService,
             IZaribGetService zaribGetService,
             IT52QueryService t52QueryService,
-            IZoneQueryService zoneQueryService,
+            IT51QueryService zoneQueryService,
             IConfiguration configuration)
             : base(configuration)
         {

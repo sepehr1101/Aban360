@@ -1,8 +1,9 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
-using Aban360.ClaimPool.Persistence.Constants.Literals;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using CommonLiteral = Aban360.Common.Literals;
+using ClaimLiteral = Aban360.ClaimPool.Persistence.Constants.Literals;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -28,16 +29,16 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
             if (recordCount <= 0)
             {
-                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidUpdateMoshtrakin);
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
             }
         }
-		public async Task Update(CustomerMobileUpdateDto updateDto, string dbName)
+        public async Task Update(CustomerMobileUpdateDto updateDto, string dbName)
         {
             string command = GetUpdateMobileCommand(dbName);
             int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
             if (recordCount <= 0)
             {
-                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidUpdateMoshtrakin);
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
             }
         }
         public async Task Update(CustomerBranchTypeUpdateDto updateDto, string dbName)
@@ -46,7 +47,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
             if (recordCount <= 0)
             {
-                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidUpdateMoshtrakin);
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
             }
         }
         public async Task UpdateBedbes(ZoneIdAndCustomerNumber inputDto, long amount, string dbName)
@@ -55,10 +56,67 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             int recordCount = await _sqlConnection.ExecuteAsync(command, new { inputDto.CustomerNumber, inputDto.ZoneId, amount }, _dbTransaction);
             if (recordCount <= 0)
             {
-                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidUpdateBillAmount);
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateBillAmount);
+            }
+        }
+        public async Task UpdateBedbes(IEnumerable<MembersDebtAmountUpdateDto> input, string dbName)
+        {
+            DataTable table = UpdateDebtAmountDataTable(input);
+            string tempTableCommand = GetUpdateDebtAmountCreateTmpTableCommand();
+            await _sqlConnection.ExecuteAsync(tempTableCommand, null, _dbTransaction);
+
+            using var bulk = new SqlBulkCopy((SqlConnection)_sqlConnection, SqlBulkCopyOptions.Default, (SqlTransaction)_dbTransaction)
+            {
+                DestinationTableName = $"#DebtAmountUpdateTemp",
+                BatchSize = 5000,
+                BulkCopyTimeout = 0
+            };
+
+            foreach (DataColumn col in table.Columns)
+                bulk.ColumnMappings.Add(col.ColumnName, col.ColumnName);
+            await bulk.WriteToServerAsync(table);
+
+            string updateCommand = GetUpdateDebtAmountCommand(dbName);
+            int recordEffected = await _sqlConnection.ExecuteAsync(updateCommand, null, _dbTransaction);
+            if (recordEffected != (input?.Count() ?? 0))
+            {
+                throw new ReadingException(CommonLiteral.ExceptionLiterals.InvalidUpdateMembersDebtAmount);
             }
         }
 
+        private DataTable UpdateDebtAmountDataTable(IEnumerable<MembersDebtAmountUpdateDto> input)
+        {
+            DataTable table = new DataTable();
+
+            table.Columns.Add("ZoneId", typeof(int));
+            table.Columns.Add("CustomerNumber", typeof(int));
+            table.Columns.Add("BillId", typeof(string));
+            table.Columns.Add("Amount", typeof(long));
+
+            foreach (var item in input)
+            {
+                table.Rows.Add(item.ZoneId, item.CustomerNumber, item.BillId, item.Amount);
+            }
+            return table;
+        }
+        private string GetUpdateDebtAmountCreateTmpTableCommand()
+        {
+            return $@"Create Table #DebtAmountUpdateTemp
+                    (
+                    	ZoneId int Not Null,
+                    	CustomerNumber  int Not Null,
+                    	BillId  nvarchar(20) Not Null,
+                    	Amount bigint Not Null
+                    )";
+        }
+        private string GetUpdateDebtAmountCommand(string dbName)
+        {
+            return $@"Update m
+                    Set m.bed_bes=m.bed_bes+t.Amount
+                    From [{dbName}].dbo.members m
+                    Join #DebtAmountUpdateTemp t
+                    	On m.Town=t.ZoneId AND m.radif=t.CustomerNumber";
+        }
         private string GetUpdateCommand(string dbName)
         {
             return @$"UPDATE [{dbName}].dbo.members
@@ -118,7 +176,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 						town=@zoneId AND
 						radif=@customerNumber ";
         }
-		private string GetUpdateMobileCommand(string dbName)
+        private string GetUpdateMobileCommand(string dbName)
         {
             return @$"UPDATE [{dbName}].dbo.members
                      SET 

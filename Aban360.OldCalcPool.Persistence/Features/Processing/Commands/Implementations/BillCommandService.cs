@@ -6,6 +6,7 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Persistence.Constants;
 using Dapper;
+using Microsoft.Data.SqlClient;
 using System.Data;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations
@@ -51,6 +52,211 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             {
                 throw new InvalidBillCommandException(Exceptionliterals.InvalidRemoveBill);
             }
+        }
+        public async Task InsertByBulk(ICollection<BillInsertDto> input)
+        {
+            var dt = ToDataTable(input);
+
+            using var bulk = new SqlBulkCopy((SqlConnection)_connection, SqlBulkCopyOptions.Default, (SqlTransaction)_transaction)
+            {
+                DestinationTableName = $"[CustomerWarehouse].dbo.Bills",
+                BatchSize = 5000,
+                BulkCopyTimeout = 0
+            };
+
+            foreach (DataColumn col in dt.Columns)
+                bulk.ColumnMappings.Add(col.ColumnName, col.ColumnName);
+
+            await bulk.WriteToServerAsync(dt);
+        }
+        public DataTable ToDataTable(IEnumerable<BillInsertDto> items)
+        {
+            DataTable table = new DataTable("BillRecord");
+
+            // Basic Info
+            //table.Columns.Add("Id", typeof(long));
+            table.Columns.Add("ZoneId", typeof(int));
+            table.Columns.Add("ZoneTitle", typeof(string));
+
+            table.Columns.Add("CustomerNumber", typeof(decimal));
+            table.Columns.Add("BillId", typeof(string));
+            table.Columns.Add("ReadingNumber", typeof(string));
+
+            table.Columns.Add("PreviousNumber", typeof(int));
+            table.Columns.Add("NextNumber", typeof(int));
+
+            table.Columns.Add("PreviousDay", typeof(string));
+            table.Columns.Add("NextDay", typeof(string));
+            table.Columns.Add("RegisterDay", typeof(string));
+            table.Columns.Add("RegisterDayGregorian", typeof(DateTime));
+
+            table.Columns.Add("CounterStateTitle", typeof(string));
+
+            table.Columns.Add("UsageId", typeof(decimal));
+            table.Columns.Add("UsageId2", typeof(decimal));
+
+            table.Columns.Add("UsageTitle", typeof(string));
+            table.Columns.Add("UsageTitle2", typeof(string));
+
+            table.Columns.Add("BranchType", typeof(string));
+
+            table.Columns.Add("WaterDiameterId", typeof(decimal));
+            table.Columns.Add("WaterDiameterTitle", typeof(string));
+
+            table.Columns.Add("Siphon100", typeof(decimal));
+            table.Columns.Add("Siphon125", typeof(decimal));
+            table.Columns.Add("Siphon150", typeof(decimal));
+            table.Columns.Add("Siphon200", typeof(decimal));
+            table.Columns.Add("Siphon5", typeof(decimal));
+            table.Columns.Add("Siphon6", typeof(decimal));
+            table.Columns.Add("Siphon7", typeof(decimal));
+            table.Columns.Add("Siphon8", typeof(decimal));
+
+            table.Columns.Add("ContractCapacity", typeof(decimal));
+
+            table.Columns.Add("DomesticCount", typeof(decimal));
+            table.Columns.Add("CommercialCount", typeof(decimal));
+            table.Columns.Add("OtherCount", typeof(decimal));
+            table.Columns.Add("EmptyCount", typeof(decimal));
+
+            table.Columns.Add("Consumption", typeof(int));
+            table.Columns.Add("Duration", typeof(int));
+
+            table.Columns.Add("ConsumptionAverage", typeof(float));
+
+            table.Columns.Add("Deadline", typeof(string));
+
+            table.Columns.Add("PreDebt", typeof(long));
+
+            // Items
+            for (int i = 1; i <= 18; i++)
+            {
+                table.Columns.Add($"Item{i}", typeof(long));
+            }
+
+            table.Columns.Add("SumItems", typeof(long));
+            table.Columns.Add("Payable", typeof(long));
+
+            table.Columns.Add("TypeId", typeof(string));
+
+            // ItemOff
+            for (int i = 1; i <= 18; i++)
+            {
+                table.Columns.Add($"ItemOff{i}", typeof(long));
+            }
+
+            table.Columns.Add("IsFree", typeof(bool));
+
+            table.Columns.Add("VillageId", typeof(string));
+            table.Columns.Add("VillageName", typeof(string));
+
+            table.Columns.Add("ZoneId2", typeof(string));
+            table.Columns.Add("ReadingStateTitle", typeof(string));
+            table.Columns.Add("PayId", typeof(string));
+
+            table.Columns.Add("CounterStateCode", typeof(int));
+            table.Columns.Add("TypeCode", typeof(int));
+            table.Columns.Add("TypeTitle", typeof(string));
+
+            table.Columns.Add("ReturnCauseId", typeof(int));
+            table.Columns.Add("ReturnCauseTitle", typeof(string));
+
+            table.Columns.Add("BranchTypeId", typeof(int));
+
+            table.Columns.Add("IsSettlement", typeof(bool));
+            foreach (var x in items)
+            {
+                var row = table.NewRow();
+                var xType = x.GetType();
+
+                //row["Id"] = x.Id;
+                row["ZoneId"] = x.ZoneId;
+                row["ZoneTitle"] = x.ZoneTitle ?? (object)DBNull.Value;
+
+                row["CustomerNumber"] = x.CustomerNumber;
+                row["BillId"] = x.BillId ?? (object)DBNull.Value;
+                row["ReadingNumber"] = x.ReadingNumber ?? (object)DBNull.Value;
+
+                row["PreviousNumber"] = x.PreviousNumber;
+                row["NextNumber"] = x.NextNumber;
+
+                row["PreviousDay"] = x.PreviousDay ?? (object)DBNull.Value;
+                row["NextDay"] = x.NextDay ?? (object)DBNull.Value;
+                row["RegisterDay"] = x.RegisterDay ?? (object)DBNull.Value;
+                row["RegisterDayGregorian"] = x.RegisterDayGregorian;
+
+                row["CounterStateTitle"] = x.CounterStateTitle ?? (object)DBNull.Value;
+
+                row["UsageId"] = x.UsageId;
+                row["UsageId2"] = x.UsageId2 ?? (object)DBNull.Value;
+
+                row["UsageTitle"] = x.UsageTitle ?? (object)DBNull.Value;
+                row["UsageTitle2"] = x.UsageTitle2 ?? (object)DBNull.Value;
+
+                row["BranchType"] = x.BranchType ?? (object)DBNull.Value;
+
+                row["WaterDiameterId"] = x.WaterDiameterId;
+                row["WaterDiameterTitle"] = x.WaterDiameterTitle ?? (object)DBNull.Value;
+
+                row["Siphon100"] = x.Siphon100;
+                row["Siphon125"] = x.Siphon125;
+                row["Siphon150"] = x.Siphon150;
+                row["Siphon200"] = x.Siphon200;
+                row["Siphon5"] = x.Siphon5;
+                row["Siphon6"] = x.Siphon6;
+                row["Siphon7"] = x.Siphon7;
+                row["Siphon8"] = x.Siphon8;
+
+                row["ContractCapacity"] = x.ContractCapacity;
+
+                row["DomesticCount"] = x.DomesticCount;
+                row["CommercialCount"] = x.CommercialCount;
+                row["OtherCount"] = x.OtherCount;
+                row["EmptyCount"] = x.EmptyCount;
+
+                row["Consumption"] = x.Consumption;
+                row["Duration"] = x.Duration;
+
+                row["ConsumptionAverage"] = x.ConsumptionAverage;
+
+                row["Deadline"] = x.Deadline ?? (object)DBNull.Value;
+
+                row["PreDebt"] = x.PreDebt;
+
+                for (int i = 1; i <= 18; i++)
+                {
+                    row[$"Item{i}"] = xType.GetProperty($"Item{i}").GetValue(x) ?? (object)DBNull.Value;
+                    row[$"ItemOff{i}"] = xType.GetProperty($"ItemOff{i}").GetValue(x) ?? (object)DBNull.Value;
+                }
+
+                row["SumItems"] = x.SumItems;
+                row["Payable"] = x.Payable;
+
+                row["TypeId"] = x.TypeId ?? (object)DBNull.Value;
+
+                row["IsFree"] = x.IsFree;
+
+                row["VillageId"] = x.VillageId ?? (object)DBNull.Value;
+                row["VillageName"] = x.VillageName ?? (object)DBNull.Value;
+
+                row["ZoneId2"] = x.ZoneId2 ?? (object)DBNull.Value;
+                row["ReadingStateTitle"] = x.ReadingStateTitle ?? (object)DBNull.Value;
+                row["PayId"] = x.PayId ?? (object)DBNull.Value;
+
+                row["CounterStateCode"] = x.CounterStateCode ?? (object)DBNull.Value;
+                row["TypeCode"] = x.TypeCode ?? (object)DBNull.Value;
+                row["TypeTitle"] = x.TypeTitle ?? (object)DBNull.Value;
+
+                row["ReturnCauseId"] = x.ReturnCauseId ?? (object)DBNull.Value;
+                row["ReturnCauseTitle"] = x.ReturnCauseTitle ?? (object)DBNull.Value;
+
+                row["BranchTypeId"] = x.BranchTypeId ?? (object)DBNull.Value;
+
+                row["IsSettlement"] = x.IsSettlement;
+
+                table.Rows.Add(row);
+            }
+            return table;
         }
 
         private string GetInsertByBedBesCommand(string dbName)//todo:check
@@ -291,6 +497,16 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     	ON b.elat=rc.Id
                     WHERE b.id=@id";
         }
-
+        //private string GetTempTableFieldTitlesCommand()
+        //{
+        //    return @" CREATE TABLE #BillsTemp
+        //    (
+        //        ZoneId int,
+        //        UsageId numeric(2,0),
+        //        CustomerNumber numeric(10,0),
+        //        Consumption int,
+        //        IsSettlement bit
+        //    );";
+        //}
     }
 }
