@@ -14,11 +14,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
         {
         }
 
-        public async Task<CounterStateCodeDto> Get(int id)
+        public async Task<CounterStateCodeDto> Get(int id, bool hasException)
         {
             string query = GetSingleQuery();
             CounterStateCodeDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<CounterStateCodeDto>(query, new { id });
-            if (result is null)
+            if (result is null && hasException)
             {
                 throw new InvalidIdException();
             }

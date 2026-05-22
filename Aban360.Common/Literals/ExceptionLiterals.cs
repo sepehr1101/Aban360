@@ -136,7 +136,10 @@
         public static string CurrentNumberLessThanPreviousNumber => "شماره کنتور فعلی کمتر از قبلی است.";
         public static string InvalidRepeatConstructionBranchType => "وضعیت فعلی -ساخت و ساز- است.";
         public static string InvalidBranchTypeId => "خطا در کد نوع واگذاری فعلی.";
-
+        public static string NotFoundMeterReadingDetail => "قبض برای بررسی یافت نشد.";
+        public static string InvalidUpdateMembersDebtAmount => "خطا در ویرایش مبلغ بدهی مشترک";
+        public static string InvalidUpdateWaterDebt => "خطا در ویرایش مبلغ بدهی";
+        public static string InvalidUpdateContor => "خطا در ویرایش آخرین وضعیت کنتور";
 
         //RemovedBill
         public static string NotFoundBillsToRemoved => "قبضی برای ابطال یافت نشد.";

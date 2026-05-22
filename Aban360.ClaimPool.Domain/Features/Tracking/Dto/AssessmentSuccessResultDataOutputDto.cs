@@ -1,4 +1,4 @@
-﻿using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
+﻿using Aban360.Common.BaseEntities;
 
 namespace Aban360.ClaimPool.Domain.Features.Tracking.Dto
 {
@@ -27,6 +27,6 @@ namespace Aban360.ClaimPool.Domain.Features.Tracking.Dto
         public string AssessmentResultTitle { get; set; }
         public bool HasTrench { get; set; }
 
-        public ICollection<MoshtrakCompanyService> CompanyServices{ get; set; }
+        public ICollection<SelectionDto> CompanyServices{ get; set; }
     }
 }

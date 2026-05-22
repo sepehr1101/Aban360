@@ -7,9 +7,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Implementations
 {
-    internal sealed class ZoneQueryService : AbstractBaseConnection, IZoneQueryService
+    internal sealed class T51QueryService : AbstractBaseConnection, IT51QueryService
     {
-        public ZoneQueryService(IConfiguration configuration)
+        public T51QueryService(IConfiguration configuration)
             : base(configuration)
         {
         }

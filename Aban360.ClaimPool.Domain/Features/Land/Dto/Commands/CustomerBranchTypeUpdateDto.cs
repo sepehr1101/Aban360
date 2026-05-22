@@ -10,7 +10,7 @@ namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
         public string BillId { get; set; }
         public int BranchTypeId { get; set; }
         public string ToDayDateJalali { get; set; } = DateTime.Now.ToShortPersianDateString();
-        public CustomerBranchTypeUpdateDto(int id, int zoneId, int customerNumber,string billId, int branchTypeId)
+        public CustomerBranchTypeUpdateDto(int id, int zoneId, int customerNumber, string billId, int branchTypeId)
         {
             Id = id;
             ZoneId = zoneId;

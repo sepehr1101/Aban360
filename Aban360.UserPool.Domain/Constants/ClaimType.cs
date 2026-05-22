@@ -7,6 +7,7 @@
         ProfileThumbnail=3,
         ZoneId=4,
         DefaultZoneId=5,
-        Endpoint=6
+        Endpoint=6,
+        RequestKartable = 7
     }
 }

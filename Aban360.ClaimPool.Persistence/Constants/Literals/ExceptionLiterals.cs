@@ -28,5 +28,9 @@
         public static string InvalidInsertQueue=> "خطا در ذخیره پیامک";
         public static string InvalidInsertAssessmentOff=> "خطا در ثبت مرخصی";
 
+        public static string InvalidZoneTitle => "کد ناحیه یافت نشد";
+        public static string InvalidMeterDiameterTitle => "کد قطر انشعاب یافت نشد";
+        public static string InvalidUsageTitle => "کد کاربری یافت نشد";
+        public static string InvalidBranchTypeTitle => "کد نوع واگذاری یافت نشد";
     }
 }
