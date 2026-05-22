@@ -4,7 +4,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Contracts
 {
     public interface ICounterStateQueryService
     {
-        Task<CounterStateCodeDto> Get(int id);
+        Task<CounterStateCodeDto> Get(int id, bool hasException);
         Task<IEnumerable<CounterStateCodeDto>> Get();
     }
 }

@@ -4,13 +4,21 @@ using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Implementations;
+using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
+using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
+using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Db.Services;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
+using Aban360.OldCalcPool.Domain.Features.Db70.Dto.Queries;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
+using Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using DNTPersianUtils.Core;
@@ -23,19 +31,34 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
     {
         private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
         private readonly IMeterReadingDetailQueryService _meterReadingDetailService;
+        private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly IMeterFlowQueryService _meterFlowQueryService;
         private readonly IBedBesQueryService _bedBesQueryService;
         private readonly IOldTariffEngine _oldTariffEngine;
         private readonly IVariabService _variabService;
+        private readonly ICounterStateQueryService _counterStateQueryService;
+        private readonly IT51QueryService _t51QueryService;
+        private readonly IT5QueryService _t5QueryService;
+        private readonly IT7QueryService _t7QueryService;
+        private readonly IT41QueryService _t41QueryService;
         const int _paymentDeadline = 7;
         const int _maxPayIdLen = 13;
+        const int _type = 1;
+        const string _typeTitle = "قبض";
+        const string _readingStateTitle = "دارای کد مامور";
         public CalculationConfirmationHandler(
             IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
             IMeterReadingDetailQueryService meterReadingDetailService,
+            ICommonMemberQueryService commonMemberQueryService,
             IMeterFlowQueryService meterFlowQueryService,
             IBedBesQueryService bedBesQueryService,
             IOldTariffEngine oldTariffEngine,
             IVariabService variabService,
+            ICounterStateQueryService counterStateQueryService,
+            IT51QueryService t51QueryService,
+            IT7QueryService t7QueryService,
+            IT5QueryService t5QueryService,
+            IT41QueryService t41QueryService,
             IConfiguration configuration)
             : base(configuration)
         {
@@ -44,6 +67,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 
             _meterReadingDetailService = meterReadingDetailService;
             _meterReadingDetailService.NotNull(nameof(meterReadingDetailService));
+
+            _commonMemberQueryService = commonMemberQueryService;
+            _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
 
             _meterFlowQueryService = meterFlowQueryService;
             _meterFlowQueryService.NotNull(nameof(meterFlowQueryService));
@@ -56,6 +82,21 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 
             _variabService = variabService;
             _variabService.NotNull(nameof(variabService));
+
+            _counterStateQueryService = counterStateQueryService;
+            _counterStateQueryService.NotNull(nameof(counterStateQueryService));
+
+            _t51QueryService = t51QueryService;
+            _t51QueryService.NotNull(nameof(t51QueryService));
+
+            _t5QueryService = t5QueryService;
+            _t5QueryService.NotNull(nameof(t5QueryService));
+
+            _t7QueryService = t7QueryService;
+            _t7QueryService.NotNull(nameof(t7QueryService));
+
+            _t41QueryService = t41QueryService;
+            _t41QueryService.NotNull(nameof(t41QueryService));
         }
 
         public async Task<MeterReadingCheckedOutputDto> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
@@ -65,13 +106,20 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             int firstFlowId = await _meterFlowQueryService.GetFirstFlowId(latestFlowId);
             IEnumerable<MeterReadingDetailDataOutputDto> meterReadings = await _meterReadingDetailService.Get(firstFlowId);
 
+            if (!meterReadings.Any())
+            {
+                throw new ReadingException(ExceptionLiterals.NotFoundMeterReadingDetail);
+            }
             int zoneId = meterReadings.FirstOrDefault().ZoneId;
             var (bedBesBatch, kasrHaBatch) = await GetBedBesAndKasrHaDto(meterReadings, cancellationToken);
 
             var (warningMessageForDuplicateBills, duplicateBillIds) = await CheckDuplicateBill(bedBesBatch);
             ICollection<BedBesCreateDto> bedBesBatchWithoutDuplicate = bedBesBatch.Where(s => !duplicateBillIds.Contains(s.ShGhabs1)).ToList();
             ICollection<KasrHaDto> kasrhasBatchWithoutDuplicate = kasrHaBatch.Where(s => !duplicateBillIds.Contains(s.ShGhabs)).ToList();
-            int newMeterFlowId = await CommandTransactions(bedBesBatchWithoutDuplicate, kasrhasBatchWithoutDuplicate, zoneId, latestFlowId, appUser);
+            ICollection<BillInsertDto> billsBatch = await GetBillsInsertDto(bedBesBatchWithoutDuplicate, kasrHaBatch);
+            ICollection<MembersDebtAmountUpdateDto> memberDebtAmountBatch = bedBesBatchWithoutDuplicate.Select(b => new MembersDebtAmountUpdateDto((int)b.Town, (int)b.Radif, b.ShGhabs1, (long)b.Pard)).ToList();
+            ICollection<ContorUpdateDto> contorsUpcateBatch = GetContorsUpdateDto(bedBesBatchWithoutDuplicate);
+            int newMeterFlowId = await CommandTransactions(bedBesBatchWithoutDuplicate, kasrhasBatchWithoutDuplicate, billsBatch, memberDebtAmountBatch, contorsUpcateBatch, zoneId, latestFlowId, appUser);
 
             return GetResult(newMeterFlowId, warningMessageForDuplicateBills);
         }
@@ -99,7 +147,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             }
             return (BedBesBatch, kasrHaBatch);
         }
-        private async Task<int> CommandTransactions(ICollection<BedBesCreateDto> BedBesBatch, ICollection<KasrHaDto> kasrHaBatch, int zoneId, int latestFlowId, IAppUser appUser)
+        private async Task<int> CommandTransactions(ICollection<BedBesCreateDto> BedBesBatch, ICollection<KasrHaDto> kasrHaBatch, ICollection<BillInsertDto> billsBatch, ICollection<MembersDebtAmountUpdateDto> memberDebtAmountBatch, ICollection<ContorUpdateDto> contorsUpdateBatch, int zoneId, int latestFlowId, IAppUser appUser)
         {
             //string dbName = GetDbName(zoneId);
             string dbName = "Atlas";
@@ -127,10 +175,16 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                     KasrHaCommandService kasrHaCommandService = new(connection, transaction);
                     MeterFlowCommandService meterFlowCommandService = new(connection, transaction);
                     BillCommandService billCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ContorCommandService contorCommandService = new(connection, transaction);
+                    WaterDebtCommandService waterDebtCommandService = new(connection, transaction);
 
                     await bedBesCreateService.InsertByBulk(BedBesBatch, dbName);
                     await kasrHaCommandService.InsertByBulk(kasrHaBatch, dbName);
-                    //todo: insert Bill
+                    await billCommandService.InsertByBulk(billsBatch);
+                    await membersCommandService.UpdateBedbes(memberDebtAmountBatch, dbName);//todo:not found any record in atlas.members
+                    await contorCommandService.Update(contorsUpdateBatch, dbName, false);
+                    await waterDebtCommandService.UpdateAmount(memberDebtAmountBatch);
 
                     await meterFlowCommandService.Update(meterFlowUpdate);
                     int newMeterFlowId = await meterFlowCommandService.Insert(newMeterFlow);
@@ -140,13 +194,14 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 }
             }
         }
+
         private async Task<BedBesCreateDto> GetBedBes(MeterReadingDetailDataOutputDto meterReading)
         {
+            MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber(meterReading.ZoneId, meterReading.CustomerNumber));
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
             string mohlatDateJalali = DateTime.Now.AddDays(_paymentDeadline).ToShortPersianDateString();
             decimal barge = await _variabService.GetAndRenew(meterReading.ZoneId);
             string paymentId = TransactionIdGenerator.GeneratePaymentId((long)meterReading.Pard, meterReading.BillId);//todo
-
 
             return new BedBesCreateDto()
             {
@@ -168,10 +223,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 DateBed = currentDateJalali,
                 JalaseNo = 0,//todo
                 Mohlat = mohlatDateJalali,
-                Baha = (decimal)meterReading.SumItems,
                 AbonAb = (decimal)meterReading.AbonAb,
-                Pard = (decimal)(Math.Round(meterReading.SumItems.Value, 3)),//bedehi gahbli+currentSumItems  
-                Jam = (decimal)meterReading.SumItems,//bedehi gahbli+currentSumItems  
+                Baha = (decimal)meterReading.SumItems,
+                Pard = ((long)(meterReading.SumItems.Value + memberInfo.DebtAmount) / 1000) * 1000,//bedehi gahbli+currentSumItems   => check
+                Jam = (decimal)(meterReading.SumItems.Value + memberInfo.DebtAmount),//bedehi gahbli+currentSumItems  => check
                 CodVas = meterReading.CurrentCounterStateCode,
                 Ghabs = "1",
                 Del = false,
@@ -274,6 +329,135 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 NoeVa = meterReading.BranchTypeId,
                 Bodjeh = (decimal)meterReading.BoodjeDiscount,
             };
+        }
+        private async Task<ICollection<BillInsertDto>> GetBillsInsertDto(ICollection<BedBesCreateDto> bedBes, ICollection<KasrHaDto> kasrHa)
+        {
+            DateTime currentDate = DateTime.Now;
+            IEnumerable<NumericDictionary> meterDiameterIds = await _t5QueryService.Get();
+            NumericDictionary zoneInfo = await _t51QueryService.Get((int)(bedBes?.FirstOrDefault()?.Town ?? 0), true);
+            IEnumerable<NumericDictionary> branchTypeIds = await _t7QueryService.Get();
+            IEnumerable<NumericDictionary> usageIds = await _t41QueryService.Get();
+            IEnumerable<CounterStateCodeDto> counterStateCodes = await _counterStateQueryService.Get();//todo: change Dto -> NumericDictionary
+
+
+            ICollection<BillInsertDto> bills = new List<BillInsertDto>();
+            foreach (var b in bedBes)
+            {
+                MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber((int)b.Town, (int)b.Radif));
+                KasrHaDto? discountInfo = kasrHa.Where(k => k.Radif == b.Radif && k.Town == b.Town).FirstOrDefault();
+                bool isVillageId = (int)b.Town > 140000;
+
+
+                BillInsertDto newBill = new()
+                {
+                    ZoneId = (int)b.Town,
+                    ZoneTitle = zoneInfo.Title,
+                    UsageId = b.CodEnshab,
+                    CustomerNumber = b.Radif,
+                    BillId = b.ShGhabs1,
+                    ReadingNumber = b.Eshtrak,
+                    PreviousNumber = (int)b.PriNo,
+                    NextNumber = (int)b.TodayNo,
+                    PreviousDay = b.PriDate,
+                    NextDay = b.TodayDate,
+                    RegisterDay = b.DateBed,
+                    RegisterDayGregorian = currentDate,
+                    CounterStateTitle = counterStateCodes.Where(x => x.Id == b.CodVas).FirstOrDefault()?.Title ?? string.Empty,
+                    UsageId2 = b.Group1,
+                    UsageTitle = usageIds.Where(x => x.Id == b.CodEnshab).FirstOrDefault()?.Title ?? string.Empty,
+                    UsageTitle2 = usageIds.Where(x => x.Id == b.Group1).FirstOrDefault()?.Title ?? string.Empty,
+                    BranchType = branchTypeIds.Where(x => x.Id == b.NoeVa).FirstOrDefault()?.Title ?? string.Empty,
+                    WaterDiameterId = b.Enshab,
+                    WaterDiameterTitle = meterDiameterIds.Where(x => x.Id == b.Enshab).FirstOrDefault()?.Title ?? string.Empty,
+                    Siphon100 = memberInfo.Siphon1,
+                    Siphon125 = memberInfo.Siphon2,
+                    Siphon150 = memberInfo.Siphon3,
+                    Siphon200 = memberInfo.Siphon4,
+                    Siphon5 = memberInfo.Siphon5,
+                    Siphon6 = memberInfo.Siphon6,
+                    Siphon7 = memberInfo.Siphon7,
+                    Siphon8 = memberInfo.Siphon8,
+                    ContractCapacity = b.FixMas,
+                    DomesticCount = b.TedadMas,
+                    CommercialCount = b.TedadTej,
+                    OtherCount = b.TedadVahd,
+                    EmptyCount = b.KhaliS,
+                    Consumption = (int)b.Masraf,
+                    Duration = (int)b.Modat,
+                    ConsumptionAverage = (float)b.Rate,
+                    Deadline = b.Mohlat,
+                    Item1 = (long)(b.AbBaha),
+                    Item2 = (long)(b.FasBaha),
+                    Item3 = (long)(b.AbonAb),
+                    Item4 = (long)(b.AbonFas),
+                    Item5 = (long)(b.Shahrdari),
+                    Item6 = 0,
+                    Item7 = 0,
+                    Item8 = (long)(b.Jarime),
+                    Item9 = (long)(b.Zabresani),
+                    Item10 = (long)(b.ZaribD),
+                    Item11 = (long)(b.ZaribFasl),
+                    Item12 = (long)(b.Ztadil),
+                    Item13 = 0,
+                    Item14 = 0,
+                    Item15 = 0,
+                    Item16 = (long)(b.Bodjeh),
+                    Item17 = 0,
+                    Item18 = (long)(b.Avarez),
+                    SumItems = (long)(b.Baha),
+                    Payable = (long)(b.Pard),
+                    PreDebt = (long)(memberInfo.DebtAmount ?? 0),
+                    TypeId = _typeTitle,
+                    ItemOff1 = (long)(discountInfo?.AbBaha ?? 0),
+                    ItemOff2 = (long)(discountInfo?.FasBaha ?? 0),
+                    ItemOff3 = (long)(discountInfo?.AbonAb ?? 0),
+                    ItemOff4 = (long)(discountInfo?.AbonFas ?? 0),
+                    ItemOff5 = (long)(discountInfo?.Shahrdari ?? 0),
+                    ItemOff6 = 0,
+                    ItemOff7 = 0,
+                    ItemOff8 = 0,
+                    ItemOff9 = 0,
+                    ItemOff10 = 0,
+                    ItemOff11 = (long)(discountInfo?.ZaribFasl ?? 0),
+                    ItemOff12 = 0,
+                    ItemOff13 = 0,
+                    ItemOff14 = 0,
+                    ItemOff15 = 0,
+                    ItemOff16 = (long)(discountInfo?.Bodjeh ?? 0),
+                    ItemOff17 = 0,
+                    ItemOff18 = 0,
+                    IsFree = false,
+                    VillageId = isVillageId ? b.Town.ToString() : string.Empty,
+                    VillageName = isVillageId ? zoneInfo.Title : string.Empty,
+                    ZoneId2 = b.Town.ToString(),
+                    ReadingStateTitle = _readingStateTitle,
+                    PayId = b.ShPard1,
+                    CounterStateCode = (int)b.CodVas,
+                    TypeCode = _type,
+                    TypeTitle = _typeTitle,
+                    ReturnCauseId = null,
+                    ReturnCauseTitle = null,
+                    BranchTypeId = (int)b.NoeVa,
+                    IsSettlement = false,
+                };
+
+                bills.Add(newBill);
+            }
+            return bills;
+        }
+        private ICollection<ContorUpdateDto> GetContorsUpdateDto(ICollection<BedBesCreateDto> input)
+        {
+            return input.Select(b => new ContorUpdateDto()
+            {
+                ZoneId = (int)b.Town,
+                CustomerNumber = (int)b.Radif,
+                CurrentDateJalali = b.DateBed,
+                CurrentNumber = (int)b.TodayNo,
+                Consumption = (int)b.Masraf,
+                ConsumptionAverage = (float)b.Rate,
+                PreviousCounterState = (int)b.CodVas,
+            })
+            .ToList();
         }
         private async Task<int> CreateCalculationConfirmedFlow(IDbConnection connection, IDbTransaction transaction, int latestFlowId, IAppUser appUser)
         {

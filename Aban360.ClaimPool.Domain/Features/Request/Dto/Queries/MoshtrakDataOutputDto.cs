@@ -1,4 +1,6 @@
-﻿namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Queries
+﻿using Aban360.Common.BaseEntities;
+
+namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Queries
 {
     public record MoshtrakDataOutputDto
     {
@@ -54,6 +56,6 @@
         public bool HasBroker { get { return BrokerId >= 1; } }
         public int? ServiceGroupId { get; set; }
         public string? ServiceGroupTitle { get; set; }
-        public IEnumerable<MoshtrakCompanyService> CompanyServiceItems { get; set; }
+        public IEnumerable<SelectionDto> CompanyServiceItems { get; set; }
     }
 }

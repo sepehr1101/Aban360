@@ -21,6 +21,6 @@ namespace Aban360.ClaimPool.Domain.Features.Tracking.Dto
         public string? Caller { get; set; }
         public string NotificationMobile { get; set; }
         public string Address { get; set; }
-        public ICollection<MoshtrakCompanyService> CompanyServices{ get; set; }
+        public ICollection<SelectionDto> CompanyServices{ get; set; }
     }
 }

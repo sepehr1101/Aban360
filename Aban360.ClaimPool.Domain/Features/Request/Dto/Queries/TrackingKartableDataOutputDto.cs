@@ -11,6 +11,7 @@
         public string ServiceGroupTitle { get; set; }
         public int StatusId { get; set; }
         public string StatusTitle { get; set; }
+        public string? NextStatusTitle { get; set; }
         public string NeighbourBillId { get; set; }
         public bool HasAttention { get; set; }
         public string RequestDateJalali { get; set; }

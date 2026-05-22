@@ -32,7 +32,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             previousRequest.ForEach(pr =>
             {
                 MoshtrakServiceDto sDto = GetMoshtrakDto(pr);
-                IEnumerable<MoshtrakCompanyService> companyService = MoshtrakService.GetMoshtrakCompanyServiceDto(sDto, pr.ServiceGroupId);
+                IEnumerable<SelectionDto> companyService = MoshtrakService.GetMoshtrakCompanyServiceDto(sDto, pr.ServiceGroupId);
                 IEnumerable<string> companyServiceTitles = companyService.Where(c => c.IsSelected).Select(c => c.Title);
                 PreviousRequestDataOutputDto outPut = GeOutput(pr, string.Join(", ", companyServiceTitles));
                 result.Add(outPut);
