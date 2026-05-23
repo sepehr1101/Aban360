@@ -21,7 +21,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
         public async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> Handle(ReturnBillFullInputDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
-            CustomerInfoOutputDto customerInfo = await Validation(input, cancellationToken);
+            CustomerInfoOutputDto customerInfo = await Validate(input, appUser, cancellationToken);
 
             int jalaseNumber = await _returnBillBaseHandler.GetJalaliNumber(input.MinutesNumber, customerInfo.ZoneId, customerInfo.Radif);
             IEnumerable<BedBesCreateDto> bedBesInfo = await _returnBillBaseHandler.GetBedBesList(customerInfo, input.FromDateJalali, input.ToDateJalali);
@@ -33,10 +33,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             return await _returnBillBaseHandler.GetReturn(bedBes, newCalculation, bedBes, customerInfo, bedBesInfo.Count(), input.IsConfirm, false, appUser, input.FromDateJalali, input.ToDateJalali);
 
         }
-        private async Task<CustomerInfoOutputDto> Validation(ReturnBillFullInputDto input, CancellationToken cancellationToken)
+        private async Task<CustomerInfoOutputDto> Validate(ReturnBillFullInputDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await _returnBillBaseHandler.FullValidation(input, cancellationToken);
-            CustomerInfoOutputDto customerInfo = await _returnBillBaseHandler.Validation(input.BillId, input.FromDateJalali, input.ToDateJalali);
+            await _returnBillBaseHandler.FullValidate(input, cancellationToken);
+            CustomerInfoOutputDto customerInfo = await _returnBillBaseHandler.Validate(appUser, input.BillId, input.FromDateJalali, input.ToDateJalali);
             return customerInfo;
         }
     }

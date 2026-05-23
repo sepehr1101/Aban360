@@ -51,14 +51,14 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
         public async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> Handle(ReturnBillPartialInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            CustomerInfoOutputDto customerInfo = await Validation(inputDto, cancellationToken);
+            CustomerInfoOutputDto customerInfo = await Validate(inputDto, appUser, cancellationToken);
             int jalaseNumber = await _returnBillBaseHandler.GetJalaliNumber(inputDto.MinutesNumber, customerInfo.ZoneId, customerInfo.Radif);
             float consumptionAverage = await _returnBillBaseHandler.GetConsumptionAverage(inputDto.FromDateJalali, inputDto.ToDateJalali, inputDto.CalculationType, inputDto.UserInput, customerInfo, inputDto.ReturnCauseId);
             var (bedBesInfo, bedBesResult) = await GetBedBesCreateDto(inputDto, customerInfo);
 
             int[] burstPipe = { 1 };
             int[] misreaded = { 5, 7, 9, 14, 15 };
-            int[] misreadedCalcWithMeterNumber = {10, 14, 15 };
+            int[] misreadedCalcWithMeterNumber = { 10, 14, 15 };
             if (burstPipe.Contains(inputDto.ReturnCauseId))
             {
                 float _consumptionAverage = await GetConsumptionAverage(customerInfo, bedBesResult.PriDate, bedBesResult.TodayDate, consumptionAverage);
@@ -204,10 +204,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             return duration > 0 ? duration : throw new ReturnedBillException(ExceptionLiterals.CurrentDateNotMoreThanPreviousDate);
         }
-        private async Task<CustomerInfoOutputDto> Validation(ReturnBillPartialInputDto input, CancellationToken cancellationToken)
+        private async Task<CustomerInfoOutputDto> Validate(ReturnBillPartialInputDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await _returnBillBaseHandler.PartialValidation(input, cancellationToken);
-            CustomerInfoOutputDto customerInfo = await _returnBillBaseHandler.Validation(input.BillId, input.FromDateJalali, input.ToDateJalali);
+            await _returnBillBaseHandler.PartialValidate(input, cancellationToken);
+            CustomerInfoOutputDto customerInfo = await _returnBillBaseHandler.Validate(appUser, input.BillId, input.FromDateJalali, input.ToDateJalali);
 
             return customerInfo;
         }

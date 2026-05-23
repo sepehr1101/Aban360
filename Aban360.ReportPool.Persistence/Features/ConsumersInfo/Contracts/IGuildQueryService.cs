@@ -5,5 +5,6 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
     public interface IGuildQueryService
     {
         Task<IEnumerable<NumericDictionary>> Get();
+        Task<NumericDictionary> Get(int id);
     }
 }

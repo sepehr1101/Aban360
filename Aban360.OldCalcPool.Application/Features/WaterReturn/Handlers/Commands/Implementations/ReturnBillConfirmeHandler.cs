@@ -20,6 +20,7 @@ using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.Common.Db.Services;
+using Aban360.Common.ApplicationUser;
 
 namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Implementations
 {
@@ -29,6 +30,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private readonly IMembersQueryService _membersQueryService;
         private readonly IRepairQueryService _repairQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
+        private readonly ICommonZoneService _commonZoneService;
         private readonly IHBedBesQueryService _hbedBesQueryService;
         private readonly IValidator<ReturnBillConfirmeByBillIdInputDto> _validator;
         public ReturnBillConfirmeHandler(
@@ -36,6 +38,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             IMembersQueryService membersQueryService,
             IRepairQueryService repairQueryService,
             ICommonMemberQueryService commonMemberQueryService,
+            ICommonZoneService commonZoneService,
             IHBedBesQueryService hbedBesQueryService,
             IValidator<ReturnBillConfirmeByBillIdInputDto> validator,
             IConfiguration configuration)
@@ -56,14 +59,17 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             _commonMemberQueryService = commonMemberQueryService;
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
 
+            _commonZoneService = commonZoneService;
+            _commonZoneService.NotNull(nameof(commonZoneService));
+
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
-        public async Task<ReturnBillDataOutputDto> Handle(ReturnBillConfirmeByBillIdInputDto input, CancellationToken cancellationToken)
+        public async Task<ReturnBillDataOutputDto> Handle(ReturnBillConfirmeByBillIdInputDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await Validation(input, cancellationToken);
+            await Validate(input, cancellationToken);
             MemberGetDto memberInfo = await _membersQueryService.Get(input.BillId);
-            await ReturnValidation(memberInfo, input.MinutesNumber);
+            await ReturnValidate(memberInfo, appUser, input.MinutesNumber);
 
             AutoBackGetDto autoBack_difference = await GetDifferenceAutoBack(input, memberInfo);
             RepairCreateDto repairCreate = GetRepairDto(autoBack_difference);
@@ -240,7 +246,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         //    BedBesUpdateDelWithDateDto bedBesUpdate = new((int)input.Town, (int)input.Radif, true, input.PriDate, input.TodayDate);
         //    await _billCommandService.UpdateDel(bedBesUpdate);
         //}
-        private async Task Validation(ReturnBillConfirmeByBillIdInputDto input, CancellationToken cancellationToken)
+        private async Task Validate(ReturnBillConfirmeByBillIdInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -249,8 +255,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 throw new CustomValidationException(message);
             }
         }
-        private async Task ReturnValidation(MemberGetDto memberInfo, int jalaseNumber)
+        private async Task ReturnValidate(MemberGetDto memberInfo, IAppUser appUser, int jalaseNumber)
         {
+            await _commonZoneService.IsUserInZone(appUser, memberInfo.ZoneId);
+
             ZoneIdAndCustomerNumberOutputDto zoneIdAndCustomerNumber = new(memberInfo.ZoneId, memberInfo.CustomerNumber);
             int repairCount = await _repairQueryService.GetRepairCount(zoneIdAndCustomerNumber, jalaseNumber);
             if (repairCount > 0)

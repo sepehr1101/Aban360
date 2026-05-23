@@ -33,6 +33,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private readonly IAutoBackQueryService _autoBackQueryService;
         private readonly IRepairQueryService _repairQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
+        private readonly ICommonZoneService _commonZoneService;
         private readonly IBedBesQueryService _bedBesQueryService;
         private static string _title = "تایید برگشتی";
         public ReturnBillSetConfirmHandler(
@@ -40,6 +41,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             IAutoBackQueryService autoBackQueryService,
             IRepairQueryService repairQueryService,
             ICommonMemberQueryService commonMemberQueryService,
+            ICommonZoneService commonZoneService,
             IBedBesQueryService bedBesQueryService,
             IConfiguration configuration)
             : base(configuration)
@@ -58,11 +60,15 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             _commonMemberQueryService = commonMemberQueryService;
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
+
+            _commonZoneService = commonZoneService;
+            _commonZoneService.NotNull(nameof(commonZoneService));
         }
 
         public async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> Handle(ReturnBillSetConfirmInputDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
             IEnumerable<AutoBackGetByBargeDto> autoBacksInfo = await _autoBackQueryService.GetByConfirmNumber(input.ConfirmedNumber);
+            await _commonZoneService.IsUserInZone(appUser, (int)(autoBacksInfo?.FirstOrDefault()?.Town ?? 0));
             RepairGetDto repairInfo = await _repairQueryService.GetByConfirmNumber(input.ConfirmedNumber);
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber((int)repairInfo.Town, (int)repairInfo.Radif));
 

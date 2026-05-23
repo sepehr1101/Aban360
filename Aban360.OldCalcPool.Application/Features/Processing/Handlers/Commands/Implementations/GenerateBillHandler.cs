@@ -131,6 +131,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     MonthlyAverageConsumption = (double)inputDto.ConsumptionAverage
                 };
                 abBahaCalcResult = await _tariffEngine.Handle(tariffMeterInfoByConsumptionAverage, cancellationToken);
+                abBahaCalcResult.MeterInfo.CounterStateCode = inputDto.CounterStateCode;
             }
             else
             {

@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<KartableAccessUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] KartableAccessUpdateDto inputDto, CancellationToken cancellationToken)
         {
-            await _kartableAccessUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            await _kartableAccessUpdateHandler.Handle(inputDto,  cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
             return Ok(inputDto);
         }

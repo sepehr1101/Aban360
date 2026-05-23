@@ -16,12 +16,12 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
             _requestKartableGetListByUserIdHandler.NotNull(nameof(requestKartableGetListByUserIdHandler));
         }
 
-        [Route("get")]
+        [Route("get/{userId}")]
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<SelectionDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get(CancellationToken cancellationToken)
+        public async Task<IActionResult> Get( Guid userId, CancellationToken cancellationToken)
         {
-            IEnumerable<SelectionDto> result = await _requestKartableGetListByUserIdHandler.Handle(CurrentUser, cancellationToken);
+            IEnumerable<SelectionDto> result = await _requestKartableGetListByUserIdHandler.Handle(userId, cancellationToken);
             return Ok(result);
         }
     }
