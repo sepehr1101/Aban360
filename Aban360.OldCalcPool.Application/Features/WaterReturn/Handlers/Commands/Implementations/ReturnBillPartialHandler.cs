@@ -55,13 +55,25 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             int[] misreaded = { 5, 7, 9, 14, 15 };
             int[] misreadedCalcWithMeterNumber = { 10, 14, 15 };
 
-            CustomerInfoOutputDto customerInfo = await Validation(inputDto, cancellationToken);
+            CustomerInfoOutputDto customerInfo = await Validate(inputDto, appUser, cancellationToken);
             int jalaseNumber = await _returnBillBaseHandler.GetJalaliNumber(inputDto.MinutesNumber, customerInfo.ZoneId, customerInfo.Radif);
             var (bedBesInfo, bedBesResult) = await GetBedBesCreateDto(inputDto, customerInfo);
 
-            int[] burstPipe = { 1 };
-            int[] misreaded = { 5, 7, 9, 14, 15 };
-            int[] misreadedCalcWithMeterNumber = {10, 14, 15 };
+            float consumptionAverage = 0;
+            if (burstPipe.Contains(inputDto.ReturnCauseId))
+            {
+                consumptionAverage = await GetConsumptionAverage(customerInfo, bedBesResult.PriDate, bedBesResult.TodayDate, consumptionAverage);
+            }
+            else
+            {
+                consumptionAverage = await _returnBillBaseHandler.GetConsumptionAverage(inputDto.FromDateJalali, inputDto.ToDateJalali, inputDto.CalculationType, inputDto.UserInput, customerInfo, inputDto.ReturnCauseId);
+            }
+
+            if (consumptionAverage == 0)
+            {
+                throw new BaseException("خطا در محاسبه متوسط مصرف");
+            }
+
             if (burstPipe.Contains(inputDto.ReturnCauseId))
             {                
                 AbBahaCalculationDetails abBahaResult = await GetAbBahaTariff(inputDto, bedBesInfo, consumptionAverage, cancellationToken);
