@@ -13,8 +13,8 @@ using DNTPersianUtils.Core;
 using Aban360.Common.BaseEntities;
 using FluentValidation;
 using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Contracts;
-using Aban360.OldCalcPools.WaterReturn.Dto.Queries;
 using Aban360.Common.Db.Services;
+using Aban360.Common.ApplicationUser;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations
 {
@@ -23,6 +23,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         private readonly ISubscriptionQueryService _customerQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly IMembersQueryService _membersQueryService;
+        private readonly ICommonZoneService _commonZoneService;
         private readonly IValidator<CustomerMobileUpdateInputDto> _updateMobilevalidator;
         static int[] _allowedToSetConstructionType = { 0, 1 };
         static int _constructionId = 4;
@@ -30,6 +31,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             ISubscriptionQueryService customerQueryService,
             ICommonMemberQueryService commonMemberQueryService,
             IMembersQueryService membersQueryService,
+            ICommonZoneService commonZoneService,
             IValidator<CustomerMobileUpdateInputDto> updateMobilevalidator,
             IConfiguration configuration)
             : base(configuration)
@@ -40,6 +42,12 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             _commonMemberQueryService = commonMemberQueryService;
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
 
+            _commonZoneService = commonZoneService;
+            _commonZoneService.NotNull(nameof(commonZoneService));
+
+            _membersQueryService = membersQueryService;
+            _membersQueryService.NotNull(nameof(membersQueryService));
+
             _updateMobilevalidator = updateMobilevalidator;
             _updateMobilevalidator.NotNull(nameof(updateMobilevalidator));
 
@@ -47,60 +55,60 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             _membersQueryService.NotNull(nameof(membersQueryService));
         }
 
-        public async Task Handle(SubscriptionGetDto inputDto, CancellationToken cancellationToken)
+        public async Task Handle(SubscriptionGetDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(inputDto.BillId);
+            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, previousSubscription);
 
             await UpdateCustomer(customerUpdate);
         }
-        public async Task Handle(CustomerUpdate1Dto inputDto, CancellationToken cancellationToken)
+        public async Task Handle(CustomerUpdate1Dto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(inputDto.BillId);
+            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, previousSubscription);
 
             await UpdateCustomer(customerUpdate);
         }
-        public async Task Handle(CustomerUpdate2Dto inputDto, CancellationToken cancellationToken)
+        public async Task Handle(CustomerUpdate2Dto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(inputDto.BillId);
+            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, previousSubscription);
 
             await UpdateCustomer(customerUpdate);
         }
-        public async Task Handle(CustomerUpdate3Dto inputDto, CancellationToken cancellationToken)
+        public async Task Handle(CustomerUpdate3Dto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(inputDto.BillId);
+            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, previousSubscription);
 
             await UpdateCustomer(customerUpdate);
         }
-        public async Task Handle(CustomerUpdate5Dto inputDto, CancellationToken cancellationToken)
+        public async Task Handle(CustomerUpdate5Dto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(inputDto.BillId);
+            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, previousSubscription);
 
             await UpdateCustomer(customerUpdate);
         }
-        public async Task Handle(ServiceLinkConnectionInput inputDto, int deletionStateId, CancellationToken cancellationToken)
+        public async Task Handle(ServiceLinkConnectionInput inputDto, int deletionStateId, IAppUser appUser, CancellationToken cancellationToken)
         {
             await LastDeletionStateValidation(inputDto.BillId, deletionStateId);
 
-            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(inputDto.BillId);
+            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, deletionStateId, previousSubscription);
 
             await UpdateCustomerAndClient(customerUpdate);
         }
-        public async Task Handle(CustomerMobileUpdateInputDto inputDto, CancellationToken cancellationToken)
+        public async Task Handle(CustomerMobileUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             await Validation(inputDto, cancellationToken);
-            SubscriptionGetDto previousSubscriptioninfo = await GetCustomerPreviousInfo(inputDto.BillId);
+            SubscriptionGetDto previousSubscriptioninfo = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
             CustomerMobileUpdateDto updateDto = new(previousSubscriptioninfo.Id, previousSubscriptioninfo.ZoneId, previousSubscriptioninfo.CustomerNumber, previousSubscriptioninfo.BillId, inputDto.MobileNumber);
             await UpdateCustomerAndClient(updateDto);
         }
-        public async Task Handle(CustomerBranchTypeUpdateInputDto inputDto, CancellationToken cancellation)
+        public async Task Handle(CustomerBranchTypeUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellation)
         {
-            SubscriptionGetDto previousSubscriptioninfo = await GetCustomerPreviousInfo(inputDto.BillId);
+            SubscriptionGetDto previousSubscriptioninfo = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
             if (previousSubscriptioninfo.BranchTypeId == 4)
             {
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidRepeatConstructionBranchType);
@@ -115,6 +123,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidBranchTypeId);
             }
         }
+
+
         private async Task UpdateCustomer(CustomerUpdateDto updateDto)
         {
             using (IDbConnection connection = _sqlReportConnection)
@@ -566,13 +576,14 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 ToDayDateJalaliWithFragmentYear = DateTime.Now.ToShortPersianDateString().Substring(2, 8),
             };
         }
-        private async Task<SubscriptionGetDto> GetCustomerPreviousInfo(string billId)
+        private async Task<SubscriptionGetDto> GetCustomerPreviousInfo(IAppUser appUser, string billId)
         {
             SubscriptionGetDto previousSubscription = await _customerQueryService.GetInfo(billId);
             if (previousSubscription == null)
             {
                 throw new BaseException("شناسه قبض یافت نشد");
             }
+            await _commonZoneService.IsUserInZone(appUser, previousSubscription.ZoneId);
 
             return previousSubscription;
         }

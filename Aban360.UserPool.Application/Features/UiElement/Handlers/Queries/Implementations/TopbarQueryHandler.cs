@@ -39,6 +39,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
         }
         public async Task<Topbar> Handle(Guid userId, CancellationToken cancellationToken)
         {
+
             var query = from app in _appQueryService.GetQuery().Where(a => a.IsActive && a.InMenu)
                         join module in _moduleQueryService.GetQuery().Where(a => a.IsActive && a.InMenu)
                             on app.Id equals module.AppId
@@ -65,6 +66,14 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
                                 module.LogicalOrder,
                                 module.Style,
                                 module.Description
+                            },
+                            _SubModule = new
+                            {
+                                subModule.Id,
+                                subModule.Title,
+                                subModule.Style,
+                                subModule.LogicalOrder,
+                                subModule.ClientRoute,
                             }
                         };
             var list = await query.ToListAsync();
@@ -85,7 +94,19 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
                             LogicalOrder = moduleGroup.First()._Module.LogicalOrder,
                             ClientRoute = moduleGroup.First()._Module.ClientRoute,
                             Title = moduleGroup.First()._Module.Title,
-                            Description=moduleGroup.First()._Module.Description
+                            Description = moduleGroup.First()._Module.Description,
+                            Level3s = moduleGroup
+                                .GroupBy(l => l._SubModule.Id)
+                                .Select(subModuleGroup => new TopbarLevel3()
+                                {
+                                    Id = subModuleGroup.Key,
+                                    Style = subModuleGroup.First()._SubModule.Style,
+                                    Title = subModuleGroup.First()._SubModule.Title,
+                                    ClientRoute = subModuleGroup.First()._SubModule.ClientRoute,
+                                    LogicalOrder = subModuleGroup.First()._SubModule.LogicalOrder,
+                                })
+                                .OrderBy(endPoint => endPoint.LogicalOrder)
+                                .ToList()
                         })
                         .OrderBy(subModule => subModule.LogicalOrder)
                         .ToList()
@@ -93,6 +114,6 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
                 .OrderBy(module => module.LogicalOrder)
                 .ToList();
             return new Topbar() { Level1s = items };
-        }     
+        }
     }
 }

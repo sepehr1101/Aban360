@@ -35,6 +35,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private readonly IBedBesQueryService _bedBesQueryService;
         private readonly ICustomerInfoDetailQueryService _customerInfoDetailQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
+        private readonly ICommonZoneService _commonZoneService;
         private readonly IBillReturnCauseQueryService _billReturnCauseQueryService;
         private readonly ITaxCalculator _taxCalculator;
         private readonly IHBedBesQueryService _hBedBesQueryService;
@@ -50,6 +51,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             IBedBesQueryService bedBesQueryService,
             ICustomerInfoDetailQueryService customerInfoDetailQueryService,
             ICommonMemberQueryService commonMemberQueryService,
+            ICommonZoneService commonZoneService,
             IBillReturnCauseQueryService billReturnCauseQueryService,
             ITaxCalculator taxCalculator,
             IHBedBesQueryService hBedBesQueryService,
@@ -71,6 +73,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             _commonMemberQueryService = commonMemberQueryService;
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
+
+            _commonZoneService = commonZoneService;
+            _commonZoneService.NotNull(nameof(commonZoneService));
 
             _billReturnCauseQueryService = billReturnCauseQueryService;
             _billReturnCauseQueryService.NotNull(nameof(billReturnCauseQueryService));
@@ -261,7 +266,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             {
                 return result;
             }
-            await DuplicateReturnValidtion(previousValues);
+            await DuplicateReturnValidate(previousValues);
             decimal confirmNumber = await _variabService.GetAndRenewParvand(customerInfo.ZoneId, true);
             header.ConfirmNumber = (int)confirmNumber;
             bedBes.JalaseNo = confirmNumber;
@@ -705,7 +710,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 return currentDaypreviousMinutes.Value + 1;
             }
         }
-        public async Task FullValidation(ReturnBillFullInputDto input, CancellationToken cancellationToken)
+        public async Task FullValidate(ReturnBillFullInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _returnFullValidator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -714,7 +719,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 throw new CustomValidationException(message);
             }
         }
-        public async Task PartialValidation(ReturnBillPartialInputDto input, CancellationToken cancellationToken)
+        public async Task PartialValidate(ReturnBillPartialInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _returnPartialValidator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -723,21 +728,22 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 throw new CustomValidationException(message);
             }
         }
-        public void ValidationAmount(decimal repairSumItems, decimal previousSumItems)
+        public void AmountValidate(decimal repairSumItems, decimal previousSumItems)
         {
             _ = repairSumItems > previousSumItems ? throw new ReturnedBillException(ExceptionLiterals.RepairAmountMoreThanBedBesAmount) : 0;
         }
-        public async Task<CustomerInfoOutputDto> Validation(string billId, string fromDateJalali, string toDateJalali)
+        public async Task<CustomerInfoOutputDto> Validate(IAppUser appUser, string billId, string fromDateJalali, string toDateJalali)
         {
             CustomerInfoOutputDto customerInfo = await _customerInfoDetailQueryService.GetInfo(billId);
+            await _commonZoneService.IsUserInZone(appUser, customerInfo.ZoneId);
 
-            async Task DateValidation(string date, string exceptionMessage, bool isPreviousDate)
+            async Task DateValidate(string date, string exceptionMessage, bool isPreviousDate)
             {
                 int count = await _bedBesQueryService.GetCountInDateBed(customerInfo.ZoneId, customerInfo.Radif, date, isPreviousDate);
                 _ = count <= 0 ? throw new ReturnedBillException(exceptionMessage) : 0;
             }
-            await DateValidation(fromDateJalali, ExceptionLiterals.InvalidFromDate, true);
-            await DateValidation(toDateJalali, ExceptionLiterals.InvalidToDate, false);
+            await DateValidate(fromDateJalali, ExceptionLiterals.InvalidFromDate, true);
+            await DateValidate(toDateJalali, ExceptionLiterals.InvalidToDate, false);
 
             return customerInfo;
         }
@@ -888,7 +894,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Avarez = different.Avarez,
             };
         }
-        private async Task DuplicateReturnValidtion(ReturnBillDataOutputDto previousValues)
+        private async Task DuplicateReturnValidate(ReturnBillDataOutputDto previousValues)
         {
             ReturnBillDateIntervalDto dateInterval = new((int)previousValues.ZoneId, (int)previousValues.CustomerNumber, previousValues.PreviousDateJalali, previousValues.CurrentDateJalali);
             int count = await _autoBackQueryService.GetCountByDateInterval(dateInterval);

@@ -4,22 +4,22 @@ using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 
 namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implementations
 {
-    public interface IGuildQueryHandler
+    public interface IGuildByIdQueryHandler
     {
-        Task<IEnumerable<NumericDictionary>> Handle(CancellationToken cancellationToken);
+        Task<NumericDictionary> Handle(int id, CancellationToken cancellationToken);
     }
-    internal sealed class GuildQueryHandler : IGuildQueryHandler
+    internal sealed class GuildByIdQueryHandler : IGuildByIdQueryHandler
     {
         private readonly IGuildQueryService _guildService;
-        public GuildQueryHandler(IGuildQueryService guildQueryService)
+        public GuildByIdQueryHandler(IGuildQueryService guildQueryService)
         {
             _guildService = guildQueryService;
             _guildService.NotNull(nameof(guildQueryService));
         }
 
-        public async Task<IEnumerable<NumericDictionary>> Handle(CancellationToken cancellationToken)
+        public async Task<NumericDictionary> Handle(int id, CancellationToken cancellationToken)
         {
-            return await _guildService.Get();
+            return await _guildService.Get(id);
         }
     }
 }

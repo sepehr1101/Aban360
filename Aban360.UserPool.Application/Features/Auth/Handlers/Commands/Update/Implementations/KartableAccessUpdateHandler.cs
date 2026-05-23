@@ -1,5 +1,4 @@
-﻿using Aban360.Common.ApplicationUser;
-using Aban360.Common.Categories.UseragentLog;
+﻿using Aban360.Common.Categories.UseragentLog;
 using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Common.Base;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts;
@@ -17,10 +16,12 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IUserClaimCommandService _userClaimCommandService;
         private readonly IUserClaimQueryService _userClaimQueryService;
+        private readonly IUserQueryService _userQueryService;
         public KartableAccessUpdateHandler(
             IHttpContextAccessor contextAccessor,
             IUserClaimCommandService userClaimCommandService,
-            IUserClaimQueryService userClaimQueryService)
+            IUserClaimQueryService userClaimQueryService,
+            IUserQueryService userQueryService)
         {
             _contextAccessor = contextAccessor;
             _contextAccessor.NotNull(nameof(contextAccessor));
@@ -30,18 +31,22 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
 
             _userClaimQueryService = userClaimQueryService;
             _userClaimQueryService.NotNull(nameof(userClaimQueryService));
+
+            _userQueryService = userQueryService;
+            _userQueryService.NotNull(nameof(userQueryService));
         }
 
-        public async Task Handle(KartableAccessUpdateDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task Handle(KartableAccessUpdateDto inputDto, CancellationToken cancellationToken)
         {
             LogInfo logInfo = DeviceDetection.GetLogInfo(_contextAccessor.HttpContext.Request);
             string logInfoString = JsonOperation.Marshal(logInfo);
             Guid insertGroupId = Guid.NewGuid();
 
-            ICollection<UserClaim> previousUserClaims = await _userClaimQueryService.Get(appUser.UserId, ClaimType.RequestKartable);
+            User user = await _userQueryService.Get(inputDto.UserId);
+            ICollection<UserClaim> previousUserClaims = await _userClaimQueryService.Get(inputDto.UserId, ClaimType.RequestKartable);
             _userClaimCommandService.Remove(previousUserClaims, logInfoString);
 
-            ICollection<UserClaim> newUserClaims = CreateUserClaim(inputDto.KartableIds.Select(r => r.ToString()).ToList(), ClaimType.RequestKartable, logInfoString, insertGroupId, appUser.UserId);
+            ICollection<UserClaim> newUserClaims = CreateUserClaim(inputDto.KartableIds.Select(r => r.ToString()).ToList(), ClaimType.RequestKartable, logInfoString, insertGroupId, inputDto.UserId);
             await _userClaimCommandService.Add(newUserClaims);
         }
     }

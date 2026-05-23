@@ -2,6 +2,7 @@
 {
     public record KartableAccessUpdateDto
     {
+        public Guid UserId { get; set; }
         public IEnumerable<int> KartableIds { get; set; }
     }
 }

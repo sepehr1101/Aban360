@@ -24,7 +24,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Disconnect([FromBody] ServiceLinkConnectionInput input, CancellationToken cancellationToken)
         {
-            await _customerUpdateHandler.Handle(input, _disconnectState, cancellationToken);
+            await _customerUpdateHandler.Handle(input, _disconnectState, CurrentUser, cancellationToken);
             return Ok(successfullyDone);
         }
 
@@ -33,7 +33,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Reconnect([FromBody] ServiceLinkConnectionInput input, CancellationToken cancellationToken)
         {
-            await _customerUpdateHandler.Handle(input, _connectState, cancellationToken);
+            await _customerUpdateHandler.Handle(input, _connectState, CurrentUser, cancellationToken);
             return Ok(successfullyDone);
         }
     }

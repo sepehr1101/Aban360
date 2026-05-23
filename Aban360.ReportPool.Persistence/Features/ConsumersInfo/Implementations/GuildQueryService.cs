@@ -19,11 +19,26 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             IEnumerable<NumericDictionary> dictionary = await _sqlReportConnection.QueryAsync<NumericDictionary>(query);
             return dictionary;
         }
+        public async Task<NumericDictionary> Get(int id)
+        {
+            string query = GetByIdQuery();
+            NumericDictionary guild= await _sqlReportConnection.QueryFirstOrDefaultAsync<NumericDictionary>(query, new { id});
+            return guild;
+        }
+
         private string GetQuery()
         {
             string query = @"USE Db70
                             SELECT MoshtarakinId Id, Title
                             FROM Senf";
+            return query;
+        }
+        private string GetByIdQuery()
+        {
+            string query = @"USE Db70
+                            SELECT MoshtarakinId Id, Title
+                            FROM Senf
+                            WHERE MoshtarakinId =@id";
             return query;
         }
     }

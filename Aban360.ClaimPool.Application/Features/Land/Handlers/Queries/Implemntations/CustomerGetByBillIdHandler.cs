@@ -1,7 +1,9 @@
 ﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
+using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
@@ -11,9 +13,11 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
 {
     internal sealed class CustomerGetByBillIdHandler : ICustomerGetByBillIdHandler
     {
+        private readonly ICommonZoneService _commonZoneService;
         private readonly ISubscriptionQueryService _subscriptionAssignmentQueryService;
         private readonly IGisService _gisService;
         public CustomerGetByBillIdHandler(
+            ICommonZoneService commonZoneService,
             ISubscriptionQueryService subscriptionAssignmentQueryService,
             IGisService gisService)
         {
@@ -24,9 +28,10 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
             _gisService.NotNull(nameof(gisService));
         }
 
-        public async Task<SubscriptionGetDto> Handle(SearchInput inputDto, CancellationToken cancellationToken)
+        public async Task<SubscriptionGetDto> Handle(SearchInput inputDto,IAppUser appUser, CancellationToken cancellationToken)
         {
             SubscriptionGetDto customerInfo = await _subscriptionAssignmentQueryService.GetInfo(inputDto.Input);
+            await _commonZoneService.IsUserInZone(appUser, customerInfo.ZoneId);
             if (customerInfo == null)
             {
                 throw new BaseException("شناسه قبض یافت نشد");
