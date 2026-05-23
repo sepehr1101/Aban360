@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Exceptions;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
@@ -81,9 +82,19 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         }
         public async Task Delete(int id, int zoneId, string dbName)
         {
-            string query = GetDeleteQuery(dbName);
+            string query = GetDeleteByIdQuery(dbName);
             int rowsAffected = await _connection.ExecuteAsync(query, new { id, zoneId }, _transaction);
 
+            if (rowsAffected == 0)
+            {
+                throw new ReadingException(ExceptionLiterals.NotFoundBillsToRemoved);
+            }
+        }
+        public async Task Delete(ZoneIdAndCustomerNumber input, string dbName)
+        {
+            string query = GetDeleteByCustomerNumberQuery(dbName);
+            int rowsAffected = await _connection.ExecuteAsync(query, input, _transaction);
+            
             if (rowsAffected == 0)
             {
                 throw new ReadingException(ExceptionLiterals.NotFoundBillsToRemoved);
@@ -310,10 +321,15 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 
                  SELECT CAST(SCOPE_IDENTITY() AS INT)";
         }
-        private string GetDeleteQuery(string dbName)
+        private string GetDeleteByIdQuery(string dbName)
         {
             return $"Delete FROM [{dbName}].dbo.bed_bes " +
                     "Where Id=@id AND town=@zoneId";
+        }
+        private string GetDeleteByCustomerNumberQuery(string dbName)
+        {
+            return $"Delete FROM [{dbName}].dbo.bed_bes " +
+                    "Where radif=@customerNumber AND town=@zoneId";
         }
         private string GetUpdateDelCommand(string dbName)
         {

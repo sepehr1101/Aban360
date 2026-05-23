@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.Db.Dapper;
+using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -35,7 +36,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 
             return range;
         }
-
         public async Task<decimal> GetAndRenewParvand(int zoneId, bool isAtlas)
         {
             string dbName = isAtlas ? _atlasDbName : GetDbName(zoneId);
@@ -43,7 +43,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             await _sqlReportConnection.ExecuteAsync(IncreaseParavand(dbName, isAtlas), new { zoneId });
             return parvand;
         }
-
         public async Task<bool> IsOperationValid(int zoneId, string operationDate)
         {
             string dateCheck = await _sqlReportConnection.QuerySingleAsync<string>(GetCheckDate1(GetDbName(zoneId)), new { @zoneId });
@@ -63,12 +62,22 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             }
             return true;
         }
-
         public async Task<int> GetAndRenewRadif(int zoneId)
         {
             int radif = await _sqlReportConnection.QuerySingleAsync<int>(GetRadifQuery(GetDbName(zoneId)), new { zoneId });
             await _sqlReportConnection.ExecuteAsync(IncreaseRadif(GetDbName(zoneId)), new { zoneId });
             return radif;
+        }
+        public async Task<string> GetDateCheck(int zoneId)
+        {
+            string dbName = GetDbName(zoneId);
+            string query = GetDateCheckQuery(dbName);
+            string? dateCheck = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(query, new { zoneId });
+            if (string.IsNullOrWhiteSpace(dateCheck))
+            {
+                throw new InvalidDataException(ExceptionLiterals.InvalidDateCheckFormat);
+            }
+            return dateCheck;
         }
 
         private string GetBargeQuery(string dbName)
@@ -121,6 +130,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             string query = $"USE [{dbName}] " +
                $"UPDATE variab SET parvand=parvand+1 {zoneCondition} ;";
             return query;
+        }
+
+        private string GetDateCheckQuery(string dbName)
+        {
+            return $@"Select date_check
+                    From [{dbName}].dbo.variab 
+                    Where town=@zoneId";
         }
     }
 }

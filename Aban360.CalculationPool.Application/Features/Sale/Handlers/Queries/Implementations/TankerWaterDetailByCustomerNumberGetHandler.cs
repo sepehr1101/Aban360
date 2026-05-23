@@ -11,7 +11,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
     internal sealed class TankerWaterDetailByCustomerNumberGetHandler : ITankerWaterDetailByCustomerNumberGetHandler
     {
         private readonly ITankerQueryService _tankerQueryService;
-        private readonly IBedBesQueryService _besQueryService
+        private readonly IBedBesQueryService _besQueryService;
         const string _title = "آب تانکری";
         public TankerWaterDetailByCustomerNumberGetHandler(
             ITankerQueryService tankerQueryService,

@@ -18,12 +18,12 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Command
     public class TankerWaterController : BaseController
     {
         private readonly ITankerInsertHandler _tankerInserHandler;
-        private readonly ITankerRemoveHandler _tankerRemoveHandler;
+        private readonly ITankerDeleteHandler _tankerRemoveHandler;
         private readonly ITankerWaterDetailByCustomerNumberGetHandler _tankerDetailByCustomerNumberHandler;
         private readonly ISmsOldHandler _smsOldHandler;
         private readonly IBackgroundJobClient _backgroundJobClient;
         public TankerWaterController(
-            ITankerRemoveHandler tankerRemoveHandler,
+            ITankerDeleteHandler tankerRemoveHandler,
             ITankerInsertHandler tankerInserHandler,
             ITankerWaterDetailByCustomerNumberGetHandler tankerDetailByCustomerNumberHandler,
             ISmsOldHandler smsOldHandler,
@@ -45,7 +45,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Command
             _backgroundJobClient.NotNull(nameof(backgroundJobClient));
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("add")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<TankerWaterCalculationOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Add([FromBody] TankerInsertInputDto input, CancellationToken cancellationToken)
@@ -60,18 +60,17 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Command
         }
 
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("remove")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<TankerRemoveInputDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Remove([FromBody] TankerRemoveInputDto input, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponseEnvelope<TankerDeleteInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Remove([FromBody] TankerDeleteInputDto input, CancellationToken cancellationToken)
         {
-            int userCode = UserService.GetUserCode(CurrentUser.Username);
-            await _tankerRemoveHandler.Handle(input, userCode, cancellationToken);
+            await _tankerRemoveHandler.Handle(input, CurrentUser, cancellationToken);
             return Ok(input);
         }
 
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSti([FromBody] ZoneIdAndCustomerNumberOutputDto input, CancellationToken cancellationToken)

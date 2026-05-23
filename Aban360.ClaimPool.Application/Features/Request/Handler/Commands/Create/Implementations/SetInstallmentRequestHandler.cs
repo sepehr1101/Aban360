@@ -148,7 +148,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 DueDateJalali = x.DueDateJalali,
                 InsertBy = _insertBy,
                 BillId = trackingInfo.BillId ?? string.Empty,
-                PaymentId = TransactionIdGenerator.GeneratePaymentId(x.Amount, trackingInfo.BillId, $"00{counter++}"),
+                PaymentId = TransactionIdGenerator.GeneratePaymentId(x.Amount, trackingInfo.BillId, $"20{counter++}"),
             });
         }
         private async Task ExecuteSqlCommand(IEnumerable<GhestInsertDto> ghestsInsertDto, int zoneId)

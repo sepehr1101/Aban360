@@ -134,15 +134,17 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         {
             ICollection<BedBesCreateDto> BedBesBatch = new List<BedBesCreateDto>();
             ICollection<KasrHaDto> kasrHaBatch = new List<KasrHaDto>();
-            string paymentIdOption = GetPaymentIdOption();
+            string currnetDateJalali = DateTime.Now.ToShortPersianDateString();
+            string month = currnetDateJalali.Substring(5, 2);
+
             foreach (var mr in meterReadings)
             {
-                BedBesCreateDto bedBes = await GetBedBes(mr, paymentIdOption);
+                BedBesCreateDto bedBes = await GetBedBes(mr, $"1{month}");
                 BedBesBatch.Add(bedBes);
 
                 if (mr.DiscountSum > 0)
                 {
-                    KasrHaDto kasrHa = GerKasrHa(mr,bedBes.ShPard1);
+                    KasrHaDto kasrHa = GerKasrHa(mr, bedBes.ShPard1);
                     kasrHaBatch.Add(kasrHa);
                 }
             }
@@ -290,7 +292,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 TrackNumber = long.Parse(paymentId)//Todo
             };
         }
-        private KasrHaDto GerKasrHa(MeterReadingDetailDataOutputDto meterReading,string paymentId)
+        private KasrHaDto GerKasrHa(MeterReadingDetailDataOutputDto meterReading, string paymentId)
         {
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
 
@@ -541,13 +543,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 return false;
             }
             return true;
-        }
-        private string GetPaymentIdOption()
-        {
-            string currnetDateJalali = DateTime.Now.ToShortPersianDateString();
-            string month = currnetDateJalali.Substring(5, 2);
-            string monthTrim = month.TrimStart('0');
-            return monthTrim.Length == 1 ? $"10{monthTrim}" : $"1{monthTrim}";
         }
     }
 }
