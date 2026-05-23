@@ -21,12 +21,18 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         }
         public async Task<ReportOutput<CustomerMiniSearchHeaderOutputDto, CustomerMiniSearchDataOutputDto>> Get(CustomerMiniSearchInputDto input)
         {
-            string fieldSearch = GetField(input.SearchType);
+            string fieldSearch = GetSqlCondition(input.SearchType);
             string query = GetQuery(fieldSearch);
-            IEnumerable<CustomerMiniSearchDataOutputDto> data = await _sqlReportConnection.QueryAsync<CustomerMiniSearchDataOutputDto>(query, new { input = input.Input, zoneIds=input.UserZoneIds });
+            string normalizedInput = NormalizeText(input.Input);
+            if (input.SearchType == CustomerMiniSearchInputEnum.Name)
+            {
+                normalizedInput = $"%{normalizedInput}%";
+            }
+
+            IEnumerable<CustomerMiniSearchDataOutputDto> data = await _sqlReportConnection.QueryAsync<CustomerMiniSearchDataOutputDto>(query, new { input = normalizedInput, zoneIds=input.UserZoneIds });
             CustomerMiniSearchHeaderOutputDto header = new CustomerMiniSearchHeaderOutputDto()
             {
-                Input = input.Input,
+                Input =input.Input,
                 SearchType = input.SearchType,
 
                 CustomerCount = data.Count(),
@@ -39,14 +45,30 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
             return result;
         }
-        private string GetField(CustomerMiniSearchInputEnum input)
+        private string NormalizeText(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return text;
+
+            return text
+                .Replace('ي', 'ی')
+                .Replace('ك', 'ک')
+                .Replace('أ', 'ا')
+                .Replace('إ', 'ا')
+                .Replace('آ', 'ا')
+                .Replace('ٱ', 'ا')
+                .Replace('ة', 'ه')
+                .Replace('ۀ', 'ه')
+                .Trim();
+        }
+        private string GetSqlCondition(CustomerMiniSearchInputEnum input)
         {
             return input switch
             {
                 CustomerMiniSearchInputEnum.MobileNumber => "c.MobileNo=@input",
                 CustomerMiniSearchInputEnum.NationalCode => "c.NationalId=@input",
                 CustomerMiniSearchInputEnum.PostalCode => "c.PostalCode=@input",
-                CustomerMiniSearchInputEnum.Name => "(TRIM(c.FirstName)+' '+TRIM(c.SureName))=@input",
+                CustomerMiniSearchInputEnum.Name => "c.FullNameNormalized LIKE @input",
                 CustomerMiniSearchInputEnum.PhoneNumber => "c.PhoneNo=@input",
                 CustomerMiniSearchInputEnum.CustomerNumber => "(c.CustomerNumber=@input OR TRIM(c.ReadingNumber)=@input)",
 				CustomerMiniSearchInputEnum.BillId=> "c.BillId=@input",
@@ -55,7 +77,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         }
         private string GetQuery(string condition)
         {
-            return $@"Select 
+            return $@"Select TOP 100
 						TRIM(c.FirstName) FirstName,
 						TRIM(c.SureName) Surname,
 						(TRIM(c.FirstName)+' '+TRIM(c.SureName)) FullName,
