@@ -35,7 +35,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
             TankerOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<TankerOutputDto>(query, input);
             if (result is null)
             {
-                throw new TankerException (ExceptionLiterals.InvalidCustomerNumber);
+                throw new TankerException(ExceptionLiterals.InvalidCustomerNumber);
             }
             return result;
         }
@@ -82,13 +82,25 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
                     	t.date RegisterDateJalali,
                     	t.del IsDeleted,
                     	t.user_hasf DeletedBy,
-                    	t.date_hasf DeletedDateJalali 
+                    	t.date_hasf DeletedDateJalali ,
+						a.sh_ghabs BillId,
+						a.pard PaymentAmount,
+						a.sh_pard PaymentId,
+						a.cod_bank BankCode,
+						a.date_bank BankDateJalali ,
+						a.pay_date PaymentDateJalali,
+						a.type_pay PaymentTypeId,
+						t150.C2 PaymentTypeTitle
                     From [{dbName}].dbo.tanker t
+					Left Join [{dbName}].dbo.vosolab a
+						ON t.radif=a.radif AND t.town=a.town
                     Join [Db70].dbo.T51 t51
                     	On t.town=t51.C0
                     Join [Db70].dbo.T46 t46
                     	On t51.C1=t46.C0
-                    Where t.radif=@customerNumber";
+                    Left Join [Db70].dbo.T150 t150
+                    	On a.type_pay Collate SQL_Latin1_General_CP1_CI_AS=t150.C1 Collate SQL_Latin1_General_CP1_CI_AS
+                    Where t.radif=@CustomerNumber";
         }
 
     }

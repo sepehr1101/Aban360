@@ -16,5 +16,14 @@
         public bool IsDeleted { get; set; }
         public int DeletedBy { get; set; }
         public string? DeletedDateJalali { get; set; }
+
+        public string? BillId { get; set; }
+        public long? PaymentAmount { get; set; }
+        public string? PaymentId { get; set; }
+        public string? BankCode { get; set; }
+        public string? BankDateJalali { get; set; }
+        public string? PaymentDateJalali { get; set; }
+        public string? PaymentTypeTitle { get; set; }
+        public int? PaymentTypeId { get; set; }
     }
 }
