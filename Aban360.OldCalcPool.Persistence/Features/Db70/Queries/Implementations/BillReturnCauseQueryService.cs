@@ -48,9 +48,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
         }
         private string GetAllQuery()
         {
-            return @"Select *
+            return @"Select Id,Title
                     From [Db70].dbo.BillReturnCause
-                    Where RemoveDateTime IS NULL";
+                    Where 
+                        RemoveDateTime IS NULL /*AND
+                        IsInList=1*/";
         }
         private string GetAllQueryByDictionary()
         {
@@ -58,7 +60,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
                         Code Id,
                          Title
                     From [Db70].dbo.BillReturnCause
-                    Where RemoveDateTime IS NULL";
+                    Where
+                        RemoveDateTime IS NULL /*AND
+                        IsInList=1*/";
         }
     }
 }

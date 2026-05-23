@@ -50,15 +50,15 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             {
                 return false;
             }
-            string _30daysAgo = DateTime.Now.AddDays(-30).ToShortPersianDateString();
-            if (operationDate.CompareTo(_30daysAgo) < 0)
+            string _35daysAgo = DateTime.Now.AddDays(-35).ToShortPersianDateString();
+            if (operationDate.CompareTo(_35daysAgo) < 0)
             {
                 return false;
             }
             string today = DateTime.Now.ToShortPersianDateString();
             if (today.Substring(5, 2) != operationDate.Substring(5, 2))
             {
-                return false;
+                //return false; //TODO: در صورتی که ماه متفاوت باشد اما دوره بسته نشده باشد موقتا گیر نده 1405/03/02 
             }
             return true;
         }

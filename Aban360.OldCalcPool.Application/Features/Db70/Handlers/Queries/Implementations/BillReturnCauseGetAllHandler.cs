@@ -8,21 +8,21 @@ namespace Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Impleme
 {
     internal sealed class BillReturnCauseGetAllHandler : IBillReturnCauseGetAllHandler
     {
-        private readonly IBillReturnCauseQueryService _virtualCategoryQueryService;
+        private readonly IBillReturnCauseQueryService _billReturnCauseQueryService;
 
-        public BillReturnCauseGetAllHandler(IBillReturnCauseQueryService virtualCategoryQueryService)
+        public BillReturnCauseGetAllHandler(IBillReturnCauseQueryService billReturnCauseQueryService)
         {
-            _virtualCategoryQueryService = virtualCategoryQueryService;
-            _virtualCategoryQueryService.NotNull(nameof(virtualCategoryQueryService));
+            _billReturnCauseQueryService = billReturnCauseQueryService;
+            _billReturnCauseQueryService.NotNull(nameof(billReturnCauseQueryService));
         }
         public async Task<IEnumerable<BillReturnCauseGetDto>> Handle(CancellationToken cancellationToken)
         {
-            IEnumerable<BillReturnCauseGetDto> result = await _virtualCategoryQueryService.Get();
+            IEnumerable<BillReturnCauseGetDto> result = await _billReturnCauseQueryService.Get();
             return result;
         }
         public async Task<IEnumerable<NumericDictionary>> HandleByDictionary(CancellationToken cancellationToken)
         {
-            IEnumerable<NumericDictionary> result = await _virtualCategoryQueryService.GetByDictionary();
+            IEnumerable<NumericDictionary> result = await _billReturnCauseQueryService.GetByDictionary();
             return result;
         }
     }
