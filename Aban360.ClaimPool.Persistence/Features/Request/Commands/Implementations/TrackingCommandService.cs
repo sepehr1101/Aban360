@@ -93,7 +93,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 						@TrackId TrackId,
 						t.TrackNumber,
 						t.ZoneId,
-						GETDATE() DateAndTime,
+						@CurrentDateGregorian DateAndTime,
 						@currentDateJalali DateTimeJalali,
 						t.BillId,
 						t.ServiceGroup_FK,

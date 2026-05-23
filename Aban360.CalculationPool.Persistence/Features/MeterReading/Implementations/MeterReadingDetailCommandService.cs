@@ -27,8 +27,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         public async Task Insert(MeterReadingDetailCreateDto input)
         {
             string command = GetInsertCommand();
-            int rowEffect = await _connection.ExecuteAsync(command, input, _transaction);
-            if (rowEffect <= 0)
+            int affectedRecords = await _connection.ExecuteAsync(command, input, _transaction);
+            if (affectedRecords <= 0)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidUpdate);
             }
@@ -92,8 +92,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         public async Task Delete(MeterReadingDetailDeleteDto input)
         {
             string query = GetDeleteCommands();
-            int rowEffect = await _connection.ExecuteAsync(query, input, _transaction);
-            if (rowEffect <= 0)
+            int affectedRecords = await _connection.ExecuteAsync(query, input, _transaction);
+            if (affectedRecords <= 0)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidUpdate);
             }
@@ -106,7 +106,11 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         public async Task Exclude(MeterReadingDetailExcludedDto input)
         {
             string query = GetExcludeCommand();
-            await _connection.ExecuteAsync(query, input);
+            int affectedRecords = await _connection.ExecuteAsync(query, input);
+            if (affectedRecords <= 0)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidSetExclude);
+            }
         }
         private DataTable ToDataTable(IEnumerable<MeterReadingDetailCreateDto> input)
         {

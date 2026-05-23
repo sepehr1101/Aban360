@@ -26,6 +26,9 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
 
             _gisService = gisService;
             _gisService.NotNull(nameof(gisService));
+
+            _commonZoneService = commonZoneService;
+            _commonZoneService.NotNull(nameof(commonZoneService));
         }
 
         public async Task<SubscriptionGetDto> Handle(SearchInput inputDto,IAppUser appUser, CancellationToken cancellationToken)

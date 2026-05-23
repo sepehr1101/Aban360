@@ -81,7 +81,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         {
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(input.BillId);
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumber);
-            await _moshtrakQueryService.CheckOpenRequest(memberInfo.CustomerNumber, memberInfo.ZoneId);
+            //await _moshtrakQueryService.CheckOpenRequest(memberInfo.CustomerNumber, memberInfo.ZoneId);
 
             return memberInfo;
         }
@@ -219,6 +219,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 PostalCode = memberInfo.PostalCode,
                 IsSpecial = memberInfo.IsSpecial,
                 ReadingNumber = memberInfo.ReadingNumber,
+                CertificateNumber = string.Empty,
                 BrokerId = 0,//todo
                 s0 = serviceSelected.s0,
                 s1 = serviceSelected.s1,

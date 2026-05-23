@@ -23,9 +23,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly IKartQueryService _kartQueryService;
         private readonly IValidator<InstallmentRequestInputDto> _validator;
+        static int[] _enableStatus = { 60, 75 };
         static int _maxInterval = 3;
         static int _maxInstallmentCount = 9;
-        static int _calculationConfirmedStatus = 60;
         static string _title = "تقسیط";
         static string _insertBy = "Aban";
         public SetInstallmentRequestHandler(
@@ -68,7 +68,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         {
             await InputValidation(inputDto, cancellationToken);
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
-            if (trackingInfo.StatusId != _calculationConfirmedStatus)
+            if (!_enableStatus.Contains(trackingInfo.StatusId))
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
             }

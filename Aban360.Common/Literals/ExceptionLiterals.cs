@@ -141,6 +141,7 @@
         public static string InvalidUpdateMembersDebtAmount => "خطا در ویرایش مبلغ بدهی مشترک";
         public static string InvalidUpdateWaterDebt => "خطا در ویرایش مبلغ بدهی";
         public static string InvalidUpdateContor => "خطا در ویرایش آخرین وضعیت کنتور";
+        public static string InvalidSetExclude => "خطا در خروج قبض از لیست";
 
         //RemovedBill
         public static string NotFoundBillsToRemoved => "قبضی برای ابطال یافت نشد.";

@@ -28,11 +28,12 @@ namespace Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries
         public int BranchTypeId { get; set; }
         public string BranchTypeTitle { get; set; }
         public int UsageId { get; set; }
-        public string UsageTitle {  get; set; }
+        public string UsageTitle { get; set; }
         public int ConsumptionUsageId { get; set; }
         public int DomesticUnit { get; set; }
         public int CommercialUnit { get; set; }
         public int OtherUnit { get; set; }
+        public int TotalUnit { get; set; }
         public int EmptyUnit { get; set; }
         public string WaterInstallationDateJalali { get; set; }
         public string SewageInstallationDateJalali { get; set; }
