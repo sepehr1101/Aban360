@@ -39,6 +39,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
         }
         public async Task<Topbar> Handle(Guid userId, CancellationToken cancellationToken)
         {
+
             var query = from app in _appQueryService.GetQuery().Where(a => a.IsActive && a.InMenu)
                         join module in _moduleQueryService.GetQuery().Where(a => a.IsActive && a.InMenu)
                             on app.Id equals module.AppId

@@ -1,5 +1,4 @@
 ﻿using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
-using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
@@ -24,13 +23,13 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
             _requestStatusQueryService.NotNull(nameof(requestStatusQueryService));
         }
 
-        public async Task<IEnumerable<SelectionDto>> Handle(IAppUser appUser, CancellationToken cancellationToken)
+        public async Task<IEnumerable<SelectionDto>> Handle(Guid userId, CancellationToken cancellationToken)
         {
             IEnumerable<SelectionDto> requestStatuses = await _requestStatusQueryService.GetIsKartable();
-            ICollection<UserClaim> userAccesses = await _userClaimQueryService.Get(appUser.UserId, ClaimType.RequestKartable);
+            ICollection<UserClaim> userAccesses = await _userClaimQueryService.Get(userId, ClaimType.RequestKartable);
             foreach (var item in requestStatuses)
             {
-               item.IsSelected  = userAccesses.Select(u=>u.Id== item.Id).Any();
+                item.IsSelected = userAccesses.Select(u => u.Id == item.Id).Any();
             }
 
             return requestStatuses;

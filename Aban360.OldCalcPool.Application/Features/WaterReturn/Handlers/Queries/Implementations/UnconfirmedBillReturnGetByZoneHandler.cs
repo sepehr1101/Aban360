@@ -1,4 +1,5 @@
-﻿using Aban360.Common.BaseEntities;
+﻿using Aban360.Common.ApplicationUser;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.Contracts;
@@ -28,9 +29,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.
             _commonZoneService.NotNull(nameof(commonZoneService));
         }
 
-        public async Task<ReportOutput<UnconfirmedBillReturnHeaderOutputDto, UnconfirmedBillReturnDataOutputDto>> Handle(int  zoneId, CancellationToken cancellationToken)
+        public async Task<ReportOutput<UnconfirmedBillReturnHeaderOutputDto, UnconfirmedBillReturnDataOutputDto>> Handle(int zoneId, IAppUser appUser, CancellationToken cancellationToken)
         {
             string title = ReportLiterals.UnconfirmedBillReturn;
+            await _commonZoneService.IsUserInZone(appUser, zoneId);
             IEnumerable<UnconfirmedBillReturnDataOutputDto> data = await GetDate(zoneId);
             UnconfirmedBillReturnHeaderOutputDto header = new()
             {

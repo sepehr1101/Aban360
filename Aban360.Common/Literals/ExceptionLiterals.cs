@@ -182,6 +182,7 @@
         public static string InvalidStateId => "وضعیت ارسالی یافت نشد.";
         public static string InvalidExaminerName => "کد ارزیابی صحیح نیست.";
         public static string InvalidUserName => "کد کاربری صحیح نیست.";
+        public static string InvalidUserId => "شناسه کاربری صحیح نیست.";
         public static string InvalidDiscountFileName => "اطلاعات در این پوشه یافت نشد";
         public static string InvalidStatusId => "خطا در کد وضعیت ";
         public static string InvalidSetResultDuplicate => "ثبت نتیجه ارزیابی قبلا انجام شده.";

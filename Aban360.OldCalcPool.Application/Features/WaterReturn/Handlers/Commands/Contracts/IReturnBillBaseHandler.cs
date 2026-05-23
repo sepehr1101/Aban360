@@ -18,10 +18,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         BedBesCreateDto GetBedbes(IEnumerable<BedBesCreateDto> input, CustomerInfoOutputDto customerInfo);
         AutoBackCreateDto GetBedBes(BedBesCreateDto bedBes, int bedBesCount, int jalaseNumber, int returnCauseId);
         Task<int> GetJalaliNumber(int? minutesNumber, int zoneId, int customerNumber);
-        Task FullValidation(ReturnBillFullInputDto input, CancellationToken cancellationToken);
-        Task PartialValidation(ReturnBillPartialInputDto input, CancellationToken cancellationToken);
-        void ValidationAmount(decimal repairSumItems, decimal previousSumItems);
-        Task<CustomerInfoOutputDto> Validation(string billId, string fromDateJalali, string toDateJalali);
+        Task FullValidate(ReturnBillFullInputDto input, CancellationToken cancellationToken);
+        Task PartialValidate(ReturnBillPartialInputDto input, CancellationToken cancellationToken);
+        void AmountValidate(decimal repairSumItems, decimal previousSumItems);
+        Task<CustomerInfoOutputDto> Validate(IAppUser appUser, string billId, string fromDateJalali, string toDateJalali);
         Task<float> GetConsumptionAverage(string fromDateJalali, string toDateJalali, ReturnedBillCalculationTypeEnum calculationType, float? userInput, CustomerInfoOutputDto customerInfo, int returnCauseId);
         bool IsDomestic(int customerNumber);
     }

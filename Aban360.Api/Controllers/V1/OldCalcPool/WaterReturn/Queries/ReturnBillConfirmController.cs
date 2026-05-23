@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<UnconfirmedBillReturnHeaderOutputDto, UnconfirmedBillReturnDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUnConfirmed(int zoneId, CancellationToken cancellationToken)
         {
-            ReportOutput<UnconfirmedBillReturnHeaderOutputDto, UnconfirmedBillReturnDataOutputDto> result = await _unconfirmedBillReturnGetByZoneHandler.Handle(zoneId, cancellationToken);
+            ReportOutput<UnconfirmedBillReturnHeaderOutputDto, UnconfirmedBillReturnDataOutputDto> result = await _unconfirmedBillReturnGetByZoneHandler.Handle(zoneId, CurrentUser, cancellationToken);
             return Ok(result);
         }
     }
