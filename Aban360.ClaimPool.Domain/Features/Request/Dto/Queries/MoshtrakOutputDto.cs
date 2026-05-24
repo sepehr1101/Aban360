@@ -55,6 +55,7 @@
         public string? CertificateNumber { get; set; }
         public bool HasBroker { get { return BrokerId >= 1; } }
 
+        //Synced With MoshtrakServiceDto
         public int s0 { get; set; }
         public bool HasEnsheabAb { get { return s0 > 0; } }
 
@@ -77,7 +78,11 @@
         public bool HasEstelamMahzar { get { return s10 > 0; } }
 
         public int s11 { get; set; }
+        public bool HasTafkikArseAb { get { return s11 > 0; } }
+
         public int s12 { get; set; }
+        public bool HasTafkikArseFazelab { get { return s12 > 0; } }
+
         public int s13 { get; set; }
         public bool HasTaqirSathCounter { get { return s13 > 0; } }
 
@@ -93,8 +98,14 @@
         public bool HasJabejaiiKontor { get { return s20 > 0; } }
 
         public int s21 { get; set; }
+        public bool HasKhatEnteghalAb { get { return s21 > 0; } }
+
         public int s22 { get; set; }
+        public bool HasKhatEnteghalFazelab { get { return s22 > 0; } }
+
         public int s23 { get; set; }
+        public bool HasSahmManbaAb { get { return s23 > 0; } }
+
         public int s24 { get; set; }
         public bool HasTaqirQotrSifoon { get { return s24 > 0; } }
 
@@ -116,10 +127,10 @@
         public bool HasSifoonEzafe { get { return s33 > 0; } }
 
         public int s34 { get; set; }
-        public bool HasWaterDiscount { get { return s34 > 0; } }
+        public bool HasAdamTakhfifAb { get { return s34 > 0; } }
 
         public int s35 { get; set; }
-        public bool HasSewageDiscount { get { return s35 > 0; } }
+        public bool HasAdamTakhfifFazelab { get { return s35 > 0; } }
 
         public int s36 { get; set; }
         public bool HasJabejaiiSifoon { get { return s36 > 0; } }
@@ -128,6 +139,8 @@
         public bool HasNezamMohandesi { get { return s37 > 0; } }
 
         public int s38 { get; set; }
+        public bool HasTavizSifoon { get { return s38 > 0; } }
+
         public int s39 { get; set; }
         public bool HasKhanevarShomari { get { return s39 > 0; } }
 
@@ -138,6 +151,7 @@
         public bool HasTavizKontor { get { return s41 > 0; } }
 
         public int s42 { get; set; }
+        public bool HasLooleGozareAb { get { return s42 > 0; } }
         public int s43 { get; set; }
         public bool HasLooleGozareAbFazelab { get { return s43 > 0; } }
 

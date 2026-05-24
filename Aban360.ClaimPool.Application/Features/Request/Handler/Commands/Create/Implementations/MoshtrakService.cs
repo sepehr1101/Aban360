@@ -46,7 +46,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 s34 = servicesSelected.Contains((int)CompanyServiceEnum.AdamTakhfifAb) ? 1 : 0,//عدم تخفیف آب00000
                 s35 = servicesSelected.Contains((int)CompanyServiceEnum.AdamTakhfifFazelab) ? 1 : 0,//عدم تخفیف فاضلاب000
                 s36 = servicesSelected.Contains((int)CompanyServiceEnum.JabejaiiSifoon) ? 1 : 0,
-                s37 = servicesSelected.Contains((int)CompanyServiceEnum.SaleNezamMohandesi) || servicesSelected.Contains((int)CompanyServiceEnum.SaleNezamMohandesi) ? 1 : 0,
+                s37 = servicesSelected.Contains((int)CompanyServiceEnum.SaleNezamMohandesi) || servicesSelected.Contains((int)CompanyServiceEnum.AfterSaleNezamMohandesi) ? 1 : 0,
                 s38 = servicesSelected.Contains((int)CompanyServiceEnum.TavizSifoon) ? 1 : 0,
                 s39 = servicesSelected.Contains((int)CompanyServiceEnum.KhanevarShomari) ? 1 : 0,
                 s40 = servicesSelected.Contains((int)CompanyServiceEnum.TajmiEdqam) ? 1 : 0,

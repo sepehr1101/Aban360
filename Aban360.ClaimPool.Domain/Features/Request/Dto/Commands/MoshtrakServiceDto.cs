@@ -2,7 +2,7 @@
 {
     public record MoshtrakServiceDto
     {
-
+        //Synced With MoshtrakOutputDto
         public int s0 { get; set; }
         public bool HasEnsheabAb { get { return s0 > 0; } }
 
@@ -86,7 +86,7 @@
         public bool HasNezamMohandesi { get { return s37 > 0; } }
 
         public int s38 { get; set; }
-        public bool HasTavizSifoon { get { return s37 > 0; } }
+        public bool HasTavizSifoon { get { return s38 > 0; } }
 
         public int s39 { get; set; }
         public bool HasKhanevarShomari { get { return s39 > 0; } }

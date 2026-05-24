@@ -270,6 +270,8 @@ namespace Aban360.Common.Extensions
                     {"BankId", "شماره بانک"},
                     {"PaymentId", "شماره پرداخت"},
                     {"PaymentGateway", "روش پرداخت"},
+                    {"PaymentTypeTitle", "روش پرداخت"},
+                    {"PaymentTypeId", "کد روش پرداخت"},
                     {"DueAmount", "مبلغ جاری"},
                     {"OverdueAmount", "مبلغ معوق"},
                     {"DueCount", "تعداد جاری"},
@@ -527,6 +529,9 @@ namespace Aban360.Common.Extensions
                     { "PreviousReadingDateJalali","تاریخ قرائت آخر"},
                     { "PreviousBillAmount","مبلغ آخرین قبض"},
                     { "DueDateJalali","مهلت قبض"},
+                    { "PaymentAmount","مبلغ پرداختی"},
+                    { "IsNotShorb","غیر شرب"},
+                    { "Barge","شماره برگه"},
             };
         }
     }

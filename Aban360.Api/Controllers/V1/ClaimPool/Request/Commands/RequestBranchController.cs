@@ -93,7 +93,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> CloseRequest([FromBody] CloseRequestInputDto inputDto, CancellationToken cancellationToken)
         {
             int userName = UserService.GetUserCode(CurrentUser.Username);
-            RequestCloseOuputDto result = await _closeRequestHandle.Handle(inputDto , userName, cancellationToken);
+            RequestCloseOuputDto result = await _closeRequestHandle.Handle(inputDto, userName, cancellationToken);
             return Ok(result);
         }
 
@@ -116,7 +116,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             return Ok(result);
         }
 
-        [HttpPost,HttpGet]
+        [HttpPost, HttpGet]
         [Route("previous/{billId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<PreviousRequestDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetPreviousRequests(string billId, CancellationToken cancellationToken)
@@ -127,11 +127,11 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 
         [HttpPost]
         [Route("swap-request-type")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<SwapRequestTypeInputDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<SwapRequestTypeOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SwapRequestType([FromBody] SwapRequestTypeInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _swapRequestTypeHandler.Handle(inputDto, CurrentUser, cancellationToken);
-            return Ok(inputDto);
+            SwapRequestTypeOutputDto resutl = await _swapRequestTypeHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            return Ok(resutl);
         }
     }
 }

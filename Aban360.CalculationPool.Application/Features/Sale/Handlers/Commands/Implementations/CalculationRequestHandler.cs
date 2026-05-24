@@ -97,8 +97,8 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 OtherUnit = moshtrakInfo.OtherUnit,
                 DiscountCount = moshtrakInfo.DiscountCount,
                 DiscountTypeId = moshtrakInfo.DiscountTypeId,
-                IsSewageDiscount = moshtrakInfo.HasSewageDiscount,
-                IsWaterDiscount = moshtrakInfo.HasWaterDiscount,
+                IsSewageDiscount = moshtrakInfo.HasAdamTakhfifFazelab,
+                IsWaterDiscount = moshtrakInfo.HasAdamTakhfifAb,
                 HasWaterArticle11 = false,//todo
                 HasSewageArticle11 = false,//todo
             };
@@ -123,8 +123,8 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 DomesticUnit = previousMoshtrakInfo.DomesticUnit,
                 CommertialUnit = previousMoshtrakInfo.CommercialUnit,
                 OtherUnit = previousMoshtrakInfo.OtherUnit,
-                IsSewageDiscount = moshtrakInfo.HasSewageDiscount,
-                IsWaterDiscount = moshtrakInfo.HasWaterDiscount,
+                IsSewageDiscount = moshtrakInfo.HasAdamTakhfifFazelab,
+                IsWaterDiscount = moshtrakInfo.HasAdamTakhfifAb,
                 DiscountCount = 0,//todo,
                 DiscountTypeId = 0,//todo,
             };
@@ -138,8 +138,8 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 DomesticUnit = moshtrakInfo.DomesticUnit,
                 CommertialUnit = moshtrakInfo.CommercialUnit,
                 OtherUnit = moshtrakInfo.OtherUnit,
-                IsSewageDiscount = moshtrakInfo.HasSewageDiscount,
-                IsWaterDiscount = moshtrakInfo.HasWaterDiscount,
+                IsSewageDiscount = moshtrakInfo.HasAdamTakhfifFazelab,
+                IsWaterDiscount = moshtrakInfo.HasAdamTakhfifAb,
                 DiscountCount = moshtrakInfo.DiscountCount,
                 DiscountTypeId = moshtrakInfo.DiscountTypeId,
             };
