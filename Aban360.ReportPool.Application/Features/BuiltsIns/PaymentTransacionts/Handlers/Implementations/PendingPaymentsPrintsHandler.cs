@@ -61,7 +61,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                      PreviousBillAmount = 0,//todo
                      DueDateJalali = string.Empty,//todo
                      BillId = p.BillId,
-                     PayId = TransactionIdGenerator.GeneratePaymentId(p.EndingDebt, p.BillId),
+                     PayId = TransactionIdGenerator.GeneratePaymentId(p.EndingDebt, p.BillId,"100"),
                  });
             PendingPaymentsPrintstHeaderOutputDto header = new()
             {

@@ -31,7 +31,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Commands.Implementat
                 throw new TankerException(ExceptionLiterals.InvalidInsertTanker);
             }
         }
-        public async Task Remove(TankerRemoveDto input,string dbName)
+        public async Task Delete(TankerDeleteDto input,string dbName)
         {
             string command = GetRemoveCommand(dbName);
             int rowEffected = await _connection.ExecuteAsync(command, input, _transaction);
@@ -56,7 +56,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Commands.Implementat
         {
             return @$"Update [{dbName}].dbo.tanker
                     Set del=1 , date_hasf=@CurrentDateJalali, user_hasf=@UserCode
-                    Where radif=@CustomerNumber";
+                    Where radif=@CustomerNumber AND town=@ZoneId";
         }
     }
 }

@@ -7,5 +7,6 @@
         Task<bool> IsOperationValid(int zoneId, string operationDate);
         Task<int> GetAndRenewRadif(int zoneId);
         Task<decimal> GetAndRenewParvand(int zoneId, bool isAtlas);
+        Task<string> GetDateCheck(int zoneId);
     }
 }

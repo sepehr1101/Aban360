@@ -55,6 +55,13 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 Consumption = tankerInfo.Consumption,
                 SaleState = "-",
                 Title = _title,
+                BankCode = tankerInfo.BankCode,
+                BankDateJalali = tankerInfo.BankDateJalali,
+                PaymentAmount = tankerInfo.PaymentAmount,
+                PaymentDateJalali = tankerInfo.PaymentDateJalali,
+                PaymentId = tankerInfo.PaymentId,
+                PaymentTypeId = tankerInfo.PaymentTypeId,
+                PaymentTypeTitle = tankerInfo.PaymentTypeTitle,
             };
 
             return new ReportOutput<TankerHeaderOutputDto, StringDictionary>(_title, header, data);

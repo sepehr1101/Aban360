@@ -101,7 +101,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 
         public async Task<MeterReadingCheckedOutputDto> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await _meterFlowValidationGetHandler.Handle(latestFlowId, MeterFlowStepEnum.ConsumptionChecked, cancellationToken);
+            //await _meterFlowValidationGetHandler.Handle(latestFlowId, MeterFlowStepEnum.ConsumptionChecked, cancellationToken);
 
             int firstFlowId = await _meterFlowQueryService.GetFirstFlowId(latestFlowId);
             IEnumerable<MeterReadingDetailDataOutputDto> meterReadings = await _meterReadingDetailService.Get(firstFlowId);
@@ -134,14 +134,17 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         {
             ICollection<BedBesCreateDto> BedBesBatch = new List<BedBesCreateDto>();
             ICollection<KasrHaDto> kasrHaBatch = new List<KasrHaDto>();
+            string currnetDateJalali = DateTime.Now.ToShortPersianDateString();
+            string month = currnetDateJalali.Substring(5, 2);
+
             foreach (var mr in meterReadings)
             {
-                BedBesCreateDto bedBes = await GetBedBes(mr);
+                BedBesCreateDto bedBes = await GetBedBes(mr, $"1{month}");
                 BedBesBatch.Add(bedBes);
 
                 if (mr.DiscountSum > 0)
                 {
-                    KasrHaDto kasrHa = GerKasrHa(mr);
+                    KasrHaDto kasrHa = GerKasrHa(mr, bedBes.ShPard1);
                     kasrHaBatch.Add(kasrHa);
                 }
             }
@@ -195,13 +198,13 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             }
         }
 
-        private async Task<BedBesCreateDto> GetBedBes(MeterReadingDetailDataOutputDto meterReading)
+        private async Task<BedBesCreateDto> GetBedBes(MeterReadingDetailDataOutputDto meterReading, string paymentIdOption)
         {
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber(meterReading.ZoneId, meterReading.CustomerNumber));
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
             string mohlatDateJalali = DateTime.Now.AddDays(_paymentDeadline).ToShortPersianDateString();
             decimal barge = await _variabService.GetAndRenew(meterReading.ZoneId);
-            string paymentId = TransactionIdGenerator.GeneratePaymentId((long)meterReading.Pard, meterReading.BillId);//todo
+            string paymentId = TransactionIdGenerator.GeneratePaymentId((long)meterReading.Pard, meterReading.BillId, paymentIdOption);
 
             return new BedBesCreateDto()
             {
@@ -289,10 +292,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 TrackNumber = long.Parse(paymentId)//Todo
             };
         }
-        private KasrHaDto GerKasrHa(MeterReadingDetailDataOutputDto meterReading)
+        private KasrHaDto GerKasrHa(MeterReadingDetailDataOutputDto meterReading, string paymentId)
         {
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
-            string paymentId = TransactionIdGenerator.GeneratePaymentId((long)meterReading.SumItems, meterReading.BillId);//todo
 
             return new KasrHaDto()
             {

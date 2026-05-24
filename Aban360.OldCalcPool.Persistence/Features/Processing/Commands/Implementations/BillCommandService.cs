@@ -46,13 +46,23 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         }
         public async Task Delete(RemoveBillDto input)
         {
-            string command = GetDeleteCommand();
+            string command = GetDeleteByDetailCommand();
             int recordCount = await _connection.ExecuteAsync(command, input, _transaction);
             if (recordCount <= 0)
             {
                 throw new InvalidBillCommandException(Exceptionliterals.InvalidRemoveBill);
             }
         }
+        public async Task Delete(ZoneIdAndCustomerNumber input)
+        {
+            string command = GetDeleteByCustomerNumberCommand();
+            int recordCount = await _connection.ExecuteAsync(command, input, _transaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidBillCommandException(Exceptionliterals.InvalidRemoveBill);
+            }
+        }
+       
         public async Task InsertByBulk(ICollection<BillInsertDto> input)
         {
             var dt = ToDataTable(input);
@@ -376,7 +386,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                         b.town=@ZoneId AND
                         b.radif=@CustomerNumber";//
         }
-        private string GetDeleteCommand()
+        private string GetDeleteByDetailCommand()
         {
             return $@"Delete [CustomerWarehouse].dbo.Bills
                     Where 
@@ -386,6 +396,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     	PreviousNumber=@previousNumber AND
                     	NextDay=@CurrentDateJalali AND
                     	NextNumber=@CurrentNumber ";
+        }
+        private string GetDeleteByCustomerNumberCommand()
+        {
+            return $@"Delete [CustomerWarehouse].dbo.Bills
+                    Where 
+                    	ZoneId=@ZoneId AND
+                    	CustomerNumber=@CustomerNumber ";
         }
         private string GetInsertReturnByRepairCommand(string dbName)
         {

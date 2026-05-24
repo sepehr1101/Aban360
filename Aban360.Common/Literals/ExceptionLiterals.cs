@@ -80,6 +80,7 @@
         public static string GreaterThanZero => "مقدار باید بزرگتر از صفر باشد.";
         public static string InvalidGuid => "مقدار Guid نامعتبر است.";
 
+        public static string InvalidDateCheckFormat => "فرمت تاریخ دوره جاری نامعتبر است.";
         public static string HasNotSiphon => "سیفون ندارد";
         public static string DuplicateBillIdTags => "شناسه قبض با شناسه تگ جاری تکراری است.";
 
@@ -140,6 +141,7 @@
         public static string InvalidUpdateMembersDebtAmount => "خطا در ویرایش مبلغ بدهی مشترک";
         public static string InvalidUpdateWaterDebt => "خطا در ویرایش مبلغ بدهی";
         public static string InvalidUpdateContor => "خطا در ویرایش آخرین وضعیت کنتور";
+        public static string InvalidSetExclude => "خطا در خروج قبض از لیست";
 
         //RemovedBill
         public static string NotFoundBillsToRemoved => "قبضی برای ابطال یافت نشد.";
@@ -205,6 +207,8 @@
         public static string InvalidUpdateTankerRadif => "خطا در ویرایش ردیف تانکر آب";
         public static string InvalidInsertTanker => "خطا در ذخیره اطلاعات تانکر";
         public static string InvalidRemoveTanker => "خطا در حذف اطلاعات تانکر";
+        public static string InvalidDeleteTankerAfterPaid => "امکان حذف آب تانکری پس از پرداخت وجود ندارد.";
+        public static string InvalidDeleteTankerAfterDateCheck => "امکان حذف آب تانکری پس از بسته شدن دوره وجود ندارد.";
 
         public static string InvalidInsertOpLog => "خطا در ثبت لاگ";
 

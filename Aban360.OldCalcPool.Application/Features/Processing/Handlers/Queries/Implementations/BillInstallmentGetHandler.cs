@@ -44,7 +44,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
             foreach (var dataItem in data)
             {
                 dataItem.BillId = input;
-                dataItem.PaymentId = TransactionIdGenerator.GeneratePaymentId(dataItem.Payable, input, $"00{dataItem.QueueNumber}");
+                dataItem.PaymentId = TransactionIdGenerator.GeneratePaymentId(dataItem.Payable, input, $"10{dataItem.QueueNumber}");
             }
             MemberGetDto memberInfo = await _membersQueryService.Get(input);
 

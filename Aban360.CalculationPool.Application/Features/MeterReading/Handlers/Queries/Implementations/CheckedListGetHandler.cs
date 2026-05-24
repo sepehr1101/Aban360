@@ -41,7 +41,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         }
         public async Task<ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCheckedDto>> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await _meterFlowValidationGetHandler.Handle(latestFlowId, cancellationToken);
+            //await _meterFlowValidationGetHandler.Handle(latestFlowId, cancellationToken);
             int firstFlowId = await _meterFlowService.GetFirstFlowId(latestFlowId);
             MeterFlowStepEnum latestFlowStep = (await _meterFlowService.Get(latestFlowId)).MeterFlowStepId;
 
@@ -108,6 +108,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 DomesticUnit = input.DomesticUnit,
                 CommercialUnit = input.CommercialUnit,
                 OtherUnit = input.OtherUnit,
+                TotalUnit = input.DomesticUnit + input.CommercialUnit + input.OtherUnit,
                 EmptyUnit = input.EmptyUnit,
                 WaterInstallationDateJalali = input.WaterInstallationDateJalali,
                 SewageInstallationDateJalali = input.SewageInstallationDateJalali,

@@ -127,7 +127,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 
         [HttpPost]
         [Route("swap-request-type")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<SwapRequestTypeInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SwapRequestType([FromBody] SwapRequestTypeInputDto inputDto, CancellationToken cancellationToken)
         {
             await _swapRequestTypeHandler.Handle(inputDto, CurrentUser, cancellationToken);
