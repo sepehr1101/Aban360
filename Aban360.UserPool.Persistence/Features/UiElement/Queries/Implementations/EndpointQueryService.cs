@@ -59,8 +59,9 @@ namespace Aban360.UserPool.Persistence.Features.UiElement.Queries.Implementation
         public async Task<List<string>> GetAuthValue(int[] ids)
         {
             return await _endPoints
-                .Where(e=> ids.Contains(e.Id))
+                .Where(e=> ids.Contains(e.Id) && e.IsActive)
                 .Select(e=>e.AuthValue)
+                .Distinct()
                 .ToListAsync();
         }
     }

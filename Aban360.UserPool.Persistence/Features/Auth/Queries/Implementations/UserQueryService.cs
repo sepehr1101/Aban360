@@ -63,11 +63,30 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
 
         public async Task<IEnumerable<UserQueryDto>> Search(SearchUserDto input)
         {
-            var zoneIds = string.Join(",", input.ZoneIds);
-            var endpointIds = string.Join(",", input.EndpointIds);
-            var roleIds = string.Join(",", input.RoleIds);
+            string zoneIdCondition = string.Empty, endpointIdCondition = string.Empty, roleIdCondition = string.Empty,
+            joinTypeZone = "LEFT", joinTypeEndpoint = "LEFT", joinTypeRole = "LEFT";
 
-            string query = GetSearchUserQuery(zoneIds, endpointIds, roleIds);
+            if(input.ZoneIds != null && input.ZoneIds.Any())
+            {
+               string zoneIds= string.Join(",", input.ZoneIds);
+                zoneIdCondition = $" AND uc_zone.ClaimValue IN ({zoneIds})";
+                joinTypeZone = string.Empty;
+            }
+            if(input.EndpointIds!=null && input.EndpointIds.Any())
+            {
+                string endpointIds = string.Join(",", input.EndpointIds);
+                endpointIdCondition = $"AND p.Id IN ({endpointIds})";
+                joinTypeEndpoint = string.Empty;
+            }
+            if(input.RoleIds!=null && input.RoleIds.Any())
+            {
+                string roleIds = string.Join(",", input.RoleIds);
+                roleIdCondition = $"AND ur.RoleId IN ({roleIds})";
+                joinTypeRole = string.Empty;
+            }
+
+            string query = GetSearchUserQuery(zoneIdCondition, endpointIdCondition, roleIdCondition,
+                joinTypeZone, joinTypeEndpoint, joinTypeRole);
             IEnumerable<UserQueryDto> result = await _uow.ExecuteQuery<UserQueryDto>(query);
 
             return result;
@@ -88,7 +107,8 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
         }
 
 
-        private string GetSearchUserQuery(string zoneIds, string endpointIds, string roleIds)
+        private string GetSearchUserQuery(string zoneIdCondition, string endpointIdCondition, string roleIdCondition,
+            string joinTypeZone, string joinTypeEndpoint, string joinTypeRole)
         {
             return @$";WITH OneRowPerUser AS
                     (
@@ -103,20 +123,22 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
                             CAST(0 AS bit) IsLocked,
                             ROW_NUMBER() OVER(PARTITION BY u.Id ORDER BY u.Id) AS rn
                         FROM [Aban360].UserPool.[User] u
-                        JOIN [Aban360].UserPool.UserClaim uc_zone
+                        {joinTypeZone} JOIN [Aban360].UserPool.UserClaim uc_zone
                             ON u.Id = uc_zone.UserId 
                             AND uc_zone.ClaimTypeId = 5 
-                            AND uc_zone.ClaimValue IN ({zoneIds})
                             AND uc_zone.ValidTo IS NULL 
-                        JOIN [Aban360].UserPool.UserClaim uc_Tree
+                            {zoneIdCondition}
+                        {joinTypeEndpoint} JOIN [Aban360].UserPool.UserClaim uc_Tree
                             ON u.Id = uc_Tree.UserId 
                             AND uc_Tree.ClaimTypeId = 6 
                             AND uc_Tree.ValidTo IS NULL 
-                        JOIN [Aban360].UserPool.Endpoint p
+                        {joinTypeEndpoint} JOIN [Aban360].UserPool.Endpoint p
                             ON uc_Tree.ClaimValue = p.AuthValue 
-                            AND p.Id IN ({endpointIds})
-                    	JOIN [Aban360].UserPool.UserRole ur
-                    		ON u.Id=ur.UserId AND ur.RoleId IN ({roleIds})
+                           {endpointIdCondition}
+                    	{joinTypeRole} JOIN [Aban360].UserPool.UserRole ur
+                    		ON u.Id=ur.UserId 
+                            AND ur.ValidTo is null
+                           {roleIdCondition}
                         WHERE u.ValidTo IS NULL 
                     )
                     SELECT 

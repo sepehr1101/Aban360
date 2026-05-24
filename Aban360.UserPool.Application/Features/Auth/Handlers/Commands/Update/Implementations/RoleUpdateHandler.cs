@@ -49,12 +49,12 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
 
             Role role = await _roleQueryService.Get(updateDto.Id);
             List<string> endpointValue = await _endpointQueryService.GetAuthValue(updateDto.SelectedEndpointIds);
-
-            if (updateDto.SelectedEndpointIds is not null && endpointValue.Count() == updateDto.SelectedEndpointIds.Count())
-            {
-                role.DefaultClaims = JsonOperation.Marshal(updateDto.SelectedEndpointIds);
-            }
+                        
             _mapper.Map(updateDto, role);
+            if (updateDto.SelectedEndpointIds is not null && endpointValue.Any() && updateDto.SelectedEndpointIds.Any())
+            {
+                role.DefaultClaims = JsonOperation.Marshal(updateDto.SelectedEndpointIds.Distinct());
+            }
         }
     }
 }
