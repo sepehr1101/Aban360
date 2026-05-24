@@ -5,26 +5,17 @@ using FluentValidation;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Validations
 {
-    public class KartInsertManualValidator : BaseValidator<KartInsertManualInputDto>
+    public class ServiceLinkReturnValidator : BaseValidator<ServiceLinkReturnInputDto>
     {
-        public KartInsertManualValidator()
+        public ServiceLinkReturnValidator()
         {
-            RuleFor(f => f.TrackNumber)
+            RuleFor(f => f.BillId)
              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
              .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(f => f.AmountItemId)
+            RuleFor(f => f.ReturnItems)
              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
              .NotNull().WithMessage(ExceptionLiterals.NotNull);
-
-            RuleFor(f => f.Amount)
-             .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-             .NotNull().WithMessage(ExceptionLiterals.NotNull);
-
-            RuleFor(f => f.CategoryType)
-             .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-             .NotNull().WithMessage(ExceptionLiterals.NotNull);
-
         }
     }
 }

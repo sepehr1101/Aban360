@@ -10,7 +10,9 @@
         public static string BillInstallmentManualOpLog => @"اقساط قبض انجام شد. شناسه قبض:{0}  مبلغ کل:{1}  تعداد اقساط:{2}  پیش پرداخت:{3}";
         public static string BillReturnOpLog => @"درخواست قبض برگشتی {0} انجام شد. شناسه قبض:{1}  تعداد قبض:{2}  از تاریخ:{3} تا تاریخ:{4}  مبلغ برگشتی:{5}  کد تایید:{6}";
         public static string BillReturnConfirmedOpLog => @"تایید نهایی قبض برگشتی انجام شد. شناسه قبض:{0}  تعداد قبض:{1}  از تاریخ:{2} تا تاریخ:{3}  مبلغ برگشتی:{4}  کد تایید:{5}";
-        public static string InsertTankerOpLog => @"قبض آب تانکری توسط:{0}  صادر شد. تاریخ:{1} کد ناحیه:{2} شناسه قبض:{3} ردیف:{4} مبلغ:{5}";    
-        public static string DeleteTankerOpLog => @"قبض آب تانکری توسط:{0}  حذف شد. تاریخ:{1} کد ناحیه:{2} شناسه قبض:{3} ردیف:{4} مبلغ:{5}";    
+        public static string TankerInsertOpLog => @"قبض آب تانکری توسط:{0}  صادر شد. تاریخ:{1} کد ناحیه:{2} شناسه قبض:{3} ردیف:{4} مبلغ:{5}";    
+        public static string TankerDeleteOpLog => @"قبض آب تانکری توسط:{0}  حذف شد. تاریخ:{1} کد ناحیه:{2} شناسه قبض:{3} ردیف:{4} مبلغ:{5}";
+        public static string RequestOfferingInsertOpLog => @"آیتم {0} برای شماره درخواست{1} ایجاد شد. مبلغ{2}  نوع آیتم {3}";
+        public static string RequestOfferingReturnOpLog => @"برگشتی حق انشعاب انجام شد. شناسه قبض{0}  تعداد آیتم‌ها {1}  مبلغ{2}";
     }
 }

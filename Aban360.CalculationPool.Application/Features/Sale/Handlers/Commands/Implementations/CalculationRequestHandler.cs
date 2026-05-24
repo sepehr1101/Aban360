@@ -237,7 +237,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                     KartCommandService kartCommandService = new(connection, transaction);
                     GhestCommandService ghestCommandService = new(connection, transaction);
 
-                    await kartCommandService.Insert(kartsInsertDto, dbName);
+                    await kartCommandService.Insert(kartsInsertDto, false, dbName);
                     await ghestCommandService.Insert(ghestInsertDto, dbName);
 
                     transaction.Commit();
@@ -266,7 +266,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                     PardN = s.FinalAmount,
                     PardG = 0,
                     Sum = s.FinalAmount,
-                    ServiceSelectedId = s.Id,//todo: check has same id
+                    AmountItemId = s.Id,//todo: check has same id
                     SiphonId = moshtrakInfo.MainSiphon,
                     UsageId = moshtrakInfo.UsageId,
                     IsRegister = false,
@@ -313,7 +313,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 DueDateJalali = DateTime.Now.AddDays(_intervalDueDate).ToShortPersianDateString(),
                 InsertBy = _insertBy,
                 BillId = billId ?? string.Empty,//todo:remove
-                PaymentId = TransactionIdGenerator.GeneratePaymentId(header.FinalAmount, billId,$"200")
+                PaymentId = TransactionIdGenerator.GeneratePaymentId(header.FinalAmount, billId, $"200")
             };
         }
     }

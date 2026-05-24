@@ -52,7 +52,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         {
             await _commonZoneService.IsUserInZone(appUser, inputDto.ZoneId);
             TankerOutputDto tankerInfo = await DateValidate(inputDto);
-            string opLogText = string.Format(Literals.DeleteTankerOpLog, appUser.Username, DateTime.Now.ToShortPersianDateString(), inputDto.ZoneId, tankerInfo.BillId, tankerInfo.CustomerNumber, tankerInfo.Amount);
+            string opLogText = string.Format(Literals.TankerDeleteOpLog, appUser.Username, DateTime.Now.ToShortPersianDateString(), inputDto.ZoneId, tankerInfo.BillId, tankerInfo.CustomerNumber, tankerInfo.Amount);
             TankerDeleteDto tankerDeleteDto = new(inputDto.ZoneId, inputDto.CustomerNumber, _operator);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = new(tankerDeleteDto.ZoneId, tankerDeleteDto.CustomerNumber);
             await SqlCommands(tankerDeleteDto, zoneIdAndCustomerNumber, appUser, opLogText);

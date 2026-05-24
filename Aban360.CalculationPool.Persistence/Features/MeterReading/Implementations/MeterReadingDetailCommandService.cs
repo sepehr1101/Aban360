@@ -101,12 +101,12 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         public async Task CreateDuplicateForLog(MeterReadingDetailCreateDuplicateDto input)
         {
             string query = GetCreateDuplicateForLogCommand();
-            await _connection.ExecuteAsync(query, input);
+            await _connection.ExecuteAsync(query, input,_transaction);
         }
         public async Task Exclude(MeterReadingDetailExcludedDto input)
         {
             string query = GetExcludeCommand();
-            int affectedRecords = await _connection.ExecuteAsync(query, input);
+            int affectedRecords = await _connection.ExecuteAsync(query, input, _transaction);
             if (affectedRecords <= 0)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidSetExclude);

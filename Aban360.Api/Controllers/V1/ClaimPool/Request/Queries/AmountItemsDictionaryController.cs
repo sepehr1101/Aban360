@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
 {
-    [Route("v1/service-group")]
-    public class ServiceGroupDictionaryController : BaseController
+    [Route("v1/amount-items")]
+    public class AmountItemsDictionaryController : BaseController
     {
         private readonly IServiceGroupGetAllHandler _serviceGroupGetAllHandler;
-        public ServiceGroupDictionaryController(IServiceGroupGetAllHandler serviceGroupGetAllHandler)
+        public AmountItemsDictionaryController(IServiceGroupGetAllHandler serviceGroupGetAllHandler)
         {
             _serviceGroupGetAllHandler= serviceGroupGetAllHandler;
             _serviceGroupGetAllHandler.NotNull(nameof(serviceGroupGetAllHandler));

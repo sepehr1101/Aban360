@@ -105,7 +105,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                     calcResult.BillId = bedBesInsertDto.ShGhabs1;
                     calcResult.PaymentId = bedBesInsertDto.ShPard1;
                     calcResult.CustomerNumber = customerNumber;
-                    string opLogText = string.Format(Literals.InsertTankerOpLog, appUser.Username, tankerInsertDto.CurrentDateJalali, inputDto.ZoneId, bedBesInsertDto.ShGhabs1, tankerInsertDto.CustomerNumber, calcResult.Final);
+                    string opLogText = string.Format(Literals.TankerInsertOpLog, appUser.Username, tankerInsertDto.CurrentDateJalali, inputDto.ZoneId, bedBesInsertDto.ShGhabs1, tankerInsertDto.CustomerNumber, calcResult.Final);
 
                     await tankerCommandService.Insert(tankerInsertDto, dbName);
                     int bedBesId = await bedBesCommandService.Insert(bedBesInsertDto, dbName);

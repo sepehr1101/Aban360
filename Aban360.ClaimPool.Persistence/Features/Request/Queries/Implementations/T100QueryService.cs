@@ -16,13 +16,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
         public async Task<NumericDictionary> Get(int Id)
         {
             string query = GetByIdQuery();
-            NumericDictionary result = await _sqlConnection.QueryFirstOrDefaultAsync<NumericDictionary>(query, new { Id });
+            NumericDictionary result = await _sqlReportConnection.QueryFirstOrDefaultAsync<NumericDictionary>(query, new { Id });
             return result;
         }
         public async Task<IEnumerable<NumericDictionary>> Get()
         {
             string query = GetQuery();
-            IEnumerable<NumericDictionary> result = await _sqlConnection.QueryAsync<NumericDictionary>(query, null);
+            IEnumerable<NumericDictionary> result = await _sqlReportConnection.QueryAsync<NumericDictionary>(query, null);
             return result;
         }
         private string GetByIdQuery()

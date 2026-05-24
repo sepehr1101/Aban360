@@ -11,6 +11,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
     {
         private readonly IDbConnection _connection;
         private readonly IDbTransaction _transaction;
+        string _karten75TableName = "karten75";
+        string _kartTableName = "kart";
         public KartCommandService(
             IDbConnection connection,
             IDbTransaction transaction)
@@ -22,20 +24,22 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
             _transaction.NotNull(nameof(transaction));
         }
 
-        public async Task Insert(KartInsertDto inputDto, string dbName)
+        public async Task Insert(KartInsertDto inputDto, bool isKarten75, string dbName)
         {
-            string command = GetInsertCommand(dbName);
+            string tableName = GetTableName(isKarten75);
+            string command = GetInsertCommand(dbName, tableName);
             int rowEffected = await _connection.ExecuteAsync(command, inputDto, _transaction);
             if (rowEffected <= 0)
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertKart);
             }
         }
-        public async Task Insert(ICollection<KartInsertDto> inputDto, string dbName)
+        public async Task Insert(IEnumerable<KartInsertDto> inputDto, bool isKarten75, string dbName)
         {
-            string command = GetInsertCommand(dbName);
+            string tableName = GetTableName(isKarten75);
+            string command = GetInsertCommand(dbName, tableName);
             int rowEffected = await _connection.ExecuteAsync(command, inputDto, _transaction);
-            if (rowEffected <= 0)
+            if (rowEffected != (inputDto?.Count() ?? 0))
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertKart);
             }
@@ -55,10 +59,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
             }
         }
 
-
-        private string GetInsertCommand(string dbName)
+        private string GetTableName(bool isKarten75) => isKarten75 ? _karten75TableName : _kartTableName;
+        private string GetInsertCommand(string dbName, string tableName)
         {
-            return $@"Insert Into  [{dbName}].dbo.kart 
+            return $@"Insert Into  [{dbName}].dbo.{tableName} 
                     	(town,radif,eshtrak,par_no,serial,
                     	date,mohlat,cod_takh,pard,takhfif,
                     	pard_n,pard_g,jam_ha,type,noe_bed,
@@ -70,7 +74,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                     Values
                     	(@ZoneId ,@CustomerNumber ,@ReadingNumber  ,@StringTrackNumber ,@Serial ,
                     	@CurrentDateJalali ,@DueDateJalali ,@DiscountTypeId ,@FinalAmount  ,@DiscountAmount ,
-                    	@PardN ,@PardG ,@Sum ,@Type ,@ServiceSelectedId ,
+                    	@PardN ,@PardG ,@Sum ,@Type ,@AmountItemId ,
                     	@Ser ,@MeterDiameterId ,@SiphonId ,@UsageId ,@IsRegister  ,
                     	@TotalServicesAmount ,@TotalServicesAmount ,@FirstInstallment ,@JGEST_FA ,@PishFa ,
                     	@InstallmentPercent ,@InstallmentCount ,@Installment ,@BankDateJalali ,0 ,
