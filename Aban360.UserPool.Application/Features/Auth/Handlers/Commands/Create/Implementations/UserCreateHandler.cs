@@ -82,7 +82,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
             int zoneCount = await _zoneCountQueryAddhoc.GetCount(userCreateDto.SelectedZoneIds, cancellationToken);
             //List<string> endpointValue = await _endpointQueryService.GetAuthValue(userCreateDto.SelectedEndpointIds.ToArray());
             List<string> endpointValue = await GetEndpointsValue(userCreateDto);
-            Validate(zoneCount, userCreateDto.SelectedZoneIds.Count(), endpointValue.Count(), userCreateDto.SelectedEndpointIds.Count());
+            Validate(zoneCount, userCreateDto.SelectedZoneIds.Count(), endpointValue.Count(), userCreateDto.SelectedEndpointIds.Distinct().Count());
 
             ICollection<UserClaim> zones = CreateUserClaim(userCreateDto.SelectedZoneIds.Select(x => x.ToString()).ToList(), ClaimType.ZoneId, logInfoString, operationGroupId, operationGroupId);
             ICollection<UserClaim> endpionts = CreateUserClaim(endpointValue, ClaimType.Endpoint, logInfoString, operationGroupId, operationGroupId);

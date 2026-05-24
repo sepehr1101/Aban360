@@ -29,11 +29,11 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Commands.Implementations
             Guid operationGropuId= Guid.NewGuid();
             userClaims.ForEach(userClaim => Remove(userClaim,logInfo,operationGropuId)); 
         }
-        private void Remove(UserClaim userClaim, string logInfo, Guid operationGropuId)
+        private void Remove(UserClaim userClaim, string logInfo, Guid operationGroupId)
         {
             userClaim.ValidTo = DateTime.Now;
             userClaim.RemoveLogInfo=logInfo;
-            userClaim.RemoveGroupId=operationGropuId;
+            userClaim.RemoveGroupId=operationGroupId;
         }
     }
 }

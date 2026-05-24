@@ -1,4 +1,4 @@
-﻿using Aban360.Common.Db.Exceptions;
+﻿using Aban360.Common.Exceptions;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Constants.Enums;
 
@@ -24,7 +24,7 @@ namespace Aban360.UserPool.Application.Common.Base
         {
             if (zoneCount != dtoZoneCount || endpointCount < dtoEndpointCount)
             {
-                throw new InvalidIdException();
+                throw new CustomValidationException("ناهماهنگی در تعداد خدمات یا نواحی انتخاب شده");
             }
         }
         internal ICollection<UserRole> CreateUserRoles(ICollection<int> roleIds, string logInfoString, Guid operationGroupId, Guid userId)

@@ -2,6 +2,7 @@
 using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
@@ -22,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
             _userSearchByRoleIdHandler.NotNull(nameof(userSearchByRoleIdHandler));  
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("search")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<UserQueryDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetParamsOfCreate(SearchUserDto inputDto,CancellationToken cancellationToken)
