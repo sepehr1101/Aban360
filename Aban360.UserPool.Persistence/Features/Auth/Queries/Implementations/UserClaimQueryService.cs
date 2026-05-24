@@ -40,5 +40,18 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
                     userClaim.ClaimTypeId == claimType)
                 .ToListAsync();
         }
+
+        public async Task<ICollection<UserClaim>> Get(int roleId, ClaimType claimType)
+        {
+            return await _userClaims
+                   .Where(userClaim =>
+                       userClaim.ClaimTypeId == claimType &&
+                       userClaim.RemoveLogInfo == null)
+                   .Include(userClaim => userClaim.User)
+                       .ThenInclude(user => user.UserRoles)
+                   .Where(userClaim => userClaim.User.UserRoles
+                       .Any(userRole => userRole.RoleId == roleId && userRole.RemoveLogInfo == null))
+                   .ToListAsync();
+        }
     }
 }

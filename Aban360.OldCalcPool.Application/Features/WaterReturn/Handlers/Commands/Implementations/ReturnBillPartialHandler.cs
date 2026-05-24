@@ -62,6 +62,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             float consumptionAverage = 0;
             if (burstPipe.Contains(inputDto.ReturnCauseId))
             {
+                if (inputDto.UserInput.HasValue && inputDto.UserInput.Value>0)
+                {
+                    consumptionAverage = inputDto.UserInput.Value;
+                }
                 consumptionAverage = await GetConsumptionAverage(customerInfo, bedBesResult.PriDate, bedBesResult.TodayDate, consumptionAverage);
             }
             else
@@ -219,9 +223,13 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             return duration > 0 ? duration : throw new ReturnedBillException(ExceptionLiterals.CurrentDateNotMoreThanPreviousDate);
         }
         private async Task<CustomerInfoOutputDto> Validate(ReturnBillPartialInputDto input, IAppUser appUser, CancellationToken cancellationToken)
-        {
+        {           
             await _returnBillBaseHandler.PartialValidate(input, cancellationToken);
             CustomerInfoOutputDto customerInfo = await _returnBillBaseHandler.Validate(appUser, input.BillId, input.FromDateJalali, input.ToDateJalali);
+            if (input.ReturnCauseId == 1 && !_returnBillBaseHandler.IsDomestic(customerInfo.UsageId))
+            {
+                throw new ReturnedBillException("برای برگشتی کاربری های غیرمسکونی وارد نمودن متوسط مصرف توسط شما ضروری است");
+            }
 
             return customerInfo;
         }

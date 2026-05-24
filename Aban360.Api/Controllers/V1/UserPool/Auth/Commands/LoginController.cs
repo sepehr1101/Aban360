@@ -14,6 +14,7 @@ using DNTPersianUtils.Core;
 using System.Globalization;
 using DNTCaptcha.Core;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
+using System.Diagnostics;
 
 namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
 {
@@ -102,7 +103,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
         public async Task<IActionResult> PaceFirstStep([FromBody] FirstStepLoginInput loginInput, CancellationToken cancellationToken)
         {            
             bool isCaptchaValid = HasRequestValidCaptchaEntry(loginInput);
-            if (!isCaptchaValid)
+            if (!isCaptchaValid && !Debugger.IsAttached)
             {
                 return ClientError(MessageResources.CaptchaInvalid);
             }

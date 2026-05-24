@@ -4,7 +4,6 @@ using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.Contracts;
-using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.Implementations;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,7 +36,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
             _reportGenerator.NotNull(nameof(reportGenerator));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("partial")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReturnBillOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> PartialReturn([FromBody] ReturnBillPartialInputDto input, CancellationToken cancellationToken)
@@ -46,7 +45,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
             return Ok(result);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("full")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReturnBillOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> FullReturn([FromBody] ReturnBillFullInputDto input, CancellationToken cancellationToken)
