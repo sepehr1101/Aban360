@@ -4,6 +4,6 @@ namespace Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Contrac
 {
     public interface ICounterStateGetAllHandler
     {
-        Task<IEnumerable<CounterStateCodeDto>> Handle(CancellationToken cancellationToken);
+        Task<IEnumerable<CounterStateCodeDto>> Handle(bool isReadable,CancellationToken cancellationToken);
     }
 }
