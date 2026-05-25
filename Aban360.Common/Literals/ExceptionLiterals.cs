@@ -218,6 +218,7 @@
 
         public static string InvalidInsertClientDiscount => "خطا در ثبت درخواست تخفیف";
         public static string InvalidUpdateClientDiscount => "خطا در ویرایش درخواست تخفیف";
+        public static string InvalidInsertVosolEn => "خطا در ذخیره وصولی حق انشعاب";
 
     }
 }

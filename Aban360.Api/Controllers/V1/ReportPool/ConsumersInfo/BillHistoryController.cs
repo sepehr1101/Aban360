@@ -47,7 +47,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSti([FromBody] BillHistoryInputDto inputDto, CancellationToken cancellationToken)
         {
-            int reportCode = 3090;
+            int reportCode = 2090;
             ReportOutput<BillHistoryHeaderOutputDto, BillHistoryDataOutputDto> result = await _billHistoryGetHandler.Handle(inputDto, CurrentUser, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
             return Ok(reportId);
