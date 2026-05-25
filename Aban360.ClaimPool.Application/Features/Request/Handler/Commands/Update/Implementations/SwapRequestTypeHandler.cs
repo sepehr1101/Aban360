@@ -18,6 +18,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
     {
         private readonly ITrackingQueryService _trackingQueryService;
         static int[] _allowedStatusId = { 0, 10, 20, 65 };
+        static string _newRequest = "انشعاب جدید";
+        static string _afterSaleRequest = "پس از فروش";
         public SwapRequestTypeHandler(
             ITrackingQueryService trackingQueryService,
             IConfiguration configuration)
@@ -27,12 +29,13 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
             _trackingQueryService.NotNull(nameof(trackingQueryService));
         }
 
-        public async Task Handle(SwapRequestTypeInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task<SwapRequestTypeOutputDto> Handle(SwapRequestTypeInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             TrackingOutputDto latestTrackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
-            Validation(latestTrackingInfo.StatusId);
+            Validate(latestTrackingInfo.StatusId);
 
-            TrackingRequestTypeUpdateDto swapRequestTypeDto = GetTrackingRequestTypeUpdateDto(inputDto.TrackNumber, latestTrackingInfo.ServiceGroupId, appUser.Username);
+            var (serviceGroupId, serviceGroupTitle, description) = GetServiceGroup(latestTrackingInfo.ServiceGroupId, appUser.Username);
+            TrackingRequestTypeUpdateDto swapRequestTypeDto = new(inputDto.TrackNumber, serviceGroupId, description);
             MoshtrakServicesUpdateDto moshtrakServicesUpdateDto = GetMoshtrakServicesDto(inputDto);
             string dbName = GetDbName(latestTrackingInfo.ZoneId);
 
@@ -51,21 +54,22 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
                     transaction.Commit();
                 }
             }
+            return new SwapRequestTypeOutputDto(inputDto.TrackNumber, serviceGroupId, serviceGroupTitle, inputDto.SelectedServices);
         }
-        private void Validation(int latestStatusId)
+        private void Validate(int latestStatusId)
         {
             if (!_allowedStatusId.Contains(latestStatusId))
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
             }
         }
-        private TrackingRequestTypeUpdateDto GetTrackingRequestTypeUpdateDto(int trackNumber, int previousServiceTypeId, string userName)
+        private (int, string, string) GetServiceGroup(int previousServiceTypeId, string userName)
         {
             int requestTypeId = previousServiceTypeId == 1 ? 2 : 1;
-            string requestTypeTitle = requestTypeId == 1 ? "انشعاب جدید" : "پس از فروش";
+            string requestTypeTitle = requestTypeId == 1 ? _newRequest : _afterSaleRequest;
             string description = $@"-نوع درخواست توسط{userName} به '{requestTypeTitle}' تغیر یافت.";
 
-            return new(trackNumber, requestTypeId, description);
+            return new(requestTypeId, requestTypeTitle, description);
         }
         private MoshtrakServicesUpdateDto GetMoshtrakServicesDto(SwapRequestTypeInputDto inputDto)
         {

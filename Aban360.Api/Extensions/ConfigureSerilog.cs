@@ -26,7 +26,7 @@ namespace Aban360.Api.Extensions
         }
         private static void AddSelfDebug()
         {
-            Serilog.Debugging.SelfLog.Enable(msg => {
+            Serilog.Debugging.SelfLog.Enable(msg =>     {
                 Console.WriteLine($"Serilog Error: {msg}");
                 System.Diagnostics.Debug.WriteLine($"Serilog Error: {msg}");
             });

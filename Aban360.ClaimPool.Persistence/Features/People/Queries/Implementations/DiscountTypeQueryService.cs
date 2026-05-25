@@ -24,7 +24,6 @@ namespace Aban360.ClaimPool.Persistence.Features.People.Queries.Implementations
         {
             return await _uow.FindOrThrowAsync<DiscountType>(id);
         }
-
         public async Task<ICollection<DiscountType>> Get()
         {
             return await _discountType.ToListAsync();

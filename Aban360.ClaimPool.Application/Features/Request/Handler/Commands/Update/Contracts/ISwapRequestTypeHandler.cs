@@ -5,6 +5,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
 {
     public interface ISwapRequestTypeHandler
     {
-        Task Handle(SwapRequestTypeInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
+        Task<SwapRequestTypeOutputDto> Handle(SwapRequestTypeInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
     }
 }

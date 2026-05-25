@@ -4,8 +4,8 @@ using Aban360.Common.ApplicationUser;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts
 {
-    public interface ICalculationRequestInsertManualHandler
+    public interface IServiceLinkReturnHandler
     {
-        Task<SaleAndAfterSaleDataOutputDto> Handle(KartInsertManualInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
+        Task Handle(ServiceLinkReturnInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
     }
 }

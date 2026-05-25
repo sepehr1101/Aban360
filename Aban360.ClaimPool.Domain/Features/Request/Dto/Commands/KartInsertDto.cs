@@ -19,7 +19,7 @@
         public long Sum { get; set; }
         public int Type { get; set; }
         public int Ser { get; set; }
-        public int ServiceSelectedId { get; set; }
+        public int AmountItemId { get; set; }
         public int MeterDiameterId { get; set; }
         public int SiphonId { get; set; }
         public int UsageId { get; set; }

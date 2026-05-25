@@ -75,8 +75,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<SaleAndAfterSaleDataOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> InsertManualCalculation([FromBody] KartInsertManualInputDto inputDto, CancellationToken cancellationToken)
         {
-            int userCode = UserService.GetUserCode(CurrentUser.Username);
-            SaleAndAfterSaleDataOutputDto result = await _calculationRequestInsertManualHandler.Handle(inputDto, userCode, cancellationToken);
+            SaleAndAfterSaleDataOutputDto result = await _calculationRequestInsertManualHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
         }
 
