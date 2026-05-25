@@ -9,7 +9,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Validations
     {
         public PreAssessmentResultValidator()
         {
-            RuleFor(f => f.TrackNumber)
+            RuleFor(f => f.TrackId)
              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
              .NotNull().WithMessage(ExceptionLiterals.NotNull);
 

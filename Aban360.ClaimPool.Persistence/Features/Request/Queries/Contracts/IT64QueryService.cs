@@ -6,6 +6,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts
     public interface IT64QueryService
     {
         Task<IEnumerable<NumericDictionary>> Get();
+        Task<IEnumerable<AssessmentResultByPreResultOutputDto>> GetAssessment();
         Task<IEnumerable<AssessmentResultOutputDto>> GetAll();
     }
 }

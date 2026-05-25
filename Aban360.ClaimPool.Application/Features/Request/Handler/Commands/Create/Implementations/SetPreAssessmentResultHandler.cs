@@ -55,13 +55,13 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         public async Task Handle(PreAssessmentResultInputDto inputDto, int assessmentCode, CancellationToken cancellationToken)
         {
             await InputValidation(inputDto, cancellationToken);
-            TrackingOutputDto latestTrackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
+            TrackingOutputDto latestTrackingInfo = await _trackingQueryService.Get(inputDto.TrackId);
             await Validatoin(latestTrackingInfo.TrackId, latestTrackingInfo.StatusId);
 
-            TrackingInsertDuplicateDto trackingInsertSeenAssessmentDto = new(inputDto.TrackNumber, _seenByAssessmentStatus, inputDto.Description, assessmentCode, _requestOrigin, true, true);
-            TrackingInsertDuplicateDto trackingInsertSetAssessmentResultDto = new(inputDto.TrackNumber, _setAssessmentResultStatus, inputDto.Description, assessmentCode, _requestOrigin, true, true, 1);
-            TrackingInsertDuplicateDto trackingInserSetArchiveDto = new(inputDto.TrackNumber, _archiveStats, inputDto.Description, assessmentCode, _requestOrigin, true, false, 2);
-            MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(latestTrackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
+            TrackingInsertDuplicateDto trackingInsertSeenAssessmentDto = new(latestTrackingInfo.TrackNumber, _seenByAssessmentStatus, inputDto.Description, assessmentCode, _requestOrigin, true, true);
+            TrackingInsertDuplicateDto trackingInsertSetAssessmentResultDto = new(latestTrackingInfo.TrackNumber, _setAssessmentResultStatus, inputDto.Description, assessmentCode, _requestOrigin, true, true, 1);
+            TrackingInsertDuplicateDto trackingInserSetArchiveDto = new(latestTrackingInfo.TrackNumber, _archiveStats, inputDto.Description, assessmentCode, _requestOrigin, true, false, 2);
+            MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(latestTrackingInfo.ZoneId, null, null, latestTrackingInfo.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
             AssessmentUpdateDto assessmentUpdateDto = await GetAssessmentUpdateDto(inputDto, latestTrackingInfo, moshtrakInfo, assessmentCode, trackingInsertSetAssessmentResultDto.TrackId);
 
             await ExecuteSqlCommand(latestTrackingInfo.ZoneId, trackingInsertSetAssessmentResultDto, trackingInsertSeenAssessmentDto, trackingInserSetArchiveDto, assessmentUpdateDto);
