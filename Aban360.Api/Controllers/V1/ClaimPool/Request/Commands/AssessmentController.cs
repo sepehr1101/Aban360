@@ -23,6 +23,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         private readonly ISetAssessmentResultHandler _setAssessmentResultHandler;
         private readonly ISetAssessmentTimeHandler _setAssessmentTimeHandler;
         private readonly ISetLightAssessmentResultHandler _setLightAssessmentResultHandler;
+        private readonly ISetPreAssessmentResultHandler _setPreAssessmentResultHandler;
         private readonly IAssessmentByTrackIdGetHandler _assessmentByIdGetHandler;
         private readonly IReAssessmentRequestHandler _reAssessmentRequestHandler;
         private readonly ISmsOldHandler _smsOldHandler;
@@ -33,12 +34,13 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             ISetAssessmentResultHandler setAssessmentResultHandler,
             ISetAssessmentTimeHandler setAssessmentTimeHandler,
             ISetLightAssessmentResultHandler setLightAssessmentResultHandler,
+            ISetPreAssessmentResultHandler setPreAssessmentResultHandler,
             IAssessmentByTrackIdGetHandler assessmentByIdGetHandler,
             IReAssessmentRequestHandler reAssessmentRequestHandler,
             ISmsOldHandler smsOldHandler,
             IBackgroundJobClient backgroudJobClient)
         {
-            _contextAccessor=contextAccessor;
+            _contextAccessor = contextAccessor;
             _contextAccessor.NotNull(nameof(contextAccessor));
 
             _setAssessmentResultHandler = setAssessmentResultHandler;
@@ -49,6 +51,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 
             _setLightAssessmentResultHandler = setLightAssessmentResultHandler;
             _setLightAssessmentResultHandler.NotNull(nameof(setLightAssessmentResultHandler));
+
+            _setPreAssessmentResultHandler = setPreAssessmentResultHandler;
+            _setPreAssessmentResultHandler.NotNull(nameof(setPreAssessmentResultHandler));
 
             _assessmentByIdGetHandler = assessmentByIdGetHandler;
             _assessmentByIdGetHandler.NotNull(nameof(assessmentByIdGetHandler));
@@ -62,14 +67,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             _backgroudJobClient = backgroudJobClient;
             _backgroudJobClient.NotNull(nameof(backgroudJobClient));
         }
-               
+
         [HttpPost]
         [Route("result")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AssessmentResultInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SetReult(CancellationToken cancellationToken)
         {
             int examinerCode = UserService.GetUserCode(CurrentUser.Username);
-            AssessmentResultInputDto inputDto=await _setAssessmentResultHandler.Handle(examinerCode, cancellationToken);
+            AssessmentResultInputDto inputDto = await _setAssessmentResultHandler.Handle(examinerCode, cancellationToken);
             return Ok(inputDto);
         }
 
@@ -126,6 +131,17 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             return Ok(inputDto);
         }
 
+        
+        [HttpPost]
+        [Route("set-pre-result")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakUpdateInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SetPreAssessment([FromBody] PreAssessmentResultInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int userName = UserService.GetUserCode(CurrentUser.Username);
+            await _setPreAssessmentResultHandler.Handle(inputDto, userName, cancellationToken);
+            return Ok(inputDto);
+        }
+
         [HttpPost]
         [Route("reAssessment")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<TrackNumberWithDescriptionInputDto>), StatusCodes.Status200OK)]
@@ -159,7 +175,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidShowPreviousRequest);
             }
-         
+
             JObject jsonObject = new JObject
             {
                 ["reportData"] = JToken.Parse(result.AllInJson)
@@ -171,7 +187,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
                 var property = reportData.Property("commercialUnitsDetailsJson");
                 if (property != null && property.Value.Type == JTokenType.String)
                 {
-                    string arrayJson = property.Value.ToString();                   
+                    string arrayJson = property.Value.ToString();
                     // Guard against empty / whitespace JSON string
                     if (!string.IsNullOrWhiteSpace(arrayJson))
                     {
@@ -179,12 +195,12 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
                         property.Value = JToken.Parse(arrayJson);
                     }
                     else
-                    {                       
+                    {
                         // Optionally set to an empty array or leave as null
                         property.Value = new JArray();
-                    }                    
+                    }
                 }
-            }            
+            }
             JsonReportId reportId = await JsonOperation.ExportToJsonFlat(jsonObject, cancellationToken, reportCode);
             return reportId;
         }
