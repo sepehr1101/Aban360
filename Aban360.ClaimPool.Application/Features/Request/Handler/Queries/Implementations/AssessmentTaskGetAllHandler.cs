@@ -87,7 +87,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
         public async Task<AssessmentTasksOutputDto> Handle(int assessmentCode, CancellationToken cancellationToken)
         {
-            IEnumerable<NumericDictionary> trackingResultsDictionary = await _trackingResultQueryService.Get();
+            IEnumerable<AssessmentResultByPreResultOutputDto> trackingResultsDictionary = await _trackingResultQueryService.GetAssessment();
 
             ICollection<Usage> usageList = await _usageQueryService.Get();
             IEnumerable<NumericDictionary> usagesDictionary = usageList.Select(u => new NumericDictionary(u.Id, u.Title));

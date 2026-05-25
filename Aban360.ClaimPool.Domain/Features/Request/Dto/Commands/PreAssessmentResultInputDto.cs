@@ -2,7 +2,7 @@
 {
     public record PreAssessmentResultInputDto
     {
-        public int TrackNumber { get; set; }
+        public Guid TrackId { get; set; }
         public int ResultId { get; set; }
         public string? Description { get; set; }
     }

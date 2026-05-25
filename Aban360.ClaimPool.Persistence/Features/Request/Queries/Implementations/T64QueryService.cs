@@ -19,6 +19,11 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             string query = GetAllQuery();
             return await _sqlReportConnection.QueryAsync<NumericDictionary>(query, null);
         }
+        public async Task<IEnumerable<AssessmentResultByPreResultOutputDto>> GetAssessment()
+        {
+            string query = GetAssessmentQuery();
+            return await _sqlReportConnection.QueryAsync<AssessmentResultByPreResultOutputDto>(query, null);
+        }
         public async Task<IEnumerable<AssessmentResultOutputDto>> GetAll()
         {
             string query = GetAllQuery();
@@ -32,6 +37,16 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                         C4 IsSuccess
                     From Db70.dbo.t64
                     WHERE C3=1
+                    ORDER BY C0 DESC";                    
+        }
+        private string GetAssessmentQuery()
+        {
+            return @"Select 
+                    	C0 Id,
+                    	C1 Title,
+						IsPreResult
+                    From Db70.dbo.t64
+                    WHERE C3=1 AND IsAssessment=1
                     ORDER BY C0 DESC";                    
         }
     }

@@ -9,8 +9,8 @@
         public string BillId { get; set; }
         public int TrackNumber { get; set; }
         public Guid TackId { get; set; }
-        public int ServiceGoupId { get; set; }
-        public string ServiceGoupTitle { get; set; }
+        public int ServiceGroupId { get; set; }
+        public string ServiceGroupTitle { get; set; }
         public string AssessmentName { get; set; }
         public int AssessmentCode { get; set; }
         public string AssessmentMobile { get; set; }
