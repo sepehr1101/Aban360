@@ -11,6 +11,7 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<UserClaim> _userClaims;
+        private readonly DbSet<UserRole> _userRoles;
         public UserClaimQueryService(IUnitOfWork uow)
         {
             _uow = uow;
@@ -18,6 +19,9 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
 
             _userClaims = _uow.Set<UserClaim>();
             _userClaims.NotNull(nameof(_userClaims));
+
+            _userRoles = _uow.Set<UserRole>();
+            _userRoles.NotNull(nameof(_userRoles));
         }
 
         public IQueryable<UserClaim> GetQuery()
@@ -39,6 +43,33 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
                     userClaim.UserId == userId &&
                     userClaim.ClaimTypeId == claimType)
                 .ToListAsync();
+        }
+
+        public async Task<(ICollection<Guid>, ICollection<UserClaim>)> Get(int roleId, ClaimType claimType)
+        {
+            List<Guid> userIds = await _userRoles
+                .Where(userRole => userRole.RoleId == roleId &&
+                       userRole.ValidTo == null)
+                .Select(userRole => userRole.UserId)
+                .Distinct()
+                .ToListAsync();
+            var userClaims = await _userClaims
+                .Where(userClaim =>
+                    userClaim.ClaimTypeId==claimType &&
+                    userClaim.ValidTo == null &&
+                    userIds.Contains(userClaim.UserId))
+                .ToListAsync();
+            return (userIds, userClaims);
+            //return await _userClaims
+            //       .Where(userClaim =>
+            //           userClaim.ClaimTypeId == claimType &&
+            //           userClaim.RemoveLogInfo == null &&
+            //           userClaim.User.UserRoles
+            //            .Any(userRole => userRole.RoleId == roleId && userRole.RemoveLogInfo == null))
+            //       //.Include(userClaim => userClaim.User)
+            //       //.ThenInclude(user => user.UserRoles)
+            //       //.AsSplitQuery()
+            //       .ToListAsync();
         }
     }
 }

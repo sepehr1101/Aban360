@@ -35,9 +35,9 @@ namespace Aban360.UserPool.Application.Features.Auth.Validations
                .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(u => u.SelectedEndpointIds)
-               .NotNull().WithMessage(ExceptionLiterals.NotNull)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
+            //RuleFor(u => u.SelectedEndpointIds)
+            //   .NotNull().WithMessage(ExceptionLiterals.NotNull)
+            //   .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
         }
     }
 }

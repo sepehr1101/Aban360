@@ -8,5 +8,6 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts
         Task<ICollection<UserClaim>> Get(Guid userId);
         Task<ICollection<UserClaim>> Get(Guid userId, ClaimType claimType);
         IQueryable<UserClaim> GetQuery();
+        Task<(ICollection<Guid>,ICollection<UserClaim>)> Get(int roleId, ClaimType claimType);
     }
 }

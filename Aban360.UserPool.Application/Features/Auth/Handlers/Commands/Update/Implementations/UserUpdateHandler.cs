@@ -129,8 +129,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
         }
         private async Task<List<string>> GetEndpointsValue(UserUpdateDto userUpdateDto)
         {
-            List<string> endpointValue = await _endpointQueryService.GetAuthValue(userUpdateDto.SelectedEndpointIds.ToArray());
-            ICollection<Role> selectedRoles = await _roleQueryService.Get(userUpdateDto.SelectedRoleIds);
+            List<string> endpointValue = await _endpointQueryService.GetAuthValue(userUpdateDto.SelectedEndpointIds.Distinct().ToArray());
+            ICollection<Role> selectedRoles = await _roleQueryService.Get(userUpdateDto.SelectedRoleIds.Distinct().ToArray());
             foreach (Role role in selectedRoles)
             {
                 if (!string.IsNullOrWhiteSpace(role.DefaultClaims))
@@ -144,7 +144,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
                 }
             }
 
-            return endpointValue;
+            return endpointValue.Distinct().ToList();
         }
     }
 }
