@@ -52,8 +52,8 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         public async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> Handle(ReturnBillPartialInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             int[] burstPipe = { 1 };
-            int[] misreaded = { 5, 7, 9, 14, 15 };
-            int[] misreadedCalcWithMeterNumber = { 10, 14, 15 };
+            int[] misreaded = { 5, 7, 9, 11, 12, 14, 15 };
+            int[] misreadedCalcWithMeterNumber = { 10, 11, 12, 14, 15 }; //TODO: 10 ?
 
             CustomerInfoOutputDto customerInfo = await Validate(inputDto, appUser, cancellationToken);
             int jalaseNumber = await _returnBillBaseHandler.GetJalaliNumber(inputDto.MinutesNumber, customerInfo.ZoneId, customerInfo.Radif);

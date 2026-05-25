@@ -7,6 +7,7 @@ using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handle
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
@@ -29,7 +30,6 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [AllowTimeWindowFilter]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterModifiedBillsHeaderOutputDto, WaterModifiedBillsDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(WaterModifiedBillsInputDto input, CancellationToken cancellationToken)
         {
@@ -39,7 +39,6 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
-        [AllowTimeWindowFilter]
         public async Task<IActionResult> GetExcel(string connectionId, WaterModifiedBillsInputDto inputDto, CancellationToken cancellationToken)
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _modifiedBillsHandler.Handle, CurrentUser, ReportLiterals.WaterModifiedBillsDetail, connectionId);
@@ -48,8 +47,8 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost]
         [Route("sti")]
-        [AllowTimeWindowFilter]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetStiReport(WaterModifiedBillsInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 520;
