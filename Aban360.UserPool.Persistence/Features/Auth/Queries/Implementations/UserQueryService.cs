@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Extensions;
+using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
@@ -106,6 +107,13 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
             return result;
         }
 
+        public async Task<bool> Exists(UserCreateDto userCreateDto)
+        {
+            return await _users
+                .AnyAsync(user =>
+                     user.Username == userCreateDto.Username ||
+                     user.FullName == userCreateDto.FullName);
+        }
 
         private string GetSearchUserQuery(string zoneIdCondition, string endpointIdCondition, string roleIdCondition,
             string joinTypeZone, string joinTypeEndpoint, string joinTypeRole)

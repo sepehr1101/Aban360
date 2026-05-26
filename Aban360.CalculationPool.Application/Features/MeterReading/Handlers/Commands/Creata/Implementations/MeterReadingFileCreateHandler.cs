@@ -41,9 +41,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IPreviousAverageHandler _previousAverageHandler;
 
         public MeterReadingFileCreateHandler(
-              IMeterFlowQueryService meterFlowService,
+            IMeterFlowQueryService meterFlowService,
             ICustomerInfoService customerInfoService,
-             IMeterReadingDetailQueryService meterReadingDetailService,
+            IMeterReadingDetailQueryService meterReadingDetailService,
             IOldTariffEngine tariffEngine,
             IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
             IValidator<MeterReadingFileCreateDto> validator,
