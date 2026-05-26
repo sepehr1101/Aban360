@@ -257,7 +257,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 ZoneId = (int)bedBesResult.Town,
                 CustomerNumber = (int)bedBesResult.Radif,
                 ReturnCauseId = returnCauseId,
-                FromDateJalali = ConvertDate.JalaliToDateTime(bedBesResult.PriDate).AddYears(-4).ToShortPersianDateString(),
+                FromDateJalali = DateTime.Now.AddYears(-4).ToShortPersianDateString(),
                 ToDateJalali = bedBesResult.TodayDate,
             };
             BillReturnCauseGetDto returnCauseInfo = await _billReturnCauseQueryService.Get((short)returnCauseId);

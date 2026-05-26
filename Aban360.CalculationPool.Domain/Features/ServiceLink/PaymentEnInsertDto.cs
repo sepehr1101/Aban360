@@ -20,5 +20,6 @@
         public string BankCode { get; set; }
         public string PayDateJalali { get; set; }
         public long? TempId { get; set; }
+        public int VosoolTableId { get; set; }
     }
 }

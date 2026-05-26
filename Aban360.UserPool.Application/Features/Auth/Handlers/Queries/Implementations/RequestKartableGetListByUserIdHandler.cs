@@ -29,7 +29,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
             ICollection<UserClaim> userAccesses = await _userClaimQueryService.GetValid(userId, ClaimType.RequestKartable);
             foreach (var item in requestStatuses)
             {
-                item.IsSelected = userAccesses.Where(u => int.Parse(u.ClaimValue) == item.Id).Any();
+                item.IsSelected =userAccesses.Where(u => int.Parse(u.ClaimValue) == item.Id).Any();
+                //userAccesses.Select(u=> int.Parse(u.ClaimValue)).Contains(item.Id);
             }
 
             return requestStatuses;
