@@ -54,7 +54,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         }
         internal static bool IsReligiousWithCharity(int usageId)
         {
-            return CheckConditions(usageId, [12, 13, 29, 30, 32]);
+            //در تاریخ 4 خرداد سال 1405 بنا به درخواست سرکار خانم حبیبی نژاد کد 10 معادل دارالقران به این لیست اضافه شد
+            return CheckConditions(usageId, [/*10,*/ 12, 13, 29, 30, 32]);
         }
         internal static bool IsVillageCollectorMeter(int usageId)
         {

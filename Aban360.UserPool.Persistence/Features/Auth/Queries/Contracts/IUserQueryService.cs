@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.BaseEntities;
+using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 
@@ -14,5 +15,6 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts
         Task<IEnumerable<UserQueryDto>> Search(SearchUserDto input);
         Task<IEnumerable<UserQueryDto>> Get(UserSearchByRoleTitleAndZoneIdDto inputDto);
         Task<IEnumerable<StringDictionary>> GetDictionary(UserSearchByRoleTitleAndZoneIdDto inputDto);
+        Task<bool> Exists(UserCreateDto userCreateDto);
     }
 }

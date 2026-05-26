@@ -1,5 +1,4 @@
 ﻿using Aban360.Api.Cronjobs;
-using Aban360.Api.Filters;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
@@ -30,7 +29,6 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [AllowTimeWindowFilter]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ServiceLinkModifiedBillsHeaderOutputDto, ServiceLinkModifiedBillsDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(ServiceLinkModifiedBillsInputDto input, CancellationToken cancellationToken)
         {
@@ -40,7 +38,6 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
-        [AllowTimeWindowFilter]
         public async Task<IActionResult> GetExcel(string connectionId, ServiceLinkModifiedBillsInputDto inputDto, CancellationToken cancellationToken)
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _modifiedBillsHandler.Handle, CurrentUser, ReportLiterals.ServiceLinkModifiedBillsDetail, connectionId);
@@ -51,7 +48,6 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         [Route("sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         [AllowAnonymous]
-        [AllowTimeWindowFilter]
         public async Task<IActionResult> GetStiReport(ServiceLinkModifiedBillsInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 630;

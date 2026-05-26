@@ -18,6 +18,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
 {
     internal sealed class UserCreateHandler : UserBaseCreateOrUpdateService, IUserCreateHandler
     {
+        private readonly IUserQueryService _userQueryService;
         private readonly IUserCommandService _userCommandService;
         private readonly IUserClaimCommandService _userClaimCommandService;
         private readonly IUserRoleCommandService _userRoleCommandService;
@@ -37,7 +38,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
             IZoneCountQueryAddhoc zoneCountQueryAddhoc,
             IEndpointQueryService endpointQueryService,
             IRoleQueryService roleQueryService,
-            IValidator<UserCreateDto> userValidator)
+            IValidator<UserCreateDto> userValidator,
+            IUserQueryService userQueryService)
         {
             _userCommandService = userCommandService;
             _userCommandService.NotNull(nameof(userCommandService));
@@ -65,6 +67,9 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
 
             _userValidator = userValidator;
             _userValidator.NotNull(nameof(userValidator));
+
+            _userQueryService = userQueryService;
+            _userQueryService.NotNull(nameof(_userQueryService));
         }
         public async Task Handle(UserCreateDto userCreateDto, CancellationToken cancellationToken)
         {
@@ -74,7 +79,10 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new CustomValidationException(message);
             }//
-
+            if(await _userQueryService.Exists(userCreateDto))
+            {
+                throw new CustomValidationException("کاربر قبلا ایجاد شده است");
+            }
             LogInfo logInfo = DeviceDetection.GetLogInfo(_contextAccessor.HttpContext.Request);
             string logInfoString = JsonOperation.Marshal(logInfo);
             Guid operationGroupId = Guid.NewGuid();
