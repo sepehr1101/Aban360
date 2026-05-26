@@ -15,6 +15,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private readonly ITankerWaterDistanceTariffQueryService _tankerQueryService;
         private readonly IZaribCQueryService _zaribCQueryService;
         private readonly IZaribGetService _zaribGetService;
+        static float _hotSeasonMultiple = 1.2f;
         public TankerWaterCalculationHandler(
             ITankerWaterDistanceTariffQueryService tankerQueryService,
             IZaribCQueryService zaribCQueryService,
@@ -41,12 +42,16 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             decimal boodjeh = input.Consumption * 2000m;
             decimal multiplier = GetVarzaneMultiplier(input);
 
+
+            decimal water = abBaha * multiplier;
+            water = IsHotSeasonDate() ? water * (decimal)_hotSeasonMultiple : water;
+
             if (input.IsConfirm)
             {
-                return new TankerWaterCalculationOutputDto(123123, "116416", "1230000", null, abBaha * multiplier, boodjeh, deliveryAmount);
+                return new TankerWaterCalculationOutputDto(123123, "116416", "1230000", null, water, boodjeh, deliveryAmount);
             }
 
-            return new TankerWaterCalculationOutputDto(null, null, null, null, abBaha * multiplier, boodjeh, deliveryAmount);
+            return new TankerWaterCalculationOutputDto(null, null, null, null, water, boodjeh, deliveryAmount);
         }
 
         private decimal GetVarzaneMultiplier(TankerWaterCalculationInputDto input)
@@ -72,6 +77,15 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             ZaribGetDto zarib = await _zaribGetService.Get(zoneId, currentDateJalali);
 
             return (zaribC.C, zarib.Zb);
+        }
+        private bool IsHotSeasonDate()
+        {
+            string currentDateJalali = DateTime.Now.ToShortPersianDateString();
+            string yearJalali = currentDateJalali.Substring(0, 4);
+
+            string hotSeasonFromDateJalali = $"{yearJalali}/03/01";
+            string hotSeasonToDateJalali = $"{yearJalali}/06/31";
+            return currentDateJalali.CompareTo(hotSeasonFromDateJalali) >= 0 && currentDateJalali.CompareTo(hotSeasonToDateJalali) <= 0;
         }
     }
 }

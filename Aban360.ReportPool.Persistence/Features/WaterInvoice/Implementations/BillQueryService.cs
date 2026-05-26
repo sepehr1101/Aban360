@@ -11,28 +11,34 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
     internal sealed class BillQueryService : AbstractBaseConnection, IBillQueryService
     {
         public BillQueryService(IConfiguration configuration)
-            :base(configuration)
+            : base(configuration)
         {
         }
 
         public async Task<BillItemsGetDto> Get(int id)
         {
-			string query = GetItemsByBillIdQuery();
+            string query = GetItemsByBillIdQuery();
             BillItemsGetDto? data = await _sqlReportConnection.QueryFirstOrDefaultAsync<BillItemsGetDto>(query, new { id });
-			if (data == null)
-			{
-				throw new InvalidBillIdException(ExceptionLiterals.InvoiceNotFound);
-			}
-			return data;
+            if (data == null)
+            {
+                throw new InvalidBillIdException(ExceptionLiterals.InvoiceNotFound);
+            }
+            return data;
         }
-		public async Task<IEnumerable<BillTransactionDetailGetDto>> GetBillDetails(string billId)
-		{
-			string query = GetPreviousBillsDetailsQuery();
-			IEnumerable<BillTransactionDetailGetDto> result = await _sqlReportConnection.QueryAsync<BillTransactionDetailGetDto>(query, new { billId });
-			return result;
-		}
-		
-		private string GetItemsByBillIdQuery()
+        public async Task<IEnumerable<BillTransactionDetailGetDto>> GetBillDetails(string billId)
+        {
+            string query = GetPreviousBillsDetailsQuery();
+            IEnumerable<BillTransactionDetailGetDto> result = await _sqlReportConnection.QueryAsync<BillTransactionDetailGetDto>(query, new { billId });
+            return result;
+        }
+        public async Task<IEnumerable<BillHistoryDataOutputDto>> GetHistory(BillHistoryInputDto inputDto)
+        {
+            string query = GetBillHistoryQuery();
+            IEnumerable<BillHistoryDataOutputDto> result = await _sqlReportConnection.QueryAsync<BillHistoryDataOutputDto>(query, inputDto);
+            return result;
+        }
+
+        private string GetItemsByBillIdQuery()
         {
             return $@"Select 
 						Id,
@@ -73,9 +79,9 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						On t51.C1=t46.C0
 					Where Id=@id";
         }
-		private string GetPreviousBillsDetailsQuery()
-		{
-			return $@"Select 
+        private string GetPreviousBillsDetailsQuery()
+        {
+            return $@"Select 
 						b.ZoneId,
 						b.ZoneTitle,
 						b.CustomerNumber,
@@ -105,6 +111,53 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						BillId=@BillId AND
 						CustomerWarehouse.dbo.PersianToMiladi(RegisterDay)>=DATEADD(YEAR,-1,GETDATE())
 					Order by RegisterDay ASC";
-		}
+        }
+        private string GetBillHistoryQuery()
+        {
+            return $@"Select 
+						Id,
+						BillId,
+						CustomerNumber,
+						t46.C0 RegionId,
+						t46.C2 RegionTitle,
+						ZoneId,
+						ZoneTitle,
+						UsageId,
+						UsageTitle,
+						BranchTypeId,
+						BranchType BranchTypeTitle,
+						Consumption	,
+						ConsumptionAverage,
+						Item1 AbBaha,
+						Item2 FazelabBaha,
+						Item3 AbonmanAb,
+						Item4 AbonmanFazelab,
+						Item5 Maliat,
+						Item6 Tabsare2,
+						Item7 Tabsare2_3,
+						Item8 Jarime,
+						Item9 Abresani,
+						Item10  JavaniJamiat,
+						Item11 FaslGarm,
+						Item12 ZaribTadil,
+						Item13 Tabsare3Ab,
+						Item14 Tabsare3Fazelab,
+						Item15 TabsareAbonmanFazelab,
+						Item16 GhanonBoodje,
+						Item17 JavazemKahande,
+						Item18 Boodje,
+						Payable,
+						SumItems
+					From CustomerWarehouse.dbo.Bills
+					Left Join [Db70].dbo.T51 t51
+						On ZoneId=t51.C0
+					Left Join [Db70].dbo.T46 t46
+						On t51.C1=t46.C0
+					Where 
+						BillId=@BillId AND
+						RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali AND
+					    CounterStateCode NOT IN (4,7)
+					Order by RegisterDay ASC";
+        }
     }
 }

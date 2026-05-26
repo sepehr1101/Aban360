@@ -19,6 +19,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         static int _recalculateStatus = 65;
         static int _deletedSatatus = 90000;
+        static int[] _disallowedStatusIds = { _recalculateStatus, _deletedSatatus };
         static int _requestOrigin = 12;
         public ReCalculationRequestHandler(
             ITrackingQueryService trackingQueryService,
@@ -37,7 +38,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         {
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
-            Validation(inputDto.TrackNumber, trackingInfo.StatusId, moshtrakInfo.IsRegistered);
+            Validate(inputDto.TrackNumber, trackingInfo.StatusId, moshtrakInfo.IsRegistered);
 
             TrackingInsertDuplicateDto trackingInsertDto = GetTrackingInsertDto(inputDto, userCode);
             string dbName = GetDbName(trackingInfo.ZoneId);
@@ -57,9 +58,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 }
             }
         }
-        private void Validation(int trackNumber, int statusId, bool isRegistered)
+        private void Validate(int trackNumber, int statusId, bool isRegistered)
         {
-            if (isRegistered == true || statusId == _deletedSatatus)//and not Deleted
+            if (isRegistered == true || _disallowedStatusIds.Contains(statusId))//and not Deleted
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
             }

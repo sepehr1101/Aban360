@@ -31,6 +31,8 @@
         public static string WithZone { get { return " شهری "; } }
         public static string WithVillage { get { return " روستایی "; } }
 
+        public static string BillsHistory { get { return $"{Report} تاریخچه قبوض "; } }
+  
         public static string EmptyUnit { get { return $"{Report} خالی از سکنه"; } }
 
         public static string EmptyUnitPossibility { get { return $"{Report} احتمال خالی از سکنه "; } }

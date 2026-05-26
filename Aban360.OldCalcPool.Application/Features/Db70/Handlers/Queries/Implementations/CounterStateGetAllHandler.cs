@@ -14,9 +14,9 @@ namespace Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Impleme
             _CounterStateQueryService = CounterStateQueryService;
             _CounterStateQueryService.NotNull(nameof(CounterStateQueryService));
         }
-        public async Task<IEnumerable<CounterStateCodeDto>> Handle(CancellationToken cancellationToken)
+        public async Task<IEnumerable<CounterStateCodeDto>> Handle(bool isReadable, CancellationToken cancellationToken)
         {
-            IEnumerable<CounterStateCodeDto> result = await _CounterStateQueryService.Get();
+            IEnumerable<CounterStateCodeDto> result = await _CounterStateQueryService.Get(isReadable);
             return result;
         }
     }

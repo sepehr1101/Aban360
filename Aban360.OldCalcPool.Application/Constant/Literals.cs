@@ -14,5 +14,6 @@
         public static string TankerDeleteOpLog => @"قبض آب تانکری توسط:{0}  حذف شد. تاریخ:{1} کد ناحیه:{2} شناسه قبض:{3} ردیف:{4} مبلغ:{5}";
         public static string RequestOfferingInsertOpLog => @"آیتم {0} برای شماره درخواست{1} ایجاد شد. مبلغ{2}  نوع آیتم {3}";
         public static string RequestOfferingReturnOpLog => @"برگشتی حق انشعاب انجام شد. شناسه قبض{0}  تعداد آیتم‌ها {1}  مبلغ{2}";
+        public static string ServiceLinkRegisterManualOpLog => @"وصولی دستی حق انشعاب انجام شد. شناسه قبض:{0} تعداد پرداختی:{1}  جمع مبلغ:{2}";
     }
 }

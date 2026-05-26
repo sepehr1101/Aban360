@@ -5,6 +5,8 @@ using oldCalcPool = Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queri
 using Aban360.MeterPool.Domain.Features.Management.Dtos.Queries;
 using Microsoft.AspNetCore.Mvc;
 using Aban360.OldCalcPool.Domain.Features.Db70.Dto.Queries;
+using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Aban360.Api.Controllers.V1.MeterPool.Management.Queries
 {
@@ -36,9 +38,9 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management.Queries
         [HttpPost, HttpGet]
         [Route("all")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<CounterStateCodeDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAll([Optional] bool isReadable, CancellationToken cancellationToken)
         {
-            IEnumerable<CounterStateCodeDto> counterStates = await _counterStateGetAllOldCalcPoolHandler.Handle(cancellationToken);
+            IEnumerable<CounterStateCodeDto> counterStates = await _counterStateGetAllOldCalcPoolHandler.Handle(isReadable, cancellationToken);
             return Ok(counterStates);
         }
     }

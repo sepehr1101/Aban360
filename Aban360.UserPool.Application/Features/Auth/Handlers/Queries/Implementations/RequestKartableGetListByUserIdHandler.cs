@@ -26,10 +26,10 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
         public async Task<IEnumerable<SelectionDto>> Handle(Guid userId, CancellationToken cancellationToken)
         {
             IEnumerable<SelectionDto> requestStatuses = await _requestStatusQueryService.GetIsKartable();
-            ICollection<UserClaim> userAccesses = await _userClaimQueryService.Get(userId, ClaimType.RequestKartable);
+            ICollection<UserClaim> userAccesses = await _userClaimQueryService.GetValid(userId, ClaimType.RequestKartable);
             foreach (var item in requestStatuses)
             {
-                item.IsSelected = userAccesses.Select(u => u.Id == item.Id).Any();
+                item.IsSelected = userAccesses.Where(u => int.Parse(u.ClaimValue) == item.Id).Any();
             }
 
             return requestStatuses;

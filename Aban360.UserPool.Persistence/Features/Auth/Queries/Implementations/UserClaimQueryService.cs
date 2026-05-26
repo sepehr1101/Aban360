@@ -31,7 +31,7 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
         public async Task<ICollection<UserClaim>> Get(Guid userId)
         {
             return await _userClaims
-                .Where(uc => 
+                .Where(uc =>
                     uc.UserId == userId &&
                     uc.ValidTo == null)
                 .ToListAsync();
@@ -39,9 +39,18 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
         public async Task<ICollection<UserClaim>> Get(Guid userId, ClaimType claimType)
         {
             return await _userClaims
-                .Where(userClaim => 
+                .Where(userClaim =>
                     userClaim.UserId == userId &&
                     userClaim.ClaimTypeId == claimType)
+                .ToListAsync();
+        }
+        public async Task<ICollection<UserClaim>> GetValid(Guid userId, ClaimType claimType)
+        {
+            return await _userClaims
+                .Where(userClaim =>
+                    userClaim.UserId == userId &&
+                    userClaim.ClaimTypeId == claimType &&
+                    userClaim.ValidTo == null)
                 .ToListAsync();
         }
 
@@ -55,7 +64,7 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
                 .ToListAsync();
             var userClaims = await _userClaims
                 .Where(userClaim =>
-                    userClaim.ClaimTypeId==claimType &&
+                    userClaim.ClaimTypeId == claimType &&
                     userClaim.ValidTo == null &&
                     userIds.Contains(userClaim.UserId))
                 .ToListAsync();

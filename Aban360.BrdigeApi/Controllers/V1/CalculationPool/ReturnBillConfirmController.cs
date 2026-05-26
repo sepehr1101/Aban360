@@ -22,7 +22,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReturnBillDataOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Confirm([FromBody] ReturnBillConfirmeByBillIdInputDto input, CancellationToken cancellationToken)
         {
-            ReturnBillDataOutputDto result = await _returnConfirmHandler.Handle(input, cancellationToken);
+            ReturnBillDataOutputDto result = await _returnConfirmHandler.Handle(input, CurrentUser, cancellationToken);
             return Ok(result);
         }
     }
