@@ -243,9 +243,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     Where 
                     	t.IsConsiderd=0 AND 
                      	t.DateTimeJalali>='1404/07/01' AND
-                        --( t.Status IN (0,15,20,50,60,70, /*75,150,*/ 90002) OR
-						-- (t.Status IN(17, 65, 110) AND C19=1)) AND
-                        t.Status IN @statusIds AND
+                        (
+                            (t.Status IN @statusIds AND t.Status NOT IN(65, 110)) OR
+                            (t.Status IN @statusIds AND t.Status IN(65, 110) AND C19=1)
+                            --( t.Status IN (0, 15, 60, 90002) OR
+						    --(t.Status IN(65, 110) AND C19=1)
+                        ) AND
                         t.ZoneId IN @zoneIds
                     Order by sg.Title,t.DateAndTime desc";
         }

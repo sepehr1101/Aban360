@@ -295,7 +295,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
         private (long, long) Get2Amount(ConsumptionPartialInfo consumptionPartialInfo, CustomerInfoOutputDto customerInfo, AbAzadFormulaDto abAzad8And39, double abBahaFromExpression, int olgoo, double monthlyConsumption, [Optional] int? c, [Optional] IEnumerable<int> tagIds)
         {
-            if (IsReligiousWithCharity(customerInfo.UsageId))
+            if (IsReligiousWithCharity(customerInfo.UsageId) ||
+                IsQuranAfter1404_01_01(customerInfo.UsageId, consumptionPartialInfo.StartDateJalali))
             {
                 return Get2PartAmountReligious(consumptionPartialInfo.EndDateJalali);
             }
