@@ -63,7 +63,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
         public async Task<(MoshtrakCreateDto, Guid)> Handle(RequestNewBranchInputDto inputDto, int userName, CancellationToken cancellationToken)
         {
-            await Validation(inputDto, cancellationToken);
+            await Validate(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber neighbourCustomerInfo = await _commonMemberQueryService.Get(inputDto.NeighbourBillId);
             MemberInfoGetDto neighbourMemeberInfo = await _commonMemberQueryService.Get(neighbourCustomerInfo);
             if (!inputDto.IsSkipDuplicate)
@@ -74,7 +74,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
             return await SqlCommand(inputDto, neighbourCustomerInfo, userName, assessmentDateJalali, assessmentCode);
         }
-        private async Task Validation(RequestNewBranchInputDto inputDto, CancellationToken cancellationToken)
+        private async Task Validate(RequestNewBranchInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -226,7 +226,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
                     if (!string.IsNullOrWhiteSpace(assessmentDateJalali))
                     {
-                        TrackingInsertDuplicateDto trackingInsertSetTimeDto = new(trackNumber, _setAssessmentTimeStatusId, inputDto.Description, userName, _requestOrigin, true, false);
+                        TrackingInsertDuplicateDto trackingInsertSetTimeDto = new(trackNumber, _setAssessmentTimeStatusId, inputDto.Description, userName, _requestOrigin, true, false, 1);
                         AssessmentInsertDto assessmentInsert = await GetAssessmentInsertDto(trackingInsertSetTimeDto, assessmentCode, assessmentDateJalali, trackingSetRequestInsertDto.ZoneId);
                         await trackingCommandService.UpdateIsConsiderdLatest(trackingSetRequestInsertDto.TrackNumber, true);
                         await trackingCommandService.InsertDuplicate(trackingInsertSetTimeDto);

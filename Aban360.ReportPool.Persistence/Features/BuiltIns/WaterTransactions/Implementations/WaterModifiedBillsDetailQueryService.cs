@@ -43,10 +43,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             return @"Select
                     	b.ZoneTitle,
 	                    b.CustomerNumber,
+						b.BillId,
+						b.WaterDiameterId AS MeterDiameterId,
+						b.WaterDiameterTitle AS MeterDiameterTitle,
 	                    b.UsageTitle AS UsageSellTitle,
 	                    b.RegisterDay AS RegisterDateJalali,
 	                    b.Payable,
-	                    b.SumItems
+	                    b.SumItems,
+						b.ReturnCauseId,
+						b.ReturnCauseTitle
                     From [CustomerWarehouse].dbo.Bills b
                     Where	
                     	b.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali AND

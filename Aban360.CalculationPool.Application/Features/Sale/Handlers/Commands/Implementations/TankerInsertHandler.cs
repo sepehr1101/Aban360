@@ -32,6 +32,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         private readonly IZaribGetService _zaribGetService;
         private readonly IT52QueryService _t52QueryService;
         private readonly IT51QueryService _zoneQueryService;
+        static float _hotSeasonMultiple = 1.2f;
         static int _tankerWaterUsageId = 19;
         static int _operator = 666;
         static int _typeId = 1;
@@ -129,7 +130,10 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             decimal boodjeh = input.Consumption * 2000m;
             decimal multiplier = GetVarzaneMultiplier(input);
 
-            return new TankerWaterCalculationOutputDto(null, null, null, input.MobileNumber, abBaha * multiplier, boodjeh, deliveryAmount);
+            decimal water = abBaha * multiplier;
+            water = IsHotSeasonDate() ? water * (decimal)_hotSeasonMultiple : water;
+            
+            return new TankerWaterCalculationOutputDto(null, null, null, input.MobileNumber, water, boodjeh, deliveryAmount);
         }
         private decimal GetVarzaneMultiplier(TankerInsertInputDto input)
         {
@@ -299,6 +303,15 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             inputDto.FirstName = inputDto.FirstName.Trim();
             inputDto.Surname = inputDto?.Surname?.Trim() ?? string.Empty;
             inputDto.Address = inputDto?.Address?.Trim() ?? string.Empty;
+        }
+        private bool IsHotSeasonDate()
+        {
+            string currentDateJalali = DateTime.Now.ToShortPersianDateString();
+            string yearJalali = currentDateJalali.Substring(0, 4);
+
+            string hotSeasonFromDateJalali = $"{yearJalali}/03/01";
+            string hotSeasonToDateJalali = $"{yearJalali}/06/31";
+            return currentDateJalali.CompareTo(hotSeasonFromDateJalali) >= 0 && currentDateJalali.CompareTo(hotSeasonToDateJalali) <= 0;
         }
     }
 }

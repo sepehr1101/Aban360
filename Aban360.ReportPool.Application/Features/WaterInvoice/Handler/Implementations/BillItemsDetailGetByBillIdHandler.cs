@@ -22,8 +22,8 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
             BillItemsGetDto billItems = await _billQueryService.Get(billId);
             BillItemsDataOutputDto data = new()
             {
-                Consumption=billItems.Consumption,
-                ConsumptionAverage=billItems.ConsumptionAverage,
+                Consumption = billItems.Consumption,
+                ConsumptionAverage = billItems.ConsumptionAverage,
                 AbBaha = billItems.AbBaha,
                 FazelabBaha = billItems.FazelabBaha,
                 AbonmanAb = billItems.AbonmanAb,

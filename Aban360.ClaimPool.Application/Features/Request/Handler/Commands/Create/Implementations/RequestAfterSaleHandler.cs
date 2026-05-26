@@ -62,13 +62,13 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
         public async Task<(MoshtrakCreateDto, Guid)> Handle(RequestAfterSaleInputDto input, int userName, CancellationToken cancellationToken)
         {
-            await InputValidation(input, cancellationToken);
-            MemberInfoGetDto memberInfo = await OpenRequestValidation(input);
+            await InputValidate(input, cancellationToken);
+            MemberInfoGetDto memberInfo = await OpenRequestValidate(input);
             var (assessmentCode, assessmentDateJalali) = await GetAssessmentDateTime(memberInfo);
 
             return await SqlCommands(input, memberInfo, userName, assessmentCode, assessmentDateJalali);
         }
-        private async Task InputValidation(RequestAfterSaleInputDto inputDto, CancellationToken cancellationToken)
+        private async Task InputValidate(RequestAfterSaleInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -77,7 +77,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 throw new CustomValidationException(message);
             }
         }
-        private async Task<MemberInfoGetDto> OpenRequestValidation(RequestAfterSaleInputDto input)
+        private async Task<MemberInfoGetDto> OpenRequestValidate(RequestAfterSaleInputDto input)
         {
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(input.BillId);
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumber);
@@ -112,7 +112,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
                     if (!string.IsNullOrWhiteSpace(assessmentDateJalali))
                     {
-                        TrackingInsertDuplicateDto trackingInsertSetTimeDto = new(trackNumber, _setAssessmentTimeStatusId, input.Description, userName, _requestOrigin, true, false);
+                        TrackingInsertDuplicateDto trackingInsertSetTimeDto = new(trackNumber, _setAssessmentTimeStatusId, input.Description, userName, _requestOrigin, true, false, 1);
                         AssessmentInsertDto assessmentInsert = await GetAssessmentInsertDto(trackingInsertSetTimeDto, trackingSetRequestInsertDto, memberInfo, assessmentCode, assessmentDateJalali);
                         await trackingCommandService.UpdateIsConsiderdLatest(trackingSetRequestInsertDto.TrackNumber, true);
                         await trackingCommandService.InsertDuplicate(trackingInsertSetTimeDto);
