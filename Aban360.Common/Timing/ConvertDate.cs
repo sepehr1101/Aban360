@@ -1,5 +1,4 @@
-﻿using Aban360.Common.Exceptions;
-using Aban360.Common.Literals;
+﻿using Aban360.Common.Literals;
 using DNTPersianUtils.Core;
 
 namespace Aban360.Common.Timing

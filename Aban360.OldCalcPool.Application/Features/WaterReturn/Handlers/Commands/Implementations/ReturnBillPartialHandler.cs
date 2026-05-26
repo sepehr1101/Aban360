@@ -3,16 +3,21 @@ using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using Aban360.Common.Timing;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
+using Aban360.OldCalcPool.Domain.Features.Db70.Dto.Queries;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
+using Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
 using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Commands;
+using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Queries;
+using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Contracts;
 using DNTPersianUtils.Core;
 using FluentValidation;
 
@@ -25,13 +30,17 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private readonly IZaribCQueryService _zaribCQueryService;
         private readonly IOldTariffEngine _oldTariffEngine;
         private readonly IReturnBillBaseHandler _returnBillBaseHandler;
+        private readonly IRepairQueryService _repairQueryService;
+        private readonly IBillReturnCauseQueryService _billReturnCauseQueryService;
 
         public ReturnBillPartialHandler(
             ISQueryService sQueryService,
             IBedBesQueryService besQueryService,
             IZaribCQueryService zaribCQueryService,
             IOldTariffEngine oldTariffEngine,
-            IReturnBillBaseHandler returnBillBaseHandler)
+            IReturnBillBaseHandler returnBillBaseHandler,
+            IRepairQueryService repairQueryService,
+            IBillReturnCauseQueryService billReturnCauseQueryService)
         {
             _sQueryService = sQueryService;
             _sQueryService.NotNull(nameof(sQueryService));
@@ -47,6 +56,12 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             _returnBillBaseHandler = returnBillBaseHandler;
             _returnBillBaseHandler.NotNull(nameof(returnBillBaseHandler));
+
+            _repairQueryService = repairQueryService;
+            _repairQueryService.NotNull(nameof(repairQueryService));
+
+            _billReturnCauseQueryService = billReturnCauseQueryService;
+            _billReturnCauseQueryService.NotNull(nameof(billReturnCauseQueryService));
         }
 
         public async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> Handle(ReturnBillPartialInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
@@ -62,7 +77,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             float consumptionAverage = 0;
             if (burstPipe.Contains(inputDto.ReturnCauseId))
             {
-                if (inputDto.UserInput.HasValue && inputDto.UserInput.Value>0)
+                await BurstPipeValidate(bedBesResult, inputDto.ReturnCauseId);
+
+                if (inputDto.UserInput.HasValue && inputDto.UserInput.Value > 0)
                 {
                     consumptionAverage = inputDto.UserInput.Value;
                 }
@@ -79,7 +96,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             }
 
             if (burstPipe.Contains(inputDto.ReturnCauseId))
-            {                
+            {
                 AbBahaCalculationDetails abBahaResult = await GetAbBahaTariff(inputDto, bedBesInfo, consumptionAverage, cancellationToken);
                 var (finalAmount, hadarConsumption) = await GetAbHadarMasHadar(bedBesResult, customerInfo, (float)abBahaResult.Consumption, bedBesResult.PriDate, bedBesResult.TodayDate);
                 return await CreateAutoBacksAndReturn(abBahaResult, inputDto, bedBesInfo, bedBesResult, customerInfo, hadarConsumption, (long)finalAmount, consumptionAverage, jalaseNumber, appUser, inputDto.FromDateJalali, inputDto.ToDateJalali, cancellationToken);
@@ -223,15 +240,33 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             return duration > 0 ? duration : throw new ReturnedBillException(ExceptionLiterals.CurrentDateNotMoreThanPreviousDate);
         }
         private async Task<CustomerInfoOutputDto> Validate(ReturnBillPartialInputDto input, IAppUser appUser, CancellationToken cancellationToken)
-        {           
+        {
             await _returnBillBaseHandler.PartialValidate(input, cancellationToken);
             CustomerInfoOutputDto customerInfo = await _returnBillBaseHandler.Validate(appUser, input.BillId, input.FromDateJalali, input.ToDateJalali);
-            if (input.ReturnCauseId == 1 && !_returnBillBaseHandler.IsDomestic(customerInfo.UsageId))
+            if (input.ReturnCauseId == 1 && !_returnBillBaseHandler.IsDomestic(customerInfo.UsageId) && (input.UserInput is null || input.UserInput <= 0))
             {
                 throw new ReturnedBillException("برای برگشتی کاربری های غیرمسکونی وارد نمودن متوسط مصرف توسط شما ضروری است");
             }
 
             return customerInfo;
+        }
+        private async Task BurstPipeValidate(BedBesCreateDto bedBesResult, int returnCauseId)
+        {
+            RepairDateValidateDto repairDateValidateDto = new()
+            {
+                ZoneId = (int)bedBesResult.Town,
+                CustomerNumber = (int)bedBesResult.Radif,
+                ReturnCauseId = returnCauseId,
+                FromDateJalali = ConvertDate.JalaliToDateTime(bedBesResult.PriDate).AddYears(-4).ToShortPersianDateString(),
+                ToDateJalali = bedBesResult.TodayDate,
+            };
+            BillReturnCauseGetDto returnCauseInfo = await _billReturnCauseQueryService.Get((short)returnCauseId);
+
+            RepairedOutputDto? repairOutput = await _repairQueryService.GetRepairDateValidate(repairDateValidateDto);
+            if (repairOutput != null)
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvalidReturn(returnCauseInfo.Title));
+            }
         }
         private bool IsReverse(int counterStateCode)
         {

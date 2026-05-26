@@ -156,6 +156,8 @@
         public static string InvalidReturnDuplicate => "در گذشته قبضی با اطلاعات وارد شده برگشت داده شده است.";
         public static string InvalidSaveReturn => "خطا در ذخیره برگشتی";
         public static string InvalidConfirmedReturn => "خطا در ذخیره تایید برگشتی";
+        public static string InvalidReturn(string returnCauseTitle) => $@" در 4 سال اخیر، قبض برگشتی {returnCauseTitle} صادر شده";
+
 
         //Tax
         public static string InvalidMaaherWrapperInsert => "خطا در درج دسته مالیات";
