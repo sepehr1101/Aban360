@@ -9,5 +9,6 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Contract
         Task<RepairGetDto> GetByConfirmNumber(int confirmedNumber);
         Task<IEnumerable<RepairGetDto>> Get(string billId);
         Task<int> GetRepairCount(ZoneIdAndCustomerNumberOutputDto input, int jalaseNumber);
+        Task<RepairedOutputDto?> GetRepairDateValidate(RepairDateValidateDto input);
     }
 }

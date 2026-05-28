@@ -9,13 +9,26 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Validations
     {
         public ServiceLinkRegisterManualValidator()
         {
-            RuleFor(i => i.BillId)
+            RuleFor(i => i.ZoneId)
               .NotNull().WithMessage(ExceptionLiterals.NotNull)
               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(i => i.PayItems)
+            RuleFor(i => i.Amount)
               .NotNull().WithMessage(ExceptionLiterals.NotNull)
               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
+
+            RuleFor(i => i.BankDateJalali)
+              .NotNull().WithMessage(ExceptionLiterals.NotNull)
+              .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
+
+            RuleFor(i => i.PayDateJalali)
+              .NotNull().WithMessage(ExceptionLiterals.NotNull)
+              .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
+
+            RuleFor(i => i.BankCode)
+              .NotNull().WithMessage(ExceptionLiterals.NotNull)
+              .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
+
 
         }
     }

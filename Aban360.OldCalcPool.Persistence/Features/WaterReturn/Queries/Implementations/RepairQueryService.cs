@@ -56,6 +56,12 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Implemen
             int count = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(query, @params);
             return count;
         }
+        public async Task<RepairedOutputDto?> GetRepairDateValidate(RepairDateValidateDto input)
+        {
+            string query = GetDateValidateQuery(GetDbName(input.ZoneId));
+            RepairedOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<RepairedOutputDto>(query, input);
+            return result;
+        }
 
         private async Task<int> GetCustomerNumber(string billId)
         {
@@ -169,6 +175,20 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Implemen
                     	town=@zoneId AND
                     	radif=@customerNumber AND
                     	jalase_no=@jalaseNumber";
+        }
+        private string GetDateValidateQuery(string dbName)
+        {
+            return $@"Select Top 1
+                    	radif CustomerNumber,
+                    	date_bed RegisterDateJalali,
+                    	pard Amount
+                    From [{dbName}].dbo.Repair
+                    Where 
+                    	town=@zoneId AND
+                    	radif=@customerNumber AND
+                    	elat=@returnCauseId AND
+                    	date_bed BETWEEN @fromDateJalali AND @toDateJalali
+                    Order by date_bed Desc";
         }
 
         //public async Task<RepairGetDto> Get(string billId)

@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Contracts;
@@ -17,7 +18,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         private readonly IAssessmentOffByAssessmentCodeGetHandler _byAssessmentCodeGetHandler;
         private readonly IAssessmentOffGetAllHandler _getAllHandler;
         public AssessmentOffController(
-            IAssessmentOffInsertHandler insertHandler, 
+            IAssessmentOffInsertHandler insertHandler,
             IAssessmentOffRemoveHandler removeHandler,
             IAssessmentOffByAssessmentCodeGetHandler byAssessmentCodeGetHandler,
             IAssessmentOffGetAllHandler getAllHandler)
@@ -26,7 +27,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             _insertHandler.NotNull(nameof(insertHandler));
 
             _removeHandler = removeHandler;
-            _removeHandler.NotNull(nameof(removeHandler));  
+            _removeHandler.NotNull(nameof(removeHandler));
 
             _byAssessmentCodeGetHandler = byAssessmentCodeGetHandler;
             _byAssessmentCodeGetHandler.NotNull(nameof(byAssessmentCodeGetHandler));
@@ -44,15 +45,15 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             await _insertHandler.Handle(inputDto, examinerCode, cancellationToken);
             return Ok(inputDto);
         }
-        
+
         [HttpPost]
-        [Route("remove/{id}")]
+        [Route("remove")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<Guid>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> AddAssessmentOff(Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> AddAssessmentOff(GuidInput inputDto, CancellationToken cancellationToken)
         {
             int examinerCode = UserService.GetUserCode(CurrentUser.Username);
-            await _removeHandler.Handle(id, examinerCode, cancellationToken);
-            return Ok(id);
+            await _removeHandler.Handle(inputDto.Input, examinerCode, cancellationToken);
+            return Ok(inputDto.Input);
         }
 
         [HttpPost]
