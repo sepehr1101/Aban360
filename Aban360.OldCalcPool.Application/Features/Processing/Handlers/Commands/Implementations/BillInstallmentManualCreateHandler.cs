@@ -27,7 +27,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IGhestAbQueryService _ghestAbQueryService;
         private readonly IVariabService _variabService;
         private readonly IValidator<BillInstallmentManualInputDto> _validator;
-        private const int _operator = 5;
+        private const int _operator = 666;
         private const string _title = "اقساط آب‌بها";
         public BillInstallmentManualCreateHandler(
             IHttpContextAccessor contextAccessor,
