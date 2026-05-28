@@ -246,7 +246,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                         (
                             (t.Status IN @statusIds AND t.Status NOT IN(65, 110)) OR
                             (t.Status IN @statusIds AND t.Status IN(65, 110) AND C19=1)
-                            --( t.Status IN (0, 15, 60, 90002) OR
+                            --( t.Status IN (0, 15, 60) OR
 						    --(t.Status IN(65, 110) AND C19=1)
                         ) AND
                         t.ZoneId IN @zoneIds
