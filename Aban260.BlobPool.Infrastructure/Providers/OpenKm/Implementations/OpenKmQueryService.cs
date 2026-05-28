@@ -382,6 +382,18 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             response.EnsureSuccessStatusCode();
         }
 
+        public async Task Move(string docUuid, string newPath)
+        {
+            string baseUrl = $"{_options.BaseUrl}{_options.RenameFolderEndpoint}";
+            string finalUrl = $"{baseUrl}?fldId={docUuid}&dstId={HttpUtility.UrlEncode(newPath)}";
+
+            var authHeader = await GetAuthenticationHeaderAsync();
+            using var request = new HttpRequestMessage(HttpMethod.Put, finalUrl);
+            request.Headers.Authorization = authHeader;
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+        }
+
         //privates
         private async Task<AddFileDto> AddFile(string basePath ,string path, StreamContent content, string fileName)
         {
