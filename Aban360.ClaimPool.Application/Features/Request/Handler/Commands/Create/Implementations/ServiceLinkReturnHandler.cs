@@ -1,8 +1,6 @@
-﻿using Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts;
-using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
+﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
 using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
-using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Features.People.Queries.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
@@ -13,15 +11,12 @@ using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.OldCalcPool.Application.Constant;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using NetTopologySuite.Index.HPRtree;
-using System.Collections.Generic;
 using System.Data;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations
@@ -75,14 +70,14 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
         public async Task Handle(ServiceLinkReturnInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await InputValidation(inputDto, cancellationToken);
+            await Validate(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumbere = await _commonMemberQueryService.Get(inputDto.BillId);
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumbere);
             decimal barge = await _variabService.GetAndRenew(memberInfo.ZoneId);
 
-            IEnumerable<KartInsertDto> kartsInsertDto = GetKartInsertDto(inputDto.ReturnItems, memberInfo, (int)barge);
-            IEnumerable<RequestBillDetailsInsertDto> requestBillDetailsInsertDto = await GetRequestBillDetailsInsertDto(kartsInsertDto, memberInfo);
-            string opLogText = string.Format(Literals.RequestOfferingReturnOpLog, inputDto.BillId, inputDto.ReturnItems?.Count() ?? 0, kartsInsertDto?.Sum(k => k.FinalAmount) ?? 0);
+            KartInsertDto kartsInsertDto = GetKartInsertDto( inputDto , memberInfo, (int)barge);
+            RequestBillDetailsInsertDto requestBillDetailsInsertDto = await GetRequestBillDetailsInsertDto(kartsInsertDto, memberInfo);
+            string opLogText = string.Format(Literals.RequestOfferingReturnOpLog, inputDto.BillId, kartsInsertDto.FinalAmount);
             //string dbName = GetDbName(memberInfo.ZoneId);
             string dbName = "Atlas";
 
@@ -104,7 +99,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 }
             }
         }
-        private async Task InputValidation(ServiceLinkReturnInputDto inputDto, CancellationToken cancellationToken)
+        private async Task Validate(ServiceLinkReturnInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -113,9 +108,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 throw new CustomValidationException(message);
             }
         }
-        private IEnumerable<KartInsertDto> GetKartInsertDto(IEnumerable<ServiceLinkReturnItemDto> items, MemberInfoGetDto memberInfo, int barge)
+        private KartInsertDto GetKartInsertDto(ServiceLinkReturnInputDto input, MemberInfoGetDto memberInfo, int barge)
         {
-            return items.Select(i => new KartInsertDto()
+            return new KartInsertDto()
             {
                 ZoneId = memberInfo.ZoneId,
                 CustomerNumber = memberInfo.CustomerNumber,
@@ -126,17 +121,17 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 CurrentDateJalali = DateTime.Now.ToShortPersianDateString(),
                 DueDateJalali = DateTime.Now.AddMonths(1).ToShortPersianDateString(),
                 DiscountTypeId = 0,
-                FinalAmount = i.Amount,
+                FinalAmount = input.Amount,
                 DiscountAmount = 0,
-                PardN = i.Amount,
+                PardN = input.Amount,
                 PardG = 0,
-                Sum = i.Amount,
-                AmountItemId = i.AmountItemId,//From T100
+                Sum = input.Amount,
+                AmountItemId = input.AmountItemId,//From T100
                 SiphonId = int.Parse(memberInfo.MainSiphon),
                 UsageId = memberInfo.UsageId,
                 IsRegister = false,
-                TotalServicesAmount = i.Amount,
-                FirstInstallment = i.Amount,
+                TotalServicesAmount = input.Amount,
+                FirstInstallment = input.Amount,
                 JGEST_FA = 0,
                 PishFa = 0,
                 InstallmentPercent = 100,
@@ -151,43 +146,37 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 InstallmentCount = 1,
                 MeterDiameterId = memberInfo.MeterDiameterId,
                 Ser = 0,
-                Type = (int)i.CategoryType,
-            }).ToList();
+                Type = (int)input.CategoryType,
+            };
         }
-        private async Task<IEnumerable<RequestBillDetailsInsertDto>> GetRequestBillDetailsInsertDto(IEnumerable<KartInsertDto> items, MemberInfoGetDto memberInfo)
+        private async Task<RequestBillDetailsInsertDto> GetRequestBillDetailsInsertDto(KartInsertDto item, MemberInfoGetDto memberInfo)
         {
-            //amount
-            ICollection<RequestBillDetailsInsertDto> result = new List<RequestBillDetailsInsertDto>();
-            foreach (var item in items)
+            ModifyTypeGetDto modifyTypeInfo = await _modifyTypeQueryService.GetByKarten75(item.Type);
+            long finalAmount = _allowedMultipleAmount.Contains(item.Type) ? -1 * item.FinalAmount : item.FinalAmount;
+            return new RequestBillDetailsInsertDto()
             {
-                ModifyTypeGetDto modifyTypeInfo = await _modifyTypeQueryService.GetByKarten75(item.Type);
-                long finalAmount = _allowedMultipleAmount.Contains(item.Type) ? -1 * item.FinalAmount : item.FinalAmount;
-                result.Add(new RequestBillDetailsInsertDto()
-                {
-                    TrackNumber = item.StringTrackNumber,
-                    ZoneId = item.ZoneId,
-                    CustomerNumber = item.CustomerNumber,
-                    BillId = memberInfo.BillId,
-                    TypeId = modifyTypeInfo.Title,
-                    TypeCode = modifyTypeInfo.RequestBillDetailsId,
-                    ItemId = item.AmountItemId,
-                    ItemTitle = (await _t100QueryService.Get(item.AmountItemId)).Title,
-                    Amount = item.TotalServicesAmount,
-                    OffAmount = item.DiscountAmount,
-                    OffTitle = (await _discountTypeQueryService.Get((DiscountTypeEnum)item.DiscountTypeId)).Title,
-                    FinalAmount = finalAmount,
-                    RegisterDate = item.CurrentDateJalali,
-                    ZoneTitle = memberInfo.ZoneTitle,
-                    UsageId = memberInfo.UsageId,
-                    UsageTitle = memberInfo.UsageTitle,
-                    PayId = string.Empty,//
-                    CommercialCount = memberInfo.CommercialUnit,
-                    DomesticCount = memberInfo.DomesticUnit,
-                    OtherCount = memberInfo.OtherUnit,
-                    ContractualCapacity = memberInfo.ContractualCapacity,
-                });
-            }
-            return result;
+                TrackNumber = item.StringTrackNumber,
+                ZoneId = item.ZoneId,
+                CustomerNumber = item.CustomerNumber,
+                BillId = memberInfo.BillId,
+                TypeId = modifyTypeInfo.Title,
+                TypeCode = modifyTypeInfo.RequestBillDetailsId,
+                ItemId = item.AmountItemId,
+                ItemTitle = (await _t100QueryService.Get(item.AmountItemId)).Title,
+                Amount = item.TotalServicesAmount,
+                OffAmount = item.DiscountAmount,
+                OffTitle = (await _discountTypeQueryService.Get((DiscountTypeEnum)item.DiscountTypeId)).Title,
+                FinalAmount = finalAmount,
+                RegisterDate = item.CurrentDateJalali,
+                ZoneTitle = memberInfo.ZoneTitle,
+                UsageId = memberInfo.UsageId,
+                UsageTitle = memberInfo.UsageTitle,
+                PayId = string.Empty,//
+                CommercialCount = memberInfo.CommercialUnit,
+                DomesticCount = memberInfo.DomesticUnit,
+                OtherCount = memberInfo.OtherUnit,
+                ContractualCapacity = memberInfo.ContractualCapacity,
+            };
         }
     }
 }

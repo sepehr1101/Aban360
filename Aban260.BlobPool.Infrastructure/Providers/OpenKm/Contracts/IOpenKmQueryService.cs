@@ -33,5 +33,7 @@ namespace Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts
         Task AddOrUpdateMetadata(string body, string nodeId, bool isFile);
 
         Task RenameFolder(string folderUuid, string newName);
+
+        Task Move(string docUuid, string newPath);
     }
 }

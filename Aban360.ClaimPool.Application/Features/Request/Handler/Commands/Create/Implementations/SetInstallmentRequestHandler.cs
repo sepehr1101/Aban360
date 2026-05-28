@@ -9,7 +9,6 @@ using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.Common.Timing;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
@@ -66,7 +65,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         }
         private async Task<TrackingOutputDto> GetTrackingWithValidation(InstallmentRequestInputDto inputDto, CancellationToken cancellationToken)
         {
-            await InputValidation(inputDto, cancellationToken);
+            await Validate(inputDto, cancellationToken);
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
             if (!_enableStatus.Contains(trackingInfo.StatusId))
             {
@@ -91,6 +90,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
             long firstInstallmentWithZero = (long)(payable * (inputDto.PrepaymentPercent / 100.0));
             long firstInstallmentWithoutZero = (firstInstallmentWithZero / 1000) * 1000;
+            if(inputDto.InstallmentCount==1 || inputDto.PrepaymentPercent == 100)
+            {
+                return (payable, firstInstallmentWithoutZero, 0, 0);
+            }
 
             long otherAmount = payable - firstInstallmentWithoutZero;
             long eachInstallmentAmountWithZero = otherAmount / (inputDto.InstallmentCount - 1);
@@ -115,7 +118,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
             return data;
         }
-        private async Task InputValidation(InstallmentRequestInputDto inputDto, CancellationToken cancellationToken)
+        private async Task Validate(InstallmentRequestInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
