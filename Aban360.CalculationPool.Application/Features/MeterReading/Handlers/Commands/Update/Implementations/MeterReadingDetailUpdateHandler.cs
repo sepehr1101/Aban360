@@ -146,7 +146,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             meterDetailCreateDto.TodayDate = meterDetailCreateDto.CurrentDateJalali;
             meterDetailCreateDto.AbonAb = (decimal)(abBahaCalc?.AbonmanAbAmount ?? 0);
             meterDetailCreateDto.AbonFas = (decimal)(abBahaCalc?.AbonmanFazelabAmount ?? 0);
-            meterDetailCreateDto.FasBaha = (decimal)(abBahaCalc?.FazelabAmount ?? 0);
+            meterDetailCreateDto.FasBaha = ((decimal)(abBahaCalc?.FazelabAmount ?? 0)) + ((decimal)(abBahaCalc?.HotSeasonFazelabAmount ?? 0));
             meterDetailCreateDto.AbBaha = (decimal)(abBahaCalc?.AbBahaAmount ?? 0);
             meterDetailCreateDto.Ztadil = 0;//todo
             meterDetailCreateDto.Masraf = (decimal)(abBahaCalc?.Consumption ?? 0);
@@ -213,15 +213,15 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
             //KasrHa Props
             meterDetailCreateDto.AbBahaDiscount = abBahaCalc?.AbBahaDiscount ?? 0;
-            meterDetailCreateDto.HotSeasonDiscount= abBahaCalc?.HotSeasonDiscount ?? 0;
+            meterDetailCreateDto.HotSeasonDiscount = abBahaCalc?.HotSeasonDiscount ?? 0;
             meterDetailCreateDto.HotSeasonFazelabDiscount = abBahaCalc?.AbonmanFazelabDiscount ?? 0;
-            meterDetailCreateDto.FazelabDiscount=abBahaCalc?.FazelabDiscount ?? 0;
+            meterDetailCreateDto.FazelabDiscount = abBahaCalc?.FazelabDiscount ?? 0;
             meterDetailCreateDto.AbonmanFazelabDiscount = abBahaCalc?.AbonmanFazelabDiscount ?? 0;
-            meterDetailCreateDto.AbonmanAbDiscount=abBahaCalc?.AbonmanAbDiscount ?? 0;
-            meterDetailCreateDto.AvarezDiscount=abBahaCalc?.AvarezDiscount ?? 0;
-            meterDetailCreateDto.JavaniDiscount=abBahaCalc?.JavaniDiscount ?? 0;
-            meterDetailCreateDto.BoodjeDiscount=abBahaCalc?.BoodjeDiscount ?? 0;
-            meterDetailCreateDto.MaliatDiscount=abBahaCalc?.MaliatDiscount ?? 0;
+            meterDetailCreateDto.AbonmanAbDiscount = abBahaCalc?.AbonmanAbDiscount ?? 0;
+            meterDetailCreateDto.AvarezDiscount = abBahaCalc?.AvarezDiscount ?? 0;
+            meterDetailCreateDto.JavaniDiscount = abBahaCalc?.JavaniDiscount ?? 0;
+            meterDetailCreateDto.BoodjeDiscount = abBahaCalc?.BoodjeDiscount ?? 0;
+            meterDetailCreateDto.MaliatDiscount = abBahaCalc?.MaliatDiscount ?? 0;
 
             return meterDetailCreateDto;
 

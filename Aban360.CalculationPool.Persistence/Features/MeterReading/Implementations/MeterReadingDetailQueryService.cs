@@ -33,7 +33,14 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             }
             return detail;
         }
-    
+        public async Task<IEnumerable<MeterReadingDetailExcludedDataOutptuDto>> Get(MeterReadingDetailExcludedInputDto inputDto)
+        {
+            string query = GetExcludedQuery();
+            IEnumerable<MeterReadingDetailExcludedDataOutptuDto> details = await _sqlReportConnection.QueryAsync<MeterReadingDetailExcludedDataOutptuDto>(query, inputDto);
+
+            return details;
+        }
+
         private string GetQuery()
         {
             return $@"Select 
@@ -179,6 +186,63 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             return @"Select *
                      From Atlas.dbo.MeterReadingDetail
                      Where Id=@id";
+        }
+        private string GetExcludedQuery()
+        {
+            return $@"Select 
+                        mr.Id,
+                    	t46.C0 RegionId,
+                    	t46.C2 RegionTitle,
+                    	mr.ZoneId,
+                    	t51.C2 ZoneTitle,
+                    	c.FirstName,
+                    	c.SureName Surname,
+                    	c.FirstName + ' ' + c.SureName FullName,
+                    	mr.CustomerNumber,
+                    	mr.BillId,
+                    	mr.FlowImportedId,
+                    	mr.ReadingNumber,
+                    	mr.CurrentCounterStateCode,
+                    	mr.PreviousDateJalali,
+                    	mr.CurrentDateJalali,
+                    	mr.PreviousNumber,
+                    	mr.CurrentNumber,
+                    	mr.ExcludedDateTime,
+                    	mr.ExcludedByUserId,
+                    	mr.InsertByUserId,
+                    	mr.InsertDateTime,
+                    	mr.UsageId,
+                    	t41_1.C1 UsageTitle,
+                    	mr.BranchTypeId,
+                    	t7.C1 BranchTypeTitle,
+                    	mr.ConsumptionUsageId ,
+                    	t41_2.C1 ConsumptionUsageTitle,
+                    	mr.CommercialUnit,
+                    	mr.DomesticUnit,
+                    	mr.OtherUnit,
+                    	mr.TavizDateJalali,
+                    	mr.MeterDiameterId,
+                    	t5.C2 MeterDiameterTitle
+                    From Atlas.dbo.MeterReadingDetail mr
+                    Left Join CustomerWarehouse.dbo.Clients c
+                    	 ON mr.ZoneId=c.ZoneId AND mr.CustomerNumber=c.CustomerNumber
+                    Join [Db70].dbo.T51 t51 
+                    	ON mr.ZoneId=t51.C0
+                    Join [Db70].dbo.T46 t46 
+                    	ON t51.C1=t46.C0
+                    Join [Db70].dbo.T41 t41_1 
+                    	ON mr.UsageId=t41_1.C0
+                    Join [Db70].dbo.T41 t41_2 
+                    	ON mr.ConsumptionUsageId=t41_2.C0
+                    Join [Db70].dbo.T7 t7
+                    	ON mr.BranchTypeId=t7.C0
+                    Join [Db70].dbo.T5 t5
+                    	ON mr.MeterDiameterId=t5.C0
+                    Where 
+                    	c.ToDayJalali IS NULL AND
+                    	mr.ExcludedByUserId IS NOT Null AND
+                    	mr.ZoneId = @ZoneId AND
+                    	FORMAT(CAST(mr.ExcludedDateTime as date),'yyyy/MM/dd','fa')=@DateJalali";
         }
     }
 }

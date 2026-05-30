@@ -453,7 +453,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             r.TodayDate = r.CurrentDateJalali;
             r.AbonAb = (decimal)(abBahaCalc?.AbonmanAbAmount ?? 0);
             r.AbonFas = (decimal)(abBahaCalc?.AbonmanFazelabAmount ?? 0);
-            r.FasBaha = (decimal)(abBahaCalc?.FazelabAmount ?? 0);
+            r.FasBaha = ((decimal)(abBahaCalc?.FazelabAmount ?? 0)) + ((decimal)(abBahaCalc?.HotSeasonFazelabAmount ?? 0));
             r.AbBaha = (decimal)(abBahaCalc?.AbBahaAmount ?? 0);
             r.Ztadil = 0;//todo
             r.Masraf = (decimal)(abBahaCalc?.Consumption ?? 0);

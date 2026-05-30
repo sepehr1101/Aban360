@@ -33,7 +33,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         private readonly IOpenKmMetaDataQueryServices _openKmMetaDataQueryService;
         private readonly IGuildQueryHandler _guildQueryHandler;
         private readonly IT9QueryService _t9QueryService;
-
+        private int _saleServiceGroupId = 1;
+        private int _afterSaleServiceGroupId = 2;
         public AssessmentTaskGetAllHandler(
             IAssessmentTaskQueryService assessmentTaskQueryService,
             IT64QueryService trackingResultQueryService,
@@ -115,6 +116,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
             IEnumerable<AssessmentLocationInfoOutputDto> locationsInfo = await GetLocationsInfo(assessmentCode);
 
+            IEnumerable<NumericDictionary> saleServiceGroups = await _t9QueryService.GetByTypeId(_saleServiceGroupId);
+
+            IEnumerable<NumericDictionary> afterSaleServiceGroups = await _t9QueryService.GetByTypeId(_afterSaleServiceGroupId);
+
             IEnumerable<StringDictionary> mapDictionary = GetMapDictionary();
 
             return new AssessmentTasksOutputDto()
@@ -131,6 +136,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 BlockCodes = BlockCodeDictionary,
                 Guilds = guildDictionary,
                 MapDictionary = mapDictionary,
+                SaleServiceGroups = saleServiceGroups,
+                AfterSaleServiceGroups = afterSaleServiceGroups,
             };
         }
         private async Task<IEnumerable<AssessmentLocationInfoOutputDto>> GetLocationsInfo(int assessmentCode)

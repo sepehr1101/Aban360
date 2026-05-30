@@ -37,38 +37,22 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         {
             TrackingOutputDto latestTrackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
             IEnumerable<InstallmentRequestDataOutputDto> installments = await _ghestQueryService.Get(latestTrackingInfo.StringTrackNumber, latestTrackingInfo.ZoneId);
-            Validation(installments, latestTrackingInfo.StatusId);
+            Validate(installments, latestTrackingInfo.StatusId);
 
             TrackingInsertDuplicateDto trackingInsertDuplicateDto = new(latestTrackingInfo.TrackNumber, _amountIsConfirmedStatus, inputDto.Description, userCode, _requestOrigin, true, false);
             //TrackingInsertDto trackingInsertDto = GetTrackingCreateDto(inputDto, trackingInfo, userCode);
             await ExecuteSqlCommand(trackingInsertDuplicateDto);
         }
-        private void Validation(IEnumerable<InstallmentRequestDataOutputDto> installments, int previousStatusId)
+        private void Validate(IEnumerable<InstallmentRequestDataOutputDto> installments, int previousStatusId)
         {
             if (!installments.Any())
             {
-                throw new InvalidTrackingException(ExceptionLiterals.InvalidCalculationConfirmed);
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidEmpyInstallment);
             }
             if (previousStatusId != _calculationConfirmedStatus)
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
             }
-        }
-        private TrackingInsertDto GetTrackingCreateDto(SetCalculationRequestInputDto inputDto, TrackingOutputDto latestTrackingInfo, int userCode)
-        {
-            return new TrackingInsertDto()
-            {
-                TrackNumber = latestTrackingInfo.TrackNumber,
-                ZoneId = latestTrackingInfo.ZoneId,
-                BillId = latestTrackingInfo.BillId,
-                ServiceGroupId = latestTrackingInfo.ServiceGroupId,
-                StatusId = _amountIsConfirmedStatus,
-                InsertByUserId = userCode,
-                Description = inputDto.Description,
-                NotificationMobile = latestTrackingInfo.NotificationMobile,
-                NeighbourBillId = latestTrackingInfo.NeighbourBillId,
-                RequestOrigin = _requestOrigin,
-            };
         }
         private async Task ExecuteSqlCommand(TrackingInsertDuplicateDto trackingInsertDuplicateDto)
         {

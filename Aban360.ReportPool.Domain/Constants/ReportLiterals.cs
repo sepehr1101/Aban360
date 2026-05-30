@@ -266,6 +266,8 @@
         
         public static string UnconfirmedBillReturn { get { return "قبوض برگشتی تایید نشده."; }  }
         public static string ServiceLinkPaid { get { return "وصولی حق انشعاب"; }  }
+        
+        public static string MeterReadingExcluded { get { return "قرائت‌های خارج شده از لیست"; }  }
 
 
     }

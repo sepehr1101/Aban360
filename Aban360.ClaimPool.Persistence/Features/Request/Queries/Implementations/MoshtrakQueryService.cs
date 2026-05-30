@@ -81,6 +81,18 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             }
             return result;
         }
+        public async Task<RequestBasicInfoGetDto> GetBasicInfo(int trackNumber, int zoneId)
+        {
+            string dbName = GetDbName(zoneId);
+            string query = GetBasicInfoByTrackNumberQuery(dbName);
+            RequestBasicInfoGetDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<RequestBasicInfoGetDto>(query, new { trackNumber });
+            if (result is null)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidTrackNumber);
+            }
+            return result;
+        }
+
         private string GetCondition(MoshtrakSearchTypeEnum searchType)
         {
             return searchType switch
@@ -528,6 +540,107 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                         	ON c.TrackNumber=t.TrackNumber
                         Where t.Status=0
                         Order By c.RequestDateJalali";
+        }
+        private string GetBasicInfoByTrackNumberQuery(string dbName)
+        {
+            return $@"Select Top 1
+                        t46.C0 RegionId,
+                        t46.C2 RegionTitle,
+                    	m.town ZoneId,
+                    	t51.C2 ZoneTitle,
+                    	TRIM(m.name) FirstName,
+                    	TRIM(m.family) Surname,
+                    	TRIM(m.name) + ' ' +TRIM(m.family) FullName,
+                    	TRIM(m.father_nam) FatherName,
+                    	m.noe_va BranchTypeId,
+                    	t7.C1 BranchTypeTitle,
+                    	m.radif CustomerNumber,
+                    	m.eshtrak ReadingNumber,
+                    	m.TrackingNumber TrackNumber,
+                    	TRIM(m.address) Address,
+                    	TRIM(m.post_cod) PostalCode,
+                    	TRIM(m.meli_cod) NationalCode,
+                    	TRIM(m.sharh) Description,
+                    	m.date_ask RequestDateJalali,
+                    	m.date_sabt RegisterDateJalali,
+                    	m.ted_takh DiscountCount,
+                    	m.cod_takh DiscountTypeId,
+                    	t15.C1 DiscountTypeTitle,
+                    	m.phone_no PhoneNumber,
+                    	m.NeighbourBillID,
+                    	t.ServiceGroup_FK ServiceGroupId,
+                    	t10.C1 ServiceGroupTitle,
+                    	t.Status PreviousStatusId,
+                    	s.SummaryDescription PreviousStatusTitle,
+                    	t.DateTimeJalali PreviousStepDateJalali,
+                    	t.BillID ,
+                    	t.TrackID PreviousTrackId,
+                        m.s0,
+                        m.s1,
+                        m.s2,
+                        m.s3,
+                        m.s4,
+                        m.s5,
+                        m.s8,
+                        m.s9,
+                        m.s10,
+                        m.s11,
+                        m.s12,
+                        m.s13,
+                        m.s14,
+                        m.s15,
+                        m.s16,
+                        m.s17,
+                        m.s18,
+                        m.s19,
+                        m.s20,
+                        m.s21,
+                        m.s22,
+                        m.s23,
+                        m.s24,
+                        m.s25,
+                        m.s26,
+                        m.s27,
+                        m.s28,
+                        m.s29,
+                        m.s30,
+                        m.s31,
+                        m.s32,
+                        m.s33,
+                        m.s34,
+                        m.s35,
+                        m.s36,
+                        m.s37,
+                        m.s38,
+                        m.s39,
+                        m.s40,
+                        m.s41,
+                        m.s42,
+                        m.s43,
+                        m.s44,
+                        m.s45,
+                        m.s46,
+                        m.s47,
+                        m.s48
+                    From [{dbName}].dbo.moshtrak m
+                    Join [AbAndFazelab].dbo.Tracking t
+                    	ON m.TrackingNumber=t.TrackNumber
+                    Join [AbAndFazelab].dbo.Status s
+                    	ON t.status=s.StatusID
+                    Join [Db70].dbo.T51 t51 
+                        	ON m.town=t51.C0
+                     Join [Db70].dbo.T46 t46 
+                        	ON t51.C1=t46.C0
+                     Join [Db70].dbo.T41 t41_1 
+                        	ON m.cod_enshab=t41_1.C0
+                     Join [Db70].dbo.T7 t7
+                        	ON m.noe_va=t7.C0
+                     Join [Db70].dbo.T15 t15
+                        	ON m.cod_takh=t15.C0
+                     Join [Db70].dbo.T10 t10
+                        	ON t.ServiceGroup_FK=t10.C0
+                    Where m.trackingNumber=@TrackNumber
+                    Order by t.DateAndTime Desc";
         }
     }
 }

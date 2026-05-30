@@ -59,7 +59,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
         public async Task<SaleAndAfterSaleDataOutputDto> Handle(KartInsertManualInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await InputValidation(inputDto, cancellationToken);
+            await InputValidate(inputDto, cancellationToken);
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
             KartInsertDto kartInsertDto = GetKartInsertDto(inputDto, moshtrakInfo);
@@ -87,7 +87,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             }
             return new SaleAndAfterSaleDataOutputDto((short)kartInsertDto.AmountItemId, amountItemInfo.Title, kartInsertDto.FinalAmount + kartInsertDto.DiscountAmount, kartInsertDto.DiscountAmount, kartInsertDto.FinalAmount, kartInsertDto.DiscountTypeId, true);
         }
-        private async Task InputValidation(KartInsertManualInputDto inputDto, CancellationToken cancellationToken)
+        private async Task InputValidate(KartInsertManualInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)

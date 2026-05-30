@@ -309,7 +309,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 TodayNo = meterReading.CurrentNumber,
                 Masraf = (decimal)meterReading.Consumption,
                 AbBaha = (decimal)meterReading.AbBahaDiscount,
-                FasBaha = (decimal)meterReading.FazelabDiscount,
+                FasBaha = (decimal)meterReading.FazelabDiscount + (decimal)meterReading.HotSeasonFazelabDiscount,
                 AbonAb = (decimal)meterReading.AbonmanAbDiscount,
                 AbonFas = (decimal)meterReading.AbonmanFazelabDiscount,
                 TabAbnA = 0,

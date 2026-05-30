@@ -12,5 +12,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts
         Task<IEnumerable<MoshtrakOutputDto>> GetValid(MoshtrakGetDto inputDto, MoshtrakSearchTypeEnum searchType, bool hasException = true);
         Task<MoshtrakOutputDto> Get(int id, int zoneId);
         Task<IEnumerable<PreviousRequestGetDto>> GetAllRequestByCustomerNumber(ZoneIdAndCustomerNumber inputDto);
+        Task<RequestBasicInfoGetDto> GetBasicInfo(int trackNumber, int zoneId);
     }
 }

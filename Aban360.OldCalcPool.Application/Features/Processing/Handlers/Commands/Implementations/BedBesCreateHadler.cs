@@ -28,7 +28,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             using (IDbTransaction transaction = _sqlReportConnection.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
-                BedBesCommandService bedBesCommandService = new BedBesCommandService(_sqlReportConnection,transaction);
+                BedBesCommandService bedBesCommandService = new BedBesCommandService(_sqlReportConnection, transaction);
                 await bedBesCommandService.Insert(bedBesDto, dbName);
             }
         }
@@ -47,7 +47,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             bedBesDto.PriDate = inputDto.MeterInfo.PreviousDateJalali;
             bedBesDto.TodayDate = " ";//from object
             bedBesDto.AbonFas = (decimal)inputDto.AbonmanFazelabAmount;
-            bedBesDto.FasBaha = (decimal)inputDto.FazelabAmount;
+            bedBesDto.FasBaha = (decimal)inputDto.FazelabAmount + (decimal)inputDto.HotSeasonFazelabAmount;
             bedBesDto.AbBaha = (decimal)inputDto.AbBahaAmount;
             bedBesDto.Ztadil = 0;
             bedBesDto.Masraf = inputDto.MeterInfo.PreviousNumber - 0;//current nubmer

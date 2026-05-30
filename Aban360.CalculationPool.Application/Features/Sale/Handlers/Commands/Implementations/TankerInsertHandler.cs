@@ -6,7 +6,6 @@ using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
-using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
@@ -20,6 +19,7 @@ using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Con
 using Aban360.Common.Db.Services;
 using Aban360.OldCalcPool.Application.Constant;
 using Aban360.Common.ApplicationUser;
+using Aban360.CalculationPool.Application.Features.Base;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Implementations
 {
@@ -32,7 +32,6 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         private readonly IZaribGetService _zaribGetService;
         private readonly IT52QueryService _t52QueryService;
         private readonly IT51QueryService _zoneQueryService;
-        static float _hotSeasonMultiple = 1.2f;
         static int _tankerWaterUsageId = 19;
         static int _operator = 666;
         static int _typeId = 1;
@@ -72,7 +71,8 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         public async Task<TankerCalculationResultOutputDto> Handle(TankerInsertInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             TrimInputProp(inputDto);
-            TankerWaterCalculationOutputDto calcResult = await Calc(inputDto, cancellationToken);
+            TankerCalculationBaseService tankerService = new TankerCalculationBaseService(_tankerQueryService, _zaribCQueryService, _zaribGetService);
+            TankerWaterCalculationOutputDto calcResult = await tankerService.Calculate(GetTankerServiceDto(inputDto), inputDto.MobileNumber);
             if (!inputDto.IsConfirm)
             {
                 return await GetResult(calcResult, inputDto);
@@ -118,46 +118,16 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 }
             }
         }
-        public async Task<TankerWaterCalculationOutputDto> Calc(TankerInsertInputDto input, CancellationToken cancellationToken)
+        private TankerWaterCalculationInputDto GetTankerServiceDto(TankerInsertInputDto inputDto)
         {
-            string currentDateJalali = DateTime.Now.ToShortPersianDateString();
-
-            var (c, zb) = await GetZarib(input.ZoneId);
-            decimal saleStateZarib = input.SaleState == TankerWaterSaleStateEnum.Nomads ? 1.5m : 4;
-
-            long deliveryAmount = await CalcDeliveryAmount(input);
-            decimal abBaha = (input.Consumption * saleStateZarib * c) * zb;
-            decimal boodjeh = input.Consumption * 2000m;
-            decimal multiplier = GetVarzaneMultiplier(input);
-
-            decimal water = abBaha * multiplier;
-            water = IsHotSeasonDate() ? water * (decimal)_hotSeasonMultiple : water;
-            
-            return new TankerWaterCalculationOutputDto(null, null, null, input.MobileNumber, water, boodjeh, deliveryAmount);
-        }
-        private decimal GetVarzaneMultiplier(TankerInsertInputDto input)
-        {
-            return input.SaleState != TankerWaterSaleStateEnum.Nomads && input.ZoneId == 133111 ? 0.5m : 1m;
-        }
-        private async Task<long> CalcDeliveryAmount(TankerInsertInputDto input)
-        {
-            if (input.SaleState != TankerWaterSaleStateEnum.WithTanker)
+            return new TankerWaterCalculationInputDto()
             {
-                return 0;
-            }
-
-            string currentDateJalali = DateTime.Now.ToShortPersianDateString();
-            TankerWaterDistanceTariffOutputDto tankerTariff = await _tankerQueryService.Get(input.Distance, currentDateJalali);
-            return tankerTariff.Amount * input.Consumption;
-        }
-        private async Task<(int, decimal)> GetZarib(int zoneId)
-        {
-            string currentDateJalali = DateTime.Now.ToShortPersianDateString();
-
-            ZaribCQueryDto zaribC = await _zaribCQueryService.GetZaribC(currentDateJalali);
-            ZaribGetDto zarib = await _zaribGetService.Get(zoneId, currentDateJalali);
-
-            return (zaribC.C, zarib.Zb);
+                Consumption = inputDto.Consumption,
+                Distance = inputDto.Distance,
+                IsConfirm = inputDto.IsConfirm,
+                SaleState = inputDto.SaleState,
+                ZoneId = inputDto.ZoneId
+            };
         }
         private TankerInsertDto GetTankerInsertDto(TankerInsertInputDto inputDto, TankerWaterCalculationOutputDto calcResult, int customerNumber, decimal barge)
         {
@@ -198,7 +168,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 AbBaha = calcResult.Water,
                 Ztadil = 0,
                 Masraf = tankerInsertDto.Consumption,
-                Shahrdari = 0,
+                Shahrdari = calcResult.Tax,
                 Modat = 30,
                 DateBed = currentDateJalali,
                 JalaseNo = 0,
@@ -216,7 +186,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 Elat = 0,
                 Serial = 0,
                 Ser = 0,
-                ZaribFasl = 0,
+                ZaribFasl = calcResult.HotSeason,
                 Ab10 = 0,
                 Ab20 = 0,
                 TedadVahd = 1,
@@ -303,15 +273,6 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             inputDto.FirstName = inputDto.FirstName.Trim();
             inputDto.Surname = inputDto?.Surname?.Trim() ?? string.Empty;
             inputDto.Address = inputDto?.Address?.Trim() ?? string.Empty;
-        }
-        private bool IsHotSeasonDate()
-        {
-            string currentDateJalali = DateTime.Now.ToShortPersianDateString();
-            string yearJalali = currentDateJalali.Substring(0, 4);
-
-            string hotSeasonFromDateJalali = $"{yearJalali}/03/01";
-            string hotSeasonToDateJalali = $"{yearJalali}/06/31";
-            return currentDateJalali.CompareTo(hotSeasonFromDateJalali) >= 0 && currentDateJalali.CompareTo(hotSeasonToDateJalali) <= 0;
         }
     }
 }

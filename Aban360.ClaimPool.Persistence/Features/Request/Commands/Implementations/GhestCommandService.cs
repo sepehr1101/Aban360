@@ -45,19 +45,19 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
         {
             string command = GetRemoveByStringTrackNumber(dbName);
             int recordCount = await _connection.ExecuteAsync(command, new { stringTrackNumber }, _transaction);
-            if (recordCount <= 0)
-            {
-                throw new InvalidBillCommandException(ExceptionLiterals.InvalidDeleteGhest);
-            }
+            //if (recordCount <= 0)
+            //{
+            //    throw new InvalidBillCommandException(ExceptionLiterals.InvalidDeleteGhest);
+            //}
         }
         public async Task Update(GhestUpdateDto inputdto, string dbName)
         {
             string command = GetUpdateCommand(dbName);
             int recordCount = await _connection.ExecuteAsync(command, inputdto, _transaction);
-            if (recordCount <= 0)
-            {
-                throw new InvalidBillCommandException(ExceptionLiterals.InvalidUpdateGhest);
-            }
+            //if (recordCount <= 0)
+            //{
+            //    throw new InvalidBillCommandException(ExceptionLiterals.InvalidUpdateGhest);
+            //}
         }
 
 

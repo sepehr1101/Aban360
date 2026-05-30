@@ -16,11 +16,13 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
     {
         private readonly IBillInstallmentCreateHandler _billInstallmentCreateHandler;
         private readonly IBillInstallmentManualCreateHandler _billInstallmentManualCreateHandler;
+        private readonly IBillInstallmentUpdateHandler _billInstallmentUpdateHandler;
         private readonly IBillInstallmentGetHandler _billInstallmentGetHandler;
         private readonly IReportGenerator _reportGenerator;
         public BillInstallmentController(
             IBillInstallmentCreateHandler billInstallmentCreateHandler,
             IBillInstallmentManualCreateHandler billInstallmentManualCreateHandler,
+            IBillInstallmentUpdateHandler billInstallmentUpdateHandler,
             IBillInstallmentGetHandler billInstallmentGetHandler,
             IReportGenerator reportGenerator)
         {
@@ -29,6 +31,9 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
 
             _billInstallmentManualCreateHandler = billInstallmentManualCreateHandler;
             _billInstallmentManualCreateHandler.NotNull(nameof(billInstallmentManualCreateHandler));
+
+            _billInstallmentUpdateHandler = billInstallmentUpdateHandler;
+            _billInstallmentUpdateHandler.NotNull(nameof(billInstallmentUpdateHandler));
 
             _billInstallmentGetHandler = billInstallmentGetHandler;
             _billInstallmentGetHandler.NotNull(nameof(billInstallmentGetHandler));
@@ -52,6 +57,15 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         public async Task<IActionResult> AddManualInstallment([FromBody] BillInstallmentManualInputDto inputDto, CancellationToken cancellationToken)
         {
             ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto> result = await _billInstallmentManualCreateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("update")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<BillInstallmentDataOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateManual([FromBody] BillInstallmentUpdateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            BillInstallmentDataOutputDto result= await _billInstallmentUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
         }
 

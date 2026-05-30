@@ -1,5 +1,7 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Dapper;
@@ -36,6 +38,19 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             return result;
 
         }
+        public async Task<BillInstallmentOutputDto> Get(ZoneIdAndCustomerNumber inputDto, int id)
+        {
+            string dbName = GetDbName(inputDto.ZoneId);
+            string query = GetByIdQuery(dbName);
+            BillInstallmentOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BillInstallmentOutputDto>(query, new { id, inputDto.ZoneId, inputDto.CustomerNumber });
+            if (result == null)
+            {
+                throw new InvalidInstallmentException(ExceptionLiterals.NotFountBillInstallmentId);
+            }
+            return result;
+        }
+
+
         private string GetCustomerInstallmentsQuery(string dbName)
         {
             return $@"With Cte As(
@@ -131,6 +146,33 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 	                	ON g.enshab=t5.C0
 	                where g.radif=@CustomerNumber  
 	                order by g.mohlat";
+        }
+        private string GetByIdQuery(string dbName)
+        {
+            return $@"Select 
+                    	g.ID,
+                    	g.town ZoneId,
+                    	g.radif CustomerNumber,
+                    	TRIM(g.eshtrak) ReadingNumber,
+                    	g.barge Barge,
+                    	g.date_bed RegisterDateJalali,
+                    	g.mohlat DeadLineDateJalali,
+                    	g.pard Payable,
+                    	g.cod_enshab UsageId,
+                    	t41.C1 UsageTitle,
+                    	g.enshab MeterDiamterId,
+                    	t5.C2 MeterDiameterTitle,
+						g.serial QueueNumber,
+	                	g.operator InsertedBy
+                   From [{dbName}].dbo.ghest_ab g
+                   Join [Db70].dbo.T41 t41
+                     ON g.cod_enshab=t41.C0
+                   Join [Db70].dbo.T5 t5
+                   	 ON g.enshab=t5.C0
+                   Where 
+                   	g.ID=@id AND
+                   	g.radif=@customerNumber AND
+                   	g.town=@zoneId";
         }
     }
 }

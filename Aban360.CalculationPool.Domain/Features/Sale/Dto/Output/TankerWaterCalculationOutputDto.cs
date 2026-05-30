@@ -11,11 +11,12 @@
         public decimal Water { get; }
         public decimal Delivery { get; }
         public decimal Budget { get; }
+        public decimal HotSeason { get; set; }
         public decimal Final { get; }
 
-        public TankerWaterCalculationOutputDto(int? customerNumber,string? billId,string? paymentId,string? mobileNumber,decimal water, decimal budget, decimal delivery)
+        public TankerWaterCalculationOutputDto(int? customerNumber, string? billId, string? paymentId, string? mobileNumber, decimal water, decimal budget, decimal delivery, decimal hotSeason)
         {
-            decimal tax = (water + budget) * _vatRate;
+            decimal tax = (water + budget + hotSeason) * _vatRate;
 
             CustomerNumber = customerNumber ?? 0;
             BillId = billId;
@@ -25,7 +26,8 @@
             Water = water;
             Delivery = delivery;
             Budget = budget;
-            Final = tax + water + delivery + budget;
+            HotSeason = hotSeason;
+            Final = tax + water + delivery + budget + hotSeason;
         }
     }
 }
