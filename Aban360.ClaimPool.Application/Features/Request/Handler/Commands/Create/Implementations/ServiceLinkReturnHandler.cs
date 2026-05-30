@@ -73,7 +73,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             await Validate(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumbere = await _commonMemberQueryService.Get(inputDto.BillId);
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumbere);
-            decimal barge = await _variabService.GetAndRenew(memberInfo.ZoneId);
+            decimal barge = await _variabService.GetAndRenew(131301/*memberInfo.ZoneId*/);
 
             KartInsertDto kartsInsertDto = GetKartInsertDto( inputDto , memberInfo, (int)barge);
             RequestBillDetailsInsertDto requestBillDetailsInsertDto = await GetRequestBillDetailsInsertDto(kartsInsertDto, memberInfo);

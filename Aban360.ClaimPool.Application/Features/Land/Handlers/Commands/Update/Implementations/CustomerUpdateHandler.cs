@@ -62,14 +62,14 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
 
             await UpdateCustomer(customerUpdate);
         }
-        public async Task Handle(CustomerUpdate1Dto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task Handle(CustomerEstateUpdateDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, previousSubscription);
 
             await UpdateCustomer(customerUpdate);
         }
-        public async Task Handle(CustomerUpdate2Dto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task Handle(CustomerTechnicalUpdateDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, previousSubscription);
@@ -284,7 +284,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 GuildId = inputDto.GuildId
             };
         }
-        private CustomerUpdateDto GetCustomerUpdate(CustomerUpdate1Dto inputDto, SubscriptionGetDto previousSubscription)
+        private CustomerUpdateDto GetCustomerUpdate(CustomerEstateUpdateDto inputDto, SubscriptionGetDto previousSubscription)
         {
             return new CustomerUpdateDto()
             {
@@ -305,7 +305,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 MobileNumber = previousSubscription.MobileNumber,
                 FatherName = previousSubscription.FatherName,
                 BranchTypeId = previousSubscription.BranchTypeId,
-                UsageSellId = previousSubscription.UsageSellId,
+                UsageSellId = inputDto.UsageSellId,
                 UsageConsumptionId = inputDto.UsageConsumptionId,
                 EmptyUnit = inputDto.EmptyUnit,
                 CommertialUnit = inputDto.CommertialUnit,
@@ -319,7 +319,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 ImprovementCommertial = inputDto.ImprovementCommertial,
                 ImprovementDomestic = inputDto.ImprovementDomestic,
                 ImprovementOverall = inputDto.ImprovementOverall,
-                Premises = previousSubscription.Premises,
+                Premises = inputDto.Premises,
                 Operator = previousSubscription.Operator,
                 SewageInstallationDateJalali = DateValidation(previousSubscription.SewageInstallationDateJalali, false),
                 SewageRequestDateJalali = DateValidation(previousSubscription.SewageRequestDateJalali, false),
@@ -342,7 +342,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 GuildId = inputDto.GuildId
             };
         }
-        private CustomerUpdateDto GetCustomerUpdate(CustomerUpdate2Dto inputDto, SubscriptionGetDto previousSubscription)
+        private CustomerUpdateDto GetCustomerUpdate(CustomerTechnicalUpdateDto inputDto, SubscriptionGetDto previousSubscription)
         {
             return new CustomerUpdateDto()
             {
@@ -362,17 +362,17 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 PhoneNumber = previousSubscription.PhoneNumber,
                 MobileNumber = previousSubscription.MobileNumber,
                 FatherName = previousSubscription.FatherName,
-                BranchTypeId = inputDto.BranchTypeId,
+                BranchTypeId = previousSubscription.BranchTypeId,
                 UsageSellId = previousSubscription.UsageSellId,
                 UsageConsumptionId = previousSubscription.UsageConsumptionId,
-                EmptyUnit = inputDto.EmptyUnit,
+                EmptyUnit = previousSubscription.EmptyUnit,
                 CommertialUnit = previousSubscription.CommertialUnit,
                 DomesticUnit = previousSubscription.DomesticUnit,
                 OtherUnit = previousSubscription.OtherUnit,
                 HouseholdDateJalali = DateValidation(previousSubscription.HouseholdDateJalali, false),
-                HouseholdNumber = inputDto.HouseholdNumber,
-                MeterDiamterId = previousSubscription.MeterDiameterId,
-                IsSpecial = inputDto.IsSpecial,
+                HouseholdNumber = previousSubscription.HouseholdNumber,
+                MeterDiamterId = inputDto.MeterDiameterId,
+                IsSpecial = previousSubscription.IsSpecial,
                 ContractualCapacity = previousSubscription.ContractualCapacity,
                 ImprovementCommertial = previousSubscription.ImprovementCommertial,
                 ImprovementDomestic = previousSubscription.ImprovementDomestic,
@@ -383,18 +383,18 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 SewageRequestDateJalali = DateValidation(previousSubscription.SewageRequestDateJalali, false),
                 MeterInstallationDateJalali = DateValidation(previousSubscription.MeterInstallationDateJalali, true),
                 MeterRequestDateJalali = DateValidation(previousSubscription.MeterRequestDateJalali, true),
-                Siphon100 = previousSubscription.Siphon100,
-                Siphon125 = previousSubscription.Siphon125,
-                Siphon150 = previousSubscription.Siphon150,
-                Siphon200 = previousSubscription.Siphon200,
-                Siphon5 = previousSubscription.Siphon5,
-                Siphon6 = previousSubscription.Siphon6,
-                Siphon7 = previousSubscription.Siphon7,
-                Siphon8 = previousSubscription.Siphon8,
-                MainSiphon = previousSubscription.MainSiphon,
-                DeletionStateId = inputDto.DeletionStateId,
-                BodySerial = previousSubscription.BodySerial ?? string.Empty,
-                CommonSiphon = previousSubscription.CommonSiphon,
+                Siphon100 = inputDto.Siphon100,
+                Siphon125 = inputDto.Siphon125,
+                Siphon150 = inputDto.Siphon150,
+                Siphon200 = inputDto.Siphon200,
+                Siphon5 = inputDto.Siphon5,
+                Siphon6 = inputDto.Siphon6,
+                Siphon7 = inputDto.Siphon7,
+                Siphon8 = inputDto.Siphon8,
+                MainSiphon = inputDto.MainSiphon,
+                DeletionStateId = previousSubscription.DeletionStateId,
+                BodySerial = inputDto.BodySerial ?? string.Empty,
+                CommonSiphon = inputDto.CommonSiphon,
                 MeterRegisterDateJalali = DateValidation(previousSubscription.MeterRegisterDateJalali, true),
                 SewageRegisterDateJalali = DateValidation(previousSubscription.SewageRegisterDateJalali, false),
                 GuildId = previousSubscription.GuildId

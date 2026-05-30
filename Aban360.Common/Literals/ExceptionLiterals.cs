@@ -61,6 +61,7 @@
         public static string InvalidDiameterId => " امکان محاسبه تعرفه با قطر انتخابی وجود ندارد.";
         public static string InvalidZoneIdMoreThan1 => "با توجه به اینکه فیلد از/تا اشتراک مقدار دهی شده است، می‌توانید فقط یک ناحیه را انتخاب کنید.";
         public static string InvalidInstallmentMoreThan6 => "تعداد اقساط باید کمتر از 6 قسط باشد.";
+        public static string InvalidUpdateInstallmentNotCurrentDate => "امکان ویرایش قسط وجود ندارد - خطا در تاریخ قسط";
         public static string InvalidTemporaryDeletionState => "مشترک در وضعیت 'حذف موقت' قرار دارد.";
         public static string InvalidCollectedDeletionState => "مشترک در وضعیت 'جمع آوری' قرار دارد.";
         public static string InvalidDuration => "مدت زمان محاسبه نامعتبر";
@@ -205,6 +206,7 @@
         public static string InvalidInsertAssessmentOff => " خطا در حذف مرخصی ";
         public static string InvalidRemoveAssessmentOff => " خطا در ذخیره مرخصی ";
         public static string InvalidEmpyInstallment => " تعداد اقساط باید بیشتر از 0 قسط باشد";
+        public static string NotFountBillInstallmentId => "شناسه تقسیط آب‌بها یافت نشد.";
 
 
         //Tanker

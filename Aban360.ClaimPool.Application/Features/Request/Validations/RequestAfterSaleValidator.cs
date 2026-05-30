@@ -12,7 +12,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Validations
             RuleFor(f => f.BillId)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull)
-                .MinimumLength(6).WithMessage(ExceptionLiterals.NotLessThan6);
+                .MinimumLength(6).WithMessage(ExceptionLiterals.NotLessThan6)
+                .Must(IsDigit).WithMessage(ExceptionLiterals.MustDigit);
 
             RuleFor(f => f.SelectedServices)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
@@ -25,16 +26,13 @@ namespace Aban360.ClaimPool.Application.Features.Request.Validations
 
             RuleFor(f => f.Address)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull)
-                .MinimumLength(6).WithMessage(ExceptionLiterals.NotLessThan6);
+                .Length(5, 100).WithMessage(ExceptionLiterals.Between5And100);
 
-            RuleFor(f => f.PhoneNumber)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull);
+            RuleFor(f => f.PhoneNumber).
+                Must(IsValidPhoneNumber).WithMessage(ExceptionLiterals.PhoneNumberFormat);
 
             RuleFor(f => f.NotificationNumber)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull);
+                .Must(IsValidMobileNumber).WithMessage(ExceptionLiterals.MobileNumberFormat);
 
         }
     }

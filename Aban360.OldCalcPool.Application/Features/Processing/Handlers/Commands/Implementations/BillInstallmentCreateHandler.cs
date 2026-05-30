@@ -205,5 +205,5 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 throw new InvalidInstallmentException(ExceptionLiterals.InvalidDuplicateInstallment(latestBatchInstallment?.FirstOrDefault()?.InsertedBy ?? "-", latestBatchInstallment?.Count() ?? 0, latestBatchInstallment?.FirstOrDefault()?.RegisterDateJalali ?? "-"));
             }
         }
-    }
+    }    
 }

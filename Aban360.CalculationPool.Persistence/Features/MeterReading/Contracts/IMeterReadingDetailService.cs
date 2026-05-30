@@ -7,5 +7,6 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts
     {
         Task<IEnumerable<MeterReadingDetailDataOutputDto>> Get(int flowImportedId);
         Task<MeterReadingDetailDataOutputDto> GetById(int id);
+        Task<IEnumerable<MeterReadingDetailExcludedDataOutptuDto>> Get(MeterReadingDetailExcludedInputDto inputDto);
     }
 }

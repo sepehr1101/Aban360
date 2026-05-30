@@ -18,6 +18,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
     {
         private readonly IKartableRequestGetAllHandler _requestKartableGetAllHandler;
         private readonly IDisplayRequestHandler _displayRequestHandler;
+        private readonly IRequestBasicInfoGetHandler _requestBasicInfoGetHandler;
         private readonly IMoshtrakRequestUpdateHandler _moshtrakRequestUpdateHandler;
         private readonly ICloseRequestHandler _closeRequestHandle;
         private readonly IPreviousStatusRequestHandler _previousStatusRequestHandler;
@@ -27,6 +28,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public RequestBranchController(
             IKartableRequestGetAllHandler requestKartableGetAllHandler,
             IDisplayRequestHandler displayRequestHandler,
+            IRequestBasicInfoGetHandler requestBasicInfoGetHandler,
             IMoshtrakRequestUpdateHandler moshtrakRequestUpdateHandler,
             ICloseRequestHandler closeRequestHandle,
             IPreviousStatusRequestHandler previousStatusRequestHandler,
@@ -39,6 +41,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 
             _displayRequestHandler = displayRequestHandler;
             _displayRequestHandler.NotNull(nameof(displayRequestHandler));
+
+            _requestBasicInfoGetHandler = requestBasicInfoGetHandler;
+            _requestBasicInfoGetHandler.NotNull(nameof(requestBasicInfoGetHandler));
 
             _moshtrakRequestUpdateHandler = moshtrakRequestUpdateHandler;
             _moshtrakRequestUpdateHandler.NotNull(nameof(moshtrakRequestUpdateHandler));
@@ -75,6 +80,15 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> DisplayRequest([FromBody] ZoneIdAndTrackNumber inputDto, CancellationToken cancellationToken)
         {
             MoshtrakDataOutputDto result = await _displayRequestHandler.Handle(inputDto, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("basic-info/{trackNumber}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<RequestBasicInfoDataOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetBasicInfo(int trackNumber, CancellationToken cancellationToken)
+        {
+            RequestBasicInfoDataOutputDto result = await _requestBasicInfoGetHandler.Handle(trackNumber, CurrentUser, cancellationToken);
             return Ok(result);
         }
 

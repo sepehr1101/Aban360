@@ -28,9 +28,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
 
 
         [HttpGet, HttpPost]
-        [Route("update-1")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerUpdate1Dto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Update1([FromBody] CustomerUpdate1Dto inputDto, CancellationToken cancellationToken)
+        [Route("update-estate")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerEstateUpdateDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> EstateUpdate([FromBody] CustomerEstateUpdateDto inputDto, CancellationToken cancellationToken)
         {
             await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
@@ -38,23 +38,23 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
 
 
         [HttpGet, HttpPost]
-        [Route("update-2")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerUpdate2Dto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Update2([FromBody] CustomerUpdate2Dto inputDto, CancellationToken cancellationToken)
+        [Route("update-technical")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerTechnicalUpdateDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> TechnicalUpdate([FromBody] CustomerTechnicalUpdateDto inputDto, CancellationToken cancellationToken)
         {
             await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
 
 
-        [HttpGet, HttpPost]
-        [Route("update-3")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerUpdate3Dto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Update3([FromBody] CustomerUpdate3Dto inputDto, CancellationToken cancellationToken)
-        {
-            await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
-            return Ok(inputDto);
-        }
+        //[HttpGet, HttpPost]
+        //[Route("update-3")]
+        //[ProducesResponseType(typeof(ApiResponseEnvelope<CustomerUpdate3Dto>), StatusCodes.Status200OK)]
+        //public async Task<IActionResult> Update3([FromBody] CustomerUpdate3Dto inputDto, CancellationToken cancellationToken)
+        //{
+        //    await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+        //    return Ok(inputDto);
+        //}
 
 
         [HttpGet, HttpPost]
