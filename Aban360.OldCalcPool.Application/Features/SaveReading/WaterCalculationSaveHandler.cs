@@ -76,8 +76,8 @@ namespace Aban360.OldCalcPool.Application.Features.SaveReading
                     BedBesCommandService bedBesCommandService = new BedBesCommandService(_sqlReportConnection, transaction);
                     KasrHaCommandService kasrHaCommandService = new KasrHaCommandService(_sqlReportConnection, transaction);
 
-                    await bedBesCommandService.Insert(bedBes,dbName);
-                    await kasrHaCommandService.Insert(kasrHa,dbName);
+                    await bedBesCommandService.Insert(bedBes, dbName);
+                    await kasrHaCommandService.Insert(kasrHa, dbName);
                 }
             }
         }
@@ -95,7 +95,7 @@ namespace Aban360.OldCalcPool.Application.Features.SaveReading
                 PriDate = abBahaCalculation.MeterInfo.PreviousDateJalali,
                 TodayDate = readingBillInfo.ReadingDateJalali,
                 AbonFas = (decimal)abBahaCalculation.AbonmanFazelabAmount,
-                FasBaha = (decimal)abBahaCalculation.FazelabAmount,
+                FasBaha = (decimal)abBahaCalculation.FazelabAmount + (decimal)abBahaCalculation.HotSeasonFazelabAmount,
                 AbBaha = (decimal)abBahaCalculation.AbBahaAmount,
                 //Ztadil = (decimal)s.Zarib,
                 Masraf = (decimal)abBahaCalculation.Consumption,
@@ -186,7 +186,7 @@ namespace Aban360.OldCalcPool.Application.Features.SaveReading
                 TodayNo = readingBillInfo.MeterNumber,
                 Masraf = (decimal)s.Consumption,
                 AbBaha = (decimal)s.AbBahaAmount,
-                FasBaha = (decimal)s.FazelabAmount,
+                FasBaha = (decimal)s.FazelabAmount + (decimal)s.HotSeasonFazelabDiscount,
                 AbonAb = (decimal)s.AbonmanAbAmount,
                 AbonFas = (decimal)s.AbonmanFazelabAmount,
                 TabAbnA = 0,
