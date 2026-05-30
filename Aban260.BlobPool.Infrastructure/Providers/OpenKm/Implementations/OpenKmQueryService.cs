@@ -306,9 +306,10 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
         {
             return await AddFile($"{_options.BaseDiscountPath}", path, content, fileName);
         }
-        public async Task<string> CreateFolder(string folderName)
+        public async Task<string> CreateFolder(string folderName, string path)
         {
-            string fullPath = $"{_options.BaseDirectoryPath}{folderName}";
+            string fullPath = string.IsNullOrEmpty(path)? 
+                $"{_options.BaseDirectoryPath}{folderName}": $"{_options.BaseDirectoryPath}{path}{folderName}";
             string url = $"{_options.AddFolderEndpoint}";
 
             var content = new StringContent($"{fullPath}", Encoding.UTF8, applicationJson);
@@ -384,6 +385,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
 
         public async Task Move(string docUuid, string newPath)
         {
+            newPath = $"{_options.BaseDirectoryPath}{newPath}";
             string baseUrl = $"{_options.BaseUrl}{_options.RenameFolderEndpoint}";
             string finalUrl = $"{baseUrl}?fldId={docUuid}&dstId={HttpUtility.UrlEncode(newPath)}";
 

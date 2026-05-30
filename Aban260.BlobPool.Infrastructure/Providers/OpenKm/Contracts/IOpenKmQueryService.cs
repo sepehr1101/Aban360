@@ -20,7 +20,7 @@ namespace Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts
         //commands
         Task<AddFileDto> AddFile(string path, StreamContent content, string fileName);
         Task<AddFileDto> AddFileDiscount(string path, StreamContent content, string fileName);
-        Task<string> CreateFolder(string billId);
+        Task<string> CreateFolder(string billId, string path = "");
 
         Task MarkNodeAsMetadatable(string nodeId, bool isFile);
 
