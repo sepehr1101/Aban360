@@ -11,7 +11,7 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
         private readonly ICreateFolderHandler _createFolderHandler;
         private readonly IOpenKmQueryService _openKmQueryService;
 
-        private const string folderName = "deleted";
+        private const string deleteFolderName = "deleted";
         public RemoveFileHandler(
             ICreateFolderHandler createFolderHandler,
             IOpenKmQueryService openKmQueryService)
@@ -24,8 +24,9 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
         }
         public async Task Handle(RemoveFileDto removeFileDto, CancellationToken cancellationToken)
         {
-            await _createFolderHandler.Handle(folderName, cancellationToken, $"{removeFileDto.FolderName}/");
-            await _openKmQueryService.Move(removeFileDto.Uuid, $"{removeFileDto.FolderName}/{folderName}");
+            string directory = removeFileDto.IsBillId ? removeFileDto.FolderName : $"r_{removeFileDto.FolderName}";
+            await _createFolderHandler.Handle(deleteFolderName, cancellationToken, $"{directory}");
+            await _openKmQueryService.Move(removeFileDto.Uuid, $"{directory}/{deleteFolderName}");
 
         }
     }

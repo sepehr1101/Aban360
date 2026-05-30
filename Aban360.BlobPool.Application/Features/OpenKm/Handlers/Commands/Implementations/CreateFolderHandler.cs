@@ -16,7 +16,8 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
 
         public async Task<string> Handle(string folderName, CancellationToken cancellationToken, [Optional] string path)
         {
-            bool doesFolderExist = await _openKmQueryService.CheckFolderExists(folderName);
+            string pathToCheck = string.IsNullOrWhiteSpace(path) ? folderName : $"{path}/{folderName}";
+            bool doesFolderExist = await _openKmQueryService.CheckFolderExists(pathToCheck);
             if (!doesFolderExist)
             {
                 string uuid = await _openKmQueryService.CreateFolder(folderName, path);
