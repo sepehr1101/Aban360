@@ -39,5 +39,7 @@
         public long SumItem16 { get; set; }
         public long SumItem17 { get; set; }
         public long SumItem18 { get; set; }
+        public int BillUnit { get; set; }
+        public int TotalUnit { get; set; }
     }
 }

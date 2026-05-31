@@ -10,7 +10,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Validations
     {
         public BillInstallmentUpdateValidator()
         {
-            RuleFor(b=>b.BillId)
+            RuleFor(b => b.BillId)
                 .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
@@ -25,5 +25,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Validations
             RuleFor(b => b.Id)
                 .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
+        }
     }
 }

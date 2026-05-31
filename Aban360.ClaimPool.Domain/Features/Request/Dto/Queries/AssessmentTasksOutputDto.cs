@@ -17,6 +17,7 @@ namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Queries
         public IEnumerable<NumericDictionary> Guilds { get; set; }
         public IEnumerable<NumericDictionary> Customer { get; set; }
         public IEnumerable<NumericDictionary> SaleServiceGroups { get; set; }
+        public IEnumerable<NumericDictionary> AfterSaleServiceGroups { get; set; }
         public IEnumerable<StringDictionary> MapDictionary { get; set; } = default!;
     }
 }

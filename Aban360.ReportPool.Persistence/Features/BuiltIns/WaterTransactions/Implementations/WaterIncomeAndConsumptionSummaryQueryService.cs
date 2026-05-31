@@ -81,7 +81,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 SumItem16 = waterIncomeAndConsumptionData.Sum(w => w.Item16),
                 SumItem17 = waterIncomeAndConsumptionData.Sum(w => w.Item17),
                 SumItem18 = waterIncomeAndConsumptionData.Sum(w => w.Item18),
-
+                BillUnit = waterIncomeAndConsumptionData.Sum(w => w.BillUnit),
+                TotalUnit = waterIncomeAndConsumptionData.Sum(w => w.TotalUnit),
             };
 
             var result = new ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionSummaryDataOutputDto>(reportTitle, waterIncomeAndConsumptionHeader, waterIncomeAndConsumptionData);
@@ -145,7 +146,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     		b.Item15,
                     		b.Item16,
                     		b.Item17,
-                    		b.Item18
+                    		b.Item18,
+                            IIF((OtherCount+CommercialCount+DomesticCount)=0,1,OtherCount+CommercialCount+DomesticCount) - EmptyCount BillUnit,
+                            IIF((OtherCount+CommercialCount+DomesticCount)=0,1,OtherCount+CommercialCount+DomesticCount) TotalUnit
                     From [CustomerWarehouse].dbo.Bills b
                     Join [Db70].dbo.T41 t41
                     	ON b.UsageId=t41.C0
@@ -184,7 +187,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	SUM(Item5) as Item5,
                     	SUM(Item6) as Item6,
                     	SUM(Item7) as Item7,
-                    	SUM(Item7) as Item7,
                     	SUM(Item8) as Item8,
                     	SUM(Item9) as Item9,
                     	SUM(Item10) as Item10,
@@ -195,7 +197,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     	SUM(Item15) as Item15,
                     	SUM(Item16) as Item16,
                     	SUM(Item17) as Item17,
-                    	SUM(Item18) as Item18 
+                    	SUM(Item18) as Item18,
+                        SUM(BillUnit) as BillUnit,
+                        SUM(TotalUnit) as TotalUnit
                     From cte
                     Group By {groupKey}";
         }
@@ -210,6 +214,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 return "ZoneTitle";
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.Usage)
                 return "UsageTitle";
+            if (enumState == WaterIncomeAndConsumptionSummaryEnum.Region)
+                return "RegionTitle";
 
             return "ZoneTitle";
         }

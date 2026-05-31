@@ -30,5 +30,7 @@
         public long Item16 { get; set; }
         public long Item17 { get; set; }
         public long Item18 { get; set; }
+        public int BillUnit { get; set; }
+        public int TotalUnit { get; set; }
     }
 }

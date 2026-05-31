@@ -13,7 +13,7 @@
             CustomerNumber = customerNumber;
             Id = id;
             DueDateJalali = dueDateJalali;
-            Amount = amount;\
+            Amount = amount;
         }
         public BillInstallmentUpdateDto()
         {
