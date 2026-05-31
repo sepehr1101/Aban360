@@ -242,7 +242,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                     	c.ToDayJalali IS NULL AND
                     	mr.ExcludedByUserId IS NOT Null AND
                     	mr.ZoneId = @ZoneId AND
-                    	FORMAT(CAST(mr.ExcludedDateTime as date),'yyyy/MM/dd','fa')=@DateJalali";
+                    	FORMAT(CAST(mr.ExcludedDateTime as date),'yyyy/MM/dd','fa')=@ExcludeDateJalali";
         }
     }
 }
