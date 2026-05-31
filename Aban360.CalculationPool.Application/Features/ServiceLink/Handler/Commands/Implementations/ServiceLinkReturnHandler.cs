@@ -1,4 +1,5 @@
-﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
+﻿using Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Commands.Contracts;
+using Aban360.CalculationPool.Domain.Features.ServiceLink;
 using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
@@ -19,7 +20,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
-namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations
+namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Commands.Implementations
 {
     internal sealed class ServiceLinkReturnHandler : AbstractBaseConnection, IServiceLinkReturnHandler
     {
@@ -73,11 +74,16 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             await Validate(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumbere = await _commonMemberQueryService.Get(inputDto.BillId);
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumbere);
-            decimal barge = await _variabService.GetAndRenew(131301/*memberInfo.ZoneId*/);
+            decimal barge = await _variabService.GetAndRenew(memberInfo.ZoneId);
 
-            KartInsertDto kartsInsertDto = GetKartInsertDto( inputDto , memberInfo, (int)barge);
+            KartInsertDto kartsInsertDto = GetKartInsertDto(inputDto, memberInfo, (int)barge);
             RequestBillDetailsInsertDto requestBillDetailsInsertDto = await GetRequestBillDetailsInsertDto(kartsInsertDto, memberInfo);
-            string opLogText = string.Format(Literals.RequestOfferingReturnOpLog, inputDto.BillId, kartsInsertDto.FinalAmount);
+            string opLogText = string.Format(Literals.ServiceLinkReturnOpLog, inputDto.BillId, kartsInsertDto.FinalAmount);
+
+            await SqlCommands(kartsInsertDto, requestBillDetailsInsertDto, appUser, opLogText);
+        }
+        private async Task SqlCommands(KartInsertDto kartsInsertDto, RequestBillDetailsInsertDto requestBillDetailsInsertDto, IAppUser appUser, string opLogText)
+        {
             //string dbName = GetDbName(memberInfo.ZoneId);
             string dbName = "Atlas";
 
@@ -120,7 +126,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 Barge = barge,
                 CurrentDateJalali = DateTime.Now.ToShortPersianDateString(),
                 DueDateJalali = DateTime.Now.AddMonths(1).ToShortPersianDateString(),
-                DiscountTypeId = 0,
+                DiscountTypeId = input.DiscountTypeId,
                 FinalAmount = input.Amount,
                 DiscountAmount = 0,
                 PardN = input.Amount,
