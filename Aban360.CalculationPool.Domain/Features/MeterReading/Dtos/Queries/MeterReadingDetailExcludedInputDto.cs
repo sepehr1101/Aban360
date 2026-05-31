@@ -3,6 +3,6 @@
     public record MeterReadingDetailExcludedInputDto
     {
         public int ZoneId { get; set; }
-        public string DateJalali { get; set; }
+        public string ExcludeDateJalali { get; set; }
     }
 }
