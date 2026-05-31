@@ -21,6 +21,7 @@
         public int SumBillUnitCounts { get; set; }
         public int SumDuration { get; set; }
         public long SumItems { get; set; }
+        public long SumWater { get; set; }
         public long SumItem1 { get; set; }
         public long SumItem2 { get; set; }
         public long SumItem3 { get; set; }
