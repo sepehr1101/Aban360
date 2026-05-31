@@ -26,14 +26,14 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
 
         public async Task Handle(MoshtrakUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
-            await InputValidation(inputDto, cancellationToken);
-            if (inputDto.IsRegistered)
-            {
-                throw new InvalidTrackingException(ExceptionLiterals.CantUpdate);
-            }
-            MoshtrakUpdateInfoDto moshtrakUpdateDto=GetUpdateDto(inputDto);
-            string dbName = GetDbName(inputDto.ZoneId);
+            await Validate(inputDto, cancellationToken);
+            MoshtrakUpdateInfoDto moshtrakUpdateDto = GetUpdateDto(inputDto);
+            await SqlCommands(moshtrakUpdateDto);
+        }
 
+        private async Task SqlCommands(MoshtrakUpdateInfoDto moshtrakUpdateDto)
+        {
+            string dbName = GetDbName(moshtrakUpdateDto.ZoneId);
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
@@ -48,7 +48,15 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
                 }
             }
         }
-        private async Task InputValidation(MoshtrakUpdateInputDto inputDto, CancellationToken cancellationToken)
+        private async Task Validate(MoshtrakUpdateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await InputValidate(inputDto, cancellationToken);
+            if (inputDto.IsRegistered)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.CantUpdate);
+            }
+        }
+        private async Task InputValidate(MoshtrakUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -97,10 +105,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
                 CounterType = inputDto.CounterType,
                 MainSiphon = inputDto.MainSiphon,
                 CommonSiphon = inputDto.CommonSiphon,
-                Description=inputDto.Description,
-                IsSpecial=inputDto.IsSpecial,
-                ReadingNumber=inputDto.ReadingNumber,
-               
+                Description = inputDto.Description,
+                IsSpecial = inputDto.IsSpecial,
+                ReadingNumber = inputDto.ReadingNumber,
+
 
                 s0 = serviceSelected.s0,
                 s1 = serviceSelected.s1,

@@ -9,5 +9,6 @@
         public string BillId { get; set; } = default!;
         public string PaymentId { get; set; } = default!;
 
+
     }
 }
