@@ -1,5 +1,4 @@
 ﻿using Aban360.Api.Cronjobs;
-using Aban360.ClaimPool.Domain.Features.Land.Entities;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
@@ -68,7 +67,8 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
                 { 0,"کاربری"},
                 { 1,"ناحیه"},
                 { 2,"روز"},
-                { 3,"میانگین مصرف"},
+                { 4,"میانگین مصرف"},
+                { 5,"منطقه"},
             };
             return baseReportTitle + titles[(int)enumState];
         }

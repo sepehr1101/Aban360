@@ -64,6 +64,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 SumDuration = waterIncomeAndConsumptionData.Sum(w => w.Duration),
                 SumItems = waterIncomeAndConsumptionData.Sum(w => w.SumItems),
                 SumBillUnitCounts = waterIncomeAndConsumptionData.Sum(w => w.BillUnitCounts),
+                SumWater = waterIncomeAndConsumptionData.Sum(w => w.SumWater),
                 SumItem1 = waterIncomeAndConsumptionData.Sum(w => w.Item1),
                 SumItem2 = waterIncomeAndConsumptionData.Sum(w => w.Item2),
                 SumItem3 = waterIncomeAndConsumptionData.Sum(w => w.Item3),
@@ -82,6 +83,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 SumItem16 = waterIncomeAndConsumptionData.Sum(w => w.Item16),
                 SumItem17 = waterIncomeAndConsumptionData.Sum(w => w.Item17),
                 SumItem18 = waterIncomeAndConsumptionData.Sum(w => w.Item18),
+                BillUnit = waterIncomeAndConsumptionData.Sum(w => w.BillUnit),
+                TotalUnit = waterIncomeAndConsumptionData.Sum(w => w.TotalUnit),
             };
 
             var result = new ReportOutput<WaterIncomeAndConsumptionDetailHeaderOutputDto, WaterIncomeAndConsumptionDetailDataOutputDto>(reportTitle, waterIncomeAndConsumptionHeader, waterIncomeAndConsumptionData);
@@ -121,8 +124,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						b.WaterDiameterTitle as MeterDiameterTitle,
 						b.BranchType AS BranchType,	
 						b.Duration,
-						b.SumItems,
-						b.Item1 ,
+						--b.SumItems,
+                        (b.Item1+b.Item2+b.Item3+b.Item4+b.Item5+b.Item6+b.Item7+b.Item8+b.Item9+b.Item10+b.Item11+b.Item12+b.Item13+b.Item14+b.Item15+b.Item16+b.Item17+b.Item18) SumItems,
+                        (b.Item1 + b.Item9 + b.Item11 + b.Item12 ) as SumWater,
+						b.Item1,
 						b.Item2,
 						b.Item3,
 						b.Item4,
@@ -139,7 +144,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						b.Item15,
 						b.Item16,
 						b.Item17,
-						b.Item18
+						b.Item18,
+                        IIF((OtherCount+CommercialCount+DomesticCount)=0,1,OtherCount+CommercialCount+DomesticCount) - EmptyCount BillUnit,
+                        IIF((OtherCount+CommercialCount+DomesticCount)=0,1,OtherCount+CommercialCount+DomesticCount) TotalUnit
 					From [CustomerWarehouse].dbo.Bills b
                     Join [Db70].dbo.T51 t51
                     	On b.ZoneId=t51.C0

@@ -1,9 +1,9 @@
-﻿using Aban360.ClaimPool.Application.Features.Base.Validations;
-using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
+﻿using Aban360.CalculationPool.Application.Features.Base;
+using Aban360.CalculationPool.Domain.Features.ServiceLink;
 using Aban360.Common.Literals;
 using FluentValidation;
 
-namespace Aban360.ClaimPool.Application.Features.Request.Validations
+namespace Aban360.CalculationPool.Application.Features.ServiceLink.Validations
 {
     public class ServiceLinkReturnValidator : BaseValidator<ServiceLinkReturnInputDto>
     {

@@ -16,6 +16,7 @@
         public string BranchType { get; set; }
         public int Duration { get; set; }
         public long SumItems { get; set; }
+        public long SumWater { get; set; }
         public long Item1 { get; set; }
         public long Item2 { get; set; }
         public long Item3 { get; set; }
@@ -34,5 +35,7 @@
         public long Item16 { get; set; }
         public long Item17 { get; set; }
         public long Item18 { get; set; }
+        public int BillUnit { get; set; }
+        public int TotalUnit { get; set; }
     }
 }

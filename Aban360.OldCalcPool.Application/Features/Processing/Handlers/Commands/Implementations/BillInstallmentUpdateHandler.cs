@@ -13,10 +13,10 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using DNTPersianUtils.Core;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
-using System.Reflection;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
@@ -26,11 +26,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly ICommonZoneService _commonZoneService;
         private readonly IGhestAbQueryService _ghestAbQueryService;
+        private readonly IValidator<BillInstallmentUpdateInputDto> _validator;
         public BillInstallmentUpdateHandler(
             IHttpContextAccessor contextAccessor,
             ICommonMemberQueryService commonMemberQueryService,
             ICommonZoneService commonZoneService,
             IGhestAbQueryService ghestAbQueryService,
+            IValidator<BillInstallmentUpdateInputDto> validator,
             IConfiguration configuration)
             : base(configuration)
         {
@@ -45,30 +47,26 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             _ghestAbQueryService = ghestAbQueryService;
             _ghestAbQueryService.NotNull(nameof(ghestAbQueryService));
+
+            _validator = validator;
+            _validator.NotNull(nameof(validator));
         }
 
         public async Task<BillInstallmentDataOutputDto> Handle(BillInstallmentUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            //inputValidate
-            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(inputDto.BillId);
-            await _commonZoneService.IsUserInZone(appUser, zoneIdAndCustomerNumber.ZoneId);
+            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await Validate(inputDto, appUser, cancellationToken);
             BillInstallmentOutputDto billInstallmentInfo = await _ghestAbQueryService.Get(zoneIdAndCustomerNumber, inputDto.Id);
-            if (billInstallmentInfo.RegisterDateJalali.CompareTo(DateTime.Now.ToShortPersianDateString()) != 0)
-            {
-                throw new InvalidInstallmentException(ExceptionLiterals.InvalidUpdateInstallmentNotCurrentDate);
-            }
+            DateValidate(billInstallmentInfo);
 
-            BillInstallmentUpdateDto updateDto = new()
-            {
-                ZoneId = zoneIdAndCustomerNumber.ZoneId,
-                CustomerNumber = zoneIdAndCustomerNumber.CustomerNumber,
-                Amount = inputDto.Amount,
-                DueDateJalali = inputDto.DueDateJalali,
-                Id = inputDto.Id,
-            };
+            BillInstallmentUpdateDto updateDto = new(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber, inputDto.Id, inputDto.DueDateJalali, inputDto.Amount);
             string logText = string.Format(Literals.BillInstallmentUpdateOpLog, inputDto.BillId, inputDto.Id, billInstallmentInfo.Payable, inputDto.Amount, billInstallmentInfo.DeadLineDateJalali, inputDto.DueDateJalali);
 
-            string dbName = GetDbName(zoneIdAndCustomerNumber.ZoneId);
+            await SqlCommands(updateDto, appUser, logText);
+            return GetResult(inputDto, billInstallmentInfo);
+        }
+        private async Task SqlCommands(BillInstallmentUpdateDto updateDto, IAppUser appUser,string logText)
+        {
+            string dbName = GetDbName(updateDto.ZoneId);
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
@@ -86,6 +84,33 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     transaction.Commit();
                 }
             }
+        }
+        private async Task<ZoneIdAndCustomerNumber> Validate(BillInstallmentUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            await InputValidate(inputDto, cancellationToken);
+            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(inputDto.BillId);
+            await _commonZoneService.IsUserInZone(appUser, zoneIdAndCustomerNumber.ZoneId);
+
+            return zoneIdAndCustomerNumber;
+        }
+        private async Task InputValidate(BillInstallmentUpdateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new CustomValidationException(message);
+            }
+        }
+        private void DateValidate(BillInstallmentOutputDto billInstallmentInfo)
+        {
+            if (billInstallmentInfo.RegisterDateJalali.CompareTo(DateTime.Now.ToShortPersianDateString()) != 0)
+            {
+                throw new InvalidInstallmentException(ExceptionLiterals.InvalidUpdateInstallmentNotCurrentDate);
+            }
+        }
+        private BillInstallmentDataOutputDto GetResult(BillInstallmentUpdateInputDto inputDto, BillInstallmentOutputDto billInstallmentInfo)
+        {
             return new BillInstallmentDataOutputDto()
             {
                 DeadLineDateJalali = inputDto.DueDateJalali,

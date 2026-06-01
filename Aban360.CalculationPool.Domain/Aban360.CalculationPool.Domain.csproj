@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Aban360.ClaimPool.Domain\Aban360.ClaimPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
   </ItemGroup>
 

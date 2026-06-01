@@ -9,10 +9,10 @@
 
         public string FromDateJalali { get; set; }
         public string ToDateJalali { get; set; }
-        public double? FromAmount{ get; set; }
-        public double? ToAmount{ get; set; }
-        public int? FromConsumption{ get; set; }
-        public int? ToConsumption{ get; set; }
+        public double? FromAmount { get; set; }
+        public double? ToAmount { get; set; }
+        public int? FromConsumption { get; set; }
+        public int? ToConsumption { get; set; }
 
         public int SumBillCount { get; set; }
         public float SumSewageConsumption { get; set; }
@@ -21,6 +21,7 @@
         public int SumBillUnitCounts { get; set; }
         public int SumDuration { get; set; }
         public long SumItems { get; set; }
+        public long SumWater { get; set; }
         public long SumItem1 { get; set; }
         public long SumItem2 { get; set; }
         public long SumItem3 { get; set; }
@@ -39,5 +40,7 @@
         public long SumItem16 { get; set; }
         public long SumItem17 { get; set; }
         public long SumItem18 { get; set; }
+        public int BillUnit { get; set; }
+        public int TotalUnit { get; set; }
     }
 }
