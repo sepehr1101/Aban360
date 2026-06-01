@@ -40,6 +40,6 @@
         public string BranchTypeTitle { get; set; }
         public int CounterStateCode { get; set; }
         public string CounterStateTitle { get; set; }
-
+        public string ReadingStateTitle { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.Db.Dapper;
+using Aban360.Common.Extensions;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using Dapper;
@@ -18,12 +19,14 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
         {
             string query = GetByAssessmentCodeQuery();
             IEnumerable <AssessmentOffGetDto> result = await _sqlReportConnection.QueryAsync<AssessmentOffGetDto>(query, new { assessmentCode , conditionDateJalali = GetStartYear ()});
+            result.Where(r=>r.IsCanceled).ForEach(r => r.CanceledDateJalali = r.CanceledDateGregorian.ToShortPersianDateString());
             return result;
         }
         public async Task<IEnumerable<AssessmentOffGetDto>> Get()
         {
             string query = GetAllQuery();
             IEnumerable<AssessmentOffGetDto> result = await _sqlReportConnection.QueryAsync<AssessmentOffGetDto>(query, new { conditionDateJalali = GetStartYear() });
+            result.Where(r => r.IsCanceled).ForEach(r => r.CanceledDateJalali = r.CanceledDateGregorian.ToShortPersianDateString());
             return result;
         }
         private string GetStartYear()

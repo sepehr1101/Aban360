@@ -127,7 +127,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Implement
 						tmp_mohlat TmpMohlat, 
 						tmp_taviz_date TmpTavizDate, 
 						tmp_date_bed TmpDateBed,
-                        IsConfirmed
+                        IsConfirmed,
+                        IsDeleted
 					From [{dbName}].dbo.autoback
 					Where
 						town=@ZoneId AND
@@ -203,7 +204,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Implement
                         tmp_date_bed AS TmpDateBed,
                         tmp_mohlat AS TmpMohlat,
                         tmp_taviz_date AS TmpTavizDate,
-                        IsConfirmed
+                        IsConfirmed,
+                        IsDeleted
                     FROM [{dbName}].dbo.[autoback]
                     Where jalase_no=@confirmedNumber
                     ORDER BY id ASC;";
@@ -251,7 +253,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Implement
                     		ON a.enshab=t5.C0
                     	Join [Db70].dbo.ReturnCause r
                     		ON a.elat=r.Id
-                    	Where a.IsConfirmed=0 AND a.Town=@zoneId
+                    	Where a.IsConfirmed=0 AND a.Town=@zoneId AND a.IsDeleted=0
                     )
                     Select c.*
                     From Cte c
@@ -265,7 +267,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Implement
                     Where 
                     	town=@ZoneId AND
                     	radif=@CustomerNumber AND
-                    	(pri_date>=@FromDateJalali AND today_date<=@ToDateJalali) ";
+                    	(pri_date>=@FromDateJalali AND today_date<=@ToDateJalali) AND
+                        IsDeleted=0";
         }
     }
 }

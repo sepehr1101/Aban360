@@ -2,6 +2,7 @@
 {
     public record MemberInfoGetDto
     {
+        public int Id { get; set; }
         public int ZoneId { get; set; }
         public string ZoneTitle { get; set; }
         public int RegionId { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs
 {
-    public record PendingPaymentsInputDto
+    public record ConnectDisconnectPrintDto
     {
         public string? FromReadingNumber { get; set; }
         public string? ToReadingNumber { get; set; }
@@ -16,4 +16,5 @@
 
 
     }
+
 }

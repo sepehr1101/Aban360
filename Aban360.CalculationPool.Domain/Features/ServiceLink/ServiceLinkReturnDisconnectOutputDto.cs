@@ -3,6 +3,8 @@
     public record ServiceLinkReturnDisconnectOutputDto
     {
         public string BillId { get; set; }
-        public long Amount { get; set; }
+        public long WaterSubscriptionAmount { get; set; }
+        public long SewageSubscriptionAmount { get; set; }
+        public long SubscriptionAmount { get { return WaterSubscriptionAmount + SewageSubscriptionAmount; } }
     }
 }

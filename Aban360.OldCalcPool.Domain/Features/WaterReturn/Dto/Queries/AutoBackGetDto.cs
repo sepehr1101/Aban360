@@ -67,5 +67,8 @@
         public string TmpMohlat { get; set; }
         public string TmpTavizDate { get; set; }
         public string TmpDateBed { get; set; }
+
+        public bool IsConfirmed { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }
