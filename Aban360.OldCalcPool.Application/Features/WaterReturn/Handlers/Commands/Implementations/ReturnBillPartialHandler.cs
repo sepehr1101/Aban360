@@ -3,7 +3,6 @@ using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.Common.Timing;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Db70.Dto.Queries;
@@ -67,8 +66,8 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         public async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> Handle(ReturnBillPartialInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             int[] burstPipe = { 1 };
-            int[] misreaded = { 5, 7, 9, 11, 12, 14, 15 };
-            int[] misreadedCalcWithMeterNumber = { 10, 11, 12, 14, 15 }; //TODO: 10 ?
+            int[] misreaded = { 5, 7, 9, 11, 12, 14, 15 }; //9 removed
+            int[] misreadedCalcWithMeterNumber = { 9, 10, 11, 12, 14, 15 }; //TODO: 10 ? - 9 added
 
             CustomerInfoOutputDto customerInfo = await Validate(inputDto, appUser, cancellationToken);
             int jalaseNumber = await _returnBillBaseHandler.GetJalaliNumber(inputDto.MinutesNumber, customerInfo.ZoneId, customerInfo.Radif);
@@ -90,11 +89,6 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 consumptionAverage = await _returnBillBaseHandler.GetConsumptionAverage(inputDto.FromDateJalali, inputDto.ToDateJalali, inputDto.CalculationType, inputDto.UserInput, customerInfo, inputDto.ReturnCauseId);
             }
 
-            if (consumptionAverage == 0)
-            {
-                throw new BaseException("خطا در محاسبه متوسط مصرف");
-            }
-
             if (burstPipe.Contains(inputDto.ReturnCauseId))
             {
                 AbBahaCalculationDetails abBahaResult = await GetAbBahaTariff(inputDto, bedBesInfo, consumptionAverage, cancellationToken);
@@ -106,11 +100,15 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 AbBahaCalculationDetails abBahaResult = new();
                 if (misreadedCalcWithMeterNumber.Contains(inputDto.ReturnCauseId))
                 {
-                    abBahaResult = await GetAbBahaTariffWithMeterNumber(inputDto, bedBesInfo, cancellationToken);
+                    abBahaResult = await GetAbBahaTariffWithMeterNumber(inputDto, bedBesInfo, bedBesResult, customerInfo, cancellationToken);
                 }
                 else
                 {
-                    abBahaResult = await GetAbBahaTariffWithConsumptionAverage(inputDto, bedBesInfo, cancellationToken);
+                    if (consumptionAverage == 0)
+                    {
+                        throw new BaseException("خطا در محاسبه متوسط مصرف");
+                    }
+                    abBahaResult = await GetAbBahaTariffWithConsumptionAverage(inputDto, bedBesInfo, consumptionAverage, cancellationToken);
                 }
                 return await CreateAutoBacksAndReturn(abBahaResult, inputDto, bedBesInfo, bedBesResult, customerInfo, null, null, (float)abBahaResult.MonthlyConsumption, jalaseNumber, appUser, inputDto.FromDateJalali, inputDto.ToDateJalali, cancellationToken);
             }
@@ -149,9 +147,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             AbBahaCalculationDetails abBahaResult = await _oldTariffEngine.Handle(meterData, cancellationToken);
             return abBahaResult;
         }
-        private async Task<AbBahaCalculationDetails> GetAbBahaTariffWithConsumptionAverage(ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBes, CancellationToken cancellationToken)
+        private async Task<AbBahaCalculationDetails> GetAbBahaTariffWithConsumptionAverage(ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBes, float consumptionAverage,  CancellationToken cancellationToken)
         {
-            double consumptionAverage = (double)bedBes.Average(b => b.Rate);
+            //double consumptionAverage = (double)bedBes.Average(b => b.Rate);
             string previousDateJalali = bedBes.Min(x => x.PriDate);
             string currentDateJalali = bedBes.Max(x => x.TodayDate);
 
@@ -163,25 +161,36 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             AbBahaCalculationDetails abBahaResult = await _oldTariffEngine.Handle(meterData, cancellationToken);
             return abBahaResult;
         }
-        private async Task<AbBahaCalculationDetails> GetAbBahaTariffWithMeterNumber(ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBes, CancellationToken cancellationToken)
+        private async Task<AbBahaCalculationDetails> GetAbBahaTariffWithMeterNumber(ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBesList, BedBesCreateDto bedBesResult, CustomerInfoOutputDto customerInfoOutputDto, CancellationToken cancellationToken)
         {
-            string previousDateJalali = bedBes.Min(x => x.PriDate);
-            string currentDateJalali = bedBes.Max(x => x.TodayDate);
+            string previousDateJalali = bedBesList.Min(x => x.PriDate);
+            string currentDateJalali = bedBesList.Max(x => x.TodayDate);
 
-            int previousNumber = (int)bedBes.Min(x => x.PriNo);
-            int currentNumber = (int)bedBes.Max(x => x.TodayNo);
+            int previousNumber = (int)bedBesList.Min(x => x.PriNo);
+            int currentNumber = (int)bedBesList.Max(x => x.TodayNo);
 
-            MeterInfoByPreviousDataInputDto meterData = new()
+            if (bedBesList.Any(bedBes => bedBes.CodVas == 1))
             {
-                BillId = input.BillId,
-                PreviousDateJalali = previousDateJalali,
-                CurrentDateJalali = currentDateJalali,
-                PreviousNumber = previousNumber,
-                CurrentMeterNumber = currentNumber,
-            };
+                decimal masraf = bedBesResult.Masraf;
+                float consumptionAverage = (float)masraf * 30 / (float)(customerInfoOutputDto.PureDomesticUnit * bedBesResult.Modat);
+                MeterDateInfoWithMonthlyConsumptionOutputDto meterData = new(input.BillId, previousDateJalali, currentDateJalali, consumptionAverage);
+                AbBahaCalculationDetails abBahaResult = await _oldTariffEngine.Handle(meterData, cancellationToken);
+                return abBahaResult;
+            }
+            else
+            {
+                MeterInfoByPreviousDataInputDto meterData = new()
+                {
+                    BillId = input.BillId,
+                    PreviousDateJalali = previousDateJalali,
+                    CurrentDateJalali = currentDateJalali,
+                    PreviousNumber = previousNumber,
+                    CurrentMeterNumber = currentNumber,
+                };
 
-            AbBahaCalculationDetails abBahaResult = await _oldTariffEngine.Handle(meterData, cancellationToken);
-            return abBahaResult;
+                AbBahaCalculationDetails abBahaResult = await _oldTariffEngine.Handle(meterData, cancellationToken);
+                return abBahaResult;
+            }
         }
         private async Task<(IEnumerable<BedBesCreateDto>, BedBesCreateDto)> GetBedBesCreateDto(ReturnBillPartialInputDto input, CustomerInfoOutputDto customerInfo)
         {
