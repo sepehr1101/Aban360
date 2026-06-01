@@ -149,7 +149,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         }
         private async Task UpdateCustomerAndClient(CustomerUpdateDto updateDto)
         {
-            ZoneIdCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber.ToString());
+            ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
@@ -175,7 +175,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         }
         private async Task UpdateCustomerAndClient(CustomerMobileUpdateDto updateDto)
         {
-            ZoneIdCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber.ToString());
+            ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
@@ -201,7 +201,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         }
         private async Task UpdateCustomerAndClient(CustomerBranchTypeUpdateDto updateDto)
         {
-            ZoneIdCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber.ToString());
+            ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)

@@ -1,10 +1,9 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Constants.Literals;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Dapper;
-using DNTPersianUtils.Core;
-using Microsoft.Data.SqlClient;
 using System.Data;
 
 namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
@@ -33,7 +32,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidUpdateToDayJalali);
             }
         }
-        public async Task UpdateToDayJalali(ZoneIdCustomerNumber input, string CurrentDateJalali)
+        public async Task UpdateToDayJalali(ZoneIdAndCustomerNumber input, string CurrentDateJalali)
         {
             string command = GetUpdateToDayJalaliCommand();
             int rowEffectCount = await _connection.ExecuteAsync(command, new { input.ZoneId, input.CustomerNumber, CurrentDateJalali }, _transaction);

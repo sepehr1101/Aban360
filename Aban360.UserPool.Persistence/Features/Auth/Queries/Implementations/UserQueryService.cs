@@ -109,7 +109,6 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
         public async Task<IEnumerable<StringDictionary>> GetDictionary(UserSearchByRoleTitleAndZoneIdsDto inputDto)
         {
             string query = GetSearchByRoleTitleAndZoneIdsDictionaryQuery(inputDto);
-            Console.WriteLine(query);
             IEnumerable<StringDictionary> result = await _uow.ExecuteQuery<StringDictionary>(query);
 
             return result;
