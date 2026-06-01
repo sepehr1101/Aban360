@@ -15,6 +15,7 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts
         Task<IEnumerable<UserQueryDto>> Search(SearchUserDto input);
         Task<IEnumerable<UserQueryDto>> Get(UserSearchByRoleTitleAndZoneIdDto inputDto);
         Task<IEnumerable<StringDictionary>> GetDictionary(UserSearchByRoleTitleAndZoneIdDto inputDto);
+        Task<IEnumerable<StringDictionary>> GetDictionary(UserSearchByRoleTitleAndZoneIdsDto inputDto);
         Task<bool> Exists(UserCreateDto userCreateDto);
     }
 }
