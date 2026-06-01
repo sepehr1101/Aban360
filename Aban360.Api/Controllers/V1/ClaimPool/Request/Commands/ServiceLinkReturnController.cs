@@ -1,5 +1,7 @@
 ﻿using Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Commands.Contracts;
+using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
 using Aban360.CalculationPool.Domain.Features.ServiceLink;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -33,10 +35,10 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         
         [HttpPost]
         [Route("return-disconnect")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ServiceLinkReturnDisconnectOutputDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ServiceLinkReturnDisconnectHeaderOutputDto, ServiceLinkReturnDisconnectDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> DisconnectReturn([FromBody] ServiceLinkReturnDisconnectInputDto inputDto, CancellationToken cancellationToken)
         {
-            ServiceLinkReturnDisconnectOutputDto result= await _serviceLinkReturnDisconnectHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            ReportOutput<ServiceLinkReturnDisconnectHeaderOutputDto, ServiceLinkReturnDisconnectDataOutputDto> result = await _serviceLinkReturnDisconnectHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
         }
     }

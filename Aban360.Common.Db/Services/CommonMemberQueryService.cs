@@ -68,6 +68,7 @@ namespace Aban360.Common.Db.Services
         private string GetMemeberInfoQuery(string dbName)
         {
             return $@"Select
+						m.id,
 						m.radif CustomerNumber,
 						TRIM(m.bill_id) BillId,
 						m.town ZoneId,

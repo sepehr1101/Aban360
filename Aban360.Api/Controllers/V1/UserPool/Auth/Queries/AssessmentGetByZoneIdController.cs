@@ -17,11 +17,20 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
         }
 
         [HttpGet, HttpPost]
-        [Route("assessment")]
+        [Route("assessment-by-zoneid")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<StringDictionary>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAssessmentByZoneId(SearchNumericInput inputDto, CancellationToken cancellationToken)
         {
             IEnumerable<StringDictionary> assessments = await _userSearch.Handle(inputDto.Input, cancellationToken);
+            return Ok(assessments);
+        }
+
+        [HttpGet, HttpPost]
+        [Route("assessment")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<StringDictionary>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAssessments(CancellationToken cancellationToken)
+        {
+            IEnumerable<StringDictionary> assessments = await _userSearch.Handle(CurrentUser, cancellationToken);
             return Ok(assessments);
         }
     }

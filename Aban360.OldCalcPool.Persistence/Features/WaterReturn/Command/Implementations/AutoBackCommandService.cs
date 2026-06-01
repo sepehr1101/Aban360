@@ -46,11 +46,23 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Implement
                 throw new ReturnedBillException(ExceptionLiterals.InvalidConfirmedNumber);
             }
         }
+        public async Task UpdateIsDeleted(int confirmedNumber, string dbName)
+        {
+            string query = GetIsDeletedUpdateCommand(dbName);
+            int recordEffected = await _connection.ExecuteAsync(query, new { confirmedNumber }, _transaction);
+            if (recordEffected != 3)
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvalidConfirmedNumber);
+            }
+        }
 
         private string GetCreateCommand(string dbName, bool isAtlas)
         {
-            string isConfirmedField = isAtlas ? ", IsConfirmed" : string.Empty;
-            string isConfirmedParm = isAtlas ? " , 0" : string.Empty;
+            string isAtlasField = isAtlas ? ", IsConfirmed , IsDeleted" : string.Empty;
+            string isAtlasParm = isAtlas ? " , 0 , 0" : string.Empty;
+            
+
+
             return @$"INSERT INTO [{dbName}].dbo.[autoback]
                     (
                         town, radif, eshtrak, barge, pri_no, today_no, pri_date, today_date,
@@ -61,7 +73,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Implement
                         sabt, rate, operator, mamor, taviz_date, zarib_cntr, zabresani,
                         zarib_d, tafavot, mas_hadar, ab_hadar, range_mas, taf_back, ted_ghabs,
                         TAB_ABN_A, TAB_ABN_F, TABS_FA, bodjeh, FAZ,
-                        tmp_pri_date, tmp_today_date, tmp_date_bed, tmp_mohlat, tmp_taviz_date {isConfirmedField}
+                        tmp_pri_date, tmp_today_date, tmp_date_bed, tmp_mohlat, tmp_taviz_date {isAtlasField} 
                     )
                     VALUES
                     (   
@@ -73,13 +85,19 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Implement
                         @Sabt, @Rate, @Operator, @Mamor, @TavizDate, @ZaribCntr, @Zabresani,
                         @ZaribD, @Tafavot, @MasHadar, @AbHadar, @RangeMas, @TafBack, @TedGhabs,
                         @TabAbnA, @TabAbnF, @TabsFa, @Bodjeh, @Faz,
-                        @TmpPriDate, @TmpTodayDate, @TmpDateBed, @TmpMohlat, @TmpTavizDate {isConfirmedParm}
+                        @TmpPriDate, @TmpTodayDate, @TmpDateBed, @TmpMohlat, @TmpTavizDate {isAtlasParm}
                     );";
         }
         private string GetIsConfirmedUpdateCommand(string dbName)
         {
-            return $@"Update [Atlas].dbo.autoback
+            return $@"Update [{dbName}].dbo.autoback
                     Set IsConfirmed=1
+                    Where jalase_no=@confirmedNumber";
+        }
+        private string GetIsDeletedUpdateCommand(string dbName)
+        {
+            return $@"Update [{dbName}].dbo.autoback
+                    Set IsDeleted=1
                     Where jalase_no=@confirmedNumber";
         }
     }

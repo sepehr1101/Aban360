@@ -73,5 +73,6 @@
         public string DateSbt { get; set; }
         public decimal Avarez { get; set; }
         public bool IsConfirmed { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }
