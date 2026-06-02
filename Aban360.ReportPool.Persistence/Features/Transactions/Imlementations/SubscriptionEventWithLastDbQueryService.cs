@@ -95,7 +95,8 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 							When cv.MoshtarakinId IN (4,7) Then 8
 							When cv.MoshtarakinId=8 Then 7
 							Else 1
-						End TypeCode
+						End TypeCode,
+						b.del IsReturned
 					From [{dbName}].dbo.bed_bes b
 					Left Join [Db70].dbo.CounterVaziat cv 
 						On b.cod_vas=cv.MoshtarakinId
@@ -134,7 +135,8 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						t41_sell.C1 UsageSellTitle,
 						t41_consumption.C1 UsageConsumptionTitle,
 						'' PayDateJalali,--todo
-						0 TypeCode
+						0 TypeCode,
+						0 IsReturned
 					From [{dbName}].dbo.base_mand b
 					Left Join [{dbName}].dbo.members m
 						On b.town=m.town AND b.radif=m.radif
@@ -193,7 +195,8 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						t41_sell.C1 UsageSellTitle,
 						t41_consumption.C1 UsageConsumptionTitle,
 						'' PayDateJalali,
-						0 TypeCode
+						0 TypeCode,
+						0 IsReturned
 					From [{dbName}].dbo.REPAIR r
 					Left Join [{dbName}].dbo.members m
 						On r.town=m.town AND r.radif=m.radif
@@ -232,7 +235,8 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						'' UsageSellTitle,
 						'' UsageConsumptionTitle,
 						v.date_bank PayDateJalali,--todo
-						0 TypeCode
+						0 TypeCode,
+						0 IsReturned
 					From [{dbName}].dbo.vosolab v
 					Left Join [{dbName}].dbo.members m
 						On v.town=m.town AND v.radif=m.radif
@@ -271,7 +275,8 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						'' UsageSellTitle,
 						'' UsageConsumptionTitle,
 						'' PayDateJalali,--todo
-						17 TypeCode
+						17 TypeCode,
+						0 IsReturned
 					From [{dbName}].dbo.HbedBes h
 					Where 
 						h.town=@zoneId AND

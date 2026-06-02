@@ -33,7 +33,7 @@
         public long TabsareAbonmanFazelab { get; set; }
         public long GhanonBoodje { get; set; }
         public long JavazemKahande { get; set; }
-        public long Boodje { get; set; }
+        public long AvarezSanati { get; set; }
 
 
         public long Payable { get; set; }

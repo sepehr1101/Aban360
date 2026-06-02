@@ -41,7 +41,7 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
                 TabsareAbonmanFazelab = billItems.TabsareAbonmanFazelab,
                 GhanonBoodje = billItems.GhanonBoodje,
                 JavazemKahande = billItems.JavazemKahande,
-                Boodje = billItems.Boodje,
+                AvarezSanati = billItems.AvarezSanati,
             };
             BillItemsHeaderOutputDto header = new()
             {

@@ -13,6 +13,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
     internal sealed class BedBesCreateHadler : AbstractBaseConnection, IBedBesCreateHadler
     {
         private readonly IConfiguration _configuration;
+        const int _operator = 666;
         public BedBesCreateHadler(
             IConfiguration configuration)
             : base(configuration)
@@ -80,7 +81,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             bedBesDto.Masjar = 0;
             bedBesDto.Sabt = 1;
             bedBesDto.Rate = (decimal)inputDto.MonthlyConsumption;
-            bedBesDto.Operator = 0;
+            bedBesDto.Operator = _operator;
             bedBesDto.Mamor = 0;//from input,
             bedBesDto.TavizDate = "from input";
             bedBesDto.ZaribCntr = 0;

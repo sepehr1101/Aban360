@@ -46,6 +46,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         const int _changeCounterState = 2;
         const int _reverseCounterState = 3;
         const int _nextRoundCounterSatate = 5;
+        const int _operator = 666;
         public GenerateBillHandler(
             IHttpContextAccessor contextAccessor,
             ICustomerInfoService customerInfoService,
@@ -426,7 +427,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 Masjar = 0,
                 Sabt = 1,//todo
                 Rate = (decimal)abBahaCalc.MonthlyConsumption,
-                Operator = 5,//generate manual bill
+                Operator = _operator,
                 Mamor = 0,
                 TavizDate = customerInfo?.TavizInfo?.TavizDateJalali ?? string.Empty,
                 ZaribCntr = 0,
@@ -542,12 +543,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 DateOnly? currentDate = inputDto.CurrentDateJalali.ToGregorianDateOnly();
                 if (!currentDate.HasValue)
                 {
-                    var message = string.Join("تاریخ ناصحیح");
+                    var message = string.Join(',',"تاریخ ناصحیح");
                     throw new BaseException(message);
                 }
                 if (currentDate.Value > DateTime.Now.ToDateOnly())
                 {
-                    var message = string.Join("تاریخ ناصحیح");
+                    var message = string.Join(',', "تاریخ ناصحیح");
                     throw new BaseException(message);
                 }
             }

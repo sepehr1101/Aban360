@@ -203,6 +203,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                     	mr.FlowImportedId,
                     	mr.ReadingNumber,
                     	mr.CurrentCounterStateCode,
+						cv.Title CurrentCounterStateTitle,
                     	mr.PreviousDateJalali,
                     	mr.CurrentDateJalali,
                     	mr.PreviousNumber,
@@ -215,8 +216,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                     	t41_1.C1 UsageTitle,
                     	mr.BranchTypeId,
                     	t7.C1 BranchTypeTitle,
-                    	mr.ConsumptionUsageId ,
-                    	t41_2.C1 ConsumptionUsageTitle,
+                    	mr.ConsumptionUsageId UsageConsumptionId ,
+                    	t41_2.C1 UsageConsumptionTitle,
                     	mr.CommercialUnit,
                     	mr.DomesticUnit,
                     	mr.OtherUnit,
@@ -238,6 +239,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                     	ON mr.BranchTypeId=t7.C0
                     Join [Db70].dbo.T5 t5
                     	ON mr.MeterDiameterId=t5.C0
+					Join [Db70].dbo.CounterVaziat cv
+						ON mr.CurrentCounterStateCode=cv.MoshtarakinId
                     Where 
                     	c.ToDayJalali IS NULL AND
                     	mr.ExcludedByUserId IS NOT Null AND

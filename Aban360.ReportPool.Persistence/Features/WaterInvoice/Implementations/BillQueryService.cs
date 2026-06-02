@@ -71,7 +71,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						Item15 TabsareAbonmanFazelab,
 						Item16 GhanonBoodje,
 						Item17 JavazemKahande,
-						Item18 Boodje
+						Item18 AvarezSanati
 					From CustomerWarehouse.dbo.Bills
 					Left Join [Db70].dbo.T51 t51
 						On ZoneId=t51.C0
@@ -145,7 +145,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						Item15 TabsareAbonmanFazelab,
 						Item16 GhanonBoodje,
 						Item17 JavazemKahande,
-						Item18 Boodje,
+						Item18 AvarezSanati,
 						Payable,
 						SumItems
 					From CustomerWarehouse.dbo.Bills

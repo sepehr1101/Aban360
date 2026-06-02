@@ -56,7 +56,7 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
                 TabsareAbonmanFazelab = data?.Sum(d => d.TabsareAbonmanFazelab) ?? 0,
                 GhanonBoodje = data?.Sum(d => d.GhanonBoodje) ?? 0,
                 JavazemKahande = data?.Sum(d => d.JavazemKahande) ?? 0,
-                Boodje = data?.Sum(d => d.Boodje) ?? 0,
+                AvarezSanati = data?.Sum(d => d.AvarezSanati) ?? 0,
             };
             return new ReportOutput<BillHistoryHeaderOutputDto, BillHistoryDataOutputDto>(_title, header, data);
         }

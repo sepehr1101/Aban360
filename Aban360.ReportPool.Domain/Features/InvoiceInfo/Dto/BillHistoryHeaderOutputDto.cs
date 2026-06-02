@@ -32,6 +32,6 @@ namespace Aban360.ReportPool.Domain.Features.InvoiceInfo.Dto
         public long TabsareAbonmanFazelab { get; set; }
         public long GhanonBoodje { get; set; }
         public long JavazemKahande { get; set; }
-        public long Boodje { get; set; }
+        public long AvarezSanati { get; set; }
     }
 }

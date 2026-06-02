@@ -45,6 +45,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         const int _changeCounterState = 2;
         const int _reverseCounterState = 3;
         const int _nextRoundCounterSatate = 5;
+        const int _operator = 666;
         public FreeGenerateBillHandler(
             IHttpContextAccessor contextAccessor,
             ICustomerInfoService customerInfoService,
@@ -412,7 +413,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 Masjar = 0,
                 Sabt = 1,//todo
                 Rate = (decimal)abBahaCalc.MonthlyConsumption,
-                Operator = 5,//generate manual bill
+                Operator = _operator,
                 Mamor = 0,
                 TavizDate = customerInfo?.TavizInfo?.TavizDateJalali ?? string.Empty,
                 ZaribCntr = 0,
