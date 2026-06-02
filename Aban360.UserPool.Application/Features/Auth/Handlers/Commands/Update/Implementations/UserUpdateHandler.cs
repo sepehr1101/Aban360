@@ -109,7 +109,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
             ICollection<UserClaim> previousClaims = await _userClaimsQueryService.Get(userUpdateDto.Id);
             ICollection<UserRole> previousRoles = await _userRoleQueryService.Get(userUpdateDto.Id);
 
-            _userClaimCommandService.Remove(previousClaims, logInfoString);
+            _userClaimCommandService.Remove(previousClaims.Where(user=>user.ClaimTypeId!=ClaimType.RequestKartable).ToList(), logInfoString);
             _userRoleCommandService.Remove(previousRoles, logInfoString);
 
             int zoneCount = await _zoneCountQueryAddhoc.GetCount(userUpdateDto.SelectedZoneIds, cancellationToken);

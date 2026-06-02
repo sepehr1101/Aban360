@@ -21,15 +21,9 @@ namespace Aban360.ReportPool.Application.Features.Requests.Handlers.Implementati
         {
             string title = ReportLiterals.ReceivedSms;
             IEnumerable<ReceivedSmsDataOutputDto> receivedSmsList = await _receivedSmsDetailQueryService.Get(inputDto);
-            double div = (double)(receivedSmsList?.Count() ?? 0 )/ (double)inputDto.PageSize;
-            int totalPages = (int)Math.Ceiling(div);
 
-            IEnumerable<ReceivedSmsDataOutputDto> data = receivedSmsList
-                .OrderByDescending(r => r.DateAndTime)
-                .Skip((inputDto.PageNumber - 1) * inputDto.PageSize)
-                .Take(inputDto.PageSize);
-            ReceivedSmsHeaderOutputDto header = new(data.Count(), inputDto.PageNumber, title, receivedSmsList?.Count() ?? 0, totalPages);
-            ReportOutput<ReceivedSmsHeaderOutputDto, ReceivedSmsDataOutputDto> result = new(title, header, data);
+            ReceivedSmsHeaderOutputDto header = new(title, receivedSmsList.Count());
+            ReportOutput<ReceivedSmsHeaderOutputDto, ReceivedSmsDataOutputDto> result = new(title, header, receivedSmsList);
             return result;
         }
     }

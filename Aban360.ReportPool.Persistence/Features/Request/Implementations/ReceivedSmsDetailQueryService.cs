@@ -22,7 +22,7 @@ namespace Aban360.ReportPool.Persistence.Features.Request.Implementations
         }
         private string GetQuery()
         {
-            return @"Select 
+            return @"Select TOP 10000
 	                    Id,
 	                    SenderNumber,
 	                    RecipientNumber,
