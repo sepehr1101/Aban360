@@ -6,11 +6,19 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Validations
 {
-    public class NonPermanentBranchValidator : BaseValidator<NonPermanentBranchInputDto>
+    public class ClientGuildValidator : BaseValidator<ClientGuildInputDto>
     {
-        public NonPermanentBranchValidator()
+        public ClientGuildValidator()
         {
-            RuleFor(customer => customer.ZoneIds)
+            RuleFor(g => g.ZoneIds)
+           .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+           .NotNull().WithMessage(ExceptionLiterals.NotNull);
+
+            RuleFor(g => g.FromDateJalali)
+           .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+           .NotNull().WithMessage(ExceptionLiterals.NotNull);
+
+            RuleFor(g => g.ToDateJalali)
            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
            .NotNull().WithMessage(ExceptionLiterals.NotNull);
         }

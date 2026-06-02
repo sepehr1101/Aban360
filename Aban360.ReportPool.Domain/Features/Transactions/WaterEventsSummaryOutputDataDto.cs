@@ -41,5 +41,6 @@
         public int CounterStateCode { get; set; }
         public string CounterStateTitle { get; set; }
         public string ReadingStateTitle { get; set; }
+        public bool IsReturned { get; set; }
     }
 }

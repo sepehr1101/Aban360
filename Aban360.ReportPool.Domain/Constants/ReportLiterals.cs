@@ -247,6 +247,9 @@
 
         public static string WaterSaleSummary { get { return " خلاصه فروش آب‌بها "; } }
         public static string WaterSaleDetail { get { return " جزئیات فروش آب‌بها "; } }
+        
+        public static string ClientGuildSummary { get { return " خلاصه اصناف "; } }
+        public static string ClientGuildDetail { get { return " جزئیات اصناف "; } }
 
         public static string UspFinancial2 { get { return "گزارش درامد2"; } }
         public static string UspPayment2 { get { return "گزارش وصولی 2"; } }

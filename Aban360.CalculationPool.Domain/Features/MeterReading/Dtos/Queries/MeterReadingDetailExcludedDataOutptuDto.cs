@@ -15,6 +15,7 @@
         public int FlowImportedId { get; set; }
         public string ReadingNumber { get; set; }
         public int CurrentCounterStateCode { get; set; }
+        public string CurrentCounterStateTitle { get; set; }
         public string PreviousDateJalali { get; set; }
         public string CurrentDateJalali { get; set; }
         public int PreviousNumber { get; set; }
@@ -27,8 +28,8 @@
         public string UsageTitle { get; set; }
         public int BranchTypeId { get; set; }
         public string BranchTypeTitle { get; set; }
-        public int ConsumptionUsageId { get; set; }
-        public string ConsumptionUsageTitle { get; set; }
+        public int UsageConsumptionId { get; set; }
+        public string UsageConsumptionTitle { get; set; }
         public string CommercialUnit { get; set; }
         public string DomesticUnit { get; set; }
         public string OtherUnit { get; set; }
