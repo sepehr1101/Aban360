@@ -1,20 +1,15 @@
-﻿namespace Aban360.ReportPool.Domain.Features.InvoiceInfo.Dto
+﻿using DNTPersianUtils.Core;
+
+namespace Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs
 {
-    public record BillItemsGetDto
+    public record WaterDiscountSummaryHeaderOutputDto
     {
-        public int Id { get; set; }
-        public int CustomerNumber { get; set; }
-        public string BillId { get; set; }
-        public int RegionId { get; set; }
-        public string RegionTitle { get; set; }
-        public int ZoneId { get; set; }
-        public string ZoneTitle { get; set; }
-        public int UsageId { get; set; }
-        public string UsageTitle { get; set; }
-        public int BranchTypeId { get; set; }
-        public string BranchTypeTitle { get; set; }
-        public int Consumption { get; set; }
-        public float ConsumptionAverage { get; set; }
+        public string FromDateJalali { get; set; }
+        public string ToDateJalali { get; set; }
+        public int RecordCount { get; set; }
+        public string ReportDateJalali { get; set; } = DateTime.Now.ToShortPersianDateString();
+        public string Title { get; set; }
+        public int BillCount { get; set; }
 
         public long AbBaha { get; set; }
         public long FazelabBaha { get; set; }
@@ -34,6 +29,5 @@
         public long GhanonBoodje { get; set; }
         public long JavazemKahande { get; set; }
         public long AvarezSanati { get; set; }
-
     }
 }

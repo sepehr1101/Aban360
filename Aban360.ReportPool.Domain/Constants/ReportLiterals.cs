@@ -250,6 +250,9 @@
         
         public static string ClientGuildSummary { get { return " خلاصه اصناف "; } }
         public static string ClientGuildDetail { get { return " جزئیات اصناف "; } }
+        
+        public static string WaterDiscountSummary { get { return " خلاصه تخفیفات آب‌بها "; } }
+        public static string WaterDiscountDetail { get { return " جزئیات تخفیفات آب‌بها "; } }
 
         public static string UspFinancial2 { get { return "گزارش درامد2"; } }
         public static string UspPayment2 { get { return "گزارش وصولی 2"; } }

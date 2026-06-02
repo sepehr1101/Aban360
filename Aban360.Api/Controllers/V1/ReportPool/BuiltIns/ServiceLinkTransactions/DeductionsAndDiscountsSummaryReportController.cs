@@ -37,7 +37,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         }
 
         [HttpPost, HttpGet]
-        [Route("eDeductionsAndDiscountcel/{connectionId}")]
+        [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetEDeductionsAndDiscountcel(string connectionId, DeductionsAndDiscountsReportInputDto inputDto, CancellationToken cancellationToken)
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _deductionsAndDiscountsSummaryReportHandler.Handle, CurrentUser, ReportLiterals.DeductionsAndDiscountsReportSummary, connectionId);
