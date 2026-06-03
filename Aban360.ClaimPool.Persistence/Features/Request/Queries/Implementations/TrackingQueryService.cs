@@ -2,6 +2,7 @@
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Dapper;
 using Microsoft.Extensions.Configuration;
@@ -62,6 +63,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             TrackingOutputDto secondToLatest = result.OrderBy(x => x.InsertDateTimeGregorian).FirstOrDefault();
             secondToLatest.StringTrackNumber = trackNumber.ToString().PadLeft(11, '0');
             return secondToLatest;
+        }
+        public async Task<IEnumerable<TrackingOutputDto>> GetByStatus(TrackingByStatusInputDto input)
+        {
+            string query = GetByStatusIdQuery();
+            IEnumerable<TrackingOutputDto> result = await _sqlReportConnection.QueryAsync<TrackingOutputDto>(query, input);
+            result.ForEach(r => r.StringTrackNumber = r.TrackNumber.ToString().PadLeft(11, '0'));
+            return result;
         }
         public async Task<IEnumerable<TrackingKartableDataOutputDto>> GetAllOpenRequest(IEnumerable<int> zoneIds, IEnumerable<int> statusIds)
         {
@@ -215,6 +223,46 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 					Join Db70.dbo.T46 t46
 						ON t51.C1=t46.C0
                     Where t.TrackNumber=@TrackNumber 
+					Order By t.DateAndTime Desc";
+        }
+        private string GetByStatusIdQuery()
+        {
+            return $@"Select 
+                    	t.TrackID,
+                    	t.TrackNumber,
+                        t.BillID,
+						t46.C0 RegionId,
+						t46.C2 RegionTitle,
+                    	t.ZoneID, 
+						t51.C2 ZoneTitle,
+                    	t.DateTimeJalali InsertDateJalali,
+                    	t.ServiceGroup_FK ServiceGroupId,
+                    	sg.Title ServiceGroupTitle,
+                    	t.Status StatusId,
+                    	s.Description StatusTitle,
+                    	t.InserrtedBy ,
+                    	t.Description,
+                    	t.NotificationMobile,
+                    	t.NeighbourBillId,
+						t.Caller,
+						t.RequestOrigin RequestOriginId,
+						r.C1 RequestOrigin,
+                        t.DateAndTime InsertDateTimeGregorian
+                    From AbAndFazelab.dbo.Tracking t
+                    Join AbAndFazelab.dbo.Status s
+                    	ON t.Status=s.StatusID
+                    Join AbAndFazelab.dbo.ServiceGroup sg
+                    	ON t.ServiceGroup_FK=sg.Id
+					Join Db70.dbo.T51 t51
+						ON t.ZoneID=t51.C0
+					Join Db70.dbo.T46 t46
+						ON t51.C1=t46.C0
+					Join Db70.dbo.RequestOrigins r
+						ON t.RequestOrigin=r.C0
+                    Where 
+						t.ZoneID IN @ZoneIds AND
+						t.Status=@StatusId AND 
+						IsConsiderd=0
 					Order By t.DateAndTime Desc";
         }
         private string GetAllOpenTrackingQuery()
