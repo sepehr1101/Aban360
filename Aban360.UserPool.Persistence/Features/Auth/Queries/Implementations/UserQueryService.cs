@@ -119,7 +119,7 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
             return await _users
                 .AnyAsync(user =>
                      user.Username == userCreateDto.Username ||
-                     user.FullName == userCreateDto.FullName);
+                     (user.FullName == userCreateDto.FullName && user.Mobile == userCreateDto.Mobile));
         }
 
         private string GetSearchUserQuery(string zoneIdCondition, string endpointIdCondition, string roleIdCondition,
