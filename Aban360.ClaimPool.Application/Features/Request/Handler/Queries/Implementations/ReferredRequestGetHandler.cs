@@ -13,7 +13,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
     {
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly ICommonZoneService _commonZoneService;
-        static string _title = "کارتابل درخواست‌های ارجاع شده";
+        static string _title = "کارتابل درخواست‌های ارجاع داخلی";
         static int _referredStatusId = 160;
         public ReferredRequestGetHandler(
             ITrackingQueryService trackingQueryService,
