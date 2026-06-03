@@ -8,6 +8,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts
         Task<TrackingOutputDto> Get(Guid trackId);
         Task<TrackingOutputDto> GetLatest(int trackNumber, bool hasException = true);
         Task<TrackingOutputDto> GetSecondToLatest(int trackNumber);
+        Task<IEnumerable<TrackingOutputDto>> GetByStatus(TrackingByStatusInputDto input);
         Task<IEnumerable<TrackingKartableDataOutputDto>> GetAllOpenRequest(IEnumerable<int> zoneIds, IEnumerable<int> statusIds);
         Task<IEnumerable<TrackingKartableDataOutputDto>> GetAllArchivedRequest();
         Task<IEnumerable<UnconfirmedRequestDataOutputDto>> GetUnconfirmedRequestByZoneId(int zoneId);
