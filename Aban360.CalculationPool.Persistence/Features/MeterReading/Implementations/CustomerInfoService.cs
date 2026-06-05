@@ -6,7 +6,10 @@ using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Dapper;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementations
 {
@@ -21,8 +24,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         private async Task<ZoneIdAndCustomerNumberGetDto> GetZoneIdAndCustomerNumber(string billId)
         {
             string query = GetZoneIdAndCustomerNumberQuery();
-            ZoneIdAndCustomerNumberGetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZoneIdAndCustomerNumberGetDto>(query, new { billId = billId });			
-			if (result is null)
+            ZoneIdAndCustomerNumberGetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZoneIdAndCustomerNumberGetDto>(query, new { billId = billId });
+            if (result is null)
             {
                 throw new InvalidBillIdException(ExceptionLiterals.BillIdNotFound);
             }
@@ -45,13 +48,43 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         public async Task<CustomersInfoGetDto> Get(int zoneId, ICollection<int> customerNumbers)
         {
             string dbName = GetDbName(zoneId);
-            string memberQuery = GetAllMembers(dbName);
-            string bedBesQuery = GetAllBedBesQuery(dbName);
-            string tavizQuery = GetAllTavisQuery(dbName);
+            string memberQuery = GetAllMembers(dbName, false);
+            string bedBesQuery = GetAllBedBesQuery(dbName, false);
+            string tavizQuery = GetAllTavisQuery(dbName, false);
 
             IEnumerable<MembersInfo> membersInfo = await _sqlReportConnection.QueryAsync<MembersInfo>(memberQuery, new { zoneId, customerNumbers });
             IEnumerable<LatesTavizInfo> latestTavizInfo = await _sqlReportConnection.QueryAsync<LatesTavizInfo>(tavizQuery, new { zoneId, customerNumbers });
             IEnumerable<LatestBedBesConsumptionInfo> latestBedBesInfo = await _sqlReportConnection.QueryAsync<LatestBedBesConsumptionInfo>(bedBesQuery, new { zoneId, customerNumbers });
+
+            return new CustomersInfoGetDto(membersInfo, latestBedBesInfo, latestTavizInfo);
+        }
+        public async Task<CustomersInfoGetDto> GetByBulkCopy(IDbConnection connection, IDbTransaction transaction, int zoneId, ICollection<int> customerNumbers)
+        {
+            var table = new DataTable();
+            table.Columns.Add("ZoneId", typeof(int));
+            table.Columns.Add("CustomerNumbers", typeof(int));
+            foreach (var item in customerNumbers)
+                table.Rows.Add(zoneId, item);
+
+            string tempTableCreateCommand = "Create Table #TempCustomerNumbers" +
+                                                "(ZoneId int Not Null," +
+                                                "CustomerNumber int Not NUll)";
+            await connection.ExecuteAsync(tempTableCreateCommand, null, transaction);
+            using (var bulkCopy = new SqlBulkCopy((SqlConnection)connection, SqlBulkCopyOptions.Default, (SqlTransaction)transaction))
+            {
+                bulkCopy.DestinationTableName = "#TempCustomerNumbers";
+                bulkCopy.BatchSize = 10000;
+                await bulkCopy.WriteToServerAsync(table);
+            }
+
+            string dbName = GetDbName(zoneId);
+            string memberQuery = GetAllMembers(dbName, true);
+            string bedBesQuery = GetAllBedBesQuery(dbName, true);
+            string tavizQuery = GetAllTavisQuery(dbName, true);
+
+            IEnumerable<MembersInfo> membersInfo = await connection.QueryAsync<MembersInfo>(memberQuery, null, transaction);
+            IEnumerable<LatesTavizInfo> latestTavizInfo = await connection.QueryAsync<LatesTavizInfo>(tavizQuery, null, transaction);
+            IEnumerable<LatestBedBesConsumptionInfo> latestBedBesInfo = await connection.QueryAsync<LatestBedBesConsumptionInfo>(bedBesQuery, null, transaction);
 
             return new CustomersInfoGetDto(membersInfo, latestBedBesInfo, latestTavizInfo);
         }
@@ -150,9 +183,15 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         }
 
 
-        private string GetAllMembers(string dbName)
+        private string GetAllMembers(string dbName, bool isSqlBulkCopy)
         {
-
+            string conditionQuery = isSqlBulkCopy ?
+                @"Join #TempCustomerNumbers t 
+					ON 	m.town = t.ZoneId AND
+						m.radif = t.CustomerNumber" :
+                @"Where 
+						m.town = @zoneId AND
+						m.radif IN @customerNumbers";
             return @$"Select
 						m.town as ZoneId,
 						m.radif as CustomerNumber,
@@ -180,12 +219,18 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 						m.Khali_s as EmptyUnit,
 						Trim(m.serial_co) as BodySerial
 					From [{dbName}].dbo.members m
-					Where 
-						m.town=@zoneId AND
-						m.radif IN @customerNumbers;";
+					{conditionQuery};";
         }
-        private string GetAllBedBesQuery(string dbName)
+        private string GetAllBedBesQuery(string dbName, bool isSqlBulkCopy)
         {
+            string conditionQuery = isSqlBulkCopy ?
+                @"Join #TempCustomerNumbers t 
+					ON 	b.town = t.ZoneId AND
+						b.radif = t.CustomerNumber" :
+                @"Where 
+						b.town = @zoneId AND
+						b.radif IN @customerNumbers";
+
             return $@";With CTE AS (
 						Select 
 							b.town,
@@ -198,7 +243,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 							b.cod_vas,
 							RN= ROW_NUMBER() OVER(Partition By b.radif Order By b.today_date DESC)
 						From [{dbName}].dbo.bed_bes b
-						where b.radif in @customerNumbers
+						{conditionQuery}
 					)
 					Select
 						c.radif as CustomerNumber,
@@ -209,13 +254,17 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 						c.cod_vas as LastCounterStateCode,
 						c.baha as LastSumItems
 					From CTE c
-					Where
-						c.town=@zoneId AND
-						c.radif IN @customerNumbers AND
-						c.RN=1";
+					Where c.RN=1";
         }
-        private string GetAllTavisQuery(string dbName)
+        private string GetAllTavisQuery(string dbName, bool isSqlBulkCopy)
         {
+            string conditionQuery = isSqlBulkCopy ?
+                @"Join #TempCustomerNumbers tc 
+					ON 	t.town = tc.ZoneId AND
+						t.radif = tc.CustomerNumber" :
+                @"Where 
+						t.town = @zoneId AND
+						t.radif IN @customerNumbers";
             return $@";With CTE AS (
 						Select 
 							t.town,
@@ -226,7 +275,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 							t.taviz_no,
 							RN= ROW_NUMBER() OVER(Partition By t.radif Order By t.taviz_date DESC)
 						From [{dbName}].dbo.taviz t
-						where t.radif in @customerNumbers
+						{conditionQuery}
 					)
 					Select
 						c.radif as CustomerNumber,
@@ -235,10 +284,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 						c.date_sabt as TavizRegisterDateJalali,
 						c.taviz_no as TavizNumber
 					From CTE c
-					Where
-						c.town=@zoneId AND
-						c.radif IN @customerNumbers AND
-						c.RN=1";
+					Where c.RN=1";
         }
         private string GetMembersBedBesQueru(string dbName)
         {
