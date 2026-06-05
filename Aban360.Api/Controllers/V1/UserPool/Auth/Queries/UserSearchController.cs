@@ -26,7 +26,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
         [HttpPost]
         [Route("search")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<UserQueryDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetParamsOfCreate(SearchUserDto inputDto,CancellationToken cancellationToken)
+        public async Task<IActionResult> Search(SearchUserDto inputDto,CancellationToken cancellationToken)
         {
             IEnumerable<UserQueryDto> userParamsOfCreateDto = await _userSearch.Handle(inputDto,cancellationToken);
             return Ok(userParamsOfCreateDto);
@@ -35,7 +35,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
         [HttpGet, HttpPost]
         [Route("search-by-role/{roleId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<UserQueryDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetParamsOfCreate(int roleId,CancellationToken cancellationToken)
+        public async Task<IActionResult> SearchByRoleId(int roleId,CancellationToken cancellationToken)
         {
             IEnumerable<UserQueryDto> users = await _userSearchByRoleIdHandler.Handle(roleId, cancellationToken);
             return Ok(users);

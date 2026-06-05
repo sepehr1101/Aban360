@@ -7,6 +7,7 @@ namespace Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts
     {
         Task<string> GetDownloadLink(string uuid, bool oneTimeUse);
         Task<byte[]> GetFileBinary(string documentId);
+        Task<FileListResponse> GetRemovedFiles(string directory);
         Task<FileListResponse> GetFilesDiscount(string id);
         Task<FileListResponse> GetFilesTracknumber(string r_trackNumber);
         Task<FileListResponse> GetFilesByBillId(string billId);

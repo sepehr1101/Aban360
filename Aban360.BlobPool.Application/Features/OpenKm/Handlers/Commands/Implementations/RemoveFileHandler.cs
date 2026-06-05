@@ -27,7 +27,6 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
             string directory = removeFileDto.IsBillId ? removeFileDto.FolderName : $"r_{removeFileDto.FolderName}";
             await _createFolderHandler.Handle(deleteFolderName, cancellationToken, $"{directory}");
             await _openKmQueryService.Move(removeFileDto.Uuid, $"{directory}/{deleteFolderName}");
-
         }
     }
 }

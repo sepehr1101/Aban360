@@ -56,7 +56,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         private string GetUpdateCommand(string dbName)
         {
             return $@"Update [{dbName}].dbo.ghest_ab 
-                    Set mohlat=@dueDateJalali , pard=@amount
+                    Set mohlat=@DeadLineDateJalali , pard=@amount
                     where 
                     	ID=@id AND
                     	town=@zoneId AND

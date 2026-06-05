@@ -103,6 +103,11 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             return new AuthenticationHeaderValue(token.TokenType, token.AccessToken);
         }
 
+        public async Task<FileListResponse> GetRemovedFiles(string directory)
+        {
+            string fldId = $"{_options.BaseDirectoryPath}{directory}/deleted";
+            return await GetChildren(fldId, false);
+        }
         public async Task<FileListResponse> GetFilesTracknumber(string r_trackNumber)
         {
             string fldId = $"{_options.BaseDirectoryPath}{r_trackNumber}";

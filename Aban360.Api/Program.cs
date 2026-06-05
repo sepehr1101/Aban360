@@ -1,5 +1,6 @@
 using Aban360.Api.ExceptionHandlers;
 using Aban360.Api.Extensions;
+using Aban360.Api.Filters;
 using Aban360.Api.Hubs.Implementations;
 using Microsoft.Extensions.FileProviders;
 
@@ -11,7 +12,7 @@ var configuration = builder.Configuration;
 builder.Services.AddDI();
 builder.Services.AddAuth(configuration);
 //builder.Services.AddControllers(options =>
-//    options.Filters.Add<BillIdAuthorizationFilter>()
+//    options.Filters.Add<EndpointAuthorizationFilter>()
 //);
 builder.Services.AddHttpContextAccessor();
 

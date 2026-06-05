@@ -58,8 +58,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             BillInstallmentOutputDto billInstallmentInfo = await _ghestAbQueryService.Get(zoneIdAndCustomerNumber, inputDto.Id);
             DateValidate(billInstallmentInfo);
 
-            BillInstallmentUpdateDto updateDto = new(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber, inputDto.Id, inputDto.DueDateJalali, inputDto.Amount);
-            string logText = string.Format(Literals.BillInstallmentUpdateOpLog, inputDto.BillId, inputDto.Id, billInstallmentInfo.Payable, inputDto.Amount, billInstallmentInfo.DeadLineDateJalali, inputDto.DueDateJalali);
+            BillInstallmentUpdateDto updateDto = new(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber, inputDto.Id, inputDto.DeadLineDateJalali, inputDto.Amount);
+            string logText = string.Format(Literals.BillInstallmentUpdateOpLog, inputDto.BillId, inputDto.Id, billInstallmentInfo.Payable, inputDto.Amount, billInstallmentInfo.DeadLineDateJalali, inputDto.DeadLineDateJalali);
 
             await SqlCommands(updateDto, appUser, logText);
             return GetResult(inputDto, billInstallmentInfo);
@@ -113,7 +113,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         {
             return new BillInstallmentDataOutputDto()
             {
-                DeadLineDateJalali = inputDto.DueDateJalali,
+                DeadLineDateJalali = inputDto.DeadLineDateJalali,
                 Payable = inputDto.Amount,
                 QueueNumber = billInstallmentInfo.QueueNumber,
                 BillId = inputDto.BillId,

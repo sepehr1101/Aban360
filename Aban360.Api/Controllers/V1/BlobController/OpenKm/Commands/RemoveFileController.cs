@@ -20,7 +20,6 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Commands
         [HttpPost, HttpDelete]
         [Route("remove-file")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<string>), StatusCodes.Status200OK)]
-        [AllowAnonymous]
         public async Task<IActionResult> RemoveFile([FromBody] RemoveFileDto removeFileDto, CancellationToken cancellation)
         {
             await _removeFileHandler.Handle(removeFileDto, cancellation);
