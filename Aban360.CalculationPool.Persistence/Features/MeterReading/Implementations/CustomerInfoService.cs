@@ -79,7 +79,6 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 
             string dbName = GetDbName(zoneId);
             string memberQuery = GetAllMembers(dbName, true);
-			Console.WriteLine(memberQuery);
             string bedBesQuery = GetAllBedBesQuery(dbName, true);
             string tavizQuery = GetAllTavisQuery(dbName, true);
 
