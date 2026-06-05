@@ -5,14 +5,14 @@
         public int ZoneId { get; set; }
         public int CustomerNumber { get; set; }
         public int Id { get; set; }
-        public string DueDateJalali { get; set; }
+        public string DeadLineDateJalali { get; set; }
         public long Amount { get; set; }
-        public BillInstallmentUpdateDto(int zoneId,int customerNumber,int id,string dueDateJalali,long amount)
+        public BillInstallmentUpdateDto(int zoneId,int customerNumber,int id,string deadlineDateJalali,long amount)
         {
             ZoneId = zoneId;
             CustomerNumber = customerNumber;
             Id = id;
-            DueDateJalali = dueDateJalali;
+            DeadLineDateJalali = deadlineDateJalali;
             Amount = amount;
         }
         public BillInstallmentUpdateDto()

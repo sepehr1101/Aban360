@@ -14,7 +14,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Validations
                 .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(b => b.DueDateJalali)
+            RuleFor(b => b.DeadLineDateJalali)
                 .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
 

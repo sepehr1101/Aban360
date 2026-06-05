@@ -2,7 +2,7 @@
 {
     public record InstallmentDataInputDto
     {
-        public string DueDateJalali { get; set; }
+        public string DeadLineDateJalali { get; set; } = default!;
         public long Amount { get; set; }
     }
 }

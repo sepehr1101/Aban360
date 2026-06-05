@@ -6,4 +6,10 @@
         public bool IsBillId { get; set; }
         public string Uuid { get; set; } = default!;
     }
+
+    public record RemovedFilesInput
+    {
+        public string FolderName { get; set; } = default!;
+        public bool IsBillId { get; set; }
+    }
 }
