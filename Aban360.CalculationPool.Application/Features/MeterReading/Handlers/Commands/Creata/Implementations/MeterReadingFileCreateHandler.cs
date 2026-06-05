@@ -218,6 +218,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             ICollection<MeterReadingFileDetail> meterReadings = ReadDb(filePath, userId);
             MeterReadingFileDetail firstMeterDetail = meterReadings.FirstOrDefault();
             MeterFlowCreateDto importedMeterFlow = GetMeterFlowCreateDto(MeterFlowStepEnum.Imported, meterFile.ReadingFile.FileName, firstMeterDetail.ZoneId, userId, meterFile.Description);
+            CustomersInfoGetDto customersInfo;
             int meterFlowId = 0;
 
             using (IDbConnection connection = _sqlReportConnection)
@@ -228,12 +229,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 {
                     MeterFlowCommandService meterflowCommandService = new(connection, transaction);
                     meterFlowId = await meterflowCommandService.Insert(importedMeterFlow);
+                    customersInfo = await _customerInfoService.GetByBulkCopy(connection, transaction, firstMeterDetail.ZoneId, meterReadings.Select(m => m.CustomerNumber).ToList());
 
                     transaction.Commit();
                 }
             }
 
-            CustomersInfoGetDto customersInfo = await _customerInfoService.Get(firstMeterDetail.ZoneId, meterReadings.Select(m => m.CustomerNumber).ToList());
             IEnumerable<MeterReadingDetailCreateDto> meterReadingsDetailCreate = GetReadingMeterDetails(meterReadings, customersInfo, meterFlowId);
 
             return meterReadingsDetailCreate;
