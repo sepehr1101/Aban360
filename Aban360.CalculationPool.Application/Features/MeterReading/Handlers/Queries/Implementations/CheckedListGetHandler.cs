@@ -41,7 +41,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         }
         public async Task<ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCheckedDto>> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
         {
-            //await _meterFlowValidationGetHandler.Handle(latestFlowId, cancellationToken);
+            await _meterFlowValidationGetHandler.Handle(latestFlowId, cancellationToken);
             int firstFlowId = await _meterFlowService.GetFirstFlowId(latestFlowId);
             MeterFlowStepEnum latestFlowStep = (await _meterFlowService.Get(latestFlowId)).MeterFlowStepId;
 
@@ -56,14 +56,17 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             int[] closedAndObstacleCounterState = { 4, 7, 8 };
             MeterReadingDetailHeaderOutputDto header = new MeterReadingDetailHeaderOutputDto()
             {
-                Amount = data.Sum(m => m.SumItems) ?? 0,
-                Consumption = data.Sum(m => m.Consumption) ?? 0,
-                RecordCount = data.Count(),
-                Closed = data.Count(r => r.CurrentCounterStateCode == 4),
-                Obstacle = data.Count(r => r.CurrentCounterStateCode == 7),
-                Temporarily = data.Count(r => r.CurrentCounterStateCode == 8),
-                PureReading = data.Count(r => !closedAndObstacleCounterState.Contains(r.CurrentCounterStateCode)),
-                Ruined = data.Count(r => r.CurrentCounterStateCode == 1)
+                Amount = data?.Sum(m => m.SumItems) ?? 0,
+                Consumption = data?.Sum(m => m.Consumption) ?? 0,
+                RecordCount = data?.Count() ?? 0,
+                FromReadingNumber = data?.Min(m => m.ReadingNumber) ?? string.Empty,
+                ToReadingNumber = data?.Max(m => m.ReadingNumber) ?? string.Empty,
+
+                Closed = data?.Count(r => r.CurrentCounterStateCode == 4) ?? 0,
+                Obstacle = data?.Count(r => r.CurrentCounterStateCode == 7) ?? 0,
+                Temporarily = data?.Count(r => r.CurrentCounterStateCode == 8) ?? 0,
+                PureReading = data?.Count(r => !closedAndObstacleCounterState.Contains(r.CurrentCounterStateCode)) ?? 0,
+                Ruined = data?.Count(r => r.CurrentCounterStateCode == 1) ?? 0
             };
             ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCheckedDto> result = new(_reportTitle, header, data.OrderByDescending(meter => meter.AttentionState));
 

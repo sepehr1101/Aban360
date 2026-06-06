@@ -48,9 +48,6 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
         {
             return await
                 _query
-                .Include(user => user.UserRoles.Where(userRole => userRole.ValidTo == null))
-                    .ThenInclude(userRole => userRole.Role)
-                .Include(user => user.UserClaims.Where(u => u.ValidTo == null && u.ClaimTypeId == ClaimType.DefaultZoneId))
                 .Select(user => new UserQueryDto()
                 {
                     Id = user.Id,
@@ -63,7 +60,7 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
                                         .FirstOrDefault()
                                         .ClaimValue,
                     DefaultZoneTitle = null,
-                    RoleClaimsTitle = string.Join(",", user.UserRoles
+                    RolesTitle = string.Join(",", user.UserRoles
                                                             .Where(userRole => userRole.ValidTo == null)
                                                             .Select(r => r.Role.Title)),
                     MobileConfirmed = user.MobileConfirmed,
