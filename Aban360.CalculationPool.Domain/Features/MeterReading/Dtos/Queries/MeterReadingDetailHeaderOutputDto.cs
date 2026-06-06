@@ -5,6 +5,8 @@
         public int RecordCount { get; set; }
         public double Amount { get; set; }
         public double Consumption { get; set; }
+        public string FromReadingNumber { get; set; }
+        public string ToReadingNumber { get; set; }
 
         public int Closed { get; set; }
         public int Obstacle { get; set; }
