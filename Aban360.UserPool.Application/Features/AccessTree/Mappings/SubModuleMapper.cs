@@ -12,8 +12,10 @@ namespace Aban360.UserPool.Application.Features.AccessTree.Mappings
             CreateMap<SubModuleCreateDto, SubModule>();
             CreateMap<SubModuleDeleteDto, SubModule>();
             CreateMap<SubModuleUpdateDto, SubModule>();
-            CreateMap<SubModule,SubModuleGetDto>()
+            CreateMap<SubModule, SubModuleGetDto>()
                 .ForMember(dest => dest.ModuleTitle, opt => opt.MapFrom(src => src.Module.Title));
+            CreateMap<SubModule, SubModuleWithEndPointGetDto>()
+             .ForMember(dest => dest.ModuleTitle, opt => opt.MapFrom(src => src.Module.Title));
 
         }
     }

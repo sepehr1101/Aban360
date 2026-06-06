@@ -21,7 +21,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
             
             string Sql() => @"select C1 From Db70.dbo.T100 Where C0=@id";
 
-            string? title=await _sqlConnection.QueryFirstOrDefaultAsync<string>(Sql(), new {id=id});
+            string? title=await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(Sql(), new {id=id});
             if (string.IsNullOrWhiteSpace(title))
             {
                 throw new InvalidIdException();

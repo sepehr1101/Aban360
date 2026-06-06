@@ -14,7 +14,8 @@ namespace Aban360.UserPool.Application.Features.AccessTree.Mappings
             CreateMap<ModuleUpdateDto, Module>();
             CreateMap<Module,ModuleGetDto>()
                 .ForMember(dest => dest.AppTitle, opt => opt.MapFrom(src => src.App.Title));
-        
+            CreateMap<Module, ModuleWithSubModuleGetDto>()
+                .ForMember(dest => dest.AppTitle, opt => opt.MapFrom(src => src.App.Title));
         }
     }
 }

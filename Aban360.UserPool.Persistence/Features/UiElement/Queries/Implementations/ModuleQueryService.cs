@@ -28,7 +28,7 @@ namespace Aban360.UserPool.Persistence.Features.UiElement.Queries.Implementation
                 .Where(module => module.IsActive)
                 .ToListAsync();
         }
-        
+
         public async Task<ICollection<Module>> GetInclude()
         {
             return await _modules
@@ -40,13 +40,19 @@ namespace Aban360.UserPool.Persistence.Features.UiElement.Queries.Implementation
         {
             return await _uow.FindOrThrowAsync<Module>(id);
         }
-        
         public async Task<Module> GetInclude(int id)
         {
             return await _modules
                 .Include(m => m.App)
                 .Where(m => m.Id == id)
                 .SingleAsync();
+        }
+        public async Task<IEnumerable<Module>> GetChildrens(int id)
+        {
+            return await _modules
+                .Where(app => app.Id == id)
+                .Include(app => app.SubModules)
+                .ToListAsync();
         }
     }
 }

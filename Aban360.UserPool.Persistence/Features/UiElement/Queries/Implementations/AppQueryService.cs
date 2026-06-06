@@ -32,5 +32,12 @@ namespace Aban360.UserPool.Persistence.Features.UiElement.Queries.Implementation
         {
             return await _uow.FindOrThrowAsync<App>(id);
         }
+        public async Task<IEnumerable<App>> GetChildrens(int id)
+        {
+            return await _apps
+                .Where(app => app.Id == id)
+                .Include(app => app.Modules)
+                .ToListAsync();
+        }
     }
 }

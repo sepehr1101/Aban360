@@ -13,6 +13,7 @@ namespace Aban360.UserPool.Application.Features.AccessTree.Mappings
             CreateMap<AppDeleteDto, App>();
             CreateMap<AppUpdateDto, App>();
             CreateMap<App,AppGetDto>();
+            CreateMap<App,AppWithModuleGetDto>();
         }
     }
 }
