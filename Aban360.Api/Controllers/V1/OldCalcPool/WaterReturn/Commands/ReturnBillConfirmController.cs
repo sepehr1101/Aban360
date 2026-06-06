@@ -23,15 +23,6 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
             _returnSetConfirmHandler.NotNull(nameof(returnSetConfirmHandler));
         }
 
-        //[HttpPost, HttpGet]
-        //[Route("confirm")]
-        //[ProducesResponseType(typeof(ApiResponseEnvelope<ReturnBillDataOutputDto>), StatusCodes.Status200OK)]
-        //public async Task<IActionResult> Confirm([FromBody] ReturnBillConfirmeByBillIdInputDto input, CancellationToken cancellationToken)
-        //{
-        //    ReturnBillDataOutputDto result = await _returnConfirmHandler.Handle(input, cancellationToken);
-        //    return Ok(result);
-        //}
-
         [HttpPost]
         [Route("confirm")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>>), StatusCodes.Status200OK)]

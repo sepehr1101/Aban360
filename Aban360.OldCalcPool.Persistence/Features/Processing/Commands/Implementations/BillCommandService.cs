@@ -361,7 +361,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                          NULL ReturnCauseId,
                          NULL,
                          b.noe_va,
-                         IIF(b.ghabs='2' AND b.cod_vas NOT IN(4,7,8),1,0) IsSettlement
+                         IIF(b.ghabs='2' AND b.cod_vas NOT IN(4,7,8),1,0) IsSettlement,
+                         0 OldDbDel,
+                         0 OldDbSerial
                     FROM [{dbName}].dbo.bed_bes b
                     JOIN Db70.dbo.T51 z
                     	ON b.town=z.C0
@@ -496,7 +498,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     	rc.Id,
                     	rc.Title,
                     	b.noe_va,
-                    	0 IsSettlement
+                    	0 IsSettlement,
+                        0 OldDbDel ,
+                        0 OldDbSerial
                     from [{dbName}].dbo.REPAIR b
                     join Db70.dbo.T51 z
                     	on b.town=z.C0
