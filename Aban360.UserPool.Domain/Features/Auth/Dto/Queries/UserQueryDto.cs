@@ -9,7 +9,7 @@
         public string Mobile { get; set; } = null!;
         public string? DefaultZoneId { get; set; }
         public string? DefaultZoneTitle { get; set; } 
-        public string RoleClaimsTitle { get; set; }=null!;
+        public string RolesTitle { get; set; }=null!;
         public bool MobileConfirmed { get; set; }
         public bool HasTwoStepVerification { get; set; }
         public bool IsLocked { get; set; }
