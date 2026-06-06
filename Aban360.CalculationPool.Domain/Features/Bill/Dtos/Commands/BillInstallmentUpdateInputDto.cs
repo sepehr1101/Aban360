@@ -2,9 +2,9 @@
 {
     public record BillInstallmentUpdateInputDto
     {
-        public string  BillId { get; set; }
+        public string BillId { get; set; } = default!;
         public int Id { get; set; }
-        public string DueDateJalali { get; set; }
+        public string DeadLineDateJalali { get; set; } = default!;
         public long Amount { get; set; }
     }
 }

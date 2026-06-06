@@ -187,6 +187,7 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Implemen
                     	town=@zoneId AND
                     	radif=@customerNumber AND
                     	elat=@returnCauseId AND
+                        serial<>7 AND
                     	date_bed BETWEEN @fromDateJalali AND @toDateJalali
                     Order by date_bed Desc";
         }

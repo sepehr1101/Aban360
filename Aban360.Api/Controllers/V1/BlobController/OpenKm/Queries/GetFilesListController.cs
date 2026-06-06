@@ -1,25 +1,28 @@
-﻿using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Contracts;
+﻿using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Contracts;
+using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Contracts;
 using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Implementations;
+using Aban360.BlobPool.Domain.Features.OpenKm;
 using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.InteropServices;
 
 namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
 {
     [Route("v1/open-km")]
-    public class GetFilesByBillIdController : BaseController
+    public class GetFilesListController : BaseController
     {
         private readonly IGetFilesByBillId _getFilesByBillIdHandler;
         private readonly IGetFilesDiscount _discountHandler;
         private readonly IGetFilesRequest _requestHandler;
+        private readonly IDisplayRemovedFilesHandler _displayRemovedFilesHandler;
 
-        public GetFilesByBillIdController(
+        public GetFilesListController(
             IGetFilesByBillId getFilesByBillIdHandler,
             IGetFilesDiscount getFilesDiscountHandler,
-            IGetFilesRequest getFilesRequest)
+            IGetFilesRequest getFilesRequest,
+            IDisplayRemovedFilesHandler displayRemovedFilesHandler)
         {
             _getFilesByBillIdHandler = getFilesByBillIdHandler;
             _getFilesByBillIdHandler.NotNull(nameof(getFilesByBillIdHandler));
@@ -29,6 +32,8 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
 
             _requestHandler = getFilesRequest;
             _requestHandler.NotNull(nameof(getFilesRequest));
+
+            _displayRemovedFilesHandler=displayRemovedFilesHandler;
         }
 
         [HttpGet]
@@ -52,10 +57,18 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
         [HttpGet]
         [Route("request-directory-tree")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<FileListResponse>), StatusCodes.Status200OK)]
-        [AllowAnonymous]
         public async Task<IActionResult> GetRequestDirectoryTree(string input, CancellationToken cancellation)
         {
             FileListResponse result = await _requestHandler.Handle(input, cancellation);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("removed-directory-tree")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<FileListResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetRemovedTree([FromBody]RemovedFilesInput input, CancellationToken cancellation)
+        {
+            FileListResponse result = await _displayRemovedFilesHandler.Handle(input, cancellation);
             return Ok(result);
         }
     }

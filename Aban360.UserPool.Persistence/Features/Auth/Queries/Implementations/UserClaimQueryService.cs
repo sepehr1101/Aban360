@@ -53,6 +53,15 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
                     userClaim.ValidTo == null)
                 .ToListAsync();
         }
+        public async Task<bool> HasValue(Guid userId, ClaimType claimType, string value)
+        {
+            return await _userClaims
+                .AnyAsync(userClaim => 
+                    userClaim.UserId==userId &&
+                    userClaim.ValidTo == null &&
+                    userClaim.ClaimTypeId == claimType &&
+                    userClaim.ClaimValue == value);
+        }
 
         public async Task<(ICollection<Guid>, ICollection<UserClaim>)> Get(int roleId, ClaimType claimType)
         {

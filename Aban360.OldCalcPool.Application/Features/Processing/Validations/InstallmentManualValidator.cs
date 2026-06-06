@@ -25,7 +25,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Validations
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
             foreach (var installment in Installments)
             {
-                if (installment.DueDateJalali.CompareTo(currentDateJalali) < 0)
+                if (installment.DeadLineDateJalali.CompareTo(currentDateJalali) < 0)
                 {
                     return false;
                 }

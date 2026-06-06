@@ -90,7 +90,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     CustomerNumber = memberInfo.CustomerNumber,
                     ReadingNumber = memberInfo.ReadingNumber,
                     Barge = input.IsConfirm ? (int)rangeBarge[i] : 0,
-                    DeadLineDateJalali = input.Installments?.ElementAt(i)?.DueDateJalali ?? string.Empty,
+                    DeadLineDateJalali = input.Installments?.ElementAt(i)?.DeadLineDateJalali ?? string.Empty,
                     Payable = input.Installments?.ElementAt(i).Amount ?? 0,
                     UsageId = memberInfo.UsageId,
                     MeterDiameterId = memberInfo.MeterDiameterId,
