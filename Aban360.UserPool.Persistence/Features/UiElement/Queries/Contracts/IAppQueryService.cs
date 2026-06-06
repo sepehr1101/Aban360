@@ -7,5 +7,6 @@ namespace Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts
         Task<ICollection<App>> Get();
         Task<App> Get(int id);
         IQueryable<App> GetQuery();
+        Task<IEnumerable<App>> GetChildrens(int id);
     }
 }

@@ -38,7 +38,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.
             {
                 RecordCount = data?.Count() ?? 0,
                 Title = title,
-                Amount = data?.Count() ?? 0,
+                Amount = data?.Sum(u => u.Amount) ?? 0,
             };
 
             return new ReportOutput<UnconfirmedBillReturnHeaderOutputDto, UnconfirmedBillReturnDataOutputDto>(title, header, data);

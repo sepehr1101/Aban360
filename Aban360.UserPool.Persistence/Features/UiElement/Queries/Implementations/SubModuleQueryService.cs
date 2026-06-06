@@ -3,6 +3,7 @@ using Aban360.UserPool.Domain.Features.AceessTree.Entites;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
 using Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace Aban360.UserPool.Persistence.Features.UiElement.Queries.Implementations
 {
@@ -45,6 +46,14 @@ namespace Aban360.UserPool.Persistence.Features.UiElement.Queries.Implementation
                 .Include(subModule => subModule.Module)
                 .Where(subModule => subModule.Id == id)
                 .SingleAsync();
+        }
+        public async Task<IEnumerable<SubModule>> GetChildrens(int id)
+        {
+            return await _subModules
+                .Where(app => app.Id == id)
+                .Include(app => app.Endpoints)
+                .Include(app => app.Module)
+                .ToListAsync();
         }
     }
 }

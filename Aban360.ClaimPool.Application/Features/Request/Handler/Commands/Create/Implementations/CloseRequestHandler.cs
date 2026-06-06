@@ -34,6 +34,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
         public async Task<RequestCloseOuputDto> Handle(CloseRequestInputDto inputDto, int userName, CancellationToken cancellationToken)
         {
+            //
             TrackingOutputDto? trackingInfo = await _trackingQueryService.GetFirstStep(inputDto.TrackNumber, false);
             string deleteDescription = $"حذف توسط {userName}";
 

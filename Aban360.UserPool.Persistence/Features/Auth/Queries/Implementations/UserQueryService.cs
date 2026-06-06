@@ -3,6 +3,7 @@ using Aban360.Common.Extensions;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
+using Aban360.UserPool.Persistence.Constants.Enums;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using Microsoft.Data.SqlClient;
@@ -41,6 +42,34 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
         {
             return await
                 _query
+                .ToListAsync();
+        }
+        public async Task<ICollection<UserQueryDto>> GetWithDefaultZone()
+        {
+            return await
+                _query
+                .Include(user => user.UserRoles.Where(userRole => userRole.ValidTo == null))
+                    .ThenInclude(userRole => userRole.Role)
+                .Include(user => user.UserClaims.Where(u => u.ValidTo == null && u.ClaimTypeId == ClaimType.DefaultZoneId))
+                .Select(user => new UserQueryDto()
+                {
+                    Id = user.Id,
+                    FullName = user.FullName,
+                    DisplayName = user.DisplayName,
+                    Username = user.Username,
+                    Mobile = user.Mobile,
+                    DefaultZoneId = user.UserClaims
+                                        .Where(u => u.ValidTo == null && u.ClaimTypeId == ClaimType.DefaultZoneId)
+                                        .FirstOrDefault()
+                                        .ClaimValue,
+                    DefaultZoneTitle = null,
+                    RoleClaimsTitle = string.Join(",", user.UserRoles
+                                                            .Where(userRole => userRole.ValidTo == null)
+                                                            .Select(r => r.Role.Title)),
+                    MobileConfirmed = user.MobileConfirmed,
+                    HasTwoStepVerification = user.HasTwoStepVerification,
+                    IsLocked = user.LockTimespan.HasValue,
+                })
                 .ToListAsync();
         }
         public async Task<User> Get(Guid id)

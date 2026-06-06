@@ -9,5 +9,6 @@ namespace Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts
         Task<SubModule> Get(int id);
         Task<SubModule> GetInclude(int id);
         IQueryable<SubModule> GetQuery();
+        Task<IEnumerable<SubModule>> GetChildrens(int id);
     }
 }
