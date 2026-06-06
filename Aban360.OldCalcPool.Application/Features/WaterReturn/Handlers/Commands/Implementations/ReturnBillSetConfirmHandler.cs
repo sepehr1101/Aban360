@@ -97,7 +97,6 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         }
         private async Task SqlCommands(IEnumerable<AutoBackCreateDto> autoBacksCreateDto, IEnumerable<BedBesUpdateDelDto> bedBesUpdateDelDto, RepairCreateDto repairCreateDto, MemberInfoGetDto memberInfo, IAppUser appUser, string logText, string zoneDbName, string atlasDbName)
         {
-
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
