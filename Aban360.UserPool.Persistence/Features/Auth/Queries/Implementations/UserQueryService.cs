@@ -15,6 +15,8 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<User> _users;
+        private readonly DbSet<UserRole> _userRoles;
+        private readonly DbSet<UserClaim> _userClaims;
         public UserQueryService(IUnitOfWork uow)
         {
             _uow = uow;
@@ -22,6 +24,12 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
 
             _users = _uow.Set<User>();
             _users.NotNull(nameof(_users));
+
+            _userRoles = _uow.Set<UserRole>();
+            _userRoles.NotNull(nameof(_userRoles));
+
+            _userClaims = _uow.Set<UserClaim>();
+            _userClaims.NotNull(nameof(_userClaims));   
         }
         public IQueryable<User> GetQuery()
         {
@@ -46,28 +54,38 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
         }
         public async Task<ICollection<UserQueryDto>> GetWithDefaultZone()
         {
-            return await
-                _query
-                .Select(user => new UserQueryDto()
-                {
-                    Id = user.Id,
-                    FullName = user.FullName,
-                    DisplayName = user.DisplayName,
-                    Username = user.Username,
-                    Mobile = user.Mobile,
-                    DefaultZoneId = user.UserClaims
-                                        .Where(u => u.ValidTo == null && u.ClaimTypeId == ClaimType.DefaultZoneId)
-                                        .FirstOrDefault()
-                                        .ClaimValue,
-                    DefaultZoneTitle = null,
-                    RolesTitle = string.Join(",", user.UserRoles
-                                                            .Where(userRole => userRole.ValidTo == null)
-                                                            .Select(r => r.Role.Title)),
-                    MobileConfirmed = user.MobileConfirmed,
-                    HasTwoStepVerification = user.HasTwoStepVerification,
-                    IsLocked = user.LockTimespan.HasValue,
-                })
+            var users = await _query.ToListAsync();
+
+            var userIds = users.Select(u => u.Id).ToList();
+
+            var defaultZoneClaims = await _userClaims
+                .Where(uc => userIds.Contains(uc.UserId) && uc.ValidTo == null && uc.ClaimTypeId == ClaimType.DefaultZoneId)
+                .ToDictionaryAsync(uc => uc.UserId, uc => uc.ClaimValue);
+
+            var rolesPerUser = await _userRoles
+                .Where(ur => userIds.Contains(ur.UserId) && ur.ValidTo == null)
+                .Select(ur => new { ur.UserId, RoleTitle = ur.Role.Title })
                 .ToListAsync();
+
+            var rolesGrouped = rolesPerUser
+                .GroupBy(x => x.UserId)
+                .ToDictionary(g => g.Key, g => string.Join(",", g.Select(x => x.RoleTitle)));
+
+            List<UserQueryDto> dtos = users.Select(user => new UserQueryDto
+            {
+                Id = user.Id,
+                FullName = user.FullName,
+                DisplayName = user.DisplayName,
+                Username = user.Username,
+                Mobile = user.Mobile,
+                DefaultZoneId = defaultZoneClaims.GetValueOrDefault(user.Id),
+                DefaultZoneTitle = null,
+                RolesTitle = rolesGrouped.GetValueOrDefault(user.Id) ?? string.Empty,
+                MobileConfirmed = user.MobileConfirmed,
+                HasTwoStepVerification = user.HasTwoStepVerification,
+                IsLocked = user.LockTimespan.HasValue
+            }).ToList();
+            return dtos;
         }
         public async Task<User> Get(Guid id)
         {
