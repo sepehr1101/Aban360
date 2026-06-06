@@ -367,7 +367,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             string condition = isRemove ?
                 $"JOIN [{dbName}].dbo.variab v ON b.town=v.town AND b.date_bed collate Persian_100_CI_AI>=v.date_check" :
                 string.Empty;
-            return @$"SELECT	
+            return @$"SELECT TOP 1
                     	b.id,
                     	b.town as ZoneId,
 						t51.C2 as ZoneTitle,
@@ -406,7 +406,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     WHERE 
                     	b.date_bed>=@ComparisonDateJalali AND
                     	b.town=@ZoneId AND
-                    	b.radif=@CustomerNumber";
+                    	b.radif=@CustomerNumber
+                    ORDER BY b.date_bed DESC, b.id DESC";
         }
         private string GetBedBesToRemove(string dbName)
         {
