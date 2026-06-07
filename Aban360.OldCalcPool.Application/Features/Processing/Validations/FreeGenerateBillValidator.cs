@@ -13,10 +13,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Validations
             RuleFor(g => g.BillId)
                 .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
-
-            RuleFor(g => g.PreviousMeterNumber)
-                .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull);
             
             RuleFor(g => g.CurrentDateJalali)
                 .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)

@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Queries
         [HttpGet, HttpPost]
         [Route("get-excel/{connectionId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<TankerWaterInputDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRaw(string connectionId, [FromBody] TankerWaterInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetExcel(string connectionId, [FromBody] TankerWaterInputDto inputDto, CancellationToken cancellationToken)
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _getHandler.Handle, CurrentUser, ReportLiterals.Tanker, connectionId);
             return Ok(inputDto);

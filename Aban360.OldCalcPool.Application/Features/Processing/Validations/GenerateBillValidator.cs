@@ -8,7 +8,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Validations
 {
     public class GenerateBillValidator : BaseValidator<GenerateBillInputDto>
     {
-        static int[] _allowedZeroMeterNumberCounterState = { 4, 7 };
+        static int[] _allowedZeroMeterNumberCounterState = { 2, 4, 7 };
         public GenerateBillValidator()
         {
             RuleFor(g => g.BillId)
@@ -23,7 +23,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Validations
         {
             if (!_allowedZeroMeterNumberCounterState.Contains(input.CounterStateCode ?? 0) && input.MeterNumber == 0)
             {
-                return false;   
+                return false;
             }
             return true;
         }
