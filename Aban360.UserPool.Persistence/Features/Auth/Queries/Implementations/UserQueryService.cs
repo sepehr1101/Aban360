@@ -60,7 +60,8 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
 
             var defaultZoneClaims = await _userClaims
                 .Where(uc => userIds.Contains(uc.UserId) && uc.ValidTo == null && uc.ClaimTypeId == ClaimType.DefaultZoneId)
-                .ToDictionaryAsync(uc => uc.UserId, uc => uc.ClaimValue);
+                .GroupBy(uc=> new { uc.UserId,uc.ClaimValue})
+                .ToDictionaryAsync(ucGrp => ucGrp.Key.UserId, ucGrp => ucGrp.Key.ClaimValue);
 
             var rolesPerUser = await _userRoles
                 .Where(ur => userIds.Contains(ur.UserId) && ur.ValidTo == null)

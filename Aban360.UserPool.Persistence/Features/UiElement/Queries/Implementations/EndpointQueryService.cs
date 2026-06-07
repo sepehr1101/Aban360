@@ -28,12 +28,6 @@ namespace Aban360.UserPool.Persistence.Features.UiElement.Queries.Implementation
                 .Where(endpoint => endpoint.IsActive)
                 .ToListAsync();
         }
-        public async Task<ICollection<Endpoint>> GetAllWithInclude()
-        {
-            return await _endPoints
-                .Include(endpoint => endpoint.SubModule)
-                .ToListAsync();
-        }
         public async Task<ICollection<Endpoint>> GetInclude()
         {
             return await _endPoints
