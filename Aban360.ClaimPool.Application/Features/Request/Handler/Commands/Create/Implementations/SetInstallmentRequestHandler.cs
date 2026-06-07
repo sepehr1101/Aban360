@@ -69,15 +69,15 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
             if (!_enableStatus.Contains(trackingInfo.StatusId))
             {
-                //throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
             }
             if (inputDto.MonthlyDuration > _maxInterval)
             {
-                //throw new InvalidTrackingException(ExceptionLiterals.InvalidMonthlyDuration(_maxInterval));
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidMonthlyDuration(_maxInterval));
             }
             if (inputDto.InstallmentCount > _maxInstallmentCount)
             {
-                //throw new InvalidTrackingException(ExceptionLiterals.InvalidInstallmentCount(_maxInstallmentCount));
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidInstallmentCount(_maxInstallmentCount));
             }
 
             return trackingInfo;
