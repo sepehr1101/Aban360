@@ -49,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         [HttpPost]
         [Route("remove")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<Guid>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> AddAssessmentOff(GuidInput inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> RemoveAssessmentOff(GuidInput inputDto, CancellationToken cancellationToken)
         {
             int examinerCode = UserService.GetUserCode(CurrentUser.Username);
             await _removeHandler.Handle(inputDto.Input, examinerCode, cancellationToken);
