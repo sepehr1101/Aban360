@@ -364,10 +364,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         }
         private string GetBedBesListToRemoveOrReturn(string dbName, bool isRemove)
         {
+            string top1= isRemove? " TOP 1 ":string.Empty;
             string condition = isRemove ?
                 $"JOIN [{dbName}].dbo.variab v ON b.town=v.town AND b.date_bed collate Persian_100_CI_AI>=v.date_check" :
                 string.Empty;
-            return @$"SELECT TOP 1
+            return @$"SELECT {top1}
                     	b.id,
                     	b.town as ZoneId,
 						t51.C2 as ZoneTitle,
