@@ -31,10 +31,6 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Implemen
 
         public async Task<FileListResponse> Handle(string input, string? trackNumber, IAppUser appUser, CancellationToken cancellationToken)
         {
-            if (!string.IsNullOrWhiteSpace(input))
-            {
-                await ZoneValidate(appUser, input);
-            }
 
             if (string.IsNullOrWhiteSpace(input) || input == "null")
             {
@@ -57,7 +53,12 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Implemen
                 string uuid = await _openKmQueryService.GetFolderUuid($"r_{trackNumber}");
                 await _openKmQueryService.RenameFolder(uuid, input);
             }
-
+            //مشکل اینجاست که فولدر در بایگانی کاج وجود دارد اما مشترک هنوز از دید رایاب ثبت قطعی نشده یا اینکه 
+            //هنوز در دیتابیس customerWarehouse وجود ندارد
+            /*if (!string.IsNullOrWhiteSpace(input))
+            {
+                await ZoneValidate(appUser, input);
+            }*/
             FileListResponse result = await _openKmQueryService.GetFilesByBillId(input);
             return result;
         }
