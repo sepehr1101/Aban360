@@ -92,7 +92,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
             List<string> authValues = userClaims.Where(userClaim => userClaim.ClaimTypeId == ClaimType.Endpoint)
                     .Select(userClaim => userClaim.ClaimValue)
                     .ToList();
-            ICollection<Endpoint> endpoints = await _endpointQueryService.GetIncludeAll();
+            ICollection<Endpoint> endpoints = await _endpointQueryService.GetIncludeActiveAll();
             List<int> toBeSelectedEndpointIds = endpoints
                 .Where(endpoint => authValues.Contains(endpoint.AuthValue))
                 .Select(endpoint => endpoint.Id)
