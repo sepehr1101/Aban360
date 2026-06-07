@@ -90,28 +90,28 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
             long firstInstallmentWithZero = (long)(payable * (inputDto.PrepaymentPercent / 100.0));
             long firstInstallmentWithoutZero = (firstInstallmentWithZero / 1000) * 1000;
-            if(inputDto.InstallmentCount==1 || inputDto.PrepaymentPercent == 100)
+            if (inputDto.InstallmentCount == 1 || inputDto.PrepaymentPercent == 100)
             {
                 return (payable, firstInstallmentWithoutZero, 0, 0);
             }
 
             long otherAmount = payable - firstInstallmentWithoutZero;
-            long eachInstallmentAmountWithZero = otherAmount / (inputDto.InstallmentCount - 1);
+            long eachInstallmentAmountWithZero = otherAmount / (inputDto.InstallmentCount);
             long eachInstallmentAmountWithoutZero = (eachInstallmentAmountWithZero / 1000) * 1000;
-            long remain = otherAmount - (eachInstallmentAmountWithoutZero * (inputDto.InstallmentCount - 1));
+            long remain = otherAmount - (eachInstallmentAmountWithoutZero * (inputDto.InstallmentCount));
 
             return (payable, firstInstallmentWithoutZero, eachInstallmentAmountWithoutZero, remain);
         }
         private IEnumerable<InstallmentRequestDataOutputDto> GetInstallments(InstallmentRequestInputDto inputDto, IEnumerable<CalculationRequestDisplayDataOutputDto> kartInfo)
         {
-            string[] dueDatesJalali = GetDate(inputDto.InstallmentCount, inputDto.MonthlyDuration);
+            string[] dueDatesJalali = GetDate(inputDto.InstallmentCount + 1, inputDto.MonthlyDuration);
             var (payable, firstInstallmentWithoutZero, eachInstallmentAmountWithoutZero, remain) = GetInstallmentAmount(inputDto, kartInfo);
             InstallmentRequestDataOutputDto firstInstallment = new(firstInstallmentWithoutZero + remain, dueDatesJalali[0], string.Empty);
             ICollection<InstallmentRequestDataOutputDto> data = new List<InstallmentRequestDataOutputDto>(); ;
             data.Add(firstInstallment);
-            for (int i = 2; i <= inputDto.InstallmentCount; i++)
+            for (int i = 1; i <= inputDto.InstallmentCount; i++)
             {
-                string dueDateJalali = dueDatesJalali[i - 1];
+                string dueDateJalali = dueDatesJalali[i ];
                 InstallmentRequestDataOutputDto otherinstallment = new(eachInstallmentAmountWithoutZero, dueDateJalali, string.Empty);
                 data.Add(otherinstallment);
             }
