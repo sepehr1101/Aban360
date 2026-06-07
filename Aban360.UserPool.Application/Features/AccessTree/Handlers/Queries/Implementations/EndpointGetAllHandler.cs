@@ -24,7 +24,7 @@ namespace Aban360.UserPool.Application.Features.AccessTree.Handlers.Queries.Impl
 
         public async Task<ICollection<EndpointGetDto>> Handle( CancellationToken cancellationToken)
         {
-            ICollection<Endpoint> endpoint = await _endpointQueryService.GetInclude();
+            ICollection<Endpoint> endpoint = await _endpointQueryService.GetAllWithInclude();
             return _mapper.Map<ICollection<EndpointGetDto>>(endpoint);
         }
     }
