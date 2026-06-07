@@ -28,12 +28,6 @@ namespace Aban360.UserPool.Persistence.Features.UiElement.Queries.Implementation
                 .Where(endpoint => endpoint.IsActive)
                 .ToListAsync();
         }
-        public async Task<ICollection<Endpoint>> GetAllWithInclude()
-        {
-            return await _endPoints
-                .Include(endpoint => endpoint.SubModule)
-                .ToListAsync();
-        }
         public async Task<ICollection<Endpoint>> GetInclude()
         {
             return await _endPoints
@@ -48,6 +42,19 @@ namespace Aban360.UserPool.Persistence.Features.UiElement.Queries.Implementation
                 .Include(endpoint => endpoint.SubModule)
                 .ThenInclude(subModule => subModule.Module)
                 .ThenInclude(modue => modue.App)
+                .ToListAsync();
+        }
+        public async Task<ICollection<Endpoint>> GetIncludeActiveAll()
+        {
+            return await _endPoints
+                .AsNoTracking()
+                .Include(endpoint => endpoint.SubModule)
+                .ThenInclude(subModule => subModule.Module)
+                .ThenInclude(modue => modue.App)
+                .Where(endpoint=>endpoint.IsActive &&
+                        endpoint.SubModule.IsActive && 
+                        endpoint.SubModule.Module.IsActive && 
+                        endpoint.SubModule.Module.App.IsActive)
                 .ToListAsync();
         }
         public async Task<Endpoint> Get(int id)
