@@ -149,9 +149,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 AbBahaCalculationDetails calculationDetails = await GetCalculationDetails(meterInfo, customerInfo);
                 return calculationDetails;
             }
-            catch (Exception e)
+            catch (TariffCalcException e)
             {
-                throw new BaseException($"{e.Message}. {customerInfo.BillId} {input.MeterPreviousData.PreviousDateJalali} {input.MeterPreviousData.PreviousNumber}");
+                throw new InvalidBillCommandException($"{e.Message}. {customerInfo.BillId} {input.MeterPreviousData.PreviousDateJalali} {input.MeterPreviousData.PreviousNumber}");
             }
         }
         public async Task<AbBahaCalculationDetails> Handle(MeterDateInfoWithMonthlyConsumptionOutputDto input, CancellationToken cancellationToken)

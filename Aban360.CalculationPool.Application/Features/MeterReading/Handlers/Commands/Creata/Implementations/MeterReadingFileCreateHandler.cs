@@ -97,20 +97,28 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                             MonthlyAverageConsumption = previousAverage,
                             PreviousDateJalali = readingDetail.PreviousDateJalali,
                         };
-                        AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterInfo, cancellationToken);
-                        readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false));
+                        try
+                        {
+
+                            AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterInfo, cancellationToken);
+                            readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null));
+                        }
+                        catch (Exception ex) when (IsInException(ex))
+                        {
+                            readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, false, appUser.UserId));
+                        }
                     }
                     else if (readingDetail.CurrentCounterStateCode == 2 && string.IsNullOrWhiteSpace(readingDetail.TavizDateJalali))
                     {
-                        readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true));
+                        readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, null));
                     }
                     else if (readingDetail.CurrentCounterStateCode == 2 && readingDetail.TavizDateJalali.CompareTo(readingDetail.CurrentDateJalali) > 0)
                     {
-                        readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true));
+                        readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, null));
                     }
                     else if (readingDetail.CurrentCounterStateCode == 2 && readingDetail.TavizDateJalali.CompareTo(readingDetail.PreviousDateJalali) < 0)
                     {
-                        readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true));
+                        readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, null));
                     }
                     else if (readingDetail.CurrentCounterStateCode == 2) //taviz
                     {
@@ -131,19 +139,41 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                             MonthlyAverageConsumption = abBahaCalcTmp.MonthlyConsumption,
                             PreviousDateJalali = readingDetail.PreviousDateJalali,
                         };
-                        AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterInfo, cancellationToken);
-                        readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false));
+                        try
+                        {
+
+                            AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterInfo, cancellationToken);
+                            readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null));
+                        }
+                        catch (Exception ex) when (IsInException(ex))
+                        {
+                            readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, false, appUser.UserId));
+                        }
                     }
                     else //not xarab, nor taviz
                     {
                         MeterImaginaryInputDto meterImaginary = GetMeterImaginary(readingDetail);
-                        AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterImaginary, cancellationToken);
-                        readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false));
+                        try
+                        {
+                            AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterImaginary, cancellationToken);
+                            readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null));
+                        }
+                        catch (Exception ex) when (IsInException(ex))
+                        {
+                            readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, false, appUser.UserId));
+                        }
                     }
                 }
                 else
                 {
-                    readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true));
+                    try
+                    {
+                        readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, null));
+                    }
+                    catch (Exception ex) when (IsInException(ex))
+                    {
+                        readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, false, appUser.UserId));
+                    }
                 }
             }
 
@@ -441,12 +471,14 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 MeterPreviousData = meterInfo,
             };
         }
-        private async Task<MeterReadingDetailCreateDto> GetMeterReadingDetailByAbBahaValue(MeterReadingDetailCreateDto r, AbBahaCalculationDetails? abBahaCalc, bool hasZeroValue)
+        private async Task<MeterReadingDetailCreateDto> GetMeterReadingDetailByAbBahaValue(MeterReadingDetailCreateDto r, AbBahaCalculationDetails? abBahaCalc, bool hasZeroValue, Guid? userIdExclude)
         {
             double preDebtAmount = await _customerInfoService.GetMembersBedBes(new ZoneIdAndCustomerNumber(r.ZoneId, r.CustomerNumber));//checkResult: changeDto
             var (sumItems, jam, pard) = GetAmounts(preDebtAmount, abBahaCalc?.SumItems ?? 0);
             string mohlatDateJalali = DateTime.Now.AddDays(_paymentDeadline).ToShortPersianDateString();
 
+            r.ExcludedByUserId = userIdExclude;
+            r.ExcludedDateTime = userIdExclude.HasValue ? DateTime.Now : null;
             r.Barge = 0;
             r.PriNo = r.PreviousNumber;
             r.TodayNo = r.CurrentNumber;
@@ -541,11 +573,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             }
             else
             {
-                r.SumItemsBeforeDiscount = abBahaCalc.SumItemsBeforeDiscount;
-                r.SumItems = abBahaCalc.SumItems;
-                r.DiscountSum = abBahaCalc.DiscountSum;
-                r.Consumption = abBahaCalc.Consumption;
-                r.MonthlyConsumption = abBahaCalc.MonthlyConsumption;
+                r.SumItemsBeforeDiscount = abBahaCalc?.SumItemsBeforeDiscount ?? 0;
+                r.SumItems = abBahaCalc?.SumItems ?? 0;
+                r.DiscountSum = abBahaCalc?.DiscountSum ?? 0;
+                r.Consumption = abBahaCalc?.Consumption ?? 0;
+                r.MonthlyConsumption = abBahaCalc?.MonthlyConsumption ?? 0;
             }
             return r;
         }
@@ -563,6 +595,13 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             {
                 return (sumItems, jam, 0);
             }
+        }
+        private bool IsInException(Exception ex)
+        {
+            return ex is InvalidDateException ||
+            ex is InvalidBillIdException ||
+            ex is TariffDateException ||
+            ex is TariffCalcException;
         }
     }
 }
