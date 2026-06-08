@@ -46,6 +46,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo = await _customerGeneralInfoQueryService.Get(zoneIdAndCustomerNumber);
 
             ICollection<ConnectDisconnectPrintDataOutputDto> data = new List<ConnectDisconnectPrintDataOutputDto>();
+            var locInfo = await GetBase64Location(inputDto.BillId, cancellationToken);
             data.Add(new ConnectDisconnectPrintDataOutputDto()
             {
                 CustomerNumber = customerInfo.ReportHeader?.CustomerNumber ?? 0,
@@ -68,7 +69,9 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 MeterDiameterTitle = customerInfo.ReportHeader?.MeterDiameterTitle ?? string.Empty,
                 BranchTypeTitle = customerInfo.ReportHeader?.BranchTypeTitle ?? string.Empty,
                 CauseTitle = inputDto.Why.HasValue ? GetCasues().Where(c => c.Id == inputDto.Why).FirstOrDefault()?.Title ?? string.Empty : string.Empty,
-                Base64 = await GetBase64Location(inputDto.BillId, cancellationToken)
+                Base64 = locInfo.Item2,
+                X=locInfo.Item1.X,
+                Y=locInfo.Item1.Y
             });
             ConnectDisconnectPrintHeaderOutputDto header = new()
             {
@@ -79,10 +82,11 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             };
             return new ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto>(title, header, data);
         }
-        private async Task<string> GetBase64Location(string billId, CancellationToken cancellationToken)
+        private async Task<(LocationInfoDto, string)> GetBase64Location(string billId, CancellationToken cancellationToken)
         {
             LocationInfoDto location = await _locationInfoService.Handle(billId, cancellationToken);
-            return await _mapService.GenerateMapBase64(location.X, location.Y);
+            string base64= await _mapService.GenerateMapBase64(location.X, location.Y);
+            return (location, base64);
         }
         public ICollection<NumericDictionary> GetCasues()
         {

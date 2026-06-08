@@ -62,9 +62,11 @@ namespace Aban360.Common.Extensions
             await File.WriteAllTextAsync(fileName, jsonString, Encoding.UTF8, cancellationToken);
             return new JsonReportId(id, fileCode);
         }
-        public static async Task<JsonReportId> ExportToJsonFlat<TFlatData>(TFlatData reportOutput, CancellationToken cancellationToken, int fileCode)
+        public static async Task<JsonReportId> ExportToJsonFlat<TFlatData>(TFlatData reportOutput, CancellationToken cancellationToken, int fileCode, bool hasLogo = false)
         {
             const string path = @"AppData\Jsons\";
+            const string logoPath = @"AppData\Images\logoBase64.txt";
+
             reportOutput.NotNull(nameof(reportOutput));
             Guid id = Guid.NewGuid();
             JsonSerializerSettings settings = new JsonSerializerSettings
@@ -73,7 +75,18 @@ namespace Aban360.Common.Extensions
                 Formatting = Formatting.Indented,
                 NullValueHandling=NullValueHandling.Include
             };
-            string jsonString = reportOutput.Marshal(settings);
+            string? logoBase64 = null;
+            var outputObject = JObject.FromObject(reportOutput, JsonSerializer.Create(settings));
+            if (hasLogo && Path.Exists(logoPath))
+            {
+                logoBase64 = await File.ReadAllTextAsync(logoPath, cancellationToken);
+            }
+            if (logoBase64 != null && outputObject["reportHeader"] is JObject headerObject)
+            {
+                headerObject["logoBase64"] = logoBase64;
+            }
+            //string jsonString = reportOutput.Marshal(settings);
+            string jsonString = outputObject.ToString(Formatting.Indented);
             var fileName = Path.Combine(path, $"{id}.json");
             await File.WriteAllTextAsync(fileName, jsonString, Encoding.UTF8, cancellationToken);
             return new JsonReportId(id, fileCode);

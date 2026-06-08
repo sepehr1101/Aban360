@@ -32,7 +32,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         {
             int reportCode = 2070;
             ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto> result = await _connectDisconnectPrint.Handle(inputDto, true, cancellationToken);
-            JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode);
+            JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode, true);
             return Ok(reportId);
         }
 
@@ -43,7 +43,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         {
             int reportCode = 2071;
             ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto> result = await _connectDisconnectPrint.Handle(inputDto, false, cancellationToken);
-            JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode);
+            JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode, true);
             return Ok(reportId);
         }
     }

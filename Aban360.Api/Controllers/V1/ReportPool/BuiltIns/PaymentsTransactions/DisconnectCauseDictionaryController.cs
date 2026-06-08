@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,11 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
     public class DisconnectCauseDictionaryController : BaseController
     {
         private readonly IConnectDisconnectPrintHandler _connectDisconnectPrintHandler;
+        public DisconnectCauseDictionaryController(IConnectDisconnectPrintHandler connectDisconnectPrintHandler)
+        {
+            _connectDisconnectPrintHandler = connectDisconnectPrintHandler;
+            _connectDisconnectPrintHandler.NotNull(nameof(connectDisconnectPrintHandler));
+        }
 
         [HttpGet]
         [Route("get-dictionary")]
