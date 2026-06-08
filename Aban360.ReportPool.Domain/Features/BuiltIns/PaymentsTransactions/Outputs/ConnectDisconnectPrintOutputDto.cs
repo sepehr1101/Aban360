@@ -6,8 +6,6 @@
         public string RegionTitle { get; set; }
         public string ZoneTitle { get; set; }
         public string PostalCode { get; set; }
-        public double N { get; set; }
-        public double E { get; set; }
         public string Address { get; set; }
         public long WaterDebtAmount { get; set; }
         public string FirstName { get; set; }
@@ -24,5 +22,6 @@
         public string MeterDiameterTitle { get; set; }
         public string BranchTypeTitle { get; set; }
         public string CauseTitle { get; set; }
+        public string? Base64 { get; set; }
     }
 }

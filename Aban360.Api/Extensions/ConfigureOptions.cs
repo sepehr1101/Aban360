@@ -15,6 +15,7 @@ namespace Aban360.Api.Extensions
             services.AddOpenKm(configuration);
             services.AddGeo(configuration);
             services.AddMaaher(configuration);
+            services.AddMap(configuration);
             return services;
         }
 
@@ -43,6 +44,10 @@ namespace Aban360.Api.Extensions
         private static void AddMaaher(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<MaaherOptions>(configuration.GetSection(MaaherOptions.SectionName));
+        }
+        private static void AddMap(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<MapOptions>(configuration.GetSection(MapOptions.SectionName));
         }
     }
 }

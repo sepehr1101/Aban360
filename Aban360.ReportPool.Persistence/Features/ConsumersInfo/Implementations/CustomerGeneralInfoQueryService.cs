@@ -152,7 +152,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 						TRIM(m.father_nam) FatherName,
 						TRIM(m.MELI_COD) as NationalCode,
 						TRIM(m.MOBILE) as MobileNumber,
-						m.eshtrak as ReadingNumber,
+						TRIM(m.eshtrak) as ReadingNumber,
 						m.bill_id as BillId,
 						t41.C1 as UsageTitle,
 						m.cod_enshab UsageId,
@@ -184,7 +184,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 					
 						t46.C2 as RegionTitle,
 						t51.C2 as ZoneTitle,
-						m.POST_COD as PostalCode,
+						TRIM(m.POST_COD) as PostalCode,
 						TRIM(m.address) as Address,
 
 						m.tedad_mas+m.tedad_tej+m.tedad_vahd as TotalUnit,
@@ -225,7 +225,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 						b.today_no as LatestMeterNumber,
 						b.today_date as LatestMeterReading,
 						'-' as UsageStatusTitle,
-						b.sh_pard1 PaymentId
+						TRIM(b.sh_pard1) PaymentId
 					From [{dbName}].dbo.bed_bes b
 					Join Db70.dbo.CounterVaziat v
 						ON b.cod_vas=v.MoshtarakinId

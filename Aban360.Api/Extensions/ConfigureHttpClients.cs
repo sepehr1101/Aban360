@@ -8,12 +8,13 @@ using Microsoft.Extensions.Options;
 namespace Aban360.Api.Extensions
 {
     internal static class ConfigureHttpClients
-    {       
+    {
         internal static IServiceCollection AddCustomHttpClients(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddOpenKm(configuration);
             services.AddGeo(configuration);
             services.AddMaaher(configuration);
+            services.AddMap(configuration);
             return services;
         }
         private static void AddOpenKm(this IServiceCollection services, IConfiguration configuration)
@@ -37,7 +38,7 @@ namespace Aban360.Api.Extensions
                 {
                     throw new InvalidConfigFileException(ExceptionLiterals.InvalidConfiguration(nameof(GeoOptions), nameof(GeoOptions.BaseUrl)));
                 }
-                httpClient.BaseAddress=new Uri(options.Value.BaseUrl);
+                httpClient.BaseAddress = new Uri(options.Value.BaseUrl);
             });
         }
         private static void AddMaaher(this IServiceCollection services, IConfiguration configuration)
@@ -50,6 +51,18 @@ namespace Aban360.Api.Extensions
                     throw new InvalidConfigFileException(ExceptionLiterals.InvalidConfiguration(nameof(MaaherOptions), nameof(MaaherOptions.MaaherBaseUrl)));
                 }
                 httpClient.BaseAddress = new Uri(options.Value.MaaherBaseUrl);
+            });
+        }
+        private static void AddMap(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHttpClient(HttpClientNames.Map, (sp, HttpClient) =>
+            {
+                var options = sp.GetRequiredService<IOptions<MapOptions>>();
+                if (options is null || string.IsNullOrWhiteSpace(options.Value.BaseUrl))
+                {
+                    throw new InvalidConfigFileException(ExceptionLiterals.InvalidConfiguration(nameof(MapOptions), nameof(MapOptions.BaseUrl)));
+                }
+                HttpClient.BaseAddress = new Uri(options.Value.BaseUrl);
             });
         }
     }
