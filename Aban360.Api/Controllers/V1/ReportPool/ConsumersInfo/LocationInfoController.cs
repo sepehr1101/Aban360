@@ -54,7 +54,12 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         public async Task<IActionResult> GetFileInfo(string billId, CancellationToken cancellationToken)
         {
             byte[] bytes = await _locationFileHandler.Handle(billId, CurrentUser, cancellationToken);
-            FileContentResult file = new(bytes, "image/png");
+            var timeNow = DateTime.Now.ToString("HH-mm-ss");
+            FileContentResult file = new(bytes, "image/png")
+            {
+                FileDownloadName = $"{billId}-{timeNow}.png"
+            };
+
             return Ok(file);
         }
 
