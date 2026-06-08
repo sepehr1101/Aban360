@@ -9,6 +9,8 @@
         public int CustomerNumber { get; set; }
         public string FirstName { get; set; }//+
         public string Surname { get; set; }//+
+        public string? FatherName { get; set; }
+        public string? NationalCode { get; set; }
         public string? Address { get; set; }
         public string? PostalCode { get; set; }
         public string UsageConsumptionTitle { get; set; }

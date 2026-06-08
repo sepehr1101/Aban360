@@ -8,7 +8,6 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Domain.Features.Geo;
 using Aban360.ReportPool.Infrastructure.Features.Geo;
-using Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Contracts;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Implementations
@@ -45,6 +44,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 RegionTitle = customerInfo.ReportData?.FirstOrDefault()?.RegionTitle ?? string.Empty,
                 ZoneTitle = customerInfo.ReportData?.FirstOrDefault()?.ZoneTitle ?? string.Empty,
                 PostalCode = customerInfo.ReportData?.FirstOrDefault()?.PostalCode ?? string.Empty,
+                NationalCode=customerInfo.ReportHeader?.NationalCode ?? string.Empty,   
                 N = e,
                 E = n,
                 Address = customerInfo.ReportData?.FirstOrDefault()?.Address ?? string.Empty,

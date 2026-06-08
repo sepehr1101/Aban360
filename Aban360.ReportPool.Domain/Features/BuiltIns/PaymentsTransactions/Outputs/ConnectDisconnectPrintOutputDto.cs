@@ -14,6 +14,7 @@
         public string Surname { get; set; }
         public string FatherName { get; set; }
         public string FullName { get; set; }
+        public string? NationalCode { get; set; }
         public string MobileNumber { get; set; }
         public string ReadingNumber { get; set; }
         public string BillId { get; set; }

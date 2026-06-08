@@ -145,7 +145,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 Cod3 = 0,//todo
                 Barge = 0,//todo
                 Payable = x.Amount,
-                Type = 0,//todo
+                Type = 2,
                 InstallmentNumber = counter,
                 CurrentDateJalali = DateTime.Now.ToShortDateString(),
                 DueDateJalali = x.DueDateJalali,

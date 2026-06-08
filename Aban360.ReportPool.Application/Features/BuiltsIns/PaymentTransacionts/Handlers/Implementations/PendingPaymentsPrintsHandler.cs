@@ -2,6 +2,7 @@
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Contracts;
+using Aban360.ReportPool.Application.Features.Geo.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
@@ -14,13 +15,18 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
     internal sealed class PendingPaymentsPrintsHandler : IPendingPaymentsPrintsHandler
     {
         private readonly IPendingPaymentsQueryService _pendingPaymentsQueryService;
+        private readonly ILocationInfoGetHandler _locationInfoService;
         private readonly IValidator<PendingPaymentsInputDto> _validator;
         public PendingPaymentsPrintsHandler(
             IPendingPaymentsQueryService pendingPaymentsQueryService,
+            ILocationInfoGetHandler locationInfoService,
             IValidator<PendingPaymentsInputDto> validator)
         {
             _pendingPaymentsQueryService = pendingPaymentsQueryService;
             _pendingPaymentsQueryService.NotNull(nameof(pendingPaymentsQueryService));
+
+            _locationInfoService = locationInfoService;
+            _locationInfoService.NotNull(nameof(locationInfoService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -46,6 +52,13 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                  .Where(p => p.EndingDebt >= 0)
                  .Select(p => new PendingPaymentPrintsDataOutputDto()
                  {
+                     RegionTitle = p.RegionTitle,
+                     ZoneTitle = p.ZoneTitle,
+                     FullName = $"{p.FirstName} {p.Surname}",
+                     FatherName = p.FatherName,
+                     NationalCode = p.NationalCode,
+                     UsageTitle = p.UsageSellTitle,
+                     CauseTitle="بدهی مشترک",
                      CustomerNumber = p.CustomerNumber,
                      CustomerNumber2 = p.CustomerNumber,
                      ReadingNumber = p.ReadingNumber,
@@ -61,7 +74,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                      PreviousBillAmount = 0,//todo
                      DueDateJalali = string.Empty,//todo
                      BillId = p.BillId,
-                     PayId = TransactionIdGenerator.GeneratePaymentId(p.EndingDebt, p.BillId,"100"),
+                     PayId = TransactionIdGenerator.GeneratePaymentId(p.EndingDebt, p.BillId, "100"),
                  });
             PendingPaymentsPrintstHeaderOutputDto header = new()
             {

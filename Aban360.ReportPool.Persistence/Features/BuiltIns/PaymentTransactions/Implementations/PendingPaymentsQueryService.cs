@@ -87,6 +87,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 								UsageId2 UsageConsumptionId,
 								FirstName As FirstName,
 								SureName Surname,
+								FatherName,
+								NationalId NationalCode,
 								TRIM(MobileNo ) AS MobileNumber,
 								TRIM(PhoneNo ) AS PhoneNumber,
 								TRIM(Address) Address ,
