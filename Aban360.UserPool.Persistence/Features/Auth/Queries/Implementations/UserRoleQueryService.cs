@@ -47,7 +47,11 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
             return await _userRoles
                  .Include(ur => ur.Role)
                  .Include(ur => ur.User)
-                 .Where(ur => ur.RoleId == roleId)
+                 .Where(ur =>
+                    ur.RoleId == roleId &&
+                    ur.Role.ValidTo == null &&
+                    ur.User.ValidTo == null &&
+                    ur.ValidTo == null)
                  .Select(ur => new UserQueryDto()
                  {
                      Id = ur.User.Id,
