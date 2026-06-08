@@ -199,7 +199,7 @@
 
         public static string NotFountOpenRequest => "درخواستی با وضعیت نیمه‌تمام یافت نشد.";
         public static string CantSetTime => "امکان انتساب زمانبندی ارزیابی وجود ندارد";
-        public static string InvalidDuplicateDeletionState => "خطا در تغییر وضعیت کنتور - وضعیت تکراری";
+        public static string InvalidDuplicateDeletionState => "خطا در تغییر وضعیت انشعاب - وضعیت تکراری";
         public static string InvalidCalculation => "امکان محاسبه وجود ندارد.";
         public static string InvalidCalculationConfirmed => "محاسبه تایید نشده است.";
         public static string InvalidLastDbData(string stringTrackNumber) => $"درخواست {stringTrackNumber} ، در سیتم قدیم ثبت شده است.";

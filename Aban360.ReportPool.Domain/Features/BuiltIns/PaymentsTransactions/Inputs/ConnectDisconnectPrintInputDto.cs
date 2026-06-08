@@ -2,7 +2,9 @@
 {
     public record ConnectDisconnectPrintInputDto
     {
-        public string BillId { get; set; }
-        public string CauseId { get; set; }
+        public string BillId { get; set; } = default!;
+        public int? Why { get; set; }
+        public string Who { get; set; } = default!;
+        public string? Description { get; set; }
     }
 }

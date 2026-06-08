@@ -16,7 +16,7 @@ using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Contracts;
 using Aban360.Common.Db.Services;
 using Aban360.Common.ApplicationUser;
 
-namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations
+namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementationsu
 {
     internal sealed class CustomerUpdateHandler : AbstractBaseConnection, ICustomerUpdateHandler
     {
@@ -123,7 +123,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidBranchTypeId);
             }
         }
-
 
         private async Task UpdateCustomer(CustomerUpdateDto updateDto)
         {
