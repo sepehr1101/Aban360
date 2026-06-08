@@ -63,7 +63,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 MeterDiameterId = customerInfo.ReportHeader?.MeterDiameterId ?? string.Empty,
                 MeterDiameterTitle = customerInfo.ReportHeader?.MeterDiameterTitle ?? string.Empty,
                 BranchTypeTitle = customerInfo.ReportHeader?.BranchTypeTitle ?? string.Empty,
-                CauseTitle = inputDto.CauseId,
+                CauseTitle = inputDto.Why.HasValue ? GetCasues().Where(c => c.Id == inputDto.Why).FirstOrDefault()?.Title ?? string.Empty : string.Empty,
                 Base64 = await GetBase64Location(inputDto.BillId, cancellationToken)
             };
         }
@@ -72,6 +72,26 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             LocationInfoDto location = await _locationInfoService.Handle(billId, cancellationToken);
             return await _mapService.GenerateMapBase64(location.X, location.Y);
         }
+        private async Task<(double, double)> GetLocation(string billId, CancellationToken cancellationToken)
+        {
+            LocationInfoDto location = await _locationInfoService.Handle(billId, cancellationToken);
+            var utm = UtmConverter.LatLonToUtm(double.Parse(location.X), double.Parse(location.Y));
 
+            return (utm.Easting, utm.Northing);
+        }
+        public ICollection<NumericDictionary> GetCasues()
+        {
+            ICollection<NumericDictionary> causes = new List<NumericDictionary>()
+            {
+              new NumericDictionary(1,"بدهی آببها"),
+              new NumericDictionary(2,"بدهی حق انشعاب"),
+              new NumericDictionary(3,"بسته بیش از سه دوره"),
+              new NumericDictionary(4,"انشعاب غیر مجاز آب"),
+              new NumericDictionary(5,"انشعاب غیر مجاز فاضلاب"),
+              new NumericDictionary(6,"به درخواست مشترک یا مصرف کننده"),
+              new NumericDictionary(7,"نصب مستقیم پمپ"),
+            };
+            return causes;
+        }
     }
 }
