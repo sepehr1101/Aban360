@@ -142,6 +142,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="AppData\Images\location_icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="AppData\Mrts\100.mrt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

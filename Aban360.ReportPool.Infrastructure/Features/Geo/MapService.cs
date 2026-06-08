@@ -89,7 +89,7 @@ namespace Aban360.ReportPool.Infrastructure.Features.Geo
             float pointX = (float)(tileSize + offsetX);
             float pointY = (float)(tileSize + offsetY);
 
-            string pinPath = Path.Combine(AppContext.BaseDirectory, "AppData", "images", "location_icon.png");
+            string pinPath = Path.Combine(AppContext.BaseDirectory, "AppData", "Images", "location_icon.png");
             using Image pinImage = Image.FromFile(pinPath);
             int pinWidth = 100;
             int pinHeight = 100;
