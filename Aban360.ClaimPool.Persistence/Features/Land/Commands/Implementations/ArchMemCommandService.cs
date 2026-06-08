@@ -212,7 +212,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                         m.town=@zoneId AND
                     	m.radif=@customerNumber 
 
-                    SELECT CAST(SCOPE_IDENTITY() AS INT)";
+                    SELECT ISNULL(CAST(SCOPE_IDENTITY() AS INT),-1)";
         }
     }
 }

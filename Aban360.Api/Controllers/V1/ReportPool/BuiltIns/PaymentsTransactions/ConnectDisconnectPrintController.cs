@@ -31,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         public async Task<IActionResult> GetConnectStiReport(ConnectDisconnectPrintInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 2070;
-            ConnectDisconnectPrintOutputDto result = await _connectDisconnectPrint.Handle(inputDto, cancellationToken);
+            ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto> result = await _connectDisconnectPrint.Handle(inputDto, true, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode);
             return Ok(reportId);
         }
@@ -42,7 +42,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         public async Task<IActionResult> GetDisconnectStiReport(ConnectDisconnectPrintInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 2071;
-            ConnectDisconnectPrintOutputDto result = await _connectDisconnectPrint.Handle(inputDto, cancellationToken);
+            ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto> result = await _connectDisconnectPrint.Handle(inputDto, false, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode);
             return Ok(reportId);
         }
