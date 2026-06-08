@@ -17,10 +17,12 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
         private readonly ICustomerGeneralInfoQueryService _customerGeneralInfoQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly ILocationInfoGetHandler _locationInfoService;
+        private readonly IMapService _mapService;
         public ConnectDisconnectPrintHandler(
             ICustomerGeneralInfoQueryService customerGeneralInfoQueryService,
             ICommonMemberQueryService commonMemberQueryService,
-            ILocationInfoGetHandler locationInfoService)
+            ILocationInfoGetHandler locationInfoService,
+            IMapService mapService)
         {
             _customerGeneralInfoQueryService = customerGeneralInfoQueryService;
             _customerGeneralInfoQueryService.NotNull(nameof(customerGeneralInfoQueryService));
@@ -30,13 +32,15 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
 
             _locationInfoService = locationInfoService;
             _locationInfoService.NotNull(nameof(locationInfoService));
+
+            _mapService = mapService;
+            _mapService.NotNull(nameof(mapService));
         }
 
         public async Task<ConnectDisconnectPrintOutputDto> Handle(ConnectDisconnectPrintInputDto inputDto, CancellationToken cancellationToken)
         {
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(inputDto.BillId);
             ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo = await _customerGeneralInfoQueryService.Get(zoneIdAndCustomerNumber);
-            var (e, n) = await GetLocation(inputDto.BillId, cancellationToken);
 
             return new ConnectDisconnectPrintOutputDto()
             {
@@ -44,9 +48,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 RegionTitle = customerInfo.ReportData?.FirstOrDefault()?.RegionTitle ?? string.Empty,
                 ZoneTitle = customerInfo.ReportData?.FirstOrDefault()?.ZoneTitle ?? string.Empty,
                 PostalCode = customerInfo.ReportData?.FirstOrDefault()?.PostalCode ?? string.Empty,
-                NationalCode=customerInfo.ReportHeader?.NationalCode ?? string.Empty,   
-                N = e,
-                E = n,
+                NationalCode = customerInfo.ReportHeader?.NationalCode ?? string.Empty,
                 Address = customerInfo.ReportData?.FirstOrDefault()?.Address ?? string.Empty,
                 WaterDebtAmount = customerInfo.ReportData?.FirstOrDefault()?.WaterDebtAmount ?? 0,
                 FirstName = customerInfo.ReportHeader?.FirstName ?? string.Empty,
@@ -62,14 +64,13 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 MeterDiameterTitle = customerInfo.ReportHeader?.MeterDiameterTitle ?? string.Empty,
                 BranchTypeTitle = customerInfo.ReportHeader?.BranchTypeTitle ?? string.Empty,
                 CauseTitle = inputDto.CauseId,
+                Base64 = await GetBase64Location(inputDto.BillId, cancellationToken)
             };
         }
-        private async Task<(double, double)> GetLocation(string billId, CancellationToken cancellationToken)
+        private async Task<string> GetBase64Location(string billId, CancellationToken cancellationToken)
         {
             LocationInfoDto location = await _locationInfoService.Handle(billId, cancellationToken);
-            var utm = UtmConverter.LatLonToUtm(double.Parse(location.X), double.Parse(location.Y));
-
-            return (utm.Easting, utm.Northing);
+            return await _mapService.GenerateMapBase64(location.X, location.Y);
         }
 
     }
