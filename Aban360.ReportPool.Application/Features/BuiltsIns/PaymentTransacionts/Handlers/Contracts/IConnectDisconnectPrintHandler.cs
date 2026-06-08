@@ -6,7 +6,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
 {
     public interface IConnectDisconnectPrintHandler
     {
-        Task<ConnectDisconnectPrintOutputDto> Handle(ConnectDisconnectPrintInputDto inputDto, CancellationToken cancellationToken);
+        Task<ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto>> Handle(ConnectDisconnectPrintInputDto inputDto,bool isConnect, CancellationToken cancellationToken);
         ICollection<NumericDictionary> GetCasues();
     }
 }

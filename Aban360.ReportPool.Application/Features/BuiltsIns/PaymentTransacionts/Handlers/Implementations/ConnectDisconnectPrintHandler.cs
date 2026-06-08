@@ -3,12 +3,14 @@ using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Contracts;
 using Aban360.ReportPool.Application.Features.Geo.Contracts;
+using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Domain.Features.Geo;
 using Aban360.ReportPool.Infrastructure.Features.Geo;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
+using DNTPersianUtils.Core;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Implementations
 {
@@ -37,12 +39,14 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             _mapService.NotNull(nameof(mapService));
         }
 
-        public async Task<ConnectDisconnectPrintOutputDto> Handle(ConnectDisconnectPrintInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto>> Handle(ConnectDisconnectPrintInputDto inputDto, bool isConnect ,CancellationToken cancellationToken)
         {
+            string title = isConnect ? ReportLiterals.Connect : ReportLiterals.Disconnect;
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(inputDto.BillId);
             ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo = await _customerGeneralInfoQueryService.Get(zoneIdAndCustomerNumber);
 
-            return new ConnectDisconnectPrintOutputDto()
+            ICollection<ConnectDisconnectPrintDataOutputDto> data = new List<ConnectDisconnectPrintDataOutputDto>();
+            data.Add(new ConnectDisconnectPrintDataOutputDto()
             {
                 CustomerNumber = customerInfo.ReportHeader?.CustomerNumber ?? 0,
                 RegionTitle = customerInfo.ReportData?.FirstOrDefault()?.RegionTitle ?? string.Empty,
@@ -65,19 +69,20 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 BranchTypeTitle = customerInfo.ReportHeader?.BranchTypeTitle ?? string.Empty,
                 CauseTitle = inputDto.Why.HasValue ? GetCasues().Where(c => c.Id == inputDto.Why).FirstOrDefault()?.Title ?? string.Empty : string.Empty,
                 Base64 = await GetBase64Location(inputDto.BillId, cancellationToken)
+            });
+            ConnectDisconnectPrintHeaderOutputDto header = new()
+            {
+                CustomerCount = 1,
+                RecordCount = 1,
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                Title = title
             };
+            return new ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto>(title, header, data);
         }
         private async Task<string> GetBase64Location(string billId, CancellationToken cancellationToken)
         {
             LocationInfoDto location = await _locationInfoService.Handle(billId, cancellationToken);
             return await _mapService.GenerateMapBase64(location.X, location.Y);
-        }
-        private async Task<(double, double)> GetLocation(string billId, CancellationToken cancellationToken)
-        {
-            LocationInfoDto location = await _locationInfoService.Handle(billId, cancellationToken);
-            var utm = UtmConverter.LatLonToUtm(double.Parse(location.X), double.Parse(location.Y));
-
-            return (utm.Easting, utm.Northing);
         }
         public ICollection<NumericDictionary> GetCasues()
         {
