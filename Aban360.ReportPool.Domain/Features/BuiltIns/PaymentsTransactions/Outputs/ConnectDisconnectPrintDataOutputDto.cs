@@ -1,6 +1,8 @@
-﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs
+﻿using DNTPersianUtils.Core;
+
+namespace Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs
 {
-    public record ConnectDisconnectPrintOutputDto
+    public record ConnectDisconnectPrintDataOutputDto
     {
         public int CustomerNumber { get; set; }
         public string RegionTitle { get; set; }
@@ -23,5 +25,8 @@
         public string BranchTypeTitle { get; set; }
         public string CauseTitle { get; set; }
         public string? Base64 { get; set; }
+        public string ReportDateJalali { get; set; } = DateTime.Now.ToShortPersianDateString();
+        public string X { get; set; }
+        public string Y { get; set; }
     }
 }

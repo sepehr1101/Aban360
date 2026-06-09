@@ -378,3 +378,5 @@ FodyWeavers.xsd
 /Aban360.Api/AppData/Dbfs/CFile__214466208_51_69.dbf
 /Aban360.Api/AppData/Dbfs/CFile__214466208_51_70.dbf
 *.dbf
+/Aban360.ReportPool.Infrastructure/sixlabors.lic
+/Aban360.Api/sixlabors.lic

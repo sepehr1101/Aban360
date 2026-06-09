@@ -3,12 +3,14 @@ using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Contracts;
 using Aban360.ReportPool.Application.Features.Geo.Contracts;
+using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Domain.Features.Geo;
 using Aban360.ReportPool.Infrastructure.Features.Geo;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
+using DNTPersianUtils.Core;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Implementations
 {
@@ -37,12 +39,15 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             _mapService.NotNull(nameof(mapService));
         }
 
-        public async Task<ConnectDisconnectPrintOutputDto> Handle(ConnectDisconnectPrintInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto>> Handle(ConnectDisconnectPrintInputDto inputDto, bool isConnect ,CancellationToken cancellationToken)
         {
+            string title = isConnect ? ReportLiterals.Connect : ReportLiterals.Disconnect;
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(inputDto.BillId);
             ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo = await _customerGeneralInfoQueryService.Get(zoneIdAndCustomerNumber);
 
-            return new ConnectDisconnectPrintOutputDto()
+            ICollection<ConnectDisconnectPrintDataOutputDto> data = new List<ConnectDisconnectPrintDataOutputDto>();
+            var locInfo = await GetBase64Location(inputDto.BillId, cancellationToken);
+            data.Add(new ConnectDisconnectPrintDataOutputDto()
             {
                 CustomerNumber = customerInfo.ReportHeader?.CustomerNumber ?? 0,
                 RegionTitle = customerInfo.ReportData?.FirstOrDefault()?.RegionTitle ?? string.Empty,
@@ -63,15 +68,39 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 MeterDiameterId = customerInfo.ReportHeader?.MeterDiameterId ?? string.Empty,
                 MeterDiameterTitle = customerInfo.ReportHeader?.MeterDiameterTitle ?? string.Empty,
                 BranchTypeTitle = customerInfo.ReportHeader?.BranchTypeTitle ?? string.Empty,
-                CauseTitle = inputDto.CauseId,
-                Base64 = await GetBase64Location(inputDto.BillId, cancellationToken)
+                CauseTitle = inputDto.Why.HasValue ? GetCasues().Where(c => c.Id == inputDto.Why).FirstOrDefault()?.Title ?? string.Empty : string.Empty,
+                Base64 = locInfo.Item2,
+                X=locInfo.Item1.X,
+                Y=locInfo.Item1.Y
+            });
+            ConnectDisconnectPrintHeaderOutputDto header = new()
+            {
+                CustomerCount = 1,
+                RecordCount = 1,
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                Title = title
             };
+            return new ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto>(title, header, data);
         }
-        private async Task<string> GetBase64Location(string billId, CancellationToken cancellationToken)
+        private async Task<(LocationInfoDto, string)> GetBase64Location(string billId, CancellationToken cancellationToken)
         {
             LocationInfoDto location = await _locationInfoService.Handle(billId, cancellationToken);
-            return await _mapService.GenerateMapBase64(location.X, location.Y);
+            string base64= await _mapService.GenerateMapBase64(location.X, location.Y);
+            return (location, base64);
         }
-
+        public ICollection<NumericDictionary> GetCasues()
+        {
+            ICollection<NumericDictionary> causes = new List<NumericDictionary>()
+            {
+              new NumericDictionary(1,"بدهی آببها"),
+              new NumericDictionary(2,"بدهی حق انشعاب"),
+              new NumericDictionary(3,"بسته بیش از سه دوره"),
+              new NumericDictionary(4,"انشعاب غیر مجاز آب"),
+              new NumericDictionary(5,"انشعاب غیر مجاز فاضلاب"),
+              new NumericDictionary(6,"به درخواست مشترک یا مصرف کننده"),
+              new NumericDictionary(7,"نصب مستقیم پمپ"),
+            };
+            return causes;
+        }
     }
 }
