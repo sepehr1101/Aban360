@@ -31,6 +31,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         const string _reportTitle = "آپلود و محاسبه اولیه";
         const int _conditionPayableAmount = 10000;
         const int _paymentDeadline = 7;
+        const double _maxAmount = 999_999_999_999;
 
         private readonly IMeterFlowQueryService _meterFlowService;
         private readonly ICustomerInfoService _customerInfoService;
@@ -101,6 +102,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                         {
 
                             AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterInfo, cancellationToken);
+                            if (abBahaCalc.SumItems > _maxAmount)
+                            {
+                                throw new InvalidBillCommandException(ExceptionLiterals.InvalidDisallowedAmount(readingDetail.BillId, _maxAmount));
+                            }
                             readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null));
                         }
                         catch (Exception ex) when (IsInException(ex))
@@ -144,6 +149,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
 
                             AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterInfo, cancellationToken);
+                            if (abBahaCalc.SumItems > _maxAmount)
+                            {
+                                throw new InvalidBillCommandException(ExceptionLiterals.InvalidDisallowedAmount(readingDetail.BillId, _maxAmount));
+                            }
                             readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null));
                         }
                         catch (Exception ex) when (IsInException(ex))
@@ -157,6 +166,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                         try
                         {
                             AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterImaginary, cancellationToken);
+                            if (abBahaCalc.SumItems > _maxAmount)
+                            {
+                                throw new InvalidBillCommandException(ExceptionLiterals.InvalidDisallowedAmount(readingDetail.BillId, _maxAmount));
+                            }
                             readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null));
                         }
                         catch (Exception ex) when (IsInException(ex))
@@ -203,6 +216,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     {
                         transaction.Rollback();
                         await meterFlowCommand.Delete(meterFlowDeleteDto);
+                        throw ex;
                         //DeleteFromDisk(filePath);//todo:Error
                     }
                 }
@@ -263,6 +277,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
             return meterReadingsDetailCreate;
         }
+
         private IEnumerable<MeterReadingDetailCreateDto> GetReadingMeterDetails(ICollection<MeterReadingFileDetail> meterReadings, CustomersInfoGetDto customersInfo, int meterFlowId)
         {
             return from meterReading in meterReadings

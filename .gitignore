@@ -380,3 +380,5 @@ FodyWeavers.xsd
 *.dbf
 /Aban360.ReportPool.Infrastructure/sixlabors.lic
 /Aban360.Api/sixlabors.lic
+/Aban360.ReportPool.Infrastructure/sixlabors.lic
+/Aban360.Api/sixlabors.lic
