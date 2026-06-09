@@ -9,11 +9,12 @@ namespace Aban360.CalculationPool.Domain.Features.Sale.Dto.Output
         public string? BillId { get; set; }
         public string? PaymentId { get; set; }
         public string? MobileNumber { get; set; }
-        public decimal Tax => (Water + Budget) * _vatRate;
+        public decimal Tax { get; set; }
         public decimal Water { get; set; }
         public decimal Delivery { get; set; }
         public decimal Budget { get; set; }
-        public decimal Final => Water + Tax + Delivery + Budget;
+        public decimal HotSeason { get; set; }
+        public decimal Final => Water + Tax + Delivery + Budget + HotSeason;
         public int ZoneId { get; set; }
         public string ZoneTitle { get; set; }
         public string SaleStateTitle { get; set; }

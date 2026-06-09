@@ -46,6 +46,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         const int _reverseCounterState = 3;
         const int _nextRoundCounterSatate = 5;
         const int _operator = 666;
+        const int _payIdMaxChar = 13;
         public FreeGenerateBillHandler(
             IHttpContextAccessor contextAccessor,
             ICustomerInfoService customerInfoService,
@@ -87,6 +88,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             await Validation(inputDto, zoneIdAndCustomerNumber, customerInfo);
 
             AbBahaCalculationDetails abBahaCalcResult = await GetAbBahaCalc(inputDto, customerInfo, cancellationToken);
+            abBahaCalcResult.MeterInfo.CounterStateCode = inputDto.CounterStateCode ?? 0;
             NewBillOutputDto result = new()
             {
                 AbBahaCalculationDetail = abBahaCalcResult,
@@ -366,6 +368,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             string paymentId = IsAllowedZeroMeterNumber(counterSatetCode) ?
                 string.Empty :
                 TransactionIdGenerator.GeneratePaymentId((long)pard, abBahaCalc.Customer.BillId, paymentIdOption);
+            if (paymentId.ToString().Length > _payIdMaxChar)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.NotSupportPaymentIdCharecters(pard));
+            }
             decimal barge = await _variabService.GetAndRenew(abBahaCalc.Customer.ZoneId);
 
             return new BedBesCreateDto()// ToDo :check
@@ -392,7 +398,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 AbonAb = (decimal)abBahaCalc.AbonmanAbAmount,
                 Pard = (decimal)pard,
                 Jam = (decimal)jam,
-                CodVas = abBahaCalc.MeterInfo.CounterStateCode ?? 0,
+                CodVas = counterSatetCode ?? 0,
                 Ghabs = "1",
                 Del = false,
                 Type = "1",

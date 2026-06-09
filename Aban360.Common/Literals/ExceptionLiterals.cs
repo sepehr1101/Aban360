@@ -58,7 +58,8 @@
         public static string BaseBeforComparisonDate => "تاریخ مبنا بعد از تاریخ مقایسه وارد شود ";
         public static string CustomerNotFound => " مشترک یافت نشد.";
         public static string BillNotFound => " قبضی یافت نشد.";
-        public static string InvalidDisallowedAmount(string billId,double maxAmount) => $" مبلغ محاسبه شده برای مشترک با شناسه قبض:{billId} بیش از {maxAmount} است";
+        public static string InvalidDisallowedAmount(string billId, double maxAmount) => $" مبلغ محاسبه شده برای مشترک با شناسه قبض:{billId} بیش از {maxAmount} است";
+        public static string NotSupportPaymentIdCharecters(double amount) => $"ساختار شناسه پرداخت، مبلغ {amount} را پشتیبانی نمی‌کند.";
         public static string InvalidDiameterId => " امکان محاسبه تعرفه با قطر انتخابی وجود ندارد.";
         public static string InvalidZoneIdMoreThan1 => "با توجه به اینکه فیلد از/تا اشتراک مقدار دهی شده است، می‌توانید فقط یک ناحیه را انتخاب کنید.";
         public static string InvalidInstallmentMoreThan6 => "تعداد اقساط باید کمتر از 6 قسط باشد.";
