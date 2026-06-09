@@ -56,7 +56,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             TrackingInsertDuplicateDto trackingInsertSeenAssessmentDto = new(inputDto.TrackNumber, _seenByAssessmentStatus, inputDto.Description, assessmentCode, _requestOrigin, true, true);
             TrackingInsertDuplicateDto trackingInsertSetAssessmentResultDto = new(inputDto.TrackNumber, _setAssessmentResultStatus, inputDto.Description, assessmentCode, _requestOrigin, isSuccessResult, false);
             AssessmentUpdateDto assessmentUpdateDto = await GetAssessmentUpdateDto(inputDto, assessmentCode, trackingInsertSetAssessmentResultDto.TrackId, requestBody);
-            //await Validation(inputDto.TrackingId);
+            await Validation(inputDto.TrackingId);
 
             using (IDbConnection connection = _sqlReportConnection)
             {
