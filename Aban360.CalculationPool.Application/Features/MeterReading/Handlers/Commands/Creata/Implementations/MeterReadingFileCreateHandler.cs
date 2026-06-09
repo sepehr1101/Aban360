@@ -595,6 +595,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             return ex is InvalidDateException ||
             ex is InvalidBillIdException ||
             ex is TariffDateException ||
+            ex is InvalidBillCommandException ||
             ex is TariffCalcException;
         }
     }

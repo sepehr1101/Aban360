@@ -184,5 +184,25 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 ContractualCapacity = memberInfo.ContractualCapacity,
             };
         }
+        public IEnumerable<NumericDictionary> ReturnCodes()
+        {
+            return new List<NumericDictionary>()
+            {
+                new NumericDictionary(1,"از آب‌بها/نقل به"),
+                new NumericDictionary(2,"اشتباه ثبت مبلغ"),
+                new NumericDictionary(3,"تکرار مبلغ"),
+                new NumericDictionary(4,"اشتباه ثبت ردیف"),
+                new NumericDictionary(5,"صدور چک"),
+                new NumericDictionary(6,"از قلم افتادگی"),
+                new NumericDictionary(7,"از ردیف به ردیف"),
+                new NumericDictionary(8,"اصلاح حساب"),
+                new NumericDictionary(9,"عدم امکان فنی"),
+                new NumericDictionary(10,"اصلاح ردیف نامعتبر"),
+                new NumericDictionary(11,"پرداخت خسارت بخش آب"),
+                new NumericDictionary(12,"پرداخت خسارت بخش فاضلاب"),
+                new NumericDictionary(13,"برگشت چک"),
+                new NumericDictionary(14,"تخفیف"),
+            };
+        }
     }
 }
