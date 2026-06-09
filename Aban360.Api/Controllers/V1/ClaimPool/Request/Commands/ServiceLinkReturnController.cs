@@ -19,7 +19,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         {
             _serviceLinkReturnHandler = serviceLinkReturnHandler;
             _serviceLinkReturnHandler.NotNull(nameof(serviceLinkReturnHandler));
-            
+
             _serviceLinkReturnDisconnectHandler = serviceLinkReturnDisconnectHandler;
             _serviceLinkReturnDisconnectHandler.NotNull(nameof(serviceLinkReturnDisconnectHandler));
         }
@@ -32,7 +32,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             await _serviceLinkReturnHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
-        
+
         [HttpPost]
         [Route("return-disconnect")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ServiceLinkReturnDisconnectHeaderOutputDto, ServiceLinkReturnDisconnectDataOutputDto>>), StatusCodes.Status200OK)]
@@ -41,5 +41,15 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             ReportOutput<ServiceLinkReturnDisconnectHeaderOutputDto, ServiceLinkReturnDisconnectDataOutputDto> result = await _serviceLinkReturnDisconnectHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
         }
+
+        [HttpGet]
+        [Route("return-codes")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<NumericDictionary>>), StatusCodes.Status200OK)]
+        public IActionResult GetReturnCodes(CancellationToken cancellationToken)
+        {
+            IEnumerable<NumericDictionary> result = _serviceLinkReturnHandler.ReturnCodes();
+            return Ok(result);
+        }
+
     }
 }
