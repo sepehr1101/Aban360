@@ -39,10 +39,17 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetStiReport(PendingPaymentsInputDto inputDto, CancellationToken cancellationToken)
         {
+            JsonReportId reportId = await GetPrintableData(inputDto, cancellationToken);
+            return Ok(reportId);
+        }
+
+        private async Task<JsonReportId> GetPrintableData(PendingPaymentsInputDto inputDto, CancellationToken cancellationToken)
+        {
             int reportCode = 2030;
             ReportOutput<PendingPaymentsPrintstHeaderOutputDto, PendingPaymentPrintsDataOutputDto> result = await _pendingPaymentsPrintsHandler.Handle(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
-            return Ok(reportId);
+          
+            return reportId;
         }
     }
 }
