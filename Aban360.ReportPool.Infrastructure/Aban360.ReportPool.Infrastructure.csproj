@@ -19,4 +19,10 @@
     <ProjectReference Include="..\Aban360.ReportPool.Domain\Aban360.ReportPool.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="sixlabors.lic">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
