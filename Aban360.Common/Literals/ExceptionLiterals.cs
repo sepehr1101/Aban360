@@ -122,7 +122,7 @@
         //Configuration
         public static string InvalidConfiguration(string item, string subItem) => $"تنظیمات راه اندازی نرم افزار اشتباه است. {item} > {subItem}";
 
-        public static string InvalidPreviousDateInvoice(int day) => $"صدور قبل برای کمتر از {day} روز امکان پذیر نمی‌باشد.";
+        public static string InvalidPreviousDateInvoice(int day) => $"صدور قبض برای کمتر از {day} روز امکان پذیر نمی‌باشد.";
 
 
 
