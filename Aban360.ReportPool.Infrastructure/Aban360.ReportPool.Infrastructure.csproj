@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <None Update="sixlabors.lic">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
