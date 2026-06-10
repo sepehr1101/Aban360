@@ -84,8 +84,8 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         }
         private async Task SqlCommands(KartInsertDto kartsInsertDto, RequestBillDetailsInsertDto requestBillDetailsInsertDto, IAppUser appUser, string opLogText)
         {
-            //string dbName = GetDbName(memberInfo.ZoneId);
-            string dbName = "Atlas";
+            string dbName = GetDbName(kartsInsertDto.ZoneId);
+            //string dbName = "Atlas";
 
             using (IDbConnection connection = _sqlReportConnection)
             {
