@@ -2,6 +2,8 @@
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Literals;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
@@ -29,6 +31,16 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             string query = GetAllQuery();
             return await _sqlReportConnection.QueryAsync<AssessmentResultOutputDto>(query, null);
         }
+        public async Task<AssessmentResultOutputDto> Get(int id)
+        {
+            string query = GetByIdQuery();
+            AssessmentResultOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<AssessmentResultOutputDto>(query, new { id });
+            if (result is null || result.Id == 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidAssessmentResultId);
+            }
+            return result;
+        }
         private string GetAllQuery()
         {
             return @"Select 
@@ -37,7 +49,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                         C4 IsSuccess
                     From Db70.dbo.t64
                     WHERE C3=1
-                    ORDER BY C0 DESC";                    
+                    ORDER BY C0 DESC";
         }
         private string GetAssessmentQuery()
         {
@@ -47,7 +59,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 						IsPreResult
                     From Db70.dbo.t64
                     WHERE C3=1 AND IsAssessment=1
-                    ORDER BY C0 DESC";                    
+                    ORDER BY C0 DESC";
+        }
+        private string GetByIdQuery()
+        {
+            return $@"Select C0 Id,
+                    	C1 Title,
+                        C4 IsSuccess
+                    From Db70.dbo.T64
+                    Where C0=@id";
         }
     }
 }

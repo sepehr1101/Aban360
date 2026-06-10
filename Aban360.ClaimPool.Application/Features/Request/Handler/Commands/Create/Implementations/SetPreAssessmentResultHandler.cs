@@ -21,6 +21,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IExaminationQueryService _assessmentQueryService;
         private readonly IMoshtrakQueryService _moshtrakQueryService;
+        private readonly IT64QueryService _t64QueryService;
         private readonly IValidator<PreAssessmentResultInputDto> _validator;
         private static int _setAssessmentResultStatus = 110;
         private static int _seenByAssessmentStatus = 150;
@@ -32,6 +33,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             ITrackingQueryService trackingQueryService,
             IExaminationQueryService assessmentQueryService,
             IMoshtrakQueryService moshtrakQueryService,
+            IT64QueryService t64QueryService,
             IValidator<PreAssessmentResultInputDto> validator,
             IConfiguration configuration)
             : base(configuration)
@@ -48,6 +50,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             _moshtrakQueryService = moshtrakQueryService;
             _moshtrakQueryService.NotNull(nameof(moshtrakQueryService));
 
+            _t64QueryService = t64QueryService;
+            _t64QueryService.NotNull(nameof(t64QueryService));
+
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
@@ -59,7 +64,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             await Validatoin(latestTrackingInfo.TrackId, latestTrackingInfo.StatusId);
 
             TrackingInsertDuplicateDto trackingInsertSeenAssessmentDto = new(latestTrackingInfo.TrackNumber, _seenByAssessmentStatus, inputDto.Description, assessmentCode, _requestOrigin, true, true);
-            TrackingInsertDuplicateDto trackingInsertSetAssessmentResultDto = new(latestTrackingInfo.TrackNumber, _setAssessmentResultStatus, inputDto.Description, assessmentCode, _requestOrigin, true, true, 1);
+            TrackingInsertDuplicateDto trackingInsertSetAssessmentResultDto = new(latestTrackingInfo.TrackNumber, _setAssessmentResultStatus, inputDto.Description, assessmentCode, _requestOrigin, true, false, 1);
             TrackingInsertDuplicateDto trackingInserSetArchiveDto = new(latestTrackingInfo.TrackNumber, _archiveStats, inputDto.Description, assessmentCode, _requestOrigin, true, false, 2);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(latestTrackingInfo.ZoneId, null, null, latestTrackingInfo.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
             AssessmentUpdateDto assessmentUpdateDto = await GetAssessmentUpdateDto(inputDto, latestTrackingInfo, moshtrakInfo, assessmentCode, trackingInsertSetAssessmentResultDto.TrackId);
@@ -140,7 +145,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     await _trackingCommandService.UpdateIsConsiderdLatest(trackingInsertSetAssessmentResultDto.TrackNumber, true);
                     await _trackingCommandService.InsertDuplicate(trackingInsertSeenAssessmentDto);
                     await _trackingCommandService.InsertDuplicate(trackingInsertSetAssessmentResultDto);
-                    await _trackingCommandService.InsertDuplicate(trackingInserSetArchiveDto);
+                    //await _trackingCommandService.InsertDuplicate(trackingInserSetArchiveDto);//after unarchive-> trackingInsertSetAssessmentResultDto.isConsiderd=true
                     await _examinationCommandService.Update(assessmentUpdateDto);
 
                     transaction.Commit();

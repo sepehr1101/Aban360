@@ -690,6 +690,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     		b.today_no,
                     		r.elat,
                     		b.del,
+							b.cod_vas,
                             Case 
                                 When b.del = 0 And b.cod_vas In (4,7,8) Then b.pri_no
                                 When b.del = 0 And b.cod_vas Not In (4,7,8) Then b.today_no
@@ -713,7 +714,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     		PreviousDateJalali,
                     		PreviousNumber
                     From Cte
-                    Where PreviousNumber Is Not Null
+                    Where   
+                        PreviousNumber Is Not Null AND 
+						cod_vas Not In (4,7,8)
                     Order By date_bed Desc";
         }
     }

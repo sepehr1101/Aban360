@@ -178,9 +178,6 @@
     <None Update="AppData\Mrts\90.mrt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="sixlabors.lic">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="https://acp-protocol.dev/schemas/v1/cache.schema.json" /></VisualStudio></ProjectExtensions>

@@ -22,7 +22,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Diagnostics;
-using System.Threading;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
@@ -47,6 +46,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         const int _reverseCounterState = 3;
         const int _nextRoundCounterSatate = 5;
         const int _operator = 666;
+        const int _payIdMaxChar = 13;
         public GenerateBillHandler(
             IHttpContextAccessor contextAccessor,
             ICustomerInfoService customerInfoService,
@@ -88,6 +88,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             await Validate(inputDto, zoneIdAndCustomerNumber, customerInfo);
 
             AbBahaCalculationDetails abBahaCalcResult = await GetAbBahaCalc(inputDto, customerInfo, cancellationToken);
+            abBahaCalcResult.MeterInfo.CounterStateCode = inputDto.CounterStateCode ?? 0;
             NewBillOutputDto result = new()
             {
                 AbBahaCalculationDetail = abBahaCalcResult,
@@ -380,6 +381,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             string paymentId = IsAllowedZeroMeterNumber(counterSatetCode) ?
                 string.Empty :
                 TransactionIdGenerator.GeneratePaymentId((long)pard, abBahaCalc.Customer.BillId, paymentIdOption);
+            if (paymentId.ToString().Length > _payIdMaxChar)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.NotSupportPaymentIdCharecters(pard));
+            }
             decimal barge = await _variabService.GetAndRenew(abBahaCalc.Customer.ZoneId);
 
             return new BedBesCreateDto()// ToDo :check
@@ -406,7 +411,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 AbonAb = (decimal)abBahaCalc.AbonmanAbAmount,
                 Pard = (decimal)pard,
                 Jam = (decimal)jam,
-                CodVas = abBahaCalc.MeterInfo.CounterStateCode ?? 0,
+                CodVas = counterSatetCode ?? 0,
                 Ghabs = "1",
                 Del = false,
                 Type = "1",
@@ -543,7 +548,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 DateOnly? currentDate = inputDto.CurrentDateJalali.ToGregorianDateOnly();
                 if (!currentDate.HasValue)
                 {
-                    var message = string.Join(',',"تاریخ ناصحیح");
+                    var message = string.Join(',', "تاریخ ناصحیح");
                     throw new BaseException(message);
                 }
                 if (currentDate.Value > DateTime.Now.ToDateOnly())
@@ -576,7 +581,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             }
 
         }
-        private bool IsChangedOrReverse(int? counterStateCode) => counterStateCode == _reverseCounterState || counterStateCode == _nextRoundCounterSatate || counterStateCode==_changeCounterState;
+        private bool IsChangedOrReverse(int? counterStateCode) => counterStateCode == _reverseCounterState || counterStateCode == _nextRoundCounterSatate || counterStateCode == _changeCounterState;
         private bool IsDomestic(int usageId) => _domesticUsage.Contains(usageId);
         private bool IsAllowedZeroMeterNumber(int? counterStateCode) => _allowedZeroMeterNumberCounterState.Contains(counterStateCode ?? 0);
         private int GetDuration(string previousDate, string currentDate)
