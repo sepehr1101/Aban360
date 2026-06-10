@@ -67,7 +67,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         {
             int[] burstPipe = { 1 };
             int[] misreaded = { 5, 7, 9, 11, 12, 14, 15 }; //9 removed
-            int[] misreadedCalcWithMeterNumber = { 9, 10, 11, 12, 14, 15 }; //TODO: 10 ? - 9 added
+            int[] misreadedCalcWithMeterNumber = { 5, 9, 10, 11, 12, 14, 15 }; //TODO: 10 ? - 9 added, 5 added
 
             CustomerInfoOutputDto customerInfo = await Validate(inputDto, appUser, cancellationToken);
             int jalaseNumber = await _returnBillBaseHandler.GetJalaliNumber(inputDto.MinutesNumber, customerInfo.ZoneId, customerInfo.Radif);
