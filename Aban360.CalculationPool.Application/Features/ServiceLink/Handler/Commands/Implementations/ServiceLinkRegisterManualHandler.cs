@@ -154,7 +154,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 RegisterDay = DateTime.Now.ToShortPersianDateString(),
                 RegisterDayGregorian = DateTime.Now,
                 BankName = input.Serial.ToString(),
-                BankBranchCode = int.Parse(input.CodBank),
+                BankBranchCode = string.IsNullOrWhiteSpace(input.CodBank) ? 0 : int.Parse(input.CodBank),
                 PaymentGateway = input.TypePay,
                 BillTableId = 0,
                 VillageId = string.Empty,

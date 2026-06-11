@@ -13,12 +13,14 @@ using System.Data;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations
 {
-    internal sealed class PreviousStatusRequestHandler : AbstractBaseConnection, IPreviousStatusRequestHandler
+    internal sealed class ReferredToIndividualRequestHandler : AbstractBaseConnection, IReferredToIndividualRequestHandler
     {
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IMoshtrakQueryService _moshtrakQueryService;
+        static int _referredToIndividualStatusId = 160;
+        static int _removeRequestStatusId = 90000;
         static int _requestOrigin = 12;
-        public PreviousStatusRequestHandler(
+        public ReferredToIndividualRequestHandler(
             ITrackingQueryService trackingQueryService,
             IMoshtrakQueryService moshtrakQueryService,
             IConfiguration configuration)
@@ -35,11 +37,14 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         {
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
-            Validate(inputDto.TrackNumber, moshtrakInfo.IsRegistered);
+            Validate(inputDto.TrackNumber, moshtrakInfo.IsRegistered, trackingInfo.StatusId);
 
-            TrackingOutputDto previousTrackingInfo = await _trackingQueryService.GetSecondToLatest(inputDto.TrackNumber);//todo : check
-            TrackingInsertDuplicateDto trackingInsertDto = new TrackingInsertDuplicateDto(inputDto.TrackNumber, previousTrackingInfo.StatusId, inputDto.Description, userCode, _requestOrigin, true, false);
+            TrackingInsertDuplicateDto trackingInsertDto = new(inputDto.TrackNumber, _referredToIndividualStatusId, inputDto.Description, userCode, _requestOrigin, true, false);
+            await SqlCommands(trackingInsertDto);
 
+        }
+        private async Task SqlCommands(TrackingInsertDuplicateDto trackingInsertDto)
+        {
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
@@ -48,20 +53,20 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 {
                     TrackingCommandService trackingCommandService = new(connection, transaction);
 
-                    await trackingCommandService.UpdateIsConsiderdLatest(inputDto.TrackNumber, true);
+                    await trackingCommandService.UpdateIsConsiderdLatest(trackingInsertDto.TrackNumber, true);
                     await trackingCommandService.InsertDuplicate(trackingInsertDto);
 
                     transaction.Commit();
                 }
             }
-
         }
-        private void Validate(int trackNumber, bool isRegistered)//todo: need Or not?
+        private void Validate(int trackNumber, bool isRegistered, int previousStatusId)
         {
-            if (isRegistered == true)//and not Deleted
+            if (isRegistered == true || previousStatusId == _removeRequestStatusId)
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
             }
         }
+
     }
 }
