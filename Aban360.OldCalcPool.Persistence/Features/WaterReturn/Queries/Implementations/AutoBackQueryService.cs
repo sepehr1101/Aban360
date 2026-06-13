@@ -253,7 +253,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Implement
                     		ON a.enshab=t5.C0
                     	Join [Db70].dbo.ReturnCause r
                     		ON a.elat=r.Id
-                    	Where a.IsConfirmed=0 AND a.Town=@zoneId AND a.IsDeleted=0
+                    	Where a.IsConfirmed=0 AND a.Town=@zoneId AND (a.IsDeleted=0 OR a.IsDeleted IS NULL)
                     )
                     Select c.*
                     From Cte c

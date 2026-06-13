@@ -18,6 +18,7 @@ namespace Aban360.ReportPool.Persistence.Base
                         TRIM(b.BillId) AS BillId,
                         b.CustomerNumber,
                         b.ReadingNumber,
+                        b.CounterStateCode,
                         b.CounterStateTitle,
                         b.ZoneTitle,
                         b.ZoneId,
@@ -31,7 +32,8 @@ namespace Aban360.ReportPool.Persistence.Base
                         (@FromReadingNumber IS NULL OR
                          @ToReadingNumber IS NULL OR
                          b.ReadingNumber BETWEEN @FromReadingNumber AND @ToReadingNumber)
-                        AND b.ZoneId IN @zoneIds
+                        AND b.ZoneId IN @zoneIds 
+                        AND b.CounterStateCode NOT IN(8)
                 ),
                 ConsecutiveCount AS (
                     SELECT 
@@ -102,6 +104,7 @@ namespace Aban360.ReportPool.Persistence.Base
                         TRIM(b.BillId) AS BillId,
                         b.CustomerNumber,
                         b.ReadingNumber,
+                        b.CounterStateCode,
                         b.CounterStateTitle,
                         b.ZoneTitle,
                         b.ZoneId,
@@ -117,6 +120,7 @@ namespace Aban360.ReportPool.Persistence.Base
                          @ToReadingNumber IS NULL OR
                          b.ReadingNumber BETWEEN @FromReadingNumber AND @ToReadingNumber)
                          {zoneQuery}
+                         AND b.CounterStateCode NOT IN(8)
                 ),
                 ConsecutiveCount AS (
                     SELECT 

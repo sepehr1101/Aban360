@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.Geo.Contracts;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Domain.Features.Geo;
@@ -24,11 +25,24 @@ namespace Aban360.ReportPool.Application.Features.Geo.Implementations
 
         public async Task<LocationInfoDto> Handle(string billId, CancellationToken cancellationToken)
         {
-            LocationInfoDto locationInfo = await _locationInfoService.GetInfo(billId);
-            CustomerLocationDto customerLocation = await _gisService.GetCustomerLocation(new CustomerLocationInputDto(billId));
-            LocationInfoDto result = GetLocationInfo(locationInfo, customerLocation);
+            try
+            {
+                int timeoutSecond = 6;
+                LocationInfoDto locationInfo = await _locationInfoService.GetInfo(billId);
+                CustomerLocationDto customerLocation = await _gisService.GetCustomerLocation(new CustomerLocationInputDto(billId), timeoutSecond);
+                LocationInfoDto result = GetLocationInfo(locationInfo, customerLocation);
 
-            return result;
+                return result;
+            }
+            catch (OperationCanceledException)
+            {
+                throw new BaseException("سرویس gis در دسترس نیست. لطفا با پشتیبانی موضوع را مطرح بفرمایید");
+            }
+            catch (Exception ex)
+            {
+                throw new BaseException("سرویس gis در دسترس نیست. لطفا با پشتیبانی موضوع را مطرح بفرمایید");
+            }
+         
         }
 
         private LocationInfoDto GetLocationInfo(LocationInfoDto locationInfo, CustomerLocationDto customerLocation)

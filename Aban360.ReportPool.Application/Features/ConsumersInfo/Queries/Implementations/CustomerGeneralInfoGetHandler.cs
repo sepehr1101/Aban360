@@ -80,7 +80,7 @@ namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implemen
             }
             catch (OperationCanceledException)
             {
-                throw;
+                return (0, 0);
             }
             catch (Exception ex)
             {
