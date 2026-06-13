@@ -45,6 +45,7 @@ namespace Aban360.Common.Db.Services
                 Ip = _contextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString(),
                 SystemInfo = JsonSerializer.Serialize(logInfo),
                 Description = text,
+                Scope=string.Empty,
             };
 
             string command = GetInsertCommand();
@@ -58,10 +59,10 @@ namespace Aban360.Common.Db.Services
         {
             return $@"Insert CustomerWarehouse.dbo.OpLog(
                         UserId,DisplayName,UserName,
-                        Ip,SystemInfo,RegisterDateTime,Description)
+                        Ip,SystemInfo,RegisterDateTime,Description,Scope)
                     Values(
                         @UserId ,@DisplayName ,@UserName ,
-                        @Ip ,@SystemInfo ,@RegisterDateTime ,@Description)";
+                        @Ip ,@SystemInfo ,@RegisterDateTime ,@Description ,@Scope)";
         }
 
     }
@@ -95,7 +96,8 @@ namespace Aban360.Common.Db.Services
                     	Ip,
                     	SystemInfo,
                     	RegisterDateTime,
-                    	Description
+                    	Description,
+                        Scope
                     From CustomerWarehouse.dbo.OpLog
                     Where 
                     CAST( DATEFROMPARTS( YEAR(RegisterDateTime), MONTH(RegisterDateTime), DAY(RegisterDateTime )) AS datetime)  BETWEEN @fromDate and @toDate ";
@@ -110,6 +112,7 @@ namespace Aban360.Common.Db.Services
         public string SystemInfo { get; set; }
         public DateTime RegisterDateTime { get; set; } = DateTime.Now;
         public string Description { get; set; }
+        public string? Scope { get; set; }
     }
     public record OpLogDataDto
     {
@@ -122,6 +125,7 @@ namespace Aban360.Common.Db.Services
         public DateTime RegisterDateTime { get; set; }
         public string RegisterDateJalali { get; set; }
         public string Description { get; set; }
+        public string? Scope { get; set; }
     }
     public record OpLogGetDto
     {

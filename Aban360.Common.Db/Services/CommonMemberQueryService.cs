@@ -102,6 +102,7 @@ namespace Aban360.Common.Db.Services
 						m.edareh_k AS IsSpecial,
 						m.hasf DeletionStateId,
 						m.noe_va AS UseStateId,
+						t7.C1 UseStateTitle,
 						m.master_sif AS MainSiphon,
 						m.sif_1 AS Siphon1,
 						m.sif_2 AS Siphon2,
@@ -139,6 +140,8 @@ namespace Aban360.Common.Db.Services
 						ON m.cod_enshab=t41.C0
 					Left Join [Db70].dbo.T5 t5
 						ON m.enshab=t5.C0
+					Left Join [Db70].dbo.T7 t7
+						ON m.noe_va=t7.C0
 					Where
 						m.town=@ZoneId AND
 						m.radif=@CustomerNumber";

@@ -53,8 +53,12 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             TrackingOutputDto trackingInfo = await GetTrackingWithValidation(inputDto, cancellationToken);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
             IEnumerable<CalculationRequestDisplayDataOutputDto> kartInfo = await _kartQueryService.Get(trackingInfo.StringTrackNumber, trackingInfo.ZoneId);
+            if (string.IsNullOrWhiteSpace(trackingInfo.BillId))
+            {
+                throw new InvalidBillIdException(ExceptionLiterals.InvalidBillId);
+            }
 
-            IEnumerable<InstallmentRequestDataOutputDto> data = GetInstallments(inputDto, kartInfo);
+            IEnumerable<InstallmentRequestDataOutputDto> data = GetData(inputDto, kartInfo, trackingInfo.BillId);
             InstallmentRequestHeaderOutputDto header = new(data?.Sum(x => x.Amount) ?? 0, inputDto.InstallmentCount);
             ReportOutput<InstallmentRequestHeaderOutputDto, InstallmentRequestDataOutputDto> result = new(_title, header, data);
 
@@ -82,17 +86,13 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
             return trackingInfo;
         }
-        private (long, long, long, long) GetInstallmentAmount(InstallmentRequestInputDto inputDto, IEnumerable<CalculationRequestDisplayDataOutputDto> kartInfo)
+        private (long, long, long) GetInstallmentAmount(InstallmentRequestInputDto inputDto, long payable)
         {
-            long amount = kartInfo?.Sum(x => x.Amount) ?? 0;
-            long discount = kartInfo?.Sum(x => x.Discount) ?? 0;
-            long payable = amount - discount;//todo: true or not?
-
             long firstInstallmentWithZero = (long)(payable * (inputDto.PrepaymentPercent / 100.0));
             long firstInstallmentWithoutZero = (firstInstallmentWithZero / 1000) * 1000;
             if (inputDto.InstallmentCount == 1 || inputDto.PrepaymentPercent == 100)
             {
-                return (payable, firstInstallmentWithoutZero, 0, 0);
+                return (firstInstallmentWithoutZero, 0, 0);
             }
 
             long otherAmount = payable - firstInstallmentWithoutZero;
@@ -100,21 +100,45 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             long eachInstallmentAmountWithoutZero = (eachInstallmentAmountWithZero / 1000) * 1000;
             long remain = otherAmount - (eachInstallmentAmountWithoutZero * (inputDto.InstallmentCount));
 
-            return (payable, firstInstallmentWithoutZero, eachInstallmentAmountWithoutZero, remain);
+            return (firstInstallmentWithoutZero, eachInstallmentAmountWithoutZero, remain);
         }
-        private IEnumerable<InstallmentRequestDataOutputDto> GetInstallments(InstallmentRequestInputDto inputDto, IEnumerable<CalculationRequestDisplayDataOutputDto> kartInfo)
+        private IEnumerable<InstallmentRequestDataOutputDto> GetData(InstallmentRequestInputDto inputDto, IEnumerable<CalculationRequestDisplayDataOutputDto> kartInfo, string billId)
         {
             string[] dueDatesJalali = GetDate(inputDto.InstallmentCount + 1, inputDto.MonthlyDuration);
-            var (payable, firstInstallmentWithoutZero, eachInstallmentAmountWithoutZero, remain) = GetInstallmentAmount(inputDto, kartInfo);
-            InstallmentRequestDataOutputDto firstInstallment = new(firstInstallmentWithoutZero + remain, dueDatesJalali[0], string.Empty);
+            long amount = kartInfo?.Sum(x => x.Amount) ?? 0;
+            long discount = kartInfo?.Sum(x => x.Discount) ?? 0;
+            long payable = amount - discount;//todo: true or not?
+
+            if (inputDto.PrepaymentPercent == 100 || inputDto.InstallmentCount == 1)
+            {
+                return GetCashInstallments(billId, dueDatesJalali[0], payable);
+            }
+            else
+            {
+                return GetInstallments(inputDto, billId, dueDatesJalali, payable);
+            }
+        }
+        private IEnumerable<InstallmentRequestDataOutputDto> GetInstallments(InstallmentRequestInputDto inputDto, string billId, string[] dueDatesJalali, long payable)
+        {
+            var (firstInstallmentWithoutZero, eachInstallmentAmountWithoutZero, remain) = GetInstallmentAmount(inputDto, payable);
+            string firstPaymentId = TransactionIdGenerator.GeneratePaymentId(firstInstallmentWithoutZero, billId, $"20{0}");
+            InstallmentRequestDataOutputDto firstInstallment = new(firstInstallmentWithoutZero + remain, dueDatesJalali[0], firstPaymentId);
             ICollection<InstallmentRequestDataOutputDto> data = new List<InstallmentRequestDataOutputDto>(); ;
             data.Add(firstInstallment);
             for (int i = 1; i <= inputDto.InstallmentCount; i++)
             {
-                string dueDateJalali = dueDatesJalali[i ];
-                InstallmentRequestDataOutputDto otherinstallment = new(eachInstallmentAmountWithoutZero, dueDateJalali, string.Empty);
+                string dueDateJalali = dueDatesJalali[i];
+                string paymentId = TransactionIdGenerator.GeneratePaymentId(eachInstallmentAmountWithoutZero, billId, $"20{i}");
+                InstallmentRequestDataOutputDto otherinstallment = new(eachInstallmentAmountWithoutZero, dueDateJalali, paymentId);
                 data.Add(otherinstallment);
             }
+
+            return data;
+        }
+        private IEnumerable<InstallmentRequestDataOutputDto> GetCashInstallments(string billId, string dueDateJalali, long payable)
+        {
+            ICollection<InstallmentRequestDataOutputDto> data = new List<InstallmentRequestDataOutputDto>();
+            data.Add(new InstallmentRequestDataOutputDto(payable, dueDateJalali, TransactionIdGenerator.GeneratePaymentId(payable, billId, $"200")));
 
             return data;
         }
@@ -129,10 +153,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         }
         private IEnumerable<GhestInsertDto> GetGhestsInsertDto(IEnumerable<InstallmentRequestDataOutputDto> data, TrackingOutputDto trackingInfo, MoshtrakOutputDto moshtrakInfo)
         {
-            if (string.IsNullOrWhiteSpace(trackingInfo.BillId))
-            {
-                throw new InvalidBillIdException(ExceptionLiterals.InvalidBillId);
-            }
             int counter = 0;
             return data.Select(x => new GhestInsertDto()
             {
@@ -151,7 +171,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 DueDateJalali = x.DueDateJalali,
                 InsertBy = _insertBy,
                 BillId = trackingInfo.BillId ?? string.Empty,
-                PaymentId = TransactionIdGenerator.GeneratePaymentId(x.Amount, trackingInfo.BillId, $"20{counter++}"),
+                PaymentId = x.PaymentId,
             });
         }
         private async Task ExecuteSqlCommand(IEnumerable<GhestInsertDto> ghestsInsertDto, int zoneId)
