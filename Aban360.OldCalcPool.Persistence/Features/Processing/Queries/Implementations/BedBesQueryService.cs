@@ -692,17 +692,17 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     		b.del,
 							b.cod_vas,
                             Case 
-                                When b.del = 0 And b.cod_vas In (4,7,8) Then b.pri_no
+                                When b.del = 0 And b.cod_vas In (4,7,8) Then NULL
                                 When b.del = 0 And b.cod_vas Not In (4,7,8) Then b.today_no
                                 When b.del = 1 And r.elat Not In (2,3,4,5,6,9,10) And b.cod_vas Not In (4,7,8) Then b.today_no
-                                When b.del = 1 And r.elat Not In (2,3,4,5,6,9,10) And b.cod_vas In (4,7,8) Then b.pri_no
+                                When b.del = 1 And r.elat Not In (2,3,4,5,6,9,10) And b.cod_vas In (4,7,8) Then NULL
                                 Else NULL
                             End As PreviousNumber,
                     		Case 
-                                When b.del = 0 And b.cod_vas In (4,7,8) Then b.pri_date
+                                When b.del = 0 And b.cod_vas In (4,7,8) Then NULL
                                 When b.del = 0 And b.cod_vas Not In(4,7,8) Then b.today_date
                                 When b.del = 1 And r.elat Not In(2,3,4,5,6,9,10) And b.cod_vas Not In (4,7,8) Then b.today_date
-                                When b.del = 1 And r.elat Not In(2,3,4,5,6,9,10) And b.cod_vas In (4,7,8) Then b.pri_date
+                                When b.del = 1 And r.elat Not In(2,3,4,5,6,9,10) And b.cod_vas In (4,7,8) Then NULL
                                 Else NULL
                             End As PreviousDateJalali
                         From  [{dbName}].dbo.bed_bes b
@@ -714,9 +714,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     		PreviousDateJalali,
                     		PreviousNumber
                     From Cte
-                    Where   
-                        PreviousNumber Is Not Null AND 
-						cod_vas Not In (4,7,8)
+                    Where PreviousNumber Is Not Null 
                     Order By date_bed Desc";
         }
     }

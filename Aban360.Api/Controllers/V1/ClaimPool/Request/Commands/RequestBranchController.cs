@@ -22,6 +22,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         private readonly IMoshtrakRequestUpdateHandler _moshtrakRequestUpdateHandler;
         private readonly ICloseRequestHandler _closeRequestHandle;
         private readonly IPreviousStatusRequestHandler _previousStatusRequestHandler;
+        private readonly IReferredToIndividualRequestHandler _referredToIndividualRequestHandler;
         private readonly IGeneralInformationHandler _generalInformationRequestHandler;
         private readonly IPreviousRequestGetByBillIdHandler _previousRequestGetByBillIdHandler;
         private readonly ISwapRequestTypeHandler _swapRequestTypeHandler;
@@ -32,6 +33,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             IMoshtrakRequestUpdateHandler moshtrakRequestUpdateHandler,
             ICloseRequestHandler closeRequestHandle,
             IPreviousStatusRequestHandler previousStatusRequestHandler,
+            IReferredToIndividualRequestHandler referredToIndividualRequestHandler,
             IGeneralInformationHandler generalInformationRequestHandler,
             IPreviousRequestGetByBillIdHandler previousRequestGetByBillIdHandler,
             ISwapRequestTypeHandler swapRequestTypeHandler)
@@ -53,6 +55,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 
             _previousStatusRequestHandler = previousStatusRequestHandler;
             _previousStatusRequestHandler.NotNull(nameof(previousStatusRequestHandler));
+
+            _referredToIndividualRequestHandler = referredToIndividualRequestHandler;
+            _referredToIndividualRequestHandler.NotNull(nameof(referredToIndividualRequestHandler));
 
             _generalInformationRequestHandler = generalInformationRequestHandler;
             _generalInformationRequestHandler.NotNull(nameof(generalInformationRequestHandler));
@@ -109,6 +114,16 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             int userName = UserService.GetUserCode(CurrentUser.Username);
             RequestCloseOuputDto result = await _closeRequestHandle.Handle(inputDto, userName, cancellationToken);
             return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("refer-to")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<TrackNumberWithDescriptionInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ToReferRequest([FromBody] TrackNumberWithDescriptionInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int userName = UserService.GetUserCode(CurrentUser.Username);
+            await _referredToIndividualRequestHandler.Handle(inputDto, userName, cancellationToken);
+            return Ok(inputDto);
         }
 
         [HttpPost]
