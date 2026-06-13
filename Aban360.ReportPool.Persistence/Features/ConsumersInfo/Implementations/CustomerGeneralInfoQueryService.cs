@@ -79,6 +79,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
                 CustomerNumber = input.CustomerNumber,
                 RegionTitle = input.RegionTitle,
                 ZoneTitle = input.ZoneTitle,
+                ZoneId=input.ZoneId,
                 PostalCode = input.PostalCode,
                 N = input.N,
                 E = input.E,

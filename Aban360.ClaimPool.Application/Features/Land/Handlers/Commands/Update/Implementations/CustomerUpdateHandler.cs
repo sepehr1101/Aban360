@@ -90,15 +90,15 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
 
             await UpdateCustomer(customerUpdate);
         }
-        public async Task Handle(ServiceLinkConnectionInput inputDto, int deletionStateId, IAppUser appUser, CancellationToken cancellationToken)
-        {
-            await LastDeletionStateValidation(inputDto.BillId, deletionStateId);
+        //public async Task Handle(ServiceLinkConnectionInput inputDto, int deletionStateId, IAppUser appUser, CancellationToken cancellationToken)
+        //{
+        //    await LastDeletionStateValidation(inputDto.BillId, deletionStateId);
 
-            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
-            CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, deletionStateId, previousSubscription);
+        //    SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
+        //    CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, deletionStateId, previousSubscription);
 
-            await UpdateCustomerAndClient(customerUpdate);
-        }
+        //    await UpdateCustomerAndClient(customerUpdate);
+        //}//use from:IConnectDisconnectUpdateHandler
         public async Task Handle(CustomerMobileUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             await Validation(inputDto, cancellationToken);

@@ -2,9 +2,8 @@
 {
     public record ServiceLinkConnectionInput
     {
-        public string BillId { get; set; } = default!;
+        public long Id { get; set; }
         public string? Description { get; set; }
-        public string Who { get; set; } = default!;
         public string? Why { get; set; }
     }
 }
