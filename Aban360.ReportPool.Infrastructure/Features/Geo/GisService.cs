@@ -48,7 +48,8 @@ namespace Aban360.ReportPool.Infrastructure.Features.Geo
             string billId = JsonSerializer.Serialize(inputDto);
             request.Content = new StringContent(billId, Encoding.UTF8, _contentType);
 
-            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
+            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cts.Token);
             response.EnsureSuccessStatusCode();
             CustomerLocationDto result = await response.Content.ReadFromJsonAsync<CustomerLocationDto>();
 

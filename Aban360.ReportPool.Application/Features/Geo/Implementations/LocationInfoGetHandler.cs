@@ -9,14 +9,14 @@ namespace Aban360.ReportPool.Application.Features.Geo.Implementations
 {
     internal class LocationInfoGetHandler : ILocationInfoGetHandler
     {
-        private readonly ILocationInfoService _branchSpecificationSummaryInfoService;
+        private readonly ILocationInfoService _locationInfoService;
         private readonly IGisService _gisService;
         public LocationInfoGetHandler(
-            ILocationInfoService branchSpecificationSummaryInfoService,
+            ILocationInfoService locationInfoService,
             IGisService gisService)
         {
-            _branchSpecificationSummaryInfoService = branchSpecificationSummaryInfoService;
-            _branchSpecificationSummaryInfoService.NotNull(nameof(branchSpecificationSummaryInfoService));
+            _locationInfoService = locationInfoService;
+            _locationInfoService.NotNull(nameof(locationInfoService));
 
             _gisService = gisService;
             _gisService.NotNull(nameof(gisService));
@@ -24,9 +24,9 @@ namespace Aban360.ReportPool.Application.Features.Geo.Implementations
 
         public async Task<LocationInfoDto> Handle(string billId, CancellationToken cancellationToken)
         {
-            LocationInfoDto branchSpecificationSummaryInfo = await _branchSpecificationSummaryInfoService.GetInfo(billId);
+            LocationInfoDto locationInfo = await _locationInfoService.GetInfo(billId);
             CustomerLocationDto customerLocation = await _gisService.GetCustomerLocation(new CustomerLocationInputDto(billId));
-            LocationInfoDto result = GetLocationInfo(branchSpecificationSummaryInfo, customerLocation);
+            LocationInfoDto result = GetLocationInfo(locationInfo, customerLocation);
 
             return result;
         }

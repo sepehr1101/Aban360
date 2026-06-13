@@ -73,10 +73,19 @@ namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implemen
         }
         private async Task<(double, double)> GetLocation(string billId, CancellationToken cancellationToken)
         {
-            LocationInfoDto location = await _locationInfoService.Handle(billId, cancellationToken);
-            var utm=UtmConverter.LatLonToUtm(double.Parse(location.X), double.Parse(location.Y));
-
-            return (utm.Easting,utm.Northing);
+            try
+            {
+                var location = await _locationInfoService.Handle(billId, cancellationToken);
+                return (location.Easting, location.Northing);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                return (0, 0);
+            }
         }
     }
 }
