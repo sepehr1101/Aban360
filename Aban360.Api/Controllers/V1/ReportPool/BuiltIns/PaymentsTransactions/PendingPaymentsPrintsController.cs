@@ -47,8 +47,8 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         {
             int reportCode = 2030;
             ReportOutput<PendingPaymentsPrintstHeaderOutputDto, PendingPaymentPrintsDataOutputDto> result = await _pendingPaymentsPrintsHandler.Handle(inputDto, cancellationToken);
-            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
-          
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode, true);
+
             return reportId;
         }
     }

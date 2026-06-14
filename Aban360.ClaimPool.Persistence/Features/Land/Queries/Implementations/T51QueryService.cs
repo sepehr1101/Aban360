@@ -31,6 +31,16 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
             }
             return result is null ? new NumericDictionary(id, string.Empty) : result;
         }
+        public async Task<string?> GetAddress(int id, bool hasException)
+        {
+            string query = GetAddressByIdQuery();
+            string? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(query, new { id });
+            if (result is null && hasException)
+            {
+                throw new InvalidDataException(ExceptionLiterals.InvalidZoneTitle);
+            }
+            return result;
+        }
 
         private string GetQuery()
         {
@@ -44,6 +54,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
             return @"Select 
                     	C0 Id,
                     	C2 Title
+                    From [Db70].dbo.T51
+                    Where C0=@id";
+        }
+        private string GetAddressByIdQuery()
+        {
+            return @"Select Address
                     From [Db70].dbo.T51
                     Where C0=@id";
         }

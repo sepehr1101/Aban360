@@ -72,7 +72,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
         {
 			string usageSellQuery = hasUsageSellId == true ? "AND (UsageId IN @UsageSellIds)" : string.Empty;
 			string usageConsumptionQuery = hasUsageConsumptionId == true ? "AND (UsageId2 IN @UsageConsumptionIds)" : string.Empty;
-            return @$"-- مشتریان هدف
+           return @$"-- مشتریان هدف
 						WITH FilteredClients AS (
 							SELECT 
 								ZoneId,

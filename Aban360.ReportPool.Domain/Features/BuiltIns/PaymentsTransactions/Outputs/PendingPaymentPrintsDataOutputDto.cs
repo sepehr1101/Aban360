@@ -15,6 +15,7 @@
         public string? FatherName { get; set; }
         public string? NationalCode{ get; set; }
         public string? Address { get; set; }
+        public string? PostalCode { get; set; }
         public int UsageId { get; set; }
         public string UsageTitle { get; set; }
         public string? PhoneNumber { get; set; }

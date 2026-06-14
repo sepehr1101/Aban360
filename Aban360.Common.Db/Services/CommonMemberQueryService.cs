@@ -94,7 +94,7 @@ namespace Aban360.Common.Db.Services
 						m.aian AS OverallImprovement,
 						m.aian_tej AS CommercialImprovement,
 						m.aian_mas AS DomesticImprovement,
-						m.address Address ,
+						TRIM(m.address) Address ,
 						'' AS HousePlate,
 						m.pelak Plaque,
 						m.edareh_k AS IsSpecial,
@@ -120,10 +120,10 @@ namespace Aban360.Common.Db.Services
 						TRIM(m.ask_fas) AS SiphonRequestDateJalali,--
 						TRIM(m.inst_fas) AS SiphonInstallationDateJalali,
 
-						m.POST_COD PostalCode,
-						m.PHONE_NO  AS PhoneNumber,
-						m.MOBILE AS MobileNumber,
-						m.MELI_COD AS NationalCode,
+						TRIM(m.POST_COD) PostalCode,
+						TRIM(m.PHONE_NO ) AS PhoneNumber,
+						TRIM(m.MOBILE) AS MobileNumber,
+						TRIM(m.MELI_COD) AS NationalCode,
 						0 AS MOJAVZ,
 						m.VillageId VillageId,
 						m.VillageName VillageName,
@@ -132,7 +132,7 @@ namespace Aban360.Common.Db.Services
 						m.Khali_s AS EmptyUnit,
 						m.operator AS Operator,
 						m.Senf AS Guild,
-						m.date_KHANE HouseholdDateJalali ,
+						TRIM(m.date_KHANE) HouseholdDateJalali ,
 						bed_bes DebtAmount
 					From [{dbName}].dbo.members m
 					Left Join [Db70].dbo.T51 t51

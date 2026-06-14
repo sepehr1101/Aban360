@@ -268,6 +268,7 @@
 
         public static string Disconnect { get { return "صدور دستور قطع"; }  }
         public static string Connect { get { return "صدور دستور وصل"; }  }
+        public static string NoResultConnectDisconnect { get { return "دستورات قطع و وصل بدون نتیجه"; }  }
        
         
         public static string UnconfirmedBillReturn { get { return "قبوض برگشتی تایید نشده."; }  }

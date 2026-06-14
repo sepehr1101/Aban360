@@ -6,5 +6,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts
     {
         Task<IEnumerable<NumericDictionary>> Get();
         Task<NumericDictionary> Get(int id, bool hasException);
+        Task<string?> GetAddress(int id, bool hasException);
     }
 }

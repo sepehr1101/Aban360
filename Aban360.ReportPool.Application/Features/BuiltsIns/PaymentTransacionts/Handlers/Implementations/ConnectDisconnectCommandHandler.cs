@@ -1,5 +1,6 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
+using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
@@ -29,6 +30,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
         private readonly ICustomerGeneralInfoQueryService _customerGeneralInfoQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly ILocationInfoGetHandler _locationInfoService;
+        private readonly IT51QueryService _t51QueryService;
         private readonly IMapService _mapService;
         private int _connectTypeId = 1;
         private int _disconnectTypeId = 0;
@@ -39,6 +41,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             ICustomerGeneralInfoQueryService customerGeneralInfoQueryService,
             ICommonMemberQueryService commonMemberQueryService,
             ILocationInfoGetHandler locationInfoService,
+            IT51QueryService t51QueryService,
             IMapService mapService,
             IConfiguration configuration)
                 : base(configuration)
@@ -54,6 +57,9 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
 
             _locationInfoService = locationInfoService;
             _locationInfoService.NotNull(nameof(locationInfoService));
+
+            _t51QueryService = t51QueryService;
+            _t51QueryService.NotNull(nameof(t51QueryService));
 
             _mapService = mapService;
             _mapService.NotNull(nameof(mapService));
@@ -95,13 +101,16 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
         }
         private async Task<ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto>> GetResult(ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo, ConnectDisconnectPrintInputDto inputDto, string title, string messageText, CancellationToken cancellationToken)
         {
+            string? zoneAddress = await _t51QueryService.GetAddress(customerInfo.ReportData?.FirstOrDefault()?.ZoneId ?? 0, true);
             ICollection<ConnectDisconnectPrintDataOutputDto> data = new List<ConnectDisconnectPrintDataOutputDto>();
             var locInfo = await GetBase64Location(inputDto.BillId, cancellationToken);
+
             data.Add(new ConnectDisconnectPrintDataOutputDto()
             {
                 CustomerNumber = customerInfo.ReportHeader?.CustomerNumber ?? 0,
                 RegionTitle = customerInfo.ReportData?.FirstOrDefault()?.RegionTitle ?? string.Empty,
                 ZoneTitle = customerInfo.ReportData?.FirstOrDefault()?.ZoneTitle ?? string.Empty,
+                ZoneAddress = zoneAddress,
                 PostalCode = customerInfo.ReportData?.FirstOrDefault()?.PostalCode ?? string.Empty,
                 NationalCode = customerInfo.ReportHeader?.NationalCode ?? string.Empty,
                 Address = customerInfo.ReportData?.FirstOrDefault()?.Address ?? string.Empty,

@@ -1,5 +1,4 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
-using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Constants.Literals;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
@@ -41,6 +40,16 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateConnectDisconnect);
             }
         }
+        public async Task Remove(ConnectDisconnectRemoveDto inputDto)
+        {
+            string command = GetRemoveQuery();
+            int recordCount = await _connection.ExecuteAsync(command, inputDto, _transaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidRemoveConnectDisconnect);
+            }
+        }
+
         private string GetInsertQuery()
         {
             return @"INSERT INTO [CustomerWarehouse].dbo.ConnectDisconnect 
@@ -65,6 +74,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                         ResultBy=@ResultBy ,
                         ResultId=@ResultId ,
                         ResultTitle=@ResultTitle ,
+                        Description=@Description
+                    Where Id=@Id";
+        }
+        private string GetRemoveQuery()
+        {
+            return $@"Update [CustomerWarehouse].dbo.ConnectDisconnect 
+                    Set  
+                        RemovedDateTime=@RemovedDateTime,
+                        RemovedBy=@RemovedBy,
                         Description=@Description
                     Where Id=@Id";
         }
