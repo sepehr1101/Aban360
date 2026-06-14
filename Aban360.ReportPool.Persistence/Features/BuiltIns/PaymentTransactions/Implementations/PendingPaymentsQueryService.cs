@@ -70,46 +70,46 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 
         private string GetPendingPaymentsDataQuery(bool hasUsageSellId,bool hasUsageConsumptionId)
         {
-			string usageSellQuery = hasUsageSellId == true ? "AND (UsageId IN @UsageSellIds)" : string.Empty;
-			string usageConsumptionQuery = hasUsageConsumptionId == true ? "AND ((UsageId2 IN @UsageConsumptionIds) OR (UsageId IN @UsageConsumptionIds AND UsageId2=0))" : string.Empty;
+			string usageSellQuery = hasUsageSellId == true ? "AND (c.UsageId IN @UsageSellIds)" : string.Empty;
+			string usageConsumptionQuery = hasUsageConsumptionId == true ? "AND ((c.UsageId2 IN @UsageConsumptionIds) OR (c.UsageId IN @UsageConsumptionIds AND c.UsageId2=0))" : string.Empty;
             return @$"-- مشتریان هدف
 						WITH FilteredClients AS (
 							SELECT 
-								ZoneId,
-								ZoneTitle,
-								VillageName,
-								CustomerNumber,
-								BillId,
-								ReadingNumber,
-								UsageTitle AS UsageSellTitle ,
-								UsageId UsageSellId,
-								IIF(UsageId2=0,UsageTitle,UsageTitle2) AS UsageConsumptionTitle,
-								UsageId2 UsageConsumptionId,
-								FirstName As FirstName,
-								SureName Surname,
-								TRIM(FatherName),
-								NationalId NationalCode,
-								TRIM(MobileNo ) AS MobileNumber,
-								TRIM(PhoneNo ) AS PhoneNumber,
-								TRIM(Address) Address ,
-								TRIM(PostalCode) PostalCode ,
-								DeletionStateTitle AS UseStateTitle,
+								c.ZoneId,
+								c.ZoneTitle,
+								c.VillageName,
+								c.CustomerNumber,
+								c.BillId,
+								c.ReadingNumber,
+								c.UsageTitle AS UsageSellTitle ,
+								c.UsageId UsageSellId,
+								IIF(c.UsageId2=0,c.UsageTitle,c.UsageTitle2) AS UsageConsumptionTitle,
+								c.UsageId2 UsageConsumptionId,
+								c.FirstName As FirstName,
+								c.SureName Surname,
+								TRIM(c.FatherName) FatherName,
+								c.NationalId NationalCode,
+								TRIM(c.MobileNo ) AS MobileNumber,
+								TRIM(c.PhoneNo ) AS PhoneNumber,
+								TRIM(c.Address) Address ,
+								TRIM(c.PostalCode) PostalCode ,
+								c.DeletionStateTitle AS UseStateTitle,
 								'--' AS HeadquarterTitle ,
 								t46.C2 AS RegionTitle
-							FROM [CustomerWarehouse].dbo.Clients 
+							FROM [CustomerWarehouse].dbo.Clients c
 						    Join [Db70].dbo.T51 t51
-						    	On t51.C0=ZoneId
+						    	On t51.C0=c.ZoneId
 						    Join [Db70].dbo.T46 t46
 						    	On t51.C1=t46.C0
 							WHERE 
-								ToDayJalali IS NULL AND
-								ZoneId IN @ZoneIds AND
+								c.ToDayJalali IS NULL AND
+								c.ZoneId IN @ZoneIds AND
 								(  
 									@FromReadingNumber IS NULL OR 
 									@ToReadingNumber IS NULL OR 
-									TRIM(ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber
+									TRIM(c.ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber
 								) --AND
-								--DeletionStateId NOT IN (1,2)
+								--c.DeletionStateId NOT IN (1,2)
 								--{usageSellQuery}
 								{usageConsumptionQuery}
 						),						
