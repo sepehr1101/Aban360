@@ -157,7 +157,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 						t41.C1 as UsageTitle,
 						m.cod_enshab UsageId,
 						m.group1 UsageConsumptionId,
-						t41_c.C1 UsageConsumptionTitle,	
+						IIF(m.group1=0, t41.C1, t41_c.C1) UsageConsumptionTitle,	
 						m.fix_mas as ContractualCapacity,
 						m.enshab as MeterDiameterId,
 						t5.C2 as MeterDiameterTitle,

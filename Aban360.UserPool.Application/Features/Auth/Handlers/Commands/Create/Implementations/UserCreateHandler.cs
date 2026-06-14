@@ -89,11 +89,11 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
 
             int zoneCount = await _zoneCountQueryAddhoc.GetCount(userCreateDto.SelectedZoneIds, cancellationToken);
             //List<string> endpointValue = await _endpointQueryService.GetAuthValue(userCreateDto.SelectedEndpointIds.ToArray());
-            List<string> endpointValue = await GetEndpointsValue(userCreateDto);
-            Validate(zoneCount, userCreateDto.SelectedZoneIds.Count(), endpointValue.Count(), userCreateDto.SelectedEndpointIds.Distinct().Count());
+            IEnumerable<EndpointInfo> endpointValues = await GetUserEndpoints(userCreateDto);
+            Validate(zoneCount, userCreateDto.SelectedZoneIds.Count(), endpointValues.Count(), userCreateDto.SelectedEndpointIds.Distinct().Count());
 
             ICollection<UserClaim> zones = CreateUserClaim(userCreateDto.SelectedZoneIds.Select(x => x.ToString()).ToList(), ClaimType.ZoneId, logInfoString, operationGroupId, operationGroupId);
-            ICollection<UserClaim> endpionts = CreateUserClaim(endpointValue, ClaimType.Endpoint, logInfoString, operationGroupId, operationGroupId);
+            ICollection<UserClaim> endpionts = CreateUserClaim(endpointValues, ClaimType.Endpoint, logInfoString, operationGroupId, operationGroupId);
             ICollection<UserClaim> defaultZoneId = CreateUserClaim(new List<string> { userCreateDto.SelectedZoneIds.Select(x => x.ToString()).First() }, ClaimType.DefaultZoneId, logInfoString, operationGroupId, operationGroupId);
             List<UserClaim> userCliams = zones.Union(endpionts).ToList();
 
@@ -106,9 +106,15 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
             await _userClaimCommandService.Add(userCliams);
             await _userRoleCommandService.Add(userRoles);
         }
-        private async Task<List<string>> GetEndpointsValue(UserCreateDto userCreateDto)
+        private async Task<IEnumerable<EndpointInfo>> GetUserEndpoints(UserCreateDto userCreateDto)
         {
-            List<string> endpointValue = await _endpointQueryService.GetAuthValue(userCreateDto.SelectedEndpointIds.ToArray());
+            IEnumerable<EndpointInfo> userDirectEndpoints= new List<EndpointInfo>();
+            IEnumerable<EndpointInfo> userRoleEndpoints = new List<EndpointInfo>();
+            List<string> endpointValues = await _endpointQueryService.GetAuthValue(userCreateDto.SelectedEndpointIds.ToArray());
+            if (endpointValues != null && endpointValues.Any())
+            {
+                userDirectEndpoints = endpointValues.Select(e => new EndpointInfo(e, null));
+            }
             ICollection<Role> selectedRoles = await _roleQueryService.Get(userCreateDto.SelectedRoleIds);
             foreach (Role role in selectedRoles)
             {
@@ -118,12 +124,14 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
                     List<string> roleEndpointsValue = await _endpointQueryService.GetAuthValue(roleEndpiontsId);
                     if (roleEndpointsValue.Any())
                     {
-                        endpointValue = endpointValue.Union(roleEndpointsValue).ToList();
+                        userRoleEndpoints = endpointValues.Select(e => new EndpointInfo(e, role.Id));
                     }
                 }
             }
-
-            return endpointValue;
+            IEnumerable<EndpointInfo> allEndpoints= userDirectEndpoints.Union(userRoleEndpoints);
+            IEnumerable<EndpointInfo> distinctEndpoints= allEndpoints.GroupBy(e=>e.endpoint).Select(grp=>new EndpointInfo(grp.Key,grp.FirstOrDefault()?.roleId));
+            return distinctEndpoints;
         }
+        public record EndpointInfo(string endpoint, int? roleId);
     }
 }

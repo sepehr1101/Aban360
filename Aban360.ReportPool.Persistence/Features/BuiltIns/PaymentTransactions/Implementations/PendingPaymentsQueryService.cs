@@ -108,8 +108,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 									@FromReadingNumber IS NULL OR 
 									@ToReadingNumber IS NULL OR 
 									TRIM(ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber
-								) AND
-								DeletionStateId NOT IN (1,2)
+								) --AND
+								--DeletionStateId NOT IN (1,2)
 								--{usageSellQuery}
 								{usageConsumptionQuery}
 						),						

@@ -75,19 +75,10 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
                 .Where(userClaim =>
                     userClaim.ClaimTypeId == claimType &&
                     userClaim.ValidTo == null &&
-                    userIds.Contains(userClaim.UserId))
+                    userIds.Contains(userClaim.UserId) /*&&
+                    userClaim.RoleId==roleId*/)
                 .ToListAsync();
             return (userIds, userClaims);
-            //return await _userClaims
-            //       .Where(userClaim =>
-            //           userClaim.ClaimTypeId == claimType &&
-            //           userClaim.RemoveLogInfo == null &&
-            //           userClaim.User.UserRoles
-            //            .Any(userRole => userRole.RoleId == roleId && userRole.RemoveLogInfo == null))
-            //       //.Include(userClaim => userClaim.User)
-            //       //.ThenInclude(user => user.UserRoles)
-            //       //.AsSplitQuery()
-            //       .ToListAsync();
         }
     }
 }
