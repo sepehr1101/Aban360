@@ -21,10 +21,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
             return result;
         }
 
-        public async Task<ConnectDisconnectGetDto> Get(long id)
+        public async Task<ConnectDisconnectGetDto> Get(long id, int typeId)
         {
             string query = GetByIdQuery();
-            ConnectDisconnectGetDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ConnectDisconnectGetDto>(query, new { id });
+            ConnectDisconnectGetDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ConnectDisconnectGetDto>(query, new { id, typeId });
             if (result is null)
             {
                 throw new InvalidDataException(ExceptionLiterals.InvalidConnectDisconnectId);
@@ -44,13 +44,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         CommandBy , 
                         CommandCauseId , 
                         CommandCauseTitle , 
-                        ResultDateTime 
-                        ResultBy 
-                        ResultId 
-                        ResultTitle 
+                        ResultDateTime ,
+                        ResultBy ,
+                        ResultId ,
+                        ResultTitle ,
                         MeterDiameterId ,
                         MeterDiameterTitle , 
-                        CompanyTitle 
+                        CompanyTitle ,
                         TypeId , 
                         TypeTitle ,
                         Description 
@@ -68,18 +68,20 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         CommandBy , 
                         CommandCauseId , 
                         CommandCauseTitle , 
-                        ResultDateTime 
-                        ResultBy 
-                        ResultId 
-                        ResultTitle 
+                        ResultDateTime ,
+                        ResultBy ,
+                        ResultId ,
+                        ResultTitle ,
                         MeterDiameterId ,
                         MeterDiameterTitle , 
-                        CompanyTitle 
+                        CompanyTitle ,
                         TypeId , 
                         TypeTitle ,
                         Description 
                     From [CustomerWarehouse].dbo.connectdisconnect
-                    Where Id=@id";
+                    Where 
+                        Id=@id AND
+                        TypeId=@typeId";
         }
     }
 }

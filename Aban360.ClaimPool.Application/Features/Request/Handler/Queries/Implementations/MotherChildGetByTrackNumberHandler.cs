@@ -78,10 +78,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 UsageId = motherInfo.UsageId,
                 IsSpecial = motherInfo.IsSpecial,
 
-                Siphon100 = motherInfo.Siphon1,
-                Siphon125 = motherInfo.Siphon2,
-                Siphon150 = motherInfo.Siphon3,
-                Siphon200 = motherInfo.Siphon4,
+                Siphon100 = motherInfo.Siphon100,
+                Siphon125 = motherInfo.Siphon125,
+                Siphon150 = motherInfo.Siphon150,
+                Siphon200 = motherInfo.Siphon200,
                 CommonSiphon = motherInfo.CommonSiphon1,
 
                 CommercialUnit = motherInfo.CommercialUnit,

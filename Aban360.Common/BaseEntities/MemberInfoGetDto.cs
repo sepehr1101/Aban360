@@ -18,6 +18,8 @@
         public string MeterDiameterTitle { get; set; }
         public int UsageId { get; set; }
         public string UsageTitle { get; set; }
+        public int UsageConsumptionId { get; set; }
+        public string UsageConsumptionTitle { get; set; }
         public int OtherUnit { get; set; }
         public int CommercialUnit { get; set; }
         public int HouseholdNumber { get; set; }
@@ -31,8 +33,8 @@
         public string MeterInstallationDateJalali { get; set; }
         public string SiphonRequestDateJalali { get; set; }
         public string SiphonInstallationDateJalali { get; set; }
-        public string MeterInstalltionRegisterDate { get; set; }
-        public string SiphonInstalltionRegisterDate { get; set; }
+        public string MeterInstalltionRegisterDateJalali { get; set; }
+        public string SiphonInstalltionRegisterDateJalali { get; set; }
         public string Address { get; set; }
         public string HousePlate { get; set; }
         public bool IsSpecial { get; set; }
@@ -40,10 +42,10 @@
         public string UseStateTitle { get; set; }//different update
         public int UseStateId { get; set; }
         public string MainSiphon { get; set; }
-        public int Siphon1 { get; set; }
-        public int Siphon2 { get; set; }
-        public int Siphon3 { get; set; }
-        public int Siphon4 { get; set; }
+        public int Siphon100 { get; set; }
+        public int Siphon125 { get; set; }
+        public int Siphon150 { get; set; }
+        public int Siphon200 { get; set; }
         public int CommonSiphon1 { get; set; }
         public int ContractualCapacity { get; set; }
         public string BodySerial { get; set; }

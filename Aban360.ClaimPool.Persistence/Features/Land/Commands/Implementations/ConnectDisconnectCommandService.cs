@@ -64,7 +64,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                         ResultDateTime=@ResultDateTime ,
                         ResultBy=@ResultBy ,
                         ResultId=@ResultId ,
-                        ResultTitle=@ResultTitle
+                        ResultTitle=@ResultTitle ,
+                        Description=@Description
                     Where Id=@Id";
         }
 

@@ -1,5 +1,4 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
-using Aban360.ClaimPool.Domain.Features.Metering.Entities;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
@@ -24,7 +23,7 @@ using System.Data;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Implementations
 {
-    internal sealed class ConnectDisconnectPrintHandler : AbstractBaseConnection, IConnectDisconnectPrintHandler
+    internal sealed class ConnectDisconnectCommandHandler : AbstractBaseConnection, IConnectDisconnectCommandHandler
     {
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly ICustomerGeneralInfoQueryService _customerGeneralInfoQueryService;
@@ -35,7 +34,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
         private int _disconnectTypeId = 0;
         private string _connectTypeTitle = "صدور دستور وصل";
         private string _disconnectTypeTitle = "صدور دستور قطع";
-        public ConnectDisconnectPrintHandler(
+        public ConnectDisconnectCommandHandler(
             IHttpContextAccessor contextAccessor,
             ICustomerGeneralInfoQueryService customerGeneralInfoQueryService,
             ICommonMemberQueryService commonMemberQueryService,
@@ -79,7 +78,9 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
+                {
                     connection.Open();
+                }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.Serializable))
                 {
                     ConnectDisconnectCommandService connectDisconnectCommandService = new(connection, transaction);
@@ -154,7 +155,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 CompanyTitle = inputDto.Who,
                 TypeId = isConnect ? _connectTypeId : _disconnectTypeId,
                 TypeTitle = isConnect ? _connectTypeTitle : _disconnectTypeTitle,
-                Description=inputDto.Description ?? string.Empty,
+                Description = inputDto.Description ?? string.Empty,
             };
         }
         private (string, string, string) GetStringsValue(ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo, ConnectDisconnectPrintInputDto inputDto, bool isConnect, string? causeTitle)

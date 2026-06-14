@@ -5,7 +5,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Contracts
 {
-    public interface IConnectDisconnectPrintHandler
+    public interface IConnectDisconnectCommandHandler
     {
         Task<ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto>> Handle(ConnectDisconnectPrintInputDto inputDto, IAppUser appUser, bool isConnect, CancellationToken cancellationToken);
         ICollection<NumericDictionary> GetCasues();

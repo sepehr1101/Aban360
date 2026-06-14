@@ -235,6 +235,7 @@
         public static string InvalidIPaymentDeleteAfterDateCheck => "امکان حذف وصولی پس از بسته شدن دوره وجود ندارد.";
       
         public static string InvalidConnectDisconnectDuplicateResult => "امکان ذخیره نتیجه مجدد برای درخواست قطع/وصل وجود ندارد.";
+        public static string InvalidEmptyDisconnectWhy => "نتیجه قطع را به درستی وارد کنید.";
 
     }
 }
