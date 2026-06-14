@@ -17,6 +17,7 @@ public class UserClaim: IHashableEntity
     public DateTime? ValidTo { get; set; }
     public string InsertLogInfo { get; set; } = null!;
     public string? RemoveLogInfo { get; set; }
+    public int? RoleId { get; set; }
 
     public virtual User User { get; set; } = null!;
 }

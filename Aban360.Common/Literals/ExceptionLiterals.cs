@@ -45,11 +45,12 @@
         public static string InvalidLessThanCurrentDate => "تاریخ وارد شده نباید از تاریخ امروز کمتر باشد.";
         public static string InvalidMoreThanCurrentDate => "تاریخ وارد شده نباید از تاریخ امروز بزرگتر باشد.";
         public static string InvalidDeletionState => "نامعتبر! کنتور جمع‌آوری شده";
-        public static string InvoiceNotFound => " قبض یافت نشد!";
-        public static string BillIdNotFound => "شناسه قبض یافت نشد!";
-        public static string InvalidBillId => "شناسه قبض معتبر نیست!";
-        public static string InvalidCustomerNumber => "ردیف یافت نشد!";
-        public static string NotFoundCustomer => "مشترک با اطلاعات وارد شده یافت نشد!";
+        public static string DmsInfoNotFound => "اطلاعات بایگانی الکترونیک یافت نشد";
+        public static string InvoiceNotFound => " قبض یافت نشد";
+        public static string BillIdNotFound => "شناسه قبض یافت نشد";
+        public static string InvalidBillId => "شناسه قبض معتبر نیست";
+        public static string InvalidCustomerNumber => "ردیف یافت نشد";
+        public static string NotFoundCustomer => "مشترک با اطلاعات وارد شده یافت نشد";
         public static string InvalidTrackNumber => "شماره پیگیری یافت نشد.";
         public static string InvalidDate => "تاریخ ناصحیح";
         public static string InvalidFromDate => "تاریخ شروع ناصحیح";

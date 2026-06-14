@@ -71,7 +71,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
         private string GetPendingPaymentsDataQuery(bool hasUsageSellId,bool hasUsageConsumptionId)
         {
 			string usageSellQuery = hasUsageSellId == true ? "AND (UsageId IN @UsageSellIds)" : string.Empty;
-			string usageConsumptionQuery = hasUsageConsumptionId == true ? "AND (UsageId2 IN @UsageConsumptionIds)" : string.Empty;
+			string usageConsumptionQuery = hasUsageConsumptionId == true ? "AND ((UsageId2 IN @UsageConsumptionIds) OR (UsageId IN @UsageConsumptionIds AND UsageId2=0))" : string.Empty;
             return @$"-- مشتریان هدف
 						WITH FilteredClients AS (
 							SELECT 
@@ -108,8 +108,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 									@FromReadingNumber IS NULL OR 
 									@ToReadingNumber IS NULL OR 
 									TRIM(ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber
-								) AND
-								DeletionStateId NOT IN (1,2)
+								) --AND
+								--DeletionStateId NOT IN (1,2)
 								--{usageSellQuery}
 								{usageConsumptionQuery}
 						),						

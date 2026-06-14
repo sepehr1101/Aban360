@@ -331,7 +331,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         }
         private IEnumerable<StringDictionary> GetBlockCodes()
         {
-            return [new StringDictionary("A", "A"),
+            return [
+                    new StringDictionary("","ندارد"),
+                    new StringDictionary("A", "A"),
                     new StringDictionary("B", "B"),
                     new StringDictionary("C", "C"),
                     new StringDictionary("D", "D"),

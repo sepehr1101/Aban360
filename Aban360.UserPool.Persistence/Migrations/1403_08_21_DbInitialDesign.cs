@@ -187,6 +187,7 @@ namespace Aban360.UserPool.Persistence.Migrations
                 .WithColumn("ValidTo").AsDateTime2().Nullable()
                 .WithColumn("InsertLogInfo").AsString(int.MaxValue).NotNullable()
                 .WithColumn("RemoveLogInfo").AsString(int.MaxValue).Nullable()
+                .WithColumn("RoleId").AsInt32().Nullable()
                 .WithColumn(Hash).AsString(int.MaxValue).NotNullable();
         }
         private void CreateUserToken()

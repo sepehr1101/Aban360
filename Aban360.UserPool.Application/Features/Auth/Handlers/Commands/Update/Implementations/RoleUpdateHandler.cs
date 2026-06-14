@@ -1,5 +1,4 @@
-﻿using Aban360.Common.Exceptions;
-using Aban360.Common.Extensions;
+﻿using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
@@ -7,8 +6,6 @@ using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts;
 using AutoMapper;
 using FluentValidation;
-using Microsoft.AspNetCore.Http.HttpResults;
-using System.Threading;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations
 {
