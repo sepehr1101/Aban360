@@ -71,7 +71,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
             List<UserClaim> endpointClaims = new List<UserClaim>();
             foreach (var userId in userIds)
             {
-                ICollection<UserClaim> userEndpointClaims = CreateUserClaim(roleEndpointsValue, ClaimType.Endpoint, "", operationGroupId, userId);
+                ICollection<UserClaim> userEndpointClaims = CreateUserClaim(roleEndpointsValue, ClaimType.Endpoint, "", operationGroupId, userId, roleId);
                 if (userEndpointClaims.Any())
                 {
                     endpointClaims.AddRange(userEndpointClaims);
