@@ -3,8 +3,8 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts
 {
-    public interface IGenerateBillWithPreDebtHandler
+    public interface IGenerateBillWithRemainedHandler
     {
-        Task<NewBillOutputDto> Handle(string billId, IAppUser appUser, CancellationToken cancellationToken);
+        Task<BillIssueRemainedOutputDto> Handle(string billId, IAppUser appUser, CancellationToken cancellationToken);
     }
 }

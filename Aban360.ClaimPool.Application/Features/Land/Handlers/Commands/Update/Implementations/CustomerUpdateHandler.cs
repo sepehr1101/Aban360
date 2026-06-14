@@ -90,15 +90,15 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
 
             await UpdateCustomer(customerUpdate);
         }
-        public async Task Handle(ServiceLinkConnectionInput inputDto, int deletionStateId, IAppUser appUser, CancellationToken cancellationToken)
-        {
-            await LastDeletionStateValidation(inputDto.BillId, deletionStateId);
+        //public async Task Handle(ServiceLinkConnectionInput inputDto, int deletionStateId, IAppUser appUser, CancellationToken cancellationToken)
+        //{
+        //    await LastDeletionStateValidation(inputDto.BillId, deletionStateId);
 
-            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
-            CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, deletionStateId, previousSubscription);
+        //    SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
+        //    CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, deletionStateId, previousSubscription);
 
-            await UpdateCustomerAndClient(customerUpdate);
-        }
+        //    await UpdateCustomerAndClient(customerUpdate);
+        //}//use from:IConnectDisconnectUpdateHandler
         public async Task Handle(CustomerMobileUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             await Validation(inputDto, cancellationToken);
@@ -134,8 +134,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    ArchMemCommandService _archMemCommandService = new(_sqlReportConnection, transaction);
-                    MembersCommandService _membersCommandService = new(_sqlReportConnection, transaction);
+                    ArchMemCommandService _archMemCommandService = new(connection, transaction);
+                    MembersCommandService _membersCommandService = new(connection, transaction);
                     //string dbName = GetDbName(updateDto.ZoneId);
                     string dbName = "Atlas";
 
@@ -252,7 +252,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 CommertialUnit = inputDto.CommertialUnit,
                 DomesticUnit = inputDto.DomesticUnit,
                 OtherUnit = inputDto.OtherUnit,
-                HouseholdDateJalali = DateValidation(inputDto.HouseholdDateJalali, true),
+                HouseholdDateJalali = DateValidation(inputDto.HouseholdDateJalali, false),
                 HouseholdNumber = inputDto.HouseholdNumber,
                 MeterDiamterId = inputDto.MeterDiameterId,
                 IsSpecial = inputDto.IsSpecial,
@@ -264,8 +264,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 Operator = inputDto.Operator,
                 SewageInstallationDateJalali = DateValidation(inputDto.SewageInstallationDateJalali, false),
                 SewageRequestDateJalali = DateValidation(inputDto.SewageRequestDateJalali, false),
-                MeterInstallationDateJalali = DateValidation(inputDto.MeterInstallationDateJalali, true),
-                MeterRequestDateJalali = DateValidation(inputDto.MeterRequestDateJalali, true),
+                MeterInstallationDateJalali = DateValidation(inputDto.MeterInstallationDateJalali, false),
+                MeterRequestDateJalali = DateValidation(inputDto.MeterRequestDateJalali, false),
                 Siphon100 = inputDto.Siphon100,
                 Siphon125 = inputDto.Siphon125,
                 Siphon150 = inputDto.Siphon150,
@@ -278,7 +278,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 DeletionStateId = inputDto.DeletionStateId,
                 BodySerial = inputDto.BodySerial ?? string.Empty,
                 CommonSiphon = inputDto.CommonSiphon,
-                MeterRegisterDateJalali = DateValidation(inputDto.MeterRegisterDateJalali, true),
+                MeterRegisterDateJalali = DateValidation(inputDto.MeterRegisterDateJalali, false),
                 SewageRegisterDateJalali = DateValidation(inputDto.SewageRegisterDateJalali, false),
                 GuildId = inputDto.GuildId
             };
@@ -310,7 +310,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 CommertialUnit = inputDto.CommertialUnit,
                 DomesticUnit = inputDto.DomesticUnit,
                 OtherUnit = inputDto.OtherUnit,
-                HouseholdDateJalali = DateValidation(previousSubscription.HouseholdDateJalali, true),
+                HouseholdDateJalali = DateValidation(previousSubscription.HouseholdDateJalali, false),
                 HouseholdNumber = previousSubscription.HouseholdNumber,
                 MeterDiamterId = previousSubscription.MeterDiameterId,
                 IsSpecial = previousSubscription.IsSpecial,
@@ -322,8 +322,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 Operator = previousSubscription.Operator,
                 SewageInstallationDateJalali = DateValidation(previousSubscription.SewageInstallationDateJalali, false),
                 SewageRequestDateJalali = DateValidation(previousSubscription.SewageRequestDateJalali, false),
-                MeterInstallationDateJalali = DateValidation(previousSubscription.MeterInstallationDateJalali, true),
-                MeterRequestDateJalali = DateValidation(previousSubscription.MeterRequestDateJalali, true),
+                MeterInstallationDateJalali = DateValidation(previousSubscription.MeterInstallationDateJalali, false),
+                MeterRequestDateJalali = DateValidation(previousSubscription.MeterRequestDateJalali, false),
                 Siphon100 = previousSubscription.Siphon100,
                 Siphon125 = previousSubscription.Siphon125,
                 Siphon150 = previousSubscription.Siphon150,
@@ -336,7 +336,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 DeletionStateId = previousSubscription.DeletionStateId,
                 BodySerial = previousSubscription.BodySerial ?? string.Empty,
                 CommonSiphon = previousSubscription.CommonSiphon,
-                MeterRegisterDateJalali = DateValidation(previousSubscription.MeterRegisterDateJalali, true),
+                MeterRegisterDateJalali = DateValidation(previousSubscription.MeterRegisterDateJalali, false),
                 SewageRegisterDateJalali = DateValidation(previousSubscription.SewageRegisterDateJalali, false),
                 GuildId = inputDto.GuildId
             };
@@ -380,8 +380,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 Operator = previousSubscription.Operator,
                 SewageInstallationDateJalali = DateValidation(previousSubscription.SewageInstallationDateJalali, false),
                 SewageRequestDateJalali = DateValidation(previousSubscription.SewageRequestDateJalali, false),
-                MeterInstallationDateJalali = DateValidation(previousSubscription.MeterInstallationDateJalali, true),
-                MeterRequestDateJalali = DateValidation(previousSubscription.MeterRequestDateJalali, true),
+                MeterInstallationDateJalali = DateValidation(previousSubscription.MeterInstallationDateJalali, false),
+                MeterRequestDateJalali = DateValidation(previousSubscription.MeterRequestDateJalali, false),
                 Siphon100 = inputDto.Siphon100,
                 Siphon125 = inputDto.Siphon125,
                 Siphon150 = inputDto.Siphon150,
@@ -394,7 +394,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 DeletionStateId = previousSubscription.DeletionStateId,
                 BodySerial = inputDto.BodySerial ?? string.Empty,
                 CommonSiphon = inputDto.CommonSiphon,
-                MeterRegisterDateJalali = DateValidation(previousSubscription.MeterRegisterDateJalali, true),
+                MeterRegisterDateJalali = DateValidation(previousSubscription.MeterRegisterDateJalali, false),
                 SewageRegisterDateJalali = DateValidation(previousSubscription.SewageRegisterDateJalali, false),
                 GuildId = previousSubscription.GuildId
             };
@@ -438,8 +438,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 Operator = previousSubscription.Operator,
                 SewageInstallationDateJalali = DateValidation(previousSubscription.SewageInstallationDateJalali, false),
                 SewageRequestDateJalali = DateValidation(previousSubscription.SewageRequestDateJalali, false),
-                MeterInstallationDateJalali = DateValidation(previousSubscription.MeterInstallationDateJalali, true),
-                MeterRequestDateJalali = DateValidation(previousSubscription.MeterRequestDateJalali, true),
+                MeterInstallationDateJalali = DateValidation(previousSubscription.MeterInstallationDateJalali, false),
+                MeterRequestDateJalali = DateValidation(previousSubscription.MeterRequestDateJalali, false),
                 Siphon100 = previousSubscription.Siphon100,
                 Siphon125 = previousSubscription.Siphon125,
                 Siphon150 = previousSubscription.Siphon150,
@@ -452,7 +452,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 DeletionStateId = previousSubscription.DeletionStateId,
                 BodySerial = previousSubscription.BodySerial ?? string.Empty,
                 CommonSiphon = previousSubscription.CommonSiphon,
-                MeterRegisterDateJalali = DateValidation(previousSubscription.MeterRegisterDateJalali, true),
+                MeterRegisterDateJalali = DateValidation(previousSubscription.MeterRegisterDateJalali, false),
                 SewageRegisterDateJalali = DateValidation(previousSubscription.SewageRegisterDateJalali, false),
                 GuildId = previousSubscription.GuildId
             };
@@ -496,8 +496,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 Operator = previousSubscription.Operator,
                 SewageInstallationDateJalali = DateValidation(inputDto.SewageInstallationDateJalali, false),
                 SewageRequestDateJalali = DateValidation(inputDto.SewageRequestDateJalali, false),
-                MeterInstallationDateJalali = DateValidation(inputDto.MeterInstallationDateJalali, true),
-                MeterRequestDateJalali = DateValidation(inputDto.MeterRequestDateJalali, true),
+                MeterInstallationDateJalali = DateValidation(inputDto.MeterInstallationDateJalali, false),
+                MeterRequestDateJalali = DateValidation(inputDto.MeterRequestDateJalali, false),
                 Siphon100 = inputDto.Siphon100,
                 Siphon125 = inputDto.Siphon125,
                 Siphon150 = inputDto.Siphon150,
@@ -510,7 +510,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 DeletionStateId = previousSubscription.DeletionStateId,
                 BodySerial = inputDto.BodySerial ?? string.Empty,
                 CommonSiphon = inputDto.CommonSiphon,
-                MeterRegisterDateJalali = DateValidation(inputDto.MeterRegisterDateJalali, true),
+                MeterRegisterDateJalali = DateValidation(inputDto.MeterRegisterDateJalali, false),
                 SewageRegisterDateJalali = DateValidation(inputDto.SewageRegisterDateJalali, false),
                 GuildId = previousSubscription.GuildId
             };
@@ -594,7 +594,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                     throw new InvalidDateException(ExceptionLiterals.InvalidDate) :
                     inputDate.Trim();
             }
-            return string.IsNullOrWhiteSpace(inputDate) || inputDate.Trim().Length != 10 ? string.Empty : inputDate.Trim();
+            return string.IsNullOrWhiteSpace(inputDate) ? string.Empty : inputDate.Trim();
         }
         private async Task LastDeletionStateValidation(string billId, int deletionStateId)
         {

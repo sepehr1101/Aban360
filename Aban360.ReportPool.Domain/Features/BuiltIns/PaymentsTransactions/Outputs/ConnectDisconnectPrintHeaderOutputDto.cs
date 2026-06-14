@@ -6,5 +6,6 @@
         public string ReportDateJalali { get; set; }
         public int CustomerCount { get; set; }
         public string Title { get; set; }
+        public string MessageText { get; set; }
     }
 }

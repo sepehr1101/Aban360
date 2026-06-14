@@ -12,11 +12,11 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
     {
         private readonly IGenerateBillHandler _generateBillHandler;
         private readonly IFreeGenerateBillHandler _freeGenerateBillHandler;
-        private readonly IGenerateBillWithPreDebtHandler _generateBillWithPreDebtHandler;
+        private readonly IGenerateBillWithRemainedHandler _generateBillWithRemainedHandler;
         public GenerateBillController(
             IGenerateBillHandler generateBillHandler,
             IFreeGenerateBillHandler freeGenerateBillHandler,
-            IGenerateBillWithPreDebtHandler generateBillWithPreDebtHandler)
+            IGenerateBillWithRemainedHandler generateBillWithRemainedHandler)
         {
             _generateBillHandler = generateBillHandler;
             _generateBillHandler.NotNull(nameof(generateBillHandler));
@@ -24,8 +24,8 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
             _freeGenerateBillHandler = freeGenerateBillHandler;
             _freeGenerateBillHandler.NotNull(nameof(freeGenerateBillHandler));
 
-            _generateBillWithPreDebtHandler = generateBillWithPreDebtHandler;
-            _generateBillWithPreDebtHandler.NotNull(nameof(generateBillWithPreDebtHandler));
+            _generateBillWithRemainedHandler = generateBillWithRemainedHandler;
+            _generateBillWithRemainedHandler.NotNull(nameof(generateBillWithRemainedHandler));
         }
 
         [HttpPost, HttpGet]
@@ -47,11 +47,11 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         }
 
         [HttpPost, HttpGet]
-        [Route("with-pre-debt")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<NewBillOutputDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> WithPreDebt(string billId, CancellationToken cancellationToken)
+        [Route("issue-remained")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<BillIssueRemainedOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetIssueRemained(string billId, CancellationToken cancellationToken)
         {
-            NewBillOutputDto result = await _generateBillWithPreDebtHandler.Handle(billId, CurrentUser, cancellationToken);
+            BillIssueRemainedOutputDto result = await _generateBillWithRemainedHandler.Handle(billId, CurrentUser, cancellationToken);
             return Ok(result);
         }
     }

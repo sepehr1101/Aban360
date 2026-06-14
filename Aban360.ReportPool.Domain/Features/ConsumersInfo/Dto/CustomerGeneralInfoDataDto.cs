@@ -4,6 +4,7 @@
     {
         public int CustomerNumber { get; set; }
         public string RegionTitle { get; set; }
+        public int ZoneId { get; set; }
         public string ZoneTitle { get; set; }
         public string PostalCode { get; set; }
         public double N { get; set; }
@@ -24,7 +25,7 @@
 
 
         public string CounterStateCode { get; set; }
-        public string CounterStateTitle{ get; set; }
+        public string CounterStateTitle { get; set; }
         public int LatestMeterNumber { get; set; }
         public string MeterLife { get; set; }
         public string BodySerial { get; set; }

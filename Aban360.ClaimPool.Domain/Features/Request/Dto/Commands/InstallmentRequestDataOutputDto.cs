@@ -7,9 +7,9 @@
         public string? PaymentId { get; set; }
         public InstallmentRequestDataOutputDto(long amount, string dueDateJalali, string? paymentId)
         {
-            Amount= amount; 
-            DueDateJalali= dueDateJalali;
-            PaymentId=PaymentId;
+            Amount = amount;
+            DueDateJalali = dueDateJalali;
+            PaymentId = paymentId;
         }
         public InstallmentRequestDataOutputDto()
         {

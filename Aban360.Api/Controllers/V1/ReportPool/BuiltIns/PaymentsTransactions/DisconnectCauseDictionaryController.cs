@@ -9,8 +9,8 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
     [Route("v1/disconnect-cause")]
     public class DisconnectCauseDictionaryController : BaseController
     {
-        private readonly IConnectDisconnectPrintHandler _connectDisconnectPrintHandler;
-        public DisconnectCauseDictionaryController(IConnectDisconnectPrintHandler connectDisconnectPrintHandler)
+        private readonly IConnectDisconnectCommandHandler _connectDisconnectPrintHandler;
+        public DisconnectCauseDictionaryController(IConnectDisconnectCommandHandler connectDisconnectPrintHandler)
         {
             _connectDisconnectPrintHandler = connectDisconnectPrintHandler;
             _connectDisconnectPrintHandler.NotNull(nameof(connectDisconnectPrintHandler));

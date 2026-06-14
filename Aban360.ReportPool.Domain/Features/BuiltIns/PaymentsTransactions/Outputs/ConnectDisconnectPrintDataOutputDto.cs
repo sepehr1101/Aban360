@@ -20,10 +20,11 @@ namespace Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outpu
         public string BillId { get; set; }
         public string PaymentId { get; set; }
         public string UsageTitle { get; set; }
-        public string MeterDiameterId { get; set; }
+        public int MeterDiameterId { get; set; }
         public string MeterDiameterTitle { get; set; }
         public string BranchTypeTitle { get; set; }
         public string CauseTitle { get; set; }
+        public string CompanyTitle{ get; set; }
         public string? Base64 { get; set; }
         public string ReportDateJalali { get; set; } = DateTime.Now.ToShortPersianDateString();
         public string X { get; set; }

@@ -19,5 +19,11 @@
         public static string ServiceLinkReturnDisconnectOpLog => @"برگشتی حق انشعاب-برچیدن انشعاب انجام شد. شناسه قبض{0}  مبلغ{1}";
         public static string ServiceLinkRegisterManualOpLog => @"وصولی دستی حق انشعاب انجام شد. شناسه قبض:{0}  مبلغ:{1}";
         public static string ServiceLinkDeleteManualOpLog => @"حذف وصولی دستی حق انشعاب انجام شد. شناسه قبض:{0}  مبلغ:{1}";
+    
+        public static string ServiceLinkConnectInsertOpLog => @"صدور دستور وصل انجام شد. شناسه قبض:{0} ";
+        public static string ServiceLinkDisconnectInsertOpLog => @"صدور دستور قطع انجام شد. شناسه قبض:{0}  علت:{1}";
+        public static string ServiceLinkConnectSetResultOpLog => @"ثبت نتیجه وصل انجام شد. شناسه قبض:{0}";
+        public static string ServiceLinkDisconnectSetResultOpLog => @"ثبت نتیجه قطع انجام شد. شناسه قبض:{0}  نتیجه:{1}";
+    
     }
 }
