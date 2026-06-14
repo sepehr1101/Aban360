@@ -106,7 +106,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
         [HttpGet]
         [Route("disconnect-result")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<NumericDictionary>>), StatusCodes.Status200OK)]
-        public IActionResult GetDisconnectResultDictionary([FromBody] ServiceLinkConnectionInput input, CancellationToken cancellationToken)
+        public IActionResult GetDisconnectResultDictionary(CancellationToken cancellationToken)
         {
             ICollection<NumericDictionary> dictionary = _connectDisconnectSetResultHandler.GetDisconnectResults();
             return Ok(dictionary);
