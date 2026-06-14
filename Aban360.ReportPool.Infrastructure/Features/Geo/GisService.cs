@@ -12,7 +12,7 @@ namespace Aban360.ReportPool.Infrastructure.Features.Geo
 {
     public interface IGisService
     {
-        Task<CustomerLocationDto> GetCustomerLocation(CustomerLocationInputDto inputDto);
+        Task<CustomerLocationDto> GetCustomerLocation(CustomerLocationInputDto inputDto, int timeoutSecond=3);
     }
     internal sealed class GisService : IGisService
     {
@@ -36,7 +36,7 @@ namespace Aban360.ReportPool.Infrastructure.Features.Geo
             _httpClient.NotNull(nameof(httpClient));
         }
 
-        public async Task<CustomerLocationDto> GetCustomerLocation(CustomerLocationInputDto inputDto)
+        public async Task<CustomerLocationDto> GetCustomerLocation(CustomerLocationInputDto inputDto, int timeoutSecond)
         {
             var token = await _tokenService.GetToken();
             string requestUrl = _options.BaseUrl + _options.CustomerLocation;
@@ -48,7 +48,8 @@ namespace Aban360.ReportPool.Infrastructure.Features.Geo
             string billId = JsonSerializer.Serialize(inputDto);
             request.Content = new StringContent(billId, Encoding.UTF8, _contentType);
 
-            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(timeoutSecond));
+            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cts.Token);
             response.EnsureSuccessStatusCode();
             CustomerLocationDto result = await response.Content.ReadFromJsonAsync<CustomerLocationDto>();
 

@@ -71,8 +71,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
         private string GetPendingPaymentsDataQuery(bool hasUsageSellId,bool hasUsageConsumptionId)
         {
 			string usageSellQuery = hasUsageSellId == true ? "AND (UsageId IN @UsageSellIds)" : string.Empty;
+<<<<<<< HEAD
 			string usageConsumptionQuery = hasUsageConsumptionId == true ? "AND (UsageId2 IN @UsageConsumptionIds)" : string.Empty;
            return @$"-- مشتریان هدف
+=======
+			string usageConsumptionQuery = hasUsageConsumptionId == true ? "AND ((UsageId2 IN @UsageConsumptionIds) OR (UsageId IN @UsageConsumptionIds AND UsageId2=0))" : string.Empty;
+            return @$"-- مشتریان هدف
+>>>>>>> fe701a6b592400c750c426013baa72c0c58e96b7
 						WITH FilteredClients AS (
 							SELECT 
 								ZoneId,
@@ -87,7 +92,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 								UsageId2 UsageConsumptionId,
 								FirstName As FirstName,
 								SureName Surname,
-								FatherName,
+								TRIM(FatherName),
 								NationalId NationalCode,
 								TRIM(MobileNo ) AS MobileNumber,
 								TRIM(PhoneNo ) AS PhoneNumber,
@@ -108,8 +113,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 									@FromReadingNumber IS NULL OR 
 									@ToReadingNumber IS NULL OR 
 									TRIM(ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber
-								) AND
-								DeletionStateId NOT IN (1,2)
+								) --AND
+								--DeletionStateId NOT IN (1,2)
 								--{usageSellQuery}
 								{usageConsumptionQuery}
 						),						
