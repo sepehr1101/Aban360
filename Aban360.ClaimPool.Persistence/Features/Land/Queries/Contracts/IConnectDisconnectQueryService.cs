@@ -5,6 +5,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts
     public interface IConnectDisconnectQueryService
     {
         Task<IEnumerable<ConnectDisconnectGetDto>> Get();
-        Task<ConnectDisconnectGetDto> Get(long id,int typeId);
+        Task<IEnumerable<ConnectDisconnectDataOutputDto>> Get(int zoneId, bool isNoResult,bool isNoRemoved);
+        Task<ConnectDisconnectGetDto> Get(long id, int? typeId);
     }
 }

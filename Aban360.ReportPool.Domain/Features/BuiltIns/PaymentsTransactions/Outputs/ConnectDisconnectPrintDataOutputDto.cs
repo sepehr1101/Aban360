@@ -7,6 +7,7 @@ namespace Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outpu
         public int CustomerNumber { get; set; }
         public string RegionTitle { get; set; }
         public string ZoneTitle { get; set; }
+        public string? ZoneAddress { get; set; }
         public string PostalCode { get; set; }
         public string Address { get; set; }
         public long WaterDebtAmount { get; set; }
@@ -24,6 +25,7 @@ namespace Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outpu
         public string MeterDiameterTitle { get; set; }
         public string BranchTypeTitle { get; set; }
         public string CauseTitle { get; set; }
+        public bool IsConnect { get; set; }
         public string CompanyTitle{ get; set; }
         public string? Base64 { get; set; }
         public string ReportDateJalali { get; set; } = DateTime.Now.ToShortPersianDateString();

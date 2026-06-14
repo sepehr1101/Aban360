@@ -138,7 +138,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
                 SewageInstallationDateJalali = input.SewageInstallationDateJalali,
                 DeletionStateTitle = input.DeletionStateTitle,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                Title = ReportLiterals.CustomerGeneralInfo
+                Title = ReportLiterals.CustomerGeneralInfo,
             };
         }
 

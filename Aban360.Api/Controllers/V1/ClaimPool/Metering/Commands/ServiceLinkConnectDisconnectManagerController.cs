@@ -1,5 +1,7 @@
 ﻿using Aban360.Api.Cronjobs;
-using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations;
+using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts;
+using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
+using Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.Common.BaseEntities;
@@ -15,17 +17,23 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
 {
     [Route("v1/service-link")]
-    public class ServiceLinkManagerController : BaseController
+    public class ServiceLinkConnectDisconnectManagerController : BaseController
     {
         private readonly IConnectDisconnectCommandHandler _connectDisconnectCommandHandler;
         private readonly IConnectDisconnectSetResultHandler _connectDisconnectSetResultHandler;
+        private readonly IConnectDisconnectGetAllHandler _connectDisconnectGetAllHandler;
+        private readonly IConnectDisconnectNoResultDeleteHandler _connectDisconnectNoResultDeleteHandler;
+        private readonly IConnectDisconnectGetStiHandler _connectDisconnectGetStiHandler;
         private readonly IReportGenerator _reportGenerator;
         private readonly ISmsOldHandler _smsHandler;
         private readonly IBackgroundJobClient _jobClient;
         string successfullyDone = "با موفقیت انجام شد";
-        public ServiceLinkManagerController(
+        public ServiceLinkConnectDisconnectManagerController(
             IConnectDisconnectCommandHandler connectDisconnectCommandHandler,
             IConnectDisconnectSetResultHandler connectDisconnectSetResultHandler,
+            IConnectDisconnectGetAllHandler connectDisconnectGetAllHandler,
+            IConnectDisconnectNoResultDeleteHandler connectDisconnectNoResultDeleteHandler,
+            IConnectDisconnectGetStiHandler connectDisconnectGetStiHandler,
             IReportGenerator reportGenerator,
             ISmsOldHandler smsHandler,
             IBackgroundJobClient jobClient)
@@ -35,6 +43,15 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
 
             _connectDisconnectSetResultHandler = connectDisconnectSetResultHandler;
             _connectDisconnectSetResultHandler.NotNull(nameof(connectDisconnectSetResultHandler));
+
+            _connectDisconnectGetAllHandler = connectDisconnectGetAllHandler;
+            _connectDisconnectGetAllHandler.NotNull(nameof(connectDisconnectGetAllHandler));
+
+            _connectDisconnectNoResultDeleteHandler = connectDisconnectNoResultDeleteHandler;
+            _connectDisconnectNoResultDeleteHandler.NotNull(nameof(connectDisconnectNoResultDeleteHandler));
+
+            _connectDisconnectGetStiHandler = connectDisconnectGetStiHandler;
+            _connectDisconnectGetStiHandler.NotNull(nameof(connectDisconnectGetStiHandler));
 
             _reportGenerator = reportGenerator;
             _reportGenerator.NotNull(nameof(reportGenerator));
@@ -110,6 +127,39 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
         {
             ICollection<NumericDictionary> dictionary = _connectDisconnectSetResultHandler.GetDisconnectResults();
             return Ok(dictionary);
+        }
+
+        [HttpGet]
+        [Route("unconfirmed/{zoneId}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ConnectDisconnectHeaderOutputDto, ConnectDisconnectDataOutputDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetUnconfirmed(int zoneId, CancellationToken cancellationToken)
+        {
+            ReportOutput<ConnectDisconnectHeaderOutputDto, ConnectDisconnectDataOutputDto> result = await _connectDisconnectGetAllHandler.Handle(zoneId, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("remove")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ConnectDisconnectRemoveInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Remove([FromBody]ConnectDisconnectRemoveInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _connectDisconnectNoResultDeleteHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            return Ok(inputDto);
+        }
+
+        [HttpGet]
+        [Route("sti/{id}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetSti(long id, CancellationToken cancellationToken)
+        {
+            int connectReportCode = 2070;
+            int disconnectReportCode = 2071;
+            ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto> result = await _connectDisconnectGetStiHandler.Handle(id, CurrentUser, cancellationToken);
+            int reportCode = result?.ReportData?.FirstOrDefault()?.IsConnect ?? false ? connectReportCode : disconnectReportCode;
+          
+            JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode, true);
+
+            return Ok(reportId);
         }
     }
 }

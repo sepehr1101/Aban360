@@ -237,6 +237,8 @@
       
         public static string InvalidConnectDisconnectDuplicateResult => "امکان ذخیره نتیجه مجدد برای درخواست قطع/وصل وجود ندارد.";
         public static string InvalidEmptyDisconnectWhy => "نتیجه قطع را به درستی وارد کنید.";
+        public static string InvalidConnectDisconnectDeleteDuplicate => "درخواست قطع/وصل جاری قبلا حذف شده.";
+        public static string InvalidGetSti => "امکان دریافت فایل چاپ وجود ندارد. برای درخواست جاری ثبت نتیجه/حذف صورت گرفته.";
 
     }
 }

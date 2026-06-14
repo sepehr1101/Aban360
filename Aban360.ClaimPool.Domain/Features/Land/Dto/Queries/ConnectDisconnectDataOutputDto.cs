@@ -1,11 +1,16 @@
 ﻿namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Queries
 {
-    public record ConnectDisconnectGetDto
+    public record ConnectDisconnectDataOutputDto
     {
         public long Id { get; set; }
         public int ZoneId { get; set; }
         public string ZoneTitle { get; set; }
         public string BillId { get; set; }
+        public int CustomerNumber { get; set; }
+        public string FirstName { get; set; }
+        public string Surname { get; set; }
+        public string FullName { get; set; }
+        public string? MobileNumber { get; set; }
         public long WaterDebt { get; set; }
         public DateTime CommandDateTime { get; set; }
         public Guid CommandBy { get; set; }

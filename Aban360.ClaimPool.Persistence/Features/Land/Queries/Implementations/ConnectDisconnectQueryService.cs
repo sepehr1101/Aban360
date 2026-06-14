@@ -20,10 +20,19 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
             IEnumerable<ConnectDisconnectGetDto> result = await _sqlReportConnection.QueryAsync<ConnectDisconnectGetDto>(query);
             return result;
         }
-
-        public async Task<ConnectDisconnectGetDto> Get(long id, int typeId)
+        public async Task<IEnumerable<ConnectDisconnectDataOutputDto>> Get(int zoneId, bool isNoResult, bool isNoRemoved)
         {
-            string query = GetByIdQuery();
+            string noResultCondition = isNoResult ? "AND d.ResultId Is Null" : string.Empty;
+            string removedCondition = isNoRemoved ? "AND d.RemovedDateTime Is Null" : string.Empty;
+            string query = GetByConditionQuery(noResultCondition, removedCondition);
+            IEnumerable<ConnectDisconnectDataOutputDto> result = await _sqlReportConnection.QueryAsync<ConnectDisconnectDataOutputDto>(query, new { zoneId });
+            return result;
+        }
+
+        public async Task<ConnectDisconnectGetDto> Get(long id, int? typeId)
+        {
+            string typeCondition = typeId is null ? string.Empty : "AND TypeId=@typeId";
+            string query = GetByIdQuery(typeCondition);
             ConnectDisconnectGetDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ConnectDisconnectGetDto>(query, new { id, typeId });
             if (result is null)
             {
@@ -31,10 +40,9 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
             }
             return result;
         }
-
         private string GetQuery()
         {
-            return @"Select 
+            return @$"Select 
                         Id , 
                         ZoneId , 
                         ZoneTitle , 
@@ -53,12 +61,51 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         CompanyTitle ,
                         TypeId , 
                         TypeTitle ,
-                        Description 
+                        Description ,
+                        RemovedDateTime ,
+                        RemovedBy
                     From [CustomerWarehouse].dbo.connectdisconnect";
         }
-        private string GetByIdQuery()
+        private string GetByConditionQuery(string noResultCondition, string removedCondition)
         {
-            return @"Select 
+            return @$"Select 
+                        d.Id , 
+                        d.ZoneId , 
+                        d.ZoneTitle , 
+                        d.BillId , 
+                        d.WaterDebt , 
+                        d.CommandDateTime , 
+                        d.CommandBy , 
+                        d.CommandCauseId , 
+                        d.CommandCauseTitle , 
+                        d.ResultDateTime ,
+                        d.ResultBy ,
+                        d.ResultId ,
+                        d.ResultTitle ,
+                        d.MeterDiameterId ,
+                        d.MeterDiameterTitle , 
+                        d.CompanyTitle ,
+                        d.TypeId , 
+                        d.TypeTitle ,
+                        d.Description ,
+                        d.RemovedDateTime ,
+                        d.RemovedBy ,
+						TRIM(c.FirstName) FirstName ,
+						TRIM(c.SureName) SurName,
+						TRIM(c.FirstName) + ' '+ TRIM(c.SureName) FullName,
+						TRIM(c.MobileNo) MobileNumber
+                    From [CustomerWarehouse].dbo.connectdisconnect d
+					Join [CustomerWarehouse].dbo.Clients c
+						ON d.BillId Collate Arabic_CI_AS=c.BillId
+                    Where 
+						c.ToDayJalali Is Null AND
+						d.ZoneId=@zoneId
+                        {noResultCondition}
+                        {removedCondition}";
+        }
+        private string GetByIdQuery(string typeCondition)
+        {
+            return @$"Select 
                         Id , 
                         ZoneId , 
                         ZoneTitle , 
@@ -77,11 +124,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         CompanyTitle ,
                         TypeId , 
                         TypeTitle ,
-                        Description 
+                        Description ,
+                        RemovedDateTime ,
+                        RemovedBy
                     From [CustomerWarehouse].dbo.connectdisconnect
                     Where 
-                        Id=@id AND
-                        TypeId=@typeId";
+                        Id=@id 
+                        {typeCondition}";
         }
     }
 }
