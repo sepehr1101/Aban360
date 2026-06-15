@@ -64,7 +64,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
             KartInsertDto kartInsertDto = GetKartInsertDto(inputDto, moshtrakInfo);
             GhestUpdateDto ghestInsertDto = new(trackingInfo.StringTrackNumber, kartInsertDto.FinalAmount);
-            NumericDictionary amountItemInfo = await _t100QueryService.Get(inputDto.AmountItemId);
+            NumericDictionary amountItemInfo = await _t100QueryService.Get(inputDto.AmountItemId, true);
             string opLogText = string.Format(Literals.RequestOfferingInsertOpLog, amountItemInfo.Title, inputDto.TrackNumber, kartInsertDto.FinalAmount, inputDto.CategoryType.ToString());//todo: CategoryType not persian -> user dateBase
             string dbName = GetDbName(trackingInfo.ZoneId);
 

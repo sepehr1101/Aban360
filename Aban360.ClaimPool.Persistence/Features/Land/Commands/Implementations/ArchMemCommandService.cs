@@ -21,9 +21,9 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             _dbTransaction.NotNull(nameof(_dbTransaction));
         }
 
-        public async Task<int> Insert(CustomerUpdateDto updateDto, string dbName)
+        public async Task<int> Insert(CustomerUpdateDto updateDto, string fromDbName, string insertToDbName)
         {
-            string command = GetInsertQuery(dbName);
+            string command = GetInsertQuery(fromDbName, insertToDbName);
             int? insertResultId = await _sqlConnection.QueryFirstOrDefaultAsync<int>(command, updateDto, _dbTransaction);
             if (insertResultId is null || insertResultId <= 0)
             {
@@ -66,18 +66,18 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             return insertResultId.Value;
         }
 
-        private string GetInsertQuery(string dbName)
+        private string GetInsertQuery(string fromDbName, string insertToDbName)
         {
             return @$";With cte as
                     (
                     	Select Top 1 *
-                    	From [{dbName}].dbo.arch_mem 
+                    	From [{fromDbName}].dbo.arch_mem 
                     	Where 
                     		town=@zoneId AND
                     		radif=@customerNumber 
                     	Order By date_roz desc,id desc
                     )
-                    INSERT INTO [{dbName}].dbo.arch_mem(
+                    INSERT INTO [{insertToDbName}].dbo.arch_mem(
                     	town, radif, par_no, eshtrak, name, family, father_nam, enshab, cod_enshab,
                     	tedad_vahd, tedad_mas, ted_khane, tedad_tej, date_sabt, arse, aian, aian_mas,
                     	aian_tej, ask_ab, inst_ab, ask_fas, inst_fas, address, pelak, bed_bes, edareh_k,

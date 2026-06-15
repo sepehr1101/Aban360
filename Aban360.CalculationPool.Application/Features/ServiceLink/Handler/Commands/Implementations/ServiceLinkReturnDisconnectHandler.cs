@@ -222,7 +222,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                     TypeId = modifyTypeDto.Title,
                     TypeCode = modifyTypeDto.RequestBillDetailsId,
                     ItemId = k.AmountItemId,
-                    ItemTitle = (await _t100QueryService.Get(k.AmountItemId)).Title,
+                    ItemTitle = (await _t100QueryService.Get(k.AmountItemId, true)).Title,
                     Amount = k.TotalServicesAmount,
                     OffAmount = k.DiscountAmount,
                     OffTitle = (await _discountTypeQueryService.Get((DiscountTypeEnum)k.DiscountTypeId)).Title,

@@ -92,7 +92,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                     string dbName = GetDbName(updateDto.ZoneId);
                     //string dbName = "Atlas";
 
-                    int rowId = await _archMemCommandService.Insert(updateDto, dbName);
+                    int rowId = await _archMemCommandService.Insert(updateDto, dbName, dbName);
                     await _membersCommandService.Update(updateDto, dbName);
                     await _clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, updateDto.ToDayDateJalali);
                     await _clientCommandService.InsertByArchMemId(rowId, dbName);
