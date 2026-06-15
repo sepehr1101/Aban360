@@ -234,7 +234,9 @@
         public static string InvalidInsertVosolEn => "خطا در ذخیره وصولی حق انشعاب";
         public static string InvalidPaymentInsertAfterDateCheck => "امکان وصولی پس از بسته شدن دوره وجود ندارد.";
         public static string InvalidIPaymentDeleteAfterDateCheck => "امکان حذف وصولی پس از بسته شدن دوره وجود ندارد.";
-      
+
+        public static string InvalidConnectDisconnectByCustomerInfo(string deletionStateTitle) => $"وضعیت انشعاب مشترک درحالت:{deletionStateTitle} قرار دارد. امکان درخواست وجود ندارد.";
+        public static string InvalidConnectDisconnectDuplicateRequest => "امکان ثبت درخواست قطع/وصل تکراری وجود ندارد  (درخواست قبلی حذف نشده/ثبت نتیجه نشده).";
         public static string InvalidConnectDisconnectDuplicateResult => "امکان ذخیره نتیجه مجدد برای درخواست قطع/وصل وجود ندارد.";
         public static string InvalidEmptyDisconnectWhy => "نتیجه قطع را به درستی وارد کنید.";
         public static string InvalidConnectDisconnectDeleteDuplicate => "درخواست قطع/وصل جاری قبلا حذف شده.";

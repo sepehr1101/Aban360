@@ -59,7 +59,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
         }
         private string GetAddressByIdQuery()
         {
-            return @"Select Address
+            return @"Select ZoneAddress
                     From [Db70].dbo.T51
                     Where C0=@id";
         }

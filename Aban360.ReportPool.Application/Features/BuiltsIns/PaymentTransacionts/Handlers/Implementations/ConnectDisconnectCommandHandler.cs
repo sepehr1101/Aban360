@@ -1,10 +1,12 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Constant;
@@ -27,6 +29,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
     internal sealed class ConnectDisconnectCommandHandler : AbstractBaseConnection, IConnectDisconnectCommandHandler
     {
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IConnectDisconnectQueryService _connectDisconnectQueryService;
         private readonly ICustomerGeneralInfoQueryService _customerGeneralInfoQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly ILocationInfoGetHandler _locationInfoService;
@@ -34,10 +37,13 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
         private readonly IMapService _mapService;
         private int _connectTypeId = 1;
         private int _disconnectTypeId = 0;
-        private string _connectTypeTitle = "صدور دستور وصل";
-        private string _disconnectTypeTitle = "صدور دستور قطع";
+        private static int _disconnectState = 5;
+        private static int _connectState = 0;
+        private string _connectStateTitle = "انشعاب برقرار";
+        private string _disconnectStateTitle = "حذف موقت";
         public ConnectDisconnectCommandHandler(
             IHttpContextAccessor contextAccessor,
+            IConnectDisconnectQueryService connectDisconnectQueryService,
             ICustomerGeneralInfoQueryService customerGeneralInfoQueryService,
             ICommonMemberQueryService commonMemberQueryService,
             ILocationInfoGetHandler locationInfoService,
@@ -48,6 +54,9 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
         {
             _contextAccessor = contextAccessor;
             _contextAccessor.NotNull(nameof(contextAccessor));
+
+            _connectDisconnectQueryService = connectDisconnectQueryService;
+            _connectDisconnectQueryService.NotNull(nameof(connectDisconnectQueryService));
 
             _customerGeneralInfoQueryService = customerGeneralInfoQueryService;
             _customerGeneralInfoQueryService.NotNull(nameof(customerGeneralInfoQueryService));
@@ -67,8 +76,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
 
         public async Task<ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto>> Handle(ConnectDisconnectPrintInputDto inputDto, IAppUser appUser, bool isConnect, CancellationToken cancellationToken)
         {
-            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(inputDto.BillId);
-            ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo = await _customerGeneralInfoQueryService.Get(zoneIdAndCustomerNumber);
+            ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo = await ValidateAndGetCustomerGeneral(inputDto.BillId, isConnect);
             NumericDictionary? connectDisconnectCause = GetCasues().Where(c => c.Id == (inputDto.Why ?? 0)).FirstOrDefault();
             var (messageText, opLogText, title) = GetStringsValue(customerInfo, inputDto, isConnect, connectDisconnectCause?.Title);
 
@@ -163,7 +171,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 MeterDiameterTitle = customerInfo.ReportHeader.MeterDiameterTitle,
                 CompanyTitle = inputDto.Who,
                 TypeId = isConnect ? _connectTypeId : _disconnectTypeId,
-                TypeTitle = isConnect ? _connectTypeTitle : _disconnectTypeTitle,
+                TypeTitle = isConnect ? ReportLiterals.Connect : ReportLiterals.Disconnect,
                 Description = inputDto.Description ?? string.Empty,
             };
         }
@@ -186,6 +194,30 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             LocationInfoDto location = await _locationInfoService.Handle(billId, cancellationToken);
             string base64 = await _mapService.GenerateMapBase64(location.X, location.Y);
             return (location, base64);
+        }
+        private async Task<ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto>> ValidateAndGetCustomerGeneral(string billId, bool isConnect)
+        {
+            int typeId = isConnect ? _connectTypeId : _disconnectTypeId;
+            int deletionStateId = isConnect ? _connectState : _disconnectState;
+            string deletionStateTitle = isConnect ? _connectStateTitle : _disconnectStateTitle;
+
+            await CheckDuplicateRequest(billId, typeId);
+            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(billId);
+            ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo = await _customerGeneralInfoQueryService.Get(zoneIdAndCustomerNumber);
+
+            if ((customerInfo?.ReportData?.FirstOrDefault()?.DeletionStateId ?? 0) == deletionStateId)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidConnectDisconnectByCustomerInfo(deletionStateTitle));
+            }
+            return customerInfo;
+        }
+        private async Task CheckDuplicateRequest(string billId, int typeId)
+        {
+            ConnectDisconnectGetDto? previousRequest = await _connectDisconnectQueryService.Get(new ConnectDisconnectGetWithConditionDto(billId, typeId, false, false));
+            if (previousRequest is not null)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidConnectDisconnectDuplicateRequest);
+            }
         }
         public ICollection<NumericDictionary> GetCasues()
         {
