@@ -5,6 +5,7 @@
         public string HeadquarterTitle { get; set; }//
         public string RegionTitle { get; set; }//
         public string ZoneTitle { get; set; }
+        public string? ZoneAddress { get; set; }
         public string ReadingNumber { get; set; }
         public int CustomerNumber { get; set; }
         public string FirstName { get; set; }//+

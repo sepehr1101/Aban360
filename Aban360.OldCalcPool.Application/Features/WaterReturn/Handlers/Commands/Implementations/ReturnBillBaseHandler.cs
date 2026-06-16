@@ -5,7 +5,6 @@ using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using OpLogLiterals = Aban360.OldCalcPool.Application.Constant;
 using Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Constants;
@@ -26,6 +25,7 @@ using System.Data;
 using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implementations;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Contracts;
+using Aban360.Common.Db.Constants.Literals;
 
 namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Implementations
 {
@@ -280,7 +280,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
 
             string returnMode = isPartial ? "محاسبه مجدد" : "کامل";
-            string logText = string.Format(OpLogLiterals.Literals.BillReturnOpLog, returnMode, customerInfo.BillId, billCount, fromDateJalali, toDateJalali, different.Baha, confirmNumber);
+            string logText = string.Format(OpLogLiterals.BillReturnOpLog, returnMode, customerInfo.BillId, billCount, fromDateJalali, toDateJalali, different.Baha, confirmNumber);
 
             await SqlCommands(bedBes, newCalculation, different, appUser, logText);
             return result;
@@ -789,7 +789,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 {
                     AutoBackCommandService autoBackCommandService = new(connection, transaction);
                     RepairCommandService repairCommandService = new(connection, transaction);
-                    OpLogCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     await autoBackCommandService.Create(datas, dbName, true);//حتما به ترتیب باید ایجاد شود
                     int repairId = await repairCommandService.Insert(repairCreateDto, dbName);

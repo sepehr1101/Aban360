@@ -1,6 +1,9 @@
-﻿using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
+﻿using Aban360.ClaimPool.Persistence.Constants.Literals;
+using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Db.Exceptions;
+using Aban360.Common.Exceptions;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
@@ -13,10 +16,14 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
         {
         }
 
-        public async Task<NumericDictionary> Get(int Id)
+        public async Task<NumericDictionary> Get(int Id, bool hasException)
         {
             string query = GetByIdQuery();
-            NumericDictionary result = await _sqlReportConnection.QueryFirstOrDefaultAsync<NumericDictionary>(query, new { Id });
+            NumericDictionary? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<NumericDictionary>(query, new { Id });
+            if (hasException && result is null)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.NotFoundT100);
+            }
             return result;
         }
         public async Task<IEnumerable<NumericDictionary>> Get()

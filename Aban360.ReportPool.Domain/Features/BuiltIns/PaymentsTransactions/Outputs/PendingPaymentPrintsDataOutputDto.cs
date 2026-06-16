@@ -4,6 +4,7 @@
     {
         public string RegionTitle { get; set; }
         public string ZoneTitle { get; set; }
+        public string? ZoneAddress { get; set; }
         public int CustomerNumber { get; set; }
         public int CustomerNumber2 { get; set; }
         public string ReadingNumber { get; set; }

@@ -17,9 +17,9 @@ using Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contra
 using Microsoft.AspNetCore.Http;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
 using Aban360.Common.Db.Services;
-using Aban360.OldCalcPool.Application.Constant;
 using Aban360.Common.ApplicationUser;
 using Aban360.CalculationPool.Application.Features.Base;
+using Aban360.Common.Db.Constants.Literals;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Implementations
 {
@@ -98,7 +98,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                     TankerCommandService tankerCommandService = new(connection, transaction);
                     BedBesCommandService bedBesCommandService = new(connection, transaction);
                     BillCommandService billCommandService = new(connection, transaction);
-                    OpLogCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     int customerNumber = await variablesCommandService.GetAndRenewTankerRadif();
                     TankerInsertDto tankerInsertDto = GetTankerInsertDto(inputDto, calcResult, customerNumber, barge);
@@ -106,7 +106,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                     calcResult.BillId = bedBesInsertDto.ShGhabs1;
                     calcResult.PaymentId = bedBesInsertDto.ShPard1;
                     calcResult.CustomerNumber = customerNumber;
-                    string opLogText = string.Format(Literals.TankerInsertOpLog, appUser.Username, tankerInsertDto.CurrentDateJalali, inputDto.ZoneId, bedBesInsertDto.ShGhabs1, tankerInsertDto.CustomerNumber, calcResult.Final);
+                    string opLogText = string.Format(OpLogLiterals.TankerInsertOpLog, appUser.Username, tankerInsertDto.CurrentDateJalali, inputDto.ZoneId, bedBesInsertDto.ShGhabs1, tankerInsertDto.CustomerNumber, calcResult.Final);
 
                     await tankerCommandService.Insert(tankerInsertDto, dbName);
                     int bedBesId = await bedBesCommandService.Insert(bedBesInsertDto, dbName);

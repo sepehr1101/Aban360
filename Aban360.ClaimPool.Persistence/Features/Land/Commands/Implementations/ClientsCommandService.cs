@@ -1,5 +1,4 @@
-﻿using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
-using Aban360.ClaimPool.Persistence.Constants.Literals;
+﻿using Aban360.ClaimPool.Persistence.Constants.Literals;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;

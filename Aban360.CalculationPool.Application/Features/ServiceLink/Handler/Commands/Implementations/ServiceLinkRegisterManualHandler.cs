@@ -3,12 +3,12 @@ using Aban360.CalculationPool.Domain.Features.ServiceLink;
 using Aban360.CalculationPool.Persistence.Features.ServiceLink.Commands.Implementations;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.OldCalcPool.Application.Constant;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using DNTPersianUtils.Core;
 using FluentValidation;
@@ -63,7 +63,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
             VosoEnInsertDto vosolEnInsertDto = GetVosolEnInsertDto(input, memberInfo);
             PaymentEnInsertDto paymentEnInsertDto = GetPaymentEnInsertDto(vosolEnInsertDto, memberInfo);
 
-            string opLogText = string.Format(Literals.ServiceLinkRegisterManualOpLog, memberInfo.BillId, input.Amount);
+            string opLogText = string.Format(OpLogLiterals.ServiceLinkRegisterManualOpLog, memberInfo.BillId, input.Amount);
 
             await SqlCommands(vosolEnInsertDto, paymentEnInsertDto, appUser, opLogText);
         }
@@ -180,7 +180,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 {
                     VosolEnCommandService vosolEnCommandService = new(connection, transaction);
                     PaymentEnCommandService paymentEnCommandService = new(connection, transaction);
-                    OpLogCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     int recordId = await vosolEnCommandService.Insert(vosolEnInsertDto, dbName);
                     paymentEnInsertDto.VosoolTableId = recordId;

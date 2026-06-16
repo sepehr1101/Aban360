@@ -21,6 +21,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Validations
             RuleFor(u => u.Username)
                .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .Must(IsDigit).WithMessage(ExceptionLiterals.MustDigit)
                .MaximumLength(255).WithMessage("Not More than 255");//Unique
 
             RuleFor(u => u.Password)

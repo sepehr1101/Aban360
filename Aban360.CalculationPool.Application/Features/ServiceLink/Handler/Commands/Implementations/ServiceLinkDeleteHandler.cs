@@ -4,12 +4,12 @@ using Aban360.CalculationPool.Persistence.Features.ServiceLink.Commands.Implemen
 using Aban360.CalculationPool.Persistence.Features.ServiceLink.Qeuries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.OldCalcPool.Application.Constant;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -55,7 +55,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber(inputDto.ZoneId, inputDto.CustomerNumber));
             ServiceLinkPaidDataOutputDto paidInfo = await _vosolEnQueryService.Get(inputDto);//todo:in GetMethod:ReName DbName
             await DateValidate(inputDto.ZoneId, paidInfo.RegisterDateJalali);
-            string opLogText = string.Format(Literals.ServiceLinkDeleteManualOpLog, memberInfo.BillId, paidInfo.Amount);
+            string opLogText = string.Format(OpLogLiterals.ServiceLinkDeleteManualOpLog, memberInfo.BillId, paidInfo.Amount);
 
             await SqlCommands(inputDto, appUser, opLogText);
         }
@@ -80,7 +80,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 {
                     VosolEnCommandService vosolEnCommandService = new(connection, transaction);
                     PaymentEnCommandService paymentEnCommandService = new(connection, transaction);
-                    OpLogCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     await vosolEnCommandService.Remove(inputDto, dbName);
                     await paymentEnCommandService.Remove(inputDto);

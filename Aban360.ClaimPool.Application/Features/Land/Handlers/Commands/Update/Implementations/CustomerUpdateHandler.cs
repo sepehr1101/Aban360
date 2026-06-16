@@ -67,14 +67,14 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, previousSubscription);
 
-            await UpdateCustomer(customerUpdate);
+            await UpdateCustomerAndClient(customerUpdate);
         }
         public async Task Handle(CustomerTechnicalUpdateDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, previousSubscription);
 
-            await UpdateCustomer(customerUpdate);
+            await UpdateCustomerAndClient(customerUpdate);
         }
         public async Task Handle(CustomerUpdate3Dto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
@@ -90,15 +90,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
 
             await UpdateCustomer(customerUpdate);
         }
-        //public async Task Handle(ServiceLinkConnectionInput inputDto, int deletionStateId, IAppUser appUser, CancellationToken cancellationToken)
-        //{
-        //    await LastDeletionStateValidation(inputDto.BillId, deletionStateId);
-
-        //    SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
-        //    CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, deletionStateId, previousSubscription);
-
-        //    await UpdateCustomerAndClient(customerUpdate);
-        //}//use from:IConnectDisconnectUpdateHandler
         public async Task Handle(CustomerMobileUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             await Validation(inputDto, cancellationToken);
@@ -136,11 +127,11 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 {
                     ArchMemCommandService _archMemCommandService = new(connection, transaction);
                     MembersCommandService _membersCommandService = new(connection, transaction);
-                    //string dbName = GetDbName(updateDto.ZoneId);
-                    string dbName = "Atlas";
+                    string fromDbName = GetDbName(updateDto.ZoneId);
+                    string insertToDbName = "Atlas";
 
-                    int rowId = await _archMemCommandService.Insert(updateDto, dbName);
-                    await _membersCommandService.Update(updateDto, dbName);
+                    int rowId = await _archMemCommandService.Insert(updateDto, fromDbName, insertToDbName);
+                    await _membersCommandService.Update(updateDto, insertToDbName);
 
                     transaction.Commit();
                 }
@@ -163,7 +154,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                     string dbName = GetDbName(updateDto.ZoneId);
                     //string dbName = "Atlas";
 
-                    int rowId = await _archMemCommandService.Insert(updateDto, dbName);
+                    int rowId = await _archMemCommandService.Insert(updateDto, dbName, dbName);
                     await _membersCommandService.Update(updateDto, dbName);
                     await _clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, updateDto.ToDayDateJalali);
                     await _clientCommandService.InsertByArchMemId(rowId, dbName);
@@ -229,7 +220,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         {
             return new CustomerUpdateDto()
             {
-                Id = previousSubscription.Id,
+                Id = inputDto.Id,
                 CustomerNumber = previousSubscription.CustomerNumber,
                 ZoneId = previousSubscription.ZoneId,
                 BillId = inputDto.BillId,
@@ -252,7 +243,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 CommertialUnit = inputDto.CommertialUnit,
                 DomesticUnit = inputDto.DomesticUnit,
                 OtherUnit = inputDto.OtherUnit,
-                HouseholdDateJalali = DateValidation(inputDto.HouseholdDateJalali, false),
+                HouseholdDateJalali = DateValidation(inputDto.HouseholdDateJalali, true),
                 HouseholdNumber = inputDto.HouseholdNumber,
                 MeterDiamterId = inputDto.MeterDiameterId,
                 IsSpecial = inputDto.IsSpecial,

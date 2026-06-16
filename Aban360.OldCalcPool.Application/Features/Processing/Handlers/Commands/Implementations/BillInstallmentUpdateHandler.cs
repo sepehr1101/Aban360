@@ -1,12 +1,12 @@
 ﻿using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.OldCalcPool.Application.Constant;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
@@ -59,7 +59,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             DateValidate(billInstallmentInfo);
 
             BillInstallmentUpdateDto updateDto = new(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber, inputDto.Id, inputDto.DeadLineDateJalali, inputDto.Amount);
-            string logText = string.Format(Literals.BillInstallmentUpdateOpLog, inputDto.BillId, inputDto.Id, billInstallmentInfo.Payable, inputDto.Amount, billInstallmentInfo.DeadLineDateJalali, inputDto.DeadLineDateJalali);
+            string logText = string.Format(OpLogLiterals.BillInstallmentUpdateOpLog, inputDto.BillId, inputDto.Id, billInstallmentInfo.Payable, inputDto.Amount, billInstallmentInfo.DeadLineDateJalali, inputDto.DeadLineDateJalali);
 
             await SqlCommands(updateDto, appUser, logText);
             return GetResult(inputDto, billInstallmentInfo);
@@ -76,7 +76,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     GhestAbCommandService ghestAbCommandService = new(connection, transaction);
-                    OpLogCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     await ghestAbCommandService.Update(updateDto, dbName);
                     await opLogCommandService.Insert(logText, appUser);

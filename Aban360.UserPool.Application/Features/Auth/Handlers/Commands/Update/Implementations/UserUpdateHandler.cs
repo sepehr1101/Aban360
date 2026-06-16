@@ -5,6 +5,7 @@ using Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Contracts;
 using Aban360.UserPool.Application.Common.Base;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
+using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Constants.Enums;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
@@ -87,7 +88,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
             _userValidator.NotNull(nameof(userValidator));
         }
 
-        public async Task Handle(UserUpdateDto userUpdateDto, CancellationToken cancellationToken)
+        public async Task<UserPersonalGetDto> Handle(UserUpdateDto userUpdateDto, CancellationToken cancellationToken)
         {
             var validationResult = await _userValidator.ValidateAsync(userUpdateDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -101,6 +102,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
             Guid operationGroupId = Guid.NewGuid();
             User userInDb = await _userQueryService.Get(userUpdateDto.Id);
             User user = _mapper.Map<User>(userInDb);
+            UserPersonalGetDto userPersinalInfo = new(user.Id,user.FullName ,user.DisplayName,user.Username,user.Mobile);
 
             user.Mobile = userUpdateDto.Mobile;
             user.FullName = userUpdateDto.FullName;
@@ -126,6 +128,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
 
             await _userClaimCommandService.Add(userCliams);
             await _userRoleCommandService.Add(userRoles);
+            return userPersinalInfo;
         }
         private async Task<List<string>> GetEndpointsValue(UserUpdateDto userUpdateDto)
         {

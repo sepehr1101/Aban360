@@ -1,6 +1,7 @@
 ﻿using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
@@ -64,7 +65,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             MemberGetDto memberInfo = await GetMemberInfo(input.BillId);
             ZoneIdAndCustomerNumber zoneIdCustomerNumber = new(memberInfo.ZoneId, memberInfo.CustomerNumber);
             ICollection<BillInstallmentCreateDto> installments = await GetInstallment(memberInfo, input);
-            string logText = string.Format(Literals.BillInstallmentOpLog, memberInfo.BillId, installments?.Sum(x => x.Payable) ?? 0, input.InstallmentCount, installments?.FirstOrDefault()?.Payable ?? 0, input.PrepaymentPercent);
+            string logText = string.Format(OpLogLiterals.BillInstallmentOpLog, memberInfo.BillId, installments?.Sum(x => x.Payable) ?? 0, input.InstallmentCount, installments?.FirstOrDefault()?.Payable ?? 0, input.PrepaymentPercent);
 
             if (input.IsConfirm)
             {
@@ -86,7 +87,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     GhestAbCommandService ghestAbCommandService = new(connection, transaction);
-                    OpLogCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     await ghestAbCommandService.Insert(installments, dbName);
                     await opLogCommandService.Insert(logText, appUser);

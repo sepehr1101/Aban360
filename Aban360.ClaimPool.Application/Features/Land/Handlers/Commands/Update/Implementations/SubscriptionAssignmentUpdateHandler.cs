@@ -34,20 +34,20 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             CustomerUpdateDto subscriptionUpdate = GetCustomerUpdateDto(updateDto, previousSubscription);
 
             using (IDbConnection connection = _sqlReportConnection)
-            {                
+            {
                 if (connection.State != ConnectionState.Open)
                 {
                     connection.Open();
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    ArchMemCommandService _archMemCommandService = new (_sqlReportConnection, transaction);
-                    MembersCommandService _membersCommandService = new (_sqlReportConnection, transaction);
-                    //string dbName = GetDbName(subscriptionUpdate.ZoneId);
-                    string dbName = "Atlas";
+                    ArchMemCommandService _archMemCommandService = new(_sqlReportConnection, transaction);
+                    MembersCommandService _membersCommandService = new(_sqlReportConnection, transaction);
+                    string fromDbName = GetDbName(subscriptionUpdate.ZoneId);
+                    string insertToDbName = "Atlas";
 
-                    await _archMemCommandService.Insert(subscriptionUpdate, dbName);
-                    await _membersCommandService.Update(subscriptionUpdate, dbName);
+                    await _archMemCommandService.Insert(subscriptionUpdate, fromDbName, insertToDbName);
+                    await _membersCommandService.Update(subscriptionUpdate, insertToDbName);
 
                     transaction.Commit();
                 }
