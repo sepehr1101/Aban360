@@ -556,6 +556,7 @@ namespace Aban360.Common.Extensions
                     { "GhanonBoodje", "مبلغ قانون بودجه"},
                     { "JavazemKahande", "قسط لوازم کاهنده مصرف"},
                     { "AvarezSanati", "عوارض صنعتی"},
+                    { "ZoneAddress", "آدرس ناحیه"},
             };
         }
     }

@@ -59,6 +59,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                  {
                      RegionTitle = p.RegionTitle,
                      ZoneTitle = p.ZoneTitle,
+                     ZoneAddress=p.ZoneAddress,
                      FullName = $"{p.FirstName} {p.Surname}",
                      FatherName = p.FatherName,
                      NationalCode = p.NationalCode,

@@ -83,7 +83,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
         public async Task<NewBillOutputDto> Handle(GenerateBillInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await InputValidation(inputDto, cancellationToken);
+            await InputValidate(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await GetZoneIdANdCustomerNumber(inputDto.BillId);
             CustomerInfoGetDto customerInfo = await _customerInfoService.Get(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
             await Validate(inputDto, zoneIdAndCustomerNumber, customerInfo);
@@ -536,7 +536,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             await DeletionStateValidation(zoneIdAndCustomerNumber);
             CounterStateValidation(inputDto.CounterStateCode, inputDto.MeterNumber, customerInfo.BedBesInfo.LastMeterNumber);
         }
-        private async Task InputValidation(GenerateBillInputDto inputDto, CancellationToken cancellationToken)
+        private async Task InputValidate(GenerateBillInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
