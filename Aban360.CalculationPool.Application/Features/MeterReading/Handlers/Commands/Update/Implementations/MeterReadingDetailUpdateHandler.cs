@@ -7,6 +7,7 @@ using Aban360.Common.ApplicationUser;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
@@ -19,13 +20,14 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 {
     internal sealed class MeterReadingDetailUpdateHandler : AbstractBaseConnection, IMeterReadingDetailUpdateHandler
     {
-        const int _conditionPayableAmount = 10000;
-        const int _paymentDeadline = 7;
-
         private readonly IMeterReadingDetailQueryService _meterReadingDetailService;
         private readonly ICustomerInfoService _customerInfoService;
         private readonly IOldTariffEngine _oldTariffEngine;
         private readonly IValidator<MeterReadingDetailUpdateDto> _validator;
+        const double _maxAmount = 999_999_999_999;
+        const int _conditionPayableAmount = 10000;
+        const int _paymentDeadline = 7;
+
         public MeterReadingDetailUpdateHandler(
              IMeterReadingDetailQueryService meterReadingDetailService,
              ICustomerInfoService customerInfoService,
@@ -55,9 +57,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             //MeterReadingDetailCreateDuplicateDto readingCreateDuplicate = new(input.Id, input.CurrentCounterStateCode, input.CurrentDateJalali, input.CurrentNumber, appUser.UserId, DateTime.Now, abBahaResult.SumItems, abBahaResult.SumItemsBeforeDiscount, abBahaResult.DiscountSum, abBahaResult.Consumption, abBahaResult.MonthlyConsumption);
             MeterReadingDetailCreateDto meterReadingCreateDto = await GetMeterReadingDetailCreateDto(abBahaResult, input, previousMeterDetailDto, appUser);
             MeterReadingDetailDeleteDto readingDelete = new(input.Id, appUser.UserId, DateTime.Now);
-
-            using (IDbConnection connection = _sqlReportConnection)
+            if (abBahaResult.SumItems > _maxAmount)
             {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidDisallowedAmount(previousMeterDetailDto.BillId, _maxAmount));
+            }
+            using (IDbConnection connection = _sqlReportConnection)
+                {
                 if (connection.State != ConnectionState.Open)
                 {
                     connection.Open();

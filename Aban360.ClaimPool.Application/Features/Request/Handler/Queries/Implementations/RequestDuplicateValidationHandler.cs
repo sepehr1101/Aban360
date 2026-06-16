@@ -43,7 +43,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             if (moshtrakInfo is not null)
             {
                 MoshtrakServiceDto moshtrakServiceDto = GetMoshtrakService(moshtrakInfo);
-                serviceSelected = MoshtrakService.GetServicesSelectedDto(moshtrakServiceDto, latestTrackingInfo.ServiceGroupId);
+                serviceSelected = latestTrackingInfo is null ?
+                    new List<NumericDictionary>() :
+                    MoshtrakService.GetServicesSelectedDto(moshtrakServiceDto, latestTrackingInfo.ServiceGroupId);
             }
 
             return GetResultDto(inputDto, serviceSelected, moshtrakInfo, latestTrackingInfo, firstTrackingInfo, requestOrigin);

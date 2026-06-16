@@ -8,11 +8,11 @@ using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using Aban360.OldCalcPool.Application.Constant;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -64,8 +64,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
             KartInsertDto kartInsertDto = GetKartInsertDto(inputDto, moshtrakInfo);
             GhestUpdateDto ghestInsertDto = new(trackingInfo.StringTrackNumber, kartInsertDto.FinalAmount);
-            NumericDictionary amountItemInfo = await _t100QueryService.Get(inputDto.AmountItemId);
-            string opLogText = string.Format(Literals.RequestOfferingInsertOpLog, amountItemInfo.Title, inputDto.TrackNumber, kartInsertDto.FinalAmount, inputDto.CategoryType.ToString());//todo: CategoryType not persian -> user dateBase
+            NumericDictionary amountItemInfo = await _t100QueryService.Get(inputDto.AmountItemId, true);
+            string opLogText = string.Format(OpLogLiterals.RequestOfferingInsertOpLog, amountItemInfo.Title, inputDto.TrackNumber, kartInsertDto.FinalAmount, inputDto.CategoryType.ToString());//todo: CategoryType not persian -> user dateBase
             string dbName = GetDbName(trackingInfo.ZoneId);
 
             using (IDbConnection connection = _sqlReportConnection)
@@ -76,7 +76,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 {
                     KartCommandService kartCommandService = new(connection, transaction);
                     GhestCommandService ghestCommandService = new(connection, transaction);
-                    OpLogCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     await kartCommandService.Insert(kartInsertDto, false, dbName);
                     await ghestCommandService.Update(ghestInsertDto, dbName);

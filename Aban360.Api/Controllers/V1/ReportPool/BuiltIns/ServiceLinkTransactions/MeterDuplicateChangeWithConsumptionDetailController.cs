@@ -28,7 +28,6 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpGet, HttpPost]
         [Route("raw")]
-        [AllowTimeWindowFilter]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<MeterDuplicateChangeWithCustomerDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Raw(MeterDuplicateChangeWithCustomerInputDto inputDto, CancellationToken cancellationToken)
         {

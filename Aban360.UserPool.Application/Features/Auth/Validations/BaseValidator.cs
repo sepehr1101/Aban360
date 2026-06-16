@@ -9,5 +9,6 @@ namespace Aban360.UserPool.Application.Features.Auth.Validations
             ClassLevelCascadeMode = CascadeMode.Stop;
             RuleLevelCascadeMode = CascadeMode.Stop;
         }
+        protected virtual bool IsDigit(string input) => !string.IsNullOrWhiteSpace(input) && input.All(char.IsDigit);
     }
 }

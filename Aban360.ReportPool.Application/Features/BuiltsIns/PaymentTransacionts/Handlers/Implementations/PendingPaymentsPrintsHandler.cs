@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Contracts;
 using Aban360.ReportPool.Application.Features.Geo.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -42,6 +43,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             }
 
             ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentsDataOutputDto> pendingPayments = await _pendingPaymentsQueryService.GetInfo(input);
+            if (!pendingPayments.ReportData.Any())
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.NotFoundData);
+            }
 
             return GetResult(pendingPayments, input);
         }
@@ -54,6 +59,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                  {
                      RegionTitle = p.RegionTitle,
                      ZoneTitle = p.ZoneTitle,
+                     ZoneAddress=p.ZoneAddress,
                      FullName = $"{p.FirstName} {p.Surname}",
                      FatherName = p.FatherName,
                      NationalCode = p.NationalCode,

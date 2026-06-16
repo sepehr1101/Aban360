@@ -14,6 +14,7 @@ using System.Data;
 using Aban360.OldCalcPool.Application.Constant;
 using Microsoft.AspNetCore.Http;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
+using Aban360.Common.Db.Constants.Literals;
 
 namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Implementations
 {
@@ -52,7 +53,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             await _commonZoneService.IsUserInZone(appUser, (int)(autoBacksInfo.FirstOrDefault()?.Town ?? 0));
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber((int)(autoBacksInfo.FirstOrDefault()?.Town ?? 0), (int)(autoBacksInfo.FirstOrDefault()?.Radif ?? 0)));
-            string logText = string.Format(Literals.BillReturnDeletedOpLog, memberInfo.BillId, autoBacksInfo.FirstOrDefault().PriDate, autoBacksInfo.FirstOrDefault().TodayDate, confirmedNumber);
+            string logText = string.Format(OpLogLiterals.BillReturnDeletedOpLog, memberInfo.BillId, autoBacksInfo.FirstOrDefault().PriDate, autoBacksInfo.FirstOrDefault().TodayDate, confirmedNumber);
 
             await SqlCommand(confirmedNumber, appUser, logText);
         }
@@ -69,7 +70,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     AutoBackCommandService autoBackCommandService = new(connection, transaction);
-                    OpLogCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     await autoBackCommandService.UpdateIsDeleted(confirmedNumber, atlasDbName);
                     await opLogCommandService.Insert(logText, appUser);

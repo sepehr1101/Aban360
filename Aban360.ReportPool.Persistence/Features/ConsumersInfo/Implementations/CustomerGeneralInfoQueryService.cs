@@ -176,7 +176,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts
 						m.noe_va as BranchTypeId,
 						t7.C1 as BranchTypeTitle,
 						d.Title DeletionStateTitle,
-						d.Id DeletionStateId,
+						d.Id DeletionStateId, 
 						0 as DiscountType,
 						ask_ab as WaterRequestDateJalali,
 						m.inst_ab as WaterInstallationDateJalali,

@@ -3,6 +3,7 @@ using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
@@ -82,10 +83,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
         public async Task<NewBillOutputDto> Handle(FreeGenerateBillInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await InputValidation(inputDto, cancellationToken);
+            await InputValidate(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await GetZoneIdANdCustomerNumber(inputDto.BillId);
             CustomerInfoGetDto customerInfo = await _customerInfoService.Get(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
-            await Validation(inputDto, zoneIdAndCustomerNumber, customerInfo);
+            await Validate(inputDto, zoneIdAndCustomerNumber, customerInfo);
 
             AbBahaCalculationDetails abBahaCalcResult = await GetAbBahaCalc(inputDto, customerInfo, cancellationToken);
             abBahaCalcResult.MeterInfo.CounterStateCode = inputDto.CounterStateCode ?? 0;
@@ -106,7 +107,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             BedBesCreateDto bedBes = await GetBedBes(customerInfo, abBahaCalcResult, inputDto, zoneIdAndCustomerNumber, inputDto.CounterStateCode);
             KasrHaDto kasrHa = GerKasrHa(customerInfo, abBahaCalcResult, inputDto);
             ContorUpdateDto contorUpdate = GetControUpdateDto(customerInfo, bedBes, inputDto.CounterStateCode ?? 0);
-            string logtext = string.Format(Literals.GenerateFreeBillOpLog, bedBes.ShGhabs1, bedBes.ShPard1, bedBes.Pard);
+            string logtext = string.Format(OpLogLiterals.GenerateFreeBillOpLog, bedBes.ShGhabs1, bedBes.ShPard1, bedBes.Pard);
 
             await SqlCommands(zoneIdAndCustomerNumber, bedBes, kasrHa, contorUpdate, abBahaCalcResult, appUser, inputDto.CounterStateCode, logtext);
 
@@ -310,7 +311,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                         WaterDebtCommandService waterDebtCommandService = new(connection, transaction);
                         BillCommandService billCommandService = new(connection, transaction);
                         ContorCommandService controCommandService = new(connection, transaction);
-                        OpLogCommandService opLogcommandService = new(_contextAccessor, connection, transaction);
+                        OpLogWithTransactionCommandService opLogcommandService = new(_contextAccessor, connection, transaction);
 
                         int bedBesRecordId = await bedBedCommandService.Insert(bedBes, dbName);
                         BillByBedBedIdInsertDto billInsertByBedBesIdDto = new(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber, GetTypeId(counterStateCode), bedBesRecordId);
@@ -521,12 +522,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 Bodjeh = (decimal)abBahaCalc.BoodjeDiscount,
             };
         }
-        private async Task Validation(FreeGenerateBillInputDto inputDto, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber, CustomerInfoGetDto customerInfo)
+        private async Task Validate(FreeGenerateBillInputDto inputDto, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber, CustomerInfoGetDto customerInfo)
         {
             await DeletionStateValidation(zoneIdAndCustomerNumber);
             CounterStateValidation(inputDto);
         }
-        private async Task InputValidation(FreeGenerateBillInputDto inputDto, CancellationToken cancellationToken)
+        private async Task InputValidate(FreeGenerateBillInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)

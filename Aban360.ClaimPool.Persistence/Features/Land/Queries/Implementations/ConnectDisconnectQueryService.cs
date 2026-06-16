@@ -2,6 +2,7 @@
 using Aban360.ClaimPool.Persistence.Constants.Literals;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.Db.Dapper;
+using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
@@ -28,7 +29,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
             IEnumerable<ConnectDisconnectDataOutputDto> result = await _sqlReportConnection.QueryAsync<ConnectDisconnectDataOutputDto>(query, new { zoneId });
             return result;
         }
-
         public async Task<ConnectDisconnectGetDto> Get(long id, int? typeId)
         {
             string typeCondition = typeId is null ? string.Empty : "AND TypeId=@typeId";
@@ -38,6 +38,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
             {
                 throw new InvalidDataException(ExceptionLiterals.InvalidConnectDisconnectId);
             }
+            return result;
+        }
+        public async Task<ConnectDisconnectGetDto?> Get(ConnectDisconnectGetWithConditionDto inputDto)
+        {
+            string query = GetByConditionQuery(inputDto.IsRemoved, inputDto.HasResult);
+            ConnectDisconnectGetDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ConnectDisconnectGetDto>(query, inputDto);
             return result;
         }
         private string GetQuery()
@@ -131,6 +137,39 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                     Where 
                         Id=@id 
                         {typeCondition}";
+        }
+        private string GetByConditionQuery(bool isRemoved, bool hasResult)
+        {
+            string removedCondition = isRemoved ? " AND RemovedDateTime IS NOT NUll " : " AND RemovedDateTime IS NUll ";
+            string resultCondition = hasResult ? " AND ResultDateTime IS NOT NULL " : " AND ResultDateTime IS NULL ";
+            return @$"Select
+                        Id , 
+                        ZoneId , 
+                        ZoneTitle , 
+                        BillId , 
+                        WaterDebt , 
+                        CommandDateTime , 
+                        CommandBy , 
+                        CommandCauseId , 
+                        CommandCauseTitle , 
+                        ResultDateTime ,
+                        ResultBy ,
+                        ResultId ,
+                        ResultTitle ,
+                        MeterDiameterId ,
+                        MeterDiameterTitle , 
+                        CompanyTitle ,
+                        TypeId , 
+                        TypeTitle ,
+                        Description ,
+                        RemovedDateTime ,
+                        RemovedBy
+                    From [CustomerWarehouse].dbo.connectdisconnect
+                    Where 
+                        BillId=@BillId AND
+						TypeId=@TypeId 
+						{resultCondition}
+                        {removedCondition}";
         }
     }
 }

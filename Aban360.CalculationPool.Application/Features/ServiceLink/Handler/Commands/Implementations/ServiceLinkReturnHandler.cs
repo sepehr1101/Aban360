@@ -8,11 +8,11 @@ using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using Aban360.OldCalcPool.Application.Constant;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using DNTPersianUtils.Core;
 using FluentValidation;
@@ -37,7 +37,6 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         const int _operator = 666;
         const int _kartTypeId = 2;
         const int _discountDescriptionCode = 14;
-
         public ServiceLinkReturnHandler(
             IHttpContextAccessor contextAccessor,
             ICommonMemberQueryService commonMemberQueryService,
@@ -80,7 +79,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
 
             KartInsertDto kartsInsertDto = GetKartInsertDto(inputDto, memberInfo, (int)barge);
             RequestBillDetailsInsertDto requestBillDetailsInsertDto = await GetRequestBillDetailsInsertDto(kartsInsertDto, memberInfo);
-            string opLogText = string.Format(Literals.ServiceLinkReturnOpLog, inputDto.BillId, kartsInsertDto.FinalAmount);
+            string opLogText = string.Format(OpLogLiterals.ServiceLinkReturnOpLog, inputDto.BillId, kartsInsertDto.FinalAmount);
 
             await SqlCommands(kartsInsertDto, requestBillDetailsInsertDto, appUser, opLogText);
         }
@@ -97,7 +96,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 {
                     KartCommandService kartCommandService = new(connection, transaction);
                     RequestBillDetailsCommandService requestBillDetailCommandService = new(connection, transaction);
-                    OpLogCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     await kartCommandService.Insert(kartsInsertDto, true, dbName);
                     await requestBillDetailCommandService.Insert(requestBillDetailsInsertDto);
@@ -118,20 +117,24 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         }
         private KartInsertDto GetKartInsertDto(ServiceLinkReturnInputDto input, MemberInfoGetDto memberInfo, int barge)
         {
+            bool hasDiscountAmount = _allowedDiscountAmountReturnCodes.Contains(input.ReturnCodeId);
+            long amount = hasDiscountAmount ? 0 : input.Amount;
+            long discountAmount = hasDiscountAmount ? input.Amount : 0;
+
             return new KartInsertDto()
             {
                 ZoneId = memberInfo.ZoneId,
                 CustomerNumber = memberInfo.CustomerNumber,
                 ReadingNumber = memberInfo.ReadingNumber,
-                StringTrackNumber = DateTime.Now.ToShortPersianDateString(),
+                StringTrackNumber = DateTime.Now.ToShortPersianDateString(),//todo
                 Serial = _manualSerial,
                 Barge = barge,
                 CurrentDateJalali = DateTime.Now.ToShortPersianDateString(),
                 DueDateJalali = DateTime.Now.AddMonths(1).ToShortPersianDateString(),
                 DiscountTypeId = input.DiscountTypeId,
                 FinalAmount = input.Amount,
-                DiscountAmount = 0,
-                PardN = input.Amount,
+                DiscountAmount = discountAmount,
+                PardN = amount,//todo: which amount
                 PardG = 0,
                 Sum = input.Amount,
                 AmountItemId = input.AmountItemId,//From T100
@@ -161,6 +164,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         {
             ModifyTypeGetDto modifyTypeInfo = await _modifyTypeQueryService.GetByKarten75(item.Type);
             long finalAmount = _allowedMultipleAmount.Contains(item.Type) ? -1 * item.FinalAmount : item.FinalAmount;
+
             return new RequestBillDetailsInsertDto()
             {
                 TrackNumber = item.StringTrackNumber,
@@ -170,7 +174,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 TypeId = modifyTypeInfo.Title,
                 TypeCode = modifyTypeInfo.RequestBillDetailsId,
                 ItemId = item.AmountItemId,
-                ItemTitle = (await _t100QueryService.Get(item.AmountItemId)).Title,
+                ItemTitle = (await _t100QueryService.Get(item.AmountItemId, true)).Title,
                 Amount = item.TotalServicesAmount,
                 OffAmount = item.DiscountAmount,
                 OffTitle = (await _discountTypeQueryService.Get((DiscountTypeEnum)item.DiscountTypeId)).Title,
