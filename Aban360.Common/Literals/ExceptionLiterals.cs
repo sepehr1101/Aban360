@@ -242,5 +242,6 @@
         public static string InvalidConnectDisconnectDeleteDuplicate => "درخواست قطع/وصل جاری قبلا حذف شده.";
         public static string InvalidGetSti => "امکان دریافت فایل چاپ وجود ندارد. برای درخواست جاری ثبت نتیجه/حذف صورت گرفته.";
 
+        public static string NotFoundData => "اطلاعاتی یافت نشد";
     }
 }
