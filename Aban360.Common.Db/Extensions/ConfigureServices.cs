@@ -10,6 +10,7 @@ namespace Aban360.Common.Db.Extensions
             services.AddTransient<ICommonZoneService, CommonZoneService>();
             services.AddTransient<ICommonMemberQueryService, CommonMemberQueryService>();
             services.AddTransient<IOpLogQueryService, OpLogQueryService>();
+            services.AddTransient<IOpLogCommandService, OpLogCommandService>();
         }
     }
 }

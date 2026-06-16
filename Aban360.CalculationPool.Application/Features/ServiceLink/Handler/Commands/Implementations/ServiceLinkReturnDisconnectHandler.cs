@@ -13,10 +13,10 @@ using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
-using Aban360.OldCalcPool.Application.Constant;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using DNTPersianUtils.Core;
 using Microsoft.AspNetCore.Http;
@@ -102,7 +102,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
             IEnumerable<KartInsertDto> kartsInsertDto = GetKartInsertDto(subscriptionAmounts, inputDto, memberInfo, (int)barge);
             ICollection<RequestBillDetailsInsertDto> requestBillDetailsInsertDto = await GetRequestBillDetailsInsertDto(kartsInsertDto, memberInfo);
             CustomerDeletionStateUpdateDto customerUpdateDto = new(memberInfo.Id, memberInfo.ZoneId, memberInfo.CustomerNumber, memberInfo.BillId, _collectBranchDeletionState);
-            string opLogText = string.Format(Literals.ServiceLinkReturnDisconnectOpLog, inputDto.BillId, subscriptionAmounts.ReportHeader.Amount);
+            string opLogText = string.Format(OpLogLiterals.ServiceLinkReturnDisconnectOpLog, inputDto.BillId, subscriptionAmounts.ReportHeader.Amount);
             await SqlCommands(kartsInsertDto, requestBillDetailsInsertDto, customerUpdateDto, zoneIdAndCustomerNumber, appUser, opLogText);
 
             return subscriptionAmounts;
@@ -147,7 +147,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 {
                     KartCommandService kartCommandService = new(connection, transaction);
                     RequestBillDetailsCommandService requestBillDetailCommandService = new(connection, transaction);
-                    OpLogCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
                     ArchMemCommandService _archMemCommandService = new(connection, transaction);
                     MembersCommandService _membersCommandService = new(connection, transaction);
                     ClientsCommandService _clientCommandService = new(connection, transaction);

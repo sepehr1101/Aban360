@@ -4,12 +4,12 @@ using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.OldCalcPool.Application.Constant;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
@@ -43,8 +43,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.I
             }
 
             ConnectDisconnectRemoveDto connectDisconnectRemoveDto = new(inputDto.Id, DateTime.Now, appUser.UserId, string.Join("_", new string[] { connectDisconnectInfo.Description ?? string.Empty, inputDto.Description ?? string.Empty }));
-            string connectOpLog = string.Format(Literals.ServiceLinkConnectRemoveOpLog, connectDisconnectInfo.BillId, inputDto.Id);
-            string disconnectOpLog = string.Format(Literals.ServiceLinkDisconnectRemoveOpLog, connectDisconnectInfo.BillId, inputDto.Id);
+            string connectOpLog = string.Format(OpLogLiterals.ServiceLinkConnectRemoveOpLog, connectDisconnectInfo.BillId, inputDto.Id);
+            string disconnectOpLog = string.Format(OpLogLiterals.ServiceLinkDisconnectRemoveOpLog, connectDisconnectInfo.BillId, inputDto.Id);
             string opLogText = connectDisconnectInfo.TypeId == _connectTypeId ? connectOpLog : disconnectOpLog;
 
             await SqlCommands(connectDisconnectRemoveDto, appUser, opLogText);
@@ -60,7 +60,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.I
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     ConnectDisconnectCommandService _connectDisconnectCommandService = new(connection, transaction);
-                    OpLogCommandService _opLogCommandService = new(_contextAccessor, connection, transaction);
+                    OpLogWithTransactionCommandService _opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     await _connectDisconnectCommandService.Remove(connectDisconnectRemoveDto);
                     await _opLogCommandService.Insert(opLogText, appUser);

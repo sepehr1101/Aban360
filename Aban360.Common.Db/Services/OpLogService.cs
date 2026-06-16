@@ -14,12 +14,12 @@ using System.Text.Json;
 
 namespace Aban360.Common.Db.Services
 {
-    public sealed class OpLogCommandService
+    public sealed class OpLogWithTransactionCommandService
     {
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IDbConnection _connection;
         private readonly IDbTransaction _transaction;
-        public OpLogCommandService(
+        public OpLogWithTransactionCommandService(
             IHttpContextAccessor contextAccessor,
             IDbConnection connection,
             IDbTransaction transaction)
@@ -45,7 +45,7 @@ namespace Aban360.Common.Db.Services
                 Ip = _contextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString(),
                 SystemInfo = JsonSerializer.Serialize(logInfo),
                 Description = text,
-                Scope=string.Empty,
+                Scope = string.Empty,
             };
 
             string command = GetInsertCommand();
@@ -64,7 +64,53 @@ namespace Aban360.Common.Db.Services
                         @UserId ,@DisplayName ,@UserName ,
                         @Ip ,@SystemInfo ,@RegisterDateTime ,@Description ,@Scope)";
         }
+    }
+    public interface IOpLogCommandService
+    {
+        Task Insert(string text, IAppUser appUser);
+    }
+    internal sealed class OpLogCommandService : AbstractBaseConnection,IOpLogCommandService
+    {
+        private readonly IHttpContextAccessor _contextAccessor;
+        public OpLogCommandService(
+            IHttpContextAccessor contextAccessor,
+            IConfiguration configuration)
+                : base(configuration)
+        {
+            _contextAccessor = contextAccessor;
+            _contextAccessor.NotNull(nameof(contextAccessor));
+        }
 
+        public async Task Insert(string text, IAppUser appUser)
+        {
+            LogInfo logInfo = DeviceDetection.GetLogInfo(_contextAccessor.HttpContext.Request);
+            OpLogInsertDto insertDto = new()
+            {
+                UserId = appUser.UserId,
+                DisplayName = appUser.FullName,
+                UserName = appUser.Username,
+                Ip = _contextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString(),
+                SystemInfo = JsonSerializer.Serialize(logInfo),
+                Description = text,
+                Scope = string.Empty,
+            };
+
+            string command = GetInsertCommand();
+            int recordEffected = await _sqlReportConnection.ExecuteAsync(command, insertDto);
+            if (recordEffected <= 0)
+            {
+                throw new InvalidDateException(ExceptionLiterals.InvalidInsertOpLog);
+            }
+        }
+        private string GetInsertCommand()
+        {
+            return $@"Insert CustomerWarehouse.dbo.OpLog(
+                        UserId,DisplayName,UserName,
+                        Ip,SystemInfo,RegisterDateTime,Description,Scope)
+                    Values(
+                        @UserId ,@DisplayName ,@UserName ,
+                        @Ip ,@SystemInfo ,@RegisterDateTime ,@Description ,@Scope)";
+        }
     }
     public interface IOpLogQueryService
     {

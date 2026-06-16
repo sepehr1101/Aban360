@@ -5,12 +5,12 @@ using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.OldCalcPool.Application.Constant;
 using DNTPersianUtils.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -88,7 +88,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                     MembersCommandService _membersCommandService = new(connection, transaction);
                     ClientsCommandService _clientCommandService = new(connection, transaction);
                     ConnectDisconnectCommandService _connectDisconnectCommandService = new(connection, transaction);
-                    OpLogCommandService _opLogCommandService = new(_contextAccessor, connection, transaction);
+                    OpLogWithTransactionCommandService _opLogCommandService = new(_contextAccessor, connection, transaction);
                     string dbName = GetDbName(updateDto.ZoneId);
                     //string dbName = "Atlas";
 
@@ -191,8 +191,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             if (result is null)
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidEmptyDisconnectWhy);
 
-            string connectLogText = string.Format(Literals.ServiceLinkConnectSetResultOpLog, connectDisconnectInfo.BillId);
-            string disconnectLogText = string.Format(Literals.ServiceLinkDisconnectSetResultOpLog, connectDisconnectInfo.BillId, result.Title);
+            string connectLogText = string.Format(OpLogLiterals.ServiceLinkConnectSetResultOpLog, connectDisconnectInfo.BillId);
+            string disconnectLogText = string.Format(OpLogLiterals.ServiceLinkDisconnectSetResultOpLog, connectDisconnectInfo.BillId, result.Title);
             string opLogText = isConnect ? connectLogText : disconnectLogText;
 
             string connectMessage = string.Format(SmsTemplates.ServiceLinkConnected, memberInfo.ZoneTitle, memberInfo.BillId, inputDto.When, Environment.NewLine);

@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Http;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.Db.Services;
 using Aban360.OldCalcPool.Application.Constant;
+using Aban360.Common.Db.Constants.Literals;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
@@ -71,7 +72,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             RemoveBillDto removeBillDto = GetRemoveBillDto(removeBill);
             ContorUpdateDto controUpdate = await GetControUpdate(removeBill);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = GetZoneIdAndCustomerNumber(removeBill);
-            string logText = string.Format(Literals.RemoveBillOpLog, input.Id, input.BillId);
+            string logText = string.Format(OpLogLiterals.RemoveBillOpLog, input.Id, input.BillId);
 
             await SqlCommands(removeBill, removeBillDto, controUpdate, zoneIdAndCustomerNumber, appUser, logText);
 
@@ -97,7 +98,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     ContorCommandService contorCommandService = new(connection, transaction);
                     WaterDebtCommandService waterDebtCommandService = new(connection, transaction);
                     RemovedBillCommandService removedBillCommandService = new(connection, transaction);
-                    OpLogCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     await bedBesCommandService.Delete(removeBill.Id, removeBill.ZoneId, dbName);
                     if (removeBill.Discount > 0)

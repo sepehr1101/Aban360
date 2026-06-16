@@ -5,12 +5,12 @@ using Aban360.CalculationPool.Persistence.Features.Sale.Commands.Implementations
 using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.OldCalcPool.Application.Constant;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using DNTPersianUtils.Core;
@@ -52,7 +52,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         {
             await _commonZoneService.IsUserInZone(appUser, inputDto.ZoneId);
             TankerOutputDto tankerInfo = await DateValidate(inputDto);
-            string opLogText = string.Format(Literals.TankerDeleteOpLog, appUser.Username, DateTime.Now.ToShortPersianDateString(), inputDto.ZoneId, tankerInfo.BillId, tankerInfo.CustomerNumber, tankerInfo.Amount);
+            string opLogText = string.Format(OpLogLiterals.TankerDeleteOpLog, appUser.Username, DateTime.Now.ToShortPersianDateString(), inputDto.ZoneId, tankerInfo.BillId, tankerInfo.CustomerNumber, tankerInfo.Amount);
             TankerDeleteDto tankerDeleteDto = new(inputDto.ZoneId, inputDto.CustomerNumber, _operator);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = new(tankerDeleteDto.ZoneId, tankerDeleteDto.CustomerNumber);
             await SqlCommands(tankerDeleteDto, zoneIdAndCustomerNumber, appUser, opLogText);
@@ -70,7 +70,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     TankerCommandService tankerCommandService = new(connection, transaction);
-                    OpLogCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
                     BedBesCommandService bedBesCommandService = new(connection, transaction);
                     BillCommandService billCommandService = new(connection, transaction);
 

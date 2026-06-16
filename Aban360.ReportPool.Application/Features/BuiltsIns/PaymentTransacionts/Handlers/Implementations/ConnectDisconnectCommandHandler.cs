@@ -4,12 +4,12 @@ using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.OldCalcPool.Application.Constant;
 using Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Contracts;
 using Aban360.ReportPool.Application.Features.Geo.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -98,7 +98,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.Serializable))
                 {
                     ConnectDisconnectCommandService connectDisconnectCommandService = new(connection, transaction);
-                    OpLogCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     await connectDisconnectCommandService.Insert(connectDisconnectInsertDto);
                     await opLogCommandService.Insert(logTex, appUser);
@@ -181,8 +181,8 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             string connectText = string.Format(SmsTemplates.ServiceLinkConnectAlert, customerInfo.ReportData.FirstOrDefault().ZoneTitle, customerInfo.ReportHeader.BillId, inputDto.When, Environment.NewLine);
             string messageText = isConnect ? connectText : disconnectText;
 
-            string connectLog = string.Format(Literals.ServiceLinkConnectInsertOpLog, inputDto.BillId);
-            string disconnectLog = string.Format(Literals.ServiceLinkDisconnectInsertOpLog, inputDto.BillId, causeTitle ?? string.Empty);
+            string connectLog = string.Format(OpLogLiterals.ServiceLinkConnectInsertOpLog, inputDto.BillId);
+            string disconnectLog = string.Format(OpLogLiterals.ServiceLinkDisconnectInsertOpLog, inputDto.BillId, causeTitle ?? string.Empty);
             string opLogText = isConnect ? connectLog : disconnectLog;
 
             string title = isConnect ? ReportLiterals.Connect : ReportLiterals.Disconnect;

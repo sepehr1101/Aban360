@@ -1,6 +1,7 @@
 ﻿using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
@@ -90,7 +91,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             }
             IEnumerable<AutoBackCreateDto> autoBackCreate = autoBacksInfo.Select(a => GetAutoBackCreateDto(a));
             RepairCreateDto repairCreate = GetRepairCreateDto(repairInfo);
-            string logText = string.Format(Literals.BillReturnConfirmedOpLog, memberInfo.BillId, autoBackCreate?.FirstOrDefault()?.TedGhabs ?? 0, autoBackCreate?.FirstOrDefault()?.PriDate ?? string.Empty, autoBackCreate?.FirstOrDefault()?.TodayDate ?? string.Empty, autoBackCreate?.ElementAt(2)?.Baha ?? 0, input.ConfirmedNumber);
+            string logText = string.Format(OpLogLiterals.BillReturnConfirmedOpLog, memberInfo.BillId, autoBackCreate?.FirstOrDefault()?.TedGhabs ?? 0, autoBackCreate?.FirstOrDefault()?.PriDate ?? string.Empty, autoBackCreate?.FirstOrDefault()?.TodayDate ?? string.Empty, autoBackCreate?.ElementAt(2)?.Baha ?? 0, input.ConfirmedNumber);
 
             await SqlCommands(autoBackCreate, bedBesUpdateDelDto, repairCreate, memberInfo, appUser, logText, zoneDbName, atlasDbName);
             return await GetResult(autoBacksInfo, input, memberInfo);
@@ -111,7 +112,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                     MembersCommandService membersCommandService = new(connection, transaction);
                     BillCommandService billCommandService = new(connection, transaction);
                     BedBesCommandService bedBesCommandService = new(connection, transaction);
-                    OpLogCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     await autoBackCommandService.UpdateIsConfirmed((int)repairCreateDto.JalaseNo, atlasDbName);
                     await autoBackCommandService.Create(autoBacksCreateDto, zoneDbName, false);

@@ -3,6 +3,7 @@ using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
@@ -106,7 +107,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             BedBesCreateDto bedBes = await GetBedBes(customerInfo, abBahaCalcResult, inputDto, zoneIdAndCustomerNumber, inputDto.CounterStateCode);
             KasrHaDto kasrHa = GerKasrHa(customerInfo, abBahaCalcResult, inputDto);
             ContorUpdateDto contorUpdate = GetControUpdateDto(customerInfo, bedBes, inputDto.CounterStateCode ?? 0);
-            string logtext = string.Format(Literals.GenerateFreeBillOpLog, bedBes.ShGhabs1, bedBes.ShPard1, bedBes.Pard);
+            string logtext = string.Format(OpLogLiterals.GenerateFreeBillOpLog, bedBes.ShGhabs1, bedBes.ShPard1, bedBes.Pard);
 
             await SqlCommands(zoneIdAndCustomerNumber, bedBes, kasrHa, contorUpdate, abBahaCalcResult, appUser, inputDto.CounterStateCode, logtext);
 
@@ -306,7 +307,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                         WaterDebtCommandService waterDebtCommandService = new(connection, transaction);
                         BillCommandService billCommandService = new(connection, transaction);
                         ContorCommandService controCommandService = new(connection, transaction);
-                        OpLogCommandService opLogcommandService = new(_contextAccessor, connection, transaction);
+                        OpLogWithTransactionCommandService opLogcommandService = new(_contextAccessor, connection, transaction);
 
                         int bedBesRecordId = await bedBedCommandService.Insert(bedBes, dbName);
                         BillByBedBedIdInsertDto billInsertByBedBesIdDto = new(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber, GetTypeId(counterStateCode), bedBesRecordId);
