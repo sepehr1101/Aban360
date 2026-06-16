@@ -8,7 +8,7 @@ namespace Aban360.CalculationPool.Domain.Features.ServiceLink
         public int AmountItemId { get; set; }
         public long Amount { get; set; }
         public int DiscountTypeId { get; set; }
-        public int ReturnCodeId { get; set; }
+        public int DescriptionCode { get; set; }
         public ServiceLinkReturnCategoryTypeEnum CategoryType { get; set; }
     }
 }

@@ -31,12 +31,12 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         private readonly IDiscountTypeQueryService _discountTypeQueryService;
         private readonly IModifyTypeQueryService _modifyTypeQueryService;
         private readonly IValidator<ServiceLinkReturnInputDto> _validator;
-        static string _insertBy = "Aban";
-        static int[] _allowedMultipleAmount = { 2, 3, 5 };
-        static int[] _allowedDiscountAmountReturnCodes = { 14 };
-        static int _manualSerial = 10000;
-        static int _operator = 666;
-        static int _kartTypeId = 8;
+        const string _insertBy = "Aban";
+        static int[] _allowedMultipleAmount = [2, 3, 5];
+        const int _manualSerial = 10000;
+        const int _operator = 666;
+        const int _kartTypeId = 2;
+        const int _discountDescriptionCode = 14;
         public ServiceLinkReturnHandler(
             IHttpContextAccessor contextAccessor,
             ICommonMemberQueryService commonMemberQueryService,
