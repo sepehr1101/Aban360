@@ -32,7 +32,9 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         private readonly IModifyTypeQueryService _modifyTypeQueryService;
         private readonly IValidator<ServiceLinkReturnInputDto> _validator;
         const string _insertBy = "Aban";
-        static int[] _allowedMultipleAmount = [2, 3, 5];
+        static int[] _allowedMultipleAmount = [_returnTypeCodeInRequestBillDetail, _creditTypeCodeInRequestBillDetail];
+        const int _returnTypeCodeInRequestBillDetail = 4;
+        const int _creditTypeCodeInRequestBillDetail = 6;
         const int _manualSerial = 10000;
         const int _operator = 666;
         const int _kartTypeId = 2;
@@ -133,9 +135,9 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 CurrentDateJalali = DateTime.Now.ToShortPersianDateString(),
                 DueDateJalali = DateTime.Now.AddMonths(1).ToShortPersianDateString(),
                 DiscountTypeId = input.DiscountTypeId,
-                FinalAmount = input.Amount,
-                DiscountAmount = discountAmount,
-                PardN = amount,
+                FinalAmount = input.Amount,// amount,
+                DiscountAmount = 0,//discountAmount,
+                PardN = input.Amount,//amount,
                 PardG = 0,
                 Sum = input.Amount,
                 AmountItemId = input.AmountItemId,//From T100
@@ -164,7 +166,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         private async Task<RequestBillDetailsInsertDto> GetRequestBillDetailsInsertDto(KartInsertDto item, MemberInfoGetDto memberInfo)
         {
             ModifyTypeGetDto modifyTypeInfo = await _modifyTypeQueryService.GetByKarten75(item.Type);
-            long finalAmount = _allowedMultipleAmount.Contains(item.Type) ? -1 * item.FinalAmount : item.FinalAmount;
+            long finalAmount = _allowedMultipleAmount.Contains(modifyTypeInfo.RequestBillDetailsId) ? -1 * item.TotalServicesAmount : item.TotalServicesAmount;
 
             return new RequestBillDetailsInsertDto()
             {
@@ -176,7 +178,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 TypeCode = modifyTypeInfo.RequestBillDetailsId,
                 ItemId = item.AmountItemId,
                 ItemTitle = (await _t100QueryService.Get(item.AmountItemId, true)).Title,
-                Amount = item.TotalServicesAmount,
+                Amount = item.FinalAmount,
                 OffAmount = item.DiscountAmount,
                 OffTitle = (await _discountTypeQueryService.Get((DiscountTypeEnum)item.DiscountTypeId)).Title,
                 FinalAmount = finalAmount,
