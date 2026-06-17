@@ -5,6 +5,7 @@
         public string FolderName { get; set; } = default!;
         public bool IsBillId { get; set; }
         public string Uuid { get; set; } = default!;
+        public long? TrackNumber { get; set; }
     }
 
     public record RemovedFilesInput

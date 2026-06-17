@@ -75,8 +75,8 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
                 .Where(userClaim =>
                     userClaim.ClaimTypeId == claimType &&
                     userClaim.ValidTo == null &&
-                    userIds.Contains(userClaim.UserId) /*&&
-                    userClaim.RoleId==roleId*/)
+                    userIds.Contains(userClaim.UserId) &&
+                    userClaim.RoleId==roleId)
                 .ToListAsync();
             return (userIds, userClaims);
         }
