@@ -58,6 +58,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidRemoveKart);
             }
         }
+        public async Task Remove(KartRemoveByConditionDto input, string dbName)
+        {
+            string command = GetRemoveByConditionCommand(dbName);
+            int rowEffected = await _connection.ExecuteAsync(command, input, _transaction);
+            if (rowEffected <= 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidRemoveKart);
+            }
+        }
 
         private string GetTableName(bool isKarten75) => isKarten75 ? _karten75TableName : _kartTableName;
         private string GetInsertCommand(string dbName, string tableName)
@@ -92,6 +101,21 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                     Where 
                         id=@id AND
                         Serial=@serial";
+        }
+        private string GetRemoveByConditionCommand(string dbName)
+        {
+            return $@";With Cte As(
+                    	Select Top 1 *
+                    	From [{dbName}].dbo.karten75 
+                    	Where 
+                    		radif=@CustomerNumber AND
+                    		town=@ZoneId AND
+                    	    date=@RegisterDateJalali AND
+                    		pard=@Amount AND
+                    		type=@TypeCode AND 
+                    		noe_bed=@ItemId
+                    )
+                    Delete Cte ";
         }
     }
 }

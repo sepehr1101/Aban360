@@ -9,12 +9,12 @@ using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.OldCalcPool.Application.Constant;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
+using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using DNTPersianUtils.Core;
@@ -520,6 +520,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         }
         private async Task Validate(FreeGenerateBillInputDto inputDto, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber, CustomerInfoGetDto customerInfo)
         {
+            await InputPreviousDataValidate(inputDto, zoneIdAndCustomerNumber);
             await DeletionStateValidation(zoneIdAndCustomerNumber);
             CounterStateValidation(inputDto);
         }
@@ -565,6 +566,18 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 (inputDto.CurrentMeterNumber < inputDto.PreviousMeterNumber))
             {
                 throw new TariffCalcException(ExceptionLiterals.CurrentNumberLessThanPreviousNumber);
+            }
+        }
+        private async Task InputPreviousDataValidate(FreeGenerateBillInputDto inputDto, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber)
+        {
+            BedBesPreviousNumberAndDateOutputDto previousInfo = await _bedBesQueryService.GetPreviousDateAndNumber(zoneIdAndCustomerNumber, inputDto.BillId);
+            if (inputDto.PreviousDateJalali.CompareTo(previousInfo.PreviousDateJalali) != 0)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidPreviousDateJalali);
+            }
+            if (inputDto.PreviousMeterNumber != previousInfo.PreviousNumber)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidPreviousNumber);
             }
         }
         private bool IsChangedOrReverse(int? counterStateCode) => counterStateCode == _reverseCounterState || counterStateCode == _nextRoundCounterSatate;

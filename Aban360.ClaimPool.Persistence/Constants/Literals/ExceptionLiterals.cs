@@ -19,6 +19,7 @@
         public static string InvalidUpdateBillAmount=> "خطا در ویرایش مبلغ قبض";
         public static string InvalidUpdateTrackNumber => "خطا در ویرایش شماره پیگیری";
         public static string InvalidInsertRequestBillDetails => "خطا در ذخیره اقلام محاسبه شده ..";
+        public static string InvalidRemoveRequestBillDetails => "خطا در حذف آیتم انتخاب شده.";
         public static string InvalidInsertKart => "خطا در ذخیره اقلام محاسبه شده";
         public static string InvalidRemoveKart => "خطا در حذف قلم";
         public static string InvalidInsertGhest => "خطا در ذخیره اقساط";
@@ -40,5 +41,6 @@
         public static string InvalidConnectDisconnectId => "کد درخواست قطع/وصل یافت نشد.";
 
         public static string NotFoundT100 => "کد اقلام ارسالی یافت نشد.";
+        public static string NotFoundRequestBillDetail => "قبض برگشتی یافت نشد.";
     }
 }

@@ -13,15 +13,20 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
     {
         private readonly IServiceLinkReturnHandler _serviceLinkReturnHandler;
         private readonly IServiceLinkReturnDisconnectHandler _serviceLinkReturnDisconnectHandler;
+        private readonly IServiceLinkReturnRemoveHandler _serviceLinkReturnRemoveHandler;
         public ServiceLinkReturnController(
             IServiceLinkReturnHandler serviceLinkReturnHandler,
-            IServiceLinkReturnDisconnectHandler serviceLinkReturnDisconnectHandler)
+            IServiceLinkReturnDisconnectHandler serviceLinkReturnDisconnectHandler,
+            IServiceLinkReturnRemoveHandler serviceLinkReturnRemoveHandler)
         {
             _serviceLinkReturnHandler = serviceLinkReturnHandler;
             _serviceLinkReturnHandler.NotNull(nameof(serviceLinkReturnHandler));
 
             _serviceLinkReturnDisconnectHandler = serviceLinkReturnDisconnectHandler;
             _serviceLinkReturnDisconnectHandler.NotNull(nameof(serviceLinkReturnDisconnectHandler));
+
+            _serviceLinkReturnRemoveHandler = serviceLinkReturnRemoveHandler;
+            _serviceLinkReturnRemoveHandler.NotNull(nameof(serviceLinkReturnRemoveHandler));
         }
 
         [HttpPost]
@@ -30,6 +35,15 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> Return([FromBody] ServiceLinkReturnInputDto inputDto, CancellationToken cancellationToken)
         {
             await _serviceLinkReturnHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            return Ok(inputDto);
+        }
+        
+        [HttpPost]
+        [Route("return-remove")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ServiceLinkReturnRemoveInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> RemoveReturn([FromBody] ServiceLinkReturnRemoveInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _serviceLinkReturnRemoveHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
 

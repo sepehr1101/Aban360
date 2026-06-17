@@ -18,6 +18,7 @@
         public static string ServiceLinkReturnDisconnectOpLog => @"برگشتی حق انشعاب-برچیدن انشعاب انجام شد. شناسه قبض{0}  مبلغ{1}";
         public static string ServiceLinkRegisterManualOpLog => @"وصولی دستی حق انشعاب انجام شد. شناسه قبض:{0}  مبلغ:{1}";
         public static string ServiceLinkDeleteManualOpLog => @"حذف وصولی دستی حق انشعاب انجام شد. شناسه قبض:{0}  مبلغ:{1}";
+        public static string ServiceLinkReturnRemoved => @"قبض برگشتی حق انشعاب حذف شد. شناسه قبض:{0}  تاریخ:{1}  مبلغ:{2}  نوع قبض:{3}  نوع درخواست:{4}";
 
         public static string ServiceLinkConnectInsertOpLog => @"صدور دستور وصل انجام شد. شناسه قبض:{0} ";
         public static string ServiceLinkDisconnectInsertOpLog => @"صدور دستور قطع انجام شد. شناسه قبض:{0}  علت:{1}";
@@ -29,5 +30,6 @@
         public static string UserCreate => @"کاربر ایجاد شد. نام کامل:{0}  نام کاربری:{1}  تلفن همراه:{2}"; 
         public static string UserUpdate => @"کاربر ویرایش شد. شناسه کاربر:{0}  نام کامل :از {1} به {2}  نام کاربری:از {3} به {4}  تلفن همراه:از {5} به {6}"; 
         public static string UserDelete => @"کاربر حذف شد. شناسه کاربر:{0}"; 
+     
     }
 }

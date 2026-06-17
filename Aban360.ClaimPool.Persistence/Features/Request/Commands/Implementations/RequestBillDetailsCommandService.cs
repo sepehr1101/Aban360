@@ -39,6 +39,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertKart);
             }
         }
+        public async Task Remove(RequestBillDetailsRemoveDto inputDto)
+        {
+            string command = GetRemoveByIdCommand();
+            int rowEffected = await _connection.ExecuteAsync(command, inputDto, _transaction);
+            if (rowEffected <= 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidRemoveRequestBillDetails);
+            }
+        }
         private string GetInsertCommand()
         {
             return $@"Insert Into [CustomerWarehouse].dbo.RequestBillDetails 
@@ -56,6 +65,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                         @OffAmount,@OffTitle,@FinalAmount,@RegisterDate,
                         @ZoneTitle,@TypeCode,@UsageId,@UsageTitle,@PayId
                     )";
+        }
+        private string GetRemoveByIdCommand()
+        {
+            return $@"Delete CustomerWarehouse.dbo.RequestBillDetails
+                    Where 
+                    	Id=@Id AND 
+                    	BillId=@BillId";
         }
     }
 }

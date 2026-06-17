@@ -126,7 +126,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 ZoneId = memberInfo.ZoneId,
                 CustomerNumber = memberInfo.CustomerNumber,
                 ReadingNumber = memberInfo.ReadingNumber,
-                StringTrackNumber = DateTime.Now.ToShortPersianDateString(),//todo
+                StringTrackNumber = DateTime.Now.ToShortPersianDateString(),
                 Serial = _manualSerial,
                 Barge = barge,
                 CurrentDateJalali = DateTime.Now.ToShortPersianDateString(),
@@ -134,7 +134,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 DiscountTypeId = input.DiscountTypeId,
                 FinalAmount = input.Amount,
                 DiscountAmount = discountAmount,
-                PardN = amount,//todo: which amount
+                PardN = amount,
                 PardG = 0,
                 Sum = input.Amount,
                 AmountItemId = input.AmountItemId,//From T100

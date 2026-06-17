@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
@@ -7,6 +8,7 @@ using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.InvoiceInfo.Dto;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 using Aban360.ReportPool.Persistence.Features.WaterInvoice.Contracts;
+using System.Reflection;
 
 namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implementations
 {
@@ -15,10 +17,12 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
         private readonly IBillQueryService _billQueryService;
         private readonly IBedBesQueryService _bedBesQueryService;
         private readonly ILatestWaterMeterInfoQueryService _latestWaterMeterInfoQueryService;
+        private readonly ICommonMemberQueryService _commonMemberQueryService;
         public BillTransactionDetailsGetHandler(
             IBillQueryService billQueryService,
             IBedBesQueryService bedBesQueryService,
-            ILatestWaterMeterInfoQueryService latestWaterMeterInfoQueryService)
+            ILatestWaterMeterInfoQueryService latestWaterMeterInfoQueryService,
+            ICommonMemberQueryService commonMemberQueryService)
         {
             _billQueryService = billQueryService;
             _billQueryService.NotNull(nameof(billQueryService));
@@ -28,12 +32,16 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
 
             _latestWaterMeterInfoQueryService = latestWaterMeterInfoQueryService;
             _latestWaterMeterInfoQueryService.NotNull(nameof(latestWaterMeterInfoQueryService));
+
+            _commonMemberQueryService = commonMemberQueryService;
+            _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
         }
 
         public async Task<ReportOutput<BillTransactionDetailHeaderOutputDto, BillTransactionDetailDataOutputDto>> Handle(string billId, CancellationToken cancellationToken)
         {
             IEnumerable<BillTransactionDetailGetDto> billDetails = await _billQueryService.GetBillDetails(billId);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = new(billDetails?.FirstOrDefault()?.ZoneId ?? 0, billDetails?.FirstOrDefault()?.CustomerNumber ?? 0);
+            MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumber);
             string? latestMeterChangeDateJalali = await _latestWaterMeterInfoQueryService.GetLatestChangeDateJalali(zoneIdAndCustomerNumber);
 
             string title = ReportLiterals.WaterInvoice;
@@ -73,7 +81,10 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
                 RecordCount = data?.Count() ?? 0,
                 LatestMeterChangeDateJalali = latestMeterChangeDateJalali,
                 PreviousMeterDateJalali = bedBesPreviousNumberAndDate.PreviousDateJalali,
-                PreviousMeterNumber = bedBesPreviousNumberAndDate.PreviousNumber
+                PreviousMeterNumber = bedBesPreviousNumberAndDate.PreviousNumber,
+                FirstName = memberInfo.FirstName,
+                Surname = memberInfo.Surname,
+                FullName = memberInfo.FullName,
             };
 
             return new ReportOutput<BillTransactionDetailHeaderOutputDto, BillTransactionDetailDataOutputDto>(title, header, data);
