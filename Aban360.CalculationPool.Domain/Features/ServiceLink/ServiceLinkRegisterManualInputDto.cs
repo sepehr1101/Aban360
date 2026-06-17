@@ -3,8 +3,8 @@
     public record ServiceLinkRegisterManualInputDto
     {
         public int ZoneId { get; set; }
-        public string PayDateJalali { get; set; }
-        public string BankDateJalali { get; set; }
+        public string PayDateJalali { get; set; } = default!;//تاریخ عملکرد
+        public string BankDateJalali { get; set; } = default!;//تاریخ بانک
 
         public int CustomerNumber { get; set; }
         public int BankCode { get; set; }

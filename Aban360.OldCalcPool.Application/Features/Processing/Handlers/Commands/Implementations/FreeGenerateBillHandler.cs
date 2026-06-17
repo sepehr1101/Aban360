@@ -134,6 +134,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     MonthlyAverageConsumption = (double)inputDto.ConsumptionAverage
                 };
                 abBahaCalcResult = await _tariffEngine.Handle(tariffMeterInfoByConsumptionAverage, cancellationToken);
+                abBahaCalcResult.MeterInfo.PreviousNumber = inputDto.PreviousMeterNumber;
+                abBahaCalcResult.MeterInfo.CurrentNumber = inputDto.CurrentMeterNumber;
                 abBahaCalcResult.MeterInfo.CounterStateCode = inputDto.CounterStateCode;
             }
             else
@@ -187,6 +189,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 PreviousDateJalali = inputDto.PreviousDateJalali,
             };
             AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterInfo, cancellationToken);
+            abBahaCalc.MeterInfo.PreviousNumber = inputDto.PreviousMeterNumber;
+            abBahaCalc.MeterInfo.CurrentNumber = inputDto.CurrentMeterNumber;
             return abBahaCalc;
         }
         private AbBahaCalculationDetails GetAbBahaCalcWithZeroValues(FreeGenerateBillInputDto inputDto, CustomerInfoGetDto customerInfo)
@@ -568,6 +572,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 throw new TariffCalcException(ExceptionLiterals.CurrentNumberLessThanPreviousNumber);
             }
         }
+
         private async Task InputPreviousDataValidate(FreeGenerateBillInputDto inputDto, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber)
         {
             BedBesPreviousNumberAndDateOutputDto previousInfo = await _bedBesQueryService.GetPreviousDateAndNumber(zoneIdAndCustomerNumber, inputDto.BillId);
@@ -580,7 +585,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidPreviousNumber);
             }
         }
-        private bool IsChangedOrReverse(int? counterStateCode) => counterStateCode == _reverseCounterState || counterStateCode == _nextRoundCounterSatate;
+
+        private bool IsChangedOrReverse(int? counterStateCode) => counterStateCode == _reverseCounterState || counterStateCode == _nextRoundCounterSatate || counterStateCode == _changeCounterState;
         private bool IsDomestic(int usageId) => _domesticUsage.Contains(usageId);
         private bool IsAllowedZeroMeterNumber(int? counterStateCode) => _allowedZeroMeterNumberCounterState.Contains(counterStateCode ?? 0);
         private int GetDuration(string previousDate, string currentDate)
@@ -603,6 +609,5 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             }
             return 1;//todo: set other 
         }
-
     }
 }

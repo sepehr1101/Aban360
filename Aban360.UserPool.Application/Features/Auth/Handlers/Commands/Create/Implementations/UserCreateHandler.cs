@@ -95,7 +95,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
             ICollection<UserClaim> zones = CreateUserClaim(userCreateDto.SelectedZoneIds.Select(x => x.ToString()).ToList(), ClaimType.ZoneId, logInfoString, operationGroupId, operationGroupId);
             ICollection<UserClaim> endpionts = CreateUserClaim(endpointValues, ClaimType.Endpoint, logInfoString, operationGroupId, operationGroupId);
             ICollection<UserClaim> defaultZoneId = CreateUserClaim(new List<string> { userCreateDto.SelectedZoneIds.Select(x => x.ToString()).First() }, ClaimType.DefaultZoneId, logInfoString, operationGroupId, operationGroupId);
-            List<UserClaim> userCliams = zones.Union(endpionts).ToList();
+            List<UserClaim> userCliams = zones.Union(endpionts).Union(defaultZoneId).ToList();
 
             ICollection<UserRole> userRoles = CreateUserRoles(userCreateDto.SelectedRoleIds, logInfoString, operationGroupId, operationGroupId);
             User user = _mapper.Map<User>(userCreateDto);
