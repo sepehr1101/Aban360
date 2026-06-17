@@ -9,6 +9,7 @@ using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +22,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly IKartQueryService _kartQueryService;
+        private readonly IVariabService _variabService;
         private readonly IValidator<InstallmentRequestInputDto> _validator;
         static int[] _enableStatus = { 60, 75 };
         static int _maxInterval = 3;
@@ -31,6 +33,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             ITrackingQueryService trackingQueryService,
             IMoshtrakQueryService moshtrakQueryService,
             IKartQueryService kartQueryService,
+            IVariabService variabService,
             IValidator<InstallmentRequestInputDto> validator,
             IConfiguration configuration)
                 : base(configuration)
@@ -43,6 +46,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
             _kartQueryService = kartQueryService;
             _kartQueryService.NotNull(nameof(kartQueryService));
+
+            _variabService = variabService;
+            _variabService.NotNull(nameof(variabService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -62,7 +68,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             InstallmentRequestHeaderOutputDto header = new(data?.Sum(x => x.Amount) ?? 0, inputDto.InstallmentCount);
             ReportOutput<InstallmentRequestHeaderOutputDto, InstallmentRequestDataOutputDto> result = new(_title, header, data);
 
-            IEnumerable<GhestInsertDto> ghestsInsertDto = GetGhestsInsertDto(data, trackingInfo, moshtrakInfo);
+            IEnumerable<GhestInsertDto> ghestsInsertDto = await GetGhestsInsertDto(data, trackingInfo, moshtrakInfo);
             await ExecuteSqlCommand(ghestsInsertDto, trackingInfo.ZoneId);
 
             return result;
@@ -151,19 +157,20 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 throw new CustomValidationException(message);
             }
         }
-        private IEnumerable<GhestInsertDto> GetGhestsInsertDto(IEnumerable<InstallmentRequestDataOutputDto> data, TrackingOutputDto trackingInfo, MoshtrakOutputDto moshtrakInfo)
+        private async Task<IEnumerable<GhestInsertDto>> GetGhestsInsertDto(IEnumerable<InstallmentRequestDataOutputDto> data, TrackingOutputDto trackingInfo, MoshtrakOutputDto moshtrakInfo)
         {
             int counter = 0;
+            decimal[] barges = await _variabService.GetAndRenew(trackingInfo.ZoneId, data?.Count() ?? 0);
             return data.Select(x => new GhestInsertDto()
             {
                 ZoneId = trackingInfo.ZoneId,
                 CustomerNumber = moshtrakInfo.CustomerNumber,
                 StringTrackNumber = trackingInfo.StringTrackNumber,
-                Identify = 0,//todo
-                Cod1 = 0,//todo
-                Cod2 = 0,//todo
-                Cod3 = 0,//todo
-                Barge = 0,//todo
+                Identify = 0,
+                Cod1 = 0,
+                Cod2 = 0,
+                Cod3 = x.Amount,
+                Barge = barges[counter],
                 Payable = x.Amount,
                 Type = 2,
                 InstallmentNumber = counter,

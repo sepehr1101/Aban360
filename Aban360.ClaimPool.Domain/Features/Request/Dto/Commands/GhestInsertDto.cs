@@ -6,10 +6,10 @@
         public int CustomerNumber { get; set; }
         public string StringTrackNumber { get; set; }
         public int Identify { get; set; }
-        public int Cod1 { get; set; }
-        public int Cod2 { get; set; }
-        public int Cod3 { get; set; }
-        public int Barge { get; set; }
+        public long Cod1 { get; set; }
+        public long Cod2 { get; set; }
+        public long Cod3 { get; set; }
+        public decimal Barge { get; set; }
         public long Payable { get; set; }
         public int Type { get; set; }
         public int InstallmentNumber { get; set; }

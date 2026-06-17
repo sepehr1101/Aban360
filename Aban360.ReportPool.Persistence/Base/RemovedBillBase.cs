@@ -22,7 +22,7 @@ namespace Aban360.ReportPool.Persistence.Base
                 	rb.PreviousDay AS PreviousDateJalali,
                 	rb.Consumption,
                 	rb.SumItems AS Amount,
-                	rb.RegisterDay AS RemovedDateJalali,
+                	rb.RemoveDay AS RemovedDateJalali,
                 	TRIM(c.FirstName) AS FirstName,
                 	TRIM(c.SureName) AS Surname,
                 	(TRIM(c.FirstName)+' ' +TRIM(c.SureName)) AS FullName,
