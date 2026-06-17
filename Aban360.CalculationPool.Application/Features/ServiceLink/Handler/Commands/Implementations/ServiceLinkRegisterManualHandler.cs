@@ -65,14 +65,14 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
 
             string opLogText = string.Format(OpLogLiterals.ServiceLinkRegisterManualOpLog, memberInfo.BillId, input.Amount);
 
-            await SqlCommands(vosolEnInsertDto, paymentEnInsertDto, appUser, opLogText);
+            await ExecSql(vosolEnInsertDto, paymentEnInsertDto, appUser, opLogText);
         }
         private async Task Validate(ServiceLinkRegisterManualInputDto input, CancellationToken cancellationToken)
         {
-            await InputValidate(input, cancellationToken);
-            await DateValidate(input);
+            await ValidateInput(input, cancellationToken);
+            await ValidateDates(input);
         }
-        private async Task InputValidate(ServiceLinkRegisterManualInputDto input, CancellationToken cancellationToken)
+        private async Task ValidateInput(ServiceLinkRegisterManualInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -81,16 +81,37 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 throw new CustomValidationException(message);
             }
         }
-        private async Task DateValidate(ServiceLinkRegisterManualInputDto input)
-        {
+        private async Task ValidateDates(ServiceLinkRegisterManualInputDto input)
+        {            
             string checkDateJalali = await _variabService.GetDateCheck(input.ZoneId);
-            if (DateTime.Now.ToShortPersianDateString().CompareTo(checkDateJalali) < 0)
+            string todayJalali = DateTime.Now.ToShortPersianDateString();
+            DateOnly? dateOnlyBank= input.BankDateJalali.ToGregorianDateOnly();
+            DateOnly? dateOnlyPay= input.PayDateJalali.ToGregorianDateOnly();
+            if(!dateOnlyBank.HasValue || !dateOnlyPay.HasValue)
+            {
+                throw new InvalidDateException(ExceptionLiterals.InvalidDate);
+            }
+
+            if (todayJalali.CompareTo(checkDateJalali) < 0)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidPaymentInsertAfterDateCheck);
             }
-            if (input.PayDateJalali.CompareTo(DateTime.Now.ToShortPersianDateString()) > 0)
+            if (input.PayDateJalali.CompareTo(todayJalali) > 0)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidMoreThanCurrentDate);
+            }
+            if (input.BankDateJalali.CompareTo(todayJalali) > 0)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidMoreThanCurrentDate);
+            }
+
+            if (input.PayDateJalali.CompareTo(checkDateJalali) <= 0)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidPaymentInsertAfterDateCheck);
+            }
+            if (input.BankDateJalali.CompareTo(checkDateJalali) <= 0)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidPaymentInsertAfterDateCheck);
             }
         }
         private VosoEnInsertDto GetVosolEnInsertDto(ServiceLinkRegisterManualInputDto input, MemberInfoGetDto memberInfo)
@@ -103,10 +124,10 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 Town = memberInfo.ZoneId,
                 Radif = memberInfo.CustomerNumber,
                 ParNo = "0",
-                PayDate = input.PayDateJalali,
+                PayDate = string.Empty,
                 DateBank = input.BankDateJalali,
                 DateBes = currentDateJalali,
-                DateSabt = currentDateJalali,
+                DateSabt = input.PayDateJalali,//تاریخ عملکرد
                 CodBank = string.IsNullOrWhiteSpace(input.BankBranchCode) ? string.Empty : input.BankBranchCode,
                 Serial = input.BankCode,
                 Ser = _ser,
@@ -167,11 +188,10 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 VosoolTableId = 0,
             };
         }
-        private async Task SqlCommands(VosoEnInsertDto vosolEnInsertDto, PaymentEnInsertDto paymentEnInsertDto, IAppUser appUser, string opLogText)
+        private async Task ExecSql(VosoEnInsertDto vosolEnInsertDto, PaymentEnInsertDto paymentEnInsertDto, IAppUser appUser, string opLogText)
         {
-            string dbName = "Atlas";
-            //string dbName = GetDbName(vosolEnsInsertDto?.FirstOrDefault()?.Town ?? 0);
-
+            //string dbName = "Atlas";
+            string dbName = GetDbName(vosolEnInsertDto.Town);
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)

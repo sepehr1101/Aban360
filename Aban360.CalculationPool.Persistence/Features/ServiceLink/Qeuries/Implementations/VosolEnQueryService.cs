@@ -23,7 +23,9 @@ namespace Aban360.CalculationPool.Persistence.Features.ServiceLink.Qeuries.Imple
         }
         public async Task<ServiceLinkPaidDataOutputDto> Get(ServiceLinkPaymentRemoveInputDto input)
         {
-            string query = GetByCustomerNumberQuery("Atlas");//GetDbName(input.ZoneId)
+			//Atlas;
+			string dbName = GetDbName(input.ZoneId);
+            string query = GetByCustomerNumberQuery(dbName);
             ServiceLinkPaidDataOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ServiceLinkPaidDataOutputDto>(query, input);
 			if (result == null)
 			{
@@ -44,14 +46,14 @@ namespace Aban360.CalculationPool.Persistence.Features.ServiceLink.Qeuries.Imple
 						date_bank BankDateJalali,
 						date_bes RegisterDateJalali,
 						serial BankCode,
-						cod_bank BankCode,
+						cod_bank BankBranchCode,
 						cod3 Amount
 					From [{dbName}].dbo.vosolEN 
 					Join [Db70].dbo.T51 t51
 						On town=t51.C0
 					Where
 						town=@zoneId AND
-						pay_date =@PayDateJalali";
+						date_bes =@PayDateJalali";
         }
         private string GetByCustomerNumberQuery(string dbName)
         {
@@ -71,9 +73,9 @@ namespace Aban360.CalculationPool.Persistence.Features.ServiceLink.Qeuries.Imple
 					Join [Db70].dbo.T51 t51
 						On town=t51.C0
 					Where
-						town=@zoneId AND
-						radif =@customerNumber AND
-						ID=@id";
+						town=@ZoneId AND
+						radif =@CustomerNumber AND
+						ID=@Id";
         }
     }
 }

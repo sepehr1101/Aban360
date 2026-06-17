@@ -37,6 +37,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         const int _operator = 666;
         const int _kartTypeId = 2;
         const int _discountDescriptionCode = 14;
+
         public ServiceLinkReturnHandler(
             IHttpContextAccessor contextAccessor,
             ICommonMemberQueryService commonMemberQueryService,
@@ -117,7 +118,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         }
         private KartInsertDto GetKartInsertDto(ServiceLinkReturnInputDto input, MemberInfoGetDto memberInfo, int barge)
         {
-            bool hasDiscountAmount = _allowedDiscountAmountReturnCodes.Contains(input.ReturnCodeId);
+            bool hasDiscountAmount = _discountDescriptionCode == input.DescriptionCode;
             long amount = hasDiscountAmount ? 0 : input.Amount;
             long discountAmount = hasDiscountAmount ? input.Amount : 0;
 
