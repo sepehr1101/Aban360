@@ -67,6 +67,8 @@
         public static string InvalidUpdateInstallmentNotCurrentDate => "امکان ویرایش قسط وجود ندارد - خطا در تاریخ قسط";
         public static string InvalidTemporaryDeletionState => "مشترک در وضعیت 'حذف موقت' قرار دارد.";
         public static string InvalidCollectedDeletionState => "مشترک در وضعیت 'جمع آوری' قرار دارد.";
+        public static string InvalidPreviousDateJalali=> "عدم تطبیق تاریخ قبلی";
+        public static string InvalidPreviousNumber=> "عدم تطبیق رقم قبلی";
         public static string InvalidDuration => "مدت زمان محاسبه نامعتبر";
         public static string InvalidZeroServiceSelected => "حداقل یک درخواست انتخاب کنید.";
         public static string InvalidZoneTitle => "ناحیه یافت نشد!";
@@ -236,12 +238,14 @@
         public static string InvalidIPaymentDeleteAfterDateCheck => "امکان حذف وصولی پس از بسته شدن دوره وجود ندارد.";
 
         public static string InvalidConnectDisconnectByCustomerInfo(string deletionStateTitle) => $"وضعیت انشعاب مشترک درحالت:{deletionStateTitle} قرار دارد. امکان درخواست وجود ندارد.";
-        public static string InvalidConnectDisconnectDuplicateRequest => "امکان ثبت درخواست قطع/وصل تکراری وجود ندارد  (درخواست قبلی حذف نشده/ثبت نتیجه نشده).";
+        public static string InvalidConnectDisconnectDuplicateRequest => " تکراری (درخواست قبلی حذف/ثبت نتیجه نشده).";
         public static string InvalidConnectDisconnectDuplicateResult => "امکان ذخیره نتیجه مجدد برای درخواست قطع/وصل وجود ندارد.";
         public static string InvalidEmptyDisconnectWhy => "نتیجه قطع را به درستی وارد کنید.";
         public static string InvalidConnectDisconnectDeleteDuplicate => "درخواست قطع/وصل جاری قبلا حذف شده.";
         public static string InvalidGetSti => "امکان دریافت فایل چاپ وجود ندارد. برای درخواست جاری ثبت نتیجه/حذف صورت گرفته.";
 
         public static string NotFoundData => "اطلاعاتی یافت نشد";
+        public static string InvalidServiceLinkReturnRemoveBeforDateCheck => "قبض برگشتی جاری، قبل از بسته شدن دوره صادر شده.";
+        public static string InvalidServiceLinkReturnRemoveLessThan7Days => "قبض برگشتی جاری، بیش از 7 روز گدشته صادر شده.";
     }
 }

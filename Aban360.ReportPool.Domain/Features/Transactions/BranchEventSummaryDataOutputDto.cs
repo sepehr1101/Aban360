@@ -2,6 +2,7 @@
 {
     public record BranchEventSummaryDataOutputDto
     {
+        public int Id { get; set; }
         public string UsageTitle { get; set; }
         public int UsageId { get; set; }
         public string TrackNumber { get; set; }
@@ -16,5 +17,7 @@
         public long DiscountAmount { get; set; }
         public string DiscountTitle { get; set; }
         public long AmountAfterDiscount { get; set; }
+        public bool IsRemovable { get; set; }
+        public int TypeCode { get; set; }
     }
 }

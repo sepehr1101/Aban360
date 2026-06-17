@@ -39,18 +39,42 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             branchHeader.Title = ReportLiterals.BranchEventSummary;
 
             IEnumerable<BranchEventSummaryDataOutputDto> branchData = await _sqlReportConnection.QueryAsync<BranchEventSummaryDataOutputDto>(brachSummeryDataQueryString, new { zoneId = zoneIdCustomerNumber.ZoneId, customerNumber = zoneIdCustomerNumber.CustomerNumber });
-            IEnumerable < BranchEventSummaryDataOutputDto > branchDateOrder = branchData.OrderBy(t => t.RegisterDateJalali);
-         
+            IEnumerable<BranchEventSummaryDataOutputDto> branchDateOrder = branchData.OrderBy(t => t.RegisterDateJalali);
+            string dateCheck = await GetDateCheck(zoneIdCustomerNumber.ZoneId);
             long lastRemained = 0;
             for (int i = 0; i < branchDateOrder.Count(); i++)
-            {   
+            {
                 BranchEventSummaryDataOutputDto row = branchDateOrder.ElementAt(i);
                 lastRemained = lastRemained + (row.DebtAmount - row.CreditAmount - row.DiscountAmount);
                 row.Remained = lastRemained;
+                row.IsRemovable = GetIsRemovable(dateCheck, row.RegisterDateJalali, row.TypeCode);
             }
 
             ReportOutput<BranchEventSummaryHeaderOutputDto, BranchEventSummaryDataOutputDto> result = new(ReportLiterals.BranchEventSummary, branchHeader, branchDateOrder);
             return result;
+        }
+        private async Task<string> GetDateCheck(int zoneId)
+        {
+            string dbName = GetDbName(zoneId);
+            string query = GetDateCheckQuery(dbName);
+            string? dateCheck = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(query, new { zoneId });
+            if (string.IsNullOrWhiteSpace(dateCheck))
+            {
+                throw new InvalidDataException(ExceptionLiterals.InvalidDateCheckFormat);
+            }
+            return dateCheck;
+        }
+        private bool GetIsRemovable(string dateCheck, string registerDateJalali, int typeCode)
+        {
+            int[] allowedRemovableTypeCode = { 4, 5, 6 };
+
+            if (registerDateJalali.CompareTo(dateCheck) < 0 ||
+                DateTime.Now.AddDays(-7).ToShortPersianDateString().CompareTo(registerDateJalali) > 0 ||
+               !allowedRemovableTypeCode.Contains(typeCode))
+            {
+                return false;
+            }
+            return true;
         }
         private string GetZoneIdAndCustomerNumberQuery()
         {
@@ -91,6 +115,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         private string GetBrachEventSummaryDataQuery()
         {
             return @"Select 
+                        r.Id,
                     	r.UsageTitle AS UsageTitle,
                     	r.UsageId AS UsageId,
                     	TRIM(r.TrackNumber) TrackNumber,
@@ -103,7 +128,8 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	ISNULL(r.ItemTitle,N'')+N' '+ISNULL(r.TypeId,'') AS Description	,
 						0 AS BankCode, 
                         r.OffAmount as DiscountAmount,
-                        r.OffTitle as DiscountTitle
+                        r.OffTitle as DiscountTitle,
+                        r.TypeCode
                     From [CustomerWarehouse].dbo.RequestBillDetails r
                     Where
                     	r.CustomerNumber=@customerNumber AND 
@@ -111,6 +137,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	r.FinalAmount!=0
                     Union All
                     Select 
+                        p.Id,
                     	'' AS UsageTitle,
                     	0 AS UsageId,
                     	'' AS TrackNumber,
@@ -123,12 +150,19 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	p.BankName +' - '+p.PaymentGateway AS Description,
 						p.BankCode,
                         0 as DiscountAmount,
-                        '' as DiscountTitle
+                        '' as DiscountTitle,
+                        -1 TypeCode
                     From [CustomerWarehouse].dbo.PaymentsEn p
                     Where 
                     	p.CustomerNumber=@customerNumber AND 
                     	p.ZoneId=@zoneId AND
                     	p.Amount!=0";
+        }
+        private string GetDateCheckQuery(string dbName)
+        {
+            return $@"Select date_check
+                    From [{dbName}].dbo.variab 
+                    Where town=@zoneId";
         }
     }
 }
