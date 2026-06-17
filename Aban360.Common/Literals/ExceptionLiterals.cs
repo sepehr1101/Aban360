@@ -234,8 +234,8 @@
         public static string NotFountVosolEn => "وصولی حق انشعاب یافت نشد";
         public static string InvalidDeleteVosolEn => "خطا در حذف وصولی حق انشعاب";
         public static string InvalidInsertVosolEn => "خطا در ذخیره وصولی حق انشعاب";
-        public static string InvalidPaymentInsertAfterDateCheck => "امکان وصولی پس از بسته شدن دوره وجود ندارد.";
-        public static string InvalidIPaymentDeleteAfterDateCheck => "امکان حذف وصولی پس از بسته شدن دوره وجود ندارد.";
+        public static string InvalidPaymentInsertAfterDateCheck => "امکان ثبت وصولی پس از بسته شدن دوره  قبلی وجود ندارد.";
+        public static string InvalidIPaymentDeleteAfterDateCheck => "امکان حذف وصولی پس از بسته شدن دوره جاری وجود ندارد.";
 
         public static string InvalidConnectDisconnectByCustomerInfo(string deletionStateTitle) => $"وضعیت انشعاب مشترک درحالت:{deletionStateTitle} قرار دارد. امکان درخواست وجود ندارد.";
         public static string InvalidConnectDisconnectDuplicateRequest => " تکراری (درخواست قبلی حذف/ثبت نتیجه نشده).";

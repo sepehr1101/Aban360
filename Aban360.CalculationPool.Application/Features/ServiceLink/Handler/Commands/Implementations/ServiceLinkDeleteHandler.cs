@@ -54,12 +54,12 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
             await _commonZoneService.IsUserInZone(appUser, inputDto.ZoneId);
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber(inputDto.ZoneId, inputDto.CustomerNumber));
             ServiceLinkPaidDataOutputDto paidInfo = await _vosolEnQueryService.Get(inputDto);//todo:in GetMethod:ReName DbName
-            await DateValidate(inputDto.ZoneId, paidInfo.RegisterDateJalali);
+            await ValidateDate(inputDto.ZoneId, paidInfo.RegisterDateJalali);
             string opLogText = string.Format(OpLogLiterals.ServiceLinkDeleteManualOpLog, memberInfo.BillId, paidInfo.Amount);
 
-            await SqlCommands(inputDto, appUser, opLogText);
+            await ExecSql(inputDto, appUser, opLogText);
         }
-        private async Task DateValidate(int zoneId, string payDateJalali)
+        private async Task ValidateDate(int zoneId, string payDateJalali)
         {
             string checkDateJalali = await _variabService.GetDateCheck(zoneId);
             if (payDateJalali.CompareTo(checkDateJalali) < 0)
@@ -67,10 +67,10 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidIPaymentDeleteAfterDateCheck);
             }
         }
-        private async Task SqlCommands(ServiceLinkPaymentRemoveInputDto inputDto, IAppUser appUser, string opLogText)
+        private async Task ExecSql(ServiceLinkPaymentRemoveInputDto inputDto, IAppUser appUser, string opLogText)
         {
-            string dbName = "Atlas";
-            //string dbName = GetDbName(vosolEnsInsertDto?.FirstOrDefault()?.Town ?? 0);
+            //string dbName = "Atlas";
+            string dbName = GetDbName(inputDto.ZoneId);
 
             using (IDbConnection connection = _sqlReportConnection)
             {

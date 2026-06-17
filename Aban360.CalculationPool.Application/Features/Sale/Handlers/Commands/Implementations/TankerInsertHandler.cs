@@ -257,6 +257,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 Surname = inputDto.Surname,
                 SaleStateTitle = GetSaleStateTitle(inputDto.SaleState),
                 Consumption = inputDto.Consumption,
+                ZoneId = inputDto.ZoneId
             };
         }
         private string GetSaleStateTitle(TankerWaterSaleStateEnum saleState)
