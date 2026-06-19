@@ -2,7 +2,6 @@
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.Base;
-using Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
@@ -10,12 +9,12 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Implementations
 {
-    internal sealed class WithoutBillSummaryByZoneGroupedHandler : IWithoutBillSummaryByZoneGroupedHandler
+    internal sealed class WithoutBillSummaryByZoneUsageHandler: IWithoutBillSummaryByZoneUsageHandler
     {
-        private readonly IWithoutBillSummaryByZoneQueryService _withoutBillSummaryByZoneQueryService;
+        private readonly IWithoutBillSummaryByUsageZoneQueryService _withoutBillSummaryByZoneQueryService;
         private readonly IValidator<WithoutBillInputDto> _validator;
-        public WithoutBillSummaryByZoneGroupedHandler(
-            IWithoutBillSummaryByZoneQueryService withoutBillSummaryByZoneQueryService,
+        public WithoutBillSummaryByZoneUsageHandler(
+            IWithoutBillSummaryByUsageZoneQueryService withoutBillSummaryByZoneQueryService,
             IValidator<WithoutBillInputDto> validator)
         {
             _withoutBillSummaryByZoneQueryService = withoutBillSummaryByZoneQueryService;
@@ -40,7 +39,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
               .GroupBy(m => m.RegionTitle)
               .Select(g =>
               {
-                  var mapped = g.Select(MappToGroup);
+                  var mapped = g.Select(MapToGroup);
                   var mappedd = g;
 
                   return new ReportOutput<WithoutBillSummaryDataOutputDto, WithoutBillSummaryDataOutputDto>
@@ -72,11 +71,15 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryDataOutputDto> flatResult = new(result.Title, result.ReportHeader, flatData) { };
             return flatResult;
         }
-        private static WithoutBillSummaryDataOutputDto MappToGroup(WithoutBillSummaryDataOutputDto input)
+        private static WithoutBillSummaryDataOutputDto MapToGroup(WithoutBillSummaryDataOutputDto input)
         {
             return new WithoutBillSummaryDataOutputDto()
             {
                 ItemTitle = input.ItemTitle,
+                UsageTitle = input.UsageTitle,
+                ZoneTitle = input.ZoneTitle,
+                RegionTitle = input.RegionTitle,
+                IsFirstRow=input.IsFirstRow,
                 CustomerCount = input.CustomerCount,
                 CommercialUnit = input.CommercialUnit,
                 DomesticUnit = input.DomesticUnit,

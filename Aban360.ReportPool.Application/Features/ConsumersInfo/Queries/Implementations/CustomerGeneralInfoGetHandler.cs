@@ -37,16 +37,19 @@ namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implemen
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));    
         }
 
-        public async Task<ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto>> Handle(SearchInput input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto>> Handle(CustomerGeneralInput input, CancellationToken cancellationToken)
         {
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(input.Input);
 
             ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> result = await _customerGeneralInfoService.Get(zoneIdAndCustomerNumber);
             result.ReportData.FirstOrDefault().MeterLife = GetMeterLife(result.ReportData.FirstOrDefault(), result.ReportHeader);
 
-            var (e, n) = await GetLocation(input.Input,cancellationToken);
-            result.ReportData.FirstOrDefault().E = e;
-            result.ReportData.FirstOrDefault().N= n;
+            if (input.HasLocation)
+            {
+                var (e, n) = await GetLocation(input.Input, cancellationToken);
+                result.ReportData.FirstOrDefault().E = e;
+                result.ReportData.FirstOrDefault().N = n;
+            }
 
             return result;
         }

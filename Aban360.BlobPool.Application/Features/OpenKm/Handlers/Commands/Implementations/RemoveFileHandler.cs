@@ -25,7 +25,16 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
         public async Task Handle(RemoveFileDto removeFileDto, CancellationToken cancellationToken)
         {
             string directory = removeFileDto.IsBillId ? removeFileDto.FolderName : $"r_{removeFileDto.FolderName}";
-            await _createFolderHandler.Handle(deleteFolderName, cancellationToken, $"{directory}");
+            try
+            {
+                await _createFolderHandler.Handle(deleteFolderName, cancellationToken, $"{directory}");
+            }
+            catch
+            {
+                //برای مواردی که شناسه قبض موجود است اما هنوز مشترک قطعی نشده، بنابراین باید الزاماً با شماره پیگیری پیدا شود
+                directory = $"r_{removeFileDto.TrackNumber}";
+                await _createFolderHandler.Handle(deleteFolderName, cancellationToken, directory);
+            }
             await _openKmQueryService.Move(removeFileDto.Uuid, $"{directory}/{deleteFolderName}");
         }
     }

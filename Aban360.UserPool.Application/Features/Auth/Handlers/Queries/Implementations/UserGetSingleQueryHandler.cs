@@ -11,7 +11,6 @@ using Aban360.UserPool.Persistence.Constants.Enums;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using Aban360.UserPool.Persistence.Features.UiElement.Queries.Contracts;
 using AutoMapper;
-using System.Collections.Generic;
 
 namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations
 {
@@ -65,7 +64,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
             }
             ICollection<Role> roles = await _roleQueryService.Get();
             IEnumerable<UserRoleQueryDto> query = from role in roles
-                                                  join userRole in userRoles
+                                                  join userRole in userRoles.Distinct()
                                                   on role.Id equals userRole.RoleId into roleGroup
                                                   from rg in roleGroup.DefaultIfEmpty()
                                                   select new UserRoleQueryDto()
@@ -83,7 +82,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
                 userClaims
                 .Where(userClaim => userClaim.ClaimTypeId == ClaimType.ZoneId)
                 .Select(userClaim => int.Parse(userClaim.ClaimValue))
-            .ToList();
+                .Distinct()
+                .ToList();
             LocationTree locationTree = await _locationTreeAdHoc.Handle(zoneIds, cancellationToken);
             return locationTree;
         }
@@ -96,6 +96,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
             List<int> toBeSelectedEndpointIds = endpoints
                 .Where(endpoint => authValues.Contains(endpoint.AuthValue))
                 .Select(endpoint => endpoint.Id)
+                .Distinct()
                 .ToList();
             AccessTreeValueKeyDto accessTree = endpoints.CreateAccessTree(toBeSelectedEndpointIds);
             return accessTree;

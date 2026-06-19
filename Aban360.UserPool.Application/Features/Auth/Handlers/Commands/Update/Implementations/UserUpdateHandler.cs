@@ -121,7 +121,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
 
             ICollection<UserClaim> zones = CreateUserClaim(userUpdateDto.SelectedZoneIds.Select(x => x.ToString()).Distinct().ToList(), ClaimType.ZoneId, logInfoString, operationGroupId, userUpdateDto.Id);
             ICollection<UserClaim> endpionts = CreateUserClaim(endpointValue, ClaimType.Endpoint, logInfoString, operationGroupId, userUpdateDto.Id);
-            ICollection<UserClaim> defaultZoneId = CreateUserClaim(new List<string> { userUpdateDto.SelectedZoneIds.Select(x => x.ToString()).First() }, ClaimType.DefaultZoneId, logInfoString, operationGroupId, userUpdateDto.Id);
+            string defaultZoneIdValue = userUpdateDto.SelectedZoneIds.Count() > 30 ? "130000" : userUpdateDto.SelectedZoneIds.Select(x => x.ToString()).First();
+            ICollection<UserClaim> defaultZoneId = CreateUserClaim(new List<string> { defaultZoneIdValue }, ClaimType.DefaultZoneId, logInfoString, operationGroupId, userUpdateDto.Id);
             List<UserClaim> userCliams = zones.Union(endpionts).Union(defaultZoneId).ToList();
 
             ICollection<UserRole> userRoles = CreateUserRoles(userUpdateDto.SelectedRoleIds, logInfoString, operationGroupId, userUpdateDto.Id);

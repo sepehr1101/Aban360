@@ -2,7 +2,6 @@
 using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
@@ -16,8 +15,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
             _userGetSingleQueryHandler = userGetSingleQuery;
             _userGetSingleQueryHandler.NotNull(nameof(userGetSingleQuery));
         }
-
-        [AllowAnonymous]
+      
         [HttpGet,HttpPost]
         [Route("info/{userId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<UserDisplayDto>), StatusCodes.Status200OK)]
