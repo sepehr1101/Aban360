@@ -5,6 +5,6 @@ namespace Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contract
 {
     public interface ICustomerGeneralInfoGetHandler
     {
-        Task<ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto>> Handle(SearchInput input, CancellationToken cancellationToken);
+        Task<ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto>> Handle(CustomerGeneralInput input, CancellationToken cancellationToken);
     }
 }

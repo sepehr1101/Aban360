@@ -55,7 +55,6 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
         public async Task<ICollection<UserQueryDto>> GetWithDefaultZone()
         {
             var users = await _query.ToListAsync();
-
             var userIds = users.Select(u => u.Id).ToList();
 
             var defaultZoneClaims = await _userClaims

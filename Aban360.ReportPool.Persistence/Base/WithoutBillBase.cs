@@ -229,6 +229,108 @@ namespace Aban360.ReportPool.Persistence.Base
                         w.HasWater=1
 					Group By w.{parameters.ZoneOrUsageGrouped}";
         }
+        internal string GetGroupedBothQuery()
+        {
+            string zonePartQuery = "AND b.ZoneId IN @ZoneIds";
+            string usagePartQuery = "AND b.UsageId IN @usageIds";
+            string ZoneTitle = nameof(ZoneTitle),
+                  UsageTitle = nameof(UsageTitle);
+
+            return $@";With WithoutBill as (
+                    Select 
+                    	c.ZoneId,
+						c.ZoneTitle,
+						c.UsageTitle,
+						c.CustomerNumber,
+						c.WaterDiameterId,
+                    	c.CommercialCount,
+                    	c.DomesticCount,
+                    	c.OtherCount,
+                        c.DeletionStateId,
+                        c.HasWater
+                    From [CustomerWarehouse].dbo.Clients c
+                    Where NOT EXISTS(
+                    		Select 1
+                    		From [CustomerWarehouse].dbo.Bills  b
+                    		Where 
+                    			c.ZoneId=b.ZoneId AND
+                    			c.CustomerNumber=b.CustomerNumber AND
+                    			(@FromDateJalali IS NULL or
+                    			@ToDateJalali IS NULL or 
+                    			b.NextDay BETWEEN @FromDateJalali and @ToDateJalali)AND 
+                    			(   
+                                    @FromReadingNumber IS NULL or
+                    			    @ToReadingNumber IS NULL or 
+                    			    c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber
+                                ) AND
+                            	c.DeletionStateId IN (0) AND
+                                c.HasWater=1 AND
+                    			b.TypeCode IN (1,7,8) AND
+                                c.PhysicalWaterInstallDateJalali <= @ToDateJalali AND
+                    			c.ToDayJalali IS NULL 
+                                {zonePartQuery}
+                                {usagePartQuery}
+                          ) AND --not exists
+                    	  (
+                              @FromReadingNumber IS NULL or
+                    		  @ToReadingNumber IS NULL or 
+                    		  c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber
+                          ) AND
+                         c.DeletionStateId IN (0) AND
+                    	 c.ToDayJalali IS NULL  AND 
+                         CustomerWarehouse.dbo.PersianToMiladi(c.WaterRegisterDateJalali) < DATEADD(day,-45,CustomerWarehouse.dbo.PersianToMiladi(@ToDateJalali))
+                         {zonePartQuery}
+                         {usagePartQuery}
+                    ),
+					LatestBill as
+                    (
+						SELECT  
+							b.ZoneId,
+							b.CustomerNumber,
+							ROW_NUMBER() OVER(PARTITION BY ZoneId, CustomerNumber ORDER BY RegisterDay DESC) AS RN
+						FROM [CustomerWarehouse].dbo.Bills b
+						WHERE 
+						  b.TypeCode IN (1,7,8) AND
+                    	  (
+                            @FromReadingNumber IS NULL or
+                    	    @ToReadingNumber IS NULL or 
+                    	    b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber
+                          ) 
+                          {zonePartQuery}
+                          {usagePartQuery}
+					) --LatestBill
+                    Select 
+						MAX(t46.C2) AS RegionTitle,
+                    	w.{ZoneTitle},
+                    	w.{UsageTitle},
+						COUNT(1) AS CustomerCount,
+						SUM(ISNULL(w.CommercialCount, 0) + ISNULL(w.DomesticCount, 0) + ISNULL(w.OtherCount, 0)) AS TotalUnit,
+						SUM(ISNULL(w.CommercialCount, 0)) AS CommercialUnit,
+						SUM(ISNULL(w.DomesticCount, 0)) AS DomesticUnit,
+						SUM(ISNULL(w.OtherCount, 0)) AS OtherUnit,
+						SUM(CASE WHEN w.WaterDiameterId = 0 THEN 1 ELSE 0 END) AS UnSpecified,
+						SUM(CASE WHEN w.WaterDiameterId = 1 THEN 1 ELSE 0 END) AS Field0_5,
+						SUM(CASE WHEN w.WaterDiameterId = 2 THEN 1 ELSE 0 END) AS Field0_75,
+						SUM(CASE WHEN w.WaterDiameterId = 3 THEN 1 ELSE 0 END) AS Field1,
+						SUM(CASE WHEN w.WaterDiameterId = 4 THEN 1 ELSE 0 END) AS Field1_2,
+						SUM(CASE WHEN w.WaterDiameterId = 5 THEN 1 ELSE 0 END) AS Field1_5,
+						SUM(CASE WHEN w.WaterDiameterId = 6 THEN 1 ELSE 0 END) AS Field2,
+						SUM(CASE WHEN w.WaterDiameterId = 7 THEN 1 ELSE 0 END) AS Field3,
+						SUM(CASE WHEN w.WaterDiameterId = 8 THEN 1 ELSE 0 END) AS Field4,
+						SUM(CASE WHEN w.WaterDiameterId = 9 THEN 1 ELSE 0 END) AS Field5,
+						SUM(CASE WHEN w.WaterDiameterId In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6
+                   From WithoutBill w
+                   Left Join LatestBill b
+                    	On w.ZoneId=b.ZoneId AND w.CustomerNumber=b.CustomerNumber AND RN=1
+                    Join [Db70].dbo.T51 t51
+                    	On t51.C0=w.ZoneId
+                    Join [Db70].dbo.T46 t46
+                    	On t51.C1=t46.C0
+                    WHERE 
+                        w.DeletionStateId IN (0) AND
+                        w.HasWater=1
+					Group By w.{ZoneTitle}, w.{UsageTitle}";
+        }
 
         private Parameters GetQueryParam(bool hasZone, bool hasUsage, bool isZone=false)
         {

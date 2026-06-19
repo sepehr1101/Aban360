@@ -33,10 +33,8 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
             IEnumerable<NumericDictionary> zonesInfo = await _t51QueryService.Get();
             ICollection<UserQueryDto> userQueryDtoList = await _userQueryService.GetWithDefaultZone();
             userQueryDtoList.ForEach(u =>
-                u.DefaultZoneTitle = zonesInfo
-                    .Where(zone => zone.Id == (string.IsNullOrWhiteSpace(u.DefaultZoneId) ? 0 : (int.Parse)(u.DefaultZoneId)))
-                    .FirstOrDefault()?
-                    .Title ?? string.Empty
+                u.DefaultZoneTitle = zonesInfo.Where(zone => zone.Id == (string.IsNullOrWhiteSpace(u.DefaultZoneId) ? 0 : int.Parse(u.DefaultZoneId)))
+               .FirstOrDefault()?.Title ?? string.Empty
             );
             return userQueryDtoList;
         }

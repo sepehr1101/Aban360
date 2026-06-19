@@ -29,7 +29,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [HttpPost]
         [Route("info")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> info(SearchInput searchInput, CancellationToken cancellationToken)
+        public async Task<IActionResult> info(CustomerGeneralInput searchInput, CancellationToken cancellationToken)
         {
             ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> summary = await _customerInfoHandle.Handle(searchInput, cancellationToken);
             return Ok(summary);
@@ -38,7 +38,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
-        public async Task<IActionResult> GetExcel(string connectionId, SearchInput searchInput, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetExcel(string connectionId, CustomerGeneralInput searchInput, CancellationToken cancellationToken)
         {
             await _reportGenerator.FireAndInform(searchInput, cancellationToken, _customerInfoHandle.Handle, CurrentUser, ReportLiterals.CustomerGeneralInfo, connectionId);
             return Ok(searchInput);
@@ -48,7 +48,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [Route("sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         [AllowAnonymous]
-        public async Task<IActionResult> GetStiReport(SearchInput searchInput, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetStiReport(CustomerGeneralInput searchInput, CancellationToken cancellationToken)
         {
             int reportCode = 800;
             ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo = await _customerInfoHandle.Handle(searchInput, cancellationToken);

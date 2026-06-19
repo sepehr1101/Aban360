@@ -1,6 +1,5 @@
 ﻿using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Db.Constants.Literals;
-using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Contracts;
@@ -8,7 +7,6 @@ using Aban360.UserPool.Domain.Constants;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 
 namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
 {
