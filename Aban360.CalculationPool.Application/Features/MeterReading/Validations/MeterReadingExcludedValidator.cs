@@ -13,7 +13,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Validations
                .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(t => t.ExcludeDateJalali)
+            RuleFor(t => t.FromExcludeDateJalali)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
+
+            RuleFor(t => t.ToExcludeDateJalali)
                .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 

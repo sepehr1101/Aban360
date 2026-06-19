@@ -46,7 +46,7 @@ namespace Aban360.CalculationPool.Persistence.Features.ServiceLink.Qeuries.Imple
 						date_bank BankDateJalali,
 						date_bes RegisterDateJalali,
 						serial BankCode,
-						cod_bank BankBranchCode,
+						TRIM(cod_bank) BankBranchCode,
 						cod3 Amount
 					From [{dbName}].dbo.vosolEN 
 					Join [Db70].dbo.T51 t51

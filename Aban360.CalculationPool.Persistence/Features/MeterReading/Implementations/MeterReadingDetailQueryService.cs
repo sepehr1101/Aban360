@@ -243,9 +243,12 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 						ON mr.CurrentCounterStateCode=cv.MoshtarakinId
                     Where 
                     	c.ToDayJalali IS NULL AND
-                    	mr.ExcludedByUserId IS NOT Null AND
+                    	mr.ExcludedByUserId IS NOT NUll AND
                     	mr.ZoneId = @ZoneId AND
-                    	FORMAT(CAST(mr.ExcludedDateTime as date),'yyyy/MM/dd','fa')=@ExcludeDateJalali";
+                    	(FORMAT(CAST(mr.ExcludedDateTime as date),'yyyy/MM/dd','fa') BETWEEN @FromExcludeDateJalali AND @ToExcludeDateJalali) AND
+                        (@FromReadingNumber IS NUll OR
+                        @ToReadingNumber IS NULL OR
+                        mr.ReadingNumber  BETWEEN @FromReadingNumber AND @ToReadingNumber)";
         }
     }
 }

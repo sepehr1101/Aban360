@@ -373,6 +373,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	b.town as ZoneId,
 						t51.C2 as ZoneTitle,
                     	b.radif as CustomerNumber,
+						TRIM(m.name) + ' ' + TRIM(m.family) FullName,
+						TRIM(m.address) Address,
                     	b.pri_no as PreviousNumber, 
                     	b.today_no as CurrentNumber,
                     	b.pri_date as PreviousDateJalali,
@@ -397,6 +399,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 						b.del as IsReturned,
                         IIF(b.cod_enshab IN (1,3), 1, 0) IsDomestic
                     FROM [{dbName}].dbo.bed_bes b
+					Left JOIN [{dbName}].dbo.members m
+						ON b.town=m.town AND b.radif=m.radif
                     {condition}
                     JOIN [Db70].dbo.T41 t41 
                     	ON b.cod_enshab=t41.C0

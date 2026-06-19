@@ -6,6 +6,8 @@
         public int ZoneId { get; set; }
         public string ZoneTitle { get; set; }
         public int CustomerNumber { get; set; }
+        public string? FullName { get; set; }
+        public string? Address { get; set; }
         public int PreviousNumber { get; set; }
         public int CurrentNumber { get; set; }
         public string PreviousDateJalali { get; set; }
