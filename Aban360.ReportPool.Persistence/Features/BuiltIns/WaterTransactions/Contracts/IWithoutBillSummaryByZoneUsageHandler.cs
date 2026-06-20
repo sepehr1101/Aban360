@@ -6,7 +6,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Con
 {
     public interface IWithoutBillSummaryByZoneUsageHandler
     {
-        Task<ReportOutput<WithoutBillHeaderOutputDto, ReportOutput<WithoutBillSummaryDataOutputDto, WithoutBillSummaryDataOutputDto>>> Handle(WithoutBillInputDto input, CancellationToken cancellationToken);
-        Task<ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryDataOutputDto>> HandleFlat(WithoutBillInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryDataOutputDto>> Handle(WithoutBillInputDto input, CancellationToken cancellationToken);        
     }
 }

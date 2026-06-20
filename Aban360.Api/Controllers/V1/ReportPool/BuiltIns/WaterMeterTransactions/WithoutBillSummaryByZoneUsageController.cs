@@ -29,10 +29,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WithoutBillHeaderOutputDto, ReportOutput<WithoutBillSummaryDataOutputDto, WithoutBillSummaryDataOutputDto>>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(WithoutBillInputDto input, CancellationToken cancellationToken)
         {
-            ReportOutput<WithoutBillHeaderOutputDto, ReportOutput<WithoutBillSummaryDataOutputDto, WithoutBillSummaryDataOutputDto>> withoutBillSummaryByZoneGrouped = await _withoutBillSummaryByZoneUsageHandler.Handle(input, cancellationToken);
+            ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryDataOutputDto> withoutBillSummaryByZoneGrouped = await _withoutBillSummaryByZoneUsageHandler.Handle(input, cancellationToken);
             return Ok(withoutBillSummaryByZoneGrouped);
         }
 
@@ -40,7 +40,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, WithoutBillInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _withoutBillSummaryByZoneUsageHandler.HandleFlat, CurrentUser, ReportLiterals.WithoutBillSummary + ReportLiterals.ByZone, connectionId, ReportLiterals.HandleFlat);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _withoutBillSummaryByZoneUsageHandler.Handle, CurrentUser, ReportLiterals.WithoutBillSummary + ReportLiterals.ByZone, connectionId, ReportLiterals.HandleFlat);
             return Ok(inputDto);
         }
 
@@ -51,7 +51,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         public async Task<IActionResult> GetStiReport(WithoutBillInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 213;
-            ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryDataOutputDto> nonPermanentBranch = await _withoutBillSummaryByZoneUsageHandler.HandleFlat(inputDto, cancellationToken);
+            ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryDataOutputDto> nonPermanentBranch = await _withoutBillSummaryByZoneUsageHandler.Handle(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(nonPermanentBranch, cancellationToken, reportCode);
             return Ok(reportId);
         }
