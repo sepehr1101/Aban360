@@ -2,7 +2,9 @@
 {
     public record LatestBedBesConsumptionInfo
     {
+        public int ZoneId { get; set; }
         public int CustomerNumber { get; set; }
+        public string BillId { get; set; }
         public string LastMeterDateJalali { get; set; }
         public int? LastMeterNumber { get; set; }
         public float? LastMonthlyConsumption { get; set; }

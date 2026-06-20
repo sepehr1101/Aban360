@@ -3,6 +3,7 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
+using System.Data;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
 {
@@ -28,5 +29,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
         Task<BedBesItemsOutputDto> GetLatestByCustomerNumber(ZoneIdAndCustomerNumber input);
         Task<IEnumerable<BedBesWithDelOutputDto>> GetByDateInterval(ZoneCustomerFromToDateDto input, string dbName);
         Task<BedBesPreviousNumberAndDateOutputDto> GetPreviousDateAndNumber(ZoneIdAndCustomerNumber input, string billId);
+        Task<IEnumerable<ZoneIdAndCustomerNumber>> GetPreviousDateAndNumberWithSqlBulk(IDbConnection connection, IDbTransaction transaction, int zoneId, ICollection<int> customerNumbers);
     }
 }

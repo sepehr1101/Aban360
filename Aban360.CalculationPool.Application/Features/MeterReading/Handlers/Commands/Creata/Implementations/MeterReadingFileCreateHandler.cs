@@ -16,6 +16,8 @@ using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Cont
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Implementations;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
+using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using DNTPersianUtils.Core;
 using DotNetDBF;
 using FluentValidation;
@@ -40,6 +42,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IOldTariffEngine _tariffEngine;
         private readonly IValidator<MeterReadingFileCreateDto> _validator;
         private readonly IPreviousAverageHandler _previousAverageHandler;
+        private readonly IBedBesQueryService _bedBesQueryService;
 
         public MeterReadingFileCreateHandler(
             IMeterFlowQueryService meterFlowService,
@@ -49,6 +52,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
             IValidator<MeterReadingFileCreateDto> validator,
             IPreviousAverageHandler previousAverageHandler,
+            IBedBesQueryService bedBesQueryService,
             IConfiguration configuration)
             : base(configuration)
         {
@@ -72,6 +76,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
             _previousAverageHandler = previousAverageHandler;
             _previousAverageHandler.NotNull(nameof(_previousAverageHandler));
+
+            _bedBesQueryService = bedBesQueryService;
+            _bedBesQueryService.NotNull(nameof(bedBesQueryService));
         }
 
         public async Task<ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto>> Handle(MeterReadingFileCreateDto input, IAppUser appUser, CancellationToken cancellationToken)
@@ -184,10 +191,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 }
             }
 
-            await InsertAndUpdate(readingDetailsCreate, input, appUser, filePath);
+            await ExecSql(readingDetailsCreate, input, appUser, filePath);
             return GetReturnData(readingDetailsCreate);
         }
-        private async Task InsertAndUpdate(ICollection<MeterReadingDetailCreateDto> readingDetailsCreate, MeterReadingFileCreateDto input, IAppUser appUser, string filePath)
+        private async Task ExecSql(ICollection<MeterReadingDetailCreateDto> readingDetailsCreate, MeterReadingFileCreateDto input, IAppUser appUser, string filePath)
         {
             int firstFlowId = readingDetailsCreate.FirstOrDefault().FlowImportedId;
             int zoneId = readingDetailsCreate.FirstOrDefault().ZoneId;
@@ -257,6 +264,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             MeterReadingFileDetail firstMeterDetail = meterReadings.FirstOrDefault();
             MeterFlowCreateDto importedMeterFlow = GetMeterFlowCreateDto(MeterFlowStepEnum.Imported, meterFile.ReadingFile.FileName, firstMeterDetail.ZoneId, userId, meterFile.Description);
             CustomersInfoGetDto customersInfo;
+            IEnumerable<ZoneIdAndCustomerNumber> customersByInvalidPreviousBedBes = new List<ZoneIdAndCustomerNumber>();
             int meterFlowId = 0;
 
             using (IDbConnection connection = _sqlReportConnection)
@@ -268,13 +276,21 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     MeterFlowCommandService meterflowCommandService = new(connection, transaction);
                     meterFlowId = await meterflowCommandService.Insert(importedMeterFlow);
                     customersInfo = await _customerInfoService.GetByBulkCopy(connection, transaction, firstMeterDetail.ZoneId, meterReadings.Select(m => m.CustomerNumber).ToList());
-
+                    customersByInvalidPreviousBedBes = await _bedBesQueryService.GetPreviousDateAndNumberWithSqlBulk(connection, transaction, firstMeterDetail.ZoneId, meterReadings.Select(m => m.CustomerNumber).ToList());
                     transaction.Commit();
                 }
             }
-
+            foreach (var item in customersInfo.BedBesInfo)
+            {
+                if (customersByInvalidPreviousBedBes.Select(c => c.CustomerNumber).Contains(item.CustomerNumber))
+                {
+                    BedBesPreviousNumberAndDateOutputDto previousInfo = await _bedBesQueryService.GetPreviousDateAndNumber(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber), item.BillId);
+                    item.LastMeterNumber = previousInfo.PreviousNumber;
+                    item.LastMeterDateJalali = previousInfo.PreviousDateJalali;
+                }
+            }
             IEnumerable<MeterReadingDetailCreateDto> meterReadingsDetailCreate = GetReadingMeterDetails(meterReadings, customersInfo, meterFlowId);
-
+            
             return meterReadingsDetailCreate;
         }
 
@@ -418,7 +434,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             if (insertDateTime is not null)
             {
                 string insertDateJalali = ConvertDate.GregorianToJalali(insertDateTime);
-                throw new ReadingException(ExceptionLiterals.InvalidDuplicateFileName(insertDateJalali));
+                //throw new ReadingException(ExceptionLiterals.InvalidDuplicateFileName(insertDateJalali));
             }
         }
         private bool CounterStateValidation(int counterStateCode, int currentNumber, int previousNumber)

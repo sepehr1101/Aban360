@@ -7,7 +7,6 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Dapper;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
@@ -157,6 +156,9 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         private string GetBedBesQuery(string dbName)
         {
             return $@"Select TOP 1
+						b.town ZoneId,
+						c.radif as CustomerNumber,
+						b.sh_ghabs1 BillId,
 						b.today_date as LastMeterDateJalali ,
 						b.today_no as LastMeterNumber,
 						b.rate as LastConsumptionAverage,
@@ -235,6 +237,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 						Select 
 							b.town,
 							b.radif,
+							b.sh_ghabs1,
 							b.today_date,
 							b.today_no,
 							b.rate,
@@ -246,7 +249,9 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 						{conditionQuery}
 					)
 					Select
+						c.town ZoneId,
 						c.radif as CustomerNumber,
+						c.sh_ghabs1 BillId,
 						c.today_date as LastMeterDateJalali ,
 						c.today_no as LastMeterNumber,
 						c.masraf as LastConsumption,

@@ -10,6 +10,7 @@ using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
@@ -308,6 +309,24 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             }
             return result;
         }
+        public async Task<IEnumerable<ZoneIdAndCustomerNumber>> GetPreviousDateAndNumberWithSqlBulk(IDbConnection connection, IDbTransaction transaction, int zoneId, ICollection<int> customerNumbers)
+        {
+            var table = new DataTable();
+            table.Columns.Add("ZoneId", typeof(int));
+            table.Columns.Add("CustomerNumbers", typeof(int));
+            foreach (var item in customerNumbers)
+                table.Rows.Add(zoneId, item);
+
+            using (var bulkCopy = new SqlBulkCopy((SqlConnection)connection, SqlBulkCopyOptions.Default, (SqlTransaction)transaction))
+            {
+                bulkCopy.DestinationTableName = "#TempCustomerNumbers";
+                bulkCopy.BatchSize = 10000;
+                await bulkCopy.WriteToServerAsync(table);
+            }
+            string query = GetInvalidPreviousBedBesBySqlBulkCopyQuery(GetDbName(zoneId));
+            IEnumerable<ZoneIdAndCustomerNumber> customersByInvalidPreviousBedBes = await connection.QueryAsync<ZoneIdAndCustomerNumber>(query, null, transaction);
+            return customersByInvalidPreviousBedBes;
+        }
 
         private string GetBedBesConsumptionDataQuery(string dataBaseName)
         {
@@ -364,7 +383,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         }
         private string GetBedBesListToRemoveOrReturn(string dbName, bool isRemove)
         {
-            string top1= isRemove? " TOP 1 ":string.Empty;
+            string top1 = isRemove ? " TOP 1 " : string.Empty;
             string condition = isRemove ?
                 $"JOIN [{dbName}].dbo.variab v ON b.town=v.town AND b.date_bed collate Persian_100_CI_AI>=v.date_check" :
                 string.Empty;
@@ -720,6 +739,32 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     From Cte
                     Where PreviousNumber Is Not Null 
                     Order By date_bed Desc";
+        }
+        private string GetInvalidPreviousBedBesBySqlBulkCopyQuery(string dbName)
+        {
+            return $@";With CTE AS (
+						Select 
+							b.town,
+							b.radif,
+							b.today_date,
+							b.today_no,
+							b.rate,
+							b.masraf,
+							b.baha,
+							b.cod_vas,
+                            b.del,
+							RN= ROW_NUMBER() OVER(Partition By b.radif Order By b.today_date DESC)
+						From [{dbName}].dbo.bed_bes b
+						Join #TempCustomerNumbers t 
+					        ON 	b.town = t.ZoneId AND b.radif = t.CustomerNumber 
+					)
+					Select
+						c.radif as CustomerNumber,
+						c.town ZoneId
+					From CTE c
+					Where 
+                        c.RN=1 AND 
+                        c.del=1 ;";
         }
     }
 }
