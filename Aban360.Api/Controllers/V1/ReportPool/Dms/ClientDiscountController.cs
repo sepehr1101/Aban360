@@ -60,7 +60,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Dms
             return Ok(input);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost, HttpGet, HttpDelete]
         [Route("remove/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)

@@ -12,7 +12,7 @@
         public static string ChangeDate { get { return "تاریخ تعویض"; } }
         public static string ByZone { get { return " بر اساس ناحیه "; } }
         public static string ByRegion { get { return " بر اساس منطقه "; } }
-        public static string ZoneTitle { get { return "ZoneTitle"; } }
+        public static string ZoneTitle { get { return "ناحیه"; } }
         public static string ByDay { get { return " بر اساس روز "; } }
         public static string ByUsage { get { return " بر اساس کاربری "; } }
         public static string UsageTitle { get { return "UsageTitle"; } }
