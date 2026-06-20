@@ -13,6 +13,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Aban360.ReportPool.Domain.Features.Geo;
 using Aban360.ReportPool.Infrastructure.Features.Geo;
 using DNTPersianUtils.Core;
+using System.Threading;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations
 {
@@ -90,8 +91,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
                 IsConnect = connectDisconnectInfo.TypeId == _connectTypeId ? true : false,
                 CauseTitle = connectDisconnectInfo.CommandCauseTitle,
                 Base64 = locInfo.Item2,
-                X = locInfo.Item1.X,
-                Y = locInfo.Item1.Y
+                X = locInfo.Item1.Easting.ToString(),
+                Y = locInfo.Item1.Northing.ToString(),
             });
             ConnectDisconnectPrintHeaderOutputDto header = new()
             {
@@ -106,9 +107,14 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
         private async Task<(LocationInfoDto, string)> GetBase64Location(string billId, CancellationToken cancellationToken)
         {
             LocationInfoDto location = await _locationInfoService.Handle(billId, cancellationToken);
+            if (location is null ||
+                string.IsNullOrWhiteSpace(location.X) || location.X.Trim() == "0" ||
+                string.IsNullOrWhiteSpace(location.Y) || location.Y.Trim() == "0")
+            {
+                return (location, await Base64Operation.GetNotFoundBase64(cancellationToken));
+            }
             string base64 = await _mapService.GenerateMapBase64(location.X, location.Y);
             return (location, base64);
         }
-
     }
 }

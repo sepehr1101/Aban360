@@ -1,45 +1,25 @@
 ﻿using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.Dms.Commands.Contracts;
-using Aban360.ReportPool.Application.Features.Dms.Queries.Contracts;
 using Aban360.ReportPool.Domain.Features.Dms;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Aban360.Api.Controllers.V1.ReportPool.Dms
+namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
 {
     [Route("v1/client-discount")]
     public class ClientDiscountController : BaseController
     {
-        private readonly IClientDiscountGetAllHandler _requestDiscountHandler;
         private readonly IClientDiscountUpdateHandler _requestDiscountUpdateHandler;
         private readonly IClientDiscountInsertHandler _requestDiscountInsertHandler;
-        private readonly IClientDiscountRemoveHandler _requestDiscountRemoveHandler;
         public ClientDiscountController(
-            IClientDiscountGetAllHandler requestDiscountHandler,
             IClientDiscountUpdateHandler requestDiscountUpdateHandler,
-            IClientDiscountInsertHandler requestDiscountInsertHandler,
-            IClientDiscountRemoveHandler requestDiscountRemoveHandler)
+            IClientDiscountInsertHandler requestDiscountInsertHandler)
         {
-            _requestDiscountHandler = requestDiscountHandler;
-            _requestDiscountHandler.NotNull(nameof(requestDiscountHandler));
-
             _requestDiscountUpdateHandler = requestDiscountUpdateHandler;
             _requestDiscountUpdateHandler.NotNull(nameof(requestDiscountUpdateHandler));
 
             _requestDiscountInsertHandler = requestDiscountInsertHandler;
             _requestDiscountInsertHandler.NotNull(nameof(requestDiscountInsertHandler));
-
-            _requestDiscountRemoveHandler = requestDiscountRemoveHandler;
-            _requestDiscountRemoveHandler.NotNull(nameof(requestDiscountRemoveHandler));
-        }
-
-        [HttpPost, HttpGet]
-        [Route("all")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<ClientDiscount>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get(CancellationToken cancellationToken)
-        {
-            var data = await _requestDiscountHandler.Handle(cancellationToken);
-            return Ok(data);
         }
 
         [HttpPost, HttpGet]
@@ -58,15 +38,6 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Dms
         {
             await _requestDiscountUpdateHandler.Handle(input, cancellationToken);
             return Ok(input);
-        }
-
-        [HttpPost, HttpGet]
-        [Route("remove/{id}")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
-        {
-            await _requestDiscountRemoveHandler.Handle(id, CurrentUser, cancellationToken);
-            return Ok(id);
         }
     }
 }

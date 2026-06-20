@@ -112,6 +112,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             string? zoneAddress = await _t51QueryService.GetAddress(customerInfo.ReportData?.FirstOrDefault()?.ZoneId ?? 0, true);
             ICollection<ConnectDisconnectPrintDataOutputDto> data = new List<ConnectDisconnectPrintDataOutputDto>();
             var locInfo = await GetBase64Location(inputDto.BillId, cancellationToken);
+            long devidDebt = (customerInfo.ReportData?.FirstOrDefault()?.WaterDebtAmount ?? 0) / 1000;
 
             data.Add(new ConnectDisconnectPrintDataOutputDto()
             {
@@ -122,7 +123,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 PostalCode = customerInfo.ReportData?.FirstOrDefault()?.PostalCode ?? string.Empty,
                 NationalCode = customerInfo.ReportHeader?.NationalCode ?? string.Empty,
                 Address = customerInfo.ReportData?.FirstOrDefault()?.Address ?? string.Empty,
-                WaterDebtAmount = customerInfo.ReportData?.FirstOrDefault()?.WaterDebtAmount ?? 0,
+                WaterDebtAmount = devidDebt * 1000,
                 FirstName = customerInfo.ReportHeader?.FirstName ?? string.Empty,
                 Surname = customerInfo.ReportHeader?.Surname ?? string.Empty,
                 FatherName = customerInfo.ReportHeader?.FatherName ?? string.Empty,
@@ -192,6 +193,12 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
         private async Task<(LocationInfoDto, string)> GetBase64Location(string billId, CancellationToken cancellationToken)
         {
             LocationInfoDto location = await _locationInfoService.Handle(billId, cancellationToken);
+            if (location is null ||
+                string.IsNullOrWhiteSpace(location.X) || location.X.Trim() == "0" ||
+                string.IsNullOrWhiteSpace(location.Y) || location.Y.Trim() == "0")
+            {
+                return (location, await Base64Operation.GetNotFoundBase64(cancellationToken));
+            }
             string base64 = await _mapService.GenerateMapBase64(location.X, location.Y);
             return (location, base64);
         }
@@ -208,6 +215,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             if ((customerInfo?.ReportData?.FirstOrDefault()?.DeletionStateId ?? 0) == deletionStateId)
             {
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidConnectDisconnectByCustomerInfo(deletionStateTitle));
+            }
+            if ((customerInfo?.ReportData?.FirstOrDefault()?.WaterDebtAmount ?? 0) < 0)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidDebtAmountLessThanZero);
             }
             return customerInfo;
         }

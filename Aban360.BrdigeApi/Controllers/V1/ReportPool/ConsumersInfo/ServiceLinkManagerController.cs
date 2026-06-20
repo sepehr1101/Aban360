@@ -9,14 +9,14 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
     [Route("v1/service-link")]
     public class ServiceLinkManagerController : BaseController
     {
-        private readonly ICustomerUpdateHandler _customerUpdateHandler;
+        private readonly IConnectDisconnectSetResultHandler _connectDisconnectSetResultHandler;
         string successfullyDone = "با موفقیت انجام شد";
         int _disconnectState = 5;
         int _connectState = 0;
-        public ServiceLinkManagerController(ICustomerUpdateHandler customerUpdateHandler)
+        public ServiceLinkManagerController(IConnectDisconnectSetResultHandler connectDisconnectSetResultHandler)
         {
-            _customerUpdateHandler = customerUpdateHandler;
-            _customerUpdateHandler.NotNull(nameof(customerUpdateHandler));
+            _connectDisconnectSetResultHandler = connectDisconnectSetResultHandler;
+            _connectDisconnectSetResultHandler.NotNull(nameof(connectDisconnectSetResultHandler));
         }
 
         [HttpPost]
@@ -24,7 +24,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
         [ProducesResponseType(typeof(ApiResponseEnvelope<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Disconnect([FromBody] ServiceLinkConnectionInput input, CancellationToken cancellationToken)
         {
-            await _customerUpdateHandler.Handle(input, _disconnectState, CurrentUser, cancellationToken);
+            await _connectDisconnectSetResultHandler.Handle(input, false, CurrentUser, cancellationToken);
             return Ok(successfullyDone);
         }
 
@@ -33,7 +33,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
         [ProducesResponseType(typeof(ApiResponseEnvelope<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Reconnect([FromBody] ServiceLinkConnectionInput input, CancellationToken cancellationToken)
         {
-            await _customerUpdateHandler.Handle(input, _connectState, CurrentUser, cancellationToken);
+            await _connectDisconnectSetResultHandler.Handle(input, true, CurrentUser, cancellationToken);
             return Ok(successfullyDone);
         }
     }
