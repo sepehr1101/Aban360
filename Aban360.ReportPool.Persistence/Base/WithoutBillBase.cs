@@ -231,8 +231,12 @@ namespace Aban360.ReportPool.Persistence.Base
         }
         internal string GetGroupedBothQuery()
         {
-            string zonePartQuery = "AND b.ZoneId IN @ZoneIds";
-            string usagePartQuery = "AND b.UsageId IN @usageIds";
+            string b_zonePartQuery = "AND b.ZoneId IN @ZoneIds";
+            string b_usagePartQuery = "AND b.UsageId IN @usageIds";
+            string c_zonePartQuery = "AND c.ZoneId IN @ZoneIds";
+            string c_usagePartQuery = "AND c.UsageId IN @usageIds";
+
+
             string ZoneTitle = nameof(ZoneTitle),
                   UsageTitle = nameof(UsageTitle);
 
@@ -268,8 +272,8 @@ namespace Aban360.ReportPool.Persistence.Base
                     			b.TypeCode IN (1,7,8) AND
                                 c.PhysicalWaterInstallDateJalali <= @ToDateJalali AND
                     			c.ToDayJalali IS NULL 
-                                {zonePartQuery}
-                                {usagePartQuery}
+                                {c_zonePartQuery}
+                                {c_usagePartQuery}
                           ) AND --not exists
                     	  (
                               @FromReadingNumber IS NULL or
@@ -279,8 +283,8 @@ namespace Aban360.ReportPool.Persistence.Base
                          c.DeletionStateId IN (0) AND
                     	 c.ToDayJalali IS NULL  AND 
                          CustomerWarehouse.dbo.PersianToMiladi(c.WaterRegisterDateJalali) < DATEADD(day,-45,CustomerWarehouse.dbo.PersianToMiladi(@ToDateJalali))
-                         {zonePartQuery}
-                         {usagePartQuery}
+                         {c_zonePartQuery}
+                         {c_usagePartQuery}
                     ),
 					LatestBill as
                     (
@@ -296,8 +300,8 @@ namespace Aban360.ReportPool.Persistence.Base
                     	    @ToReadingNumber IS NULL or 
                     	    b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber
                           ) 
-                          {zonePartQuery}
-                          {usagePartQuery}
+                          {b_zonePartQuery}
+                          {b_usagePartQuery}
 					) --LatestBill
                     Select 
 						MAX(t46.C2) AS RegionTitle,
