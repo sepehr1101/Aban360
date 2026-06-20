@@ -64,12 +64,12 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             await Validatoin(latestTrackingInfo.TrackId, latestTrackingInfo.StatusId);
 
             TrackingInsertDuplicateDto trackingInsertSeenAssessmentDto = new(latestTrackingInfo.TrackNumber, _seenByAssessmentStatus, inputDto.Description, assessmentCode, _requestOrigin, true, true);
-            TrackingInsertDuplicateDto trackingInsertSetAssessmentResultDto = new(latestTrackingInfo.TrackNumber, _setAssessmentResultStatus, inputDto.Description, assessmentCode, _requestOrigin, true, false, 1);
+            TrackingInsertDuplicateDto trackingInsertSetAssessmentResultDto = new(latestTrackingInfo.TrackNumber, _setAssessmentResultStatus, inputDto.Description, assessmentCode, _requestOrigin, isSuccess: false, false, 1);
             TrackingInsertDuplicateDto trackingInserSetArchiveDto = new(latestTrackingInfo.TrackNumber, _archiveStats, inputDto.Description, assessmentCode, _requestOrigin, true, false, 2);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(latestTrackingInfo.ZoneId, null, null, latestTrackingInfo.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
             AssessmentUpdateDto assessmentUpdateDto = await GetAssessmentUpdateDto(inputDto, latestTrackingInfo, moshtrakInfo, assessmentCode, trackingInsertSetAssessmentResultDto.TrackId);
 
-            await ExecuteSqlCommand(latestTrackingInfo.ZoneId, trackingInsertSetAssessmentResultDto, trackingInsertSeenAssessmentDto, trackingInserSetArchiveDto, assessmentUpdateDto);
+            await ExecSql(latestTrackingInfo.ZoneId, trackingInsertSetAssessmentResultDto, trackingInsertSeenAssessmentDto, trackingInserSetArchiveDto, assessmentUpdateDto);
         }
         private async Task InputValidation(PreAssessmentResultInputDto input, CancellationToken cancellationToken)
         {
@@ -128,7 +128,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 AllInJson = body //JsonSerializer.Serialize<PreAssessmentResultInputDto>(inputDto)
             };
         }
-        private async Task ExecuteSqlCommand(int zoneId, TrackingInsertDuplicateDto trackingInsertSetAssessmentResultDto, TrackingInsertDuplicateDto trackingInsertSeenAssessmentDto, TrackingInsertDuplicateDto trackingInserSetArchiveDto, AssessmentUpdateDto assessmentUpdateDto)
+        private async Task ExecSql(int zoneId, TrackingInsertDuplicateDto trackingInsertSetAssessmentResultDto, TrackingInsertDuplicateDto trackingInsertSeenAssessmentDto, TrackingInsertDuplicateDto trackingInserSetArchiveDto, AssessmentUpdateDto assessmentUpdateDto)
         {
             string dbName = GetDbName(zoneId);
             using (IDbConnection connection = _sqlReportConnection)

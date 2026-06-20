@@ -63,7 +63,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(connectDisconnectInfo.BillId);
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumber);
 
-            Validate(memberInfo, connectDisconnectInfo, deletionStateId, isConnect, inputDto.Why);
+            Validate(memberInfo, connectDisconnectInfo, deletionStateId, inputDto, isConnect);
             var (resultId, resultTitle, opLogText, message, isSendMessage) = GetConnectOrDisconnectValue(connectDisconnectInfo, memberInfo, inputDto, isConnect);
 
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, deletionStateId, memberInfo);
@@ -203,9 +203,9 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
 
             return (result.Id, result.Title, opLogText, message, isSendMessage);
         }
-        private void Validate(MemberInfoGetDto memberInfo, ConnectDisconnectGetDto connectDisconnectResult, int deletionStateId, bool isConnect, int? Why)
+        private void Validate(MemberInfoGetDto memberInfo, ConnectDisconnectGetDto connectDisconnectResult, int deletionStateId, ServiceLinkConnectionInput inputDto, bool isConnect)
         {
-            if (!isConnect && (Why == 0 || Why is null))
+            if (!isConnect && (inputDto.Why == 0 || inputDto.Why is null))
             {
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidEmptyDisconnectWhy);
             }
@@ -216,6 +216,10 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             if (memberInfo.DeletionStateId == deletionStateId)
             {
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidDuplicateDeletionState);
+            }
+            if (connectDisconnectResult.CommandDateTime.ToShortPersianDateString().CompareTo(inputDto.When) > 0)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidLessThanCommandDate);
             }
         }
         public ICollection<NumericDictionary> GetDisconnectResults()

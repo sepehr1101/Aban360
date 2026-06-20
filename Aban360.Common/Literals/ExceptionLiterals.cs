@@ -44,6 +44,8 @@
         public static string CurrentNumberNotMoreThanPreviousNumber => "رقم دوره قبلی نمیتوان از رقم دوره جاری بزرگ تر باشد";
         public static string InvalidLessThanCurrentDate => "تاریخ وارد شده نباید از تاریخ امروز کمتر باشد.";
         public static string InvalidMoreThanCurrentDate => "تاریخ وارد شده نباید از تاریخ امروز بزرگتر باشد.";
+        public static string InvalidLessThanCommandDate => "تاریخ وارد شده نباید از تاریخ صدور دستور کوچکتر باشد.";
+        public static string InvalidDebtAmountLessThanZero => "مبلغ بدهی آب‌بها کمتر از صفر است.";
         public static string InvalidDeletionState => "نامعتبر! کنتور جمع‌آوری شده";
         public static string DmsInfoNotFound => "اطلاعات بایگانی الکترونیک یافت نشد";
         public static string InvoiceNotFound => " قبض یافت نشد";
@@ -231,6 +233,7 @@
 
         public static string InvalidInsertClientDiscount => "خطا در ثبت درخواست تخفیف";
         public static string InvalidUpdateClientDiscount => "خطا در ویرایش درخواست تخفیف";
+        public static string InvalidRemoveClientDiscount => "خطا در حذف درخواست تخفیف";
         public static string NotFountVosolEn => "وصولی حق انشعاب یافت نشد";
         public static string InvalidDeleteVosolEn => "خطا در حذف وصولی حق انشعاب";
         public static string InvalidInsertVosolEn => "خطا در ذخیره وصولی حق انشعاب";

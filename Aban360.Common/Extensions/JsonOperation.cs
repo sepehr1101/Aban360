@@ -35,7 +35,7 @@ namespace Aban360.Common.Extensions
         public static async Task<JsonReportId> ExportToJson<THeader, TData>(ReportOutput<THeader, TData> reportOutput, CancellationToken cancellationToken, int fileCode, bool hasLogo=false)
         {
             const string path = @"AppData\Jsons\";
-            const string logoPath = @"AppData\Images\logoBase64.txt";
+            //const string logoPath = @"AppData\Images\logoBase64.txt";
 
             reportOutput.NotNull(nameof(reportOutput));
             Guid id = Guid.NewGuid();
@@ -48,9 +48,10 @@ namespace Aban360.Common.Extensions
             string? logoBase64 = null;           
             var outputObject = JObject.FromObject(reportOutput, JsonSerializer.Create(settings));
 
-            if (hasLogo && Path.Exists(logoPath))
+            if (hasLogo )//&& Path.Exists(logoPath))
             {
-                logoBase64 = await File.ReadAllTextAsync(logoPath, cancellationToken);
+                //logoBase64 = await File.ReadAllTextAsync(logoPath, cancellationToken);
+                logoBase64 =await Base64Operation.GetLogoBase64(cancellationToken);
             }
             if (logoBase64 != null && outputObject["reportHeader"] is JObject headerObject)
             {
@@ -65,7 +66,7 @@ namespace Aban360.Common.Extensions
         public static async Task<JsonReportId> ExportToJsonFlat<TFlatData>(TFlatData reportOutput, CancellationToken cancellationToken, int fileCode, bool hasLogo = false)
         {
             const string path = @"AppData\Jsons\";
-            const string logoPath = @"AppData\Images\logoBase64.txt";
+            //const string logoPath = @"AppData\Images\logoBase64.txt";
 
             reportOutput.NotNull(nameof(reportOutput));
             Guid id = Guid.NewGuid();
@@ -77,9 +78,10 @@ namespace Aban360.Common.Extensions
             };
             string? logoBase64 = null;
             var outputObject = JObject.FromObject(reportOutput, JsonSerializer.Create(settings));
-            if (hasLogo && Path.Exists(logoPath))
+            if (hasLogo)// && Path.Exists(logoPath))
             {
-                logoBase64 = await File.ReadAllTextAsync(logoPath, cancellationToken);
+                //logoBase64 = await File.ReadAllTextAsync(logoPath, cancellationToken);
+                logoBase64 = await Base64Operation.GetLogoBase64(cancellationToken);
             }
             if (logoBase64 != null && outputObject["reportHeader"] is JObject headerObject)
             {

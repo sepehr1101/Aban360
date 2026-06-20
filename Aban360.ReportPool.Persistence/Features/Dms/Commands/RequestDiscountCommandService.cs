@@ -38,6 +38,15 @@ namespace Aban360.ReportPool.Persistence.Features.Dms.Commands
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateClientDiscount);
             }
         }
+        public async Task Remove(ClientDiscountRemoveDto input)
+        {
+            string command = GetRemoveCommand();
+            int recordEffected = await _connection.ExecuteAsync(command, input, _transaction);
+            if (recordEffected <= 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidRemoveClientDiscount);
+            }
+        }
 
         private string GetInsertCommand()
         {
@@ -54,6 +63,13 @@ namespace Aban360.ReportPool.Persistence.Features.Dms.Commands
                     Set
                     	Name=@Name ,Family=@Family ,FatherName=@FatherName ,CodeMeli=@CodeMeli ,
                     	DarsadJanbazi=@DarsadJanbazi ,Radif=@Radif ,PreRadif=@PreRadif ,LifeType=@LifeType
+                    Where Id=@Id";
+        }
+        private string GetRemoveCommand()
+        {
+            return @"Update AbAndFazelab.dbo.ClientDiscount
+                    Set
+                    	RemovedBy=@RemovedBy , RemovedDateTime=@RemovedDateTime
                     Where Id=@Id";
         }
     }

@@ -6,6 +6,7 @@ using Aban360.ReportPool.Application.Features.Geo.Contracts;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Domain.Features.Geo;
 using Aban360.ReportPool.Infrastructure.Features.Geo;
+using NetTopologySuite.Geometries;
 
 namespace Aban360.ReportPool.Application.Features.Geo.Implementations
 {
@@ -40,8 +41,16 @@ namespace Aban360.ReportPool.Application.Features.Geo.Implementations
             await _zoneService.IsUserInZone(appUser, zoneIdAndCustomerNumber.ZoneId);
 
             CustomerLocationDto locationInfo = await _gisService.GetCustomerLocation(new CustomerLocationInputDto(billId));
-            string base64Image = await _mapService.GenerateMapBase64(locationInfo.X, locationInfo.Y);
-            return new LocationBase64Dto(zoneIdAndCustomerNumber.CustomerNumber,zoneIdAndCustomerNumber.ZoneId,billId,base64Image);
+            string base64Image = string.Empty;
+            
+            if (locationInfo is null ||
+                string.IsNullOrWhiteSpace(locationInfo.X) || locationInfo.X.Trim() == "0" ||
+                string.IsNullOrWhiteSpace(locationInfo.Y) || locationInfo.Y.Trim() == "0")
+            {
+                base64Image = await Base64Operation.GetNotFoundBase64(cancellationToken);
+            }
+            base64Image = await _mapService.GenerateMapBase64(locationInfo.X, locationInfo.Y);
+            return new LocationBase64Dto(zoneIdAndCustomerNumber.CustomerNumber, zoneIdAndCustomerNumber.ZoneId, billId, base64Image);
         }
     }
 }

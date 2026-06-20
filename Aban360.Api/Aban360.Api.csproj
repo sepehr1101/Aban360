@@ -116,7 +116,6 @@
 
   <ItemGroup>
     <Folder Include="AppData\Dbfs\" />
-    <Folder Include="AppData\Images\" />
     <Folder Include="AppData\Excels\" />
     <Folder Include="Controllers\V1\ClaimPool\Registration\Commands\" />
     <Folder Include="Controllers\V1\ClaimPool\Registration\Queries\" />
@@ -143,6 +142,9 @@
 
   <ItemGroup>
     <None Update="AppData\Images\location_icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="AppData\Images\LogoNotFoundBase64.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="AppData\Mrts\100.mrt">

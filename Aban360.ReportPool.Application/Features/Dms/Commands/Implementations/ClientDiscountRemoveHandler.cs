@@ -1,0 +1,35 @@
+﻿using Aban360.Common.ApplicationUser;
+using Aban360.Common.Db.Dapper;
+using Aban360.ReportPool.Application.Features.Dms.Commands.Contracts;
+using Aban360.ReportPool.Domain.Features.Dms;
+using Aban360.ReportPool.Persistence.Features.Dms.Commands;
+using Microsoft.Extensions.Configuration;
+using System.Data;
+
+namespace Aban360.ReportPool.Application.Features.Dms.Commands.Implementations
+{
+    internal sealed class ClientDiscountRemoveHandler : AbstractBaseConnection, IClientDiscountRemoveHandler
+    {
+        public ClientDiscountRemoveHandler(IConfiguration configuration)
+            : base(configuration)
+        {
+        }
+
+        public async Task Handle(int id, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    RequestDiscountCommandService clientDiscountCommandService = new(connection, transaction);
+                    await clientDiscountCommandService.Remove(new ClientDiscountRemoveDto(id, appUser.UserId));
+                    transaction.Commit();
+                }
+            }
+        }
+    }
+}
