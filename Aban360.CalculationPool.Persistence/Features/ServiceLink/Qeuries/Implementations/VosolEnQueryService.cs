@@ -44,7 +44,8 @@ namespace Aban360.CalculationPool.Persistence.Features.ServiceLink.Qeuries.Imple
 						sh_ghabs BillId,
 						pay_date PayDateJalali,
 						date_bank BankDateJalali,
-						date_bes RegisterDateJalali,
+						date_sabt RegisterDateJalali,
+						date_bes CreditDateJalali,
 						serial BankCode,
 						TRIM(cod_bank) BankBranchCode,
 						cod3 Amount
@@ -53,7 +54,8 @@ namespace Aban360.CalculationPool.Persistence.Features.ServiceLink.Qeuries.Imple
 						On town=t51.C0
 					Where
 						town=@zoneId AND
-						date_bes =@PayDateJalali";
+						date_sabt =@PayDateJalali AND
+						TRIM(pay_date)='' ";
         }
         private string GetByCustomerNumberQuery(string dbName)
         {
@@ -66,6 +68,7 @@ namespace Aban360.CalculationPool.Persistence.Features.ServiceLink.Qeuries.Imple
 						pay_date PayDateJalali,
 						date_bank BankDateJalali,
 						date_bes RegisterDateJalali,
+						date_bes CreditDateJalali,
 						serial BankCode,
 						cod_bank BankCode,
 						cod3 Amount

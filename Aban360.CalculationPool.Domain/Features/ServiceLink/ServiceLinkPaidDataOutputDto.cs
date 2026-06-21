@@ -10,6 +10,7 @@
         public string BankDateJalali { get; set; }
         public string PayDateJalali { get; set; }
         public string RegisterDateJalali { get; set; }
+        public string CreditDateJalali { get; set; }
         public long Amount { get; set; }
         public string BankCode { get; set; }
         public string? BankBranchCode { get; set; }
