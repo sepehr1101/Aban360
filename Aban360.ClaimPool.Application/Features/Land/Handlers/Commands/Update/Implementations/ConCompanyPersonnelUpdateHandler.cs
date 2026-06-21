@@ -1,0 +1,102 @@
+﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
+using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
+using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
+using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
+using Aban360.Common.ApplicationUser;
+using Aban360.Common.Db.Constants.Literals;
+using Aban360.Common.Db.Dapper;
+using Aban360.Common.Db.Services;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
+using FluentValidation;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using System.Data;
+using System.Text.Json;
+
+namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations
+{
+    internal sealed class ConCompanyPersonnelUpdateHandler : AbstractBaseConnection, IConCompanyPersonnelUpdateHandler
+    {
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IConCompanyQueryService _conCompanyQueryService;
+        private readonly IValidator<ConCompanyPersonnelUpdateInputDto> _validator;
+        public ConCompanyPersonnelUpdateHandler(
+            IHttpContextAccessor contextAccessor,
+            IConCompanyQueryService conCompanyQueryService,
+            IValidator<ConCompanyPersonnelUpdateInputDto> validator,
+            IConfiguration configuration)
+                : base(configuration)
+        {
+            _contextAccessor = contextAccessor;
+            _contextAccessor.NotNull(nameof(contextAccessor));
+
+            _conCompanyQueryService = conCompanyQueryService;
+            _conCompanyQueryService.NotNull(nameof(conCompanyQueryService));
+
+            _validator = validator;
+            _validator.NotNull(nameof(validator));
+        }
+        public async Task Handle(ConCompanyPersonnelUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            await Validate(inputDto, cancellationToken);
+            ConCompanyGetDto conCompanyInfo = await _conCompanyQueryService.Get(inputDto.CompanyId);
+            int personnelIndex = await _conCompanyQueryService.GetPersonnelIndex(inputDto.CompanyId, inputDto.Id);
+            string ConCompanyPersonnelUpdateJson = GetPersonnelUpdateJson(inputDto, appUser);
+            string opLogText = string.Format(OpLogLiterals.ConCompanyPersonnelUpdateOpLog, inputDto.FullName, inputDto.NationalCode);
+
+            await ExecSql(ConCompanyPersonnelUpdateJson, appUser, inputDto.CompanyId, personnelIndex, opLogText);
+        }
+        private async Task ExecSql(string conCompanyPersonnelUpdateJson, IAppUser appUser, int companyId, int personnelIndex, string opLogText)
+        {
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    ConCompanyCommandService conCompanyCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+
+                    await conCompanyCommandService.UpdatePersonnel(companyId, conCompanyPersonnelUpdateJson, personnelIndex);
+                    await opLogCommandService.Insert(opLogText, appUser);
+
+                    transaction.Commit();
+                }
+            }
+        }
+        private async Task Validate(ConCompanyPersonnelUpdateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new BaseException(message);
+            }
+        }
+        private string GetPersonnelUpdateJson(ConCompanyPersonnelUpdateInputDto input, IAppUser appUser)
+        {
+            ConCompanyPersonnelUpdateDto UpdateDto = new()
+            {
+                Id = input.Id,
+                FullName = input.FullName,
+                NationalCode = input.NationalCode,
+                MobileNumber = input.MobileNumber,
+                PersonnelCode = input.PersonnelCode,
+                HomeAddress = input.HomeAddress,
+                HomePhoneNumber = input.HomePhoneNumber,
+                EducationGrade = input.EducationGrade,
+                EducationField = input.EducationField,
+                BirtDateJalali = input.BirtDateJalali,
+                InsertedBy = appUser.UserId,
+                RemovedBy = null,
+                RemovedDateTime = null,
+            };
+
+            return JsonSerializer.Serialize(UpdateDto);
+        }
+    }
+}

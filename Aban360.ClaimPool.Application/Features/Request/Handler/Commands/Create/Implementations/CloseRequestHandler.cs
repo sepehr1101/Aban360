@@ -42,7 +42,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             TrackingInsertDuplicateDto trackingInsertDto = new(trackingInfo?.TrackNumber ?? 0, _removeRequestStatusId, deleteDescription, userName, _requestOrigin, true, false);
 
             string dbName = GetDbName(moshtrakInfo.ZoneId);
-            await SqlCommands(trackingInfo, moshtrakSabtUpdate, trackingInsertDto, dbName);
+            await ExecSql(trackingInfo, moshtrakSabtUpdate, trackingInsertDto, dbName);
 
             return new RequestCloseOuputDto(moshtrakInfo.ZoneId, moshtrakInfo.ZoneTitle, inputDto.TrackNumber);
         }
@@ -71,7 +71,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
             return (moshtrakSabtUpdate, moshtrakInfo);
         }
-        private async Task SqlCommands(TrackingOutputDto? trackingInfo, MoshtrakSabtUpdateDto moshtrakSabtUpdate, TrackingInsertDuplicateDto trackingInsertDto, string dbName)
+        private async Task ExecSql(TrackingOutputDto? trackingInfo, MoshtrakSabtUpdateDto moshtrakSabtUpdate, TrackingInsertDuplicateDto trackingInsertDto, string dbName)
         {
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -84,8 +84,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     if (trackingInfo != null)
                     {
                         TrackingCommandService _trackingCommandService = new(connection, transaction);
-                        await _trackingCommandService.InsertDuplicate(trackingInsertDto);
                         await _trackingCommandService.UpdateIsConsiderdLatest(trackingInfo.TrackNumber, true);
+                        await _trackingCommandService.InsertDuplicate(trackingInsertDto);
                     }
                     MoshtrakCommandService _moshtrackCommandService = new(connection, transaction);
                     await _moshtrackCommandService.UpdateSabt(moshtrakSabtUpdate, dbName);

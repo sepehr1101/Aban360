@@ -40,6 +40,15 @@
         public static string InvalidRemoveConnectDisconnect => "خطا در حذف قطع/وصل";
         public static string InvalidConnectDisconnectId => "کد درخواست قطع/وصل یافت نشد.";
 
+        public static string InvalidInsertConCompany => "خطا در ذخیره پیمانکار قطع/وصل";
+        public static string InvalidUpdateConCompany => "خطا در ویرایش پیمانکار قطع/وصل";
+        public static string InvalidRemoveConCompany => "خطا در حذف پیمانکار قطع/وصل";
+        public static string InvalidConCompanyId => "کد پیمانکار قطع/وصل یافت نشد.";
+        public static string InvalidConCompanyPersonnelId => "کد مامور قطع/وصل یافت نشد.";
+        public static string InvalidInsertConCompanyPersonnel => "خطا در ایجاد مامور قطع/وصل";
+        public static string InvalidUpdateConCompanyPersonnel => "خطا در ویرایش مامور قطع/وصل";
+        public static string InvalidRemoveConCompanyPersonnel => "خطا در حذف مامور قطع/وصل";
+
         public static string NotFoundT100 => "کد اقلام ارسالی یافت نشد.";
         public static string NotFoundRequestBillDetail => "قبض برگشتی یافت نشد.";
     }

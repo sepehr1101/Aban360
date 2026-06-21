@@ -1,0 +1,157 @@
+﻿using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
+using Aban360.ClaimPool.Persistence.Constants.Literals;
+using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
+using Aban360.Common.Db.Dapper;
+using Aban360.Common.Exceptions;
+using Dapper;
+using Microsoft.Extensions.Configuration;
+
+namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
+{
+    internal sealed class ConCompanyQueryService : AbstractBaseConnection, IConCompanyQueryService
+    {
+        public ConCompanyQueryService(IConfiguration configuration)
+            : base(configuration)
+        {
+        }
+
+        public async Task<IEnumerable<ConCompanyGetDto>> Get()
+        {
+            string query = GetQuery();
+            IEnumerable<ConCompanyGetDto> result = await _sqlReportConnection.QueryAsync<ConCompanyGetDto>(query);
+            return result;
+        }
+        public async Task<ConCompanyGetDto> Get(int id)
+        {
+            string query = GetByIdQuery();
+            ConCompanyGetDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ConCompanyGetDto>(query, new { id });
+            if (result is null)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidConCompanyId);
+            }
+            return result;
+        }
+        public async Task<ConCompanyPersonnelGetDto> GetPersonnel(int id)
+        {
+            string query = GetByIdQuery();
+            ConCompanyPersonnelGetDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ConCompanyPersonnelGetDto>(query, new { id });
+            if (result is null)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidConCompanyId);
+            }
+            return result;
+        }
+        public async Task<IEnumerable<ConCompanyPersonnelGetDto>> GetPersonnel()
+        {
+            string query = GetQuery();
+            IEnumerable<ConCompanyPersonnelGetDto> result = await _sqlReportConnection.QueryAsync<ConCompanyPersonnelGetDto>(query);
+            return result;
+        }
+        public async Task<ConCompanyPersonnelPersonalGetDto> GetPersonnelById(int companyId, Guid personnelId)
+        {
+            string query = GetPersonnelByIdQuery();
+            ConCompanyPersonnelPersonalGetDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ConCompanyPersonnelPersonalGetDto>(query, new { companyId, personnelId });
+            if (result is null)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidConCompanyId);
+            }
+            return result;
+        }
+        public async Task<int> GetPersonnelIndex(int companyId, Guid personnelId)
+        {
+            string query = GetPersonnelIndexQuery();
+            int? index = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(query, new { companyId, personnelId });
+            if (index is null)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidConCompanyPersonnelId);
+            }
+            return index.Value;
+        }
+
+        private string GetQuery()
+        {
+            return @$"Select 
+                         Id, 
+                         CompanyName,
+                         CompanyNationalCode, 
+                         CompanyMobileNumber,
+                         CompanyAddress, 
+                         CompanyPostalCode,
+                         RepresentativePostalCode,
+                         RepresentativeName,
+                         RepresentativeNationalCode,
+                         RepresentativeFatherName,
+                         RepresentativeMobileNumber,
+                         RepresentativeAddress,
+                         RepresentativeBirthDateJalali, 
+                         RepresentativeBirthPlace,
+                         RepresentativeCertificateNumber,
+                         ContractNumber, 
+                         ContractSubject,
+                         ContractDataJalali, 
+                         ContractDuration,
+                         AdministratorName, 
+                         AdministratorMobileNumber,
+                         ConCompanyPersonnel,
+                         InsertedBy,
+                         InsertedDateTime,
+                         RemovedBy,
+                         RemovedDateTime
+                    From [Db70].dbo.ConCompany
+                    Where RemovedBy IS NULL";
+        }
+        private string GetByIdQuery()
+        {
+            return @$"Select 
+                         Id, 
+                         CompanyName,
+                         CompanyNationalCode, 
+                         CompanyMobileNumber,
+                         CompanyAddress, 
+                         CompanyPostalCode,
+                         RepresentativePostalCode,
+                         RepresentativeName,
+                         RepresentativeNationalCode,
+                         RepresentativeFatherName,
+                         RepresentativeMobileNumber,
+                         RepresentativeAddress,
+                         RepresentativeBirthDateJalali, 
+                         RepresentativeBirthPlace,
+                         RepresentativeCertificateNumber,
+                         ContractNumber, 
+                         ContractSubject,
+                         ContractDataJalali, 
+                         ContractDuration,
+                         AdministratorName, 
+                         AdministratorMobileNumber, 
+                         ConCompanyPersonnel,
+                         InsertedBy,
+                         InsertedDateTime,
+                         RemovedBy,
+                         RemovedDateTime
+                    From [Db70].dbo.ConCompany
+                    Where 
+                         Id=@Id AND
+                         RemovedBy IS NULL";
+        }
+        private string GetPersonnelByIdQuery()
+        {
+            return @$"SELECT 
+                        CAST(JSON_VALUE(value, '$.Id') AS uniqueidentifier) AS Id,
+                        JSON_VALUE(value, '$.FullName') AS FullName,
+                        JSON_VALUE(value, '$.MobileNumber') AS MobileNumber,
+                        JSON_VALUE(value, '$.NationalCode') AS NationalCode
+                    FROM [Db70].dbo.ConCompany 
+                    CROSS APPLY OPENJSON(ConCompanyPersonnel)
+                    WHERE Id = @companyId 
+                      AND JSON_VALUE(value, '$.Id') = @personnelId ;";
+        }
+        private string GetPersonnelIndexQuery()
+        {
+            return $@"Select Cast([key] as int)
+                    From [Db70].dbo.ConCompany 
+                    Cross Apply openjson(ConCompanyPersonnel)
+                    Where Id=@CompanyId and  JSON_VALUE(value,'$.Id')=@personnelId ";
+        }
+    }
+}

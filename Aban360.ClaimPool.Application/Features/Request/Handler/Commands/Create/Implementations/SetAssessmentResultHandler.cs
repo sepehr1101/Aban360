@@ -234,6 +234,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new CustomValidationException(message);
             }
+            if (inputDto.BlockId == "-")
+            {
+                inputDto.BlockId = string.Empty;
+            }
         }
         private async Task<bool> GetIsSucces(int statusId)
         {

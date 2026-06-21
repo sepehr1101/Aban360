@@ -26,6 +26,12 @@
         public static string ServiceLinkDisconnectSetResultOpLog => @"ثبت نتیجه قطع انجام شد. شناسه قبض:{0}  نتیجه:{1}";
         public static string ServiceLinkConnectRemoveOpLog => @"دستور وصل حذف شد. شناسه قبض:{0}  شناسه جدول:{1}";
         public static string ServiceLinkDisconnectRemoveOpLog => @"دستور قطع حذف شد. شناسه قبض:{0}  شناسه جدول:{1}";
+        public static string ConCompanyInsertOpLog => @"پیمانکار قطع/وصل ایجاد شد. نام شرکت:{0}  نام نماینده:{1}";
+        public static string ConCompanyUpdateOpLog => @"پیمانکار قطع/وصل ویرایش شد. نام شرکت:{0}  نام نماینده:{1}";
+        public static string ConCompanyRemoveOpLog => @"پیمانکار قطع/وصل حذف شد. نام شرکت:{0}  نام نماینده:{1}";
+        public static string ConCompanyPersonnelInsertOpLog => @"مامور وصول پیمانکار قطع/وصل ایجاد شد. نام مامور:{0}  کدملی:{1}";
+        public static string ConCompanyPersonnelUpdateOpLog => @"مامور وصول پیمانکار قطع/وصل ویرایش شد. نام مامور:{0}  کدملی:{1}";
+        public static string ConCompanyPersonnelRemoveOpLog => @"مامور وصول پیمانکار قطع/وصل حذف شد. نام مامور:{0}  کدملی:{1}";
 
         public static string UserCreate => @"کاربر ایجاد شد. نام کامل:{0}  نام کاربری:{1}  تلفن همراه:{2}"; 
         public static string UserUpdate => @"کاربر ویرایش شد. شناسه کاربر:{0}  نام کامل :از {1} به {2}  نام کاربری:از {3} به {4}  تلفن همراه:از {5} به {6}"; 
