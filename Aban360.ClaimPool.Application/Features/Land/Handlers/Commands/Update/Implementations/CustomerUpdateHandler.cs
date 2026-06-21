@@ -243,7 +243,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 CommertialUnit = inputDto.CommertialUnit,
                 DomesticUnit = inputDto.DomesticUnit,
                 OtherUnit = inputDto.OtherUnit,
-                HouseholdDateJalali = DateValidation(inputDto.HouseholdDateJalali, true),
+                HouseholdDateJalali = DateValidation(inputDto.HouseholdDateJalali, false),
                 HouseholdNumber = inputDto.HouseholdNumber,
                 MeterDiamterId = inputDto.MeterDiameterId,
                 IsSpecial = inputDto.IsSpecial,

@@ -155,7 +155,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         }
         private string GetBedBesQuery(string dbName)
         {
-            return $@"Select TOP 1
+            return $@"Select TOP 1	
 						b.town ZoneId,
 						b.radif as CustomerNumber,
 						b.sh_ghabs1 BillId,
