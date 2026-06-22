@@ -286,7 +286,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                     InstallmentCount = 1,
                     MeterDiameterId = moshtrakInfo.MeterDiameterId,
                     Ser = 0,
-                    Type = 0,//todo
+                    Type = 1,//todo
                 })
             .ToList();
         }

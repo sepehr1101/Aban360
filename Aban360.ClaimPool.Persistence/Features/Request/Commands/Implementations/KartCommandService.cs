@@ -67,6 +67,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidRemoveKart);
             }
         }
+        public async Task Update(KartInstallmentUpdateDto inputDto, string dbName)
+        {
+            string command = GetUpdateInstallmentCommand(dbName);
+            int rowEffected = await _connection.ExecuteAsync(command, inputDto, _transaction);
+            if (rowEffected <= 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateInstallmentKart);
+            }
+        }
 
         private string GetTableName(bool isKarten75) => isKarten75 ? _karten75TableName : _kartTableName;
         private string GetInsertCommand(string dbName, string tableName)
@@ -116,6 +125,22 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                     		noe_bed=@ItemId
                     )
                     Delete Cte ";
+        }
+        private string GetUpdateInstallmentCommand(string dbName)
+        {
+            return $@"Update[{dbName}].dbo.kart 
+                    Set
+                    	pard_n = pard * @CashPercent ,
+                    	pard_g = pard * @UncashPercent ,
+                    	pish_gest = @FirstInstallment ,
+                    	drsd_gest = @InstallmentPercent ,
+                    	tedad_gest = @InstallmentCount,
+                    	ghest = @Installment  ,
+                    	ICT_CO = @InsertedBy ,
+                        operator = @Operator
+                    Where       
+                        par_no = @StringTrackNumber AND
+                        town = @ZoneId ";
         }
     }
 }
