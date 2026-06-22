@@ -48,7 +48,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             await _meterFlowValidationGetHandler.Handle(latestFlowId, cancellationToken);
             //todo: use cancellationToken
             int firstFlowId = await _meterFlowQueryService.GetFirstFlowId(latestFlowId);
-            IEnumerable<MeterReadingDetailDataOutputDto> readingDetails = await _meterReadingDetailService.Get(firstFlowId);
+            IEnumerable<MeterReadingDetailDataOutputDto> readingDetails = await _meterReadingDetailService.GetWithoutExcluded(firstFlowId);
             ICollection<MeterReadingWithAbBahaResultUpdateDto> consumptionsInfo = new List<MeterReadingWithAbBahaResultUpdateDto>();
             foreach (var readingDetail in readingDetails)
             {
