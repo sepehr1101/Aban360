@@ -69,7 +69,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             ReportOutput<InstallmentRequestHeaderOutputDto, InstallmentRequestDataOutputDto> result = new(_title, header, data);
 
             IEnumerable<GhestInsertDto> ghestsInsertDto = await GetGhestsInsertDto(data, trackingInfo, moshtrakInfo);
-            await ExecuteSqlCommand(ghestsInsertDto, trackingInfo.ZoneId);
+            await ExecSql(ghestsInsertDto, trackingInfo.ZoneId);
 
             return result;
         }
@@ -79,7 +79,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
             if (!_enableStatus.Contains(trackingInfo.StatusId))
             {
-                throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
+                //throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
             }
             if (inputDto.MonthlyDuration > _maxInterval)
             {
@@ -174,14 +174,14 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 Payable = x.Amount,
                 Type = 2,
                 InstallmentNumber = counter,
-                CurrentDateJalali = DateTime.Now.ToShortDateString(),
+                CurrentDateJalali = DateTime.Now.ToShortPersianDateString(),
                 DueDateJalali = x.DueDateJalali,
                 InsertBy = _insertBy,
                 BillId = trackingInfo.BillId ?? string.Empty,
                 PaymentId = x.PaymentId,
             });
         }
-        private async Task ExecuteSqlCommand(IEnumerable<GhestInsertDto> ghestsInsertDto, int zoneId)
+        private async Task ExecSql(IEnumerable<GhestInsertDto> ghestsInsertDto, int zoneId)
         {
             string dbName = GetDbName(zoneId);
             using (IDbConnection connection = _sqlReportConnection)

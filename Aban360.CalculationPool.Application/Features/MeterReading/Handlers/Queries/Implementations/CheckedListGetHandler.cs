@@ -45,7 +45,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             int firstFlowId = await _meterFlowService.GetFirstFlowId(latestFlowId);
             MeterFlowStepEnum latestFlowStep = (await _meterFlowService.Get(latestFlowId)).MeterFlowStepId;
 
-            IEnumerable<MeterReadingDetailDataOutputDto> meterReadings = await _meterReadingDetailService.Get(firstFlowId);
+            IEnumerable<MeterReadingDetailDataOutputDto> meterReadings = await _meterReadingDetailService.GetWithoutExcluded(firstFlowId);
             IEnumerable<MeterReadingDetailCheckedDto> readingsCheck = GetReadingControl(meterReadings, latestFlowStep);
 
             return GetResult(readingsCheck, latestFlowStep);
@@ -102,6 +102,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 CurrentNumber = input.CurrentNumber,
                 InsertByUserId = input.InsertByUserId,
                 InsertDateTime = input.InsertDateTime,
+                Duration = input.Modat ?? 0,
 
                 BranchTypeId = input.BranchTypeId,
                 BranchTypeTitle = input.BranchTypeTitle,

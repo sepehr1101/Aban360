@@ -33,7 +33,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             return $@"Select 
                     	pard Amount,
                     	mohlat DueDateJalali,
-                    	sh_pard1 PaymentId
+                    	TRIM(sh_pard1) PaymentId
                     From [{dbName}].dbo.ghest
                     Where par_no=@stringTrackNumber";
         }
@@ -42,7 +42,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             return $@"Select 
                     	pard Amount,
                     	mohlat DueDateJalali,
-                    	sh_pard1 PaymentId
+                    	TRIM(sh_pard1) PaymentId
                     From [{dbName}].dbo.ghest
                     Where id=@id";
         }

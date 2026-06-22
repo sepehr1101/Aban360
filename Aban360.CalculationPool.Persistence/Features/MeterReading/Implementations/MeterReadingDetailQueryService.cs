@@ -15,9 +15,9 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         {
         }
 
-        public async Task<IEnumerable<MeterReadingDetailDataOutputDto>> Get(int flowImportedId)
+        public async Task<IEnumerable<MeterReadingDetailDataOutputDto>> GetWithoutExcluded(int flowImportedId)
         {
-            string query = GetQuery();
+            string query = GetWithoutExcludedQuery();
             IEnumerable<MeterReadingDetailDataOutputDto> details = await _sqlReportConnection.QueryAsync<MeterReadingDetailDataOutputDto>(query, new { flowImportedId = flowImportedId });
 
             return details;
@@ -41,7 +41,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             return details;
         }
 
-        private string GetQuery()
+        private string GetWithoutExcludedQuery()
         {
             return $@"Select 
                         m.Id,
@@ -179,7 +179,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                         On m.UsageId = t41.C0
                     Where 
                         m.FlowImportedId = @flowImportedId AND
-                        m.RemovedByUserId IS NULL";
+                        m.RemovedByUserId IS NULL AND
+                        m.ExcludedByUserId IS NULL";
         }
         private string GetSingleQuery()
         {

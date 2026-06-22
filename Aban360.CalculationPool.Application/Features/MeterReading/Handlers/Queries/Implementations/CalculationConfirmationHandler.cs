@@ -104,7 +104,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             //await _meterFlowValidationGetHandler.Handle(latestFlowId, MeterFlowStepEnum.ConsumptionChecked, cancellationToken);
 
             int firstFlowId = await _meterFlowQueryService.GetFirstFlowId(latestFlowId);
-            IEnumerable<MeterReadingDetailDataOutputDto> meterReadings = await _meterReadingDetailService.Get(firstFlowId);
+            IEnumerable<MeterReadingDetailDataOutputDto> meterReadings = await _meterReadingDetailService.GetWithoutExcluded(firstFlowId);
 
             if (!meterReadings.Any())
             {

@@ -117,24 +117,13 @@
   <ItemGroup>
     <Folder Include="AppData\Dbfs\" />
     <Folder Include="AppData\Excels\" />
+    <Folder Include="AppData\Jsons\" />
     <Folder Include="Controllers\V1\ClaimPool\Registration\Commands\" />
     <Folder Include="Controllers\V1\ClaimPool\Registration\Queries\" />
     <Folder Include="Controllers\V1\NotificationPool\Queries\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="AppData\Jsons\non-permanent-branch-report.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="AppData\Jsons\non-permanent-branch-report2.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="AppData\Jsons\non-permanent-branch-report3.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="AppData\Jsons\pre-payment-report.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Update="Views\V1\DynamicGenerator\DisplayDesigner.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

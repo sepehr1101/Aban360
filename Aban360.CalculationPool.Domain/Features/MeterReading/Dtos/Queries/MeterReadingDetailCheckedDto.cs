@@ -49,6 +49,7 @@ namespace Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries
         public short MeterDiameterId { get; set; }
         public int VirtualCategoryId { get; set; }
         public string? BodySerial { get; set; }
+        public int Duration { get; set; }
 
         public string? TavizDateJalali { get; set; }
         public string? TavizCause { get; set; }
