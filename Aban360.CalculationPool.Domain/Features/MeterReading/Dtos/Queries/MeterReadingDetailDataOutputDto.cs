@@ -55,7 +55,7 @@
         //previous
         public string LastMeterDateJalali { get; set; }
         public int? LastMeterNumber { get; set; }
-        public float? LastConsumption{ get; set; }
+        public float? LastConsumption { get; set; }
         public float? LastMonthlyConsumption { get; set; }
         public int? LastCounterStateCode { get; set; }
         public double? LastSumItems { get; set; }

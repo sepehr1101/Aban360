@@ -33,16 +33,19 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             return $@"Select 
                     	pard Amount,
                     	mohlat DueDateJalali,
-                    	TRIM(sh_pard1) PaymentId
+                    	TRIM(sh_pard1) PaymentId,
+                        no_gest Queue
                     From [{dbName}].dbo.ghest
-                    Where par_no=@stringTrackNumber";
+                    Where par_no=@stringTrackNumber
+                    Order by Mohlat Asc";
         }
         private string GetByIdQuery(string dbName)
         {
             return $@"Select 
                     	pard Amount,
                     	mohlat DueDateJalali,
-                    	TRIM(sh_pard1) PaymentId
+                    	TRIM(sh_pard1) PaymentId,
+                        no_gest Queue
                     From [{dbName}].dbo.ghest
                     Where id=@id";
         }
