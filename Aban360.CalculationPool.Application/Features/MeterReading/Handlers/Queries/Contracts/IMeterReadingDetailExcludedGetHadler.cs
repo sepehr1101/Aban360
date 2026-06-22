@@ -6,6 +6,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 {
     public interface IMeterReadingDetailExcludedGetHadler
     {
-        Task<ReportOutput<MeterReadingDetailExcludedHeaderOutptuDto, MeterReadingDetailExcludedDataOutptuDto>> Handle(MeterReadingDetailExcludedInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
+        Task<ReportOutput<MeterReadingDetailExcludedHeaderOutptuDto, MeterReadingDetailExcludedDataOutputDto>> Handle(MeterReadingDetailExcludedInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
     }
 }

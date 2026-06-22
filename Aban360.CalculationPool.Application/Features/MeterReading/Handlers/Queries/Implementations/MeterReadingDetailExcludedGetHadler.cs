@@ -32,17 +32,17 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             _validator.NotNull(nameof(meterReadingDetailQueryService));
         }
 
-        public async Task<ReportOutput<MeterReadingDetailExcludedHeaderOutptuDto, MeterReadingDetailExcludedDataOutptuDto>> Handle(MeterReadingDetailExcludedInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task<ReportOutput<MeterReadingDetailExcludedHeaderOutptuDto, MeterReadingDetailExcludedDataOutputDto>> Handle(MeterReadingDetailExcludedInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             await Validate(inputDto, appUser, cancellationToken);
-            IEnumerable<MeterReadingDetailExcludedDataOutptuDto> data = await _meterReadingDetailQueryService.Get(inputDto);
+            IEnumerable<MeterReadingDetailExcludedDataOutputDto> data = await _meterReadingDetailQueryService.Get(inputDto);
             MeterReadingDetailExcludedHeaderOutptuDto header = new()
             {
                 RecordCount = data?.Count() ?? 0,
                 Title = _title
             };
 
-            return new ReportOutput<MeterReadingDetailExcludedHeaderOutptuDto, MeterReadingDetailExcludedDataOutptuDto>(_title, header, data);
+            return new ReportOutput<MeterReadingDetailExcludedHeaderOutptuDto, MeterReadingDetailExcludedDataOutputDto>(_title, header, data);
         }
         private async Task Validate(MeterReadingDetailExcludedInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {

@@ -33,13 +33,20 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             }
             return detail;
         }
-        public async Task<IEnumerable<MeterReadingDetailExcludedDataOutptuDto>> Get(MeterReadingDetailExcludedInputDto inputDto)
+        public async Task<IEnumerable<MeterReadingDetailExcludedDataOutputDto>> Get(MeterReadingDetailExcludedInputDto inputDto)
         {
             string query = GetExcludedQuery();
-            IEnumerable<MeterReadingDetailExcludedDataOutptuDto> details = await _sqlReportConnection.QueryAsync<MeterReadingDetailExcludedDataOutptuDto>(query, inputDto);
+            IEnumerable<MeterReadingDetailExcludedDataOutputDto> details = await _sqlReportConnection.QueryAsync<MeterReadingDetailExcludedDataOutputDto>(query, inputDto);
 
             return details;
         }
+        public async Task<IEnumerable<MeterReadingDetailUpdatedDataOutputDto>> GetUpdated(MeterReadingDetailUpdatedInputDto inputDto)
+        {
+            string query = GetUpdatedReportQuery();
+            IEnumerable<MeterReadingDetailUpdatedDataOutputDto> result = await _sqlReportConnection.QueryAsync<MeterReadingDetailUpdatedDataOutputDto>(query, inputDto);
+            return result;
+        }
+
 
         private string GetWithoutExcludedQuery()
         {
@@ -249,7 +256,77 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                     	(FORMAT(CAST(mr.ExcludedDateTime as date),'yyyy/MM/dd','fa') BETWEEN @FromExcludeDateJalali AND @ToExcludeDateJalali) AND
                         (@FromReadingNumber IS NUll OR
                         @ToReadingNumber IS NULL OR
-                        mr.ReadingNumber  BETWEEN @FromReadingNumber AND @ToReadingNumber)";
+                        mr.ReadingNumber  BETWEEN @FromReadingNumber AND @ToReadingNumber) AND
+                        mr.RemovedByUserId Is NUll";
+        }
+        private string GetUpdatedReportQuery()
+        {
+            return $@";With Cte As(
+                        	Select 
+                        		BillId,
+                        		MAX(FlowImportedId) FlowImportedId
+                        	From Atlas.dbo.MeterReadingDetail 
+                        	Where 
+                        		ZoneId=@ZoneId AND
+                        		(FORMAT(CAST(InsertDateTime AS date),'yyyy/MM/dd','fa')  BETWEEN @FromDateJalali AND @ToDateJalali) AND
+                        		RemovedDateTime IS NOT NULL AND
+                        		(@FromReadingNumber IS NULL OR
+                        		@ToReadingNumber IS NULL OR
+                        		ReadingNumber BETWEEN @FromReadingNumber AND @ToReadingNumber)
+                        	Group By BillId
+                        )
+                        Select 
+                        	 mr.Id,
+                        	t46.C0 RegionId,
+                        	t46.C2 RegionTitle,
+                        	mr.ZoneId,
+                        	t51.C2 ZoneTitle,
+                        	mr.CustomerNumber,
+                        	mr.BillId,
+                        	mr.FlowImportedId,
+                        	mr.ReadingNumber,
+                        	mr.CurrentCounterStateCode,
+                        	cv.Title CurrentCounterStateTitle,
+                        	mr.PreviousDateJalali,
+                        	mr.CurrentDateJalali,
+                        	mr.PreviousNumber,
+                        	mr.CurrentNumber,
+                        	mr.ExcludedDateTime,
+                        	mr.ExcludedByUserId,
+                        	mr.InsertByUserId,
+                        	mr.InsertDateTime,
+	                        mr.RemovedByUserId,
+	                        mr.RemovedDateTime,
+                        	mr.UsageId,
+                        	t41_1.C1 UsageTitle,
+                        	mr.BranchTypeId,
+                        	t7.C1 BranchTypeTitle,
+                        	mr.ConsumptionUsageId UsageConsumptionId ,
+                        	t41_2.C1 UsageConsumptionTitle,
+                        	mr.CommercialUnit,
+                        	mr.DomesticUnit,
+                        	mr.OtherUnit,
+                        	mr.TavizDateJalali,
+                        	mr.MeterDiameterId,
+                        	t5.C2 MeterDiameterTitle
+                        From Cte c
+                        Join Atlas.dbo.MeterReadingDetail mr
+                        	On c.BillId=mr.BillId AND c.FlowImportedId=mr.FlowImportedId
+                        Join [Db70].dbo.T51 t51 
+                        	ON mr.ZoneId=t51.C0
+                        Join [Db70].dbo.T46 t46 
+                        	ON t51.C1=t46.C0
+                        Join [Db70].dbo.T41 t41_1 
+                        	ON mr.UsageId=t41_1.C0
+                        Join [Db70].dbo.T41 t41_2 
+                        	ON mr.ConsumptionUsageId=t41_2.C0
+                        Join [Db70].dbo.T7 t7
+                        	ON mr.BranchTypeId=t7.C0
+                        Join [Db70].dbo.T5 t5
+                        	ON mr.MeterDiameterId=t5.C0
+                        Join [Db70].dbo.CounterVaziat cv
+                        	ON mr.CurrentCounterStateCode=cv.MoshtarakinId
+                        Order By mr.BillId,mr.InsertDateTime Desc";
         }
     }
 }
