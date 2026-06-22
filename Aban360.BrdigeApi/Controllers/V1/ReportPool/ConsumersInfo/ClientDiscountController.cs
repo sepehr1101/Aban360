@@ -11,15 +11,21 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
     {
         private readonly IClientDiscountUpdateHandler _requestDiscountUpdateHandler;
         private readonly IClientDiscountInsertHandler _requestDiscountInsertHandler;
+        private readonly IClientDiscountRemoveHandler _requestDiscountRemoveHandler;
+
         public ClientDiscountController(
             IClientDiscountUpdateHandler requestDiscountUpdateHandler,
-            IClientDiscountInsertHandler requestDiscountInsertHandler)
+            IClientDiscountInsertHandler requestDiscountInsertHandler,
+            IClientDiscountRemoveHandler requestDiscountRemoveHandler)
         {
             _requestDiscountUpdateHandler = requestDiscountUpdateHandler;
             _requestDiscountUpdateHandler.NotNull(nameof(requestDiscountUpdateHandler));
 
             _requestDiscountInsertHandler = requestDiscountInsertHandler;
             _requestDiscountInsertHandler.NotNull(nameof(requestDiscountInsertHandler));
+
+            _requestDiscountRemoveHandler = requestDiscountRemoveHandler;
+            _requestDiscountRemoveHandler.NotNull(nameof(requestDiscountRemoveHandler));
         }
 
         [HttpPost, HttpGet]
@@ -38,6 +44,15 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
         {
             await _requestDiscountUpdateHandler.Handle(input, cancellationToken);
             return Ok(input);
+        }
+
+        [HttpPost, HttpGet, HttpDelete]
+        [Route("remove/{id}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
+        {
+            await _requestDiscountRemoveHandler.Handle(id, CurrentUser, cancellationToken);
+            return Ok(id);
         }
     }
 }
