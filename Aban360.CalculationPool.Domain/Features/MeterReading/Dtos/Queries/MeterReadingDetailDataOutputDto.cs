@@ -83,7 +83,7 @@
         public decimal? Ztadil { get; set; }
         public decimal? Masraf { get; set; }
         public decimal? Shahrdari { get; set; }//0
-        public decimal? Modat { get; set; }
+        public int? Modat { get; set; }
         public string? DateBed { get; set; }//emroz
         public decimal? JalaseNo { get; set; }//
         public string? Mohlat { get; set; }//10 rooz bad emroz ( from appsettirn)
