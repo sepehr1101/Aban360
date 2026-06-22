@@ -35,7 +35,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	mohlat DueDateJalali,
                     	TRIM(sh_pard1) PaymentId
                     From [{dbName}].dbo.ghest
-                    Where par_no=@stringTrackNumber";
+                    Where par_no=@stringTrackNumber
+                    Order by Mohlat Asc";
         }
         private string GetByIdQuery(string dbName)
         {

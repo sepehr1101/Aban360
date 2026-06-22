@@ -53,6 +53,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         {
             await Validate(input, cancellationToken);
             MeterReadingDetailDataOutputDto previousMeterDetailDto = await _meterReadingDetailService.GetById(input.Id);
+            if (previousMeterDetailDto.RemovedByUserId is not null)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidUpdateMeterReading);
+            }
+
             AbBahaCalculationDetails abBahaResult = await CalcAbBahaTariff(input, previousMeterDetailDto, cancellationToken);
             //MeterReadingDetailCreateDuplicateDto readingCreateDuplicate = new(input.Id, input.CurrentCounterStateCode, input.CurrentDateJalali, input.CurrentNumber, appUser.UserId, DateTime.Now, abBahaResult.SumItems, abBahaResult.SumItemsBeforeDiscount, abBahaResult.DiscountSum, abBahaResult.Consumption, abBahaResult.MonthlyConsumption);
             MeterReadingDetailCreateDto meterReadingCreateDto = await GetMeterReadingDetailCreateDto(abBahaResult, input, previousMeterDetailDto, appUser);

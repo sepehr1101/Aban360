@@ -65,7 +65,23 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             }
 
             IEnumerable<InstallmentRequestDataOutputDto> data = GetData(inputDto, kartInfo, trackingInfo.BillId);
-            InstallmentRequestHeaderOutputDto header = new(data?.Sum(x => x.Amount) ?? 0, inputDto.InstallmentCount);
+            InstallmentRequestHeaderOutputDto header = new()
+            {
+                Amount = data?.Sum(x => x.Amount) ?? 0,
+                InstallmentCount = inputDto.InstallmentCount,
+                PrePaymentAmount = data?.FirstOrDefault()?.Amount ?? 0,
+                PrePaymentPercent = inputDto.PrepaymentPercent,//todo,
+                PerPaymentAmount = (data?.Count() ?? 0) > 1 ? data?.ElementAt(1)?.Amount ?? 0 : 0,//todo
+                TrackNumber = trackingInfo.TrackNumber,
+                ServiceGroupTitle = trackingInfo.ServiceGroupTitle,
+                BillId = trackingInfo.BillId,
+                NeighbourBillId = moshtrakInfo?.NeighbourBillId ?? string.Empty,
+                RegionTitle = trackingInfo.RegionTitle,
+                ZoneTitle = trackingInfo.ZoneTitle,
+                FullName = $"{moshtrakInfo?.FirstName ?? string.Empty} {moshtrakInfo?.Surname ?? string.Empty}",
+                RecordCount = data?.Count() ?? 0,
+                Title = _title,
+            };
             ReportOutput<InstallmentRequestHeaderOutputDto, InstallmentRequestDataOutputDto> result = new(_title, header, data);
 
             IEnumerable<GhestInsertDto> ghestsInsertDto = await GetGhestsInsertDto(data, trackingInfo, moshtrakInfo);
@@ -79,7 +95,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
             if (!_enableStatus.Contains(trackingInfo.StatusId))
             {
-                //throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
             }
             if (inputDto.MonthlyDuration > _maxInterval)
             {

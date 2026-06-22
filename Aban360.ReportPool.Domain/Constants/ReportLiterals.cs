@@ -275,6 +275,7 @@
         public static string ServiceLinkPaid { get { return "وصولی حق انشعاب"; }  }
         
         public static string MeterReadingExcluded { get { return "قرائت‌های خارج شده از لیست"; }  }
+        public static string MeterReadingUpdated{ get { return "قرائت‌های ویرایش شده"; }  }
 
 
     }

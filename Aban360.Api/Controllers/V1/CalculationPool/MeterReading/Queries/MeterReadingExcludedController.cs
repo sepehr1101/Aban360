@@ -19,10 +19,10 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Queries
 
         [HttpGet, HttpPost]
         [Route("excluded")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<MeterReadingDetailExcludedHeaderOutptuDto, MeterReadingDetailExcludedDataOutptuDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<MeterReadingDetailExcludedHeaderOutptuDto, MeterReadingDetailExcludedDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetExcluded([FromBody]MeterReadingDetailExcludedInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<MeterReadingDetailExcludedHeaderOutptuDto, MeterReadingDetailExcludedDataOutptuDto> result = await _excludedGetHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            ReportOutput<MeterReadingDetailExcludedHeaderOutptuDto, MeterReadingDetailExcludedDataOutputDto> result = await _excludedGetHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
         }
     }
