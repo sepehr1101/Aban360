@@ -8,12 +8,11 @@ namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Commands
         public int InstallmentCount { get; set; }
         public int PrePaymentPercent { get; set; }
         public long PrePaymentAmount { get; set; }
-        public long PerPaymentAmount { get; set; }
+        public long InstallmentAmount { get; set; }
 
         public int TrackNumber { get; set; }
         public string ServiceGroupTitle { get; set; }
         public string? BillId { get; set; }
-        public string? NeighbourBillId { get; set; }
         public string RegionTitle { get; set; }
         public string ZoneTitle { get; set; }
         public string FullName { get; set; }
