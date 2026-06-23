@@ -16,6 +16,7 @@
         public int SumField4 { get; set; }
         public int SumField5 { get; set; }
         public int SumMoreThan6 { get; set; }
+        public long ContractualCapacity { get; set; }
     }
     
   

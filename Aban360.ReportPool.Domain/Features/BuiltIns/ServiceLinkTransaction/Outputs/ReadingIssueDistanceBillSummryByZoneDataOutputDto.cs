@@ -9,6 +9,7 @@
         public int CommercialUnit { get; set; }
         public int DomesticUnit { get; set; }
         public int OtherUnit { get; set; }
+        public long ContractualCapacity { get; set; }
 
         public int UnSpecified { get; set; }
         public string UnSpecifiedText { get; set; }

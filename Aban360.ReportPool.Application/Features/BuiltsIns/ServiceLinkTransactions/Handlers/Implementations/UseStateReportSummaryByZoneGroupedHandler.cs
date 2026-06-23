@@ -146,7 +146,8 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 Field3 = input.Field3,
                 Field4 = input.Field4,
                 Field5 = input.Field5,
-                MoreThan6 = input.MoreThan6
+                MoreThan6 = input.MoreThan6,
+                ContractualCapacity= input.ContractualCapacity
             };
         }
     }
