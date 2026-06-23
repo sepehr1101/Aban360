@@ -7,6 +7,7 @@ using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using FluentValidation;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations
@@ -99,6 +100,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
                 BillId = memberInfo.BillId,
                 Title = _title,
                 RecordCount = 1,
+                Message = string.Format(SmsTemplates.JudicalNoticeCommandAlert, memberInfo.FullName, memberInfo.BillId, memberInfo.DebtAmount, Environment.NewLine),
                 JudicalBase64 = await Base64Operation.GetDudicalBase64(cancellationToken),
                 JudicalDocumentBase64 = await Base64Operation.GetDudicalDocumentBase64(cancellationToken)
             };
