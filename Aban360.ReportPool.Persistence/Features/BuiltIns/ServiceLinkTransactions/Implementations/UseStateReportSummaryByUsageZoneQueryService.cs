@@ -50,7 +50,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             string useStateQuery = GetUseStateTitle();
             string useStateTitle = await _sqlConnection.QueryFirstOrDefaultAsync<string>(useStateQuery, new { useStateId = useStateId });
 
-            return ReportLiterals.Report + " " + ReportLiterals.ByUsage + "-" + ReportLiterals.ZoneTitle + useStateTitle;
+            return ReportLiterals.Report + " " + ReportLiterals.ByUsage + "-" + ReportLiterals.ByZone+" " + useStateTitle;
         }
 
         private string GetUseStateTitle()
