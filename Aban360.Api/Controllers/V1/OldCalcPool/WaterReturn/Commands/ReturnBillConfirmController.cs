@@ -10,15 +10,10 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
     [Route("v1/water-return")]
     public class ReturnBillConfirmController : BaseController
     {
-        private readonly IReturnBillConfirmeHandler _returnConfirmHandler;
         private readonly IReturnBillSetConfirmHandler _returnSetConfirmHandler;
         public ReturnBillConfirmController(
-            IReturnBillConfirmeHandler returnConfirmHandler,
             IReturnBillSetConfirmHandler returnSetConfirmHandler)
         {
-            _returnConfirmHandler = returnConfirmHandler;
-            _returnConfirmHandler.NotNull(nameof(returnConfirmHandler));
-
             _returnSetConfirmHandler = returnSetConfirmHandler;
             _returnSetConfirmHandler.NotNull(nameof(returnSetConfirmHandler));
         }

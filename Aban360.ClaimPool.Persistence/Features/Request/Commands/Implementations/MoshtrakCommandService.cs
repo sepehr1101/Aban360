@@ -41,7 +41,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateMoshtrakin);
             }
         }
-		public async Task Update(MoshtrakUpdateInfoDto input, string dbName)
+        public async Task Update(MoshtrakUpdateInfoDto input, string dbName)
         {
             string command = GetUpdateInfoCommand(dbName);
             int recordCount = await _sqlConnection.ExecuteAsync(command, input, _transaction);
@@ -50,7 +50,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateMoshtrakin);
             }
         }
-		public async Task Update(MoshtrakUpdateCustomerInfoDto input, string dbName)
+        public async Task Update(MoshtrakUpdateCustomerInfoDto input, string dbName)
         {
             string command = GetUpdateCustomerInfoCommand(dbName);
             int recordCount = await _sqlConnection.ExecuteAsync(command, input, _transaction);
@@ -68,7 +68,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateMoshtrakin);
             }
         }
-		public async Task Update(MoshtrakCustomerNumberUpdateDto input, string dbName)
+        public async Task Update(MoshtrakCustomerNumberUpdateDto input, string dbName)
         {
             string command = GetUpdateCustomerNumberCommand(dbName);
             int recordCount = await _sqlConnection.ExecuteAsync(command, input, _transaction);
@@ -77,13 +77,22 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertCustomerNumber);
             }
         }
-		public async Task Update(MoshtrakServicesUpdateDto input, string dbName)
+        public async Task Update(MoshtrakServicesUpdateDto input, string dbName)
         {
             string command = GetUpdateServicesSelectedCommand(dbName);
             int recordCount = await _sqlConnection.ExecuteAsync(command, input, _transaction);
             if (recordCount != 1)
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidSwapRequestType);
+            }
+        }
+        public async Task Update(MoshtrakInstallmentUpdateDto input, string dbName)
+        {
+            string command = GetUpdateInstallmentCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, input, _transaction);
+            if (recordCount != 1)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateMoshtrakInstallment);
             }
         }
 
@@ -224,7 +233,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 							zarib_f=@HouseValue
 						Where TrackingNumber=@TrackNumber";
         }
-		private string GetUpdateInfoCommand(string dbName)
+        private string GetUpdateInfoCommand(string dbName)
         {
             return $@"Update [{dbName}].dbo.moshtrak
 						Set 
@@ -345,15 +354,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 						Set sabt=@IsRegister , sharh=@Description
 						Where Id=@Id";
         }
-		private string GetUpdateCustomerNumberCommand(string dbName)
+        private string GetUpdateCustomerNumberCommand(string dbName)
         {
             return $@"Update [{dbName}].dbo.moshtrak
 						Set radif=@CustomerNumber
 						Where TrackingNumber=@TrackNumber";
         }
-		private string GetUpdateServicesSelectedCommand(string dbName)
-		{
-			return $@"Update [{dbName}].dbo.moshtrak
+        private string GetUpdateServicesSelectedCommand(string dbName)
+        {
+            return $@"Update [{dbName}].dbo.moshtrak
 						Set 
 							s0=@s0,
 							s1=@s1,
@@ -403,6 +412,14 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 							s47=@s47,
 							s48=@s48
 						Where TrackingNumber=@TrackNumber";
-		}
-	}
+        }
+        private string GetUpdateInstallmentCommand(string dbName)
+        {
+            return $@"Update [{dbName}].dbo.moshtrak
+				      Set 
+						drsd_gest = @PrePaymentPrecent , 
+						tedad_gest = @InstallmentCount 
+					  Where TrackingNumber=@TrackNumber";
+        }
+    }
 }

@@ -234,7 +234,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new CustomValidationException(message);
             }
-            if (inputDto.BlockId == "-")
+            if (inputDto.BlockId == "-" || inputDto.BlockId == "ندارد")
             {
                 inputDto.BlockId = string.Empty;
             }

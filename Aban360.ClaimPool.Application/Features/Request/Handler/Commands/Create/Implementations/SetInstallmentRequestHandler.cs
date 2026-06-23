@@ -2,6 +2,7 @@
 using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
+using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations;
 using Aban360.Common.BaseEntities;
@@ -27,6 +28,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         static int[] _enableStatus = { 60, 75 };
         static int _maxInterval = 3;
         static int _maxInstallmentCount = 9;
+        static int _prePaymentType = 0;
+        static int _installmentType = 1;
+        static int _operator = 666;
         static string _title = "تقسیط";
         static string _insertBy = "Aban";
         public SetInstallmentRequestHandler(
@@ -64,29 +68,45 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 throw new InvalidBillIdException(ExceptionLiterals.InvalidBillId);
             }
 
-            IEnumerable<InstallmentRequestDataOutputDto> data = GetData(inputDto, kartInfo, trackingInfo.BillId);
-            InstallmentRequestHeaderOutputDto header = new()
+            ReportOutput<InstallmentRequestHeaderOutputDto, InstallmentRequestDataOutputDto> result = GetResult(inputDto, kartInfo, trackingInfo, moshtrakInfo);
+            IEnumerable<GhestInsertDto> ghestsInsertDto = await GetGhestsInsertDto(result.ReportData, trackingInfo, moshtrakInfo);
+            MoshtrakInstallmentUpdateDto moshtrakUpdate = new(trackingInfo.TrackNumber, inputDto.PrepaymentPercent, inputDto.InstallmentCount);
+            KartInstallmentUpdateDto kartUpdateDto = new()
             {
-                Amount = data?.Sum(x => x.Amount) ?? 0,
+                ZoneId = moshtrakInfo.ZoneId,
+                StringTrackNumber = moshtrakInfo.StringTrackNumber,
+                FirstInstallment = ghestsInsertDto?.Where(g => g.InstallmentNumber == 0)?.FirstOrDefault()?.Cod3 ?? 0,
+                InstallmentPercent = inputDto.PrepaymentPercent,
                 InstallmentCount = inputDto.InstallmentCount,
-                PrePaymentAmount = data?.FirstOrDefault()?.Amount ?? 0,
-                PrePaymentPercent = inputDto.PrepaymentPercent,//todo,
-                InstallmentAmount = (data?.Count() ?? 0) > 1 ? data?.ElementAt(1)?.Amount ?? 0 : 0,//todo
-                TrackNumber = trackingInfo.TrackNumber,
-                ServiceGroupTitle = trackingInfo.ServiceGroupTitle,
-                BillId = trackingInfo.BillId,
-                RegionTitle = trackingInfo.RegionTitle,
-                ZoneTitle = trackingInfo.ZoneTitle,
-                FullName = $"{moshtrakInfo?.FirstName ?? string.Empty} {moshtrakInfo?.Surname ?? string.Empty}",
-                RecordCount = data?.Count() ?? 0,
-                Title = _title,
+                Installment = ghestsInsertDto?.Where(g => g.InstallmentNumber != 0)?.FirstOrDefault()?.Cod3 ?? 0,
+                InsertedBy = _insertBy,
+                Operator = _operator
             };
-            ReportOutput<InstallmentRequestHeaderOutputDto, InstallmentRequestDataOutputDto> result = new(_title, header, data);
-
-            IEnumerable<GhestInsertDto> ghestsInsertDto = await GetGhestsInsertDto(data, trackingInfo, moshtrakInfo);
-            await ExecSql(ghestsInsertDto, trackingInfo.ZoneId);
+            await ExecSql(ghestsInsertDto, moshtrakUpdate, kartUpdateDto, trackingInfo.ZoneId);
 
             return result;
+        }
+        private async Task ExecSql(IEnumerable<GhestInsertDto> ghestsInsertDto, MoshtrakInstallmentUpdateDto moshtrakUpdate, KartInstallmentUpdateDto kartUpdateDto, int zoneId)
+        {
+            string dbName = GetDbName(zoneId);
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                    connection.Open();
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.Serializable))
+                {
+                    GhestCommandService ghestCommandService = new(connection, transaction);
+                    KartCommandService kartCommandService = new(connection, transaction);
+                    MoshtrakCommandService moshtrakCommandService = new(connection, transaction);
+
+                    await ghestCommandService.Remove(ghestsInsertDto?.FirstOrDefault()?.StringTrackNumber ?? string.Empty, dbName);
+                    await ghestCommandService.Insert(ghestsInsertDto, dbName);
+                    await moshtrakCommandService.Update(moshtrakUpdate, dbName);
+                    await kartCommandService.Update(kartUpdateDto, dbName);
+
+                    transaction.Commit();
+                }
+            }
         }
         private async Task<TrackingOutputDto> GetTrackingWithValidation(InstallmentRequestInputDto inputDto, CancellationToken cancellationToken)
         {
@@ -139,6 +159,27 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 return GetInstallments(inputDto, billId, dueDatesJalali, payable);
             }
         }
+        private ReportOutput<InstallmentRequestHeaderOutputDto, InstallmentRequestDataOutputDto> GetResult(InstallmentRequestInputDto inputDto, IEnumerable<CalculationRequestDisplayDataOutputDto> kartInfo, TrackingOutputDto trackingInfo, MoshtrakOutputDto moshtrakInfo)
+        {
+            IEnumerable<InstallmentRequestDataOutputDto> data = GetData(inputDto, kartInfo, trackingInfo.BillId);
+            InstallmentRequestHeaderOutputDto header = new()
+            {
+                Amount = data?.Sum(x => x.Amount) ?? 0,
+                InstallmentCount = inputDto.InstallmentCount,
+                PrePaymentAmount = data?.FirstOrDefault()?.Amount ?? 0,
+                PrePaymentPercent = inputDto.PrepaymentPercent,//todo,
+                InstallmentAmount = (data?.Count() ?? 0) > 1 ? data?.ElementAt(1)?.Amount ?? 0 : 0,//todo
+                TrackNumber = trackingInfo.TrackNumber,
+                ServiceGroupTitle = trackingInfo.ServiceGroupTitle,
+                BillId = trackingInfo.BillId,
+                RegionTitle = trackingInfo.RegionTitle,
+                ZoneTitle = trackingInfo.ZoneTitle,
+                FullName = $"{moshtrakInfo?.FirstName ?? string.Empty} {moshtrakInfo?.Surname ?? string.Empty}",
+                RecordCount = data?.Count() ?? 0,
+                Title = _title,
+            };
+            return new ReportOutput<InstallmentRequestHeaderOutputDto, InstallmentRequestDataOutputDto>(_title, header, data);
+        }
         private IEnumerable<InstallmentRequestDataOutputDto> GetInstallments(InstallmentRequestInputDto inputDto, string billId, string[] dueDatesJalali, long payable)
         {
             var (firstInstallmentWithoutZero, eachInstallmentAmountWithoutZero, remain) = GetInstallmentAmount(inputDto, payable);
@@ -176,43 +217,33 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         {
             int counter = 0;
             decimal[] barges = await _variabService.GetAndRenew(trackingInfo.ZoneId, data?.Count() ?? 0);
-            return data.Select(x => new GhestInsertDto()
+            ICollection<GhestInsertDto> ghests = new List<GhestInsertDto>();
+            data.ForEach(x =>
             {
-                ZoneId = trackingInfo.ZoneId,
-                CustomerNumber = moshtrakInfo.CustomerNumber,
-                StringTrackNumber = trackingInfo.StringTrackNumber,
-                Identify = 0,
-                Cod1 = 0,
-                Cod2 = 0,
-                Cod3 = x.Amount,
-                Barge = barges[counter],
-                Payable = x.Amount,
-                Type = 2,
-                InstallmentNumber = counter,
-                CurrentDateJalali = DateTime.Now.ToShortPersianDateString(),
-                DueDateJalali = x.DueDateJalali,
-                InsertBy = _insertBy,
-                BillId = trackingInfo.BillId ?? string.Empty,
-                PaymentId = x.PaymentId,
-            });
-        }
-        private async Task ExecSql(IEnumerable<GhestInsertDto> ghestsInsertDto, int zoneId)
-        {
-            string dbName = GetDbName(zoneId);
-            using (IDbConnection connection = _sqlReportConnection)
-            {
-                if (connection.State != ConnectionState.Open)
-                    connection.Open();
-                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.Serializable))
+                GhestInsertDto ghest = new()
                 {
-                    GhestCommandService ghestCommandService = new(connection, transaction);
+                    ZoneId = trackingInfo.ZoneId,
+                    CustomerNumber = moshtrakInfo.CustomerNumber,
+                    StringTrackNumber = trackingInfo.StringTrackNumber,
+                    Identify = 0,
+                    Cod1 = 0,
+                    Cod2 = 0,
+                    Cod3 = x.Amount,
+                    Barge = barges[counter],
+                    Payable = x.Amount,
+                    Type = counter == 0 ? _prePaymentType : _installmentType,
+                    InstallmentNumber = counter,
+                    CurrentDateJalali = DateTime.Now.ToShortPersianDateString(),
+                    DueDateJalali = x.DueDateJalali,
+                    InsertBy = _insertBy,
+                    BillId = trackingInfo.BillId ?? string.Empty,
+                    PaymentId = x.PaymentId,
+                };
+                ghests.Add(ghest);
+                counter++;
+            });
 
-                    await ghestCommandService.Remove(ghestsInsertDto.FirstOrDefault().StringTrackNumber, dbName);
-                    await ghestCommandService.Insert(ghestsInsertDto, dbName);
-
-                    transaction.Commit();
-                }
-            }
+            return ghests;
         }
         private string[] GetDate(int installmentCount, int monthlyDuration)
         {
