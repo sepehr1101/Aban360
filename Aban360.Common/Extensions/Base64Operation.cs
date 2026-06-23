@@ -18,5 +18,21 @@
 
             return string.Empty;
         }
+        public static async Task<string> GetDudicalDocumentBase64(CancellationToken cancellationToken)
+        {
+            const string logoPath = @"AppData\Images\JudicalDocumentBase64.txt";
+            if (Path.Exists(logoPath))
+                return await File.ReadAllTextAsync(logoPath, cancellationToken);
+
+            return string.Empty;
+        }
+        public static async Task<string> GetDudicalBase64(CancellationToken cancellationToken)
+        {
+            const string logoPath = @"AppData\Images\JudicalBase64.txt";
+            if (Path.Exists(logoPath))
+                return await File.ReadAllTextAsync(logoPath, cancellationToken);
+
+            return string.Empty;
+        }
     }
 }

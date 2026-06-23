@@ -10,5 +10,8 @@ namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Queries
         public string Title { get; set; }
         public int RecordCount { get; set; }
         public string ReportDateJalali { get; set; } = DateTime.Now.ToShortPersianDateString();
+        public string? JudicalDocumentBase64 { get; set; }
+        public string? JudicalBase64 { get; set; }
+        public string Message { get; set; }
     }
 }
