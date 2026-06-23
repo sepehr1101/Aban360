@@ -776,7 +776,6 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             ICollection<AutoBackCreateDto> datas = new List<AutoBackCreateDto>() { bedBes, newCalculation, different };
             RepairCreateDto repairCreateDto = GetRepairCreateDto(different);
 
-            //string dbName = GetDbName((int)bedBes.Town);
             string dbName = ReportLiterals.Atlas;
 
             using (IDbConnection connection = _sqlReportConnection)
