@@ -38,7 +38,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
             ZoneIdAndCustomerNumber zoneIdAndCustomeorNumber = await _commonMemberQueryService.Get(inputDto.BillId);
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomeorNumber);
 
-            return GetResult(conCompanyInfo, memberInfo);
+            return await GetResult(conCompanyInfo, memberInfo, cancellationToken);
         }
         private async Task Validate(JudicalNoticeCommandInputDto inputDto, CancellationToken cancellationToken)
         {
@@ -90,7 +90,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
                 ContractDataJalali = conCompanyInfo.ContractDataJalali,
             };
         }
-        private FlatReportOutput<JudicalNoticeCommandHeaderOutputDto, JudicalNoticeCommandDataOutputDto> GetResult(ConCompanyGetDto conCompanyInfo, MemberInfoGetDto memberInfo)
+        private async Task<FlatReportOutput<JudicalNoticeCommandHeaderOutputDto, JudicalNoticeCommandDataOutputDto>> GetResult(ConCompanyGetDto conCompanyInfo, MemberInfoGetDto memberInfo, CancellationToken cancellationToken)
         {
             JudicalNoticeCommandHeaderOutputDto header = new()
             {
@@ -99,9 +99,10 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
                 BillId = memberInfo.BillId,
                 Title = _title,
                 RecordCount = 1,
+                JudicalBase64 = await Base64Operation.GetDudicalBase64(cancellationToken),
+                JudicalDocumentBase64 = await Base64Operation.GetDudicalDocumentBase64(cancellationToken)
             };
             return new FlatReportOutput<JudicalNoticeCommandHeaderOutputDto, JudicalNoticeCommandDataOutputDto>(_title, header, GetData(conCompanyInfo, memberInfo));
         }
     }
-
 }

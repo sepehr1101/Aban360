@@ -130,6 +130,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="AppData\Images\JudicalDocumentBase64.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="AppData\Images\JudicalBase64.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="AppData\Images\location_icon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
