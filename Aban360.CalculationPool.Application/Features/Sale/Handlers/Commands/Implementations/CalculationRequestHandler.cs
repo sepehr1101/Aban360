@@ -237,6 +237,8 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                     KartCommandService kartCommandService = new(connection, transaction);
                     GhestCommandService ghestCommandService = new(connection, transaction);
 
+                    await kartCommandService.Remove(moshtrakInfo.StringTrackNumber, dbName);
+                    await ghestCommandService.Remove(moshtrakInfo.StringTrackNumber, dbName);
                     await kartCommandService.Insert(kartsInsertDto, false, dbName);
                     await ghestCommandService.Insert(ghestInsertDto, dbName);
 
@@ -263,7 +265,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                     DiscountTypeId = s.DiscountTypeId,
                     FinalAmount = s.FinalAmount,
                     DiscountAmount = s.Discount ?? 0,
-                    PardN = s.FinalAmount,
+                    PardN = 0,
                     PardG = 0,
                     Sum = s.FinalAmount,
                     AmountItemId = s.Id,//todo: check has same id
