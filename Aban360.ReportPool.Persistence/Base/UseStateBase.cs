@@ -71,7 +71,8 @@ namespace Aban360.ReportPool.Persistence.Base
 						c.CommercialCount,
 						c.DomesticCount,
 						c.OtherCount,
-						c.DeletionStateId	                   
+						c.DeletionStateId,
+                        c.ContractCapacity
                     FROM [CustomerWarehouse].dbo.Clients c 
                     WHERE 
                        c.RegisterDayJalali Between @FromDateJalali and @ToDateJalali AND
@@ -102,7 +103,8 @@ namespace Aban360.ReportPool.Persistence.Base
 						SUM(CASE WHEN c.WaterDiameterId = 8 THEN 1 ELSE 0 END) AS Field4,
 						SUM(CASE WHEN c.WaterDiameterId = 9 THEN 1 ELSE 0 END) AS Field5,
 						SUM(CASE WHEN c.WaterDiameterId In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6,
-                        SUM(w.Debt) as DebtAmount
+                        SUM(w.Debt) as DebtAmount,
+                        SUM(c.ContractCapacity) AS ContractualCapacity
 					FROM CTE c	
 					Join [CustomerWarehouse].dbo.WaterDebt w 
 						On c.BillId COLLATE SQL_Latin1_General_CP1_CI_AS=w.BillId
@@ -130,7 +132,8 @@ namespace Aban360.ReportPool.Persistence.Base
 						c.CommercialCount,
 						c.DomesticCount,
 						c.OtherCount,
-						c.DeletionStateId	                   
+						c.DeletionStateId,
+                        c.ContractCapacity
                     FROM [CustomerWarehouse].dbo.Clients c 
                     WHERE 
                        c.RegisterDayJalali Between @FromDateJalali and @ToDateJalali AND
@@ -161,7 +164,8 @@ namespace Aban360.ReportPool.Persistence.Base
 						SUM(CASE WHEN c.WaterDiameterId = 8 THEN 1 ELSE 0 END) AS Field4,
 						SUM(CASE WHEN c.WaterDiameterId = 9 THEN 1 ELSE 0 END) AS Field5,
 						SUM(CASE WHEN c.WaterDiameterId In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6,
-                        SUM(w.Debt) as DebtAmount
+                        SUM(w.Debt) as DebtAmount,
+                        SUM(c.ContractCapacity) AS ContractualCapacity
 					FROM CTE c	
 					Join [CustomerWarehouse].dbo.WaterDebt w 
 						On c.BillId COLLATE SQL_Latin1_General_CP1_CI_AS=w.BillId
