@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using DNTPersianUtils.Core;
+using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Base
 {
@@ -12,9 +13,9 @@ namespace Aban360.ReportPool.Persistence.Base
             : base(configuration)
         { 
         }
-        internal string GetDetailQuery(bool hasZone, bool hasUsage)
+        internal string GetDetailQuery(bool hasZone, bool hasUsage, string toDateJalali)
         {
-            Parameters parameters = GetQueryParam(hasZone, hasUsage);
+            Parameters parameters = GetQueryParam(toDateJalali,hasZone, hasUsage);
 
             return $@";With WithoutBill as (
                     Select 
@@ -71,7 +72,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     ) AND
                     c.ToDayJalali IS NULL AND
                     c.DeletionStateId IN (0) AND 
-                    CustomerWarehouse.dbo.PersianToMiladi(c.WaterRegisterDateJalali) < DATEADD(day,-45,CustomerWarehouse.dbo.PersianToMiladi(@ToDateJalali))
+                    c.WaterRegisterDateJalali < @ThresholdDate
                     -- AND c.PhysicalWaterInstallDateJalali <= @FromDateJalali
                     {parameters.CZoneQuery}
                     {parameters.CUsageQuery}
@@ -130,9 +131,9 @@ namespace Aban360.ReportPool.Persistence.Base
                         w.DeletionStateId IN (0) AND
                         w.HasWater = 1";
         }
-        internal string GetGroupedQuery(bool hasZone, bool hasUsage, bool isZone)
+        internal string GetGroupedQuery(bool hasZone, bool hasUsage, bool isZone, string toDateJalali)
         {
-            Parameters parameters = GetQueryParam(hasZone, hasUsage, isZone);
+            Parameters parameters = GetQueryParam(toDateJalali, hasZone, hasUsage, isZone);
 
             return $@";With WithoutBill as (
                     Select 
@@ -176,7 +177,7 @@ namespace Aban360.ReportPool.Persistence.Base
                           ) AND
                          c.DeletionStateId IN (0) AND
                     	 c.ToDayJalali IS NULL  AND 
-                         CustomerWarehouse.dbo.PersianToMiladi(c.WaterRegisterDateJalali) < DATEADD(day,-45,CustomerWarehouse.dbo.PersianToMiladi(@ToDateJalali))
+                         c.WaterRegisterDateJalali < @ThresholdDate
                          {parameters.CZoneQuery}
                          {parameters.CUsageQuery}
                     ),
@@ -282,7 +283,7 @@ namespace Aban360.ReportPool.Persistence.Base
                           ) AND
                          c.DeletionStateId IN (0) AND
                     	 c.ToDayJalali IS NULL  AND 
-                         CustomerWarehouse.dbo.PersianToMiladi(c.WaterRegisterDateJalali) < DATEADD(day,-45,CustomerWarehouse.dbo.PersianToMiladi(@ToDateJalali))
+                         c.WaterRegisterDateJalali < @ThresholdDate
                          {c_zonePartQuery}
                          {c_usagePartQuery}
                     ),
@@ -336,19 +337,19 @@ namespace Aban360.ReportPool.Persistence.Base
 					Group By w.{ZoneTitle}, w.{UsageTitle}";
         }
 
-        private Parameters GetQueryParam(bool hasZone, bool hasUsage, bool isZone=false)
+        private Parameters GetQueryParam(string toDateJalali, bool hasZone, bool hasUsage, bool isZone=false)
         {
             string ZoneTitle = nameof(ZoneTitle),
                    UsageTitle = nameof(UsageTitle);
-
+            DateTime toDateMiladi = toDateJalali.ToGregorianDateTime().Value;
             return new Parameters()
             {
                 BZoneQuery = hasZone ? "AND b.ZoneId IN @ZoneIds" : string.Empty,
                 CZoneQuery = hasZone ? "AND c.ZoneId IN @ZoneIds" : string.Empty,
-                BUsageQuery= hasUsage ? "AND b.UsageId IN @usageIds" : string.Empty,
-                CUsageQuery= hasUsage ? "AND c.UsageId IN @usageIds" : string.Empty,
-                ZoneOrUsageGrouped= isZone ? ZoneTitle : UsageTitle
-
+                BUsageQuery = hasUsage ? "AND b.UsageId IN @usageIds" : string.Empty,
+                CUsageQuery = hasUsage ? "AND c.UsageId IN @usageIds" : string.Empty,
+                ZoneOrUsageGrouped = isZone ? ZoneTitle : UsageTitle,
+                ThresholdDate = toDateMiladi.AddDays(-45).ToShortPersianDateString()
             };
         }
 
@@ -359,6 +360,7 @@ namespace Aban360.ReportPool.Persistence.Base
             public string? BUsageQuery { get; set; }
             public string? CUsageQuery { get; set; }
             public string? ZoneOrUsageGrouped { get; set; }
+            public string ThresholdDate { get; set; } = default!;
         }
     }
 }
