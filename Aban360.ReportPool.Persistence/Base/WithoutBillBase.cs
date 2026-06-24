@@ -1,4 +1,6 @@
-﻿using DNTPersianUtils.Core;
+﻿using Aban360.Common.Extensions;
+using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
+using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Base
@@ -13,9 +15,11 @@ namespace Aban360.ReportPool.Persistence.Base
             : base(configuration)
         { 
         }
-        internal string GetDetailQuery(bool hasZone, bool hasUsage, string toDateJalali)
+        internal string GetDetailQuery(WithoutBillInputDto input)
         {
-            Parameters parameters = GetQueryParam(toDateJalali,hasZone, hasUsage);
+            bool hasZone = input.ZoneIds.HasValue();
+            bool hasUsage = input.UsageIds.HasValue();
+            Parameters parameters = GetQueryParam(input,hasZone, hasUsage);
 
             return $@";With WithoutBill as (
                     Select 
@@ -49,31 +53,23 @@ namespace Aban360.ReportPool.Persistence.Base
                     	Select 1
                     	From [CustomerWarehouse].dbo.Bills  b
                     	Where 
-                    		c.ZoneId=b.ZoneId AND
-                    		c.CustomerNumber=b.CustomerNumber AND
-                    		b.NextDay BETWEEN @FromDateJalali and @ToDateJalali AND 
-                    		(
-                                @FromReadingNumber IS NULL or
-                    			@ToReadingNumber IS NULL or 
-                    			c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber
-                            ) AND                
-                            c.DeletionStateId IN (0) AND
-                            c.HasWater=1 AND
-                            c.PhysicalWaterInstallDateJalali <= @ToDateJalali AND
+                    		b.NextDay BETWEEN @FromDateJalali and @ToDateJalali
                     		b.TypeCode IN (1,7,8) AND
-                    		c.ToDayJalali IS NULL 
-                            {parameters.CZoneQuery}
-                            {parameters.CUsageQuery}
-                    ) AND --not exists
-                    (
-                        @FromReadingNumber IS NULL or
-                    	@ToReadingNumber IS NULL or 
-                    	c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber
+                    		c.CustomerNumber=b.CustomerNumber AND
+                    		c.ZoneId=b.ZoneId
+                            --c.DeletionStateId IN (0) AND
+                            --c.HasWater=1 AND
+                            --c.PhysicalWaterInstallDateJalali <= @ToDateJalali AND
+                    		--c.ToDayJalali IS NULL 
+                    		--{parameters.CReadingCondition}                
+                            --{parameters.CZoneQuery}
+                            --{parameters.CUsageQuery}
                     ) AND
                     c.ToDayJalali IS NULL AND
                     c.DeletionStateId IN (0) AND 
-                    c.WaterRegisterDateJalali < @ThresholdDate
+                    c.WaterRegisterDateJalali < '{parameters.ThresholdDate}'
                     -- AND c.PhysicalWaterInstallDateJalali <= @FromDateJalali
+                    {parameters.CReadingCondition}
                     {parameters.CZoneQuery}
                     {parameters.CUsageQuery}
                     ),
@@ -89,12 +85,8 @@ namespace Aban360.ReportPool.Persistence.Base
 							ROW_NUMBER() OVER(PARTITION BY ZoneId, CustomerNumber ORDER BY RegisterDay DESC) AS RN
 						FROM [CustomerWarehouse].dbo.Bills b
 						WHERE 
-						    b.TypeCode IN (1,7,8) AND
-                    	    (   
-                                @FromReadingNumber IS NULL or
-                    	        @ToReadingNumber IS NULL or 
-                    	        b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber
-                            )
+						    b.TypeCode IN (1,7,8) 
+                            {parameters.BReadingCondition}
                             {parameters.BZoneQuery}
                             {parameters.BUsageQuery}
 					)
@@ -131,9 +123,11 @@ namespace Aban360.ReportPool.Persistence.Base
                         w.DeletionStateId IN (0) AND
                         w.HasWater = 1";
         }
-        internal string GetGroupedQuery(bool hasZone, bool hasUsage, bool isZone, string toDateJalali)
+        internal string GetGroupedQuery(WithoutBillInputDto input, bool isZone)
         {
-            Parameters parameters = GetQueryParam(toDateJalali, hasZone, hasUsage, isZone);
+            bool hasZone = input.ZoneIds.HasValue();
+            bool hasUsage = input.UsageIds.HasValue();
+            Parameters parameters = GetQueryParam(input, hasZone, hasUsage, isZone);
 
             return $@";With WithoutBill as (
                     Select 
@@ -152,8 +146,6 @@ namespace Aban360.ReportPool.Persistence.Base
                     		Select 1
                     		From [CustomerWarehouse].dbo.Bills  b
                     		Where 
-                    			c.ZoneId=b.ZoneId AND
-                    			c.CustomerNumber=b.CustomerNumber AND
                     			(@FromDateJalali IS NULL or
                     			@ToDateJalali IS NULL or 
                     			b.NextDay BETWEEN @FromDateJalali and @ToDateJalali)AND 
@@ -162,13 +154,15 @@ namespace Aban360.ReportPool.Persistence.Base
                     			    @ToReadingNumber IS NULL or 
                     			    c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber
                                 ) AND
-                            	c.DeletionStateId IN (0) AND
-                                c.HasWater=1 AND
                     			b.TypeCode IN (1,7,8) AND
-                                c.PhysicalWaterInstallDateJalali <= @ToDateJalali AND
-                    			c.ToDayJalali IS NULL 
-                                {parameters.CZoneQuery}
-                                {parameters.CUsageQuery}
+                            	c.DeletionStateId IN (0) AND
+                    			c.CustomerNumber=b.CustomerNumber AND
+                    			--c.ZoneId=b.ZoneId AND
+                                --c.HasWater=1 AND
+                                --c.PhysicalWaterInstallDateJalali <= @ToDateJalali AND
+                    			--c.ToDayJalali IS NULL 
+                                --{parameters.CZoneQuery}
+                                --{parameters.CUsageQuery}
                           ) AND --not exists
                     	  (
                               @FromReadingNumber IS NULL or
@@ -177,7 +171,7 @@ namespace Aban360.ReportPool.Persistence.Base
                           ) AND
                          c.DeletionStateId IN (0) AND
                     	 c.ToDayJalali IS NULL  AND 
-                         c.WaterRegisterDateJalali < @ThresholdDate
+                         c.WaterRegisterDateJalali < '{parameters.ThresholdDate}'
                          {parameters.CZoneQuery}
                          {parameters.CUsageQuery}
                     ),
@@ -230,13 +224,14 @@ namespace Aban360.ReportPool.Persistence.Base
                         w.HasWater=1
 					Group By w.{parameters.ZoneOrUsageGrouped}";
         }
-        internal string GetGroupedBothQuery()
+        internal string GetGroupedBothQuery(string toDateJalali)
         {
             string b_zonePartQuery = "AND b.ZoneId IN @ZoneIds";
             string b_usagePartQuery = "AND b.UsageId IN @usageIds";
             string c_zonePartQuery = "AND c.ZoneId IN @ZoneIds";
             string c_usagePartQuery = "AND c.UsageId IN @usageIds";
-
+            DateTime toDateMiladi = toDateJalali.ToGregorianDateTime().Value;
+            string thresholdDate = toDateMiladi.AddDays(-45).ToShortPersianDateString();
 
             string ZoneTitle = nameof(ZoneTitle),
                   UsageTitle = nameof(UsageTitle);
@@ -258,8 +253,6 @@ namespace Aban360.ReportPool.Persistence.Base
                     		Select 1
                     		From [CustomerWarehouse].dbo.Bills  b
                     		Where 
-                    			c.ZoneId=b.ZoneId AND
-                    			c.CustomerNumber=b.CustomerNumber AND
                     			(@FromDateJalali IS NULL or
                     			@ToDateJalali IS NULL or 
                     			b.NextDay BETWEEN @FromDateJalali and @ToDateJalali)AND 
@@ -268,13 +261,15 @@ namespace Aban360.ReportPool.Persistence.Base
                     			    @ToReadingNumber IS NULL or 
                     			    c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber
                                 ) AND
-                            	c.DeletionStateId IN (0) AND
-                                c.HasWater=1 AND
                     			b.TypeCode IN (1,7,8) AND
-                                c.PhysicalWaterInstallDateJalali <= @ToDateJalali AND
-                    			c.ToDayJalali IS NULL 
-                                {c_zonePartQuery}
-                                {c_usagePartQuery}
+                            	c.DeletionStateId IN (0) AND
+                    			c.CustomerNumber=b.CustomerNumber AND
+                    			c.ZoneId=b.ZoneId AND
+                                --c.HasWater=1 AND
+                                --c.PhysicalWaterInstallDateJalali <= @ToDateJalali AND
+                    			--c.ToDayJalali IS NULL 
+                                --{c_zonePartQuery}
+                                --{c_usagePartQuery}
                           ) AND --not exists
                     	  (
                               @FromReadingNumber IS NULL or
@@ -283,7 +278,7 @@ namespace Aban360.ReportPool.Persistence.Base
                           ) AND
                          c.DeletionStateId IN (0) AND
                     	 c.ToDayJalali IS NULL  AND 
-                         c.WaterRegisterDateJalali < @ThresholdDate
+                         c.WaterRegisterDateJalali < '{thresholdDate}'
                          {c_zonePartQuery}
                          {c_usagePartQuery}
                     ),
@@ -337,11 +332,11 @@ namespace Aban360.ReportPool.Persistence.Base
 					Group By w.{ZoneTitle}, w.{UsageTitle}";
         }
 
-        private Parameters GetQueryParam(string toDateJalali, bool hasZone, bool hasUsage, bool isZone=false)
+        private Parameters GetQueryParam(WithoutBillInputDto input, bool hasZone, bool hasUsage, bool isZone=false)
         {
             string ZoneTitle = nameof(ZoneTitle),
                    UsageTitle = nameof(UsageTitle);
-            DateTime toDateMiladi = toDateJalali.ToGregorianDateTime().Value;
+            DateTime toDateMiladi = input.ToDateJalali.ToGregorianDateTime().Value;
             return new Parameters()
             {
                 BZoneQuery = hasZone ? "AND b.ZoneId IN @ZoneIds" : string.Empty,
@@ -349,7 +344,11 @@ namespace Aban360.ReportPool.Persistence.Base
                 BUsageQuery = hasUsage ? "AND b.UsageId IN @usageIds" : string.Empty,
                 CUsageQuery = hasUsage ? "AND c.UsageId IN @usageIds" : string.Empty,
                 ZoneOrUsageGrouped = isZone ? ZoneTitle : UsageTitle,
-                ThresholdDate = toDateMiladi.AddDays(-45).ToShortPersianDateString()
+                ThresholdDate = toDateMiladi.AddDays(-45).ToShortPersianDateString(),
+                CReadingCondition = string.IsNullOrWhiteSpace(input.FromReadingNumber) || string.IsNullOrWhiteSpace(input.ToReadingNumber) ?
+                                    "AND c.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber" : string.Empty,
+                BReadingCondition = string.IsNullOrWhiteSpace(input.FromReadingNumber) || string.IsNullOrWhiteSpace(input.ToReadingNumber) ?
+                                    "AND b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber" : string.Empty,
             };
         }
 
@@ -361,6 +360,8 @@ namespace Aban360.ReportPool.Persistence.Base
             public string? CUsageQuery { get; set; }
             public string? ZoneOrUsageGrouped { get; set; }
             public string ThresholdDate { get; set; } = default!;
+            public string? CReadingCondition { get; set; }
+            public string? BReadingCondition { get; set; }
         }
     }
 }

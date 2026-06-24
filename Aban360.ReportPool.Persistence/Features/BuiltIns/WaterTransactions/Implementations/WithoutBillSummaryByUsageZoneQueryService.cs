@@ -21,7 +21,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         public async Task<ReportOutput<WithoutBillHeaderOutputDto, WithoutBillSummaryDataOutputDto>> GetInfo(WithoutBillInputDto input)
         {
             string reportTitle = ReportLiterals.WithoutBill + ReportLiterals.ByUsage + "-" + ReportLiterals.ByZone;
-            string query = GetGroupedBothQuery();
+            string query = GetGroupedBothQuery(input.ToDateJalali);
 
             IEnumerable<WithoutBillSummaryDataOutputDto> withoutBillData = await _sqlReportConnection.QueryAsync<WithoutBillSummaryDataOutputDto>(query, input, null, 180);
             WithoutBillHeaderOutputDto withoutBillHeader = new WithoutBillHeaderOutputDto()
