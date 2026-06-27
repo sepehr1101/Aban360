@@ -9,6 +9,7 @@ using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
@@ -22,6 +23,7 @@ using Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using DNTPersianUtils.Core;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
@@ -29,6 +31,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 {
     internal sealed class CalculationConfirmationHandler : AbstractBaseConnection, ICalculationConfirmationHandler
     {
+        private readonly IHttpContextAccessor _contextAccessor;
         private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
         private readonly IMeterReadingDetailQueryService _meterReadingDetailService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
@@ -47,6 +50,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         const string _typeTitle = "قبض";
         const string _readingStateTitle = "دارای کد مامور";
         public CalculationConfirmationHandler(
+            IHttpContextAccessor contextAccessor,
             IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
             IMeterReadingDetailQueryService meterReadingDetailService,
             ICommonMemberQueryService commonMemberQueryService,
@@ -62,6 +66,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             IConfiguration configuration)
             : base(configuration)
         {
+            _contextAccessor = contextAccessor;
+            _contextAccessor.NotNull(nameof(contextAccessor));
+
             _meterFlowValidationGetHandler = meterFlowValidationGetHandler;
             _meterFlowValidationGetHandler.NotNull(nameof(meterFlowValidationGetHandler));
 
@@ -101,7 +108,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 
         public async Task<MeterReadingCheckedOutputDto> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
         {
-            //await _meterFlowValidationGetHandler.Handle(latestFlowId, MeterFlowStepEnum.ConsumptionChecked, cancellationToken);
+            await _meterFlowValidationGetHandler.Handle(latestFlowId, MeterFlowStepEnum.ConsumptionChecked, cancellationToken);
 
             int firstFlowId = await _meterFlowQueryService.GetFirstFlowId(latestFlowId);
             IEnumerable<MeterReadingDetailDataOutputDto> meterReadings = await _meterReadingDetailService.GetWithoutExcluded(firstFlowId);
@@ -119,7 +126,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             ICollection<BillInsertDto> billsBatch = await GetBillsInsertDto(bedBesBatchWithoutDuplicate, kasrHaBatch);
             ICollection<MembersDebtAmountUpdateDto> memberDebtAmountBatch = bedBesBatchWithoutDuplicate.Select(b => new MembersDebtAmountUpdateDto((int)b.Town, (int)b.Radif, b.ShGhabs1, (long)b.Pard)).ToList();
             ICollection<ContorUpdateDto> contorsUpcateBatch = GetContorsUpdateDto(bedBesBatchWithoutDuplicate);
-            int newMeterFlowId = await CommandTransactions(bedBesBatchWithoutDuplicate, kasrhasBatchWithoutDuplicate, billsBatch, memberDebtAmountBatch, contorsUpcateBatch, zoneId, latestFlowId, appUser);
+            string opLogText = string.Format(OpLogLiterals.GenerateBatchBillOpLog, billsBatch?.FirstOrDefault()?.ZoneTitle, bedBesBatchWithoutDuplicate?.Count() ?? 0);
+            int newMeterFlowId = await ExceSql(bedBesBatchWithoutDuplicate, kasrhasBatchWithoutDuplicate, billsBatch, memberDebtAmountBatch, contorsUpcateBatch, zoneId, latestFlowId, appUser, opLogText);
 
             return GetResult(newMeterFlowId, warningMessageForDuplicateBills);
         }
@@ -150,7 +158,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             }
             return (BedBesBatch, kasrHaBatch);
         }
-        private async Task<int> CommandTransactions(ICollection<BedBesCreateDto> BedBesBatch, ICollection<KasrHaDto> kasrHaBatch, ICollection<BillInsertDto> billsBatch, ICollection<MembersDebtAmountUpdateDto> memberDebtAmountBatch, ICollection<ContorUpdateDto> contorsUpdateBatch, int zoneId, int latestFlowId, IAppUser appUser)
+        private async Task<int> ExceSql(ICollection<BedBesCreateDto> BedBesBatch, ICollection<KasrHaDto> kasrHaBatch, ICollection<BillInsertDto> billsBatch, ICollection<MembersDebtAmountUpdateDto> memberDebtAmountBatch, ICollection<ContorUpdateDto> contorsUpdateBatch, int zoneId, int latestFlowId, IAppUser appUser, string opLogText)
         {
             //string dbName = GetDbName(zoneId);
             string dbName = "Atlas";
@@ -181,6 +189,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                     MembersCommandService membersCommandService = new(connection, transaction);
                     ContorCommandService contorCommandService = new(connection, transaction);
                     WaterDebtCommandService waterDebtCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     await bedBesCreateService.InsertByBulk(BedBesBatch, dbName);
                     await kasrHaCommandService.InsertByBulk(kasrHaBatch, dbName);
@@ -188,6 +197,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                     await membersCommandService.UpdateBedbes(memberDebtAmountBatch, dbName);//todo:not found any record in atlas.members
                     await contorCommandService.Update(contorsUpdateBatch, dbName, false);
                     await waterDebtCommandService.UpdateAmount(memberDebtAmountBatch);
+                    await opLogCommandService.Insert(opLogText, appUser);
 
                     await meterFlowCommandService.Update(meterFlowUpdate);
                     int newMeterFlowId = await meterFlowCommandService.Insert(newMeterFlow);

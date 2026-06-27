@@ -1,6 +1,7 @@
 ﻿using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
@@ -19,12 +20,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IBedBesQueryService _bedBesQueryService;
         private readonly ICustomerInfoService _customerInfoService;
         private readonly ISubscriptionEventQueryService _subscriptionEventQueryService;
+        private readonly IOpLogCommandService _opLogCommandService;
         public GenerateBillWithRemainedHandler(
             ICommonZoneService commonZoneService,
             ICommonMemberQueryService commonMemberQueryService,
             IBedBesQueryService bedBesQueryService,
             ICustomerInfoService customerInfoService,
-            ISubscriptionEventQueryService subscriptionEventQueryService)
+            ISubscriptionEventQueryService subscriptionEventQueryService,
+            IOpLogCommandService opLogCommandService)
         {
             _commonZoneService = commonZoneService;
             _commonZoneService.NotNull(nameof(commonZoneService));
@@ -40,6 +43,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             _subscriptionEventQueryService = subscriptionEventQueryService;
             _subscriptionEventQueryService.NotNull(nameof(subscriptionEventQueryService));
+
+            _opLogCommandService = opLogCommandService;
+            _opLogCommandService.NotNull(nameof(opLogCommandService));
         }
 
         public async Task<BillIssueRemainedOutputDto> Handle(string billId, IAppUser appUser, CancellationToken cancellationToken)
@@ -48,10 +54,15 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumber);
             await _commonZoneService.IsUserInZone(appUser, zoneIdAndCustomerNumber.ZoneId);
 
-            ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> result = await _subscriptionEventQueryService.GetEventsSummaryDtos(billId, string.Empty);
-            long amount = result.ReportHeader.Remained;
-            string currentMonth = DateTime.Now.ToShortPersianDateString().Substring(5, 2);
-            string paymentIdOption = $"1{currentMonth}";
+            BillIssueRemainedOutputDto result = await GetResult(memberInfo, billId);
+            string opLogText = string.Format(OpLogLiterals.GenerateBillIssueRemianedOpLog, result.BillId, result.PaymentId, result.Amount);
+            await _opLogCommandService.Insert(opLogText, appUser);
+            return result;
+        }
+        private async Task<BillIssueRemainedOutputDto> GetResult(MemberInfoGetDto memberInfo, string billId)
+        {
+            ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> subscripitonInfo = await _subscriptionEventQueryService.GetEventsSummaryDtos(billId, string.Empty);
+            long amount = subscripitonInfo.ReportHeader.Remained;
             return new BillIssueRemainedOutputDto()
             {
                 CustomerNumber = memberInfo.CustomerNumber,
