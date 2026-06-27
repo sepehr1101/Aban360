@@ -63,6 +63,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         {
             ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> subscripitonInfo = await _subscriptionEventQueryService.GetEventsSummaryDtos(billId, string.Empty);
             long amount = subscripitonInfo.ReportHeader.Remained;
+            string currentMonth = DateTime.Now.ToShortPersianDateString().Substring(5, 2);
+            string paymentIdOption = $"1{currentMonth}";
             return new BillIssueRemainedOutputDto()
             {
                 CustomerNumber = memberInfo.CustomerNumber,
