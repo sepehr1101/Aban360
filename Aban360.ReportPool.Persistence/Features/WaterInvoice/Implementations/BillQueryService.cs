@@ -37,6 +37,12 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             IEnumerable<BillHistoryDataOutputDto> result = await _sqlReportConnection.QueryAsync<BillHistoryDataOutputDto>(query, inputDto);
             return result;
         }
+        public async Task<IEnumerable<BillLatestListDataOutputDto>> GetLatestList(BillLatestListInputDto inputDto)
+        {
+            string query = GetBillLatestListQuery();
+            IEnumerable<BillLatestListDataOutputDto> result = await _sqlReportConnection.QueryAsync<BillLatestListDataOutputDto>(query, inputDto, null, 180);
+            return result;
+        }
 
         private string GetItemsByBillIdQuery()
         {
@@ -158,6 +164,47 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali AND
 					    CounterStateCode NOT IN (4,7)
 					Order by RegisterDay ASC";
+        }
+        private string GetBillLatestListQuery()
+        {
+            return $@";With Cte As(
+						Select 
+							b.Id,
+							b.BillId,
+							b.CustomerNumber,
+							b.ReadingNumber,
+							t46.C0 RegionId,
+							t46.C2 RegionTitle,
+							b.ZoneId,
+							b.ZoneTitle,
+							b.UsageId,
+							b.UsageTitle,
+							b.BranchTypeId,
+							b.BranchType BranchTypeTitle,
+							b.Consumption ,
+							b.ConsumptionAverage,
+							b.CounterStateCode,
+							b.CounterStateTitle,
+							b.RegisterDay RegisterDateJalali,
+							Rn=ROW_NUMBER() OVER(PARTITION BY b.BillId ORDER BY b.RegisterDay DESC)
+					From CustomerWarehouse.dbo.Clients c
+				    Join CustomerWarehouse.dbo.Bills b
+						On c.ZoneId=b.ZoneId AND c.CustomerNumber=b.CustomerNumber
+					Left Join [Db70].dbo.T51 t51
+						On b.ZoneId=t51.C0
+					Left Join [Db70].dbo.T46 t46
+						On t51.C1=t46.C0
+					Where 
+						c.ToDayJalali IS NULL AND
+						c.DeletionStateId NOT IN (1,5) AND
+						c.ZoneId=@ZoneId AND
+						c.ReadingNumber  BETWEEN @FromReadingNumber AND @ToReadingNumber
+					)
+					Select Top 300 * 
+					From Cte
+					Where 
+						Rn=1 AND
+						CustomerWarehouse.dbo.PersianToMiladi(RegisterDateJalali)<DATEADD(DAY,-15,Cast(GETDATE() AS date))";
         }
     }
 }

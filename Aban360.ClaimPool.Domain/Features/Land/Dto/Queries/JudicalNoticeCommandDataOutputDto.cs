@@ -25,6 +25,8 @@
         //Representative
         public string CompanyName { get; set; }
         public string? CompanyNationalCode { get; set; }
+        public string CompanyCertificateNumber { get; set; }
+        public string CompanyRegisterPlace { get; set; }
         public string CompanyMobileNumber { get; set; }
         public string? CompanyAddress { get; set; }
         public string? CompanyPostalCode { get; set; }
