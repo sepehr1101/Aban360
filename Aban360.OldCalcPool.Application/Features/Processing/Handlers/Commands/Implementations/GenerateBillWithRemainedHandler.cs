@@ -8,6 +8,7 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.ReportPool.Domain.Features.Transactions;
 using Aban360.ReportPool.Persistence.Features.Transactions.Contracts;
+using DNTPersianUtils.Core;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
@@ -49,6 +50,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> result = await _subscriptionEventQueryService.GetEventsSummaryDtos(billId, string.Empty);
             long amount = result.ReportHeader.Remained;
+            string currentMonth = DateTime.Now.ToShortPersianDateString().Substring(5, 2);
+            string paymentIdOption = $"1{currentMonth}";
             return new BillIssueRemainedOutputDto()
             {
                 CustomerNumber = memberInfo.CustomerNumber,
@@ -62,7 +65,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 BranchTypeTitle = memberInfo.UseStateTitle,
                 ContractualCapacity = memberInfo.ContractualCapacity,
                 Amount = amount,
-                PaymentId = TransactionIdGenerator.GeneratePaymentId(amount, billId, "100"),
+                PaymentId = TransactionIdGenerator.GeneratePaymentId(amount, billId, paymentIdOption),
             };
         }
     }
