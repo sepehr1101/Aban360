@@ -8,7 +8,7 @@
         public long Discount { get; set; }
         public int DiscountTypeId { get; set; }
         public bool Removable { get; set; }
-        public CalculationRequestDisplayDataOutputDto(int id,string title,long amount,long discount,int discountTypeId, bool removable)
+        public CalculationRequestDisplayDataOutputDto(int id, string title, long amount, long discount, int discountTypeId, bool removable)
         {
             Id = id;
             Title = title;
@@ -21,4 +21,4 @@
         {
         }
     }
-}   
+}

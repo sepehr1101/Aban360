@@ -21,6 +21,7 @@
         public static string ServiceLinkRegisterManualOpLog => @"وصولی دستی حق انشعاب انجام شد. شناسه قبض:{0}  مبلغ:{1}";
         public static string ServiceLinkDeleteManualOpLog => @"حذف وصولی دستی حق انشعاب انجام شد. شناسه قبض:{0}  مبلغ:{1}";
         public static string ServiceLinkReturnRemoved => @"قبض برگشتی حق انشعاب حذف شد. شناسه قبض:{0}  تاریخ:{1}  مبلغ:{2}  نوع قبض:{3}  نوع درخواست:{4}";
+        public static string ServiceLinkReturnConfirmedOpLog => @"برگشتی دسته‌ای حق انشعاب انجام شد. شناسه قبض:{0}  تعداد برگشتی:{1}";
 
         public static string ServiceLinkConnectInsertOpLog => @"صدور دستور وصل انجام شد. شناسه قبض:{0} ";
         public static string ServiceLinkDisconnectInsertOpLog => @"صدور دستور قطع انجام شد. شناسه قبض:{0}  علت:{1}";
