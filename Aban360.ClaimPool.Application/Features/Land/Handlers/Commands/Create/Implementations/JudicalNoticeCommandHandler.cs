@@ -74,6 +74,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
                 CompanyName = conCompanyInfo.CompanyName,
                 CompanyNationalCode = conCompanyInfo.CompanyNationalCode,
                 CompanyMobileNumber = conCompanyInfo.CompanyMobileNumber,
+                CompanyCertificateNumber = "-",
+                CompanyRegisterPlace = "-",
                 CompanyAddress = conCompanyInfo.CompanyAddress,
                 CompanyPostalCode = conCompanyInfo.CompanyPostalCode,
                 RepresentativeName = conCompanyInfo.RepresentativeName,

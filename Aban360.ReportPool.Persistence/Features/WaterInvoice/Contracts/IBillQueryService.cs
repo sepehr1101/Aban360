@@ -7,5 +7,6 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Contracts
         Task<BillItemsGetDto> Get(int id);
         Task<IEnumerable<BillTransactionDetailGetDto>> GetBillDetails(string billId);
         Task<IEnumerable<BillHistoryDataOutputDto>> GetHistory(BillHistoryInputDto inputDto);
+        Task<IEnumerable<BillLatestListDataOutputDto>> GetLatestList(BillLatestListInputDto inputDto);
     }
 }

@@ -2,6 +2,8 @@
 {
     public static class OpLogLiterals
     {
+        public static string GenerateBillIssueRemianedOpLog => @"قبض تسویه صادر شد. شناسه قبض:{0}  شناسه پرداخت:{1}  مبلغ:{2}";
+        public static string GenerateBatchBillOpLog => @"قبض دسته‌ای صادر شد. ناحیه:{0}  تعداد قبض:{1}";
         public static string GenerateBillOpLog => @"قبض صادر شد. شناسه قبض:{0}  شناسه پرداخت:{1}  مبلغ:{2}";
         public static string GenerateFreeBillOpLog => @"قبض با رقم قبلیصادر شد. شناسه قبض:{0}  شناسه پرداخت:{1}  مبلغ:{2}";
         public static string RemoveBillOpLog => @"قبض ابطال شد.  شناسه جدول:{0}  شناسه قبض:{1}.";

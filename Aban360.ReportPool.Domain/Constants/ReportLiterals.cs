@@ -55,6 +55,7 @@
 
         public static string WaterInvoice { get { return $"{Report} قبض"; } }
         public static string WaterItemsInvoice { get { return $"{Report} اقلام قبض"; } }
+        public static string WaterLatestList { get { return $"{Report} آخرین قبوض (پیش از 15روز اخیر)"; } }
 
         public static string NonPermanentBranchDetail { get { return $"{Report} جرئیات انشعاب غیر‌دائم"; } }
         public static string NonPermanentBranchSummary { get { return $"{Report} خلاصه انشعاب غیر‌دائم"; } }
