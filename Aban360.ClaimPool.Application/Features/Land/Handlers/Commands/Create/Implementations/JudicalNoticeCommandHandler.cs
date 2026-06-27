@@ -62,11 +62,11 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
                 CustomerFirstName = memberInfo.FirstName,
                 CustomerSurname = memberInfo.Surname,
                 CustomerFullName = memberInfo.FullName,
-                CustomerFatherName = memberInfo.FatherName,
-                CustomerAddress = memberInfo.Address,
-                CustomerPostalCode = memberInfo.PostalCode,
-                CustomerMobileNumber = memberInfo.MobileNumber,
-                CustomerNationalCode = memberInfo.NationalCode,
+                CustomerFatherName = GetInstedOfEmpty(memberInfo.FatherName),
+                CustomerAddress = GetInstedOfEmpty(memberInfo.Address),
+                CustomerPostalCode = GetInstedOfEmpty(memberInfo.PostalCode),
+                CustomerMobileNumber = GetInstedOfEmpty(memberInfo.MobileNumber),
+                CustomerNationalCode = GetInstedOfEmpty(memberInfo.NationalCode),
                 DebtAmount = memberInfo.DebtAmount ?? 0,
                 CustomerCertificateNumber = "-",
                 CustomerBirthPlace = "-",
@@ -107,6 +107,10 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
                 JudicalDocumentBase64 = await Base64Operation.GetDudicalDocumentBase64(cancellationToken)
             };
             return new FlatReportOutput<JudicalNoticeCommandHeaderOutputDto, JudicalNoticeCommandDataOutputDto>(_title, header, GetData(conCompanyInfo, memberInfo));
+        }
+        private string GetInstedOfEmpty(string? value)
+        {
+            return string.IsNullOrWhiteSpace(value) ? "-" : value;
         }
     }
 }
