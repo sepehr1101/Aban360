@@ -62,7 +62,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 BranchTypeTitle = memberInfo.UseStateTitle,
                 ContractualCapacity = memberInfo.ContractualCapacity,
                 Amount = amount,
-                PaymentId = TransactionIdGenerator.GeneratePaymentId(amount, "100"),
+                PaymentId = TransactionIdGenerator.GeneratePaymentId(amount, billId, "100"),
             };
         }
     }
