@@ -26,8 +26,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
         [Route("amount-confirmed/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MeterReadingCheckedOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> CheckAmount(int id, CancellationToken cancellationToken)
-        {
-            //await _amountCheckedHandler.Handle(id, CurrentUser, cancellationToken);
+        {           
             MeterReadingCheckedOutputDto result = await _confirmationHandler.Handle(id, CurrentUser, cancellationToken);
             return Ok(result);
         }

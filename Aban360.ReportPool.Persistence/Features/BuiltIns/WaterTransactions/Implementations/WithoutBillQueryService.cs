@@ -1,5 +1,4 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
@@ -20,9 +19,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
         public async Task<ReportOutput<WithoutBillHeaderOutputDto, WithoutBillDataOutputDto>> GetInfo(WithoutBillInputDto input)
         {
-            string query = GetDetailQuery(input.ZoneIds.HasValue(), input.UsageIds.HasValue());
+            string query = GetDetailQuery(input);
 
-            IEnumerable<WithoutBillDataOutputDto> withoutBillData = await _sqlReportConnection.QueryAsync<WithoutBillDataOutputDto>(query, input, null, 900);
+            IEnumerable<WithoutBillDataOutputDto> withoutBillData = await _sqlReportConnection.QueryAsync<WithoutBillDataOutputDto>(query, input, null, 1800);
             WithoutBillHeaderOutputDto withoutBillHeader = new WithoutBillHeaderOutputDto()
             {
                 FromDateJalali=input.FromDateJalali,

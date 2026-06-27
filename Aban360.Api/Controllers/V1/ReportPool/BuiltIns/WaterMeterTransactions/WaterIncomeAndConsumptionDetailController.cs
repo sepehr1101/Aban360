@@ -30,7 +30,6 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [AllowTimeWindowFilter]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(WaterIncomeAndConsumptionDetailInputDto inputDto, CancellationToken cancellationToken)
         {
@@ -40,7 +39,6 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
-        [AllowTimeWindowFilter]
         public async Task<IActionResult> GetExcel(string connectionId, WaterIncomeAndConsumptionDetailInputDto inputDto, CancellationToken cancellationToken)
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _waterIncomeAndConsumptionDetail.Handle, CurrentUser, ReportLiterals.WaterIncomeAndConsumptionDetail, connectionId);
@@ -49,7 +47,6 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost]
         [Route("sti")]
-        [AllowTimeWindowFilter]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         [AllowAnonymous]
         public async Task<IActionResult> GetStiReport(WaterIncomeAndConsumptionDetailInputDto inputDto, CancellationToken cancellationToken)
