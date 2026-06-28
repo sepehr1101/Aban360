@@ -18,8 +18,6 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         {
         }
 
-
-
         public async Task<MeterFlowGetDto> Get(int id)
         {
             string query = GetQuery();
@@ -47,7 +45,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         public async Task<IEnumerable<MeterFlowCartableGetDto>> GetCartable(IEnumerable<int> zoneIds)
         {
             string query = GetCartablQuery();
-            IEnumerable<MeterFlowCartableGetDto> cartable = await _sqlReportConnection.QueryAsync<MeterFlowCartableGetDto>(query, new { zoneIds});
+            IEnumerable<MeterFlowCartableGetDto> cartable = await _sqlReportConnection.QueryAsync<MeterFlowCartableGetDto>(query, new { zoneIds });
 
             return cartable;
         }
@@ -72,6 +70,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                     	m.ZoneId,
 						t51.C2 as ZoneTitle,
                         m.InsertDateTime,
+                        m.RemovedDateTime,
                         m.Description
                     From Atlas.dbo.MeterFlow m
 					Left Join Db70.dbo.T51 t51 
@@ -84,9 +83,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             return @"Select InsertDateTime
                     From Atlas.dbo.MeterFlow
                     Where 
-                        FileName=@fileName AND
-						RemovedByUserId IS NULL AND
-						RemovedDateTime IS NULL";
+                        FileName=@fileName ";
         }
         private string GetValidationByIdQuery()
         {

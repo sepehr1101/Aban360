@@ -143,6 +143,7 @@
         public static string FlowStepNotFound => "شناسه روند یافت نشد";
         public static string InvalidMeterFlow => "خطا در ذخیره مرحله";
         public static string InvalidUpdate => "خطا در ویرایش";
+        public static string InvalidRemove => "خطا در حذف";
         public static string CurrentNumberLessThanPreviousNumber => "شماره کنتور فعلی کمتر از قبلی است.";
         public static string InvalidRepeatConstructionBranchType => "وضعیت فعلی -ساخت و ساز- است.";
         public static string InvalidBranchTypeId => "خطا در کد نوع واگذاری فعلی.";
@@ -152,6 +153,8 @@
         public static string InvalidUpdateContor => "خطا در ویرایش آخرین وضعیت کنتور";
         public static string InvalidSetExclude => "خطا در خروج قبض از لیست";
         public static string InvalidUpdateMeterReading => "خطا در ویرایش قبض";
+        public static string InvalidRemoveFile => "خطا در حذف فایل";
+        public static string InvalidRemoveFinishedFile => "امکان حذف فایل تایید نهایی شده وجود ندارد.";
 
         //RemovedBill
         public static string NotFoundBillsToRemoved => "قبضی برای ابطال یافت نشد.";
