@@ -43,6 +43,13 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             IEnumerable<BillLatestListDataOutputDto> result = await _sqlReportConnection.QueryAsync<BillLatestListDataOutputDto>(query, inputDto, null, 180);
             return result;
         }
+		public async Task<IEnumerable<BillLatestListDataOutputDto>> GetLatestListByBedBes(BillLatestListInputDto inputDto)
+        {
+			string dbName = GetDbName(inputDto.ZoneId);
+            string query = GetBedBesLatestListQuery(dbName);
+            IEnumerable<BillLatestListDataOutputDto> result = await _sqlReportConnection.QueryAsync<BillLatestListDataOutputDto>(query, inputDto, null, 180);
+            return result;
+        }
 
         private string GetItemsByBillIdQuery()
         {
@@ -206,5 +213,54 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						Rn=1 AND
 						CustomerWarehouse.dbo.PersianToMiladi(RegisterDateJalali)<DATEADD(DAY,-15,Cast(GETDATE() AS date))";
         }
-    }
+		private string GetBedBesLatestListQuery(string dbName)
+		{
+			return $@";WITH CTE AS(
+						Select 
+							b.Id,
+							b.sh_ghabs1 BillId,
+							b.radif CustomerNumber,
+							b.eshtrak ReadingNumber,
+							t46.C0 RegionId,
+							t46.C2 RegionTitle,
+							b.town ZoneId,
+							t51.C2 ZoneTitle,
+							b.cod_enshab UsageId,
+							t41.C1 UsageTitle,
+							b.noe_va BranchTypeId,
+							t7.C1 BranchTypeTitle,
+							b.today_no PreviousNumber,
+							b.today_date PreviousDateJalali,
+							b.masraf Consumption ,
+							b.rate ConsumptionAverage,
+							b.cod_vas CounterStateCode,
+							cv.Title CounterStateTitle,
+							b.date_bed RegisterDateJalali,
+							b.del IsReturned,
+							Rn=ROW_NUMBER() OVER(PARTITION BY b.town,b.radif ORDER BY b.date_bed DESC)
+						From [{dbName}].dbo.members m 
+						Join [{dbName}].dbo.bed_bes b
+							ON m.town=b.town AND m.radif=b.radif
+						Left Join [Db70].dbo.T51 t51
+							On b.town=t51.C0
+						Left Join [Db70].dbo.T46 t46
+							On t51.C1=t46.C0
+						Left Join [Db70].dbo.T41 t41
+							On b.cod_enshab=t41.C0
+						Left Join [Db70].dbo.T7 t7
+							On b.noe_va=t7.C0
+						Left Join [Db70].dbo.CounterVaziat cv
+							On b.cod_vas=cv.MoshtarakinId
+						Where 
+							m.hasf NOT IN (1,5) AND
+							m.town=@ZoneId AND
+							m.eshtrak BETWEEN @FromReadingNumber AND @ToReadingNumber
+					)
+					Select TOP 300 * 
+					From CTE
+					WHERE
+						rn=1 AND
+						CustomerWarehouse.dbo.PersianToMiladi(RegisterDateJalali)<DATEADD(DAY,-15,Cast(GETDATE() AS date))";
+		}
+	}
 }

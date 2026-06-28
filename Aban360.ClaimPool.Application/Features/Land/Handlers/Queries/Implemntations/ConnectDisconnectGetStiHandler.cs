@@ -13,7 +13,6 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Aban360.ReportPool.Domain.Features.Geo;
 using Aban360.ReportPool.Infrastructure.Features.Geo;
 using DNTPersianUtils.Core;
-using System.Threading;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations
 {

@@ -51,8 +51,26 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
         }
         public async Task Remove(KartRemoveDto input, string dbName)
         {
-            string command = GetRemoveByIdCommand(dbName);
+            string command = GetRemoveByIdAndSerialCommand(dbName);
             int rowEffected = await _connection.ExecuteAsync(command, input, _transaction);
+            if (rowEffected <= 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidRemoveKart);
+            }
+        }
+        public async Task Remove(IEnumerable<KartRemoveByIdDto> inputDto, string dbName)
+        {
+            string command = GetRemoveByIdAndCustomerNumberCommand(dbName);
+            int rowEffected = await _connection.ExecuteAsync(command, inputDto, _transaction);
+            if (rowEffected != (inputDto?.Count() ?? 0))
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidRemoveKart);
+            }
+        }
+        public async Task Remove(KartRemoveByIdDto inputDto, string dbName)
+        {
+            string command = GetRemoveByIdAndCustomerNumberCommand(dbName);
+            int rowEffected = await _connection.ExecuteAsync(command, inputDto, _transaction);
             if (rowEffected <= 0)
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidRemoveKart);
@@ -104,12 +122,20 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
             return $@"Delete [{dbName}].dbo.kart 
                     Where par_no=@stringTrackNumber";
         }
-        private string GetRemoveByIdCommand(string dbName)
+        private string GetRemoveByIdAndSerialCommand(string dbName)
         {
             return $@"Delete [{dbName}].dbo.kart 
                     Where 
                         id=@id AND
                         Serial=@serial";
+        }
+        private string GetRemoveByIdAndCustomerNumberCommand(string dbName)
+        {
+            return $@"Delete [{dbName}].dbo.kart 
+                    Where 
+                        id=@Id AND
+                        radif=@CustomerNumber AND
+                        town=@ZoneId ";
         }
         private string GetRemoveByConditionCommand(string dbName)
         {

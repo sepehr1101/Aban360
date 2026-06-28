@@ -48,6 +48,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Aban360.CalculationPool.Domain\Aban360.CalculationPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.ClaimPool.Domain\Aban360.ClaimPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.Common.Db\Aban360.Common.Db.csproj" />
     <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />

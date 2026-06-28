@@ -267,13 +267,18 @@
         public static string Tracking { get { return "درخواست ها"; }  }
 
 
+        public static int DisconnectId { get { return 0; }  }
+        public static int ConnectId { get { return 1; }  }
+        public static int JudicalNoticeId { get { return 2; }  }
         public static string Disconnect { get { return "صدور دستور قطع"; }  }
         public static string Connect { get { return "صدور دستور وصل"; }  }
+        public static string JudicalNotice { get { return "صدور اسناد رسمی"; }  }
         public static string NoResultConnectDisconnect { get { return "دستورات قطع و وصل بدون نتیجه"; }  }
        
         
         public static string UnconfirmedBillReturn { get { return "قبوض برگشتی تایید نشده."; }  }
         public static string ServiceLinkPaid { get { return "وصولی حق انشعاب"; }  }
+        public static string ServiceLinkUnconfirmed { get { return "وصولی تایید نشده حق انشعاب"; }  }
         
         public static string MeterReadingExcluded { get { return "قرائت‌های خارج شده از لیست"; }  }
         public static string MeterReadingUpdated{ get { return "قرائت‌های ویرایش شده"; }  }

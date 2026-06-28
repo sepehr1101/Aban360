@@ -29,7 +29,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<BillLatestListHeaderOutputDto, BillLatestListDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw([FromBody] BillLatestListInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<BillLatestListHeaderOutputDto, BillLatestListDataOutputDto> result = await _billLatestListGetHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            ReportOutput<BillLatestListHeaderOutputDto, BillLatestListDataOutputDto> result = await _billLatestListGetHandler.HandleByBedBes(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
         }
     }

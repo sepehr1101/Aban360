@@ -8,6 +8,7 @@ using Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.InvoiceInfo.Dto;
 using Aban360.ReportPool.Persistence.Features.WaterInvoice.Contracts;
+using NetTopologySuite.Index.HPRtree;
 
 namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implementations
 {
@@ -41,6 +42,32 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
                 BedBesPreviousNumberAndDateOutputDto billInfo = await _bedBesQueryService.GetPreviousDateAndNumber(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber), item.BillId);
                 item.PreviousNumber = billInfo.PreviousNumber;
                 item.PreviousDateJalali = billInfo.PreviousDateJalali;
+            }
+            BillLatestListHeaderOutputDto header = new()
+            {
+                ZoneId = inputDto.ZoneId,
+                ZoneTitle = data?.FirstOrDefault()?.ZoneTitle ?? string.Empty,
+                FromReadingNumber = inputDto.FromReadingNumber,
+                ToReadingNumber = inputDto.ToReadingNumber,
+                RecordCount = data?.Count() ?? 0,
+                Title = _title,
+            };
+            ReportOutput<BillLatestListHeaderOutputDto, BillLatestListDataOutputDto> result = new(_title, header, data);
+            return result;
+        }
+        public async Task<ReportOutput<BillLatestListHeaderOutputDto, BillLatestListDataOutputDto>> HandleByBedBes(BillLatestListInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            await _commonZoneService.IsUserInZone(appUser, inputDto.ZoneId);
+            IEnumerable<BillLatestListDataOutputDto> data = await _billQueryService.GetLatestListByBedBes(inputDto);
+        
+            foreach (var item in data)
+            {
+                if (item.IsReturned)
+                {
+                    BedBesPreviousNumberAndDateOutputDto billInfo = await _bedBesQueryService.GetPreviousDateAndNumber(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber), item.BillId);
+                    item.PreviousNumber = billInfo.PreviousNumber;
+                    item.PreviousDateJalali = billInfo.PreviousDateJalali;
+                }
             }
             BillLatestListHeaderOutputDto header = new()
             {

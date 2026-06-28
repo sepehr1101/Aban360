@@ -8,14 +8,14 @@
         public string RegisterDateJalali { get; set; }
         public int TypeCode { get; set; }
         public int ItemId { get; set; }
-        public KartRemoveByConditionDto(int zoneId,int customerNumber,long amount,string registerDateJalali,int typeCode,int itemId)
+        public KartRemoveByConditionDto(int zoneId, int customerNumber, long amount, string registerDateJalali, int typeCode, int itemId)
         {
-            ZoneId=zoneId;
-            CustomerNumber=customerNumber;
-            Amount=amount;
-            RegisterDateJalali=registerDateJalali;  
-            TypeCode=typeCode;
-            ItemId=itemId;
+            ZoneId = zoneId;
+            CustomerNumber = customerNumber;
+            Amount = amount;
+            RegisterDateJalali = registerDateJalali;
+            TypeCode = typeCode;
+            ItemId = itemId;
         }
         public KartRemoveByConditionDto()
         {
