@@ -5,14 +5,13 @@ using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Base;
-using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
-using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -26,8 +25,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
         private readonly IConCompanyQueryService _conCompanyQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly IValidator<JudicalNoticeCommandInputDto> _validator;
-        const string _title = "تقاضانامه صدور اجرائیه اسناد ذمه";
-        private int _setJudicalTypeId = 2;
+        static string _title = ReportLiterals.JudicalNoticeCommand;
         public JudicalNoticeCommandHandler(
             IHttpContextAccessor contextAccessor,
             IConCompanyQueryService conCompanyQueryService,
@@ -55,9 +53,13 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
             ZoneIdAndCustomerNumber zoneIdAndCustomeorNumber = await _commonMemberQueryService.Get(inputDto.BillId);
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomeorNumber);
 
+            ConnectDisconnectInsertDto connectDisconnectInsertDto = GetConnectDisconnectInsertDto(memberInfo, inputDto, conCompanyInfo, appUser);
+            string opLogText = string.Format(OpLogLiterals.JudicalNoticeCommandInsertOpLog, memberInfo.BillId, memberInfo.DebtAmount, conCompanyInfo.CompanyName, conCompanyInfo.AdministratorName);
+            await ExceSql(connectDisconnectInsertDto, appUser, opLogText);
+
             return await GetResult(conCompanyInfo, memberInfo, cancellationToken);
         }
-        private async Task ExceSql(IAppUser appUser, string opLogText)
+        private async Task ExceSql(ConnectDisconnectInsertDto connectDisconnectInsertDto, IAppUser appUser, string opLogText)
         {
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -70,37 +72,38 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
                     ConnectDisconnectCommandService connectDisconnectCommandService = new(connection, transaction);
                     OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
-                    //await connectDisconnectCommandService.Insert(connectDisconnectInsertDto);
+                    await connectDisconnectCommandService.Insert(connectDisconnectInsertDto);
                     await opLogCommandService.Insert(opLogText, appUser);
 
                     transaction.Commit();
                 }
             }
         }
-        //private ConnectDisconnectInsertDto GetConnectDisconnectInsertDto(ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo, ConnectDisconnectPrintInputDto inputDto, IAppUser appUser, string causeTitle, bool isConnect)
-        //{
-        //    return new ConnectDisconnectInsertDto()
-        //    {
-        //        ZoneId = customerInfo.ReportData?.FirstOrDefault()?.ZoneId ?? 0,
-        //        ZoneTitle = customerInfo.ReportData?.FirstOrDefault()?.ZoneTitle ?? string.Empty,
-        //        BillId = customerInfo.ReportHeader.BillId,
-        //        WaterDebt = customerInfo.ReportData?.FirstOrDefault()?.WaterDebtAmount ?? 0,
-        //        CommandDateTime = DateTime.Now,
-        //        CommandBy = appUser.UserId,
-        //        CommandCauseId = inputDto.Why ?? 0,
-        //        CommandCauseTitle = causeTitle,
-        //        ResultDateTime = null,
-        //        ResultBy = null,
-        //        ResultId = null,
-        //        ResultTitle = null,
-        //        MeterDiameterId = customerInfo.ReportHeader.MeterDiameterId,
-        //        MeterDiameterTitle = customerInfo.ReportHeader.MeterDiameterTitle,
-        //        CompanyTitle = inputDto.Who,
-        //        TypeId = isConnect ? _connectTypeId : _disconnectTypeId,
-        //        TypeTitle = isConnect ? ReportLiterals.Connect : ReportLiterals.Disconnect,
-        //        Description = inputDto.Description ?? string.Empty,
-        //    };
-        //}
+        private ConnectDisconnectInsertDto GetConnectDisconnectInsertDto(MemberInfoGetDto memberInfo, JudicalNoticeCommandInputDto inputDto, ConCompanyGetDto conCompanyInfo, IAppUser appUser)
+        {
+            return new ConnectDisconnectInsertDto()
+            {
+                ZoneId = memberInfo.ZoneId,
+                ZoneTitle = memberInfo.ZoneTitle,
+                BillId = memberInfo.BillId,
+                WaterDebt = memberInfo.DebtAmount ?? 0,
+                CommandDateTime = DateTime.Now,
+                CommandBy = appUser.UserId,
+                CommandCauseId = ReportLiterals.JudicalNoticeId,
+                CommandCauseTitle = ReportLiterals.JudicalNotice,
+                ResultDateTime = null,
+                ResultBy = null,
+                ResultId = null,
+                ResultTitle = null,
+                MeterDiameterId = memberInfo.MeterDiameterId,
+                MeterDiameterTitle = memberInfo.MeterDiameterTitle,
+                CompanyId = conCompanyInfo.Id,
+                CompanyTitle = conCompanyInfo.CompanyName,
+                TypeId = ReportLiterals.JudicalNoticeId,
+                TypeTitle = ReportLiterals.JudicalNotice,
+                Description = inputDto.Description ?? string.Empty,
+            };
+        }
         private async Task Validate(JudicalNoticeCommandInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);

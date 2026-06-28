@@ -16,6 +16,7 @@
         public string? ResultTitle { get; set; }
         public int MeterDiameterId { get; set; }
         public string MeterDiameterTitle { get; set; } 
+        public int CompanyId{ get; set; }
         public string? CompanyTitle { get; set; }
         public int TypeId { get; set; }
         public string TypeTitle { get; set; }

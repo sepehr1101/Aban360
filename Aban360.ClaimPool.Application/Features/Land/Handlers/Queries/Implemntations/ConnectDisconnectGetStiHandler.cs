@@ -23,7 +23,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
         private readonly ICommonZoneService _commonZoneService;
         private readonly ILocationInfoGetHandler _locationInfoService;
         private readonly IMapService _mapService;
-        private const int _connectTypeId = 1;
         public ConnectDisconnectGetStiHandler(
             IConnectDisconnectQueryService connectDisconnectQueryService,
             ICommonMemberQueryService commonMemberQueryService,
@@ -57,7 +56,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
             await _commonZoneService.IsUserInZone(appUser, zoneIdAndCustomerNumber.ZoneId);
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumber);
 
-            string title = connectDisconnectInfo.TypeId == _connectTypeId ? ReportLiterals.Connect : ReportLiterals.Disconnect;
+            string title = connectDisconnectInfo.TypeId == ReportLiterals.ConnectId ? ReportLiterals.Connect : ReportLiterals.Disconnect;
 
             return await GetResult(memberInfo, connectDisconnectInfo, title, cancellationToken);
         }
@@ -87,7 +86,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
                 MeterDiameterTitle = memberInfo.MeterDiameterTitle,
                 BranchTypeTitle = memberInfo.UseStateTitle,
                 CompanyTitle = connectDisconnectInfo.CompanyTitle ?? string.Empty,
-                IsConnect = connectDisconnectInfo.TypeId == _connectTypeId ? true : false,
+                IsConnect = connectDisconnectInfo.TypeId == ReportLiterals.ConnectId ? true : false,
                 CauseTitle = connectDisconnectInfo.CommandCauseTitle,
                 Base64 = locInfo.Item2,
                 X = locInfo.Item1.Easting.ToString(),

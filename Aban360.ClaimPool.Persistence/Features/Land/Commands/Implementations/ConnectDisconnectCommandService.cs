@@ -57,13 +57,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                         ZoneId,ZoneTitle,BillId,WaterDebt,
                         CommandDateTime,CommandBy,CommandCauseId,CommandCauseTitle,
                         ResultDateTime,ResultBy,ResultId,ResultTitle,
-                        MeterDiameterId,MeterDiameterTitle,CompanyTitle,TypeId,TypeTitle,Description
+                        MeterDiameterId,MeterDiameterTitle,CompanyId,CompanyTitle,TypeId,TypeTitle,Description
                     )
                     VALUES (
                         @ZoneId,@ZoneTitle,@BillId,@WaterDebt,
                         @CommandDateTime,@CommandBy,@CommandCauseId,@CommandCauseTitle,
                         @ResultDateTime,@ResultBy,@ResultId,@ResultTitle,
-                        @MeterDiameterId,@MeterDiameterTitle,@CompanyTitle,@TypeId,@TypeTitle,@Description
+                        @MeterDiameterId,@MeterDiameterTitle,@CompanyId,@CompanyTitle,@TypeId,@TypeTitle,@Description
                     )";
         }
         private string GetUpdateQuery()
