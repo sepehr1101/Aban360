@@ -21,5 +21,6 @@
         public string RegisterDateJalali { get; set; }
         public string PreviousDateJalali { get; set; }
         public int PreviousNumber { get; set; }
+        public bool IsReturned { get; set; }
     }
 }

@@ -7,5 +7,6 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Contracts
     public interface IBillLatestListGetHandler
     {
         Task<ReportOutput<BillLatestListHeaderOutputDto, BillLatestListDataOutputDto>> Handle(BillLatestListInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
+        Task<ReportOutput<BillLatestListHeaderOutputDto, BillLatestListDataOutputDto>> HandleByBedBes(BillLatestListInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
     }
 }
