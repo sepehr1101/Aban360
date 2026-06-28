@@ -16,6 +16,8 @@
 
         public Guid? ExcludedByUserId { get; set; }
         public DateTime? ExcludedDateTime { get; set; }
+        public int? ExcludedCauseId { get; set; }
+        public string? ExcludedCauseTitle { get; set; }
 
         public Guid InsertByUserId { get; set; }
         public DateTime InsertDateTime { get; set; }

@@ -18,6 +18,7 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
+using Aban360.ReportPool.Domain.Base;
 using DNTPersianUtils.Core;
 using DotNetDBF;
 using FluentValidation;
@@ -34,6 +35,17 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         const int _conditionPayableAmount = 10000;
         const int _paymentDeadline = 7;
         const double _maxAmount = 999_999_999_999;
+        const int _commonMeterTypeId = 0;
+        const int _malfunctionMeterTypeId = 1;
+        const int _replacementMeterTupeId = 2;
+        const int _inverseMeterTypeId = 3;
+        const int _closeMeterTypeId = 4;
+        const int _roundAgainMeterTypeId = 5;//todo: rename
+        const int _withoutConsumptionMeterTypeId = 6;
+        const int _blockMeterTypeId = 7;
+        const int _noReadMeterTypeId = 8;
+        const int _desolateUnitMeterTypeId = 9;//todo: rename
+        const int _disconnectionMeterTypeId = 10;
 
         private readonly IMeterFlowQueryService _meterFlowService;
         private readonly ICustomerInfoService _customerInfoService;
@@ -92,9 +104,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             ICollection<MeterReadingDetailCreateDto> readingDetailsCreate = new List<MeterReadingDetailCreateDto>();
             foreach (var readingDetail in readingDetails)
             {
-                if (CounterStateValidation(readingDetail.CurrentCounterStateCode, readingDetail.CurrentNumber, readingDetail.PreviousNumber))
+                var (isValid, hasExclude) = CounterStateValidation(readingDetail.CurrentCounterStateCode, readingDetail.CurrentNumber, readingDetail.PreviousNumber);
+                if (isValid)
                 {
-                    if (readingDetail.CurrentCounterStateCode == 1)//xarab
+                    if (readingDetail.CurrentCounterStateCode == _malfunctionMeterTypeId)//xarab
                     {
                         float previousAverage = await _previousAverageHandler.HandleByPreviousYear(readingDetail.ZoneId, readingDetail.CustomerNumber, readingDetail.PreviousDateJalali, readingDetail.CurrentDateJalali) ??
                            await _previousAverageHandler.HandleByLatestReading(readingDetail.ZoneId, readingDetail.CustomerNumber, readingDetail.PreviousDateJalali, readingDetail.CurrentDateJalali);
@@ -120,19 +133,19 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                             readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
                         }
                     }
-                    else if (readingDetail.CurrentCounterStateCode == 2 && string.IsNullOrWhiteSpace(readingDetail.TavizDateJalali))
+                    else if (readingDetail.CurrentCounterStateCode == _replacementMeterTupeId && string.IsNullOrWhiteSpace(readingDetail.TavizDateJalali))
                     {
-                        readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, null));
+                        readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
                     }
-                    else if (readingDetail.CurrentCounterStateCode == 2 && readingDetail.TavizDateJalali.CompareTo(readingDetail.CurrentDateJalali) > 0)
+                    else if (readingDetail.CurrentCounterStateCode == _replacementMeterTupeId && readingDetail.TavizDateJalali.CompareTo(readingDetail.CurrentDateJalali) > 0)
                     {
-                        readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, null));
+                        readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
                     }
-                    else if (readingDetail.CurrentCounterStateCode == 2 && readingDetail.TavizDateJalali.CompareTo(readingDetail.PreviousDateJalali) < 0)
+                    else if (readingDetail.CurrentCounterStateCode == _replacementMeterTupeId && readingDetail.TavizDateJalali.CompareTo(readingDetail.PreviousDateJalali) < 0)
                     {
-                        readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, null));
+                        readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
                     }
-                    else if (readingDetail.CurrentCounterStateCode == 2) //taviz
+                    else if (readingDetail.CurrentCounterStateCode == _replacementMeterTupeId) //taviz
                     {
                         int previousNumber = readingDetail.PreviousNumber;
                         string previousDateJalali = readingDetail.PreviousDateJalali;
@@ -187,7 +200,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 }
                 else
                 {
-                    readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, null));
+                    Guid? excludedUserId = hasExclude ? appUser.UserId : null;
+                    readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, excludedUserId));
                 }
             }
 
@@ -290,7 +304,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 }
             }
             IEnumerable<MeterReadingDetailCreateDto> meterReadingsDetailCreate = GetReadingMeterDetails(meterReadings, customersInfo, meterFlowId);
-            
+
             return meterReadingsDetailCreate;
         }
 
@@ -437,23 +451,27 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 //throw new ReadingException(ExceptionLiterals.InvalidDuplicateFileName(insertDateJalali));
             }
         }
-        private bool CounterStateValidation(int counterStateCode, int currentNumber, int previousNumber)
+        private (bool, bool) CounterStateValidation(int counterStateCode, int currentNumber, int previousNumber)
         {
-            int[] invalidCounterStateCode = [4, /*6,*/ 7, 8, 9, 10];
+            int[] invalidCounterStateCode = [_closeMeterTypeId, /*_withoutConsumptionMeterTypeId,*/ _blockMeterTypeId, _noReadMeterTypeId, _desolateUnitMeterTypeId, _disconnectionMeterTypeId];
 
-            if (counterStateCode == 6 && previousNumber != currentNumber)
+            if (counterStateCode == _commonMeterTypeId && previousNumber > currentNumber)
             {
-                return false;
+                return (false, true);
+            }
+            if (counterStateCode == _withoutConsumptionMeterTypeId && previousNumber != currentNumber)
+            {
+                return (false, true);
             }
             if (invalidCounterStateCode.Contains(counterStateCode))
             {
-                return false;
+                return (false, false);
             }
-            else if ((counterStateCode == 3 || counterStateCode == 5) && currentNumber > previousNumber)
+            else if ((counterStateCode == _replacementMeterTupeId || counterStateCode == _inverseMeterTypeId || counterStateCode == _roundAgainMeterTypeId) && currentNumber > previousNumber)
             {
-                return false;
+                return (false, true);
             }
-            return true;
+            return (true, false);//(IsValid,HasExclude)
         }
         private MeterImaginaryInputDto GetMeterImaginary(MeterReadingDetailCreateDto readingDetail)
         {
@@ -504,6 +522,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
             r.ExcludedByUserId = userIdExclude;
             r.ExcludedDateTime = userIdExclude.HasValue ? DateTime.Now : null;
+            r.ExcludedCauseId = userIdExclude.HasValue ? (int)ExcludedCauseEnum.Error : null;
+            r.ExcludedCauseTitle = userIdExclude.HasValue ? ReportLiterals.Error : null;
             r.Barge = 0;
             r.PriNo = r.PreviousNumber;
             r.TodayNo = r.CurrentNumber;

@@ -285,6 +285,10 @@
 
         public static string JudicalNoticeCommand{ get { return "تقاضانامه صدور اجرائیه اسناد ذمه"; }  }
 
+        public static string PriGTCurrent { get { return "رقم قبلی کمتر از فعلی"; } }
+        public static string NeedEvaluate { get { return "نیاز به بازدید مجدد"; } }
+        public static string Error { get { return "خطا"; } }
+
 
     }
 }
