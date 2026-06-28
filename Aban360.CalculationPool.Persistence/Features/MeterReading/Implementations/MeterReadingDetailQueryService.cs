@@ -264,16 +264,16 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             return $@";With Cte As(
                         	Select 
                         		BillId,
-                        		MAX(FlowImportedId) FlowImportedId
+                        		FlowImportedId
                         	From Atlas.dbo.MeterReadingDetail 
                         	Where 
                         		ZoneId=@ZoneId AND
-                        		(FORMAT(CAST(InsertDateTime AS date),'yyyy/MM/dd','fa')  BETWEEN @FromDateJalali AND @ToDateJalali) AND
+                        		(FORMAT(CAST(RemovedDateTime AS date),'yyyy/MM/dd','fa')  BETWEEN @FromDateJalali AND @ToDateJalali) AND
                         		RemovedDateTime IS NOT NULL AND
                         		(@FromReadingNumber IS NULL OR
                         		@ToReadingNumber IS NULL OR
                         		ReadingNumber BETWEEN @FromReadingNumber AND @ToReadingNumber)
-                        	Group By BillId
+                        	Group By BillId,FlowImportedId
                         )
                         Select 
                         	 mr.Id,
