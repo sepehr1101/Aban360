@@ -193,10 +193,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 
                     await bedBesCreateService.InsertByBulk(BedBesBatch, dbName);
                     await kasrHaCommandService.InsertByBulk(kasrHaBatch, dbName);
-                    await billCommandService.InsertByBulk(billsBatch);
-                    await membersCommandService.UpdateBedbes(memberDebtAmountBatch, dbName);//todo:not found any record in atlas.members
-                    await contorCommandService.Update(contorsUpdateBatch, dbName, false);
-                    await waterDebtCommandService.UpdateAmount(memberDebtAmountBatch);
+                    //await billCommandService.InsertByBulk(billsBatch);
+                    //await membersCommandService.UpdateBedbes(memberDebtAmountBatch, dbName);//todo:not found any record in atlas.members
+                    //await contorCommandService.Update(contorsUpdateBatch, dbName, false);
+                    // waterDebtCommandService.UpdateAmount(memberDebtAmountBatch);
                     await opLogCommandService.Insert(opLogText, appUser);
 
                     await meterFlowCommandService.Update(meterFlowUpdate);
