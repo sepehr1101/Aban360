@@ -1,4 +1,6 @@
-﻿namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands
+﻿using Aban360.OldCalcPool.Domain.Constants;
+
+namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands
 {
     public record FreeGenerateBillInputDto
     {
@@ -9,6 +11,7 @@
         public string PreviousDateJalali { get; set; }
         public float? ConsumptionAverage { get; set; }
         public int? CounterStateCode { get; set; }
+        public FreeGenerateBillOperatorCodeEnum OperatorCode { get; set; }
 
         public bool IsConfirm { get; set; }
 

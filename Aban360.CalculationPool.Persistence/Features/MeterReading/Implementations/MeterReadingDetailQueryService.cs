@@ -15,9 +15,9 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         {
         }
 
-        public async Task<IEnumerable<MeterReadingDetailDataOutputDto>> GetWithoutExcluded(int flowImportedId)
+        public async Task<IEnumerable<MeterReadingDetailDataOutputDto>> Get(int flowImportedId,bool? hasExcluded)
         {
-            string query = GetWithoutExcludedQuery();
+            string query = GetWithFlowImportedIdQuery(hasExcluded);
             IEnumerable<MeterReadingDetailDataOutputDto> details = await _sqlReportConnection.QueryAsync<MeterReadingDetailDataOutputDto>(query, new { flowImportedId = flowImportedId });
 
             return details;
@@ -48,8 +48,15 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         }
 
 
-        private string GetWithoutExcludedQuery()
+        private string GetWithFlowImportedIdQuery(bool? hasExcluded)
         {
+            string excludedConditionQuery = hasExcluded switch
+            {
+                null => string.Empty,
+                true => " AND m.ExcludedByUserId IS NOT NULL ",
+                _ => " AND m.ExcludedByUserId IS NULL ",
+            };
+
             return $@"Select 
                         m.Id,
                         m.FlowImportedId,
@@ -186,8 +193,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                         On m.UsageId = t41.C0
                     Where 
                         m.FlowImportedId = @flowImportedId AND
-                        m.RemovedByUserId IS NULL AND
-                        m.ExcludedByUserId IS NULL";
+                        m.RemovedByUserId IS NULL 
+                        {excludedConditionQuery}";
         }
         private string GetSingleQuery()
         {
@@ -218,6 +225,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                     	mr.CurrentNumber,
                     	mr.ExcludedDateTime,
                     	mr.ExcludedByUserId,
+                        mr.ExcludedCauseId,
+                        mr.ExcludedCauseTitle,
                     	mr.InsertByUserId,
                     	mr.InsertDateTime,
                     	mr.UsageId,
@@ -293,6 +302,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                         	mr.CurrentNumber,
                         	mr.ExcludedDateTime,
                         	mr.ExcludedByUserId,
+                            mr.ExcludedCauseId,
+                            mr.ExcludedCauseTitle,
                         	mr.InsertByUserId,
                         	mr.InsertDateTime,
 	                        mr.RemovedByUserId,

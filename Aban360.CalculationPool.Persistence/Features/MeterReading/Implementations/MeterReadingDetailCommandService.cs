@@ -648,8 +648,10 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         {
             return @"Update Atlas.dbo.MeterReadingDetail	
                     Set 
-                    	ExcludedByUserId=@ExcludedByUserId ,
-                    	ExcludedDateTime=@ExcludedDateTime
+                    	ExcludedByUserId = @ExcludedByUserId ,
+                    	ExcludedDateTime = @ExcludedDateTime ,
+                        ExcludedCauseId = @ExcludedCauseId , 
+                        ExcludedCauseTitle = @ExcludedCauseTitle
                     Where Id=@Id";
         }
     }

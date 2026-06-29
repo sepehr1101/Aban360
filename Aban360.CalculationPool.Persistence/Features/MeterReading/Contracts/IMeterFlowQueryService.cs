@@ -8,6 +8,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts
         Task<string?> GetInsertDateTime(string fileName);
         Task<MeterFlowValidationDto?> GetMeterFlowValidation(int id);
         Task<int> GetFirstFlowId(int latestFlowId);
+        Task<MeterFlowGetDto> GetLatestFlowInfo(int firstFlowId);
         Task<IEnumerable<MeterFlowCartableGetDto>> GetCartable(IEnumerable<int> zoneIds);
     }
 }

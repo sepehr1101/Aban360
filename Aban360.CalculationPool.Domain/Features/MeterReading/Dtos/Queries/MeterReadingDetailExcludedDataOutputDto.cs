@@ -23,6 +23,8 @@ namespace Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries
         public int PreviousNumber { get; set; }
         public int CurrentNumber { get; set; }
 
+        public int? ExcludedCauseId { get; set; }
+        public string? ExcludedCauseTitle { get; set; }
         public DateTime? ExcludedDateTime { get; set; }
         public Guid? ExcludedByUserId { get; set; }
         public string? ExcludedDateJalali { get { return ExcludedDateTime?.ToShortPersianDateTimeString() ?? string.Empty; } }

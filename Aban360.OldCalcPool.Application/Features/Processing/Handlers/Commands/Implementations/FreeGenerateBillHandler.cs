@@ -46,7 +46,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         const int _changeCounterState = 2;
         const int _reverseCounterState = 3;
         const int _nextRoundCounterSatate = 5;
-        const int _operator = 666;
         const int _payIdMaxChar = 13;
         public FreeGenerateBillHandler(
             IHttpContextAccessor contextAccessor,
@@ -424,7 +423,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 Masjar = 0,
                 Sabt = 1,//todo
                 Rate = (decimal)abBahaCalc.MonthlyConsumption,
-                Operator = _operator,
+                Operator = (decimal)generateBillInfo.OperatorCode,
                 Mamor = 0,
                 TavizDate = customerInfo?.TavizInfo?.TavizDateJalali ?? string.Empty,
                 ZaribCntr = 0,
@@ -571,8 +570,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             {
                 throw new TariffCalcException(ExceptionLiterals.CurrentNumberLessThanPreviousNumber);
             }
+            if (inputDto.CounterStateCode == _malfunctionCounterState && inputDto.ConsumptionAverage is null)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidMonthlyAverageWithMalfunctionState);
+            }
         }
-
         private async Task InputPreviousDataValidate(FreeGenerateBillInputDto inputDto, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber)
         {
             BedBesPreviousNumberAndDateOutputDto previousInfo = await _bedBesQueryService.GetPreviousDateAndNumber(zoneIdAndCustomerNumber, inputDto.BillId);

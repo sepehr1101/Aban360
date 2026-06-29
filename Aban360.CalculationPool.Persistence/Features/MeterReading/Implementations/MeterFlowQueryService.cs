@@ -60,11 +60,23 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 
             return firstFlowId.Value;
         }
+        public async Task<MeterFlowGetDto> GetLatestFlowInfo(int firstFlowId)
+        {
+            string query = GetLatestFlowId();
+            MeterFlowGetDto? latestFlowInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<MeterFlowGetDto>(query, new { firstFlowId });
+            if (latestFlowInfo is null || latestFlowInfo.Id <= 0)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidFlowStep);
+            }
+
+            return latestFlowInfo;
+        }
 
 
         private string GetQuery()
         {
             return @"Select 
+                        m.Id,
                     	m.MeterFlowStepId,
                     	m.FileName,
                     	m.ZoneId,
@@ -105,6 +117,25 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                     Where
                     	f2.Id=@id AND
                     	f1.MeterFlowStepId=1";
+        }
+        private string GetLatestFlowId()
+        {
+            return @"Select top 1 
+                        m2.Id,
+                    	m2.MeterFlowStepId,
+                    	m2.FileName,
+                    	m2.ZoneId,
+                    	t51.C2 as ZoneTitle,
+                    	m2.InsertDateTime,
+                    	m2.RemovedDateTime,
+                    	m2.Description
+                    From Atlas.dbo.MeterFlow m1 
+                    Join Atlas.dbo.MeterFlow m2
+                    	ON m1.FileName=m2.FileName
+                    Left Join Db70.dbo.T51 t51 
+                    	On m2.ZoneId=t51.C0
+                    Where m1.Id=@firstFlowId
+                    Order By m2.InsertDateTime Desc";
         }
         private string GetCartablQuery()
         {
