@@ -11,7 +11,11 @@
         public int Closed { get; set; }
         public int Obstacle { get; set; }
         public int Temporarily { get; set; }
-        public int Ruined { get; set; }
+        public int Malfunction { get; set; }
         public int PureReading { get; set; }
+        public int NextRound{ get; set; }
+        public int WithoutConsumption { get; set; }
+        public int Changed { get; set; }
+        public int Excluded { get; set; }
     }
 }

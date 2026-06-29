@@ -112,6 +112,7 @@
         public static string InvalidPercent => $"درصد اشتباه وارد شده";
         public static string Incalculable => $"غیر قابل محاسبه";
 
+        public static string InvalidMonthlyAverageWithMalfunctionState => $"برای وضعیت -کنتور خراب- لازم است -میانگین مصرف ماهانه- را وارد کنید.";
         public static string IncalculableWithCounterStateCode => $"محاسبه قبض با این وضعیت کنتور امکان پذیر نیست";
         public static string ConfilictBetweenCounterNumberAndCounteState => $"رقم کنتور با وضعیت کنتور مغایرت دارد";
         public static string InvalidId => "شناسه نامعتبر است.";
@@ -143,6 +144,7 @@
         public static string FlowStepNotFound => "شناسه روند یافت نشد";
         public static string InvalidMeterFlow => "خطا در ذخیره مرحله";
         public static string InvalidUpdate => "خطا در ویرایش";
+        public static string InvalidRemove => "خطا در حذف";
         public static string CurrentNumberLessThanPreviousNumber => "شماره کنتور فعلی کمتر از قبلی است.";
         public static string InvalidRepeatConstructionBranchType => "وضعیت فعلی -ساخت و ساز- است.";
         public static string InvalidBranchTypeId => "خطا در کد نوع واگذاری فعلی.";
@@ -152,6 +154,10 @@
         public static string InvalidUpdateContor => "خطا در ویرایش آخرین وضعیت کنتور";
         public static string InvalidSetExclude => "خطا در خروج قبض از لیست";
         public static string InvalidUpdateMeterReading => "خطا در ویرایش قبض";
+        public static string InvalidUpdateMeterReadingFinished => "خطا در ویرایش قبض تایید نهایی شده";
+        public static string InvalidUpdateMeterReadingRemoved => "خطا در ویرایش قبض حذف شده";
+        public static string InvalidRemoveFile => "خطا در حذف فایل";
+        public static string InvalidRemoveFinishedFile => "امکان حذف فایل تایید نهایی شده وجود ندارد.";
 
         //RemovedBill
         public static string NotFoundBillsToRemoved => "قبضی برای ابطال یافت نشد.";

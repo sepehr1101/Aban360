@@ -4,7 +4,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts
 {
     public interface IMeterReadingDetailQueryService
     {
-        Task<IEnumerable<MeterReadingDetailDataOutputDto>> GetWithoutExcluded(int flowImportedId);
+        Task<IEnumerable<MeterReadingDetailDataOutputDto>> Get(int flowImportedId, bool? hasExcluded);
         Task<MeterReadingDetailDataOutputDto> GetById(int id);
         Task<IEnumerable<MeterReadingDetailExcludedDataOutputDto>> Get(MeterReadingDetailExcludedInputDto inputDto);
         Task<IEnumerable<MeterReadingDetailUpdatedDataOutputDto>> GetUpdated(MeterReadingDetailUpdatedInputDto inputDto);

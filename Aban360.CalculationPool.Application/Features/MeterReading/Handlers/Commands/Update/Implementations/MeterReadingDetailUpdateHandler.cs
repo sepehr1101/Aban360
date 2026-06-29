@@ -1,4 +1,5 @@
 ﻿using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Update.Contracts;
+using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
@@ -20,15 +21,19 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 {
     internal sealed class MeterReadingDetailUpdateHandler : AbstractBaseConnection, IMeterReadingDetailUpdateHandler
     {
+        private readonly IMeterFlowQueryService _meterFlowQueryService;
         private readonly IMeterReadingDetailQueryService _meterReadingDetailService;
         private readonly ICustomerInfoService _customerInfoService;
         private readonly IOldTariffEngine _oldTariffEngine;
-        private readonly IValidator<MeterReadingDetailUpdateDto> _validator;
+        private readonly IValidator<MeterReadingDetailUpdateDto> _validator; 
+        static MeterFlowStepEnum[] _allowedUpdateFileStep = { MeterFlowStepEnum.Imported, MeterFlowStepEnum.Calculated, MeterFlowStepEnum.ConsumptionChecked };
         const double _maxAmount = 999_999_999_999;
         const int _conditionPayableAmount = 10000;
         const int _paymentDeadline = 7;
+        const int _malfunctionMeterStateId = 1;
 
         public MeterReadingDetailUpdateHandler(
+            IMeterFlowQueryService meterFlowQueryService,
              IMeterReadingDetailQueryService meterReadingDetailService,
              ICustomerInfoService customerInfoService,
              IOldTariffEngine oldTariffEngine,
@@ -36,6 +41,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
              IConfiguration configuration)
             : base(configuration)
         {
+            _meterFlowQueryService = meterFlowQueryService;
+            _meterFlowQueryService.NotNull(nameof(meterFlowQueryService));
+
             _meterReadingDetailService = meterReadingDetailService;
             _meterReadingDetailService.NotNull(nameof(meterReadingDetailService));
 
@@ -51,12 +59,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
         public async Task Handle(MeterReadingDetailUpdateDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await Validate(input, cancellationToken);
             MeterReadingDetailDataOutputDto previousMeterDetailDto = await _meterReadingDetailService.GetById(input.Id);
-            if (previousMeterDetailDto.RemovedByUserId is not null)
-            {
-                throw new ReadingException(ExceptionLiterals.InvalidUpdateMeterReading);
-            }
+            await Validate(input, previousMeterDetailDto, cancellationToken);
 
             AbBahaCalculationDetails abBahaResult = await CalcAbBahaTariff(input, previousMeterDetailDto, cancellationToken);
             //MeterReadingDetailCreateDuplicateDto readingCreateDuplicate = new(input.Id, input.CurrentCounterStateCode, input.CurrentDateJalali, input.CurrentNumber, appUser.UserId, DateTime.Now, abBahaResult.SumItems, abBahaResult.SumItemsBeforeDiscount, abBahaResult.DiscountSum, abBahaResult.Consumption, abBahaResult.MonthlyConsumption);
@@ -67,7 +71,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidDisallowedAmount(previousMeterDetailDto.BillId, _maxAmount));
             }
             using (IDbConnection connection = _sqlReportConnection)
-                {
+            {
                 if (connection.State != ConnectionState.Open)
                 {
                     connection.Open();
@@ -236,13 +240,42 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             return meterDetailCreateDto;
 
         }
-        private async Task Validate(MeterReadingDetailUpdateDto input, CancellationToken cancellationToken)
+        private async Task Validate(MeterReadingDetailUpdateDto input, MeterReadingDetailDataOutputDto previousMeterDetailDto, CancellationToken cancellationToken)
+        {
+            await InputValidate(input, cancellationToken);
+            await RemovedValidate(previousMeterDetailDto);
+            CounterStateValidate(input);
+        }
+        private async Task InputValidate(MeterReadingDetailUpdateDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new CustomValidationException(message);
+            }
+        }
+        private async Task RemovedValidate(MeterReadingDetailDataOutputDto previousMeterDetailDto)
+        {
+            if (previousMeterDetailDto.RemovedByUserId is not null)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidUpdateMeterReading);
+            }
+            MeterFlowGetDto latestFlowInfo = await _meterFlowQueryService.GetLatestFlowInfo(previousMeterDetailDto.FlowImportedId);
+            if (latestFlowInfo.RemovedDateTime is not null)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidUpdateMeterReadingRemoved);
+            }
+            if (!_allowedUpdateFileStep.Contains(latestFlowInfo.MeterFlowStepId))
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidUpdateMeterReadingFinished);
+            }
+        }
+        private void CounterStateValidate(MeterReadingDetailUpdateDto input)
+        {
+            if (input.CurrentCounterStateCode == _malfunctionMeterStateId && input.MonthlyAverage is null)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidMonthlyAverageWithMalfunctionState);
             }
         }
         private async Task<AbBahaCalculationDetails> CalcAbBahaTariff(MeterReadingDetailUpdateDto meterReadingDetailUpdate, MeterReadingDetailDataOutputDto previousMeterDetailDto, CancellationToken cancellationToken)

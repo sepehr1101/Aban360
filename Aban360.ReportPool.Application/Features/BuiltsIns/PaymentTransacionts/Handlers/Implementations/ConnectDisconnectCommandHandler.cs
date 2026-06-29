@@ -35,8 +35,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
         private readonly ILocationInfoGetHandler _locationInfoService;
         private readonly IT51QueryService _t51QueryService;
         private readonly IMapService _mapService;
-        private int _connectTypeId = 1;
-        private int _disconnectTypeId = 0;
         private static int _disconnectState = 5;
         private static int _connectState = 0;
         private string _connectStateTitle = "انشعاب برقرار";
@@ -170,8 +168,9 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 ResultTitle = null,
                 MeterDiameterId = customerInfo.ReportHeader.MeterDiameterId,
                 MeterDiameterTitle = customerInfo.ReportHeader.MeterDiameterTitle,
+                CompanyId = 0,
                 CompanyTitle = inputDto.Who,
-                TypeId = isConnect ? _connectTypeId : _disconnectTypeId,
+                TypeId = isConnect ? ReportLiterals.ConnectId : ReportLiterals.DisconnectId,
                 TypeTitle = isConnect ? ReportLiterals.Connect : ReportLiterals.Disconnect,
                 Description = inputDto.Description ?? string.Empty,
             };
@@ -204,7 +203,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
         }
         private async Task<ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto>> ValidateAndGetCustomerGeneral(string billId, bool isConnect)
         {
-            int typeId = isConnect ? _connectTypeId : _disconnectTypeId;
+            int typeId = isConnect ? ReportLiterals.ConnectId : ReportLiterals.DisconnectId;
             int deletionStateId = isConnect ? _connectState : _disconnectState;
             string deletionStateTitle = isConnect ? _connectStateTitle : _disconnectStateTitle;
 

@@ -2,7 +2,7 @@
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 
-namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Implementations
+namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts
 {
     public interface IMeterReadingDetailUpdatedGetHadler
     {

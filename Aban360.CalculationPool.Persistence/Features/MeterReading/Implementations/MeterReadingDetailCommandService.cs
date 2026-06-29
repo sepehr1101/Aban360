@@ -98,6 +98,15 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                 throw new ReadingException(ExceptionLiterals.InvalidUpdate);
             }
         }
+        public async Task DeleteByFlowImportedId(MeterReadingDetailDeleteDto input)
+        {
+            string query = GetDeleteByFlowImportedIdCommands();
+            int affectedRecords = await _connection.ExecuteAsync(query, input, _transaction);
+            if (affectedRecords <= 0)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidRemove);
+            }
+        }
         public async Task CreateDuplicateForLog(MeterReadingDetailCreateDuplicateDto input)
         {
             string query = GetCreateDuplicateForLogCommand();
@@ -500,6 +509,16 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                     	RemovedDateTime=@RemovedDateTime
                     Where Id=@Id";
         }
+         private string GetDeleteByFlowImportedIdCommands()
+        {
+            return @"Update Atlas.dbo.MeterReadingDetail	
+                    Set 
+                    	RemovedByUserId=@RemovedByUserId ,
+                    	RemovedDateTime=@RemovedDateTime
+                    Where 
+                        FlowImportedId=@Id AND
+                        RemovedDateTime IS NULL";
+        }
         private string GetCreateDuplicateForLogCommand()
         {
             return @"INSERT INTO atlas.dbo.MeterReadingDetail
@@ -629,8 +648,10 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         {
             return @"Update Atlas.dbo.MeterReadingDetail	
                     Set 
-                    	ExcludedByUserId=@ExcludedByUserId ,
-                    	ExcludedDateTime=@ExcludedDateTime
+                    	ExcludedByUserId = @ExcludedByUserId ,
+                    	ExcludedDateTime = @ExcludedDateTime ,
+                        ExcludedCauseId = @ExcludedCauseId , 
+                        ExcludedCauseTitle = @ExcludedCauseTitle
                     Where Id=@Id";
         }
     }

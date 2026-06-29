@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Features\MeterReading\Handlers\Queries\Implementations\CheckedListGetHandler.cs~RFd388149e.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Automapper" Version="13.0.1" />
     <PackageReference Include="DNTPersianUtils.Core" Version="6.4.0" />
     <PackageReference Include="DotNetDBF" Version="7.0.1" />
