@@ -187,7 +187,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 							 @FromDebtPeriodCount IS NULL OR
 							 @toDebtPeriodCount IS NULL OR
 							 D.DebtPeriodsAfter BETWEEN @FromDebtPeriodCount AND @toDebtPeriodCount
-							)";
+							) 
+						Order By C.ReadingNumber";
         }
     }
 }
