@@ -110,7 +110,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         public async Task CreateDuplicateForLog(MeterReadingDetailCreateDuplicateDto input)
         {
             string query = GetCreateDuplicateForLogCommand();
-            await _connection.ExecuteAsync(query, input,_transaction);
+            await _connection.ExecuteAsync(query, input, _transaction);
         }
         public async Task Exclude(MeterReadingDetailExcludedDto input)
         {
@@ -142,6 +142,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             table.Columns.Add("RemovedDateTime", typeof(DateTime));
             table.Columns.Add("ExcludedByUserId", typeof(Guid));
             table.Columns.Add("ExcludedDateTime", typeof(DateTime));
+            table.Columns.Add("ExcludedCauseId", typeof(int));
+            table.Columns.Add("ExcludedCauseTitle", typeof(string));
 
             table.Columns.Add("BranchTypeId", typeof(int));
             table.Columns.Add("UsageId", typeof(int));
@@ -290,6 +292,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                 row["RemovedDateTime"] = x.RemovedDateTime ?? (object)DBNull.Value;
                 row["ExcludedByUserId"] = x.ExcludedByUserId ?? (object)DBNull.Value;
                 row["ExcludedDateTime"] = x.ExcludedDateTime ?? (object)DBNull.Value;
+                row["ExcludedCauseId"] = x.ExcludedCauseId ?? (object)DBNull.Value;
+                row["ExcludedCauseTitle"] = x.ExcludedCauseTitle ?? (object)DBNull.Value;
 
                 row["BranchTypeId"] = x.BranchTypeId;
                 row["UsageId"] = x.UsageId;
@@ -509,7 +513,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                     	RemovedDateTime=@RemovedDateTime
                     Where Id=@Id";
         }
-         private string GetDeleteByFlowImportedIdCommands()
+        private string GetDeleteByFlowImportedIdCommands()
         {
             return @"Update Atlas.dbo.MeterReadingDetail	
                     Set 

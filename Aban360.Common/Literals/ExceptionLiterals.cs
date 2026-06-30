@@ -74,6 +74,7 @@
         public static string InvalidDuration => "مدت زمان محاسبه نامعتبر";
         public static string InvalidZeroServiceSelected => "حداقل یک درخواست انتخاب کنید.";
         public static string InvalidZoneTitle => "ناحیه یافت نشد!";
+        public static string InvalidNotEqualMeterNumberInWithoutConsumption => "در وضعیت -بدون مصرف- رقم قبلی و فعلی باید یکی باشد.";
         public static string InvalidBedBesPreviousNumberAndDate(string billId) => $"آخرین تاریخ قرائت و رقم کنتور برای شناسه قبض{billId} قابل جستجو نیست.";
 
         public static string InvlaidStringLength => "طول رشته نامعتبر است.";
@@ -144,6 +145,7 @@
         public static string FlowStepNotFound => "شناسه روند یافت نشد";
         public static string InvalidMeterFlow => "خطا در ذخیره مرحله";
         public static string InvalidUpdate => "خطا در ویرایش";
+        public static string InvalidUpdateFileName => "خطا در ویرایش نام فایل";
         public static string InvalidRemove => "خطا در حذف";
         public static string CurrentNumberLessThanPreviousNumber => "شماره کنتور فعلی کمتر از قبلی است.";
         public static string InvalidRepeatConstructionBranchType => "وضعیت فعلی -ساخت و ساز- است.";

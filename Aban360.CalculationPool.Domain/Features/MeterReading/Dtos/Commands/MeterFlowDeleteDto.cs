@@ -7,9 +7,9 @@
         public DateTime RemovedDateTime { get; set; }
         public MeterFlowDeleteDto(int id, Guid removedByUserId, DateTime removedDateTime)
         {
-            Id=id;
-            RemovedByUserId=removedByUserId;
-            RemovedDateTime=removedDateTime;
+            Id = id;
+            RemovedByUserId = removedByUserId;
+            RemovedDateTime = removedDateTime;
         }
     }
 }

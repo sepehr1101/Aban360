@@ -23,14 +23,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMeterFlowQueryService _meterFlowQueryService;
-        private readonly IMeterReadingDetailQueryService _meterReadingDetailQueryService;
         private readonly ICommonZoneService _commonZoneService;
         private readonly IT51QueryService _t51QueryService;
         static MeterFlowStepEnum[] _allowedRemoveFileStep = { MeterFlowStepEnum.Imported, MeterFlowStepEnum.Calculated, MeterFlowStepEnum.ConsumptionChecked };
         public MeterReadingFileRemoveHandler(
             IHttpContextAccessor httpContextAccessor,
             IMeterFlowQueryService meterFlowQueryService,
-            IMeterReadingDetailQueryService meterReadingDetailQueryService,
             ICommonZoneService commonZoneService,
             IT51QueryService t51QueryService,
             IConfiguration configuration)
@@ -42,9 +40,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             _meterFlowQueryService = meterFlowQueryService;
             _meterFlowQueryService.NotNull(nameof(meterFlowQueryService));
 
-            _meterReadingDetailQueryService = meterReadingDetailQueryService;
-            _meterFlowQueryService.NotNull(nameof(meterReadingDetailQueryService));
-
             _commonZoneService = commonZoneService;
             _commonZoneService.NotNull(nameof(commonZoneService));
 
@@ -54,28 +49,19 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
         public async Task Handle(int id, IAppUser appUser, CancellationToken cancellation)
         {
-            MeterFlowGetDto meterFlowInfo = await _meterFlowQueryService.Get(id);
-            if (meterFlowInfo.RemovedDateTime is not null)
-            {
-                throw new ReadingException(ExceptionLiterals.InvalidRemoveFile);
-            }
-
-            bool isInValidStep = _allowedRemoveFileStep.Contains(meterFlowInfo.MeterFlowStepId);
-            if (!isInValidStep)
-            {
-                throw new ReadingException(ExceptionLiterals.InvalidRemoveFinishedFile);
-            }
+            MeterFlowGetDto meterFlowInfo = await Validate(id);
 
             int firstFlowId = await _meterFlowQueryService.GetFirstFlowId(id);
+            string newFileName = $"{meterFlowInfo.FileName}_{Guid.NewGuid()}";
             await _commonZoneService.IsUserInZone(appUser, meterFlowInfo?.ZoneId ?? 0);
             NumericDictionary zoneInfo = await _t51QueryService.Get(meterFlowInfo?.ZoneId ?? 0, false);
             MeterFlowDeleteDto meterFlowRemoveDto = new(id, appUser.UserId, DateTime.Now);
             MeterReadingDetailDeleteDto meterReadingDetailRemoveDto = new(firstFlowId, appUser.UserId, DateTime.Now);
-            string opLogText = string.Format(OpLogLiterals.MeterFlowRemoveOpLog, meterFlowInfo.FileName, zoneInfo.Title);
+            string opLogText = string.Format(OpLogLiterals.MeterFlowRemoveOpLog, meterFlowInfo.FileName, newFileName, zoneInfo.Title);
 
-            await ExecSql(meterFlowRemoveDto, meterReadingDetailRemoveDto, appUser, opLogText);
+            await ExecSql(meterFlowRemoveDto, meterReadingDetailRemoveDto, appUser, opLogText, meterFlowInfo.FileName, newFileName);
         }
-        private async Task ExecSql(MeterFlowDeleteDto meterFlowRemoveDto, MeterReadingDetailDeleteDto meterReadingDetailRemoveDto, IAppUser appUser, string opLogText)
+        private async Task ExecSql(MeterFlowDeleteDto meterFlowRemoveDto, MeterReadingDetailDeleteDto meterReadingDetailRemoveDto, IAppUser appUser, string opLogText, string previousFileName, string newFileName)
         {
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -89,12 +75,29 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     OpLogWithTransactionCommandService opLogCommand = new(_httpContextAccessor, connection, transaction);
 
                     await meterFlowCommand.Delete(meterFlowRemoveDto);
+                    await meterFlowCommand.Update(previousFileName, newFileName);
                     await meterReadingDetailService.DeleteByFlowImportedId(meterReadingDetailRemoveDto);
                     await opLogCommand.Insert(opLogText, appUser);
 
                     transaction.Commit();
                 }
             }
+        }
+        private async Task<MeterFlowGetDto> Validate(int id)
+        {
+            MeterFlowGetDto meterFlowInfo = await _meterFlowQueryService.Get(id);
+            if (meterFlowInfo.RemovedDateTime is not null)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidRemoveFile);
+            }
+
+            bool isInValidStep = _allowedRemoveFileStep.Contains(meterFlowInfo.MeterFlowStepId);
+            if (!isInValidStep)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidRemoveFinishedFile);
+            }
+
+            return meterFlowInfo;
         }
     }
 }

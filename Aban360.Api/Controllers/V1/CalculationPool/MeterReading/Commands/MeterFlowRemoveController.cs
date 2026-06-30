@@ -15,7 +15,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
             _meterReadingFileRemoveHandler.NotNull(nameof(meterReadingFileRemoveHandler));
         }
 
-        [HttpPost]
+        [HttpPost, HttpGet]
         [Route("remove/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
         public async Task<IActionResult> RemoveFile(int id, CancellationToken cancellationToken)
