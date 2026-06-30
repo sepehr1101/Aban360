@@ -281,8 +281,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private async Task<AbBahaCalculationDetails> CalcAbBahaTariff(MeterReadingDetailUpdateDto meterReadingDetailUpdate, MeterReadingDetailDataOutputDto previousMeterDetailDto, CancellationToken cancellationToken)
         {
             MeterReadingDetailDataOutputDto meterReadingDetail = await _meterReadingDetailService.GetById(meterReadingDetailUpdate.Id);
-            if (meterReadingDetail.CurrentCounterStateCode == 1 && meterReadingDetail.MonthlyConsumption.Value > 0 &&
-                meterReadingDetailUpdate.CurrentCounterStateCode == 1 && meterReadingDetailUpdate.MonthlyAverage.HasValue)
+            if (meterReadingDetailUpdate.CurrentCounterStateCode == 1 && meterReadingDetailUpdate.MonthlyAverage.HasValue)
             {
                 MeterDateInfoWithMonthlyConsumptionOutputDto meterInfo = new MeterDateInfoWithMonthlyConsumptionOutputDto()
                 {
