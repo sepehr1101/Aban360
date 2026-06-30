@@ -50,6 +50,15 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                 throw new ReadingException(ExceptionLiterals.InvalidMeterFlow);
             }
         }
+        public async Task Update(string previousFileName, string currentFileName)
+        {
+            string command = GetUpdateFileNameCommand();
+            int rowEffected = await _connection.ExecuteAsync(command, new { previousFileName, currentFileName }, _transaction);
+            if (rowEffected <= 0)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidRemove);
+            };
+        }
         public async Task Delete(MeterFlowDeleteDto input)
         {
             string command = GetRemoveCommand();
@@ -79,6 +88,12 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             return @"Update Atlas.dbo.MeterFlow
                         Set RemovedDateTime=@RemovedDateTime , RemovedByUserId=@RemovedByUserId
                         Where Id=@id";
+        }
+        private string GetUpdateFileNameCommand()
+        {
+            return @"Update Atlas.dbo.MeterFlow
+                        Set FileName=@currentFileName
+                        Where FileName=@previousFileName";
         }
         private string GetRemoveCommand()
         {

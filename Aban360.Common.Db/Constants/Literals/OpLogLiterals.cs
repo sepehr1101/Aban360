@@ -41,7 +41,7 @@
         public static string UserUpdate => @"کاربر ویرایش شد. شناسه کاربر:{0}  نام کامل :از {1} به {2}  نام کاربری:از {3} به {4}  تلفن همراه:از {5} به {6}"; 
         public static string UserDelete => @"کاربر حذف شد. شناسه کاربر:{0}"; 
      
-        public static string MeterFlowRemoveOpLog => @"فایل قرائت حذف شد. نام فایل:{0}  ناحیه:{1}"; 
+        public static string MeterFlowRemoveOpLog => @"فایل قرائت حذف شد. نام قبلی فایل:{0}  نام فعلی فایل:{1} ناحیه:{2}"; 
      
     }
 }

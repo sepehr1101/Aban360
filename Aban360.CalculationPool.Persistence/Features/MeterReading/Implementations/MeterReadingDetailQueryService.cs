@@ -240,7 +240,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                     	mr.OtherUnit,
                     	mr.TavizDateJalali,
                     	mr.MeterDiameterId,
-                    	t5.C2 MeterDiameterTitle
+                    	t5.C2 MeterDiameterTitle,
+                        1 IsEditable
                     From Atlas.dbo.MeterReadingDetail mr
                     Left Join CustomerWarehouse.dbo.Clients c
                     	 ON mr.ZoneId=c.ZoneId AND mr.CustomerNumber=c.CustomerNumber
