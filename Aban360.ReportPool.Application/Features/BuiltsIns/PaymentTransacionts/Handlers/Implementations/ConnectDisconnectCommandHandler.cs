@@ -35,6 +35,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
         private readonly ILocationInfoGetHandler _locationInfoService;
         private readonly IT51QueryService _t51QueryService;
         private readonly IMapService _mapService;
+        private static int _waterDebtCauseId = 1;
         private static int _disconnectState = 5;
         private static int _connectState = 0;
         private string _connectStateTitle = "انشعاب برقرار";
@@ -74,7 +75,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
 
         public async Task<ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto>> Handle(ConnectDisconnectPrintInputDto inputDto, IAppUser appUser, bool isConnect, CancellationToken cancellationToken)
         {
-            ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo = await ValidateAndGetCustomerGeneral(inputDto.BillId, isConnect);
+            ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo = await ValidateAndGetCustomerGeneral(inputDto, isConnect);
             NumericDictionary? connectDisconnectCause = GetCasues().Where(c => c.Id == (inputDto.Why ?? 0)).FirstOrDefault();
             var (messageText, opLogText, title) = GetStringsValue(customerInfo, inputDto, isConnect, connectDisconnectCause?.Title);
 
@@ -201,21 +202,22 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             string base64 = await _mapService.GenerateMapBase64(location.X, location.Y);
             return (location, base64);
         }
-        private async Task<ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto>> ValidateAndGetCustomerGeneral(string billId, bool isConnect)
+        private async Task<ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto>> ValidateAndGetCustomerGeneral(ConnectDisconnectPrintInputDto inputDto, bool isConnect)
         {
             int typeId = isConnect ? ReportLiterals.ConnectId : ReportLiterals.DisconnectId;
             int deletionStateId = isConnect ? _connectState : _disconnectState;
             string deletionStateTitle = isConnect ? _connectStateTitle : _disconnectStateTitle;
+            bool isWaterCause = (inputDto.Why ?? 0) == _waterDebtCauseId;
 
-            await CheckDuplicateRequest(billId, typeId);
-            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(billId);
+            await CheckDuplicateRequest(inputDto.BillId, typeId);
+            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(inputDto.BillId);
             ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo = await _customerGeneralInfoQueryService.Get(zoneIdAndCustomerNumber);
 
             if ((customerInfo?.ReportData?.FirstOrDefault()?.DeletionStateId ?? 0) == deletionStateId)
             {
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidConnectDisconnectByCustomerInfo(deletionStateTitle));
             }
-            if ((customerInfo?.ReportData?.FirstOrDefault()?.WaterDebtAmount ?? 0) < 0)
+            if ((customerInfo?.ReportData?.FirstOrDefault()?.WaterDebtAmount ?? 0) <= 0 && isWaterCause)
             {
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidDebtAmountLessThanZero);
             }
