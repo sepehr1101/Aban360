@@ -45,5 +45,7 @@ namespace Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries
         public string TavizDateJalali { get; set; }
         public int MeterDiameterId { get; set; }
         public string MeterDiameterTitle { get; set; }
+
+        public bool IsEditable { get; set; }
     }
 }

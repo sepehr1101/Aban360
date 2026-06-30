@@ -614,7 +614,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 r.DiscountSum = 0;
                 r.Consumption = 0;
                 r.MonthlyConsumption = 0;
-                r.CurrentCounterStateCode = 4;
             }
             else
             {

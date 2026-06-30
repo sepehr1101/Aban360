@@ -46,6 +46,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         const int _changeCounterState = 2;
         const int _reverseCounterState = 3;
         const int _nextRoundCounterSatate = 5;
+        const int _withoutConsumptionMeterState = 6;
         const int _payIdMaxChar = 13;
         public FreeGenerateBillHandler(
             IHttpContextAccessor contextAccessor,
@@ -128,7 +129,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 MeterDateInfoWithMonthlyConsumptionOutputDto tariffMeterInfoByConsumptionAverage = new()
                 {
                     BillId = inputDto.BillId,
-                    PreviousDateJalali = customerInfo.BedBesInfo?.LastMeterDateJalali ?? customerInfo.MembersInfo.WaterInstallationDateJalali,
+                    PreviousDateJalali = inputDto.PreviousDateJalali,//customerInfo.BedBesInfo?.LastMeterDateJalali ?? customerInfo.MembersInfo.WaterInstallationDateJalali,
                     CurrentDateJalali = inputDto.CurrentDateJalali,
                     MonthlyAverageConsumption = (double)inputDto.ConsumptionAverage
                 };
@@ -573,6 +574,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             if (inputDto.CounterStateCode == _malfunctionCounterState && inputDto.ConsumptionAverage is null)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidMonthlyAverageWithMalfunctionState);
+            }
+            if (inputDto.CounterStateCode == _withoutConsumptionMeterState && inputDto.PreviousMeterNumber != inputDto.CurrentMeterNumber)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidNotEqualMeterNumberInWithoutConsumption);
             }
         }
         private async Task InputPreviousDataValidate(FreeGenerateBillInputDto inputDto, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber)
