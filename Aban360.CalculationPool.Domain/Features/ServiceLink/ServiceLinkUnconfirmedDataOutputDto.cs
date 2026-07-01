@@ -9,6 +9,7 @@
         public string RegisterDateJalali { get; set; }
         public int Amount { get; set; }
         public int DiscountTypeId { get; set; }
+        public string DiscountTypeTitle { get; set; }
         public int DiscountAmount { get; set; }
         public int Type { get; set; }
         public string TypeTitle { get; set; }

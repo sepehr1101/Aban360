@@ -29,7 +29,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 {
     internal sealed class MeterReadingCreateBaseHandler : AbstractBaseConnection, IMeterReadingCreateBaseHandler
     {
-        const string _dbfPath = @"AppData\Dbfs";
         const int _conditionPayableAmount = 10000;
         const int _paymentDeadline = 7;
         const double _maxAmount = 999_999_999_999;

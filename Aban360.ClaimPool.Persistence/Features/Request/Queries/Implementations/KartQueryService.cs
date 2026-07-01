@@ -180,6 +180,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 						k.date RegisterDateJalali,
 						k.pard Amount,
 						k.cod_takh DiscountTypeId,
+						t15.C1 DiscountTypeTitle,
 						k.takhfif DiscountAmount,
 						type Type,
 						t.Title TypeTitle,
@@ -190,6 +191,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	ON k.noe_bed=t100.C0
 					Join [Db70].dbo.ModifyType t
 						ON k.type=t.Karten75Id
+					Left Join [Db70].dbo.T15 t15
+						ON k.cod_takh=t15.C0
                     Where 
                         k.radif=@CustomerNumber AND
                         k.town=@ZoneId AND
