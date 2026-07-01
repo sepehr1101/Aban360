@@ -10,6 +10,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 {
     internal sealed class BillQueryService : AbstractBaseConnection, IBillQueryService
     {
+        private int _latestListRecordMax = 10;
         public BillQueryService(IConfiguration configuration)
             : base(configuration)
         {
@@ -48,6 +49,13 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             string dbName = GetDbName(inputDto.ZoneId);
             string query = GetBedBesLatestListQuery(dbName);
             IEnumerable<BillLatestListDataOutputDto> result = await _sqlReportConnection.QueryAsync<BillLatestListDataOutputDto>(query, inputDto, null, 180);
+            return result;
+        }
+        public async Task<IEnumerable<MeterReadingExcelFileDownloadDateOutputDto>> GetLatestListForExcel(BillLatestListInputDto inputDto)
+        {
+            string dbName = GetDbName(inputDto.ZoneId);
+            string query = GetBedBesLatestListExcelQuery(dbName);
+            IEnumerable<MeterReadingExcelFileDownloadDateOutputDto> result = await _sqlReportConnection.QueryAsync<MeterReadingExcelFileDownloadDateOutputDto>(query, inputDto, null, 180);
             return result;
         }
         public async Task<IEnumerable<BillLatestListDataOutputDto>> GetLatestForNonRead(BillLatestListInputDto inputDto, string dateJalali)
@@ -214,7 +222,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						c.ZoneId=@ZoneId AND
 						c.ReadingNumber  BETWEEN @FromReadingNumber AND @ToReadingNumber
 					)
-					Select Top 300 * 
+					Select Top {_latestListRecordMax} * 
 					From Cte
 					Where 
 						Rn=1 AND
@@ -263,11 +271,54 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 							m.town=@ZoneId AND
 							m.eshtrak BETWEEN @FromReadingNumber AND @ToReadingNumber
 					)
-					Select TOP 300 * 
+					Select TOP {_latestListRecordMax} * 
 					From CTE
 					WHERE
 						rn=1 AND
 						CustomerWarehouse.dbo.PersianToMiladi(RegisterDateJalali)<DATEADD(DAY,-15,Cast(GETDATE() AS date))";
+        }
+        private string GetBedBesLatestListExcelQuery(string dbName)
+        {
+            return $@";WITH CTE AS(
+						Select 
+							b.town ZoneId,
+							t51.C2 ZoneTitle,
+							b.radif CustomerNumber,
+							b.sh_ghabs1 BillId,
+							b.eshtrak ReadingNumber,
+							b.today_no PreviousNumber,
+							b.today_date PreviousDateJalali,
+							b.cod_vas PreviousCounterStateCode,
+							b.date_bed PreviousRegisterDateJalali,
+							TRIM(m.name)+' '+TRIM(m.family) FullName,
+							t46.C0 RegionId,
+							t46.C2 RegionTitle,
+							b.cod_enshab UsageId,
+							t41.C1 UsageTitle,
+							b.noe_va BranchTypeId,
+							t7.C1 BranchTypeTitle,
+							Rn=ROW_NUMBER() OVER(PARTITION BY b.town,b.radif ORDER BY b.date_bed DESC)
+						From [{dbName}].dbo.members m 
+						Join [{dbName}].dbo.bed_bes b
+							ON m.town=b.town AND m.radif=b.radif
+						Left Join [Db70].dbo.T51 t51
+							On b.town=t51.C0
+						Left Join [Db70].dbo.T46 t46
+							On t51.C1=t46.C0
+						Left Join [Db70].dbo.T41 t41
+							On b.cod_enshab=t41.C0
+						Left Join [Db70].dbo.T7 t7
+							On b.noe_va=t7.C0
+						Where 
+							m.hasf NOT IN (1,2,5) AND
+							m.town=@ZoneId AND
+							m.eshtrak BETWEEN @FromReadingNumber AND @ToReadingNumber
+					)
+					Select TOP {_latestListRecordMax} * 
+					From CTE
+					WHERE
+						rn=1 AND
+						CustomerWarehouse.dbo.PersianToMiladi(PreviousRegisterDateJalali)<DATEADD(DAY,-15,Cast(GETDATE() AS date))";
         }
         private string GetBedBesLatestForNonReadQuery(string dbName)
         {
@@ -315,7 +366,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 							b.del=0 AND
 							b.cod_vas NOT IN (4,7,8)
 					)
-					Select TOP 10 * 
+					Select TOP {_latestListRecordMax} * 
 					From CTE
 					WHERE
 						rn=1 AND

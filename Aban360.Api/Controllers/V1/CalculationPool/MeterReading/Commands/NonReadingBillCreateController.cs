@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
         [HttpPost]
         [Route("create")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Upload([FromBody] MeterReadingNonReadInputDto input, CancellationToken cancellationToken)
+        public async Task<IActionResult> Create([FromBody] MeterReadingNonReadInputDto input, CancellationToken cancellationToken)
         {
             ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto> result = await _meterReadingNonReadHandle.Handle(input, CurrentUser, cancellationToken);
             return Ok(result);
