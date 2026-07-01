@@ -57,6 +57,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                         MeterFlowStepId = MeterFlowStepEnum.CalculationConfirmed,
                         ZoneId = meterFlow.ZoneId,
                         FileName = meterFlow.FileName,
+                        FromReadingNumber=meterFlow.FromReadingNumber,
+                        ToReadingNumber=meterFlow.ToReadingNumber,
                         InsertByUserId = appUser.UserId,
                         InsertDateTime = DateTime.Now,
                         Description = meterFlow.Description
