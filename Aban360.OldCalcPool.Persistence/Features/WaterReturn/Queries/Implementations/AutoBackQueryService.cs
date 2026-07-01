@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Db.Dapper;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
@@ -46,6 +47,12 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Implement
             IEnumerable<UnconfirmedBillReturnDataOutputDto> data = await _sqlReportConnection.QueryAsync<UnconfirmedBillReturnDataOutputDto>(query, new { zoneId });
             return data;
         }
+        public async Task<IEnumerable<UnconfirmedBillReturnDataOutputDto>> GetUnconfirmed(ZoneIdAndCustomerNumber input, string billId)
+        {
+            string query = GetUnconfirmedByCustomerNumberQuery();
+            IEnumerable<UnconfirmedBillReturnDataOutputDto> data = await _sqlReportConnection.QueryAsync<UnconfirmedBillReturnDataOutputDto>(query, new { input.ZoneId, input.CustomerNumber, billId });
+            return data;
+        }
         public async Task<int> GetCountByDateInterval(ReturnBillDateIntervalDto input)
         {
             string dbName = "Atlas";
@@ -56,9 +63,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Implement
                 throw new ReturnedBillException(ExceptionLiterals.InvalidTempReturnBill);
             }
 
-            return count; 
+            return count;
         }
-        
+
         private string GetQuery(string dbName)
         {
             return @$"Select 
@@ -221,7 +228,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Implement
                     		a.enshab MeterDiameterId,
                     		t5.C1 MeterDiameterTitle,
                     		a.radif CustomerNumber,
-                    		a.eshtrak ReadingNumber,
+                    		TRIM(a.eshtrak) ReadingNumber,
                     		a.pri_no PreviousNumber,
                     		a.today_no CurrentNumber,
                     		a.pri_date PreviousDateJalali,
@@ -253,8 +260,66 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Implement
                     		ON a.enshab=t5.C0
                     	Join [Db70].dbo.ReturnCause r
                     		ON a.elat=r.Id
-                    	Where a.IsConfirmed=0 AND a.Town=@zoneId AND (a.IsDeleted=0 OR a.IsDeleted IS NULL)
+                    	Where 
+                            a.IsConfirmed=0 AND 
+                            a.Town=@zoneId AND 
+                            (a.IsDeleted=0 OR a.IsDeleted IS NULL)
                     )
+                    Select c.*
+                    From Cte c
+                    Where c.Rn=1 
+					Order By c.RegisterDateJalali Desc , c.jalase_no desc";
+        }
+        private string GetUnconfirmedByCustomerNumberQuery()
+        {
+            return $@";With Cte As(
+                         Select 
+                    		town ZoneId,
+                    		t51.C2 ZoneTitle,
+                            @billId BillId,
+                    		a.cod_enshab UsageId,
+                    		t41.C1 UsageTitle,
+                    		a.enshab MeterDiameterId,
+                    		t5.C1 MeterDiameterTitle,
+                    		a.radif CustomerNumber,
+                    		TRIM(a.eshtrak) ReadingNumber,
+                    		a.pri_no PreviousNumber,
+                    		a.today_no CurrentNumber,
+                    		a.pri_date PreviousDateJalali,
+                    		a.today_date CurrentDateJalali,
+                    		a.date_bed RegisterDateJalali,
+                    		a.jalase_no MinutesNumber,
+                    		a.ted_ghabs BillCount,
+                    		a.tedad_mas DomesticUnit,
+                    		a.tedad_tej CommercialUnit,
+                    		a.tedad_vahd OtherUnit,
+                    		a.ted_khane HouseholdCount,
+                    		a.rate ConsumptionAverage,
+                    		a.masraf Consumption,
+                    		a.modat Duration,
+                    		a.baha Amount,
+                    		a.ab_baha WaterAmount,
+                    		a.fas_baha SewageAmount,
+                    		a.operator Operator,
+                    		a.elat ReturnCauseId,
+                    		r.Title ReturnCauseTitle,
+							a.jalase_no,
+                    		Rn=Row_Number() Over(Partition By a.jalase_no Order by a.date_bed Desc, a.Id Desc)
+                    	From [Atlas].dbo.autoback a
+                    	Join [Db70].dbo.T51 t51
+                    		ON a.town=t51.C0
+                    	Join [Db70].dbo.T41 t41
+                    		ON a.cod_enshab=t41.C0
+                    	Join [Db70].dbo.T5 t5
+                    		ON a.enshab=t5.C0
+                    	Join [Db70].dbo.ReturnCause r
+                    		ON a.elat=r.Id
+                    	Where 
+							a.IsConfirmed=0 AND 
+							a.Town=@ZoneId AND 
+							a.radif=@CustomerNumber AND
+							(a.IsDeleted=0 OR a.IsDeleted IS NULL)
+					)
                     Select c.*
                     From Cte c
                     Where c.Rn=1 
