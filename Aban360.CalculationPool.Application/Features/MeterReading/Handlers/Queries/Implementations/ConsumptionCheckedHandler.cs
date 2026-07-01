@@ -51,6 +51,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 MeterFlowStepId = MeterFlowStepEnum.ConsumptionChecked,
                 ZoneId = meterflow.ZoneId,
                 FileName = meterflow.FileName,
+                FromReadingNumber = meterflow.FromReadingNumber,
+                ToReadingNumber = meterflow.ToReadingNumber,
                 InsertByUserId = appUser.UserId,
                 InsertDateTime = DateTime.Now,
                 Description = meterflow.Description
@@ -73,7 +75,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 }
             }
         }
-      
+
         private MeterReadingCheckedOutputDto GetResult(int flowId)
         {
             return new MeterReadingCheckedOutputDto(flowId, MeterFlowStepEnum.CalculationConfirmed, MessageLiterals.SuccessfullOperation);

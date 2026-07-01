@@ -71,14 +71,16 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             }
             IEnumerable<MeterReadingDetailCreateDto> readingDetails = await GetMeterReadingDetails(latestBills, input, appUser, fileName);
             FileCreateDto fileInfo = new(fileName, null, null);
-            ICollection<MeterReadingDetailCreateDto> readingDetailsCreate = await _meterReadingCreateBaseHandler.GetReadingDetailCreateFinalNonRead(readingDetails, fileInfo, appUser,  cancellationToken);
+            ICollection<MeterReadingDetailCreateDto> readingDetailsCreate = await _meterReadingCreateBaseHandler.GetReadingDetailCreateFinalNonRead(readingDetails, fileInfo, appUser, cancellationToken);
 
             await _meterReadingCreateBaseHandler.ExecSql(readingDetailsCreate, fileInfo, appUser);
             return _meterReadingCreateBaseHandler.GetReturnData(readingDetailsCreate, _reportTitle);
         }
         private async Task<IEnumerable<MeterReadingDetailCreateDto>> GetMeterReadingDetails(IEnumerable<BillLatestListDataOutputDto> latestBills, MeterReadingNonReadInputDto input, IAppUser appUser, string fileName)
         {
-            MeterFlowCreateDto importedMeterFlow = GetMeterFlowCreateDto(MeterFlowStepEnum.Imported, fileName, input.ZoneId, appUser.UserId, string.Empty);
+            string fromReadingNumber = latestBills?.Min(m => m.ReadingNumber) ?? string.Empty;
+            string toReadingNumber = latestBills?.Max(m => m.ReadingNumber) ?? string.Empty;
+            MeterFlowCreateDto importedMeterFlow = GetMeterFlowCreateDto(MeterFlowStepEnum.Imported, fileName, input.ZoneId, fromReadingNumber, toReadingNumber, appUser.UserId, string.Empty);
             CustomersInfoGetDto customersInfo;
             IEnumerable<ZoneIdAndCustomerNumber> customersByInvalidPreviousBedBes = new List<ZoneIdAndCustomerNumber>();
             int meterFlowId = 0;
@@ -162,13 +164,15 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                        LastSumItems = latestBill?.PreviousSumItems ?? 0
                    };
         }
-        private MeterFlowCreateDto GetMeterFlowCreateDto(MeterFlowStepEnum step, string fileName, int zoneId, Guid userId, string description)
+        private MeterFlowCreateDto GetMeterFlowCreateDto(MeterFlowStepEnum step, string fileName, int zoneId, string fromReadingNumber, string toReadingNumber, Guid userId, string description)
         {
             return new MeterFlowCreateDto()
             {
                 MeterFlowStepId = step,
                 FileName = fileName,
                 ZoneId = zoneId,
+                FromReadingNumber = fromReadingNumber,
+                ToReadingNumber = toReadingNumber,
                 InsertByUserId = userId,
                 InsertDateTime = DateTime.Now,
                 Description = description
