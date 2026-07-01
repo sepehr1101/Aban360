@@ -25,7 +25,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IMeterReadingDetailQueryService _meterReadingDetailService;
         private readonly ICustomerInfoService _customerInfoService;
         private readonly IOldTariffEngine _oldTariffEngine;
-        private readonly IValidator<MeterReadingDetailUpdateDto> _validator; 
+        private readonly IValidator<MeterReadingDetailUpdateDto> _validator;
         static MeterFlowStepEnum[] _allowedUpdateFileStep = { MeterFlowStepEnum.Imported, MeterFlowStepEnum.Calculated, MeterFlowStepEnum.ConsumptionChecked };
         const double _maxAmount = 999_999_999_999;
         const int _conditionPayableAmount = 10000;
@@ -198,7 +198,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             meterDetailCreateDto.TavizDate = "";//todo
             meterDetailCreateDto.ZaribCntr = 0;
             meterDetailCreateDto.Zabresani = 0;
-            meterDetailCreateDto.ZaribD = 0;
+            meterDetailCreateDto.ZaribD = (decimal)(abBahaCalc?.JavaniAmount ?? 0);
             meterDetailCreateDto.Tafavot = 0;
             meterDetailCreateDto.KasrHa = (decimal)(abBahaCalc?.DiscountSum ?? 0);
             meterDetailCreateDto.FixMas = meterDetailCreateDto.ContractualCapacity;

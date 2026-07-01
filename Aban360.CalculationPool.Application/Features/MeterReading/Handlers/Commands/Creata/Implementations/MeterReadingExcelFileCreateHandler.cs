@@ -1,6 +1,4 @@
-﻿using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Contracts;
-using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts;
-using Aban360.CalculationPool.Domain.Constants;
+﻿using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
@@ -12,15 +10,16 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
-using DotNetDBF;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
+using Excel = MiniExcelLibs;
 using System.Data;
 using static Aban360.Common.Extensions.IoExtensions;
+using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Contracts;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Implementations
 {
-    internal sealed class MeterReadingFileCreateHandler : AbstractBaseConnection, IMeterReadingFileCreateHandler
+    internal sealed class MeterReadingExcelFileCreateHandler : AbstractBaseConnection, IMeterReadingExcelFileCreateHandler
     {
         const string _dbfPath = @"AppData\Dbfs";
         const string _reportTitle = "آپلود و محاسبه اولیه";
@@ -28,14 +27,14 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IMeterReadingCreateBaseHandler _meterReadingCreateBaseHandler;
         private readonly IMeterFlowQueryService _meterFlowService;
         private readonly ICustomerInfoService _customerInfoService;
-        private readonly IValidator<MeterReadingFileCreateDto> _validator;
+        private readonly IValidator<MeterReadingExcelFileCreateDto> _validator;
         private readonly IBedBesQueryService _bedBesQueryService;
 
-        public MeterReadingFileCreateHandler(
+        public MeterReadingExcelFileCreateHandler(
             IMeterReadingCreateBaseHandler meterReadingCreateBaseHandler,
             IMeterFlowQueryService meterFlowService,
             ICustomerInfoService customerInfoService,
-            IValidator<MeterReadingFileCreateDto> validator,
+            IValidator<MeterReadingExcelFileCreateDto> validator,
             IBedBesQueryService bedBesQueryService,
             IConfiguration configuration)
             : base(configuration)
@@ -56,10 +55,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             _bedBesQueryService.NotNull(nameof(bedBesQueryService));
         }
 
-        public async Task<ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto>> Handle(MeterReadingFileCreateDto input, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task<ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto>> Handle(MeterReadingExcelFileCreateDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
             await InputValidate(input, cancellationToken);
-            await _meterReadingCreateBaseHandler.CheckDuplicateFile(input.ReadingFile.FileName, cancellationToken);
+            //await _meterReadingCreateBaseHandler.CheckDuplicateFile(input.ReadingFile.FileName, cancellationToken);
 
             string filePath = await SaveToDisk(input.ReadingFile, _dbfPath);
             IEnumerable<MeterReadingDetailCreateDto> readingDetails = await GetMeterReadingDetails(input, filePath, appUser.UserId);
@@ -69,9 +68,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             await _meterReadingCreateBaseHandler.ExecSql(readingDetailsCreate, fileCreateInfo, appUser);
             return _meterReadingCreateBaseHandler.GetReturnData(readingDetailsCreate, _reportTitle);
         }
-        private async Task<IEnumerable<MeterReadingDetailCreateDto>> GetMeterReadingDetails(MeterReadingFileCreateDto meterFile, string filePath, Guid userId)
+        private async Task<IEnumerable<MeterReadingDetailCreateDto>> GetMeterReadingDetails(MeterReadingExcelFileCreateDto meterFile, string filePath, Guid userId)
         {
-            ICollection<MeterReadingFileDetail> meterReadings = ReadDb(filePath, userId);
+            ICollection<MeterReadingFileDetail> meterReadings = ReadExcel(filePath, userId);
             MeterReadingFileDetail firstMeterDetail = meterReadings.FirstOrDefault();
             MeterFlowCreateDto importedMeterFlow = _meterReadingCreateBaseHandler.GetMeterFlowCreateDto(MeterFlowStepEnum.Imported, meterFile.ReadingFile.FileName, firstMeterDetail.ZoneId, userId, meterFile.Description);
             CustomersInfoGetDto customersInfo;
@@ -171,30 +170,27 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                        LastSumItems = bedbes?.LastSumItems ?? 0
                    };
         }
-        private ICollection<MeterReadingFileDetail> ReadDb(string filePath, Guid userId)
+        private ICollection<MeterReadingFileDetail> ReadExcel(string filePath, Guid userId)
         {
             var result = new List<Dictionary<string, object>>();
 
-            FileStream stream = File.OpenRead(filePath);
-            DBFReader reader = new DBFReader(stream);
-
-            int recordCount = reader.RecordCount;
-            DBFField[] fields = reader.Fields;
-
+            var rows = Excel.MiniExcel.Query(filePath, useHeaderRow: false);
             ICollection<MeterReadingFileDetail> meterReadingFileDetail = new List<MeterReadingFileDetail>();
-            object[] rowObjects;
-            while ((rowObjects = reader.NextRecord()) != null)
+            foreach (var item in rows.Skip(1))
             {
-                //radif=0 eshterak=1 pridate=2 currentday=3 prinu=4 currentnu=5 codvas-counterstate=6 mamorcode=7 town=13
-                int customerNumber = (int)(decimal)rowObjects[0];
-                string readingNumber = (string)rowObjects[1];
-                string previousDay = (string)rowObjects[2];
-                string currentDay = (string)rowObjects[3];
-                int previousNumber = (int)(decimal)rowObjects[4];
-                int currentNumber = (int)(decimal)rowObjects[5];
-                short counterStateCode = (short)(decimal)rowObjects[6];
-                int agentCode = (int)(decimal)rowObjects[7];
-                int zoneId = (int)(decimal)rowObjects[13];
+                var row = (IDictionary<string, object>)item;
+
+                //0:CurrentNumber 1:CurretnDate 2:CurrentCounterState 3:AgentCode 4:ZoneId 5:ZoneTitle
+                //6:CustomerNumber 7:BillId 8:ReadingNumber 9:PriNumber 10:PriDate 
+                int customerNumber = Convert.ToInt32(row.ElementAt(6).Value);
+                string readingNumber = row.ElementAt(8).Value.ToString();
+                string previousDay = row.ElementAt(10).Value.ToString();
+                string currentDay = row.ElementAt(1).Value.ToString();
+                int previousNumber = Convert.ToInt32(row.ElementAt(9).Value);
+                int currentNumber = Convert.ToInt32(row.ElementAt(0).Value);
+                short counterStateCode = Convert.ToInt16(row.ElementAt(2).Value);
+                int agentCode = Convert.ToInt32(row.ElementAt(3).Value);
+                int zoneId = Convert.ToInt32(row.ElementAt(4).Value);
 
                 MeterReadingFileDetail meterDetail = _meterReadingCreateBaseHandler.CreateMeterReading(zoneId, customerNumber, readingNumber, agentCode, counterStateCode, previousDay, currentDay, previousNumber, currentNumber, userId);
                 meterReadingFileDetail.Add(meterDetail);
@@ -202,7 +198,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
             return meterReadingFileDetail;
         }
-        private async Task InputValidate(MeterReadingFileCreateDto input, CancellationToken cancellationToken)
+        private async Task InputValidate(MeterReadingExcelFileCreateDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)

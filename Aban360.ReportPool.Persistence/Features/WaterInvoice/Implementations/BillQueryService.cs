@@ -315,7 +315,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 							b.del=0 AND
 							b.cod_vas NOT IN (4,7,8)
 					)
-					Select TOP 300 * 
+					Select TOP 10 * 
 					From CTE
 					WHERE
 						rn=1 AND

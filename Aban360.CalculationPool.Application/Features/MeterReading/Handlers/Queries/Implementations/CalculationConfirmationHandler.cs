@@ -261,7 +261,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 Masjar = 0,
                 Sabt = 1,
                 Rate = (decimal)meterReading.MonthlyConsumption,
-                Operator = 0,
+                Operator = 666,
                 Mamor = meterReading.AgentCode,
                 TavizDate = meterReading.TavizDateJalali ?? string.Empty,
                 ZaribCntr = 0,

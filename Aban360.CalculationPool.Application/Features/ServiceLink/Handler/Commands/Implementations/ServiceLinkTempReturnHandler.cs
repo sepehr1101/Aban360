@@ -110,7 +110,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 PardG = 0,
                 Sum = input.Amount,
                 AmountItemId = input.AmountItemId,//From T100
-                SiphonId = int.Parse(memberInfo.MainSiphon),
+                SiphonId = GetSiphonId(int.Parse(memberInfo.MainSiphon)),
                 UsageId = memberInfo.UsageId,
                 IsRegister = false,
                 TotalServicesAmount = input.Amount,
@@ -130,6 +130,17 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 MeterDiameterId = memberInfo.MeterDiameterId,
                 Ser = 0,
                 Type = (int)input.CategoryType,
+            };
+        }
+        private int GetSiphonId(int mainSiphon)
+        {
+            return mainSiphon switch
+            {
+                100 => 1,
+                125 => 2,
+                150 => 3,
+                200 => 4,
+                _ => mainSiphon
             };
         }
     }
