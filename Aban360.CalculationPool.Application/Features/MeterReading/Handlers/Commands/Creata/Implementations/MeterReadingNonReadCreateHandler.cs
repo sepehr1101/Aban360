@@ -9,6 +9,7 @@ using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.Common.Timing;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.InvoiceInfo.Dto;
@@ -64,9 +65,13 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             string dateJalaliCondition = ConvertDate.JalaliToDateTime(input.CurrentDateJalali).AddDays(_maxDayCondition).ToShortPersianDateString();
 
             IEnumerable<BillLatestListDataOutputDto> latestBills = await _billQueryService.GetLatestForNonRead(new BillLatestListInputDto(input.ZoneId, input.FromReadingNumber, input.ToReadingNumber), dateJalaliCondition);
+            if (!latestBills.Any())
+            {
+                throw new ReadingException(ExceptionLiterals.NotFoundAnyCustomer);
+            }
             IEnumerable<MeterReadingDetailCreateDto> readingDetails = await GetMeterReadingDetails(latestBills, input, appUser, fileName);
             FileCreateDto fileInfo = new(fileName, null, null);
-            ICollection<MeterReadingDetailCreateDto> readingDetailsCreate = await _meterReadingCreateBaseHandler.GetReadingDetailCreateFinal(readingDetails, fileInfo, appUser, cancellationToken);
+            ICollection<MeterReadingDetailCreateDto> readingDetailsCreate = await _meterReadingCreateBaseHandler.GetReadingDetailCreateFinalNonRead(readingDetails, fileInfo, appUser,  cancellationToken);
 
             await _meterReadingCreateBaseHandler.ExecSql(readingDetailsCreate, fileInfo, appUser);
             return _meterReadingCreateBaseHandler.GetReturnData(readingDetailsCreate, _reportTitle);
