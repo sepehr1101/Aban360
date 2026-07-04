@@ -25,6 +25,7 @@
         public int TotalUnit { get; set; }
         public string SiphonDiameterTitle { get; set; }
         public string UsageTitle { get; set; }
+        public int UsageId { get; set; }
         public string NationalCode { get; set; }
         public string EmptyUnit { get; set; }
 

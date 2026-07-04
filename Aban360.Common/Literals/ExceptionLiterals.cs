@@ -261,5 +261,12 @@
         public static string InvalidServiceLinkReturnRemoveBeforDateCheck => "قبض برگشتی جاری، قبل از بسته شدن دوره صادر شده.";
         public static string InvalidServiceLinkReturnRemoveLessThan7Days => "قبض برگشتی جاری، بیش از 7 روز گدشته صادر شده.";
         public static string InvalidConCompanyPersonnelDeserialize => "خطا در نمایش پرسنل";
+
+        public static string InvalidInsertNerkh => " خطا در ایجاد نرخ کاربری ";
+        public static string InvalidUpdateNerkh => " خطا در ویرایش نرخ ";
+        public static string InvalidInsertS => "خطا در ایجاد الگو(S)";
+        public static string InvalidUpdateS => " خطا در ویرایش الگو(S) ";
+        public static string InvalidRemoveS => " خطا در حذف الگو(S) ";
+
     }
 }

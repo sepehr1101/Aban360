@@ -10,7 +10,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 {
     internal sealed class BillQueryService : AbstractBaseConnection, IBillQueryService
     {
-        private int _latestListRecordMax = 10;
+        private int _latestListRecordMax = 500;
         public BillQueryService(IConfiguration configuration)
             : base(configuration)
         {

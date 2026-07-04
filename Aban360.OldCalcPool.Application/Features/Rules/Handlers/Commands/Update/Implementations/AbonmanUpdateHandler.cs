@@ -4,39 +4,47 @@ using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Create.Contracts;
+using Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Update.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Commands;
+using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Implementations;
+using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
-namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Create.Implementations
+namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Update.Implementations
 {
-    internal sealed class SCreateHandler : AbstractBaseConnection, ISCreateHandler
+    internal sealed class AbonmanUpdateHandler : AbstractBaseConnection, IAbonmanUpdateHandler
     {
         private readonly IHttpContextAccessor _contextAccessor;
-        private readonly IValidator<SCreateDto> _validator;
-        public SCreateHandler(
+        private readonly IAbonmanQueryService _abonmanQueryService;
+        private readonly IValidator<AbonmanUpdateDto> _validator;
+        public AbonmanUpdateHandler(
             IHttpContextAccessor contextAccessor,
-            IValidator<SCreateDto> validator,
+            IAbonmanQueryService abonmanQueryService,
+            IValidator<AbonmanUpdateDto> validator,
             IConfiguration configuration)
                 : base(configuration)
         {
             _contextAccessor = contextAccessor;
             _contextAccessor.NotNull(nameof(contextAccessor));
 
+            _abonmanQueryService = abonmanQueryService;
+            _abonmanQueryService.NotNull(nameof(abonmanQueryService));
+
             _validator = validator;
-            _validator.NotNull(nameof(_validator));
+            _validator.NotNull(nameof(validator));
         }
-        public async Task Handle(SCreateDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task Handle(AbonmanUpdateDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             await InputValidate(inputDto, cancellationToken);
-            string opLogText = string.Format(OpLogLiterals.SInserstOpLog, inputDto.Olgo, inputDto.ZoneId, inputDto.FromDateJalali, inputDto.ToDateJalali);
+            AbonmanGetDto previousInfo = await _abonmanQueryService.Get(inputDto.Id);
+            string opLogText = string.Format(OpLogLiterals.AbonmanUpdateOpLog, previousInfo.Code, inputDto.Code, previousInfo.Vaj, inputDto.Vaj, previousInfo.Date1, inputDto.Date1, previousInfo.Date2, inputDto.Date2);
             await ExecSql(inputDto, appUser, opLogText);
         }
-        private async Task ExecSql(SCreateDto createDto, IAppUser appUser, string opLogText)
+        private async Task ExecSql(AbonmanUpdateDto UpdateDto, IAppUser appUser, string opLogText)
         {
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -46,25 +54,24 @@ namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Creat
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    SCommandService sCommandService = new(connection, transaction);
+                    AbonmanCommandService abonmanCommandService = new(connection, transaction);
                     OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
-                    await sCommandService.Insert(createDto);
+                    await abonmanCommandService.Update(UpdateDto);
                     await opLogCommandService.Insert(opLogText, appUser);
 
                     transaction.Commit();
                 }
             }
         }
-        private async Task InputValidate(SCreateDto createDto, CancellationToken cancellationToken)
+        public async Task InputValidate(AbonmanUpdateDto UpdateDto, CancellationToken cancellationToken)
         {
-            var validationResult = await _validator.ValidateAsync(createDto, cancellationToken);
+            var validationResult = await _validator.ValidateAsync(UpdateDto, cancellationToken);
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new CustomValidationException(message);
             }
         }
-
     }
 }

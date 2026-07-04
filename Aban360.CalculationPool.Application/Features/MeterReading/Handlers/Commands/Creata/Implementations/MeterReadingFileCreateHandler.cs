@@ -6,6 +6,7 @@ using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.ReportPool.Domain.Base;
 using DotNetDBF;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
@@ -18,8 +19,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
     {
         private readonly IMeterReadingCreateBaseHandler _meterReadingCreateBaseHandler;
         private readonly IValidator<MeterReadingFileCreateDto> _validator;
-        const string _reportTitle = "آپلود و محاسبه اولیه";
-        const string _dbfPath = @"AppData\Dbfs";
+        private static string _reportTitle = ReportLiterals.MeterReadingCreateFile;
+        private static string _dbfPath = ReportLiterals.MeterReadingFilePath;
         public MeterReadingFileCreateHandler(
             IMeterReadingCreateBaseHandler meterReadingCreateBaseHandler,
             IValidator<MeterReadingFileCreateDto> validator,
@@ -36,7 +37,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         public async Task<ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto>> Handle(MeterReadingFileCreateDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
             await InputValidate(input, cancellationToken);
-            //await _meterReadingCreateBaseHandler.CheckDuplicateFile(input.ReadingFile.FileName, cancellationToken);
+            await _meterReadingCreateBaseHandler.CheckDuplicateFile(input.ReadingFile.FileName, cancellationToken);
 
             string filePath = await SaveToDisk(input.ReadingFile, _dbfPath);
             IEnumerable<MeterReadingDetailCreateDto> readingDetails = await GetMeterReadingDetails(input, filePath, appUser.UserId);
@@ -56,16 +57,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         }
         private ICollection<MeterReadingFileDetail> ReadDb(string filePath, Guid userId)
         {
-            var result = new List<Dictionary<string, object>>();
+            ICollection<MeterReadingFileDetail> meterReadingFileDetail = new List<MeterReadingFileDetail>();
 
             FileStream stream = File.OpenRead(filePath);
             DBFReader reader = new DBFReader(stream);
-
-            int recordCount = reader.RecordCount;
-            DBFField[] fields = reader.Fields;
-
-            ICollection<MeterReadingFileDetail> meterReadingFileDetail = new List<MeterReadingFileDetail>();
             object[] rowObjects;
+
             while ((rowObjects = reader.NextRecord()) != null)
             {
                 //radif=0 eshterak=1 pridate=2 currentday=3 prinu=4 currentnu=5 codvas-counterstate=6 mamorcode=7 town=13

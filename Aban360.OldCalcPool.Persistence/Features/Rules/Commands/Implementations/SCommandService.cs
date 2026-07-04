@@ -1,16 +1,26 @@
-﻿using Aban360.Common.Db.Dapper;
+﻿using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Commands;
-using Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Contracts;
 using Dapper;
-using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Implementations
 {
-    internal sealed class SCommandService : AbstractBaseConnection, ISCommandService
+    public sealed class SCommandService
     {
-        public SCommandService(IConfiguration configuration)
-            : base(configuration)
-        { }
+        private readonly IDbConnection _connection;
+        private readonly IDbTransaction _transaction;
+        public SCommandService(
+            IDbConnection connection,
+            IDbTransaction transaction)
+        {
+            _connection = connection;
+            _connection.NotNull(nameof(connection));
+
+            _transaction = transaction;
+            _transaction.NotNull(nameof(transaction));
+        }
 
         public async Task Update(SUpdateDto input)
         {
@@ -23,34 +33,44 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Implementation
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali
             };
-            await _sqlReportConnection.ExecuteAsync(SUpdateQueryString, @params);
-
+            int effectedRecord = await _connection.ExecuteAsync(SUpdateQueryString, @params, _transaction);
+            if (effectedRecord <= 0)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidUpdateS);
+            }
         }
-        public async Task Create(SCreateDto input)
+        public async Task Insert(SCreateDto input)
         {
             int latestId = await GetLatestId();
-            
+
             string SCreateQueryString = GetSCreateQuery();
             var @params = new
             {
-                id=latestId+1,
+                id = latestId + 1,
                 town = input.ZoneId,
                 input.Olgo,
                 fromDate = input.FromDateJalali,
                 toDate = input.ToDateJalali
             };
-            await _sqlReportConnection.ExecuteAsync(SCreateQueryString, @params);
+            int effectedRecord = await _connection.ExecuteAsync(SCreateQueryString, @params, _transaction);
+            if (effectedRecord <= 0)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidInsertS);
+            }
         }
-
         public async Task Delete(int id)
         {
             string SDeleteQueryString = GetSDeleteQuery();
-            await _sqlReportConnection.ExecuteAsync(SDeleteQueryString, new { id });
+            int effectedRecord = await _connection.ExecuteAsync(SDeleteQueryString, new { id }, _transaction);
+            if (effectedRecord <= 0)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidRemoveS);
+            }
         }
         private async Task<int> GetLatestId()
         {
             string query = GetLatestIdQuery();
-            int latestId=await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(query,null);
+            int latestId = await _connection.QueryFirstOrDefaultAsync<int>(query, null, _transaction);
 
             return latestId;
         }
@@ -63,8 +83,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Implementation
         }
         private string GetSCreateQuery()
         {
-            return @"Insert Into OldCalc.dbo.S(id,town,olgo,FromDate,ToDate)
-                    Values(@id,@town,@olgo,@FromDate,@ToDate)
+            return @"Insert Into OldCalc.dbo.S(town,olgo,FromDate,ToDate)
+                    Values(@town,@olgo,@FromDate,@ToDate)
 ";
         }
         private string GetSDeleteQuery()
