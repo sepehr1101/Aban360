@@ -244,6 +244,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 							b.masraf,
 							b.baha,
 							b.cod_vas,
+							b.del,
 							RN= ROW_NUMBER() OVER(Partition By b.radif Order By b.today_date DESC)
 						From [{dbName}].dbo.bed_bes b
 						{conditionQuery}
@@ -257,7 +258,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
 						c.masraf as LastConsumption,
 						c.rate as LastMonthlyConsumption,
 						c.cod_vas as LastCounterStateCode,
-						c.baha as LastSumItems
+						c.baha as LastSumItems,
+						c.del IsReturned
 					From CTE c
 					Where c.RN=1";
         }

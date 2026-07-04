@@ -11,6 +11,8 @@ using Excel = MiniExcelLibs;
 using System.Data;
 using static Aban360.Common.Extensions.IoExtensions;
 using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Contracts;
+using Aban360.ReportPool.Domain.Base;
+using Aban360.Common.Literals;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Implementations
 {
@@ -18,8 +20,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
     {
         private readonly IMeterReadingCreateBaseHandler _meterReadingCreateBaseHandler;
         private readonly IValidator<MeterReadingExcelFileCreateDto> _validator;
-        const string _reportTitle = "آپلود و محاسبه اولیه";
-        const string _dbfPath = @"AppData\Dbfs";
+        private static string _reportTitle = ReportLiterals.MeterReadingCreateFile;
+        private static string _dbfPath = ReportLiterals.MeterReadingFilePath;
         public MeterReadingExcelFileCreateHandler(
             IMeterReadingCreateBaseHandler meterReadingCreateBaseHandler,
             IValidator<MeterReadingExcelFileCreateDto> validator,
@@ -56,10 +58,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         }
         private ICollection<MeterReadingFileDetail> ReadExcel(string filePath, Guid userId)
         {
-            var result = new List<Dictionary<string, object>>();
-
-            var rows = Excel.MiniExcel.Query(filePath, useHeaderRow: false, "صفحه 1");
             ICollection<MeterReadingFileDetail> meterReadingFileDetail = new List<MeterReadingFileDetail>();
+            var rows = Excel.MiniExcel.Query(filePath, useHeaderRow: false, sheetName: ExceptionLiterals.Page(1));
+
             foreach (var item in rows.Skip(1))
             {
                 var row = (IDictionary<string, object>)item;
