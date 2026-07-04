@@ -40,7 +40,7 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
         public async Task<ReportOutput<BillTransactionDetailHeaderOutputDto, BillTransactionDetailDataOutputDto>> Handle(string billId, CancellationToken cancellationToken)
         {
             IEnumerable<BillTransactionDetailGetDto> billDetails = await _billQueryService.GetBillDetails(billId);
-            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = new(billDetails?.FirstOrDefault()?.ZoneId ?? 0, billDetails?.FirstOrDefault()?.CustomerNumber ?? 0);
+            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(billId);
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumber);
             string? latestMeterChangeDateJalali = await _latestWaterMeterInfoQueryService.GetLatestChangeDateJalali(zoneIdAndCustomerNumber);
 
@@ -73,10 +73,10 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
 
             BillTransactionDetailHeaderOutputDto header = new()
             {
-                ZoneId = billDetails?.FirstOrDefault()?.ZoneId ?? 0,
-                ZoneTitle = billDetails?.FirstOrDefault()?.ZoneTitle ?? string.Empty,
-                CustomerNumber = billDetails?.FirstOrDefault()?.CustomerNumber ?? 0,
-                BillId = billDetails?.FirstOrDefault()?.BillId ?? string.Empty,
+                ZoneId = memberInfo?.ZoneId ?? 0,
+                ZoneTitle = memberInfo?.ZoneTitle ?? string.Empty,
+                CustomerNumber = memberInfo?.CustomerNumber ?? 0,
+                BillId = memberInfo?.BillId ?? string.Empty,
                 Title = title,
                 RecordCount = data?.Count() ?? 0,
                 LatestMeterChangeDateJalali = latestMeterChangeDateJalali,

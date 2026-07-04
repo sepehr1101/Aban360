@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<NerkhUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update(NerkhUpdateDto UpdateDto, CancellationToken cancellationToken)
         {
-            await _nerkhUpdateHandler.Handle(UpdateDto, cancellationToken);
+            await _nerkhUpdateHandler.Handle(UpdateDto, CurrentUser, cancellationToken);
             return Ok(UpdateDto);
         }
     }

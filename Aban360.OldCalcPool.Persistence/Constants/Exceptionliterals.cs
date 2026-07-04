@@ -14,5 +14,8 @@
         public static string InvalidInsertMeterChange => "خطا در ذخیره تعویض";
         public static string InvalidDateLessThan1Month => "تاریخ نمی‌تواند کمتر از 1 ماه باشد.";
         public static string InvalidDateMoreThanCurrentDay => "تاریخ نمی‌تواند بزرگتر از امروز باشد.";
+
+        public static string InvalidAbonmanInsert => "خطا در ایجاد فرمول آبونمان";
+        public static string InvalidAbonmanUpdate => "خطا در ویرایش فرمول آبونمان";
     }
 }

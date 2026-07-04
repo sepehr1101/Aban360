@@ -36,6 +36,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IValidator<MeterReadingFileCreateDto> _validator;
         private readonly IPreviousAverageHandler _previousAverageHandler;
         private readonly IBedBesQueryService _bedBesQueryService;
+        private int[] _invalidLatestCounterStateCode = { 4, 7, 8 };
         const int _conditionPayableAmount = 10000;
         const int _paymentDeadline = 7;
         const double _maxAmount = 999_999_999_999;
@@ -108,7 +109,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                         };
                         try
                         {
-
                             AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterInfo, cancellationToken);
                             if (abBahaCalc.SumItems > _maxAmount)
                             {
@@ -251,7 +251,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             }
             foreach (var item in customersInfo.BedBesInfo)
             {
-                if (item.IsReturned)
+                if (item.IsReturned || _invalidLatestCounterStateCode.Contains(item.LastCounterStateCode ?? 0))
                 {
                     BedBesPreviousNumberAndDateOutputDto previousInfo = await _bedBesQueryService.GetPreviousDateAndNumber(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber), item.BillId);
                     item.LastMeterNumber = previousInfo.PreviousNumber;

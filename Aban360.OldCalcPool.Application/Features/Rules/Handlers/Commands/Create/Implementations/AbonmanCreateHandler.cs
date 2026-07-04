@@ -14,13 +14,13 @@ using System.Data;
 
 namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Create.Implementations
 {
-    internal sealed class SCreateHandler : AbstractBaseConnection, ISCreateHandler
+    internal sealed class AbonmanCreateHandler : AbstractBaseConnection, IAbonmanCreateHandler
     {
         private readonly IHttpContextAccessor _contextAccessor;
-        private readonly IValidator<SCreateDto> _validator;
-        public SCreateHandler(
+        private readonly IValidator<AbonmanCreateDto> _validator;
+        public AbonmanCreateHandler(
             IHttpContextAccessor contextAccessor,
-            IValidator<SCreateDto> validator,
+            IValidator<AbonmanCreateDto> validator,
             IConfiguration configuration)
                 : base(configuration)
         {
@@ -28,15 +28,15 @@ namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Creat
             _contextAccessor.NotNull(nameof(contextAccessor));
 
             _validator = validator;
-            _validator.NotNull(nameof(_validator));
+            _validator.NotNull(nameof(validator));
         }
-        public async Task Handle(SCreateDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task Handle(AbonmanCreateDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             await InputValidate(inputDto, cancellationToken);
-            string opLogText = string.Format(OpLogLiterals.SInserstOpLog, inputDto.Olgo, inputDto.ZoneId, inputDto.FromDateJalali, inputDto.ToDateJalali);
+            string opLogText = string.Format(OpLogLiterals.AbonmanInserstOpLog, inputDto.Code, inputDto.Vaj, inputDto.Date1, inputDto.Date2);
             await ExecSql(inputDto, appUser, opLogText);
         }
-        private async Task ExecSql(SCreateDto createDto, IAppUser appUser, string opLogText)
+        private async Task ExecSql(AbonmanCreateDto createDto, IAppUser appUser, string opLogText)
         {
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -46,17 +46,17 @@ namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Creat
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    SCommandService sCommandService = new(connection, transaction);
+                    AbonmanCommandService abonmanCommandService = new(connection, transaction);
                     OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
-                    await sCommandService.Insert(createDto);
+                    await abonmanCommandService.Insert(createDto);
                     await opLogCommandService.Insert(opLogText, appUser);
 
                     transaction.Commit();
                 }
             }
         }
-        private async Task InputValidate(SCreateDto createDto, CancellationToken cancellationToken)
+        public async Task InputValidate(AbonmanCreateDto createDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(createDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -65,6 +65,5 @@ namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Creat
                 throw new CustomValidationException(message);
             }
         }
-
     }
 }

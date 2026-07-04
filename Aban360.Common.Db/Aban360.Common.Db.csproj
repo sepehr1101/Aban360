@@ -27,4 +27,8 @@
     <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Constants\Literals\NewFolder\" />
+  </ItemGroup>
+
 </Project>
