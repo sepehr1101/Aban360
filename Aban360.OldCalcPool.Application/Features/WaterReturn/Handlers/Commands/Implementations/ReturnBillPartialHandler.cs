@@ -83,18 +83,19 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                     consumptionAverage = inputDto.UserInput.Value;
                 }
                 consumptionAverage = await GetConsumptionAverage(customerInfo, bedBesResult.PriDate, bedBesResult.TodayDate, consumptionAverage);
-            }
-            else
-            {
-                consumptionAverage = await _returnBillBaseHandler.GetConsumptionAverage(inputDto.FromDateJalali, inputDto.ToDateJalali, inputDto.CalculationType, inputDto.UserInput, customerInfo, inputDto.ReturnCauseId);
-            }
-
-            if (burstPipe.Contains(inputDto.ReturnCauseId))
-            {
                 AbBahaCalculationDetails abBahaResult = await GetAbBahaTariff(inputDto, bedBesInfo, consumptionAverage, cancellationToken);
                 var (finalAmount, hadarConsumption) = await GetAbHadarMasHadar(bedBesResult, customerInfo, (float)abBahaResult.Consumption, bedBesResult.PriDate, bedBesResult.TodayDate);
                 return await CreateAutoBacksAndReturn(abBahaResult, inputDto, bedBesInfo, bedBesResult, customerInfo, hadarConsumption, (long)finalAmount, consumptionAverage, jalaseNumber, appUser, inputDto.FromDateJalali, inputDto.ToDateJalali, cancellationToken);
             }
+
+            else
+            {
+                if (!misreadedCalcWithMeterNumber.Contains(inputDto.ReturnCauseId))
+                {
+                    consumptionAverage = await _returnBillBaseHandler.GetConsumptionAverage(inputDto.FromDateJalali, inputDto.ToDateJalali, inputDto.CalculationType, inputDto.UserInput, customerInfo, inputDto.ReturnCauseId);
+                }
+            }
+
             if (misreaded.Contains(inputDto.ReturnCauseId))
             {
                 AbBahaCalculationDetails abBahaResult = new();
