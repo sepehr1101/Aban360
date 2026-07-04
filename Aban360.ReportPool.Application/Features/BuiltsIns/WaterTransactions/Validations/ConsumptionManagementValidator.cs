@@ -27,7 +27,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Va
               .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(c => c.FromMultiplier)
-              .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
               .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(c => c.ToMultiplier)

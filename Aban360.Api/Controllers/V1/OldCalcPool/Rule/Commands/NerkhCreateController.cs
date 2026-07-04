@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<NerkhCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create(NerkhCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _nerkhCreateHandler.Handle(createDto,  cancellationToken);
+            await _nerkhCreateHandler.Handle(createDto, CurrentUser, cancellationToken);
             return Ok(createDto);
         }
     }

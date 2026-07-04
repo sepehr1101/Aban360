@@ -36,6 +36,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IValidator<MeterReadingFileCreateDto> _validator;
         private readonly IPreviousAverageHandler _previousAverageHandler;
         private readonly IBedBesQueryService _bedBesQueryService;
+        private int[] _invalidLatestCounterStateCode = { 4, 7, 8 };
         const int _conditionPayableAmount = 10000;
         const int _paymentDeadline = 7;
         const double _maxAmount = 999_999_999_999;
@@ -98,7 +99,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     if (readingDetail.CurrentCounterStateCode == _malfunctionMeterStateId)//xarab
                     {
                         float previousAverage = await _previousAverageHandler.HandleByPreviousYear(readingDetail.ZoneId, readingDetail.CustomerNumber, readingDetail.PreviousDateJalali, readingDetail.CurrentDateJalali) ??
-                           await _previousAverageHandler.HandleByLatestReading(readingDetail.ZoneId, readingDetail.CustomerNumber, readingDetail.PreviousDateJalali, readingDetail.CurrentDateJalali);
+                        await _previousAverageHandler.HandleByLatestReading(readingDetail.ZoneId, readingDetail.CustomerNumber, readingDetail.PreviousDateJalali, readingDetail.CurrentDateJalali);
                         MeterDateInfoWithMonthlyConsumptionOutputDto meterInfo = new MeterDateInfoWithMonthlyConsumptionOutputDto()
                         {
                             BillId = readingDetail.BillId,
@@ -108,7 +109,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                         };
                         try
                         {
-
                             AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterInfo, cancellationToken);
                             if (abBahaCalc.SumItems > _maxAmount)
                             {
@@ -230,26 +230,28 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             string fromReadingNumber = meterReadings?.Min(m => m.ReadingNumber) ?? string.Empty;
             string toReadingNumber = meterReadings?.Max(m => m.ReadingNumber) ?? string.Empty;
             MeterFlowCreateDto importedMeterFlow = GetMeterFlowCreateDto(MeterFlowStepEnum.Imported, fileName, firstMeterDetail.ZoneId, fromReadingNumber, toReadingNumber, userId, description);
-            CustomersInfoGetDto customersInfo;
             IEnumerable<ZoneIdAndCustomerNumber> customersByInvalidPreviousBedBes = new List<ZoneIdAndCustomerNumber>();
+            CustomersInfoGetDto customersInfo;
             int meterFlowId = 0;
 
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
+                {
                     connection.Open();
+                }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     MeterFlowCommandService meterflowCommandService = new(connection, transaction);
+
                     meterFlowId = await meterflowCommandService.Insert(importedMeterFlow);
                     customersInfo = await _customerInfoService.GetByBulkCopy(connection, transaction, firstMeterDetail.ZoneId, meterReadings.Select(m => m.CustomerNumber).ToList());
-                    customersByInvalidPreviousBedBes = await _bedBesQueryService.GetPreviousDateAndNumberWithSqlBulk(connection, transaction, firstMeterDetail.ZoneId, meterReadings.Select(m => m.CustomerNumber).ToList());
                     transaction.Commit();
                 }
             }
             foreach (var item in customersInfo.BedBesInfo)
             {
-                if (customersByInvalidPreviousBedBes.Select(c => c.CustomerNumber).Contains(item.CustomerNumber))
+                if (item.IsReturned || _invalidLatestCounterStateCode.Contains(item.LastCounterStateCode ?? 0))
                 {
                     BedBesPreviousNumberAndDateOutputDto previousInfo = await _bedBesQueryService.GetPreviousDateAndNumber(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber), item.BillId);
                     item.LastMeterNumber = previousInfo.PreviousNumber;
@@ -337,10 +339,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
+                {
                     connection.Open();
-
-                IDbTransaction transaction = null;
-                using (transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     MeterReadingDetailCommandService meterReadingDetailService = new(connection, transaction);
                     MeterFlowCommandService meterFlowCommand = new(connection, transaction);
@@ -361,7 +363,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     }
                 }
             }
-
         }
         public ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto> GetReturnData(IEnumerable<MeterReadingDetailCreateDto> data, string title)
         {
@@ -427,7 +428,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             if (insertDateTime is not null)
             {
                 string insertDateJalali = ConvertDate.GregorianToJalali(insertDateTime);
-                //throw new ReadingException(ExceptionLiterals.InvalidDuplicateFileName(insertDateJalali));
+                throw new ReadingException(ExceptionLiterals.InvalidDuplicateFileName(insertDateJalali));
             }
         }
         private (bool, bool) CounterStateValidation(int counterStateCode, int currentNumber, int previousNumber)

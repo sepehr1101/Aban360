@@ -279,7 +279,11 @@
         public static string UnconfirmedBillReturn { get { return "قبوض برگشتی تایید نشده."; }  }
         public static string ServiceLinkPaid { get { return "وصولی حق انشعاب"; }  }
         public static string ServiceLinkUnconfirmed { get { return "برگشتی تایید نشده حق انشعاب"; }  }
-        
+
+
+        public static string MeterReadingFilePath { get { return @"AppData\Dbfs"; } }
+        public static string MeterReadingNonReadCreate { get { return "قبض دسته‌ای علی‌الحساب"; }  }
+        public static string MeterReadingCreateFile { get { return "آپلود و محاسبه اولیه"; }  }
         public static string MeterReadingExcluded { get { return "قرائت‌های خارج شده از لیست"; }  }
         public static string MeterReadingUpdated{ get { return "قرائت‌های ویرایش شده"; }  }
         public static string MeterReadingExcelFile{ get { return "قرائت"; }  }

@@ -1,9 +1,10 @@
-﻿using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Commands;
+﻿using Aban360.Common.ApplicationUser;
+using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Commands;
 
 namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Create.Contracts
 {
     public interface ISCreateHandler
     {
-        Task Handle(SCreateDto createDto, CancellationToken cancellationToken);
+        Task Handle(SCreateDto createDto, IAppUser appUser, CancellationToken cancellationToken);
     }
 }

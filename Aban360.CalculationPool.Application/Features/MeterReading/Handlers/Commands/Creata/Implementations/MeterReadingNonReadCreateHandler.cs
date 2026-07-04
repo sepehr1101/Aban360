@@ -28,7 +28,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly ICustomerInfoService _customerInfoService;
         private readonly IBillQueryService _billQueryService;
         private readonly IValidator<MeterReadingNonReadInputDto> _validator;
-        const string _reportTitle = "قبض دسته‌ای علی‌الحساب";
+        private string _reportTitle = ReportLiterals.MeterReadingNonReadCreate;
         private int _agentCode = 0;
         private short _nonReadCounterStateId = 8;//todo:?????
         private int _maxDayCondition = -15;
@@ -60,8 +60,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         public async Task<ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto>> Handle(MeterReadingNonReadInputDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
             await InputValidate(input, cancellationToken);
-            Guid fileNameGuid = Guid.NewGuid();
-            string fileName = $"{ReportLiterals.NonRead}-{fileNameGuid}";
+            string fileName = $"{ReportLiterals.NonRead}-{Guid.NewGuid()}";
             string dateJalaliCondition = ConvertDate.JalaliToDateTime(input.CurrentDateJalali).AddDays(_maxDayCondition).ToShortPersianDateString();
 
             IEnumerable<BillLatestListDataOutputDto> latestBills = await _billQueryService.GetLatestForNonRead(new BillLatestListInputDto(input.ZoneId, input.FromReadingNumber, input.ToReadingNumber), dateJalaliCondition);
@@ -81,19 +80,23 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             string fromReadingNumber = latestBills?.Min(m => m.ReadingNumber) ?? string.Empty;
             string toReadingNumber = latestBills?.Max(m => m.ReadingNumber) ?? string.Empty;
             MeterFlowCreateDto importedMeterFlow = GetMeterFlowCreateDto(MeterFlowStepEnum.Imported, fileName, input.ZoneId, fromReadingNumber, toReadingNumber, appUser.UserId, string.Empty);
-            CustomersInfoGetDto customersInfo;
             IEnumerable<ZoneIdAndCustomerNumber> customersByInvalidPreviousBedBes = new List<ZoneIdAndCustomerNumber>();
+            CustomersInfoGetDto customersInfo;
             int meterFlowId = 0;
 
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
+                {
                     connection.Open();
+                }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     MeterFlowCommandService meterflowCommandService = new(connection, transaction);
+
                     meterFlowId = await meterflowCommandService.Insert(importedMeterFlow);
                     customersInfo = await _customerInfoService.GetByBulkCopy(connection, transaction, input.ZoneId, latestBills.Select(m => m.CustomerNumber).ToList());
+                   
                     transaction.Commit();
                 }
             }

@@ -37,11 +37,19 @@
         public static string ConCompanyPersonnelRemoveOpLog => @"مامور وصول پیمانکار قطع/وصل حذف شد. نام مامور:{0}  کدملی:{1}";
         public static string JudicalNoticeCommandInsertOpLog => @"دستور اسناد رسمی ایجاد شد. شناسه قبض:{0}  مبلغ بدهی:{1}  نام شرکت:{2}  نام نماینده:{3}";
 
-        public static string UserCreate => @"کاربر ایجاد شد. نام کامل:{0}  نام کاربری:{1}  تلفن همراه:{2}"; 
-        public static string UserUpdate => @"کاربر ویرایش شد. شناسه کاربر:{0}  نام کامل :از {1} به {2}  نام کاربری:از {3} به {4}  تلفن همراه:از {5} به {6}"; 
-        public static string UserDelete => @"کاربر حذف شد. شناسه کاربر:{0}"; 
-     
-        public static string MeterFlowRemoveOpLog => @"فایل قرائت حذف شد. نام قبلی فایل:{0}  نام فعلی فایل:{1} ناحیه:{2}"; 
-     
+        public static string UserCreate => @"کاربر ایجاد شد. نام کامل:{0}  نام کاربری:{1}  تلفن همراه:{2}";
+        public static string UserUpdate => @"کاربر ویرایش شد. شناسه کاربر:{0}  نام کامل :از {1} به {2}  نام کاربری:از {3} به {4}  تلفن همراه:از {5} به {6}";
+        public static string UserDelete => @"کاربر حذف شد. شناسه کاربر:{0}";
+
+        public static string MeterFlowRemoveOpLog => @"فایل قرائت حذف شد. نام قبلی فایل:{0}  نام فعلی فایل:{1} ناحیه:{2}";
+
+        public static string AbonmanInserstOpLog => @"فرمول آبونمان ایجاد شد.کاربری:{0}  فرمول:{1}  از تاریخ:{2}  تا تاریخ:{3}";
+        public static string AbonmanUpdateOpLog => @"فرمول آبونمان ویرایش شد.کاربری از {0} به {1} / فرمول از {2} به {3}  /  از تاریخ {4} به {5}  / تا تاریخ {6} به {7}";
+        public static string NerkhInserstOpLog => @"نرخ کاربری ایجاد شد.کاربری:{0}  فرمول:{1}  از تاریخ:{2}  تا تاریخ:{3}";
+        public static string NerkhUpdateOpLog => @"نرخ کاربری ویرایش شد.کاربری از {0} به {1} / فرمول از {2} به {3}  /  از تاریخ {4} به {5}  / تا تاریخ {6} به {7}";
+        public static string SInserstOpLog => @"الگو(S) ایجاد شد. الگو:{0}  ناحیه:{1}   از تاریخ:{2}   تا تاریخ:{3}";
+        public static string SUpdateOpLog => @"الگو() ویرایش شد. الگو: از {0} به {1}  /  ناحیه: از {2} به {3}  /  از تاریخ: از {4} به {5}  /  تا تاریخ: از {6} به {7}";
+        public static string SDeleteOpLog => @"الگو(S) حذف شد. شناسه:{0}  الگو:{1}  ناحیه:{2}   از تاریخ:{3}   تا تاریخ:{4}";
+
     }
 }
