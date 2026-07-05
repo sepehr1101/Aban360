@@ -115,6 +115,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="AppData\AssessmentLogs\" />
     <Folder Include="AppData\Dbfs\" />
     <Folder Include="AppData\Excels\" />
     <Folder Include="AppData\Jsons\" />
